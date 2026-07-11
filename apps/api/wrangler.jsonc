@@ -1,0 +1,29 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "truegrit-api-dev",
+  "main": "src/truegrit_api/worker.py",
+  "compatibility_date": "2026-07-11",
+  "compatibility_flags": ["python_workers"],
+  "observability": { "enabled": true },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "truegrit-dev",
+      "database_id": "REPLACE_WITH_REAL_DEV_DATABASE_ID",
+      "migrations_dir": "../../database/migrations"
+    }
+  ],
+  "r2_buckets": [
+    { "binding": "MEDIA_BUCKET", "bucket_name": "truegrit-media-dev" },
+    { "binding": "EXPORTS_BUCKET", "bucket_name": "truegrit-exports-dev" }
+  ],
+  "kv_namespaces": [{ "binding": "CACHE", "id": "REPLACE_WITH_REAL_DEV_KV_ID" }],
+  "queues": {
+    "producers": [{ "binding": "JOBS_QUEUE", "queue": "truegrit-jobs-dev" }]
+  },
+  "vars": {
+    "APP_ENV": "development",
+    "PUBLIC_STOREFRONT_URL": "http://localhost:5173",
+    "PUBLIC_ADMIN_URL": "http://localhost:5174"
+  }
+}

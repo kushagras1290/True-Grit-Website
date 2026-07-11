@@ -1,0 +1,8 @@
+SESSION_SIGNING_KEY=replace-with-long-random-local-value
+PREVIEW_SIGNING_KEY=replace-with-long-random-local-value
+OTP_PEPPER=replace-with-long-random-local-value
+PAYMENT_PROVIDER_MODE=test
+PAYMENT_API_KEY=replace-with-test-key
+PAYMENT_WEBHOOK_SECRET=replace-with-test-secret
+EMAIL_PROVIDER_MODE=console
+EMAIL_API_KEY=replace-if-required

@@ -1,0 +1,9 @@
+"""UTC ISO 8601 timestamps, matching the D1 schema convention."""
+
+from __future__ import annotations
+
+from datetime import UTC, datetime
+
+
+def utc_now_iso() -> str:
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
