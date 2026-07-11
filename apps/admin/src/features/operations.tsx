@@ -75,7 +75,11 @@ export function InventoryPage() {
               {(data ?? []).map((row) => {
                 const available = row.onHand - row.reserved;
                 const status =
-                  available <= 0 ? "out_of_stock" : available <= row.reorderThreshold ? "low_stock" : "active";
+                  available <= 0
+                    ? "out_of_stock"
+                    : available <= row.reorderThreshold
+                      ? "low_stock"
+                      : "active";
                 return (
                   <tr key={row.variantId} className="border-t border-line">
                     <Td className="font-medium">{row.productName}</Td>
@@ -124,7 +128,11 @@ export function InventoryPage() {
             >
               <Input id="quantityDelta" type="number" {...form.register("quantityDelta")} />
             </Field>
-            <Field label="Reason" htmlFor="reasonCode" error={form.formState.errors.reasonCode?.message}>
+            <Field
+              label="Reason"
+              htmlFor="reasonCode"
+              error={form.formState.errors.reasonCode?.message}
+            >
               <select
                 id="reasonCode"
                 className="min-h-9 w-full rounded-sm border border-line-strong bg-surface px-3 text-sm"
@@ -136,7 +144,11 @@ export function InventoryPage() {
                 <option value="correction">Correction</option>
               </select>
             </Field>
-            <Field label="Note (required)" htmlFor="note" error={form.formState.errors.note?.message}>
+            <Field
+              label="Note (required)"
+              htmlFor="note"
+              error={form.formState.errors.note?.message}
+            >
               <Input id="note" placeholder="Why is stock changing?" {...form.register("note")} />
             </Field>
             <Button type="submit" variant="primary" className="w-full">
@@ -161,7 +173,10 @@ export function OrdersPage() {
 
   return (
     <div>
-      <PageHeader title="Orders" description="Snapshots at purchase time — catalogue edits never rewrite an order." />
+      <PageHeader
+        title="Orders"
+        description="Snapshots at purchase time — catalogue edits never rewrite an order."
+      />
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
@@ -205,9 +220,27 @@ export function OrdersPage() {
 // ---------------------------------------------------------------------------
 
 const DEMO_MEDIA = [
-  { id: "med_hero_home", name: "harvest-table.jpg", alt: "A wooden harvest table with seasonal organic produce", size: "482 KB", dims: "2400 × 1500" },
-  { id: "med_farm_devika", name: "devika-fields.jpg", alt: "Morning light over the terraced fields of Devika Organics", size: "391 KB", dims: "2000 × 1250" },
-  { id: "med_prod_mango", name: "alphonso-crate.jpg", alt: "A crate of ripe Alphonso mangoes", size: "287 KB", dims: "1600 × 1600" },
+  {
+    id: "med_hero_home",
+    name: "harvest-table.jpg",
+    alt: "A wooden harvest table with seasonal organic produce",
+    size: "482 KB",
+    dims: "2400 × 1500",
+  },
+  {
+    id: "med_farm_devika",
+    name: "devika-fields.jpg",
+    alt: "Morning light over the terraced fields of Devika Organics",
+    size: "391 KB",
+    dims: "2000 × 1250",
+  },
+  {
+    id: "med_prod_mango",
+    name: "alphonso-crate.jpg",
+    alt: "A crate of ripe Alphonso mangoes",
+    size: "287 KB",
+    dims: "1600 × 1600",
+  },
 ];
 
 export function MediaPage() {
@@ -224,13 +257,18 @@ export function MediaPage() {
       />
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {DEMO_MEDIA.map((asset) => (
-          <li key={asset.id} className="overflow-hidden rounded-md border border-line bg-surface shadow-card">
+          <li
+            key={asset.id}
+            className="overflow-hidden rounded-md border border-line bg-surface shadow-card"
+          >
             <div
               role="img"
               aria-label={asset.alt}
               className="flex h-36 items-end bg-gradient-to-br from-subtle to-canvas p-3"
             >
-              <span className="rounded-sm bg-surface/90 px-2 py-0.5 text-xs text-ink-muted">{asset.dims}</span>
+              <span className="rounded-sm bg-surface/90 px-2 py-0.5 text-xs text-ink-muted">
+                {asset.dims}
+              </span>
             </div>
             <div className="px-3 py-2.5">
               <p className="truncate text-sm font-medium text-ink">{asset.name}</p>

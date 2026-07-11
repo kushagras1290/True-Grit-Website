@@ -69,7 +69,10 @@ export function CategoryListPage() {
             {(data ?? []).map((category) => (
               <tr key={category.id} className="border-t border-line hover:bg-canvas/60">
                 <Td>
-                  <Link to={`/categories/${category.id}`} className="font-medium text-brand hover:underline">
+                  <Link
+                    to={`/categories/${category.id}`}
+                    className="font-medium text-brand hover:underline"
+                  >
                     {category.name}
                   </Link>
                 </Td>
@@ -100,7 +103,9 @@ function SortableBlockRow({
   onSelect: () => void;
   onToggle: () => void;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: block.id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: block.id,
+  });
   const style = {
     transform: transform ? `translate3d(0, ${transform.y}px, 0)` : undefined,
     transition,
@@ -123,7 +128,11 @@ function SortableBlockRow({
       >
         <GripVertical size={15} />
       </button>
-      <button type="button" onClick={onSelect} className="min-h-8 flex-1 truncate text-left text-sm text-ink">
+      <button
+        type="button"
+        onClick={onSelect}
+        className="min-h-8 flex-1 truncate text-left text-sm text-ink"
+      >
         {blockTitle(block)}
       </button>
       <button
@@ -144,7 +153,9 @@ function BlockPreview({ block }: { block: PublicPageBlock }) {
     case "hero":
       return (
         <div className="bg-brand px-5 py-8 text-ink-inverse">
-          <p className="text-[10px] tracking-[0.14em] uppercase opacity-80">{block.props.eyebrow}</p>
+          <p className="text-[10px] tracking-[0.14em] uppercase opacity-80">
+            {block.props.eyebrow}
+          </p>
           <p className="mt-2 font-display text-xl leading-tight">{block.props.heading}</p>
           <p className="mt-2 max-w-md text-xs opacity-90">{block.props.text}</p>
         </div>
@@ -168,7 +179,11 @@ function BlockPreview({ block }: { block: PublicPageBlock }) {
           <p className="font-display text-base">{block.props.heading}</p>
           <div className="mt-2 grid grid-cols-5 gap-2">
             {block.props.productSlugs.slice(0, block.props.limit).map((slug) => (
-              <div key={slug} className="h-14 rounded-sm border border-line bg-surface" title={slug} />
+              <div
+                key={slug}
+                className="h-14 rounded-sm border border-line bg-surface"
+                title={slug}
+              />
             ))}
           </div>
         </div>
@@ -176,7 +191,8 @@ function BlockPreview({ block }: { block: PublicPageBlock }) {
     case "farmer_story":
       return (
         <blockquote className="border-l-4 border-accent px-5 py-5 font-display text-sm italic">
-          “{block.props.quote}” <cite className="mt-1 block text-xs not-italic">{block.props.attribution}</cite>
+          “{block.props.quote}”{" "}
+          <cite className="mt-1 block text-xs not-italic">{block.props.attribution}</cite>
         </blockquote>
       );
     case "faq":
@@ -214,7 +230,11 @@ export function CategoryEditorPage() {
   const category = (categories.data ?? []).find((entry) => entry.id === id);
 
   const blocksQuery = useQuery({ queryKey: ["home-blocks"], queryFn: api.homeBlocks });
-  const [state, setState] = useState<BuilderState>({ blocks: [], selectedBlockId: null, dirty: false });
+  const [state, setState] = useState<BuilderState>({
+    blocks: [],
+    selectedBlockId: null,
+    dirty: false,
+  });
   const [publishState, setPublishState] = useState<"idle" | "published">("idle");
 
   useEffect(() => {
@@ -246,11 +266,19 @@ export function CategoryEditorPage() {
         actions={
           <>
             <span role="status" className="self-center text-sm text-ink-muted">
-              {publishState === "published" ? "Published — new immutable version created" : state.dirty ? "Unsaved changes" : "Saved"}
+              {publishState === "published"
+                ? "Published — new immutable version created"
+                : state.dirty
+                  ? "Unsaved changes"
+                  : "Saved"}
             </span>
             <PermissionGate
               permission="categories.publish"
-              fallback={<Button disabled title="Requires categories.publish">Publish</Button>}
+              fallback={
+                <Button disabled title="Requires categories.publish">
+                  Publish
+                </Button>
+              }
             >
               <Button
                 variant="primary"
@@ -271,8 +299,15 @@ export function CategoryEditorPage() {
           <h2 className="mb-2 text-xs font-semibold tracking-wide text-ink-muted uppercase">
             Layout — drag or use arrow keys
           </h2>
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={state.blocks.map((block) => block.id)} strategy={verticalListSortingStrategy}>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={state.blocks.map((block) => block.id)}
+              strategy={verticalListSortingStrategy}
+            >
               <ul className="space-y-1.5">
                 {state.blocks.map((block) => (
                   <SortableBlockRow
@@ -297,7 +332,10 @@ export function CategoryEditorPage() {
           <div className="overflow-hidden rounded-md border border-line bg-surface shadow-card">
             {state.blocks.filter((block) => block.enabled).length === 0 ? (
               <div className="px-5 py-10">
-                <EmptyState title="No visible blocks" hint="Enable at least one block to publish." />
+                <EmptyState
+                  title="No visible blocks"
+                  hint="Enable at least one block to publish."
+                />
               </div>
             ) : (
               state.blocks.map((block) => <BlockPreview key={block.id} block={block} />)

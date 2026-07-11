@@ -8,11 +8,11 @@ responsible brands, seasonal harvests, and useful food knowledge.
 
 A pnpm monorepo with three independently deployable applications targeting Cloudflare:
 
-| App | Stack | Deploys to |
-| --- | --- | --- |
-| `apps/storefront` | React 19 + React Router framework mode (SSR) + Tailwind CSS 4 | Cloudflare Workers |
-| `apps/admin` | React 19 SPA + TanStack Query/Table + RHF + Zod + dnd-kit | Cloudflare Workers |
-| `apps/api` | Python FastAPI + Pydantic v2 | Cloudflare Python Workers |
+| App               | Stack                                                         | Deploys to                |
+| ----------------- | ------------------------------------------------------------- | ------------------------- |
+| `apps/storefront` | React 19 + React Router framework mode (SSR) + Tailwind CSS 4 | Cloudflare Workers        |
+| `apps/admin`      | React 19 SPA + TanStack Query/Table + RHF + Zod + dnd-kit     | Cloudflare Workers        |
+| `apps/api`        | Python FastAPI + Pydantic v2                                  | Cloudflare Python Workers |
 
 Shared code lives in `packages/` (design tokens, API contracts, config, test utils). The
 relational source of truth is Cloudflare D1 (`database/migrations`), object storage is R2, and

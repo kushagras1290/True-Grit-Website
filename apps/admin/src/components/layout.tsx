@@ -35,10 +35,30 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
   {
     heading: "Commerce",
     entries: [
-      { to: "/products", label: "Products", icon: <Package size={16} />, permission: "products.view" },
-      { to: "/categories", label: "Categories", icon: <FolderTree size={16} />, permission: "categories.view" },
-      { to: "/inventory", label: "Inventory", icon: <Warehouse size={16} />, permission: "inventory.view" },
-      { to: "/orders", label: "Orders", icon: <ShoppingCart size={16} />, permission: "orders.view" },
+      {
+        to: "/products",
+        label: "Products",
+        icon: <Package size={16} />,
+        permission: "products.view",
+      },
+      {
+        to: "/categories",
+        label: "Categories",
+        icon: <FolderTree size={16} />,
+        permission: "categories.view",
+      },
+      {
+        to: "/inventory",
+        label: "Inventory",
+        icon: <Warehouse size={16} />,
+        permission: "inventory.view",
+      },
+      {
+        to: "/orders",
+        label: "Orders",
+        icon: <ShoppingCart size={16} />,
+        permission: "orders.view",
+      },
     ],
   },
   {
@@ -51,7 +71,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
     heading: "Configuration",
     entries: [
       { to: "/users", label: "Users & Roles", icon: <Users size={16} />, permission: "users.view" },
-      { to: "/audit", label: "Audit Log", icon: <ScrollText size={16} />, permission: "audit.view" },
+      {
+        to: "/audit",
+        label: "Audit Log",
+        icon: <ScrollText size={16} />,
+        permission: "audit.view",
+      },
     ],
   },
 ];

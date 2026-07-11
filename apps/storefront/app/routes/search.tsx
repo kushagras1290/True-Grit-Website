@@ -8,7 +8,9 @@ import { seoMeta } from "../lib/seo";
 export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const query = (url.searchParams.get("q") ?? "").slice(0, 120);
-  const results: SearchGroups = query ? await runSearch(query) : { query: "", total: 0, groups: [] };
+  const results: SearchGroups = query
+    ? await runSearch(query)
+    : { query: "", total: 0, groups: [] };
   return { results };
 }
 

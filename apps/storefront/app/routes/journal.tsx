@@ -23,7 +23,11 @@ export default function JournalPage({ loaderData }: Route.ComponentProps) {
     <Section eyebrow="The journal" heading="Stories worth chewing on">
       <div className="mx-auto max-w-2xl space-y-8">
         {loaderData.articles.map((article) => (
-          <Link key={article.id} to={`/journal/${article.slug}`} className="group block border-t border-line pt-6">
+          <Link
+            key={article.id}
+            to={`/journal/${article.slug}`}
+            className="group block border-t border-line pt-6"
+          >
             <p className="text-xs text-ink-muted">
               {article.authorName} · {article.readingMinutes} min read
             </p>

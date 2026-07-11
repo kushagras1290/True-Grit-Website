@@ -91,7 +91,11 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
         </div>
 
         {menuOpen ? (
-          <nav id="mobile-nav" aria-label="Mobile" className="border-t border-line bg-canvas md:hidden">
+          <nav
+            id="mobile-nav"
+            aria-label="Mobile"
+            className="border-t border-line bg-canvas md:hidden"
+          >
             <ul className="px-4 py-3">
               {bootstrap.navigation.map((item) => (
                 <li key={item.path}>

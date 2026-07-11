@@ -285,12 +285,7 @@ export interface PublicPage {
 // ---------------------------------------------------------------------------
 
 export type WorkflowState =
-  | "draft"
-  | "in_review"
-  | "changes_requested"
-  | "approved"
-  | "scheduled"
-  | "published";
+  "draft" | "in_review" | "changes_requested" | "approved" | "scheduled" | "published";
 
 export type EntityStatus =
   | "draft"

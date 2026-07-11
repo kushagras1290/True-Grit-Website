@@ -1,11 +1,6 @@
 import type { Route } from "./+types/home";
 import { CmsBlock, type BlockData } from "../components/blocks";
-import {
-  loadCategories,
-  loadFarms,
-  loadHome,
-  loadProductsBySlugs,
-} from "../lib/catalogue.server";
+import { loadCategories, loadFarms, loadHome, loadProductsBySlugs } from "../lib/catalogue.server";
 import { seoMeta } from "../lib/seo";
 
 export async function loader() {

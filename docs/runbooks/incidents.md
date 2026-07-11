@@ -10,9 +10,9 @@
 ## Workflow
 
 1. Acknowledge. 2. Assign incident lead. 3. Stop risky deployments. 4. Establish impact and
-timeline. 5. Mitigate first. 6. Preserve evidence and logs (request IDs correlate everything).
-7. Communicate known facts. 8. Recover and verify. 9. Monitor. 10. Blameless post-incident
-review (impact, timeline, root causes, detection gaps, corrective actions with owners).
+   timeline. 5. Mitigate first. 6. Preserve evidence and logs (request IDs correlate everything).
+2. Communicate known facts. 8. Recover and verify. 9. Monitor. 10. Blameless post-incident
+   review (impact, timeline, root causes, detection gaps, corrective actions with owners).
 
 ## High-severity patterns
 

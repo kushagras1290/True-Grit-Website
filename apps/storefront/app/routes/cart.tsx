@@ -22,8 +22,7 @@ export default function CartPage(_props: Route.ComponentProps) {
     return (
       <Section eyebrow="Your basket" heading="Nothing in the basket yet">
         <p className="max-w-md text-sm text-ink-muted">
-          The market is open. Seasonal fruit, honest staples and slow-pressed oils are a click
-          away.
+          The market is open. Seasonal fruit, honest staples and slow-pressed oils are a click away.
         </p>
         <Link
           to="/shop"
@@ -106,8 +105,7 @@ export default function CartPage(_props: Route.ComponentProps) {
             Checkout — coming in Release 2
           </button>
           <p className="mt-2 text-xs text-ink-muted">
-            Prices are re-validated server-side at checkout; your basket total here is an
-            estimate.
+            Prices are re-validated server-side at checkout; your basket total here is an estimate.
           </p>
         </aside>
       </div>

@@ -11,8 +11,8 @@
 ## Expand-contract for risky changes
 
 1. Add new nullable column/table. 2. Deploy code writing old + new. 3. Backfill in bounded
-batches. 4. Deploy code reading the new form. 5. Verify. 6. Remove the old field in a later
-release. Never rename/drop a production column in the same release as its replacement.
+   batches. 4. Deploy code reading the new form. 5. Verify. 6. Remove the old field in a later
+   release. Never rename/drop a production column in the same release as its replacement.
 
 ## Production failure
 

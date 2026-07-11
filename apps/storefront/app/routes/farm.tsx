@@ -31,7 +31,9 @@ export default function FarmPage({ loaderData }: Route.ComponentProps) {
           <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
             {farm.region} · since {farm.establishedYear}
           </p>
-          <h1 className="mt-2 font-display text-3xl leading-tight text-ink md:text-4xl">{farm.name}</h1>
+          <h1 className="mt-2 font-display text-3xl leading-tight text-ink md:text-4xl">
+            {farm.name}
+          </h1>
           <p className="mt-2 text-base text-ink-muted">Farmed by {farm.farmerName}</p>
           <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-subtle px-3 py-1 text-xs font-medium text-brand">
             <span aria-hidden>✓</span> {farm.certification}

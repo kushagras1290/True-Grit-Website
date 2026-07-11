@@ -46,7 +46,11 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
       />
 
       <div className="mx-auto grid max-w-[80rem] gap-10 px-4 py-8 sm:px-6 lg:grid-cols-2">
-        <ProduceFrame slug={product.slug} alt={product.imageAlt} className="aspect-square rounded-md" />
+        <ProduceFrame
+          slug={product.slug}
+          alt={product.imageAlt}
+          className="aspect-square rounded-md"
+        />
 
         <div className="max-w-xl">
           <p className="text-sm text-ink-muted">
@@ -63,7 +67,9 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
           <p className="mt-5 text-2xl font-semibold text-ink">
             {formatMoney(price)}{" "}
             {variant && variant.saleMinor !== null ? (
-              <s className="text-base font-normal text-ink-muted">{formatMoney(variant.listMinor)}</s>
+              <s className="text-base font-normal text-ink-muted">
+                {formatMoney(variant.listMinor)}
+              </s>
             ) : null}
           </p>
 

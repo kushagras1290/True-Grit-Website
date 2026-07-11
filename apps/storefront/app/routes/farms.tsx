@@ -31,7 +31,9 @@ export default function FarmsPage({ loaderData }: Route.ComponentProps) {
             <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
               Since {farm.establishedYear}
             </p>
-            <h2 className="mt-2 font-display text-xl text-ink group-hover:text-brand">{farm.name}</h2>
+            <h2 className="mt-2 font-display text-xl text-ink group-hover:text-brand">
+              {farm.name}
+            </h2>
             <p className="mt-1 text-sm text-ink-muted">
               {farm.farmerName} · {farm.region}
             </p>

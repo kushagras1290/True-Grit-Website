@@ -56,10 +56,16 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
             </h2>
             <ul className="mt-3 space-y-2.5">
               {recipe.ingredients.map((ingredient) => (
-                <li key={ingredient.label} className="flex items-baseline justify-between gap-3 text-sm">
+                <li
+                  key={ingredient.label}
+                  className="flex items-baseline justify-between gap-3 text-sm"
+                >
                   <span className="text-ink">
                     {ingredient.productSlug ? (
-                      <Link to={`/product/${ingredient.productSlug}`} className="text-brand hover:underline">
+                      <Link
+                        to={`/product/${ingredient.productSlug}`}
+                        className="text-brand hover:underline"
+                      >
                         {ingredient.label}
                       </Link>
                     ) : (
@@ -100,7 +106,9 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
           </aside>
 
           <div>
-            <h2 className="text-xs font-semibold tracking-[0.14em] text-ink-muted uppercase">Method</h2>
+            <h2 className="text-xs font-semibold tracking-[0.14em] text-ink-muted uppercase">
+              Method
+            </h2>
             <ol className="mt-3 space-y-5">
               {recipe.steps.map((step, index) => (
                 <li key={index} className="flex gap-4">

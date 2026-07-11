@@ -129,14 +129,18 @@ export const products: ProductDetail[] = [
     traceability: [
       { label: "Farm", detail: "Devika Organics, Ratnagiri — NPOP certificate NPOP/RA/2024/1183" },
       { label: "Harvest", detail: "Tree-ripened, picked at dawn and graded by hand" },
-      { label: "Quality check", detail: "Every lot checked for ripeness and residue-free assurance" },
+      {
+        label: "Quality check",
+        detail: "Every lot checked for ripeness and residue-free assurance",
+      },
       { label: "Packing", detail: "Packed in ventilated crates the same day" },
       { label: "Delivery", detail: "Ships every Tuesday, orchard to door within 48 hours" },
     ],
     relatedSlugs: ["organic-baby-spinach", "sprouted-ragi-flour"],
     seo: {
       title: "Organic Alphonso Mangoes — Ratnagiri, carbide-free",
-      description: "Tree-ripened certified organic Alphonso mangoes from Devika Organics, Ratnagiri.",
+      description:
+        "Tree-ripened certified organic Alphonso mangoes from Devika Organics, Ratnagiri.",
       canonicalPath: "/product/organic-alphonso-mangoes",
       indexing: "index",
     },
@@ -175,7 +179,10 @@ export const products: ProductDetail[] = [
     traceability: [
       { label: "Farm", detail: "Anandvan Collective, Wardha — PGS certificate PGS/MH/2023/0452" },
       { label: "Harvest", detail: "Cut at dawn, chilled within one hour" },
-      { label: "Quality check", detail: "Leaf integrity and freshness check at the collection centre" },
+      {
+        label: "Quality check",
+        detail: "Leaf integrity and freshness check at the collection centre",
+      },
       { label: "Packing", detail: "Packed in compostable liners" },
       { label: "Delivery", detail: "Same-day dispatch on a cold chain" },
     ],
@@ -202,7 +209,8 @@ export const products: ProductDetail[] = [
     availability: "in_stock",
     tags: ["Gluten Free", "Traditional Indian"],
     imageAlt: "Stone-milled ragi flour in a cloth bag",
-    shortDescription: "Stone-milled finger millet, sprouted for easier digestion and deeper flavour.",
+    shortDescription:
+      "Stone-milled finger millet, sprouted for easier digestion and deeper flavour.",
     overview:
       "Finger millet is sprouted for 36 hours, shade-dried and stone-milled in small weekly batches. Sprouting unlocks minerals and gives the flour a naturally sweet, nutty depth.",
     storageGuidance: "Store airtight away from sunlight; use within 3 months.",
@@ -227,7 +235,10 @@ export const products: ProductDetail[] = [
       },
     ],
     traceability: [
-      { label: "Farm", detail: "Anandvan Collective, Wardha — 40 family farms on regenerated soil" },
+      {
+        label: "Farm",
+        detail: "Anandvan Collective, Wardha — 40 family farms on regenerated soil",
+      },
       { label: "Harvest", detail: "Rain-fed finger millet, hand-harvested" },
       { label: "Quality check", detail: "Sprouting and moisture checks before milling" },
       { label: "Packing", detail: "Stone-milled and packed in small weekly batches" },
@@ -256,7 +267,8 @@ export const products: ProductDetail[] = [
     availability: "in_stock",
     tags: [],
     imageAlt: "A glass bottle of golden groundnut oil",
-    shortDescription: "Single-origin groundnuts, wood-pressed at low RPM within a week of shelling.",
+    shortDescription:
+      "Single-origin groundnuts, wood-pressed at low RPM within a week of shelling.",
     overview:
       "Groundnuts from a single harvest are pressed in a traditional wooden ghani at low temperature, keeping aroma and nutrition intact. Settled naturally, never refined or bleached.",
     storageGuidance: "Keep away from direct sunlight. Natural sediment is normal.",
@@ -328,7 +340,10 @@ export const products: ProductDetail[] = [
       },
     ],
     traceability: [
-      { label: "Farm", detail: "Himgiri Terraces, Uttarkashi — NPOP certificate NPOP/UK/2025/0261" },
+      {
+        label: "Farm",
+        detail: "Himgiri Terraces, Uttarkashi — NPOP certificate NPOP/UK/2025/0261",
+      },
       { label: "Harvest", detail: "Single October harvest, sun-dried on rooftops" },
       { label: "Quality check", detail: "Hand-sorted for uniform grain size" },
       { label: "Packing", detail: "Packed at origin in 500 g lots" },
@@ -367,12 +382,14 @@ const categoryHeroes: Record<string, { eyebrow: string; title: string; descripti
   "grains-and-millets": {
     eyebrow: "Slow staples",
     title: "The grains your grandmother knew",
-    description: "Single-origin millets, rice and pulses from regenerative collectives across India.",
+    description:
+      "Single-origin millets, rice and pulses from regenerative collectives across India.",
   },
   "cold-pressed-oils": {
     eyebrow: "Pressed, not processed",
     title: "Oil the slow way",
-    description: "Small-batch oils pressed at low temperature to keep flavour and nutrition intact.",
+    description:
+      "Small-batch oils pressed at low temperature to keep flavour and nutrition intact.",
   },
 };
 
@@ -428,11 +445,16 @@ export const farms: FarmDetail[] = [
     establishedYear: 1998,
     story:
       "The Kulkarni family has farmed these laterite slopes above the Arabian Sea for three generations. When Devika took over in 1998, she converted the orchards fully to organic methods — compost pits under every tree, no carbide ripening, and a packing shed a hundred metres from the trees. We never needed chemicals, she says. We needed patience.",
-    methods: ["Tree-ripening, no carbide", "Compost-fed orchards", "Hand grading and same-day packing"],
+    methods: [
+      "Tree-ripening, no carbide",
+      "Compost-fed orchards",
+      "Hand grading and same-day packing",
+    ],
     productSlugs: ["organic-alphonso-mangoes"],
     seo: {
       title: "Devika Organics — Ratnagiri Alphonso orchards",
-      description: "Certified organic Alphonso mango orchards in Ratnagiri, farmed by the Kulkarni family.",
+      description:
+        "Certified organic Alphonso mango orchards in Ratnagiri, farmed by the Kulkarni family.",
       canonicalPath: "/farms/devika-organics",
       indexing: "index",
     },
@@ -469,11 +491,16 @@ export const farms: FarmDetail[] = [
     establishedYear: 2015,
     story:
       "At 1,800 metres in Uttarkashi, Tara Negi organises a network of terraced smallholdings that were organic long before certification existed. Glacial channels irrigate the terraces; the single October harvest is sun-dried on rooftops and hand-sorted through the winter.",
-    methods: ["High-altitude terracing", "Glacial-fed irrigation", "Single annual harvest, hand-sorted"],
+    methods: [
+      "High-altitude terracing",
+      "Glacial-fed irrigation",
+      "Single annual harvest, hand-sorted",
+    ],
     productSlugs: ["himalayan-red-rajma"],
     seo: {
       title: "Himgiri Terraces — Himalayan hill farms",
-      description: "High-altitude organic terraces in Uttarkashi growing rajma, amaranth and spices.",
+      description:
+        "High-altitude organic terraces in Uttarkashi growing rajma, amaranth and spices.",
       canonicalPath: "/farms/himgiri-terraces",
       indexing: "index",
     },
@@ -492,7 +519,11 @@ export const recipes: RecipeDetail[] = [
     dietaryTags: ["gluten-free", "plant-based"],
     ingredients: [
       { label: "Sprouted ragi flour", quantityText: "2 cups", productSlug: "sprouted-ragi-flour" },
-      { label: "Baby spinach, chopped", quantityText: "1 cup", productSlug: "organic-baby-spinach" },
+      {
+        label: "Baby spinach, chopped",
+        quantityText: "1 cup",
+        productSlug: "organic-baby-spinach",
+      },
       { label: "Groundnut oil", quantityText: "2 tbsp", productSlug: "wood-pressed-groundnut-oil" },
       { label: "Cumin seeds", quantityText: "1 tsp", productSlug: null },
       { label: "Salt", quantityText: "to taste", productSlug: null },
@@ -529,7 +560,8 @@ export const articles: ArticleDetail[] = [
       "The revival is also a flavour story. Sprouted ragi has a sweetness that refined flour never had. Little millet cooks into a pilaf with real bite. A generation of cooks is rediscovering grains their grandmothers never abandoned.",
       "What the movement needs now is steady demand: buyers who return every month, not just when a headline celebrates ancient grains. That steadiness is what lets a farmer plant a rain-fed crop with confidence.",
     ],
-    pullQuote: "Millets are not nostalgia — they are the only crop that makes sense on regenerating land.",
+    pullQuote:
+      "Millets are not nostalgia — they are the only crop that makes sense on regenerating land.",
     seo: {
       title: "The quiet revival of Indian millets — True Grit journal",
       description:
@@ -566,7 +598,12 @@ export const homePage: PublicPage = {
       enabled: true,
       props: {
         heading: "Shop by food type",
-        categorySlugs: ["fresh-fruits", "organic-vegetables", "grains-and-millets", "cold-pressed-oils"],
+        categorySlugs: [
+          "fresh-fruits",
+          "organic-vegetables",
+          "grains-and-millets",
+          "cold-pressed-oils",
+        ],
       },
     },
     {
@@ -673,32 +710,202 @@ export const adminCategories: AdminCategoryRow[] = categories.map((category) => 
 }));
 
 export const adminInventory: AdminInventoryRow[] = [
-  { variantId: "var_alphonso_1kg", productName: "Organic Alphonso Mangoes", variantName: "1 kg box", sku: "TRG-MNG-1KG", locationName: "Mumbai Fulfilment Centre", onHand: 120, reserved: 4, reorderThreshold: 20, updatedAt: "2026-07-01T00:00:00Z" },
-  { variantId: "var_alphonso_2kg", productName: "Organic Alphonso Mangoes", variantName: "2 kg box", sku: "TRG-MNG-2KG", locationName: "Mumbai Fulfilment Centre", onHand: 60, reserved: 2, reorderThreshold: 10, updatedAt: "2026-07-01T00:00:00Z" },
-  { variantId: "var_spinach_250g", productName: "Organic Baby Spinach", variantName: "250 g bunch", sku: "TRG-SPN-250", locationName: "Mumbai Fulfilment Centre", onHand: 200, reserved: 0, reorderThreshold: 40, updatedAt: "2026-07-01T00:00:00Z" },
-  { variantId: "var_ragi_500g", productName: "Sprouted Ragi Flour", variantName: "500 g pack", sku: "TRG-RGI-500", locationName: "Mumbai Fulfilment Centre", onHand: 340, reserved: 0, reorderThreshold: 50, updatedAt: "2026-07-01T00:00:00Z" },
-  { variantId: "var_ragi_1kg", productName: "Sprouted Ragi Flour", variantName: "1 kg pack", sku: "TRG-RGI-1KG", locationName: "Mumbai Fulfilment Centre", onHand: 180, reserved: 0, reorderThreshold: 30, updatedAt: "2026-07-01T00:00:00Z" },
-  { variantId: "var_oil_500ml", productName: "Wood-Pressed Groundnut Oil", variantName: "500 ml bottle", sku: "TRG-GNO-500", locationName: "Mumbai Fulfilment Centre", onHand: 90, reserved: 1, reorderThreshold: 15, updatedAt: "2026-07-01T00:00:00Z" },
-  { variantId: "var_oil_1l", productName: "Wood-Pressed Groundnut Oil", variantName: "1 L bottle", sku: "TRG-GNO-1L", locationName: "Mumbai Fulfilment Centre", onHand: 45, reserved: 0, reorderThreshold: 10, updatedAt: "2026-07-01T00:00:00Z" },
-  { variantId: "var_rajma_500g", productName: "Himalayan Red Rajma", variantName: "500 g pack", sku: "TRG-RJM-500", locationName: "Mumbai Fulfilment Centre", onHand: 8, reserved: 0, reorderThreshold: 25, updatedAt: "2026-07-01T00:00:00Z" },
+  {
+    variantId: "var_alphonso_1kg",
+    productName: "Organic Alphonso Mangoes",
+    variantName: "1 kg box",
+    sku: "TRG-MNG-1KG",
+    locationName: "Mumbai Fulfilment Centre",
+    onHand: 120,
+    reserved: 4,
+    reorderThreshold: 20,
+    updatedAt: "2026-07-01T00:00:00Z",
+  },
+  {
+    variantId: "var_alphonso_2kg",
+    productName: "Organic Alphonso Mangoes",
+    variantName: "2 kg box",
+    sku: "TRG-MNG-2KG",
+    locationName: "Mumbai Fulfilment Centre",
+    onHand: 60,
+    reserved: 2,
+    reorderThreshold: 10,
+    updatedAt: "2026-07-01T00:00:00Z",
+  },
+  {
+    variantId: "var_spinach_250g",
+    productName: "Organic Baby Spinach",
+    variantName: "250 g bunch",
+    sku: "TRG-SPN-250",
+    locationName: "Mumbai Fulfilment Centre",
+    onHand: 200,
+    reserved: 0,
+    reorderThreshold: 40,
+    updatedAt: "2026-07-01T00:00:00Z",
+  },
+  {
+    variantId: "var_ragi_500g",
+    productName: "Sprouted Ragi Flour",
+    variantName: "500 g pack",
+    sku: "TRG-RGI-500",
+    locationName: "Mumbai Fulfilment Centre",
+    onHand: 340,
+    reserved: 0,
+    reorderThreshold: 50,
+    updatedAt: "2026-07-01T00:00:00Z",
+  },
+  {
+    variantId: "var_ragi_1kg",
+    productName: "Sprouted Ragi Flour",
+    variantName: "1 kg pack",
+    sku: "TRG-RGI-1KG",
+    locationName: "Mumbai Fulfilment Centre",
+    onHand: 180,
+    reserved: 0,
+    reorderThreshold: 30,
+    updatedAt: "2026-07-01T00:00:00Z",
+  },
+  {
+    variantId: "var_oil_500ml",
+    productName: "Wood-Pressed Groundnut Oil",
+    variantName: "500 ml bottle",
+    sku: "TRG-GNO-500",
+    locationName: "Mumbai Fulfilment Centre",
+    onHand: 90,
+    reserved: 1,
+    reorderThreshold: 15,
+    updatedAt: "2026-07-01T00:00:00Z",
+  },
+  {
+    variantId: "var_oil_1l",
+    productName: "Wood-Pressed Groundnut Oil",
+    variantName: "1 L bottle",
+    sku: "TRG-GNO-1L",
+    locationName: "Mumbai Fulfilment Centre",
+    onHand: 45,
+    reserved: 0,
+    reorderThreshold: 10,
+    updatedAt: "2026-07-01T00:00:00Z",
+  },
+  {
+    variantId: "var_rajma_500g",
+    productName: "Himalayan Red Rajma",
+    variantName: "500 g pack",
+    sku: "TRG-RJM-500",
+    locationName: "Mumbai Fulfilment Centre",
+    onHand: 8,
+    reserved: 0,
+    reorderThreshold: 25,
+    updatedAt: "2026-07-01T00:00:00Z",
+  },
 ];
 
 export const adminOrders: AdminOrderRow[] = [
-  { id: "ord_demo_1", publicReference: "TG-9K4M2X", customerEmail: "priya@example.test", totalMinor: 149900, currencyCode: "INR", orderStatus: "confirmed", paymentStatus: "paid", fulfilmentStatus: "packed", placedAt: "2026-07-09T08:42:00Z" },
-  { id: "ord_demo_2", publicReference: "TG-3D8QLN", customerEmail: "arjun@example.test", totalMinor: 68300, currencyCode: "INR", orderStatus: "processing", paymentStatus: "paid", fulfilmentStatus: "picking", placedAt: "2026-07-10T14:05:00Z" },
-  { id: "ord_demo_3", publicReference: "TG-7XW1PB", customerEmail: "sana@example.test", totalMinor: 89900, currencyCode: "INR", orderStatus: "pending_payment", paymentStatus: "pending", fulfilmentStatus: "unfulfilled", placedAt: "2026-07-11T06:18:00Z" },
+  {
+    id: "ord_demo_1",
+    publicReference: "TG-9K4M2X",
+    customerEmail: "priya@example.test",
+    totalMinor: 149900,
+    currencyCode: "INR",
+    orderStatus: "confirmed",
+    paymentStatus: "paid",
+    fulfilmentStatus: "packed",
+    placedAt: "2026-07-09T08:42:00Z",
+  },
+  {
+    id: "ord_demo_2",
+    publicReference: "TG-3D8QLN",
+    customerEmail: "arjun@example.test",
+    totalMinor: 68300,
+    currencyCode: "INR",
+    orderStatus: "processing",
+    paymentStatus: "paid",
+    fulfilmentStatus: "picking",
+    placedAt: "2026-07-10T14:05:00Z",
+  },
+  {
+    id: "ord_demo_3",
+    publicReference: "TG-7XW1PB",
+    customerEmail: "sana@example.test",
+    totalMinor: 89900,
+    currencyCode: "INR",
+    orderStatus: "pending_payment",
+    paymentStatus: "pending",
+    fulfilmentStatus: "unfulfilled",
+    placedAt: "2026-07-11T06:18:00Z",
+  },
 ];
 
 export const adminUsers: AdminUserRow[] = [
-  { id: "usr_admin", displayName: "Asha Rao", email: "admin@truegrit.test", status: "active", roles: ["Super Administrator"], lastSignInAt: "2026-07-11T05:00:00Z" },
-  { id: "usr_editor", displayName: "Kabir Mehta", email: "editor@truegrit.test", status: "active", roles: ["Content Editor"], lastSignInAt: "2026-07-10T16:20:00Z" },
-  { id: "usr_pm", displayName: "Meera Iyer", email: "catalogue@truegrit.test", status: "active", roles: ["Product Manager"], lastSignInAt: "2026-07-10T11:45:00Z" },
-  { id: "usr_ops", displayName: "Dev Sharma", email: "ops@truegrit.test", status: "active", roles: ["Inventory Manager", "Order Manager"], lastSignInAt: "2026-07-11T04:10:00Z" },
+  {
+    id: "usr_admin",
+    displayName: "Asha Rao",
+    email: "admin@truegrit.test",
+    status: "active",
+    roles: ["Super Administrator"],
+    lastSignInAt: "2026-07-11T05:00:00Z",
+  },
+  {
+    id: "usr_editor",
+    displayName: "Kabir Mehta",
+    email: "editor@truegrit.test",
+    status: "active",
+    roles: ["Content Editor"],
+    lastSignInAt: "2026-07-10T16:20:00Z",
+  },
+  {
+    id: "usr_pm",
+    displayName: "Meera Iyer",
+    email: "catalogue@truegrit.test",
+    status: "active",
+    roles: ["Product Manager"],
+    lastSignInAt: "2026-07-10T11:45:00Z",
+  },
+  {
+    id: "usr_ops",
+    displayName: "Dev Sharma",
+    email: "ops@truegrit.test",
+    status: "active",
+    roles: ["Inventory Manager", "Order Manager"],
+    lastSignInAt: "2026-07-11T04:10:00Z",
+  },
 ];
 
 export const auditLog: AuditLogRow[] = [
-  { id: "aud_1", actorName: "Asha Rao", action: "category.published", entityType: "category", entityId: "cat_fresh_fruits", requestId: "req_01demo1", createdAt: "2026-07-02T09:00:00Z" },
-  { id: "aud_2", actorName: "Meera Iyer", action: "product.published", entityType: "product", entityId: "prd_alphonso", requestId: "req_01demo2", createdAt: "2026-07-02T09:12:00Z" },
-  { id: "aud_3", actorName: "Dev Sharma", action: "inventory.adjusted", entityType: "inventory_level", entityId: "var_rajma_500g", requestId: "req_01demo3", createdAt: "2026-07-08T13:30:00Z" },
-  { id: "aud_4", actorName: "Kabir Mehta", action: "page.draft_saved", entityType: "page", entityId: "pag_home", requestId: "req_01demo4", createdAt: "2026-07-10T10:02:00Z" },
+  {
+    id: "aud_1",
+    actorName: "Asha Rao",
+    action: "category.published",
+    entityType: "category",
+    entityId: "cat_fresh_fruits",
+    requestId: "req_01demo1",
+    createdAt: "2026-07-02T09:00:00Z",
+  },
+  {
+    id: "aud_2",
+    actorName: "Meera Iyer",
+    action: "product.published",
+    entityType: "product",
+    entityId: "prd_alphonso",
+    requestId: "req_01demo2",
+    createdAt: "2026-07-02T09:12:00Z",
+  },
+  {
+    id: "aud_3",
+    actorName: "Dev Sharma",
+    action: "inventory.adjusted",
+    entityType: "inventory_level",
+    entityId: "var_rajma_500g",
+    requestId: "req_01demo3",
+    createdAt: "2026-07-08T13:30:00Z",
+  },
+  {
+    id: "aud_4",
+    actorName: "Kabir Mehta",
+    action: "page.draft_saved",
+    entityType: "page",
+    entityId: "pag_home",
+    requestId: "req_01demo4",
+    createdAt: "2026-07-10T10:02:00Z",
+  },
 ];

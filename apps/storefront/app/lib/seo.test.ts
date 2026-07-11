@@ -24,10 +24,20 @@ describe("seoMeta", () => {
   });
 
   it("maps indexing policy to robots", () => {
-    const indexed = seoMeta({ title: "t", description: "d", canonicalPath: "/", indexing: "index" });
+    const indexed = seoMeta({
+      title: "t",
+      description: "d",
+      canonicalPath: "/",
+      indexing: "index",
+    });
     expect(indexed).toContainEqual({ name: "robots", content: "index, follow" });
 
-    const hidden = seoMeta({ title: "t", description: "d", canonicalPath: "/", indexing: "noindex" });
+    const hidden = seoMeta({
+      title: "t",
+      description: "d",
+      canonicalPath: "/",
+      indexing: "noindex",
+    });
     expect(hidden).toContainEqual({ name: "robots", content: "noindex, nofollow" });
   });
 

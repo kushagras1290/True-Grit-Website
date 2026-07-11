@@ -99,9 +99,7 @@ export interface SearchGroups {
 
 export async function runSearch(query: string): Promise<SearchGroups> {
   if (API_URL) {
-    const result = await fromApi<SearchGroups>(
-      `/v1/public/search?q=${encodeURIComponent(query)}`,
-    );
+    const result = await fromApi<SearchGroups>(`/v1/public/search?q=${encodeURIComponent(query)}`);
     if (result) return result;
   }
   const needle = query.trim().toLowerCase();

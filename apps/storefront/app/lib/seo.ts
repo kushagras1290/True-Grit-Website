@@ -5,10 +5,7 @@ const SITE_NAME = "True Grit";
 /** Build route `meta` entries from a backend-owned SEO document. */
 export function seoMeta(seo: SeoDocument | null | undefined) {
   if (!seo) {
-    return [
-      { title: SITE_NAME },
-      { name: "robots", content: "noindex" },
-    ];
+    return [{ title: SITE_NAME }, { name: "robots", content: "noindex" }];
   }
   const title = seo.title.includes(SITE_NAME) ? seo.title : `${seo.title} · ${SITE_NAME}`;
   return [

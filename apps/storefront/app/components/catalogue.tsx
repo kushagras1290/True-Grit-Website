@@ -31,10 +31,7 @@ export function ProduceFrame({
       aria-label={alt}
       className={`relative flex items-center justify-center overflow-hidden bg-subtle ${className}`}
     >
-      <span
-        aria-hidden
-        className="font-display text-[5rem] leading-none text-brand/15 select-none"
-      >
+      <span aria-hidden className="font-display text-[5rem] leading-none text-brand/15 select-none">
         {PRODUCE_GLYPHS[slug] ?? alt.charAt(0).toUpperCase()}
       </span>
       <span
@@ -45,7 +42,11 @@ export function ProduceFrame({
   );
 }
 
-export function AvailabilityNote({ availability }: { availability: ProductSummary["availability"] }) {
+export function AvailabilityNote({
+  availability,
+}: {
+  availability: ProductSummary["availability"];
+}) {
   if (availability === "in_stock") return null;
   const label = availability === "low_stock" ? "Only a few left" : "Out of stock";
   const tone = availability === "low_stock" ? "text-accent" : "text-ink-muted";
@@ -95,7 +96,10 @@ export function ProductGrid({ products }: { products: ProductSummary[] }) {
         <p className="mt-1 text-sm text-ink-muted">
           This harvest is between seasons. Browse the rest of the market meanwhile.
         </p>
-        <Link to="/shop" className="mt-4 inline-block text-sm font-medium text-brand hover:underline">
+        <Link
+          to="/shop"
+          className="mt-4 inline-block text-sm font-medium text-brand hover:underline"
+        >
           Browse all products
         </Link>
       </div>
@@ -119,7 +123,10 @@ export function CategoryTile({ category }: { category: CategorySummary }) {
       style={themeVars(category.themeKey as ThemeKey)}
       className="group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-md p-5"
     >
-      <span aria-hidden className="absolute inset-0 bg-[var(--theme-bg)] transition-transform duration-200 group-hover:scale-[1.02]" />
+      <span
+        aria-hidden
+        className="absolute inset-0 bg-[var(--theme-bg)] transition-transform duration-200 group-hover:scale-[1.02]"
+      />
       <span className="relative text-[var(--theme-fg)]">
         {category.seasonLabel ? (
           <span className="mb-2 inline-block rounded-full bg-white/15 px-2.5 py-0.5 text-xs">

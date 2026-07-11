@@ -2,5 +2,7 @@
   "name": "@truegrit/config",
   "version": "0.1.0",
   "private": true,
-  "files": ["tsconfig.base.json"]
+  "files": [
+    "tsconfig.base.json"
+  ]
 }

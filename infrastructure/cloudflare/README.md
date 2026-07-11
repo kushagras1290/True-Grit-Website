@@ -2,17 +2,17 @@
 
 Never point local or staging code at production resources.
 
-| Resource | Development | Staging | Production |
-|---|---|---|---|
-| API Worker | `truegrit-api-dev` | `truegrit-api-staging` | `truegrit-api-prod` |
+| Resource          | Development               | Staging                       | Production                 |
+| ----------------- | ------------------------- | ----------------------------- | -------------------------- |
+| API Worker        | `truegrit-api-dev`        | `truegrit-api-staging`        | `truegrit-api-prod`        |
 | Storefront Worker | `truegrit-storefront-dev` | `truegrit-storefront-staging` | `truegrit-storefront-prod` |
-| Admin Worker | `truegrit-admin-dev` | `truegrit-admin-staging` | `truegrit-admin-prod` |
-| D1 database | `truegrit-dev` | `truegrit-staging` | `truegrit-prod` |
-| R2 private media | `truegrit-media-dev` | `truegrit-media-staging` | `truegrit-media-prod` |
-| R2 exports | `truegrit-exports-dev` | `truegrit-exports-staging` | `truegrit-exports-prod` |
-| Queue | `truegrit-jobs-dev` | `truegrit-jobs-staging` | `truegrit-jobs-prod` |
-| Dead-letter queue | `truegrit-dlq-dev` | `truegrit-dlq-staging` | `truegrit-dlq-prod` |
-| KV namespace | `truegrit-cache-dev` | `truegrit-cache-staging` | `truegrit-cache-prod` |
+| Admin Worker      | `truegrit-admin-dev`      | `truegrit-admin-staging`      | `truegrit-admin-prod`      |
+| D1 database       | `truegrit-dev`            | `truegrit-staging`            | `truegrit-prod`            |
+| R2 private media  | `truegrit-media-dev`      | `truegrit-media-staging`      | `truegrit-media-prod`      |
+| R2 exports        | `truegrit-exports-dev`    | `truegrit-exports-staging`    | `truegrit-exports-prod`    |
+| Queue             | `truegrit-jobs-dev`       | `truegrit-jobs-staging`       | `truegrit-jobs-prod`       |
+| Dead-letter queue | `truegrit-dlq-dev`        | `truegrit-dlq-staging`        | `truegrit-dlq-prod`        |
+| KV namespace      | `truegrit-cache-dev`      | `truegrit-cache-staging`      | `truegrit-cache-prod`      |
 
 ## Provisioning
 

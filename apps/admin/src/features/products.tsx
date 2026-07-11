@@ -46,7 +46,10 @@ export function ProductListPage() {
       columnHelper.accessor("name", {
         header: "Product",
         cell: (info) => (
-          <Link to={`/products/${info.row.original.id}`} className="font-medium text-brand hover:underline">
+          <Link
+            to={`/products/${info.row.original.id}`}
+            className="font-medium text-brand hover:underline"
+          >
             {info.getValue()}
           </Link>
         ),
@@ -56,7 +59,10 @@ export function ProductListPage() {
         header: "Status",
         cell: (info) => <StatusPill status={info.getValue()} />,
       }),
-      columnHelper.accessor((row) => row.categories.join(", "), { id: "categories", header: "Categories" }),
+      columnHelper.accessor((row) => row.categories.join(", "), {
+        id: "categories",
+        header: "Categories",
+      }),
       columnHelper.accessor("farmName", { header: "Farm / brand" }),
       columnHelper.accessor("priceRange", { header: "Price (₹)" }),
       columnHelper.accessor("availableStock", { header: "Available" }),
@@ -191,7 +197,11 @@ export function ProductEditorPage() {
         }
       />
 
-      <div role="tablist" aria-label="Product editor sections" className="mb-5 flex gap-1 border-b border-line">
+      <div
+        role="tablist"
+        aria-label="Product editor sections"
+        className="mb-5 flex gap-1 border-b border-line"
+      >
         {EDITOR_TABS.map((entry) => (
           <button
             key={entry}

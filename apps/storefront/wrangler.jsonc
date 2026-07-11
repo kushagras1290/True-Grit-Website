@@ -8,6 +8,6 @@
   "name": "truegrit-storefront-dev",
   "compatibility_date": "2026-07-11",
   "vars": {
-    "PUBLIC_API_URL": ""
-  }
+    "PUBLIC_API_URL": "",
+  },
 }

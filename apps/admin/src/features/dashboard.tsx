@@ -7,7 +7,17 @@ import { EmptyState, PageHeader, StatusPill } from "../components/ui";
 import { api } from "../lib/api";
 import { formatDateTime, formatMoney } from "../lib/format";
 
-function StatCard({ label, value, to, tone }: { label: string; value: string; to: string; tone?: "warn" }) {
+function StatCard({
+  label,
+  value,
+  to,
+  tone,
+}: {
+  label: string;
+  value: string;
+  to: string;
+  tone?: "warn";
+}) {
   return (
     <Link
       to={to}
@@ -69,7 +79,10 @@ export function DashboardPage() {
           ) : (
             <ul className="divide-y divide-line rounded-md border border-line bg-surface shadow-card">
               {lowStock.map((row) => (
-                <li key={row.variantId} className="flex items-center justify-between gap-3 px-4 py-3">
+                <li
+                  key={row.variantId}
+                  className="flex items-center justify-between gap-3 px-4 py-3"
+                >
                   <div>
                     <p className="text-sm font-medium text-ink">{row.productName}</p>
                     <p className="text-xs text-ink-muted">
@@ -77,7 +90,9 @@ export function DashboardPage() {
                     </p>
                   </div>
                   <div className="text-right">
-                    <StatusPill status={row.onHand - row.reserved <= 0 ? "out_of_stock" : "low_stock"} />
+                    <StatusPill
+                      status={row.onHand - row.reserved <= 0 ? "out_of_stock" : "low_stock"}
+                    />
                     <p className="mt-1 text-xs text-ink-muted">
                       {row.onHand - row.reserved} available · reorder at {row.reorderThreshold}
                     </p>
