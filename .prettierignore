@@ -1,0 +1,10 @@
+node_modules
+dist
+build
+coverage
+.react-router
+.wrangler
+apps/api
+pnpm-lock.yaml
+database/migrations
+database/seeds
