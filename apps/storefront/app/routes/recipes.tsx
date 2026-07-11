@@ -1,0 +1,50 @@
+import { Link } from "react-router";
+
+import type { Route } from "./+types/recipes";
+import { Section } from "../components/catalogue";
+import { loadRecipes } from "../lib/catalogue.server";
+import { seoMeta } from "../lib/seo";
+
+export async function loader() {
+  return { recipes: await loadRecipes() };
+}
+
+export function meta(_args: Route.MetaArgs) {
+  return seoMeta({
+    title: "Recipes",
+    description: "Seasonal recipes built around the market — add the ingredients in one step.",
+    canonicalPath: "/recipes",
+    indexing: "index",
+  });
+}
+
+export default function RecipesPage({ loaderData }: Route.ComponentProps) {
+  return (
+    <Section eyebrow="From the kitchen" heading="Cook with the season">
+      <div className="grid gap-6 md:grid-cols-3">
+        {loaderData.recipes.map((recipe) => (
+          <Link
+            key={recipe.id}
+            to={`/recipes/${recipe.slug}`}
+            className="group rounded-md border border-line bg-surface p-6 shadow-card transition-transform duration-200 hover:-translate-y-0.5"
+          >
+            <p className="text-xs text-ink-muted">
+              {recipe.prepMinutes + recipe.cookMinutes} min · serves {recipe.servings}
+            </p>
+            <h2 className="mt-2 font-display text-xl text-ink group-hover:text-brand">
+              {recipe.title}
+            </h2>
+            <p className="mt-2 text-sm text-ink-muted">{recipe.excerpt}</p>
+            <p className="mt-4 flex flex-wrap gap-1.5">
+              {recipe.dietaryTags.map((tag) => (
+                <span key={tag} className="rounded-full bg-subtle px-2.5 py-0.5 text-xs text-brand">
+                  {tag}
+                </span>
+              ))}
+            </p>
+          </Link>
+        ))}
+      </div>
+    </Section>
+  );
+}

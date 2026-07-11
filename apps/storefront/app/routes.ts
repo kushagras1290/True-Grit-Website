@@ -1,0 +1,18 @@
+import { index, route, type RouteConfig } from "@react-router/dev/routes";
+
+export default [
+  index("routes/home.tsx"),
+  route("shop", "routes/shop.tsx"),
+  route("category/:slug", "routes/category.tsx"),
+  route("product/:slug", "routes/product.tsx"),
+  route("search", "routes/search.tsx"),
+  route("farms", "routes/farms.tsx"),
+  route("farms/:slug", "routes/farm.tsx"),
+  route("recipes", "routes/recipes.tsx"),
+  route("recipes/:slug", "routes/recipe.tsx"),
+  route("journal", "routes/journal.tsx"),
+  route("journal/:slug", "routes/article.tsx"),
+  route("standards", "routes/standards.tsx"),
+  route("cart", "routes/cart.tsx"),
+  route("*", "routes/not-found.tsx"),
+] satisfies RouteConfig;

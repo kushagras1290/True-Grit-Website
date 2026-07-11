@@ -1,0 +1,13 @@
+{
+  // Cloudflare Workers deployment target for the storefront.
+  // The build currently targets the Node runtime (@react-router/serve) so it is
+  // verifiable everywhere; when provisioning Cloudflare, switch the Vite config
+  // to @cloudflare/vite-plugin per the current React Router + Cloudflare guide
+  // (see infrastructure/cloudflare/README.md) — route modules are unaffected.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "truegrit-storefront-dev",
+  "compatibility_date": "2026-07-11",
+  "vars": {
+    "PUBLIC_API_URL": ""
+  }
+}
