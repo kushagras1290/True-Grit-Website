@@ -1,13 +1,16 @@
 """Cloudflare Python Workers entry point.
 
+This module lives at ``src/worker.py`` (outside the ``truegrit_api`` package) on
+purpose: Cloudflare bundles the directory that contains ``main`` as the module
+root, so keeping the entry one level up makes ``truegrit_api`` a real importable
+package inside the Worker. Placing the entry inside the package instead flattens
+its contents to the bundle root and breaks every ``import truegrit_api.*``.
+
 Deployed with ``pywrangler`` (the ``workers-py`` CLI), which bundles FastAPI,
 pydantic, and the Workers runtime SDK (the ``workers`` and ``asgi`` modules)
 into the Worker. Only this thin adapter is Workers-specific; the FastAPI
-application is portable business code (ADR-003).
-
-The current ASGI bridge follows the official pattern documented at
-https://developers.cloudflare.com/workers/languages/python/packages/fastapi/ —
-verify it against those docs at deploy time, as Python Workers are in beta.
+application is portable business code (ADR-003). The ASGI bridge follows
+https://developers.cloudflare.com/workers/languages/python/packages/fastapi/.
 """
 
 import os
