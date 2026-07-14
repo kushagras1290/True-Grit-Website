@@ -41,6 +41,10 @@ export default async function handleRequest(
   }
 
   responseHeaders.set("Content-Type", "text/html");
+  // Google Identity Services opens a sign-in popup that posts the credential
+  // back via window.postMessage. "same-origin-allow-popups" keeps the opener
+  // relationship so that message is delivered (otherwise browsers may block it).
+  responseHeaders.set("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
   return new Response(body, {
     headers: responseHeaders,
     status: responseStatusCode,

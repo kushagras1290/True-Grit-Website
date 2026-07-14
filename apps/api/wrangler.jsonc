@@ -30,6 +30,11 @@
     "PUBLIC_ADMIN_URL": "https://truegrit-admin-dev.kushagras1234890.workers.dev",
     // Public Google OAuth client id (not a secret) — enables server-side
     // verification of "Sign in with Google" ID tokens.
-    "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com"
+    "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
+    // Storefront/admin and API are on different workers.dev subdomains, so the
+    // session cookie must be cross-site. "none" makes config.py also mark it
+    // Secure; CSRF tokens (x-csrf-token) remain the CSRF defence. Without this
+    // the browser drops the session cookie and logins never persist.
+    "SESSION_COOKIE_SAMESITE": "none"
   }
 }
