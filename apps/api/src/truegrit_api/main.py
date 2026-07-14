@@ -63,4 +63,12 @@ def create_app(db: Database | None = None) -> FastAPI:
     return app
 
 
-app = create_app()
+def __getattr__(name: str) -> FastAPI:
+    # Lazily construct the module-level ``app`` only when it is actually
+    # accessed (e.g. ``uvicorn truegrit_api.main:app`` in local development).
+    # This keeps importing ``create_app`` from this module side-effect free, so
+    # the Cloudflare Worker entry point (worker.py) never triggers the local
+    # SQLite build path — it constructs its own app bound to the D1 database.
+    if name == "app":
+        return create_app()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

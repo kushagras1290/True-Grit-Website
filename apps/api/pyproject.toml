@@ -17,6 +17,11 @@ dev = [
     "hypothesis>=6.115",
     "httpx>=0.27",
     "uvicorn>=0.32",
+    # Cloudflare Python Workers toolchain: `pywrangler` bundles the app + its
+    # PyPI dependencies for deployment; `workers-runtime-sdk` supplies the
+    # `workers`/`asgi` runtime modules (and IDE type stubs) used by worker.py.
+    "workers-py>=1.90",
+    "workers-runtime-sdk",
 ]
 
 [build-system]

@@ -76,7 +76,16 @@ class SQLiteDatabase:
 
 
 def repo_root() -> Path:
-    return Path(__file__).resolve().parents[5]
+    # Walk upward to the checkout root (the directory that holds the SQL
+    # migrations). Searching for a marker rather than counting parents keeps
+    # this correct regardless of nesting depth — importantly, it never raises
+    # IndexError inside the flat Cloudflare Workers bundle, where the on-disk
+    # repository tree is absent and the D1 binding is used instead.
+    here = Path(__file__).resolve()
+    for candidate in (here, *here.parents):
+        if (candidate / "database" / "migrations").is_dir():
+            return candidate
+    return here.parents[min(5, len(here.parents) - 1)]
 
 
 def build_local_database(seeded: bool = True) -> SQLiteDatabase:

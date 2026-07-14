@@ -1,13 +1,22 @@
 {
-  // Cloudflare Workers deployment target for the storefront.
-  // The build currently targets the Node runtime (@react-router/serve) so it is
-  // verifiable everywhere; when provisioning Cloudflare, switch the Vite config
-  // to @cloudflare/vite-plugin per the current React Router + Cloudflare guide
-  // (see infrastructure/cloudflare/README.md) — route modules are unaffected.
+  // Cloudflare Workers deployment target for the SSR storefront.
+  // Build with `react-router build` (the @cloudflare/vite-plugin bundles the
+  // server build + client assets and writes a deploy-redirect); then
+  // `wrangler deploy` ships that built output. See vite.config.ts and
+  // infrastructure/cloudflare/README.md.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "truegrit-storefront-dev",
+  "main": "./workers/app.ts",
   "compatibility_date": "2026-07-11",
+  // nodejs_compat also populates `process.env` from the vars/secrets below, which
+  // is how the SSR loaders read PUBLIC_API_URL (app/lib/catalogue.server.ts).
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "upload_source_maps": true,
   "vars": {
-    "PUBLIC_API_URL": "",
-  },
+    // Empty => storefront renders in demo mode (static fixtures). Set to the
+    // deployed API origin (e.g. https://truegrit-api-dev.<subdomain>.workers.dev)
+    // to serve live catalogue data from the API Worker.
+    "PUBLIC_API_URL": ""
+  }
 }

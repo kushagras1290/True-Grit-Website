@@ -9,7 +9,7 @@
     {
       "binding": "DB",
       "database_name": "truegrit-dev",
-      "database_id": "REPLACE_WITH_REAL_DEV_DATABASE_ID",
+      "database_id": "ca1cec13-5ec4-4e59-85ef-1115b365bb89",
       "migrations_dir": "../../database/migrations"
     }
   ],
@@ -17,7 +17,7 @@
     { "binding": "MEDIA_BUCKET", "bucket_name": "truegrit-media-dev" },
     { "binding": "EXPORTS_BUCKET", "bucket_name": "truegrit-exports-dev" }
   ],
-  "kv_namespaces": [{ "binding": "CACHE", "id": "REPLACE_WITH_REAL_DEV_KV_ID" }],
+  "kv_namespaces": [{ "binding": "CACHE", "id": "c90a4639e7a748c89a9f81db6b19e75f" }],
   "queues": {
     "producers": [{ "binding": "JOBS_QUEUE", "queue": "truegrit-jobs-dev" }]
   },
