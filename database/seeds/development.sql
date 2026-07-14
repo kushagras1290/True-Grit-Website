@@ -312,7 +312,7 @@ INSERT INTO pages (id, page_type, internal_name, title, slug, template_key, stat
 
 INSERT INTO page_versions (id, page_id, version_number, content_json, workflow_state, created_at, created_by, approved_at, approved_by, published_at) VALUES
   ('pgv_home_1', 'pag_home', 1,
-   '{"blocks":[{"id":"blk_hero","type":"hero","version":1,"enabled":true,"props":{"layout":"editorial-split","eyebrow":"Certified organic. Fully traceable.","heading":"Food grown the way nature intended.","text":"Fresh organic produce, conscious pantry essentials and trusted local farms — delivered with complete transparency.","primaryAction":{"label":"Explore the market","href":"/shop"},"secondaryAction":{"label":"See what is in season","href":"/category/fresh-fruits"}}},{"id":"blk_categories","type":"category_collection","version":1,"enabled":true,"props":{"heading":"Shop by food type","categorySlugs":["fresh-fruits","organic-vegetables","grains-and-millets","cold-pressed-oils"]}},{"id":"blk_products","type":"product_collection","version":1,"enabled":true,"props":{"heading":"Fresh favourites","source":"manual","productSlugs":["organic-alphonso-mangoes","organic-baby-spinach","sprouted-ragi-flour","wood-pressed-groundnut-oil","himalayan-red-rajma"],"limit":5}},{"id":"blk_farmer","type":"farmer_story","version":1,"enabled":true,"props":{"farmSlug":"devika-organics","quote":"We never needed chemicals. We needed patience.","attribution":"Devika Kulkarni, Devika Organics"}},{"id":"blk_faq","type":"faq","version":1,"enabled":true,"props":{"heading":"Our standards","items":[{"question":"What does certified organic mean here?","answer":"Every farm holds a current NPOP or PGS-India certificate that we verify and re-check annually."},{"question":"How is traceability guaranteed?","answer":"Each lot is tagged at the farm and carries its harvest date, farm and route to your door."}]}}]}',
+   '{"blocks":[{"id":"blk_hero","type":"hero","version":1,"enabled":true,"props":{"layout":"editorial-split","eyebrow":"Certified organic. Fully traceable.","heading":"Food grown the way nature intended.","text":"Fresh organic produce, conscious pantry essentials and trusted local farms — delivered with complete transparency.","primaryAction":{"label":"Explore the market","href":"/shop"},"secondaryAction":{"label":"See what is in season","href":"/seasonal"}}},{"id":"blk_categories","type":"category_collection","version":1,"enabled":true,"props":{"heading":"Shop by food type","categorySlugs":["fresh-fruits","organic-vegetables","grains-and-millets","cold-pressed-oils"]}},{"id":"blk_products","type":"product_collection","version":1,"enabled":true,"props":{"heading":"Fresh favourites","source":"manual","productSlugs":["organic-alphonso-mangoes","organic-baby-spinach","sprouted-ragi-flour","wood-pressed-groundnut-oil","himalayan-red-rajma"],"limit":5}},{"id":"blk_farmer","type":"farmer_story","version":1,"enabled":true,"props":{"farmSlug":"devika-organics","quote":"We never needed chemicals. We needed patience.","attribution":"Devika Kulkarni, Devika Organics"}},{"id":"blk_faq","type":"faq","version":1,"enabled":true,"props":{"heading":"Our standards","items":[{"question":"What does certified organic mean here?","answer":"Every farm holds a current NPOP or PGS-India certificate that we verify and re-check annually."},{"question":"How is traceability guaranteed?","answer":"Each lot is tagged at the farm and carries its harvest date, farm and route to your door."}]}}]}',
    'published', '2026-07-01T00:00:00Z', 'usr_editor', '2026-07-02T00:00:00Z', 'usr_admin', '2026-07-02T00:00:00Z');
 
 -- Article
@@ -340,7 +340,7 @@ INSERT INTO navigation_menus (id, key, name, updated_at, updated_by) VALUES
 
 INSERT INTO navigation_items (id, menu_id, parent_id, label, destination_type, destination_reference, sort_order, visible) VALUES
   ('nit_shop', 'nav_header', NULL, 'Shop', 'internal_path', '/shop', 1, 1),
-  ('nit_seasonal', 'nav_header', NULL, 'Seasonal', 'category', 'fresh-fruits', 2, 1),
+  ('nit_seasonal', 'nav_header', NULL, 'Seasonal', 'internal_path', '/seasonal', 2, 1),
   ('nit_farmers', 'nav_header', NULL, 'Farmers', 'internal_path', '/farms', 3, 1),
   ('nit_recipes', 'nav_header', NULL, 'Recipes', 'internal_path', '/recipes', 4, 1),
   ('nit_journal', 'nav_header', NULL, 'Journal', 'internal_path', '/journal', 5, 1),
@@ -350,11 +350,12 @@ INSERT INTO navigation_items (id, menu_id, parent_id, label, destination_type, d
   ('nit_footer_returns', 'nav_footer', NULL, 'Returns', 'internal_path', '/returns', 3, 1),
   ('nit_footer_contact', 'nav_footer', NULL, 'Contact', 'internal_path', '/contact', 4, 1),
   ('nit_footer_privacy', 'nav_footer', NULL, 'Privacy', 'internal_path', '/privacy', 5, 1),
-  ('nit_footer_terms', 'nav_footer', NULL, 'Terms', 'internal_path', '/terms', 6, 1);
+  ('nit_footer_terms', 'nav_footer', NULL, 'Terms', 'internal_path', '/terms', 6, 1),
+  ('nit_footer_help', 'nav_footer', NULL, 'Help', 'internal_path', '/help', 7, 1);
 
 -- Announcement
 INSERT INTO announcements (id, message, destination_path, active, created_at, created_by, updated_at) VALUES
-  ('ann_launch', 'Alphonso season is here — orchard-fresh boxes ship every Tuesday.', '/category/fresh-fruits', 1, '2026-07-01T00:00:00Z', 'usr_editor', '2026-07-01T00:00:00Z');
+  ('ann_launch', 'Alphonso season is here — orchard-fresh boxes ship every Tuesday.', '/seasonal', 1, '2026-07-01T00:00:00Z', 'usr_editor', '2026-07-01T00:00:00Z');
 
 -- Search synonyms
 INSERT INTO search_synonyms (id, term, synonym, created_at) VALUES

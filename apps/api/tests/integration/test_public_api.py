@@ -12,7 +12,18 @@ def test_bootstrap_navigation_and_announcement(client: TestClient):
     body = client.get("/v1/public/bootstrap").json()
     labels = [item["label"] for item in body["navigation"]]
     assert labels == ["Shop", "Seasonal", "Farmers", "Recipes", "Journal", "Our Standards"]
+    assert body["navigation"][1]["path"] == "/seasonal"
+    assert [item["path"] for item in body["footerNavigation"]] == [
+        "/about",
+        "/delivery",
+        "/returns",
+        "/contact",
+        "/privacy",
+        "/terms",
+        "/help",
+    ]
     assert body["announcement"]["message"].startswith("Alphonso season")
+    assert body["announcement"]["path"] == "/seasonal"
 
 
 def test_home_returns_published_blocks_only(client: TestClient):

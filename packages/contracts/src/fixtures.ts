@@ -27,7 +27,7 @@ import type {
 export const bootstrap: PublicBootstrap = {
   navigation: [
     { label: "Shop", path: "/shop" },
-    { label: "Seasonal", path: "/category/fresh-fruits" },
+    { label: "Seasonal", path: "/seasonal" },
     { label: "Farmers", path: "/farms" },
     { label: "Recipes", path: "/recipes" },
     { label: "Journal", path: "/journal" },
@@ -44,7 +44,7 @@ export const bootstrap: PublicBootstrap = {
   ],
   announcement: {
     message: "Alphonso season is here — orchard-fresh boxes ship every Tuesday.",
-    path: "/category/fresh-fruits",
+    path: "/seasonal",
   },
 };
 
@@ -598,7 +598,7 @@ export const homePage: PublicPage = {
         heading: "Food grown the way nature intended.",
         text: "Fresh organic produce, conscious pantry essentials and trusted local farms — delivered with complete transparency.",
         primaryAction: { label: "Explore the market", href: "/shop" },
-        secondaryAction: { label: "See what is in season", href: "/category/fresh-fruits" },
+        secondaryAction: { label: "See what is in season", href: "/seasonal" },
       },
     },
     {

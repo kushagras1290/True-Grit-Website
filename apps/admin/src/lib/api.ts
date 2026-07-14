@@ -557,15 +557,14 @@ export const api = {
       ? demo({
           announcementActive: true,
           announcementMessage: "Alphonso season is here - orchard-fresh boxes ship every Tuesday.",
-          announcementPath: "/category/fresh-fruits",
+          announcementPath: "/seasonal",
           heroEyebrow: "Certified organic. Fully traceable.",
           heroHeading: "Food grown the way nature intended.",
-          heroText:
-            "Fresh organic produce, conscious pantry essentials and trusted local farms.",
+          heroText: "Fresh organic produce, conscious pantry essentials and trusted local farms.",
           primaryActionLabel: "Explore the market",
           primaryActionHref: "/shop",
           secondaryActionLabel: "See what is in season",
-          secondaryActionHref: "/category/fresh-fruits",
+          secondaryActionHref: "/seasonal",
           seoTitle: "True Grit - traceable organic food from verified farms",
           seoDescription: "Fresh organic produce and trusted local farms.",
           seoKeywords: "organic food, traceable produce, Indian farms",

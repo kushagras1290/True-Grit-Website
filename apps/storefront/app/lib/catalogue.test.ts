@@ -1,8 +1,23 @@
 import { describe, expect, it } from "vitest";
 
+import { bootstrap } from "@truegrit/contracts/fixtures";
+
 import { loadCategoryPage, loadProduct, runSearch } from "./catalogue.server";
 
 describe("demo catalogue", () => {
+  it("points every footer support link at a built static route", () => {
+    expect(bootstrap.navigation.find((item) => item.label === "Seasonal")?.path).toBe("/seasonal");
+    expect(bootstrap.footerNavigation.map((item) => item.path)).toEqual([
+      "/about",
+      "/delivery",
+      "/returns",
+      "/contact",
+      "/privacy",
+      "/terms",
+      "/help",
+    ]);
+  });
+
   it("resolves a category page with products and SEO", async () => {
     const page = await loadCategoryPage("fresh-fruits");
     expect(page?.hero.title).toBe("Fruit, at its honest best");
