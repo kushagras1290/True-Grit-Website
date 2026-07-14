@@ -120,6 +120,7 @@ async def place_order(
     *,
     items: list[CheckoutLine],
     delivery_address: dict[str, Any],
+    payment_method: str = "cod",
 ) -> dict[str, Any]:
     if not items:
         raise ValidationAppError("Your basket is empty.")
@@ -142,6 +143,10 @@ async def place_order(
 
     order_id = new_id("ord")
     reference = _reference()
+    # Cash-on-delivery orders are confirmed immediately (paid on delivery). Online
+    # payments open as pending_payment and are confirmed once the gateway result
+    # is verified, so unpaid orders never enter fulfilment.
+    order_status = "confirmed" if payment_method == "cod" else "pending_payment"
     statements: list[tuple[str, Any]] = [
         (
             """
@@ -151,7 +156,7 @@ async def place_order(
               order_status, payment_status, fulfilment_status, delivery_status,
               delivery_address_json, placed_at, created_at, updated_at
             ) VALUES (?, ?, ?, ?, ?, ?, 0, ?, 0, ?,
-                      'confirmed', 'pending', 'unfulfilled', 'not_ready', ?, ?, ?, ?)
+                      ?, 'pending', 'unfulfilled', 'not_ready', ?, ?, ?, ?)
             """,
             (
                 order_id,
@@ -162,6 +167,7 @@ async def place_order(
                 subtotal,
                 delivery,
                 total,
+                order_status,
                 json.dumps(address),
                 now,
                 now,
@@ -241,6 +247,6 @@ async def place_order(
         "subtotalMinor": subtotal,
         "deliveryMinor": delivery,
         "totalMinor": total,
-        "orderStatus": "confirmed",
+        "orderStatus": order_status,
         "paymentStatus": "pending",
     }

@@ -59,3 +59,45 @@ async def get_json_async(url: str) -> Any:
         return json.loads(str(text))
     except json.JSONDecodeError as exc:
         raise HttpError(f"GET {url} returned invalid JSON.") from exc
+
+
+def _post_json_stdlib(url: str, payload: bytes, headers: dict[str, str]) -> Any:
+    request = urllib.request.Request(url, data=payload, headers=headers, method="POST")
+    try:
+        with urllib.request.urlopen(request, timeout=_DEFAULT_TIMEOUT_SECONDS) as response:
+            if response.status not in (200, 201):
+                raise HttpError(f"POST {url} returned {response.status}.")
+            raw = response.read(_MAX_RESPONSE_BYTES + 1)
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        raise HttpError(f"POST {url} failed: {exc}") from exc
+    return json.loads(raw.decode("utf-8"))
+
+
+async def post_json_async(url: str, *, body: Any, headers: dict[str, str] | None = None) -> Any:
+    """POST a JSON body and parse the JSON response, using the Workers `fetch`
+    when available and stdlib urllib as a local/test fallback."""
+    request_headers = {"content-type": "application/json", "accept": "application/json"}
+    if headers:
+        request_headers.update(headers)
+    payload = json.dumps(body)
+    try:
+        from js import Object  # Cloudflare Workers runtime only
+        from js import fetch as js_fetch
+        from pyodide.ffi import to_js
+    except (ImportError, ModuleNotFoundError):
+        return _post_json_stdlib(url, payload.encode("utf-8"), request_headers)
+    options = to_js(
+        {"method": "POST", "headers": request_headers, "body": payload},
+        dict_converter=Object.fromEntries,
+    )
+    try:
+        response = await js_fetch(url, options)
+    except Exception as exc:
+        raise HttpError(f"POST {url} failed: {exc}") from exc
+    text = await response.text()
+    if not response.ok:
+        raise HttpError(f"POST {url} returned {response.status}: {str(text)[:200]}")
+    try:
+        return json.loads(str(text))
+    except json.JSONDecodeError as exc:
+        raise HttpError(f"POST {url} returned invalid JSON.") from exc

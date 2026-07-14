@@ -75,6 +75,18 @@ async def bootstrap(db: Annotated[Database, Depends(get_database)]) -> Any:
     }
 
 
+@router.get("/payment-methods")
+async def payment_methods() -> Any:
+    """Which checkout methods the storefront should offer, plus the public
+    Razorpay key its widget needs. No secrets are exposed."""
+    settings = get_settings()
+    return {
+        "methods": settings.enabled_payment_methods,
+        "currency": settings.payment_currency,
+        "razorpayKeyId": settings.razorpay_key_id if settings.razorpay_enabled else "",
+    }
+
+
 @router.get("/home")
 async def home(db: Annotated[Database, Depends(get_database)]) -> Any:
     page = await PageRepository(db).get_published_by_slug("home")
