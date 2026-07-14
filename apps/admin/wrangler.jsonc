@@ -1,0 +1,15 @@
+{
+  // Cloudflare Workers static-assets deployment for the admin SPA.
+  // Build with `vite build` (outputs ./dist), then `wrangler deploy`. This is an
+  // assets-only Worker (no server code): Cloudflare serves the built files and,
+  // via single-page-application handling, returns index.html for unknown paths
+  // so client-side routing works. Set VITE_API_URL at build time to connect the
+  // admin to the API; unset => the UI runs in demo mode.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "truegrit-admin-dev",
+  "compatibility_date": "2026-07-11",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}

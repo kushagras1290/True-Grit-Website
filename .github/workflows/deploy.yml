@@ -1,0 +1,77 @@
+name: Deploy dev
+
+# Auto-deploys the whole project to the Cloudflare dev environment on every push
+# to master/Testing (or manual dispatch). Requires one repository secret:
+#   CLOUDFLARE_API_TOKEN — a token with Workers Scripts, D1, R2, KV, and Queues
+#   edit permissions on the target account.
+on:
+  push:
+    branches: [master, Testing]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Serialize dev deploys so concurrent pushes never race the same Workers.
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: false
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: "68185599d29e656475ecc2cabbf581b7"
+
+jobs:
+  api:
+    name: API (Python Worker)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      # Idempotent: already-applied migrations are skipped. Keeps the D1 schema
+      # in sync when a push adds new migration files.
+      - name: Apply D1 migrations
+        working-directory: apps/api
+        run: npx --yes wrangler@4.110.0 d1 migrations apply truegrit-dev --remote
+      # pywrangler bundles FastAPI/pydantic + the workers/asgi runtime SDK and
+      # deploys the Python Worker. The Pyodide venv step only works on Linux,
+      # which is why the API is deployed from CI rather than a dev machine.
+      - name: Deploy API
+        working-directory: apps/api
+        run: uvx --from workers-py pywrangler deploy
+
+  web:
+    name: Storefront + Admin
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # Public build-time config. VITE_API_URL points the SSR/browser code at
+      # the deployed API (not localhost); VITE_GOOGLE_CLIENT_ID enables the
+      # "Sign in with Google" button. Both are public (no secrets).
+      VITE_API_URL: "https://truegrit-api-dev.kushagras1234890.workers.dev"
+      VITE_GOOGLE_CLIENT_ID: "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build storefront (Cloudflare Workers)
+        working-directory: apps/storefront
+        run: pnpm build
+      - name: Deploy storefront
+        working-directory: apps/storefront
+        run: pnpm exec wrangler deploy
+      - name: Build admin
+        working-directory: apps/admin
+        run: pnpm build
+      - name: Deploy admin
+        working-directory: apps/admin
+        run: pnpm exec wrangler deploy

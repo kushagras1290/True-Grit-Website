@@ -23,7 +23,13 @@
   },
   "vars": {
     "APP_ENV": "development",
-    "PUBLIC_STOREFRONT_URL": "http://localhost:5173",
-    "PUBLIC_ADMIN_URL": "http://localhost:5174"
+    // Deployed origins so the API's CORS allow-list accepts the live storefront
+    // and admin (read by config.py via the worker.py env bridge). Update these
+    // when the Worker names/subdomain change.
+    "PUBLIC_STOREFRONT_URL": "https://truegrit-storefront-dev.kushagras1234890.workers.dev",
+    "PUBLIC_ADMIN_URL": "https://truegrit-admin-dev.kushagras1234890.workers.dev",
+    // Public Google OAuth client id (not a secret) — enables server-side
+    // verification of "Sign in with Google" ID tokens.
+    "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com"
   }
 }
