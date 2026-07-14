@@ -78,4 +78,8 @@ class R2MediaStore:
         if obj is None:  # Pyodide maps JS null -> None
             return None
         buffer = await obj.arrayBuffer()
-        return bytes(buffer.to_py()), content_type_for(key)
+        # Depending on the runtime, arrayBuffer() yields a Pyodide JsProxy
+        # (needs .to_py()) or an already-converted memoryview/bytes.
+        to_py = getattr(buffer, "to_py", None)
+        raw = to_py() if callable(to_py) else buffer
+        return bytes(raw), content_type_for(key)
