@@ -17,7 +17,11 @@ from truegrit_api.errors import AuthenticationError, PermissionDeniedError
 from truegrit_api.platform.database import Database
 
 
-def get_database(request: Request) -> Database:
+async def get_database(request: Request) -> Database:
+    # Must be async: FastAPI runs *synchronous* dependencies in an anyio
+    # threadpool, and Cloudflare Workers (Pyodide) cannot start threads
+    # ("RuntimeError: can't start new thread"). Declaring it async runs it
+    # inline on the event loop. It awaits nothing — it only reads app state.
     db: Database | None = getattr(request.app.state, "db", None)
     if db is None:
         raise RuntimeError("Application database is not configured.")
