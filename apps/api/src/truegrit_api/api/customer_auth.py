@@ -43,9 +43,18 @@ _EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 _MAX_EMAIL_LENGTH = 254
 _MAX_NAME_LENGTH = 120
 _MAX_PASSWORD_LENGTH = 256
-# Precomputed hash of an unguessable value, used to equalise timing when an
-# email has no account so login cannot be used to enumerate registered users.
-_DUMMY_HASH = hash_password(new_id("nope"), iterations=1)
+# Hash of an unguessable value, used to equalise timing when an email has no
+# account so login cannot be used to enumerate registered users. Computed lazily
+# and cached: hashing draws entropy for its salt, which Cloudflare Workers only
+# permit inside a request context — never at module import time.
+_dummy_hash: str | None = None
+
+
+def _dummy_password_hash() -> str:
+    global _dummy_hash
+    if _dummy_hash is None:
+        _dummy_hash = hash_password(new_id("nope"), iterations=1)
+    return _dummy_hash
 
 
 class RegisterRequest(BaseModel):
@@ -205,7 +214,7 @@ async def login(
         """,
         (email,),
     )
-    stored_hash = row["password_hash"] if row is not None else _DUMMY_HASH
+    stored_hash = row["password_hash"] if row is not None else _dummy_password_hash()
     if not verify_password(payload.password, stored_hash) or row is None:
         raise AuthenticationError("Invalid email or password.")
 
