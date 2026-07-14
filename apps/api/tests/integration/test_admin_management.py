@@ -3,10 +3,20 @@ products, categories, inventory, users, and orders."""
 
 from __future__ import annotations
 
+import base64
+
 from fastapi.testclient import TestClient
 
 from tests.integration.conftest import SESSION_COOKIE, create_session
 from truegrit_api.platform.database import SQLiteDatabase
+
+ADDRESS = {
+    "recipientName": "Riya Nair",
+    "line1": "12 Palm Grove",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "postalCode": "400001",
+}
 
 
 def as_admin(client: TestClient, db: SQLiteDatabase) -> None:
@@ -37,7 +47,12 @@ def test_product_create_edit_publish_archive(client: TestClient, db: SQLiteDatab
 
     updated = client.patch(
         f"/v1/admin/products/{product_id}",
-        json={"name": "Test Turmeric Powder", "shortDescription": "Single-origin turmeric root."},
+        json={
+            "name": "Test Turmeric Powder",
+            "shortDescription": "Single-origin turmeric root.",
+            "imageUrl": "https://images.example.test/turmeric.jpg",
+            "imageAlt": "Fresh turmeric roots on a table",
+        },
     )
     assert updated.status_code == 200
 
@@ -46,7 +61,11 @@ def test_product_create_edit_publish_archive(client: TestClient, db: SQLiteDatab
     assert published.json()["status"] == "published"
     assert published.json()["version"] == 1
 
-    assert client.get(f"/v1/admin/products/{product_id}").json()["name"] == "Test Turmeric Powder"
+    product = client.get(f"/v1/admin/products/{product_id}").json()
+    assert product["name"] == "Test Turmeric Powder"
+    assert product["imageUrl"] == "https://images.example.test/turmeric.jpg"
+    public_product = client.get(f"/v1/public/products/{product['slug']}").json()
+    assert public_product["imageUrl"] == "https://images.example.test/turmeric.jpg"
 
     archived = client.post(f"/v1/admin/products/{product_id}/archive")
     assert archived.status_code == 200
@@ -93,7 +112,12 @@ def test_category_create_edit_publish(client: TestClient, db: SQLiteDatabase):
 
     updated = client.patch(
         f"/v1/admin/categories/{category_id}",
-        json={"heroDescription": "Nutrient-dense staples.", "visibility": "public"},
+        json={
+            "heroDescription": "Nutrient-dense staples.",
+            "visibility": "public",
+            "heroImageUrl": "https://images.example.test/superfoods.jpg",
+            "heroImageAlt": "A spread of organic superfoods",
+        },
     )
     assert updated.status_code == 200
     assert client.get(f"/v1/admin/categories/{category_id}").json()["heroDescription"] == (
@@ -103,6 +127,16 @@ def test_category_create_edit_publish(client: TestClient, db: SQLiteDatabase):
     published = client.post(f"/v1/admin/categories/{category_id}/publish")
     assert published.status_code == 200
     assert published.json()["status"] == "published"
+    public_category = client.get(f"/v1/public/categories/{created.json()['slug']}").json()
+    assert public_category["hero"]["imageUrl"] == "https://images.example.test/superfoods.jpg"
+
+
+def test_category_delete_hides_from_admin(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    category_id = client.post("/v1/admin/categories", json={"name": "Delete Me"}).json()["id"]
+    deleted = client.delete(f"/v1/admin/categories/{category_id}")
+    assert deleted.status_code == 200
+    assert client.get(f"/v1/admin/categories/{category_id}").status_code == 404
 
 
 def test_category_update_rejects_bad_visibility(client: TestClient, db: SQLiteDatabase):
@@ -151,6 +185,25 @@ def test_inventory_adjustment_cannot_go_below_reserved(client: TestClient, db: S
     assert response.status_code == 422
 
 
+# --- Media ------------------------------------------------------------------
+
+
+def test_admin_image_upload_returns_public_media_url(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    response = client.post(
+        "/v1/admin/media/images",
+        json={
+            "filename": "pixel.png",
+            "contentType": "image/png",
+            "dataBase64": base64.b64encode(b"fake-png").decode("ascii"),
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["url"].startswith("http://testserver/media/images/img_")
+    assert body["url"].endswith(".png")
+
+
 # --- Users & roles ----------------------------------------------------------
 
 
@@ -179,6 +232,91 @@ def test_user_cannot_disable_self(client: TestClient, db: SQLiteDatabase):
     assert response.status_code == 422
 
 
+def test_owner_can_delete_users_individually_and_in_bulk(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    role_id = "rol_inventory"
+    first = client.post(
+        "/v1/admin/users/invite",
+        json={
+            "email": "delete-one@truegrit.test",
+            "displayName": "Delete One",
+            "roleIds": [role_id],
+        },
+    ).json()["id"]
+    second = client.post(
+        "/v1/admin/users/invite",
+        json={
+            "email": "delete-two@truegrit.test",
+            "displayName": "Delete Two",
+            "roleIds": [role_id],
+        },
+    ).json()["id"]
+
+    single = client.delete(f"/v1/admin/users/{first}")
+    assert single.status_code == 200
+    assert first not in {user["id"] for user in client.get("/v1/admin/users").json()["items"]}
+
+    bulk = client.post("/v1/admin/users/bulk-delete", json={"userIds": [second]})
+    assert bulk.status_code == 200
+    assert bulk.json()["count"] == 1
+    assert second not in {user["id"] for user in client.get("/v1/admin/users").json()["items"]}
+
+
+def test_owner_account_cannot_be_deleted(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    response = client.delete("/v1/admin/users/usr_admin")
+    assert response.status_code == 422
+
+
+def test_owner_can_issue_farm_owner_temporary_password(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    create_session(db, "usr_farmowner")
+
+    response = client.post("/v1/admin/users/usr_farmowner/temporary-password")
+    assert response.status_code == 200
+    temporary_password = response.json()["temporaryPassword"]
+    assert len(temporary_password) >= 18
+
+    revoked_count = db._conn.execute(
+        "SELECT COUNT(*) FROM sessions WHERE user_id = ? AND revoked_at IS NOT NULL",
+        ("usr_farmowner",),
+    ).fetchone()[0]
+    assert revoked_count >= 1
+
+    login = client.post(
+        "/v1/admin/auth/login",
+        json={"email": "owner@devika.test", "password": temporary_password},
+    )
+    assert login.status_code == 200
+
+    audit = db._conn.execute(
+        """
+        SELECT action, actor_user_id, after_summary_json, source
+        FROM audit_logs
+        WHERE action = 'farm_owner.password_reset' AND entity_id = 'usr_farmowner'
+        ORDER BY created_at DESC
+        LIMIT 1
+        """
+    ).fetchone()
+    assert audit is not None
+    assert audit["actor_user_id"] == "usr_admin"
+    assert audit["source"] == "admin"
+    assert '"passwordStored": false' in audit["after_summary_json"]
+    assert temporary_password not in audit["after_summary_json"]
+
+
+def test_farm_owner_cannot_issue_temporary_password(
+    client: TestClient, db: SQLiteDatabase
+):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    response = client.post("/v1/admin/users/usr_farmowner/temporary-password")
+    assert response.status_code == 403
+
+
 # --- Orders -----------------------------------------------------------------
 
 
@@ -200,3 +338,90 @@ def test_order_invalid_transition_conflicts(client: TestClient, db: SQLiteDataba
     as_admin(client, db)
     response = client.patch("/v1/admin/orders/ord_1002/status", json={"status": "completed"})
     assert response.status_code == 409
+
+
+def test_order_cancellation_releases_reserved_inventory(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_cust_riya"))
+    before = db._conn.execute(
+        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+    ).fetchone()
+    order = client.post(
+        "/v1/public/checkout",
+        json={
+            "items": [{"variantId": "var_alphonso_1kg", "quantity": 2}],
+            "deliveryAddress": ADDRESS,
+        },
+    ).json()
+    after_checkout = db._conn.execute(
+        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+    ).fetchone()
+    assert after_checkout["on_hand"] == before["on_hand"]
+    assert after_checkout["reserved"] == before["reserved"] + 2
+
+    client.cookies.clear()
+    as_admin(client, db)
+    cancelled = client.patch(f"/v1/admin/orders/{order['id']}/status", json={"status": "cancelled"})
+    assert cancelled.status_code == 200
+    after_cancel = db._conn.execute(
+        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+    ).fetchone()
+    assert after_cancel["on_hand"] == before["on_hand"]
+    assert after_cancel["reserved"] == before["reserved"]
+
+
+def test_completed_order_consumes_reserved_inventory(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_cust_riya"))
+    before = db._conn.execute(
+        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+    ).fetchone()
+    order = client.post(
+        "/v1/public/checkout",
+        json={
+            "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+            "deliveryAddress": ADDRESS,
+        },
+    ).json()
+
+    client.cookies.clear()
+    as_admin(client, db)
+    processing = client.patch(
+        f"/v1/admin/orders/{order['id']}/status", json={"status": "processing"}
+    )
+    assert processing.status_code == 200
+    completed = client.patch(f"/v1/admin/orders/{order['id']}/status", json={"status": "completed"})
+    assert completed.status_code == 200
+    after_complete = db._conn.execute(
+        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+    ).fetchone()
+    assert after_complete["on_hand"] == before["on_hand"] - 1
+    assert after_complete["reserved"] == before["reserved"]
+
+
+def test_owner_can_manage_site_control(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    response = client.patch(
+        "/v1/admin/site-control",
+        json={
+            "announcementActive": True,
+            "announcementMessage": "Fresh boxes ship Friday.",
+            "announcementPath": "/shop",
+            "heroHeading": "Owner managed homepage",
+            "seoTitle": "Owner managed SEO title",
+            "seoDescription": "Owner managed SEO description.",
+            "seoKeywords": "organic, farm fresh, true grit",
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["heroHeading"] == "Owner managed homepage"
+    assert body["seoKeywords"] == "organic, farm fresh, true grit"
+
+    public_home = client.get("/v1/public/home").json()
+    assert public_home["seo"]["keywords"] == "organic, farm fresh, true grit"
+    assert public_home["blocks"][0]["props"]["heading"] == "Owner managed homepage"
+
+
+def test_farm_owner_cannot_manage_site_control(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    assert client.get("/v1/admin/site-control").status_code == 403
+    assert client.patch("/v1/admin/site-control", json={"seoTitle": "Nope"}).status_code == 403

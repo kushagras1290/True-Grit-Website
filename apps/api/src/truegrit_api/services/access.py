@@ -8,12 +8,19 @@ account (which would be an easy way to lock everyone out by mistake).
 from __future__ import annotations
 
 import re
+import secrets
+import string
 from typing import Any
 
 from truegrit_api.auth.passwords import hash_password
 from truegrit_api.auth.principal import Principal
 from truegrit_api.config import get_settings
-from truegrit_api.errors import ConflictError, NotFoundError, ValidationAppError
+from truegrit_api.errors import (
+    ConflictError,
+    NotFoundError,
+    PermissionDeniedError,
+    ValidationAppError,
+)
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
 from truegrit_api.util.ids import new_id
@@ -21,6 +28,11 @@ from truegrit_api.util.timeutil import utc_now_iso
 
 _EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 _ASSIGNABLE_STATUSES = frozenset({"active", "disabled", "invited"})
+_TEMP_PASSWORD_ALPHABET = string.ascii_letters + string.digits + "-_"
+
+
+def _temporary_password(length: int = 18) -> str:
+    return "".join(secrets.choice(_TEMP_PASSWORD_ALPHABET) for _ in range(length))
 
 
 async def _validate_roles(db: Database, role_ids: list[str]) -> list[str]:
@@ -102,7 +114,9 @@ async def set_user_status(
         raise ValidationAppError("Status must be active, disabled, or invited.")
     if user_id == actor.user_id and status != "active":
         raise ValidationAppError("You cannot disable your own account.")
-    current = await db.fetch_one("SELECT id, status FROM users WHERE id = ?", (user_id,))
+    current = await db.fetch_one(
+        "SELECT id, status FROM users WHERE id = ? AND deleted_at IS NULL", (user_id,)
+    )
     if current is None:
         raise NotFoundError("User not found.")
 
@@ -206,7 +220,9 @@ async def set_user_roles(
     *,
     role_ids: list[str],
 ) -> dict[str, Any]:
-    current = await db.fetch_one("SELECT id FROM users WHERE id = ?", (user_id,))
+    current = await db.fetch_one(
+        "SELECT id FROM users WHERE id = ? AND deleted_at IS NULL", (user_id,)
+    )
     if current is None:
         raise NotFoundError("User not found.")
     roles = await _validate_roles(db, role_ids)
@@ -234,3 +250,147 @@ async def set_user_roles(
     )
     await db.batch(statements)
     return {"id": user_id, "roles": roles}
+
+
+async def delete_users(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    user_ids: list[str],
+) -> dict[str, Any]:
+    unique_ids = list(dict.fromkeys(user_ids))
+    if not unique_ids:
+        raise ValidationAppError("Select at least one user to delete.")
+    if actor.user_id in unique_ids:
+        raise ValidationAppError("You cannot delete your own owner account.")
+
+    placeholders = ", ".join("?" for _ in unique_ids)
+    rows = await db.fetch_all(
+        f"""
+        SELECT u.id, u.email, u.display_name,
+          EXISTS (
+            SELECT 1
+            FROM user_roles ur
+            JOIN roles r ON r.id = ur.role_id
+            WHERE ur.user_id = u.id AND r.key = 'super_admin'
+          ) AS is_super_admin
+        FROM users u
+        WHERE u.id IN ({placeholders})
+          AND u.user_type = 'staff'
+          AND u.deleted_at IS NULL
+        """,
+        unique_ids,
+    )
+    found = {row["id"] for row in rows}
+    missing = [user_id for user_id in unique_ids if user_id not in found]
+    if missing:
+        raise NotFoundError("One or more users were not found.")
+    if any(row["is_super_admin"] for row in rows):
+        raise PermissionDeniedError("Owner accounts cannot be deleted.")
+
+    now = utc_now_iso()
+    statements: list[Any] = []
+    for row in rows:
+        deleted_email = f"deleted-{row['id']}@truegrit.local"
+        statements.extend(
+            [
+                (
+                    """
+                    UPDATE users
+                    SET status = 'disabled',
+                        email = ?,
+                        deleted_at = ?,
+                        updated_at = ?
+                    WHERE id = ?
+                    """,
+                    (deleted_email, now, now, row["id"]),
+                ),
+                (
+                    "UPDATE sessions SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL",
+                    (now, row["id"]),
+                ),
+                audit_statement(
+                    action="user.deleted",
+                    entity_type="user",
+                    entity_id=row["id"],
+                    actor_id=actor.user_id,
+                    request_id=request_id,
+                    created_at=now,
+                    before={"email": row["email"], "displayName": row["display_name"]},
+                    after={"deletedAt": now, "sessionsRevoked": True},
+                ),
+            ]
+        )
+    await db.batch(statements)
+    return {"deletedIds": [row["id"] for row in rows], "count": len(rows)}
+
+
+async def reset_farm_owner_password(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    user_id: str,
+) -> dict[str, Any]:
+    """Generate a one-time temporary password for a farm-owner account.
+
+    The plain password is returned to the caller once. Only its hash is stored,
+    and existing sessions are revoked in the same transaction.
+    """
+    user = await db.fetch_one(
+        """
+        SELECT u.id, u.email, u.display_name, u.status, fm.farm_id
+        FROM users u
+        JOIN farm_members fm ON fm.user_id = u.id
+        WHERE u.id = ? AND u.user_type = 'staff'
+        """,
+        (user_id,),
+    )
+    if user is None:
+        raise NotFoundError("Farm owner not found.")
+    if user["status"] == "disabled":
+        raise ValidationAppError("Enable this farm owner before resetting their password.")
+
+    settings = get_settings()
+    temporary_password = _temporary_password(max(settings.password_min_length + 8, 18))
+    password_hash = hash_password(
+        temporary_password, iterations=settings.pbkdf2_iterations
+    )
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                """
+                INSERT INTO user_credentials (user_id, password_hash, created_at, updated_at)
+                VALUES (?, ?, ?, ?)
+                ON CONFLICT(user_id) DO UPDATE SET
+                  password_hash = excluded.password_hash,
+                  updated_at = excluded.updated_at
+                """,
+                (user_id, password_hash, now, now),
+            ),
+            (
+                "UPDATE sessions SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL",
+                (now, user_id),
+            ),
+            audit_statement(
+                action="farm_owner.password_reset",
+                entity_type="user",
+                entity_id=user_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={
+                    "email": user["email"],
+                    "farmId": user["farm_id"],
+                    "temporaryPasswordIssued": True,
+                    "passwordStored": False,
+                    "sessionsRevoked": True,
+                },
+            ),
+        ]
+    )
+    return {
+        "id": user_id,
+        "email": user["email"],
+        "temporaryPassword": temporary_password,
+    }

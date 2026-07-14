@@ -45,6 +45,7 @@ export interface OrderSummary {
   paymentStatus: string;
   fulfilmentStatus: string;
   placedAt: string;
+  itemCount: number;
 }
 
 export interface OrderLine {
@@ -70,6 +71,13 @@ export interface OrderDetail {
   fulfilmentStatus: string;
   placedAt: string;
   items: OrderLine[];
+}
+
+export interface ContactMessage {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
 }
 
 interface ApiErrorBody {
@@ -114,4 +122,11 @@ export function listMyOrders(): Promise<OrderSummary[]> {
 
 export function getMyOrder(reference: string): Promise<OrderDetail> {
   return request<OrderDetail>(`/v1/public/orders/${encodeURIComponent(reference)}`);
+}
+
+export function sendContactMessage(input: ContactMessage): Promise<{ ok: boolean; id: string }> {
+  return request<{ ok: boolean; id: string }>("/v1/public/contact", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
 }

@@ -361,15 +361,28 @@ async def password_reset_request(
         settings=settings,
     )
     if email is not None:
-        background.add_task(send_email, email.to, email.subject, email.body, settings)
+        background.add_task(
+            send_email,
+            email.to,
+            email.subject,
+            email.body,
+            settings,
+            email.html_body,
+        )
     return {"ok": True}
 
 
 @router.post("/password-reset/confirm")
 async def password_reset_confirm(
     payload: PasswordResetConfirm,
+    request: Request,
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
     return await confirm_password_reset(
-        db, token=payload.token, new_password=payload.new_password, settings=get_settings()
+        db,
+        token=payload.token,
+        new_password=payload.new_password,
+        settings=get_settings(),
+        request_id=getattr(request.state, "request_id", "unknown"),
+        source="api",
     )

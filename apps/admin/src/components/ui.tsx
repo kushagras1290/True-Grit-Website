@@ -1,7 +1,7 @@
 /** Restrained admin primitives — one button hierarchy, quiet surfaces, no card zoo. */
 
 import { cn } from "@truegrit/ui";
-import { X } from "lucide-react";
+import { AlertTriangle, X } from "lucide-react";
 import { useEffect } from "react";
 import type {
   ButtonHTMLAttributes,
@@ -118,6 +118,45 @@ export function Modal({
         <div className="px-5 py-5">{children}</div>
       </div>
     </div>
+  );
+}
+
+export function ConfirmDialog({
+  title,
+  description,
+  confirmLabel,
+  pendingLabel,
+  isPending = false,
+  onCancel,
+  onConfirm,
+}: {
+  title: string;
+  description: string;
+  confirmLabel: string;
+  pendingLabel?: string;
+  isPending?: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <Modal title={title} onClose={() => (isPending ? undefined : onCancel())}>
+      <div className="flex gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-danger/10 text-danger">
+          <AlertTriangle size={19} aria-hidden />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm leading-6 text-ink-muted">{description}</p>
+          <div className="mt-5 flex flex-wrap justify-end gap-2">
+            <Button type="button" variant="secondary" onClick={onCancel} disabled={isPending}>
+              Cancel
+            </Button>
+            <Button type="button" variant="destructive" onClick={onConfirm} disabled={isPending}>
+              {isPending ? (pendingLabel ?? "Working...") : confirmLabel}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </Modal>
   );
 }
 

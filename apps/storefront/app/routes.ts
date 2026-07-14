@@ -13,6 +13,7 @@ export default [
   route("journal", "routes/journal.tsx"),
   route("journal/:slug", "routes/article.tsx"),
   route("standards", "routes/standards.tsx"),
+  route("contact", "routes/contact.tsx"),
   route("cart", "routes/cart.tsx"),
   route("checkout", "routes/checkout.tsx"),
   route("account", "routes/account.tsx"),

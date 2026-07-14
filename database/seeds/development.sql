@@ -9,14 +9,16 @@ INSERT INTO users (id, email, display_name, user_type, status, email_verified_at
   ('usr_ops', 'ops@truegrit.test', 'Dev Sharma', 'staff', 'active', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
 
 -- Roles
-INSERT INTO roles (id, key, name, description, is_system, created_at) VALUES
+INSERT OR IGNORE INTO roles (id, key, name, description, is_system, created_at) VALUES
   ('rol_super_admin', 'super_admin', 'Super Administrator', 'All permissions', 1, '2026-07-01T00:00:00Z'),
   ('rol_admin', 'admin', 'Administrator', 'Broad operational management', 1, '2026-07-01T00:00:00Z'),
   ('rol_content_editor', 'content_editor', 'Content Editor', 'Draft and edit content', 1, '2026-07-01T00:00:00Z'),
   ('rol_publisher', 'publisher', 'Publisher', 'Publish approved content', 1, '2026-07-01T00:00:00Z'),
   ('rol_product_manager', 'product_manager', 'Product Manager', 'Products, variants, prices', 1, '2026-07-01T00:00:00Z'),
   ('rol_inventory_manager', 'inventory_manager', 'Inventory Manager', 'Inventory view and adjustments', 1, '2026-07-01T00:00:00Z'),
-  ('rol_order_manager', 'order_manager', 'Order Manager', 'Orders and fulfilment', 1, '2026-07-01T00:00:00Z');
+  ('rol_order_manager', 'order_manager', 'Order Manager', 'Orders and fulfilment', 1, '2026-07-01T00:00:00Z'),
+  ('rol_manager', 'manager', 'Manager', 'Catalogue, content, inventory, orders and media', 1, '2026-07-01T00:00:00Z'),
+  ('rol_inventory', 'inventory', 'Inventory', 'Inventory and order monitoring', 1, '2026-07-01T00:00:00Z');
 
 -- Permissions
 INSERT INTO permissions (id, key, description) VALUES
@@ -83,7 +85,33 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES
   ('rol_inventory_manager', 'prm_products_view'),
   ('rol_order_manager', 'prm_orders_view'),
   ('rol_order_manager', 'prm_orders_cancel'),
-  ('rol_order_manager', 'prm_customers_view');
+  ('rol_order_manager', 'prm_customers_view'),
+  ('rol_manager', 'prm_products_view'),
+  ('rol_manager', 'prm_products_create'),
+  ('rol_manager', 'prm_products_edit'),
+  ('rol_manager', 'prm_products_publish'),
+  ('rol_manager', 'prm_products_archive'),
+  ('rol_manager', 'prm_categories_view'),
+  ('rol_manager', 'prm_categories_create'),
+  ('rol_manager', 'prm_categories_edit'),
+  ('rol_manager', 'prm_categories_publish'),
+  ('rol_manager', 'prm_pages_view'),
+  ('rol_manager', 'prm_pages_create'),
+  ('rol_manager', 'prm_pages_edit'),
+  ('rol_manager', 'prm_pages_publish'),
+  ('rol_manager', 'prm_media_view'),
+  ('rol_manager', 'prm_media_upload'),
+  ('rol_manager', 'prm_media_edit'),
+  ('rol_manager', 'prm_orders_view'),
+  ('rol_manager', 'prm_orders_cancel'),
+  ('rol_manager', 'prm_inventory_view'),
+  ('rol_manager', 'prm_inventory_adjust'),
+  ('rol_manager', 'prm_customers_view'),
+  ('rol_manager', 'prm_audit_view'),
+  ('rol_inventory', 'prm_inventory_view'),
+  ('rol_inventory', 'prm_inventory_adjust'),
+  ('rol_inventory', 'prm_products_view'),
+  ('rol_inventory', 'prm_orders_view');
 
 INSERT INTO user_roles (user_id, role_id, assigned_at, assigned_by) VALUES
   ('usr_admin', 'rol_super_admin', '2026-07-01T00:00:00Z', 'usr_admin'),
@@ -102,6 +130,8 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES
   ('rol_farm_owner', 'prm_products_edit'),
   ('rol_farm_owner', 'prm_products_publish'),
   ('rol_farm_owner', 'prm_products_archive'),
+  ('rol_farm_owner', 'prm_media_view'),
+  ('rol_farm_owner', 'prm_media_upload'),
   ('rol_farm_owner', 'prm_inventory_view'),
   ('rol_farm_owner', 'prm_inventory_adjust');
 
@@ -314,7 +344,13 @@ INSERT INTO navigation_items (id, menu_id, parent_id, label, destination_type, d
   ('nit_farmers', 'nav_header', NULL, 'Farmers', 'internal_path', '/farms', 3, 1),
   ('nit_recipes', 'nav_header', NULL, 'Recipes', 'internal_path', '/recipes', 4, 1),
   ('nit_journal', 'nav_header', NULL, 'Journal', 'internal_path', '/journal', 5, 1),
-  ('nit_standards', 'nav_header', NULL, 'Our Standards', 'internal_path', '/standards', 6, 1);
+  ('nit_standards', 'nav_header', NULL, 'Our Standards', 'internal_path', '/standards', 6, 1),
+  ('nit_footer_about', 'nav_footer', NULL, 'About', 'internal_path', '/about', 1, 1),
+  ('nit_footer_delivery', 'nav_footer', NULL, 'Delivery', 'internal_path', '/delivery', 2, 1),
+  ('nit_footer_returns', 'nav_footer', NULL, 'Returns', 'internal_path', '/returns', 3, 1),
+  ('nit_footer_contact', 'nav_footer', NULL, 'Contact', 'internal_path', '/contact', 4, 1),
+  ('nit_footer_privacy', 'nav_footer', NULL, 'Privacy', 'internal_path', '/privacy', 5, 1),
+  ('nit_footer_terms', 'nav_footer', NULL, 'Terms', 'internal_path', '/terms', 6, 1);
 
 -- Announcement
 INSERT INTO announcements (id, message, destination_path, active, created_at, created_by, updated_at) VALUES

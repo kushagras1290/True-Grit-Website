@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from truegrit_api.api.admin import router as admin_router
 from truegrit_api.api.customer_auth import router as customer_auth_router
@@ -15,6 +16,7 @@ from truegrit_api.middleware.rate_limit import RateLimitMiddleware
 from truegrit_api.middleware.request_id import RequestIdMiddleware
 from truegrit_api.middleware.security_headers import SecurityHeadersMiddleware
 from truegrit_api.platform.database import Database, build_local_database
+from truegrit_api.services.media import media_root
 
 
 def create_app(db: Database | None = None) -> FastAPI:
@@ -46,6 +48,8 @@ def create_app(db: Database | None = None) -> FastAPI:
     # Outside the Workers runtime, boot a SQLite database from the real
     # migrations + development seed (identical SQL semantics to D1).
     app.state.db = db if db is not None else build_local_database()
+    media_root().mkdir(parents=True, exist_ok=True)
+    app.mount("/media", StaticFiles(directory=media_root()), name="media")
 
     app.include_router(public_router, prefix="/v1/public")
     app.include_router(customer_auth_router, prefix="/v1/public/auth")

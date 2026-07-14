@@ -13,7 +13,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix="", extra="ignore")
+    model_config = SettingsConfigDict(env_file=".env", env_prefix="", extra="ignore")
 
     app_env: Literal["development", "test", "staging", "production"] = "development"
     public_storefront_url: str = "http://localhost:5173"
@@ -69,6 +69,7 @@ class Settings(BaseSettings):
     smtp_use_tls: bool = True
     smtp_timeout_seconds: int = 10
     email_from: str = "True Grit <no-reply@truegrit.test>"
+    contact_recipient_email: str = ""
 
     # Password reset token lifetime.
     password_reset_lifetime_minutes: int = 30

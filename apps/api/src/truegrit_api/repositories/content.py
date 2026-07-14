@@ -18,7 +18,8 @@ class CategoryRepository:
             """
             SELECT id, name, slug, short_description, hero_eyebrow, hero_title,
                    hero_description, theme_key, season_label, product_assignment_mode,
-                   product_rule_json, seo_title, seo_description, updated_at
+                   product_rule_json, seo_title, seo_description, hero_image_url,
+                   hero_image_alt, updated_at
             FROM categories
             WHERE slug = ? AND status = 'published' AND visibility = 'public'
             """,
@@ -29,6 +30,7 @@ class CategoryRepository:
         return await self._db.fetch_all(
             """
             SELECT c.id, c.name, c.slug, c.short_description, c.theme_key, c.season_label,
+                   c.hero_image_url,
                    (SELECT COUNT(*) FROM product_categories pc
                      JOIN products p ON p.id = pc.product_id
                     WHERE pc.category_id = c.id AND p.status = 'published') AS product_count
@@ -60,7 +62,7 @@ class PageRepository:
     async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
         page = await self._db.fetch_one(
             """
-            SELECT p.id, p.slug, p.title, p.seo_title, p.seo_description,
+            SELECT p.id, p.slug, p.title, p.seo_title, p.seo_description, p.seo_keywords,
                    p.indexing_policy, v.content_json
             FROM pages p
             JOIN page_versions v ON v.id = p.published_version_id
@@ -79,6 +81,7 @@ class PageRepository:
             "seo": {
                 "title": page["seo_title"] or page["title"],
                 "description": page["seo_description"] or "",
+                "keywords": page["seo_keywords"],
                 "canonical_path": "/" if page["slug"] == "home" else f"/{page['slug']}",
                 "indexing": page["indexing_policy"],
             },

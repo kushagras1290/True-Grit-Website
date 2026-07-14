@@ -3,13 +3,17 @@
 from __future__ import annotations
 
 import json
+import re
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, Query
+from pydantic import BaseModel, ConfigDict, Field
+from pydantic.alias_generators import to_camel
 
 from truegrit_api.auth.dependencies import get_database
+from truegrit_api.config import get_settings
 from truegrit_api.domain.slugs import validate_slug
-from truegrit_api.errors import NotFoundError
+from truegrit_api.errors import NotFoundError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.catalogue import CatalogueRepository
 from truegrit_api.repositories.content import (
@@ -24,8 +28,24 @@ from truegrit_api.schemas.public import (
     PublicCategoryPage,
     SearchResponse,
 )
+from truegrit_api.services.email import send_email
+from truegrit_api.util.ids import new_id
+from truegrit_api.util.timeutil import utc_now_iso
 
 router = APIRouter(tags=["public"])
+
+_EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+class _CamelModel(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+
+class ContactRequest(_CamelModel):
+    name: str = Field(min_length=2, max_length=120)
+    email: str = Field(min_length=3, max_length=254)
+    subject: str = Field(min_length=3, max_length=160)
+    message: str = Field(min_length=10, max_length=2000)
 
 _STANDARDS_FAQ = [
     {
@@ -63,6 +83,48 @@ async def home(db: Annotated[Database, Depends(get_database)]) -> Any:
     return page
 
 
+@router.post("/contact")
+async def contact(
+    payload: ContactRequest,
+    background: BackgroundTasks,
+    db: Annotated[Database, Depends(get_database)],
+) -> Any:
+    email = payload.email.strip().lower()
+    if not _EMAIL_PATTERN.match(email):
+        raise ValidationAppError("Enter a valid email address.")
+
+    now = utc_now_iso()
+    message_id = new_id("msg")
+    await db.execute(
+        """
+        INSERT INTO contact_messages (id, name, email, subject, message, status, created_at)
+        VALUES (?, ?, ?, ?, ?, 'new', ?)
+        """,
+        (
+            message_id,
+            payload.name.strip(),
+            email,
+            payload.subject.strip(),
+            payload.message.strip(),
+            now,
+        ),
+    )
+    settings = get_settings()
+    to = settings.contact_recipient_email or settings.admin_login_email
+    background.add_task(
+        send_email,
+        to,
+        f"Contact form: {payload.subject.strip()}",
+        (
+            f"Name: {payload.name.strip()}\n"
+            f"Email: {email}\n\n"
+            f"{payload.message.strip()}"
+        ),
+        settings,
+    )
+    return {"ok": True, "id": message_id}
+
+
 @router.get("/categories/{slug}", response_model=PublicCategoryPage)
 async def category_page(slug: str, db: Annotated[Database, Depends(get_database)]) -> Any:
     validate_slug(slug)
@@ -92,6 +154,8 @@ async def category_page(slug: str, db: Annotated[Database, Depends(get_database)
             "title": category["hero_title"] or category["name"],
             "description": category["hero_description"] or category["short_description"] or "",
             "season_label": category["season_label"],
+            "image_url": category["hero_image_url"],
+            "image_alt": category["hero_image_alt"] or category["name"],
         },
         "subcategories": [],
         "products": products,
@@ -118,6 +182,7 @@ async def categories(db: Annotated[Database, Depends(get_database)]) -> Any:
                 "shortDescription": row["short_description"] or "",
                 "themeKey": row["theme_key"] or "forest",
                 "seasonLabel": row["season_label"],
+                "imageUrl": row["hero_image_url"],
                 "productCount": row["product_count"],
             }
             for row in rows

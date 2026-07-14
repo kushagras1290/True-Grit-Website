@@ -16,7 +16,7 @@ from truegrit_api.platform.database import Database
 _PRODUCT_BASE_SQL = """
 SELECT
   p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
-  p.seo_title, p.seo_description,
+  p.seo_title, p.seo_description, p.image_url,
   f.name AS farm_name, f.slug AS farm_slug, f.region AS farm_region,
   m.alt_text AS image_alt
 FROM products p
@@ -133,6 +133,7 @@ class CatalogueRepository:
             "unit_label": lead["name"] if lead else "",
             "availability": availability,
             "tags": tags,
+            "image_url": row["image_url"],
             "image_alt": row["image_alt"] or row["name"],
             "_variants": variant_summaries,
             "_farm_slug": row["farm_slug"] or "",

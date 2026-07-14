@@ -10,6 +10,7 @@ test-results/
 !.env.example
 client_secret_*.json
 .venv/
+.media/
 __pycache__/
 .pytest_cache/
 .ruff_cache/

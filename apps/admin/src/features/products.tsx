@@ -21,6 +21,7 @@ import { z } from "zod";
 
 import {
   Button,
+  ConfirmDialog,
   DataTableShell,
   EmptyState,
   Field,
@@ -126,10 +127,26 @@ function CreateProductModal({ onClose }: { onClose: () => void }) {
 }
 
 export function ProductListPage() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["admin-products"], queryFn: api.products });
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [creating, setCreating] = useState(false);
+  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+
+  const deleteMutation = useMutation({
+    mutationFn: (productIds: string[]) => api.deleteProducts(productIds),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      setSelectedProductIds([]);
+      setConfirmingDelete(false);
+      toast.success(`${result.count} product${result.count === 1 ? "" : "s"} deleted.`);
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not delete products."),
+  });
 
   const columns = useMemo(
     () => [
@@ -174,6 +191,27 @@ export function ProductListPage() {
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
+  const visibleRows = table.getRowModel().rows;
+  const allVisibleSelected =
+    visibleRows.length > 0 &&
+    visibleRows.every((row) => selectedProductIds.includes(row.original.id));
+
+  function toggleProduct(productId: string) {
+    setSelectedProductIds((current) =>
+      current.includes(productId)
+        ? current.filter((id) => id !== productId)
+        : [...current, productId],
+    );
+  }
+
+  function toggleVisibleProducts() {
+    const visibleIds = visibleRows.map((row) => row.original.id);
+    setSelectedProductIds((current) =>
+      allVisibleSelected
+        ? current.filter((id) => !visibleIds.includes(id))
+        : Array.from(new Set([...current, ...visibleIds])),
+    );
+  }
 
   return (
     <div>
@@ -181,14 +219,42 @@ export function ProductListPage() {
         title="Products"
         description="Catalogue with live price and stock summaries."
         actions={
-          <PermissionGate permission="products.create">
-            <Button variant="primary" onClick={() => setCreating(true)}>
-              New product
-            </Button>
-          </PermissionGate>
+          <div className="flex gap-2">
+            <PermissionGate permission="products.edit">
+              {selectedProductIds.length > 0 ? (
+                <Button
+                  variant="destructive"
+                  onClick={() => setConfirmingDelete(true)}
+                  disabled={deleteMutation.isPending}
+                >
+                  Delete selected ({selectedProductIds.length})
+                </Button>
+              ) : null}
+            </PermissionGate>
+            <PermissionGate permission="products.create">
+              <Button variant="primary" onClick={() => setCreating(true)}>
+                New product
+              </Button>
+            </PermissionGate>
+          </div>
         }
       />
       {creating ? <CreateProductModal onClose={() => setCreating(false)} /> : null}
+      {confirmingDelete ? (
+        <ConfirmDialog
+          title={
+            selectedProductIds.length === 1
+              ? "Delete product"
+              : `Delete ${selectedProductIds.length} products`
+          }
+          description="Selected products will be hidden from the storefront and removed from the active catalogue."
+          confirmLabel={selectedProductIds.length === 1 ? "Delete product" : "Delete products"}
+          pendingLabel="Deleting..."
+          isPending={deleteMutation.isPending}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={() => deleteMutation.mutate(selectedProductIds)}
+        />
+      ) : null}
 
       <div className="mb-4 max-w-sm">
         <label htmlFor="product-search" className="sr-only">
@@ -206,6 +272,14 @@ export function ProductListPage() {
         <thead className="bg-canvas">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
+              <Th>
+                <input
+                  type="checkbox"
+                  aria-label="Select visible products"
+                  checked={allVisibleSelected}
+                  onChange={toggleVisibleProducts}
+                />
+              </Th>
               {headerGroup.headers.map((header) => (
                 <Th key={header.id}>
                   {header.column.getCanSort() ? (
@@ -226,11 +300,19 @@ export function ProductListPage() {
           ))}
         </thead>
         {isLoading ? (
-          <LoadingRows columns={8} />
+          <LoadingRows columns={9} />
         ) : (
           <tbody>
             {table.getRowModel().rows.map((row) => (
               <tr key={row.id} className="border-t border-line hover:bg-canvas/60">
+                <Td>
+                  <input
+                    type="checkbox"
+                    aria-label={`Select ${row.original.name}`}
+                    checked={selectedProductIds.includes(row.original.id)}
+                    onChange={() => toggleProduct(row.original.id)}
+                  />
+                </Td>
                 {row.getVisibleCells().map((cell) => (
                   <Td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Td>
                 ))}
@@ -254,6 +336,8 @@ const generalSchema = z.object({
     .string()
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and single hyphens only"),
   shortDescription: z.string().min(10, "Give customers at least one honest sentence").max(300),
+  imageUrl: z.string().url("Enter a valid image URL").max(1000).or(z.literal("")),
+  imageAlt: z.string().max(200),
 });
 
 type GeneralForm = z.infer<typeof generalSchema>;
@@ -273,6 +357,7 @@ export function ProductEditorPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<(typeof EDITOR_TABS)[number]>("General");
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const {
     data: product,
@@ -310,15 +395,15 @@ export function ProductEditorPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not publish."),
   });
 
-  const archiveMutation = useMutation({
-    mutationFn: () => api.archiveProduct(id),
+  const deleteMutation = useMutation({
+    mutationFn: () => api.deleteProduct(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["admin-products"] });
-      toast.success("Product archived.");
+      toast.success("Product deleted from active catalogue.");
       navigate("/products");
     },
     onError: (error) =>
-      toast.error(error instanceof ApiError ? error.message : "Could not archive."),
+      toast.error(error instanceof ApiError ? error.message : "Could not delete."),
   });
 
   if (isLoading) return <p className="text-sm text-ink-muted">Loading product…</p>;
@@ -336,15 +421,10 @@ export function ProductEditorPage() {
             <PermissionGate permission="products.edit">
               <Button
                 variant="secondary"
-                onClick={() => {
-                  if (
-                    window.confirm("Archive this product? It will be hidden from the storefront.")
-                  )
-                    archiveMutation.mutate();
-                }}
-                disabled={archiveMutation.isPending}
+                onClick={() => setConfirmingDelete(true)}
+                disabled={deleteMutation.isPending}
               >
-                Archive
+                {deleteMutation.isPending ? "Deleting..." : "Delete"}
               </Button>
             </PermissionGate>
             <PermissionGate
@@ -366,6 +446,17 @@ export function ProductEditorPage() {
           </div>
         }
       />
+      {confirmingDelete ? (
+        <ConfirmDialog
+          title="Delete product"
+          description={`${product.name} will be hidden from the storefront and removed from the active catalogue.`}
+          confirmLabel="Delete product"
+          pendingLabel="Deleting..."
+          isPending={deleteMutation.isPending}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={() => deleteMutation.mutate()}
+        />
+      ) : null}
 
       <div
         role="tablist"
@@ -453,13 +544,28 @@ function GeneralTab({
   onSave: (values: GeneralForm) => void;
   saving: boolean;
 }) {
+  const toast = useToast();
   const form = useForm<GeneralForm>({
     resolver: zodResolver(generalSchema),
     values: {
       name: product.name,
       slug: product.slug,
       shortDescription: product.shortDescription,
+      imageUrl: product.imageUrl,
+      imageAlt: product.imageAlt,
     },
+  });
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => api.uploadImage(file),
+    onSuccess: (result) => {
+      form.setValue("imageUrl", result.url, { shouldDirty: true, shouldValidate: true });
+      if (!form.getValues("imageAlt")) {
+        form.setValue("imageAlt", product.name, { shouldDirty: true, shouldValidate: true });
+      }
+      toast.success("Image uploaded and URL updated.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not upload image."),
   });
 
   return (
@@ -476,6 +582,41 @@ function GeneralTab({
         error={form.formState.errors.shortDescription?.message}
       >
         <Textarea id="shortDescription" {...form.register("shortDescription")} />
+      </Field>
+      <Field
+        label="Customer image URL"
+        htmlFor="imageUrl"
+        error={form.formState.errors.imageUrl?.message}
+      >
+        <Input
+          id="productImageUpload"
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          className="mb-2"
+          disabled={uploadMutation.isPending}
+          onChange={(event) => {
+            const file = event.currentTarget.files?.[0];
+            if (file) uploadMutation.mutate(file);
+            event.currentTarget.value = "";
+          }}
+        />
+        <Input
+          id="imageUrl"
+          type="url"
+          placeholder={uploadMutation.isPending ? "Uploading image..." : "Image URL"}
+          {...form.register("imageUrl")}
+        />
+      </Field>
+      <Field
+        label="Image alt text"
+        htmlFor="imageAlt"
+        error={form.formState.errors.imageAlt?.message}
+      >
+        <Input
+          id="imageAlt"
+          placeholder="A crate of ripe Alphonso mangoes"
+          {...form.register("imageAlt")}
+        />
       </Field>
       <Button type="submit" variant="primary" disabled={saving || !form.formState.isDirty}>
         {saving ? "Saving…" : "Save draft"}

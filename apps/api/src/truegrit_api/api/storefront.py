@@ -20,6 +20,7 @@ from truegrit_api.errors import NotFoundError
 from truegrit_api.platform.database import Database
 from truegrit_api.services.checkout import CheckoutLine, place_order
 from truegrit_api.services.email import send_email
+from truegrit_api.services.email_templates import render_farm_order_notification, render_order_confirmation
 
 router = APIRouter(tags=["storefront-commerce"])
 
@@ -93,6 +94,7 @@ async def _queue_order_emails(
         f"Hi {customer.display_name},\n\nYour order {reference} is confirmed. "
         f"Total {total} (cash on delivery). We'll let you know when it ships.\n\nThank you!",
         settings,
+        render_order_confirmation(customer.display_name, reference, total)
     )
     owners = await db.fetch_all(
         """
@@ -110,10 +112,16 @@ async def _queue_order_emails(
         background.add_task(
             send_email,
             owner["email"],
-            f"New order {reference} for {owner['farm_name']}",
-            f"Hi {owner['display_name']},\n\nA new order ({reference}) includes items from "
+            f"Order Received: {reference}",
+            f"Hi {owner['display_name']},\n\nAn order ({reference}) has been received for "
             f"{owner['farm_name']}. Please prepare it for fulfilment.",
             settings,
+            render_farm_order_notification(
+                owner['display_name'], 
+                owner['farm_name'], 
+                reference, 
+                settings.public_admin_url
+            )
         )
 
 
@@ -125,7 +133,8 @@ async def my_orders(
     rows = await db.fetch_all(
         """
         SELECT id, public_reference, currency_code, total_minor, order_status,
-               payment_status, fulfilment_status, placed_at, created_at
+               payment_status, fulfilment_status, placed_at, created_at,
+               (SELECT COUNT(*) FROM order_items WHERE order_id = orders.id) AS item_count
         FROM orders
         WHERE customer_user_id = ?
         ORDER BY COALESCE(placed_at, created_at) DESC
@@ -143,6 +152,7 @@ async def my_orders(
                 "paymentStatus": row["payment_status"],
                 "fulfilmentStatus": row["fulfilment_status"],
                 "placedAt": row["placed_at"] or row["created_at"],
+                "itemCount": row["item_count"],
             }
             for row in rows
         ]

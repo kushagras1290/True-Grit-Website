@@ -11,6 +11,7 @@ import { z } from "zod";
 
 import {
   Button,
+  ConfirmDialog,
   DataTableShell,
   EmptyState,
   Field,
@@ -612,6 +613,87 @@ function EditRolesModal({ user, onClose }: { user: AdminUserRow; onClose: () => 
   );
 }
 
+function ResetFarmOwnerPasswordModal({
+  user,
+  onClose,
+}: {
+  user: AdminUserRow;
+  onClose: () => void;
+}) {
+  const toast = useToast();
+  const [result, setResult] = useState<{
+    email: string;
+    temporaryPassword: string;
+  } | null>(null);
+
+  const mutation = useMutation({
+    mutationFn: () => api.resetFarmOwnerPassword(user.id),
+    onSuccess: (response) => {
+      setResult(response);
+      toast.success("Temporary password generated.");
+    },
+    onError: (error) =>
+      toast.error(
+        error instanceof ApiError ? error.message : "Could not reset this farm owner password.",
+      ),
+  });
+
+  async function copyTemporaryPassword() {
+    if (!result) return;
+    await navigator.clipboard.writeText(result.temporaryPassword);
+    toast.success("Temporary password copied.");
+  }
+
+  return (
+    <Modal title={`Reset password - ${user.displayName}`} onClose={onClose}>
+      {result ? (
+        <div className="space-y-4">
+          <p className="text-sm text-ink-muted">
+            Share this temporary password with {result.email}. It will not be shown again.
+          </p>
+          <Field label="Temporary password" htmlFor="temporary-password">
+            <Input
+              id="temporary-password"
+              type="text"
+              readOnly
+              value={result.temporaryPassword}
+              className="font-mono"
+            />
+          </Field>
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="secondary" onClick={copyTemporaryPassword}>
+              Copy
+            </Button>
+            <Button type="button" variant="primary" onClick={onClose}>
+              Done
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <p className="text-sm text-ink-muted">
+            This signs the farm owner out everywhere and replaces their password with a new
+            temporary password.
+          </p>
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => mutation.mutate()}
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending ? "Generating..." : "Generate temporary password"}
+            </Button>
+          </div>
+        </div>
+      )}
+    </Modal>
+  );
+}
+
 const farmOwnerSchema = z.object({
   email: z.string().email("Enter a valid email"),
   displayName: z.string().min(2, "Enter a name").max(120),
@@ -690,6 +772,9 @@ export function UsersPage() {
   const [inviting, setInviting] = useState(false);
   const [addingOwner, setAddingOwner] = useState(false);
   const [editingRoles, setEditingRoles] = useState<AdminUserRow | null>(null);
+  const [resettingPassword, setResettingPassword] = useState<AdminUserRow | null>(null);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+  const [confirmingDelete, setConfirmingDelete] = useState<AdminUserRow[] | null>(null);
 
   const statusMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) => api.setUserStatus(id, status),
@@ -701,6 +786,36 @@ export function UsersPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not update status."),
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: (userIds: string[]) => api.deleteUsers(userIds),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: ["users"] });
+      setSelectedUserIds([]);
+      setConfirmingDelete(null);
+      toast.success(`${result.count} user${result.count === 1 ? "" : "s"} deleted.`);
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not delete users."),
+  });
+
+  const users = data ?? [];
+  const isOwnerRole = (user: AdminUserRow) =>
+    user.roles.some((role) => role.toLowerCase().includes("super administrator"));
+  const deletableUsers = users.filter((user) => !isOwnerRole(user));
+  const selectedUsers = deletableUsers.filter((user) => selectedUserIds.includes(user.id));
+  const allSelected =
+    deletableUsers.length > 0 && selectedUserIds.length === deletableUsers.length;
+
+  function toggleUser(userId: string) {
+    setSelectedUserIds((current) =>
+      current.includes(userId) ? current.filter((id) => id !== userId) : [...current, userId],
+    );
+  }
+
+  function toggleAllUsers() {
+    setSelectedUserIds(allSelected ? [] : deletableUsers.map((user) => user.id));
+  }
+
   return (
     <div>
       <PageHeader
@@ -709,6 +824,15 @@ export function UsersPage() {
         actions={
           <PermissionGate permission="users.invite">
             <div className="flex gap-2">
+              {selectedUserIds.length > 0 ? (
+                <Button
+                  variant="destructive"
+                  onClick={() => setConfirmingDelete(selectedUsers)}
+                  disabled={deleteMutation.isPending}
+                >
+                  Delete selected ({selectedUserIds.length})
+                </Button>
+              ) : null}
               <Button variant="secondary" onClick={() => setAddingOwner(true)}>
                 Add farm owner
               </Button>
@@ -724,10 +848,43 @@ export function UsersPage() {
       {editingRoles ? (
         <EditRolesModal user={editingRoles} onClose={() => setEditingRoles(null)} />
       ) : null}
+      {resettingPassword ? (
+        <ResetFarmOwnerPasswordModal
+          user={resettingPassword}
+          onClose={() => setResettingPassword(null)}
+        />
+      ) : null}
+      {confirmingDelete ? (
+        <ConfirmDialog
+          title={
+            confirmingDelete.length === 1
+              ? "Delete user"
+              : `Delete ${confirmingDelete.length} users`
+          }
+          description={
+            confirmingDelete.length === 1
+              ? `${confirmingDelete.at(0)?.displayName ?? "This user"} will be removed from the users list and signed out.`
+              : "Selected users will be removed from the users list and signed out."
+          }
+          confirmLabel={confirmingDelete.length === 1 ? "Delete user" : "Delete users"}
+          pendingLabel="Deleting..."
+          isPending={deleteMutation.isPending}
+          onCancel={() => setConfirmingDelete(null)}
+          onConfirm={() => deleteMutation.mutate(confirmingDelete.map((user) => user.id))}
+        />
+      ) : null}
 
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
+            <Th>
+              <input
+                type="checkbox"
+                aria-label="Select all users"
+                checked={allSelected}
+                onChange={toggleAllUsers}
+              />
+            </Th>
             <Th>Name</Th>
             <Th>Email</Th>
             <Th>Status</Th>
@@ -737,11 +894,19 @@ export function UsersPage() {
           </tr>
         </thead>
         {isLoading ? (
-          <LoadingRows columns={6} />
+          <LoadingRows columns={7} />
         ) : (
           <tbody>
-            {(data ?? []).map((user) => (
+            {users.map((user) => (
               <tr key={user.id} className="border-t border-line">
+                <Td>
+                  <input
+                    type="checkbox"
+                    aria-label={`Select ${user.displayName}`}
+                    checked={selectedUserIds.includes(user.id)}
+                    onChange={() => toggleUser(user.id)}
+                  />
+                </Td>
                 <Td className="font-medium">{user.displayName}</Td>
                 <Td className="text-ink-muted">{user.email}</Td>
                 <Td>
@@ -762,7 +927,24 @@ export function UsersPage() {
                       >
                         Roles
                       </button>
-                      <button
+                        {user.roles.some((role) => role.toLowerCase().includes("farm owner")) ? (
+                        <button
+                          type="button"
+                          className="text-sm text-ink-muted underline-offset-4 hover:text-brand hover:underline"
+                          onClick={() => setResettingPassword(user)}
+                        >
+                          Reset password
+                        </button>
+                        ) : null}
+                        <button
+                          type="button"
+                          className="text-sm text-ink-muted underline-offset-4 hover:text-danger hover:underline"
+                          onClick={() => setConfirmingDelete([user])}
+                          disabled={deleteMutation.isPending}
+                        >
+                          Delete
+                        </button>
+                        <button
                         type="button"
                         className="text-sm text-ink-muted underline-offset-4 hover:text-danger hover:underline"
                         onClick={() =>

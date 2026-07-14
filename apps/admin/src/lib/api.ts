@@ -37,6 +37,16 @@ async function demo<T>(data: T): Promise<T> {
   return structuredClone(data);
 }
 
+async function fileToBase64(file: File): Promise<string> {
+  const buffer = await file.arrayBuffer();
+  let binary = "";
+  const bytes = new Uint8Array(buffer);
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte);
+  }
+  return btoa(binary);
+}
+
 async function get<T>(path: string): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, { credentials: "include" });
   if (!response.ok) {
@@ -92,6 +102,24 @@ async function patch<T>(path: string, body?: unknown): Promise<T> {
   return (await response.json()) as T;
 }
 
+async function del<T>(path: string): Promise<T> {
+  const response = await fetch(`${API_URL}${path}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  if (!response.ok) {
+    const errorBody = (await response.json().catch(() => null)) as {
+      error?: { code?: string; message?: string };
+    } | null;
+    throw new ApiError(
+      errorBody?.error?.message ?? `Request failed (${response.status})`,
+      response.status,
+      errorBody?.error?.code ?? "request_failed",
+    );
+  }
+  return (await response.json()) as T;
+}
+
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -112,6 +140,8 @@ export interface AdminProductDetail {
   farmName: string;
   seoTitle: string;
   seoDescription: string;
+  imageUrl: string;
+  imageAlt: string;
   updatedAt: string;
   variants: Array<{
     id: string;
@@ -138,6 +168,8 @@ export interface AdminCategoryDetail {
   status: string;
   seoTitle: string;
   seoDescription: string;
+  heroImageUrl: string;
+  heroImageAlt: string;
   productAssignmentMode: string;
   updatedAt: string;
 }
@@ -182,6 +214,22 @@ export interface Me {
   permissions: string[];
   farmId?: string | null;
   farmName?: string | null;
+}
+
+export interface SiteControl {
+  announcementActive: boolean;
+  announcementMessage: string;
+  announcementPath: string;
+  heroEyebrow: string;
+  heroHeading: string;
+  heroText: string;
+  primaryActionLabel: string;
+  primaryActionHref: string;
+  secondaryActionLabel: string;
+  secondaryActionHref: string;
+  seoTitle: string;
+  seoDescription: string;
+  seoKeywords: string;
 }
 
 const DEMO_ME: Me = {
@@ -279,6 +327,8 @@ export const api = {
       farmName: product.farmName,
       seoTitle: product.seo.title,
       seoDescription: product.seo.description,
+      imageUrl: product.imageUrl ?? "",
+      imageAlt: product.imageAlt,
       updatedAt: new Date().toISOString(),
       variants: product.variants.map((variant) => ({
         id: variant.id,
@@ -320,6 +370,14 @@ export const api = {
   archiveProduct: (id: string): Promise<{ id: string; status: string }> =>
     demoMode ? demo({ id, status: "archived" }) : post(`/v1/admin/products/${id}/archive`),
 
+  deleteProduct: (id: string): Promise<{ id: string; status: string }> =>
+    demoMode ? demo({ id, status: "archived" }) : del(`/v1/admin/products/${id}`),
+
+  deleteProducts: (productIds: string[]): Promise<{ deletedIds: string[]; count: number }> =>
+    demoMode
+      ? demo({ deletedIds: productIds, count: productIds.length })
+      : post("/v1/admin/products/bulk-delete", { productIds }),
+
   categories: (): Promise<AdminCategoryRow[]> =>
     demoMode
       ? demo(adminCategories)
@@ -343,6 +401,8 @@ export const api = {
       status: category.status,
       seoTitle: "",
       seoDescription: "",
+      heroImageUrl: "",
+      heroImageAlt: category.name,
       productAssignmentMode: "manual",
       updatedAt: category.updatedAt,
     });
@@ -370,6 +430,14 @@ export const api = {
     demoMode
       ? demo({ status: "published", version: 1 })
       : post(`/v1/admin/categories/${id}/publish`),
+
+  deleteCategory: (id: string): Promise<{ id: string; status: string }> =>
+    demoMode ? demo({ id, status: "archived" }) : del(`/v1/admin/categories/${id}`),
+
+  deleteCategories: (categoryIds: string[]): Promise<{ deletedIds: string[]; count: number }> =>
+    demoMode
+      ? demo({ deletedIds: categoryIds, count: categoryIds.length })
+      : post("/v1/admin/categories/bulk-delete", { categoryIds }),
 
   inventory: (): Promise<AdminInventoryRow[]> =>
     demoMode
@@ -439,6 +507,21 @@ export const api = {
   setUserRoles: (id: string, roleIds: string[]): Promise<{ id: string }> =>
     demoMode ? demo({ id }) : patch(`/v1/admin/users/${id}/roles`, { roleIds }),
 
+  deleteUser: (id: string): Promise<{ deletedIds: string[]; count: number }> =>
+    demoMode ? demo({ deletedIds: [id], count: 1 }) : del(`/v1/admin/users/${id}`),
+
+  deleteUsers: (userIds: string[]): Promise<{ deletedIds: string[]; count: number }> =>
+    demoMode
+      ? demo({ deletedIds: userIds, count: userIds.length })
+      : post("/v1/admin/users/bulk-delete", { userIds }),
+
+  resetFarmOwnerPassword: (
+    id: string,
+  ): Promise<{ id: string; email: string; temporaryPassword: string }> =>
+    demoMode
+      ? demo({ id, email: "owner@demo.test", temporaryPassword: "TempOwner-123456" })
+      : post(`/v1/admin/users/${id}/temporary-password`),
+
   farms: (): Promise<Array<{ id: string; name: string }>> =>
     demoMode
       ? demo([{ id: "farm_devika", name: "Devika Organics" }])
@@ -468,6 +551,38 @@ export const api = {
     demoMode
       ? demo(auditLog)
       : get<{ items: AuditLogRow[] }>("/v1/admin/audit").then((body) => body.items),
+
+  siteControl: (): Promise<SiteControl> =>
+    demoMode
+      ? demo({
+          announcementActive: true,
+          announcementMessage: "Alphonso season is here - orchard-fresh boxes ship every Tuesday.",
+          announcementPath: "/category/fresh-fruits",
+          heroEyebrow: "Certified organic. Fully traceable.",
+          heroHeading: "Food grown the way nature intended.",
+          heroText:
+            "Fresh organic produce, conscious pantry essentials and trusted local farms.",
+          primaryActionLabel: "Explore the market",
+          primaryActionHref: "/shop",
+          secondaryActionLabel: "See what is in season",
+          secondaryActionHref: "/category/fresh-fruits",
+          seoTitle: "True Grit - traceable organic food from verified farms",
+          seoDescription: "Fresh organic produce and trusted local farms.",
+          seoKeywords: "organic food, traceable produce, Indian farms",
+        })
+      : get<SiteControl>("/v1/admin/site-control"),
+
+  updateSiteControl: (input: Partial<SiteControl>): Promise<SiteControl> =>
+    demoMode ? demo(input as SiteControl) : patch("/v1/admin/site-control", input),
+
+  uploadImage: async (file: File): Promise<{ id: string; url: string }> =>
+    demoMode
+      ? demo({ id: `img_${Date.now().toString(36)}`, url: URL.createObjectURL(file) })
+      : post("/v1/admin/media/images", {
+          filename: file.name,
+          contentType: file.type,
+          dataBase64: await fileToBase64(file),
+        }),
 
   homeBlocks: (): Promise<PublicPageBlock[]> => demo(homePage.blocks),
 };

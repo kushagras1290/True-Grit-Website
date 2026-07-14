@@ -21,15 +21,24 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
     <>
       <Breadcrumbs items={page.breadcrumbs} />
       <header className="mx-auto max-w-[80rem] px-4 pt-6 pb-2 sm:px-6">
-        <div className="max-w-2xl">
-          <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-            {page.hero.eyebrow}
-            {page.hero.seasonLabel ? ` · ${page.hero.seasonLabel}` : ""}
-          </p>
-          <h1 className="mt-2 font-display text-3xl leading-tight text-ink md:text-4xl">
-            {page.hero.title}
-          </h1>
-          <p className="mt-3 text-base text-ink-muted">{page.hero.description}</p>
+        <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_24rem] md:items-end">
+          <div className="max-w-2xl">
+            <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
+              {page.hero.eyebrow}
+              {page.hero.seasonLabel ? ` - ${page.hero.seasonLabel}` : ""}
+            </p>
+            <h1 className="mt-2 font-display text-3xl leading-tight text-ink md:text-4xl">
+              {page.hero.title}
+            </h1>
+            <p className="mt-3 text-base text-ink-muted">{page.hero.description}</p>
+          </div>
+          {page.hero.imageUrl ? (
+            <img
+              src={page.hero.imageUrl}
+              alt={page.hero.imageAlt ?? ""}
+              className="aspect-[4/3] w-full rounded-md object-cover"
+            />
+          ) : null}
         </div>
       </header>
 

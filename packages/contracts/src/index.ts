@@ -40,6 +40,7 @@ export interface SeoDocument {
   description: string;
   canonicalPath: string;
   indexing: "index" | "noindex";
+  keywords?: string | null;
 }
 
 export interface BreadcrumbItem {
@@ -79,6 +80,7 @@ export interface ProductSummary {
   unitLabel: string;
   availability: ProductAvailability;
   tags: string[];
+  imageUrl: string | null;
   imageAlt: string;
 }
 
@@ -116,6 +118,7 @@ export interface CategorySummary {
   shortDescription: string;
   themeKey: CategoryTheme;
   seasonLabel: string | null;
+  imageUrl: string | null;
   productCount: number;
 }
 
@@ -135,6 +138,8 @@ export interface PublicCategoryPage {
     title: string;
     description: string;
     seasonLabel: string | null;
+    imageUrl: string | null;
+    imageAlt: string | null;
   };
   subcategories: CategorySummary[];
   products: ProductSummary[];

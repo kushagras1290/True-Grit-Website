@@ -49,6 +49,7 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
         <ProduceFrame
           slug={product.slug}
           alt={product.imageAlt}
+          imageUrl={product.imageUrl}
           className="aspect-square rounded-md"
         />
 

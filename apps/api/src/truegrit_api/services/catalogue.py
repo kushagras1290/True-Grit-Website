@@ -19,7 +19,15 @@ from truegrit_api.services.audit import audit_statement
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
 
-_PRODUCT_EDITABLE = ("name", "slug", "short_description", "seo_title", "seo_description")
+_PRODUCT_EDITABLE = (
+    "name",
+    "slug",
+    "short_description",
+    "seo_title",
+    "seo_description",
+    "image_url",
+    "image_alt",
+)
 _CATEGORY_EDITABLE = (
     "name",
     "slug",
@@ -32,6 +40,8 @@ _CATEGORY_EDITABLE = (
     "visibility",
     "seo_title",
     "seo_description",
+    "hero_image_url",
+    "hero_image_alt",
 )
 
 
@@ -127,7 +137,8 @@ async def update_product(
     fields: dict[str, Any],
 ) -> dict[str, Any]:
     current = await db.fetch_one(
-        "SELECT id, name, slug, short_description, seo_title, seo_description, status"
+        "SELECT id, name, slug, short_description, seo_title, seo_description,"
+        " image_url, image_alt, status"
         " FROM products WHERE id = ? AND archived_at IS NULL",
         (product_id,),
     )
@@ -266,7 +277,8 @@ async def update_category(
 ) -> dict[str, Any]:
     current = await db.fetch_one(
         "SELECT id, name, slug, path, parent_id, short_description, hero_eyebrow, hero_title,"
-        " hero_description, season_label, theme_key, visibility, seo_title, seo_description, status"
+        " hero_description, season_label, theme_key, visibility, seo_title, seo_description,"
+        " hero_image_url, hero_image_alt, status"
         " FROM categories WHERE id = ? AND archived_at IS NULL",
         (category_id,),
     )
@@ -299,6 +311,38 @@ async def update_category(
         updates=updates,
     )
     return {"id": category_id, "status": current["status"], "changed": True}
+
+
+async def archive_category(
+    db: Database, actor: Principal, request_id: str, category_id: str
+) -> dict[str, Any]:
+    current = await db.fetch_one(
+        "SELECT id, status FROM categories WHERE id = ? AND archived_at IS NULL",
+        (category_id,),
+    )
+    if current is None:
+        raise NotFoundError("Category not found.")
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                "UPDATE categories SET status = 'archived', archived_at = ?, updated_at = ?,"
+                " updated_by = ? WHERE id = ?",
+                (now, now, actor.user_id, category_id),
+            ),
+            audit_statement(
+                action="category.archived",
+                entity_type="category",
+                entity_id=category_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                before={"status": current["status"]},
+                after={"status": "archived"},
+            ),
+        ]
+    )
+    return {"id": category_id, "status": "archived"}
 
 
 async def _category_path(db: Database, parent_id: str | None, slug: str, category_id: str) -> str:

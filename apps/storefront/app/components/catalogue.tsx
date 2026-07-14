@@ -19,10 +19,12 @@ const PRODUCE_GLYPHS: Record<string, string> = {
 export function ProduceFrame({
   slug,
   alt,
+  imageUrl,
   className = "",
 }: {
   slug: string;
   alt: string;
+  imageUrl?: string | null;
   className?: string;
 }) {
   return (
@@ -31,13 +33,22 @@ export function ProduceFrame({
       aria-label={alt}
       className={`relative flex items-center justify-center overflow-hidden bg-subtle ${className}`}
     >
-      <span aria-hidden className="font-display text-[5rem] leading-none text-brand/15 select-none">
-        {PRODUCE_GLYPHS[slug] ?? alt.charAt(0).toUpperCase()}
-      </span>
-      <span
-        aria-hidden
-        className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-brand/10 to-transparent"
-      />
+      {imageUrl ? (
+        <img src={imageUrl} alt="" className="h-full w-full object-cover" loading="lazy" />
+      ) : (
+        <>
+          <span
+            aria-hidden
+            className="font-display text-[5rem] leading-none text-brand/15 select-none"
+          >
+            {PRODUCE_GLYPHS[slug] ?? alt.charAt(0).toUpperCase()}
+          </span>
+          <span
+            aria-hidden
+            className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-brand/10 to-transparent"
+          />
+        </>
+      )}
     </div>
   );
 }
@@ -61,6 +72,7 @@ export function ProductCard({ product }: { product: ProductSummary }) {
         <ProduceFrame
           slug={product.slug}
           alt={product.imageAlt}
+          imageUrl={product.imageUrl}
           className="aspect-square rounded-md transition-transform duration-200 group-hover:scale-[1.01]"
         />
         <div className="pt-3">
@@ -127,6 +139,17 @@ export function CategoryTile({ category }: { category: CategorySummary }) {
         aria-hidden
         className="absolute inset-0 bg-[var(--theme-bg)] transition-transform duration-200 group-hover:scale-[1.02]"
       />
+      {category.imageUrl ? (
+        <>
+          <img
+            src={category.imageUrl}
+            alt=""
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+          />
+          <span aria-hidden className="absolute inset-0 bg-black/25" />
+        </>
+      ) : null}
       <span className="relative text-[var(--theme-fg)]">
         {category.seasonLabel ? (
           <span className="mb-2 inline-block rounded-full bg-white/15 px-2.5 py-0.5 text-xs">

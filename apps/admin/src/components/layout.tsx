@@ -11,6 +11,7 @@ import {
   Menu,
   Package,
   ScrollText,
+  Settings,
   ShoppingCart,
   Users,
   Warehouse,
@@ -69,6 +70,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
   {
     heading: "Content",
     entries: [
+      {
+        to: "/site-control",
+        label: "Site Control",
+        icon: <Settings size={16} />,
+        permission: "settings.view",
+      },
       { to: "/media", label: "Media Library", icon: <Image size={16} />, permission: "media.view" },
     ],
   },

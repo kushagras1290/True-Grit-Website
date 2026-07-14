@@ -3,6 +3,7 @@ password-reset flows for the customer and staff portals."""
 
 from __future__ import annotations
 
+import json
 import re
 
 import pytest
@@ -85,7 +86,7 @@ def test_checkout_emails_customer_and_farm_owner(
     sent: list[str] = []
     monkeypatch.setattr(
         "truegrit_api.api.storefront.send_email",
-        lambda to, subject, body, settings=None: sent.append(to),
+        lambda to, subject, body, settings=None, html_body=None: sent.append(to),
     )
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_cust_riya"))
     response = client.post(
@@ -100,6 +101,36 @@ def test_checkout_emails_customer_and_farm_owner(
     assert "owner@devika.test" in sent  # owner of farm_devika (Alphonso)
 
 
+def test_contact_form_records_message_and_sends_email(
+    client: TestClient, db: SQLiteDatabase, monkeypatch: pytest.MonkeyPatch
+):
+    sent: list[tuple[str, str]] = []
+    monkeypatch.setenv("CONTACT_RECIPIENT_EMAIL", "support@truegrit.test")
+    get_settings.cache_clear()
+    monkeypatch.setattr(
+        "truegrit_api.api.public.send_email",
+        lambda to, subject, body, settings=None, html_body=None: sent.append((to, subject)),
+    )
+    response = client.post(
+        "/v1/public/contact",
+        json={
+            "name": "Riya Nair",
+            "email": "riya@example.test",
+            "subject": "Order help",
+            "message": "Please help with my latest order delivery.",
+        },
+    )
+    assert response.status_code == 200
+    row = db._conn.execute(
+        "SELECT email, subject, message FROM contact_messages WHERE id = ?",
+        (response.json()["id"],),
+    ).fetchone()
+    assert row["email"] == "riya@example.test"
+    assert row["subject"] == "Order help"
+    assert "latest order" in row["message"]
+    assert sent == [("support@truegrit.test", "Contact form: Order help")]
+
+
 # --- Customer password reset ------------------------------------------------
 
 
@@ -109,7 +140,7 @@ def test_customer_password_reset_flow(
     captured: dict[str, str] = {}
     monkeypatch.setattr(
         "truegrit_api.api.customer_auth.send_email",
-        lambda to, subject, body, settings=None: captured.update(body=body),
+        lambda to, subject, body, settings=None, html_body=None: captured.update(body=body),
     )
     assert (
         client.post(
@@ -162,7 +193,7 @@ def test_staff_password_reset_flow(
     captured: dict[str, str] = {}
     monkeypatch.setattr(
         "truegrit_api.api.admin.send_email",
-        lambda to, subject, body, settings=None: captured.update(body=body),
+        lambda to, subject, body, settings=None, html_body=None: captured.update(body=body),
     )
     assert (
         client.post(
@@ -185,3 +216,25 @@ def test_staff_password_reset_flow(
         json={"email": "owner@devika.test", "password": "resetfarm123"},
     )
     assert login.status_code == 200
+
+    audit = db._conn.execute(
+        """
+        SELECT action, entity_type, entity_id, actor_user_id, after_summary_json, source
+        FROM audit_logs
+        WHERE action = 'password.changed' AND entity_id = 'usr_farmowner'
+        ORDER BY created_at DESC
+        LIMIT 1
+        """
+    ).fetchone()
+    assert audit is not None
+    assert audit["entity_type"] == "user"
+    assert audit["actor_user_id"] == "usr_farmowner"
+    assert audit["source"] == "admin"
+    after = json.loads(audit["after_summary_json"])
+    assert after == {
+        "email": "owner@devika.test",
+        "userType": "staff",
+        "credentialChanged": True,
+        "passwordStored": False,
+    }
+    assert "resetfarm123" not in audit["after_summary_json"]

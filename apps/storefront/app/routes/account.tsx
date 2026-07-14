@@ -52,7 +52,7 @@ function OrderHistory() {
   return (
     <ul className="divide-y divide-line rounded-md border border-line bg-surface">
       {orders.map((order) => (
-        <li key={order.reference} className="flex items-center justify-between gap-3 px-5 py-3.5">
+        <li key={order.reference} className="flex items-center justify-between gap-3 px-5 py-4">
           <div className="min-w-0">
             <Link
               to={`/account/orders/${order.reference}`}
@@ -60,10 +60,19 @@ function OrderHistory() {
             >
               {order.reference}
             </Link>
-            <p className="text-xs text-ink-muted">
+            <p className="mt-0.5 text-xs text-ink-muted">
               {new Date(order.placedAt).toLocaleDateString()} ·{" "}
-              {order.orderStatus.replaceAll("_", " ")}
+              {order.itemCount} item{order.itemCount === 1 ? "" : "s"} ·{" "}
+              <span className="capitalize">{order.orderStatus.replaceAll("_", " ")}</span>
             </p>
+            <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-ink-muted">
+              <span className="inline-flex items-center rounded-sm bg-canvas px-1.5 py-0.5 capitalize">
+                Payment: {order.paymentStatus.replaceAll("_", " ")}
+              </span>
+              <span className="inline-flex items-center rounded-sm bg-canvas px-1.5 py-0.5 capitalize">
+                Fulfilment: {order.fulfilmentStatus.replaceAll("_", " ")}
+              </span>
+            </div>
           </div>
           <span className="whitespace-nowrap text-sm font-medium text-ink">
             {formatMoney(order.totalMinor, order.currencyCode)}

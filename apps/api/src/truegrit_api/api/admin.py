@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hmac
+import json
 from typing import Annotated, Any
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Query, Request, Response
@@ -26,11 +27,14 @@ from truegrit_api.repositories.admin import AdminRepository
 from truegrit_api.repositories.content import AuditRepository, CategoryRepository
 from truegrit_api.services.access import (
     create_farm_owner,
+    delete_users,
     invite_user,
+    reset_farm_owner_password,
     set_user_roles,
     set_user_status,
 )
 from truegrit_api.services.catalogue import (
+    archive_category,
     archive_product,
     create_category,
     create_product,
@@ -39,9 +43,11 @@ from truegrit_api.services.catalogue import (
 )
 from truegrit_api.services.email import send_email
 from truegrit_api.services.inventory import adjust_inventory
+from truegrit_api.services.media import save_image_upload
 from truegrit_api.services.orders import update_order_status
 from truegrit_api.services.password_reset import confirm_password_reset, request_password_reset
 from truegrit_api.services.publishing import publish_category, publish_product
+from truegrit_api.util.timeutil import utc_now_iso
 
 
 def _request_id(request: Request) -> str:
@@ -126,6 +132,20 @@ async def login(
         and hmac.compare_digest(email, settings.admin_login_email.lower())
         and hmac.compare_digest(payload.password, settings.admin_login_password)
     )
+    if user is None and env_ok:
+        user = await db.fetch_one(
+            """
+            SELECT u.id, u.display_name, u.email
+            FROM users u
+            JOIN user_roles ur ON ur.user_id = u.id
+            JOIN roles r ON r.id = ur.role_id
+            WHERE u.user_type = 'staff'
+              AND u.status = 'active'
+              AND r.key = 'super_admin'
+            ORDER BY u.created_at ASC
+            LIMIT 1
+            """
+        )
     credential_ok = False
     if user is not None and not env_ok:
         credential = await db.fetch_one(
@@ -170,6 +190,197 @@ async def me(
         "farmId": principal.farm_id,
         "farmName": farm_name,
     }
+
+
+class SiteControlUpdate(_CamelModel):
+    announcement_active: bool | None = None
+    announcement_message: str | None = Field(default=None, max_length=220)
+    announcement_path: str | None = Field(default=None, max_length=200)
+    hero_eyebrow: str | None = Field(default=None, max_length=120)
+    hero_heading: str | None = Field(default=None, max_length=160)
+    hero_text: str | None = Field(default=None, max_length=500)
+    primary_action_label: str | None = Field(default=None, max_length=80)
+    primary_action_href: str | None = Field(default=None, max_length=200)
+    secondary_action_label: str | None = Field(default=None, max_length=80)
+    secondary_action_href: str | None = Field(default=None, max_length=200)
+    seo_title: str | None = Field(default=None, max_length=160)
+    seo_description: str | None = Field(default=None, max_length=320)
+    seo_keywords: str | None = Field(default=None, max_length=500)
+
+
+class ImageUploadRequest(_CamelModel):
+    filename: str = Field(min_length=1, max_length=180)
+    content_type: str = Field(min_length=1, max_length=80)
+    data_base64: str = Field(min_length=1)
+
+
+def _home_hero(page: dict[str, Any]) -> dict[str, Any]:
+    content = json.loads(page["content_json"])
+    for block in content.get("blocks", []):
+        if block.get("type") == "hero":
+            return block
+    return {
+        "props": {
+            "eyebrow": "",
+            "heading": page["title"],
+            "text": "",
+            "primaryAction": {"label": "Shop now", "href": "/shop"},
+            "secondaryAction": None,
+        }
+    }
+
+
+@router.get("/site-control")
+async def get_site_control(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("settings.view"))],
+) -> Any:
+    page = await db.fetch_one(
+        """
+        SELECT p.id, p.title, p.seo_title, p.seo_description, p.seo_keywords,
+               v.content_json
+        FROM pages p
+        JOIN page_versions v ON v.id = p.published_version_id
+        WHERE p.slug = 'home' AND p.archived_at IS NULL
+        """
+    )
+    if page is None:
+        raise NotFoundError("Homepage not found.")
+    announcement = await db.fetch_one(
+        "SELECT message, destination_path, active FROM announcements"
+        " ORDER BY active DESC, updated_at DESC LIMIT 1"
+    )
+    hero = _home_hero(page)["props"]
+    primary = hero.get("primaryAction") or {}
+    secondary = hero.get("secondaryAction") or {}
+    return {
+        "announcementActive": bool(announcement["active"]) if announcement else False,
+        "announcementMessage": announcement["message"] if announcement else "",
+        "announcementPath": announcement["destination_path"] if announcement else "",
+        "heroEyebrow": hero.get("eyebrow") or "",
+        "heroHeading": hero.get("heading") or page["title"],
+        "heroText": hero.get("text") or "",
+        "primaryActionLabel": primary.get("label") or "",
+        "primaryActionHref": primary.get("href") or "",
+        "secondaryActionLabel": secondary.get("label") or "",
+        "secondaryActionHref": secondary.get("href") or "",
+        "seoTitle": page["seo_title"] or "",
+        "seoDescription": page["seo_description"] or "",
+        "seoKeywords": page["seo_keywords"] or "",
+    }
+
+
+@router.patch("/site-control")
+async def update_site_control(
+    payload: SiteControlUpdate,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    page = await db.fetch_one(
+        """
+        SELECT p.id, p.published_version_id, v.content_json
+        FROM pages p
+        JOIN page_versions v ON v.id = p.published_version_id
+        WHERE p.slug = 'home' AND p.archived_at IS NULL
+        """
+    )
+    if page is None:
+        raise NotFoundError("Homepage not found.")
+    content = json.loads(page["content_json"])
+    blocks = content.setdefault("blocks", [])
+    hero = next((block for block in blocks if block.get("type") == "hero"), None)
+    if hero is None:
+        hero = {"id": "blk_hero", "type": "hero", "version": 1, "enabled": True, "props": {}}
+        blocks.insert(0, hero)
+    props = hero.setdefault("props", {})
+
+    fields = payload.model_dump(exclude_unset=True)
+    for source, target in (
+        ("hero_eyebrow", "eyebrow"),
+        ("hero_heading", "heading"),
+        ("hero_text", "text"),
+    ):
+        if source in fields:
+            props[target] = fields[source] or ""
+    if "primary_action_label" in fields or "primary_action_href" in fields:
+        current = props.get("primaryAction") or {}
+        props["primaryAction"] = {
+            "label": fields.get("primary_action_label", current.get("label", "")) or "",
+            "href": fields.get("primary_action_href", current.get("href", "")) or "",
+        }
+    if "secondary_action_label" in fields or "secondary_action_href" in fields:
+        current = props.get("secondaryAction") or {}
+        label = fields.get("secondary_action_label", current.get("label", "")) or ""
+        href = fields.get("secondary_action_href", current.get("href", "")) or ""
+        props["secondaryAction"] = {"label": label, "href": href} if label and href else None
+
+    now = utc_now_iso()
+    await db.execute(
+        "UPDATE page_versions SET content_json = ? WHERE id = ?",
+        (json.dumps(content, separators=(",", ":")), page["published_version_id"]),
+    )
+    await db.execute(
+        """
+        UPDATE pages
+        SET seo_title = COALESCE(?, seo_title),
+            seo_description = COALESCE(?, seo_description),
+            seo_keywords = COALESCE(?, seo_keywords),
+            updated_at = ?,
+            updated_by = ?
+        WHERE id = ?
+        """,
+        (
+            fields.get("seo_title"),
+            fields.get("seo_description"),
+            fields.get("seo_keywords"),
+            now,
+            principal.user_id,
+            page["id"],
+        ),
+    )
+    if {
+        "announcement_active",
+        "announcement_message",
+        "announcement_path",
+    } & set(fields):
+        existing = await db.fetch_one(
+            "SELECT id FROM announcements ORDER BY updated_at DESC LIMIT 1"
+        )
+        if existing:
+            await db.execute(
+                """
+                UPDATE announcements
+                SET active = COALESCE(?, active),
+                    message = COALESCE(?, message),
+                    destination_path = COALESCE(?, destination_path),
+                    updated_at = ?
+                WHERE id = ?
+                """,
+                (
+                    int(fields["announcement_active"])
+                    if "announcement_active" in fields
+                    else None,
+                    fields.get("announcement_message"),
+                    fields.get("announcement_path"),
+                    now,
+                    existing["id"],
+                ),
+            )
+    return await get_site_control(db, principal)
+
+
+@router.post("/media/images")
+async def upload_image_endpoint(
+    payload: ImageUploadRequest,
+    request: Request,
+    _principal: Annotated[Principal, Depends(require_permission("media.upload"))],
+) -> Any:
+    saved = save_image_upload(
+        content_type=payload.content_type,
+        data_base64=payload.data_base64,
+    )
+    base_url = str(request.base_url).rstrip("/")
+    return {"id": saved["id"], "url": f"{base_url}{saved['path']}"}
 
 
 @router.get("/products")
@@ -323,6 +534,12 @@ class ProductUpdateRequest(_CamelModel):
     short_description: str | None = Field(default=None, max_length=300)
     seo_title: str | None = Field(default=None, max_length=160)
     seo_description: str | None = Field(default=None, max_length=320)
+    image_url: str | None = Field(default=None, max_length=1000)
+    image_alt: str | None = Field(default=None, max_length=200)
+
+
+class ProductBulkDeleteRequest(_CamelModel):
+    product_ids: list[str] = Field(min_length=1, max_length=100)
 
 
 class PublishRequest(_CamelModel):
@@ -368,6 +585,8 @@ async def get_product_endpoint(
         "farmName": detail["farm_name"],
         "seoTitle": detail["seo_title"] or "",
         "seoDescription": detail["seo_description"] or "",
+        "imageUrl": detail["image_url"] or "",
+        "imageAlt": detail["image_alt"] or detail["name"],
         "updatedAt": detail["updated_at"],
         "variants": [
             {
@@ -422,6 +641,32 @@ async def archive_product_endpoint(
     return await archive_product(db, principal, _request_id(request), product_id)
 
 
+@router.delete("/products/{product_id}")
+async def delete_product_endpoint(
+    product_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("products.edit"))],
+) -> Any:
+    await _assert_product_scope(db, product_id, principal)
+    return await archive_product(db, principal, _request_id(request), product_id)
+
+
+@router.post("/products/bulk-delete")
+async def bulk_delete_products_endpoint(
+    payload: ProductBulkDeleteRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("products.edit"))],
+) -> Any:
+    deleted: list[str] = []
+    for product_id in payload.product_ids:
+        await _assert_product_scope(db, product_id, principal)
+        await archive_product(db, principal, _request_id(request), product_id)
+        deleted.append(product_id)
+    return {"deletedIds": deleted, "count": len(deleted)}
+
+
 # ---------------------------------------------------------------------------
 # Category mutations
 # ---------------------------------------------------------------------------
@@ -447,6 +692,12 @@ class CategoryUpdateRequest(_CamelModel):
     visibility: str | None = Field(default=None, max_length=16)
     seo_title: str | None = Field(default=None, max_length=160)
     seo_description: str | None = Field(default=None, max_length=320)
+    hero_image_url: str | None = Field(default=None, max_length=1000)
+    hero_image_alt: str | None = Field(default=None, max_length=200)
+
+
+class CategoryBulkDeleteRequest(_CamelModel):
+    category_ids: list[str] = Field(min_length=1, max_length=100)
 
 
 @router.post("/categories")
@@ -491,6 +742,8 @@ async def get_category_endpoint(
         "status": detail["status"],
         "seoTitle": detail["seo_title"] or "",
         "seoDescription": detail["seo_description"] or "",
+        "heroImageUrl": detail["hero_image_url"] or "",
+        "heroImageAlt": detail["hero_image_alt"] or detail["name"],
         "productAssignmentMode": detail["product_assignment_mode"],
         "updatedAt": detail["updated_at"],
     }
@@ -506,6 +759,30 @@ async def update_category_endpoint(
 ) -> Any:
     fields = payload.model_dump(exclude_unset=True)
     return await update_category(db, principal, _request_id(request), category_id, fields=fields)
+
+
+@router.delete("/categories/{category_id}")
+async def delete_category_endpoint(
+    category_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("categories.edit"))],
+) -> Any:
+    return await archive_category(db, principal, _request_id(request), category_id)
+
+
+@router.post("/categories/bulk-delete")
+async def bulk_delete_categories_endpoint(
+    payload: CategoryBulkDeleteRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("categories.edit"))],
+) -> Any:
+    deleted: list[str] = []
+    for category_id in payload.category_ids:
+        await archive_category(db, principal, _request_id(request), category_id)
+        deleted.append(category_id)
+    return {"deletedIds": deleted, "count": len(deleted)}
 
 
 # ---------------------------------------------------------------------------
@@ -567,6 +844,10 @@ class UserStatusRequest(_CamelModel):
 
 class UserRolesRequest(_CamelModel):
     role_ids: list[str] = Field(default_factory=list)
+
+
+class UserBulkDeleteRequest(_CamelModel):
+    user_ids: list[str] = Field(min_length=1, max_length=100)
 
 
 @router.get("/users")
@@ -651,6 +932,38 @@ async def set_user_roles_endpoint(
     return await set_user_roles(
         db, principal, _request_id(request), user_id, role_ids=payload.role_ids
     )
+
+
+@router.delete("/users/{user_id}")
+async def delete_user_endpoint(
+    user_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("users.manage_roles"))],
+) -> Any:
+    return await delete_users(db, principal, _request_id(request), [user_id])
+
+
+@router.post("/users/bulk-delete")
+async def bulk_delete_users_endpoint(
+    payload: UserBulkDeleteRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("users.manage_roles"))],
+) -> Any:
+    return await delete_users(db, principal, _request_id(request), payload.user_ids)
+
+
+@router.post("/users/{user_id}/temporary-password")
+async def reset_farm_owner_password_endpoint(
+    user_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("users.manage_roles"))],
+) -> Any:
+    if principal.farm_id is not None:
+        raise PermissionDeniedError("Only main admins can reset farm owner passwords.")
+    return await reset_farm_owner_password(db, principal, _request_id(request), user_id)
 
 
 # ---------------------------------------------------------------------------
@@ -818,15 +1131,28 @@ async def staff_password_reset_request(
         settings=settings,
     )
     if email is not None:
-        background.add_task(send_email, email.to, email.subject, email.body, settings)
+        background.add_task(
+            send_email,
+            email.to,
+            email.subject,
+            email.body,
+            settings,
+            email.html_body,
+        )
     return {"ok": True}
 
 
 @router.post("/auth/password-reset/confirm")
 async def staff_password_reset_confirm(
     payload: StaffResetConfirm,
+    request: Request,
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
     return await confirm_password_reset(
-        db, token=payload.token, new_password=payload.new_password, settings=get_settings()
+        db,
+        token=payload.token,
+        new_password=payload.new_password,
+        settings=get_settings(),
+        request_id=_request_id(request),
+        source="admin",
     )

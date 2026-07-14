@@ -19,6 +19,7 @@ class SeoDocument(PublicModel):
     description: str
     canonical_path: str
     indexing: str = "index"
+    keywords: str | None = None
 
 
 class BreadcrumbItem(PublicModel):
@@ -55,6 +56,7 @@ class ProductSummary(PublicModel):
     unit_label: str
     availability: str
     tags: list[str]
+    image_url: str | None = None
     image_alt: str
 
 
@@ -92,6 +94,7 @@ class CategorySummary(PublicModel):
     short_description: str
     theme_key: str
     season_label: str | None = None
+    image_url: str | None = None
     product_count: int
 
 
@@ -105,6 +108,8 @@ class CategoryHero(PublicModel):
     title: str
     description: str
     season_label: str | None = None
+    image_url: str | None = None
+    image_alt: str | None = None
 
 
 class PublicCategoryPage(PublicModel):

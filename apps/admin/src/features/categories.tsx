@@ -28,6 +28,7 @@ import { z } from "zod";
 
 import {
   Button,
+  ConfirmDialog,
   DataTableShell,
   EmptyState,
   Field,
@@ -107,8 +108,39 @@ function CreateCategoryModal({ onClose }: { onClose: () => void }) {
 }
 
 export function CategoryListPage() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["admin-categories"], queryFn: api.categories });
   const [creating, setCreating] = useState(false);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const categories = data ?? [];
+  const allSelected =
+    categories.length > 0 && categories.every((category) => selectedCategoryIds.includes(category.id));
+
+  const deleteMutation = useMutation({
+    mutationFn: (categoryIds: string[]) => api.deleteCategories(categoryIds),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-categories"] });
+      setSelectedCategoryIds([]);
+      setConfirmingDelete(false);
+      toast.success(`${result.count} categor${result.count === 1 ? "y" : "ies"} deleted.`);
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not delete categories."),
+  });
+
+  function toggleCategory(categoryId: string) {
+    setSelectedCategoryIds((current) =>
+      current.includes(categoryId)
+        ? current.filter((id) => id !== categoryId)
+        : [...current, categoryId],
+    );
+  }
+
+  function toggleAllCategories() {
+    setSelectedCategoryIds(allSelected ? [] : categories.map((category) => category.id));
+  }
 
   return (
     <div>
@@ -116,18 +148,54 @@ export function CategoryListPage() {
         title="Categories"
         description="One composition engine renders every category — no code per category."
         actions={
-          <PermissionGate permission="categories.create">
-            <Button variant="primary" onClick={() => setCreating(true)}>
-              New category
-            </Button>
-          </PermissionGate>
+          <div className="flex gap-2">
+            <PermissionGate permission="categories.edit">
+              {selectedCategoryIds.length > 0 ? (
+                <Button
+                  variant="destructive"
+                  onClick={() => setConfirmingDelete(true)}
+                  disabled={deleteMutation.isPending}
+                >
+                  Delete selected ({selectedCategoryIds.length})
+                </Button>
+              ) : null}
+            </PermissionGate>
+            <PermissionGate permission="categories.create">
+              <Button variant="primary" onClick={() => setCreating(true)}>
+                New category
+              </Button>
+            </PermissionGate>
+          </div>
         }
       />
       {creating ? <CreateCategoryModal onClose={() => setCreating(false)} /> : null}
+      {confirmingDelete ? (
+        <ConfirmDialog
+          title={
+            selectedCategoryIds.length === 1
+              ? "Delete category"
+              : `Delete ${selectedCategoryIds.length} categories`
+          }
+          description="Selected categories will be hidden from the storefront and removed from the active catalogue."
+          confirmLabel={selectedCategoryIds.length === 1 ? "Delete category" : "Delete categories"}
+          pendingLabel="Deleting..."
+          isPending={deleteMutation.isPending}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={() => deleteMutation.mutate(selectedCategoryIds)}
+        />
+      ) : null}
 
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
+            <Th>
+              <input
+                type="checkbox"
+                aria-label="Select all categories"
+                checked={allSelected}
+                onChange={toggleAllCategories}
+              />
+            </Th>
             <Th>Name</Th>
             <Th>Slug</Th>
             <Th>Products</Th>
@@ -137,11 +205,19 @@ export function CategoryListPage() {
           </tr>
         </thead>
         {isLoading ? (
-          <LoadingRows columns={6} />
+          <LoadingRows columns={7} />
         ) : (
           <tbody>
-            {(data ?? []).map((category) => (
+            {categories.map((category) => (
               <tr key={category.id} className="border-t border-line hover:bg-canvas/60">
+                <Td>
+                  <input
+                    type="checkbox"
+                    aria-label={`Select ${category.name}`}
+                    checked={selectedCategoryIds.includes(category.id)}
+                    onChange={() => toggleCategory(category.id)}
+                  />
+                </Td>
                 <Td>
                   <Link
                     to={`/categories/${category.id}`}
@@ -309,6 +385,8 @@ const settingsSchema = z.object({
   heroDescription: z.string().max(500),
   seasonLabel: z.string().max(80),
   visibility: z.enum(["public", "hidden", "private"]),
+  heroImageUrl: z.string().url("Enter a valid image URL").max(1000).or(z.literal("")),
+  heroImageAlt: z.string().max(200),
 });
 
 type SettingsForm = z.infer<typeof settingsSchema>;
@@ -322,6 +400,7 @@ function CategorySettingsForm({
   onSave: (values: SettingsForm) => void;
   saving: boolean;
 }) {
+  const toast = useToast();
   const form = useForm<SettingsForm>({
     resolver: zodResolver(settingsSchema),
     values: {
@@ -335,7 +414,21 @@ function CategorySettingsForm({
       visibility: (["public", "hidden", "private"].includes(category.visibility)
         ? category.visibility
         : "public") as SettingsForm["visibility"],
+      heroImageUrl: category.heroImageUrl,
+      heroImageAlt: category.heroImageAlt,
     },
+  });
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => api.uploadImage(file),
+    onSuccess: (result) => {
+      form.setValue("heroImageUrl", result.url, { shouldDirty: true, shouldValidate: true });
+      if (!form.getValues("heroImageAlt")) {
+        form.setValue("heroImageAlt", category.name, { shouldDirty: true, shouldValidate: true });
+      }
+      toast.success("Hero image uploaded and URL updated.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not upload image."),
   });
 
   return (
@@ -365,6 +458,41 @@ function CategorySettingsForm({
       <Field label="Hero description" htmlFor="c-hero-desc">
         <Textarea id="c-hero-desc" {...form.register("heroDescription")} />
       </Field>
+      <Field
+        label="Hero image URL"
+        htmlFor="c-hero-image"
+        error={form.formState.errors.heroImageUrl?.message}
+      >
+        <Input
+          id="c-hero-image-upload"
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          className="mb-2"
+          disabled={uploadMutation.isPending}
+          onChange={(event) => {
+            const file = event.currentTarget.files?.[0];
+            if (file) uploadMutation.mutate(file);
+            event.currentTarget.value = "";
+          }}
+        />
+        <Input
+          id="c-hero-image"
+          type="url"
+          placeholder={uploadMutation.isPending ? "Uploading image..." : "Hero image URL"}
+          {...form.register("heroImageUrl")}
+        />
+      </Field>
+      <Field
+        label="Hero image alt text"
+        htmlFor="c-hero-image-alt"
+        error={form.formState.errors.heroImageAlt?.message}
+      >
+        <Input
+          id="c-hero-image-alt"
+          placeholder="Seasonal organic fruit arranged on a table"
+          {...form.register("heroImageAlt")}
+        />
+      </Field>
       <Field label="Visibility" htmlFor="c-visibility">
         <Select id="c-visibility" {...form.register("visibility")}>
           <option value="public">Public</option>
@@ -383,9 +511,11 @@ const EDITOR_TABS = ["Settings", "Layout"] as const;
 
 export function CategoryEditorPage() {
   const { id = "" } = useParams();
+  const navigate = useNavigate();
   const toast = useToast();
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<(typeof EDITOR_TABS)[number]>("Settings");
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const {
     data: category,
@@ -442,6 +572,17 @@ export function CategoryEditorPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not publish."),
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: () => api.deleteCategory(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-categories"] });
+      toast.success("Category deleted from active catalogue.");
+      navigate("/categories");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not delete."),
+  });
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (over && active.id !== over.id) {
@@ -460,6 +601,15 @@ export function CategoryEditorPage() {
         actions={
           <div className="flex items-center gap-2">
             <StatusPill status={category.status} />
+            <PermissionGate permission="categories.edit">
+              <Button
+                variant="secondary"
+                onClick={() => setConfirmingDelete(true)}
+                disabled={deleteMutation.isPending}
+              >
+                {deleteMutation.isPending ? "Deleting..." : "Delete"}
+              </Button>
+            </PermissionGate>
             <PermissionGate
               permission="categories.publish"
               fallback={
@@ -479,6 +629,17 @@ export function CategoryEditorPage() {
           </div>
         }
       />
+      {confirmingDelete ? (
+        <ConfirmDialog
+          title="Delete category"
+          description={`${category.name} will be hidden from the storefront and removed from the active catalogue.`}
+          confirmLabel="Delete category"
+          pendingLabel="Deleting..."
+          isPending={deleteMutation.isPending}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={() => deleteMutation.mutate()}
+        />
+      ) : null}
 
       <div
         role="tablist"

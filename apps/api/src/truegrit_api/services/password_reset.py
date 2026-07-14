@@ -20,7 +20,9 @@ from truegrit_api.auth.sessions import hash_token
 from truegrit_api.config import Settings
 from truegrit_api.errors import ValidationAppError
 from truegrit_api.platform.database import Database
+from truegrit_api.services.audit import audit_statement
 from truegrit_api.services.email import OutboundEmail
+from truegrit_api.services.email_templates import render_password_reset
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
 
@@ -68,6 +70,7 @@ async def request_password_reset(
         to=user["email"],
         subject="Reset your True Grit password",
         body=_reset_email_body(reset_url, settings.password_reset_lifetime_minutes),
+        html_body=render_password_reset(reset_url, settings.password_reset_lifetime_minutes),
     )
 
 
@@ -77,13 +80,21 @@ async def confirm_password_reset(
     token: str,
     new_password: str,
     settings: Settings,
+    request_id: str = "unknown",
+    source: str = "api",
 ) -> dict[str, Any]:
     if len(new_password) < settings.password_min_length:
         raise ValidationAppError(
             f"Password must be at least {settings.password_min_length} characters."
         )
     row = await db.fetch_one(
-        "SELECT id, user_id, expires_at, used_at FROM password_reset_tokens WHERE token_hash = ?",
+        """
+        SELECT prt.id, prt.user_id, prt.expires_at, prt.used_at,
+               u.email, u.user_type
+        FROM password_reset_tokens prt
+        JOIN users u ON u.id = prt.user_id
+        WHERE prt.token_hash = ?
+        """,
         (hash_token(token or ""),),
     )
     now = utc_now_iso()
@@ -108,6 +119,21 @@ async def confirm_password_reset(
             (
                 "UPDATE sessions SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL",
                 (now, row["user_id"]),
+            ),
+            audit_statement(
+                action="password.changed",
+                entity_type="user",
+                entity_id=row["user_id"],
+                actor_id=row["user_id"],
+                request_id=request_id,
+                source=source,
+                created_at=now,
+                after={
+                    "email": row["email"],
+                    "userType": row["user_type"],
+                    "credentialChanged": True,
+                    "passwordStored": False,
+                },
             ),
         ]
     )

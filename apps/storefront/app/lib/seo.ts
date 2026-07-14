@@ -11,6 +11,7 @@ export function seoMeta(seo: SeoDocument | null | undefined) {
   return [
     { title },
     { name: "description", content: seo.description },
+    ...(seo.keywords ? [{ name: "keywords", content: seo.keywords }] : []),
     { name: "robots", content: seo.indexing === "index" ? "index, follow" : "noindex, nofollow" },
     { property: "og:title", content: title },
     { property: "og:description", content: seo.description },

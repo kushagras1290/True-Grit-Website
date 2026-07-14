@@ -19,6 +19,7 @@ import {
   UsersPage,
 } from "./features/operations";
 import { ProductEditorPage, ProductListPage } from "./features/products";
+import { SiteControlPage } from "./features/site-control";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,6 +50,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="inventory" element={<InventoryPage />} />
               <Route path="orders" element={<OrdersPage />} />
               <Route path="orders/:id" element={<OrderDetailPage />} />
+              <Route path="site-control" element={<SiteControlPage />} />
               <Route path="media" element={<MediaPage />} />
               <Route path="users" element={<UsersPage />} />
               <Route path="audit" element={<AuditPage />} />

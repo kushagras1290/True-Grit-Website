@@ -92,7 +92,7 @@ class AdminRepository:
         product = await self._db.fetch_one(
             """
             SELECT p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
-                   p.seo_title, p.seo_description, p.updated_at,
+                   p.seo_title, p.seo_description, p.image_url, p.image_alt, p.updated_at,
                    COALESCE(f.name, b.name, '') AS farm_name
             FROM products p
             LEFT JOIN farms f ON f.id = p.farm_id
@@ -128,7 +128,7 @@ class AdminRepository:
             """
             SELECT id, name, slug, short_description, hero_eyebrow, hero_title, hero_description,
                    season_label, theme_key, visibility, status, seo_title, seo_description,
-                   product_assignment_mode, updated_at
+                   hero_image_url, hero_image_alt, product_assignment_mode, updated_at
             FROM categories WHERE id = ? AND archived_at IS NULL
             """,
             (category_id,),
@@ -143,14 +143,25 @@ class AdminRepository:
               (SELECT GROUP_CONCAT(ur.role_id, ',') FROM user_roles ur
                 WHERE ur.user_id = u.id) AS role_ids
             FROM users u
-            WHERE u.user_type = 'staff'
+            WHERE u.user_type = 'staff' AND u.deleted_at IS NULL
             ORDER BY u.display_name
             """
         )
 
     async def list_roles(self) -> list[dict[str, Any]]:
         return await self._db.fetch_all(
-            "SELECT id, key, name, description FROM roles ORDER BY name"
+            """
+            SELECT id, key, name, description
+            FROM roles
+            ORDER BY
+              CASE key
+                WHEN 'manager' THEN 0
+                WHEN 'inventory' THEN 1
+                WHEN 'farm_owner' THEN 2
+                ELSE 10
+              END,
+              name
+            """
         )
 
     async def list_orders(self, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:

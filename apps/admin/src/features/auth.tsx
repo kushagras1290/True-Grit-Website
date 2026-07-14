@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ShieldCheck } from "lucide-react";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from "react-router";
 
 import { Button, Field, Input } from "../components/ui";
@@ -118,11 +118,8 @@ export function AdminLoginPage() {
   const location = useLocation();
   const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ?? "/";
   const mutation = useMutation({
-    mutationFn: async (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      const form = new FormData(event.currentTarget);
-      await api.login(String(form.get("email") ?? ""), String(form.get("password") ?? ""));
-    },
+    mutationFn: ({ email, password }: { email: string; password: string }) =>
+      api.login(email, password),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["me"] });
       navigate(from, { replace: true });
@@ -161,7 +158,17 @@ export function AdminLoginPage() {
             </div>
           </div>
 
-          <form className="space-y-4" onSubmit={(event) => mutation.mutate(event)}>
+          <form
+            className="space-y-4"
+            onSubmit={(event) => {
+              event.preventDefault();
+              const form = new FormData(event.currentTarget);
+              mutation.mutate({
+                email: String(form.get("email") ?? ""),
+                password: String(form.get("password") ?? ""),
+              });
+            }}
+          >
             <Field label="Email" htmlFor="admin-email">
               <Input
                 id="admin-email"

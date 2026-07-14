@@ -17,7 +17,7 @@ _AUDIT_SQL = (
     "INSERT INTO audit_logs"
     " (id, actor_user_id, action, entity_type, entity_id,"
     "  before_summary_json, after_summary_json, request_id, source, created_at)"
-    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'admin', ?)"
+    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 )
 
 
@@ -29,6 +29,7 @@ def audit_statement(
     actor_id: str,
     request_id: str,
     created_at: str,
+    source: str = "admin",
     before: Any = None,
     after: Any = None,
 ) -> tuple[str, Sequence[Any]]:
@@ -44,6 +45,7 @@ def audit_statement(
             json.dumps(before) if before is not None else None,
             json.dumps(after) if after is not None else None,
             request_id,
+            source,
             created_at,
         ),
     )

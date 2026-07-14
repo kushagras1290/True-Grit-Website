@@ -37,6 +37,7 @@ export const bootstrap: PublicBootstrap = {
     { label: "About", path: "/about" },
     { label: "Delivery", path: "/delivery" },
     { label: "Returns", path: "/returns" },
+    { label: "Contact", path: "/contact" },
     { label: "Privacy", path: "/privacy" },
     { label: "Terms", path: "/terms" },
     { label: "Help", path: "/help" },
@@ -55,6 +56,7 @@ export const categories: CategorySummary[] = [
     shortDescription: "Seasonal organic fruit, picked at peak ripeness and traced to the orchard.",
     themeKey: "terracotta",
     seasonLabel: "Mango season",
+    imageUrl: null,
     productCount: 1,
   },
   {
@@ -64,6 +66,7 @@ export const categories: CategorySummary[] = [
     shortDescription: "Everyday vegetables from soil that is tested, rested and certified.",
     themeKey: "sage",
     seasonLabel: null,
+    imageUrl: null,
     productCount: 1,
   },
   {
@@ -73,6 +76,7 @@ export const categories: CategorySummary[] = [
     shortDescription: "Heritage grains and millets, stone-milled in small batches.",
     themeKey: "forest",
     seasonLabel: null,
+    imageUrl: null,
     productCount: 2,
   },
   {
@@ -82,6 +86,7 @@ export const categories: CategorySummary[] = [
     shortDescription: "Wood-pressed and cold-pressed oils from single-origin oilseeds.",
     themeKey: "charcoal",
     seasonLabel: null,
+    imageUrl: null,
     productCount: 1,
   },
 ];
@@ -101,6 +106,7 @@ export const products: ProductDetail[] = [
     unitLabel: "1 kg box",
     availability: "in_stock",
     tags: [],
+    imageUrl: null,
     imageAlt: "A crate of ripe Alphonso mangoes",
     shortDescription: "Ratnagiri Alphonso, tree-ripened and carbide-free, from Devika Organics.",
     overview:
@@ -159,6 +165,7 @@ export const products: ProductDetail[] = [
     unitLabel: "250 g bunch",
     availability: "in_stock",
     tags: ["Plant Based"],
+    imageUrl: null,
     imageAlt: "A fresh bunch of baby spinach leaves",
     shortDescription: "Tender baby spinach, harvested at dawn and chilled within the hour.",
     overview:
@@ -208,6 +215,7 @@ export const products: ProductDetail[] = [
     unitLabel: "500 g pack",
     availability: "in_stock",
     tags: ["Gluten Free", "Traditional Indian"],
+    imageUrl: null,
     imageAlt: "Stone-milled ragi flour in a cloth bag",
     shortDescription:
       "Stone-milled finger millet, sprouted for easier digestion and deeper flavour.",
@@ -266,6 +274,7 @@ export const products: ProductDetail[] = [
     unitLabel: "500 ml bottle",
     availability: "in_stock",
     tags: [],
+    imageUrl: null,
     imageAlt: "A glass bottle of golden groundnut oil",
     shortDescription:
       "Single-origin groundnuts, wood-pressed at low RPM within a week of shelling.",
@@ -321,6 +330,7 @@ export const products: ProductDetail[] = [
     unitLabel: "500 g pack",
     availability: "low_stock",
     tags: ["High Protein", "Plant Based"],
+    imageUrl: null,
     imageAlt: "Deep red kidney beans from Himalayan terraces",
     shortDescription:
       "Small red kidney beans from high-altitude terraces, famous for their quick cooking.",
@@ -408,7 +418,7 @@ export function getCategoryPage(slug: string): PublicCategoryPage | null {
       { label: category.name, path: `/category/${category.slug}` },
     ],
     themeKey: category.themeKey,
-    hero: { ...hero, seasonLabel: category.seasonLabel },
+    hero: { ...hero, seasonLabel: category.seasonLabel, imageUrl: null, imageAlt: category.name },
     subcategories: [],
     products: products.filter((product) => slugs.includes(product.slug)),
     faq: [

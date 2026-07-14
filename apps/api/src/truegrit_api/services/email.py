@@ -27,6 +27,7 @@ class OutboundEmail:
     to: str
     subject: str
     body: str
+    html_body: str | None = None
 
 
 class EmailSender(Protocol):
@@ -57,6 +58,9 @@ class SmtpEmailSender:
         email["To"] = message.to
         email["Subject"] = message.subject
         email.set_content(message.body)
+        
+        if message.html_body:
+            email.add_alternative(message.html_body, subtype="html")
 
         with smtplib.SMTP(
             settings.smtp_host, settings.smtp_port, timeout=settings.smtp_timeout_seconds
@@ -75,10 +79,14 @@ def get_email_sender(settings: Settings | None = None) -> EmailSender:
     return ConsoleEmailSender()
 
 
-def send_email(to: str, subject: str, body: str, settings: Settings | None = None) -> None:
+def send_email(
+    to: str, subject: str, body: str, settings: Settings | None = None, html_body: str | None = None
+) -> None:
     """Best-effort send. Logs and swallows transport errors so the caller's
     primary action (order, reset) is never blocked by mail delivery."""
     try:
-        get_email_sender(settings).send(OutboundEmail(to=to, subject=subject, body=body))
+        get_email_sender(settings).send(
+            OutboundEmail(to=to, subject=subject, body=body, html_body=html_body)
+        )
     except (smtplib.SMTPException, OSError, ssl.SSLError) as exc:
         log_event("error", "email_send_failed", to=to, error_type=type(exc).__name__)
