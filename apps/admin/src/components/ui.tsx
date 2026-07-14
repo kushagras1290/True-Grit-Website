@@ -1,7 +1,15 @@
 /** Restrained admin primitives — one button hierarchy, quiet surfaces, no card zoo. */
 
 import { cn } from "@truegrit/ui";
-import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from "react";
+import { X } from "lucide-react";
+import { useEffect } from "react";
+import type {
+  ButtonHTMLAttributes,
+  InputHTMLAttributes,
+  ReactNode,
+  SelectHTMLAttributes,
+  TextareaHTMLAttributes,
+} from "react";
 
 export function Button({
   variant = "secondary",
@@ -39,6 +47,77 @@ export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElem
       )}
       {...props}
     />
+  );
+}
+
+export function Textarea({ className, ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  return (
+    <textarea
+      className={cn(
+        "min-h-20 w-full rounded-sm border border-line-strong bg-surface px-3 py-2 text-sm text-ink",
+        "placeholder:text-ink-muted",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+export function Select({ className, ...props }: SelectHTMLAttributes<HTMLSelectElement>) {
+  return (
+    <select
+      className={cn(
+        "min-h-9 w-full rounded-sm border border-line-strong bg-surface px-3 text-sm text-ink",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+export function Modal({
+  title,
+  onClose,
+  children,
+}: {
+  title: string;
+  onClose: () => void;
+  children: ReactNode;
+}) {
+  useEffect(() => {
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[90] flex items-start justify-center overflow-y-auto bg-ink/40 px-4 py-10"
+      onMouseDown={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        className="w-full max-w-lg rounded-md border border-line bg-surface shadow-overlay"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
+          <h2 className="font-display text-lg text-ink">{title}</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="flex h-8 w-8 items-center justify-center text-ink-muted hover:text-ink"
+          >
+            <X size={17} />
+          </button>
+        </div>
+        <div className="px-5 py-5">{children}</div>
+      </div>
+    </div>
   );
 }
 

@@ -1,10 +1,11 @@
 /** Dashboard: only actionable numbers, each linking to its operational view. */
 
 import { useQuery } from "@tanstack/react-query";
+import { Activity, RefreshCw } from "lucide-react";
 import { Link } from "react-router";
 
-import { EmptyState, PageHeader, StatusPill } from "../components/ui";
-import { api } from "../lib/api";
+import { Button, EmptyState, PageHeader, StatusPill } from "../components/ui";
+import { api, demoMode } from "../lib/api";
 import { formatDateTime, formatMoney } from "../lib/format";
 
 function StatCard({
@@ -32,9 +33,29 @@ function StatCard({
 }
 
 export function DashboardPage() {
-  const orders = useQuery({ queryKey: ["orders"], queryFn: api.orders });
-  const inventory = useQuery({ queryKey: ["inventory"], queryFn: api.inventory });
-  const audit = useQuery({ queryKey: ["audit"], queryFn: api.audit });
+  const liveQueryOptions = { refetchInterval: 10_000, refetchIntervalInBackground: true };
+  const orders = useQuery({ queryKey: ["orders"], queryFn: api.orders, ...liveQueryOptions });
+  const inventory = useQuery({
+    queryKey: ["inventory"],
+    queryFn: api.inventory,
+    ...liveQueryOptions,
+  });
+  const audit = useQuery({ queryKey: ["audit"], queryFn: api.audit, ...liveQueryOptions });
+  const products = useQuery({
+    queryKey: ["admin-products"],
+    queryFn: api.products,
+    ...liveQueryOptions,
+  });
+  const categories = useQuery({
+    queryKey: ["admin-categories"],
+    queryFn: api.categories,
+    ...liveQueryOptions,
+  });
+  const homeBlocks = useQuery({
+    queryKey: ["home-blocks"],
+    queryFn: api.homeBlocks,
+    ...liveQueryOptions,
+  });
 
   const paidOrders = (orders.data ?? []).filter((order) => order.paymentStatus === "paid");
   const revenueMinor = paidOrders.reduce((sum, order) => sum + order.totalMinor, 0);
@@ -44,13 +65,88 @@ export function DashboardPage() {
   const lowStock = (inventory.data ?? []).filter(
     (row) => row.onHand - row.reserved <= row.reorderThreshold,
   );
+  const publishedProducts = (products.data ?? []).filter(
+    (product) => product.status === "published",
+  );
+  const publicCategories = (categories.data ?? []).filter(
+    (category) => category.visibility === "public",
+  );
+  const activeHomeBlocks = (homeBlocks.data ?? []).filter((block) => block.enabled);
+  const fetching =
+    orders.isFetching ||
+    inventory.isFetching ||
+    audit.isFetching ||
+    products.isFetching ||
+    categories.isFetching ||
+    homeBlocks.isFetching;
+  const lastUpdatedAt = Math.max(
+    orders.dataUpdatedAt,
+    inventory.dataUpdatedAt,
+    audit.dataUpdatedAt,
+    products.dataUpdatedAt,
+    categories.dataUpdatedAt,
+    homeBlocks.dataUpdatedAt,
+  );
+  const lastUpdatedLabel =
+    lastUpdatedAt > 0
+      ? new Intl.DateTimeFormat("en-IN", { timeStyle: "medium" }).format(lastUpdatedAt)
+      : "Pending";
+
+  function refreshAll() {
+    void orders.refetch();
+    void inventory.refetch();
+    void audit.refetch();
+    void products.refetch();
+    void categories.refetch();
+    void homeBlocks.refetch();
+  }
 
   return (
     <div>
       <PageHeader
-        title="Overview"
-        description="Today across the marketplace. Every number links to the queue that clears it."
+        title="Realtime overview"
+        description="Live marketplace state, fulfilment pressure and publishing activity."
+        actions={
+          <Button type="button" variant="secondary" onClick={refreshAll}>
+            <RefreshCw size={15} className={fetching ? "animate-spin" : ""} />
+            Refresh
+          </Button>
+        }
       />
+
+      <section className="mb-6 grid gap-4 border-y border-line bg-surface px-4 py-4 shadow-card md:grid-cols-4">
+        <div className="flex items-center gap-3">
+          <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-subtle text-brand">
+            <Activity size={17} />
+          </span>
+          <div>
+            <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">API mode</p>
+            <p className="text-sm font-medium text-ink">
+              {demoMode ? "Demo data" : "Live connected"}
+            </p>
+          </div>
+        </div>
+        <div>
+          <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
+            Published products
+          </p>
+          <p className="text-lg font-medium text-ink">
+            {publishedProducts.length}/{products.data?.length ?? 0}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
+            Public categories
+          </p>
+          <p className="text-lg font-medium text-ink">
+            {publicCategories.length}/{categories.data?.length ?? 0}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">Last sync</p>
+          <p className="text-lg font-medium text-ink">{lastUpdatedLabel}</p>
+        </div>
+      </section>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="Revenue (paid)" value={formatMoney(revenueMinor)} to="/orders" />
@@ -70,6 +166,37 @@ export function DashboardPage() {
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        <section aria-labelledby="website-heading">
+          <h2 id="website-heading" className="mb-3 font-display text-lg text-ink">
+            Website publishing surface
+          </h2>
+          <div className="rounded-md border border-line bg-surface shadow-card">
+            <div className="grid divide-y divide-line md:grid-cols-3 md:divide-x md:divide-y-0">
+              <Link to="/products" className="px-4 py-4 hover:bg-canvas">
+                <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
+                  Catalogue
+                </p>
+                <p className="mt-1 text-2xl font-medium text-ink">{publishedProducts.length}</p>
+                <p className="text-xs text-ink-muted">items visible on storefront</p>
+              </Link>
+              <Link to="/categories" className="px-4 py-4 hover:bg-canvas">
+                <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
+                  Navigation
+                </p>
+                <p className="mt-1 text-2xl font-medium text-ink">{publicCategories.length}</p>
+                <p className="text-xs text-ink-muted">public collections</p>
+              </Link>
+              <Link to="/categories" className="px-4 py-4 hover:bg-canvas">
+                <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
+                  Homepage
+                </p>
+                <p className="mt-1 text-2xl font-medium text-ink">{activeHomeBlocks.length}</p>
+                <p className="text-xs text-ink-muted">active CMS blocks</p>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <section aria-labelledby="attention-heading">
           <h2 id="attention-heading" className="mb-3 font-display text-lg text-ink">
             Needs attention

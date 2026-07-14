@@ -1,0 +1,114 @@
+"""Self-service password reset for customer and staff portals.
+
+Request: look up an active user of the expected type, mint a single-use token,
+store only its hash, and email the reset link. The response is always success so
+the endpoint can't be used to discover which emails are registered.
+
+Confirm: validate the token (unused, unexpired), then upsert the user's password
+credential and burn the token. A reset works for any user with credentials, so
+the same confirm path serves every portal.
+"""
+
+from __future__ import annotations
+
+import secrets
+from datetime import UTC, datetime, timedelta
+from typing import Any
+
+from truegrit_api.auth.passwords import hash_password
+from truegrit_api.auth.sessions import hash_token
+from truegrit_api.config import Settings
+from truegrit_api.errors import ValidationAppError
+from truegrit_api.platform.database import Database
+from truegrit_api.services.email import OutboundEmail
+from truegrit_api.util.ids import new_id
+from truegrit_api.util.timeutil import utc_now_iso
+
+
+def _reset_email_body(reset_url: str, minutes: int) -> str:
+    return (
+        "We received a request to reset your True Grit password.\n\n"
+        f"Reset it here (valid for {minutes} minutes):\n{reset_url}\n\n"
+        "If you didn't ask for this, you can safely ignore this email."
+    )
+
+
+async def request_password_reset(
+    db: Database,
+    *,
+    email: str,
+    user_type: str,
+    reset_base_url: str,
+    settings: Settings,
+) -> OutboundEmail | None:
+    """Mint a reset token and return the email to send (or None for an unknown
+    address). Kept side-effect-free of transport so the endpoint can send it in
+    the background and tests can assert the token without a mail server."""
+    normalized = (email or "").strip().lower()
+    user = await db.fetch_one(
+        "SELECT id, email FROM users WHERE email = ? AND user_type = ? AND status = 'active'",
+        (normalized, user_type),
+    )
+    if user is None:
+        return None
+
+    token = secrets.token_urlsafe(32)
+    now = datetime.now(UTC)
+    expires_at = (now + timedelta(minutes=settings.password_reset_lifetime_minutes)).strftime(
+        "%Y-%m-%dT%H:%M:%SZ"
+    )
+    await db.execute(
+        "INSERT INTO password_reset_tokens (id, user_id, token_hash, expires_at, created_at)"
+        " VALUES (?, ?, ?, ?, ?)",
+        (new_id("prt"), user["id"], hash_token(token), expires_at, utc_now_iso()),
+    )
+    separator = "&" if "?" in reset_base_url else "?"
+    reset_url = f"{reset_base_url}{separator}token={token}"
+    return OutboundEmail(
+        to=user["email"],
+        subject="Reset your True Grit password",
+        body=_reset_email_body(reset_url, settings.password_reset_lifetime_minutes),
+    )
+
+
+async def confirm_password_reset(
+    db: Database,
+    *,
+    token: str,
+    new_password: str,
+    settings: Settings,
+) -> dict[str, Any]:
+    if len(new_password) < settings.password_min_length:
+        raise ValidationAppError(
+            f"Password must be at least {settings.password_min_length} characters."
+        )
+    row = await db.fetch_one(
+        "SELECT id, user_id, expires_at, used_at FROM password_reset_tokens WHERE token_hash = ?",
+        (hash_token(token or ""),),
+    )
+    now = utc_now_iso()
+    if row is None or row["used_at"] is not None or row["expires_at"] <= now:
+        raise ValidationAppError("This reset link is invalid or has expired.")
+
+    password_hash = hash_password(new_password, iterations=settings.pbkdf2_iterations)
+    await db.batch(
+        [
+            (
+                "INSERT INTO user_credentials (user_id, password_hash, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?)"
+                " ON CONFLICT(user_id) DO UPDATE SET password_hash = excluded.password_hash,"
+                " updated_at = excluded.updated_at",
+                (row["user_id"], password_hash, now, now),
+            ),
+            (
+                "UPDATE password_reset_tokens SET used_at = ? WHERE id = ?",
+                (now, row["id"]),
+            ),
+            # Sign out everywhere: revoke the user's live sessions on reset.
+            (
+                "UPDATE sessions SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL",
+                (now, row["user_id"]),
+            ),
+        ]
+    )
+    return {"ok": True}

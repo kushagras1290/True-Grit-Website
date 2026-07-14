@@ -351,6 +351,7 @@ export interface AdminUserRow {
   email: string;
   status: "invited" | "active" | "disabled";
   roles: string[];
+  roleIds?: string[];
   lastSignInAt: string | null;
 }
 

@@ -1,5 +1,6 @@
-/** Category list and editor. The Layout tab is the keyboard-accessible
- * block builder (dnd-kit) with a live preview column. */
+/** Category list, create dialog, and editor. The editor has a Settings tab
+ * (real, persisted fields) and a Layout tab — the keyboard-accessible block
+ * builder (dnd-kit) with a live preview. Publish hits the real workflow. */
 
 import {
   DndContext,
@@ -16,29 +17,98 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useQuery } from "@tanstack/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { PublicPageBlock } from "@truegrit/contracts";
 import { Eye, EyeOff, GripVertical } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate, useParams } from "react-router";
+import { z } from "zod";
 
 import {
   Button,
   DataTableShell,
   EmptyState,
+  Field,
+  Input,
   LoadingRows,
+  Modal,
   PageHeader,
+  Select,
   StatusPill,
   Td,
+  Textarea,
   Th,
 } from "../components/ui";
-import { api } from "../lib/api";
+import { useToast } from "../components/toast";
+import { ApiError, api, type AdminCategoryDetail } from "../lib/api";
 import { formatDate } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
 import { blockTitle, reorderBlocks, toggleBlock, type BuilderState } from "./builder";
 
+const createSchema = z.object({
+  name: z.string().min(3, "At least 3 characters").max(140),
+  slug: z
+    .string()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and single hyphens")
+    .optional()
+    .or(z.literal("")),
+});
+
+type CreateForm = z.infer<typeof createSchema>;
+
+function CreateCategoryModal({ onClose }: { onClose: () => void }) {
+  const toast = useToast();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const form = useForm<CreateForm>({
+    resolver: zodResolver(createSchema),
+    defaultValues: { name: "", slug: "" },
+  });
+
+  const mutation = useMutation({
+    mutationFn: (values: CreateForm) =>
+      api.createCategory({ name: values.name, slug: values.slug || undefined }),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-categories"] });
+      toast.success("Category created as a draft.");
+      onClose();
+      navigate(`/categories/${result.id}`);
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not create the category."),
+  });
+
+  return (
+    <Modal title="New category" onClose={onClose}>
+      <form className="space-y-4" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
+        <Field label="Name" htmlFor="cat-name" error={form.formState.errors.name?.message}>
+          <Input id="cat-name" placeholder="Fresh Fruits" {...form.register("name")} />
+        </Field>
+        <Field
+          label="Slug (optional)"
+          htmlFor="cat-slug"
+          error={form.formState.errors.slug?.message}
+        >
+          <Input id="cat-slug" placeholder="fresh-fruits" {...form.register("slug")} />
+        </Field>
+        <div className="flex justify-end gap-2 pt-1">
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="primary" disabled={mutation.isPending}>
+            {mutation.isPending ? "Creating…" : "Create draft"}
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
 export function CategoryListPage() {
   const { data, isLoading } = useQuery({ queryKey: ["admin-categories"], queryFn: api.categories });
+  const [creating, setCreating] = useState(false);
 
   return (
     <div>
@@ -47,10 +117,14 @@ export function CategoryListPage() {
         description="One composition engine renders every category — no code per category."
         actions={
           <PermissionGate permission="categories.create">
-            <Button variant="primary">New category</Button>
+            <Button variant="primary" onClick={() => setCreating(true)}>
+              New category
+            </Button>
           </PermissionGate>
         }
       />
+      {creating ? <CreateCategoryModal onClose={() => setCreating(false)} /> : null}
+
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
@@ -224,10 +298,104 @@ function BlockPreview({ block }: { block: PublicPageBlock }) {
   }
 }
 
+const settingsSchema = z.object({
+  name: z.string().min(3, "At least 3 characters").max(140),
+  slug: z
+    .string()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and single hyphens only"),
+  shortDescription: z.string().max(300),
+  heroEyebrow: z.string().max(120),
+  heroTitle: z.string().max(160),
+  heroDescription: z.string().max(500),
+  seasonLabel: z.string().max(80),
+  visibility: z.enum(["public", "hidden", "private"]),
+});
+
+type SettingsForm = z.infer<typeof settingsSchema>;
+
+function CategorySettingsForm({
+  category,
+  onSave,
+  saving,
+}: {
+  category: AdminCategoryDetail;
+  onSave: (values: SettingsForm) => void;
+  saving: boolean;
+}) {
+  const form = useForm<SettingsForm>({
+    resolver: zodResolver(settingsSchema),
+    values: {
+      name: category.name,
+      slug: category.slug,
+      shortDescription: category.shortDescription,
+      heroEyebrow: category.heroEyebrow,
+      heroTitle: category.heroTitle,
+      heroDescription: category.heroDescription,
+      seasonLabel: category.seasonLabel,
+      visibility: (["public", "hidden", "private"].includes(category.visibility)
+        ? category.visibility
+        : "public") as SettingsForm["visibility"],
+    },
+  });
+
+  return (
+    <form className="max-w-2xl space-y-5" onSubmit={form.handleSubmit(onSave)}>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Name" htmlFor="c-name" error={form.formState.errors.name?.message}>
+          <Input id="c-name" {...form.register("name")} />
+        </Field>
+        <Field label="Slug" htmlFor="c-slug" error={form.formState.errors.slug?.message}>
+          <Input id="c-slug" {...form.register("slug")} />
+        </Field>
+      </div>
+      <Field label="Short description" htmlFor="c-short">
+        <Textarea id="c-short" {...form.register("shortDescription")} />
+      </Field>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Hero eyebrow" htmlFor="c-eyebrow">
+          <Input id="c-eyebrow" placeholder="In season now" {...form.register("heroEyebrow")} />
+        </Field>
+        <Field label="Season label" htmlFor="c-season">
+          <Input id="c-season" placeholder="Summer" {...form.register("seasonLabel")} />
+        </Field>
+      </div>
+      <Field label="Hero title" htmlFor="c-hero-title">
+        <Input id="c-hero-title" {...form.register("heroTitle")} />
+      </Field>
+      <Field label="Hero description" htmlFor="c-hero-desc">
+        <Textarea id="c-hero-desc" {...form.register("heroDescription")} />
+      </Field>
+      <Field label="Visibility" htmlFor="c-visibility">
+        <Select id="c-visibility" {...form.register("visibility")}>
+          <option value="public">Public</option>
+          <option value="hidden">Hidden</option>
+          <option value="private">Private</option>
+        </Select>
+      </Field>
+      <Button type="submit" variant="primary" disabled={saving || !form.formState.isDirty}>
+        {saving ? "Saving…" : "Save settings"}
+      </Button>
+    </form>
+  );
+}
+
+const EDITOR_TABS = ["Settings", "Layout"] as const;
+
 export function CategoryEditorPage() {
   const { id = "" } = useParams();
-  const categories = useQuery({ queryKey: ["admin-categories"], queryFn: api.categories });
-  const category = (categories.data ?? []).find((entry) => entry.id === id);
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const [tab, setTab] = useState<(typeof EDITOR_TABS)[number]>("Settings");
+
+  const {
+    data: category,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["admin-category", id],
+    queryFn: () => api.getCategory(id),
+    retry: false,
+  });
 
   const blocksQuery = useQuery({ queryKey: ["home-blocks"], queryFn: api.homeBlocks });
   const [state, setState] = useState<BuilderState>({
@@ -235,7 +403,6 @@ export function CategoryEditorPage() {
     selectedBlockId: null,
     dirty: false,
   });
-  const [publishState, setPublishState] = useState<"idle" | "published">("idle");
 
   useEffect(() => {
     if (blocksQuery.data && state.blocks.length === 0) {
@@ -248,6 +415,33 @@ export function CategoryEditorPage() {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
+  const saveMutation = useMutation({
+    mutationFn: (input: Record<string, unknown>) => api.updateCategory(id, input),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["admin-category", id] }),
+        queryClient.invalidateQueries({ queryKey: ["admin-categories"] }),
+      ]);
+      toast.success("Settings saved.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not save settings."),
+  });
+
+  const publishMutation = useMutation({
+    mutationFn: () => api.publishCategory(id),
+    onSuccess: async (result) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["admin-category", id] }),
+        queryClient.invalidateQueries({ queryKey: ["admin-categories"] }),
+      ]);
+      setState((current) => ({ ...current, dirty: false }));
+      toast.success(`Published — version ${result.version} is now live.`);
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not publish."),
+  });
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (over && active.id !== over.id) {
@@ -255,23 +449,17 @@ export function CategoryEditorPage() {
     }
   }
 
-  if (categories.isLoading) return <p className="text-sm text-ink-muted">Loading category…</p>;
-  if (!category) return <EmptyState title="Category not found" />;
+  if (isLoading) return <p className="text-sm text-ink-muted">Loading category…</p>;
+  if (isError || !category) return <EmptyState title="Category not found" />;
 
   return (
     <div>
       <PageHeader
         title={category.name}
-        description={`/${category.slug} · ${category.productCount} products resolved by rule`}
+        description={`/${category.slug}`}
         actions={
-          <>
-            <span role="status" className="self-center text-sm text-ink-muted">
-              {publishState === "published"
-                ? "Published — new immutable version created"
-                : state.dirty
-                  ? "Unsaved changes"
-                  : "Saved"}
-            </span>
+          <div className="flex items-center gap-2">
+            <StatusPill status={category.status} />
             <PermissionGate
               permission="categories.publish"
               fallback={
@@ -282,67 +470,92 @@ export function CategoryEditorPage() {
             >
               <Button
                 variant="primary"
-                onClick={() => {
-                  setPublishState("published");
-                  setState((current) => ({ ...current, dirty: false }));
-                }}
+                onClick={() => publishMutation.mutate()}
+                disabled={publishMutation.isPending}
               >
-                Publish
+                {publishMutation.isPending ? "Publishing…" : "Publish"}
               </Button>
             </PermissionGate>
-          </>
+          </div>
         }
       />
 
-      <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-        <section aria-label="Page outline">
-          <h2 className="mb-2 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-            Layout — drag or use arrow keys
-          </h2>
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
+      <div
+        role="tablist"
+        aria-label="Category editor sections"
+        className="mb-5 flex gap-1 border-b border-line"
+      >
+        {EDITOR_TABS.map((entry) => (
+          <button
+            key={entry}
+            role="tab"
+            aria-selected={tab === entry}
+            onClick={() => setTab(entry)}
+            className={`min-h-9 px-3 text-sm ${
+              tab === entry
+                ? "border-b-2 border-brand font-medium text-brand"
+                : "text-ink-muted hover:text-ink"
+            }`}
           >
-            <SortableContext
-              items={state.blocks.map((block) => block.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <ul className="space-y-1.5">
-                {state.blocks.map((block) => (
-                  <SortableBlockRow
-                    key={block.id}
-                    block={block}
-                    selected={state.selectedBlockId === block.id}
-                    onSelect={() =>
-                      setState((current) => ({ ...current, selectedBlockId: block.id }))
-                    }
-                    onToggle={() => setState((current) => toggleBlock(current, block.id))}
-                  />
-                ))}
-              </ul>
-            </SortableContext>
-          </DndContext>
-        </section>
-
-        <section aria-label="Live preview">
-          <h2 className="mb-2 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-            Live preview
-          </h2>
-          <div className="overflow-hidden rounded-md border border-line bg-surface shadow-card">
-            {state.blocks.filter((block) => block.enabled).length === 0 ? (
-              <div className="px-5 py-10">
-                <EmptyState
-                  title="No visible blocks"
-                  hint="Enable at least one block to publish."
-                />
-              </div>
-            ) : (
-              state.blocks.map((block) => <BlockPreview key={block.id} block={block} />)
-            )}
-          </div>
-        </section>
+            {entry}
+          </button>
+        ))}
       </div>
+
+      {tab === "Settings" ? (
+        <CategorySettingsForm
+          category={category}
+          onSave={(values) => saveMutation.mutate(values)}
+          saving={saveMutation.isPending}
+        />
+      ) : (
+        <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
+          <section aria-label="Page outline">
+            <h2 className="mb-2 text-xs font-semibold tracking-wide text-ink-muted uppercase">
+              Layout — drag or use arrow keys
+            </h2>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={state.blocks.map((block) => block.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <ul className="space-y-1.5">
+                  {state.blocks.map((block) => (
+                    <SortableBlockRow
+                      key={block.id}
+                      block={block}
+                      selected={state.selectedBlockId === block.id}
+                      onSelect={() =>
+                        setState((current) => ({ ...current, selectedBlockId: block.id }))
+                      }
+                      onToggle={() => setState((current) => toggleBlock(current, block.id))}
+                    />
+                  ))}
+                </ul>
+              </SortableContext>
+            </DndContext>
+          </section>
+
+          <section aria-label="Live preview">
+            <h2 className="mb-2 text-xs font-semibold tracking-wide text-ink-muted uppercase">
+              Live preview
+            </h2>
+            <div className="overflow-hidden rounded-md border border-line bg-surface shadow-card">
+              {state.blocks.filter((block) => block.enabled).length === 0 ? (
+                <div className="px-5 py-10">
+                  <EmptyState title="No visible blocks" hint="Enable at least one block." />
+                </div>
+              ) : (
+                state.blocks.map((block) => <BlockPreview key={block.id} block={block} />)
+              )}
+            </div>
+          </section>
+        </div>
+      )}
     </div>
   );
 }

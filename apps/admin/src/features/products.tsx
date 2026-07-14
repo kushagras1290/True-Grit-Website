@@ -1,6 +1,8 @@
-/** Product list (TanStack Table: search, sort) and a tabbed product editor. */
+/** Product list (TanStack Table) + a real, wired product editor with a
+ * create dialog, draft save, publish workflow and archive. */
 
-import { useQuery } from "@tanstack/react-query";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createColumnHelper,
   flexRender,
@@ -11,11 +13,10 @@ import {
   type SortingState,
 } from "@tanstack/react-table";
 import type { AdminProductRow } from "@truegrit/contracts";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowUpDown } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { z } from "zod";
 
 import {
@@ -25,21 +26,110 @@ import {
   Field,
   Input,
   LoadingRows,
+  Modal,
   PageHeader,
+  Select,
   StatusPill,
   Td,
+  Textarea,
   Th,
 } from "../components/ui";
-import { api } from "../lib/api";
+import { useToast } from "../components/toast";
+import { ApiError, api, type AdminProductDetail } from "../lib/api";
 import { formatDate, formatMoney } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
 
 const columnHelper = createColumnHelper<AdminProductRow>();
 
+const PRODUCT_TYPES = [
+  "general",
+  "fresh_fruit",
+  "vegetable",
+  "grain",
+  "oil",
+  "pantry",
+  "dairy",
+  "beverage",
+];
+
+const createSchema = z.object({
+  name: z.string().min(3, "At least 3 characters").max(140),
+  productType: z.string().min(1),
+  slug: z
+    .string()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and single hyphens")
+    .optional()
+    .or(z.literal("")),
+});
+
+type CreateForm = z.infer<typeof createSchema>;
+
+function CreateProductModal({ onClose }: { onClose: () => void }) {
+  const toast = useToast();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const form = useForm<CreateForm>({
+    resolver: zodResolver(createSchema),
+    defaultValues: { name: "", productType: "general", slug: "" },
+  });
+
+  const mutation = useMutation({
+    mutationFn: (values: CreateForm) =>
+      api.createProduct({
+        name: values.name,
+        productType: values.productType,
+        slug: values.slug || undefined,
+      }),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      toast.success("Product created as a draft.");
+      onClose();
+      navigate(`/products/${result.id}`);
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not create the product."),
+  });
+
+  return (
+    <Modal title="New product" onClose={onClose}>
+      <form className="space-y-4" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
+        <Field label="Public name" htmlFor="new-name" error={form.formState.errors.name?.message}>
+          <Input id="new-name" placeholder="Organic Alphonso Mangoes" {...form.register("name")} />
+        </Field>
+        <Field label="Product type" htmlFor="new-type">
+          <Select id="new-type" {...form.register("productType")}>
+            {PRODUCT_TYPES.map((type) => (
+              <option key={type} value={type}>
+                {type.replaceAll("_", " ")}
+              </option>
+            ))}
+          </Select>
+        </Field>
+        <Field
+          label="Slug (optional — derived from the name if blank)"
+          htmlFor="new-slug"
+          error={form.formState.errors.slug?.message}
+        >
+          <Input id="new-slug" placeholder="organic-alphonso-mangoes" {...form.register("slug")} />
+        </Field>
+        <div className="flex justify-end gap-2 pt-1">
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="primary" disabled={mutation.isPending}>
+            {mutation.isPending ? "Creating…" : "Create draft"}
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
 export function ProductListPage() {
   const { data, isLoading } = useQuery({ queryKey: ["admin-products"], queryFn: api.products });
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [creating, setCreating] = useState(false);
 
   const columns = useMemo(
     () => [
@@ -92,10 +182,14 @@ export function ProductListPage() {
         description="Catalogue with live price and stock summaries."
         actions={
           <PermissionGate permission="products.create">
-            <Button variant="primary">New product</Button>
+            <Button variant="primary" onClick={() => setCreating(true)}>
+              New product
+            </Button>
           </PermissionGate>
         }
       />
+      {creating ? <CreateProductModal onClose={() => setCreating(false)} /> : null}
+
       <div className="mb-4 max-w-sm">
         <label htmlFor="product-search" className="sr-only">
           Search products
@@ -147,7 +241,7 @@ export function ProductListPage() {
       </DataTableShell>
       {!isLoading && table.getRowModel().rows.length === 0 ? (
         <div className="mt-4">
-          <EmptyState title="No products match" hint="Adjust the search or clear filters." />
+          <EmptyState title="No products match" hint="Adjust the search or create a product." />
         </div>
       ) : null}
     </div>
@@ -164,36 +258,112 @@ const generalSchema = z.object({
 
 type GeneralForm = z.infer<typeof generalSchema>;
 
-const EDITOR_TABS = ["General", "Variants", "Pricing", "Trust", "SEO"] as const;
+const seoSchema = z.object({
+  seoTitle: z.string().max(160),
+  seoDescription: z.string().max(320),
+});
+
+type SeoForm = z.infer<typeof seoSchema>;
+
+const EDITOR_TABS = ["General", "Variants", "SEO"] as const;
 
 export function ProductEditorPage() {
   const { id = "" } = useParams();
-  const { data: product, isLoading } = useQuery({
-    queryKey: ["admin-product", id],
-    queryFn: () => api.productDetail(id),
-  });
+  const navigate = useNavigate();
+  const toast = useToast();
+  const queryClient = useQueryClient();
   const [tab, setTab] = useState<(typeof EDITOR_TABS)[number]>("General");
-  const [saved, setSaved] = useState(false);
 
-  const form = useForm<GeneralForm>({
-    resolver: zodResolver(generalSchema),
-    values: product
-      ? { name: product.name, slug: product.slug, shortDescription: product.shortDescription }
-      : undefined,
+  const {
+    data: product,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["admin-product", id],
+    queryFn: () => api.getProduct(id),
+    retry: false,
+  });
+
+  const invalidate = () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["admin-product", id] }),
+      queryClient.invalidateQueries({ queryKey: ["admin-products"] }),
+    ]);
+
+  const saveMutation = useMutation({
+    mutationFn: (input: Record<string, unknown>) => api.updateProduct(id, input),
+    onSuccess: async () => {
+      await invalidate();
+      toast.success("Changes saved.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not save changes."),
+  });
+
+  const publishMutation = useMutation({
+    mutationFn: () => api.publishProduct(id),
+    onSuccess: async (result) => {
+      await invalidate();
+      toast.success(`Published — version ${result.version} is now live.`);
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not publish."),
+  });
+
+  const archiveMutation = useMutation({
+    mutationFn: () => api.archiveProduct(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      toast.success("Product archived.");
+      navigate("/products");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not archive."),
   });
 
   if (isLoading) return <p className="text-sm text-ink-muted">Loading product…</p>;
-  if (!product) return <EmptyState title="Product not found" hint="It may have been archived." />;
+  if (isError || !product)
+    return <EmptyState title="Product not found" hint="It may have been archived." />;
 
   return (
     <div>
       <PageHeader
         title={product.name}
-        description={`${product.farmName} · ${product.region}`}
+        description={`${product.farmName || "Unassigned"} · ${product.slug}`}
         actions={
-          <PermissionGate permission="products.publish">
-            <Button variant="primary">Publish</Button>
-          </PermissionGate>
+          <div className="flex items-center gap-2">
+            <StatusPill status={product.status} />
+            <PermissionGate permission="products.edit">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  if (
+                    window.confirm("Archive this product? It will be hidden from the storefront.")
+                  )
+                    archiveMutation.mutate();
+                }}
+                disabled={archiveMutation.isPending}
+              >
+                Archive
+              </Button>
+            </PermissionGate>
+            <PermissionGate
+              permission="products.publish"
+              fallback={
+                <Button disabled title="Requires products.publish">
+                  Publish
+                </Button>
+              }
+            >
+              <Button
+                variant="primary"
+                onClick={() => publishMutation.mutate()}
+                disabled={publishMutation.isPending}
+              >
+                {publishMutation.isPending ? "Publishing…" : "Publish"}
+              </Button>
+            </PermissionGate>
+          </div>
         }
       />
 
@@ -220,49 +390,11 @@ export function ProductEditorPage() {
       </div>
 
       {tab === "General" ? (
-        <form
-          className="max-w-xl space-y-5"
-          onSubmit={form.handleSubmit(() => {
-            setSaved(true);
-            setTimeout(() => setSaved(false), 2000);
-          })}
-        >
-          <Field label="Public name" htmlFor="name" error={form.formState.errors.name?.message}>
-            <Input
-              id="name"
-              aria-describedby={form.formState.errors.name ? "name-error" : undefined}
-              {...form.register("name")}
-            />
-          </Field>
-          <Field label="Slug" htmlFor="slug" error={form.formState.errors.slug?.message}>
-            <Input
-              id="slug"
-              aria-describedby={form.formState.errors.slug ? "slug-error" : undefined}
-              {...form.register("slug")}
-            />
-          </Field>
-          <Field
-            label="Short description"
-            htmlFor="shortDescription"
-            error={form.formState.errors.shortDescription?.message}
-          >
-            <Input
-              id="shortDescription"
-              aria-describedby={
-                form.formState.errors.shortDescription ? "shortDescription-error" : undefined
-              }
-              {...form.register("shortDescription")}
-            />
-          </Field>
-          <div className="flex items-center gap-3">
-            <Button type="submit" variant="primary" disabled={form.formState.isSubmitting}>
-              Save draft
-            </Button>
-            <span role="status" className="text-sm text-success">
-              {saved ? "Saved" : ""}
-            </span>
-          </div>
-        </form>
+        <GeneralTab
+          product={product}
+          onSave={(values) => saveMutation.mutate(values)}
+          saving={saveMutation.isPending}
+        />
       ) : null}
 
       {tab === "Variants" ? (
@@ -273,64 +405,114 @@ export function ProductEditorPage() {
               <Th>SKU</Th>
               <Th>List price</Th>
               <Th>Sale price</Th>
-              <Th>Availability</Th>
+              <Th>Available</Th>
+              <Th>Status</Th>
             </tr>
           </thead>
           <tbody>
-            {product.variants.map((variant) => (
-              <tr key={variant.id} className="border-t border-line">
-                <Td className="font-medium">{variant.name}</Td>
-                <Td>{variant.sku}</Td>
-                <Td>{formatMoney(variant.listMinor)}</Td>
-                <Td>{variant.saleMinor === null ? "—" : formatMoney(variant.saleMinor)}</Td>
-                <Td>
-                  <StatusPill status={variant.availability} />
-                </Td>
+            {product.variants.length === 0 ? (
+              <tr className="border-t border-line">
+                <Td className="text-ink-muted">No variants yet.</Td>
+                <Td /> <Td /> <Td /> <Td /> <Td />
               </tr>
-            ))}
+            ) : (
+              product.variants.map((variant) => (
+                <tr key={variant.id} className="border-t border-line">
+                  <Td className="font-medium">{variant.name}</Td>
+                  <Td>{variant.sku}</Td>
+                  <Td>{variant.listMinor === null ? "—" : formatMoney(variant.listMinor)}</Td>
+                  <Td>{variant.saleMinor === null ? "—" : formatMoney(variant.saleMinor)}</Td>
+                  <Td>{variant.available}</Td>
+                  <Td>
+                    <StatusPill status={variant.status} />
+                  </Td>
+                </tr>
+              ))
+            )}
           </tbody>
         </DataTableShell>
       ) : null}
 
-      {tab === "Pricing" ? (
-        <p className="max-w-lg text-sm text-ink-muted">
-          Prices are integer paise on active price rows per market (ADR-006). Historical orders
-          snapshot their prices — changing a price here never rewrites an order.
-        </p>
-      ) : null}
-
-      {tab === "Trust" ? (
-        <div className="max-w-xl space-y-3">
-          <p className="text-sm text-ink">
-            <span className="font-medium">Certification:</span> {product.certification}
-          </p>
-          <ol className="space-y-2 border-l-2 border-subtle pl-4">
-            {product.traceability.map((step) => (
-              <li key={step.label}>
-                <p className="text-sm font-medium text-ink">{step.label}</p>
-                <p className="text-sm text-ink-muted">{step.detail}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      ) : null}
-
       {tab === "SEO" ? (
-        <dl className="max-w-xl space-y-3 text-sm">
-          <div>
-            <dt className="font-medium text-ink">Title</dt>
-            <dd className="text-ink-muted">{product.seo.title}</dd>
-          </div>
-          <div>
-            <dt className="font-medium text-ink">Description</dt>
-            <dd className="text-ink-muted">{product.seo.description}</dd>
-          </div>
-          <div>
-            <dt className="font-medium text-ink">Canonical</dt>
-            <dd className="text-ink-muted">{product.seo.canonicalPath}</dd>
-          </div>
-        </dl>
+        <SeoTab
+          product={product}
+          onSave={(values) => saveMutation.mutate(values)}
+          saving={saveMutation.isPending}
+        />
       ) : null}
     </div>
+  );
+}
+
+function GeneralTab({
+  product,
+  onSave,
+  saving,
+}: {
+  product: AdminProductDetail;
+  onSave: (values: GeneralForm) => void;
+  saving: boolean;
+}) {
+  const form = useForm<GeneralForm>({
+    resolver: zodResolver(generalSchema),
+    values: {
+      name: product.name,
+      slug: product.slug,
+      shortDescription: product.shortDescription,
+    },
+  });
+
+  return (
+    <form className="max-w-xl space-y-5" onSubmit={form.handleSubmit(onSave)}>
+      <Field label="Public name" htmlFor="name" error={form.formState.errors.name?.message}>
+        <Input id="name" {...form.register("name")} />
+      </Field>
+      <Field label="Slug" htmlFor="slug" error={form.formState.errors.slug?.message}>
+        <Input id="slug" {...form.register("slug")} />
+      </Field>
+      <Field
+        label="Short description"
+        htmlFor="shortDescription"
+        error={form.formState.errors.shortDescription?.message}
+      >
+        <Textarea id="shortDescription" {...form.register("shortDescription")} />
+      </Field>
+      <Button type="submit" variant="primary" disabled={saving || !form.formState.isDirty}>
+        {saving ? "Saving…" : "Save draft"}
+      </Button>
+    </form>
+  );
+}
+
+function SeoTab({
+  product,
+  onSave,
+  saving,
+}: {
+  product: AdminProductDetail;
+  onSave: (values: SeoForm) => void;
+  saving: boolean;
+}) {
+  const form = useForm<SeoForm>({
+    resolver: zodResolver(seoSchema),
+    values: { seoTitle: product.seoTitle, seoDescription: product.seoDescription },
+  });
+
+  return (
+    <form className="max-w-xl space-y-5" onSubmit={form.handleSubmit(onSave)}>
+      <Field label="SEO title" htmlFor="seoTitle" error={form.formState.errors.seoTitle?.message}>
+        <Input id="seoTitle" {...form.register("seoTitle")} />
+      </Field>
+      <Field
+        label="SEO description"
+        htmlFor="seoDescription"
+        error={form.formState.errors.seoDescription?.message}
+      >
+        <Textarea id="seoDescription" {...form.register("seoDescription")} />
+      </Field>
+      <Button type="submit" variant="primary" disabled={saving || !form.formState.isDirty}>
+        {saving ? "Saving…" : "Save SEO"}
+      </Button>
+    </form>
   );
 }

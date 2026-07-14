@@ -14,5 +14,9 @@ export default [
   route("journal/:slug", "routes/article.tsx"),
   route("standards", "routes/standards.tsx"),
   route("cart", "routes/cart.tsx"),
+  route("checkout", "routes/checkout.tsx"),
+  route("account", "routes/account.tsx"),
+  route("account/orders/:reference", "routes/order.tsx"),
+  route("reset-password", "routes/reset-password.tsx"),
   route("*", "routes/not-found.tsx"),
 ] satisfies RouteConfig;

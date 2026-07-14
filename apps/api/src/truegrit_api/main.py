@@ -6,9 +6,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from truegrit_api.api.admin import router as admin_router
+from truegrit_api.api.customer_auth import router as customer_auth_router
 from truegrit_api.api.public import router as public_router
+from truegrit_api.api.storefront import router as storefront_router
 from truegrit_api.config import get_settings
 from truegrit_api.middleware.error_handler import install_error_handlers
+from truegrit_api.middleware.rate_limit import RateLimitMiddleware
 from truegrit_api.middleware.request_id import RequestIdMiddleware
 from truegrit_api.middleware.security_headers import SecurityHeadersMiddleware
 from truegrit_api.platform.database import Database, build_local_database
@@ -24,7 +27,11 @@ def create_app(db: Database | None = None) -> FastAPI:
         openapi_url="/internal/openapi.json",
     )
 
-    # Middleware runs in reverse registration order; request id must wrap everything.
+    # Middleware runs in reverse registration order (last added is outermost).
+    # RateLimitMiddleware is added first so it sits innermost — the global 429 it
+    # returns still passes back out through SecurityHeaders, RequestId (stamps
+    # x-request-id) and CORS. The request-id middleware wraps everything else.
+    app.add_middleware(RateLimitMiddleware)
     app.add_middleware(SecurityHeadersMiddleware)
     app.add_middleware(RequestIdMiddleware)
     app.add_middleware(
@@ -41,6 +48,8 @@ def create_app(db: Database | None = None) -> FastAPI:
     app.state.db = db if db is not None else build_local_database()
 
     app.include_router(public_router, prefix="/v1/public")
+    app.include_router(customer_auth_router, prefix="/v1/public/auth")
+    app.include_router(storefront_router, prefix="/v1/public")
     app.include_router(admin_router, prefix="/v1/admin")
 
     @app.get("/health/live", tags=["health"])

@@ -92,6 +92,29 @@ INSERT INTO user_roles (user_id, role_id, assigned_at, assigned_by) VALUES
   ('usr_ops', 'rol_inventory_manager', '2026-07-01T00:00:00Z', 'usr_admin'),
   ('usr_ops', 'rol_order_manager', '2026-07-01T00:00:00Z', 'usr_admin');
 
+-- Farm-owner sub-admin: a staff user scoped to a single farm (see 0009).
+INSERT INTO roles (id, key, name, description, is_system, created_at) VALUES
+  ('rol_farm_owner', 'farm_owner', 'Farm Owner', 'Manage own farm products and stock', 1, '2026-07-01T00:00:00Z');
+
+INSERT INTO role_permissions (role_id, permission_id) VALUES
+  ('rol_farm_owner', 'prm_products_view'),
+  ('rol_farm_owner', 'prm_products_create'),
+  ('rol_farm_owner', 'prm_products_edit'),
+  ('rol_farm_owner', 'prm_products_publish'),
+  ('rol_farm_owner', 'prm_products_archive'),
+  ('rol_farm_owner', 'prm_inventory_view'),
+  ('rol_farm_owner', 'prm_inventory_adjust');
+
+INSERT INTO users (id, email, display_name, user_type, status, email_verified_at, created_at, updated_at) VALUES
+  ('usr_farmowner', 'owner@devika.test', 'Devika Kulkarni', 'staff', 'active', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
+
+INSERT INTO user_roles (user_id, role_id, assigned_at, assigned_by) VALUES
+  ('usr_farmowner', 'rol_farm_owner', '2026-07-01T00:00:00Z', 'usr_admin');
+
+-- Password: devikafarm1 (synthetic — change for any shared environment).
+INSERT INTO user_credentials (user_id, password_hash, created_at, updated_at) VALUES
+  ('usr_farmowner', 'pbkdf2_sha256$50000$YMMj0RYC+Hn+V+vIjfMyJQ==$APwBvRJgA1ShNDkySplvH/8MdEAwEjjAkebakQfDlhc=', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
+
 -- Media placeholders (object keys reference R2 layout)
 INSERT INTO media_assets (id, object_key, original_filename, mime_type, size_bytes, width_px, height_px, alt_text, visibility, processing_status, created_at, created_by, updated_at, updated_by) VALUES
   ('med_hero_home', 'originals/med_hero_home/harvest-table.jpg', 'harvest-table.jpg', 'image/jpeg', 482000, 2400, 1500, 'A wooden harvest table with seasonal organic produce', 'public', 'ready', '2026-07-01T00:00:00Z', 'usr_editor', '2026-07-01T00:00:00Z', 'usr_editor'),
@@ -315,3 +338,23 @@ INSERT INTO search_content (entity_type, entity_id, title, slug, excerpt, keywor
   ('article', 'art_millets', 'The quiet revival of Indian millets', 'quiet-revival-of-indian-millets', 'How a generation of farmers is bringing climate-resilient grains back.', 'millets grains climate'),
   ('recipe', 'rcp_ragi_dosa', 'Crisp sprouted ragi dosa', 'crisp-sprouted-ragi-dosa', 'A weekday dosa with the deep, nutty flavour of sprouted finger millet.', 'dosa ragi breakfast'),
   ('farm', 'farm_devika', 'Devika Organics', 'devika-organics', 'Three generations of Alphonso orchards in Ratnagiri.', 'mango farm ratnagiri');
+
+-- Sample customer and orders (synthetic — power the operations console Orders view)
+INSERT INTO users (id, email, display_name, user_type, status, email_verified_at, created_at, updated_at) VALUES
+  ('usr_cust_riya', 'riya@example.test', 'Riya Nair', 'customer', 'active', '2026-07-05T00:00:00Z', '2026-07-05T00:00:00Z', '2026-07-05T00:00:00Z');
+
+INSERT INTO customer_profiles (user_id, marketing_email_consent, created_at, updated_at) VALUES
+  ('usr_cust_riya', 1, '2026-07-05T00:00:00Z', '2026-07-05T00:00:00Z');
+
+INSERT INTO orders (id, public_reference, customer_user_id, customer_email, currency_code, subtotal_minor, discount_minor, delivery_minor, tax_minor, total_minor, order_status, payment_status, fulfilment_status, delivery_status, placed_at, created_at, updated_at) VALUES
+  ('ord_1001', 'TG-1001', 'usr_cust_riya', 'riya@example.test', 'INR', 89900, 0, 4900, 0, 94800, 'confirmed', 'paid', 'unfulfilled', 'not_ready', '2026-07-10T09:00:00Z', '2026-07-10T09:00:00Z', '2026-07-10T09:00:00Z'),
+  ('ord_1002', 'TG-1002', 'usr_cust_riya', 'riya@example.test', 'INR', 149900, 0, 0, 0, 149900, 'pending_payment', 'pending', 'unfulfilled', 'not_ready', '2026-07-12T14:30:00Z', '2026-07-12T14:30:00Z', '2026-07-12T14:30:00Z');
+
+INSERT INTO order_items (id, order_id, product_id, variant_id, product_name, variant_name, sku, quantity, unit_list_amount_minor, unit_effective_amount_minor, discount_minor, tax_minor, line_total_minor) VALUES
+  ('oit_1001', 'ord_1001', 'prd_alphonso', 'var_alphonso_1kg', 'Organic Alphonso Mangoes', '1 kg box (3-4 mangoes)', 'TRG-MNG-1KG', 1, 89900, 89900, 0, 0, 89900),
+  ('oit_1002', 'ord_1002', 'prd_alphonso', 'var_alphonso_2kg', 'Organic Alphonso Mangoes', '2 kg box (7-8 mangoes)', 'TRG-MNG-2KG', 1, 149900, 149900, 0, 0, 149900);
+
+-- Farm membership (farms exist by now): the Devika owner is scoped to farm_devika,
+-- whose catalogue includes prd_alphonso.
+INSERT INTO farm_members (user_id, farm_id, created_at, created_by) VALUES
+  ('usr_farmowner', 'farm_devika', '2026-07-01T00:00:00Z', 'usr_admin');

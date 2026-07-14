@@ -36,6 +36,21 @@ async def get_current_staff(
     return principal
 
 
+async def get_current_customer(
+    request: Request, db: Annotated[Database, Depends(get_database)]
+) -> Principal:
+    """Resolve the signed-in storefront customer. A staff session never
+    satisfies this dependency, keeping the two audiences isolated even though
+    they share one session cookie on the API origin."""
+    token = request.cookies.get(get_settings().session_cookie_name)
+    if not token:
+        raise AuthenticationError()
+    principal = await resolve_session(db, token)
+    if principal is None or principal.user_type != "customer":
+        raise AuthenticationError()
+    return principal
+
+
 def require_permission(permission: str):
     async def dependency(
         principal: Annotated[Principal, Depends(get_current_staff)],

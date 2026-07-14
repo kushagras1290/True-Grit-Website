@@ -96,14 +96,12 @@ export default function CartPage(_props: Route.ComponentProps) {
               <dd className="text-ink-muted">Calculated at checkout</dd>
             </div>
           </dl>
-          <button
-            type="button"
-            disabled
-            title="Checkout ships in Release 2 — catalogue and publishing come first."
-            className="mt-5 min-h-11 w-full cursor-not-allowed rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse opacity-60"
+          <Link
+            to="/checkout"
+            className="mt-5 flex min-h-11 w-full items-center justify-center rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90"
           >
-            Checkout — coming in Release 2
-          </button>
+            Proceed to checkout
+          </Link>
           <p className="mt-2 text-xs text-ink-muted">
             Prices are re-validated server-side at checkout; your basket total here is an estimate.
           </p>

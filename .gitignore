@@ -8,6 +8,7 @@ test-results/
 .env
 .env.*
 !.env.example
+client_secret_*.json
 .venv/
 __pycache__/
 .pytest_cache/

@@ -14,6 +14,7 @@ import appCss from "./app.css?url";
 import { Footer, Header } from "./components/chrome";
 import { loadBootstrap } from "./lib/catalogue.server";
 import { CartProvider } from "./lib/cart";
+import { CustomerProvider } from "./lib/customer-auth";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -50,19 +51,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   const { bootstrap } = useLoaderData<typeof loader>();
   return (
-    <CartProvider>
-      <a
-        href="#content"
-        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-surface focus:px-3 focus:py-2"
-      >
-        Skip to content
-      </a>
-      <Header bootstrap={bootstrap} />
-      <main id="content">
-        <Outlet />
-      </main>
-      <Footer bootstrap={bootstrap} />
-    </CartProvider>
+    <CustomerProvider>
+      <CartProvider>
+        <a
+          href="#content"
+          className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-surface focus:px-3 focus:py-2"
+        >
+          Skip to content
+        </a>
+        <Header bootstrap={bootstrap} />
+        <main id="content">
+          <Outlet />
+        </main>
+        <Footer bootstrap={bootstrap} />
+      </CartProvider>
+    </CustomerProvider>
   );
 }
 

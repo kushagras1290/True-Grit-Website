@@ -121,3 +121,100 @@ async def publish_category(
     )
 
     return {"id": category_id, "status": "published", "version": version_number}
+
+
+async def publish_product(
+    db: Database,
+    product_id: str,
+    actor: Principal,
+    request_id: str,
+    change_summary: str | None = None,
+) -> dict[str, str | int]:
+    """Publish a product: immutable version row, status swap, audit and outbox in
+    one batch — mirrors category publishing so the workflow is identical."""
+    product = await db.fetch_one(
+        "SELECT * FROM products WHERE id = ? AND archived_at IS NULL",
+        (product_id,),
+    )
+    if product is None:
+        raise NotFoundError("Product not found.")
+
+    current_status = product["status"]
+    workflow_current = _WORKFLOW_EQUIVALENT.get(current_status, current_status)
+    assert_transition("products", workflow_current, "published", actor.permissions)
+
+    now = utc_now_iso()
+    version_row = await db.fetch_one(
+        "SELECT COALESCE(MAX(version_number), 0) AS max_version"
+        " FROM product_versions WHERE product_id = ?",
+        (product_id,),
+    )
+    version_number = int(version_row["max_version"]) + 1 if version_row else 1
+    version_id = new_id("prv")
+    content_json = json.dumps(
+        {
+            "name": product["name"],
+            "slug": product["slug"],
+            "short_description": product["short_description"],
+            "product_type": product["product_type"],
+        }
+    )
+
+    await db.batch(
+        [
+            (
+                "INSERT INTO product_versions"
+                " (id, product_id, version_number, content_json, change_summary,"
+                "  workflow_state, created_at, created_by, approved_at, approved_by, published_at)"
+                " VALUES (?, ?, ?, ?, ?, 'published', ?, ?, ?, ?, ?)",
+                (
+                    version_id,
+                    product_id,
+                    version_number,
+                    content_json,
+                    change_summary,
+                    now,
+                    actor.user_id,
+                    now,
+                    actor.user_id,
+                    now,
+                ),
+            ),
+            (
+                "UPDATE products SET status = 'published', published_version_id = ?,"
+                " updated_at = ?, updated_by = ? WHERE id = ?",
+                (version_id, now, actor.user_id, product_id),
+            ),
+            (
+                "INSERT INTO audit_logs"
+                " (id, actor_user_id, action, entity_type, entity_id,"
+                "  before_summary_json, after_summary_json, request_id, source, created_at)"
+                " VALUES (?, ?, 'product.published', 'product', ?, ?, ?, ?, 'admin', ?)",
+                (
+                    new_id("aud"),
+                    actor.user_id,
+                    product_id,
+                    json.dumps({"status": current_status}),
+                    json.dumps({"status": "published", "version": version_number}),
+                    request_id,
+                    now,
+                ),
+            ),
+            (
+                "INSERT INTO outbox_events"
+                " (id, event_type, event_version, aggregate_type, aggregate_id,"
+                "  payload_json, status, available_at, created_at)"
+                " VALUES (?, 'content.product.published.v1', 1, 'product',"
+                "  ?, ?, 'pending', ?, ?)",
+                (
+                    new_id("evt"),
+                    product_id,
+                    json.dumps({"productId": product_id, "version": version_number}),
+                    now,
+                    now,
+                ),
+            ),
+        ]
+    )
+
+    return {"id": product_id, "status": "published", "version": version_number}

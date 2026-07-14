@@ -12,6 +12,9 @@ class Principal:
     email: str
     user_type: str  # 'staff' | 'customer'
     permissions: frozenset[str] = field(default_factory=frozenset)
+    # For farm-owner sub-admins: the single farm they may manage. None for
+    # unrestricted staff and customers.
+    farm_id: str | None = None
 
     def has(self, permission: str) -> bool:
         return permission in self.permissions

@@ -13,7 +13,9 @@ class AdminRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def list_products(self, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
+    async def list_products(
+        self, limit: int = 50, offset: int = 0, farm_id: str | None = None
+    ) -> list[dict[str, Any]]:
         limit = min(max(limit, 1), MAX_PAGE_SIZE)
         return await self._db.fetch_all(
             """
@@ -40,10 +42,11 @@ class AdminRepository:
             LEFT JOIN brands b ON b.id = p.brand_id
             LEFT JOIN users u ON u.id = p.updated_by
             WHERE p.archived_at IS NULL
+              AND (? IS NULL OR p.farm_id = ?)
             ORDER BY p.updated_at DESC, p.name
             LIMIT ? OFFSET ?
             """,
-            (limit, max(offset, 0)),
+            (farm_id, farm_id, limit, max(offset, 0)),
         )
 
     async def list_categories(self, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
@@ -64,7 +67,9 @@ class AdminRepository:
             (limit, max(offset, 0)),
         )
 
-    async def list_inventory(self, limit: int = 100, offset: int = 0) -> list[dict[str, Any]]:
+    async def list_inventory(
+        self, limit: int = 100, offset: int = 0, farm_id: str | None = None
+    ) -> list[dict[str, Any]]:
         limit = min(max(limit, 1), 200)
         return await self._db.fetch_all(
             """
@@ -76,8 +81,110 @@ class AdminRepository:
             JOIN product_variants v ON v.id = il.variant_id
             JOIN products p ON p.id = v.product_id
             JOIN inventory_locations loc ON loc.id = il.location_id
+            WHERE (? IS NULL OR p.farm_id = ?)
             ORDER BY (il.on_hand - il.reserved - il.reorder_threshold) ASC, p.name
+            LIMIT ? OFFSET ?
+            """,
+            (farm_id, farm_id, limit, max(offset, 0)),
+        )
+
+    async def get_product_detail(self, product_id: str) -> dict[str, Any] | None:
+        product = await self._db.fetch_one(
+            """
+            SELECT p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
+                   p.seo_title, p.seo_description, p.updated_at,
+                   COALESCE(f.name, b.name, '') AS farm_name
+            FROM products p
+            LEFT JOIN farms f ON f.id = p.farm_id
+            LEFT JOIN brands b ON b.id = p.brand_id
+            WHERE p.id = ? AND p.archived_at IS NULL
+            """,
+            (product_id,),
+        )
+        if product is None:
+            return None
+        variants = await self._db.fetch_all(
+            """
+            SELECT v.id, v.name, v.sku, v.status,
+              (SELECT vp.list_amount_minor FROM variant_prices vp
+                WHERE vp.variant_id = v.id AND vp.status = 'active'
+                ORDER BY vp.starts_at DESC LIMIT 1) AS list_minor,
+              (SELECT vp.sale_amount_minor FROM variant_prices vp
+                WHERE vp.variant_id = v.id AND vp.status = 'active'
+                ORDER BY vp.starts_at DESC LIMIT 1) AS sale_minor,
+              (SELECT COALESCE(SUM(il.on_hand - il.reserved), 0) FROM inventory_levels il
+                WHERE il.variant_id = v.id) AS available
+            FROM product_variants v
+            WHERE v.product_id = ?
+            ORDER BY v.sort_order, v.name
+            """,
+            (product_id,),
+        )
+        product["variants"] = variants
+        return product
+
+    async def get_category_detail(self, category_id: str) -> dict[str, Any] | None:
+        return await self._db.fetch_one(
+            """
+            SELECT id, name, slug, short_description, hero_eyebrow, hero_title, hero_description,
+                   season_label, theme_key, visibility, status, seo_title, seo_description,
+                   product_assignment_mode, updated_at
+            FROM categories WHERE id = ? AND archived_at IS NULL
+            """,
+            (category_id,),
+        )
+
+    async def list_users(self) -> list[dict[str, Any]]:
+        return await self._db.fetch_all(
+            """
+            SELECT u.id, u.display_name, u.email, u.status, u.last_sign_in_at,
+              (SELECT GROUP_CONCAT(r.name, ', ') FROM user_roles ur
+                JOIN roles r ON r.id = ur.role_id WHERE ur.user_id = u.id) AS role_names,
+              (SELECT GROUP_CONCAT(ur.role_id, ',') FROM user_roles ur
+                WHERE ur.user_id = u.id) AS role_ids
+            FROM users u
+            WHERE u.user_type = 'staff'
+            ORDER BY u.display_name
+            """
+        )
+
+    async def list_roles(self) -> list[dict[str, Any]]:
+        return await self._db.fetch_all(
+            "SELECT id, key, name, description FROM roles ORDER BY name"
+        )
+
+    async def list_orders(self, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
+        limit = min(max(limit, 1), MAX_PAGE_SIZE)
+        return await self._db.fetch_all(
+            """
+            SELECT id, public_reference, customer_email, currency_code, total_minor,
+                   order_status, payment_status, fulfilment_status, placed_at, created_at
+            FROM orders
+            ORDER BY COALESCE(placed_at, created_at) DESC
             LIMIT ? OFFSET ?
             """,
             (limit, max(offset, 0)),
         )
+
+    async def get_order_detail(self, order_id: str) -> dict[str, Any] | None:
+        order = await self._db.fetch_one(
+            """
+            SELECT id, public_reference, customer_email, customer_phone_e164, currency_code,
+                   subtotal_minor, discount_minor, delivery_minor, tax_minor, total_minor,
+                   order_status, payment_status, fulfilment_status, delivery_status,
+                   delivery_address_json, placed_at, created_at
+            FROM orders WHERE id = ?
+            """,
+            (order_id,),
+        )
+        if order is None:
+            return None
+        order["items"] = await self._db.fetch_all(
+            """
+            SELECT id, product_name, variant_name, sku, quantity,
+                   unit_effective_amount_minor, line_total_minor
+            FROM order_items WHERE order_id = ? ORDER BY product_name
+            """,
+            (order_id,),
+        )
+        return order
