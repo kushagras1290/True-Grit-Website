@@ -1,8 +1,8 @@
 """Admin media uploads.
 
-Local development writes images to ``apps/api/.media`` and serves them from the
-API origin. Production can replace this service with Cloudflare Images or R2
-without changing the admin UI contract: it only needs a final public URL.
+Images are stored through the app's ``MediaStore`` — Cloudflare R2 in the
+Workers runtime, the local filesystem in development — and served back from the
+API under ``/media``. The admin UI only needs the final public URL.
 """
 
 from __future__ import annotations
@@ -13,6 +13,7 @@ from pathlib import Path
 
 from truegrit_api.errors import ValidationAppError
 from truegrit_api.platform.database import repo_root
+from truegrit_api.platform.media_store import MediaStore
 from truegrit_api.util.ids import new_id
 
 _MAX_IMAGE_BYTES = 5 * 1024 * 1024
@@ -28,7 +29,9 @@ def media_root() -> Path:
     return repo_root() / "apps" / "api" / ".media"
 
 
-def save_image_upload(*, content_type: str, data_base64: str) -> dict[str, str]:
+async def save_image_upload(
+    store: MediaStore, *, content_type: str, data_base64: str
+) -> dict[str, str]:
     extension = _IMAGE_TYPES.get(content_type)
     if extension is None:
         raise ValidationAppError("Upload a JPG, PNG, WebP, or GIF image.")
@@ -42,8 +45,6 @@ def save_image_upload(*, content_type: str, data_base64: str) -> dict[str, str]:
         raise ValidationAppError("Images must be 5 MB or smaller.")
 
     image_id = new_id("img")
-    filename = f"{image_id}{extension}"
-    target_dir = media_root() / "images"
-    target_dir.mkdir(parents=True, exist_ok=True)
-    (target_dir / filename).write_bytes(raw)
-    return {"id": image_id, "path": f"/media/images/{filename}"}
+    key = f"images/{image_id}{extension}"
+    await store.put(key, raw, content_type)
+    return {"id": image_id, "path": f"/media/{key}"}

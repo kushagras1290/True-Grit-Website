@@ -17,12 +17,13 @@ dev = [
     "hypothesis>=6.115",
     "httpx>=0.27",
     "uvicorn>=0.32",
-    # Cloudflare Python Workers toolchain: `pywrangler` bundles the app + its
-    # PyPI dependencies for deployment; `workers-runtime-sdk` supplies the
-    # `workers`/`asgi` runtime modules (and IDE type stubs) used by worker.py.
-    "workers-py>=1.90",
-    "workers-runtime-sdk",
 ]
+
+# Cloudflare Python Workers are deployed with pywrangler, run standalone in CI as
+# `uvx --from workers-py pywrangler deploy` (see .github/workflows/deploy.yml).
+# It bundles the runtime SDK (the `workers`/`asgi` modules) and the `dependencies`
+# above automatically, so those packages are intentionally NOT project deps —
+# pinning them here only breaks local `uv run` resolution.
 
 [build-system]
 requires = ["hatchling"]

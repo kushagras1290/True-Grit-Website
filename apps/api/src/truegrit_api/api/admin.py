@@ -375,7 +375,8 @@ async def upload_image_endpoint(
     request: Request,
     _principal: Annotated[Principal, Depends(require_permission("media.upload"))],
 ) -> Any:
-    saved = save_image_upload(
+    saved = await save_image_upload(
+        request.app.state.media,
         content_type=payload.content_type,
         data_base64=payload.data_base64,
     )

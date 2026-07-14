@@ -23,6 +23,7 @@ import asgi
 from truegrit_api.config import Settings
 from truegrit_api.main import create_app
 from truegrit_api.platform.d1 import D1Database
+from truegrit_api.platform.media_store import R2MediaStore
 
 # Build the FastAPI application once per isolate. The D1 binding is resolved
 # from ``env`` on first request (it is not available at module-import time) and
@@ -55,5 +56,8 @@ class Default(WorkerEntrypoint):
         global _app
         if _app is None:
             _bridge_worker_env(self.env)
-            _app = create_app(db=D1Database(self.env.DB))
+            _app = create_app(
+                db=D1Database(self.env.DB),
+                media=R2MediaStore(self.env.MEDIA_BUCKET),
+            )
         return await asgi.fetch(_app, request, self.env)
