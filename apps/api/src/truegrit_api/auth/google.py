@@ -17,15 +17,15 @@ from __future__ import annotations
 import base64
 import hashlib
 import hmac
+import inspect
 import json
-import threading
 import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
 from truegrit_api.errors import AuthenticationError
-from truegrit_api.platform.http import HttpError, get_json
+from truegrit_api.platform.http import HttpError, get_json_async
 
 GOOGLE_JWKS_URI = "https://www.googleapis.com/oauth2/v3/certs"
 GOOGLE_ISSUERS = frozenset({"accounts.google.com", "https://accounts.google.com"})
@@ -87,48 +87,50 @@ class GoogleTokenVerifier:
         clock: Callable[[], float] = time.time,
         cache_ttl_seconds: int = _JWKS_CACHE_TTL_SECONDS,
     ) -> None:
-        self._fetch = jwks_fetcher or (lambda: get_json(GOOGLE_JWKS_URI))
+        # The fetcher may be sync (tests inject a plain callable) or async (the
+        # default uses the Workers `fetch`); _load_keys awaits it when needed.
+        self._fetch = jwks_fetcher or (lambda: get_json_async(GOOGLE_JWKS_URI))
         self._clock = clock
         self._cache_ttl = cache_ttl_seconds
-        self._lock = threading.Lock()
         self._keys: dict[str, tuple[int, int]] = {}
         self._fetched_at = 0.0
 
-    def _load_keys(self, *, force: bool) -> dict[str, tuple[int, int]]:
-        with self._lock:
-            fresh = self._clock() - self._fetched_at < self._cache_ttl
-            if self._keys and fresh and not force:
-                return self._keys
-            try:
-                document = self._fetch()
-            except HttpError as exc:
-                if self._keys and not force:
-                    return self._keys  # serve stale keys rather than fail sign-in
-                raise GoogleAuthError("Could not reach Google to verify sign-in.") from exc
-            keys: dict[str, tuple[int, int]] = {}
-            for jwk in (document or {}).get("keys", []):
-                if jwk.get("kty") != "RSA" or jwk.get("alg") not in (None, "RS256"):
-                    continue
-                kid, modulus, exponent = jwk.get("kid"), jwk.get("n"), jwk.get("e")
-                if not (kid and modulus and exponent):
-                    continue
-                keys[kid] = (_b64url_to_int(modulus), _b64url_to_int(exponent))
-            if not keys:
-                raise GoogleAuthError("Google returned no usable signing keys.")
-            self._keys = keys
-            self._fetched_at = self._clock()
+    async def _load_keys(self, *, force: bool) -> dict[str, tuple[int, int]]:
+        fresh = self._clock() - self._fetched_at < self._cache_ttl
+        if self._keys and fresh and not force:
             return self._keys
+        try:
+            document = self._fetch()
+            if inspect.isawaitable(document):
+                document = await document
+        except HttpError as exc:
+            if self._keys and not force:
+                return self._keys  # serve stale keys rather than fail sign-in
+            raise GoogleAuthError("Could not reach Google to verify sign-in.") from exc
+        keys: dict[str, tuple[int, int]] = {}
+        for jwk in (document or {}).get("keys", []):
+            if jwk.get("kty") != "RSA" or jwk.get("alg") not in (None, "RS256"):
+                continue
+            kid, modulus, exponent = jwk.get("kid"), jwk.get("n"), jwk.get("e")
+            if not (kid and modulus and exponent):
+                continue
+            keys[kid] = (_b64url_to_int(modulus), _b64url_to_int(exponent))
+        if not keys:
+            raise GoogleAuthError("Google returned no usable signing keys.")
+        self._keys = keys
+        self._fetched_at = self._clock()
+        return self._keys
 
-    def _key_for(self, kid: str) -> tuple[int, int]:
-        keys = self._load_keys(force=False)
+    async def _key_for(self, kid: str) -> tuple[int, int]:
+        keys = await self._load_keys(force=False)
         if kid not in keys:
-            keys = self._load_keys(force=True)  # key rotation: refresh once
+            keys = await self._load_keys(force=True)  # key rotation: refresh once
         key = keys.get(kid)
         if key is None:
             raise GoogleAuthError("Sign-in token was signed with an unknown key.")
         return key
 
-    def verify(self, credential: str, *, client_id: str) -> GoogleIdentity:
+    async def verify(self, credential: str, *, client_id: str) -> GoogleIdentity:
         if not client_id:
             raise GoogleAuthError("Google sign-in is not configured.")
         if not credential or credential.count(".") != 2:
@@ -145,7 +147,7 @@ class GoogleTokenVerifier:
         if not kid:
             raise GoogleAuthError("Google sign-in token is missing its key id.")
 
-        modulus, exponent = self._key_for(kid)
+        modulus, exponent = await self._key_for(kid)
         signing_input = f"{header_b64}.{payload_b64}".encode("ascii")
         try:
             signature = _b64url_decode(signature_b64)
@@ -191,6 +193,6 @@ class GoogleTokenVerifier:
 _default_verifier = GoogleTokenVerifier()
 
 
-def verify_google_id_token(credential: str, *, client_id: str) -> GoogleIdentity:
+async def verify_google_id_token(credential: str, *, client_id: str) -> GoogleIdentity:
     """Verify a Google ID token using the shared, cached verifier."""
-    return _default_verifier.verify(credential, client_id=client_id)
+    return await _default_verifier.verify(credential, client_id=client_id)

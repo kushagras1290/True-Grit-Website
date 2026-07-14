@@ -11,6 +11,7 @@ current customer session. Sessions and cookies are created by the shared
 
 from __future__ import annotations
 
+import inspect
 import re
 from typing import Annotated, Any
 
@@ -240,7 +241,10 @@ async def google_login(
         max_attempts=settings.rate_limit_google_per_ip,
         window=settings.rate_limit_window_seconds,
     )
-    identity = verify_google_id_token(payload.credential, client_id=settings.google_client_id)
+    verified = verify_google_id_token(payload.credential, client_id=settings.google_client_id)
+    # The default verifier is async (Workers fetch for JWKS); tests may patch it
+    # with a synchronous stub — accept either.
+    identity = await verified if inspect.isawaitable(verified) else verified
     email = identity.email.strip().lower()
     now = utc_now_iso()
 

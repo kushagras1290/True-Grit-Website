@@ -38,3 +38,24 @@ def get_json(url: str, *, timeout: float = _DEFAULT_TIMEOUT_SECONDS) -> Any:
         return json.loads(raw.decode("utf-8"))
     except (json.JSONDecodeError, UnicodeDecodeError) as exc:
         raise HttpError(f"GET {url} returned invalid JSON.") from exc
+
+
+async def get_json_async(url: str) -> Any:
+    """GET `url` and parse JSON, using the Cloudflare Workers `fetch` when
+    available (the runtime has no raw sockets, so stdlib urllib fails there) and
+    falling back to the synchronous `get_json` locally and in tests."""
+    try:
+        from js import fetch as js_fetch  # Cloudflare Workers runtime only
+    except (ImportError, ModuleNotFoundError):
+        return get_json(url)
+    try:
+        response = await js_fetch(url)
+    except Exception as exc:  # a JS fetch rejection surfaces as a generic error
+        raise HttpError(f"GET {url} failed: {exc}") from exc
+    if not response.ok:
+        raise HttpError(f"GET {url} returned {response.status}.")
+    text = await response.text()
+    try:
+        return json.loads(str(text))
+    except json.JSONDecodeError as exc:
+        raise HttpError(f"GET {url} returned invalid JSON.") from exc

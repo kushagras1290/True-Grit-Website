@@ -7,6 +7,7 @@ claim checks with zero network access and no third-party crypto dependency.
 
 from __future__ import annotations
 
+import asyncio
 import base64
 import hashlib
 import json
@@ -79,8 +80,13 @@ def build_verifier() -> GoogleTokenVerifier:
     return GoogleTokenVerifier(jwks_fetcher=lambda: {"keys": [jwk]}, clock=lambda: NOW)
 
 
+def verify(token: str, *, client_id: str = CLIENT_ID):
+    """Run the async verifier synchronously for these unit tests."""
+    return asyncio.run(build_verifier().verify(token, client_id=client_id))
+
+
 def test_valid_token_returns_identity():
-    identity = build_verifier().verify(make_token(default_claims()), client_id=CLIENT_ID)
+    identity = verify(make_token(default_claims()))
     assert identity.subject == "google-subject-123"
     assert identity.email == "leaf@example.com"
     assert identity.name == "Leaf Grower"
@@ -90,25 +96,25 @@ def test_valid_token_returns_identity():
 def test_rejects_wrong_audience():
     token = make_token(default_claims(aud="someone-else"))
     with pytest.raises(GoogleAuthError, match="another app"):
-        build_verifier().verify(token, client_id=CLIENT_ID)
+        verify(token)
 
 
 def test_rejects_expired_token():
     token = make_token(default_claims(exp=NOW - 120))
     with pytest.raises(GoogleAuthError, match="expired"):
-        build_verifier().verify(token, client_id=CLIENT_ID)
+        verify(token)
 
 
 def test_rejects_bad_issuer():
     token = make_token(default_claims(iss="https://evil.example.com"))
     with pytest.raises(GoogleAuthError, match="issuer"):
-        build_verifier().verify(token, client_id=CLIENT_ID)
+        verify(token)
 
 
 def test_rejects_unverified_email():
     token = make_token(default_claims(email_verified=False))
     with pytest.raises(GoogleAuthError, match="not verified"):
-        build_verifier().verify(token, client_id=CLIENT_ID)
+        verify(token)
 
 
 def test_rejects_tampered_payload():
@@ -117,21 +123,21 @@ def test_rejects_tampered_payload():
     forged_payload = _b64url(json.dumps(default_claims(email="attacker@evil.test")).encode())
     tampered = f"{header}.{forged_payload}.{signature}"
     with pytest.raises(GoogleAuthError, match="signature is invalid"):
-        build_verifier().verify(tampered, client_id=CLIENT_ID)
+        verify(tampered)
 
 
 def test_rejects_unknown_signing_key():
     token = make_token(default_claims(), kid="rotated-away")
     with pytest.raises(GoogleAuthError, match="unknown key"):
-        build_verifier().verify(token, client_id=CLIENT_ID)
+        verify(token)
 
 
 def test_rejects_when_not_configured():
     with pytest.raises(GoogleAuthError, match="not configured"):
-        build_verifier().verify(make_token(default_claims()), client_id="")
+        verify(make_token(default_claims()), client_id="")
 
 
 @pytest.mark.parametrize("bad", ["", "only-one-part", "two.parts", "a.b.c.d"])
 def test_rejects_malformed_token(bad: str):
     with pytest.raises(GoogleAuthError):
-        build_verifier().verify(bad, client_id=CLIENT_ID)
+        verify(bad)
