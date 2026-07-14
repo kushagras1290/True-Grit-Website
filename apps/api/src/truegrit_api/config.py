@@ -74,6 +74,51 @@ class Settings(BaseSettings):
     # Password reset token lifetime.
     password_reset_lifetime_minutes: int = 30
 
+    # Payments. Cash-on-delivery is always available; each online gateway turns
+    # on only when its keys are present. Secrets come from env vars / Worker
+    # secrets (`wrangler secret put`) and are never committed. Use test-mode keys
+    # until go-live. Amounts are charged in `payment_currency` minor units.
+    payment_currency: str = "INR"
+    payment_cod_enabled: bool = True
+    # Razorpay (UPI, cards, netbanking, wallets — primary for India).
+    razorpay_key_id: str = ""
+    razorpay_key_secret: str = ""
+    razorpay_webhook_secret: str = ""
+    # Stripe (cards, global).
+    stripe_secret_key: str = ""
+    stripe_publishable_key: str = ""
+    stripe_webhook_secret: str = ""
+    # PayPal (PayPal balance + cards, global).
+    paypal_client_id: str = ""
+    paypal_secret: str = ""
+    paypal_webhook_id: str = ""
+    paypal_environment: Literal["sandbox", "live"] = "sandbox"
+
+    @property
+    def razorpay_enabled(self) -> bool:
+        return bool(self.razorpay_key_id and self.razorpay_key_secret)
+
+    @property
+    def stripe_enabled(self) -> bool:
+        return bool(self.stripe_secret_key)
+
+    @property
+    def paypal_enabled(self) -> bool:
+        return bool(self.paypal_client_id and self.paypal_secret)
+
+    @property
+    def enabled_payment_methods(self) -> list[str]:
+        methods: list[str] = []
+        if self.payment_cod_enabled:
+            methods.append("cod")
+        if self.razorpay_enabled:
+            methods.append("razorpay")
+        if self.stripe_enabled:
+            methods.append("stripe")
+        if self.paypal_enabled:
+            methods.append("paypal")
+        return methods
+
     @property
     def allowed_origins(self) -> list[str]:
         # Accept the sibling loopback host (localhost <-> 127.0.0.1) so a browser
