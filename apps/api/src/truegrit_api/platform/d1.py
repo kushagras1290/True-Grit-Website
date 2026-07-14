@@ -9,6 +9,18 @@ from collections.abc import Sequence
 from typing import Any
 
 
+def _to_py(value: Any) -> Any:
+    """Return a native Python value from a D1 result element.
+
+    Depending on the Workers/Pyodide runtime, D1 results arrive either as
+    Pyodide ``JsProxy`` objects (which expose ``.to_py()``) or as already
+    converted Python ``list``/``dict`` values. Calling ``.to_py()`` blindly
+    raises ``AttributeError`` on the latter, so convert only when needed.
+    """
+    to_py = getattr(value, "to_py", None)
+    return to_py() if callable(to_py) else value
+
+
 class D1Database:
     """Wraps the Worker `env.DB` binding behind the `Database` protocol."""
 
@@ -17,16 +29,19 @@ class D1Database:
 
     async def fetch_all(self, sql: str, params: Sequence[Any] = ()) -> list[dict[str, Any]]:
         result = await self._db.prepare(sql).bind(*params).all()
-        return [dict(row) for row in result.results.to_py()]
+        rows = _to_py(result.results)
+        return [dict(_to_py(row)) for row in rows]
 
     async def fetch_one(self, sql: str, params: Sequence[Any] = ()) -> dict[str, Any] | None:
         row = await self._db.prepare(sql).bind(*params).first()
-        return dict(row.to_py()) if row is not None else None
+        if row is None:
+            return None
+        return dict(_to_py(row))
 
     async def execute(self, sql: str, params: Sequence[Any] = ()) -> int:
         result = await self._db.prepare(sql).bind(*params).run()
-        meta = result.meta.to_py()
-        return int(meta.get("changes", 0))
+        meta = _to_py(result.meta)
+        return int(meta.get("changes", 0) or 0)
 
     async def batch(self, statements: Sequence[tuple[str, Sequence[Any]]]) -> None:
         prepared = [self._db.prepare(sql).bind(*params) for sql, params in statements]
