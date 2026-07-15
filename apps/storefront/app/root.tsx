@@ -7,6 +7,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useLocation,
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -27,7 +28,14 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export async function loader() {
-  return { bootstrap: await loadBootstrap() };
+  return {
+    bootstrap: await loadBootstrap(),
+    publicEnv: {
+      PUBLIC_API_URL: process.env.PUBLIC_API_URL || "",
+      PUBLIC_FACEBOOK_APP_ID: process.env.PUBLIC_FACEBOOK_APP_ID || "",
+      PUBLIC_FACEBOOK_LOGIN_VISIBLE: process.env.PUBLIC_FACEBOOK_LOGIN_VISIBLE || "",
+    },
+  };
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -49,23 +57,43 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { bootstrap } = useLoaderData<typeof loader>();
+  const { bootstrap, publicEnv } = useLoaderData<typeof loader>();
+  const location = useLocation();
+  const isPaymentWindow = location.pathname === "/payment/razorpay";
   return (
-    <CustomerProvider>
-      <CartProvider>
-        <a
-          href="#content"
-          className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-surface focus:px-3 focus:py-2"
-        >
-          Skip to content
-        </a>
-        <Header bootstrap={bootstrap} />
-        <main id="content">
-          <Outlet />
-        </main>
-        <Footer bootstrap={bootstrap} />
-      </CartProvider>
-    </CustomerProvider>
+    <>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `window.__TRUEGRIT_PUBLIC_ENV__=${JSON.stringify(publicEnv).replace(
+            /</g,
+            "\\u003c",
+          )};`,
+        }}
+      />
+      <CustomerProvider>
+        <CartProvider>
+          {isPaymentWindow ? (
+            <main id="content">
+              <Outlet />
+            </main>
+          ) : (
+            <>
+              <a
+                href="#content"
+                className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-surface focus:px-3 focus:py-2"
+              >
+                Skip to content
+              </a>
+              <Header bootstrap={bootstrap} />
+              <main id="content">
+                <Outlet />
+              </main>
+              <Footer bootstrap={bootstrap} />
+            </>
+          )}
+        </CartProvider>
+      </CustomerProvider>
+    </>
   );
 }
 

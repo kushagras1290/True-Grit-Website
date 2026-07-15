@@ -377,11 +377,13 @@ INSERT INTO search_content (entity_type, entity_id, title, slug, excerpt, keywor
   ('farm', 'farm_devika', 'Devika Organics', 'devika-organics', 'Three generations of Alphonso orchards in Ratnagiri.', 'mango farm ratnagiri');
 
 -- Sample customer and orders (synthetic — power the operations console Orders view)
-INSERT INTO users (id, email, display_name, user_type, status, email_verified_at, created_at, updated_at) VALUES
-  ('usr_cust_riya', 'riya@example.test', 'Riya Nair', 'customer', 'active', '2026-07-05T00:00:00Z', '2026-07-05T00:00:00Z', '2026-07-05T00:00:00Z');
+-- Riya has a verified mobile: checkout requires one (phone_required_at_checkout),
+-- so a seeded customer without one could not place an order.
+INSERT INTO users (id, email, display_name, user_type, status, email_verified_at, phone_e164, phone_verified_at, created_at, updated_at) VALUES
+  ('usr_cust_riya', 'riya@example.test', 'Riya Nair', 'customer', 'active', '2026-07-05T00:00:00Z', '+919999900010', '2026-07-05T00:00:00Z', '2026-07-05T00:00:00Z', '2026-07-05T00:00:00Z');
 
-INSERT INTO customer_profiles (user_id, marketing_email_consent, created_at, updated_at) VALUES
-  ('usr_cust_riya', 1, '2026-07-05T00:00:00Z', '2026-07-05T00:00:00Z');
+INSERT INTO customer_profiles (user_id, phone_e164, marketing_email_consent, created_at, updated_at) VALUES
+  ('usr_cust_riya', '+919999900010', 1, '2026-07-05T00:00:00Z', '2026-07-05T00:00:00Z');
 
 INSERT INTO orders (id, public_reference, customer_user_id, customer_email, currency_code, subtotal_minor, discount_minor, delivery_minor, tax_minor, total_minor, order_status, payment_status, fulfilment_status, delivery_status, placed_at, created_at, updated_at) VALUES
   ('ord_1001', 'TG-1001', 'usr_cust_riya', 'riya@example.test', 'INR', 89900, 0, 4900, 0, 94800, 'confirmed', 'paid', 'unfulfilled', 'not_ready', '2026-07-10T09:00:00Z', '2026-07-10T09:00:00Z', '2026-07-10T09:00:00Z'),

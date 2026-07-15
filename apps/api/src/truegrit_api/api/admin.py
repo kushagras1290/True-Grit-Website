@@ -41,6 +41,7 @@ from truegrit_api.services.catalogue import (
     update_category,
     update_product,
 )
+from truegrit_api.services.contact import contactable_email
 from truegrit_api.services.email import send_email
 from truegrit_api.services.inventory import adjust_inventory
 from truegrit_api.services.media import save_image_upload
@@ -989,7 +990,10 @@ async def list_orders_endpoint(
             {
                 "id": row["id"],
                 "publicReference": row["public_reference"],
-                "customerEmail": row["customer_email"],
+                # Null, not the `@phone.invalid` placeholder: staff looking at a
+                # phone-only customer's order should see no email, not a fake one
+                # they might try to write to.
+                "customerEmail": contactable_email(row["customer_email"]),
                 "totalMinor": row["total_minor"],
                 "currencyCode": row["currency_code"],
                 "orderStatus": row["order_status"],
@@ -1016,7 +1020,8 @@ async def get_order_endpoint(
     return {
         "id": order["id"],
         "publicReference": order["public_reference"],
-        "customerEmail": order["customer_email"],
+        "customerEmail": contactable_email(order["customer_email"]),
+        "customerPhone": order["customer_phone_e164"],
         "currencyCode": order["currency_code"],
         "subtotalMinor": order["subtotal_minor"],
         "discountMinor": order["discount_minor"],

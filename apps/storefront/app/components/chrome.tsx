@@ -6,14 +6,24 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 import { Link, NavLink } from "react-router";
 
 import { useCart } from "../lib/cart";
+import { isFacebookLoginVisible } from "../lib/public-env";
 import {
   AuthError,
+  FacebookSignInButton,
   GoogleSignInButton,
   requestPasswordReset,
   useCustomer,
+  type PhoneVerification,
 } from "../lib/customer-auth";
+import { AddPhonePrompt, PhoneAuthPanel, PhoneVerifier } from "./phone-auth";
 
-type AuthMode = "signin" | "register";
+type AuthMode = "phone" | "signin" | "register";
+
+const AUTH_MODE_LABELS: Record<AuthMode, string> = {
+  phone: "Mobile",
+  signin: "Email",
+  register: "Sign up",
+};
 
 function ForgotPassword() {
   const [open, setOpen] = useState(false);
@@ -77,12 +87,14 @@ const FIELD_CLASS =
 
 function AccountSummary({
   email,
+  phone,
   name,
   onNavigate,
   onSignOut,
   pending,
 }: {
-  email: string;
+  email: string | null;
+  phone: string | null;
   name: string;
   onNavigate: () => void;
   onSignOut: () => void;
@@ -92,8 +104,14 @@ function AccountSummary({
     <div className="space-y-3 px-4 py-4">
       <div>
         <p className="text-sm font-medium text-ink">{name}</p>
-        <p className="text-xs text-ink-muted">{email}</p>
+        {/* A phone-only account has no address, so lead with whichever
+            identifier this customer actually has. */}
+        <p className="text-xs text-ink-muted">{email ?? phone ?? "No contact on file"}</p>
+        {email && phone ? <p className="text-xs text-ink-muted">{phone}</p> : null}
       </div>
+
+      <AddPhonePrompt />
+
       <div className="grid grid-cols-2 gap-2 text-sm">
         <Link
           to="/account"
@@ -123,12 +141,19 @@ function AccountSummary({
 }
 
 function CustomerPortal() {
-  const { customer, status, login, register, loginWithGoogle, logout } = useCustomer();
+  const { customer, status, login, register, loginWithGoogle, loginWithFacebook, logout } =
+    useCustomer();
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState<AuthMode>("signin");
+  // Mobile first: it is the shortest path for most Indian customers and needs no
+  // password.
+  const [mode, setMode] = useState<AuthMode>("phone");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  // Proof of a mobile, held between the verify step and the account being
+  // created. Registration will not submit without it.
+  const [registerPhone, setRegisterPhone] = useState<PhoneVerification | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const showFacebookLogin = isFacebookLoginVisible();
 
   useEffect(() => {
     if (!open) return;
@@ -166,6 +191,22 @@ function CustomerPortal() {
     [loginWithGoogle],
   );
 
+  const handleFacebook = useCallback(
+    async (accessToken: string) => {
+      setError(null);
+      setPending(true);
+      try {
+        await loginWithFacebook(accessToken);
+        setOpen(false);
+      } catch (caught) {
+        setError(caught instanceof AuthError ? caught.message : "Facebook sign-in failed.");
+      } finally {
+        setPending(false);
+      }
+    },
+    [loginWithFacebook],
+  );
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
@@ -175,7 +216,16 @@ function CustomerPortal() {
     setPending(true);
     try {
       if (mode === "register") {
-        await register({ name: String(form.get("name") ?? ""), email, password });
+        if (registerPhone === null) {
+          setError("Verify your mobile number first.");
+          return;
+        }
+        await register({
+          name: String(form.get("name") ?? ""),
+          email,
+          password,
+          phoneVerificationToken: registerPhone.verificationToken,
+        });
       } else {
         await login(email, password);
       }
@@ -184,6 +234,12 @@ function CustomerPortal() {
       setError(
         caught instanceof AuthError ? caught.message : "Something went wrong. Please try again.",
       );
+      // Send them back to the number step only when the proof itself is gone.
+      // For an ordinary rejection — a taken email, a weak password — the token is
+      // still good, and re-verifying would cost them another text to fix a typo.
+      if (caught instanceof AuthError && caught.code === "phone_verification_required") {
+        setRegisterPhone(null);
+      }
     } finally {
       setPending(false);
     }
@@ -192,9 +248,15 @@ function CustomerPortal() {
   function switchMode(next: AuthMode) {
     setMode(next);
     setError(null);
+    setRegisterPhone(null);
   }
 
   const signedIn = status === "authenticated" && customer !== null;
+  // The email/password form is the last step of registration, not the first:
+  // while a new customer still owes us a verified number, the phone step stands
+  // in its place.
+  const showCredentialsForm =
+    mode === "signin" || (mode === "register" && registerPhone !== null);
 
   return (
     <div className="relative" ref={containerRef}>
@@ -218,7 +280,9 @@ function CustomerPortal() {
             <div>
               <p className="font-medium text-ink">{signedIn ? "Account" : "Welcome"}</p>
               <p className="text-xs text-ink-muted">
-                {signedIn ? customer.email : "Sign in to track orders and rewards"}
+                {signedIn
+                  ? (customer.email ?? customer.phone ?? "Signed in")
+                  : "Sign in with your mobile, email, or Google"}
               </p>
             </div>
             <button
@@ -235,6 +299,7 @@ function CustomerPortal() {
             <AccountSummary
               name={customer.displayName}
               email={customer.email}
+              phone={customer.phone}
               pending={pending}
               onNavigate={() => setOpen(false)}
               onSignOut={async () => {
@@ -245,7 +310,12 @@ function CustomerPortal() {
             />
           ) : (
             <div className="space-y-4 px-4 py-4">
-              <GoogleSignInButton onCredential={handleGoogle} onError={reportError} />
+              <div className="space-y-2">
+                <GoogleSignInButton onCredential={handleGoogle} onError={reportError} />
+                {showFacebookLogin ? (
+                  <FacebookSignInButton onAccessToken={handleFacebook} onError={reportError} />
+                ) : null}
+              </div>
 
               <div className="flex items-center gap-3 text-xs text-ink-muted">
                 <span className="h-px flex-1 bg-line" />
@@ -253,8 +323,8 @@ function CustomerPortal() {
                 <span className="h-px flex-1 bg-line" />
               </div>
 
-              <div className="grid grid-cols-2 gap-1 rounded-sm bg-canvas p-1 text-sm">
-                {(["signin", "register"] as const).map((value) => (
+              <div className="grid grid-cols-3 gap-1 rounded-sm bg-canvas p-1 text-sm">
+                {(["phone", "signin", "register"] as const).map((value) => (
                   <button
                     key={value}
                     type="button"
@@ -265,13 +335,37 @@ function CustomerPortal() {
                     aria-pressed={mode === value}
                     onClick={() => switchMode(value)}
                   >
-                    {value === "signin" ? "Sign in" : "Create account"}
+                    {AUTH_MODE_LABELS[value]}
                   </button>
                 ))}
               </div>
 
-              <form className="space-y-3" onSubmit={handleSubmit}>
-                {mode === "register" ? (
+              {mode === "phone" ? <PhoneAuthPanel onDone={() => setOpen(false)} /> : null}
+
+              {mode === "register" && registerPhone === null ? (
+                <PhoneVerifier
+                  intent="register"
+                  heading="First, verify your mobile"
+                  hint="Every account needs a verified number for delivery updates."
+                  onVerified={(verification) => setRegisterPhone(verification)}
+                />
+              ) : null}
+
+              {showCredentialsForm ? (
+                <form className="space-y-3" onSubmit={handleSubmit}>
+                  {mode === "register" && registerPhone !== null ? (
+                    <p className="rounded-sm border border-line bg-canvas px-3 py-2 text-xs text-ink-muted">
+                      Mobile verified ✓{" "}
+                      <button
+                        type="button"
+                        className="text-brand underline-offset-4 hover:underline"
+                        onClick={() => setRegisterPhone(null)}
+                      >
+                        Change
+                      </button>
+                    </p>
+                  ) : null}
+                  {mode === "register" ? (
                   <label className="block space-y-1">
                     <span className="text-xs font-medium text-ink-muted">Name</span>
                     <input
@@ -322,6 +416,7 @@ function CustomerPortal() {
                   {pending ? "Please wait…" : mode === "register" ? "Create account" : "Sign in"}
                 </button>
               </form>
+              ) : null}
 
               {mode === "signin" ? (
                 <div className="pt-1">

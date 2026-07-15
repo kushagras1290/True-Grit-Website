@@ -20,7 +20,7 @@ from typing import Any
 
 from truegrit_api.auth.principal import Principal
 from truegrit_api.config import get_settings
-from truegrit_api.errors import ConflictError, ValidationAppError
+from truegrit_api.errors import ConflictError, PhoneRequiredError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
 from truegrit_api.util.ids import new_id
@@ -134,6 +134,18 @@ async def place_order(
     lines = [CheckoutLine(variant_id=v, quantity=q) for v, q in merged.items()]
 
     address = _validate_address(delivery_address)
+    settings = get_settings()
+
+    # A reachable mobile is the one contact detail this order genuinely depends
+    # on: the courier calls it, and cash-on-delivery has nothing else to fall
+    # back on. Accounts that predate phone verification are prompted (and may
+    # skip) in the storefront, so checkout is where the ask finally lands.
+    if settings.phone_required_at_checkout and not customer.has_verified_phone:
+        raise PhoneRequiredError(
+            "Please verify your mobile number before checking out — "
+            "we need it for delivery updates."
+        )
+
     now = utc_now_iso()
     resolved = [await _resolve_line(db, line, now) for line in lines]
 
@@ -142,7 +154,6 @@ async def place_order(
     delivery = 0 if subtotal >= _FREE_DELIVERY_THRESHOLD_MINOR else _DELIVERY_FEE_MINOR
     total = subtotal + delivery
 
-    settings = get_settings()
     if payment_method == "cod":
         if total > settings.payment_cod_max_minor:
             raise ValidationAppError(
@@ -177,18 +188,24 @@ async def place_order(
         (
             """
             INSERT INTO orders (
-              id, public_reference, customer_user_id, customer_email, currency_code,
+              id, public_reference, customer_user_id, customer_email, customer_phone_e164,
+              currency_code,
               subtotal_minor, discount_minor, delivery_minor, tax_minor, total_minor,
               order_status, payment_status, fulfilment_status, delivery_status,
               delivery_address_json, placed_at, created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, 0, ?, 0, ?,
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, 0, ?,
                       ?, 'pending', 'unfulfilled', 'not_ready', ?, ?, ?, ?)
             """,
             (
                 order_id,
                 reference,
                 customer.user_id,
+                # customer_email is NOT NULL, so a phone-only account stores its
+                # `@phone.invalid` placeholder here exactly as `users` does. Every
+                # reader goes through `services.contact`, and the phone below is
+                # what fulfilment actually contacts them on.
                 customer.email,
+                customer.phone_e164 or address.get("phone_e164"),
                 currency,
                 subtotal,
                 delivery,

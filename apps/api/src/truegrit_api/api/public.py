@@ -85,6 +85,11 @@ async def payment_methods() -> Any:
         "currency": settings.payment_currency,
         "codMaxMinor": settings.payment_cod_max_minor,
         "razorpayKeyId": settings.razorpay_key_id if settings.razorpay_enabled else "",
+        # Public client id only — the secret never leaves the API. PayPal is the
+        # international lane, so the storefront also needs the currency an
+        # overseas buyer will actually be charged in (never INR).
+        "paypalClientId": settings.paypal_client_id if settings.paypal_enabled else "",
+        "paypalCurrency": settings.paypal_currency.upper() if settings.paypal_enabled else "",
     }
 
 

@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from truegrit_api.api.admin import router as admin_router
 from truegrit_api.api.customer_auth import router as customer_auth_router
+from truegrit_api.api.phone_auth import router as phone_auth_router
 from truegrit_api.api.public import router as public_router
 from truegrit_api.api.storefront import router as storefront_router
 from truegrit_api.config import get_settings
@@ -64,6 +65,7 @@ def create_app(db: Database | None = None, media: MediaStore | None = None) -> F
 
     app.include_router(public_router, prefix="/v1/public")
     app.include_router(customer_auth_router, prefix="/v1/public/auth")
+    app.include_router(phone_auth_router, prefix="/v1/public/auth")
     app.include_router(storefront_router, prefix="/v1/public")
     app.include_router(admin_router, prefix="/v1/admin")
 

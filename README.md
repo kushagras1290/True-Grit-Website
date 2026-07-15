@@ -71,21 +71,86 @@ reviewable before Cloudflare resources exist. Point them at a deployed API to go
 
 ### Customer accounts and sign-in
 
-The storefront header account menu supports email + password sign-up/sign-in and "Sign in with
-Google". Passwords are PBKDF2-SHA256 hashed; Google ID tokens are verified server-side against
-Google's JWKS. Relevant environment variables:
+The storefront header account menu supports **mobile + SMS passcode**, email + password
+sign-up/sign-in, "Sign in with Google", and "Continue with Facebook". Passwords are PBKDF2-SHA256
+hashed; Google ID tokens are verified server-side against Google's JWKS, and Facebook user access
+tokens are verified server-side against Meta's Graph API. Relevant environment variables:
 
-| Variable | App | Purpose |
-| --- | --- | --- |
-| `VITE_API_URL` | storefront | Browser calls the customer-auth API with cookies. Unset ⇒ demo mode (faked localStorage session). |
-| `VITE_GOOGLE_CLIENT_ID` | storefront | Public Google OAuth client id for the Google button. Unset ⇒ the button shows "not configured". |
-| `GOOGLE_CLIENT_ID` | api | Same client id; the API accepts only Google tokens whose `aud` matches it. Empty ⇒ Google sign-in disabled. |
+| Variable                                                        | App        | Purpose                                                                                                     |
+| --------------------------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- |
+| `VITE_FACEBOOK_APP_ID` / `PUBLIC_FACEBOOK_APP_ID`               | storefront | Public Facebook app id for the Facebook button. Unset => the button shows "not configured".                 |
+| `VITE_FACEBOOK_LOGIN_VISIBLE` / `PUBLIC_FACEBOOK_LOGIN_VISIBLE` | storefront | Set to `true` only when the Facebook button should be visible to customers. Default `false`.                |
+| `FACEBOOK_APP_ID`                                               | api        | Same public Facebook app id; the API accepts only Facebook tokens issued to this app.                       |
+| `FACEBOOK_APP_SECRET`                                           | api        | Server-side Facebook app secret used to inspect access tokens. Empty => Facebook sign-in disabled.          |
+| `VITE_API_URL`                                                  | storefront | Browser calls the customer-auth API with cookies. Unset ⇒ demo mode (faked localStorage session).           |
+| `VITE_GOOGLE_CLIENT_ID`                                         | storefront | Public Google OAuth client id for the Google button. Unset ⇒ the button shows "not configured".             |
+| `GOOGLE_CLIENT_ID`                                              | api        | Same client id; the API accepts only Google tokens whose `aud` matches it. Empty ⇒ Google sign-in disabled. |
+| `FAST2SMS_API_KEY`                                              | api        | SMS provider key for passcodes. Empty ⇒ console sender in dev; **refused in staging/production**.            |
+
+Sign in with X (Twitter) is **not** implemented: X discontinued its free API tier on 6 February 2026
+and routes new developers to pay-per-use only, so every sign-in would be a billed API call.
+
+#### Mobile numbers and one-time passcodes
+
+A customer can sign up and sign in with **nothing but a mobile number** — no email, no password.
+Numbers are stored as E.164 on `users.phone_e164` (unique) and are only ever written once verified.
+Registration through any route requires a verified number, and checkout enforces one, because a
+courier and cash-on-delivery both depend on being able to ring the customer. Existing accounts are
+prompted after sign-in and may skip; checkout is the backstop.
+
+Passcodes are generated and verified by us — the provider only delivers — so swapping providers is
+one class in `apps/api/src/truegrit_api/services/sms.py`. Only SHA-256 hashes of the passcode and of
+the resulting proof token are stored.
+
+**There is no free SMS in India.** With `FAST2SMS_API_KEY` blank, a console sender logs the passcode
+instead of texting it, so the whole flow is exercisable locally at zero cost; `get_sms_sender`
+**refuses** that fallback when `APP_ENV` is staging/production, since logging live passcodes would let
+anyone with log access take over accounts. For production, Fast2SMS's `route=otp` rides the
+provider's own approved DLT header, so no ₹5,900 TRAI DLT registration is needed — new accounts get
+₹50 of free credit (~240 passcodes), then roughly ₹0.21–0.25 per SMS.
+
+#### Payments
+
+Cash on delivery (≤ ₹399, one open COD order per customer) and Razorpay (UPI, cards, netbanking,
+wallets) are the domestic options. **Keys alone never expose a gateway.** Razorpay is the only one
+with a finished checkout; PayPal sits behind `PAYMENT_PAYPAL_VISIBLE` and Stripe behind
+`PAYMENT_STRIPE_VISIBLE`, both defaulting to `false`, so pasting a key into `.env` cannot advertise a
+method that would strand a customer with an unpayable order. Same idea as
+`PUBLIC_FACEBOOK_LOGIN_VISIBLE`: configure first, reveal deliberately.
+
+**PayPal is international-only.** PayPal closed its domestic India business on 1 April 2021 — an
+Indian merchant cannot take INR from an Indian customer. The supported direction is an overseas buyer
+paying an Indian merchant, i.e. the NRI case: pay from abroad, deliver to family in India. So orders
+stay priced in INR while PayPal charges `PAYPAL_CURRENCY` (never INR), converted at the operator-set
+`PAYPAL_INR_PER_UNIT`. That rate is a fixed number rather than a live FX lookup on purpose: an FX API
+is another key, another dependency and another outage on the checkout path, and a silently moving
+rate makes order totals unreproducible. Set it slightly in the store's favour and review it; `0`
+disables PayPal, since the API refuses to offer a gateway it cannot price.
+
+Razorpay verifies offline (it returns a signature we check with HMAC); PayPal does not — an approval
+only becomes money when the API calls capture, so `/v1/public/payments/paypal/capture` captures
+against the PayPal order id **we** stored and rejects any captured amount that does not match. Both
+gateways pay in a dedicated popup (`/payment/razorpay`, `/payment/paypal`) that reports back to the
+checkout tab via `postMessage`.
+
+#### Contact details on phone-only accounts
+
+A phone-only account has no email address, but `users.email` is `NOT NULL` and cannot be relaxed:
+dropping the constraint needs a SQLite table rebuild, and D1 supports neither `PRAGMA foreign_keys =
+OFF` nor cascade-free deferral, so `DROP TABLE users` would silently cascade-delete profiles,
+sessions and orders. Those accounts therefore hold a reserved RFC 2606 `@phone.invalid` placeholder.
+**Always read an account's address through `services.contact.contactable_email`**, which returns
+`None` rather than a placeholder — never `users.email` directly.
 
 No Google client secret is required — Google Identity Services returns a signed ID token to the
 browser, which the API verifies.
 
+Facebook sign-in requires a Facebook app secret on the API because the backend inspects the browser
+user access token via Meta's Graph API before creating a session. Do not expose or commit
+`FACEBOOK_APP_SECRET`; set it as a local `.env` value or Worker secret.
+
 **Google Cloud setup (one-time):** in [console.cloud.google.com](https://console.cloud.google.com)
-→ APIs & Services → Credentials → *Create OAuth client ID* → **Web application**. Under
+→ APIs & Services → Credentials → _Create OAuth client ID_ → **Web application**. Under
 **Authorized JavaScript origins** add the exact storefront origins you browse to — for local dev
 add **both** so either loopback host works:
 
@@ -94,7 +159,7 @@ http://localhost:5173
 http://127.0.0.1:5173
 ```
 
-Leave *Authorized redirect URIs* empty (the button returns the token to a JS callback). On the
+Leave _Authorized redirect URIs_ empty (the button returns the token to a JS callback). On the
 OAuth consent screen, either add your Google account under **Test users** or **Publish** the app —
 otherwise Google rejects sign-in even though the button renders. The `openid email profile` scopes
 are non-sensitive, so no Google verification is needed.
@@ -102,6 +167,12 @@ are non-sensitive, so no Google verification is needed.
 Use the same origin in the browser that you registered (this repo's dev servers listen on both
 `localhost` and `127.0.0.1`, and the API's CORS accepts both, but Google matches the origin
 exactly).
+
+**Meta setup (one-time):** in [developers.facebook.com](https://developers.facebook.com/) create an
+app with Facebook Login for Web. Add the exact storefront origins you browse to under the app's
+allowed domains / valid OAuth redirect settings, including `localhost` and `127.0.0.1` for local
+development. Request `public_profile,email`; customers whose Facebook account does not return an
+email cannot use Facebook sign-in until they grant or add an email.
 
 Copy `apps/api/.env.example`, `apps/storefront/.env.example`, and `apps/admin/.env.example` to
 `.env` and fill in values. `.env` files are git-ignored; only the `.env.example` templates are
@@ -116,7 +187,7 @@ Two layers protect the API:
   `429` with a `Retry-After` header. In-memory by design so a flood cannot amplify into DB load; on
   multi-isolate Workers, put Cloudflare edge rate limiting in front for a hard cap.
 - **Auth-specific limits** — durable, DB-backed fixed-window counters (`auth_rate_limits` table) on
-  register/login/Google and admin login, keyed per-IP and per-account, so brute-force and
+  register/login/Google/Facebook and admin login, keyed per-IP and per-account, so brute-force and
   credential-stuffing limits hold across isolates and deploys. Defaults: 5 login attempts /
   account / 15 min, 20 / IP / 15 min. Tune via `RATE_LIMIT_*`; set `RATE_LIMIT_ENABLED=false` only
   in controlled tests.
@@ -139,7 +210,7 @@ Cloudflare resources use explicit environment suffixes (`truegrit-api-dev|stagin
   engine, product detail, farms, recipes, journal, search foundation, admin console, RBAC,
   publishing workflows, media metadata, audit log.
 - **Delivered on top of Release 1:**
-  - **Customer accounts** — Google + email/password sign-in, order history.
+  - **Customer accounts** — Google + Facebook + email/password sign-in, order history.
   - **Operations console (real CRUD)** — products and categories create/edit/publish/archive with
     versioning + audit, persisted inventory adjustments, user/role management, order status
     transitions.

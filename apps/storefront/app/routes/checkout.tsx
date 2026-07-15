@@ -8,7 +8,10 @@ import { useCart } from "../lib/cart";
 import {
   commerceLive,
   getPaymentMethods,
-  payWithRazorpay,
+  openPaypalPaymentWindow,
+  openRazorpayPaymentWindow,
+  payWithPaypalWindow,
+  payWithRazorpayWindow,
   placeOrder,
   type DeliveryAddress,
   type PaymentMethodsInfo,
@@ -48,6 +51,7 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
   const codAllowed =
     payment !== null && payment.methods.includes("cod") && total <= payment.codMaxMinor;
   const razorpayAllowed = payment !== null && payment.methods.includes("razorpay");
+  const paypalAllowed = payment !== null && payment.methods.includes("paypal");
 
   useEffect(() => {
     if (!commerceLive) return;
@@ -120,6 +124,14 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
       postalCode: String(form.get("postalCode") ?? ""),
     };
     const chosen = method === "cod" && !codAllowed ? "razorpay" : method;
+    // Open the popup synchronously, before any await: a window opened after an
+    // async hop is no longer tied to the click and browsers block it.
+    const paymentWindow =
+      chosen === "razorpay"
+        ? openRazorpayPaymentWindow()
+        : chosen === "paypal"
+          ? openPaypalPaymentWindow()
+          : null;
     setError(null);
     setPending(true);
     try {
@@ -128,14 +140,28 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
         address,
         chosen,
       );
-      // Online orders open a Razorpay widget; only clear the cart once the
-      // payment is verified server-side. COD orders are already confirmed.
+      // Online orders open a gateway window; only clear the cart once the
+      // payment is settled server-side. COD orders are already confirmed.
       if (order.payment?.method === "razorpay") {
-        await payWithRazorpay(order, { name: customer!.displayName, email: customer!.email });
+        await payWithRazorpayWindow(
+          order,
+          {
+            name: customer!.displayName,
+            email: customer!.email ?? undefined,
+            contact: customer!.phone ?? address.phoneE164,
+          },
+          paymentWindow,
+        );
+      } else if (order.payment?.method === "paypal") {
+        // No prefill: PayPal authenticates the buyer in its own window, and the
+        // account paying may not be the account shopping (someone abroad paying
+        // for a delivery here).
+        await payWithPaypalWindow(order, paymentWindow);
       }
       clear();
       void navigate(`/account/orders/${order.reference}`, { replace: true });
     } catch (caught) {
+      if (paymentWindow && !paymentWindow.closed) paymentWindow.close();
       setError(caught instanceof AuthError ? caught.message : "Could not place your order.");
     } finally {
       setPending(false);
@@ -238,6 +264,28 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                   onChange={() => setMethod("razorpay")}
                 />
                 <span className="text-ink">Pay online — UPI, cards, netbanking &amp; wallets</span>
+              </label>
+            ) : null}
+            {paypalAllowed ? (
+              <label className="flex cursor-pointer items-start gap-2 rounded-sm border border-line px-3 py-2 text-sm">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  className="mt-0.5"
+                  checked={method === "paypal"}
+                  onChange={() => setMethod("paypal")}
+                />
+                <span className="text-ink">
+                  PayPal — for international cards
+                  {/* PayPal cannot settle INR to an Indian merchant, so this is
+                      the overseas lane only. Say who it is for, so domestic
+                      customers do not pick it and hit a conversion they did not
+                      want. */}
+                  <span className="mt-0.5 block text-xs text-ink-muted">
+                    Paying from outside India? Charged in {payment?.paypalCurrency || "USD"} at
+                    today's rate.
+                  </span>
+                </span>
               </label>
             ) : null}
             <label

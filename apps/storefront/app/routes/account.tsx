@@ -61,8 +61,8 @@ function OrderHistory() {
               {order.reference}
             </Link>
             <p className="mt-0.5 text-xs text-ink-muted">
-              {new Date(order.placedAt).toLocaleDateString()} ·{" "}
-              {order.itemCount} item{order.itemCount === 1 ? "" : "s"} ·{" "}
+              {new Date(order.placedAt).toLocaleDateString()} · {order.itemCount} item
+              {order.itemCount === 1 ? "" : "s"} ·{" "}
               <span className="capitalize">{order.orderStatus.replaceAll("_", " ")}</span>
             </p>
             <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-ink-muted">
@@ -129,9 +129,19 @@ export default function AccountPage(_props: Route.ComponentProps) {
               <dt className="text-sm text-ink-muted">Name</dt>
               <dd className="text-sm font-medium text-ink">{customer.displayName}</dd>
             </div>
+            {/* Phone-only accounts have no address at all, so render the row
+                only when there is something real to put in it. */}
+            {customer.email ? (
+              <div className="flex items-center justify-between px-5 py-4">
+                <dt className="text-sm text-ink-muted">Email</dt>
+                <dd className="text-sm font-medium text-ink">{customer.email}</dd>
+              </div>
+            ) : null}
             <div className="flex items-center justify-between px-5 py-4">
-              <dt className="text-sm text-ink-muted">Email</dt>
-              <dd className="text-sm font-medium text-ink">{customer.email}</dd>
+              <dt className="text-sm text-ink-muted">Mobile</dt>
+              <dd className="text-sm font-medium text-ink">
+                {customer.phone ?? <span className="text-ink-muted">Not added</span>}
+              </dd>
             </div>
           </dl>
 

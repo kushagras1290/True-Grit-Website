@@ -20,6 +20,45 @@ def as_customer(client: TestClient, db: SQLiteDatabase) -> None:
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_cust_riya"))
 
 
+def test_checkout_requires_a_verified_mobile(client: TestClient, db: SQLiteDatabase):
+    """Accounts predating phone verification are prompted (and may skip) in the
+    storefront, so checkout is the backstop — a courier needs a live number, and
+    cash on delivery has nothing else to fall back on."""
+    db._conn.execute(
+        "UPDATE users SET phone_e164 = NULL, phone_verified_at = NULL WHERE id = 'usr_cust_riya'"
+    )
+    db._conn.commit()
+    as_customer(client, db)
+
+    response = client.post(
+        "/v1/public/checkout",
+        json={
+            "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+            "deliveryAddress": ADDRESS,
+        },
+    )
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "phone_verification_required"
+
+
+def test_checkout_records_the_customers_verified_mobile(client: TestClient, db: SQLiteDatabase):
+    as_customer(client, db)
+    response = client.post(
+        "/v1/public/checkout",
+        json={
+            "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+            "deliveryAddress": ADDRESS,
+        },
+    )
+    assert response.status_code == 200
+    stored = db._conn.execute(
+        "SELECT customer_phone_e164 FROM orders WHERE public_reference = ?",
+        (response.json()["reference"],),
+    ).fetchone()[0]
+    # Fulfilment needs a number it can actually ring.
+    assert stored == "+919999900010"
+
+
 def test_checkout_creates_order_and_reserves_stock(client: TestClient, db: SQLiteDatabase):
     as_customer(client, db)
     before = db._conn.execute(

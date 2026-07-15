@@ -31,10 +31,46 @@
     // Public Google OAuth client id (not a secret) — enables server-side
     // verification of "Sign in with Google" ID tokens.
     "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
+    // Public Facebook app id. Set FACEBOOK_APP_SECRET with
+    // `wrangler secret put FACEBOOK_APP_SECRET` to enable Facebook sign-in.
+    "FACEBOOK_APP_ID": "",
     // Storefront/admin and API are on different workers.dev subdomains, so the
     // session cookie must be cross-site. "none" makes config.py also mark it
     // Secure; CSRF tokens (x-csrf-token) remain the CSRF defence. Without this
     // the browser drops the session cookie and logins never persist.
-    "SESSION_COOKIE_SAMESITE": "none"
+    "SESSION_COOKIE_SAMESITE": "none",
+
+    // --- Mobile verification (SMS passcodes) ---
+    // OFF until the SMS provider is wired. Nothing here can deliver a passcode
+    // yet: FAST2SMS_API_KEY is unset, so the console sender stands in and prints
+    // the code to the Worker log where a customer will never see it. Requiring a
+    // verified mobile before that key exists would lock every customer out of
+    // registration and checkout.
+    //
+    // GO-LIVE, in this order:
+    //   1. `wrangler secret put FAST2SMS_API_KEY`   (never a var — it is a secret)
+    //   2. flip both flags below to "true"
+    //   3. redeploy and place one test order
+    "PHONE_REQUIRED_AT_REGISTRATION": "false",
+    "PHONE_REQUIRED_AT_CHECKOUT": "false",
+
+    // --- Payments ---
+    // Razorpay is the only gateway with a finished checkout. PayPal and Stripe
+    // stay hidden so that adding a key cannot advertise a method that would
+    // strand a customer with an order they are unable to pay.
+    "PAYMENT_STRIPE_VISIBLE": "false",
+    // PayPal is INTERNATIONAL ONLY — PayPal closed domestic India payments in
+    // April 2021, so an Indian customer cannot pay an Indian merchant in INR.
+    // Before flipping this to "true": set PAYPAL_CLIENT_ID here, put
+    // PAYPAL_SECRET in as a secret, and set a real PAYPAL_INR_PER_UNIT — that
+    // rate is what an overseas buyer is actually charged. "0" disables PayPal.
+    "PAYMENT_PAYPAL_VISIBLE": "false",
+    "PAYPAL_ENVIRONMENT": "sandbox",
+    "PAYPAL_CLIENT_ID": "",
+    "PAYPAL_CURRENCY": "USD",
+    "PAYPAL_INR_PER_UNIT": "0"
   }
+  // NOTE: every value in `vars` must be a JSON *string*. worker.py's env bridge
+  // copies only strings into os.environ, so a bare `false` or `0` here would be
+  // silently dropped and the setting would quietly fall back to its default.
 }

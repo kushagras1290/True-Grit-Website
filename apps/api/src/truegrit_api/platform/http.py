@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import urllib.error
+import urllib.parse
 import urllib.request
 from typing import Any
 
@@ -73,21 +74,17 @@ def _post_json_stdlib(url: str, payload: bytes, headers: dict[str, str]) -> Any:
     return json.loads(raw.decode("utf-8"))
 
 
-async def post_json_async(url: str, *, body: Any, headers: dict[str, str] | None = None) -> Any:
-    """POST a JSON body and parse the JSON response, using the Workers `fetch`
-    when available and stdlib urllib as a local/test fallback."""
-    request_headers = {"content-type": "application/json", "accept": "application/json"}
-    if headers:
-        request_headers.update(headers)
-    payload = json.dumps(body)
+async def _post_async(url: str, payload: str, headers: dict[str, str]) -> Any:
+    """POST an already-encoded body and parse the JSON response, using the
+    Workers `fetch` when available and stdlib urllib as a local/test fallback."""
     try:
         from js import Object  # Cloudflare Workers runtime only
         from js import fetch as js_fetch
         from pyodide.ffi import to_js
     except (ImportError, ModuleNotFoundError):
-        return _post_json_stdlib(url, payload.encode("utf-8"), request_headers)
+        return _post_json_stdlib(url, payload.encode("utf-8"), headers)
     options = to_js(
-        {"method": "POST", "headers": request_headers, "body": payload},
+        {"method": "POST", "headers": headers, "body": payload},
         dict_converter=Object.fromEntries,
     )
     try:
@@ -101,3 +98,29 @@ async def post_json_async(url: str, *, body: Any, headers: dict[str, str] | None
         return json.loads(str(text))
     except json.JSONDecodeError as exc:
         raise HttpError(f"POST {url} returned invalid JSON.") from exc
+
+
+async def post_json_async(url: str, *, body: Any, headers: dict[str, str] | None = None) -> Any:
+    """POST a JSON body and parse the JSON response."""
+    request_headers = {"content-type": "application/json", "accept": "application/json"}
+    if headers:
+        request_headers.update(headers)
+    return await _post_async(url, json.dumps(body), request_headers)
+
+
+async def post_form_async(
+    url: str, *, form: dict[str, str], headers: dict[str, str] | None = None
+) -> Any:
+    """POST an `application/x-www-form-urlencoded` body and parse the JSON reply.
+
+    OAuth2 token endpoints (PayPal's among them) mandate form encoding per
+    RFC 6749 §4.4.2 and reject a JSON body, so this cannot go through
+    `post_json_async`.
+    """
+    request_headers = {
+        "content-type": "application/x-www-form-urlencoded",
+        "accept": "application/json",
+    }
+    if headers:
+        request_headers.update(headers)
+    return await _post_async(url, urllib.parse.urlencode(form), request_headers)

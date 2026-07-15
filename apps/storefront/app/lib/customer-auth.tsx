@@ -22,23 +22,50 @@ import {
   type ReactNode,
 } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL as string | undefined;
+import { getPublicApiUrl, getPublicFacebookAppId, hasPublicApiUrl } from "./public-env";
+
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
-export const authDemoMode = !API_URL;
+export const authDemoMode = !hasPublicApiUrl();
 
 const DEMO_SESSION_KEY = "truegrit.customer.session";
 const GIS_SCRIPT_SRC = "https://accounts.google.com/gsi/client";
+const FACEBOOK_SDK_SRC = "https://connect.facebook.net/en_US/sdk.js";
 
 export interface CustomerAccount {
   id: string;
   displayName: string;
-  email: string;
+  /** Null for accounts that signed up with a mobile number and never gave an
+   *  address. The API nulls its internal placeholder, so this is never fake. */
+  email: string | null;
+  /** E.164, and only ever present once verified by SMS passcode. */
+  phone: string | null;
+  phoneVerified: boolean;
 }
 
 export interface RegisterInput {
   name: string;
   email: string;
   password: string;
+  /** Single-use proof from `verifyPhoneCode`. Required unless the API has
+   *  `phone_required_at_registration` turned off. */
+  phoneVerificationToken?: string;
+}
+
+/** A passcode has been sent; the UI now collects the code. */
+export interface PhoneChallenge {
+  challengeId: string;
+  /** "+91 ••••• 43210" — safe to display, enough to spot a typo. */
+  phoneMasked: string;
+  expiresAt: string;
+  resendsRemaining: number;
+}
+
+export interface PhoneVerification {
+  verificationToken: string;
+  expiresAt: string;
+  /** Whether this number already has an account. Only known after the caller
+   *  proves they hold the handset, so it is safe to branch the UI on. */
+  registered: boolean;
 }
 
 export type AuthStatus = "loading" | "authenticated" | "anonymous";
@@ -59,7 +86,11 @@ interface ApiErrorBody {
 }
 
 async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`, {
+  const apiUrl = getPublicApiUrl();
+  if (!apiUrl) {
+    throw new AuthError("This action needs the live API.", 503, "demo_mode");
+  }
+  const response = await fetch(`${apiUrl}${path}`, {
     ...init,
     credentials: "include",
     headers: init?.body
@@ -98,12 +129,122 @@ function writeDemoSession(customer: CustomerAccount): CustomerAccount {
   return customer;
 }
 
-function demoCustomerFromEmail(email: string, name?: string): CustomerAccount {
+/**
+ * `phone` defaults to null so demo Google/Facebook sign-ins land without a
+ * number — which is the real-world shape (a federated identity carries an email,
+ * never a mobile) and keeps the "add your number" prompt reviewable offline.
+ */
+function demoCustomerFromEmail(
+  email: string,
+  name?: string,
+  phone: string | null = null,
+): CustomerAccount {
   const local = email.split("@")[0] ?? "member";
   const displayName =
     name?.trim() || local.replace(/[._-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-  return { id: `demo_${local}`, displayName: displayName || "Organic member", email };
+  return {
+    id: `demo_${local}`,
+    displayName: displayName || "Organic member",
+    email,
+    phone,
+    phoneVerified: phone !== null,
+  };
 }
+
+function demoCustomerFromPhone(phone: string, name?: string): CustomerAccount {
+  return {
+    id: `demo_${phone.replace(/\D/g, "")}`,
+    displayName: name?.trim() || "Organic member",
+    email: null,
+    phone,
+    phoneVerified: true,
+  };
+}
+
+// --- Mobile number verification ---------------------------------------------
+
+/**
+ * Demo mode fakes the SMS round-trip: no API means no provider, but the OTP
+ * screens still need to be reviewable. The passcode is fixed and announced in
+ * the UI, and none of this code path exists once `VITE_API_URL` is set.
+ */
+export const DEMO_OTP_CODE = "000000";
+const DEMO_PHONE_E164 = "+919876543210";
+const DEMO_CHALLENGE_PREFIX = "demo_challenge_";
+const DEMO_TOKEN_PREFIX = "demo_token_";
+
+function demoMaskPhone(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length <= 4) return `+${"•".repeat(digits.length)}`;
+  return `+${digits.slice(0, 2)} ${"•".repeat(Math.max(0, digits.length - 6))} ${digits.slice(-4)}`;
+}
+
+function demoChallenge(phone: string): PhoneChallenge {
+  return {
+    challengeId: `${DEMO_CHALLENGE_PREFIX}${encodeURIComponent(phone)}`,
+    phoneMasked: demoMaskPhone(phone),
+    expiresAt: new Date(Date.now() + 5 * 60_000).toISOString(),
+    resendsRemaining: 3,
+  };
+}
+
+/** Where the passcode is being sent from, which decides what the resulting
+ *  proof is allowed to do. Mirrors the API's challenge purposes. */
+export type PhoneIntent = "signin" | "register" | "attach";
+
+const START_PATHS: Record<PhoneIntent, string> = {
+  signin: "/v1/public/auth/phone/start",
+  register: "/v1/public/auth/phone/register/start",
+  attach: "/v1/public/auth/phone/attach/start",
+};
+
+/** Text a passcode to `phone`. The response is identical whether or not the
+ *  number has an account — that is deliberate on the API side. */
+export async function startPhoneVerification(
+  phone: string,
+  intent: PhoneIntent,
+): Promise<PhoneChallenge> {
+  if (authDemoMode) return demoChallenge(phone);
+  return apiRequest<PhoneChallenge>(START_PATHS[intent], {
+    method: "POST",
+    body: JSON.stringify({ phone }),
+  });
+}
+
+export async function resendPhoneCode(challengeId: string): Promise<PhoneChallenge> {
+  if (authDemoMode) {
+    const phone = decodeURIComponent(challengeId.replace(DEMO_CHALLENGE_PREFIX, ""));
+    return demoChallenge(phone);
+  }
+  return apiRequest<PhoneChallenge>("/v1/public/auth/phone/resend", {
+    method: "POST",
+    body: JSON.stringify({ challengeId }),
+  });
+}
+
+/** Exchange a passcode for single-use proof of the number. */
+export async function verifyPhoneCode(
+  challengeId: string,
+  code: string,
+): Promise<PhoneVerification> {
+  if (authDemoMode) {
+    if (code.trim() !== DEMO_OTP_CODE) {
+      throw new AuthError(`In demo mode the code is ${DEMO_OTP_CODE}.`, 422, "validation_error");
+    }
+    const phone = decodeURIComponent(challengeId.replace(DEMO_CHALLENGE_PREFIX, ""));
+    return {
+      verificationToken: `${DEMO_TOKEN_PREFIX}${encodeURIComponent(phone)}`,
+      expiresAt: new Date(Date.now() + 15 * 60_000).toISOString(),
+      registered: readDemoSession()?.phone === phone,
+    };
+  }
+  return apiRequest<PhoneVerification>("/v1/public/auth/phone/verify", {
+    method: "POST",
+    body: JSON.stringify({ challengeId, code }),
+  });
+}
+
+// --- Password reset ---------------------------------------------------------
 
 // --- Password reset ---------------------------------------------------------
 
@@ -133,6 +274,12 @@ interface CustomerContextValue {
   register: (input: RegisterInput) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   loginWithGoogle: (credential: string) => Promise<void>;
+  loginWithFacebook: (accessToken: string) => Promise<void>;
+  /** Exchange proof of a mobile for a session — signing in if the number is
+   *  known, creating the account if it is not (hence `name`). */
+  loginWithPhone: (verificationToken: string, name?: string) => Promise<void>;
+  /** Attach a verified mobile to the account already signed in. */
+  attachPhone: (verificationToken: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -174,7 +321,11 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
 
   const register = useCallback(async (input: RegisterInput) => {
     if (authDemoMode) {
-      setCustomer(writeDemoSession(demoCustomerFromEmail(input.email, input.name)));
+      // Registration always carries a verified number, so the demo session does
+      // too — otherwise the "add your number" prompt would fire immediately.
+      setCustomer(
+        writeDemoSession(demoCustomerFromEmail(input.email, input.name, DEMO_PHONE_E164)),
+      );
       setStatus("authenticated");
       return;
     }
@@ -188,7 +339,7 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     if (authDemoMode) {
-      setCustomer(writeDemoSession(demoCustomerFromEmail(email)));
+      setCustomer(writeDemoSession(demoCustomerFromEmail(email, undefined, DEMO_PHONE_E164)));
       setStatus("authenticated");
       return;
     }
@@ -214,6 +365,52 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
     setStatus("authenticated");
   }, []);
 
+  const loginWithFacebook = useCallback(async (accessToken: string) => {
+    if (authDemoMode) {
+      setCustomer(
+        writeDemoSession(demoCustomerFromEmail("member@facebook.com", "Facebook member")),
+      );
+      setStatus("authenticated");
+      return;
+    }
+    const { customer: account } = await apiRequest<{ customer: CustomerAccount }>(
+      "/v1/public/auth/facebook",
+      { method: "POST", body: JSON.stringify({ accessToken }) },
+    );
+    setCustomer(account);
+    setStatus("authenticated");
+  }, []);
+
+  const loginWithPhone = useCallback(async (verificationToken: string, name?: string) => {
+    if (authDemoMode) {
+      const phone = decodeURIComponent(verificationToken.replace(DEMO_TOKEN_PREFIX, ""));
+      setCustomer(writeDemoSession(demoCustomerFromPhone(phone, name)));
+      setStatus("authenticated");
+      return;
+    }
+    const { customer: account } = await apiRequest<{ customer: CustomerAccount }>(
+      "/v1/public/auth/phone/complete",
+      { method: "POST", body: JSON.stringify({ verificationToken, name }) },
+    );
+    setCustomer(account);
+    setStatus("authenticated");
+  }, []);
+
+  const attachPhone = useCallback(async (verificationToken: string) => {
+    if (authDemoMode) {
+      const phone = decodeURIComponent(verificationToken.replace(DEMO_TOKEN_PREFIX, ""));
+      setCustomer((current) =>
+        current ? writeDemoSession({ ...current, phone, phoneVerified: true }) : current,
+      );
+      return;
+    }
+    const { customer: account } = await apiRequest<{ customer: CustomerAccount }>(
+      "/v1/public/auth/phone/attach",
+      { method: "POST", body: JSON.stringify({ verificationToken }) },
+    );
+    setCustomer(account);
+  }, []);
+
   const logout = useCallback(async () => {
     if (authDemoMode) {
       if (typeof window !== "undefined") window.localStorage.removeItem(DEMO_SESSION_KEY);
@@ -227,8 +424,28 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<CustomerContextValue>(
-    () => ({ customer, status, register, login, loginWithGoogle, logout }),
-    [customer, status, register, login, loginWithGoogle, logout],
+    () => ({
+      customer,
+      status,
+      register,
+      login,
+      loginWithGoogle,
+      loginWithFacebook,
+      loginWithPhone,
+      attachPhone,
+      logout,
+    }),
+    [
+      customer,
+      status,
+      register,
+      login,
+      loginWithGoogle,
+      loginWithFacebook,
+      loginWithPhone,
+      attachPhone,
+      logout,
+    ],
   );
 
   return <CustomerContext.Provider value={value}>{children}</CustomerContext.Provider>;
@@ -254,9 +471,26 @@ interface GoogleAccountsId {
   renderButton: (parent: HTMLElement, options: Record<string, unknown>) => void;
 }
 
+interface FacebookLoginResponse {
+  status?: string;
+  authResponse?: {
+    accessToken?: string;
+  };
+}
+
+interface FacebookSdk {
+  init: (config: { appId: string; cookie: boolean; xfbml: boolean; version: string }) => void;
+  login: (
+    callback: (response: FacebookLoginResponse) => void,
+    options: { scope: string; return_scopes: boolean },
+  ) => void;
+}
+
 declare global {
   interface Window {
     google?: { accounts: { id: GoogleAccountsId } };
+    FB?: FacebookSdk;
+    fbAsyncInit?: () => void;
   }
 }
 
@@ -339,5 +573,110 @@ export function GoogleSignInButton({
     <p className="rounded-sm border border-dashed border-line px-3 py-2 text-center text-xs text-ink-muted">
       Google sign-in is not configured.
     </p>
+  );
+}
+
+let facebookScriptPromise: Promise<void> | null = null;
+let initializedFacebookAppId = "";
+
+function initializeFacebookSdk(appId: string) {
+  if (!window.FB || initializedFacebookAppId === appId) return;
+  window.FB.init({
+    appId,
+    cookie: true,
+    xfbml: false,
+    version: "v25.0",
+  });
+  initializedFacebookAppId = appId;
+}
+
+function loadFacebookSdk(appId: string): Promise<void> {
+  if (typeof window === "undefined") return Promise.reject(new Error("no window"));
+  if (window.FB) {
+    initializeFacebookSdk(appId);
+    return Promise.resolve();
+  }
+  if (facebookScriptPromise) {
+    return facebookScriptPromise.then(() => initializeFacebookSdk(appId));
+  }
+  facebookScriptPromise = new Promise<void>((resolve, reject) => {
+    window.fbAsyncInit = () => {
+      initializeFacebookSdk(appId);
+      resolve();
+    };
+    const script = document.createElement("script");
+    script.src = FACEBOOK_SDK_SRC;
+    script.async = true;
+    script.defer = true;
+    script.crossOrigin = "anonymous";
+    script.onerror = () => {
+      facebookScriptPromise = null;
+      reject(new Error("Failed to load Facebook SDK."));
+    };
+    document.head.appendChild(script);
+  });
+  return facebookScriptPromise;
+}
+
+export function FacebookSignInButton({
+  onAccessToken,
+  onError,
+}: {
+  onAccessToken: (accessToken: string) => void;
+  onError?: (message: string) => void;
+}) {
+  const [loading, setLoading] = useState(false);
+  const appId = getPublicFacebookAppId();
+
+  const handleClick = useCallback(() => {
+    if (authDemoMode) {
+      onAccessToken("demo");
+      return;
+    }
+    if (!appId) {
+      onError?.("Facebook sign-in is not configured.");
+      return;
+    }
+    setLoading(true);
+    loadFacebookSdk(appId)
+      .then(() => {
+        if (!window.FB) throw new Error("Facebook SDK is unavailable.");
+        window.FB.login(
+          (response) => {
+            setLoading(false);
+            const accessToken = response.authResponse?.accessToken;
+            if (response.status === "connected" && accessToken) {
+              onAccessToken(accessToken);
+            } else {
+              onError?.("Facebook sign-in was cancelled.");
+            }
+          },
+          { scope: "public_profile,email", return_scopes: true },
+        );
+      })
+      .catch(() => {
+        setLoading(false);
+        onError?.("Could not load Facebook sign-in. Please try again.");
+      });
+  }, [appId, onAccessToken, onError]);
+
+  if (!appId && !authDemoMode) {
+    return (
+      <p className="rounded-sm border border-dashed border-line px-3 py-2 text-center text-xs text-ink-muted">
+        Facebook sign-in is not configured.
+      </p>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className="flex min-h-11 w-full items-center justify-center gap-2 rounded-sm border border-[#1877f2] bg-[#1877f2] px-4 text-sm font-medium text-white hover:opacity-95 disabled:opacity-60"
+      onClick={handleClick}
+      disabled={loading}
+    >
+      <span className="text-base font-bold">f</span>
+      {loading ? "Connecting..." : "Continue with Facebook"}
+    </button>
   );
 }

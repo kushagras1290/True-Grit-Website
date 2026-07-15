@@ -7,9 +7,9 @@
  */
 
 import { AuthError } from "./customer-auth";
+import { getPublicApiUrl, hasPublicApiUrl } from "./public-env";
 
-const API_URL = import.meta.env.VITE_API_URL as string | undefined;
-export const commerceLive = Boolean(API_URL);
+export const commerceLive = hasPublicApiUrl();
 
 export interface CheckoutItem {
   variantId: string;
@@ -30,6 +30,10 @@ export interface OrderPayment {
   method: string;
   razorpayKeyId?: string;
   razorpayOrderId?: string;
+  paypalClientId?: string;
+  paypalOrderId?: string;
+  /** For PayPal this is the *converted* charge (e.g. USD cents), not the INR
+   *  order total — PayPal cannot settle INR to an Indian merchant. */
   amountMinor?: number;
   currency?: string;
 }
@@ -51,6 +55,9 @@ export interface PaymentMethodsInfo {
   currency: string;
   codMaxMinor: number;
   razorpayKeyId: string;
+  paypalClientId: string;
+  /** What an overseas buyer is charged in. Never INR. */
+  paypalCurrency: string;
 }
 
 export interface OrderSummary {
@@ -101,10 +108,11 @@ interface ApiErrorBody {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  if (!API_URL) {
+  const apiUrl = getPublicApiUrl();
+  if (!apiUrl) {
     throw new AuthError("Checkout needs the live API (set VITE_API_URL).", 503, "demo_mode");
   }
-  const response = await fetch(`${API_URL}${path}`, {
+  const response = await fetch(`${apiUrl}${path}`, {
     ...init,
     credentials: "include",
     headers: init?.body
@@ -143,6 +151,61 @@ interface RazorpayResult {
   razorpay_signature: string;
 }
 
+export interface RazorpayPrefill {
+  name: string;
+  email?: string;
+  contact?: string;
+}
+
+export interface RazorpayWindowPayload {
+  order: PlacedOrder;
+  prefill: RazorpayPrefill;
+}
+
+const RAZORPAY_WINDOW_STORAGE_PREFIX = "truegrit:razorpay:";
+
+/** Correlates a payment popup with the tab that opened it. Shared by every
+ *  gateway — it identifies a window, not a provider. */
+function createPaymentWindowToken(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function razorpayWindowStorageKey(token: string): string {
+  return `${RAZORPAY_WINDOW_STORAGE_PREFIX}${token}`;
+}
+
+export function readRazorpayWindowPayload(token: string): RazorpayWindowPayload | null {
+  if (typeof window === "undefined") return null;
+  const key = razorpayWindowStorageKey(token);
+  const raw = window.localStorage.getItem(key);
+  window.localStorage.removeItem(key);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as RazorpayWindowPayload;
+  } catch {
+    return null;
+  }
+}
+
+function isRazorpayWindowMessage(data: unknown): data is {
+  source: "truegrit:razorpay";
+  token: string;
+  status: "paid" | "failed" | "cancelled";
+  order?: PlacedOrder & { ok: boolean };
+  message?: string;
+} {
+  return (
+    typeof data === "object" &&
+    data !== null &&
+    (data as { source?: unknown }).source === "truegrit:razorpay" &&
+    typeof (data as { token?: unknown }).token === "string" &&
+    ["paid", "failed", "cancelled"].includes(String((data as { status?: unknown }).status))
+  );
+}
+
 export function verifyRazorpayPayment(
   orderId: string,
   result: RazorpayResult,
@@ -168,7 +231,8 @@ function loadRazorpayScript(): Promise<void> {
     const script = document.createElement("script");
     script.src = RAZORPAY_SCRIPT_SRC;
     script.onload = () => resolve();
-    script.onerror = () => reject(new AuthError("Could not load the payment widget.", 502, "payment_error"));
+    script.onerror = () =>
+      reject(new AuthError("Could not load the payment widget.", 502, "payment_error"));
     document.head.appendChild(script);
   });
 }
@@ -177,15 +241,20 @@ function loadRazorpayScript(): Promise<void> {
  *  verified server-side. Rejects if the customer dismisses the widget. */
 export async function payWithRazorpay(
   order: PlacedOrder,
-  prefill: { name: string; email: string },
+  // `email` and `contact` are both optional because an account may legitimately
+  // have only one of them: phone-only signups have no address, and Google
+  // sign-ups arrive with no number. Razorpay simply leaves a blank field for the
+  // customer to fill, so passing undefined is better than passing "".
+  prefill: RazorpayPrefill,
 ): Promise<PlacedOrder & { ok: boolean }> {
   const payment = order.payment;
   if (!payment?.razorpayOrderId || !payment.razorpayKeyId) {
     throw new AuthError("The payment could not be started.", 500, "payment_error");
   }
   await loadRazorpayScript();
-  const Razorpay = (window as unknown as { Razorpay: new (options: unknown) => { open: () => void } })
-    .Razorpay;
+  const Razorpay = (
+    window as unknown as { Razorpay: new (options: unknown) => { open: () => void } }
+  ).Razorpay;
   return new Promise((resolve, reject) => {
     const checkout = new Razorpay({
       key: payment.razorpayKeyId,
@@ -205,6 +274,356 @@ export async function payWithRazorpay(
       },
     });
     checkout.open();
+  });
+}
+
+export function openRazorpayPaymentWindow(): Window | null {
+  if (typeof window === "undefined") return null;
+  const width = 520;
+  const height = 760;
+  const left = Math.max(0, window.screenX + Math.round((window.outerWidth - width) / 2));
+  const top = Math.max(0, window.screenY + Math.round((window.outerHeight - height) / 2));
+  return window.open(
+    "/payment/razorpay?status=starting",
+    "truegrit_razorpay_checkout",
+    [
+      "popup=yes",
+      "resizable=yes",
+      "scrollbars=yes",
+      `width=${width}`,
+      `height=${height}`,
+      `left=${left}`,
+      `top=${top}`,
+    ].join(","),
+  );
+}
+
+export function payWithRazorpayWindow(
+  order: PlacedOrder,
+  prefill: RazorpayPrefill,
+  paymentWindow: Window | null,
+): Promise<PlacedOrder & { ok: boolean }> {
+  if (typeof window === "undefined" || !paymentWindow || paymentWindow.closed) {
+    return payWithRazorpay(order, prefill);
+  }
+
+  const token = createPaymentWindowToken();
+  try {
+    window.localStorage.setItem(
+      razorpayWindowStorageKey(token),
+      JSON.stringify({ order, prefill } satisfies RazorpayWindowPayload),
+    );
+  } catch {
+    return payWithRazorpay(order, prefill);
+  }
+
+  return new Promise((resolve, reject) => {
+    let closedTimer: number | undefined;
+    const cleanup = () => {
+      window.removeEventListener("message", handleMessage);
+      window.localStorage.removeItem(razorpayWindowStorageKey(token));
+      if (closedTimer !== undefined) window.clearInterval(closedTimer);
+    };
+    const fail = (message: string, code = "payment_error") => {
+      cleanup();
+      reject(new AuthError(message, 499, code));
+    };
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin || !isRazorpayWindowMessage(event.data)) return;
+      if (event.data.token !== token) return;
+      cleanup();
+      if (event.data.status === "paid" && event.data.order) {
+        resolve(event.data.order);
+        return;
+      }
+      if (event.data.status === "paid") {
+        reject(
+          new AuthError(
+            "Payment was verified, but the order result was incomplete.",
+            502,
+            "payment_error",
+          ),
+        );
+        return;
+      }
+      reject(
+        new AuthError(
+          event.data.message ?? "Payment was cancelled before it completed.",
+          499,
+          event.data.status === "cancelled" ? "cancelled" : "payment_error",
+        ),
+      );
+    };
+
+    window.addEventListener("message", handleMessage);
+    closedTimer = window.setInterval(() => {
+      if (paymentWindow.closed) {
+        fail("Payment window was closed before the payment completed.", "cancelled");
+      }
+    }, 800);
+    paymentWindow.location.assign(`/payment/razorpay?token=${encodeURIComponent(token)}`);
+    paymentWindow.focus();
+  });
+}
+
+// --- PayPal (international) --------------------------------------------------
+
+/**
+ * PayPal is the cross-border lane: PayPal closed domestic India payments in
+ * 2021, so it exists here for someone abroad paying for delivery into India.
+ * The buyer is charged a converted foreign-currency amount, never the INR total.
+ *
+ * The flow differs from Razorpay in one important way: Razorpay hands the
+ * browser a signature the API can verify offline, whereas a PayPal approval is
+ * not money until the *server* captures it. So `onApprove` below reports to our
+ * API and the API does the capturing — nothing the browser says is trusted.
+ */
+
+export interface PaypalWindowPayload {
+  order: PlacedOrder;
+}
+
+const PAYPAL_WINDOW_STORAGE_PREFIX = "truegrit:paypal:";
+
+function paypalWindowStorageKey(token: string): string {
+  return `${PAYPAL_WINDOW_STORAGE_PREFIX}${token}`;
+}
+
+export function readPaypalWindowPayload(token: string): PaypalWindowPayload | null {
+  if (typeof window === "undefined") return null;
+  const key = paypalWindowStorageKey(token);
+  const raw = window.localStorage.getItem(key);
+  window.localStorage.removeItem(key);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as PaypalWindowPayload;
+  } catch {
+    return null;
+  }
+}
+
+function isPaypalWindowMessage(
+  data: unknown,
+): data is {
+  source: "truegrit:paypal";
+  token: string;
+  status: "paid" | "failed" | "cancelled";
+  order?: PlacedOrder & { ok: boolean };
+  message?: string;
+} {
+  return (
+    typeof data === "object" &&
+    data !== null &&
+    (data as { source?: unknown }).source === "truegrit:paypal" &&
+    typeof (data as { token?: unknown }).token === "string" &&
+    ["paid", "failed", "cancelled"].includes(String((data as { status?: unknown }).status))
+  );
+}
+
+/** Ask the API to capture the approved PayPal order. This — not the browser's
+ *  `onApprove` — is what makes the order paid. */
+export function capturePaypalPayment(
+  orderId: string,
+  paypalOrderId: string,
+): Promise<PlacedOrder & { ok: boolean }> {
+  return request<PlacedOrder & { ok: boolean }>("/v1/public/payments/paypal/capture", {
+    method: "POST",
+    body: JSON.stringify({ orderId, paypalOrderId }),
+  });
+}
+
+interface PaypalSdk {
+  Buttons: (config: {
+    createOrder: () => Promise<string> | string;
+    onApprove: (data: { orderID: string }) => Promise<void> | void;
+    onCancel: () => void;
+    onError: (error: unknown) => void;
+    style?: Record<string, unknown>;
+  }) => { render: (container: HTMLElement | string) => Promise<void> };
+}
+
+let paypalSdkPromise: Promise<PaypalSdk> | null = null;
+
+function loadPaypalSdk(clientId: string, currency: string): Promise<PaypalSdk> {
+  if (typeof window === "undefined") {
+    return Promise.reject(new AuthError("PayPal needs a browser.", 500, "payment_error"));
+  }
+  const existing = (window as unknown as { paypal?: PaypalSdk }).paypal;
+  if (existing) return Promise.resolve(existing);
+  if (paypalSdkPromise) return paypalSdkPromise;
+
+  paypalSdkPromise = new Promise<PaypalSdk>((resolve, reject) => {
+    const script = document.createElement("script");
+    const params = new URLSearchParams({
+      "client-id": clientId,
+      currency,
+      intent: "capture",
+      // No funding sources we cannot settle: this account takes card + PayPal
+      // balance only.
+      "disable-funding": "credit,paylater",
+    });
+    script.src = `https://www.paypal.com/sdk/js?${params.toString()}`;
+    script.onload = () => {
+      const sdk = (window as unknown as { paypal?: PaypalSdk }).paypal;
+      if (sdk) {
+        resolve(sdk);
+        return;
+      }
+      paypalSdkPromise = null;
+      reject(new AuthError("Could not load the PayPal widget.", 502, "payment_error"));
+    };
+    script.onerror = () => {
+      paypalSdkPromise = null;
+      reject(new AuthError("Could not load the PayPal widget.", 502, "payment_error"));
+    };
+    document.head.appendChild(script);
+  });
+  return paypalSdkPromise;
+}
+
+/** Render PayPal's buttons into `container` and resolve once our API has
+ *  captured the payment. Rejects if the buyer cancels. */
+export async function payWithPaypal(
+  order: PlacedOrder,
+  container: HTMLElement,
+): Promise<PlacedOrder & { ok: boolean }> {
+  const payment = order.payment;
+  if (!payment?.paypalOrderId || !payment.paypalClientId || !payment.currency) {
+    throw new AuthError("The payment could not be started.", 500, "payment_error");
+  }
+  const sdk = await loadPaypalSdk(payment.paypalClientId, payment.currency);
+
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const finish = (fn: () => void) => {
+      if (settled) return;
+      settled = true;
+      fn();
+    };
+    sdk
+      .Buttons({
+        // The order already exists server-side; the buttons just adopt it. This
+        // is what stops the browser choosing its own amount.
+        createOrder: () => payment.paypalOrderId as string,
+        onApprove: async (data) => {
+          try {
+            const paid = await capturePaypalPayment(order.id, data.orderID);
+            finish(() => resolve(paid));
+          } catch (caught) {
+            finish(() =>
+              reject(
+                caught instanceof AuthError
+                  ? caught
+                  : new AuthError("We could not confirm your payment.", 502, "payment_error"),
+              ),
+            );
+          }
+        },
+        onCancel: () =>
+          finish(() =>
+            reject(new AuthError("Payment was cancelled before it completed.", 499, "cancelled")),
+          ),
+        onError: () =>
+          finish(() =>
+            reject(new AuthError("PayPal could not complete this payment.", 502, "payment_error")),
+          ),
+        style: { layout: "vertical", color: "gold", shape: "rect", label: "paypal" },
+      })
+      .render(container)
+      .catch(() =>
+        finish(() =>
+          reject(new AuthError("Could not show the PayPal buttons.", 502, "payment_error")),
+        ),
+      );
+  });
+}
+
+export function openPaypalPaymentWindow(): Window | null {
+  if (typeof window === "undefined") return null;
+  const width = 520;
+  const height = 760;
+  const left = Math.max(0, window.screenX + Math.round((window.outerWidth - width) / 2));
+  const top = Math.max(0, window.screenY + Math.round((window.outerHeight - height) / 2));
+  return window.open(
+    "/payment/paypal?status=starting",
+    "truegrit_paypal_checkout",
+    [
+      "popup=yes",
+      "resizable=yes",
+      "scrollbars=yes",
+      `width=${width}`,
+      `height=${height}`,
+      `left=${left}`,
+      `top=${top}`,
+    ].join(","),
+  );
+}
+
+export function payWithPaypalWindow(
+  order: PlacedOrder,
+  paymentWindow: Window | null,
+): Promise<PlacedOrder & { ok: boolean }> {
+  if (typeof window === "undefined" || !paymentWindow || paymentWindow.closed) {
+    return Promise.reject(
+      new AuthError(
+        "We couldn't open the PayPal window. Please allow pop-ups and try again.",
+        499,
+        "payment_error",
+      ),
+    );
+  }
+
+  const token = createPaymentWindowToken();
+  try {
+    window.localStorage.setItem(
+      paypalWindowStorageKey(token),
+      JSON.stringify({ order } satisfies PaypalWindowPayload),
+    );
+  } catch {
+    return Promise.reject(
+      new AuthError("We couldn't start the PayPal payment.", 500, "payment_error"),
+    );
+  }
+
+  return new Promise((resolve, reject) => {
+    let closedTimer: number | undefined;
+    const cleanup = () => {
+      window.removeEventListener("message", handleMessage);
+      window.localStorage.removeItem(paypalWindowStorageKey(token));
+      if (closedTimer !== undefined) window.clearInterval(closedTimer);
+    };
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin || !isPaypalWindowMessage(event.data)) return;
+      if (event.data.token !== token) return;
+      cleanup();
+      if (event.data.status === "paid" && event.data.order) {
+        resolve(event.data.order);
+        return;
+      }
+      reject(
+        new AuthError(
+          event.data.message ?? "Payment was cancelled before it completed.",
+          499,
+          event.data.status === "cancelled" ? "cancelled" : "payment_error",
+        ),
+      );
+    };
+
+    window.addEventListener("message", handleMessage);
+    closedTimer = window.setInterval(() => {
+      if (paymentWindow.closed) {
+        cleanup();
+        reject(
+          new AuthError(
+            "Payment window was closed before the payment completed.",
+            499,
+            "cancelled",
+          ),
+        );
+      }
+    }, 800);
+    paymentWindow.location.assign(`/payment/paypal?token=${encodeURIComponent(token)}`);
+    paymentWindow.focus();
   });
 }
 

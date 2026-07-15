@@ -107,7 +107,8 @@ async def end_session(
 async def resolve_session(db: Database, token: str) -> Principal | None:
     row = await db.fetch_one(
         """
-        SELECT u.id, u.display_name, u.email, u.user_type
+        SELECT u.id, u.display_name, u.email, u.user_type,
+               u.phone_e164, u.phone_verified_at
         FROM sessions s
         JOIN users u ON u.id = s.user_id
         WHERE s.token_hash = ?
@@ -139,4 +140,7 @@ async def resolve_session(db: Database, token: str) -> Principal | None:
         user_type=row["user_type"],
         permissions=frozenset(entry["key"] for entry in permission_rows),
         farm_id=membership["farm_id"] if membership else None,
+        # Surface the number only once it is verified: an unverified value is a
+        # claim, and every consumer of Principal treats presence as proof.
+        phone_e164=row["phone_e164"] if row["phone_verified_at"] else None,
     )

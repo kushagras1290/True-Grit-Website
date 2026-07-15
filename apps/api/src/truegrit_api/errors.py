@@ -62,3 +62,15 @@ class RateLimitError(AppError):
 
     def __init__(self, message: str = "Too many requests. Try again shortly."):
         super().__init__(message)
+
+
+class PhoneRequiredError(AppError):
+    """The action needs a verified mobile the account does not have yet.
+
+    Its own code so the storefront can open the verification flow instead of
+    printing a message the customer has no way to act on — the difference between
+    "here is a Verify button" and a dead end at checkout.
+    """
+
+    code = "phone_verification_required"
+    http_status = 422

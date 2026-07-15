@@ -23,6 +23,8 @@ export default [
   route("help", "routes/help.tsx"),
   route("cart", "routes/cart.tsx"),
   route("checkout", "routes/checkout.tsx"),
+  route("payment/razorpay", "routes/razorpay-payment.tsx"),
+  route("payment/paypal", "routes/paypal-payment.tsx"),
   route("account", "routes/account.tsx"),
   route("account/orders/:reference", "routes/order.tsx"),
   route("reset-password", "routes/reset-password.tsx"),

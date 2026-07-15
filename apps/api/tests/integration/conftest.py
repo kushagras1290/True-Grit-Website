@@ -18,10 +18,59 @@ from truegrit_api.auth.sessions import hash_token  # noqa: E402
 from truegrit_api.config import get_settings  # noqa: E402
 from truegrit_api.main import create_app  # noqa: E402
 from truegrit_api.platform.database import SQLiteDatabase, build_local_database  # noqa: E402
+from truegrit_api.services.sms import OutboundSms  # noqa: E402
 
 get_settings.cache_clear()
 
 SESSION_COOKIE = "tg_session"
+
+# Any Indian mobile works; this one is in the reserved-for-fiction 99999 block.
+TEST_PHONE = "9999900001"
+
+
+class RecordingSmsSender:
+    """Captures messages instead of sending them, so a test can read the passcode
+    the customer would have received."""
+
+    def __init__(self, outbox: list[OutboundSms]) -> None:
+        self._outbox = outbox
+
+    async def send(self, message: OutboundSms) -> None:
+        self._outbox.append(message)
+
+
+@pytest.fixture(autouse=True)
+def sms_outbox(monkeypatch: pytest.MonkeyPatch) -> list[OutboundSms]:
+    """Every test gets a recording SMS sender. Autouse so no test can reach a
+    real provider by forgetting to ask for it; request it as a parameter to read
+    the codes."""
+    outbox: list[OutboundSms] = []
+    monkeypatch.setattr(
+        "truegrit_api.services.sms.get_sms_sender",
+        lambda settings=None: RecordingSmsSender(outbox),
+    )
+    return outbox
+
+
+def verify_phone_token(
+    client: TestClient,
+    sms_outbox: list[OutboundSms],
+    *,
+    phone: str = TEST_PHONE,
+    start_path: str = "/v1/public/auth/phone/register/start",
+) -> str:
+    """Drive a real OTP round-trip and return the proof token. Uses the actual
+    endpoints — a test that fakes the token would not exercise the thing most
+    likely to break."""
+    started = client.post(start_path, json={"phone": phone})
+    assert started.status_code == 200, started.text
+    challenge_id = started.json()["challengeId"]
+    code = sms_outbox[-1].body
+    verified = client.post(
+        "/v1/public/auth/phone/verify", json={"challengeId": challenge_id, "code": code}
+    )
+    assert verified.status_code == 200, verified.text
+    return verified.json()["verificationToken"]
 
 
 @pytest.fixture()

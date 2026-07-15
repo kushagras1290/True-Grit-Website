@@ -16,13 +16,16 @@ from pydantic.alias_generators import to_camel
 from truegrit_api.auth.dependencies import get_current_customer, get_database
 from truegrit_api.auth.principal import Principal
 from truegrit_api.config import get_settings
-from truegrit_api.errors import NotFoundError
+from truegrit_api.errors import ConflictError, NotFoundError
 from truegrit_api.platform.database import Database
 from truegrit_api.services.checkout import CheckoutLine, place_order
+from truegrit_api.services.contact import contactable_email
 from truegrit_api.services.email import send_email
 from truegrit_api.services.email_templates import render_farm_order_notification, render_order_confirmation
 from truegrit_api.services.payments import (
     PaymentError,
+    capture_paypal_order,
+    create_paypal_order,
     create_razorpay_order,
     verify_razorpay_signature,
 )
@@ -65,6 +68,11 @@ class CheckoutRequest(_CamelModel):
     # "cod" | "razorpay" (| "paypal" later). Unknown/unavailable methods fall
     # back to cash-on-delivery so checkout never fails on a bad client value.
     payment_method: str = Field(default="cod", max_length=32)
+
+
+class PaypalCaptureRequest(_CamelModel):
+    order_id: str = Field(max_length=64)
+    paypal_order_id: str = Field(max_length=64)
 
 
 class RazorpayVerifyRequest(_CamelModel):
@@ -133,6 +141,40 @@ async def checkout(
         }
         return result
 
+    if method == "paypal":
+        # International lane: the order stays priced in INR, but the buyer is
+        # charged in `paypal_currency` because PayPal cannot settle INR to an
+        # Indian merchant. Store the converted amount on the payment row so the
+        # capture can be checked against exactly what we asked PayPal for.
+        paypal = await create_paypal_order(
+            settings,
+            amount_minor=result["totalMinor"],
+            currency=result["currencyCode"],
+            reference=result["reference"],
+        )
+        await db.execute(
+            _PAYMENT_INSERT_SQL,
+            (
+                new_id("pay"),
+                result["id"],
+                "paypal",
+                paypal["paypalOrderId"],
+                paypal["chargeMinor"],
+                paypal["chargeCurrency"],
+                "created",
+                now,
+                now,
+            ),
+        )
+        result["payment"] = {
+            "method": "paypal",
+            "paypalClientId": settings.paypal_client_id,
+            "paypalOrderId": paypal["paypalOrderId"],
+            "amountMinor": paypal["chargeMinor"],
+            "currency": paypal["chargeCurrency"],
+        }
+        return result
+
     # Cash on delivery: record the pending payment; the order is already confirmed.
     await db.execute(
         _PAYMENT_INSERT_SQL,
@@ -151,6 +193,72 @@ async def checkout(
     result["payment"] = {"method": "cod"}
     await _queue_order_emails(db, background, customer, result)
     return result
+
+
+@router.post("/payments/paypal/capture")
+async def capture_paypal_payment(
+    payload: PaypalCaptureRequest,
+    background: BackgroundTasks,
+    customer: Annotated[Principal, Depends(get_current_customer)],
+    db: Annotated[Database, Depends(get_database)],
+) -> Any:
+    """Capture an approved PayPal order and mark ours paid.
+
+    Unlike Razorpay — where the browser returns a signature we can check offline
+    — PayPal only becomes money when *we* call capture. So the browser's report
+    is never trusted: we look up our own payment row, capture against the id we
+    stored, and check the captured amount matches what we asked for.
+    """
+    order = await db.fetch_one(
+        """
+        SELECT o.id, o.public_reference, o.currency_code, o.total_minor,
+               p.provider_reference, p.amount_minor AS charge_minor, p.status AS payment_status
+        FROM orders o
+        JOIN payments p ON p.order_id = o.id AND p.provider = 'paypal'
+        WHERE o.id = ? AND o.customer_user_id = ? AND o.order_status = 'pending_payment'
+        """,
+        (payload.order_id, customer.user_id),
+    )
+    if order is None:
+        raise NotFoundError("Order not found or already processed.")
+    # Capture the id we created, not the one the client handed us. Trusting the
+    # client's id would let it swap in some other (cheaper) PayPal order.
+    if str(order["provider_reference"]) != payload.paypal_order_id:
+        raise PaymentError("This payment does not belong to that order.")
+    if str(order["payment_status"]) == "paid":
+        raise ConflictError("This order has already been paid.")
+
+    capture_id = await capture_paypal_order(
+        get_settings(),
+        paypal_order_id=str(order["provider_reference"]),
+        expected_minor=int(order["charge_minor"]),
+    )
+
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                "UPDATE payments SET status = 'paid', provider_intent_id = ?, updated_at = ?"
+                " WHERE order_id = ? AND provider = 'paypal'",
+                (capture_id, now, payload.order_id),
+            ),
+            (
+                "UPDATE orders SET payment_status = 'paid', order_status = 'confirmed',"
+                " updated_at = ? WHERE id = ? AND customer_user_id = ?",
+                (now, payload.order_id, customer.user_id),
+            ),
+        ]
+    )
+    result = {
+        "id": order["id"],
+        "reference": order["public_reference"],
+        "currencyCode": order["currency_code"],
+        "totalMinor": order["total_minor"],
+        "orderStatus": "confirmed",
+        "paymentStatus": "paid",
+    }
+    await _queue_order_emails(db, background, customer, result)
+    return {"ok": True, **result}
 
 
 @router.post("/payments/razorpay/verify")
@@ -220,15 +328,22 @@ async def _queue_order_emails(
     settings = get_settings()
     reference = order["reference"]
     total = f"{order['totalMinor'] / 100:.2f} {order['currencyCode']}"
-    background.add_task(
-        send_email,
-        customer.email,
-        f"Order {reference} confirmed",
-        f"Hi {customer.display_name},\n\nYour order {reference} is confirmed. "
-        f"Total {total} (cash on delivery). We'll let you know when it ships.\n\nThank you!",
-        settings,
-        render_order_confirmation(customer.display_name, reference, total)
-    )
+    # A customer who signed up with a mobile has no address — only the
+    # `@phone.invalid` placeholder that satisfies users.email NOT NULL. Skip the
+    # email rather than hand the mail server something undeliverable; they get
+    # the same status from the order page, and SMS order updates would be a
+    # separate (chargeable) piece of work.
+    customer_email = contactable_email(customer.email)
+    if customer_email is not None:
+        background.add_task(
+            send_email,
+            customer_email,
+            f"Order {reference} confirmed",
+            f"Hi {customer.display_name},\n\nYour order {reference} is confirmed. "
+            f"Total {total} (cash on delivery). We'll let you know when it ships.\n\nThank you!",
+            settings,
+            render_order_confirmation(customer.display_name, reference, total),
+        )
     owners = await db.fetch_all(
         """
         SELECT DISTINCT u.email, u.display_name, f.name AS farm_name
