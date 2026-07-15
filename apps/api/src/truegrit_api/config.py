@@ -80,6 +80,10 @@ class Settings(BaseSettings):
     # until go-live. Amounts are charged in `payment_currency` minor units.
     payment_currency: str = "INR"
     payment_cod_enabled: bool = True
+    # Cash-on-delivery ceiling (minor units). Orders above this must pay online.
+    # Default 39900 = ₹399. (Customers may also hold only one unpaid COD order at
+    # a time — enforced in services.checkout.)
+    payment_cod_max_minor: int = 39900
     # Razorpay (UPI, cards, netbanking, wallets — primary for India).
     razorpay_key_id: str = ""
     razorpay_key_secret: str = ""

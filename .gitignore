@@ -9,6 +9,9 @@ test-results/
 .env.*
 !.env.example
 client_secret_*.json
+# Downloaded gateway/API key exports — never commit secrets.
+*_api_keys_*.csv
+*api_key*.csv
 .venv/
 .media/
 __pycache__/

@@ -1,11 +1,18 @@
 import { formatMoney } from "@truegrit/contracts";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
 
 import type { Route } from "./+types/checkout";
 import { Section } from "../components/catalogue";
 import { useCart } from "../lib/cart";
-import { commerceLive, placeOrder, type DeliveryAddress } from "../lib/commerce";
+import {
+  commerceLive,
+  getPaymentMethods,
+  payWithRazorpay,
+  placeOrder,
+  type DeliveryAddress,
+  type PaymentMethodsInfo,
+} from "../lib/commerce";
 import { AuthError, useCustomer } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
 
@@ -31,10 +38,36 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [payment, setPayment] = useState<PaymentMethodsInfo | null>(null);
+  const [method, setMethod] = useState<string>("razorpay");
 
   const delivery =
     subtotalMinor >= FREE_DELIVERY_THRESHOLD || subtotalMinor === 0 ? 0 : DELIVERY_FEE;
   const total = subtotalMinor + delivery;
+
+  const codAllowed =
+    payment !== null && payment.methods.includes("cod") && total <= payment.codMaxMinor;
+  const razorpayAllowed = payment !== null && payment.methods.includes("razorpay");
+
+  useEffect(() => {
+    if (!commerceLive) return;
+    let active = true;
+    getPaymentMethods()
+      .then((info) => {
+        if (!active) return;
+        setPayment(info);
+        setMethod(info.methods.includes("razorpay") ? "razorpay" : "cod");
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Cart total past the COD ceiling => force online payment.
+  useEffect(() => {
+    if (method === "cod" && !codAllowed && razorpayAllowed) setMethod("razorpay");
+  }, [method, codAllowed, razorpayAllowed]);
 
   if (status === "loading") {
     return (
@@ -86,13 +119,20 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
       state: String(form.get("state") ?? ""),
       postalCode: String(form.get("postalCode") ?? ""),
     };
+    const chosen = method === "cod" && !codAllowed ? "razorpay" : method;
     setError(null);
     setPending(true);
     try {
       const order = await placeOrder(
         lines.map((line) => ({ variantId: line.variantId, quantity: line.quantity })),
         address,
+        chosen,
       );
+      // Online orders open a Razorpay widget; only clear the cart once the
+      // payment is verified server-side. COD orders are already confirmed.
+      if (order.payment?.method === "razorpay") {
+        await payWithRazorpay(order, { name: customer!.displayName, email: customer!.email });
+      }
       clear();
       void navigate(`/account/orders/${order.reference}`, { replace: true });
     } catch (caught) {
@@ -186,16 +226,53 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
               <dd>{formatMoney(total)}</dd>
             </div>
           </dl>
+          <fieldset className="mt-4 space-y-2">
+            <legend className="text-xs font-medium text-ink-muted">Payment method</legend>
+            {razorpayAllowed ? (
+              <label className="flex cursor-pointer items-start gap-2 rounded-sm border border-line px-3 py-2 text-sm">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  className="mt-0.5"
+                  checked={method === "razorpay"}
+                  onChange={() => setMethod("razorpay")}
+                />
+                <span className="text-ink">Pay online — UPI, cards, netbanking &amp; wallets</span>
+              </label>
+            ) : null}
+            <label
+              className={`flex items-start gap-2 rounded-sm border border-line px-3 py-2 text-sm ${
+                codAllowed ? "cursor-pointer" : "opacity-60"
+              }`}
+            >
+              <input
+                type="radio"
+                name="paymentMethod"
+                className="mt-0.5"
+                checked={method === "cod"}
+                disabled={!codAllowed}
+                onChange={() => setMethod("cod")}
+              />
+              <span className="text-ink">
+                Cash on delivery
+                {payment && !codAllowed ? (
+                  <span className="mt-0.5 block text-xs text-ink-muted">
+                    Available only up to {formatMoney(payment.codMaxMinor)} and when you have no
+                    other unpaid COD order.
+                  </span>
+                ) : null}
+              </span>
+            </label>
+          </fieldset>
           <p className="mt-2 text-xs text-ink-muted">
-            Payment is cash on delivery. Prices are re-validated server-side before your order is
-            confirmed.
+            Prices are re-validated server-side before your order is confirmed.
           </p>
           <button
             type="submit"
             disabled={pending}
             className="mt-4 min-h-11 w-full rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-95 disabled:opacity-60"
           >
-            {pending ? "Placing order…" : "Place order"}
+            {pending ? "Processing…" : method === "cod" ? "Place order" : "Pay & place order"}
           </button>
         </aside>
       </form>

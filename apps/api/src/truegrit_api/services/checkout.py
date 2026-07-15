@@ -19,6 +19,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from truegrit_api.auth.principal import Principal
+from truegrit_api.config import get_settings
 from truegrit_api.errors import ConflictError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
@@ -140,6 +141,31 @@ async def place_order(
     subtotal = sum(item["line_total_minor"] for item in resolved)
     delivery = 0 if subtotal >= _FREE_DELIVERY_THRESHOLD_MINOR else _DELIVERY_FEE_MINOR
     total = subtotal + delivery
+
+    settings = get_settings()
+    if payment_method == "cod":
+        if total > settings.payment_cod_max_minor:
+            raise ValidationAppError(
+                "Cash on delivery is only available for orders up to "
+                f"{settings.payment_cod_max_minor // 100} {currency}. "
+                "Please pay online for this order."
+            )
+        # One outstanding COD order per customer: an unpaid COD order must be
+        # settled (paid on delivery) before another can be placed.
+        outstanding = await db.fetch_one(
+            """
+            SELECT COUNT(*) AS open_cod
+            FROM payments p
+            JOIN orders o ON o.id = p.order_id
+            WHERE o.customer_user_id = ? AND p.provider = 'cod' AND p.status = 'pending'
+            """,
+            (customer.user_id,),
+        )
+        if outstanding and int(outstanding["open_cod"]) > 0:
+            raise ConflictError(
+                "You already have a cash-on-delivery order in progress. "
+                "Please pay for this order online, or wait until the previous one is delivered."
+            )
 
     order_id = new_id("ord")
     reference = _reference()

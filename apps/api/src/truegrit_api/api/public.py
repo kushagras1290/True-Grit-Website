@@ -83,6 +83,7 @@ async def payment_methods() -> Any:
     return {
         "methods": settings.enabled_payment_methods,
         "currency": settings.payment_currency,
+        "codMaxMinor": settings.payment_cod_max_minor,
         "razorpayKeyId": settings.razorpay_key_id if settings.razorpay_enabled else "",
     }
 
