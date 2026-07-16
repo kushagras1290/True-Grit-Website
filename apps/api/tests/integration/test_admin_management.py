@@ -64,6 +64,12 @@ def test_product_create_edit_publish_archive(client: TestClient, db: SQLiteDatab
     product = client.get(f"/v1/admin/products/{product_id}").json()
     assert product["name"] == "Test Turmeric Powder"
     assert product["imageUrl"] == "https://images.example.test/turmeric.jpg"
+    list_items = client.get("/v1/admin/products").json()["items"]
+    list_product = next(
+        item for item in list_items if item["id"] == product_id
+    )
+    assert list_product["imageUrl"] == "https://images.example.test/turmeric.jpg"
+    assert list_product["imageAlt"] == "Fresh turmeric roots on a table"
     public_product = client.get(f"/v1/public/products/{product['slug']}").json()
     assert public_product["imageUrl"] == "https://images.example.test/turmeric.jpg"
 

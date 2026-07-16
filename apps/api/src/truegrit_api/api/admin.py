@@ -531,6 +531,8 @@ async def list_products(
             {
                 "id": row["id"],
                 "name": row["name"],
+                "imageUrl": row["image_url"] or "",
+                "imageAlt": row["image_alt"] or row["name"],
                 "sku": row["sku"] or "—",
                 "status": row["status"],
                 "categories": (row["categories"] or "").split(", ") if row["categories"] else [],

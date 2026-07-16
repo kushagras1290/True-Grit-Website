@@ -20,7 +20,7 @@ class AdminRepository:
         return await self._db.fetch_all(
             """
             SELECT
-              p.id, p.name, p.status, p.updated_at,
+              p.id, p.name, p.status, p.image_url, p.image_alt, p.updated_at,
               u.display_name AS updated_by,
               COALESCE(f.name, b.name, '') AS farm_name,
               (SELECT v.sku FROM product_variants v

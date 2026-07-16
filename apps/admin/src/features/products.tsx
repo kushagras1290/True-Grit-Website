@@ -54,6 +54,39 @@ const PRODUCT_TYPES = [
   "beverage",
 ];
 
+function ProductThumbnail({
+  src,
+  alt,
+  name,
+  className = "h-11 w-11",
+}: {
+  src: string;
+  alt: string;
+  name: string;
+  className?: string;
+}) {
+  const [failed, setFailed] = useState(false);
+  const initial = name.trim().charAt(0).toUpperCase() || "?";
+
+  return (
+    <span
+      className={`${className} inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md border border-line bg-canvas text-sm font-semibold text-ink-muted`}
+    >
+      {src && !failed ? (
+        <img
+          src={src}
+          alt={alt || name}
+          className="h-full w-full object-cover"
+          loading="lazy"
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        initial
+      )}
+    </span>
+  );
+}
+
 const createSchema = z.object({
   name: z.string().min(3, "At least 3 characters").max(140),
   productType: z.string().min(1),
@@ -156,9 +189,14 @@ export function ProductListPage() {
         cell: (info) => (
           <Link
             to={`/products/${info.row.original.id}`}
-            className="font-medium text-brand hover:underline"
+            className="flex min-w-56 items-center gap-3 font-medium text-brand hover:underline"
           >
-            {info.getValue()}
+            <ProductThumbnail
+              src={info.row.original.imageUrl}
+              alt={info.row.original.imageAlt}
+              name={info.getValue()}
+            />
+            <span>{info.getValue()}</span>
           </Link>
         ),
       }),
@@ -758,14 +796,17 @@ function GeneralTab({
       imageAlt: product.imageAlt,
     },
   });
+  const watchedImageUrl = form.watch("imageUrl");
+  const watchedImageAlt = form.watch("imageAlt");
   const uploadMutation = useMutation({
     mutationFn: (file: File) => api.uploadImage(file),
     onSuccess: (result) => {
+      const imageAlt = form.getValues("imageAlt") || product.name;
+      const nextValues = { ...form.getValues(), imageUrl: result.url, imageAlt };
       form.setValue("imageUrl", result.url, { shouldDirty: true, shouldValidate: true });
-      if (!form.getValues("imageAlt")) {
-        form.setValue("imageAlt", product.name, { shouldDirty: true, shouldValidate: true });
-      }
-      toast.success("Image uploaded and URL updated.");
+      form.setValue("imageAlt", imageAlt, { shouldDirty: true, shouldValidate: true });
+      onSave(nextValues);
+      toast.success("Image uploaded; saving thumbnail.");
     },
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not upload image."),
@@ -796,7 +837,7 @@ function GeneralTab({
           type="file"
           accept="image/jpeg,image/png,image/webp,image/gif"
           className="mb-2"
-          disabled={uploadMutation.isPending}
+          disabled={uploadMutation.isPending || saving}
           onChange={(event) => {
             const file = event.currentTarget.files?.[0];
             if (file) uploadMutation.mutate(file);
@@ -809,6 +850,16 @@ function GeneralTab({
           placeholder={uploadMutation.isPending ? "Uploading image..." : "Image URL"}
           {...form.register("imageUrl")}
         />
+        {watchedImageUrl ? (
+          <div className="mt-3">
+            <ProductThumbnail
+              src={watchedImageUrl}
+              alt={watchedImageAlt}
+              name={product.name}
+              className="h-32 w-32"
+            />
+          </div>
+        ) : null}
       </Field>
       <Field
         label="Image alt text"

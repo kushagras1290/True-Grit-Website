@@ -44,6 +44,8 @@ def test_product_list_shape(client: TestClient, db: SQLiteDatabase):
     assert len(items) == 5
     alphonso = next(item for item in items if item["id"] == "prd_alphonso")
     assert alphonso["sku"] == "TRG-MNG-1KG"
+    assert "imageUrl" in alphonso
+    assert "imageAlt" in alphonso
     assert alphonso["priceRange"] == "899-1699"
     assert alphonso["availableStock"] == 174  # (120-4) + (60-2)
 

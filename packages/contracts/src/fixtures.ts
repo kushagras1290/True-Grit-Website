@@ -693,6 +693,8 @@ export const homePage: PublicPage = {
 export const adminProducts: AdminProductRow[] = products.map((product) => ({
   id: product.id,
   name: product.name,
+  imageUrl: product.imageUrl ?? "",
+  imageAlt: product.imageAlt,
   sku: product.variants[0]?.sku ?? "—",
   status: "published",
   categories: categories
