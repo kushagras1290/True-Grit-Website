@@ -1,5 +1,21 @@
 from fastapi.testclient import TestClient
 
+from truegrit_api.platform.database import SQLiteDatabase
+
+
+def _restrict_product(db: SQLiteDatabase, product_id: str, countries: list[str]) -> None:
+    """Seed helper: limit a product's release to the given countries."""
+    db._conn.execute(
+        "UPDATE products SET release_scope = 'selected' WHERE id = ?", (product_id,)
+    )
+    for code in countries:
+        db._conn.execute(
+            "INSERT INTO product_release_countries (product_id, country_code, added_at, added_by)"
+            " VALUES (?, ?, '2026-07-16T00:00:00Z', 'usr_admin')",
+            (product_id, code),
+        )
+    db._conn.commit()
+
 
 def test_health(client: TestClient):
     response = client.get("/health/live")
@@ -118,3 +134,112 @@ def test_search_matches_synonyms(client: TestClient):
 def test_search_zero_results_is_safe(client: TestClient):
     body = client.get("/v1/public/search", params={"q": "zzzzunknownterm"}).json()
     assert body == {"query": "zzzzunknownterm", "total": 0, "groups": []}
+
+
+def test_search_reflects_live_catalogue(client: TestClient, db: SQLiteDatabase):
+    # Product hits come from the live products table, so an unpublish takes
+    # effect immediately (the FTS shadow table is only seeded, never synced).
+    db._conn.execute("UPDATE products SET status = 'unpublished' WHERE id = 'prd_ragi'")
+    db._conn.commit()
+    body = client.get("/v1/public/search", params={"q": "ragi"}).json()
+    product_groups = [group for group in body["groups"] if group["group"] == "products"]
+    names = [item["name"] for group in product_groups for item in group["items"]]
+    assert all("Ragi" not in name for name in names)
+
+
+def test_search_product_items_carry_slug(client: TestClient):
+    body = client.get("/v1/public/search", params={"q": "rajma"}).json()
+    product_group = next(group for group in body["groups"] if group["group"] == "products")
+    assert product_group["items"][0]["slug"] == "himalayan-red-rajma"
+
+
+# ---------------------------------------------------------------------------
+# Geo release
+# ---------------------------------------------------------------------------
+
+
+def test_geo_release_filters_product_lists(client: TestClient, db: SQLiteDatabase):
+    _restrict_product(db, "prd_rajma", ["US"])
+
+    india = client.get("/v1/public/products", params={"country": "IN"}).json()
+    assert "himalayan-red-rajma" not in {p["slug"] for p in india["items"]}
+
+    united_states = client.get("/v1/public/products", params={"country": "us"}).json()
+    assert "himalayan-red-rajma" in {p["slug"] for p in united_states["items"]}
+
+    # No country -> no filtering (internal callers, older clients).
+    unfiltered = client.get("/v1/public/products").json()
+    assert "himalayan-red-rajma" in {p["slug"] for p in unfiltered["items"]}
+
+
+def test_geo_release_locks_product_detail(client: TestClient, db: SQLiteDatabase):
+    _restrict_product(db, "prd_rajma", ["US"])
+    assert (
+        client.get("/v1/public/products/himalayan-red-rajma", params={"country": "IN"}).status_code
+        == 404
+    )
+    assert (
+        client.get("/v1/public/products/himalayan-red-rajma", params={"country": "US"}).status_code
+        == 200
+    )
+
+
+def test_geo_release_filters_search_and_category(client: TestClient, db: SQLiteDatabase):
+    _restrict_product(db, "prd_rajma", ["US"])
+
+    search = client.get("/v1/public/search", params={"q": "rajma", "country": "IN"}).json()
+    product_groups = [group for group in search["groups"] if group["group"] == "products"]
+    assert not product_groups
+
+    category = client.get(
+        "/v1/public/categories/grains-and-millets", params={"country": "IN"}
+    ).json()
+    assert {p["slug"] for p in category["products"]} == {"sprouted-ragi-flour"}
+
+
+def test_country_param_must_be_two_letters(client: TestClient):
+    response = client.get("/v1/public/products", params={"country": "U1"})
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "validation_error"
+
+
+# ---------------------------------------------------------------------------
+# Highlighted products (search page slots)
+# ---------------------------------------------------------------------------
+
+
+def test_highlights_return_curated_order_published_only(
+    client: TestClient, db: SQLiteDatabase
+):
+    db._conn.executescript(
+        """
+        INSERT INTO highlighted_products (product_id, sort_order, added_at, added_by) VALUES
+          ('prd_ragi', 1, '2026-07-16T00:00:00Z', 'usr_admin'),
+          ('prd_alphonso', 0, '2026-07-16T00:00:00Z', 'usr_admin');
+        """
+    )
+    db._conn.commit()
+    body = client.get("/v1/public/highlights").json()
+    assert [p["slug"] for p in body["items"]] == [
+        "organic-alphonso-mangoes",
+        "sprouted-ragi-flour",
+    ]
+
+    # Unpublishing removes the slot from customers without touching curation.
+    db._conn.execute("UPDATE products SET status = 'unpublished' WHERE id = 'prd_alphonso'")
+    db._conn.commit()
+    body = client.get("/v1/public/highlights").json()
+    assert [p["slug"] for p in body["items"]] == ["sprouted-ragi-flour"]
+
+
+def test_highlights_respect_geo_release(client: TestClient, db: SQLiteDatabase):
+    db._conn.execute(
+        "INSERT INTO highlighted_products (product_id, sort_order, added_at, added_by)"
+        " VALUES ('prd_rajma', 0, '2026-07-16T00:00:00Z', 'usr_admin')"
+    )
+    db._conn.commit()
+    _restrict_product(db, "prd_rajma", ["US"])
+    india = client.get("/v1/public/highlights", params={"country": "IN"}).json()
+    assert india["items"] == []
+    united_states = client.get("/v1/public/highlights", params={"country": "US"}).json()
+    assert [p["slug"] for p in united_states["items"]] == ["himalayan-red-rajma"]

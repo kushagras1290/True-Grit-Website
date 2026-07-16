@@ -6,6 +6,7 @@ import {
   loadAllProducts,
   loadCategories,
   loadCategoryPage,
+  loadHighlightedProducts,
   loadProduct,
   loadProductsBySlugs,
   runSearch,
@@ -50,10 +51,7 @@ describe("demo catalogue", () => {
   });
 
   it("loads products by slug in the requested order", async () => {
-    const result = await loadProductsBySlugs([
-      "sprouted-ragi-flour",
-      "organic-alphonso-mangoes",
-    ]);
+    const result = await loadProductsBySlugs(["sprouted-ragi-flour", "organic-alphonso-mangoes"]);
     expect(result.map((product) => product.slug)).toEqual([
       "sprouted-ragi-flour",
       "organic-alphonso-mangoes",
@@ -63,6 +61,12 @@ describe("demo catalogue", () => {
   it("returns an empty list for no slugs without hitting the catalogue", async () => {
     expect(await loadProductsBySlugs([])).toEqual([]);
   });
+
+  it("falls back to fixture products for the highlights box in demo mode", async () => {
+    const highlights = await loadHighlightedProducts("IN");
+    expect(highlights.length).toBeGreaterThan(0);
+    expect(highlights[0]?.slug).toBe(products[0]?.slug);
+  });
 });
 
 describe("search", () => {
@@ -70,6 +74,12 @@ describe("search", () => {
     const results = await runSearch("finger millet");
     const productGroup = results.groups.find((group) => group.group === "products");
     expect(productGroup?.items.some((item) => item.name.includes("Ragi"))).toBe(true);
+  });
+
+  it("returns product slugs so the search page can render price cards", async () => {
+    const results = await runSearch("rajma");
+    const productGroup = results.groups.find((group) => group.group === "products");
+    expect(productGroup?.items[0]?.slug).toBe("himalayan-red-rajma");
   });
 
   it("returns a safe empty state for gibberish", async () => {

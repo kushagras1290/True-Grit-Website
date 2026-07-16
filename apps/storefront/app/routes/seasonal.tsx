@@ -4,10 +4,11 @@ import type { Route } from "./+types/seasonal";
 import { CategoryTile, ProductGrid, Section } from "../components/catalogue";
 import { StaticHero } from "../components/static-page";
 import { loadCategories, loadProductsBySlugs } from "../lib/catalogue.server";
+import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 import { products as allProducts } from "@truegrit/contracts/fixtures";
 
-export async function loader() {
+export async function loader({ request }: Route.LoaderArgs) {
   const categories = await loadCategories();
   const seasonalCategories = categories.filter((category) => category.seasonLabel);
   // The curated seasonal slot: in-season drops, selected by the demo fixture's
@@ -18,6 +19,7 @@ export async function loader() {
         (product) => product.availability !== "out_of_stock" && product.slug.includes("mango"),
       )
       .map((product) => product.slug),
+    resolveCountry(request),
   );
 
   return { seasonalCategories, seasonalProducts };

@@ -40,6 +40,14 @@ async function fromApi<T>(path: string): Promise<T | null> {
   return (await response.json()) as T;
 }
 
+/** Append `country=XX` so the API geo-locks the catalogue to the visitor's
+ * country. Fixture mode has no release data, so no filtering happens there. */
+function withCountry(path: string, country?: string): string {
+  if (!country) return path;
+  const separator = path.includes("?") ? "&" : "?";
+  return `${path}${separator}country=${encodeURIComponent(country)}`;
+}
+
 // List endpoints wrap their rows in `{ items }`. Unwrap, and fall back to the
 // supplied fixture when the API is not configured or returns nothing — a
 // storefront should degrade to demo data, never crash a page, if a list is
@@ -60,8 +68,13 @@ export async function loadHome(): Promise<PublicPage> {
   return homePage;
 }
 
-export async function loadCategoryPage(slug: string): Promise<PublicCategoryPage | null> {
-  if (API_URL) return fromApi<PublicCategoryPage>(`/v1/public/categories/${slug}`);
+export async function loadCategoryPage(
+  slug: string,
+  country?: string,
+): Promise<PublicCategoryPage | null> {
+  if (API_URL) {
+    return fromApi<PublicCategoryPage>(withCountry(`/v1/public/categories/${slug}`, country));
+  }
   return getCategoryPage(slug);
 }
 
@@ -69,12 +82,14 @@ export async function loadCategories(): Promise<CategorySummary[]> {
   return listFromApi<CategorySummary>("/v1/public/categories", categories);
 }
 
-export async function loadAllProducts(): Promise<ProductSummary[]> {
-  return listFromApi<ProductSummary>("/v1/public/products", products);
+export async function loadAllProducts(country?: string): Promise<ProductSummary[]> {
+  return listFromApi<ProductSummary>(withCountry("/v1/public/products", country), products);
 }
 
-export async function loadProduct(slug: string): Promise<ProductDetail | null> {
-  if (API_URL) return fromApi<ProductDetail>(`/v1/public/products/${slug}`);
+export async function loadProduct(slug: string, country?: string): Promise<ProductDetail | null> {
+  if (API_URL) {
+    return fromApi<ProductDetail>(withCountry(`/v1/public/products/${slug}`, country));
+  }
   return products.find((product) => product.slug === slug) ?? null;
 }
 
@@ -84,20 +99,41 @@ export async function loadProduct(slug: string): Promise<ProductDetail | null> {
  * omits. Fetched in parallel; unknown slugs drop out. Reserve for the small,
  * bounded slug sets a single page references, not for grids.
  */
-export async function loadProductDetailsBySlugs(slugs: string[]): Promise<ProductDetail[]> {
+export async function loadProductDetailsBySlugs(
+  slugs: string[],
+  country?: string,
+): Promise<ProductDetail[]> {
   if (slugs.length === 0) return [];
-  const details = await Promise.all(slugs.map((slug) => loadProduct(slug)));
+  const details = await Promise.all(slugs.map((slug) => loadProduct(slug, country)));
   return details.filter((product): product is ProductDetail => product !== null);
 }
 
-export async function loadProductsBySlugs(slugs: string[]): Promise<ProductSummary[]> {
+export async function loadProductsBySlugs(
+  slugs: string[],
+  country?: string,
+): Promise<ProductSummary[]> {
   if (slugs.length === 0) return [];
   if (API_URL) {
     const query = slugs.map((slug) => encodeURIComponent(slug)).join(",");
-    return listFromApi<ProductSummary>(`/v1/public/products?slugs=${query}`, []);
+    return listFromApi<ProductSummary>(
+      withCountry(`/v1/public/products?slugs=${query}`, country),
+      [],
+    );
   }
   const bySlug = new Map(products.map((product) => [product.slug, product]));
   return slugs.flatMap((slug) => bySlug.get(slug) ?? []);
+}
+
+/**
+ * The owner-curated highlight slots (search page box). Curated in the admin's
+ * Site Control; falls back to the first fixture products in demo mode so the
+ * box is reviewable without the API.
+ */
+export async function loadHighlightedProducts(country?: string): Promise<ProductSummary[]> {
+  return listFromApi<ProductSummary>(
+    withCountry("/v1/public/highlights", country),
+    products.slice(0, 4),
+  );
 }
 
 export async function loadFarms(): Promise<FarmDetail[]> {
@@ -127,12 +163,17 @@ export async function loadArticle(slug: string): Promise<ArticleDetail | null> {
 export interface SearchGroups {
   query: string;
   total: number;
-  groups: Array<{ group: string; items: Array<{ id: string; name: string; path: string }> }>;
+  groups: Array<{
+    group: string;
+    items: Array<{ id: string; name: string; path: string; slug?: string }>;
+  }>;
 }
 
-export async function runSearch(query: string): Promise<SearchGroups> {
+export async function runSearch(query: string, country?: string): Promise<SearchGroups> {
   if (API_URL) {
-    const result = await fromApi<SearchGroups>(`/v1/public/search?q=${encodeURIComponent(query)}`);
+    const result = await fromApi<SearchGroups>(
+      withCountry(`/v1/public/search?q=${encodeURIComponent(query)}`, country),
+    );
     if (result) return result;
   }
   const needle = query.trim().toLowerCase();
@@ -149,7 +190,12 @@ export async function runSearch(query: string): Promise<SearchGroups> {
   const groups: SearchGroups["groups"] = [];
   const productItems = products
     .filter((product) => matches(`${product.name} ${product.tags.join(" ")} ${product.farmName}`))
-    .map((product) => ({ id: product.id, name: product.name, path: `/product/${product.slug}` }));
+    .map((product) => ({
+      id: product.id,
+      name: product.name,
+      slug: product.slug,
+      path: `/product/${product.slug}`,
+    }));
   if (productItems.length) groups.push({ group: "products", items: productItems });
 
   const farmItems = farms

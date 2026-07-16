@@ -1,12 +1,21 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { Button, EmptyState, Field, Input, PageHeader, Textarea } from "../components/ui";
+import {
+  Button,
+  EmptyState,
+  Field,
+  Input,
+  PageHeader,
+  Select,
+  StatusPill,
+  Textarea,
+} from "../components/ui";
 import { useToast } from "../components/toast";
-import { ApiError, api, type SiteControl } from "../lib/api";
+import { ApiError, api, type AdminLinkedProduct, type SiteControl } from "../lib/api";
 
 const siteSchema = z.object({
   announcementActive: z.boolean(),
@@ -100,19 +109,29 @@ export function SiteControlPage() {
               <Input id="announcementMessage" {...form.register("announcementMessage")} />
             </Field>
             <Field label="Banner link" htmlFor="announcementPath">
-              <Input id="announcementPath" placeholder="/category/fresh-fruits" {...form.register("announcementPath")} />
+              <Input
+                id="announcementPath"
+                placeholder="/category/fresh-fruits"
+                {...form.register("announcementPath")}
+              />
             </Field>
           </section>
 
           <section className="space-y-4 border-t border-line pt-5">
             <div>
               <h2 className="font-display text-lg text-ink">Homepage hero</h2>
-              <p className="text-sm text-ink-muted">Primary homepage banner copy and calls to action.</p>
+              <p className="text-sm text-ink-muted">
+                Primary homepage banner copy and calls to action.
+              </p>
             </div>
             <Field label="Eyebrow" htmlFor="heroEyebrow">
               <Input id="heroEyebrow" {...form.register("heroEyebrow")} />
             </Field>
-            <Field label="Headline" htmlFor="heroHeading" error={form.formState.errors.heroHeading?.message}>
+            <Field
+              label="Headline"
+              htmlFor="heroHeading"
+              error={form.formState.errors.heroHeading?.message}
+            >
               <Input id="heroHeading" {...form.register("heroHeading")} />
             </Field>
             <Field label="Supporting text" htmlFor="heroText">
@@ -137,9 +156,15 @@ export function SiteControlPage() {
           <section className="space-y-4 border-t border-line pt-5">
             <div>
               <h2 className="font-display text-lg text-ink">Homepage SEO</h2>
-              <p className="text-sm text-ink-muted">Metadata used by search engines and social previews.</p>
+              <p className="text-sm text-ink-muted">
+                Metadata used by search engines and social previews.
+              </p>
             </div>
-            <Field label="SEO title" htmlFor="seoTitle" error={form.formState.errors.seoTitle?.message}>
+            <Field
+              label="SEO title"
+              htmlFor="seoTitle"
+              error={form.formState.errors.seoTitle?.message}
+            >
               <Input id="seoTitle" {...form.register("seoTitle")} />
             </Field>
             <Field label="SEO description" htmlFor="seoDescription">
@@ -167,6 +192,145 @@ export function SiteControlPage() {
           </Button>
         </aside>
       </form>
+
+      <HighlightsSection />
     </div>
+  );
+}
+
+/** The highlighted-products slots shown on the storefront search page. One
+ * curated, ordered list — add, remove and reorder to swap products in and out. */
+function HighlightsSection() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const { data: saved, isLoading } = useQuery({
+    queryKey: ["highlights"],
+    queryFn: api.highlights,
+  });
+  const { data: allProducts } = useQuery({ queryKey: ["admin-products"], queryFn: api.products });
+  const [items, setItems] = useState<AdminLinkedProduct[] | null>(null);
+  const [pendingId, setPendingId] = useState("");
+
+  const current = items ?? saved ?? [];
+  const dirty =
+    items !== null &&
+    (saved ?? []).map((entry) => entry.id).join(",") !== items.map((entry) => entry.id).join(",");
+
+  const mutation = useMutation({
+    mutationFn: (productIds: string[]) => api.setHighlights(productIds),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["highlights"] });
+      setItems(null);
+      toast.success("Highlighted products saved.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not save highlights."),
+  });
+
+  const addable = (allProducts ?? []).filter(
+    (row) => !current.some((entry) => entry.id === row.id),
+  );
+
+  function move(index: number, delta: number) {
+    const target = index + delta;
+    if (target < 0 || target >= current.length) return;
+    const next = [...current];
+    const sourceItem = next[index];
+    const targetItem = next[target];
+    if (!sourceItem || !targetItem) return;
+    next[index] = targetItem;
+    next[target] = sourceItem;
+    setItems(next);
+  }
+
+  return (
+    <section className="mt-10 space-y-4 border-t border-line pt-5">
+      <div>
+        <h2 className="font-display text-lg text-ink">Highlighted products</h2>
+        <p className="text-sm text-ink-muted">
+          Shown in the highlights box on the storefront search page, in this order. Only published
+          products appear to customers.
+        </p>
+      </div>
+      {isLoading ? (
+        <p className="text-sm text-ink-muted">Loading highlights...</p>
+      ) : current.length === 0 ? (
+        <p className="max-w-xl rounded-md border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
+          No highlighted products yet. Add a few below.
+        </p>
+      ) : (
+        <ul className="max-w-xl divide-y divide-line rounded-md border border-line">
+          {current.map((entry, index) => (
+            <li key={entry.id} className="flex items-center gap-2 px-3 py-2 text-sm">
+              <span className="w-5 text-xs text-ink-muted">{index + 1}.</span>
+              <span className="flex-1 font-medium text-ink">{entry.name}</span>
+              <StatusPill status={entry.status} />
+              <button
+                type="button"
+                aria-label={`Move ${entry.name} up`}
+                className="min-h-8 min-w-8 rounded-sm border border-line text-xs disabled:opacity-40"
+                disabled={index === 0}
+                onClick={() => move(index, -1)}
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                aria-label={`Move ${entry.name} down`}
+                className="min-h-8 min-w-8 rounded-sm border border-line text-xs disabled:opacity-40"
+                disabled={index === current.length - 1}
+                onClick={() => move(index, 1)}
+              >
+                ↓
+              </button>
+              <button
+                type="button"
+                aria-label={`Remove ${entry.name}`}
+                className="min-h-8 rounded-sm border border-line px-2 text-xs text-danger"
+                onClick={() => setItems(current.filter((item) => item.id !== entry.id))}
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div className="flex max-w-xl gap-2">
+        <Select
+          aria-label="Product to highlight"
+          value={pendingId}
+          onChange={(event) => setPendingId(event.target.value)}
+          className="flex-1"
+        >
+          <option value="">Add a product…</option>
+          {addable.map((row) => (
+            <option key={row.id} value={row.id}>
+              {row.name}
+            </option>
+          ))}
+        </Select>
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={!pendingId || current.length >= 12}
+          onClick={() => {
+            const row = addable.find((entry) => entry.id === pendingId);
+            if (!row) return;
+            setItems([...current, { id: row.id, name: row.name, slug: "", status: row.status }]);
+            setPendingId("");
+          }}
+        >
+          Add to highlights
+        </Button>
+      </div>
+      <Button
+        type="button"
+        variant="primary"
+        disabled={mutation.isPending || !dirty}
+        onClick={() => mutation.mutate(current.map((entry) => entry.id))}
+      >
+        {mutation.isPending ? "Saving..." : "Save highlights"}
+      </Button>
+    </section>
   );
 }

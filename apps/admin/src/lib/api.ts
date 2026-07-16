@@ -104,6 +104,26 @@ async function patch<T>(path: string, body?: unknown): Promise<T> {
   return (await response.json()) as T;
 }
 
+async function put<T>(path: string, body?: unknown): Promise<T> {
+  const response = await fetch(`${API_URL}${path}`, {
+    method: "PUT",
+    credentials: "include",
+    headers: body ? { "content-type": "application/json" } : undefined,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!response.ok) {
+    const errorBody = (await response.json().catch(() => null)) as {
+      error?: { code?: string; message?: string };
+    } | null;
+    throw new ApiError(
+      errorBody?.error?.message ?? `Request failed (${response.status})`,
+      response.status,
+      errorBody?.error?.code ?? "request_failed",
+    );
+  }
+  return (await response.json()) as T;
+}
+
 async function del<T>(path: string): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, {
     method: "DELETE",
@@ -132,6 +152,13 @@ export class ApiError extends Error {
   }
 }
 
+export interface AdminLinkedProduct {
+  id: string;
+  name: string;
+  slug: string;
+  status: string;
+}
+
 export interface AdminProductDetail {
   id: string;
   name: string;
@@ -145,6 +172,9 @@ export interface AdminProductDetail {
   imageUrl: string;
   imageAlt: string;
   updatedAt: string;
+  releaseScope: "global" | "selected";
+  releaseCountries: string[];
+  linkedProducts: AdminLinkedProduct[];
   variants: Array<{
     id: string;
     name: string;
@@ -332,6 +362,9 @@ export const api = {
       imageUrl: product.imageUrl ?? "",
       imageAlt: product.imageAlt,
       updatedAt: new Date().toISOString(),
+      releaseScope: "global",
+      releaseCountries: [],
+      linkedProducts: [],
       variants: product.variants.map((variant) => ({
         id: variant.id,
         name: variant.name,
@@ -541,7 +574,10 @@ export const api = {
       ? demo({ id: `usr_${Date.now().toString(36)}`, farmName: "Demo Farm" })
       : post("/v1/admin/farm-owners", input),
 
-  changePassword: async (currentPassword: string, newPassword: string): Promise<{ ok: boolean }> => {
+  changePassword: async (
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<{ ok: boolean }> => {
     if (demoMode) {
       await new Promise((resolve) => setTimeout(resolve, 180));
       if (currentPassword !== DEMO_PASSWORD) {
@@ -591,6 +627,26 @@ export const api = {
 
   updateSiteControl: (input: Partial<SiteControl>): Promise<SiteControl> =>
     demoMode ? demo(input as SiteControl) : patch("/v1/admin/site-control", input),
+
+  highlights: (): Promise<AdminLinkedProduct[]> =>
+    demoMode
+      ? demo(
+          products
+            .slice(0, 4)
+            .map((p) => ({ id: p.id, name: p.name, slug: p.slug, status: "published" })),
+        )
+      : get<{ items: AdminLinkedProduct[] }>("/v1/admin/highlights").then((body) => body.items),
+
+  setHighlights: (productIds: string[]): Promise<AdminLinkedProduct[]> =>
+    demoMode
+      ? demo(
+          products
+            .filter((p) => productIds.includes(p.id))
+            .map((p) => ({ id: p.id, name: p.name, slug: p.slug, status: "published" })),
+        )
+      : put<{ items: AdminLinkedProduct[] }>("/v1/admin/highlights", { productIds }).then(
+          (body) => body.items,
+        ),
 
   uploadImage: async (file: File): Promise<{ id: string; url: string }> =>
     demoMode

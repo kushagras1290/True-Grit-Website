@@ -7,6 +7,7 @@ import re
 from typing import Any
 
 from truegrit_api.platform.database import Database
+from truegrit_api.repositories.catalogue import geo_release_clause
 
 
 class CategoryRepository:
@@ -131,28 +132,57 @@ class SearchRepository:
         self._db = db
 
     async def _expand_terms(self, query: str) -> list[str]:
-        terms = [term for term in _FTS_SANITIZE.sub(" ", query).split() if len(term) >= 2][:6]
+        normalized = _FTS_SANITIZE.sub(" ", query).lower()
+        terms = [term for term in normalized.split() if len(term) >= 2][:6]
         if not terms:
             return []
+        # Synonyms expand in both directions: a query for "ragi" should also
+        # match "finger millet", and a query phrased as "finger millet" (the
+        # synonym, possibly multi-word) should match "ragi". The table is tiny,
+        # so scan it rather than juggle phrase placeholders.
         expanded = list(terms)
-        placeholders = ", ".join("?" for _ in terms)
-        rows = await self._db.fetch_all(
-            f"SELECT synonym FROM search_synonyms WHERE term IN ({placeholders})",
-            [term.lower() for term in terms],
-        )
-        expanded.extend(row["synonym"] for row in rows)
+        rows = await self._db.fetch_all("SELECT term, synonym FROM search_synonyms")
+        for row in rows:
+            term = row["term"].lower()
+            synonym = row["synonym"].lower()
+            if term in terms and synonym not in expanded:
+                expanded.append(synonym)
+            if synonym in normalized and term not in expanded:
+                expanded.append(term)
         return expanded
 
-    async def search(self, query: str, limit: int = 20) -> dict[str, Any]:
+    async def search(self, query: str, limit: int = 20, country: str | None = None) -> dict[str, Any]:
         terms = await self._expand_terms(query)
         if not terms:
             return {"query": query, "total": 0, "groups": []}
         match = " OR ".join(f'"{term}"*' for term in terms)
 
+        # Products are searched against the live catalogue (not the FTS shadow
+        # table, which only the seed populates) so results always reflect what
+        # is actually published — and only what is released in the visitor's
+        # country.
+        term_clause = " OR ".join(
+            "(p.name LIKE ? OR p.slug LIKE ? OR p.short_description LIKE ?"
+            " OR f.name LIKE ? OR t.label LIKE ?)"
+            for _ in terms
+        )
+        term_params: list[Any] = []
+        for term in terms:
+            like = f"%{term}%"
+            term_params.extend([like, like, like, like, like])
+        geo_sql, geo_params = geo_release_clause(country)
         product_rows = await self._db.fetch_all(
-            "SELECT product_id AS id, name, slug FROM search_products"
-            " WHERE search_products MATCH ? LIMIT ?",
-            (match, limit),
+            f"""
+            SELECT DISTINCT p.id, p.name, p.slug
+            FROM products p
+            LEFT JOIN farms f ON f.id = p.farm_id
+            LEFT JOIN product_tags pt ON pt.product_id = p.id
+            LEFT JOIN tags t ON t.id = pt.tag_id
+            WHERE p.status = 'published' AND ({term_clause}){geo_sql}
+            ORDER BY p.name
+            LIMIT ?
+            """,
+            (*term_params, *geo_params, limit),
         )
         content_rows = await self._db.fetch_all(
             "SELECT entity_type, entity_id AS id, title AS name, slug FROM search_content"
@@ -166,7 +196,12 @@ class SearchRepository:
                 {
                     "group": "products",
                     "items": [
-                        {"id": row["id"], "name": row["name"], "path": f"/product/{row['slug']}"}
+                        {
+                            "id": row["id"],
+                            "name": row["name"],
+                            "slug": row["slug"],
+                            "path": f"/product/{row['slug']}",
+                        }
                         for row in product_rows
                     ],
                 }

@@ -85,6 +85,104 @@ def test_publish_unknown_category_404(client: TestClient, db: SQLiteDatabase):
     assert client.post("/v1/admin/categories/cat_missing/publish").status_code == 404
 
 
+def test_product_release_roundtrip(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
+
+    response = client.patch(
+        "/v1/admin/products/prd_rajma",
+        json={"releaseScope": "selected", "releaseCountries": ["us", "AE"]},
+    )
+    assert response.status_code == 200, response.text
+
+    detail = client.get("/v1/admin/products/prd_rajma").json()
+    assert detail["releaseScope"] == "selected"
+    assert detail["releaseCountries"] == ["AE", "US"]
+
+    # The storefront in India no longer sees it; the UAE does.
+    india = client.get("/v1/public/products", params={"country": "IN"}).json()
+    assert "himalayan-red-rajma" not in {p["slug"] for p in india["items"]}
+    uae = client.get("/v1/public/products", params={"country": "AE"}).json()
+    assert "himalayan-red-rajma" in {p["slug"] for p in uae["items"]}
+
+    # Back to global: the country list is cleared.
+    client.patch("/v1/admin/products/prd_rajma", json={"releaseScope": "global"})
+    detail = client.get("/v1/admin/products/prd_rajma").json()
+    assert detail["releaseScope"] == "global"
+    assert detail["releaseCountries"] == []
+
+
+def test_product_release_validation(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
+    empty = client.patch(
+        "/v1/admin/products/prd_rajma",
+        json={"releaseScope": "selected", "releaseCountries": []},
+    )
+    assert empty.status_code == 422
+    bad_code = client.patch(
+        "/v1/admin/products/prd_rajma",
+        json={"releaseScope": "selected", "releaseCountries": ["USA"]},
+    )
+    assert bad_code.status_code == 422
+    bad_scope = client.patch(
+        "/v1/admin/products/prd_rajma", json={"releaseScope": "everywhere"}
+    )
+    assert bad_scope.status_code == 422
+
+
+def test_product_links_roundtrip(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
+
+    response = client.patch(
+        "/v1/admin/products/prd_rajma",
+        # Self-links are ignored rather than rejected.
+        json={"linkedProductIds": ["prd_spinach", "prd_rajma", "prd_ragi"]},
+    )
+    assert response.status_code == 200, response.text
+
+    detail = client.get("/v1/admin/products/prd_rajma").json()
+    assert [entry["id"] for entry in detail["linkedProducts"]] == ["prd_spinach", "prd_ragi"]
+
+    # The public product page serves the curated slots in order.
+    public = client.get("/v1/public/products/himalayan-red-rajma").json()
+    assert public["relatedSlugs"] == ["organic-baby-spinach", "sprouted-ragi-flour"]
+
+    # Swapping is a plain re-save with a different list.
+    client.patch("/v1/admin/products/prd_rajma", json={"linkedProductIds": ["prd_ragi"]})
+    public = client.get("/v1/public/products/himalayan-red-rajma").json()
+    assert public["relatedSlugs"] == ["sprouted-ragi-flour"]
+
+    unknown = client.patch(
+        "/v1/admin/products/prd_rajma", json={"linkedProductIds": ["prd_missing"]}
+    )
+    assert unknown.status_code == 422
+
+
+def test_highlights_admin_roundtrip(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
+
+    response = client.put(
+        "/v1/admin/highlights", json={"productIds": ["prd_ragi", "prd_alphonso"]}
+    )
+    assert response.status_code == 200, response.text
+    assert [entry["id"] for entry in response.json()["items"]] == ["prd_ragi", "prd_alphonso"]
+
+    public = client.get("/v1/public/highlights").json()
+    assert [p["slug"] for p in public["items"]] == [
+        "sprouted-ragi-flour",
+        "organic-alphonso-mangoes",
+    ]
+
+    # Replacing the list swaps the slots.
+    client.put("/v1/admin/highlights", json={"productIds": ["prd_alphonso"]})
+    public = client.get("/v1/public/highlights").json()
+    assert [p["slug"] for p in public["items"]] == ["organic-alphonso-mangoes"]
+
+
+def test_highlights_require_settings_permission(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
+    assert client.put("/v1/admin/highlights", json={"productIds": []}).status_code == 403
+
+
 def test_inventory_view_permission(client: TestClient, db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_ops"))
     items = client.get("/v1/admin/inventory").json()["items"]

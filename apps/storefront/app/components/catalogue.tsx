@@ -4,9 +4,11 @@
  * botanical placeholder driven by its category theme — real media assets slot
  * into the same frame via Cloudflare Images at integration time. */
 
-import { formatMoney, type CategorySummary, type ProductSummary } from "@truegrit/contracts";
+import type { CategorySummary, ProductSummary } from "@truegrit/contracts";
 import { themeVars, type ThemeKey } from "@truegrit/ui";
 import { Link } from "react-router";
+
+import { usePriceFormatter } from "../lib/currency";
 
 const PRODUCE_GLYPHS: Record<string, string> = {
   "organic-alphonso-mangoes": "M",
@@ -65,6 +67,7 @@ export function AvailabilityNote({
 }
 
 export function ProductCard({ product }: { product: ProductSummary }) {
+  const price = usePriceFormatter();
   const onSale = product.saleMinor !== null && product.saleMinor < product.priceMinor;
   return (
     <article className="group">
@@ -85,11 +88,11 @@ export function ProductCard({ product }: { product: ProductSummary }) {
           <p className="mt-1 text-sm text-ink">
             {onSale ? (
               <>
-                <span className="font-semibold">{formatMoney(product.saleMinor!)}</span>{" "}
-                <s className="text-ink-muted">{formatMoney(product.priceMinor)}</s>
+                <span className="font-semibold">{price(product.saleMinor!)}</span>{" "}
+                <s className="text-ink-muted">{price(product.priceMinor)}</s>
               </>
             ) : (
-              <span className="font-semibold">{formatMoney(product.priceMinor)}</span>
+              <span className="font-semibold">{price(product.priceMinor)}</span>
             )}{" "}
             <span className="text-ink-muted">· {product.unitLabel}</span>
           </p>

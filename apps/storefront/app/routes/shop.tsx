@@ -1,10 +1,14 @@
 import type { Route } from "./+types/shop";
 import { CategoryTile, ProductGrid, Section } from "../components/catalogue";
 import { loadAllProducts, loadCategories } from "../lib/catalogue.server";
+import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader() {
-  const [categories, products] = await Promise.all([loadCategories(), loadAllProducts()]);
+export async function loader({ request }: Route.LoaderArgs) {
+  const [categories, products] = await Promise.all([
+    loadCategories(),
+    loadAllProducts(resolveCountry(request)),
+  ]);
   return { categories, products };
 }
 

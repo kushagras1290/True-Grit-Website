@@ -1,4 +1,3 @@
-import { formatMoney } from "@truegrit/contracts";
 import { useState } from "react";
 import { data, Link } from "react-router";
 
@@ -12,12 +11,15 @@ import {
 } from "../components/catalogue";
 import { loadProduct, loadProductsBySlugs } from "../lib/catalogue.server";
 import { useCart } from "../lib/cart";
+import { usePriceFormatter } from "../lib/currency";
+import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader({ params }: Route.LoaderArgs) {
-  const product = await loadProduct(params.slug);
+export async function loader({ params, request }: Route.LoaderArgs) {
+  const country = resolveCountry(request);
+  const product = await loadProduct(params.slug, country);
   if (!product) throw data("Product not found", { status: 404 });
-  return { product, related: await loadProductsBySlugs(product.relatedSlugs) };
+  return { product, related: await loadProductsBySlugs(product.relatedSlugs, country) };
 }
 
 export function meta({ data: loaderData }: Route.MetaArgs) {
@@ -27,6 +29,7 @@ export function meta({ data: loaderData }: Route.MetaArgs) {
 export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const { product, related } = loaderData;
   const { add } = useCart();
+  const formatPrice = usePriceFormatter();
   const [variantId, setVariantId] = useState(product.variants[0]?.id ?? "");
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
@@ -66,10 +69,10 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
           </p>
 
           <p className="mt-5 text-2xl font-semibold text-ink">
-            {formatMoney(price)}{" "}
+            {formatPrice(price)}{" "}
             {variant && variant.saleMinor !== null ? (
               <s className="text-base font-normal text-ink-muted">
-                {formatMoney(variant.listMinor)}
+                {formatPrice(variant.listMinor)}
               </s>
             ) : null}
           </p>

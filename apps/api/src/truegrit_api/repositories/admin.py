@@ -93,6 +93,7 @@ class AdminRepository:
             """
             SELECT p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
                    p.seo_title, p.seo_description, p.image_url, p.image_alt, p.updated_at,
+                   p.release_scope,
                    COALESCE(f.name, b.name, '') AS farm_name
             FROM products p
             LEFT JOIN farms f ON f.id = p.farm_id
@@ -103,6 +104,22 @@ class AdminRepository:
         )
         if product is None:
             return None
+        release_rows = await self._db.fetch_all(
+            "SELECT country_code FROM product_release_countries WHERE product_id = ?"
+            " ORDER BY country_code",
+            (product_id,),
+        )
+        product["release_countries"] = [row["country_code"] for row in release_rows]
+        product["linked_products"] = await self._db.fetch_all(
+            """
+            SELECT p.id, p.name, p.slug, p.status
+            FROM product_links pl
+            JOIN products p ON p.id = pl.linked_product_id
+            WHERE pl.product_id = ? AND p.archived_at IS NULL
+            ORDER BY pl.sort_order
+            """,
+            (product_id,),
+        )
         variants = await self._db.fetch_all(
             """
             SELECT v.id, v.name, v.sku, v.status,

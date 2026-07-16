@@ -37,6 +37,7 @@ import {
 } from "../components/ui";
 import { useToast } from "../components/toast";
 import { ApiError, api, type AdminProductDetail } from "../lib/api";
+import { COUNTRIES } from "../lib/countries";
 import { formatDate, formatMoney } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
 
@@ -349,7 +350,7 @@ const seoSchema = z.object({
 
 type SeoForm = z.infer<typeof seoSchema>;
 
-const EDITOR_TABS = ["General", "Variants", "SEO"] as const;
+const EDITOR_TABS = ["General", "Variants", "Availability & Links", "SEO"] as const;
 
 export function ProductEditorPage() {
   const { id = "" } = useParams();
@@ -524,6 +525,14 @@ export function ProductEditorPage() {
         </DataTableShell>
       ) : null}
 
+      {tab === "Availability & Links" ? (
+        <AvailabilityTab
+          product={product}
+          onSave={(values) => saveMutation.mutate(values)}
+          saving={saveMutation.isPending}
+        />
+      ) : null}
+
       {tab === "SEO" ? (
         <SeoTab
           product={product}
@@ -531,6 +540,200 @@ export function ProductEditorPage() {
           saving={saveMutation.isPending}
         />
       ) : null}
+    </div>
+  );
+}
+
+/** Geo release (global vs. selected countries) and the owner-curated
+ * "linked products" slots shown on the product page — add, remove and reorder
+ * to swap what customers see. */
+function AvailabilityTab({
+  product,
+  onSave,
+  saving,
+}: {
+  product: AdminProductDetail;
+  onSave: (values: Record<string, unknown>) => void;
+  saving: boolean;
+}) {
+  const [globalRelease, setGlobalRelease] = useState(product.releaseScope !== "selected");
+  const [countries, setCountries] = useState<string[]>(product.releaseCountries);
+  const [links, setLinks] = useState(product.linkedProducts);
+  const [pendingLinkId, setPendingLinkId] = useState("");
+  const { data: allProducts } = useQuery({ queryKey: ["admin-products"], queryFn: api.products });
+
+  const dirty =
+    globalRelease !== (product.releaseScope !== "selected") ||
+    countries.join(",") !== product.releaseCountries.join(",") ||
+    links.map((entry) => entry.id).join(",") !==
+      product.linkedProducts.map((entry) => entry.id).join(",");
+
+  const linkable = (allProducts ?? []).filter(
+    (row) => row.id !== product.id && !links.some((entry) => entry.id === row.id),
+  );
+
+  function toggleCountry(code: string) {
+    setCountries((current) =>
+      current.includes(code) ? current.filter((entry) => entry !== code) : [...current, code],
+    );
+  }
+
+  function moveLink(index: number, delta: number) {
+    setLinks((current) => {
+      const target = index + delta;
+      if (target < 0 || target >= current.length) return current;
+      const next = [...current];
+      const sourceItem = next[index];
+      const targetItem = next[target];
+      if (!sourceItem || !targetItem) return current;
+      next[index] = targetItem;
+      next[target] = sourceItem;
+      return next;
+    });
+  }
+
+  return (
+    <div className="max-w-2xl space-y-8">
+      <section className="space-y-3">
+        <div>
+          <h2 className="font-display text-lg text-ink">Where this product is released</h2>
+          <p className="text-sm text-ink-muted">
+            Visitors outside the released countries will not see this product anywhere on the
+            storefront.
+          </p>
+        </div>
+        <label className="flex items-center gap-2 text-sm text-ink">
+          <input
+            type="checkbox"
+            checked={globalRelease}
+            onChange={(event) => setGlobalRelease(event.target.checked)}
+          />
+          Release globally (all countries)
+        </label>
+        {!globalRelease ? (
+          <fieldset className="rounded-md border border-line p-4">
+            <legend className="px-1 text-xs font-medium text-ink-muted">
+              Release only in these countries
+            </legend>
+            <div className="grid max-h-64 grid-cols-2 gap-x-4 gap-y-1.5 overflow-y-auto sm:grid-cols-3">
+              {COUNTRIES.map((country) => (
+                <label key={country.code} className="flex items-center gap-2 text-sm text-ink">
+                  <input
+                    type="checkbox"
+                    checked={countries.includes(country.code)}
+                    onChange={() => toggleCountry(country.code)}
+                  />
+                  {country.name}
+                </label>
+              ))}
+            </div>
+            {countries.length === 0 ? (
+              <p className="mt-2 text-xs text-danger">
+                Pick at least one country, or release globally.
+              </p>
+            ) : null}
+          </fieldset>
+        ) : null}
+      </section>
+
+      <section className="space-y-3">
+        <div>
+          <h2 className="font-display text-lg text-ink">Linked products</h2>
+          <p className="text-sm text-ink-muted">
+            Shown in the “Goes well with” slots on this product’s page, in this order. Leave empty
+            to let the storefront pick from the same category.
+          </p>
+        </div>
+        {links.length === 0 ? (
+          <p className="rounded-md border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
+            No products linked yet.
+          </p>
+        ) : (
+          <ul className="divide-y divide-line rounded-md border border-line">
+            {links.map((entry, index) => (
+              <li key={entry.id} className="flex items-center gap-2 px-3 py-2 text-sm">
+                <span className="w-5 text-xs text-ink-muted">{index + 1}.</span>
+                <span className="flex-1 font-medium text-ink">{entry.name}</span>
+                <StatusPill status={entry.status} />
+                <button
+                  type="button"
+                  aria-label={`Move ${entry.name} up`}
+                  className="min-h-8 min-w-8 rounded-sm border border-line text-xs disabled:opacity-40"
+                  disabled={index === 0}
+                  onClick={() => moveLink(index, -1)}
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  aria-label={`Move ${entry.name} down`}
+                  className="min-h-8 min-w-8 rounded-sm border border-line text-xs disabled:opacity-40"
+                  disabled={index === links.length - 1}
+                  onClick={() => moveLink(index, 1)}
+                >
+                  ↓
+                </button>
+                <button
+                  type="button"
+                  aria-label={`Remove ${entry.name}`}
+                  className="min-h-8 rounded-sm border border-line px-2 text-xs text-danger"
+                  onClick={() =>
+                    setLinks((current) => current.filter((link) => link.id !== entry.id))
+                  }
+                >
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="flex gap-2">
+          <Select
+            aria-label="Product to link"
+            value={pendingLinkId}
+            onChange={(event) => setPendingLinkId(event.target.value)}
+            className="flex-1"
+          >
+            <option value="">Add a product…</option>
+            {linkable.map((row) => (
+              <option key={row.id} value={row.id}>
+                {row.name}
+              </option>
+            ))}
+          </Select>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={!pendingLinkId || links.length >= 12}
+            onClick={() => {
+              const row = linkable.find((entry) => entry.id === pendingLinkId);
+              if (!row) return;
+              setLinks((current) => [
+                ...current,
+                { id: row.id, name: row.name, slug: "", status: row.status },
+              ]);
+              setPendingLinkId("");
+            }}
+          >
+            Link product
+          </Button>
+        </div>
+      </section>
+
+      <Button
+        type="button"
+        variant="primary"
+        disabled={saving || !dirty || (!globalRelease && countries.length === 0)}
+        onClick={() =>
+          onSave({
+            releaseScope: globalRelease ? "global" : "selected",
+            releaseCountries: globalRelease ? [] : countries,
+            linkedProductIds: links.map((entry) => entry.id),
+          })
+        }
+      >
+        {saving ? "Saving…" : "Save availability & links"}
+      </Button>
     </div>
   );
 }

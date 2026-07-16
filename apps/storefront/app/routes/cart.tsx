@@ -1,9 +1,9 @@
-import { formatMoney } from "@truegrit/contracts";
 import { Link } from "react-router";
 
 import type { Route } from "./+types/cart";
 import { Section } from "../components/catalogue";
 import { useCart } from "../lib/cart";
+import { usePriceFormatter } from "../lib/currency";
 import { seoMeta } from "../lib/seo";
 
 export function meta(_args: Route.MetaArgs) {
@@ -17,6 +17,7 @@ export function meta(_args: Route.MetaArgs) {
 
 export default function CartPage(_props: Route.ComponentProps) {
   const { lines, subtotalMinor, setQuantity, remove } = useCart();
+  const formatPrice = usePriceFormatter();
 
   if (lines.length === 0) {
     return (
@@ -71,7 +72,7 @@ export default function CartPage(_props: Route.ComponentProps) {
                 </button>
               </div>
               <p className="w-24 text-right font-medium text-ink">
-                {formatMoney(line.unitMinor * line.quantity)}
+                {formatPrice(line.unitMinor * line.quantity)}
               </p>
               <button
                 type="button"
@@ -89,7 +90,7 @@ export default function CartPage(_props: Route.ComponentProps) {
           <dl className="mt-4 space-y-2 text-sm">
             <div className="flex justify-between">
               <dt className="text-ink-muted">Subtotal (estimate)</dt>
-              <dd className="font-medium text-ink">{formatMoney(subtotalMinor)}</dd>
+              <dd className="font-medium text-ink">{formatPrice(subtotalMinor)}</dd>
             </div>
             <div className="flex justify-between">
               <dt className="text-ink-muted">Delivery</dt>

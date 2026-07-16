@@ -9,6 +9,7 @@ row that publishing later snapshots.
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from truegrit_api.auth.principal import Principal
@@ -167,6 +168,194 @@ async def update_product(
         updates=updates,
     )
     return {"id": product_id, "status": current["status"], "changed": True}
+
+
+_COUNTRY_CODE = re.compile(r"^[A-Za-z]{2}$")
+_MAX_RELEASE_COUNTRIES = 100
+_MAX_PRODUCT_LINKS = 12
+_MAX_HIGHLIGHTS = 12
+
+
+def _normalize_country_codes(countries: list[str]) -> list[str]:
+    """Uppercase, validate and dedupe ISO-3166 alpha-2 codes, keeping order."""
+    seen: list[str] = []
+    for raw in countries:
+        code = (raw or "").strip().upper()
+        if not _COUNTRY_CODE.match(code):
+            raise ValidationAppError(f"'{raw}' is not a two-letter ISO country code.")
+        if code not in seen:
+            seen.append(code)
+    if len(seen) > _MAX_RELEASE_COUNTRIES:
+        raise ValidationAppError(
+            f"At most {_MAX_RELEASE_COUNTRIES} release countries are supported."
+        )
+    return seen
+
+
+async def set_product_release(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    product_id: str,
+    *,
+    scope: str,
+    countries: list[str],
+) -> dict[str, Any]:
+    """Replace a product's geo release: global, or a specific country list."""
+    if scope not in ("global", "selected"):
+        raise ValidationAppError("Release scope must be 'global' or 'selected'.")
+    codes = _normalize_country_codes(countries) if scope == "selected" else []
+    if scope == "selected" and not codes:
+        raise ValidationAppError("Pick at least one country, or release globally.")
+
+    current = await db.fetch_one(
+        "SELECT id, release_scope FROM products WHERE id = ? AND archived_at IS NULL",
+        (product_id,),
+    )
+    if current is None:
+        raise NotFoundError("Product not found.")
+
+    now = utc_now_iso()
+    statements: list[tuple[str, Any]] = [
+        ("DELETE FROM product_release_countries WHERE product_id = ?", (product_id,)),
+        *[
+            (
+                "INSERT INTO product_release_countries"
+                " (product_id, country_code, added_at, added_by) VALUES (?, ?, ?, ?)",
+                (product_id, code, now, actor.user_id),
+            )
+            for code in codes
+        ],
+        (
+            "UPDATE products SET release_scope = ?, updated_at = ?, updated_by = ?"
+            " WHERE id = ?",
+            (scope, now, actor.user_id, product_id),
+        ),
+        audit_statement(
+            action="product.release_updated",
+            entity_type="product",
+            entity_id=product_id,
+            actor_id=actor.user_id,
+            request_id=request_id,
+            created_at=now,
+            before={"release_scope": current["release_scope"]},
+            after={"release_scope": scope, "countries": codes},
+        ),
+    ]
+    await db.batch(statements)
+    return {"id": product_id, "release_scope": scope, "release_countries": codes}
+
+
+async def set_product_links(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    product_id: str,
+    *,
+    linked_product_ids: list[str],
+) -> dict[str, Any]:
+    """Replace the owner-curated 'goes well with' slots for a product, keeping
+    the given order. An empty list clears them (storefront falls back to
+    same-category picks)."""
+    ordered: list[str] = []
+    for linked_id in linked_product_ids:
+        if linked_id == product_id or linked_id in ordered:
+            continue
+        ordered.append(linked_id)
+    if len(ordered) > _MAX_PRODUCT_LINKS:
+        raise ValidationAppError(f"At most {_MAX_PRODUCT_LINKS} linked products are supported.")
+
+    current = await db.fetch_one(
+        "SELECT id FROM products WHERE id = ? AND archived_at IS NULL", (product_id,)
+    )
+    if current is None:
+        raise NotFoundError("Product not found.")
+    if ordered:
+        placeholders = ", ".join("?" for _ in ordered)
+        rows = await db.fetch_all(
+            f"SELECT id FROM products WHERE id IN ({placeholders}) AND archived_at IS NULL",
+            ordered,
+        )
+        found = {row["id"] for row in rows}
+        missing = [linked_id for linked_id in ordered if linked_id not in found]
+        if missing:
+            raise ValidationAppError(f"Unknown linked products: {', '.join(missing)}.")
+
+    now = utc_now_iso()
+    statements: list[tuple[str, Any]] = [
+        ("DELETE FROM product_links WHERE product_id = ?", (product_id,)),
+        *[
+            (
+                "INSERT INTO product_links"
+                " (product_id, linked_product_id, sort_order, created_at, created_by)"
+                " VALUES (?, ?, ?, ?, ?)",
+                (product_id, linked_id, index, now, actor.user_id),
+            )
+            for index, linked_id in enumerate(ordered)
+        ],
+        audit_statement(
+            action="product.links_updated",
+            entity_type="product",
+            entity_id=product_id,
+            actor_id=actor.user_id,
+            request_id=request_id,
+            created_at=now,
+            after={"linked_product_ids": ordered},
+        ),
+    ]
+    await db.batch(statements)
+    return {"id": product_id, "linked_product_ids": ordered}
+
+
+async def set_highlighted_products(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    product_ids: list[str],
+) -> dict[str, Any]:
+    """Replace the site-wide highlighted products (search page slots), keeping
+    the given order. The owner swaps products by saving a new list."""
+    ordered: list[str] = []
+    for product_id in product_ids:
+        if product_id not in ordered:
+            ordered.append(product_id)
+    if len(ordered) > _MAX_HIGHLIGHTS:
+        raise ValidationAppError(f"At most {_MAX_HIGHLIGHTS} highlighted products are supported.")
+    if ordered:
+        placeholders = ", ".join("?" for _ in ordered)
+        rows = await db.fetch_all(
+            f"SELECT id FROM products WHERE id IN ({placeholders}) AND archived_at IS NULL",
+            ordered,
+        )
+        found = {row["id"] for row in rows}
+        missing = [product_id for product_id in ordered if product_id not in found]
+        if missing:
+            raise ValidationAppError(f"Unknown products: {', '.join(missing)}.")
+
+    now = utc_now_iso()
+    statements: list[tuple[str, Any]] = [
+        ("DELETE FROM highlighted_products", ()),
+        *[
+            (
+                "INSERT INTO highlighted_products (product_id, sort_order, added_at, added_by)"
+                " VALUES (?, ?, ?, ?)",
+                (product_id, index, now, actor.user_id),
+            )
+            for index, product_id in enumerate(ordered)
+        ],
+        audit_statement(
+            action="site.highlights_updated",
+            entity_type="site",
+            entity_id="highlighted_products",
+            actor_id=actor.user_id,
+            request_id=request_id,
+            created_at=now,
+            after={"product_ids": ordered},
+        ),
+    ]
+    await db.batch(statements)
+    return {"product_ids": ordered}
 
 
 async def archive_product(

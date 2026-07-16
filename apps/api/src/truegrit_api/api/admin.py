@@ -40,6 +40,9 @@ from truegrit_api.services.catalogue import (
     archive_product,
     create_category,
     create_product,
+    set_highlighted_products,
+    set_product_links,
+    set_product_release,
     update_category,
     update_product,
 )
@@ -436,6 +439,46 @@ async def update_site_control(
     return await get_site_control(db, principal)
 
 
+class HighlightsUpdateRequest(_CamelModel):
+    product_ids: list[str] = Field(max_length=12)
+
+
+@router.get("/highlights")
+async def get_highlights(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("settings.view"))],
+) -> Any:
+    """The curated highlight slots (search page box), in curated order."""
+    rows = await db.fetch_all(
+        """
+        SELECT p.id, p.name, p.slug, p.status
+        FROM highlighted_products hp
+        JOIN products p ON p.id = hp.product_id
+        WHERE p.archived_at IS NULL
+        ORDER BY hp.sort_order
+        """
+    )
+    return {
+        "items": [
+            {"id": row["id"], "name": row["name"], "slug": row["slug"], "status": row["status"]}
+            for row in rows
+        ]
+    }
+
+
+@router.put("/highlights")
+async def update_highlights(
+    payload: HighlightsUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    await set_highlighted_products(
+        db, principal, _request_id(request), product_ids=payload.product_ids
+    )
+    return await get_highlights(db, principal)
+
+
 @router.post("/media/images")
 async def upload_image_endpoint(
     payload: ImageUploadRequest,
@@ -604,6 +647,9 @@ class ProductUpdateRequest(_CamelModel):
     seo_description: str | None = Field(default=None, max_length=320)
     image_url: str | None = Field(default=None, max_length=1000)
     image_alt: str | None = Field(default=None, max_length=200)
+    release_scope: str | None = Field(default=None, max_length=16)
+    release_countries: list[str] | None = Field(default=None, max_length=100)
+    linked_product_ids: list[str] | None = Field(default=None, max_length=12)
 
 
 class ProductBulkDeleteRequest(_CamelModel):
@@ -656,6 +702,17 @@ async def get_product_endpoint(
         "imageUrl": detail["image_url"] or "",
         "imageAlt": detail["image_alt"] or detail["name"],
         "updatedAt": detail["updated_at"],
+        "releaseScope": detail["release_scope"],
+        "releaseCountries": detail["release_countries"],
+        "linkedProducts": [
+            {
+                "id": linked["id"],
+                "name": linked["name"],
+                "slug": linked["slug"],
+                "status": linked["status"],
+            }
+            for linked in detail["linked_products"]
+        ],
         "variants": [
             {
                 "id": v["id"],
@@ -681,7 +738,48 @@ async def update_product_endpoint(
 ) -> Any:
     await _assert_product_scope(db, product_id, principal)
     fields = payload.model_dump(exclude_unset=True)
-    return await update_product(db, principal, _request_id(request), product_id, fields=fields)
+
+    # Geo release and curated links are relational, not simple columns — they
+    # are applied through their own audited services, then any remaining plain
+    # fields go through the standard update path.
+    changed = False
+    release_scope = fields.pop("release_scope", None)
+    release_countries = fields.pop("release_countries", None)
+    if release_scope is None and release_countries is not None:
+        # Countries sent alone keep the product's current scope.
+        row = await db.fetch_one(
+            "SELECT release_scope FROM products WHERE id = ?", (product_id,)
+        )
+        release_scope = row["release_scope"] if row else "global"
+    if release_scope is not None:
+        await set_product_release(
+            db,
+            principal,
+            _request_id(request),
+            product_id,
+            scope=release_scope,
+            countries=release_countries or [],
+        )
+        changed = True
+    linked_product_ids = fields.pop("linked_product_ids", None)
+    if linked_product_ids is not None:
+        await set_product_links(
+            db,
+            principal,
+            _request_id(request),
+            product_id,
+            linked_product_ids=linked_product_ids,
+        )
+        changed = True
+
+    if fields:
+        result = await update_product(
+            db, principal, _request_id(request), product_id, fields=fields
+        )
+        result["changed"] = result.get("changed", False) or changed
+        return result
+    row = await db.fetch_one("SELECT status FROM products WHERE id = ?", (product_id,))
+    return {"id": product_id, "status": row["status"] if row else "draft", "changed": changed}
 
 
 @router.post("/products/{product_id}/publish")

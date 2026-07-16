@@ -36,6 +36,17 @@ from truegrit_api.util.timeutil import utc_now_iso
 router = APIRouter(tags=["public"])
 
 _EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+_COUNTRY_PATTERN = re.compile(r"^[A-Za-z]{2}$")
+
+
+def _normalize_country(country: str | None) -> str | None:
+    """Uppercase a two-letter ISO country code; anything else is rejected.
+    Absent means \"unknown\" and no geo filtering is applied."""
+    if not country:
+        return None
+    if not _COUNTRY_PATTERN.match(country):
+        raise ValidationAppError("Country must be a two-letter ISO code.")
+    return country.upper()
 
 
 class _CamelModel(BaseModel):
@@ -145,8 +156,13 @@ async def contact(
 
 
 @router.get("/categories/{slug}", response_model=PublicCategoryPage)
-async def category_page(slug: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+async def category_page(
+    slug: str,
+    db: Annotated[Database, Depends(get_database)],
+    country: Annotated[str | None, Query(max_length=2)] = None,
+) -> Any:
     validate_slug(slug)
+    visitor_country = _normalize_country(country)
     category = await CategoryRepository(db).get_published_by_slug(slug)
     if category is None:
         raise NotFoundError("Category not found.")
@@ -154,9 +170,13 @@ async def category_page(slug: str, db: Annotated[Database, Depends(get_database)
     catalogue = CatalogueRepository(db)
     rule_json = category["product_rule_json"]
     if category["product_assignment_mode"] in {"dynamic", "hybrid"} and rule_json:
-        products = await catalogue.list_published_by_rule(json.loads(rule_json))
+        products = await catalogue.list_published_by_rule(
+            json.loads(rule_json), country=visitor_country
+        )
     else:
-        products = await catalogue.list_published_by_category(category["id"])
+        products = await catalogue.list_published_by_category(
+            category["id"], country=visitor_country
+        )
 
     return {
         "id": category["id"],
@@ -213,26 +233,49 @@ async def categories(db: Annotated[Database, Depends(get_database)]) -> Any:
 async def products_list(
     db: Annotated[Database, Depends(get_database)],
     slugs: Annotated[str | None, Query(max_length=4000)] = None,
+    country: Annotated[str | None, Query(max_length=2)] = None,
 ) -> Any:
     """Published products for storefront grids.
 
     With `?slugs=a,b,c` returns exactly those, in the given order (home-page
     product collections). Without it, every published product, newest first (the
-    shop grid). Declared before `/products/{slug}` so the literal path wins.
+    shop grid). `?country=XX` hides products not released in that country.
+    Declared before `/products/{slug}` so the literal path wins.
     """
+    visitor_country = _normalize_country(country)
     catalogue = CatalogueRepository(db)
     if slugs is not None:
         wanted = [slug.strip() for slug in slugs.split(",") if slug.strip()][:200]
-        items = await catalogue.list_published_by_slugs(wanted) if wanted else []
+        items = (
+            await catalogue.list_published_by_slugs(wanted, country=visitor_country)
+            if wanted
+            else []
+        )
     else:
-        items = await catalogue.list_all_published()
+        items = await catalogue.list_all_published(country=visitor_country)
+    return {"items": items}
+
+
+@router.get("/highlights", response_model=ProductListResponse)
+async def highlighted_products(
+    db: Annotated[Database, Depends(get_database)],
+    country: Annotated[str | None, Query(max_length=2)] = None,
+) -> Any:
+    """The owner-curated highlight slots (search page box), curated order."""
+    items = await CatalogueRepository(db).list_highlighted(country=_normalize_country(country))
     return {"items": items}
 
 
 @router.get("/products/{slug}", response_model=ProductDetail)
-async def product_detail(slug: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+async def product_detail(
+    slug: str,
+    db: Annotated[Database, Depends(get_database)],
+    country: Annotated[str | None, Query(max_length=2)] = None,
+) -> Any:
     validate_slug(slug)
-    detail = await CatalogueRepository(db).get_published_detail(slug)
+    detail = await CatalogueRepository(db).get_published_detail(
+        slug, country=_normalize_country(country)
+    )
     if detail is None:
         raise NotFoundError("Product not found.")
     return detail
@@ -242,5 +285,6 @@ async def product_detail(slug: str, db: Annotated[Database, Depends(get_database
 async def search(
     db: Annotated[Database, Depends(get_database)],
     q: Annotated[str, Query(min_length=1, max_length=120)],
+    country: Annotated[str | None, Query(max_length=2)] = None,
 ) -> Any:
-    return await SearchRepository(db).search(q)
+    return await SearchRepository(db).search(q, country=_normalize_country(country))

@@ -16,6 +16,7 @@ import {
   type DeliveryAddress,
   type PaymentMethodsInfo,
 } from "../lib/commerce";
+import { usePriceFormatter, useDisplayCurrency } from "../lib/currency";
 import { AuthError, useCustomer } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
 
@@ -38,6 +39,8 @@ const FIELD =
 export default function CheckoutPage(_props: Route.ComponentProps) {
   const { customer, status } = useCustomer();
   const { lines, subtotalMinor, clear } = useCart();
+  const formatPrice = usePriceFormatter();
+  const displayCurrency = useDisplayCurrency();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -233,7 +236,7 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                   </span>
                 </span>
                 <span className="whitespace-nowrap text-ink">
-                  {formatMoney(line.unitMinor * line.quantity)}
+                  {formatPrice(line.unitMinor * line.quantity)}
                 </span>
               </li>
             ))}
@@ -241,17 +244,23 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
           <dl className="mt-3 space-y-1.5 border-t border-line pt-3 text-sm">
             <div className="flex justify-between">
               <dt className="text-ink-muted">Subtotal</dt>
-              <dd className="text-ink">{formatMoney(subtotalMinor)}</dd>
+              <dd className="text-ink">{formatPrice(subtotalMinor)}</dd>
             </div>
             <div className="flex justify-between">
               <dt className="text-ink-muted">Delivery</dt>
-              <dd className="text-ink">{delivery === 0 ? "Free" : formatMoney(delivery)}</dd>
+              <dd className="text-ink">{delivery === 0 ? "Free" : formatPrice(delivery)}</dd>
             </div>
             <div className="flex justify-between border-t border-line pt-1.5 font-medium">
               <dt>Total</dt>
-              <dd>{formatMoney(total)}</dd>
+              <dd>{formatPrice(total)}</dd>
             </div>
           </dl>
+          {displayCurrency.code !== "INR" ? (
+            <p className="mt-2 text-xs text-ink-muted">
+              Prices shown in {displayCurrency.code} are approximate. Your payment is charged as{" "}
+              {formatMoney(total)}.
+            </p>
+          ) : null}
           <fieldset className="mt-4 space-y-2">
             <legend className="text-xs font-medium text-ink-muted">Payment method</legend>
             {razorpayAllowed ? (

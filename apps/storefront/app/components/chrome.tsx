@@ -3,7 +3,7 @@
 import type { PublicBootstrap } from "@truegrit/contracts";
 import { Search, ShoppingBasket, UserRound, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
-import { Link, NavLink } from "react-router";
+import { Form, Link, NavLink } from "react-router";
 
 import { useCart } from "../lib/cart";
 import { isFacebookLoginVisible } from "../lib/public-env";
@@ -255,8 +255,7 @@ function CustomerPortal() {
   // The email/password form is the last step of registration, not the first:
   // while a new customer still owes us a verified number, the phone step stands
   // in its place.
-  const showCredentialsForm =
-    mode === "signin" || (mode === "register" && registerPhone !== null);
+  const showCredentialsForm = mode === "signin" || (mode === "register" && registerPhone !== null);
 
   return (
     <div className="relative" ref={containerRef}>
@@ -366,56 +365,56 @@ function CustomerPortal() {
                     </p>
                   ) : null}
                   {mode === "register" ? (
+                    <label className="block space-y-1">
+                      <span className="text-xs font-medium text-ink-muted">Name</span>
+                      <input
+                        name="name"
+                        type="text"
+                        autoComplete="name"
+                        required
+                        className={FIELD_CLASS}
+                        placeholder="Priya Sharma"
+                      />
+                    </label>
+                  ) : null}
                   <label className="block space-y-1">
-                    <span className="text-xs font-medium text-ink-muted">Name</span>
+                    <span className="text-xs font-medium text-ink-muted">Email</span>
                     <input
-                      name="name"
-                      type="text"
-                      autoComplete="name"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
                       required
                       className={FIELD_CLASS}
-                      placeholder="Priya Sharma"
+                      placeholder="you@example.com"
                     />
                   </label>
-                ) : null}
-                <label className="block space-y-1">
-                  <span className="text-xs font-medium text-ink-muted">Email</span>
-                  <input
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    className={FIELD_CLASS}
-                    placeholder="you@example.com"
-                  />
-                </label>
-                <label className="block space-y-1">
-                  <span className="text-xs font-medium text-ink-muted">Password</span>
-                  <input
-                    name="password"
-                    type="password"
-                    autoComplete={mode === "register" ? "new-password" : "current-password"}
-                    required
-                    minLength={mode === "register" ? 10 : undefined}
-                    className={FIELD_CLASS}
-                    placeholder={mode === "register" ? "At least 10 characters" : "Your password"}
-                  />
-                </label>
+                  <label className="block space-y-1">
+                    <span className="text-xs font-medium text-ink-muted">Password</span>
+                    <input
+                      name="password"
+                      type="password"
+                      autoComplete={mode === "register" ? "new-password" : "current-password"}
+                      required
+                      minLength={mode === "register" ? 10 : undefined}
+                      className={FIELD_CLASS}
+                      placeholder={mode === "register" ? "At least 10 characters" : "Your password"}
+                    />
+                  </label>
 
-                {error ? (
-                  <p role="alert" className="text-sm text-danger">
-                    {error}
-                  </p>
-                ) : null}
+                  {error ? (
+                    <p role="alert" className="text-sm text-danger">
+                      {error}
+                    </p>
+                  ) : null}
 
-                <button
-                  type="submit"
-                  className="min-h-11 w-full rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-95 disabled:opacity-60"
-                  disabled={pending}
-                >
-                  {pending ? "Please wait…" : mode === "register" ? "Create account" : "Sign in"}
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    className="min-h-11 w-full rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-95 disabled:opacity-60"
+                    disabled={pending}
+                  >
+                    {pending ? "Please wait…" : mode === "register" ? "Create account" : "Sign in"}
+                  </button>
+                </form>
               ) : null}
 
               {mode === "signin" ? (
@@ -428,6 +427,33 @@ function CustomerPortal() {
         </div>
       ) : null}
     </div>
+  );
+}
+
+/** Global product search: an inline box on wider screens; small screens keep
+ * the icon that leads to the full search page. Both land on /search. */
+function GlobalSearch() {
+  return (
+    <Form method="get" action="/search" role="search" className="hidden lg:block">
+      <label htmlFor="global-search" className="sr-only">
+        Search products
+      </label>
+      <div className="relative">
+        <Search
+          size={15}
+          aria-hidden
+          className="pointer-events-none absolute top-1/2 left-2.5 -translate-y-1/2 text-ink-muted"
+        />
+        <input
+          id="global-search"
+          name="q"
+          type="search"
+          placeholder="Search products…"
+          autoComplete="off"
+          className="min-h-9 w-44 rounded-full border border-line bg-surface pr-3 pl-8 text-sm text-ink transition-[width] duration-200 placeholder:text-ink-muted focus:w-64 focus:border-brand focus:outline-none"
+        />
+      </div>
+    </Form>
   );
 }
 
@@ -489,10 +515,11 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
           </nav>
 
           <div className="flex items-center gap-1">
+            <GlobalSearch />
             <CustomerPortal />
             <Link
               to="/search"
-              className="flex min-h-11 min-w-11 items-center justify-center text-ink hover:text-brand"
+              className="flex min-h-11 min-w-11 items-center justify-center text-ink hover:text-brand lg:hidden"
               aria-label="Search"
             >
               <Search size={19} />

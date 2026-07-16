@@ -15,7 +15,9 @@ import appCss from "./app.css?url";
 import { Footer, Header } from "./components/chrome";
 import { loadBootstrap } from "./lib/catalogue.server";
 import { CartProvider } from "./lib/cart";
+import { CurrencyProvider } from "./lib/currency";
 import { CustomerProvider } from "./lib/customer-auth";
+import { resolveCountry } from "./lib/geo.server";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -27,9 +29,10 @@ export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: appCss },
 ];
 
-export async function loader() {
+export async function loader({ request }: Route.LoaderArgs) {
   return {
     bootstrap: await loadBootstrap(),
+    country: resolveCountry(request),
     publicEnv: {
       PUBLIC_API_URL: process.env.PUBLIC_API_URL || "",
       PUBLIC_FACEBOOK_APP_ID: process.env.PUBLIC_FACEBOOK_APP_ID || "",
@@ -57,7 +60,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { bootstrap, publicEnv } = useLoaderData<typeof loader>();
+  const { bootstrap, country, publicEnv } = useLoaderData<typeof loader>();
   const location = useLocation();
   const isPaymentWindow = location.pathname === "/payment/razorpay";
   return (
@@ -72,25 +75,27 @@ export default function App() {
       />
       <CustomerProvider>
         <CartProvider>
-          {isPaymentWindow ? (
-            <main id="content">
-              <Outlet />
-            </main>
-          ) : (
-            <>
-              <a
-                href="#content"
-                className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-surface focus:px-3 focus:py-2"
-              >
-                Skip to content
-              </a>
-              <Header bootstrap={bootstrap} />
+          <CurrencyProvider country={country}>
+            {isPaymentWindow ? (
               <main id="content">
                 <Outlet />
               </main>
-              <Footer bootstrap={bootstrap} />
-            </>
-          )}
+            ) : (
+              <>
+                <a
+                  href="#content"
+                  className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-surface focus:px-3 focus:py-2"
+                >
+                  Skip to content
+                </a>
+                <Header bootstrap={bootstrap} />
+                <main id="content">
+                  <Outlet />
+                </main>
+                <Footer bootstrap={bootstrap} />
+              </>
+            )}
+          </CurrencyProvider>
         </CartProvider>
       </CustomerProvider>
     </>

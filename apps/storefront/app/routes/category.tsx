@@ -3,10 +3,11 @@ import { data } from "react-router";
 import type { Route } from "./+types/category";
 import { Breadcrumbs, ProductGrid, Section } from "../components/catalogue";
 import { loadCategoryPage } from "../lib/catalogue.server";
+import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader({ params }: Route.LoaderArgs) {
-  const page = await loadCategoryPage(params.slug);
+export async function loader({ params, request }: Route.LoaderArgs) {
+  const page = await loadCategoryPage(params.slug, resolveCountry(request));
   if (!page) throw data("Category not found", { status: 404 });
   return { page };
 }

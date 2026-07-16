@@ -3,12 +3,16 @@ import { data } from "react-router";
 import type { Route } from "./+types/farm";
 import { Breadcrumbs, ProductGrid, Section } from "../components/catalogue";
 import { loadFarm, loadProductsBySlugs } from "../lib/catalogue.server";
+import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader({ params }: Route.LoaderArgs) {
+export async function loader({ params, request }: Route.LoaderArgs) {
   const farm = await loadFarm(params.slug);
   if (!farm) throw data("Farm not found", { status: 404 });
-  return { farm, products: await loadProductsBySlugs(farm.productSlugs) };
+  return {
+    farm,
+    products: await loadProductsBySlugs(farm.productSlugs, resolveCountry(request)),
+  };
 }
 
 export function meta({ data: loaderData }: Route.MetaArgs) {

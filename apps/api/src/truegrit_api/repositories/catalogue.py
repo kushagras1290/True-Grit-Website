@@ -25,6 +25,24 @@ LEFT JOIN media_assets m ON m.id = p.primary_media_id
 """
 
 
+def geo_release_clause(country: str | None, alias: str = "p") -> tuple[str, list[Any]]:
+    """SQL fragment limiting rows to products released in `country`.
+
+    Products are either released globally or to an explicit country list. When
+    no country is known (internal callers, older clients) nothing is filtered —
+    the storefront always forwards the visitor's country, so public surfaces
+    stay geo-locked there.
+    """
+    if not country:
+        return "", []
+    return (
+        f" AND ({alias}.release_scope = 'global' OR EXISTS ("
+        "SELECT 1 FROM product_release_countries prc"
+        f" WHERE prc.product_id = {alias}.id AND prc.country_code = ?))",
+        [country],
+    )
+
+
 class CatalogueRepository:
     def __init__(self, db: Database):
         self._db = db
@@ -155,72 +173,120 @@ class CatalogueRepository:
             for row in rows
         ]
 
-    async def list_published_by_rule(self, rule_json: dict[str, Any]) -> list[dict[str, Any]]:
+    async def list_published_by_rule(
+        self, rule_json: dict[str, Any], country: str | None = None
+    ) -> list[dict[str, Any]]:
         compiled = compile_rule(rule_json)
+        geo_sql, geo_params = geo_release_clause(country)
         rows = await self._db.fetch_all(
             f"{_PRODUCT_BASE_SQL} WHERE p.status = 'published' AND {compiled.where_sql}"
-            f" ORDER BY {compiled.order_sql} LIMIT ?",
-            [*compiled.params, compiled.limit],
+            f"{geo_sql} ORDER BY {compiled.order_sql} LIMIT ?",
+            [*compiled.params, *geo_params, compiled.limit],
         )
         return await self._assemble(rows)
 
-    async def list_all_published(self, limit: int = 200) -> list[dict[str, Any]]:
+    async def list_all_published(
+        self, limit: int = 200, country: str | None = None
+    ) -> list[dict[str, Any]]:
         """Every published product, newest first. Backs the storefront's shop
         grid, so it reflects admin publishes without any per-category rule."""
+        geo_sql, geo_params = geo_release_clause(country)
         rows = await self._db.fetch_all(
-            f"{_PRODUCT_BASE_SQL} WHERE p.status = 'published'"
+            f"{_PRODUCT_BASE_SQL} WHERE p.status = 'published'{geo_sql}"
             " ORDER BY p.updated_at DESC, p.name LIMIT ?",
-            (limit,),
+            (*geo_params, limit),
         )
         return await self._assemble(rows)
 
-    async def list_published_by_category(self, category_id: str) -> list[dict[str, Any]]:
+    async def list_published_by_category(
+        self, category_id: str, country: str | None = None
+    ) -> list[dict[str, Any]]:
+        geo_sql, geo_params = geo_release_clause(country)
         rows = await self._db.fetch_all(
             f"""
             {_PRODUCT_BASE_SQL}
             JOIN product_categories pc ON pc.product_id = p.id
-            WHERE pc.category_id = ? AND p.status = 'published'
+            WHERE pc.category_id = ? AND p.status = 'published'{geo_sql}
             ORDER BY pc.sort_order, p.name
             LIMIT 200
             """,
-            (category_id,),
+            (category_id, *geo_params),
         )
         return await self._assemble(rows)
 
-    async def list_published_by_slugs(self, slugs: list[str]) -> list[dict[str, Any]]:
+    async def list_published_by_slugs(
+        self, slugs: list[str], country: str | None = None
+    ) -> list[dict[str, Any]]:
         if not slugs:
             return []
         placeholders = ", ".join("?" for _ in slugs)
+        geo_sql, geo_params = geo_release_clause(country)
         rows = await self._db.fetch_all(
-            f"{_PRODUCT_BASE_SQL} WHERE p.status = 'published' AND p.slug IN ({placeholders})",
-            slugs,
+            f"{_PRODUCT_BASE_SQL} WHERE p.status = 'published'"
+            f" AND p.slug IN ({placeholders}){geo_sql}",
+            (*slugs, *geo_params),
         )
         summaries = await self._assemble(rows)
         order = {slug: index for index, slug in enumerate(slugs)}
         return sorted(summaries, key=lambda item: order.get(item["slug"], len(order)))
 
-    async def get_published_detail(self, slug: str) -> dict[str, Any] | None:
+    async def list_highlighted(self, country: str | None = None) -> list[dict[str, Any]]:
+        """The owner-curated highlight slots, in curated order. Published and
+        geo-visible products only, so a swap in the admin is all it takes."""
+        geo_sql, geo_params = geo_release_clause(country)
         rows = await self._db.fetch_all(
-            f"{_PRODUCT_BASE_SQL} WHERE p.slug = ? AND p.status = 'published' LIMIT 1",
-            (slug,),
+            f"""
+            {_PRODUCT_BASE_SQL}
+            JOIN highlighted_products hp ON hp.product_id = p.id
+            WHERE p.status = 'published'{geo_sql}
+            ORDER BY hp.sort_order, p.name
+            LIMIT 12
+            """,
+            geo_params,
+        )
+        return await self._assemble(rows)
+
+    async def get_published_detail(
+        self, slug: str, country: str | None = None
+    ) -> dict[str, Any] | None:
+        geo_sql, geo_params = geo_release_clause(country)
+        rows = await self._db.fetch_all(
+            f"{_PRODUCT_BASE_SQL} WHERE p.slug = ? AND p.status = 'published'{geo_sql} LIMIT 1",
+            (slug, *geo_params),
         )
         if not rows:
             return None
         summary = (await self._assemble(rows))[0]
         row = rows[0]
 
+        # Owner-curated links fill the "goes well with" slots first; only when
+        # the owner has linked nothing do we fall back to same-category picks.
+        related_geo_sql, related_geo_params = geo_release_clause(country, alias="p2")
         related = await self._db.fetch_all(
-            """
+            f"""
             SELECT p2.slug
-            FROM product_categories pc1
-            JOIN product_categories pc2 ON pc2.category_id = pc1.category_id
-            JOIN products p2 ON p2.id = pc2.product_id
-            WHERE pc1.product_id = ? AND p2.id <> ? AND p2.status = 'published'
-            ORDER BY pc2.sort_order
-            LIMIT 4
+            FROM product_links pl
+            JOIN products p2 ON p2.id = pl.linked_product_id
+            WHERE pl.product_id = ? AND p2.status = 'published'{related_geo_sql}
+            ORDER BY pl.sort_order
+            LIMIT 8
             """,
-            (row["id"], row["id"]),
+            (row["id"], *related_geo_params),
         )
+        if not related:
+            related = await self._db.fetch_all(
+                f"""
+                SELECT p2.slug
+                FROM product_categories pc1
+                JOIN product_categories pc2 ON pc2.category_id = pc1.category_id
+                JOIN products p2 ON p2.id = pc2.product_id
+                WHERE pc1.product_id = ? AND p2.id <> ? AND p2.status = 'published'
+                {related_geo_sql}
+                ORDER BY pc2.sort_order
+                LIMIT 4
+                """,
+                (row["id"], row["id"], *related_geo_params),
+            )
 
         farm = await self._db.fetch_one(
             "SELECT name, region FROM farms WHERE slug = ?", (summary["_farm_slug"],)
