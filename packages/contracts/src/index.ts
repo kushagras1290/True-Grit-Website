@@ -329,6 +329,8 @@ export interface AdminProductRow {
 export interface AdminCategoryRow {
   id: string;
   name: string;
+  imageUrl: string;
+  imageAlt: string;
   slug: string;
   parentName: string | null;
   productCount: number;

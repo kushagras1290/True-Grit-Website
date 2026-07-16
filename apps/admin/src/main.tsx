@@ -13,6 +13,7 @@ import { CategoryEditorPage, CategoryListPage } from "./features/categories";
 import { DashboardPage } from "./features/dashboard";
 import {
   AuditPage,
+  FarmsPage,
   InventoryPage,
   MediaPage,
   OrderDetailPage,
@@ -49,6 +50,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="categories" element={<CategoryListPage />} />
               <Route path="categories/:id" element={<CategoryEditorPage />} />
               <Route path="inventory" element={<InventoryPage />} />
+              <Route path="farms" element={<FarmsPage />} />
               <Route path="orders" element={<OrdersPage />} />
               <Route path="orders/:id" element={<OrderDetailPage />} />
               <Route path="site-control" element={<SiteControlPage />} />

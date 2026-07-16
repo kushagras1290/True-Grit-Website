@@ -197,7 +197,7 @@ export function CategoryListPage() {
                 onChange={toggleAllCategories}
               />
             </Th>
-            <Th>Name</Th>
+            <Th>Category</Th>
             <Th>Slug</Th>
             <Th>Products</Th>
             <Th>Visibility</Th>
@@ -222,9 +222,15 @@ export function CategoryListPage() {
                 <Td>
                   <Link
                     to={`/categories/${category.id}`}
-                    className="font-medium text-brand hover:underline"
+                    className="flex min-w-56 items-center gap-3 font-medium text-brand hover:underline"
                   >
-                    {category.name}
+                    <ImagePreview
+                      src={category.imageUrl}
+                      alt={category.imageAlt}
+                      label={category.name}
+                      className="h-11 w-11"
+                    />
+                    <span>{category.name}</span>
                   </Link>
                 </Td>
                 <Td className="text-ink-muted">/{category.slug}</Td>

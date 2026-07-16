@@ -289,6 +289,34 @@ def test_owner_account_cannot_be_deleted(client: TestClient, db: SQLiteDatabase)
     assert response.status_code == 422
 
 
+def test_owner_can_create_farm(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    response = client.post(
+        "/v1/admin/farms",
+        json={
+            "name": "New Valley Farm",
+            "farmerName": "Nira Shah",
+            "region": "Pune, Maharashtra",
+            "countryCode": "IN",
+            "establishedYear": 2020,
+            "summary": "A mixed organic vegetable farm.",
+            "status": "published",
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["slug"] == "new-valley-farm"
+    assert body["productCount"] == 0
+
+    farms = client.get("/v1/admin/farms").json()["items"]
+    assert any(farm["id"] == body["id"] and farm["name"] == "New Valley Farm" for farm in farms)
+    audit = db._conn.execute(
+        "SELECT action FROM audit_logs WHERE entity_id = ? ORDER BY created_at DESC LIMIT 1",
+        (body["id"],),
+    ).fetchone()
+    assert audit["action"] == "farm.created"
+
+
 def test_owner_can_issue_farm_owner_temporary_password(
     client: TestClient, db: SQLiteDatabase
 ):

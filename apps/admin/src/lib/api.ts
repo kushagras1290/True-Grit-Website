@@ -200,6 +200,19 @@ export interface AdminRole {
   description: string;
 }
 
+export interface AdminFarmRow {
+  id: string;
+  name: string;
+  slug: string;
+  farmerName: string;
+  region: string;
+  countryCode: string;
+  establishedYear: number | null;
+  status: string;
+  productCount: number;
+  updatedAt: string;
+}
+
 export interface AdminOrderDetail {
   id: string;
   publicReference: string;
@@ -553,12 +566,43 @@ export const api = {
       ? demo({ id, email: "owner@demo.test", temporaryPassword: "TempOwner-123456" })
       : post(`/v1/admin/users/${id}/temporary-password`),
 
-  farms: (): Promise<Array<{ id: string; name: string }>> =>
+  farms: (): Promise<AdminFarmRow[]> =>
     demoMode
-      ? demo([{ id: "farm_devika", name: "Devika Organics" }])
-      : get<{ items: Array<{ id: string; name: string }> }>("/v1/admin/farms").then(
-          (body) => body.items,
-        ),
+      ? demo([
+          {
+            id: "farm_devika",
+            name: "Devika Organics",
+            slug: "devika-organics",
+            farmerName: "Devika Kulkarni",
+            region: "Ratnagiri, Maharashtra",
+            countryCode: "IN",
+            establishedYear: 1998,
+            status: "published",
+            productCount: 1,
+            updatedAt: "2026-07-01T00:00:00Z",
+          },
+        ])
+      : get<{ items: AdminFarmRow[] }>("/v1/admin/farms").then((body) => body.items),
+
+  createFarm: (input: {
+    name: string;
+    slug?: string;
+    farmerName: string;
+    region: string;
+    countryCode: string;
+    establishedYear: number | null;
+    summary: string;
+    status: string;
+  }): Promise<AdminFarmRow> =>
+    demoMode
+      ? demo({
+          id: `farm_${Date.now().toString(36)}`,
+          slug: input.slug || input.name.toLowerCase().replaceAll(" ", "-"),
+          productCount: 0,
+          updatedAt: new Date().toISOString(),
+          ...input,
+        })
+      : post("/v1/admin/farms", input),
 
   createFarmOwner: (input: {
     email: string;

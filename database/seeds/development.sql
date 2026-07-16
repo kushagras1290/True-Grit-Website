@@ -207,6 +207,23 @@ INSERT INTO categories (id, internal_name, name, slug, parent_id, path, level, s
    '{"version":1,"operator":"and","conditions":[{"field":"product.status","operator":"equals","value":"published"},{"field":"product.type","operator":"equals","value":"oil"}],"sort":[{"field":"name","direction":"asc"}],"limit":96}',
    '2026-07-01T00:00:00Z', 'usr_editor', '2026-07-01T00:00:00Z', 'usr_editor');
 
+UPDATE categories
+SET hero_image_url = CASE id
+      WHEN 'cat_fresh_fruits' THEN '/homepage-hero.png'
+      WHEN 'cat_vegetables' THEN '/homepage-hero-greens.png'
+      WHEN 'cat_grains' THEN '/homepage-hero-roots.png'
+      WHEN 'cat_oils' THEN '/homepage-hero-citrus.png'
+      ELSE hero_image_url
+    END,
+    hero_image_alt = CASE id
+      WHEN 'cat_fresh_fruits' THEN 'Organic mangoes held in a sunlit orchard'
+      WHEN 'cat_vegetables' THEN 'Fresh leafy greens and herbs held in a farm field'
+      WHEN 'cat_grains' THEN 'Fresh roots and pulses from organic soil'
+      WHEN 'cat_oils' THEN 'Seasonal fruit in an organic orchard'
+      ELSE hero_image_alt
+    END
+WHERE id IN ('cat_fresh_fruits', 'cat_vegetables', 'cat_grains', 'cat_oils');
+
 -- Tags
 INSERT INTO tags (id, key, label, tag_group, created_at) VALUES
   ('tag_high_protein', 'high-protein', 'High Protein', 'intention', '2026-07-01T00:00:00Z'),
@@ -241,6 +258,25 @@ INSERT INTO products (id, internal_name, name, slug, product_type, farm_id, stat
    NULL, 'Himalayan Red Rajma — Uttarkashi terraces',
    'Certified organic red rajma grown at altitude by Himgiri Terraces.',
    '2026-07-01T00:00:00Z', 'usr_pm', '2026-07-01T00:00:00Z', 'usr_pm');
+
+UPDATE products
+SET image_url = CASE id
+      WHEN 'prd_alphonso' THEN '/homepage-hero.png'
+      WHEN 'prd_spinach' THEN '/homepage-hero-greens.png'
+      WHEN 'prd_ragi' THEN '/homepage-hero-roots.png'
+      WHEN 'prd_groundnut_oil' THEN '/homepage-hero-citrus.png'
+      WHEN 'prd_rajma' THEN '/homepage-hero-roots.png'
+      ELSE image_url
+    END,
+    image_alt = CASE id
+      WHEN 'prd_alphonso' THEN 'Organic mangoes held in a sunlit orchard'
+      WHEN 'prd_spinach' THEN 'Fresh leafy greens and herbs held in a farm field'
+      WHEN 'prd_ragi' THEN 'Fresh roots and pulses from organic soil'
+      WHEN 'prd_groundnut_oil' THEN 'Seasonal fruit in an organic orchard'
+      WHEN 'prd_rajma' THEN 'Himalayan Red Rajma'
+      ELSE image_alt
+    END
+WHERE id IN ('prd_alphonso', 'prd_spinach', 'prd_ragi', 'prd_groundnut_oil', 'prd_rajma');
 
 INSERT INTO product_categories (product_id, category_id, is_primary, sort_order, assigned_at, assigned_by) VALUES
   ('prd_alphonso', 'cat_fresh_fruits', 1, 1, '2026-07-01T00:00:00Z', 'usr_pm'),

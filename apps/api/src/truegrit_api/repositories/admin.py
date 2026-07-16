@@ -20,7 +20,19 @@ class AdminRepository:
         return await self._db.fetch_all(
             """
             SELECT
-              p.id, p.name, p.status, p.image_url, p.image_alt, p.updated_at,
+              p.id, p.name, p.status,
+              COALESCE(
+                p.image_url,
+                (
+                  SELECT c.hero_image_url
+                  FROM product_categories pc2
+                  JOIN categories c ON c.id = pc2.category_id
+                  WHERE pc2.product_id = p.id AND c.hero_image_url IS NOT NULL
+                  ORDER BY pc2.is_primary DESC, pc2.sort_order, c.sort_order
+                  LIMIT 1
+                )
+              ) AS image_url,
+              p.image_alt, p.updated_at,
               u.display_name AS updated_by,
               COALESCE(f.name, b.name, '') AS farm_name,
               (SELECT v.sku FROM product_variants v
@@ -55,6 +67,7 @@ class AdminRepository:
             """
             SELECT
               c.id, c.name, c.slug, c.visibility, c.status, c.updated_at,
+              c.hero_image_url, c.hero_image_alt,
               parent.name AS parent_name,
               (SELECT COUNT(*) FROM product_categories pc WHERE pc.category_id = c.id)
                 AS product_count

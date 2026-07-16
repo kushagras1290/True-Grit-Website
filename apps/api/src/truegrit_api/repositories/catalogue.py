@@ -16,9 +16,20 @@ from truegrit_api.platform.database import Database
 _PRODUCT_BASE_SQL = """
 SELECT
   p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
-  p.seo_title, p.seo_description, p.image_url,
+  p.seo_title, p.seo_description,
+  COALESCE(
+    p.image_url,
+    (
+      SELECT c.hero_image_url
+      FROM product_categories pc
+      JOIN categories c ON c.id = pc.category_id
+      WHERE pc.product_id = p.id AND c.hero_image_url IS NOT NULL
+      ORDER BY pc.is_primary DESC, pc.sort_order, c.sort_order
+      LIMIT 1
+    )
+  ) AS image_url,
   f.name AS farm_name, f.slug AS farm_slug, f.region AS farm_region,
-  m.alt_text AS image_alt
+  COALESCE(p.image_alt, m.alt_text) AS image_alt
 FROM products p
 LEFT JOIN farms f ON f.id = p.farm_id
 LEFT JOIN media_assets m ON m.id = p.primary_media_id

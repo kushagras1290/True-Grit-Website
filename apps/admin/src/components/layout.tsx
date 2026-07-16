@@ -14,6 +14,7 @@ import {
   ScrollText,
   Settings,
   ShoppingCart,
+  Sprout,
   Users,
   Warehouse,
   X,
@@ -59,6 +60,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         label: "Inventory",
         icon: <Warehouse size={16} />,
         permission: "inventory.view",
+      },
+      {
+        to: "/farms",
+        label: "Farms",
+        icon: <Sprout size={16} />,
+        permission: "users.view",
       },
       {
         to: "/orders",

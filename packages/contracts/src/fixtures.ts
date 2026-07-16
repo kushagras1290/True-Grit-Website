@@ -752,6 +752,8 @@ export const adminProducts: AdminProductRow[] = products.map((product) => ({
 export const adminCategories: AdminCategoryRow[] = categories.map((category) => ({
   id: category.id,
   name: category.name,
+  imageUrl: category.imageUrl ?? "",
+  imageAlt: category.name,
   slug: category.slug,
   parentName: null,
   productCount: category.productCount,

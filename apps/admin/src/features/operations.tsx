@@ -48,6 +48,23 @@ const adjustmentSchema = z.object({
 
 type AdjustmentForm = z.infer<typeof adjustmentSchema>;
 
+const farmSchema = z.object({
+  name: z.string().min(3, "Enter a farm name").max(140),
+  slug: z
+    .string()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and single hyphens")
+    .optional()
+    .or(z.literal("")),
+  farmerName: z.string().max(140),
+  region: z.string().max(180),
+  countryCode: z.string().length(2, "Use a 2-letter country code"),
+  establishedYear: z.coerce.number().int().min(1800).max(2100).optional().or(z.literal("")),
+  summary: z.string().max(500),
+  status: z.enum(["draft", "published", "unpublished"]),
+});
+
+type FarmForm = z.infer<typeof farmSchema>;
+
 export function InventoryPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -186,6 +203,175 @@ export function InventoryPage() {
           </form>
         </PermissionGate>
       </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Farms
+// ---------------------------------------------------------------------------
+
+function CreateFarmModal({ onClose }: { onClose: () => void }) {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const form = useForm<FarmForm>({
+    resolver: zodResolver(farmSchema),
+    defaultValues: {
+      name: "",
+      slug: "",
+      farmerName: "",
+      region: "",
+      countryCode: "IN",
+      establishedYear: "",
+      summary: "",
+      status: "published",
+    },
+  });
+
+  const mutation = useMutation({
+    mutationFn: (values: FarmForm) =>
+      api.createFarm({
+        name: values.name,
+        slug: values.slug || undefined,
+        farmerName: values.farmerName,
+        region: values.region,
+        countryCode: values.countryCode.toUpperCase(),
+        establishedYear:
+          typeof values.establishedYear === "number" ? values.establishedYear : null,
+        summary: values.summary,
+        status: values.status,
+      }),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["farms"] }),
+        queryClient.invalidateQueries({ queryKey: ["users"] }),
+      ]);
+      toast.success("Farm created.");
+      onClose();
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not create the farm."),
+  });
+
+  return (
+    <Modal title="New farm" onClose={onClose}>
+      <form className="space-y-4" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
+        <Field label="Farm name" htmlFor="farm-name" error={form.formState.errors.name?.message}>
+          <Input id="farm-name" placeholder="Devika Organics" {...form.register("name")} />
+        </Field>
+        <Field
+          label="Slug (optional)"
+          htmlFor="farm-slug"
+          error={form.formState.errors.slug?.message}
+        >
+          <Input id="farm-slug" placeholder="devika-organics" {...form.register("slug")} />
+        </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field
+            label="Farmer name"
+            htmlFor="farm-farmer"
+            error={form.formState.errors.farmerName?.message}
+          >
+            <Input id="farm-farmer" placeholder="Asha Rao" {...form.register("farmerName")} />
+          </Field>
+          <Field label="Region" htmlFor="farm-region" error={form.formState.errors.region?.message}>
+            <Input id="farm-region" placeholder="Ratnagiri, Maharashtra" {...form.register("region")} />
+          </Field>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Field
+            label="Country"
+            htmlFor="farm-country"
+            error={form.formState.errors.countryCode?.message}
+          >
+            <Input id="farm-country" maxLength={2} {...form.register("countryCode")} />
+          </Field>
+          <Field
+            label="Established"
+            htmlFor="farm-established"
+            error={form.formState.errors.establishedYear?.message}
+          >
+            <Input id="farm-established" type="number" {...form.register("establishedYear")} />
+          </Field>
+          <Field label="Status" htmlFor="farm-status">
+            <Select id="farm-status" {...form.register("status")}>
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+              <option value="unpublished">Unpublished</option>
+            </Select>
+          </Field>
+        </div>
+        <Field label="Farm summary" htmlFor="farm-summary" error={form.formState.errors.summary?.message}>
+          <Textarea
+            id="farm-summary"
+            placeholder="Short public story for this farm."
+            {...form.register("summary")}
+          />
+        </Field>
+        <div className="flex justify-end gap-2 pt-1">
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="primary" disabled={mutation.isPending}>
+            {mutation.isPending ? "Creating..." : "Create farm"}
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+export function FarmsPage() {
+  const { data, isLoading } = useQuery({ queryKey: ["farms"], queryFn: api.farms });
+  const [creating, setCreating] = useState(false);
+
+  return (
+    <div>
+      <PageHeader
+        title="Farms"
+        description="Create partner farms before assigning products or farm-owner accounts."
+        actions={
+          <PermissionGate permission="users.invite">
+            <Button variant="primary" onClick={() => setCreating(true)}>
+              New farm
+            </Button>
+          </PermissionGate>
+        }
+      />
+      {creating ? <CreateFarmModal onClose={() => setCreating(false)} /> : null}
+      <DataTableShell>
+        <thead className="bg-canvas">
+          <tr>
+            <Th>Farm</Th>
+            <Th>Slug</Th>
+            <Th>Region</Th>
+            <Th>Products</Th>
+            <Th>Status</Th>
+            <Th>Updated</Th>
+          </tr>
+        </thead>
+        {isLoading ? (
+          <LoadingRows columns={6} />
+        ) : (
+          <tbody>
+            {(data ?? []).map((farm) => (
+              <tr key={farm.id} className="border-t border-line">
+                <Td>
+                  <div className="font-medium text-ink">{farm.name}</div>
+                  <div className="text-xs text-ink-muted">{farm.farmerName || "No farmer name"}</div>
+                </Td>
+                <Td className="text-ink-muted">/{farm.slug}</Td>
+                <Td>{farm.region || "—"}</Td>
+                <Td>{farm.productCount}</Td>
+                <Td>
+                  <StatusPill status={farm.status} />
+                </Td>
+                <Td>{formatDateTime(farm.updatedAt)}</Td>
+              </tr>
+            ))}
+          </tbody>
+        )}
+      </DataTableShell>
     </div>
   );
 }
@@ -842,6 +1028,7 @@ export function UsersPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["users"], queryFn: api.users });
+  const roles = useQuery({ queryKey: ["roles"], queryFn: api.roles });
   const [inviting, setInviting] = useState(false);
   const [addingOwner, setAddingOwner] = useState(false);
   const [editingRoles, setEditingRoles] = useState<AdminUserRow | null>(null);
@@ -857,6 +1044,17 @@ export function UsersPage() {
     },
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not update status."),
+  });
+
+  const roleMutation = useMutation({
+    mutationFn: ({ id, roleId }: { id: string; roleId: string }) =>
+      api.setUserRoles(id, roleId ? [roleId] : []),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("User role updated.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not update role."),
   });
 
   const deleteMutation = useMutation({
@@ -992,7 +1190,23 @@ export function UsersPage() {
                     permission="users.manage_roles"
                     fallback={<span className="text-xs text-ink-muted">—</span>}
                   >
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Select
+                        aria-label={`Role for ${user.displayName}`}
+                        value={user.roleIds?.[0] ?? ""}
+                        disabled={roles.isLoading || roleMutation.isPending}
+                        onChange={(event) =>
+                          roleMutation.mutate({ id: user.id, roleId: event.target.value })
+                        }
+                        className="min-w-44"
+                      >
+                        <option value="">No role</option>
+                        {(roles.data ?? []).map((role) => (
+                          <option key={role.id} value={role.id}>
+                            {role.name}
+                          </option>
+                        ))}
+                      </Select>
                       <button
                         type="button"
                         className="text-sm text-brand underline-offset-4 hover:underline"

@@ -22,7 +22,13 @@ from truegrit_api.auth.rate_limit import (
 from truegrit_api.auth.sessions import end_session, hash_token, start_session
 from truegrit_api.config import Settings, get_settings
 from truegrit_api.domain.blocks import validate_href
-from truegrit_api.errors import AuthenticationError, NotFoundError, PermissionDeniedError
+from truegrit_api.domain.slugs import slugify, validate_slug
+from truegrit_api.errors import (
+    AuthenticationError,
+    NotFoundError,
+    PermissionDeniedError,
+    ValidationAppError,
+)
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.admin import AdminRepository
 from truegrit_api.repositories.content import AuditRepository, CategoryRepository
@@ -36,6 +42,7 @@ from truegrit_api.services.access import (
     set_user_roles,
     set_user_status,
 )
+from truegrit_api.services.audit import audit_statement
 from truegrit_api.services.catalogue import (
     archive_category,
     archive_product,
@@ -54,6 +61,7 @@ from truegrit_api.services.media import save_image_bytes, save_image_upload
 from truegrit_api.services.orders import update_order_status
 from truegrit_api.services.password_reset import confirm_password_reset, request_password_reset
 from truegrit_api.services.publishing import publish_category, publish_product
+from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
 
 
@@ -670,6 +678,8 @@ async def list_categories(
             {
                 "id": row["id"],
                 "name": row["name"],
+                "imageUrl": row["hero_image_url"] or "",
+                "imageAlt": row["hero_image_alt"] or row["name"],
                 "slug": row["slug"],
                 "parentName": row["parent_name"],
                 "productCount": row["product_count"],
@@ -1363,6 +1373,17 @@ class FarmOwnerCreateRequest(_CamelModel):
     password: str = Field(min_length=1, max_length=256)
 
 
+class FarmCreateRequest(_CamelModel):
+    name: str = Field(min_length=3, max_length=140)
+    slug: str | None = Field(default=None, max_length=140)
+    farmer_name: str = Field(default="", max_length=140)
+    region: str = Field(default="", max_length=180)
+    country_code: str = Field(default="IN", min_length=2, max_length=2)
+    established_year: int | None = Field(default=None, ge=1800, le=2100)
+    summary: str = Field(default="", max_length=500)
+    status: str = Field(default="published", max_length=24)
+
+
 class StaffResetRequest(_CamelModel):
     email: str = Field(min_length=3, max_length=254)
 
@@ -1377,8 +1398,107 @@ async def list_farms_endpoint(
     db: Annotated[Database, Depends(get_database)],
     _principal: Annotated[Principal, Depends(require_permission("users.view"))],
 ) -> Any:
-    rows = await db.fetch_all("SELECT id, name FROM farms WHERE status != 'archived' ORDER BY name")
-    return {"items": [{"id": row["id"], "name": row["name"]} for row in rows]}
+    rows = await db.fetch_all(
+        """
+        SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.country_code,
+               f.established_year, f.status, f.updated_at,
+               (SELECT COUNT(*) FROM products p
+                 WHERE p.farm_id = f.id AND p.archived_at IS NULL) AS product_count
+        FROM farms f
+        WHERE f.status != 'archived'
+        ORDER BY f.name
+        """
+    )
+    return {
+        "items": [
+            {
+                "id": row["id"],
+                "name": row["name"],
+                "slug": row["slug"],
+                "farmerName": row["farmer_name"] or "",
+                "region": row["region"] or "",
+                "countryCode": row["country_code"],
+                "establishedYear": row["established_year"],
+                "status": row["status"],
+                "productCount": row["product_count"],
+                "updatedAt": row["updated_at"],
+            }
+            for row in rows
+        ]
+    }
+
+
+@router.post("/farms")
+async def create_farm_endpoint(
+    payload: FarmCreateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("users.invite"))],
+) -> Any:
+    if principal.farm_id is not None:
+        raise PermissionDeniedError("Only main admins can create farms.")
+    name = payload.name.strip()
+    slug = validate_slug(payload.slug.strip()) if payload.slug else slugify(name)
+    existing = await db.fetch_one("SELECT id FROM farms WHERE slug = ?", (slug,))
+    if existing is not None:
+        raise ValidationAppError("A farm with that slug already exists.")
+    status = payload.status if payload.status in {"draft", "published", "unpublished"} else "draft"
+    now = utc_now_iso()
+    farm_id = new_id("farm")
+    summary = payload.summary.strip()
+    story_json = json.dumps({"summary": summary}) if summary else None
+    await db.batch(
+        [
+            (
+                """
+                INSERT INTO farms (
+                  id, name, slug, farmer_name, region, country_code, established_year,
+                  story_json, status, seo_title, seo_description,
+                  created_at, created_by, updated_at, updated_by
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    farm_id,
+                    name,
+                    slug,
+                    payload.farmer_name.strip() or None,
+                    payload.region.strip() or None,
+                    payload.country_code.upper(),
+                    payload.established_year,
+                    story_json,
+                    status,
+                    f"{name} - True Grit partner farm",
+                    summary,
+                    now,
+                    principal.user_id,
+                    now,
+                    principal.user_id,
+                ),
+            ),
+            audit_statement(
+                action="farm.created",
+                entity_type="farm",
+                entity_id=farm_id,
+                actor_id=principal.user_id,
+                request_id=_request_id(request),
+                created_at=now,
+                after={"name": name, "slug": slug, "status": status},
+            ),
+        ]
+    )
+    return {
+        "id": farm_id,
+        "name": name,
+        "slug": slug,
+        "farmerName": payload.farmer_name.strip(),
+        "region": payload.region.strip(),
+        "countryCode": payload.country_code.upper(),
+        "establishedYear": payload.established_year,
+        "status": status,
+        "productCount": 0,
+        "updatedAt": now,
+    }
 
 
 @router.post("/farm-owners")
