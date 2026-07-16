@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ShieldCheck } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from "react-router";
 
 import { Button, Field, Input } from "../components/ui";
-import { ApiError, api, demoMode } from "../lib/api";
+import { ADMIN_AUTH_EXPIRED_EVENT, ApiError, api, demoMode } from "../lib/api";
 import { useMe } from "../lib/permissions";
 
 function ForgotPassword() {
@@ -216,6 +216,18 @@ export function AdminLoginPage() {
 export function RequireAdminAuth({ children }: { children: ReactNode }) {
   const location = useLocation();
   const me = useMe();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    function handleAuthExpired() {
+      queryClient.clear();
+      navigate("/login", { replace: true, state: { from: location } });
+    }
+
+    window.addEventListener(ADMIN_AUTH_EXPIRED_EVENT, handleAuthExpired);
+    return () => window.removeEventListener(ADMIN_AUTH_EXPIRED_EVENT, handleAuthExpired);
+  }, [location, navigate, queryClient]);
 
   if (me.isLoading) {
     return (

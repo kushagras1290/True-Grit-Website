@@ -31,6 +31,7 @@ const API_URL: string | undefined = import.meta.env.VITE_API_URL as string | und
 const DEMO_AUTH_KEY = "truegrit.admin.session";
 const DEMO_EMAIL = "admin@truegrit.test";
 const DEMO_PASSWORD = "admin123";
+export const ADMIN_AUTH_EXPIRED_EVENT = "truegrit.admin.auth-expired";
 
 export const demoMode = !API_URL;
 
@@ -49,17 +50,28 @@ async function fileToBase64(file: File): Promise<string> {
   return btoa(binary);
 }
 
+function notifyAuthExpired(path: string) {
+  if (typeof window === "undefined") return;
+  if (path === "/v1/admin/me" || path === "/v1/admin/auth/login") return;
+  window.dispatchEvent(new CustomEvent(ADMIN_AUTH_EXPIRED_EVENT));
+}
+
+async function apiErrorFromResponse(response: Response, path: string): Promise<ApiError> {
+  const body = (await response.json().catch(() => null)) as {
+    error?: { code?: string; message?: string };
+  } | null;
+  if (response.status === 401) notifyAuthExpired(path);
+  return new ApiError(
+    body?.error?.message ?? `Request failed (${response.status})`,
+    response.status,
+    body?.error?.code ?? "request_failed",
+  );
+}
+
 async function get<T>(path: string): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, { credentials: "include" });
   if (!response.ok) {
-    const body = (await response.json().catch(() => null)) as {
-      error?: { code?: string; message?: string };
-    } | null;
-    throw new ApiError(
-      body?.error?.message ?? `Request failed (${response.status})`,
-      response.status,
-      body?.error?.code ?? "request_failed",
-    );
+    throw await apiErrorFromResponse(response, path);
   }
   return (await response.json()) as T;
 }
@@ -72,14 +84,7 @@ async function post<T>(path: string, body?: unknown): Promise<T> {
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!response.ok) {
-    const errorBody = (await response.json().catch(() => null)) as {
-      error?: { code?: string; message?: string };
-    } | null;
-    throw new ApiError(
-      errorBody?.error?.message ?? `Request failed (${response.status})`,
-      response.status,
-      errorBody?.error?.code ?? "request_failed",
-    );
+    throw await apiErrorFromResponse(response, path);
   }
   return (await response.json()) as T;
 }
@@ -92,14 +97,7 @@ async function patch<T>(path: string, body?: unknown): Promise<T> {
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!response.ok) {
-    const errorBody = (await response.json().catch(() => null)) as {
-      error?: { code?: string; message?: string };
-    } | null;
-    throw new ApiError(
-      errorBody?.error?.message ?? `Request failed (${response.status})`,
-      response.status,
-      errorBody?.error?.code ?? "request_failed",
-    );
+    throw await apiErrorFromResponse(response, path);
   }
   return (await response.json()) as T;
 }
@@ -112,14 +110,7 @@ async function put<T>(path: string, body?: unknown): Promise<T> {
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!response.ok) {
-    const errorBody = (await response.json().catch(() => null)) as {
-      error?: { code?: string; message?: string };
-    } | null;
-    throw new ApiError(
-      errorBody?.error?.message ?? `Request failed (${response.status})`,
-      response.status,
-      errorBody?.error?.code ?? "request_failed",
-    );
+    throw await apiErrorFromResponse(response, path);
   }
   return (await response.json()) as T;
 }
@@ -130,14 +121,7 @@ async function del<T>(path: string): Promise<T> {
     credentials: "include",
   });
   if (!response.ok) {
-    const errorBody = (await response.json().catch(() => null)) as {
-      error?: { code?: string; message?: string };
-    } | null;
-    throw new ApiError(
-      errorBody?.error?.message ?? `Request failed (${response.status})`,
-      response.status,
-      errorBody?.error?.code ?? "request_failed",
-    );
+    throw await apiErrorFromResponse(response, path);
   }
   return (await response.json()) as T;
 }
