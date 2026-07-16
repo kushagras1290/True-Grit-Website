@@ -244,6 +244,13 @@ export interface SiteControl {
   heroText: string;
   heroImageUrl: string;
   heroImageAlt: string;
+  heroSlides: Array<{
+    imageUrl: string;
+    imageAlt: string;
+    href: string;
+    label: string;
+    enabled: boolean;
+  }>;
   primaryActionLabel: string;
   primaryActionHref: string;
   secondaryActionLabel: string;
@@ -606,6 +613,43 @@ export const api = {
           heroText: "Fresh organic produce, conscious pantry essentials and trusted local farms.",
           heroImageUrl: "/homepage-hero.png",
           heroImageAlt: "Organic mangoes held in a sunlit orchard",
+          heroSlides: [
+            {
+              imageUrl: "/homepage-hero.png",
+              imageAlt: "Organic mangoes held in a sunlit orchard",
+              href: "/shop",
+              label: "Explore the market",
+              enabled: true,
+            },
+            {
+              imageUrl: "/homepage-hero-tomatoes.png",
+              imageAlt: "Organic tomatoes harvested in a mountain field",
+              href: "/category/organic-vegetables",
+              label: "Shop vegetables",
+              enabled: true,
+            },
+            {
+              imageUrl: "/homepage-hero-roots.png",
+              imageAlt: "Fresh carrots and beets pulled from organic soil",
+              href: "/category/organic-vegetables",
+              label: "Shop root vegetables",
+              enabled: true,
+            },
+            {
+              imageUrl: "/homepage-hero-greens.png",
+              imageAlt: "Fresh leafy greens and herbs held in a farm field",
+              href: "/category/organic-vegetables",
+              label: "Shop fresh greens",
+              enabled: true,
+            },
+            {
+              imageUrl: "/homepage-hero-citrus.png",
+              imageAlt: "Seasonal citrus and pears in an organic orchard",
+              href: "/seasonal",
+              label: "See seasonal fruit",
+              enabled: true,
+            },
+          ],
           primaryActionLabel: "Explore the market",
           primaryActionHref: "/shop",
           secondaryActionLabel: "See what is in season",

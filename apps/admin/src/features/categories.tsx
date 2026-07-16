@@ -391,7 +391,9 @@ const settingsSchema = z.object({
     .max(1000)
     .refine(
       (value) =>
-        value === "" || value.startsWith("/") || z.string().url().safeParse(value).success,
+        value === "" ||
+        (value.startsWith("/") && !value.startsWith("//")) ||
+        z.string().url().safeParse(value).success,
       "Enter a valid image URL",
     ),
   heroImageAlt: z.string().max(200),
@@ -488,7 +490,6 @@ function CategorySettingsForm({
         />
         <Input
           id="c-hero-image"
-          type="url"
           placeholder={uploadMutation.isPending ? "Uploading image..." : "Hero image URL"}
           {...form.register("heroImageUrl")}
         />

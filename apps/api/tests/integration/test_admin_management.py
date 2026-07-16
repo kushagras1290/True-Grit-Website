@@ -427,6 +427,22 @@ def test_owner_can_manage_site_control(client: TestClient, db: SQLiteDatabase):
             "heroHeading": "Owner managed homepage",
             "heroImageUrl": "/homepage-hero.png",
             "heroImageAlt": "Organic mangoes held in a sunlit orchard",
+            "heroSlides": [
+                {
+                    "imageUrl": "/homepage-hero.png",
+                    "imageAlt": "Organic mangoes held in a sunlit orchard",
+                    "href": "/shop",
+                    "label": "Explore the market",
+                    "enabled": True,
+                },
+                {
+                    "imageUrl": "/homepage-hero-greens.png",
+                    "imageAlt": "Fresh leafy greens and herbs held in a farm field",
+                    "href": "/category/organic-vegetables",
+                    "label": "Shop fresh greens",
+                    "enabled": False,
+                },
+            ],
             "seoTitle": "Owner managed SEO title",
             "seoDescription": "Owner managed SEO description.",
             "seoKeywords": "organic, farm fresh, true grit",
@@ -437,12 +453,15 @@ def test_owner_can_manage_site_control(client: TestClient, db: SQLiteDatabase):
     assert body["heroHeading"] == "Owner managed homepage"
     assert body["heroImageUrl"] == "/homepage-hero.png"
     assert body["heroImageAlt"] == "Organic mangoes held in a sunlit orchard"
+    assert body["heroSlides"][1]["enabled"] is False
     assert body["seoKeywords"] == "organic, farm fresh, true grit"
 
     public_home = client.get("/v1/public/home").json()
     assert public_home["seo"]["keywords"] == "organic, farm fresh, true grit"
     assert public_home["blocks"][0]["props"]["heading"] == "Owner managed homepage"
     assert public_home["blocks"][0]["props"]["imageUrl"] == "/homepage-hero.png"
+    assert public_home["blocks"][0]["props"]["slides"][1]["href"] == "/category/organic-vegetables"
+    assert public_home["blocks"][0]["props"]["slides"][1]["enabled"] is False
 
 
 def test_farm_owner_cannot_manage_site_control(client: TestClient, db: SQLiteDatabase):

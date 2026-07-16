@@ -48,6 +48,8 @@ def test_home_returns_published_blocks_only(client: TestClient):
     assert types[0] == "hero"
     assert body["blocks"][0]["props"]["imageUrl"] == "/homepage-hero.png"
     assert body["blocks"][0]["props"]["imageAlt"] == "Organic mangoes held in a sunlit orchard"
+    assert len(body["blocks"][0]["props"]["slides"]) == 5
+    assert body["blocks"][0]["props"]["slides"][1]["href"] == "/category/organic-vegetables"
     assert "product_collection" in types
     assert body["seo"]["title"].startswith("True Grit")
 

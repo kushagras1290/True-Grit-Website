@@ -7,7 +7,7 @@ import json
 from typing import Annotated, Any
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Query, Request, Response
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic.alias_generators import to_camel
 
 from truegrit_api.auth.dependencies import get_current_staff, get_database, require_permission
@@ -21,6 +21,7 @@ from truegrit_api.auth.rate_limit import (
 )
 from truegrit_api.auth.sessions import end_session, hash_token, start_session
 from truegrit_api.config import Settings, get_settings
+from truegrit_api.domain.blocks import validate_href
 from truegrit_api.errors import AuthenticationError, NotFoundError, PermissionDeniedError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.admin import AdminRepository
@@ -262,6 +263,32 @@ async def me(
     }
 
 
+def _validate_image_url(value: str) -> str:
+    if value.startswith("/") and not value.startswith("//"):
+        return value
+    if value.startswith(("https://", "http://")):
+        return value
+    raise ValueError(f"Unsafe image URL: {value!r}")
+
+
+class SiteControlHeroSlide(_CamelModel):
+    image_url: str = Field(min_length=1, max_length=1000)
+    image_alt: str = Field(default="", max_length=200)
+    href: str = Field(min_length=1, max_length=512)
+    label: str = Field(min_length=1, max_length=80)
+    enabled: bool = True
+
+    @field_validator("image_url")
+    @classmethod
+    def _safe_image_url(cls, value: str) -> str:
+        return _validate_image_url(value)
+
+    @field_validator("href")
+    @classmethod
+    def _safe_href(cls, value: str) -> str:
+        return validate_href(value)
+
+
 class SiteControlUpdate(_CamelModel):
     announcement_active: bool | None = None
     announcement_message: str | None = Field(default=None, max_length=220)
@@ -271,6 +298,7 @@ class SiteControlUpdate(_CamelModel):
     hero_text: str | None = Field(default=None, max_length=500)
     hero_image_url: str | None = Field(default=None, max_length=1000)
     hero_image_alt: str | None = Field(default=None, max_length=200)
+    hero_slides: list[SiteControlHeroSlide] | None = Field(default=None, max_length=8)
     primary_action_label: str | None = Field(default=None, max_length=80)
     primary_action_href: str | None = Field(default=None, max_length=200)
     secondary_action_label: str | None = Field(default=None, max_length=80)
@@ -279,11 +307,47 @@ class SiteControlUpdate(_CamelModel):
     seo_description: str | None = Field(default=None, max_length=320)
     seo_keywords: str | None = Field(default=None, max_length=500)
 
+    @field_validator("hero_image_url")
+    @classmethod
+    def _safe_hero_image_url(cls, value: str | None) -> str | None:
+        if value in (None, ""):
+            return value
+        return _validate_image_url(value)
+
+    @field_validator("primary_action_href", "secondary_action_href")
+    @classmethod
+    def _safe_action_href(cls, value: str | None) -> str | None:
+        if value in (None, ""):
+            return value
+        return validate_href(value)
+
 
 class ImageUploadRequest(_CamelModel):
     filename: str = Field(min_length=1, max_length=180)
     content_type: str = Field(min_length=1, max_length=80)
     data_base64: str = Field(min_length=1)
+
+
+def _normalize_hero_slides(slides: Any) -> list[dict[str, Any]]:
+    if not isinstance(slides, list):
+        return []
+    normalized = []
+    for slide in slides[:8]:
+        if not isinstance(slide, dict):
+            continue
+        image_url = str(slide.get("imageUrl") or "")
+        if not image_url:
+            continue
+        normalized.append(
+            {
+                "imageUrl": image_url,
+                "imageAlt": str(slide.get("imageAlt") or ""),
+                "href": str(slide.get("href") or "/shop"),
+                "label": str(slide.get("label") or "Explore"),
+                "enabled": bool(slide.get("enabled", True)),
+            }
+        )
+    return normalized
 
 
 def _home_hero(page: dict[str, Any]) -> dict[str, Any]:
@@ -298,6 +362,7 @@ def _home_hero(page: dict[str, Any]) -> dict[str, Any]:
             "text": "",
             "imageUrl": "",
             "imageAlt": "",
+            "slides": [],
             "primaryAction": {"label": "Shop now", "href": "/shop"},
             "secondaryAction": None,
         }
@@ -325,6 +390,8 @@ async def get_site_control(
         " ORDER BY active DESC, updated_at DESC LIMIT 1"
     )
     hero = _home_hero(page)["props"]
+    slides = _normalize_hero_slides(hero.get("slides"))
+    primary_slide = slides[0] if slides else {}
     primary = hero.get("primaryAction") or {}
     secondary = hero.get("secondaryAction") or {}
     return {
@@ -334,8 +401,9 @@ async def get_site_control(
         "heroEyebrow": hero.get("eyebrow") or "",
         "heroHeading": hero.get("heading") or page["title"],
         "heroText": hero.get("text") or "",
-        "heroImageUrl": hero.get("imageUrl") or "",
-        "heroImageAlt": hero.get("imageAlt") or page["title"],
+        "heroImageUrl": primary_slide.get("imageUrl") or hero.get("imageUrl") or "",
+        "heroImageAlt": primary_slide.get("imageAlt") or hero.get("imageAlt") or page["title"],
+        "heroSlides": slides,
         "primaryActionLabel": primary.get("label") or "",
         "primaryActionHref": primary.get("href") or "",
         "secondaryActionLabel": secondary.get("label") or "",
@@ -380,6 +448,41 @@ async def update_site_control(
     ):
         if source in fields:
             props[target] = fields[source] or ""
+    if "hero_slides" in fields:
+        props["slides"] = [
+            {
+                "imageUrl": slide["image_url"],
+                "imageAlt": slide["image_alt"],
+                "href": slide["href"],
+                "label": slide["label"],
+                "enabled": slide["enabled"],
+            }
+            for slide in fields["hero_slides"]
+        ]
+        if props["slides"]:
+            props["imageUrl"] = props["slides"][0]["imageUrl"]
+            props["imageAlt"] = props["slides"][0]["imageAlt"]
+    if "hero_image_url" in fields or "hero_image_alt" in fields:
+        slides = props.setdefault("slides", [])
+        if not isinstance(slides, list):
+            slides = []
+            props["slides"] = slides
+        if not slides:
+            slides.append(
+                {
+                    "imageUrl": props.get("imageUrl") or "",
+                    "imageAlt": props.get("imageAlt") or "",
+                    "href": (props.get("primaryAction") or {}).get("href") or "/shop",
+                    "label": (props.get("primaryAction") or {}).get("label") or "Explore",
+                    "enabled": True,
+                }
+            )
+        first = slides[0]
+        if isinstance(first, dict):
+            if "hero_image_url" in fields:
+                first["imageUrl"] = fields["hero_image_url"] or ""
+            if "hero_image_alt" in fields:
+                first["imageAlt"] = fields["hero_image_alt"] or ""
     if "primary_action_label" in fields or "primary_action_href" in fields:
         current = props.get("primaryAction") or {}
         props["primaryAction"] = {

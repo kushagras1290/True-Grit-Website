@@ -228,6 +228,13 @@ export interface HeroBlock extends BlockBase {
     text: string;
     imageUrl?: string;
     imageAlt?: string;
+    slides?: Array<{
+      imageUrl: string;
+      imageAlt: string;
+      href: string;
+      label: string;
+      enabled?: boolean;
+    }>;
     primaryAction: { label: string; href: string };
     secondaryAction: { label: string; href: string } | null;
   };

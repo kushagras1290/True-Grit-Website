@@ -71,7 +71,10 @@ const imageUrlSchema = z
   .string()
   .max(1000)
   .refine(
-    (value) => value === "" || value.startsWith("/") || z.string().url().safeParse(value).success,
+    (value) =>
+      value === "" ||
+      (value.startsWith("/") && !value.startsWith("//")) ||
+      z.string().url().safeParse(value).success,
     "Enter a valid image URL",
   );
 
@@ -823,7 +826,6 @@ function GeneralTab({
         />
         <Input
           id="imageUrl"
-          type="url"
           placeholder={uploadMutation.isPending ? "Uploading image..." : "Image URL"}
           {...form.register("imageUrl")}
         />

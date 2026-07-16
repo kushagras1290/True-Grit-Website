@@ -39,6 +39,21 @@ class _BlockBase(BaseModel):
     enabled: bool = True
 
 
+class HeroSlide(BaseModel):
+    image_url: str = Field(alias="imageUrl", min_length=1, max_length=1000)
+    image_alt: str = Field(alias="imageAlt", max_length=200)
+    href: str = Field(min_length=1, max_length=512)
+    label: str = Field(min_length=1, max_length=80)
+    enabled: bool = True
+
+    @field_validator("href")
+    @classmethod
+    def _safe_href(cls, value: str) -> str:
+        return validate_href(value)
+
+    model_config = {"populate_by_name": True}
+
+
 class HeroProps(BaseModel):
     layout: Literal["editorial-split", "full-bleed"]
     eyebrow: str = Field(max_length=120)
@@ -46,6 +61,7 @@ class HeroProps(BaseModel):
     text: str = Field(max_length=600)
     image_url: str | None = Field(default=None, alias="imageUrl", max_length=1000)
     image_alt: str | None = Field(default=None, alias="imageAlt", max_length=200)
+    slides: list[HeroSlide] = Field(default_factory=list, max_length=8)
     primary_action: BlockAction = Field(alias="primaryAction")
     secondary_action: BlockAction | None = Field(default=None, alias="secondaryAction")
 

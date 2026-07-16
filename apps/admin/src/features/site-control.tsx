@@ -18,6 +18,52 @@ import {
 import { useToast } from "../components/toast";
 import { ApiError, api, type AdminLinkedProduct, type SiteControl } from "../lib/api";
 
+const imageUrlSchema = z
+  .string()
+  .max(1000)
+  .refine(
+    (value) =>
+      value === "" ||
+      (value.startsWith("/") && !value.startsWith("//")) ||
+      z.string().url().safeParse(value).success,
+    "Enter a valid image URL",
+  );
+
+const hrefSchema = z
+  .string()
+  .min(1)
+  .max(512)
+  .refine(
+    (value) =>
+      !value.startsWith("//") &&
+      (value.startsWith("/") ||
+        value.startsWith("https://") ||
+        value.startsWith("http://") ||
+        value.startsWith("mailto:")),
+    "Enter a valid link",
+  );
+const optionalHrefSchema = z
+  .string()
+  .max(512)
+  .refine(
+    (value) =>
+      value === "" ||
+      (!value.startsWith("//") &&
+        (value.startsWith("/") ||
+          value.startsWith("https://") ||
+          value.startsWith("http://") ||
+          value.startsWith("mailto:"))),
+    "Enter a valid link",
+  );
+
+const heroSlideSchema = z.object({
+  imageUrl: imageUrlSchema,
+  imageAlt: z.string().max(200),
+  href: hrefSchema,
+  label: z.string().min(1).max(80),
+  enabled: z.boolean(),
+});
+
 const siteSchema = z.object({
   announcementActive: z.boolean(),
   announcementMessage: z.string().max(220),
@@ -25,25 +71,43 @@ const siteSchema = z.object({
   heroEyebrow: z.string().max(120),
   heroHeading: z.string().min(3).max(160),
   heroText: z.string().max(500),
-  heroImageUrl: z
-    .string()
-    .max(1000)
-    .refine(
-      (value) =>
-        value === "" || value.startsWith("/") || z.string().url().safeParse(value).success,
-      "Enter a valid image URL",
-    ),
+  heroImageUrl: imageUrlSchema,
   heroImageAlt: z.string().max(200),
+  heroSlides: z.array(heroSlideSchema).max(8),
   primaryActionLabel: z.string().max(80),
-  primaryActionHref: z.string().max(200),
+  primaryActionHref: optionalHrefSchema,
   secondaryActionLabel: z.string().max(80),
-  secondaryActionHref: z.string().max(200),
+  secondaryActionHref: optionalHrefSchema,
   seoTitle: z.string().min(3).max(160),
   seoDescription: z.string().max(320),
   seoKeywords: z.string().max(500),
 });
 
 type SiteForm = z.infer<typeof siteSchema>;
+
+function defaultHeroSlides(data?: SiteControl): SiteForm["heroSlides"] {
+  if (data?.heroSlides?.length) {
+    return data.heroSlides.map((slide) => ({
+      imageUrl: slide.imageUrl,
+      imageAlt: slide.imageAlt,
+      href: slide.href,
+      label: slide.label,
+      enabled: slide.enabled ?? true,
+    }));
+  }
+  if (data?.heroImageUrl) {
+    return [
+      {
+        imageUrl: data.heroImageUrl,
+        imageAlt: data.heroImageAlt,
+        href: data.primaryActionHref || "/shop",
+        label: data.primaryActionLabel || "Explore",
+        enabled: true,
+      },
+    ];
+  }
+  return [];
+}
 
 function defaults(data?: SiteControl): SiteForm {
   return {
@@ -55,6 +119,7 @@ function defaults(data?: SiteControl): SiteForm {
     heroText: data?.heroText ?? "",
     heroImageUrl: data?.heroImageUrl ?? "",
     heroImageAlt: data?.heroImageAlt ?? "",
+    heroSlides: defaultHeroSlides(data),
     primaryActionLabel: data?.primaryActionLabel ?? "",
     primaryActionHref: data?.primaryActionHref ?? "",
     secondaryActionLabel: data?.secondaryActionLabel ?? "",
@@ -78,13 +143,33 @@ export function SiteControlPage() {
   });
   const watchedHeroImageUrl = form.watch("heroImageUrl");
   const watchedHeroImageAlt = form.watch("heroImageAlt");
+  const watchedHeroSlides = form.watch("heroSlides");
 
   useEffect(() => {
     if (data) form.reset(defaults(data));
   }, [data, form]);
 
+  function payload(values: SiteForm): SiteForm {
+    const slides = values.heroSlides
+      .filter((slide) => slide.imageUrl.trim())
+      .map((slide) => ({
+        ...slide,
+        imageUrl: slide.imageUrl.trim(),
+        imageAlt: slide.imageAlt.trim(),
+        href: slide.href.trim(),
+        label: slide.label.trim(),
+      }));
+    const first = slides[0];
+    return {
+      ...values,
+      heroImageUrl: first?.imageUrl ?? values.heroImageUrl,
+      heroImageAlt: first?.imageAlt ?? values.heroImageAlt,
+      heroSlides: slides,
+    };
+  }
+
   const mutation = useMutation({
-    mutationFn: (values: SiteForm) => api.updateSiteControl(values),
+    mutationFn: (values: SiteForm) => api.updateSiteControl(payload(values)),
     onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: ["site-control"] });
       form.reset(defaults(result));
@@ -94,14 +179,26 @@ export function SiteControlPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not save site controls."),
   });
   const uploadMutation = useMutation({
-    mutationFn: (file: File) => api.uploadImage(file),
-    onSuccess: (result) => {
-      const heroImageAlt = form.getValues("heroImageAlt") || form.getValues("heroHeading");
-      const nextValues = { ...form.getValues(), heroImageUrl: result.url, heroImageAlt };
-      form.setValue("heroImageUrl", result.url, { shouldDirty: true, shouldValidate: true });
-      form.setValue("heroImageAlt", heroImageAlt, { shouldDirty: true, shouldValidate: true });
-      mutation.mutate(nextValues);
-      toast.success("Hero image uploaded; saving homepage banner.");
+    mutationFn: ({ file }: { file: File; index: number }) => api.uploadImage(file),
+    onSuccess: (result, variables) => {
+      const values = form.getValues();
+      const slides = [...values.heroSlides];
+      const fallbackAlt =
+        slides[variables.index]?.imageAlt || values.heroImageAlt || values.heroHeading;
+      slides[variables.index] = {
+        imageUrl: result.url,
+        imageAlt: fallbackAlt,
+        href: slides[variables.index]?.href || values.primaryActionHref || "/shop",
+        label: slides[variables.index]?.label || values.primaryActionLabel || "Explore",
+        enabled: slides[variables.index]?.enabled ?? true,
+      };
+      form.setValue("heroSlides", slides, { shouldDirty: true, shouldValidate: true });
+      if (variables.index === 0) {
+        form.setValue("heroImageUrl", result.url, { shouldDirty: true, shouldValidate: true });
+        form.setValue("heroImageAlt", fallbackAlt, { shouldDirty: true, shouldValidate: true });
+      }
+      mutation.mutate({ ...values, heroSlides: slides });
+      toast.success("Hero slide uploaded; saving carousel.");
     },
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not upload image."),
@@ -110,6 +207,60 @@ export function SiteControlPage() {
   if (isLoading) return <p className="text-sm text-ink-muted">Loading site controls...</p>;
   if (isError) {
     return <EmptyState title="Site controls unavailable" hint="Requires owner settings access." />;
+  }
+  const heroSlides = watchedHeroSlides ?? [];
+
+  function updateSlide(index: number, patch: Partial<SiteForm["heroSlides"][number]>) {
+    const slides = [...form.getValues("heroSlides")];
+    const current = slides[index];
+    if (!current) return;
+    slides[index] = { ...current, ...patch };
+    form.setValue("heroSlides", slides, { shouldDirty: true, shouldValidate: true });
+    if (index === 0) {
+      if (patch.imageUrl !== undefined) {
+        form.setValue("heroImageUrl", patch.imageUrl, { shouldDirty: true, shouldValidate: true });
+      }
+      if (patch.imageAlt !== undefined) {
+        form.setValue("heroImageAlt", patch.imageAlt, { shouldDirty: true, shouldValidate: true });
+      }
+    }
+  }
+
+  function addSlide() {
+    const slides = form.getValues("heroSlides");
+    if (slides.length >= 8) {
+      toast.error("Hero carousel supports up to 8 slides.");
+      return;
+    }
+    form.setValue(
+      "heroSlides",
+      [
+        ...slides,
+        {
+          imageUrl: "",
+          imageAlt: "",
+          href: "/shop",
+          label: "Explore",
+          enabled: true,
+        },
+      ],
+      { shouldDirty: true, shouldValidate: true },
+    );
+  }
+
+  function removeSlide(index: number) {
+    const slides = form.getValues("heroSlides").filter((_, slideIndex) => slideIndex !== index);
+    form.setValue("heroSlides", slides, { shouldDirty: true, shouldValidate: true });
+    if (index === 0) {
+      form.setValue("heroImageUrl", slides[0]?.imageUrl ?? "", {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      form.setValue("heroImageAlt", slides[0]?.imageAlt ?? "", {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    }
   }
 
   return (
@@ -177,13 +328,12 @@ export function SiteControlPage() {
                 disabled={uploadMutation.isPending || mutation.isPending}
                 onChange={(event) => {
                   const file = event.currentTarget.files?.[0];
-                  if (file) uploadMutation.mutate(file);
+                  if (file) uploadMutation.mutate({ file, index: 0 });
                   event.currentTarget.value = "";
                 }}
               />
               <Input
                 id="heroImageUrl"
-                type="url"
                 placeholder={uploadMutation.isPending ? "Uploading image..." : "Hero image URL"}
                 {...form.register("heroImageUrl")}
               />
@@ -198,6 +348,88 @@ export function SiteControlPage() {
                 </div>
               ) : null}
             </Field>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm font-medium text-ink">Hero carousel slides</p>
+                <Button type="button" variant="secondary" onClick={addSlide}>
+                  Add slide
+                </Button>
+              </div>
+              <div className="space-y-3">
+                {heroSlides.map((slide, index) => (
+                  <div
+                    key={`${index}-${slide.imageUrl}`}
+                    className="grid gap-3 rounded-md border border-line bg-surface p-3 lg:grid-cols-[9rem_minmax(0,1fr)]"
+                  >
+                    <div className="space-y-2">
+                      <ImagePreview
+                        src={slide.imageUrl}
+                        alt={slide.imageAlt}
+                        label={slide.label || `Slide ${index + 1}`}
+                        className="h-20 w-36"
+                      />
+                      <Input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        disabled={uploadMutation.isPending || mutation.isPending}
+                        onChange={(event) => {
+                          const file = event.currentTarget.files?.[0];
+                          if (file) uploadMutation.mutate({ file, index });
+                          event.currentTarget.value = "";
+                        }}
+                      />
+                    </div>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <label className="flex items-center gap-2 text-sm text-ink md:col-span-2">
+                        <input
+                          type="checkbox"
+                          checked={slide.enabled}
+                          onChange={(event) => updateSlide(index, { enabled: event.target.checked })}
+                        />
+                        Enabled
+                      </label>
+                      <Field label="Image URL" htmlFor={`slide-image-${index}`}>
+                        <Input
+                          id={`slide-image-${index}`}
+                          value={slide.imageUrl}
+                          onChange={(event) =>
+                            updateSlide(index, { imageUrl: event.target.value })
+                          }
+                        />
+                      </Field>
+                      <Field label="Click link" htmlFor={`slide-href-${index}`}>
+                        <Input
+                          id={`slide-href-${index}`}
+                          value={slide.href}
+                          onChange={(event) => updateSlide(index, { href: event.target.value })}
+                        />
+                      </Field>
+                      <Field label="Label" htmlFor={`slide-label-${index}`}>
+                        <Input
+                          id={`slide-label-${index}`}
+                          value={slide.label}
+                          onChange={(event) => updateSlide(index, { label: event.target.value })}
+                        />
+                      </Field>
+                      <Field label="Alt text" htmlFor={`slide-alt-${index}`}>
+                        <Input
+                          id={`slide-alt-${index}`}
+                          value={slide.imageAlt}
+                          onChange={(event) =>
+                            updateSlide(index, { imageAlt: event.target.value })
+                          }
+                        />
+                      </Field>
+                      <div className="flex justify-end md:col-span-2">
+                        <Button type="button" variant="tertiary" onClick={() => removeSlide(index)}>
+                          Remove
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
             <Field
               label="Hero image alt text"
               htmlFor="heroImageAlt"
