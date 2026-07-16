@@ -60,6 +60,10 @@ class ProductSummary(PublicModel):
     image_alt: str
 
 
+class ProductListResponse(PublicModel):
+    items: list[ProductSummary]
+
+
 class VariantSummary(PublicModel):
     id: str
     name: str

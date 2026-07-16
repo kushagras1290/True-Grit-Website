@@ -7,6 +7,7 @@ import "./styles/app.css";
 import { Shell } from "./components/layout";
 import { ToastProvider } from "./components/toast";
 import { EmptyState } from "./components/ui";
+import { AccountPage } from "./features/account";
 import { AdminLoginPage, AdminResetPasswordPage, RequireAdminAuth } from "./features/auth";
 import { CategoryEditorPage, CategoryListPage } from "./features/categories";
 import { DashboardPage } from "./features/dashboard";
@@ -54,6 +55,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="media" element={<MediaPage />} />
               <Route path="users" element={<UsersPage />} />
               <Route path="audit" element={<AuditPage />} />
+              <Route path="account" element={<AccountPage />} />
               <Route
                 path="*"
                 element={

@@ -164,6 +164,16 @@ class CatalogueRepository:
         )
         return await self._assemble(rows)
 
+    async def list_all_published(self, limit: int = 200) -> list[dict[str, Any]]:
+        """Every published product, newest first. Backs the storefront's shop
+        grid, so it reflects admin publishes without any per-category rule."""
+        rows = await self._db.fetch_all(
+            f"{_PRODUCT_BASE_SQL} WHERE p.status = 'published'"
+            " ORDER BY p.updated_at DESC, p.name LIMIT ?",
+            (limit,),
+        )
+        return await self._assemble(rows)
+
     async def list_published_by_category(self, category_id: str) -> list[dict[str, Any]]:
         rows = await self._db.fetch_all(
             f"""

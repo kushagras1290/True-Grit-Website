@@ -8,13 +8,12 @@ export async function loader() {
   const productSlugs = page.blocks.flatMap((block) =>
     block.type === "product_collection" ? block.props.productSlugs : [],
   );
-  const [categories, farms] = await Promise.all([loadCategories(), loadFarms()]);
-  return {
-    page,
-    products: loadProductsBySlugs(productSlugs),
-    categories,
-    farms,
-  };
+  const [categories, farms, products] = await Promise.all([
+    loadCategories(),
+    loadFarms(),
+    loadProductsBySlugs(productSlugs),
+  ]);
+  return { page, products, categories, farms };
 }
 
 export function meta({ data }: Route.MetaArgs) {

@@ -29,6 +29,8 @@ import {
 
 const API_URL: string | undefined = import.meta.env.VITE_API_URL as string | undefined;
 const DEMO_AUTH_KEY = "truegrit.admin.session";
+const DEMO_EMAIL = "admin@truegrit.test";
+const DEMO_PASSWORD = "admin123";
 
 export const demoMode = !API_URL;
 
@@ -291,7 +293,7 @@ export const api = {
   login: async (email: string, password: string): Promise<void> => {
     if (demoMode) {
       await new Promise((resolve) => setTimeout(resolve, 180));
-      if (email.toLowerCase() !== "admin@truegrit.test" || password !== "admin123") {
+      if (email.toLowerCase() !== DEMO_EMAIL || password !== DEMO_PASSWORD) {
         throw new ApiError("Invalid admin email or password.", 401, "authentication_required");
       }
       setDemoSession(true);
@@ -538,6 +540,22 @@ export const api = {
     demoMode
       ? demo({ id: `usr_${Date.now().toString(36)}`, farmName: "Demo Farm" })
       : post("/v1/admin/farm-owners", input),
+
+  changePassword: async (currentPassword: string, newPassword: string): Promise<{ ok: boolean }> => {
+    if (demoMode) {
+      await new Promise((resolve) => setTimeout(resolve, 180));
+      if (currentPassword !== DEMO_PASSWORD) {
+        throw new ApiError("Current password is incorrect.", 401, "authentication_required");
+      }
+      // Demo mode has no backend to store it — say so rather than pretend.
+      throw new ApiError(
+        "Demo mode cannot change a password. Connect the API with VITE_API_URL.",
+        422,
+        "validation_error",
+      );
+    }
+    return post("/v1/admin/auth/change-password", { currentPassword, newPassword });
+  },
 
   requestPasswordReset: (email: string): Promise<{ ok: boolean }> =>
     demoMode ? demo({ ok: true }) : post("/v1/admin/auth/password-reset", { email }),

@@ -12,10 +12,11 @@ import secrets
 import string
 from typing import Any
 
-from truegrit_api.auth.passwords import hash_password
+from truegrit_api.auth.passwords import hash_password, verify_password
 from truegrit_api.auth.principal import Principal
 from truegrit_api.config import get_settings
 from truegrit_api.errors import (
+    AuthenticationError,
     ConflictError,
     NotFoundError,
     PermissionDeniedError,
@@ -323,6 +324,142 @@ async def delete_users(
         )
     await db.batch(statements)
     return {"deletedIds": [row["id"] for row in rows], "count": len(rows)}
+
+
+async def adopt_bootstrap_owner(
+    db: Database,
+    request_id: str,
+    *,
+    user_id: str,
+    email: str,
+    password: str,
+) -> None:
+    """Hand the owner account its identity and password from `.env`, once.
+
+    `ADMIN_LOGIN_EMAIL`/`ADMIN_LOGIN_PASSWORD` are a bootstrap, not a spare key:
+    they open the owner account only while it has no password of its own. The
+    first sign-in copies both onto the account — the address so the console shows
+    the real operator and reset mail reaches a live inbox, and the password as a
+    hash the account owns. After this, only the stored password authenticates,
+    which is what makes changing it in the console revoke the old one instead of
+    leaving `.env` as a second way in.
+
+    The password is deliberately not held to `password_min_length`: it is
+    whatever the operator already has in `.env`, and rejecting it here would lock
+    them out of the console that exists to fix it. `change_own_password` does
+    enforce the minimum, so the next password is a strong one.
+    """
+    settings = get_settings()
+    email = (email or "").strip().lower()
+    # users.email is UNIQUE: a customer who registered with this address would
+    # make the update fail mid-batch. Refuse loudly instead, leaving the account
+    # unadopted and the bootstrap credential still usable.
+    conflict = await db.fetch_one(
+        "SELECT id FROM users WHERE email = ? AND id != ?", (email, user_id)
+    )
+    if conflict is not None:
+        raise ConflictError(
+            "ADMIN_LOGIN_EMAIL already belongs to another account. "
+            "Set a different address for the owner console login."
+        )
+
+    now = utc_now_iso()
+    password_hash = hash_password(password, iterations=settings.pbkdf2_iterations)
+    await db.batch(
+        [
+            ("UPDATE users SET email = ?, updated_at = ? WHERE id = ?", (email, now, user_id)),
+            (
+                "INSERT INTO user_credentials (user_id, password_hash, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?)"
+                " ON CONFLICT(user_id) DO UPDATE SET password_hash = excluded.password_hash,"
+                " updated_at = excluded.updated_at",
+                (user_id, password_hash, now, now),
+            ),
+            audit_statement(
+                action="owner.bootstrapped",
+                entity_type="user",
+                entity_id=user_id,
+                actor_id=user_id,
+                request_id=request_id,
+                created_at=now,
+                after={
+                    "email": email,
+                    "credentialAdopted": True,
+                    "passwordStored": False,
+                },
+            ),
+        ]
+    )
+
+
+async def change_own_password(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    current_password: str,
+    new_password: str,
+    keep_session_token_hash: str | None,
+) -> dict[str, Any]:
+    """Rotate the signed-in user's own password.
+
+    The current password is required even though the caller already holds a
+    session: without it, a borrowed screen or a stolen cookie could lock the real
+    owner out of their own console. Every other session is revoked so a rotation
+    ejects whoever prompted it; the caller's own session survives, because
+    signing someone out of the page they just used is noise, not security.
+    """
+    settings = get_settings()
+    if len(new_password) < settings.password_min_length:
+        raise ValidationAppError(
+            f"Password must be at least {settings.password_min_length} characters."
+        )
+    if new_password == current_password:
+        raise ValidationAppError("The new password must differ from the current one.")
+
+    credential = await db.fetch_one(
+        "SELECT password_hash FROM user_credentials WHERE user_id = ?", (actor.user_id,)
+    )
+    if credential is None:
+        raise ValidationAppError(
+            "This account has no password yet. Use the reset link on the sign-in page to set one."
+        )
+    if not verify_password(current_password, credential["password_hash"]):
+        raise AuthenticationError("Current password is incorrect.")
+
+    now = utc_now_iso()
+    password_hash = hash_password(new_password, iterations=settings.pbkdf2_iterations)
+    await db.batch(
+        [
+            (
+                "INSERT INTO user_credentials (user_id, password_hash, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?)"
+                " ON CONFLICT(user_id) DO UPDATE SET password_hash = excluded.password_hash,"
+                " updated_at = excluded.updated_at",
+                (actor.user_id, password_hash, now, now),
+            ),
+            (
+                "UPDATE sessions SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL"
+                " AND token_hash != ?",
+                (now, actor.user_id, keep_session_token_hash or ""),
+            ),
+            audit_statement(
+                action="password.changed",
+                entity_type="user",
+                entity_id=actor.user_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={
+                    "email": actor.email,
+                    "credentialChanged": True,
+                    "passwordStored": False,
+                    "otherSessionsRevoked": True,
+                },
+            ),
+        ]
+    )
+    return {"ok": True}
 
 
 async def reset_farm_owner_password(

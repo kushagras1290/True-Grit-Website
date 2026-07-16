@@ -71,6 +71,41 @@ def test_product_detail_contract(client: TestClient):
     assert body["relatedSlugs"] == []
 
 
+def test_products_list_returns_published_summaries(client: TestClient):
+    body = client.get("/v1/public/products").json()
+    slugs = {product["slug"] for product in body["items"]}
+    # Every published seed product, and nothing in draft/archived.
+    assert "organic-alphonso-mangoes" in slugs
+    assert "himalayan-red-rajma" in slugs
+    sample = next(p for p in body["items"] if p["slug"] == "organic-alphonso-mangoes")
+    assert sample["priceMinor"] == 89900
+    assert sample["certification"] == "India Organic (NPOP)"
+
+
+def test_products_list_by_slugs_preserves_order(client: TestClient):
+    body = client.get(
+        "/v1/public/products",
+        params={"slugs": "himalayan-red-rajma,organic-alphonso-mangoes"},
+    ).json()
+    assert [p["slug"] for p in body["items"]] == [
+        "himalayan-red-rajma",
+        "organic-alphonso-mangoes",
+    ]
+
+
+def test_products_list_ignores_unknown_slugs(client: TestClient):
+    body = client.get(
+        "/v1/public/products", params={"slugs": "organic-alphonso-mangoes,does-not-exist"}
+    ).json()
+    assert [p["slug"] for p in body["items"]] == ["organic-alphonso-mangoes"]
+
+
+def test_products_list_does_not_collide_with_detail_route(client: TestClient):
+    # The literal /products path must not be swallowed by /products/{slug}.
+    assert client.get("/v1/public/products").status_code == 200
+    assert client.get("/v1/public/products/organic-alphonso-mangoes").status_code == 200
+
+
 def test_search_matches_synonyms(client: TestClient):
     body = client.get("/v1/public/search", params={"q": "finger millet"}).json()
     product_group = next(group for group in body["groups"] if group["group"] == "products")

@@ -8,8 +8,10 @@
 
 import type {
   ArticleDetail,
+  CategorySummary,
   FarmDetail,
   ProductDetail,
+  ProductSummary,
   PublicBootstrap,
   PublicCategoryPage,
   PublicPage,
@@ -38,6 +40,16 @@ async function fromApi<T>(path: string): Promise<T | null> {
   return (await response.json()) as T;
 }
 
+// List endpoints wrap their rows in `{ items }`. Unwrap, and fall back to the
+// supplied fixture when the API is not configured or returns nothing — a
+// storefront should degrade to demo data, never crash a page, if a list is
+// briefly unavailable.
+async function listFromApi<T>(path: string, fallback: T[]): Promise<T[]> {
+  if (!API_URL) return fallback;
+  const body = await fromApi<{ items: T[] }>(path);
+  return body?.items ?? fallback;
+}
+
 export async function loadBootstrap(): Promise<PublicBootstrap> {
   if (API_URL) return (await fromApi<PublicBootstrap>("/v1/public/bootstrap")) ?? bootstrap;
   return bootstrap;
@@ -53,8 +65,12 @@ export async function loadCategoryPage(slug: string): Promise<PublicCategoryPage
   return getCategoryPage(slug);
 }
 
-export async function loadCategories() {
-  return categories;
+export async function loadCategories(): Promise<CategorySummary[]> {
+  return listFromApi<CategorySummary>("/v1/public/categories", categories);
+}
+
+export async function loadAllProducts(): Promise<ProductSummary[]> {
+  return listFromApi<ProductSummary>("/v1/public/products", products);
 }
 
 export async function loadProduct(slug: string): Promise<ProductDetail | null> {
@@ -62,7 +78,24 @@ export async function loadProduct(slug: string): Promise<ProductDetail | null> {
   return products.find((product) => product.slug === slug) ?? null;
 }
 
-export function loadProductsBySlugs(slugs: string[]): ProductDetail[] {
+/**
+ * Full product details (variants included) for a handful of slugs — the recipe
+ * "add every ingredient to cart" flow needs each variant, which the summary list
+ * omits. Fetched in parallel; unknown slugs drop out. Reserve for the small,
+ * bounded slug sets a single page references, not for grids.
+ */
+export async function loadProductDetailsBySlugs(slugs: string[]): Promise<ProductDetail[]> {
+  if (slugs.length === 0) return [];
+  const details = await Promise.all(slugs.map((slug) => loadProduct(slug)));
+  return details.filter((product): product is ProductDetail => product !== null);
+}
+
+export async function loadProductsBySlugs(slugs: string[]): Promise<ProductSummary[]> {
+  if (slugs.length === 0) return [];
+  if (API_URL) {
+    const query = slugs.map((slug) => encodeURIComponent(slug)).join(",");
+    return listFromApi<ProductSummary>(`/v1/public/products?slugs=${query}`, []);
+  }
   const bySlug = new Map(products.map((product) => [product.slug, product]));
   return slugs.flatMap((slug) => bySlug.get(slug) ?? []);
 }

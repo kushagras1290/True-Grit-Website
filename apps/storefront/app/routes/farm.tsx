@@ -8,7 +8,7 @@ import { seoMeta } from "../lib/seo";
 export async function loader({ params }: Route.LoaderArgs) {
   const farm = await loadFarm(params.slug);
   if (!farm) throw data("Farm not found", { status: 404 });
-  return { farm, products: loadProductsBySlugs(farm.productSlugs) };
+  return { farm, products: await loadProductsBySlugs(farm.productSlugs) };
 }
 
 export function meta({ data: loaderData }: Route.MetaArgs) {

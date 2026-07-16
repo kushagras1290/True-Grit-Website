@@ -10,7 +10,9 @@ import { products as allProducts } from "@truegrit/contracts/fixtures";
 export async function loader() {
   const categories = await loadCategories();
   const seasonalCategories = categories.filter((category) => category.seasonLabel);
-  const seasonalProducts = loadProductsBySlugs(
+  // The curated seasonal slot: in-season drops, selected by the demo fixture's
+  // slug convention. The product data itself is loaded live when the API is on.
+  const seasonalProducts = await loadProductsBySlugs(
     allProducts
       .filter(
         (product) => product.availability !== "out_of_stock" && product.slug.includes("mango"),

@@ -6,6 +6,7 @@ import {
   ClipboardList,
   FolderTree,
   Image,
+  KeyRound,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -89,6 +90,9 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         icon: <ScrollText size={16} />,
         permission: "audit.view",
       },
+      // No permission: everyone who can sign in owns their own password, farm
+      // -scoped sub-admins included.
+      { to: "/account", label: "Your Account", icon: <KeyRound size={16} />, permission: null },
     ],
   },
 ];

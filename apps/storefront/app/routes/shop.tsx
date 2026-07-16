@@ -1,15 +1,11 @@
 import type { Route } from "./+types/shop";
 import { CategoryTile, ProductGrid, Section } from "../components/catalogue";
-import { loadCategories, loadProductsBySlugs } from "../lib/catalogue.server";
+import { loadAllProducts, loadCategories } from "../lib/catalogue.server";
 import { seoMeta } from "../lib/seo";
-import { products as allProducts } from "@truegrit/contracts/fixtures";
 
 export async function loader() {
-  const categories = await loadCategories();
-  return {
-    categories,
-    products: loadProductsBySlugs(allProducts.map((product) => product.slug)),
-  };
+  const [categories, products] = await Promise.all([loadCategories(), loadAllProducts()]);
+  return { categories, products };
 }
 
 export function meta(_args: Route.MetaArgs) {

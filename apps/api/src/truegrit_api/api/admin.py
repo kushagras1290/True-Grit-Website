@@ -19,13 +19,15 @@ from truegrit_api.auth.rate_limit import (
     enforce_rate_limit,
     hash_identifier,
 )
-from truegrit_api.auth.sessions import end_session, start_session
-from truegrit_api.config import get_settings
+from truegrit_api.auth.sessions import end_session, hash_token, start_session
+from truegrit_api.config import Settings, get_settings
 from truegrit_api.errors import AuthenticationError, NotFoundError, PermissionDeniedError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.admin import AdminRepository
 from truegrit_api.repositories.content import AuditRepository, CategoryRepository
 from truegrit_api.services.access import (
+    adopt_bootstrap_owner,
+    change_own_password,
     create_farm_owner,
     delete_users,
     invite_user,
@@ -91,6 +93,46 @@ class LoginRequest(BaseModel):
     password: str
 
 
+class PasswordChangeRequest(_CamelModel):
+    current_password: str = Field(min_length=1, max_length=256)
+    new_password: str = Field(min_length=1, max_length=256)
+
+
+# The account the `.env` bootstrap credential adopts when no staff row carries
+# ADMIN_LOGIN_EMAIL yet — the founding owner, by creation order.
+_FIRST_SUPER_ADMIN_SQL = """
+    SELECT u.id, u.display_name, u.email
+    FROM users u
+    JOIN user_roles ur ON ur.user_id = u.id
+    JOIN roles r ON r.id = ur.role_id
+    WHERE u.user_type = 'staff'
+      AND u.status = 'active'
+      AND r.key = 'super_admin'
+    ORDER BY u.created_at ASC
+    LIMIT 1
+"""
+
+
+def _env_credential_matches(settings: Settings, email: str, password: str) -> bool:
+    """Constant-time check of the `.env` bootstrap owner credential.
+
+    The shipped default is refused in production: an unedited `.env` must never
+    be a working owner login on a live store.
+    """
+    if settings.app_env == "production" and settings.admin_login_password == "admin123":
+        return False
+    return hmac.compare_digest(
+        email, settings.admin_login_email.strip().lower()
+    ) and hmac.compare_digest(password, settings.admin_login_password)
+
+
+async def _stored_password_hash(db: Database, user_id: str) -> str | None:
+    row = await db.fetch_one(
+        "SELECT password_hash FROM user_credentials WHERE user_id = ?", (user_id,)
+    )
+    return row["password_hash"] if row is not None else None
+
+
 @router.post("/auth/login")
 async def login(
     payload: LoginRequest,
@@ -123,39 +165,32 @@ async def login(
         (email,),
     )
 
-    # Two ways in: the environment super-admin credential, or a per-user staff
-    # password (which is how farm-owner sub-admins sign in).
-    env_default_in_production = (
-        settings.app_env == "production" and settings.admin_login_password == "admin123"
-    )
-    env_ok = (
-        not env_default_in_production
-        and hmac.compare_digest(email, settings.admin_login_email.lower())
-        and hmac.compare_digest(payload.password, settings.admin_login_password)
-    )
-    if user is None and env_ok:
-        user = await db.fetch_one(
-            """
-            SELECT u.id, u.display_name, u.email
-            FROM users u
-            JOIN user_roles ur ON ur.user_id = u.id
-            JOIN roles r ON r.id = ur.role_id
-            WHERE u.user_type = 'staff'
-              AND u.status = 'active'
-              AND r.key = 'super_admin'
-            ORDER BY u.created_at ASC
-            LIMIT 1
-            """
-        )
-    credential_ok = False
-    if user is not None and not env_ok:
-        credential = await db.fetch_one(
-            "SELECT password_hash FROM user_credentials WHERE user_id = ?", (user["id"],)
-        )
-        if credential is not None:
-            credential_ok = verify_password(payload.password, credential["password_hash"])
+    # The account's own stored password is the only thing that authenticates.
+    # This is how every staff user signs in, farm-owner sub-admins included.
+    stored_hash = await _stored_password_hash(db, user["id"]) if user is not None else None
+    credential_ok = stored_hash is not None and verify_password(payload.password, stored_hash)
 
-    if user is None or not (env_ok or credential_ok):
+    # The `.env` credential is a bootstrap, not a permanent key: it opens the
+    # owner account only while that account has no password of its own. The first
+    # sign-in adopts it — ADMIN_LOGIN_EMAIL becomes the account's address and
+    # ADMIN_LOGIN_PASSWORD becomes its stored hash — and from then on editing
+    # `.env` changes nothing, because a password the console can rotate has to be
+    # the only one that works. To hand the account back to `.env`, delete its row
+    # from user_credentials.
+    if not credential_ok and _env_credential_matches(settings, email, payload.password):
+        owner = user if user is not None else await db.fetch_one(_FIRST_SUPER_ADMIN_SQL)
+        if owner is not None and await _stored_password_hash(db, owner["id"]) is None:
+            await adopt_bootstrap_owner(
+                db,
+                _request_id(request),
+                user_id=owner["id"],
+                email=email,
+                password=payload.password,
+            )
+            user = owner
+            credential_ok = True
+
+    if user is None or not credential_ok:
         raise AuthenticationError("Invalid admin email or password.")
 
     await start_session(
@@ -172,6 +207,37 @@ async def logout(
 ) -> Any:
     await end_session(db, request, response, settings=get_settings())
     return {"ok": True}
+
+
+@router.post("/auth/change-password")
+async def change_password_endpoint(
+    payload: PasswordChangeRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(get_current_staff)],
+) -> Any:
+    """Rotate your own password. Any staff user, no permission needed — an
+    account's own credential is not something an admin should have to delegate."""
+    settings = get_settings()
+    if settings.rate_limit_enabled:
+        # Rate limited despite being authenticated: it verifies a password, so a
+        # stolen session must not become an offline-speed guessing oracle.
+        await enforce_rate_limit(
+            db,
+            key=f"admin-password-change:{hash_identifier(principal.user_id)}",
+            rule=RateLimitRule(
+                settings.rate_limit_login_per_account, settings.rate_limit_window_seconds
+            ),
+        )
+    session_token = request.cookies.get(settings.session_cookie_name)
+    return await change_own_password(
+        db,
+        principal,
+        _request_id(request),
+        current_password=payload.current_password,
+        new_password=payload.new_password,
+        keep_session_token_hash=hash_token(session_token) if session_token else None,
+    )
 
 
 @router.get("/me")

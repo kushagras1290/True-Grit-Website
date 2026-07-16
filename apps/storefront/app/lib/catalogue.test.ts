@@ -1,8 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { bootstrap } from "@truegrit/contracts/fixtures";
+import { bootstrap, categories, products } from "@truegrit/contracts/fixtures";
 
-import { loadCategoryPage, loadProduct, runSearch } from "./catalogue.server";
+import {
+  loadAllProducts,
+  loadCategories,
+  loadCategoryPage,
+  loadProduct,
+  loadProductsBySlugs,
+  runSearch,
+} from "./catalogue.server";
 
 describe("demo catalogue", () => {
   it("points every footer support link at a built static route", () => {
@@ -33,6 +40,28 @@ describe("demo catalogue", () => {
     const product = await loadProduct("sprouted-ragi-flour");
     expect(product?.variants).toHaveLength(2);
     expect(product?.traceability.length).toBeGreaterThanOrEqual(4);
+  });
+
+  // Without PUBLIC_API_URL these fall back to fixtures; the deployed storefront
+  // (which sets it) reads the same shapes from the live API.
+  it("lists every fixture category and product when the API is off", async () => {
+    expect(await loadCategories()).toEqual(categories);
+    expect(await loadAllProducts()).toEqual(products);
+  });
+
+  it("loads products by slug in the requested order", async () => {
+    const result = await loadProductsBySlugs([
+      "sprouted-ragi-flour",
+      "organic-alphonso-mangoes",
+    ]);
+    expect(result.map((product) => product.slug)).toEqual([
+      "sprouted-ragi-flour",
+      "organic-alphonso-mangoes",
+    ]);
+  });
+
+  it("returns an empty list for no slugs without hitting the catalogue", async () => {
+    expect(await loadProductsBySlugs([])).toEqual([]);
   });
 });
 

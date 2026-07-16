@@ -17,7 +17,7 @@ import { seoMeta } from "../lib/seo";
 export async function loader({ params }: Route.LoaderArgs) {
   const product = await loadProduct(params.slug);
   if (!product) throw data("Product not found", { status: 404 });
-  return { product, related: loadProductsBySlugs(product.relatedSlugs) };
+  return { product, related: await loadProductsBySlugs(product.relatedSlugs) };
 }
 
 export function meta({ data: loaderData }: Route.MetaArgs) {

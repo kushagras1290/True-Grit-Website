@@ -24,6 +24,7 @@ from truegrit_api.repositories.content import (
 )
 from truegrit_api.schemas.public import (
     ProductDetail,
+    ProductListResponse,
     PublicBootstrap,
     PublicCategoryPage,
     SearchResponse,
@@ -206,6 +207,26 @@ async def categories(db: Annotated[Database, Depends(get_database)]) -> Any:
             for row in rows
         ]
     }
+
+
+@router.get("/products", response_model=ProductListResponse)
+async def products_list(
+    db: Annotated[Database, Depends(get_database)],
+    slugs: Annotated[str | None, Query(max_length=4000)] = None,
+) -> Any:
+    """Published products for storefront grids.
+
+    With `?slugs=a,b,c` returns exactly those, in the given order (home-page
+    product collections). Without it, every published product, newest first (the
+    shop grid). Declared before `/products/{slug}` so the literal path wins.
+    """
+    catalogue = CatalogueRepository(db)
+    if slugs is not None:
+        wanted = [slug.strip() for slug in slugs.split(",") if slug.strip()][:200]
+        items = await catalogue.list_published_by_slugs(wanted) if wanted else []
+    else:
+        items = await catalogue.list_all_published()
+    return {"items": items}
 
 
 @router.get("/products/{slug}", response_model=ProductDetail)
