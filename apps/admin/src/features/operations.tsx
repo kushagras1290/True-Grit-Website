@@ -512,6 +512,7 @@ function RoleDropdown({
         ? selected.filter((id) => id !== roleId)
         : [...selected, roleId],
     );
+    setOpen(false);
   }
 
   return (
@@ -533,31 +534,43 @@ function RoleDropdown({
       {open ? (
         <div
           role="listbox"
+          aria-multiselectable="true"
           aria-label={label}
           className="absolute z-[110] mt-1 max-h-56 w-full overflow-y-auto rounded-sm border border-line bg-surface p-1.5 shadow-overlay"
         >
           {roles.length === 0 ? (
             <p className="px-2 py-2 text-sm text-ink-muted">No roles available.</p>
           ) : (
-            roles.map((role) => (
-              <label
-                key={role.id}
-                className="flex cursor-pointer items-start gap-2 rounded-sm px-2 py-2 text-sm hover:bg-subtle/60"
-              >
-                <input
-                  type="checkbox"
-                  checked={selected.includes(role.id)}
-                  onChange={() => toggleRole(role.id)}
-                  className="mt-0.5"
-                />
-                <span className="min-w-0">
-                  <span className="block font-medium text-ink">{role.name}</span>
-                  <span className="block text-xs leading-5 text-ink-muted">
-                    {role.description}
+            roles.map((role) => {
+              const isSelected = selected.includes(role.id);
+
+              return (
+                <button
+                  key={role.id}
+                  type="button"
+                  role="option"
+                  aria-selected={isSelected}
+                  className="flex w-full items-start justify-between gap-3 rounded-sm px-2 py-2 text-left text-sm hover:bg-subtle/60"
+                  onClick={() => toggleRole(role.id)}
+                >
+                  <span className="min-w-0">
+                    <span className="block font-medium text-ink">{role.name}</span>
+                    <span className="block text-xs leading-5 text-ink-muted">
+                      {role.description}
+                    </span>
                   </span>
-                </span>
-              </label>
-            ))
+                  <span
+                    className={
+                      isSelected
+                        ? "shrink-0 rounded-sm bg-brand px-2 py-0.5 text-xs font-medium text-ink-inverse"
+                        : "shrink-0 rounded-sm border border-line px-2 py-0.5 text-xs font-medium text-ink-muted"
+                    }
+                  >
+                    {isSelected ? "Selected" : "Add"}
+                  </span>
+                </button>
+              );
+            })
           )}
         </div>
       ) : null}
