@@ -39,6 +39,10 @@
     // Secure; CSRF tokens (x-csrf-token) remain the CSRF defence. Without this
     // the browser drops the session cookie and logins never persist.
     "SESSION_COOKIE_SAMESITE": "none",
+    // Python Workers have a tight CPU window; 600k PBKDF2 iterations can exceed
+    // it and Cloudflare returns 503 before CORS headers are written. Keep dev
+    // credentials at the Worker-safe factor already used by farm-owner resets.
+    "PBKDF2_ITERATIONS": "50000",
 
     // --- Mobile verification (SMS passcodes) ---
     // OFF until the SMS provider is wired. Nothing here can deliver a passcode
