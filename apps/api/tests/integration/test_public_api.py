@@ -46,6 +46,8 @@ def test_home_returns_published_blocks_only(client: TestClient):
     body = client.get("/v1/public/home").json()
     types = [block["type"] for block in body["blocks"]]
     assert types[0] == "hero"
+    assert body["blocks"][0]["props"]["imageUrl"] == "/homepage-hero.png"
+    assert body["blocks"][0]["props"]["imageAlt"] == "Organic mangoes held in a sunlit orchard"
     assert "product_collection" in types
     assert body["seo"]["title"].startswith("True Grit")
 

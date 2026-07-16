@@ -226,6 +226,8 @@ export interface HeroBlock extends BlockBase {
     eyebrow: string;
     heading: string;
     text: string;
+    imageUrl?: string;
+    imageAlt?: string;
     primaryAction: { label: string; href: string };
     secondaryAction: { label: string; href: string } | null;
   };

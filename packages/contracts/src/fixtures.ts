@@ -597,6 +597,8 @@ export const homePage: PublicPage = {
         eyebrow: "Certified organic. Fully traceable.",
         heading: "Food grown the way nature intended.",
         text: "Fresh organic produce, conscious pantry essentials and trusted local farms — delivered with complete transparency.",
+        imageUrl: "/homepage-hero.png",
+        imageAlt: "Organic mangoes held in a sunlit orchard",
         primaryAction: { label: "Explore the market", href: "/shop" },
         secondaryAction: { label: "See what is in season", href: "/seasonal" },
       },

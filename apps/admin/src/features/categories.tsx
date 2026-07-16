@@ -32,6 +32,7 @@ import {
   DataTableShell,
   EmptyState,
   Field,
+  ImagePreview,
   Input,
   LoadingRows,
   Modal,
@@ -385,7 +386,14 @@ const settingsSchema = z.object({
   heroDescription: z.string().max(500),
   seasonLabel: z.string().max(80),
   visibility: z.enum(["public", "hidden", "private"]),
-  heroImageUrl: z.string().url("Enter a valid image URL").max(1000).or(z.literal("")),
+  heroImageUrl: z
+    .string()
+    .max(1000)
+    .refine(
+      (value) =>
+        value === "" || value.startsWith("/") || z.string().url().safeParse(value).success,
+      "Enter a valid image URL",
+    ),
   heroImageAlt: z.string().max(200),
 });
 
@@ -418,14 +426,17 @@ function CategorySettingsForm({
       heroImageAlt: category.heroImageAlt,
     },
   });
+  const watchedHeroImageUrl = form.watch("heroImageUrl");
+  const watchedHeroImageAlt = form.watch("heroImageAlt");
   const uploadMutation = useMutation({
     mutationFn: (file: File) => api.uploadImage(file),
     onSuccess: (result) => {
+      const heroImageAlt = form.getValues("heroImageAlt") || category.name;
+      const nextValues = { ...form.getValues(), heroImageUrl: result.url, heroImageAlt };
       form.setValue("heroImageUrl", result.url, { shouldDirty: true, shouldValidate: true });
-      if (!form.getValues("heroImageAlt")) {
-        form.setValue("heroImageAlt", category.name, { shouldDirty: true, shouldValidate: true });
-      }
-      toast.success("Hero image uploaded and URL updated.");
+      form.setValue("heroImageAlt", heroImageAlt, { shouldDirty: true, shouldValidate: true });
+      onSave(nextValues);
+      toast.success("Hero image uploaded; saving thumbnail.");
     },
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not upload image."),
@@ -468,7 +479,7 @@ function CategorySettingsForm({
           type="file"
           accept="image/jpeg,image/png,image/webp,image/gif"
           className="mb-2"
-          disabled={uploadMutation.isPending}
+          disabled={uploadMutation.isPending || saving}
           onChange={(event) => {
             const file = event.currentTarget.files?.[0];
             if (file) uploadMutation.mutate(file);
@@ -481,6 +492,16 @@ function CategorySettingsForm({
           placeholder={uploadMutation.isPending ? "Uploading image..." : "Hero image URL"}
           {...form.register("heroImageUrl")}
         />
+        {watchedHeroImageUrl ? (
+          <div className="mt-3">
+            <ImagePreview
+              src={watchedHeroImageUrl}
+              alt={watchedHeroImageAlt}
+              label={category.name}
+              className="h-32 w-48"
+            />
+          </div>
+        ) : null}
       </Field>
       <Field
         label="Hero image alt text"

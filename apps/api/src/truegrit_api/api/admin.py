@@ -269,6 +269,8 @@ class SiteControlUpdate(_CamelModel):
     hero_eyebrow: str | None = Field(default=None, max_length=120)
     hero_heading: str | None = Field(default=None, max_length=160)
     hero_text: str | None = Field(default=None, max_length=500)
+    hero_image_url: str | None = Field(default=None, max_length=1000)
+    hero_image_alt: str | None = Field(default=None, max_length=200)
     primary_action_label: str | None = Field(default=None, max_length=80)
     primary_action_href: str | None = Field(default=None, max_length=200)
     secondary_action_label: str | None = Field(default=None, max_length=80)
@@ -294,6 +296,8 @@ def _home_hero(page: dict[str, Any]) -> dict[str, Any]:
             "eyebrow": "",
             "heading": page["title"],
             "text": "",
+            "imageUrl": "",
+            "imageAlt": "",
             "primaryAction": {"label": "Shop now", "href": "/shop"},
             "secondaryAction": None,
         }
@@ -330,6 +334,8 @@ async def get_site_control(
         "heroEyebrow": hero.get("eyebrow") or "",
         "heroHeading": hero.get("heading") or page["title"],
         "heroText": hero.get("text") or "",
+        "heroImageUrl": hero.get("imageUrl") or "",
+        "heroImageAlt": hero.get("imageAlt") or page["title"],
         "primaryActionLabel": primary.get("label") or "",
         "primaryActionHref": primary.get("href") or "",
         "secondaryActionLabel": secondary.get("label") or "",
@@ -369,6 +375,8 @@ async def update_site_control(
         ("hero_eyebrow", "eyebrow"),
         ("hero_heading", "heading"),
         ("hero_text", "text"),
+        ("hero_image_url", "imageUrl"),
+        ("hero_image_alt", "imageAlt"),
     ):
         if source in fields:
             props[target] = fields[source] or ""

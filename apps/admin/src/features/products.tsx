@@ -25,6 +25,7 @@ import {
   DataTableShell,
   EmptyState,
   Field,
+  ImagePreview,
   Input,
   LoadingRows,
   Modal,
@@ -54,39 +55,6 @@ const PRODUCT_TYPES = [
   "beverage",
 ];
 
-function ProductThumbnail({
-  src,
-  alt,
-  name,
-  className = "h-11 w-11",
-}: {
-  src: string;
-  alt: string;
-  name: string;
-  className?: string;
-}) {
-  const [failed, setFailed] = useState(false);
-  const initial = name.trim().charAt(0).toUpperCase() || "?";
-
-  return (
-    <span
-      className={`${className} inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md border border-line bg-canvas text-sm font-semibold text-ink-muted`}
-    >
-      {src && !failed ? (
-        <img
-          src={src}
-          alt={alt || name}
-          className="h-full w-full object-cover"
-          loading="lazy"
-          onError={() => setFailed(true)}
-        />
-      ) : (
-        initial
-      )}
-    </span>
-  );
-}
-
 const createSchema = z.object({
   name: z.string().min(3, "At least 3 characters").max(140),
   productType: z.string().min(1),
@@ -98,6 +66,14 @@ const createSchema = z.object({
 });
 
 type CreateForm = z.infer<typeof createSchema>;
+
+const imageUrlSchema = z
+  .string()
+  .max(1000)
+  .refine(
+    (value) => value === "" || value.startsWith("/") || z.string().url().safeParse(value).success,
+    "Enter a valid image URL",
+  );
 
 function CreateProductModal({ onClose }: { onClose: () => void }) {
   const toast = useToast();
@@ -191,10 +167,11 @@ export function ProductListPage() {
             to={`/products/${info.row.original.id}`}
             className="flex min-w-56 items-center gap-3 font-medium text-brand hover:underline"
           >
-            <ProductThumbnail
+            <ImagePreview
               src={info.row.original.imageUrl}
               alt={info.row.original.imageAlt}
-              name={info.getValue()}
+              label={info.getValue()}
+              className="h-11 w-11"
             />
             <span>{info.getValue()}</span>
           </Link>
@@ -375,7 +352,7 @@ const generalSchema = z.object({
     .string()
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and single hyphens only"),
   shortDescription: z.string().min(10, "Give customers at least one honest sentence").max(300),
-  imageUrl: z.string().url("Enter a valid image URL").max(1000).or(z.literal("")),
+  imageUrl: imageUrlSchema,
   imageAlt: z.string().max(200),
 });
 
@@ -852,10 +829,10 @@ function GeneralTab({
         />
         {watchedImageUrl ? (
           <div className="mt-3">
-            <ProductThumbnail
+            <ImagePreview
               src={watchedImageUrl}
               alt={watchedImageAlt}
-              name={product.name}
+              label={product.name}
               className="h-32 w-32"
             />
           </div>

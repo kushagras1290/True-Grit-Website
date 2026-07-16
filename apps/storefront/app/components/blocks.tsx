@@ -17,6 +17,38 @@ export interface BlockData {
 }
 
 function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "hero" }> }) {
+  if (block.props.imageUrl) {
+    return (
+      <section className="relative bg-brand text-ink-inverse">
+        <h1 className="sr-only">{block.props.heading}</h1>
+        <img
+          src={block.props.imageUrl}
+          alt={block.props.imageAlt || block.props.heading}
+          className="block aspect-[16/9] w-full object-cover"
+          fetchPriority="high"
+        />
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent">
+          <div className="mx-auto flex max-w-[80rem] flex-wrap gap-3 px-4 pb-5 sm:px-6 md:pb-8">
+            <Link
+              to={block.props.primaryAction.href}
+              className="inline-flex min-h-11 items-center rounded-sm bg-canvas px-5 text-sm font-medium text-brand hover:opacity-90"
+            >
+              {block.props.primaryAction.label}
+            </Link>
+            {block.props.secondaryAction ? (
+              <Link
+                to={block.props.secondaryAction.href}
+                className="inline-flex min-h-11 items-center rounded-sm border border-white/50 px-5 text-sm font-medium text-ink-inverse hover:bg-white/10"
+              >
+                {block.props.secondaryAction.label}
+              </Link>
+            ) : null}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="bg-brand text-ink-inverse">
       <div className="mx-auto grid max-w-[80rem] gap-10 px-4 py-16 sm:px-6 md:grid-cols-[3fr_2fr] md:py-24">

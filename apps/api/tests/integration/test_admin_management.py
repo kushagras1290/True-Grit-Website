@@ -425,6 +425,8 @@ def test_owner_can_manage_site_control(client: TestClient, db: SQLiteDatabase):
             "announcementMessage": "Fresh boxes ship Friday.",
             "announcementPath": "/shop",
             "heroHeading": "Owner managed homepage",
+            "heroImageUrl": "/homepage-hero.png",
+            "heroImageAlt": "Organic mangoes held in a sunlit orchard",
             "seoTitle": "Owner managed SEO title",
             "seoDescription": "Owner managed SEO description.",
             "seoKeywords": "organic, farm fresh, true grit",
@@ -433,11 +435,14 @@ def test_owner_can_manage_site_control(client: TestClient, db: SQLiteDatabase):
     assert response.status_code == 200
     body = response.json()
     assert body["heroHeading"] == "Owner managed homepage"
+    assert body["heroImageUrl"] == "/homepage-hero.png"
+    assert body["heroImageAlt"] == "Organic mangoes held in a sunlit orchard"
     assert body["seoKeywords"] == "organic, farm fresh, true grit"
 
     public_home = client.get("/v1/public/home").json()
     assert public_home["seo"]["keywords"] == "organic, farm fresh, true grit"
     assert public_home["blocks"][0]["props"]["heading"] == "Owner managed homepage"
+    assert public_home["blocks"][0]["props"]["imageUrl"] == "/homepage-hero.png"
 
 
 def test_farm_owner_cannot_manage_site_control(client: TestClient, db: SQLiteDatabase):

@@ -242,6 +242,8 @@ export interface SiteControl {
   heroEyebrow: string;
   heroHeading: string;
   heroText: string;
+  heroImageUrl: string;
+  heroImageAlt: string;
   primaryActionLabel: string;
   primaryActionHref: string;
   secondaryActionLabel: string;
@@ -602,6 +604,8 @@ export const api = {
           heroEyebrow: "Certified organic. Fully traceable.",
           heroHeading: "Food grown the way nature intended.",
           heroText: "Fresh organic produce, conscious pantry essentials and trusted local farms.",
+          heroImageUrl: "/homepage-hero.png",
+          heroImageAlt: "Organic mangoes held in a sunlit orchard",
           primaryActionLabel: "Explore the market",
           primaryActionHref: "/shop",
           secondaryActionLabel: "See what is in season",

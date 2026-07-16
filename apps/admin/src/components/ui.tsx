@@ -2,7 +2,7 @@
 
 import { cn } from "@truegrit/ui";
 import { AlertTriangle, X } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type {
   ButtonHTMLAttributes,
   InputHTMLAttributes,
@@ -183,6 +183,47 @@ export function Field({
         </p>
       ) : null}
     </div>
+  );
+}
+
+export function ImagePreview({
+  src,
+  alt,
+  label,
+  className,
+}: {
+  src: string;
+  alt?: string;
+  label: string;
+  className?: string;
+}) {
+  const [failed, setFailed] = useState(false);
+  const initial = label.trim().charAt(0).toUpperCase() || "?";
+
+  useEffect(() => {
+    setFailed(false);
+  }, [src]);
+
+  return (
+    <span
+      className={cn(
+        "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md",
+        "border border-line bg-canvas text-sm font-semibold text-ink-muted",
+        className ?? "h-28 w-28",
+      )}
+    >
+      {src && !failed ? (
+        <img
+          src={src}
+          alt={alt || label}
+          className="h-full w-full object-cover"
+          loading="lazy"
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        initial
+      )}
+    </span>
   );
 }
 

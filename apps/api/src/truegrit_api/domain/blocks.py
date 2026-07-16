@@ -44,6 +44,8 @@ class HeroProps(BaseModel):
     eyebrow: str = Field(max_length=120)
     heading: str = Field(min_length=1, max_length=200)
     text: str = Field(max_length=600)
+    image_url: str | None = Field(default=None, alias="imageUrl", max_length=1000)
+    image_alt: str | None = Field(default=None, alias="imageAlt", max_length=200)
     primary_action: BlockAction = Field(alias="primaryAction")
     secondary_action: BlockAction | None = Field(default=None, alias="secondaryAction")
 

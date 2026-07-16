@@ -8,6 +8,7 @@ import {
   Button,
   EmptyState,
   Field,
+  ImagePreview,
   Input,
   PageHeader,
   Select,
@@ -24,6 +25,15 @@ const siteSchema = z.object({
   heroEyebrow: z.string().max(120),
   heroHeading: z.string().min(3).max(160),
   heroText: z.string().max(500),
+  heroImageUrl: z
+    .string()
+    .max(1000)
+    .refine(
+      (value) =>
+        value === "" || value.startsWith("/") || z.string().url().safeParse(value).success,
+      "Enter a valid image URL",
+    ),
+  heroImageAlt: z.string().max(200),
   primaryActionLabel: z.string().max(80),
   primaryActionHref: z.string().max(200),
   secondaryActionLabel: z.string().max(80),
@@ -43,6 +53,8 @@ function defaults(data?: SiteControl): SiteForm {
     heroEyebrow: data?.heroEyebrow ?? "",
     heroHeading: data?.heroHeading ?? "",
     heroText: data?.heroText ?? "",
+    heroImageUrl: data?.heroImageUrl ?? "",
+    heroImageAlt: data?.heroImageAlt ?? "",
     primaryActionLabel: data?.primaryActionLabel ?? "",
     primaryActionHref: data?.primaryActionHref ?? "",
     secondaryActionLabel: data?.secondaryActionLabel ?? "",
@@ -64,6 +76,8 @@ export function SiteControlPage() {
     resolver: zodResolver(siteSchema),
     defaultValues: defaults(),
   });
+  const watchedHeroImageUrl = form.watch("heroImageUrl");
+  const watchedHeroImageAlt = form.watch("heroImageAlt");
 
   useEffect(() => {
     if (data) form.reset(defaults(data));
@@ -78,6 +92,19 @@ export function SiteControlPage() {
     },
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not save site controls."),
+  });
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => api.uploadImage(file),
+    onSuccess: (result) => {
+      const heroImageAlt = form.getValues("heroImageAlt") || form.getValues("heroHeading");
+      const nextValues = { ...form.getValues(), heroImageUrl: result.url, heroImageAlt };
+      form.setValue("heroImageUrl", result.url, { shouldDirty: true, shouldValidate: true });
+      form.setValue("heroImageAlt", heroImageAlt, { shouldDirty: true, shouldValidate: true });
+      mutation.mutate(nextValues);
+      toast.success("Hero image uploaded; saving homepage banner.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not upload image."),
   });
 
   if (isLoading) return <p className="text-sm text-ink-muted">Loading site controls...</p>;
@@ -136,6 +163,51 @@ export function SiteControlPage() {
             </Field>
             <Field label="Supporting text" htmlFor="heroText">
               <Textarea id="heroText" {...form.register("heroText")} />
+            </Field>
+            <Field
+              label="Hero image URL"
+              htmlFor="heroImageUrl"
+              error={form.formState.errors.heroImageUrl?.message}
+            >
+              <Input
+                id="heroImageUpload"
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="mb-2"
+                disabled={uploadMutation.isPending || mutation.isPending}
+                onChange={(event) => {
+                  const file = event.currentTarget.files?.[0];
+                  if (file) uploadMutation.mutate(file);
+                  event.currentTarget.value = "";
+                }}
+              />
+              <Input
+                id="heroImageUrl"
+                type="url"
+                placeholder={uploadMutation.isPending ? "Uploading image..." : "Hero image URL"}
+                {...form.register("heroImageUrl")}
+              />
+              {watchedHeroImageUrl ? (
+                <div className="mt-3">
+                  <ImagePreview
+                    src={watchedHeroImageUrl}
+                    alt={watchedHeroImageAlt}
+                    label={form.getValues("heroHeading") || "Homepage hero"}
+                    className="h-32 w-full max-w-md"
+                  />
+                </div>
+              ) : null}
+            </Field>
+            <Field
+              label="Hero image alt text"
+              htmlFor="heroImageAlt"
+              error={form.formState.errors.heroImageAlt?.message}
+            >
+              <Input
+                id="heroImageAlt"
+                placeholder="Organic mangoes held in a sunlit orchard"
+                {...form.register("heroImageAlt")}
+              />
             </Field>
             <div className="grid gap-4 md:grid-cols-2">
               <Field label="Primary button label" htmlFor="primaryActionLabel">
