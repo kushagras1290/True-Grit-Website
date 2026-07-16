@@ -1384,6 +1384,17 @@ class FarmCreateRequest(_CamelModel):
     status: str = Field(default="published", max_length=24)
 
 
+class FarmUpdateRequest(_CamelModel):
+    name: str | None = Field(default=None, min_length=3, max_length=140)
+    slug: str | None = Field(default=None, max_length=140)
+    farmer_name: str | None = Field(default=None, max_length=140)
+    region: str | None = Field(default=None, max_length=180)
+    country_code: str | None = Field(default=None, min_length=2, max_length=2)
+    established_year: int | None = Field(default=None, ge=1800, le=2100)
+    summary: str | None = Field(default=None, max_length=500)
+    status: str | None = Field(default=None, max_length=24)
+
+
 class StaffResetRequest(_CamelModel):
     email: str = Field(min_length=3, max_length=254)
 
@@ -1391,6 +1402,24 @@ class StaffResetRequest(_CamelModel):
 class StaffResetConfirm(_CamelModel):
     token: str = Field(min_length=1, max_length=256)
     new_password: str = Field(min_length=1, max_length=256)
+
+
+def _farm_response(row: Any) -> dict[str, Any]:
+    story = json.loads(row["story_json"] or "{}")
+    summary = story.get("summary", "") if isinstance(story, dict) else ""
+    return {
+        "id": row["id"],
+        "name": row["name"],
+        "slug": row["slug"],
+        "farmerName": row["farmer_name"] or "",
+        "region": row["region"] or "",
+        "countryCode": row["country_code"],
+        "establishedYear": row["established_year"],
+        "summary": summary,
+        "status": row["status"],
+        "productCount": row["product_count"],
+        "updatedAt": row["updated_at"],
+    }
 
 
 @router.get("/farms")
@@ -1401,7 +1430,7 @@ async def list_farms_endpoint(
     rows = await db.fetch_all(
         """
         SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.country_code,
-               f.established_year, f.status, f.updated_at,
+               f.story_json, f.established_year, f.status, f.updated_at,
                (SELECT COUNT(*) FROM products p
                  WHERE p.farm_id = f.id AND p.archived_at IS NULL) AS product_count
         FROM farms f
@@ -1409,23 +1438,7 @@ async def list_farms_endpoint(
         ORDER BY f.name
         """
     )
-    return {
-        "items": [
-            {
-                "id": row["id"],
-                "name": row["name"],
-                "slug": row["slug"],
-                "farmerName": row["farmer_name"] or "",
-                "region": row["region"] or "",
-                "countryCode": row["country_code"],
-                "establishedYear": row["established_year"],
-                "status": row["status"],
-                "productCount": row["product_count"],
-                "updatedAt": row["updated_at"],
-            }
-            for row in rows
-        ]
-    }
+    return {"items": [_farm_response(row) for row in rows]}
 
 
 @router.post("/farms")
@@ -1495,10 +1508,146 @@ async def create_farm_endpoint(
         "region": payload.region.strip(),
         "countryCode": payload.country_code.upper(),
         "establishedYear": payload.established_year,
+        "summary": summary,
         "status": status,
         "productCount": 0,
         "updatedAt": now,
     }
+
+
+@router.patch("/farms/{farm_id}")
+async def update_farm_endpoint(
+    farm_id: str,
+    payload: FarmUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("users.invite"))],
+) -> Any:
+    if principal.farm_id is not None:
+        raise PermissionDeniedError("Only main admins can edit farms.")
+    current = await db.fetch_one(
+        """
+        SELECT f.*,
+               (SELECT COUNT(*) FROM products p
+                 WHERE p.farm_id = f.id AND p.archived_at IS NULL) AS product_count
+        FROM farms f
+        WHERE f.id = ? AND f.status != 'archived'
+        """,
+        (farm_id,),
+    )
+    if current is None:
+        raise NotFoundError("Farm not found.")
+
+    fields = payload.model_dump(exclude_unset=True)
+    updates: dict[str, Any] = {}
+    if "name" in fields and payload.name is not None:
+        name = payload.name.strip()
+        updates["name"] = name
+        updates["seo_title"] = f"{name} - True Grit partner farm"
+    if "slug" in fields and payload.slug:
+        slug = validate_slug(payload.slug.strip())
+        existing = await db.fetch_one(
+            "SELECT id FROM farms WHERE slug = ? AND id != ?",
+            (slug, farm_id),
+        )
+        if existing is not None:
+            raise ValidationAppError("A farm with that slug already exists.")
+        updates["slug"] = slug
+    if "farmer_name" in fields:
+        updates["farmer_name"] = payload.farmer_name.strip() if payload.farmer_name else None
+    if "region" in fields:
+        updates["region"] = payload.region.strip() if payload.region else None
+    if "country_code" in fields and payload.country_code:
+        updates["country_code"] = payload.country_code.upper()
+    if "established_year" in fields:
+        updates["established_year"] = payload.established_year
+    if "summary" in fields:
+        summary = payload.summary.strip() if payload.summary else ""
+        updates["story_json"] = json.dumps({"summary": summary}) if summary else None
+        updates["seo_description"] = summary
+    if "status" in fields and payload.status:
+        updates["status"] = (
+            payload.status if payload.status in {"draft", "published", "unpublished"} else "draft"
+        )
+
+    changed = {key: value for key, value in updates.items() if value != current[key]}
+    if changed:
+        now = utc_now_iso()
+        assignments = ", ".join(f"{key} = ?" for key in changed)
+        await db.batch(
+            [
+                (
+                    f"UPDATE farms SET {assignments}, updated_at = ?, updated_by = ? WHERE id = ?",
+                    (*changed.values(), now, principal.user_id, farm_id),
+                ),
+                audit_statement(
+                    action="farm.updated",
+                    entity_type="farm",
+                    entity_id=farm_id,
+                    actor_id=principal.user_id,
+                    request_id=_request_id(request),
+                    created_at=now,
+                    before={key: current[key] for key in changed},
+                    after=changed,
+                ),
+            ]
+        )
+
+    refreshed = await db.fetch_one(
+        """
+        SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.country_code,
+               f.story_json, f.established_year, f.status, f.updated_at,
+               (SELECT COUNT(*) FROM products p
+                 WHERE p.farm_id = f.id AND p.archived_at IS NULL) AS product_count
+        FROM farms f
+        WHERE f.id = ?
+        """,
+        (farm_id,),
+    )
+    return _farm_response(refreshed)
+
+
+@router.delete("/farms/{farm_id}")
+async def delete_farm_endpoint(
+    farm_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("users.invite"))],
+) -> Any:
+    if principal.farm_id is not None:
+        raise PermissionDeniedError("Only main admins can delete farms.")
+    current = await db.fetch_one(
+        "SELECT id, name, status FROM farms WHERE id = ? AND status != 'archived'",
+        (farm_id,),
+    )
+    if current is None:
+        raise NotFoundError("Farm not found.")
+    product_count = await db.fetch_one(
+        "SELECT COUNT(*) AS count FROM products WHERE farm_id = ? AND archived_at IS NULL",
+        (farm_id,),
+    )
+    if product_count["count"] > 0:
+        raise ValidationAppError("Move or archive this farm's products before deleting it.")
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                "UPDATE farms SET status = 'archived', updated_at = ?, updated_by = ? WHERE id = ?",
+                (now, principal.user_id, farm_id),
+            ),
+            audit_statement(
+                action="farm.archived",
+                entity_type="farm",
+                entity_id=farm_id,
+                actor_id=principal.user_id,
+                request_id=_request_id(request),
+                created_at=now,
+                before={"status": current["status"]},
+                after={"status": "archived"},
+            ),
+        ]
+    )
+    return {"id": farm_id, "status": "archived"}
 
 
 @router.post("/farm-owners")

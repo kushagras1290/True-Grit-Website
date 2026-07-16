@@ -28,16 +28,24 @@ import {
   categories,
 } from "@truegrit/contracts/fixtures";
 
-const API_URL = process.env.PUBLIC_API_URL || "";
+function apiUrl(): string {
+  return (process.env.PUBLIC_API_URL || "").trim().replace(/\/+$/, "");
+}
 
 async function fromApi<T>(path: string): Promise<T | null> {
-  const response = await fetch(`${API_URL}${path}`, {
-    headers: { accept: "application/json" },
-    signal: AbortSignal.timeout(5_000),
-  });
-  if (response.status === 404) return null;
-  if (!response.ok) throw new Error(`API request failed: ${response.status}`);
-  return (await response.json()) as T;
+  const baseUrl = apiUrl();
+  if (!baseUrl) return null;
+  try {
+    const response = await fetch(`${baseUrl}${path}`, {
+      headers: { accept: "application/json" },
+      signal: AbortSignal.timeout(5_000),
+    });
+    if (response.status === 404) return null;
+    if (!response.ok) return null;
+    return (await response.json()) as T;
+  } catch {
+    return null;
+  }
 }
 
 /** Append `country=XX` so the API geo-locks the catalogue to the visitor's
@@ -53,18 +61,18 @@ function withCountry(path: string, country?: string): string {
 // storefront should degrade to demo data, never crash a page, if a list is
 // briefly unavailable.
 async function listFromApi<T>(path: string, fallback: T[]): Promise<T[]> {
-  if (!API_URL) return fallback;
+  if (!apiUrl()) return fallback;
   const body = await fromApi<{ items: T[] }>(path);
   return body?.items ?? fallback;
 }
 
 export async function loadBootstrap(): Promise<PublicBootstrap> {
-  if (API_URL) return (await fromApi<PublicBootstrap>("/v1/public/bootstrap")) ?? bootstrap;
+  if (apiUrl()) return (await fromApi<PublicBootstrap>("/v1/public/bootstrap")) ?? bootstrap;
   return bootstrap;
 }
 
 export async function loadHome(): Promise<PublicPage> {
-  if (API_URL) return (await fromApi<PublicPage>("/v1/public/home")) ?? homePage;
+  if (apiUrl()) return (await fromApi<PublicPage>("/v1/public/home")) ?? homePage;
   return homePage;
 }
 
@@ -72,8 +80,11 @@ export async function loadCategoryPage(
   slug: string,
   country?: string,
 ): Promise<PublicCategoryPage | null> {
-  if (API_URL) {
-    return fromApi<PublicCategoryPage>(withCountry(`/v1/public/categories/${slug}`, country));
+  if (apiUrl()) {
+    return (
+      (await fromApi<PublicCategoryPage>(withCountry(`/v1/public/categories/${slug}`, country))) ??
+      getCategoryPage(slug)
+    );
   }
   return getCategoryPage(slug);
 }
@@ -87,8 +98,12 @@ export async function loadAllProducts(country?: string): Promise<ProductSummary[
 }
 
 export async function loadProduct(slug: string, country?: string): Promise<ProductDetail | null> {
-  if (API_URL) {
-    return fromApi<ProductDetail>(withCountry(`/v1/public/products/${slug}`, country));
+  if (apiUrl()) {
+    return (
+      (await fromApi<ProductDetail>(withCountry(`/v1/public/products/${slug}`, country))) ??
+      products.find((product) => product.slug === slug) ??
+      null
+    );
   }
   return products.find((product) => product.slug === slug) ?? null;
 }
@@ -113,7 +128,7 @@ export async function loadProductsBySlugs(
   country?: string,
 ): Promise<ProductSummary[]> {
   if (slugs.length === 0) return [];
-  if (API_URL) {
+  if (apiUrl()) {
     const query = slugs.map((slug) => encodeURIComponent(slug)).join(",");
     return listFromApi<ProductSummary>(
       withCountry(`/v1/public/products?slugs=${query}`, country),
@@ -170,7 +185,7 @@ export interface SearchGroups {
 }
 
 export async function runSearch(query: string, country?: string): Promise<SearchGroups> {
-  if (API_URL) {
+  if (apiUrl()) {
     const result = await fromApi<SearchGroups>(
       withCountry(`/v1/public/search?q=${encodeURIComponent(query)}`, country),
     );

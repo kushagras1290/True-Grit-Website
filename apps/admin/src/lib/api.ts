@@ -208,6 +208,7 @@ export interface AdminFarmRow {
   region: string;
   countryCode: string;
   establishedYear: number | null;
+  summary: string;
   status: string;
   productCount: number;
   updatedAt: string;
@@ -577,6 +578,7 @@ export const api = {
             region: "Ratnagiri, Maharashtra",
             countryCode: "IN",
             establishedYear: 1998,
+            summary: "Ratnagiri mango orchards farmed without synthetic chemicals.",
             status: "published",
             productCount: 1,
             updatedAt: "2026-07-01T00:00:00Z",
@@ -603,6 +605,32 @@ export const api = {
           ...input,
         })
       : post("/v1/admin/farms", input),
+
+  updateFarm: (
+    id: string,
+    input: {
+      name: string;
+      slug?: string;
+      farmerName: string;
+      region: string;
+      countryCode: string;
+      establishedYear: number | null;
+      summary: string;
+      status: string;
+    },
+  ): Promise<AdminFarmRow> =>
+    demoMode
+      ? demo({
+          id,
+          productCount: 0,
+          updatedAt: new Date().toISOString(),
+          ...input,
+          slug: input.slug || input.name.toLowerCase().replaceAll(" ", "-"),
+        })
+      : patch(`/v1/admin/farms/${id}`, input),
+
+  deleteFarm: (id: string): Promise<{ id: string; status: string }> =>
+    demoMode ? demo({ id, status: "archived" }) : del(`/v1/admin/farms/${id}`),
 
   createFarmOwner: (input: {
     email: string;

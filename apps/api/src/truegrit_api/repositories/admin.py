@@ -22,17 +22,17 @@ class AdminRepository:
             SELECT
               p.id, p.name, p.status,
               COALESCE(
-                p.image_url,
+                NULLIF(p.image_url, ''),
                 (
                   SELECT c.hero_image_url
                   FROM product_categories pc2
                   JOIN categories c ON c.id = pc2.category_id
-                  WHERE pc2.product_id = p.id AND c.hero_image_url IS NOT NULL
+                  WHERE pc2.product_id = p.id AND NULLIF(c.hero_image_url, '') IS NOT NULL
                   ORDER BY pc2.is_primary DESC, pc2.sort_order, c.sort_order
                   LIMIT 1
                 )
               ) AS image_url,
-              p.image_alt, p.updated_at,
+              NULLIF(p.image_alt, '') AS image_alt, p.updated_at,
               u.display_name AS updated_by,
               COALESCE(f.name, b.name, '') AS farm_name,
               (SELECT v.sku FROM product_variants v
@@ -105,7 +105,20 @@ class AdminRepository:
         product = await self._db.fetch_one(
             """
             SELECT p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
-                   p.seo_title, p.seo_description, p.image_url, p.image_alt, p.updated_at,
+                   p.seo_title, p.seo_description,
+                   COALESCE(
+                     NULLIF(p.image_url, ''),
+                     (
+                       SELECT c.hero_image_url
+                       FROM product_categories pc
+                       JOIN categories c ON c.id = pc.category_id
+                       WHERE pc.product_id = p.id AND NULLIF(c.hero_image_url, '') IS NOT NULL
+                       ORDER BY pc.is_primary DESC, pc.sort_order, c.sort_order
+                       LIMIT 1
+                     )
+                   ) AS image_url,
+                   NULLIF(p.image_alt, '') AS image_alt,
+                   p.updated_at,
                    p.release_scope,
                    COALESCE(f.name, b.name, '') AS farm_name
             FROM products p

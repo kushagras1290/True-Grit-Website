@@ -317,6 +317,50 @@ def test_owner_can_create_farm(client: TestClient, db: SQLiteDatabase):
     assert audit["action"] == "farm.created"
 
 
+def test_owner_can_update_and_delete_empty_farm(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    farm_id = client.post(
+        "/v1/admin/farms",
+        json={
+            "name": "Editable Farm",
+            "farmerName": "Nira Shah",
+            "region": "Pune",
+            "countryCode": "IN",
+            "summary": "A farm ready for edits.",
+            "status": "draft",
+        },
+    ).json()["id"]
+
+    updated = client.patch(
+        f"/v1/admin/farms/{farm_id}",
+        json={
+            "name": "Edited Farm",
+            "slug": "edited-farm",
+            "farmerName": "Nira S.",
+            "region": "Nashik",
+            "countryCode": "IN",
+            "summary": "Updated public story.",
+            "status": "published",
+        },
+    )
+    assert updated.status_code == 200
+    assert updated.json()["name"] == "Edited Farm"
+    assert updated.json()["slug"] == "edited-farm"
+    assert updated.json()["summary"] == "Updated public story."
+
+    deleted = client.delete(f"/v1/admin/farms/{farm_id}")
+    assert deleted.status_code == 200
+    assert deleted.json()["status"] == "archived"
+    farms = client.get("/v1/admin/farms").json()["items"]
+    assert farm_id not in {farm["id"] for farm in farms}
+
+
+def test_owner_cannot_delete_farm_with_active_products(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    response = client.delete("/v1/admin/farms/farm_devika")
+    assert response.status_code == 422
+
+
 def test_owner_can_issue_farm_owner_temporary_password(
     client: TestClient, db: SQLiteDatabase
 ):

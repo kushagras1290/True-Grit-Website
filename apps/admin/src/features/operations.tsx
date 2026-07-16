@@ -26,7 +26,7 @@ import {
   Th,
 } from "../components/ui";
 import { useToast } from "../components/toast";
-import { ApiError, api, type AdminRole } from "../lib/api";
+import { ApiError, api, type AdminFarmRow, type AdminRole } from "../lib/api";
 import { formatDateTime, formatMoney } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
 
@@ -211,50 +211,62 @@ export function InventoryPage() {
 // Farms
 // ---------------------------------------------------------------------------
 
-function CreateFarmModal({ onClose }: { onClose: () => void }) {
+function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void }) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const form = useForm<FarmForm>({
     resolver: zodResolver(farmSchema),
     defaultValues: {
-      name: "",
-      slug: "",
-      farmerName: "",
-      region: "",
-      countryCode: "IN",
-      establishedYear: "",
-      summary: "",
-      status: "published",
+      name: farm?.name ?? "",
+      slug: farm?.slug ?? "",
+      farmerName: farm?.farmerName ?? "",
+      region: farm?.region ?? "",
+      countryCode: farm?.countryCode ?? "IN",
+      establishedYear: farm?.establishedYear ?? "",
+      summary: farm?.summary ?? "",
+      status: (farm?.status as FarmForm["status"]) ?? "published",
     },
   });
 
   const mutation = useMutation({
     mutationFn: (values: FarmForm) =>
-      api.createFarm({
-        name: values.name,
-        slug: values.slug || undefined,
-        farmerName: values.farmerName,
-        region: values.region,
-        countryCode: values.countryCode.toUpperCase(),
-        establishedYear:
-          typeof values.establishedYear === "number" ? values.establishedYear : null,
-        summary: values.summary,
-        status: values.status,
-      }),
+      farm
+        ? api.updateFarm(farm.id, {
+            name: values.name,
+            slug: values.slug || undefined,
+            farmerName: values.farmerName,
+            region: values.region,
+            countryCode: values.countryCode.toUpperCase(),
+            establishedYear:
+              typeof values.establishedYear === "number" ? values.establishedYear : null,
+            summary: values.summary,
+            status: values.status,
+          })
+        : api.createFarm({
+            name: values.name,
+            slug: values.slug || undefined,
+            farmerName: values.farmerName,
+            region: values.region,
+            countryCode: values.countryCode.toUpperCase(),
+            establishedYear:
+              typeof values.establishedYear === "number" ? values.establishedYear : null,
+            summary: values.summary,
+            status: values.status,
+          }),
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["farms"] }),
         queryClient.invalidateQueries({ queryKey: ["users"] }),
       ]);
-      toast.success("Farm created.");
+      toast.success(farm ? "Farm updated." : "Farm created.");
       onClose();
     },
     onError: (error) =>
-      toast.error(error instanceof ApiError ? error.message : "Could not create the farm."),
+      toast.error(error instanceof ApiError ? error.message : "Could not save the farm."),
   });
 
   return (
-    <Modal title="New farm" onClose={onClose}>
+    <Modal title={farm ? "Edit farm" : "New farm"} onClose={onClose}>
       <form className="space-y-4" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
         <Field label="Farm name" htmlFor="farm-name" error={form.formState.errors.name?.message}>
           <Input id="farm-name" placeholder="Devika Organics" {...form.register("name")} />
@@ -275,7 +287,11 @@ function CreateFarmModal({ onClose }: { onClose: () => void }) {
             <Input id="farm-farmer" placeholder="Asha Rao" {...form.register("farmerName")} />
           </Field>
           <Field label="Region" htmlFor="farm-region" error={form.formState.errors.region?.message}>
-            <Input id="farm-region" placeholder="Ratnagiri, Maharashtra" {...form.register("region")} />
+            <Input
+              id="farm-region"
+              placeholder="Ratnagiri, Maharashtra"
+              {...form.register("region")}
+            />
           </Field>
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
@@ -301,7 +317,11 @@ function CreateFarmModal({ onClose }: { onClose: () => void }) {
             </Select>
           </Field>
         </div>
-        <Field label="Farm summary" htmlFor="farm-summary" error={form.formState.errors.summary?.message}>
+        <Field
+          label="Farm summary"
+          htmlFor="farm-summary"
+          error={form.formState.errors.summary?.message}
+        >
           <Textarea
             id="farm-summary"
             placeholder="Short public story for this farm."
@@ -313,7 +333,7 @@ function CreateFarmModal({ onClose }: { onClose: () => void }) {
             Cancel
           </Button>
           <Button type="submit" variant="primary" disabled={mutation.isPending}>
-            {mutation.isPending ? "Creating..." : "Create farm"}
+            {mutation.isPending ? "Saving..." : farm ? "Save farm" : "Create farm"}
           </Button>
         </div>
       </form>
@@ -322,8 +342,23 @@ function CreateFarmModal({ onClose }: { onClose: () => void }) {
 }
 
 export function FarmsPage() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["farms"], queryFn: api.farms });
   const [creating, setCreating] = useState(false);
+  const [editing, setEditing] = useState<AdminFarmRow | null>(null);
+  const [confirmingDelete, setConfirmingDelete] = useState<AdminFarmRow | null>(null);
+
+  const deleteMutation = useMutation({
+    mutationFn: (farmId: string) => api.deleteFarm(farmId),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["farms"] });
+      setConfirmingDelete(null);
+      toast.success("Farm deleted from active list.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not delete the farm."),
+  });
 
   return (
     <div>
@@ -338,7 +373,23 @@ export function FarmsPage() {
           </PermissionGate>
         }
       />
-      {creating ? <CreateFarmModal onClose={() => setCreating(false)} /> : null}
+      {creating ? <FarmModal onClose={() => setCreating(false)} /> : null}
+      {editing ? <FarmModal farm={editing} onClose={() => setEditing(null)} /> : null}
+      {confirmingDelete ? (
+        <ConfirmDialog
+          title="Delete farm"
+          description={
+            confirmingDelete.productCount > 0
+              ? `${confirmingDelete.name} has ${confirmingDelete.productCount} active product${confirmingDelete.productCount === 1 ? "" : "s"}. Move or archive those products first.`
+              : `${confirmingDelete.name} will be removed from the active farm list.`
+          }
+          confirmLabel="Delete farm"
+          pendingLabel="Deleting..."
+          isPending={deleteMutation.isPending}
+          onCancel={() => setConfirmingDelete(null)}
+          onConfirm={() => deleteMutation.mutate(confirmingDelete.id)}
+        />
+      ) : null}
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
@@ -348,17 +399,20 @@ export function FarmsPage() {
             <Th>Products</Th>
             <Th>Status</Th>
             <Th>Updated</Th>
+            <Th>Actions</Th>
           </tr>
         </thead>
         {isLoading ? (
-          <LoadingRows columns={6} />
+          <LoadingRows columns={7} />
         ) : (
           <tbody>
             {(data ?? []).map((farm) => (
               <tr key={farm.id} className="border-t border-line">
                 <Td>
                   <div className="font-medium text-ink">{farm.name}</div>
-                  <div className="text-xs text-ink-muted">{farm.farmerName || "No farmer name"}</div>
+                  <div className="text-xs text-ink-muted">
+                    {farm.farmerName || "No farmer name"}
+                  </div>
                 </Td>
                 <Td className="text-ink-muted">/{farm.slug}</Td>
                 <Td>{farm.region || "—"}</Td>
@@ -367,6 +421,23 @@ export function FarmsPage() {
                   <StatusPill status={farm.status} />
                 </Td>
                 <Td>{formatDateTime(farm.updatedAt)}</Td>
+                <Td>
+                  <PermissionGate permission="users.invite">
+                    <div className="flex flex-wrap gap-2">
+                      <Button type="button" variant="secondary" onClick={() => setEditing(farm)}>
+                        Alter
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        onClick={() => setConfirmingDelete(farm)}
+                        disabled={deleteMutation.isPending}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </PermissionGate>
+                </Td>
               </tr>
             ))}
           </tbody>
@@ -688,15 +759,11 @@ function RoleDropdown({
   const [open, setOpen] = useState(false);
   const selectedRoles = roles.filter((role) => selected.includes(role.id));
   const summary =
-    selectedRoles.length > 0
-      ? selectedRoles.map((role) => role.name).join(", ")
-      : "Select roles";
+    selectedRoles.length > 0 ? selectedRoles.map((role) => role.name).join(", ") : "Select roles";
 
   function toggleRole(roleId: string) {
     onChange(
-      selected.includes(roleId)
-        ? selected.filter((id) => id !== roleId)
-        : [...selected, roleId],
+      selected.includes(roleId) ? selected.filter((id) => id !== roleId) : [...selected, roleId],
     );
     setOpen(false);
   }
@@ -1074,8 +1141,7 @@ export function UsersPage() {
     user.roles.some((role) => role.toLowerCase().includes("super administrator"));
   const deletableUsers = users.filter((user) => !isOwnerRole(user));
   const selectedUsers = deletableUsers.filter((user) => selectedUserIds.includes(user.id));
-  const allSelected =
-    deletableUsers.length > 0 && selectedUserIds.length === deletableUsers.length;
+  const allSelected = deletableUsers.length > 0 && selectedUserIds.length === deletableUsers.length;
 
   function toggleUser(userId: string) {
     setSelectedUserIds((current) =>
@@ -1214,7 +1280,7 @@ export function UsersPage() {
                       >
                         Roles
                       </button>
-                        {user.roles.some((role) => role.toLowerCase().includes("farm owner")) ? (
+                      {user.roles.some((role) => role.toLowerCase().includes("farm owner")) ? (
                         <button
                           type="button"
                           className="text-sm text-ink-muted underline-offset-4 hover:text-brand hover:underline"
@@ -1222,16 +1288,16 @@ export function UsersPage() {
                         >
                           Reset password
                         </button>
-                        ) : null}
-                        <button
-                          type="button"
-                          className="text-sm text-ink-muted underline-offset-4 hover:text-danger hover:underline"
-                          onClick={() => setConfirmingDelete([user])}
-                          disabled={deleteMutation.isPending}
-                        >
-                          Delete
-                        </button>
-                        <button
+                      ) : null}
+                      <button
+                        type="button"
+                        className="text-sm text-ink-muted underline-offset-4 hover:text-danger hover:underline"
+                        onClick={() => setConfirmingDelete([user])}
+                        disabled={deleteMutation.isPending}
+                      >
+                        Delete
+                      </button>
+                      <button
                         type="button"
                         className="text-sm text-ink-muted underline-offset-4 hover:text-danger hover:underline"
                         onClick={() =>
