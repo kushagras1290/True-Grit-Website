@@ -26,7 +26,7 @@ import {
   Th,
 } from "../components/ui";
 import { useToast } from "../components/toast";
-import { ApiError, api } from "../lib/api";
+import { ApiError, api, type AdminRole } from "../lib/api";
 import { formatDateTime, formatMoney } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
 
@@ -484,6 +484,87 @@ const inviteSchema = z.object({
 
 type InviteForm = z.infer<typeof inviteSchema>;
 
+function RoleDropdown({
+  id,
+  roles,
+  selected,
+  onChange,
+  label = "Roles",
+  disabled = false,
+}: {
+  id: string;
+  roles: AdminRole[];
+  selected: string[];
+  onChange: (roleIds: string[]) => void;
+  label?: string;
+  disabled?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const selectedRoles = roles.filter((role) => selected.includes(role.id));
+  const summary =
+    selectedRoles.length > 0
+      ? selectedRoles.map((role) => role.name).join(", ")
+      : "Select roles";
+
+  function toggleRole(roleId: string) {
+    onChange(
+      selected.includes(roleId)
+        ? selected.filter((id) => id !== roleId)
+        : [...selected, roleId],
+    );
+  }
+
+  return (
+    <div className="relative">
+      <button
+        id={id}
+        type="button"
+        className="flex min-h-9 w-full items-center justify-between gap-3 rounded-sm border border-line-strong bg-surface px-3 text-left text-sm text-ink disabled:cursor-not-allowed disabled:opacity-50"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        disabled={disabled}
+        onClick={() => setOpen((current) => !current)}
+      >
+        <span className="min-w-0 truncate">{summary}</span>
+        <span aria-hidden className="text-xs text-ink-muted">
+          {open ? "^" : "v"}
+        </span>
+      </button>
+      {open ? (
+        <div
+          role="listbox"
+          aria-label={label}
+          className="absolute z-[110] mt-1 max-h-56 w-full overflow-y-auto rounded-sm border border-line bg-surface p-1.5 shadow-overlay"
+        >
+          {roles.length === 0 ? (
+            <p className="px-2 py-2 text-sm text-ink-muted">No roles available.</p>
+          ) : (
+            roles.map((role) => (
+              <label
+                key={role.id}
+                className="flex cursor-pointer items-start gap-2 rounded-sm px-2 py-2 text-sm hover:bg-subtle/60"
+              >
+                <input
+                  type="checkbox"
+                  checked={selected.includes(role.id)}
+                  onChange={() => toggleRole(role.id)}
+                  className="mt-0.5"
+                />
+                <span className="min-w-0">
+                  <span className="block font-medium text-ink">{role.name}</span>
+                  <span className="block text-xs leading-5 text-ink-muted">
+                    {role.description}
+                  </span>
+                </span>
+              </label>
+            ))
+          )}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function InviteUserModal({ onClose }: { onClose: () => void }) {
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -510,12 +591,6 @@ function InviteUserModal({ onClose }: { onClose: () => void }) {
       toast.error(error instanceof ApiError ? error.message : "Could not invite the user."),
   });
 
-  function toggleRole(roleId: string) {
-    setSelectedRoles((current) =>
-      current.includes(roleId) ? current.filter((id) => id !== roleId) : [...current, roleId],
-    );
-  }
-
   return (
     <Modal title="Invite user" onClose={onClose}>
       <form className="space-y-4" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
@@ -529,22 +604,16 @@ function InviteUserModal({ onClose }: { onClose: () => void }) {
         >
           <Input id="invite-name" {...form.register("displayName")} />
         </Field>
-        <fieldset>
-          <legend className="mb-1.5 text-sm font-medium text-ink">Roles</legend>
-          <div className="grid max-h-44 gap-1.5 overflow-y-auto rounded-sm border border-line p-2">
-            {(roles.data ?? []).map((role) => (
-              <label key={role.id} className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={selectedRoles.includes(role.id)}
-                  onChange={() => toggleRole(role.id)}
-                />
-                <span>{role.name}</span>
-                <span className="text-xs text-ink-muted">{role.description}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
+        <Field label="Roles" htmlFor="invite-roles">
+          <RoleDropdown
+            id="invite-roles"
+            roles={roles.data ?? []}
+            selected={selectedRoles}
+            onChange={setSelectedRoles}
+            label="Invite user roles"
+            disabled={roles.isLoading}
+          />
+        </Field>
         <div className="flex justify-end gap-2 pt-1">
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel
@@ -575,27 +644,18 @@ function EditRolesModal({ user, onClose }: { user: AdminUserRow; onClose: () => 
       toast.error(error instanceof ApiError ? error.message : "Could not update roles."),
   });
 
-  function toggle(roleId: string) {
-    setSelected((current) =>
-      current.includes(roleId) ? current.filter((id) => id !== roleId) : [...current, roleId],
-    );
-  }
-
   return (
     <Modal title={`Roles — ${user.displayName}`} onClose={onClose}>
-      <div className="grid max-h-64 gap-1.5 overflow-y-auto rounded-sm border border-line p-2">
-        {(roles.data ?? []).map((role) => (
-          <label key={role.id} className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={selected.includes(role.id)}
-              onChange={() => toggle(role.id)}
-            />
-            <span>{role.name}</span>
-            <span className="text-xs text-ink-muted">{role.description}</span>
-          </label>
-        ))}
-      </div>
+      <Field label="Assigned roles" htmlFor="edit-user-roles">
+        <RoleDropdown
+          id="edit-user-roles"
+          roles={roles.data ?? []}
+          selected={selected}
+          onChange={setSelected}
+          label={`Roles for ${user.displayName}`}
+          disabled={roles.isLoading}
+        />
+      </Field>
       <div className="mt-4 flex justify-end gap-2">
         <Button type="button" variant="secondary" onClick={onClose}>
           Cancel
