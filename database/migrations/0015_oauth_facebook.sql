@@ -1,7 +1,4 @@
 -- 0015_oauth_facebook: allow Facebook as a storefront OAuth identity provider.
-PRAGMA foreign_keys = OFF;
-
-BEGIN TRANSACTION;
 
 DROP INDEX IF EXISTS idx_oauth_identities_user;
 
@@ -28,7 +25,3 @@ FROM oauth_identities_old;
 DROP TABLE oauth_identities_old;
 
 CREATE INDEX idx_oauth_identities_user ON oauth_identities(user_id);
-
-COMMIT;
-
-PRAGMA foreign_keys = ON;
