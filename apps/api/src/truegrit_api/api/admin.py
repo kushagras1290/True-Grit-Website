@@ -49,7 +49,7 @@ from truegrit_api.services.catalogue import (
 from truegrit_api.services.contact import contactable_email
 from truegrit_api.services.email import send_email
 from truegrit_api.services.inventory import adjust_inventory
-from truegrit_api.services.media import save_image_upload
+from truegrit_api.services.media import save_image_bytes, save_image_upload
 from truegrit_api.services.orders import update_order_status
 from truegrit_api.services.password_reset import confirm_password_reset, request_password_reset
 from truegrit_api.services.publishing import publish_category, publish_product
@@ -481,15 +481,28 @@ async def update_highlights(
 
 @router.post("/media/images")
 async def upload_image_endpoint(
-    payload: ImageUploadRequest,
     request: Request,
     _principal: Annotated[Principal, Depends(require_permission("media.upload"))],
+    filename: Annotated[str | None, Query(min_length=1, max_length=180)] = None,
 ) -> Any:
-    saved = await save_image_upload(
-        request.app.state.media,
-        content_type=payload.content_type,
-        data_base64=payload.data_base64,
-    )
+    content_type = (request.headers.get("content-type") or "").split(";", 1)[0].lower()
+    if content_type == "application/json":
+        payload = ImageUploadRequest.model_validate(await request.json())
+        saved = await save_image_upload(
+            request.app.state.media,
+            content_type=payload.content_type,
+            data_base64=payload.data_base64,
+        )
+    else:
+        # Browser uploads use the raw File body. Avoid base64 JSON here: in
+        # Python Workers that path burns enough CPU for real photos to be
+        # terminated before CORS headers are written.
+        _ = filename
+        saved = await save_image_bytes(
+            request.app.state.media,
+            content_type=content_type,
+            data=await request.body(),
+        )
     base_url = str(request.base_url).rstrip("/")
     return {"id": saved["id"], "url": f"{base_url}{saved['path']}"}
 

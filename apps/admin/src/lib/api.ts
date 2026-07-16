@@ -40,16 +40,6 @@ async function demo<T>(data: T): Promise<T> {
   return structuredClone(data);
 }
 
-async function fileToBase64(file: File): Promise<string> {
-  const buffer = await file.arrayBuffer();
-  let binary = "";
-  const bytes = new Uint8Array(buffer);
-  for (const byte of bytes) {
-    binary += String.fromCharCode(byte);
-  }
-  return btoa(binary);
-}
-
 function notifyAuthExpired(path: string) {
   if (typeof window === "undefined") return;
   if (path === "/v1/admin/me" || path === "/v1/admin/auth/login") return;
@@ -108,6 +98,19 @@ async function put<T>(path: string, body?: unknown): Promise<T> {
     credentials: "include",
     headers: body ? { "content-type": "application/json" } : undefined,
     body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!response.ok) {
+    throw await apiErrorFromResponse(response, path);
+  }
+  return (await response.json()) as T;
+}
+
+async function postFile<T>(path: string, file: File): Promise<T> {
+  const response = await fetch(`${API_URL}${path}`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "content-type": file.type || "application/octet-stream" },
+    body: file,
   });
   if (!response.ok) {
     throw await apiErrorFromResponse(response, path);
@@ -635,11 +638,7 @@ export const api = {
   uploadImage: async (file: File): Promise<{ id: string; url: string }> =>
     demoMode
       ? demo({ id: `img_${Date.now().toString(36)}`, url: URL.createObjectURL(file) })
-      : post("/v1/admin/media/images", {
-          filename: file.name,
-          contentType: file.type,
-          dataBase64: await fileToBase64(file),
-        }),
+      : postFile(`/v1/admin/media/images?filename=${encodeURIComponent(file.name)}`, file),
 
   homeBlocks: (): Promise<PublicPageBlock[]> => demo(homePage.blocks),
 };

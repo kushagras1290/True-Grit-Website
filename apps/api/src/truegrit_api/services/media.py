@@ -32,19 +32,23 @@ def media_root() -> Path:
 async def save_image_upload(
     store: MediaStore, *, content_type: str, data_base64: str
 ) -> dict[str, str]:
-    extension = _IMAGE_TYPES.get(content_type)
-    if extension is None:
-        raise ValidationAppError("Upload a JPG, PNG, WebP, or GIF image.")
     try:
         raw = base64.b64decode(data_base64, validate=True)
     except (binascii.Error, ValueError) as exc:
         raise ValidationAppError("The uploaded image could not be decoded.") from exc
-    if not raw:
+    return await save_image_bytes(store, content_type=content_type, data=raw)
+
+
+async def save_image_bytes(store: MediaStore, *, content_type: str, data: bytes) -> dict[str, str]:
+    extension = _IMAGE_TYPES.get(content_type)
+    if extension is None:
+        raise ValidationAppError("Upload a JPG, PNG, WebP, or GIF image.")
+    if not data:
         raise ValidationAppError("The uploaded image is empty.")
-    if len(raw) > _MAX_IMAGE_BYTES:
+    if len(data) > _MAX_IMAGE_BYTES:
         raise ValidationAppError("Images must be 5 MB or smaller.")
 
     image_id = new_id("img")
     key = f"images/{image_id}{extension}"
-    await store.put(key, raw, content_type)
+    await store.put(key, data, content_type)
     return {"id": image_id, "path": f"/media/{key}"}

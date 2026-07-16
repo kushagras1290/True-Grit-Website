@@ -204,6 +204,19 @@ def test_admin_image_upload_returns_public_media_url(client: TestClient, db: SQL
     assert body["url"].endswith(".png")
 
 
+def test_admin_raw_image_upload_returns_public_media_url(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    response = client.post(
+        "/v1/admin/media/images?filename=pixel.png",
+        content=b"fake-png",
+        headers={"content-type": "image/png"},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["url"].startswith("http://testserver/media/images/img_")
+    assert body["url"].endswith(".png")
+
+
 # --- Users & roles ----------------------------------------------------------
 
 
