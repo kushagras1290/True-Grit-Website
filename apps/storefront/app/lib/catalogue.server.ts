@@ -30,12 +30,20 @@ import {
 
 export interface CatalogueRuntime {
   apiUrl?: string;
+  apiWorker?: {
+    fetch: typeof fetch;
+  };
 }
 
 export function catalogueRuntime(context: unknown): CatalogueRuntime {
+  const env = (
+    context as
+      | { cloudflare?: { env?: { PUBLIC_API_URL?: string; API_WORKER?: { fetch: typeof fetch } } } }
+      | undefined
+  )?.cloudflare?.env;
   return {
-    apiUrl: (context as { cloudflare?: { env?: { PUBLIC_API_URL?: string } } } | undefined)
-      ?.cloudflare?.env?.PUBLIC_API_URL,
+    apiUrl: env?.PUBLIC_API_URL,
+    apiWorker: env?.API_WORKER,
   };
 }
 
@@ -47,9 +55,12 @@ async function fromApi<T>(path: string, runtime?: CatalogueRuntime): Promise<T |
   const baseUrl = apiUrl(runtime);
   if (!baseUrl) return null;
   try {
-    const response = await fetch(`${baseUrl}${path}`, {
+    const request = new Request(`${baseUrl}${path}`, {
       headers: { accept: "application/json" },
     });
+    const response = runtime?.apiWorker
+      ? await runtime.apiWorker.fetch(request)
+      : await fetch(request);
     if (response.status === 404) return null;
     if (!response.ok) return null;
     return (await response.json()) as T;
@@ -66,10 +77,9 @@ function withCountry(path: string, country?: string): string {
   return `${path}${separator}country=${encodeURIComponent(country)}`;
 }
 
-// List endpoints wrap their rows in `{ items }`. Unwrap, and fall back to the
-// supplied fixture when the API is not configured or returns nothing — a
-// storefront should degrade to demo data, never crash a page, if a list is
-// briefly unavailable.
+// List endpoints wrap their rows in `{ items }`. Fixture data is used only when
+// no API is configured; API mode must not mask backend failures with stale demo
+// catalogue content.
 async function listFromApi<T>(
   path: string,
   fallback: T[],
@@ -77,17 +87,30 @@ async function listFromApi<T>(
 ): Promise<T[]> {
   if (!apiUrl(runtime)) return fallback;
   const body = await fromApi<{ items: T[] }>(path, runtime);
-  return body?.items ?? fallback;
+  return body?.items ?? [];
 }
 
 export async function loadBootstrap(runtime?: CatalogueRuntime): Promise<PublicBootstrap> {
-  if (apiUrl(runtime))
-    return (await fromApi<PublicBootstrap>("/v1/public/bootstrap", runtime)) ?? bootstrap;
+  if (apiUrl(runtime)) {
+    return (
+      (await fromApi<PublicBootstrap>("/v1/public/bootstrap", runtime)) ?? {
+        navigation: [],
+        footerNavigation: [],
+        announcement: null,
+      }
+    );
+  }
   return bootstrap;
 }
 
 export async function loadHome(runtime?: CatalogueRuntime): Promise<PublicPage> {
-  if (apiUrl(runtime)) return (await fromApi<PublicPage>("/v1/public/home", runtime)) ?? homePage;
+  if (apiUrl(runtime)) {
+    const page =
+      (await fromApi<PublicPage>("/v1/public/home", runtime)) ??
+      (await fromApi<PublicPage>("/v1/public/pages/home", runtime));
+    if (!page) throw new Error("Homepage content is unavailable from the public API.");
+    return page;
+  }
   return homePage;
 }
 
@@ -105,11 +128,9 @@ export async function loadCategoryPage(
   runtime?: CatalogueRuntime,
 ): Promise<PublicCategoryPage | null> {
   if (apiUrl(runtime)) {
-    return (
-      (await fromApi<PublicCategoryPage>(
-        withCountry(`/v1/public/categories/${slug}`, country),
-        runtime,
-      )) ?? getCategoryPage(slug)
+    return fromApi<PublicCategoryPage>(
+      withCountry(`/v1/public/categories/${slug}`, country),
+      runtime,
     );
   }
   return getCategoryPage(slug);
@@ -136,14 +157,7 @@ export async function loadProduct(
   runtime?: CatalogueRuntime,
 ): Promise<ProductDetail | null> {
   if (apiUrl(runtime)) {
-    return (
-      (await fromApi<ProductDetail>(
-        withCountry(`/v1/public/products/${slug}`, country),
-        runtime,
-      )) ??
-      products.find((product) => product.slug === slug) ??
-      null
-    );
+    return fromApi<ProductDetail>(withCountry(`/v1/public/products/${slug}`, country), runtime);
   }
   return products.find((product) => product.slug === slug) ?? null;
 }
@@ -207,11 +221,7 @@ export async function loadFarm(
   runtime?: CatalogueRuntime,
 ): Promise<FarmDetail | null> {
   if (apiUrl(runtime)) {
-    return (
-      (await fromApi<FarmDetail>(`/v1/public/farms/${encodeURIComponent(slug)}`, runtime)) ??
-      farms.find((farm) => farm.slug === slug) ??
-      null
-    );
+    return fromApi<FarmDetail>(`/v1/public/farms/${encodeURIComponent(slug)}`, runtime);
   }
   return farms.find((farm) => farm.slug === slug) ?? null;
 }
@@ -225,11 +235,7 @@ export async function loadRecipe(
   runtime?: CatalogueRuntime,
 ): Promise<RecipeDetail | null> {
   if (apiUrl(runtime)) {
-    return (
-      (await fromApi<RecipeDetail>(`/v1/public/recipes/${encodeURIComponent(slug)}`, runtime)) ??
-      recipes.find((recipe) => recipe.slug === slug) ??
-      null
-    );
+    return fromApi<RecipeDetail>(`/v1/public/recipes/${encodeURIComponent(slug)}`, runtime);
   }
   return recipes.find((recipe) => recipe.slug === slug) ?? null;
 }
@@ -243,11 +249,7 @@ export async function loadArticle(
   runtime?: CatalogueRuntime,
 ): Promise<ArticleDetail | null> {
   if (apiUrl(runtime)) {
-    return (
-      (await fromApi<ArticleDetail>(`/v1/public/articles/${encodeURIComponent(slug)}`, runtime)) ??
-      articles.find((article) => article.slug === slug) ??
-      null
-    );
+    return fromApi<ArticleDetail>(`/v1/public/articles/${encodeURIComponent(slug)}`, runtime);
   }
   return articles.find((article) => article.slug === slug) ?? null;
 }
@@ -283,7 +285,7 @@ export async function runSearch(
       withCountry(`/v1/public/search?q=${encodeURIComponent(query)}`, country),
       runtime,
     );
-    if (result) return result;
+    return result ?? { query, total: 0, groups: [] };
   }
   const needle = query.trim().toLowerCase();
   if (needle.length < 2) return { query, total: 0, groups: [] };

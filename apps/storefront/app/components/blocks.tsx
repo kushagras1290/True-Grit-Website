@@ -6,7 +6,7 @@ import type {
   ProductSummary,
   PublicPageBlock,
 } from "@truegrit/contracts";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import { Link } from "react-router";
 
 import { CategoryTile, ProductGrid, Section } from "./catalogue";
@@ -34,87 +34,62 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
       },
     ];
   }, [block]);
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const [activeSlide, setActiveSlide] = useState(0);
-
-  function scrollToSlide(index: number) {
-    const target = scrollerRef.current?.children[index];
-    if (target instanceof HTMLElement) {
-      target.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
-    }
-  }
-
-  useEffect(() => {
-    if (slides.length <= 1) return undefined;
-    const timer = window.setInterval(() => {
-      setActiveSlide((current) => {
-        const next = (current + 1) % slides.length;
-        scrollToSlide(next);
-        return next;
-      });
-    }, 30_000);
-    return () => window.clearInterval(timer);
-  }, [slides.length]);
-
   if (slides.length > 0) {
     return (
-      <section className="relative bg-brand text-ink-inverse">
-        <h1 className="sr-only">{block.props.heading}</h1>
-        <div
-          ref={scrollerRef}
-          className="flex snap-x snap-mandatory overflow-x-auto scroll-smooth"
-          onScroll={(event) => {
-            const width = event.currentTarget.clientWidth;
-            if (width <= 0) return;
-            const next = Math.round(event.currentTarget.scrollLeft / width);
-            setActiveSlide(Math.max(0, Math.min(slides.length - 1, next)));
-          }}
-        >
-          {slides.map((slide, index) => (
-            <Link
-              key={`${slide.imageUrl}-${slide.href}`}
-              to={slide.href}
-              className="relative block w-full flex-none snap-start"
-              aria-label={slide.label}
-            >
-              <img
-                src={slide.imageUrl}
-                alt={slide.imageAlt || slide.label}
-                className="block aspect-[16/9] w-full object-cover"
-                fetchPriority={index === 0 ? "high" : "auto"}
-                loading={index === 0 ? "eager" : "lazy"}
-              />
-            </Link>
-          ))}
-        </div>
-        {slides.length > 1 ? (
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent">
-            <div className="mx-auto flex max-w-[80rem] items-end justify-between gap-4 px-4 pb-5 sm:px-6 md:pb-8">
+      <section className="bg-canvas">
+        <div className="mx-auto max-w-[80rem] px-4 py-7 sm:px-6 md:py-9">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
+                {block.props.eyebrow}
+              </p>
+              <h1 className="mt-2 font-display text-3xl leading-tight text-ink md:text-4xl">
+                {block.props.heading}
+              </h1>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-ink-muted md:text-base">
+                {block.props.text}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
               <Link
-                to={slides[activeSlide]?.href ?? block.props.primaryAction.href}
-                className="inline-flex min-h-11 items-center rounded-sm bg-canvas px-5 text-sm font-medium text-brand hover:opacity-90"
+                to={block.props.primaryAction.href}
+                className="inline-flex min-h-10 items-center rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90"
               >
-                {slides[activeSlide]?.label ?? block.props.primaryAction.label}
+                {block.props.primaryAction.label}
               </Link>
-              <div className="flex gap-2">
-                {slides.map((slide, index) => (
-                  <button
-                    key={`${slide.imageUrl}-dot`}
-                    type="button"
-                    aria-label={`Show slide ${index + 1}`}
-                    className={`h-2.5 w-2.5 rounded-full border border-white/70 ${
-                      index === activeSlide ? "bg-white" : "bg-white/25"
-                    }`}
-                    onClick={() => {
-                      setActiveSlide(index);
-                      scrollToSlide(index);
-                    }}
-                  />
-                ))}
-              </div>
+              {block.props.secondaryAction ? (
+                <Link
+                  to={block.props.secondaryAction.href}
+                  className="inline-flex min-h-10 items-center rounded-sm border border-line px-4 text-sm font-medium text-ink hover:bg-surface"
+                >
+                  {block.props.secondaryAction.label}
+                </Link>
+              ) : null}
             </div>
           </div>
-        ) : null}
+
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {slides.map((slide, index) => (
+              <Link
+                key={`${slide.imageUrl}-${slide.href}`}
+                to={slide.href}
+                className="group relative block overflow-hidden rounded-md bg-brand"
+                aria-label={slide.label}
+              >
+                <img
+                  src={slide.imageUrl}
+                  alt={slide.imageAlt || slide.label}
+                  className="block aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                  fetchPriority={index === 0 ? "high" : "auto"}
+                  loading={index === 0 ? "eager" : "lazy"}
+                />
+                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent px-3 pt-8 pb-2 text-xs font-medium text-white">
+                  {slide.label}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
       </section>
     );
   }

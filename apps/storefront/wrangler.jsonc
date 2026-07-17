@@ -13,6 +13,7 @@
   "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true },
   "upload_source_maps": true,
+  "services": [{ "binding": "API_WORKER", "service": "truegrit-api-dev" }],
   "vars": {
     // Runtime public API origin. The browser receives this value from SSR so
     // production builds cannot accidentally keep a local VITE_API_URL baked in.

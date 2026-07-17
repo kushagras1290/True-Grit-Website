@@ -4,29 +4,29 @@ import type { Route } from "./+types/seasonal";
 import { CmsPage } from "../components/cms-page";
 import { CategoryTile, ProductGrid, Section } from "../components/catalogue";
 import { StaticHero } from "../components/static-page";
-import { catalogueRuntime, loadCategories, loadProductsBySlugs } from "../lib/catalogue.server";
+import { catalogueRuntime, loadCategories, loadCategoryPage } from "../lib/catalogue.server";
 import { loadCmsRoute, type CmsRouteData } from "../lib/cms-route.server";
 import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
-import { products as allProducts } from "@truegrit/contracts/fixtures";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
+  const country = resolveCountry(request);
   const [cms, categories] = await Promise.all([
     loadCmsRoute("seasonal", request, context),
     loadCategories(runtime),
   ]);
   const seasonalCategories = categories.filter((category) => category.seasonLabel);
-  // The curated seasonal slot: in-season drops, selected by the demo fixture's
-  // slug convention. The product data itself is loaded live when the API is on.
-  const seasonalProducts = await loadProductsBySlugs(
-    allProducts
-      .filter(
-        (product) => product.availability !== "out_of_stock" && product.slug.includes("mango"),
-      )
-      .map((product) => product.slug),
-    resolveCountry(request),
-    runtime,
+  const seasonalPages = await Promise.all(
+    seasonalCategories.map((category) => loadCategoryPage(category.slug, country, runtime)),
+  );
+  const seasonalProducts = Array.from(
+    new Map(
+      seasonalPages
+        .flatMap((page) => page?.products ?? [])
+        .filter((product) => product.availability !== "out_of_stock")
+        .map((product) => [product.slug, product]),
+    ).values(),
   );
 
   return { cms, seasonalCategories, seasonalProducts };
