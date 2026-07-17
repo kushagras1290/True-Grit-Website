@@ -179,11 +179,8 @@ async def _upload_media_direct(env: Any, request: Any) -> Any:
         request.body,
         to_js({"httpMetadata": {"contentType": content_type}}),
     )
-    base_url = (
-        urlparse(str(request.url))._replace(path="", params="", query="", fragment="").geturl()
-    )
     return Response.new(
-        f'{{"id":"{image_id}","url":"{base_url}/media/{key}"}}',
+        f'{{"id":"{image_id}","url":"/media/{key}"}}',
         to_js({"status": 200, "headers": {**headers, "content-type": "application/json"}}),
     )
 

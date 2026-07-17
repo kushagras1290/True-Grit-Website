@@ -1730,7 +1730,7 @@ class MediaUpdateRequest(_CamelModel):
 def _media_row(row: dict[str, Any], base_url: str) -> dict[str, Any]:
     return {
         "id": row["id"],
-        "url": f"{base_url}/media/{row['object_key']}",
+        "url": f"/media/{row['object_key']}",
         "originalFilename": row["original_filename"],
         "mimeType": row["mime_type"],
         "sizeBytes": row["size_bytes"],
@@ -2075,6 +2075,84 @@ async def update_product_endpoint(
         return result
     row = await db.fetch_one("SELECT status FROM products WHERE id = ?", (product_id,))
     return {"id": product_id, "status": row["status"] if row else "draft", "changed": changed}
+
+
+class VariantCreateRequest(_CamelModel):
+    name: str = Field(min_length=1, max_length=140)
+    sku: str = Field(min_length=1, max_length=64)
+    list_minor: int = Field(ge=0)
+    sale_minor: int | None = Field(default=None)
+
+class VariantUpdateRequest(_CamelModel):
+    name: str | None = Field(default=None, max_length=140)
+    sku: str | None = Field(default=None, max_length=64)
+    list_minor: int | None = Field(default=None, ge=0)
+    sale_minor: int | None = Field(default=None)
+
+class ProductStatusRequest(_CamelModel):
+    status: str = Field(pattern="^(draft|active|archived)$")
+
+@router.post("/products/{product_id}/variants")
+async def create_variant_endpoint(
+    product_id: str,
+    payload: VariantCreateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("products.edit"))],
+) -> Any:
+    from ..services.catalogue import create_variant
+    variant_id = await create_variant(
+        db,
+        principal,
+        _request_id(request),
+        product_id,
+        name=payload.name,
+        sku=payload.sku,
+        list_minor=payload.list_minor,
+        sale_minor=payload.sale_minor,
+    )
+    return {"id": variant_id}
+
+
+@router.patch("/products/{product_id}/variants/{variant_id}")
+async def update_variant_endpoint(
+    product_id: str,
+    variant_id: str,
+    payload: VariantUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("products.edit"))],
+) -> Any:
+    from ..services.catalogue import update_variant
+    return await update_variant(
+        db,
+        principal,
+        _request_id(request),
+        product_id,
+        variant_id,
+        name=payload.name,
+        sku=payload.sku,
+        list_minor=payload.list_minor,
+        sale_minor=payload.sale_minor,
+    )
+
+@router.post("/products/{product_id}/status")
+async def set_product_status_endpoint(
+    product_id: str,
+    payload: ProductStatusRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("products.publish"))],
+) -> Any:
+    from ..services.catalogue import set_product_status
+    await _assert_product_scope(db, product_id, principal)
+    return await set_product_status(
+        db,
+        principal,
+        _request_id(request),
+        product_id,
+        payload.status,
+    )
 
 
 @router.post("/products/{product_id}/publish")
@@ -3108,3 +3186,4 @@ async def staff_password_reset_confirm(
         request_id=_request_id(request),
         source="admin",
     )
+

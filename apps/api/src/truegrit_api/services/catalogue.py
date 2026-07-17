@@ -173,6 +173,166 @@ async def update_product(
     return {"id": product_id, "status": current["status"], "changed": True}
 
 
+
+
+async def set_product_status(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    product_id: str,
+    status: str,
+) -> dict[str, Any]:
+    if status not in {"draft", "active", "archived"}:
+        raise ValidationError("Invalid status.")
+    
+    current = await db.fetch_one("SELECT status FROM products WHERE id = ? AND archived_at IS NULL", (product_id,))
+    if current is None:
+        raise NotFoundError("Product not found.")
+        
+    if current["status"] == status:
+        return {"id": product_id, "status": status, "changed": False}
+
+    updates = {"status": status}
+    await _apply_update(
+        db,
+        table="products",
+        entity_type="product",
+        action=f"product.status.{status}",
+        entity_id=product_id,
+        actor=actor,
+        request_id=request_id,
+        current=current,
+        updates=updates,
+    )
+    return {"id": product_id, "status": status, "changed": True}
+
+
+async def create_variant(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    product_id: str,
+    *,
+    name: str,
+    sku: str,
+    list_minor: int,
+    sale_minor: int | None = None,
+) -> str:
+    product = await db.fetch_one("SELECT id FROM products WHERE id = ? AND archived_at IS NULL", (product_id,))
+    if not product:
+        raise NotFoundError("Product not found.")
+        
+    sku = str(sku).strip()
+    row = await db.fetch_one("SELECT id FROM product_variants WHERE sku = ?", (sku,))
+    if row:
+        raise ConflictError("A variant with this SKU already exists.")
+
+    import secrets
+    from ..utils import now_utc
+
+    variant_id = f"var_{secrets.token_urlsafe(16)}"
+    price_id = f"vpr_{secrets.token_urlsafe(16)}"
+    now = now_utc().isoformat()
+    
+    await db.execute_batch(
+        [
+            (
+                "INSERT INTO product_variants (id, product_id, sku, name, status, created_at, updated_at) VALUES (?, ?, ?, ?, 'active', ?, ?)",
+                (variant_id, product_id, sku, name.strip(), now, now)
+            ),
+            (
+                "INSERT INTO variant_prices (id, variant_id, market_code, currency_code, list_amount_minor, sale_amount_minor, starts_at, status, created_at) VALUES (?, ?, 'IN', 'INR', ?, ?, ?, 'active', ?)",
+                (price_id, variant_id, list_minor, sale_minor, now, now)
+            ),
+            _audit_sql(
+                action="variant.created",
+                entity_type="variant",
+                entity_id=variant_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"sku": sku, "name": name, "list_minor": list_minor, "sale_minor": sale_minor},
+            )
+        ]
+    )
+    return variant_id
+
+
+async def update_variant(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    product_id: str,
+    variant_id: str,
+    *,
+    name: str | None = None,
+    sku: str | None = None,
+    list_minor: int | None = None,
+    sale_minor: int | None = None,
+) -> dict[str, Any]:
+    variant = await db.fetch_one("SELECT id, sku, name FROM product_variants WHERE id = ? AND product_id = ?", (variant_id, product_id))
+    if not variant:
+        raise NotFoundError("Variant not found.")
+
+    price = await db.fetch_one("SELECT id, list_amount_minor, sale_amount_minor FROM variant_prices WHERE variant_id = ? AND status = 'active' ORDER BY starts_at DESC LIMIT 1", (variant_id,))
+    
+    from ..utils import now_utc
+    import secrets
+    now = now_utc().isoformat()
+    batch = []
+    after = {}
+    
+    if sku is not None and sku.strip() != variant["sku"]:
+        sku_clean = sku.strip()
+        row = await db.fetch_one("SELECT id FROM product_variants WHERE sku = ? AND id != ?", (sku_clean, variant_id))
+        if row:
+            raise ConflictError("A variant with this SKU already exists.")
+        batch.append(("UPDATE product_variants SET sku = ?, updated_at = ? WHERE id = ?", (sku_clean, now, variant_id)))
+        after["sku"] = sku_clean
+        
+    if name is not None and name.strip() != variant["name"]:
+        name_clean = name.strip()
+        batch.append(("UPDATE product_variants SET name = ?, updated_at = ? WHERE id = ?", (name_clean, now, variant_id)))
+        after["name"] = name_clean
+
+    if price:
+        new_list = list_minor if list_minor is not None else price["list_amount_minor"]
+        current_sale = price["sale_amount_minor"]
+        # Allow clearing sale price if explicitly set or use current_sale
+        new_sale = sale_minor if sale_minor is not None else current_sale
+        if sale_minor == -1: # hack to clear it
+             new_sale = None
+             
+        if new_list != price["list_amount_minor"] or new_sale != current_sale:
+            batch.append(("UPDATE variant_prices SET list_amount_minor = ?, sale_amount_minor = ? WHERE id = ?", (new_list, new_sale, price["id"])))
+            after["list_minor"] = new_list
+            after["sale_minor"] = new_sale
+    elif list_minor is not None:
+        price_id = f"vpr_{secrets.token_urlsafe(16)}"
+        real_sale = None if sale_minor == -1 else sale_minor
+        batch.append((
+            "INSERT INTO variant_prices (id, variant_id, market_code, currency_code, list_amount_minor, sale_amount_minor, starts_at, status, created_at) VALUES (?, ?, 'IN', 'INR', ?, ?, ?, 'active', ?)",
+            (price_id, variant_id, list_minor, real_sale, now, now)
+        ))
+        after["list_minor"] = list_minor
+        after["sale_minor"] = real_sale
+
+    if batch:
+        batch.append(_audit_sql(
+            action="variant.updated",
+            entity_type="variant",
+            entity_id=variant_id,
+            actor_id=actor.user_id,
+            request_id=request_id,
+            created_at=now,
+            after=after,
+        ))
+        await db.execute_batch(batch)
+        return {"id": variant_id, "changed": True}
+        
+    return {"id": variant_id, "changed": False}
+
+
 _COUNTRY_CODE = re.compile(r"^[A-Za-z]{2}$")
 _MAX_RELEASE_COUNTRIES = 100
 _MAX_PRODUCT_LINKS = 12
@@ -657,3 +817,4 @@ async def _apply_update(
             ),
         ]
     )
+

@@ -480,6 +480,15 @@ export const api = {
   updateProduct: (id: string, input: Record<string, unknown>): Promise<{ id: string }> =>
     demoMode ? demo({ id }) : patch(`/v1/admin/products/${id}`, input),
 
+  createVariant: (productId: string, input: { name: string; sku: string; listMinor: number; saleMinor?: number | null }): Promise<{ id: string }> =>
+    demoMode ? demo({ id: `var_${Date.now()}` }) : post(`/v1/admin/products/${productId}/variants`, input),
+
+  updateVariant: (productId: string, variantId: string, input: { name?: string; sku?: string; listMinor?: number; saleMinor?: number | null }): Promise<{ id: string }> =>
+    demoMode ? demo({ id: variantId }) : patch(`/v1/admin/products/${productId}/variants/${variantId}`, input),
+
+  updateProductStatus: (productId: string, status: "draft" | "active" | "archived"): Promise<{ id: string }> =>
+    demoMode ? demo({ id: productId }) : post(`/v1/admin/products/${productId}/status`, { status }),
+
   publishProduct: (
     id: string,
     changeSummary?: string,
@@ -1197,3 +1206,4 @@ export const api = {
 };
 
 export type { ContentBlock };
+

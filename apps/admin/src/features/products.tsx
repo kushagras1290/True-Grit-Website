@@ -148,6 +148,7 @@ export function ProductListPage() {
   const [creating, setCreating] = useState(false);
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [editingVariant, setEditingVariant] = useState<AdminProductDetail["variants"][0] | "new" | null>(null);
 
   const deleteMutation = useMutation({
     mutationFn: (productIds: string[]) => api.deleteProducts(productIds),
@@ -259,6 +260,14 @@ export function ProductListPage() {
         }
       />
       {creating ? <CreateProductModal onClose={() => setCreating(false)} /> : null}
+      {editingVariant && (
+        <VariantEditorModal
+          productId={product.id}
+          variant={editingVariant === "new" ? undefined : editingVariant}
+          onClose={() => setEditingVariant(null)}
+          onSuccess={() => invalidate()}
+        />
+      )}
       {confirmingDelete ? (
         <ConfirmDialog
           title={
@@ -370,6 +379,89 @@ type SeoForm = z.infer<typeof seoSchema>;
 
 const EDITOR_TABS = ["General", "Variants", "Availability & Links", "SEO"] as const;
 
+const variantSchema = z.object({
+  name: z.string().min(1, "Name is required").max(140),
+  sku: z.string().min(1, "SKU is required").max(64),
+  listMinor: z.number().min(0, "Price cannot be negative"),
+  saleMinor: z.number().nullable().optional(),
+});
+
+type VariantForm = z.infer<typeof variantSchema>;
+
+function VariantEditorModal({
+  productId,
+  variant,
+  onClose,
+  onSuccess,
+}: {
+  productId: string;
+  variant?: AdminProductDetail["variants"][0];
+  onClose: () => void;
+  onSuccess: () => void;
+}) {
+  const toast = useToast();
+  const form = useForm<VariantForm>({
+    resolver: zodResolver(variantSchema),
+    defaultValues: {
+      name: variant?.name || "",
+      sku: variant?.sku || "",
+      listMinor: variant ? (variant.listMinor || 0) / 100 : 0,
+      saleMinor: variant && variant.saleMinor !== null ? variant.saleMinor / 100 : null,
+    },
+  });
+
+  const mutation = useMutation({
+    mutationFn: (values: VariantForm) => {
+      const payload = {
+        name: values.name,
+        sku: values.sku,
+        listMinor: Math.round(values.listMinor * 100),
+        saleMinor: values.saleMinor ? Math.round(values.saleMinor * 100) : null,
+      };
+      if (variant) {
+        return api.updateVariant(productId, variant.id, { ...payload, saleMinor: payload.saleMinor === null ? -1 : payload.saleMinor });
+      }
+      return api.createVariant(productId, payload);
+    },
+    onSuccess: () => {
+      toast.success(variant ? "Variant updated." : "Variant created.");
+      onSuccess();
+      onClose();
+    },
+    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Failed to save variant."),
+  });
+
+  return (
+    <Modal title={variant ? "Edit Variant" : "Add Variant"} onClose={onClose}>
+      <form onSubmit={form.handleSubmit((v) => mutation.mutate(v))} className="space-y-4">
+        <Field htmlFor="variant-name" label="Variant Name" error={form.formState.errors.name?.message}>
+          <Input id="variant-name" placeholder="e.g. 500g Pack" {...form.register("name")} />
+        </Field>
+        <Field htmlFor="variant-sku" label="SKU" error={form.formState.errors.sku?.message}>
+          <Input id="variant-sku" placeholder="e.g. TO-HONEY-500" {...form.register("sku")} />
+        </Field>
+        <div className="grid grid-cols-2 gap-4">
+          <Field htmlFor="variant-list" label="List Price (₹)" error={form.formState.errors.listMinor?.message}>
+            <Input id="variant-list" type="number" step="0.01" min="0" {...form.register("listMinor", { valueAsNumber: true })} />
+          </Field>
+          <Field htmlFor="variant-sale" label="Sale Price (₹)" error={form.formState.errors.saleMinor?.message}>
+            <Input id="variant-sale" type="number" step="0.01" min="0" placeholder="Optional" {...form.register("saleMinor", { setValueAs: (v) => (v === "" || isNaN(parseFloat(v)) ? null : parseFloat(v)) })} />
+          </Field>
+        </div>
+        <div className="flex justify-end gap-3 pt-4 border-t border-line">
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="primary" disabled={mutation.isPending}>
+            {mutation.isPending ? "Saving..." : "Save Variant"}
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+
 export function ProductEditorPage() {
   const { id = "" } = useParams();
   const navigate = useNavigate();
@@ -377,6 +469,7 @@ export function ProductEditorPage() {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<(typeof EDITOR_TABS)[number]>("General");
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [editingVariant, setEditingVariant] = useState<AdminProductDetail["variants"][0] | "new" | null>(null);
 
   const {
     data: product,
@@ -408,10 +501,20 @@ export function ProductEditorPage() {
     mutationFn: () => api.publishProduct(id),
     onSuccess: async (result) => {
       await invalidate();
-      toast.success(`Published — version ${result.version} is now live.`);
+      toast.success(`Published - version ${result.version} is now live.`);
     },
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not publish."),
+  });
+
+  const statusMutation = useMutation({
+    mutationFn: (status: "draft" | "active" | "archived") => api.updateProductStatus(id, status),
+    onSuccess: async () => {
+      await invalidate();
+      toast.success(`Product status updated.`);
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not update status."),
   });
 
   const deleteMutation = useMutation({
@@ -450,21 +553,33 @@ export function ProductEditorPage() {
               permission="products.publish"
               fallback={
                 <Button disabled title="Requires products.publish">
-                  Publish
+                  {product.status === "active" ? "Disable" : "Enable"}
                 </Button>
               }
             >
               <Button
                 variant="primary"
-                onClick={() => publishMutation.mutate()}
-                disabled={publishMutation.isPending}
+                onClick={() => statusMutation.mutate(product.status === "active" ? "draft" : "active")}
+                disabled={statusMutation.isPending}
               >
-                {publishMutation.isPending ? "Publishing…" : "Publish"}
+                {statusMutation.isPending
+                  ? "Updating…"
+                  : product.status === "active"
+                    ? "Disable"
+                    : "Enable"}
               </Button>
             </PermissionGate>
           </div>
         }
       />
+      {editingVariant && (
+        <VariantEditorModal
+          productId={product.id}
+          variant={editingVariant === "new" ? undefined : editingVariant}
+          onClose={() => setEditingVariant(null)}
+          onSuccess={() => invalidate()}
+        />
+      )}
       {confirmingDelete ? (
         <ConfirmDialog
           title="Delete product"
@@ -508,8 +623,15 @@ export function ProductEditorPage() {
       ) : null}
 
       {tab === "Variants" ? (
-        <DataTableShell>
-          <thead className="bg-canvas">
+                <DataTableShell>
+          <div className="flex items-center justify-between p-4 border-b border-line bg-canvas">
+            <h2 className="font-display text-lg text-ink">Variants</h2>
+            <Button variant="secondary" onClick={() => setEditingVariant("new")}>
+              Add Variant
+            </Button>
+          </div>
+          <table className="w-full text-left text-sm">
+          <thead className="bg-canvas border-b border-line">
             <tr>
               <Th>Variant</Th>
               <Th>SKU</Th>
@@ -517,30 +639,38 @@ export function ProductEditorPage() {
               <Th>Sale price</Th>
               <Th>Available</Th>
               <Th>Status</Th>
+              <Th></Th>
             </tr>
           </thead>
           <tbody>
             {product.variants.length === 0 ? (
               <tr className="border-t border-line">
                 <Td className="text-ink-muted">No variants yet.</Td>
-                <Td /> <Td /> <Td /> <Td /> <Td />
+                <Td /> <Td /> <Td /> <Td /> <Td /> <Td />
               </tr>
             ) : (
               product.variants.map((variant) => (
                 <tr key={variant.id} className="border-t border-line">
                   <Td className="font-medium">{variant.name}</Td>
                   <Td>{variant.sku}</Td>
-                  <Td>{variant.listMinor === null ? "—" : formatMoney(variant.listMinor)}</Td>
-                  <Td>{variant.saleMinor === null ? "—" : formatMoney(variant.saleMinor)}</Td>
+                  <Td>{variant.listMinor === null ? "-" : formatMoney(variant.listMinor)}</Td>
+                  <Td>{variant.saleMinor === null ? "-" : formatMoney(variant.saleMinor)}</Td>
                   <Td>{variant.available}</Td>
                   <Td>
                     <StatusPill status={variant.status} />
+                  </Td>
+                  <Td className="text-right">
+                    <Button variant="secondary" onClick={() => setEditingVariant(variant)}>
+                      Edit
+                    </Button>
                   </Td>
                 </tr>
               ))
             )}
           </tbody>
+          </table>
         </DataTableShell>
+
       ) : null}
 
       {tab === "Availability & Links" ? (
@@ -912,3 +1042,5 @@ function SeoTab({
     </form>
   );
 }
+
+

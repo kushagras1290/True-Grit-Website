@@ -18,6 +18,7 @@ SELECT
   p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
   p.seo_title, p.seo_description, p.return_eligible,
   COALESCE(
+    '/media/' || m.object_key,
     NULLIF(p.image_url, ''),
     (
       SELECT c.hero_image_url

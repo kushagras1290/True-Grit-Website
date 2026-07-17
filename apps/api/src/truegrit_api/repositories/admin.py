@@ -22,6 +22,7 @@ class AdminRepository:
             SELECT
               p.id, p.name, p.status,
               COALESCE(
+                '/media/' || m.object_key,
                 NULLIF(p.image_url, ''),
                 (
                   SELECT c.hero_image_url
@@ -53,6 +54,7 @@ class AdminRepository:
             LEFT JOIN farms f ON f.id = p.farm_id
             LEFT JOIN brands b ON b.id = p.brand_id
             LEFT JOIN users u ON u.id = p.updated_by
+            LEFT JOIN media_assets m ON m.id = p.primary_media_id
             WHERE p.archived_at IS NULL
               AND (? IS NULL OR p.farm_id = ?)
             ORDER BY p.updated_at DESC, p.name
@@ -94,7 +96,7 @@ class AdminRepository:
             JOIN product_variants v ON v.id = il.variant_id
             JOIN products p ON p.id = v.product_id
             JOIN inventory_locations loc ON loc.id = il.location_id
-            WHERE (? IS NULL OR p.farm_id = ?)
+            WHERE (? IS NULL OR p.farm_id = ?) AND p.archived_at IS NULL
             ORDER BY (il.on_hand - il.reserved - il.reorder_threshold) ASC, p.name
             LIMIT ? OFFSET ?
             """,
@@ -107,6 +109,7 @@ class AdminRepository:
             SELECT p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
                    p.seo_title, p.seo_description,
                    COALESCE(
+                     '/media/' || m.object_key,
                      NULLIF(p.image_url, ''),
                      (
                        SELECT c.hero_image_url
@@ -125,6 +128,7 @@ class AdminRepository:
             FROM products p
             LEFT JOIN farms f ON f.id = p.farm_id
             LEFT JOIN brands b ON b.id = p.brand_id
+            LEFT JOIN media_assets m ON m.id = p.primary_media_id
             WHERE p.id = ? AND p.archived_at IS NULL
             """,
             (product_id,),
