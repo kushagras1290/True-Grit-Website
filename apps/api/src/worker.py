@@ -18,7 +18,7 @@ import os
 import secrets
 from datetime import UTC, datetime
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 import asgi
 from workers import WorkerEntrypoint
@@ -104,7 +104,10 @@ def _cookie_value(request: Any, name: str) -> str | None:
     return None
 
 
-async def _can_upload_media(env: Any, token: str) -> bool:
+async def _authorized_media_uploader(env: Any, token: str) -> str | None:
+    """The uploading user's id, or None if the session is missing/expired or
+    lacks `media.upload`. Returning the id (not just a bool) lets the direct
+    upload path below attribute the `media_assets` row it writes."""
     token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
     row = await env.DB.prepare(
         """
@@ -119,7 +122,7 @@ async def _can_upload_media(env: Any, token: str) -> bool:
     ).bind(token_hash, datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")).first()
     row = _to_py(row)
     if row is None:
-        return False
+        return None
     user_id = dict(row)["id"]
     permission = await env.DB.prepare(
         """
@@ -131,7 +134,7 @@ async def _can_upload_media(env: Any, token: str) -> bool:
         LIMIT 1
         """
     ).bind(user_id).first()
-    return permission is not None
+    return user_id if permission is not None else None
 
 
 async def _upload_media_direct(env: Any, request: Any) -> Any:
@@ -158,18 +161,20 @@ async def _upload_media_direct(env: Any, request: Any) -> Any:
         return _json_response('{"detail":"Upload a JPG, PNG, WebP, or GIF image."}', 422, headers)
 
     content_length = request.headers.get("content-length")
+    size_bytes = 0
     if content_length is not None:
         try:
-            size = int(content_length)
+            size_bytes = int(content_length)
         except ValueError:
-            size = -1
-        if size <= 0:
+            size_bytes = -1
+        if size_bytes <= 0:
             return _json_response('{"detail":"The uploaded image is empty."}', 422, headers)
-        if size > _MAX_IMAGE_BYTES:
+        if size_bytes > _MAX_IMAGE_BYTES:
             return _json_response('{"detail":"Images must be 5 MB or smaller."}', 422, headers)
 
     token = _cookie_value(request, getattr(env, "SESSION_COOKIE_NAME", "tg_session"))
-    if token is None or not await _can_upload_media(env, token):
+    user_id = await _authorized_media_uploader(env, token) if token else None
+    if user_id is None:
         return _json_response('{"detail":"Unauthorized"}', 401, headers)
 
     image_id = f"img_{secrets.token_urlsafe(16)}"
@@ -179,6 +184,35 @@ async def _upload_media_direct(env: Any, request: Any) -> Any:
         request.body,
         to_js({"httpMetadata": {"contentType": content_type}}),
     )
+
+    # This bypasses the FastAPI /v1/admin/media/images route entirely (see
+    # Default.fetch below) to stay under Python Workers' CPU budget for real
+    # photos, but that means it must do that route's other job itself: without
+    # this insert the object lands in R2 with no `media_assets` row, and the
+    # Media Library — which lists from that table, not from the bucket — would
+    # never show it.
+    query = parse_qs(urlparse(str(request.url)).query)
+    original_filename = (query.get("filename") or [f"{image_id}{extension}"])[0][:180]
+    now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+    await env.DB.prepare(
+        """
+        INSERT INTO media_assets
+          (id, object_key, original_filename, mime_type, size_bytes, alt_text,
+           visibility, processing_status, created_at, created_by, updated_at, updated_by)
+        VALUES (?, ?, ?, ?, ?, NULL, 'public', 'ready', ?, ?, ?, ?)
+        """
+    ).bind(
+        image_id,
+        key,
+        original_filename,
+        content_type,
+        max(size_bytes, 0),
+        now,
+        user_id,
+        now,
+        user_id,
+    ).run()
+
     return Response.new(
         f'{{"id":"{image_id}","url":"/media/{key}"}}',
         to_js({"status": 200, "headers": {**headers, "content-type": "application/json"}}),
@@ -190,12 +224,29 @@ class Default(WorkerEntrypoint):
         global _app
         path = urlparse(str(request.url)).path
         method = str(request.method).upper()
-        if path == "/v1/admin/media/images" and method in {"POST", "OPTIONS"}:
-            return await _upload_media_direct(self.env, request)
-        if _app is None:
-            _bridge_worker_env(self.env)
-            _app = create_app(
-                db=D1Database(self.env.DB),
-                media=R2MediaStore(self.env.MEDIA_BUCKET),
+        try:
+            if path == "/v1/admin/media/images" and method in {"POST", "OPTIONS"}:
+                return await _upload_media_direct(self.env, request)
+            if _app is None:
+                _bridge_worker_env(self.env)
+                _app = create_app(
+                    db=D1Database(self.env.DB),
+                    media=R2MediaStore(self.env.MEDIA_BUCKET),
+                )
+            return await asgi.fetch(_app, request, self.env)
+        except Exception as exc:
+            # Everything inside the try — isolate cold start, the D1/R2 binding
+            # lookups, and asgi.fetch() itself — runs outside FastAPI's own
+            # exception handlers (truegrit_api.middleware.error_handler), which
+            # only see exceptions raised *inside* the ASGI app. A crash here
+            # would otherwise reach the browser as a bare platform error with no
+            # Access-Control-Allow-Origin header, which Chrome reports as
+            # "blocked by CORS policy" and masks the real failure. Answer with
+            # genuine CORS headers so the UI sees an honest 500 instead.
+            _app = None  # drop a possibly half-built app; rebuild next request
+            print(f"worker.fetch crashed: {type(exc).__name__}: {exc}")
+            return _json_response(
+                '{"error":{"code":"internal_error","message":"Something went wrong."}}',
+                500,
+                _cors_headers(self.env, request),
             )
-        return await asgi.fetch(_app, request, self.env)
