@@ -372,7 +372,14 @@ async def login(
         (email,),
     )
     stored_hash = row["password_hash"] if row is not None else _dummy_password_hash()
-    if not verify_password(payload.password, stored_hash) or row is None:
+    if (
+        not verify_password(
+            payload.password,
+            stored_hash,
+            max_iterations=settings.pbkdf2_verify_max_iterations,
+        )
+        or row is None
+    ):
         raise AuthenticationError("Invalid email or password.")
 
     await start_session(

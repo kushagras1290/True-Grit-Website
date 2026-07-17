@@ -49,7 +49,19 @@ def hash_password(password: str, *, iterations: int) -> str:
     return f"{_ALGORITHM}${iterations}${_b64encode(salt)}${_b64encode(derived)}"
 
 
-def verify_password(password: str, encoded: str) -> bool:
+def password_hash_iterations(encoded: str | None) -> int | None:
+    if not encoded:
+        return None
+    try:
+        algorithm, iterations_raw, _salt_b64, _hash_b64 = encoded.split("$")
+        if algorithm != _ALGORITHM:
+            return None
+        return int(iterations_raw)
+    except (ValueError, TypeError):
+        return None
+
+
+def verify_password(password: str, encoded: str, *, max_iterations: int | None = None) -> bool:
     """Constant-time verification of `password` against a stored hash.
 
     Returns False for any malformed stored value rather than raising, so a
@@ -60,6 +72,8 @@ def verify_password(password: str, encoded: str) -> bool:
         if algorithm != _ALGORITHM:
             return False
         iterations = int(iterations_raw)
+        if max_iterations is not None and iterations > max_iterations:
+            return False
         salt = _b64decode(salt_b64)
         expected = _b64decode(hash_b64)
     except (ValueError, TypeError):

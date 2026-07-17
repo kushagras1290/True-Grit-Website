@@ -38,9 +38,10 @@ class Settings(BaseSettings):
     google_client_id: str = ""
     facebook_app_id: str = ""
     facebook_app_secret: str = ""
-    # PBKDF2-HMAC-SHA256 work factor. OWASP baseline is 600k iterations for
-    # SHA-256; raise as hardware improves. Tests override this to stay fast.
-    pbkdf2_iterations: int = 600_000
+    # PBKDF2-HMAC-SHA256 work factor. Python Workers need a conservative budget
+    # or password verification can hit CPU limits before CORS headers are sent.
+    pbkdf2_iterations: int = 50_000
+    pbkdf2_verify_max_iterations: int = 50_000
     # Minimum customer password length enforced at registration.
     password_min_length: int = 10
 

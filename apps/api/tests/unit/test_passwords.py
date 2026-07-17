@@ -4,7 +4,12 @@ from __future__ import annotations
 
 import pytest
 
-from truegrit_api.auth.passwords import PasswordError, hash_password, verify_password
+from truegrit_api.auth.passwords import (
+    PasswordError,
+    hash_password,
+    password_hash_iterations,
+    verify_password,
+)
 
 FAST_ITERATIONS = 1000
 
@@ -12,7 +17,15 @@ FAST_ITERATIONS = 1000
 def test_hash_roundtrip_verifies():
     encoded = hash_password("correct horse battery", iterations=FAST_ITERATIONS)
     assert encoded.startswith("pbkdf2_sha256$1000$")
+    assert password_hash_iterations(encoded) == FAST_ITERATIONS
     assert verify_password("correct horse battery", encoded) is True
+
+
+def test_over_budget_hash_is_not_verified():
+    encoded = hash_password("correct horse battery", iterations=FAST_ITERATIONS + 1)
+    assert verify_password(
+        "correct horse battery", encoded, max_iterations=FAST_ITERATIONS
+    ) is False
 
 
 def test_wrong_password_rejected():

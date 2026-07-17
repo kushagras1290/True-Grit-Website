@@ -7,6 +7,13 @@ import { Button, Field, Input } from "../components/ui";
 import { ADMIN_AUTH_EXPIRED_EVENT, ApiError, api, demoMode } from "../lib/api";
 import { useMe } from "../lib/permissions";
 
+function isUnauthorizedError(error: unknown) {
+  if (error instanceof ApiError) return error.status === 401;
+  if (typeof error !== "object" || error === null) return false;
+  const status = (error as { status?: unknown }).status;
+  return Number(status) === 401;
+}
+
 function ForgotPassword() {
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState(false);
@@ -237,7 +244,7 @@ export function RequireAdminAuth({ children }: { children: ReactNode }) {
     );
   }
 
-  if (me.error instanceof ApiError && me.error.status === 401) {
+  if (isUnauthorizedError(me.error)) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
@@ -247,6 +254,18 @@ export function RequireAdminAuth({ children }: { children: ReactNode }) {
         <div>
           <p className="font-medium text-ink">Admin API is unavailable</p>
           <p className="mt-1 text-sm text-ink-muted">Refresh once the API is back online.</p>
+          <div className="mt-4 flex justify-center gap-2">
+            <Button type="button" variant="secondary" onClick={() => void me.refetch()}>
+              Retry
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={() => navigate("/login", { replace: true, state: { from: location } })}
+            >
+              Sign in
+            </Button>
+          </div>
         </div>
       </main>
     );

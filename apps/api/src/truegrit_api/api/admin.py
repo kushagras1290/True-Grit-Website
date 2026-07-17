@@ -11,7 +11,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic.alias_generators import to_camel
 
 from truegrit_api.auth.dependencies import get_current_staff, get_database, require_permission
-from truegrit_api.auth.passwords import verify_password
+from truegrit_api.auth.passwords import password_hash_iterations, verify_password
 from truegrit_api.auth.principal import Principal
 from truegrit_api.auth.rate_limit import (
     RateLimitRule,
@@ -150,6 +150,11 @@ def _env_credential_matches(settings: Settings, email: str, password: str) -> bo
     ) and hmac.compare_digest(password, settings.admin_login_password)
 
 
+def _hash_exceeds_budget(encoded: str | None, settings: Settings) -> bool:
+    iterations = password_hash_iterations(encoded)
+    return iterations is not None and iterations > settings.pbkdf2_verify_max_iterations
+
+
 async def _stored_password_hash(db: Database, user_id: str) -> str | None:
     row = await db.fetch_one(
         "SELECT password_hash FROM user_credentials WHERE user_id = ?", (user_id,)
@@ -192,7 +197,9 @@ async def login(
     # The account's own stored password is the only thing that authenticates.
     # This is how every staff user signs in, farm-owner sub-admins included.
     stored_hash = await _stored_password_hash(db, user["id"]) if user is not None else None
-    credential_ok = stored_hash is not None and verify_password(payload.password, stored_hash)
+    credential_ok = stored_hash is not None and verify_password(
+        payload.password, stored_hash, max_iterations=settings.pbkdf2_verify_max_iterations
+    )
 
     # The `.env` credential is a bootstrap, not a permanent key: it opens the
     # owner account only while that account has no password of its own. The first
@@ -203,7 +210,8 @@ async def login(
     # from user_credentials.
     if not credential_ok and _env_credential_matches(settings, email, payload.password):
         owner = user if user is not None else await db.fetch_one(_FIRST_SUPER_ADMIN_SQL)
-        if owner is not None and await _stored_password_hash(db, owner["id"]) is None:
+        owner_hash = await _stored_password_hash(db, owner["id"]) if owner is not None else None
+        if owner is not None and (owner_hash is None or _hash_exceeds_budget(owner_hash, settings)):
             await adopt_bootstrap_owner(
                 db,
                 _request_id(request),

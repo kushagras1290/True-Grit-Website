@@ -43,6 +43,7 @@
     // it and Cloudflare returns 503 before CORS headers are written. Keep dev
     // credentials at the Worker-safe factor already used by farm-owner resets.
     "PBKDF2_ITERATIONS": "50000",
+    "PBKDF2_VERIFY_MAX_ITERATIONS": "50000",
 
     // --- Mobile verification (SMS passcodes) ---
     // OFF until the SMS provider is wired. Nothing here can deliver a passcode

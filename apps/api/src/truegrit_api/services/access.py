@@ -597,7 +597,11 @@ async def change_own_password(
         raise ValidationAppError(
             "This account has no password yet. Use the reset link on the sign-in page to set one."
         )
-    if not verify_password(current_password, credential["password_hash"]):
+    if not verify_password(
+        current_password,
+        credential["password_hash"],
+        max_iterations=settings.pbkdf2_verify_max_iterations,
+    ):
         raise AuthenticationError("Current password is incorrect.")
 
     now = utc_now_iso()

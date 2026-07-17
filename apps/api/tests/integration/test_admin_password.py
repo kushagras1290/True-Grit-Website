@@ -12,6 +12,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from tests.integration.conftest import SESSION_COOKIE, create_session
+from truegrit_api.auth.passwords import hash_password
 from truegrit_api.config import get_settings
 from truegrit_api.platform.database import SQLiteDatabase
 
@@ -96,6 +97,24 @@ def test_clearing_the_credential_hands_the_account_back_to_env(
     get_settings.cache_clear()
 
     assert sign_in(client, ENV_EMAIL, "rescue-password").status_code == 200
+
+
+def test_env_login_repairs_over_budget_owner_hash(client: TestClient, db: SQLiteDatabase):
+    db._conn.execute(
+        "UPDATE users SET email = ? WHERE id = 'usr_admin'",
+        (ENV_EMAIL,),
+    )
+    db._conn.execute(
+        """
+        INSERT INTO user_credentials (user_id, password_hash, created_at, updated_at)
+        VALUES ('usr_admin', ?, '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z')
+        """,
+        (hash_password("old-password", iterations=60_000),),
+    )
+    db._conn.commit()
+
+    assert sign_in(client, ENV_EMAIL, ENV_PASSWORD).status_code == 200
+    assert stored_hash(db, "usr_admin").startswith("pbkdf2_sha256$1000$")
 
 
 def test_env_email_taken_by_another_account_is_refused(client: TestClient, db: SQLiteDatabase):
