@@ -280,6 +280,25 @@ export interface SiteDocuments {
   llmsTxt: string;
 }
 
+export interface CmsPageRow {
+  id: string;
+  slug: string;
+  title: string;
+  pageType: string;
+  templateKey: string;
+  status: string;
+  seoTitle: string;
+  seoDescription: string;
+  seoKeywords: string;
+  indexingPolicy: "index" | "noindex";
+  updatedAt: string;
+  blockCount: number;
+}
+
+export interface CmsPageDetail extends CmsPageRow {
+  blocks: PublicPageBlock[];
+}
+
 const DEMO_ME: Me = {
   id: "usr_admin",
   displayName: "Asha Rao",
@@ -504,6 +523,14 @@ export const api = {
   }): Promise<{ onHand: number; available: number }> =>
     demoMode ? demo({ onHand: 0, available: 0 }) : post("/v1/admin/inventory/adjustments", input),
 
+  clearInventory: (variantIds: string[]): Promise<{ clearedIds: string[]; count: number }> =>
+    demoMode
+      ? demo({ clearedIds: variantIds, count: variantIds.length })
+      : post("/v1/admin/inventory/bulk-clear", {
+          variantIds,
+          note: "Bulk cleared from the admin inventory table.",
+        }),
+
   orders: (): Promise<AdminOrderRow[]> =>
     demoMode
       ? demo(adminOrders)
@@ -635,8 +662,12 @@ export const api = {
         })
       : patch(`/v1/admin/farms/${id}`, input),
 
-  deleteFarm: (id: string): Promise<{ id: string; status: string }> =>
-    demoMode ? demo({ id, status: "archived" }) : del(`/v1/admin/farms/${id}`),
+  deleteFarm: (
+    id: string,
+  ): Promise<{ id: string; status: string; archivedProductCount: number }> =>
+    demoMode
+      ? demo({ id, status: "archived", archivedProductCount: 0 })
+      : del(`/v1/admin/farms/${id}`),
 
   createFarmOwner: (input: {
     email: string;
@@ -755,6 +786,51 @@ export const api = {
 
   updateSiteDocuments: (input: Partial<SiteDocuments>): Promise<SiteDocuments> =>
     demoMode ? demo(input as SiteDocuments) : patch("/v1/admin/site-documents", input),
+
+  cmsPages: (): Promise<CmsPageRow[]> =>
+    demoMode
+      ? demo([
+          {
+            id: homePage.id,
+            slug: homePage.slug,
+            title: homePage.title,
+            pageType: "landing",
+            templateKey: "modular",
+            status: "published",
+            seoTitle: homePage.seo.title,
+            seoDescription: homePage.seo.description,
+            seoKeywords: homePage.seo.keywords ?? "",
+            indexingPolicy: homePage.seo.indexing,
+            updatedAt: new Date().toISOString(),
+            blockCount: homePage.blocks.length,
+          },
+        ])
+      : get<{ items: CmsPageRow[] }>("/v1/admin/pages").then((body) => body.items),
+
+  cmsPage: (id: string): Promise<CmsPageDetail> =>
+    demoMode
+      ? demo({
+          id: homePage.id,
+          slug: homePage.slug,
+          title: homePage.title,
+          pageType: "landing",
+          templateKey: "modular",
+          status: "published",
+          seoTitle: homePage.seo.title,
+          seoDescription: homePage.seo.description,
+          seoKeywords: homePage.seo.keywords ?? "",
+          indexingPolicy: homePage.seo.indexing,
+          updatedAt: new Date().toISOString(),
+          blockCount: homePage.blocks.length,
+          blocks: homePage.blocks,
+        })
+      : get<CmsPageDetail>(`/v1/admin/pages/${id}`),
+
+  updateCmsPage: (
+    id: string,
+    input: Partial<CmsPageDetail> & { changeSummary?: string },
+  ): Promise<CmsPageDetail> =>
+    demoMode ? demo({ ...(input as CmsPageDetail), id }) : patch(`/v1/admin/pages/${id}`, input),
 
   highlights: (): Promise<AdminLinkedProduct[]> =>
     demoMode

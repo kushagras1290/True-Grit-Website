@@ -19,10 +19,12 @@ import { useToast } from "../components/toast";
 import {
   ApiError,
   api,
+  type CmsPageDetail,
   type AdminLinkedProduct,
   type SiteControl,
   type SiteDocuments,
 } from "../lib/api";
+import { formatDateTime } from "../lib/format";
 
 const imageUrlSchema = z
   .string()
@@ -98,6 +100,22 @@ const siteDocumentsSchema = z.object({
 });
 
 type SiteDocumentsForm = z.infer<typeof siteDocumentsSchema>;
+
+const cmsPageSchema = z.object({
+  title: z.string().min(3).max(180),
+  slug: z
+    .string()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and single hyphens"),
+  status: z.enum(["draft", "published", "unpublished", "archived"]),
+  indexingPolicy: z.enum(["index", "noindex"]),
+  seoTitle: z.string().max(160),
+  seoDescription: z.string().max(320),
+  seoKeywords: z.string().max(500),
+  blocksJson: z.string().min(2),
+  changeSummary: z.string().max(300),
+});
+
+type CmsPageForm = z.infer<typeof cmsPageSchema>;
 
 function defaultHeroSlides(data?: SiteControl): SiteForm["heroSlides"] {
   if (data?.heroSlides?.length) {
@@ -509,9 +527,215 @@ export function SiteControlPage() {
         </aside>
       </form>
 
+      <CmsPagesSection />
       <SiteDocumentsSection />
       <HighlightsSection />
     </div>
+  );
+}
+
+function cmsPageDefaults(page?: CmsPageDetail): CmsPageForm {
+  return {
+    title: page?.title ?? "",
+    slug: page?.slug ?? "",
+    status: (page?.status as CmsPageForm["status"]) ?? "published",
+    indexingPolicy: page?.indexingPolicy ?? "index",
+    seoTitle: page?.seoTitle ?? "",
+    seoDescription: page?.seoDescription ?? "",
+    seoKeywords: page?.seoKeywords ?? "",
+    blocksJson: page ? JSON.stringify(page.blocks, null, 2) : "[]",
+    changeSummary: "",
+  };
+}
+
+function CmsPagesSection() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const pages = useQuery({ queryKey: ["cms-pages"], queryFn: api.cmsPages });
+  const [selectedId, setSelectedId] = useState("");
+  const selected = useQuery({
+    queryKey: ["cms-page", selectedId],
+    queryFn: () => api.cmsPage(selectedId),
+    enabled: Boolean(selectedId),
+  });
+  const form = useForm<CmsPageForm>({
+    resolver: zodResolver(cmsPageSchema),
+    defaultValues: cmsPageDefaults(),
+  });
+
+  useEffect(() => {
+    const firstPageId = pages.data?.[0]?.id;
+    if (!selectedId && firstPageId) setSelectedId(firstPageId);
+  }, [pages.data, selectedId]);
+
+  useEffect(() => {
+    if (selected.data) form.reset(cmsPageDefaults(selected.data));
+  }, [form, selected.data]);
+
+  const mutation = useMutation({
+    mutationFn: (values: CmsPageForm) => {
+      let blocks: unknown;
+      try {
+        blocks = JSON.parse(values.blocksJson);
+      } catch {
+        throw new ApiError("Blocks JSON is not valid.", 422, "validation_error");
+      }
+      if (!Array.isArray(blocks)) {
+        throw new ApiError("Blocks JSON must be an array.", 422, "validation_error");
+      }
+      return api.updateCmsPage(selectedId, {
+        title: values.title,
+        slug: values.slug,
+        status: values.status,
+        indexingPolicy: values.indexingPolicy,
+        seoTitle: values.seoTitle,
+        seoDescription: values.seoDescription,
+        seoKeywords: values.seoKeywords,
+        blocks: blocks as CmsPageDetail["blocks"],
+        changeSummary: values.changeSummary || "Updated CMS page from admin.",
+      });
+    },
+    onSuccess: async (result) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["cms-pages"] }),
+        queryClient.invalidateQueries({ queryKey: ["cms-page", result.id] }),
+      ]);
+      form.reset(cmsPageDefaults(result));
+      toast.success("CMS page saved.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not save CMS page."),
+  });
+
+  return (
+    <section className="mt-10 space-y-4 border-t border-line pt-5">
+      <div>
+        <h2 className="font-display text-lg text-ink">CMS pages & SEO</h2>
+        <p className="text-sm text-ink-muted">
+          Edit CMS page metadata, indexing and page blocks. Homepage quick controls above still
+          update the same homepage record.
+        </p>
+      </div>
+      {pages.isError ? (
+        <EmptyState
+          title="CMS pages unavailable"
+          hint="Requires pages.view permission and a connected API."
+        />
+      ) : (
+        <div className="grid gap-6 xl:grid-cols-[20rem_minmax(0,1fr)]">
+          <div className="space-y-3">
+            {pages.isLoading ? (
+              <p className="text-sm text-ink-muted">Loading CMS pages...</p>
+            ) : (pages.data ?? []).length === 0 ? (
+              <EmptyState title="No CMS pages found" hint="No page records have been seeded." />
+            ) : (
+              (pages.data ?? []).map((page) => (
+                <button
+                  key={page.id}
+                  type="button"
+                  className={`block w-full rounded-md border px-3 py-3 text-left text-sm ${
+                    selectedId === page.id
+                      ? "border-brand bg-subtle/60"
+                      : "border-line bg-surface hover:bg-subtle/40"
+                  }`}
+                  onClick={() => setSelectedId(page.id)}
+                >
+                  <span className="block font-medium text-ink">{page.title}</span>
+                  <span className="mt-1 block text-xs text-ink-muted">/{page.slug}</span>
+                  <span className="mt-2 flex items-center justify-between gap-2">
+                    <StatusPill status={page.status} />
+                    <span className="text-xs text-ink-muted">{page.blockCount} blocks</span>
+                  </span>
+                </button>
+              ))
+            )}
+          </div>
+
+          {selected.isLoading ? (
+            <p className="text-sm text-ink-muted">Loading selected page...</p>
+          ) : selected.isError ? (
+            <EmptyState
+              title="Page unavailable"
+              hint="The selected CMS page could not be loaded."
+            />
+          ) : selected.data ? (
+            <form
+              className="space-y-5"
+              onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
+            >
+              <div className="grid gap-4 md:grid-cols-2">
+                <Field
+                  label="Title"
+                  htmlFor="cms-title"
+                  error={form.formState.errors.title?.message}
+                >
+                  <Input id="cms-title" {...form.register("title")} />
+                </Field>
+                <Field label="Slug" htmlFor="cms-slug" error={form.formState.errors.slug?.message}>
+                  <Input id="cms-slug" {...form.register("slug")} />
+                </Field>
+                <Field label="Status" htmlFor="cms-status">
+                  <Select id="cms-status" {...form.register("status")}>
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                    <option value="unpublished">Unpublished</option>
+                    <option value="archived">Archived</option>
+                  </Select>
+                </Field>
+                <Field label="Search indexing" htmlFor="cms-indexing">
+                  <Select id="cms-indexing" {...form.register("indexingPolicy")}>
+                    <option value="index">Index</option>
+                    <option value="noindex">No index</option>
+                  </Select>
+                </Field>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <Field
+                  label="SEO title"
+                  htmlFor="cms-seo-title"
+                  error={form.formState.errors.seoTitle?.message}
+                >
+                  <Input id="cms-seo-title" {...form.register("seoTitle")} />
+                </Field>
+                <Field label="SEO keywords" htmlFor="cms-seo-keywords">
+                  <Input id="cms-seo-keywords" {...form.register("seoKeywords")} />
+                </Field>
+              </div>
+              <Field label="SEO description" htmlFor="cms-seo-description">
+                <Textarea id="cms-seo-description" rows={3} {...form.register("seoDescription")} />
+              </Field>
+              <Field
+                label="Page blocks JSON"
+                htmlFor="cms-blocks"
+                error={form.formState.errors.blocksJson?.message}
+              >
+                <Textarea
+                  id="cms-blocks"
+                  rows={18}
+                  className="font-mono text-xs"
+                  {...form.register("blocksJson")}
+                />
+              </Field>
+              <Field label="Change summary" htmlFor="cms-change-summary">
+                <Input
+                  id="cms-change-summary"
+                  placeholder="What changed?"
+                  {...form.register("changeSummary")}
+                />
+              </Field>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="text-xs text-ink-muted">
+                  Last updated {formatDateTime(selected.data.updatedAt)}
+                </p>
+                <Button type="submit" variant="primary" disabled={mutation.isPending}>
+                  {mutation.isPending ? "Saving..." : "Save CMS page"}
+                </Button>
+              </div>
+            </form>
+          ) : null}
+        </div>
+      )}
+    </section>
   );
 }
 

@@ -98,6 +98,77 @@ async def adjust_inventory(
     }
 
 
+async def clear_inventory_levels(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    variant_ids: list[str],
+    note: str,
+) -> dict[str, Any]:
+    note = (note or "").strip()
+    if len(note) < _MIN_NOTE_LENGTH:
+        raise ValidationAppError("A note of at least 5 characters is required for the audit trail.")
+    if len(note) > _MAX_NOTE_LENGTH:
+        raise ValidationAppError("Note must be at most 300 characters.")
+
+    unique_variant_ids = list(dict.fromkeys(variant_ids))
+    if not unique_variant_ids:
+        raise ValidationAppError("Select at least one inventory row.")
+
+    now = utc_now_iso()
+    statements: list[tuple[str, tuple[Any, ...]]] = []
+    cleared: list[str] = []
+    for variant_id in unique_variant_ids:
+        level = await _resolve_level(db, variant_id, None)
+        new_on_hand = level["reserved"]
+        delta = new_on_hand - level["on_hand"]
+        resolved_location = level["location_id"]
+        statements.append(
+            (
+                "UPDATE inventory_levels SET on_hand = ?, version = version + 1, updated_at = ?"
+                " WHERE variant_id = ? AND location_id = ?",
+                (new_on_hand, now, variant_id, resolved_location),
+            )
+        )
+        if delta != 0:
+            statements.append(
+                (
+                    "INSERT INTO inventory_movements"
+                    " (id, variant_id, location_id, movement_type, quantity_delta,"
+                    "  reason_code, note, actor_id, created_at)"
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    (
+                        new_id("imv"),
+                        variant_id,
+                        resolved_location,
+                        "write_off",
+                        delta,
+                        "bulk_clear",
+                        note,
+                        actor.user_id,
+                        now,
+                    ),
+                )
+            )
+        statements.append(
+            audit_statement(
+                action="inventory.cleared",
+                entity_type="inventory_level",
+                entity_id=variant_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                before={"on_hand": level["on_hand"], "reserved": level["reserved"]},
+                after={"on_hand": new_on_hand, "reserved": level["reserved"], "delta": delta},
+            )
+        )
+        cleared.append(variant_id)
+
+    await db.batch(statements)
+    return {"clearedIds": cleared, "count": len(cleared)}
+
+
 async def _resolve_level(db: Database, variant_id: str, location_id: str | None) -> dict[str, Any]:
     if location_id:
         level = await db.fetch_one(

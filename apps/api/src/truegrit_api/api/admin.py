@@ -60,7 +60,7 @@ from truegrit_api.services.catalogue import (
 )
 from truegrit_api.services.contact import contactable_email
 from truegrit_api.services.email import send_email
-from truegrit_api.services.inventory import adjust_inventory
+from truegrit_api.services.inventory import adjust_inventory, clear_inventory_levels
 from truegrit_api.services.media import save_image_bytes, save_image_upload
 from truegrit_api.services.orders import update_order_status
 from truegrit_api.services.password_reset import confirm_password_reset, request_password_reset
@@ -341,6 +341,18 @@ class SiteDocumentUpdate(_CamelModel):
     llms_txt: str | None = Field(default=None, max_length=40_000)
 
 
+class CmsPageUpdateRequest(_CamelModel):
+    title: str | None = Field(default=None, min_length=3, max_length=180)
+    slug: str | None = Field(default=None, max_length=120)
+    status: str | None = Field(default=None, max_length=24)
+    seo_title: str | None = Field(default=None, max_length=160)
+    seo_description: str | None = Field(default=None, max_length=320)
+    seo_keywords: str | None = Field(default=None, max_length=500)
+    indexing_policy: str | None = Field(default=None, max_length=16)
+    blocks: list[dict[str, Any]] | None = Field(default=None, max_length=100)
+    change_summary: str | None = Field(default=None, max_length=300)
+
+
 class ImageUploadRequest(_CamelModel):
     filename: str = Field(min_length=1, max_length=180)
     content_type: str = Field(min_length=1, max_length=80)
@@ -572,9 +584,7 @@ async def update_site_control(
                 WHERE id = ?
                 """,
                 (
-                    int(fields["announcement_active"])
-                    if "announcement_active" in fields
-                    else None,
+                    int(fields["announcement_active"]) if "announcement_active" in fields else None,
                     fields.get("announcement_message"),
                     fields.get("announcement_path"),
                     now,
@@ -653,6 +663,206 @@ async def update_site_documents(
         await db.batch(statements)
     rows = await SiteDocumentRepository(db).list()
     return await _site_document_payload(db, rows)
+
+
+async def _page_detail(db: Database, page_id: str) -> dict[str, Any] | None:
+    page = await db.fetch_one(
+        """
+        SELECT p.id, p.slug, p.title, p.page_type, p.template_key, p.status,
+               p.seo_title, p.seo_description, p.seo_keywords, p.indexing_policy,
+               p.updated_at, p.published_version_id,
+               COALESCE(v.content_json, latest.content_json, '{"blocks":[]}') AS content_json
+        FROM pages p
+        LEFT JOIN page_versions v ON v.id = p.published_version_id
+        LEFT JOIN (
+          SELECT pv.page_id, pv.content_json
+          FROM page_versions pv
+          JOIN (
+            SELECT page_id, MAX(version_number) AS version_number
+            FROM page_versions
+            GROUP BY page_id
+          ) mx ON mx.page_id = pv.page_id AND mx.version_number = pv.version_number
+        ) latest ON latest.page_id = p.id
+        WHERE p.id = ? AND p.archived_at IS NULL
+        """,
+        (page_id,),
+    )
+    if page is None:
+        return None
+    content = json.loads(page["content_json"] or '{"blocks":[]}')
+    blocks = content.get("blocks", [])
+    if not isinstance(blocks, list):
+        blocks = []
+    return {
+        "id": page["id"],
+        "slug": page["slug"],
+        "title": page["title"],
+        "pageType": page["page_type"],
+        "templateKey": page["template_key"],
+        "status": page["status"],
+        "seoTitle": page["seo_title"] or "",
+        "seoDescription": page["seo_description"] or "",
+        "seoKeywords": page["seo_keywords"] or "",
+        "indexingPolicy": page["indexing_policy"],
+        "updatedAt": page["updated_at"],
+        "blockCount": len(blocks),
+        "blocks": blocks,
+    }
+
+
+@router.get("/pages")
+async def list_cms_pages(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("pages.view"))],
+) -> Any:
+    rows = await db.fetch_all(
+        """
+        SELECT p.id, p.slug, p.title, p.page_type, p.template_key, p.status,
+               p.seo_title, p.seo_description, p.seo_keywords, p.indexing_policy,
+               p.updated_at, COALESCE(v.content_json, '{"blocks":[]}') AS content_json
+        FROM pages p
+        LEFT JOIN page_versions v ON v.id = p.published_version_id
+        WHERE p.archived_at IS NULL
+        ORDER BY CASE WHEN p.slug = 'home' THEN 0 ELSE 1 END, p.slug
+        """
+    )
+    items = []
+    for row in rows:
+        content = json.loads(row["content_json"] or '{"blocks":[]}')
+        blocks = content.get("blocks", [])
+        items.append(
+            {
+                "id": row["id"],
+                "slug": row["slug"],
+                "title": row["title"],
+                "pageType": row["page_type"],
+                "templateKey": row["template_key"],
+                "status": row["status"],
+                "seoTitle": row["seo_title"] or "",
+                "seoDescription": row["seo_description"] or "",
+                "seoKeywords": row["seo_keywords"] or "",
+                "indexingPolicy": row["indexing_policy"],
+                "updatedAt": row["updated_at"],
+                "blockCount": len(blocks) if isinstance(blocks, list) else 0,
+            }
+        )
+    return {"items": items}
+
+
+@router.get("/pages/{page_id}")
+async def get_cms_page(
+    page_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("pages.view"))],
+) -> Any:
+    page = await _page_detail(db, page_id)
+    if page is None:
+        raise NotFoundError("Page not found.")
+    return page
+
+
+@router.patch("/pages/{page_id}")
+async def update_cms_page(
+    page_id: str,
+    payload: CmsPageUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("pages.edit"))],
+) -> Any:
+    current = await db.fetch_one(
+        "SELECT * FROM pages WHERE id = ? AND archived_at IS NULL",
+        (page_id,),
+    )
+    if current is None:
+        raise NotFoundError("Page not found.")
+    fields = payload.model_dump(exclude_unset=True)
+    updates: dict[str, Any] = {}
+    if "title" in fields and payload.title is not None:
+        updates["title"] = payload.title.strip()
+    if "slug" in fields and payload.slug is not None:
+        slug = validate_slug(payload.slug.strip())
+        existing = await db.fetch_one(
+            "SELECT id FROM pages WHERE slug = ? AND id != ?", (slug, page_id)
+        )
+        if existing is not None:
+            raise ValidationAppError("A page with that slug already exists.")
+        updates["slug"] = slug
+    if "status" in fields and payload.status is not None:
+        if payload.status not in {"draft", "published", "unpublished", "archived"}:
+            raise ValidationAppError("Unsupported page status.")
+        updates["status"] = payload.status
+    if "indexing_policy" in fields and payload.indexing_policy is not None:
+        if payload.indexing_policy not in {"index", "noindex"}:
+            raise ValidationAppError("Unsupported indexing policy.")
+        updates["indexing_policy"] = payload.indexing_policy
+    for key in ("seo_title", "seo_description", "seo_keywords"):
+        if key in fields:
+            updates[key] = fields[key] or None
+
+    now = utc_now_iso()
+    statements: list[tuple[str, tuple[Any, ...]]] = []
+    next_status = updates.get("status", current["status"])
+    if payload.blocks is not None:
+        next_version_row = await db.fetch_one(
+            "SELECT COALESCE(MAX(version_number), 0) + 1 AS version_number"
+            " FROM page_versions WHERE page_id = ?",
+            (page_id,),
+        )
+        version_id = new_id("pgv")
+        workflow_state = "published" if next_status == "published" else "draft"
+        statements.append(
+            (
+                """
+                INSERT INTO page_versions (
+                  id, page_id, version_number, content_json, change_summary,
+                  workflow_state, created_at, created_by, published_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    version_id,
+                    page_id,
+                    int(next_version_row["version_number"]),
+                    json.dumps({"blocks": payload.blocks}, separators=(",", ":")),
+                    payload.change_summary or "Updated from admin CMS editor.",
+                    workflow_state,
+                    now,
+                    principal.user_id,
+                    now if workflow_state == "published" else None,
+                ),
+            )
+        )
+        if workflow_state == "published":
+            updates["published_version_id"] = version_id
+    if updates:
+        updates["updated_at"] = now
+        updates["updated_by"] = principal.user_id
+        assignments = ", ".join(f"{key} = ?" for key in updates)
+        statements.append(
+            (f"UPDATE pages SET {assignments} WHERE id = ?", (*updates.values(), page_id))
+        )
+    if statements:
+        statements.append(
+            audit_statement(
+                action="page.updated",
+                entity_type="page",
+                entity_id=page_id,
+                actor_id=principal.user_id,
+                request_id=_request_id(request),
+                created_at=now,
+                before={"status": current["status"], "slug": current["slug"]},
+                after={
+                    "status": next_status,
+                    "slug": updates.get("slug", current["slug"]),
+                    "blocksUpdated": payload.blocks is not None,
+                },
+            )
+        )
+        await db.batch(statements)
+    page = await _page_detail(db, page_id)
+    if page is None:
+        raise NotFoundError("Page not found.")
+    return page
 
 
 class HighlightsUpdateRequest(_CamelModel):
@@ -980,9 +1190,7 @@ async def update_product_endpoint(
     release_countries = fields.pop("release_countries", None)
     if release_scope is None and release_countries is not None:
         # Countries sent alone keep the product's current scope.
-        row = await db.fetch_one(
-            "SELECT release_scope FROM products WHERE id = ?", (product_id,)
-        )
+        row = await db.fetch_one("SELECT release_scope FROM products WHERE id = ?", (product_id,))
         release_scope = row["release_scope"] if row else "global"
     if release_scope is not None:
         await set_product_release(
@@ -1197,6 +1405,11 @@ class InventoryAdjustRequest(_CamelModel):
     note: str = Field(min_length=1, max_length=300)
 
 
+class InventoryBulkClearRequest(_CamelModel):
+    variant_ids: list[str] = Field(min_length=1, max_length=100)
+    note: str = Field(min_length=5, max_length=300)
+
+
 @router.post("/inventory/adjustments")
 async def adjust_inventory_endpoint(
     payload: InventoryAdjustRequest,
@@ -1222,6 +1435,24 @@ async def adjust_inventory_endpoint(
         variant_id=variant_id,
         quantity_delta=payload.quantity_delta,
         reason_code=payload.reason_code,
+        note=payload.note,
+    )
+
+
+@router.post("/inventory/bulk-clear")
+async def bulk_clear_inventory_endpoint(
+    payload: InventoryBulkClearRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("inventory.adjust"))],
+) -> Any:
+    for variant_id in payload.variant_ids:
+        await _assert_variant_scope(db, variant_id, principal)
+    return await clear_inventory_levels(
+        db,
+        principal,
+        _request_id(request),
+        variant_ids=payload.variant_ids,
         note=payload.note,
     )
 
@@ -1719,12 +1950,13 @@ async def delete_farm_endpoint(
     )
     if current is None:
         raise NotFoundError("Farm not found.")
-    product_count = await db.fetch_one(
-        "SELECT COUNT(*) AS count FROM products WHERE farm_id = ? AND archived_at IS NULL",
+    product_rows = await db.fetch_all(
+        "SELECT id FROM products WHERE farm_id = ? AND archived_at IS NULL",
         (farm_id,),
     )
-    if product_count["count"] > 0:
-        raise ValidationAppError("Move or archive this farm's products before deleting it.")
+    request_id = _request_id(request)
+    for product in product_rows:
+        await archive_product(db, principal, request_id, product["id"])
     now = utc_now_iso()
     await db.batch(
         [
@@ -1737,14 +1969,17 @@ async def delete_farm_endpoint(
                 entity_type="farm",
                 entity_id=farm_id,
                 actor_id=principal.user_id,
-                request_id=_request_id(request),
+                request_id=request_id,
                 created_at=now,
                 before={"status": current["status"]},
-                after={"status": "archived"},
+                after={
+                    "status": "archived",
+                    "archivedProductCount": len(product_rows),
+                },
             ),
         ]
     )
-    return {"id": farm_id, "status": "archived"}
+    return {"id": farm_id, "status": "archived", "archivedProductCount": len(product_rows)}
 
 
 @router.post("/farm-owners")

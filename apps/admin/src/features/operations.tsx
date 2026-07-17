@@ -69,6 +69,8 @@ export function InventoryPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["inventory"], queryFn: api.inventory });
+  const [selectedVariantIds, setSelectedVariantIds] = useState<string[]>([]);
+  const [confirmingClear, setConfirmingClear] = useState(false);
 
   const form = useForm<AdjustmentForm>({
     resolver: zodResolver(adjustmentSchema),
@@ -91,17 +93,79 @@ export function InventoryPage() {
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not record the adjustment."),
   });
+  const clearMutation = useMutation({
+    mutationFn: (variantIds: string[]) => api.clearInventory(variantIds),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: ["inventory"] });
+      setSelectedVariantIds([]);
+      setConfirmingClear(false);
+      toast.success(`${result.count} inventory row${result.count === 1 ? "" : "s"} cleared.`);
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not clear inventory rows."),
+  });
+
+  const rows = data ?? [];
+  const allSelected = rows.length > 0 && selectedVariantIds.length === rows.length;
+
+  function toggleInventoryRow(variantId: string) {
+    setSelectedVariantIds((current) =>
+      current.includes(variantId)
+        ? current.filter((id) => id !== variantId)
+        : [...current, variantId],
+    );
+  }
+
+  function toggleAllInventoryRows() {
+    setSelectedVariantIds(allSelected ? [] : rows.map((row) => row.variantId));
+  }
 
   return (
     <div>
       <PageHeader
         title="Inventory"
         description="Available is always derived (on hand − reserved). Every change is a movement."
+        actions={
+          selectedVariantIds.length > 0 ? (
+            <PermissionGate permission="inventory.adjust">
+              <Button
+                variant="destructive"
+                disabled={clearMutation.isPending}
+                onClick={() => setConfirmingClear(true)}
+              >
+                Delete selected ({selectedVariantIds.length})
+              </Button>
+            </PermissionGate>
+          ) : null
+        }
       />
+      {confirmingClear ? (
+        <ConfirmDialog
+          title={
+            selectedVariantIds.length === 1
+              ? "Delete inventory row"
+              : `Delete ${selectedVariantIds.length} inventory rows`
+          }
+          description="Selected rows will be cleared to reserved stock, making available stock zero while preserving reservations, movement history and audit logs."
+          confirmLabel="Delete selected"
+          pendingLabel="Deleting..."
+          isPending={clearMutation.isPending}
+          onCancel={() => setConfirmingClear(false)}
+          onConfirm={() => clearMutation.mutate(selectedVariantIds)}
+        />
+      ) : null}
       <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
         <DataTableShell>
           <thead className="bg-canvas">
             <tr>
+              <Th>
+                <input
+                  type="checkbox"
+                  aria-label="Select all inventory rows"
+                  checked={allSelected}
+                  onChange={toggleAllInventoryRows}
+                />
+              </Th>
               <Th>Product</Th>
               <Th>Variant</Th>
               <Th>SKU</Th>
@@ -112,10 +176,10 @@ export function InventoryPage() {
             </tr>
           </thead>
           {isLoading ? (
-            <LoadingRows columns={7} />
+            <LoadingRows columns={8} />
           ) : (
             <tbody>
-              {(data ?? []).map((row) => {
+              {rows.map((row) => {
                 const available = row.onHand - row.reserved;
                 const status =
                   available <= 0
@@ -125,6 +189,14 @@ export function InventoryPage() {
                       : "in_stock";
                 return (
                   <tr key={row.variantId} className="border-t border-line">
+                    <Td>
+                      <input
+                        type="checkbox"
+                        aria-label={`Select ${row.productName} ${row.variantName}`}
+                        checked={selectedVariantIds.includes(row.variantId)}
+                        onChange={() => toggleInventoryRow(row.variantId)}
+                      />
+                    </Td>
                     <Td className="font-medium">{row.productName}</Td>
                     <Td className="text-ink-muted">{row.variantName}</Td>
                     <Td>{row.sku}</Td>
@@ -351,10 +423,14 @@ export function FarmsPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (farmId: string) => api.deleteFarm(farmId),
-    onSuccess: async () => {
+    onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: ["farms"] });
       setConfirmingDelete(null);
-      toast.success("Farm deleted from active list.");
+      toast.success(
+        result.archivedProductCount > 0
+          ? `Farm deleted and ${result.archivedProductCount} product${result.archivedProductCount === 1 ? "" : "s"} archived.`
+          : "Farm deleted from active list.",
+      );
     },
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not delete the farm."),
@@ -380,10 +456,12 @@ export function FarmsPage() {
           title="Delete farm"
           description={
             confirmingDelete.productCount > 0
-              ? `${confirmingDelete.name} has ${confirmingDelete.productCount} active product${confirmingDelete.productCount === 1 ? "" : "s"}. Move or archive those products first.`
+              ? `${confirmingDelete.name} has ${confirmingDelete.productCount} active product${confirmingDelete.productCount === 1 ? "" : "s"}. Deleting this farm will also archive those products and remove them from the storefront.`
               : `${confirmingDelete.name} will be removed from the active farm list.`
           }
-          confirmLabel="Delete farm"
+          confirmLabel={
+            confirmingDelete.productCount > 0 ? "Delete farm and products" : "Delete farm"
+          }
           pendingLabel="Deleting..."
           isPending={deleteMutation.isPending}
           onCancel={() => setConfirmingDelete(null)}
@@ -1094,7 +1172,7 @@ function AddFarmOwnerModal({ onClose }: { onClose: () => void }) {
 export function UsersPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery({ queryKey: ["users"], queryFn: api.users });
+  const { data, isLoading, isError } = useQuery({ queryKey: ["users"], queryFn: api.users });
   const roles = useQuery({ queryKey: ["roles"], queryFn: api.roles });
   const [inviting, setInviting] = useState(false);
   const [addingOwner, setAddingOwner] = useState(false);
@@ -1211,113 +1289,164 @@ export function UsersPage() {
         />
       ) : null}
 
-      <DataTableShell>
-        <thead className="bg-canvas">
-          <tr>
-            <Th>
-              <input
-                type="checkbox"
-                aria-label="Select all users"
-                checked={allSelected}
-                onChange={toggleAllUsers}
-              />
-            </Th>
-            <Th>Name</Th>
-            <Th>Email</Th>
-            <Th>Status</Th>
-            <Th>Roles</Th>
-            <Th>Last sign-in</Th>
-            <Th>Actions</Th>
-          </tr>
-        </thead>
-        {isLoading ? (
-          <LoadingRows columns={7} />
+      {isError ? (
+        <EmptyState
+          title="Users unavailable"
+          hint="Check that this account has users.view permission and that the API is connected."
+        />
+      ) : null}
+
+      {!isError ? (
+        <DataTableShell>
+          <thead className="bg-canvas">
+            <tr>
+              <Th>
+                <input
+                  type="checkbox"
+                  aria-label="Select all users"
+                  checked={allSelected}
+                  onChange={toggleAllUsers}
+                />
+              </Th>
+              <Th>Name</Th>
+              <Th>Email</Th>
+              <Th>Status</Th>
+              <Th>Roles</Th>
+              <Th>Last sign-in</Th>
+              <Th>Actions</Th>
+            </tr>
+          </thead>
+          {isLoading ? (
+            <LoadingRows columns={7} />
+          ) : (
+            <tbody>
+              {users.length === 0 ? (
+                <tr className="border-t border-line">
+                  <Td colSpan={7}>
+                    <EmptyState
+                      title="No users found"
+                      hint="Invite a user or add a farm owner to populate this page."
+                    />
+                  </Td>
+                </tr>
+              ) : (
+                users.map((user) => (
+                  <tr key={user.id} className="border-t border-line">
+                    <Td>
+                      <input
+                        type="checkbox"
+                        aria-label={`Select ${user.displayName}`}
+                        checked={selectedUserIds.includes(user.id)}
+                        onChange={() => toggleUser(user.id)}
+                      />
+                    </Td>
+                    <Td className="font-medium">{user.displayName}</Td>
+                    <Td className="text-ink-muted">{user.email}</Td>
+                    <Td>
+                      <StatusPill status={user.status} />
+                    </Td>
+                    <Td>{user.roles.join(", ") || "—"}</Td>
+                    <Td>{user.lastSignInAt ? formatDateTime(user.lastSignInAt) : "Never"}</Td>
+                    <Td>
+                      <PermissionGate
+                        permission="users.manage_roles"
+                        fallback={<span className="text-xs text-ink-muted">—</span>}
+                      >
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Select
+                            aria-label={`Role for ${user.displayName}`}
+                            value={user.roleIds?.[0] ?? ""}
+                            disabled={roles.isLoading || roleMutation.isPending}
+                            onChange={(event) =>
+                              roleMutation.mutate({ id: user.id, roleId: event.target.value })
+                            }
+                            className="min-w-44"
+                          >
+                            <option value="">No role</option>
+                            {(roles.data ?? []).map((role) => (
+                              <option key={role.id} value={role.id}>
+                                {role.name}
+                              </option>
+                            ))}
+                          </Select>
+                          <button
+                            type="button"
+                            className="text-sm text-brand underline-offset-4 hover:underline"
+                            onClick={() => setEditingRoles(user)}
+                          >
+                            Roles
+                          </button>
+                          {user.roles.some((role) => role.toLowerCase().includes("farm owner")) ? (
+                            <button
+                              type="button"
+                              className="text-sm text-ink-muted underline-offset-4 hover:text-brand hover:underline"
+                              onClick={() => setResettingPassword(user)}
+                            >
+                              Reset password
+                            </button>
+                          ) : null}
+                          <button
+                            type="button"
+                            className="text-sm text-ink-muted underline-offset-4 hover:text-danger hover:underline"
+                            onClick={() => setConfirmingDelete([user])}
+                            disabled={deleteMutation.isPending}
+                          >
+                            Delete
+                          </button>
+                          <button
+                            type="button"
+                            className="text-sm text-ink-muted underline-offset-4 hover:text-danger hover:underline"
+                            onClick={() =>
+                              statusMutation.mutate({
+                                id: user.id,
+                                status: user.status === "disabled" ? "active" : "disabled",
+                              })
+                            }
+                            disabled={statusMutation.isPending}
+                          >
+                            {user.status === "disabled" ? "Enable" : "Disable"}
+                          </button>
+                        </div>
+                      </PermissionGate>
+                    </Td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          )}
+        </DataTableShell>
+      ) : null}
+
+      <section className="mt-8 space-y-3 border-t border-line pt-5">
+        <div>
+          <h2 className="font-display text-lg text-ink">Role catalogue</h2>
+          <p className="text-sm text-ink-muted">
+            These roles define the permission sets available when inviting or editing users.
+          </p>
+        </div>
+        {roles.isLoading ? (
+          <p className="text-sm text-ink-muted">Loading roles...</p>
+        ) : roles.isError ? (
+          <EmptyState
+            title="Roles unavailable"
+            hint="The role list could not be loaded from the API."
+          />
+        ) : (roles.data ?? []).length === 0 ? (
+          <EmptyState title="No roles available" hint="Roles have not been seeded yet." />
         ) : (
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id} className="border-t border-line">
-                <Td>
-                  <input
-                    type="checkbox"
-                    aria-label={`Select ${user.displayName}`}
-                    checked={selectedUserIds.includes(user.id)}
-                    onChange={() => toggleUser(user.id)}
-                  />
-                </Td>
-                <Td className="font-medium">{user.displayName}</Td>
-                <Td className="text-ink-muted">{user.email}</Td>
-                <Td>
-                  <StatusPill status={user.status} />
-                </Td>
-                <Td>{user.roles.join(", ") || "—"}</Td>
-                <Td>{user.lastSignInAt ? formatDateTime(user.lastSignInAt) : "Never"}</Td>
-                <Td>
-                  <PermissionGate
-                    permission="users.manage_roles"
-                    fallback={<span className="text-xs text-ink-muted">—</span>}
-                  >
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Select
-                        aria-label={`Role for ${user.displayName}`}
-                        value={user.roleIds?.[0] ?? ""}
-                        disabled={roles.isLoading || roleMutation.isPending}
-                        onChange={(event) =>
-                          roleMutation.mutate({ id: user.id, roleId: event.target.value })
-                        }
-                        className="min-w-44"
-                      >
-                        <option value="">No role</option>
-                        {(roles.data ?? []).map((role) => (
-                          <option key={role.id} value={role.id}>
-                            {role.name}
-                          </option>
-                        ))}
-                      </Select>
-                      <button
-                        type="button"
-                        className="text-sm text-brand underline-offset-4 hover:underline"
-                        onClick={() => setEditingRoles(user)}
-                      >
-                        Roles
-                      </button>
-                      {user.roles.some((role) => role.toLowerCase().includes("farm owner")) ? (
-                        <button
-                          type="button"
-                          className="text-sm text-ink-muted underline-offset-4 hover:text-brand hover:underline"
-                          onClick={() => setResettingPassword(user)}
-                        >
-                          Reset password
-                        </button>
-                      ) : null}
-                      <button
-                        type="button"
-                        className="text-sm text-ink-muted underline-offset-4 hover:text-danger hover:underline"
-                        onClick={() => setConfirmingDelete([user])}
-                        disabled={deleteMutation.isPending}
-                      >
-                        Delete
-                      </button>
-                      <button
-                        type="button"
-                        className="text-sm text-ink-muted underline-offset-4 hover:text-danger hover:underline"
-                        onClick={() =>
-                          statusMutation.mutate({
-                            id: user.id,
-                            status: user.status === "disabled" ? "active" : "disabled",
-                          })
-                        }
-                        disabled={statusMutation.isPending}
-                      >
-                        {user.status === "disabled" ? "Enable" : "Disable"}
-                      </button>
-                    </div>
-                  </PermissionGate>
-                </Td>
-              </tr>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {(roles.data ?? []).map((role) => (
+              <div key={role.id} className="rounded-md border border-line bg-surface p-4">
+                <p className="font-medium text-ink">{role.name}</p>
+                <p className="mt-1 text-xs text-ink-muted">{role.key}</p>
+                {role.description ? (
+                  <p className="mt-2 text-sm leading-6 text-ink-muted">{role.description}</p>
+                ) : null}
+              </div>
             ))}
-          </tbody>
+          </div>
         )}
-      </DataTableShell>
+      </section>
     </div>
   );
 }

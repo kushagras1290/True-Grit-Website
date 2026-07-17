@@ -65,9 +65,7 @@ def test_product_create_edit_publish_archive(client: TestClient, db: SQLiteDatab
     assert product["name"] == "Test Turmeric Powder"
     assert product["imageUrl"] == "https://images.example.test/turmeric.jpg"
     list_items = client.get("/v1/admin/products").json()["items"]
-    list_product = next(
-        item for item in list_items if item["id"] == product_id
-    )
+    list_product = next(item for item in list_items if item["id"] == product_id)
     assert list_product["imageUrl"] == "https://images.example.test/turmeric.jpg"
     assert list_product["imageAlt"] == "Fresh turmeric roots on a table"
     public_product = client.get(f"/v1/public/products/{product['slug']}").json()
@@ -251,9 +249,7 @@ def test_user_cannot_disable_self(client: TestClient, db: SQLiteDatabase):
     assert response.status_code == 422
 
 
-def test_owner_can_delete_users_individually_and_in_bulk(
-    client: TestClient, db: SQLiteDatabase
-):
+def test_owner_can_delete_users_individually_and_in_bulk(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
     role_id = "rol_inventory"
     first = client.post(
@@ -355,15 +351,19 @@ def test_owner_can_update_and_delete_empty_farm(client: TestClient, db: SQLiteDa
     assert farm_id not in {farm["id"] for farm in farms}
 
 
-def test_owner_cannot_delete_farm_with_active_products(client: TestClient, db: SQLiteDatabase):
+def test_owner_can_delete_farm_with_active_products(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
     response = client.delete("/v1/admin/farms/farm_devika")
-    assert response.status_code == 422
+    assert response.status_code == 200
+    assert response.json()["archivedProductCount"] == 1
+    product = db._conn.execute(
+        "SELECT status, archived_at FROM products WHERE id = 'prd_alphonso'"
+    ).fetchone()
+    assert product["status"] == "archived"
+    assert product["archived_at"] is not None
 
 
-def test_owner_can_issue_farm_owner_temporary_password(
-    client: TestClient, db: SQLiteDatabase
-):
+def test_owner_can_issue_farm_owner_temporary_password(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
     create_session(db, "usr_farmowner")
 
@@ -400,9 +400,7 @@ def test_owner_can_issue_farm_owner_temporary_password(
     assert temporary_password not in audit["after_summary_json"]
 
 
-def test_farm_owner_cannot_issue_temporary_password(
-    client: TestClient, db: SQLiteDatabase
-):
+def test_farm_owner_cannot_issue_temporary_password(client: TestClient, db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     response = client.post("/v1/admin/users/usr_farmowner/temporary-password")
     assert response.status_code == 403
@@ -540,3 +538,44 @@ def test_farm_owner_cannot_manage_site_control(client: TestClient, db: SQLiteDat
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     assert client.get("/v1/admin/site-control").status_code == 403
     assert client.patch("/v1/admin/site-control", json={"seoTitle": "Nope"}).status_code == 403
+
+
+def test_owner_can_manage_cms_page_seo_and_blocks(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    pages = client.get("/v1/admin/pages")
+    assert pages.status_code == 200
+    home = next(page for page in pages.json()["items"] if page["slug"] == "home")
+
+    detail = client.get(f"/v1/admin/pages/{home['id']}")
+    assert detail.status_code == 200
+    blocks = detail.json()["blocks"]
+    blocks.append(
+        {
+            "id": "blk_test_note",
+            "type": "rich_text",
+            "version": 1,
+            "enabled": True,
+            "props": {"paragraphs": ["Owner managed CMS block."]},
+        }
+    )
+    response = client.patch(
+        f"/v1/admin/pages/{home['id']}",
+        json={
+            "title": "Owner managed home",
+            "slug": "home",
+            "status": "published",
+            "seoTitle": "Owner CMS SEO",
+            "seoDescription": "Owner CMS SEO description.",
+            "seoKeywords": "cms, seo",
+            "indexingPolicy": "index",
+            "blocks": blocks,
+            "changeSummary": "Test CMS page edit.",
+        },
+    )
+    assert response.status_code == 200
+    assert response.json()["seoKeywords"] == "cms, seo"
+
+    public_home = client.get("/v1/public/home").json()
+    assert public_home["title"] == "Owner managed home"
+    assert public_home["seo"]["title"] == "Owner CMS SEO"
+    assert public_home["blocks"][-1]["props"]["paragraphs"] == ["Owner managed CMS block."]

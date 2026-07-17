@@ -153,9 +153,7 @@ def test_product_release_validation(client: TestClient, db: SQLiteDatabase):
         json={"releaseScope": "selected", "releaseCountries": ["USA"]},
     )
     assert bad_code.status_code == 422
-    bad_scope = client.patch(
-        "/v1/admin/products/prd_rajma", json={"releaseScope": "everywhere"}
-    )
+    bad_scope = client.patch("/v1/admin/products/prd_rajma", json={"releaseScope": "everywhere"})
     assert bad_scope.status_code == 422
 
 
@@ -190,9 +188,7 @@ def test_product_links_roundtrip(client: TestClient, db: SQLiteDatabase):
 def test_highlights_admin_roundtrip(client: TestClient, db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
 
-    response = client.put(
-        "/v1/admin/highlights", json={"productIds": ["prd_ragi", "prd_alphonso"]}
-    )
+    response = client.put("/v1/admin/highlights", json={"productIds": ["prd_ragi", "prd_alphonso"]})
     assert response.status_code == 200, response.text
     assert [entry["id"] for entry in response.json()["items"]] == ["prd_ragi", "prd_alphonso"]
 
@@ -219,3 +215,31 @@ def test_inventory_view_permission(client: TestClient, db: SQLiteDatabase):
     assert items[0]["sku"] == "TRG-RJM-500"  # closest to reorder threshold sorts first
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
     assert client.get("/v1/admin/inventory").status_code == 403
+
+
+def test_inventory_bulk_clear_keeps_reserved_and_audits(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_ops"))
+    response = client.post(
+        "/v1/admin/inventory/bulk-clear",
+        json={
+            "variantIds": ["var_alphonso_1kg", "var_spinach_250g"],
+            "note": "Clear selected stock from admin.",
+        },
+    )
+    assert response.status_code == 200
+    assert response.json()["count"] == 2
+    row = db._conn.execute(
+        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+    ).fetchone()
+    assert row["on_hand"] == row["reserved"]
+    movement = db._conn.execute(
+        """
+        SELECT movement_type, reason_code
+        FROM inventory_movements
+        WHERE variant_id = 'var_alphonso_1kg'
+        ORDER BY created_at DESC
+        LIMIT 1
+        """
+    ).fetchone()
+    assert movement["movement_type"] == "write_off"
+    assert movement["reason_code"] == "bulk_clear"

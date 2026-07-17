@@ -8,6 +8,7 @@ import type {
   InputHTMLAttributes,
   ReactNode,
   SelectHTMLAttributes,
+  TdHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
 
@@ -199,6 +200,8 @@ export function ImagePreview({
 }) {
   const [failed, setFailed] = useState(false);
   const initial = label.trim().charAt(0).toUpperCase() || "?";
+  const apiUrl = ((import.meta.env.VITE_API_URL as string | undefined) ?? "").replace(/\/+$/, "");
+  const resolvedSrc = src.startsWith("/media/") && apiUrl ? `${apiUrl}${src}` : src;
 
   useEffect(() => {
     setFailed(false);
@@ -212,9 +215,9 @@ export function ImagePreview({
         className ?? "h-28 w-28",
       )}
     >
-      {src && !failed ? (
+      {resolvedSrc && !failed ? (
         <img
-          src={src}
+          src={resolvedSrc}
           alt={alt || label}
           className="h-full w-full object-cover"
           loading="lazy"
@@ -324,6 +327,10 @@ export function Th({ children, className }: { children?: ReactNode; className?: 
   );
 }
 
-export function Td({ children, className }: { children?: ReactNode; className?: string }) {
-  return <td className={cn("px-3 py-3 align-middle text-ink", className)}>{children}</td>;
+export function Td({ children, className, ...props }: TdHTMLAttributes<HTMLTableCellElement>) {
+  return (
+    <td className={cn("px-3 py-3 align-middle text-ink", className)} {...props}>
+      {children}
+    </td>
+  );
 }
