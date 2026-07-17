@@ -17,51 +17,72 @@ export interface BlockData {
 }
 
 function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "hero" }> }) {
-  const primarySlide = (block.props.slides ?? []).find(
+  const slides = (block.props.slides ?? []).filter(
     (slide) => slide.enabled !== false && slide.imageUrl,
   );
-  const imageUrl = primarySlide?.imageUrl || block.props.imageUrl;
-  const imageAlt = primarySlide?.imageAlt || block.props.imageAlt || block.props.heading;
+  if (slides.length === 0 && block.props.imageUrl) {
+    slides.push({
+      imageUrl: block.props.imageUrl,
+      imageAlt: block.props.imageAlt || block.props.heading,
+      href: block.props.primaryAction.href,
+      label: block.props.primaryAction.label,
+      enabled: true,
+    });
+  }
 
-  if (imageUrl) {
+  if (slides.length > 0) {
     return (
       <section className="bg-canvas">
-        <div className="mx-auto max-w-[80rem] px-4 py-5 sm:px-6 md:py-7">
-          <div className="relative min-h-[20rem] overflow-hidden rounded-md bg-subtle md:min-h-[24rem]">
-            <img
-              src={imageUrl}
-              alt={imageAlt}
-              className="absolute inset-0 h-full w-full object-contain object-right md:object-center"
-              fetchPriority="high"
-              loading="eager"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-black/10" />
-            <div className="relative flex min-h-[20rem] max-w-2xl flex-col justify-end px-5 py-6 text-white sm:px-7 md:min-h-[24rem] md:px-9 md:py-8">
-              <p className="text-xs font-semibold tracking-[0.14em] text-white/80 uppercase">
+        <div className="mx-auto max-w-[80rem] px-4 py-4 sm:px-6 md:py-5">
+          <div className="grid gap-4 md:grid-cols-[0.8fr_1.6fr] md:items-end">
+            <div>
+              <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
                 {block.props.eyebrow}
               </p>
-              <h1 className="mt-2 font-display text-3xl leading-tight md:text-4xl">
+              <h1 className="mt-2 font-display text-2xl leading-tight text-ink md:text-3xl">
                 {block.props.heading}
               </h1>
-              <p className="mt-3 max-w-lg text-sm leading-6 text-white/85 md:text-base">
+              <p className="mt-2 max-w-lg text-sm leading-6 text-ink-muted">
                 {block.props.text}
               </p>
-              <div className="mt-5 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 <Link
                   to={block.props.primaryAction.href}
-                  className="inline-flex min-h-10 items-center rounded-sm bg-canvas px-4 text-sm font-medium text-brand hover:opacity-90"
+                  className="inline-flex min-h-9 items-center rounded-sm bg-brand px-3.5 text-sm font-medium text-ink-inverse hover:opacity-90"
                 >
                   {block.props.primaryAction.label}
                 </Link>
                 {block.props.secondaryAction ? (
                   <Link
                     to={block.props.secondaryAction.href}
-                    className="inline-flex min-h-10 items-center rounded-sm border border-white/50 px-4 text-sm font-medium text-white hover:bg-white/10"
+                    className="inline-flex min-h-9 items-center rounded-sm border border-line px-3.5 text-sm font-medium text-ink hover:bg-surface"
                   >
                     {block.props.secondaryAction.label}
                   </Link>
                 ) : null}
               </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+              {slides.map((slide, index) => (
+                <Link
+                  key={`${slide.imageUrl}-${slide.href}`}
+                  to={slide.href}
+                  className="group relative block overflow-hidden rounded-md bg-subtle"
+                  aria-label={slide.label}
+                >
+                  <img
+                    src={slide.imageUrl}
+                    alt={slide.imageAlt || slide.label}
+                    className="block aspect-[16/10] w-full object-contain transition-transform duration-200 group-hover:scale-[1.01]"
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                    loading={index === 0 ? "eager" : "lazy"}
+                  />
+                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2 pt-7 pb-1.5 text-xs font-medium text-white">
+                    {slide.label}
+                  </span>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
