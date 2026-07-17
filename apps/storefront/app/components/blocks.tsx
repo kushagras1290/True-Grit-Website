@@ -33,56 +33,104 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
   if (slides.length > 0) {
     return (
       <section className="bg-canvas">
-        <div className="mx-auto max-w-[80rem] px-4 py-4 sm:px-6 md:py-5">
-          <div className="grid gap-4 md:grid-cols-[0.8fr_1.6fr] md:items-end">
-            <div>
-              <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-                {block.props.eyebrow}
-              </p>
-              <h1 className="mt-2 font-display text-2xl leading-tight text-ink md:text-3xl">
-                {block.props.heading}
-              </h1>
-              <p className="mt-2 max-w-lg text-sm leading-6 text-ink-muted">
-                {block.props.text}
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Link
-                  to={block.props.primaryAction.href}
-                  className="inline-flex min-h-9 items-center rounded-sm bg-brand px-3.5 text-sm font-medium text-ink-inverse hover:opacity-90"
+        <div className="mx-auto max-w-[80rem] px-4 py-4 sm:px-6">
+          <div className="relative overflow-hidden rounded-md bg-[#d8c8b4]">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#d8c8b4] via-[#d8c8b4]/90 to-[#d8c8b4]/50" />
+            <div className="relative grid gap-5 px-4 py-5 md:min-h-[18rem] md:grid-cols-[22rem_1fr] md:items-center md:px-7">
+              <form
+                action="/search"
+                method="get"
+                className="rounded-md bg-surface p-5 shadow-overlay md:p-6"
+              >
+                <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
+                  {block.props.eyebrow}
+                </p>
+                <h1 className="mt-2 font-display text-2xl leading-tight text-ink">
+                  {block.props.heading}
+                </h1>
+                <p className="mt-2 text-sm leading-6 text-ink-muted">{block.props.text}</p>
+                <div className="mt-4 divide-y divide-line rounded-sm border border-line-strong">
+                  <label className="block">
+                    <span className="sr-only">Food type</span>
+                    <select
+                      name="q"
+                      defaultValue=""
+                      className="min-h-11 w-full bg-surface px-3 text-sm text-ink outline-none"
+                    >
+                      <option value="">Select food type</option>
+                      <option value="fruit">Fresh fruits</option>
+                      <option value="vegetables">Organic vegetables</option>
+                      <option value="grains">Grains and millets</option>
+                      <option value="oil">Cold-pressed oils</option>
+                    </select>
+                  </label>
+                  <label className="block">
+                    <span className="sr-only">Harvest focus</span>
+                    <select
+                      name="focus"
+                      defaultValue=""
+                      className="min-h-11 w-full bg-surface px-3 text-sm text-ink outline-none"
+                    >
+                      <option value="">Select harvest focus</option>
+                      <option value="fresh">Fresh this week</option>
+                      <option value="pantry">Pantry staples</option>
+                      <option value="farm">Verified farm produce</option>
+                    </select>
+                  </label>
+                  <label className="block">
+                    <span className="sr-only">Budget</span>
+                    <select
+                      name="budget"
+                      defaultValue=""
+                      className="min-h-11 w-full bg-surface px-3 text-sm text-ink outline-none"
+                    >
+                      <option value="">Select budget</option>
+                      <option value="under-250">Under Rs 250</option>
+                      <option value="250-750">Rs 250 to Rs 750</option>
+                      <option value="750-plus">Rs 750 plus</option>
+                    </select>
+                  </label>
+                </div>
+                <button
+                  type="submit"
+                  className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90"
                 >
-                  {block.props.primaryAction.label}
-                </Link>
+                  Search
+                </button>
                 {block.props.secondaryAction ? (
                   <Link
                     to={block.props.secondaryAction.href}
-                    className="inline-flex min-h-9 items-center rounded-sm border border-line px-3.5 text-sm font-medium text-ink hover:bg-surface"
+                    className="mt-3 block text-right text-xs font-medium text-brand hover:underline"
                   >
                     {block.props.secondaryAction.label}
                   </Link>
                 ) : null}
-              </div>
-            </div>
+              </form>
 
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-              {slides.map((slide, index) => (
-                <Link
-                  key={`${slide.imageUrl}-${slide.href}`}
-                  to={slide.href}
-                  className="group relative block overflow-hidden rounded-md bg-subtle"
-                  aria-label={slide.label}
-                >
-                  <img
-                    src={slide.imageUrl}
-                    alt={slide.imageAlt || slide.label}
-                    className="block aspect-[16/10] w-full object-contain transition-transform duration-200 group-hover:scale-[1.01]"
-                    fetchPriority={index === 0 ? "high" : "auto"}
-                    loading={index === 0 ? "eager" : "lazy"}
-                  />
-                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-2 pt-7 pb-1.5 text-xs font-medium text-white">
-                    {slide.label}
-                  </span>
-                </Link>
-              ))}
+              <div className="grid grid-cols-5 items-end gap-2 md:h-full md:gap-3">
+                {slides.map((slide, index) => (
+                  <Link
+                    key={`${slide.imageUrl}-${slide.href}`}
+                    to={slide.href}
+                    className={
+                      "group relative flex min-h-24 items-end justify-center overflow-hidden rounded-sm bg-white/25 " +
+                      (index === 0 ? "col-span-2 md:min-h-56" : "md:min-h-40")
+                    }
+                    aria-label={slide.label}
+                  >
+                    <img
+                      src={slide.imageUrl}
+                      alt={slide.imageAlt || slide.label}
+                      className="h-full w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                      fetchPriority={index === 0 ? "high" : "auto"}
+                      loading={index === 0 ? "eager" : "lazy"}
+                    />
+                    <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-2 pt-8 pb-2 text-xs font-medium text-white">
+                      {slide.label}
+                    </span>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>
