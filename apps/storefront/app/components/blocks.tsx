@@ -38,88 +38,17 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
       <section className="bg-canvas">
         <div className="mx-auto max-w-[80rem] px-4 py-4 sm:px-6">
           <div className="relative overflow-hidden rounded-md bg-[#d8c8b4]">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#d8c8b4] via-[#d8c8b4]/90 to-[#d8c8b4]/50" />
-            <div className="relative grid gap-5 px-4 py-5 md:min-h-[18rem] md:grid-cols-[22rem_1fr] md:items-center md:px-7">
-              <form
-                action="/search"
-                method="get"
-                className="rounded-md bg-surface p-5 shadow-overlay md:p-6"
-              >
-                <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-                  {block.props.eyebrow}
-                </p>
-                <h1 className="mt-2 font-display text-2xl leading-tight text-ink">
-                  {block.props.heading}
-                </h1>
-                <p className="mt-2 text-sm leading-6 text-ink-muted">{block.props.text}</p>
-                <div className="mt-4 divide-y divide-line rounded-sm border border-line-strong">
-                  <label className="block">
-                    <span className="sr-only">Food type</span>
-                    <select
-                      name="q"
-                      defaultValue=""
-                      className="min-h-11 w-full bg-surface px-3 text-sm text-ink outline-none"
-                    >
-                      <option value="">Select food type</option>
-                      <option value="fruit">Fresh fruits</option>
-                      <option value="vegetables">Organic vegetables</option>
-                      <option value="grains">Grains and millets</option>
-                      <option value="oil">Cold-pressed oils</option>
-                    </select>
-                  </label>
-                  <label className="block">
-                    <span className="sr-only">Harvest focus</span>
-                    <select
-                      name="focus"
-                      defaultValue=""
-                      className="min-h-11 w-full bg-surface px-3 text-sm text-ink outline-none"
-                    >
-                      <option value="">Select harvest focus</option>
-                      <option value="fresh">Fresh this week</option>
-                      <option value="pantry">Pantry staples</option>
-                      <option value="farm">Verified farm produce</option>
-                    </select>
-                  </label>
-                  <label className="block">
-                    <span className="sr-only">Budget</span>
-                    <select
-                      name="budget"
-                      defaultValue=""
-                      className="min-h-11 w-full bg-surface px-3 text-sm text-ink outline-none"
-                    >
-                      <option value="">Select budget</option>
-                      <option value="under-250">Under Rs 250</option>
-                      <option value="250-750">Rs 250 to Rs 750</option>
-                      <option value="750-plus">Rs 750 plus</option>
-                    </select>
-                  </label>
-                </div>
-                <button
-                  type="submit"
-                  className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90"
-                >
-                  Search
-                </button>
-                {block.props.secondaryAction ? (
-                  <Link
-                    to={block.props.secondaryAction.href}
-                    className="mt-3 block text-right text-xs font-medium text-brand hover:underline"
-                  >
-                    {block.props.secondaryAction.label}
-                  </Link>
-                ) : null}
-              </form>
-
-              <div className="md:h-full">
+            <div className="relative px-3 py-3 md:px-5 md:py-5">
+              <div>
                 <Link
                   to={activeSlide.href}
-                  className="group relative block min-h-52 overflow-hidden rounded-md bg-white/25 md:min-h-64"
+                  className="group relative block min-h-52 overflow-hidden rounded-md bg-white/25 md:min-h-72"
                   aria-label={activeSlide.label}
                 >
                   <img
                     src={activeSlide.imageUrl}
                     alt={activeSlide.imageAlt || activeSlide.label}
-                    className="absolute inset-0 h-full w-full object-contain transition-transform duration-200 group-hover:scale-[1.01]"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]"
                     fetchPriority="high"
                     loading="eager"
                   />
@@ -146,7 +75,7 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
                       <img
                         src={slide.imageUrl}
                         alt=""
-                        className="h-full w-full object-contain"
+                        className="h-full w-full object-cover"
                         loading={index === 0 ? "eager" : "lazy"}
                       />
                     </button>
