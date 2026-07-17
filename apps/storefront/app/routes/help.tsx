@@ -1,21 +1,30 @@
 import { Link } from "react-router";
 
 import type { Route } from "./+types/help";
+import { CmsPage } from "../components/cms-page";
 import { Section } from "../components/catalogue";
 import { CopyBlock, InfoGrid, StaticHero } from "../components/static-page";
+import { loadCmsRoute } from "../lib/cms-route.server";
 import { seoMeta } from "../lib/seo";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Help",
-    description:
-      "Quick help for True Grit orders, delivery, returns, accounts and product questions.",
-    canonicalPath: "/help",
-    indexing: "index",
-  });
+const fallbackSeo = {
+  title: "Help",
+  description:
+    "Quick help for True Grit orders, delivery, returns, accounts and product questions.",
+  canonicalPath: "/help",
+  indexing: "index",
+} as const;
+
+export async function loader({ request, context }: Route.LoaderArgs) {
+  return loadCmsRoute("help", request, context);
 }
 
-export default function HelpPage(_props: Route.ComponentProps) {
+export function meta({ data }: Route.MetaArgs) {
+  return seoMeta(data?.page?.seo ?? fallbackSeo);
+}
+
+export default function HelpPage({ loaderData }: Route.ComponentProps) {
+  if (loaderData.page) return <CmsPage page={loaderData.page} data={loaderData.blockData} />;
   return (
     <>
       <StaticHero

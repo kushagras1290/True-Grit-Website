@@ -1,15 +1,22 @@
 import type { Route } from "./+types/standards";
+import { CmsPage } from "../components/cms-page";
 import { Section } from "../components/catalogue";
+import { loadCmsRoute } from "../lib/cms-route.server";
 import { seoMeta } from "../lib/seo";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Our standards",
-    description:
-      "What certified, traceable, responsibly sourced and fairly traded actually mean at True Grit.",
-    canonicalPath: "/standards",
-    indexing: "index",
-  });
+const fallbackSeo = {
+  title: "Our standards",
+  description:
+    "What certified, traceable, responsibly sourced and fairly traded actually mean at True Grit.",
+  canonicalPath: "/standards",
+  indexing: "index",
+} as const;
+export async function loader({ request, context }: Route.LoaderArgs) {
+  return loadCmsRoute("standards", request, context);
+}
+
+export function meta({ data }: Route.MetaArgs) {
+  return seoMeta(data?.page?.seo ?? fallbackSeo);
 }
 
 const STANDARDS = [
@@ -31,7 +38,8 @@ const STANDARDS = [
   },
 ];
 
-export default function StandardsPage(_props: Route.ComponentProps) {
+export default function StandardsPage({ loaderData }: Route.ComponentProps) {
+  if (loaderData.page) return <CmsPage page={loaderData.page} data={loaderData.blockData} />;
   return (
     <>
       <header className="bg-brand text-ink-inverse">

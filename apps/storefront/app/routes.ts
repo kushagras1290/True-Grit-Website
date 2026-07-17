@@ -2,6 +2,9 @@ import { index, route, type RouteConfig } from "@react-router/dev/routes";
 
 export default [
   index("routes/home.tsx"),
+  route("robots.txt", "routes/robots.txt.ts"),
+  route("sitemap.xml", "routes/sitemap.xml.ts"),
+  route("llms.txt", "routes/llms.txt.ts"),
   route("shop", "routes/shop.tsx"),
   route("seasonal", "routes/seasonal.tsx"),
   route("category/:slug", "routes/category.tsx"),

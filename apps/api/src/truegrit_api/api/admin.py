@@ -31,7 +31,11 @@ from truegrit_api.errors import (
 )
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.admin import AdminRepository
-from truegrit_api.repositories.content import AuditRepository, CategoryRepository
+from truegrit_api.repositories.content import (
+    AuditRepository,
+    CategoryRepository,
+    SiteDocumentRepository,
+)
 from truegrit_api.services.access import (
     adopt_bootstrap_owner,
     change_own_password,
@@ -61,6 +65,7 @@ from truegrit_api.services.media import save_image_bytes, save_image_upload
 from truegrit_api.services.orders import update_order_status
 from truegrit_api.services.password_reset import confirm_password_reset, request_password_reset
 from truegrit_api.services.publishing import publish_category, publish_product
+from truegrit_api.services.site_documents import SITE_DOCUMENT_TYPES, default_site_documents
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
 
@@ -330,10 +335,31 @@ class SiteControlUpdate(_CamelModel):
         return validate_href(value)
 
 
+class SiteDocumentUpdate(_CamelModel):
+    robots_txt: str | None = Field(default=None, max_length=20_000)
+    sitemap_xml: str | None = Field(default=None, max_length=200_000)
+    llms_txt: str | None = Field(default=None, max_length=40_000)
+
+
 class ImageUploadRequest(_CamelModel):
     filename: str = Field(min_length=1, max_length=180)
     content_type: str = Field(min_length=1, max_length=80)
     data_base64: str = Field(min_length=1)
+
+
+async def _require_owner(db: Database, principal: Principal) -> None:
+    row = await db.fetch_one(
+        """
+        SELECT 1 AS ok
+        FROM user_roles ur
+        JOIN roles r ON r.id = ur.role_id
+        WHERE ur.user_id = ? AND r.key = 'super_admin'
+        LIMIT 1
+        """,
+        (principal.user_id,),
+    )
+    if row is None:
+        raise PermissionDeniedError("Only the owner can manage global site documents.")
 
 
 def _normalize_hero_slides(slides: Any) -> list[dict[str, Any]]:
@@ -556,6 +582,77 @@ async def update_site_control(
                 ),
             )
     return await get_site_control(db, principal)
+
+
+async def _site_document_payload(db: Database, rows: list[dict[str, Any]]) -> dict[str, str]:
+    defaults = await default_site_documents(db, get_settings())
+    by_key = {key: row["content"] for key, row in defaults.items()}
+    by_key.update({row["key"]: row["content"] for row in rows})
+    return {
+        "robotsTxt": by_key.get("robots_txt", ""),
+        "sitemapXml": by_key.get("sitemap_xml", ""),
+        "llmsTxt": by_key.get("llms_txt", ""),
+    }
+
+
+@router.get("/site-documents")
+async def get_site_documents(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.view"))],
+) -> Any:
+    await _require_owner(db, principal)
+    rows = await SiteDocumentRepository(db).list()
+    return await _site_document_payload(db, rows)
+
+
+@router.patch("/site-documents")
+async def update_site_documents(
+    payload: SiteDocumentUpdate,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    await _require_owner(db, principal)
+    fields = payload.model_dump(exclude_unset=True)
+    key_map = {
+        "robots_txt": ("robots_txt", SITE_DOCUMENT_TYPES["robots_txt"]),
+        "sitemap_xml": ("sitemap_xml", SITE_DOCUMENT_TYPES["sitemap_xml"]),
+        "llms_txt": ("llms_txt", SITE_DOCUMENT_TYPES["llms_txt"]),
+    }
+    now = utc_now_iso()
+    statements: list[tuple[str, tuple[Any, ...]]] = []
+    for field, (key, content_type) in key_map.items():
+        if field not in fields:
+            continue
+        statements.append(
+            (
+                """
+                INSERT INTO site_documents (key, content, content_type, updated_at, updated_by)
+                VALUES (?, ?, ?, ?, ?)
+                ON CONFLICT(key) DO UPDATE SET
+                  content = excluded.content,
+                  content_type = excluded.content_type,
+                  updated_at = excluded.updated_at,
+                  updated_by = excluded.updated_by
+                """,
+                (key, fields[field] or "", content_type, now, principal.user_id),
+            )
+        )
+    if statements:
+        statements.append(
+            audit_statement(
+                action="site_documents.updated",
+                entity_type="site_documents",
+                entity_id="global",
+                actor_id=principal.user_id,
+                request_id=_request_id(request),
+                created_at=now,
+                after={"keys": [key_map[field][0] for field in fields if field in key_map]},
+            )
+        )
+        await db.batch(statements)
+    rows = await SiteDocumentRepository(db).list()
+    return await _site_document_payload(db, rows)
 
 
 class HighlightsUpdateRequest(_CamelModel):

@@ -1,15 +1,23 @@
 import type { Route } from "./+types/terms";
+import { CmsPage } from "../components/cms-page";
 import { Section } from "../components/catalogue";
 import { PolicyList, StaticHero, SupportCta } from "../components/static-page";
+import { loadCmsRoute } from "../lib/cms-route.server";
 import { seoMeta } from "../lib/seo";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Terms of service",
-    description: "Terms for using the True Grit organic food market and placing orders.",
-    canonicalPath: "/terms",
-    indexing: "index",
-  });
+const fallbackSeo = {
+  title: "Terms of service",
+  description: "Terms for using the True Grit organic food market and placing orders.",
+  canonicalPath: "/terms",
+  indexing: "index",
+} as const;
+
+export async function loader({ request, context }: Route.LoaderArgs) {
+  return loadCmsRoute("terms", request, context);
+}
+
+export function meta({ data }: Route.MetaArgs) {
+  return seoMeta(data?.page?.seo ?? fallbackSeo);
 }
 
 const TERMS_ITEMS = [
@@ -39,7 +47,8 @@ const TERMS_ITEMS = [
   },
 ];
 
-export default function TermsPage(_props: Route.ComponentProps) {
+export default function TermsPage({ loaderData }: Route.ComponentProps) {
+  if (loaderData.page) return <CmsPage page={loaderData.page} data={loaderData.blockData} />;
   return (
     <>
       <StaticHero

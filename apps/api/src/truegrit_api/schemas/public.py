@@ -6,6 +6,8 @@ this app is the source for frontend type generation.
 
 from __future__ import annotations
 
+from typing import Any
+
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 
@@ -128,6 +130,74 @@ class PublicCategoryPage(PublicModel):
     faq: list[FaqItem]
     seo: SeoDocument
     updated_at: str
+
+
+class PublicPage(PublicModel):
+    id: str
+    slug: str
+    title: str
+    blocks: list[dict[str, Any]]
+    seo: SeoDocument
+
+
+class FarmDetail(PublicModel):
+    id: str
+    name: str
+    slug: str
+    farmer_name: str
+    region: str
+    summary: str
+    certification: str
+    established_year: int
+    story: str
+    methods: list[str]
+    product_slugs: list[str]
+    seo: SeoDocument
+
+
+class FarmListResponse(PublicModel):
+    items: list[FarmDetail]
+
+
+class RecipeIngredient(PublicModel):
+    label: str
+    quantity_text: str
+    product_slug: str | None = None
+
+
+class RecipeDetail(PublicModel):
+    id: str
+    title: str
+    slug: str
+    excerpt: str
+    prep_minutes: int
+    cook_minutes: int
+    servings: int
+    dietary_tags: list[str]
+    ingredients: list[RecipeIngredient]
+    steps: list[str]
+    seo: SeoDocument
+
+
+class RecipeListResponse(PublicModel):
+    items: list[RecipeDetail]
+
+
+class ArticleDetail(PublicModel):
+    id: str
+    title: str
+    slug: str
+    excerpt: str
+    author_name: str
+    published_at: str
+    reading_minutes: int
+    body: list[str]
+    pull_quote: str | None = None
+    seo: SeoDocument
+
+
+class ArticleListResponse(PublicModel):
+    items: list[ArticleDetail]
 
 
 class SearchResultGroup(PublicModel):

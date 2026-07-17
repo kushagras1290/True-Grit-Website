@@ -7,15 +7,12 @@ import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
-  const farm = await loadFarm(params.slug);
+  const runtime = catalogueRuntime(context);
+  const farm = await loadFarm(params.slug, runtime);
   if (!farm) throw data("Farm not found", { status: 404 });
   return {
     farm,
-    products: await loadProductsBySlugs(
-      farm.productSlugs,
-      resolveCountry(request),
-      catalogueRuntime(context),
-    ),
+    products: await loadProductsBySlugs(farm.productSlugs, resolveCountry(request), runtime),
   };
 }
 

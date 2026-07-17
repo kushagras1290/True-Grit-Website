@@ -274,6 +274,12 @@ export interface SiteControl {
   seoKeywords: string;
 }
 
+export interface SiteDocuments {
+  robotsTxt: string;
+  sitemapXml: string;
+  llmsTxt: string;
+}
+
 const DEMO_ME: Me = {
   id: "usr_admin",
   displayName: "Asha Rao",
@@ -734,6 +740,21 @@ export const api = {
 
   updateSiteControl: (input: Partial<SiteControl>): Promise<SiteControl> =>
     demoMode ? demo(input as SiteControl) : patch("/v1/admin/site-control", input),
+
+  siteDocuments: (): Promise<SiteDocuments> =>
+    demoMode
+      ? demo({
+          robotsTxt:
+            "User-agent: *\nAllow: /\nDisallow: /checkout\nDisallow: /account\nDisallow: /payment/\n\nSitemap: http://localhost:5173/sitemap.xml\n",
+          sitemapXml:
+            '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>http://localhost:5173/</loc></url>\n</urlset>\n',
+          llmsTxt:
+            "# True Grit\n\nTraceable organic food from verified farms.\n\n## Core Pages\n- Home: http://localhost:5173/\n- Shop: http://localhost:5173/shop\n",
+        })
+      : get<SiteDocuments>("/v1/admin/site-documents"),
+
+  updateSiteDocuments: (input: Partial<SiteDocuments>): Promise<SiteDocuments> =>
+    demoMode ? demo(input as SiteDocuments) : patch("/v1/admin/site-documents", input),
 
   highlights: (): Promise<AdminLinkedProduct[]> =>
     demoMode

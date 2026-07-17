@@ -91,6 +91,14 @@ export async function loadHome(runtime?: CatalogueRuntime): Promise<PublicPage> 
   return homePage;
 }
 
+export async function loadPage(
+  slug: string,
+  runtime?: CatalogueRuntime,
+): Promise<PublicPage | null> {
+  if (!apiUrl(runtime)) return slug === "home" ? homePage : null;
+  return fromApi<PublicPage>(`/v1/public/pages/${encodeURIComponent(slug)}`, runtime);
+}
+
 export async function loadCategoryPage(
   slug: string,
   country?: string,
@@ -190,28 +198,70 @@ export async function loadHighlightedProducts(
   );
 }
 
-export async function loadFarms(): Promise<FarmDetail[]> {
-  return farms;
+export async function loadFarms(runtime?: CatalogueRuntime): Promise<FarmDetail[]> {
+  return listFromApi<FarmDetail>("/v1/public/farms", farms, runtime);
 }
 
-export async function loadFarm(slug: string): Promise<FarmDetail | null> {
+export async function loadFarm(
+  slug: string,
+  runtime?: CatalogueRuntime,
+): Promise<FarmDetail | null> {
+  if (apiUrl(runtime)) {
+    return (
+      (await fromApi<FarmDetail>(`/v1/public/farms/${encodeURIComponent(slug)}`, runtime)) ??
+      farms.find((farm) => farm.slug === slug) ??
+      null
+    );
+  }
   return farms.find((farm) => farm.slug === slug) ?? null;
 }
 
-export async function loadRecipes(): Promise<RecipeDetail[]> {
-  return recipes;
+export async function loadRecipes(runtime?: CatalogueRuntime): Promise<RecipeDetail[]> {
+  return listFromApi<RecipeDetail>("/v1/public/recipes", recipes, runtime);
 }
 
-export async function loadRecipe(slug: string): Promise<RecipeDetail | null> {
+export async function loadRecipe(
+  slug: string,
+  runtime?: CatalogueRuntime,
+): Promise<RecipeDetail | null> {
+  if (apiUrl(runtime)) {
+    return (
+      (await fromApi<RecipeDetail>(`/v1/public/recipes/${encodeURIComponent(slug)}`, runtime)) ??
+      recipes.find((recipe) => recipe.slug === slug) ??
+      null
+    );
+  }
   return recipes.find((recipe) => recipe.slug === slug) ?? null;
 }
 
-export async function loadArticles(): Promise<ArticleDetail[]> {
-  return articles;
+export async function loadArticles(runtime?: CatalogueRuntime): Promise<ArticleDetail[]> {
+  return listFromApi<ArticleDetail>("/v1/public/articles", articles, runtime);
 }
 
-export async function loadArticle(slug: string): Promise<ArticleDetail | null> {
+export async function loadArticle(
+  slug: string,
+  runtime?: CatalogueRuntime,
+): Promise<ArticleDetail | null> {
+  if (apiUrl(runtime)) {
+    return (
+      (await fromApi<ArticleDetail>(`/v1/public/articles/${encodeURIComponent(slug)}`, runtime)) ??
+      articles.find((article) => article.slug === slug) ??
+      null
+    );
+  }
   return articles.find((article) => article.slug === slug) ?? null;
+}
+
+export async function loadSiteDocument(
+  key: "robots_txt" | "sitemap_xml" | "llms_txt",
+  runtime?: CatalogueRuntime,
+): Promise<{ content: string; contentType: string } | null> {
+  if (!apiUrl(runtime)) return null;
+  const body = await fromApi<{ content: string; contentType: string }>(
+    `/v1/public/site-documents/${key}`,
+    runtime,
+  );
+  return body ? { content: body.content, contentType: body.contentType } : null;
 }
 
 export interface SearchGroups {

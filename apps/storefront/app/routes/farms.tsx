@@ -2,11 +2,11 @@ import { Link } from "react-router";
 
 import type { Route } from "./+types/farms";
 import { Section } from "../components/catalogue";
-import { loadFarms } from "../lib/catalogue.server";
+import { catalogueRuntime, loadFarms } from "../lib/catalogue.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader() {
-  return { farms: await loadFarms() };
+export async function loader({ context }: Route.LoaderArgs) {
+  return { farms: await loadFarms(catalogueRuntime(context)) };
 }
 
 export function meta(_args: Route.MetaArgs) {

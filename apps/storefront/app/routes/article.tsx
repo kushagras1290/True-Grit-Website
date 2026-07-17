@@ -2,11 +2,11 @@ import { data } from "react-router";
 
 import type { Route } from "./+types/article";
 import { Breadcrumbs } from "../components/catalogue";
-import { loadArticle } from "../lib/catalogue.server";
+import { catalogueRuntime, loadArticle } from "../lib/catalogue.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader({ params }: Route.LoaderArgs) {
-  const article = await loadArticle(params.slug);
+export async function loader({ params, context }: Route.LoaderArgs) {
+  const article = await loadArticle(params.slug, catalogueRuntime(context));
   if (!article) throw data("Article not found", { status: 404 });
   return { article };
 }

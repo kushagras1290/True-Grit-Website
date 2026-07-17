@@ -17,19 +17,31 @@ from truegrit_api.errors import NotFoundError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.catalogue import CatalogueRepository
 from truegrit_api.repositories.content import (
+    ArticleRepository,
     CategoryRepository,
+    FarmRepository,
     NavigationRepository,
     PageRepository,
+    RecipeRepository,
     SearchRepository,
+    SiteDocumentRepository,
 )
 from truegrit_api.schemas.public import (
+    ArticleDetail,
+    ArticleListResponse,
+    FarmDetail,
+    FarmListResponse,
     ProductDetail,
     ProductListResponse,
     PublicBootstrap,
     PublicCategoryPage,
+    PublicPage,
+    RecipeDetail,
+    RecipeListResponse,
     SearchResponse,
 )
 from truegrit_api.services.email import send_email
+from truegrit_api.services.site_documents import default_site_documents
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
 
@@ -111,6 +123,30 @@ async def home(db: Annotated[Database, Depends(get_database)]) -> Any:
     if page is None:
         raise NotFoundError("Homepage is not published.")
     return page
+
+
+@router.get("/pages/{slug}", response_model=PublicPage)
+async def public_page(slug: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+    validate_slug(slug)
+    page = await PageRepository(db).get_published_by_slug(slug)
+    if page is None:
+        raise NotFoundError("Page is not published.")
+    return page
+
+
+@router.get("/site-documents/{key}")
+async def site_document(key: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+    if key not in {"robots_txt", "sitemap_xml", "llms_txt"}:
+        raise NotFoundError("Site document not found.")
+    document = await SiteDocumentRepository(db).get(key)
+    if document is None:
+        document = (await default_site_documents(db, get_settings()))[key]
+    return {
+        "key": document["key"],
+        "content": document["content"],
+        "contentType": document["content_type"],
+        "updatedAt": document["updated_at"],
+    }
 
 
 @router.post("/contact")
@@ -227,6 +263,48 @@ async def categories(db: Annotated[Database, Depends(get_database)]) -> Any:
             for row in rows
         ]
     }
+
+
+@router.get("/farms", response_model=FarmListResponse)
+async def farms_list(db: Annotated[Database, Depends(get_database)]) -> Any:
+    return {"items": await FarmRepository(db).list_published()}
+
+
+@router.get("/farms/{slug}", response_model=FarmDetail)
+async def farm_detail(slug: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+    validate_slug(slug)
+    farm = await FarmRepository(db).get_published_by_slug(slug)
+    if farm is None:
+        raise NotFoundError("Farm not found.")
+    return farm
+
+
+@router.get("/recipes", response_model=RecipeListResponse)
+async def recipes_list(db: Annotated[Database, Depends(get_database)]) -> Any:
+    return {"items": await RecipeRepository(db).list_published()}
+
+
+@router.get("/recipes/{slug}", response_model=RecipeDetail)
+async def recipe_detail(slug: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+    validate_slug(slug)
+    recipe = await RecipeRepository(db).get_published_by_slug(slug)
+    if recipe is None:
+        raise NotFoundError("Recipe not found.")
+    return recipe
+
+
+@router.get("/articles", response_model=ArticleListResponse)
+async def articles_list(db: Annotated[Database, Depends(get_database)]) -> Any:
+    return {"items": await ArticleRepository(db).list_published()}
+
+
+@router.get("/articles/{slug}", response_model=ArticleDetail)
+async def article_detail(slug: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+    validate_slug(slug)
+    article = await ArticleRepository(db).get_published_by_slug(slug)
+    if article is None:
+        raise NotFoundError("Article not found.")
+    return article
 
 
 @router.get("/products", response_model=ProductListResponse)

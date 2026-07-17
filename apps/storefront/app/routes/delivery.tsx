@@ -1,18 +1,27 @@
 import type { Route } from "./+types/delivery";
+import { CmsPage } from "../components/cms-page";
 import { Section } from "../components/catalogue";
 import { InfoGrid, PolicyList, StaticHero, SupportCta } from "../components/static-page";
+import { loadCmsRoute } from "../lib/cms-route.server";
 import { seoMeta } from "../lib/seo";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Delivery",
-    description: "How True Grit packs, dispatches and delivers seasonal organic food orders.",
-    canonicalPath: "/delivery",
-    indexing: "index",
-  });
+const fallbackSeo = {
+  title: "Delivery",
+  description: "How True Grit packs, dispatches and delivers seasonal organic food orders.",
+  canonicalPath: "/delivery",
+  indexing: "index",
+} as const;
+
+export async function loader({ request, context }: Route.LoaderArgs) {
+  return loadCmsRoute("delivery", request, context);
 }
 
-export default function DeliveryPage(_props: Route.ComponentProps) {
+export function meta({ data }: Route.MetaArgs) {
+  return seoMeta(data?.page?.seo ?? fallbackSeo);
+}
+
+export default function DeliveryPage({ loaderData }: Route.ComponentProps) {
+  if (loaderData.page) return <CmsPage page={loaderData.page} data={loaderData.blockData} />;
   return (
     <>
       <StaticHero

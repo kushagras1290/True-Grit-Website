@@ -1,21 +1,30 @@
 import { Link } from "react-router";
 
 import type { Route } from "./+types/about";
+import { CmsPage } from "../components/cms-page";
 import { Section } from "../components/catalogue";
 import { CopyBlock, InfoGrid, StaticHero } from "../components/static-page";
+import { loadCmsRoute } from "../lib/cms-route.server";
 import { seoMeta } from "../lib/seo";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "About True Grit",
-    description:
-      "True Grit is a traceable organic market built around verified farms, seasonal harvests and honest food.",
-    canonicalPath: "/about",
-    indexing: "index",
-  });
+const fallbackSeo = {
+  title: "About True Grit",
+  description:
+    "True Grit is a traceable organic market built around verified farms, seasonal harvests and honest food.",
+  canonicalPath: "/about",
+  indexing: "index",
+} as const;
+
+export async function loader({ request, context }: Route.LoaderArgs) {
+  return loadCmsRoute("about", request, context);
 }
 
-export default function AboutPage(_props: Route.ComponentProps) {
+export function meta({ data }: Route.MetaArgs) {
+  return seoMeta(data?.page?.seo ?? fallbackSeo);
+}
+
+export default function AboutPage({ loaderData }: Route.ComponentProps) {
+  if (loaderData.page) return <CmsPage page={loaderData.page} data={loaderData.blockData} />;
   return (
     <>
       <StaticHero

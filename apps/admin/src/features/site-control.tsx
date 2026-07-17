@@ -16,7 +16,13 @@ import {
   Textarea,
 } from "../components/ui";
 import { useToast } from "../components/toast";
-import { ApiError, api, type AdminLinkedProduct, type SiteControl } from "../lib/api";
+import {
+  ApiError,
+  api,
+  type AdminLinkedProduct,
+  type SiteControl,
+  type SiteDocuments,
+} from "../lib/api";
 
 const imageUrlSchema = z
   .string()
@@ -84,6 +90,14 @@ const siteSchema = z.object({
 });
 
 type SiteForm = z.infer<typeof siteSchema>;
+
+const siteDocumentsSchema = z.object({
+  robotsTxt: z.string().max(20_000),
+  sitemapXml: z.string().max(200_000),
+  llmsTxt: z.string().max(40_000),
+});
+
+type SiteDocumentsForm = z.infer<typeof siteDocumentsSchema>;
 
 function defaultHeroSlides(data?: SiteControl): SiteForm["heroSlides"] {
   if (data?.heroSlides?.length) {
@@ -384,7 +398,9 @@ export function SiteControlPage() {
                         <input
                           type="checkbox"
                           checked={slide.enabled}
-                          onChange={(event) => updateSlide(index, { enabled: event.target.checked })}
+                          onChange={(event) =>
+                            updateSlide(index, { enabled: event.target.checked })
+                          }
                         />
                         Enabled
                       </label>
@@ -392,9 +408,7 @@ export function SiteControlPage() {
                         <Input
                           id={`slide-image-${index}`}
                           value={slide.imageUrl}
-                          onChange={(event) =>
-                            updateSlide(index, { imageUrl: event.target.value })
-                          }
+                          onChange={(event) => updateSlide(index, { imageUrl: event.target.value })}
                         />
                       </Field>
                       <Field label="Click link" htmlFor={`slide-href-${index}`}>
@@ -415,9 +429,7 @@ export function SiteControlPage() {
                         <Input
                           id={`slide-alt-${index}`}
                           value={slide.imageAlt}
-                          onChange={(event) =>
-                            updateSlide(index, { imageAlt: event.target.value })
-                          }
+                          onChange={(event) => updateSlide(index, { imageAlt: event.target.value })}
                         />
                       </Field>
                       <div className="flex justify-end md:col-span-2">
@@ -497,8 +509,96 @@ export function SiteControlPage() {
         </aside>
       </form>
 
+      <SiteDocumentsSection />
       <HighlightsSection />
     </div>
+  );
+}
+
+function siteDocumentsDefaults(data?: SiteDocuments): SiteDocumentsForm {
+  return {
+    robotsTxt: data?.robotsTxt ?? "",
+    sitemapXml: data?.sitemapXml ?? "",
+    llmsTxt: data?.llmsTxt ?? "",
+  };
+}
+
+function SiteDocumentsSection() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["site-documents"],
+    queryFn: api.siteDocuments,
+  });
+  const form = useForm<SiteDocumentsForm>({
+    resolver: zodResolver(siteDocumentsSchema),
+    defaultValues: siteDocumentsDefaults(),
+  });
+
+  useEffect(() => {
+    if (data) form.reset(siteDocumentsDefaults(data));
+  }, [data, form]);
+
+  const mutation = useMutation({
+    mutationFn: (values: SiteDocumentsForm) => api.updateSiteDocuments(values),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: ["site-documents"] });
+      form.reset(siteDocumentsDefaults(result));
+      toast.success("Crawler files saved.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not save crawler files."),
+  });
+
+  if (isLoading) return <p className="mt-10 text-sm text-ink-muted">Loading crawler files...</p>;
+  if (isError) {
+    return (
+      <EmptyState
+        title="Crawler files unavailable"
+        hint="Only the owner account can edit sitemap.xml, robots.txt and llms.txt."
+      />
+    );
+  }
+
+  return (
+    <section className="mt-10 space-y-4 border-t border-line pt-5">
+      <div>
+        <h2 className="font-display text-lg text-ink">Crawler files</h2>
+        <p className="text-sm text-ink-muted">
+          Owner-only controls for /sitemap.xml, /robots.txt and /llms.txt.
+        </p>
+      </div>
+      <form
+        className="grid gap-4"
+        onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
+      >
+        <Field
+          label="robots.txt"
+          htmlFor="robotsTxt"
+          error={form.formState.errors.robotsTxt?.message}
+        >
+          <Textarea id="robotsTxt" rows={9} {...form.register("robotsTxt")} />
+        </Field>
+        <Field
+          label="sitemap.xml"
+          htmlFor="sitemapXml"
+          error={form.formState.errors.sitemapXml?.message}
+        >
+          <Textarea id="sitemapXml" rows={14} {...form.register("sitemapXml")} />
+        </Field>
+        <Field label="llms.txt" htmlFor="llmsTxt" error={form.formState.errors.llmsTxt?.message}>
+          <Textarea id="llmsTxt" rows={12} {...form.register("llmsTxt")} />
+        </Field>
+        <Button
+          type="submit"
+          variant="primary"
+          className="w-fit"
+          disabled={mutation.isPending || !form.formState.isDirty}
+        >
+          {mutation.isPending ? "Saving..." : "Save crawler files"}
+        </Button>
+      </form>
+    </section>
   );
 }
 

@@ -38,6 +38,34 @@ def test_me_returns_permissions(client: TestClient, db: SQLiteDatabase):
     assert "categories.publish" in body["permissions"]
 
 
+def test_site_documents_are_owner_only(client: TestClient, db: SQLiteDatabase):
+    db._conn.executescript(
+        """
+        INSERT OR IGNORE INTO role_permissions (role_id, permission_id) VALUES
+          ('rol_content_editor', 'prm_settings_view'),
+          ('rol_content_editor', 'prm_settings_edit');
+        """
+    )
+    db._conn.commit()
+
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
+    assert client.get("/v1/admin/site-documents").status_code == 403
+
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
+    current = client.get("/v1/admin/site-documents")
+    assert current.status_code == 200
+    assert "Sitemap:" in current.json()["robotsTxt"]
+
+    updated = client.patch(
+        "/v1/admin/site-documents",
+        json={"robotsTxt": "User-agent: *\nDisallow:\n"},
+    )
+    assert updated.status_code == 200, updated.text
+    assert updated.json()["robotsTxt"] == "User-agent: *\nDisallow:\n"
+    public = client.get("/v1/public/site-documents/robots_txt").json()
+    assert public["content"] == "User-agent: *\nDisallow:\n"
+
+
 def test_product_list_shape(client: TestClient, db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
     items = client.get("/v1/admin/products").json()["items"]

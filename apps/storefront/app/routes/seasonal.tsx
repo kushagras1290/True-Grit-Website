@@ -1,16 +1,21 @@
 import { Link } from "react-router";
 
 import type { Route } from "./+types/seasonal";
+import { CmsPage } from "../components/cms-page";
 import { CategoryTile, ProductGrid, Section } from "../components/catalogue";
 import { StaticHero } from "../components/static-page";
 import { catalogueRuntime, loadCategories, loadProductsBySlugs } from "../lib/catalogue.server";
+import { loadCmsRoute, type CmsRouteData } from "../lib/cms-route.server";
 import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 import { products as allProducts } from "@truegrit/contracts/fixtures";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
-  const categories = await loadCategories(runtime);
+  const [cms, categories] = await Promise.all([
+    loadCmsRoute("seasonal", request, context),
+    loadCategories(runtime),
+  ]);
   const seasonalCategories = categories.filter((category) => category.seasonLabel);
   // The curated seasonal slot: in-season drops, selected by the demo fixture's
   // slug convention. The product data itself is loaded live when the API is on.
@@ -24,20 +29,26 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     runtime,
   );
 
-  return { seasonalCategories, seasonalProducts };
+  return { cms, seasonalCategories, seasonalProducts };
 }
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Seasonal market",
-    description:
-      "Fresh organic harvests and limited seasonal drops from True Grit's verified farm network.",
-    canonicalPath: "/seasonal",
-    indexing: "index",
-  });
+const fallbackSeo = {
+  title: "Seasonal market",
+  description:
+    "Fresh organic harvests and limited seasonal drops from True Grit's verified farm network.",
+  canonicalPath: "/seasonal",
+  indexing: "index",
+} as const;
+
+export function meta({ data }: Route.MetaArgs) {
+  const cms = data?.cms as CmsRouteData | undefined;
+  return seoMeta(cms?.page?.seo ?? fallbackSeo);
 }
 
 export default function SeasonalPage({ loaderData }: Route.ComponentProps) {
+  if (loaderData.cms.page) {
+    return <CmsPage page={loaderData.cms.page} data={loaderData.cms.blockData} />;
+  }
   return (
     <>
       <StaticHero

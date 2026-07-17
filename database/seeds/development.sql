@@ -352,17 +352,27 @@ INSERT INTO page_versions (id, page_id, version_number, content_json, workflow_s
    'published', '2026-07-01T00:00:00Z', 'usr_editor', '2026-07-02T00:00:00Z', 'usr_admin', '2026-07-02T00:00:00Z');
 
 -- Article
-INSERT INTO articles (id, internal_name, title, slug, excerpt, author_user_id, hero_media_id, reading_minutes, status, published_at, created_at, created_by, updated_at, updated_by) VALUES
+INSERT INTO articles (id, internal_name, title, slug, excerpt, author_user_id, hero_media_id, reading_minutes, status, published_version_id, published_at, created_at, created_by, updated_at, updated_by) VALUES
   ('art_millets', 'Millet revival article', 'The quiet revival of Indian millets', 'quiet-revival-of-indian-millets',
    'How a generation of farmers is bringing climate-resilient grains back to the Indian table.',
-   'usr_editor', NULL, 6, 'published', '2026-07-05T00:00:00Z', '2026-07-01T00:00:00Z', 'usr_editor', '2026-07-05T00:00:00Z', 'usr_editor');
+   'usr_editor', NULL, 6, 'published', 'arv_millets_1', '2026-07-05T00:00:00Z', '2026-07-01T00:00:00Z', 'usr_editor', '2026-07-05T00:00:00Z', 'usr_editor');
+
+INSERT INTO article_versions (id, article_id, version_number, content_json, workflow_state, created_at, created_by) VALUES
+  ('arv_millets_1', 'art_millets', 1,
+   '{"body":["For most of the twentieth century, millets fed India. Then subsidised rice and wheat pushed them to the margins - hardy grains recast as poor man''s food, grown on the land nobody irrigated.","That story is reversing. Millets need a fraction of the water that rice demands, tolerate heat that wilts wheat, and grow on soil still recovering from decades of intensive farming. For collectives like Anandvan in Wardha, they are not nostalgia - they are the only crop that makes agronomic sense on regenerating land.","The revival is also a flavour story. Sprouted ragi has a sweetness that refined flour never had. Little millet cooks into a pilaf with real bite. A generation of cooks is rediscovering grains their grandmothers never abandoned.","What the movement needs now is steady demand: buyers who return every month, not just when a headline celebrates ancient grains. That steadiness is what lets a farmer plant a rain-fed crop with confidence."],"pullQuote":"Millets are not nostalgia - they are the only crop that makes sense on regenerating land."}',
+   'published', '2026-07-05T00:00:00Z', 'usr_editor');
 
 -- Recipe
-INSERT INTO recipes (id, internal_name, title, slug, excerpt, prep_minutes, cook_minutes, servings, dietary_tags_json, status, published_at, created_at, created_by, updated_at, updated_by) VALUES
+INSERT INTO recipes (id, internal_name, title, slug, excerpt, prep_minutes, cook_minutes, servings, dietary_tags_json, status, published_version_id, published_at, created_at, created_by, updated_at, updated_by) VALUES
   ('rcp_ragi_dosa', 'Ragi dosa recipe', 'Crisp sprouted ragi dosa', 'crisp-sprouted-ragi-dosa',
    'A weekday dosa with the deep, nutty flavour of sprouted finger millet.',
-   15, 20, 4, '["gluten-free","plant-based"]', 'published', '2026-07-06T00:00:00Z',
+   15, 20, 4, '["gluten-free","plant-based"]', 'published', 'rcv_ragi_dosa_1', '2026-07-06T00:00:00Z',
    '2026-07-01T00:00:00Z', 'usr_editor', '2026-07-06T00:00:00Z', 'usr_editor');
+
+INSERT INTO recipe_versions (id, recipe_id, version_number, content_json, workflow_state, created_at, created_by) VALUES
+  ('rcv_ragi_dosa_1', 'rcp_ragi_dosa', 1,
+   '{"steps":["Whisk the ragi flour with 2 1/2 cups of water and salt into a thin, pourable batter. Rest 15 minutes.","Fold in the chopped spinach and cumin seeds.","Heat a cast-iron tawa until water beads dance. Wipe with a few drops of groundnut oil.","Pour a ladle of batter from the outside in, lace-style. Drizzle oil around the edge.","Cook 2-3 minutes until the edges lift and crisp. Serve hot with chutney."]}',
+   'published', '2026-07-06T00:00:00Z', 'usr_editor');
 
 INSERT INTO recipe_ingredients (id, recipe_id, label, quantity_text, product_id, sort_order) VALUES
   ('ing_ragi_flour', 'rcp_ragi_dosa', 'Sprouted ragi flour', '2 cups', 'prd_ragi', 1),

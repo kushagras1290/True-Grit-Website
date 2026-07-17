@@ -89,6 +89,239 @@ class PageRepository:
         }
 
 
+class FarmRepository:
+    def __init__(self, db: Database):
+        self._db = db
+
+    async def list_published(self) -> list[dict[str, Any]]:
+        rows = await self._db.fetch_all(
+            """
+            SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.story_json,
+                   f.established_year, f.seo_title, f.seo_description,
+                   (
+                     SELECT c.name
+                     FROM farm_certifications fc
+                     JOIN certifications c ON c.id = fc.certification_id
+                     WHERE fc.farm_id = f.id AND fc.verification_status = 'verified'
+                     ORDER BY fc.valid_until DESC
+                     LIMIT 1
+                   ) AS certification
+            FROM farms f
+            WHERE f.status = 'published'
+            ORDER BY f.name
+            """
+        )
+        return [await self._detail_from_row(row) for row in rows]
+
+    async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
+        row = await self._db.fetch_one(
+            """
+            SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.story_json,
+                   f.established_year, f.seo_title, f.seo_description,
+                   (
+                     SELECT c.name
+                     FROM farm_certifications fc
+                     JOIN certifications c ON c.id = fc.certification_id
+                     WHERE fc.farm_id = f.id AND fc.verification_status = 'verified'
+                     ORDER BY fc.valid_until DESC
+                     LIMIT 1
+                   ) AS certification
+            FROM farms f
+            WHERE f.slug = ? AND f.status = 'published'
+            """,
+            (slug,),
+        )
+        if row is None:
+            return None
+        return await self._detail_from_row(row)
+
+    async def _detail_from_row(self, row: dict[str, Any]) -> dict[str, Any]:
+        story = json.loads(row["story_json"] or "{}")
+        if not isinstance(story, dict):
+            story = {}
+        summary = str(story.get("summary") or "")
+        body = str(story.get("body") or summary)
+        methods = story.get("methods")
+        product_rows = await self._db.fetch_all(
+            "SELECT slug FROM products WHERE farm_id = ? AND status = 'published' ORDER BY name",
+            (row["id"],),
+        )
+        return {
+            "id": row["id"],
+            "name": row["name"],
+            "slug": row["slug"],
+            "farmer_name": row["farmer_name"] or "",
+            "region": row["region"] or "",
+            "summary": summary,
+            "certification": row["certification"] or "Verified farm",
+            "established_year": int(row["established_year"] or 0),
+            "story": body,
+            "methods": [str(method) for method in methods] if isinstance(methods, list) else [],
+            "product_slugs": [entry["slug"] for entry in product_rows],
+            "seo": {
+                "title": row["seo_title"] or row["name"],
+                "description": row["seo_description"] or summary,
+                "canonical_path": f"/farms/{row['slug']}",
+                "indexing": "index",
+            },
+        }
+
+
+class RecipeRepository:
+    def __init__(self, db: Database):
+        self._db = db
+
+    async def list_published(self) -> list[dict[str, Any]]:
+        rows = await self._db.fetch_all(
+            """
+            SELECT id, title, slug, excerpt, prep_minutes, cook_minutes, servings,
+                   dietary_tags_json, published_version_id, seo_title, seo_description
+            FROM recipes
+            WHERE status = 'published'
+            ORDER BY published_at DESC, title
+            """
+        )
+        return [await self._detail_from_row(row) for row in rows]
+
+    async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
+        row = await self._db.fetch_one(
+            """
+            SELECT id, title, slug, excerpt, prep_minutes, cook_minutes, servings,
+                   dietary_tags_json, published_version_id, seo_title, seo_description
+            FROM recipes
+            WHERE slug = ? AND status = 'published'
+            """,
+            (slug,),
+        )
+        if row is None:
+            return None
+        return await self._detail_from_row(row)
+
+    async def _detail_from_row(self, row: dict[str, Any]) -> dict[str, Any]:
+        version = None
+        if row["published_version_id"]:
+            version = await self._db.fetch_one(
+                "SELECT content_json FROM recipe_versions WHERE id = ?",
+                (row["published_version_id"],),
+            )
+        content = json.loads(version["content_json"]) if version else {}
+        ingredients = await self._db.fetch_all(
+            """
+            SELECT ri.label, ri.quantity_text, p.slug AS product_slug
+            FROM recipe_ingredients ri
+            LEFT JOIN products p ON p.id = ri.product_id
+            WHERE ri.recipe_id = ?
+            ORDER BY ri.sort_order, ri.label
+            """,
+            (row["id"],),
+        )
+        tags = json.loads(row["dietary_tags_json"] or "[]")
+        steps = content.get("steps") if isinstance(content, dict) else []
+        return {
+            "id": row["id"],
+            "title": row["title"],
+            "slug": row["slug"],
+            "excerpt": row["excerpt"] or "",
+            "prep_minutes": int(row["prep_minutes"] or 0),
+            "cook_minutes": int(row["cook_minutes"] or 0),
+            "servings": int(row["servings"] or 0),
+            "dietary_tags": [str(tag) for tag in tags] if isinstance(tags, list) else [],
+            "ingredients": [
+                {
+                    "label": entry["label"],
+                    "quantity_text": entry["quantity_text"] or "",
+                    "product_slug": entry["product_slug"],
+                }
+                for entry in ingredients
+            ],
+            "steps": [str(step) for step in steps] if isinstance(steps, list) else [],
+            "seo": {
+                "title": row["seo_title"] or row["title"],
+                "description": row["seo_description"] or row["excerpt"] or "",
+                "canonical_path": f"/recipes/{row['slug']}",
+                "indexing": "index",
+            },
+        }
+
+
+class ArticleRepository:
+    def __init__(self, db: Database):
+        self._db = db
+
+    async def list_published(self) -> list[dict[str, Any]]:
+        rows = await self._db.fetch_all(
+            """
+            SELECT a.id, a.title, a.slug, a.excerpt, a.reading_minutes, a.published_at,
+                   a.published_version_id, a.seo_title, a.seo_description,
+                   COALESCE(u.display_name, 'True Grit') AS author_name
+            FROM articles a
+            LEFT JOIN users u ON u.id = a.author_user_id
+            WHERE a.status = 'published'
+            ORDER BY a.published_at DESC, a.title
+            """
+        )
+        return [await self._detail_from_row(row) for row in rows]
+
+    async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
+        row = await self._db.fetch_one(
+            """
+            SELECT a.id, a.title, a.slug, a.excerpt, a.reading_minutes, a.published_at,
+                   a.published_version_id, a.seo_title, a.seo_description,
+                   COALESCE(u.display_name, 'True Grit') AS author_name
+            FROM articles a
+            LEFT JOIN users u ON u.id = a.author_user_id
+            WHERE a.slug = ? AND a.status = 'published'
+            """,
+            (slug,),
+        )
+        if row is None:
+            return None
+        return await self._detail_from_row(row)
+
+    async def _detail_from_row(self, row: dict[str, Any]) -> dict[str, Any]:
+        version = None
+        if row["published_version_id"]:
+            version = await self._db.fetch_one(
+                "SELECT content_json FROM article_versions WHERE id = ?",
+                (row["published_version_id"],),
+            )
+        content = json.loads(version["content_json"]) if version else {}
+        body = content.get("body") if isinstance(content, dict) else []
+        return {
+            "id": row["id"],
+            "title": row["title"],
+            "slug": row["slug"],
+            "excerpt": row["excerpt"] or "",
+            "author_name": row["author_name"],
+            "published_at": row["published_at"] or "",
+            "reading_minutes": int(row["reading_minutes"] or 1),
+            "body": [str(paragraph) for paragraph in body] if isinstance(body, list) else [],
+            "pull_quote": content.get("pullQuote") if isinstance(content, dict) else None,
+            "seo": {
+                "title": row["seo_title"] or row["title"],
+                "description": row["seo_description"] or row["excerpt"] or "",
+                "canonical_path": f"/journal/{row['slug']}",
+                "indexing": "index",
+            },
+        }
+
+
+class SiteDocumentRepository:
+    def __init__(self, db: Database):
+        self._db = db
+
+    async def get(self, key: str) -> dict[str, Any] | None:
+        return await self._db.fetch_one(
+            "SELECT key, content, content_type, updated_at FROM site_documents WHERE key = ?",
+            (key,),
+        )
+
+    async def list(self) -> list[dict[str, Any]]:
+        return await self._db.fetch_all(
+            "SELECT key, content, content_type, updated_at FROM site_documents ORDER BY key"
+        )
+
+
 class NavigationRepository:
     def __init__(self, db: Database):
         self._db = db
@@ -151,7 +384,9 @@ class SearchRepository:
                 expanded.append(term)
         return expanded
 
-    async def search(self, query: str, limit: int = 20, country: str | None = None) -> dict[str, Any]:
+    async def search(
+        self, query: str, limit: int = 20, country: str | None = None
+    ) -> dict[str, Any]:
         terms = await self._expand_terms(query)
         if not terms:
             return {"query": query, "total": 0, "groups": []}

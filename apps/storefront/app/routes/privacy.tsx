@@ -1,15 +1,23 @@
 import type { Route } from "./+types/privacy";
+import { CmsPage } from "../components/cms-page";
 import { Section } from "../components/catalogue";
 import { PolicyList, StaticHero, SupportCta } from "../components/static-page";
+import { loadCmsRoute } from "../lib/cms-route.server";
 import { seoMeta } from "../lib/seo";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Privacy policy",
-    description: "How True Grit collects, uses and protects customer account and order data.",
-    canonicalPath: "/privacy",
-    indexing: "index",
-  });
+const fallbackSeo = {
+  title: "Privacy policy",
+  description: "How True Grit collects, uses and protects customer account and order data.",
+  canonicalPath: "/privacy",
+  indexing: "index",
+} as const;
+
+export async function loader({ request, context }: Route.LoaderArgs) {
+  return loadCmsRoute("privacy", request, context);
+}
+
+export function meta({ data }: Route.MetaArgs) {
+  return seoMeta(data?.page?.seo ?? fallbackSeo);
 }
 
 const PRIVACY_ITEMS = [
@@ -39,7 +47,8 @@ const PRIVACY_ITEMS = [
   },
 ];
 
-export default function PrivacyPage(_props: Route.ComponentProps) {
+export default function PrivacyPage({ loaderData }: Route.ComponentProps) {
+  if (loaderData.page) return <CmsPage page={loaderData.page} data={loaderData.blockData} />;
   return (
     <>
       <StaticHero

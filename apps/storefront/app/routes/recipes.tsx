@@ -2,11 +2,11 @@ import { Link } from "react-router";
 
 import type { Route } from "./+types/recipes";
 import { Section } from "../components/catalogue";
-import { loadRecipes } from "../lib/catalogue.server";
+import { catalogueRuntime, loadRecipes } from "../lib/catalogue.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader() {
-  return { recipes: await loadRecipes() };
+export async function loader({ context }: Route.LoaderArgs) {
+  return { recipes: await loadRecipes(catalogueRuntime(context)) };
 }
 
 export function meta(_args: Route.MetaArgs) {

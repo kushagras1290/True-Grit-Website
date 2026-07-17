@@ -2,11 +2,11 @@ import { Link } from "react-router";
 
 import type { Route } from "./+types/journal";
 import { Section } from "../components/catalogue";
-import { loadArticles } from "../lib/catalogue.server";
+import { catalogueRuntime, loadArticles } from "../lib/catalogue.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader() {
-  return { articles: await loadArticles() };
+export async function loader({ context }: Route.LoaderArgs) {
+  return { articles: await loadArticles(catalogueRuntime(context)) };
 }
 
 export function meta(_args: Route.MetaArgs) {

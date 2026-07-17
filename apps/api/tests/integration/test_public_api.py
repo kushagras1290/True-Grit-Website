@@ -54,6 +54,43 @@ def test_home_returns_published_blocks_only(client: TestClient):
     assert body["seo"]["title"].startswith("True Grit")
 
 
+def test_public_content_surfaces_read_from_database(client: TestClient):
+    farms = client.get("/v1/public/farms").json()["items"]
+    assert {farm["slug"] for farm in farms} == {
+        "anandvan-collective",
+        "devika-organics",
+        "himgiri-terraces",
+    }
+    farm = client.get("/v1/public/farms/devika-organics").json()
+    assert farm["name"] == "Devika Organics"
+    assert farm["productSlugs"] == ["organic-alphonso-mangoes"]
+
+    recipes = client.get("/v1/public/recipes").json()["items"]
+    assert [recipe["slug"] for recipe in recipes] == ["crisp-sprouted-ragi-dosa"]
+    assert recipes[0]["ingredients"][0]["productSlug"] == "sprouted-ragi-flour"
+
+    articles = client.get("/v1/public/articles").json()["items"]
+    assert [article["slug"] for article in articles] == ["quiet-revival-of-indian-millets"]
+    assert articles[0]["authorName"] == "Kabir Mehta"
+
+
+def test_public_pages_and_site_documents_have_generated_defaults(client: TestClient):
+    home_page = client.get("/v1/public/pages/home").json()
+    assert home_page["slug"] == "home"
+    assert home_page["blocks"][0]["type"] == "hero"
+
+    robots = client.get("/v1/public/site-documents/robots_txt").json()
+    assert "Sitemap:" in robots["content"]
+    assert robots["contentType"].startswith("text/plain")
+
+    sitemap = client.get("/v1/public/site-documents/sitemap_xml").json()
+    assert "/product/organic-alphonso-mangoes" in sitemap["content"]
+    assert sitemap["contentType"].startswith("application/xml")
+
+    llms = client.get("/v1/public/site-documents/llms_txt").json()
+    assert "## Core Pages" in llms["content"]
+
+
 def test_category_page_resolves_dynamic_rule(client: TestClient):
     response = client.get("/v1/public/categories/fresh-fruits")
     assert response.status_code == 200

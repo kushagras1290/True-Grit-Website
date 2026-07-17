@@ -1,18 +1,27 @@
 import type { Route } from "./+types/returns";
+import { CmsPage } from "../components/cms-page";
 import { Section } from "../components/catalogue";
 import { InfoGrid, PolicyList, StaticHero, SupportCta } from "../components/static-page";
+import { loadCmsRoute } from "../lib/cms-route.server";
 import { seoMeta } from "../lib/seo";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Returns and refunds",
-    description: "True Grit returns, replacement and refund policy for fresh and pantry orders.",
-    canonicalPath: "/returns",
-    indexing: "index",
-  });
+const fallbackSeo = {
+  title: "Returns and refunds",
+  description: "True Grit returns, replacement and refund policy for fresh and pantry orders.",
+  canonicalPath: "/returns",
+  indexing: "index",
+} as const;
+
+export async function loader({ request, context }: Route.LoaderArgs) {
+  return loadCmsRoute("returns", request, context);
 }
 
-export default function ReturnsPage(_props: Route.ComponentProps) {
+export function meta({ data }: Route.MetaArgs) {
+  return seoMeta(data?.page?.seo ?? fallbackSeo);
+}
+
+export default function ReturnsPage({ loaderData }: Route.ComponentProps) {
+  if (loaderData.page) return <CmsPage page={loaderData.page} data={loaderData.blockData} />;
   return (
     <>
       <StaticHero

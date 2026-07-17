@@ -9,7 +9,8 @@ import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
-  const recipe = await loadRecipe(params.slug);
+  const runtime = catalogueRuntime(context);
+  const recipe = await loadRecipe(params.slug, runtime);
   if (!recipe) throw data("Recipe not found", { status: 404 });
   const productSlugs = recipe.ingredients.flatMap((entry) => entry.productSlug ?? []);
   return {
@@ -17,7 +18,7 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
     ingredientProducts: await loadProductDetailsBySlugs(
       productSlugs,
       resolveCountry(request),
-      catalogueRuntime(context),
+      runtime,
     ),
   };
 }
