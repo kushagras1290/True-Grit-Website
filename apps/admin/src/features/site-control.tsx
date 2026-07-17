@@ -522,7 +522,7 @@ export function SiteControlPage() {
             type="submit"
             variant="primary"
             className="mt-5 w-full"
-            disabled={mutation.isPending || !form.formState.isDirty}
+            disabled={mutation.isPending}
           >
             {mutation.isPending ? "Saving..." : "Save site controls"}
           </Button>
@@ -546,9 +546,10 @@ function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<Site
   const addable = (allProducts ?? []).filter(row => !currentSlugs.includes(row.slug));
 
   function move(index: number, delta: number) {
+    const current = form.getValues("freshFavourites") || [];
     const target = index + delta;
-    if (target < 0 || target >= currentSlugs.length) return;
-    const next = [...currentSlugs];
+    if (target < 0 || target >= current.length) return;
+    const next = [...current];
     const sourceItem = next[index];
     const targetItem = next[target];
     if (!sourceItem || !targetItem) return;
@@ -601,7 +602,10 @@ function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<Site
                 type="button"
                 aria-label={`Remove ${entry.name}`}
                 className="min-h-8 rounded-sm border border-line px-2 text-xs text-danger"
-                onClick={() => form.setValue("freshFavourites", currentSlugs.filter(slug => slug !== entry.slug), { shouldDirty: true, shouldValidate: true })}
+                onClick={() => {
+                  const current = form.getValues("freshFavourites") || [];
+                  form.setValue("freshFavourites", current.filter(slug => slug !== entry.slug), { shouldDirty: true, shouldValidate: true });
+                }}
               >
                 Remove
               </button>
@@ -630,7 +634,8 @@ function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<Site
           onClick={() => {
             const row = addable.find((entry) => entry.id === pendingId);
             if (!row) return;
-            form.setValue("freshFavourites", [...currentSlugs, row.slug], { shouldDirty: true, shouldValidate: true });
+            const current = form.getValues("freshFavourites") || [];
+            form.setValue("freshFavourites", [...current, row.slug], { shouldDirty: true, shouldValidate: true });
             setPendingId("");
           }}
         >
