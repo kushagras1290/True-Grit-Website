@@ -6,9 +6,11 @@
 
 import type { CategorySummary, ProductSummary } from "@truegrit/contracts";
 import { themeVars, type ThemeKey } from "@truegrit/ui";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import { usePriceFormatter } from "../lib/currency";
+import { getPublicApiUrl } from "../lib/public-env";
 
 const PRODUCE_GLYPHS: Record<string, string> = {
   "organic-alphonso-mangoes": "M",
@@ -17,6 +19,34 @@ const PRODUCE_GLYPHS: Record<string, string> = {
   "wood-pressed-groundnut-oil": "O",
   "himalayan-red-rajma": "R",
 };
+
+function useLiveProductImage(slug: string, imageUrl?: string | null): string | null | undefined {
+  const [resolvedImageUrl, setResolvedImageUrl] = useState(imageUrl);
+
+  useEffect(() => {
+    setResolvedImageUrl(imageUrl);
+    const apiUrl = getPublicApiUrl();
+    if (!apiUrl) return;
+
+    let active = true;
+    fetch(`${apiUrl}/v1/public/products/${encodeURIComponent(slug)}`, {
+      headers: { accept: "application/json" },
+    })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((product: { imageUrl?: string | null } | null) => {
+        if (active && product?.imageUrl && product.imageUrl !== imageUrl) {
+          setResolvedImageUrl(product.imageUrl);
+        }
+      })
+      .catch(() => undefined);
+
+    return () => {
+      active = false;
+    };
+  }, [imageUrl, slug]);
+
+  return resolvedImageUrl;
+}
 
 export function ProduceFrame({
   slug,
@@ -29,14 +59,15 @@ export function ProduceFrame({
   imageUrl?: string | null;
   className?: string;
 }) {
+  const resolvedImageUrl = useLiveProductImage(slug, imageUrl);
   return (
     <div
       role="img"
       aria-label={alt}
       className={`relative flex items-center justify-center overflow-hidden bg-subtle ${className}`}
     >
-      {imageUrl ? (
-        <img src={imageUrl} alt="" className="h-full w-full object-cover" loading="lazy" />
+      {resolvedImageUrl ? (
+        <img src={resolvedImageUrl} alt="" className="h-full w-full object-cover" loading="lazy" />
       ) : (
         <>
           <span
