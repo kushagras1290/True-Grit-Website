@@ -49,7 +49,6 @@ async function fromApi<T>(path: string, runtime?: CatalogueRuntime): Promise<T |
   try {
     const response = await fetch(`${baseUrl}${path}`, {
       headers: { accept: "application/json" },
-      signal: AbortSignal.timeout(5_000),
     });
     if (response.status === 404) return null;
     if (!response.ok) return null;
