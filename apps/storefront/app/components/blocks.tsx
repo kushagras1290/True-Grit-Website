@@ -6,7 +6,7 @@ import type {
   ProductSummary,
   PublicPageBlock,
 } from "@truegrit/contracts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import { CategoryTile, ProductGrid, Section } from "./catalogue";
@@ -31,6 +31,18 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
     });
   }
   const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    if (activeIndex >= slides.length) setActiveIndex(0);
+  }, [activeIndex, slides.length]);
+
+  useEffect(() => {
+    if (slides.length <= 1) return undefined;
+    const timer = window.setInterval(() => {
+      setActiveIndex((index) => (index + 1) % slides.length);
+    }, 15000);
+    return () => window.clearInterval(timer);
+  }, [slides.length]);
 
   if (slides.length > 0) {
     const activeSlide = slides[Math.min(activeIndex, slides.length - 1)]!;
@@ -57,31 +69,7 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
                   </span>
                 </Link>
 
-                <div className="mt-3 grid grid-cols-5 gap-2">
-                  {slides.map((slide, index) => (
-                    <button
-                      key={`${slide.imageUrl}-${slide.href}`}
-                      type="button"
-                      onClick={() => setActiveIndex(index)}
-                      className={
-                        "relative block aspect-[16/10] overflow-hidden rounded-sm border bg-white/25 " +
-                        (index === activeIndex
-                          ? "border-brand"
-                          : "border-transparent hover:border-white/80")
-                      }
-                      aria-label={`Show ${slide.label}`}
-                      aria-pressed={index === activeIndex}
-                    >
-                      <img
-                        src={slide.imageUrl}
-                        alt=""
-                        className="h-full w-full object-cover"
-                        loading={index === 0 ? "eager" : "lazy"}
-                      />
-                    </button>
-                  ))}
-                </div>
-                <div className="mt-2 flex justify-end gap-1">
+                <div className="mt-3 flex justify-end gap-1">
                   {slides.map((slide, index) => (
                     <button
                       key={`${slide.imageUrl}-${index}-dot`}

@@ -79,6 +79,10 @@ def test_public_pages_and_site_documents_have_generated_defaults(client: TestCli
     assert home_page["slug"] == "home"
     assert home_page["blocks"][0]["type"] == "hero"
 
+    about_page = client.get("/v1/public/pages/about").json()
+    assert about_page["title"] == "About True Grit"
+    assert about_page["blocks"][0]["type"] == "hero"
+
     robots = client.get("/v1/public/site-documents/robots_txt").json()
     assert "Sitemap:" in robots["content"]
     assert robots["contentType"].startswith("text/plain")

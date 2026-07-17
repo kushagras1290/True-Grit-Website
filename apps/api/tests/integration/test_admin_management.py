@@ -565,6 +565,8 @@ def test_owner_can_manage_cms_page_seo_and_blocks(client: TestClient, db: SQLite
     as_admin(client, db)
     pages = client.get("/v1/admin/pages")
     assert pages.status_code == 200
+    slugs = {page["slug"] for page in pages.json()["items"]}
+    assert {"about", "delivery", "returns", "privacy", "terms", "help", "standards"} <= slugs
     home = next(page for page in pages.json()["items"] if page["slug"] == "home")
 
     detail = client.get(f"/v1/admin/pages/{home['id']}")
