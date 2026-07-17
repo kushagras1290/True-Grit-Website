@@ -47,44 +47,38 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
   if (slides.length > 0) {
     const activeSlide = slides[Math.min(activeIndex, slides.length - 1)]!;
     return (
-      <section className="bg-canvas">
-        <div className="mx-auto max-w-[80rem] px-4 py-4 sm:px-6">
-          <div className="relative overflow-hidden rounded-md bg-[#d8c8b4]">
-            <div className="relative px-3 py-3 md:px-5 md:py-5">
-              <div>
-                <Link
-                  to={activeSlide.href}
-                  className="group relative block min-h-52 overflow-hidden rounded-md bg-white/25 md:min-h-72"
-                  aria-label={activeSlide.label}
-                >
-                  <img
-                    src={activeSlide.imageUrl}
-                    alt={activeSlide.imageAlt || activeSlide.label}
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]"
-                    fetchPriority="high"
-                    loading="eager"
-                  />
-                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent px-4 pt-16 pb-3 text-sm font-medium text-white">
-                    {activeSlide.label}
-                  </span>
-                </Link>
+      <section className="bg-[#d8c8b4]">
+        <div className="relative w-full overflow-hidden">
+          <Link
+            to={activeSlide.href}
+            className="group relative block min-h-[21rem] overflow-hidden bg-white/25 md:min-h-[29rem]"
+            aria-label={activeSlide.label}
+          >
+            <img
+              src={activeSlide.imageUrl}
+              alt={activeSlide.imageAlt || activeSlide.label}
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]"
+              fetchPriority="high"
+              loading="eager"
+            />
+            <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent px-5 pt-20 pb-5 text-sm font-medium text-white">
+              {activeSlide.label}
+            </span>
+          </Link>
 
-                <div className="mt-3 flex justify-end gap-1">
-                  {slides.map((slide, index) => (
-                    <button
-                      key={`${slide.imageUrl}-${index}-dot`}
-                      type="button"
-                      onClick={() => setActiveIndex(index)}
-                      className={
-                        "h-1.5 rounded-full transition-all " +
-                        (index === activeIndex ? "w-5 bg-brand" : "w-1.5 bg-white/70")
-                      }
-                      aria-label={`Show ${slide.label}`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
+          <div className="absolute right-5 bottom-5 flex gap-1">
+            {slides.map((slide, index) => (
+              <button
+                key={`${slide.imageUrl}-${index}-dot`}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                className={
+                  "h-1.5 rounded-full transition-all " +
+                  (index === activeIndex ? "w-5 bg-white" : "w-1.5 bg-white/70")
+                }
+                aria-label={`Show ${slide.label}`}
+              />
+            ))}
           </div>
         </div>
       </section>
