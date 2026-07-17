@@ -6,6 +6,7 @@ import type {
   ProductSummary,
   PublicPageBlock,
 } from "@truegrit/contracts";
+import { useState } from "react";
 import { Link } from "react-router";
 
 import { CategoryTile, ProductGrid, Section } from "./catalogue";
@@ -29,8 +30,10 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
       enabled: true,
     });
   }
+  const [activeIndex, setActiveIndex] = useState(0);
 
   if (slides.length > 0) {
+    const activeSlide = slides[Math.min(activeIndex, slides.length - 1)]!;
     return (
       <section className="bg-canvas">
         <div className="mx-auto max-w-[80rem] px-4 py-4 sm:px-6">
@@ -107,29 +110,62 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
                 ) : null}
               </form>
 
-              <div className="grid grid-cols-5 items-end gap-2 md:h-full md:gap-3">
-                {slides.map((slide, index) => (
-                  <Link
-                    key={`${slide.imageUrl}-${slide.href}`}
-                    to={slide.href}
-                    className={
-                      "group relative flex min-h-24 items-end justify-center overflow-hidden rounded-sm bg-white/25 " +
-                      (index === 0 ? "col-span-2 md:min-h-56" : "md:min-h-40")
-                    }
-                    aria-label={slide.label}
-                  >
-                    <img
-                      src={slide.imageUrl}
-                      alt={slide.imageAlt || slide.label}
-                      className="h-full w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]"
-                      fetchPriority={index === 0 ? "high" : "auto"}
-                      loading={index === 0 ? "eager" : "lazy"}
+              <div className="md:h-full">
+                <Link
+                  to={activeSlide.href}
+                  className="group relative block min-h-52 overflow-hidden rounded-md bg-white/25 md:min-h-64"
+                  aria-label={activeSlide.label}
+                >
+                  <img
+                    src={activeSlide.imageUrl}
+                    alt={activeSlide.imageAlt || activeSlide.label}
+                    className="absolute inset-0 h-full w-full object-contain transition-transform duration-200 group-hover:scale-[1.01]"
+                    fetchPriority="high"
+                    loading="eager"
+                  />
+                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent px-4 pt-16 pb-3 text-sm font-medium text-white">
+                    {activeSlide.label}
+                  </span>
+                </Link>
+
+                <div className="mt-3 grid grid-cols-5 gap-2">
+                  {slides.map((slide, index) => (
+                    <button
+                      key={`${slide.imageUrl}-${slide.href}`}
+                      type="button"
+                      onClick={() => setActiveIndex(index)}
+                      className={
+                        "relative block aspect-[16/10] overflow-hidden rounded-sm border bg-white/25 " +
+                        (index === activeIndex
+                          ? "border-brand"
+                          : "border-transparent hover:border-white/80")
+                      }
+                      aria-label={`Show ${slide.label}`}
+                      aria-pressed={index === activeIndex}
+                    >
+                      <img
+                        src={slide.imageUrl}
+                        alt=""
+                        className="h-full w-full object-contain"
+                        loading={index === 0 ? "eager" : "lazy"}
+                      />
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-2 flex justify-end gap-1">
+                  {slides.map((slide, index) => (
+                    <button
+                      key={`${slide.imageUrl}-${index}-dot`}
+                      type="button"
+                      onClick={() => setActiveIndex(index)}
+                      className={
+                        "h-1.5 rounded-full transition-all " +
+                        (index === activeIndex ? "w-5 bg-brand" : "w-1.5 bg-white/70")
+                      }
+                      aria-label={`Show ${slide.label}`}
                     />
-                    <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-2 pt-8 pb-2 text-xs font-medium text-white">
-                      {slide.label}
-                    </span>
-                  </Link>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>
