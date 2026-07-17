@@ -72,6 +72,13 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
           { label: recipe.title, path: `/recipes/${recipe.slug}` },
         ]}
       />
+      {recipe.imageUrl ? (
+        <div className="mx-auto max-w-[80rem] px-4 pt-6 sm:px-6">
+          <div className="aspect-[21/9] w-full overflow-hidden rounded-md bg-stone-100">
+            <img src={recipe.imageUrl} alt="" className="h-full w-full object-cover" />
+          </div>
+        </div>
+      ) : null}
       <header className="mx-auto max-w-[80rem] px-4 pt-6 sm:px-6">
         <div className="max-w-2xl">
           <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">

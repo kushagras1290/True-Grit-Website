@@ -29,6 +29,7 @@ _PRODUCT_EDITABLE = (
     "image_url",
     "image_alt",
     "return_eligible",
+    "farm_id",
 )
 _CATEGORY_EDITABLE = (
     "name",
@@ -156,20 +157,37 @@ async def update_product(
         updates["slug"] = validate_slug(str(updates["slug"]).strip())
         if await _slug_taken(db, "products", updates["slug"], exclude_id=product_id):
             raise ConflictError("A product with this slug already exists.")
-    if not updates:
+    if not updates and "category_ids" not in fields:
         return {"id": product_id, "status": current["status"], "changed": False}
 
-    await _apply_update(
-        db,
-        table="products",
-        entity_type="product",
-        action="product.updated",
-        entity_id=product_id,
-        actor=actor,
-        request_id=request_id,
-        current=current,
-        updates=updates,
-    )
+    if updates:
+        await _apply_update(
+            db,
+            table="products",
+            entity_type="product",
+            action="product.updated",
+            entity_id=product_id,
+            actor=actor,
+            request_id=request_id,
+            current=current,
+            updates=updates,
+        )
+
+    if "category_ids" in fields:
+        category_ids = fields["category_ids"]
+        if not isinstance(category_ids, list):
+            category_ids = []
+        now = utc_now_iso()
+        statements = [
+            ("DELETE FROM product_categories WHERE product_id = ?", (product_id,)),
+        ]
+        for idx, cat_id in enumerate(category_ids):
+            statements.append((
+                "INSERT INTO product_categories (product_id, category_id, is_primary, sort_order, assigned_at, assigned_by) VALUES (?, ?, ?, ?, ?, ?)",
+                (product_id, cat_id, 1 if idx == 0 else 0, idx, now, actor.user_id)
+            ))
+        await db.batch(statements)
+
     return {"id": product_id, "status": current["status"], "changed": True}
 
 

@@ -89,7 +89,8 @@ class AdminRepository:
         return await self._db.fetch_all(
             """
             SELECT
-              il.variant_id, p.name AS product_name, v.name AS variant_name, v.sku,
+              il.variant_id, p.id AS product_id, p.status AS product_status,
+              p.name AS product_name, v.name AS variant_name, v.sku,
               loc.name AS location_name, il.on_hand, il.reserved,
               il.reorder_threshold, il.updated_at
             FROM inventory_levels il
@@ -107,7 +108,7 @@ class AdminRepository:
         product = await self._db.fetch_one(
             """
             SELECT p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
-                   p.seo_title, p.seo_description,
+                   p.seo_title, p.seo_description, p.farm_id,
                    COALESCE(
                      '/media/' || m.object_key,
                      NULLIF(p.image_url, ''),
@@ -141,6 +142,11 @@ class AdminRepository:
             (product_id,),
         )
         product["release_countries"] = [row["country_code"] for row in release_rows]
+        category_rows = await self._db.fetch_all(
+            "SELECT category_id FROM product_categories WHERE product_id = ? ORDER BY sort_order",
+            (product_id,)
+        )
+        product["category_ids"] = [row["category_id"] for row in category_rows]
         product["linked_products"] = await self._db.fetch_all(
             """
             SELECT p.id, p.name, p.slug, p.status

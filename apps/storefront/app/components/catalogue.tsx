@@ -184,7 +184,7 @@ export function CategoryTile({ category }: { category: CategorySummary }) {
           <span aria-hidden className="absolute inset-0 bg-black/25" />
         </>
       ) : null}
-      <span className="relative text-[var(--theme-fg)]">
+      <span className={"relative " + (category.imageUrl ? "text-white" : "text-[var(--theme-fg)]")}>
         {category.seasonLabel ? (
           <span className="mb-2 inline-block rounded-full bg-white/15 px-2.5 py-0.5 text-xs">
             {category.seasonLabel}

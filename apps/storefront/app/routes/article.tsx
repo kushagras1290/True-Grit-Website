@@ -52,6 +52,13 @@ export default function ArticlePage({ loaderData }: Route.ComponentProps) {
           { label: article.title, path: `/blog/${article.slug}` },
         ]}
       />
+      {article.imageUrl ? (
+        <div className="mx-auto max-w-[80rem] px-4 pt-6 sm:px-6">
+          <div className="aspect-[21/9] w-full overflow-hidden rounded-md bg-stone-100">
+            <img src={article.imageUrl} alt="" className="h-full w-full object-cover" />
+          </div>
+        </div>
+      ) : null}
       <article className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
         <header>
           <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">

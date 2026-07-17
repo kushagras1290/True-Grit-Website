@@ -89,6 +89,7 @@ const siteSchema = z.object({
   seoTitle: z.string().min(3).max(160),
   seoDescription: z.string().max(320),
   seoKeywords: z.string().max(500),
+  freshFavourites: z.array(z.string()),
 });
 
 type SiteForm = z.infer<typeof siteSchema>;
@@ -159,6 +160,7 @@ function defaults(data?: SiteControl): SiteForm {
     seoTitle: data?.seoTitle ?? "",
     seoDescription: data?.seoDescription ?? "",
     seoKeywords: data?.seoKeywords ?? "",
+    freshFavourites: data?.freshFavourites ?? [],
   };
 }
 
@@ -529,8 +531,113 @@ export function SiteControlPage() {
 
       <CmsPagesSection />
       <SiteDocumentsSection />
+      <FreshFavouritesSection form={form} />
       <HighlightsSection />
     </div>
+  );
+}
+
+function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<SiteForm>> }) {
+  const { data: allProducts, isLoading } = useQuery({ queryKey: ["admin-products"], queryFn: api.products });
+  const [pendingId, setPendingId] = useState("");
+  
+  const currentSlugs = form.watch("freshFavourites");
+  const currentProducts = currentSlugs.map(slug => allProducts?.find(p => p.slug === slug)).filter(Boolean) as AdminLinkedProduct[];
+  const addable = (allProducts ?? []).filter(row => !currentSlugs.includes(row.slug));
+
+  function move(index: number, delta: number) {
+    const target = index + delta;
+    if (target < 0 || target >= currentSlugs.length) return;
+    const next = [...currentSlugs];
+    const sourceItem = next[index];
+    const targetItem = next[target];
+    if (!sourceItem || !targetItem) return;
+    next[index] = targetItem;
+    next[target] = sourceItem;
+    form.setValue("freshFavourites", next, { shouldDirty: true, shouldValidate: true });
+  }
+
+  return (
+    <section className="mt-10 space-y-4 border-t border-line pt-5">
+      <div>
+        <h2 className="font-display text-lg text-ink">Fresh Favourites</h2>
+        <p className="text-sm text-ink-muted">
+          Shown in the Fresh favourites section on the homepage. Only published
+          products appear to customers. Saves with "Save site controls" button.
+        </p>
+      </div>
+      {isLoading ? (
+        <p className="text-sm text-ink-muted">Loading products...</p>
+      ) : currentProducts.length === 0 ? (
+        <p className="max-w-xl rounded-md border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
+          No fresh favourites yet. Add a few below.
+        </p>
+      ) : (
+        <ul className="max-w-xl divide-y divide-line rounded-md border border-line">
+          {currentProducts.map((entry, index) => (
+            <li key={entry.id} className="flex items-center gap-2 px-3 py-2 text-sm">
+              <span className="w-5 text-xs text-ink-muted">{index + 1}.</span>
+              <span className="flex-1 font-medium text-ink">{entry.name}</span>
+              <StatusPill status={entry.status} />
+              <button
+                type="button"
+                aria-label={`Move ${entry.name} up`}
+                className="min-h-8 min-w-8 rounded-sm border border-line text-xs disabled:opacity-40"
+                disabled={index === 0}
+                onClick={() => move(index, -1)}
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                aria-label={`Move ${entry.name} down`}
+                className="min-h-8 min-w-8 rounded-sm border border-line text-xs disabled:opacity-40"
+                disabled={index === currentSlugs.length - 1}
+                onClick={() => move(index, 1)}
+              >
+                ↓
+              </button>
+              <button
+                type="button"
+                aria-label={`Remove ${entry.name}`}
+                className="min-h-8 rounded-sm border border-line px-2 text-xs text-danger"
+                onClick={() => form.setValue("freshFavourites", currentSlugs.filter(slug => slug !== entry.slug), { shouldDirty: true, shouldValidate: true })}
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div className="flex max-w-xl gap-2">
+        <Select
+          aria-label="Product to add to fresh favourites"
+          value={pendingId}
+          onChange={(event) => setPendingId(event.target.value)}
+          className="flex-1"
+        >
+          <option value="">Add a product…</option>
+          {addable.map((row) => (
+            <option key={row.id} value={row.id}>
+              {row.name}
+            </option>
+          ))}
+        </Select>
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={!pendingId || currentSlugs.length >= 12}
+          onClick={() => {
+            const row = addable.find((entry) => entry.id === pendingId);
+            if (!row) return;
+            form.setValue("freshFavourites", [...currentSlugs, row.slug], { shouldDirty: true, shouldValidate: true });
+            setPendingId("");
+          }}
+        >
+          Add to favourites
+        </Button>
+      </div>
+    </section>
   );
 }
 

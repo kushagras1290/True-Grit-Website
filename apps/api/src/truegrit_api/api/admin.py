@@ -342,6 +342,7 @@ class SiteControlUpdate(_CamelModel):
     seo_title: str | None = Field(default=None, max_length=160)
     seo_description: str | None = Field(default=None, max_length=320)
     seo_keywords: str | None = Field(default=None, max_length=500)
+    fresh_favourites: list[str] | None = None
 
     @field_validator("hero_image_url")
     @classmethod
@@ -464,6 +465,24 @@ def _home_hero(page: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _home_favourites(page: dict[str, Any]) -> dict[str, Any]:
+    content = json.loads(page["content_json"])
+    for block in content.get("blocks", []):
+        if block.get("type") == "product_collection":
+            return block
+    return {
+        "id": "blk_favourites",
+        "type": "product_collection",
+        "version": 1,
+        "enabled": True,
+        "props": {
+            "eyebrow": "Fresh favourites",
+            "heading": "Fresh favourites",
+            "productSlugs": [],
+        }
+    }
+
+
 @router.get("/site-control")
 async def get_site_control(
     db: Annotated[Database, Depends(get_database)],
@@ -506,6 +525,7 @@ async def get_site_control(
         "seoTitle": page["seo_title"] or "",
         "seoDescription": page["seo_description"] or "",
         "seoKeywords": page["seo_keywords"] or "",
+        "freshFavourites": _home_favourites(page)["props"].get("productSlugs", []),
     }
 
 
@@ -589,6 +609,24 @@ async def update_site_control(
         label = fields.get("secondary_action_label", current.get("label", "")) or ""
         href = fields.get("secondary_action_href", current.get("href", "")) or ""
         props["secondaryAction"] = {"label": label, "href": href} if label and href else None
+
+    if "fresh_favourites" in fields:
+        fav_block = next((block for block in blocks if block.get("type") == "product_collection"), None)
+        if fav_block is None:
+            fav_block = {
+                "id": "blk_favourites",
+                "type": "product_collection",
+                "version": 1,
+                "enabled": True,
+                "props": {
+                    "eyebrow": "Fresh favourites",
+                    "heading": "Fresh favourites",
+                    "productSlugs": [],
+                }
+            }
+            blocks.append(fav_block)
+        fav_props = fav_block.setdefault("props", {})
+        fav_props["productSlugs"] = fields["fresh_favourites"]
 
     now = utc_now_iso()
     await db.execute(
@@ -1749,8 +1787,9 @@ async def list_media_endpoint(
     _principal: Annotated[Principal, Depends(require_permission("media.view"))],
     limit: Annotated[int, Query(ge=1, le=200)] = 60,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
 ) -> Any:
-    rows = await list_media(db, limit=limit, offset=offset)
+    rows = await list_media(db, limit=limit, offset=offset, search=search)
     base_url = str(request.base_url).rstrip("/")
     return {
         "items": [_media_row(row, base_url) for row in rows],
@@ -1883,6 +1922,8 @@ async def list_inventory(
         "items": [
             {
                 "variantId": row["variant_id"],
+                "productId": row["product_id"],
+                "productStatus": row["product_status"],
                 "productName": row["product_name"],
                 "variantName": row["variant_name"],
                 "sku": row["sku"],
@@ -1946,6 +1987,8 @@ class ProductUpdateRequest(_CamelModel):
     release_countries: list[str] | None = Field(default=None, max_length=100)
     linked_product_ids: list[str] | None = Field(default=None, max_length=12)
     return_eligible: bool | None = Field(default=None)
+    farm_id: str | None = Field(default=None)
+    category_ids: list[str] | None = Field(default=None)
 
 
 class ProductBulkDeleteRequest(_CamelModel):
@@ -1993,6 +2036,8 @@ async def get_product_endpoint(
         "productType": detail["product_type"],
         "status": detail["status"],
         "farmName": detail["farm_name"],
+        "farmId": detail.get("farm_id"),
+        "categoryIds": detail.get("category_ids", []),
         "seoTitle": detail["seo_title"] or "",
         "seoDescription": detail["seo_description"] or "",
         "imageUrl": detail["image_url"] or "",
@@ -2136,7 +2181,7 @@ async def update_variant_endpoint(
         sale_minor=payload.sale_minor,
     )
 
-@router.post("/products/{product_id}/status")
+@router.patch("/products/{product_id}/status")
 async def set_product_status_endpoint(
     product_id: str,
     payload: ProductStatusRequest,

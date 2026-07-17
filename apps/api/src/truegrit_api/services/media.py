@@ -97,8 +97,8 @@ async def save_image_bytes(
     return {"id": image_id, "path": f"/media/{key}"}
 
 
-async def list_media(db: Database, *, limit: int = 60, offset: int = 0) -> list[dict[str, Any]]:
-    return await MediaRepository(db).list_all(limit=limit, offset=offset)
+async def list_media(db: Database, *, limit: int = 60, offset: int = 0, search: str | None = None) -> list[dict[str, Any]]:
+    return await MediaRepository(db).list_all(limit=limit, offset=offset, search=search)
 
 
 async def update_media(

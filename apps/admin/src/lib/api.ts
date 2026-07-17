@@ -166,6 +166,8 @@ export interface AdminProductDetail {
   productType: string;
   status: string;
   farmName: string;
+  farmId: string | null;
+  categoryIds: string[];
   seoTitle: string;
   seoDescription: string;
   imageUrl: string;
@@ -322,6 +324,7 @@ export interface SiteControl {
   seoTitle: string;
   seoDescription: string;
   seoKeywords: string;
+  freshFavourites: string[];
 }
 
 export interface SiteDocuments {
@@ -487,7 +490,7 @@ export const api = {
     demoMode ? demo({ id: variantId }) : patch(`/v1/admin/products/${productId}/variants/${variantId}`, input),
 
   updateProductStatus: (productId: string, status: "draft" | "active" | "archived"): Promise<{ id: string }> =>
-    demoMode ? demo({ id: productId }) : post(`/v1/admin/products/${productId}/status`, { status }),
+    demoMode ? demo({ id: productId }) : patch(`/v1/admin/products/${productId}/status`, { status }),
 
   publishProduct: (
     id: string,
@@ -1154,10 +1157,10 @@ export const api = {
 
   // --- Media library ---------------------------------------------------
 
-  mediaLibrary: (): Promise<AdminMediaAssetRow[]> =>
+  mediaLibrary: ({ limit = 60, offset = 0, search }: { limit?: number, offset?: number, search?: string } = {}): Promise<AdminMediaAssetRow[]> =>
     demoMode
-      ? demo([])
-      : get<{ items: AdminMediaAssetRow[] }>("/v1/admin/media").then((body) => body.items),
+      ? demo([]) // Assume empty or mock for demo
+      : get<{ items: AdminMediaAssetRow[] }>(`/v1/admin/media?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ''}`).then((body) => body.items),
 
   updateMediaAsset: (
     id: string,

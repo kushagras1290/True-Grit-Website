@@ -366,6 +366,10 @@ const generalSchema = z.object({
   shortDescription: z.string().min(10, "Give customers at least one honest sentence").max(300),
   imageUrl: imageUrlSchema,
   imageAlt: z.string().max(200),
+  farmId: z.string().nullable().optional(),
+  categoryIds: z.array(z.string()).default([]),
+  sku: z.string().optional(),
+  listPrice: z.coerce.number().min(0).optional(),
 });
 
 type GeneralForm = z.infer<typeof generalSchema>;
@@ -488,7 +492,29 @@ export function ProductEditorPage() {
     ]);
 
   const saveMutation = useMutation({
-    mutationFn: (input: Record<string, unknown>) => api.updateProduct(id, input),
+    mutationFn: async (values: GeneralForm) => {
+      await api.updateProduct(id, values);
+      const skuStr = values.sku?.trim();
+      if (skuStr && values.listPrice !== undefined) {
+        if (product?.variants?.length) {
+          const v = product.variants[0];
+          if (skuStr !== v.sku || Math.round(values.listPrice * 100) !== v.listMinor) {
+            await api.updateVariant(id, v.id, {
+              sku: skuStr,
+              listMinor: Math.round(values.listPrice * 100),
+              saleMinor: v.saleMinor === null ? -1 : v.saleMinor,
+              name: v.name,
+            });
+          }
+        } else {
+          await api.createVariant(id, {
+            name: "Default",
+            sku: skuStr,
+            listMinor: Math.round(values.listPrice * 100),
+          });
+        }
+      }
+    },
     onSuccess: async () => {
       await invalidate();
       toast.success("Changes saved.");
@@ -926,8 +952,16 @@ function GeneralTab({
       shortDescription: product.shortDescription,
       imageUrl: product.imageUrl,
       imageAlt: product.imageAlt,
+      farmId: product.farmId || "",
+      categoryIds: product.categoryIds || [],
+      sku: product.variants?.[0]?.sku || "",
+      listPrice: product.variants?.[0]?.listMinor ? product.variants[0].listMinor / 100 : undefined,
     },
   });
+  
+  const { data: farms = [] } = useQuery({ queryKey: ["farms"], queryFn: () => api.farms() });
+  const { data: categories = [] } = useQuery({ queryKey: ["categories"], queryFn: () => api.categories() });
+
   const watchedImageUrl = form.watch("imageUrl");
   const watchedImageAlt = form.watch("imageAlt");
   const uploadMutation = useMutation({
@@ -951,6 +985,39 @@ function GeneralTab({
       </Field>
       <Field label="Slug" htmlFor="slug" error={form.formState.errors.slug?.message}>
         <Input id="slug" {...form.register("slug")} />
+      </Field>
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="SKU (Primary Variant)" htmlFor="sku" error={form.formState.errors.sku?.message}>
+          <Input id="sku" {...form.register("sku")} placeholder="TRG-123" />
+        </Field>
+        <Field label="Price (₹) (Primary Variant)" htmlFor="listPrice" error={form.formState.errors.listPrice?.message}>
+          <Input id="listPrice" type="number" step="0.01" {...form.register("listPrice")} placeholder="199.00" />
+        </Field>
+      </div>
+      <Field label="Farm" htmlFor="farmId" error={form.formState.errors.farmId?.message}>
+        <Select id="farmId" {...form.register("farmId", { setValueAs: (v) => (v === "" ? null : v) })}>
+          <option value="">No farm assigned</option>
+          {farms.map((f) => (
+            <option key={f.id} value={f.id}>
+              {f.name}
+            </option>
+          ))}
+        </Select>
+      </Field>
+      <Field label="Categories" htmlFor="categoryIds" error={form.formState.errors.categoryIds?.message}>
+        <div className="flex flex-col gap-2 max-h-48 overflow-y-auto border border-line rounded-md p-3">
+          {categories.map((c) => (
+            <label key={c.id} className="flex items-center gap-2 cursor-pointer">
+              <input 
+                type="checkbox" 
+                value={c.id} 
+                {...form.register("categoryIds")} 
+                className="w-4 h-4 text-primary rounded border-line focus:ring-primary"
+              />
+              <span className="text-sm">{c.name}</span>
+            </label>
+          ))}
+        </div>
       </Field>
       <Field
         label="Short description"

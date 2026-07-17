@@ -179,11 +179,12 @@ export function InventoryPage() {
               <Th>On hand</Th>
               <Th>Reserved</Th>
               <Th>Available</Th>
-              <Th>Status</Th>
+              <Th>Stock Status</Th>
+              <Th>Product Status</Th>
             </tr>
           </thead>
           {isLoading ? (
-            <LoadingRows columns={8} />
+            <LoadingRows columns={9} />
           ) : (
             <tbody>
               {rows.map((row) => {
@@ -212,6 +213,29 @@ export function InventoryPage() {
                     <Td className="font-medium">{available}</Td>
                     <Td>
                       <StatusPill status={status} />
+                    </Td>
+                    <Td>
+                      <div className="flex items-center gap-2">
+                        <StatusPill status={row.productStatus} />
+                        <PermissionGate permission="products.edit">
+                          <Button
+                            variant="secondary"
+                            onClick={() => {
+                              const nextStatus = row.productStatus === "active" ? "draft" : "active";
+                              api.updateProductStatus(row.productId, nextStatus)
+                                .then(() => {
+                                  toast.success("Product status updated.");
+                                  queryClient.invalidateQueries({ queryKey: ["inventory"] });
+                                })
+                                .catch((error) => {
+                                  toast.error(error instanceof ApiError ? error.message : "Failed to update product.");
+                                });
+                            }}
+                          >
+                            {row.productStatus === "active" ? "Disable" : "Enable"}
+                          </Button>
+                        </PermissionGate>
+                      </div>
                     </Td>
                   </tr>
                 );
@@ -812,7 +836,16 @@ function EditMediaModal({
 export function MediaPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery({ queryKey: ["admin-media"], queryFn: api.mediaLibrary });
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const limit = 6;
+  const offset = (page - 1) * limit;
+
+  const { data, isLoading } = useQuery({ 
+    queryKey: ["admin-media", page, searchQuery], 
+    queryFn: () => api.mediaLibrary({ limit, offset, search: searchQuery || undefined }) 
+  });
+  
   const [editing, setEditing] = useState<AdminMediaAssetRow | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const assets = data ?? [];
@@ -882,6 +915,19 @@ export function MediaPage() {
         />
       ) : null}
 
+      <div className="mb-6 flex gap-4">
+        <div className="flex-1">
+          <Input
+            placeholder="Search images..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setPage(1); // Reset to page 1 on new search
+            }}
+          />
+        </div>
+      </div>
+
       {isLoading ? (
         <p className="text-sm text-ink-muted">Loading media…</p>
       ) : assets.length === 0 ? (
@@ -925,6 +971,26 @@ export function MediaPage() {
           ))}
         </ul>
       )}
+      
+      {assets.length > 0 || page > 1 ? (
+        <div className="mt-8 flex justify-between border-t border-line pt-4">
+          <Button
+            variant="secondary"
+            disabled={page === 1}
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+          >
+            Previous
+          </Button>
+          <span className="text-sm font-medium text-ink-muted">Page {page}</span>
+          <Button
+            variant="secondary"
+            disabled={assets.length < limit}
+            onClick={() => setPage(p => p + 1)}
+          >
+            Next
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 }
