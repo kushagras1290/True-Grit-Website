@@ -194,16 +194,41 @@ class AdminRepository:
     async def list_roles(self) -> list[dict[str, Any]]:
         return await self._db.fetch_all(
             """
-            SELECT id, key, name, description
+            SELECT id, key, name, description, is_system,
+              (SELECT GROUP_CONCAT(permission_id, ',') FROM (
+                SELECT rp.permission_id
+                FROM role_permissions rp
+                JOIN permissions p ON p.id = rp.permission_id
+                WHERE rp.role_id = roles.id
+                ORDER BY p.key
+              )) AS permission_ids,
+              (SELECT GROUP_CONCAT(key, ',') FROM (
+                SELECT p.key
+                FROM role_permissions rp
+                JOIN permissions p ON p.id = rp.permission_id
+                WHERE rp.role_id = roles.id
+                ORDER BY p.key
+              )) AS permission_keys
             FROM roles
             ORDER BY
               CASE key
-                WHEN 'manager' THEN 0
-                WHEN 'inventory' THEN 1
-                WHEN 'farm_owner' THEN 2
+                WHEN 'super_admin' THEN 0
+                WHEN 'admin' THEN 1
+                WHEN 'manager' THEN 2
+                WHEN 'inventory' THEN 3
+                WHEN 'farm_owner' THEN 4
                 ELSE 10
               END,
               name
+            """
+        )
+
+    async def list_permissions(self) -> list[dict[str, Any]]:
+        return await self._db.fetch_all(
+            """
+            SELECT id, key, description
+            FROM permissions
+            ORDER BY key
             """
         )
 

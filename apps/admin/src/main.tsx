@@ -23,6 +23,7 @@ import {
   UsersPage,
 } from "./features/operations";
 import { ProductEditorPage, ProductListPage } from "./features/products";
+import { ScopeManagementPage } from "./features/scopes";
 import { SiteControlPage } from "./features/site-control";
 
 const queryClient = new QueryClient({
@@ -60,6 +61,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="media" element={<MediaPage />} />
               <Route path="contact-attempts" element={<ContactAttemptsPage />} />
               <Route path="users" element={<UsersPage />} />
+              <Route path="scopes" element={<ScopeManagementPage />} />
               <Route path="audit" element={<AuditPage />} />
               <Route path="account" element={<AccountPage />} />
               <Route

@@ -44,6 +44,7 @@ from truegrit_api.services.access import (
     delete_users,
     invite_user,
     reset_farm_owner_password,
+    set_role_permissions,
     set_user_roles,
     set_user_status,
 )
@@ -1734,8 +1735,29 @@ class UserRolesRequest(_CamelModel):
     role_ids: list[str] = Field(default_factory=list)
 
 
+class RolePermissionsRequest(_CamelModel):
+    permission_ids: list[str] = Field(default_factory=list)
+
+
 class UserBulkDeleteRequest(_CamelModel):
     user_ids: list[str] = Field(min_length=1, max_length=100)
+
+
+async def _assert_scope_owner(db: Database, principal: Principal) -> None:
+    if principal.farm_id is not None:
+        raise PermissionDeniedError("Only the owner can manage role scopes.")
+    owner_role = await db.fetch_one(
+        """
+        SELECT 1
+        FROM user_roles ur
+        JOIN roles r ON r.id = ur.role_id
+        WHERE ur.user_id = ? AND r.key = 'super_admin'
+        LIMIT 1
+        """,
+        (principal.user_id,),
+    )
+    if owner_role is None:
+        raise PermissionDeniedError("Only the owner can manage role scopes.")
 
 
 @router.get("/users")
@@ -1773,10 +1795,47 @@ async def list_roles_endpoint(
                 "key": row["key"],
                 "name": row["name"],
                 "description": row["description"] or "",
+                "isSystem": bool(row["is_system"]),
+                "locked": row["key"] == "super_admin",
+                "permissionIds": row["permission_ids"].split(",") if row["permission_ids"] else [],
+                "permissionKeys": row["permission_keys"].split(",") if row["permission_keys"] else [],
             }
             for row in rows
         ]
     }
+
+
+@router.get("/permissions")
+async def list_permissions_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("users.manage_roles"))],
+) -> Any:
+    await _assert_scope_owner(db, principal)
+    rows = await AdminRepository(db).list_permissions()
+    return {
+        "items": [
+            {"id": row["id"], "key": row["key"], "description": row["description"]}
+            for row in rows
+        ]
+    }
+
+
+@router.patch("/roles/{role_id}/permissions")
+async def set_role_permissions_endpoint(
+    role_id: str,
+    payload: RolePermissionsRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("users.manage_roles"))],
+) -> Any:
+    await _assert_scope_owner(db, principal)
+    return await set_role_permissions(
+        db,
+        principal,
+        _request_id(request),
+        role_id,
+        permission_ids=payload.permission_ids,
+    )
 
 
 @router.get("/contact-messages")

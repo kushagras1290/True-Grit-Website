@@ -198,6 +198,16 @@ export interface AdminRole {
   key: string;
   name: string;
   description: string;
+  isSystem: boolean;
+  locked: boolean;
+  permissionIds: string[];
+  permissionKeys: string[];
+}
+
+export interface AdminPermission {
+  id: string;
+  key: string;
+  description: string;
 }
 
 export interface AdminFarmRow {
@@ -619,6 +629,17 @@ export const api = {
 
   roles: (): Promise<AdminRole[]> =>
     demoMode ? demo([]) : get<{ items: AdminRole[] }>("/v1/admin/roles").then((body) => body.items),
+
+  permissions: (): Promise<AdminPermission[]> =>
+    demoMode
+      ? demo([])
+      : get<{ items: AdminPermission[] }>("/v1/admin/permissions").then((body) => body.items),
+
+  setRolePermissions: (
+    id: string,
+    permissionIds: string[],
+  ): Promise<{ id: string; permissionIds: string[] }> =>
+    demoMode ? demo({ id, permissionIds }) : patch(`/v1/admin/roles/${id}/permissions`, { permissionIds }),
 
   inviteUser: (input: {
     email: string;

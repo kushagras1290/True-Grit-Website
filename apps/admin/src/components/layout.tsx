@@ -15,6 +15,7 @@ import {
   Package,
   ScrollText,
   Settings,
+  ShieldCheck,
   ShoppingCart,
   Sprout,
   Users,
@@ -105,6 +106,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
     heading: "Configuration",
     entries: [
       { to: "/users", label: "Users & Roles", icon: <Users size={16} />, permission: "users.view" },
+      {
+        to: "/scopes",
+        label: "Scope Management",
+        icon: <ShieldCheck size={16} />,
+        permission: "users.manage_roles",
+      },
       {
         to: "/audit",
         label: "Audit Log",

@@ -30,6 +30,8 @@ from truegrit_api.util.timeutil import utc_now_iso
 _EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 _ASSIGNABLE_STATUSES = frozenset({"active", "disabled", "invited"})
 _TEMP_PASSWORD_ALPHABET = string.ascii_letters + string.digits + "-_"
+_LOCKED_ROLE_KEYS = frozenset({"super_admin"})
+_FARM_OWNER_PERMISSION_PREFIXES = frozenset({"products", "inventory", "media"})
 
 
 def _temporary_password(length: int = 18) -> str:
@@ -52,6 +54,22 @@ async def _validate_roles(db: Database, role_ids: list[str]) -> list[str]:
     return unique
 
 
+async def _validate_permissions(db: Database, permission_ids: list[str]) -> list[str]:
+    unique = list(dict.fromkeys(permission_ids))
+    if not unique:
+        return []
+    placeholders = ", ".join("?" for _ in unique)
+    rows = await db.fetch_all(
+        f"SELECT id FROM permissions WHERE id IN ({placeholders})",
+        unique,
+    )
+    found = {row["id"] for row in rows}
+    missing = [permission_id for permission_id in unique if permission_id not in found]
+    if missing:
+        raise ValidationAppError("Unknown permission.", details={"permissions": missing})
+    return unique
+
+
 async def _ensure_no_farm_owner_role(db: Database, role_ids: list[str]) -> None:
     if not role_ids:
         return
@@ -62,6 +80,84 @@ async def _ensure_no_farm_owner_role(db: Database, role_ids: list[str]) -> None:
     )
     if any(row["key"] == "farm_owner" for row in rows):
         raise ValidationAppError("Use Add farm owner to assign the farm owner role.")
+
+
+async def set_role_permissions(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    role_id: str,
+    *,
+    permission_ids: list[str],
+) -> dict[str, Any]:
+    role = await db.fetch_one(
+        "SELECT id, key, name FROM roles WHERE id = ?",
+        (role_id,),
+    )
+    if role is None:
+        raise NotFoundError("Role not found.")
+    if role["key"] in _LOCKED_ROLE_KEYS:
+        raise ValidationAppError("The owner role cannot be edited.")
+
+    permissions = await _validate_permissions(db, permission_ids)
+    if role["key"] == "farm_owner" and permissions:
+        placeholders = ", ".join("?" for _ in permissions)
+        rows = await db.fetch_all(
+            f"SELECT key FROM permissions WHERE id IN ({placeholders})",
+            permissions,
+        )
+        unsafe = [
+            row["key"]
+            for row in rows
+            if row["key"].split(".", 1)[0] not in _FARM_OWNER_PERMISSION_PREFIXES
+        ]
+        if unsafe:
+            raise ValidationAppError(
+                "Farm-owner scopes can only include products, inventory and media permissions.",
+                details={"permissions": sorted(unsafe)},
+            )
+
+    current_rows = await db.fetch_all(
+        "SELECT permission_id FROM role_permissions WHERE role_id = ?",
+        (role_id,),
+    )
+    before = sorted(row["permission_id"] for row in current_rows)
+    after = sorted(permissions)
+    now = utc_now_iso()
+    statements: list[Any] = [("DELETE FROM role_permissions WHERE role_id = ?", (role_id,))]
+    for permission_id in permissions:
+        statements.append(
+            (
+                "INSERT INTO role_permissions (role_id, permission_id) VALUES (?, ?)",
+                (role_id, permission_id),
+            )
+        )
+    statements.extend(
+        [
+            (
+                """
+                UPDATE sessions
+                SET revoked_at = ?
+                WHERE revoked_at IS NULL
+                  AND user_id IN (SELECT user_id FROM user_roles WHERE role_id = ?)
+                  AND user_id <> ?
+                """,
+                (now, role_id, actor.user_id),
+            ),
+            audit_statement(
+                action="role.permissions_changed",
+                entity_type="role",
+                entity_id=role_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                before={"permissions": before},
+                after={"permissions": after},
+            ),
+        ]
+    )
+    await db.batch(statements)
+    return {"id": role_id, "permissionIds": after}
 
 
 async def invite_user(

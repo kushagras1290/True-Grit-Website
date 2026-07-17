@@ -339,6 +339,71 @@ def test_owner_can_create_user_with_password(client: TestClient, db: SQLiteDatab
     assert '"passwordStored": false' in audit["after_summary_json"]
 
 
+def test_owner_can_manage_role_scopes(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    create_session(db, "usr_ops")
+    permissions = client.get("/v1/admin/permissions")
+    assert permissions.status_code == 200
+    permission_ids = {
+        permission["key"]: permission["id"] for permission in permissions.json()["items"]
+    }
+
+    response = client.patch(
+        "/v1/admin/roles/rol_inventory_manager/permissions",
+        json={"permissionIds": [permission_ids["products.view"]]},
+    )
+    assert response.status_code == 200
+    assert response.json()["permissionIds"] == [permission_ids["products.view"]]
+
+    roles = client.get("/v1/admin/roles").json()["items"]
+    inventory = next(role for role in roles if role["id"] == "rol_inventory_manager")
+    assert inventory["permissionIds"] == [permission_ids["products.view"]]
+    assert inventory["permissionKeys"] == ["products.view"]
+
+    revoked = db._conn.execute(
+        "SELECT revoked_at FROM sessions WHERE user_id = 'usr_ops' ORDER BY created_at DESC LIMIT 1"
+    ).fetchone()
+    assert revoked["revoked_at"] is not None
+
+    audit = db._conn.execute(
+        """
+        SELECT action, actor_user_id, before_summary_json, after_summary_json
+        FROM audit_logs
+        WHERE action = 'role.permissions_changed' AND entity_id = 'rol_inventory_manager'
+        ORDER BY created_at DESC
+        LIMIT 1
+        """
+    ).fetchone()
+    assert audit is not None
+    assert audit["actor_user_id"] == "usr_admin"
+    assert permission_ids["products.view"] in audit["after_summary_json"]
+
+
+def test_only_owner_can_manage_role_scopes(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    assert client.get("/v1/admin/permissions").status_code == 403
+    response = client.patch(
+        "/v1/admin/roles/rol_farm_owner/permissions",
+        json={"permissionIds": ["prm_products_view"]},
+    )
+    assert response.status_code == 403
+
+
+def test_owner_cannot_edit_locked_or_unsafe_scopes(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    locked = client.patch(
+        "/v1/admin/roles/rol_super_admin/permissions",
+        json={"permissionIds": ["prm_products_view"]},
+    )
+    assert locked.status_code == 422
+
+    unsafe = client.patch(
+        "/v1/admin/roles/rol_farm_owner/permissions",
+        json={"permissionIds": ["prm_users_view"]},
+    )
+    assert unsafe.status_code == 422
+
+
 def test_owner_can_delete_users_individually_and_in_bulk(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
     role_id = "rol_inventory"
