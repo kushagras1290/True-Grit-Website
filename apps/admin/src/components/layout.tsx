@@ -4,6 +4,7 @@ import { cn } from "@truegrit/ui";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Archive,
+  ArrowLeft,
   BarChart3,
   BookOpen,
   ClipboardList,
@@ -15,6 +16,8 @@ import {
   Mail,
   Menu,
   Package,
+  PanelLeftClose,
+  PanelLeftOpen,
   RotateCcw,
   ScrollText,
   Settings,
@@ -26,12 +29,23 @@ import {
   Warehouse,
   X,
 } from "lucide-react";
-import { useState, type ReactNode } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router";
+import { useEffect, useState, type ReactNode } from "react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router";
 
 import { Button } from "./ui";
 import { api, demoMode } from "../lib/api";
 import { useMe, usePermissions } from "../lib/permissions";
+
+const SIDEBAR_COLLAPSED_KEY = "truegrit.admin.sidebar-collapsed";
+
+/** Nearest ancestor route for the back button: strips the last path segment
+ * (`/products/prd_1` -> `/products`, `/products` -> `/`). Avoids relying on
+ * browser history, which is unreliable after a direct link or refresh. */
+function parentPath(pathname: string): string {
+  const segments = pathname.split("/").filter(Boolean);
+  if (segments.length <= 1) return "/";
+  return `/${segments.slice(0, -1).join("/")}`;
+}
 
 interface NavEntry {
   to: string;
@@ -152,16 +166,20 @@ function SidebarNav({
   permissions,
   subtitle,
   onNavigate,
+  collapsed = false,
 }: {
   permissions: ReadonlySet<string>;
   subtitle: string;
   onNavigate?: () => void;
+  collapsed?: boolean;
 }) {
   return (
     <>
-      <div className="border-b border-line px-5 py-5">
-        <p className="font-display text-lg tracking-tight text-brand">TRUE GRIT</p>
-        <p className="text-xs text-ink-muted">{subtitle}</p>
+      <div className={cn("border-b border-line py-5", collapsed ? "px-3 text-center" : "px-5")}>
+        <p className="font-display text-lg tracking-tight text-brand">
+          {collapsed ? "TG" : "TRUE GRIT"}
+        </p>
+        {collapsed ? null : <p className="text-xs text-ink-muted">{subtitle}</p>}
       </div>
       <nav aria-label="Admin navigation" className="space-y-6 px-3 py-5">
         {NAV_GROUPS.map((group) => {
@@ -175,9 +193,11 @@ function SidebarNav({
           if (visible.length === 0) return null;
           return (
             <div key={group.heading}>
-              <p className="px-2 pb-1.5 text-[11px] font-semibold tracking-[0.14em] text-ink-muted uppercase">
-                {group.heading}
-              </p>
+              {collapsed ? null : (
+                <p className="px-2 pb-1.5 text-[11px] font-semibold tracking-[0.14em] text-ink-muted uppercase">
+                  {group.heading}
+                </p>
+              )}
               <ul className="space-y-0.5">
                 {visible.map((entry) => (
                   <li key={entry.to}>
@@ -185,9 +205,12 @@ function SidebarNav({
                       to={entry.to}
                       end={entry.to === "/"}
                       onClick={onNavigate}
+                      title={collapsed ? entry.label : undefined}
+                      aria-label={collapsed ? entry.label : undefined}
                       className={({ isActive }) =>
                         cn(
                           "flex min-h-9 items-center gap-2.5 rounded-sm px-2 text-sm",
+                          collapsed && "justify-center px-0",
                           isActive
                             ? "bg-subtle font-medium text-brand"
                             : "text-ink hover:bg-canvas",
@@ -195,7 +218,7 @@ function SidebarNav({
                       }
                     >
                       {entry.icon}
-                      {entry.label}
+                      {collapsed ? null : entry.label}
                     </NavLink>
                   </li>
                 ))}
@@ -213,7 +236,14 @@ export function Shell() {
   const { data: me } = useMe();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(
+    () => typeof window !== "undefined" && localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1",
+  );
+  useEffect(() => {
+    localStorage.setItem(SIDEBAR_COLLAPSED_KEY, collapsed ? "1" : "0");
+  }, [collapsed]);
   const logout = useMutation({
     mutationFn: api.logout,
     onSuccess: () => {
@@ -222,6 +252,7 @@ export function Shell() {
     },
   });
   const subtitle = me?.farmName ? `Farm · ${me.farmName}` : "Operations console";
+  const showBack = location.pathname !== "/";
 
   return (
     <div className="flex min-h-screen">
@@ -232,8 +263,25 @@ export function Shell() {
         Skip to content
       </a>
 
-      <aside className="hidden w-60 shrink-0 border-r border-line bg-surface md:block">
-        <SidebarNav permissions={permissions} subtitle={subtitle} />
+      <aside
+        className={cn(
+          "hidden shrink-0 border-r border-line bg-surface transition-[width] duration-150 md:flex md:flex-col",
+          collapsed ? "w-16" : "w-60",
+        )}
+      >
+        <div className="flex-1 overflow-y-auto">
+          <SidebarNav permissions={permissions} subtitle={subtitle} collapsed={collapsed} />
+        </div>
+        <button
+          type="button"
+          className="flex min-h-10 items-center justify-center gap-2 border-t border-line text-xs text-ink-muted hover:bg-canvas hover:text-ink"
+          aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
+          aria-pressed={collapsed}
+          onClick={() => setCollapsed((value) => !value)}
+        >
+          {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+          {collapsed ? null : "Collapse"}
+        </button>
       </aside>
 
       {mobileOpen ? (
@@ -270,6 +318,17 @@ export function Shell() {
             >
               <Menu size={18} />
             </button>
+            {showBack ? (
+              <button
+                type="button"
+                className="flex min-h-9 items-center gap-1.5 rounded-sm px-2 text-sm text-ink hover:bg-canvas"
+                aria-label="Go back"
+                onClick={() => navigate(parentPath(location.pathname))}
+              >
+                <ArrowLeft size={16} />
+                <span className="hidden sm:inline">Back</span>
+              </button>
+            ) : null}
             <div className="flex items-center gap-2 text-sm text-ink-muted">
               <ClipboardList size={16} aria-hidden className="hidden sm:block" />
               {demoMode ? (

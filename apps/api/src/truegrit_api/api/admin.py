@@ -611,7 +611,9 @@ async def update_site_control(
         props["secondaryAction"] = {"label": label, "href": href} if label and href else None
 
     if "fresh_favourites" in fields:
-        fav_block = next((block for block in blocks if block.get("type") == "product_collection"), None)
+        fav_block: dict[str, Any] | None = next(
+            (block for block in blocks if block.get("type") == "product_collection"), None
+        )
         if fav_block is None:
             fav_block = {
                 "id": "blk_favourites",
@@ -622,11 +624,17 @@ async def update_site_control(
                     "eyebrow": "Fresh favourites",
                     "heading": "Fresh favourites",
                     "productSlugs": [],
-                }
+                },
             }
             blocks.append(fav_block)
-        fav_props = fav_block.setdefault("props", {})
+        fav_props: dict[str, Any] = fav_block.setdefault("props", {})
         fav_props["productSlugs"] = fields["fresh_favourites"]
+        # The storefront renderer slices productSlugs to props.limit. That cap
+        # only makes sense for a rule-driven feed; a manually curated list must
+        # never be truncated below what the admin actually chose, so keep it in
+        # lockstep with the saved list instead of leaving a stale seed value
+        # (e.g. limit: 5) behind that silently drops later additions.
+        fav_props["limit"] = len(fields["fresh_favourites"])
 
     now = utc_now_iso()
     await db.execute(
@@ -1848,6 +1856,7 @@ async def list_products(
             {
                 "id": row["id"],
                 "name": row["name"],
+                "slug": row["slug"],
                 "imageUrl": row["image_url"] or "",
                 "imageAlt": row["image_alt"] or row["name"],
                 "sku": row["sku"] or "—",

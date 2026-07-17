@@ -325,6 +325,7 @@ export type EntityStatus =
 export interface AdminProductRow {
   id: string;
   name: string;
+  slug: string;
   imageUrl: string;
   imageAlt: string;
   sku: string;

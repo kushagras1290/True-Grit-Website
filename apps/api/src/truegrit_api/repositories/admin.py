@@ -20,7 +20,7 @@ class AdminRepository:
         return await self._db.fetch_all(
             """
             SELECT
-              p.id, p.name, p.status,
+              p.id, p.name, p.slug, p.status,
               COALESCE(
                 '/media/' || m.object_key,
                 NULLIF(p.image_url, ''),

@@ -196,10 +196,20 @@ export function SiteControlPage() {
     const first = slides[0];
     return {
       ...values,
-      heroImageUrl: first?.imageUrl ?? values.heroImageUrl,
+      primaryActionHref: values.primaryActionHref.trim(),
+      secondaryActionHref: values.secondaryActionHref.trim(),
+      announcementPath: values.announcementPath.trim(),
+      heroImageUrl: (first?.imageUrl ?? values.heroImageUrl).trim(),
       heroImageAlt: first?.imageAlt ?? values.heroImageAlt,
       heroSlides: slides,
     };
+  }
+
+  function onInvalidSubmit(errors: typeof form.formState.errors) {
+    const firstError = Object.values(errors).find(
+      (error): error is { message?: string } => Boolean(error?.message),
+    );
+    toast.error(firstError?.message ?? "Fix the highlighted fields before saving.");
   }
 
   const mutation = useMutation({
@@ -305,7 +315,7 @@ export function SiteControlPage() {
       />
       <form
         className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]"
-        onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
+        onSubmit={form.handleSubmit((values) => mutation.mutate(values), onInvalidSubmit)}
       >
         <div className="space-y-6">
           <section className="space-y-4 border-t border-line pt-5">
@@ -477,13 +487,21 @@ export function SiteControlPage() {
               <Field label="Primary button label" htmlFor="primaryActionLabel">
                 <Input id="primaryActionLabel" {...form.register("primaryActionLabel")} />
               </Field>
-              <Field label="Primary button link" htmlFor="primaryActionHref">
+              <Field
+                label="Primary button link"
+                htmlFor="primaryActionHref"
+                error={form.formState.errors.primaryActionHref?.message}
+              >
                 <Input id="primaryActionHref" {...form.register("primaryActionHref")} />
               </Field>
               <Field label="Secondary button label" htmlFor="secondaryActionLabel">
                 <Input id="secondaryActionLabel" {...form.register("secondaryActionLabel")} />
               </Field>
-              <Field label="Secondary button link" htmlFor="secondaryActionHref">
+              <Field
+                label="Secondary button link"
+                htmlFor="secondaryActionHref"
+                error={form.formState.errors.secondaryActionHref?.message}
+              >
                 <Input id="secondaryActionHref" {...form.register("secondaryActionHref")} />
               </Field>
             </div>
