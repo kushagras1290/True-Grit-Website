@@ -76,6 +76,27 @@ def test_product_create_edit_publish_archive(client: TestClient, db: SQLiteDatab
     assert client.get(f"/v1/admin/products/{product_id}").status_code == 404
 
 
+def test_archive_lists_and_restores_products(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    archived = client.post("/v1/admin/products/prd_alphonso/archive")
+    assert archived.status_code == 200
+
+    archive = client.get("/v1/admin/archive")
+    assert archive.status_code == 200
+    rows = archive.json()["items"]
+    product = next(row for row in rows if row["id"] == "prd_alphonso")
+    assert product["kind"] == "product"
+    assert product["status"] == "archived"
+
+    restored = client.post("/v1/admin/archive/product/prd_alphonso/restore")
+    assert restored.status_code == 200
+    assert restored.json()["status"] == "draft"
+    assert client.get("/v1/admin/products/prd_alphonso").status_code == 200
+    assert client.get("/v1/admin/products/prd_alphonso").json()["status"] == "draft"
+    actions = [row["action"] for row in client.get("/v1/admin/audit").json()["items"]]
+    assert "product.restored" in actions
+
+
 def test_product_create_is_permission_gated(client: TestClient, db: SQLiteDatabase):
     as_editor(client, db)  # content editor has no products.create
     response = client.post("/v1/admin/products", json={"name": "Blocked", "productType": "pantry"})

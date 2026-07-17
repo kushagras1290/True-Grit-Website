@@ -353,6 +353,32 @@ class CmsPageUpdateRequest(_CamelModel):
     change_summary: str | None = Field(default=None, max_length=300)
 
 
+ARCHIVE_VIEW_PERMISSIONS = {
+    "products.view",
+    "categories.view",
+    "users.view",
+    "pages.view",
+}
+
+
+def _can_view_archive(principal: Principal) -> bool:
+    return any(principal.has(permission) for permission in ARCHIVE_VIEW_PERMISSIONS)
+
+
+def _archive_row(kind: str, row: Any) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "kind": kind,
+        "name": row["name"],
+        "slug": row["slug"],
+        "status": row["status"],
+        "archivedAt": row["archived_at"] or row["updated_at"],
+        "updatedAt": row["updated_at"],
+        "updatedBy": row["updated_by"] or "-",
+        "detail": row["detail"] or "",
+    }
+
+
 class ImageUploadRequest(_CamelModel):
     filename: str = Field(min_length=1, max_length=180)
     content_type: str = Field(min_length=1, max_length=80)
@@ -863,6 +889,225 @@ async def update_cms_page(
     if page is None:
         raise NotFoundError("Page not found.")
     return page
+
+
+@router.get("/archive")
+async def list_archive_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(get_current_staff)],
+) -> Any:
+    if not _can_view_archive(principal):
+        raise PermissionDeniedError()
+
+    items: list[dict[str, Any]] = []
+    if principal.has("products.view"):
+        product_rows = await db.fetch_all(
+            """
+            SELECT p.id, p.name, p.slug, p.status, p.archived_at, p.updated_at,
+                   u.display_name AS updated_by,
+                   COALESCE(f.name, b.name, '') AS detail
+            FROM products p
+            LEFT JOIN farms f ON f.id = p.farm_id
+            LEFT JOIN brands b ON b.id = p.brand_id
+            LEFT JOIN users u ON u.id = p.updated_by
+            WHERE (p.archived_at IS NOT NULL OR p.status = 'archived')
+              AND (? IS NULL OR p.farm_id = ?)
+            ORDER BY COALESCE(p.archived_at, p.updated_at) DESC, p.name
+            LIMIT 100
+            """,
+            (principal.farm_id, principal.farm_id),
+        )
+        items.extend(_archive_row("product", row) for row in product_rows)
+
+    if principal.farm_id is None and principal.has("categories.view"):
+        category_rows = await db.fetch_all(
+            """
+            SELECT c.id, c.name, c.slug, c.status, c.archived_at, c.updated_at,
+                   u.display_name AS updated_by,
+                   COALESCE(parent.name, '') AS detail
+            FROM categories c
+            LEFT JOIN categories parent ON parent.id = c.parent_id
+            LEFT JOIN users u ON u.id = c.updated_by
+            WHERE c.archived_at IS NOT NULL OR c.status = 'archived'
+            ORDER BY COALESCE(c.archived_at, c.updated_at) DESC, c.name
+            LIMIT 100
+            """
+        )
+        items.extend(_archive_row("category", row) for row in category_rows)
+
+    if principal.farm_id is None and principal.has("users.view"):
+        farm_rows = await db.fetch_all(
+            """
+            SELECT f.id, f.name, f.slug, f.status, NULL AS archived_at, f.updated_at,
+                   u.display_name AS updated_by,
+                   COALESCE(f.region, '') AS detail
+            FROM farms f
+            LEFT JOIN users u ON u.id = f.updated_by
+            WHERE f.status = 'archived'
+            ORDER BY f.updated_at DESC, f.name
+            LIMIT 100
+            """
+        )
+        items.extend(_archive_row("farm", row) for row in farm_rows)
+
+    if principal.farm_id is None and principal.has("pages.view"):
+        page_rows = await db.fetch_all(
+            """
+            SELECT p.id, p.title AS name, p.slug, p.status, p.archived_at, p.updated_at,
+                   u.display_name AS updated_by,
+                   p.page_type AS detail
+            FROM pages p
+            LEFT JOIN users u ON u.id = p.updated_by
+            WHERE p.archived_at IS NOT NULL OR p.status = 'archived'
+            ORDER BY COALESCE(p.archived_at, p.updated_at) DESC, p.slug
+            LIMIT 100
+            """
+        )
+        items.extend(_archive_row("page", row) for row in page_rows)
+
+    items.sort(key=lambda item: item["archivedAt"], reverse=True)
+    return {"items": items}
+
+
+@router.post("/archive/{kind}/{item_id}/restore")
+async def restore_archive_item_endpoint(
+    kind: str,
+    item_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(get_current_staff)],
+) -> Any:
+    permissions = {
+        "product": "products.edit",
+        "category": "categories.edit",
+        "farm": "users.invite",
+        "page": "pages.edit",
+    }
+    permission = permissions.get(kind)
+    if permission is None:
+        raise NotFoundError("Archived item not found.")
+    if not principal.has(permission):
+        raise PermissionDeniedError()
+    if kind != "product" and principal.farm_id is not None:
+        raise PermissionDeniedError()
+
+    now = utc_now_iso()
+    request_id = _request_id(request)
+
+    if kind == "product":
+        await _assert_product_scope(db, item_id, principal)
+        current = await db.fetch_one(
+            "SELECT id, status, farm_id FROM products WHERE id = ?"
+            " AND (archived_at IS NOT NULL OR status = 'archived')",
+            (item_id,),
+        )
+        if current is None:
+            raise NotFoundError("Archived product not found.")
+        await db.batch(
+            [
+                (
+                    "UPDATE products SET status = 'draft', archived_at = NULL,"
+                    " updated_at = ?, updated_by = ? WHERE id = ?",
+                    (now, principal.user_id, item_id),
+                ),
+                audit_statement(
+                    action="product.restored",
+                    entity_type="product",
+                    entity_id=item_id,
+                    actor_id=principal.user_id,
+                    request_id=request_id,
+                    created_at=now,
+                    before={"status": current["status"]},
+                    after={"status": "draft"},
+                ),
+            ]
+        )
+        return {"id": item_id, "kind": kind, "status": "draft"}
+
+    if kind == "category":
+        current = await db.fetch_one(
+            "SELECT id, status FROM categories WHERE id = ?"
+            " AND (archived_at IS NOT NULL OR status = 'archived')",
+            (item_id,),
+        )
+        if current is None:
+            raise NotFoundError("Archived category not found.")
+        await db.batch(
+            [
+                (
+                    "UPDATE categories SET status = 'draft', archived_at = NULL,"
+                    " updated_at = ?, updated_by = ? WHERE id = ?",
+                    (now, principal.user_id, item_id),
+                ),
+                audit_statement(
+                    action="category.restored",
+                    entity_type="category",
+                    entity_id=item_id,
+                    actor_id=principal.user_id,
+                    request_id=request_id,
+                    created_at=now,
+                    before={"status": current["status"]},
+                    after={"status": "draft"},
+                ),
+            ]
+        )
+        return {"id": item_id, "kind": kind, "status": "draft"}
+
+    if kind == "farm":
+        current = await db.fetch_one(
+            "SELECT id, status FROM farms WHERE id = ? AND status = 'archived'",
+            (item_id,),
+        )
+        if current is None:
+            raise NotFoundError("Archived farm not found.")
+        await db.batch(
+            [
+                (
+                    "UPDATE farms SET status = 'draft', updated_at = ?, updated_by = ?"
+                    " WHERE id = ?",
+                    (now, principal.user_id, item_id),
+                ),
+                audit_statement(
+                    action="farm.restored",
+                    entity_type="farm",
+                    entity_id=item_id,
+                    actor_id=principal.user_id,
+                    request_id=request_id,
+                    created_at=now,
+                    before={"status": current["status"]},
+                    after={"status": "draft"},
+                ),
+            ]
+        )
+        return {"id": item_id, "kind": kind, "status": "draft"}
+
+    current = await db.fetch_one(
+        "SELECT id, status FROM pages WHERE id = ?"
+        " AND (archived_at IS NOT NULL OR status = 'archived')",
+        (item_id,),
+    )
+    if current is None:
+        raise NotFoundError("Archived page not found.")
+    await db.batch(
+        [
+            (
+                "UPDATE pages SET status = 'draft', archived_at = NULL,"
+                " updated_at = ?, updated_by = ? WHERE id = ?",
+                (now, principal.user_id, item_id),
+            ),
+            audit_statement(
+                action="page.restored",
+                entity_type="page",
+                entity_id=item_id,
+                actor_id=principal.user_id,
+                request_id=request_id,
+                created_at=now,
+                before={"status": current["status"]},
+                after={"status": "draft"},
+            ),
+        ]
+    )
+    return {"id": item_id, "kind": kind, "status": "draft"}
 
 
 class HighlightsUpdateRequest(_CamelModel):

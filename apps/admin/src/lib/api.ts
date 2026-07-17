@@ -214,6 +214,20 @@ export interface AdminFarmRow {
   updatedAt: string;
 }
 
+export type ArchiveKind = "product" | "category" | "farm" | "page";
+
+export interface ArchiveRow {
+  id: string;
+  kind: ArchiveKind;
+  name: string;
+  slug: string;
+  status: string;
+  archivedAt: string;
+  updatedAt: string;
+  updatedBy: string;
+  detail: string;
+}
+
 export interface AdminOrderDetail {
   id: string;
   publicReference: string;
@@ -447,6 +461,31 @@ export const api = {
     demoMode
       ? demo({ deletedIds: productIds, count: productIds.length })
       : post("/v1/admin/products/bulk-delete", { productIds }),
+
+  archive: (): Promise<ArchiveRow[]> =>
+    demoMode
+      ? demo([
+          {
+            id: "demo_arch_product",
+            kind: "product",
+            name: "Archived sample product",
+            slug: "archived-sample-product",
+            status: "archived",
+            archivedAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            updatedBy: "Demo Admin",
+            detail: "Demo farm",
+          },
+        ])
+      : get<{ items: ArchiveRow[] }>("/v1/admin/archive").then((body) => body.items),
+
+  restoreArchiveItem: (
+    kind: ArchiveKind,
+    id: string,
+  ): Promise<{ id: string; kind: ArchiveKind; status: string }> =>
+    demoMode
+      ? demo({ id, kind, status: "draft" })
+      : post(`/v1/admin/archive/${kind}/${id}/restore`),
 
   categories: (): Promise<AdminCategoryRow[]> =>
     demoMode

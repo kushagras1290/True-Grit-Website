@@ -3,6 +3,7 @@
 import { cn } from "@truegrit/ui";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
+  Archive,
   ClipboardList,
   FolderTree,
   Image,
@@ -30,7 +31,7 @@ interface NavEntry {
   to: string;
   label: string;
   icon: ReactNode;
-  permission: string | null;
+  permission: string | string[] | null;
 }
 
 const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
@@ -72,6 +73,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         label: "Orders",
         icon: <ShoppingCart size={16} />,
         permission: "orders.view",
+      },
+      {
+        to: "/archive",
+        label: "Archive",
+        icon: <Archive size={16} />,
+        permission: ["products.view", "categories.view", "users.view", "pages.view"],
       },
     ],
   },
@@ -122,7 +129,11 @@ function SidebarNav({
       <nav aria-label="Admin navigation" className="space-y-6 px-3 py-5">
         {NAV_GROUPS.map((group) => {
           const visible = group.entries.filter(
-            (entry) => entry.permission === null || permissions.has(entry.permission),
+            (entry) =>
+              entry.permission === null ||
+              (Array.isArray(entry.permission)
+                ? entry.permission.some((permission) => permissions.has(permission))
+                : permissions.has(entry.permission)),
           );
           if (visible.length === 0) return null;
           return (
