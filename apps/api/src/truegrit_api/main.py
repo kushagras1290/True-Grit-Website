@@ -41,8 +41,8 @@ def create_app(db: Database | None = None, media: MediaStore | None = None) -> F
         CORSMiddleware,
         allow_origins=settings.allowed_origins,
         allow_credentials=True,
-        allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE"],
-        allow_headers=["content-type", "x-request-id", "x-csrf-token"],
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
     install_error_handlers(app)
 
