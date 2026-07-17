@@ -4,6 +4,7 @@ products, categories, inventory, users, and orders."""
 from __future__ import annotations
 
 import base64
+import re
 
 from fastapi.testclient import TestClient
 
@@ -17,6 +18,12 @@ ADDRESS = {
     "state": "Maharashtra",
     "postalCode": "400001",
 }
+
+
+def token_from_email(body: str) -> str:
+    match = re.search(r"token=([A-Za-z0-9_-]+)", body)
+    assert match is not None
+    return match.group(1)
 
 
 def as_admin(client: TestClient, db: SQLiteDatabase) -> None:
@@ -245,8 +252,15 @@ def test_admin_raw_image_upload_returns_public_media_url(client: TestClient, db:
 # --- Users & roles ----------------------------------------------------------
 
 
-def test_users_list_invite_and_status(client: TestClient, db: SQLiteDatabase):
+def test_users_list_invite_and_status(client: TestClient, db: SQLiteDatabase, monkeypatch):
     as_admin(client, db)
+    captured: dict[str, str] = {}
+    monkeypatch.setattr(
+        "truegrit_api.api.admin.send_email",
+        lambda to, subject, body, settings=None, html_body=None: captured.update(
+            to=to, subject=subject, body=body, html_body=html_body or ""
+        ),
+    )
     assert client.get("/v1/admin/roles").status_code == 200
 
     users = client.get("/v1/admin/users").json()["items"]
@@ -259,6 +273,24 @@ def test_users_list_invite_and_status(client: TestClient, db: SQLiteDatabase):
     )
     assert invited.status_code == 200
     new_id = invited.json()["id"]
+    assert invited.json()["emailSent"] is True
+    assert captured["to"] == "newstaff@truegrit.test"
+    assert captured["subject"] == "You are invited to True Grit"
+    assert "Set your password" in captured["body"]
+
+    token = token_from_email(captured["body"])
+    confirmed = client.post(
+        "/v1/admin/auth/password-reset/confirm",
+        json={"token": token, "newPassword": "newstaffpass123"},
+    )
+    assert confirmed.status_code == 200
+    login = client.post(
+        "/v1/admin/auth/login",
+        json={"email": "newstaff@truegrit.test", "password": "newstaffpass123"},
+    )
+    assert login.status_code == 200
+    client.cookies.clear()
+    as_admin(client, db)
 
     disabled = client.patch(f"/v1/admin/users/{new_id}/status", json={"status": "disabled"})
     assert disabled.status_code == 200
@@ -421,10 +453,83 @@ def test_owner_can_issue_farm_owner_temporary_password(client: TestClient, db: S
     assert temporary_password not in audit["after_summary_json"]
 
 
+def test_owner_can_email_farm_owner_password_reset(
+    client: TestClient, db: SQLiteDatabase, monkeypatch
+):
+    as_admin(client, db)
+    captured: dict[str, str] = {}
+    monkeypatch.setattr(
+        "truegrit_api.api.admin.send_email",
+        lambda to, subject, body, settings=None, html_body=None: captured.update(
+            to=to, subject=subject, body=body, html_body=html_body or ""
+        ),
+    )
+
+    response = client.post("/v1/admin/users/usr_farmowner/password-reset-email")
+    assert response.status_code == 200
+    assert response.json()["emailSent"] is True
+    assert captured["to"] == "owner@devika.test"
+    assert captured["subject"] == "Reset your True Grit password"
+    assert "Reset it here" in captured["body"]
+
+    token = token_from_email(captured["body"])
+    confirmed = client.post(
+        "/v1/admin/auth/password-reset/confirm",
+        json={"token": token, "newPassword": "freshfarmowner123"},
+    )
+    assert confirmed.status_code == 200
+    login = client.post(
+        "/v1/admin/auth/login",
+        json={"email": "owner@devika.test", "password": "freshfarmowner123"},
+    )
+    assert login.status_code == 200
+
+    audit = db._conn.execute(
+        """
+        SELECT action, actor_user_id, after_summary_json
+        FROM audit_logs
+        WHERE action = 'farm_owner.password_reset_email' AND entity_id = 'usr_farmowner'
+        ORDER BY created_at DESC
+        LIMIT 1
+        """
+    ).fetchone()
+    assert audit is not None
+    assert audit["actor_user_id"] == "usr_admin"
+    assert '"resetEmailSent": true' in audit["after_summary_json"]
+
+
 def test_farm_owner_cannot_issue_temporary_password(client: TestClient, db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     response = client.post("/v1/admin/users/usr_farmowner/temporary-password")
     assert response.status_code == 403
+
+
+def test_farm_owner_cannot_email_password_reset(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    response = client.post("/v1/admin/users/usr_farmowner/password-reset-email")
+    assert response.status_code == 403
+
+
+def test_owner_can_view_contact_attempts(client: TestClient, db: SQLiteDatabase):
+    contact = client.post(
+        "/v1/public/contact",
+        json={
+            "name": "Riya Nair",
+            "email": "riya@example.test",
+            "subject": "Order help",
+            "message": "Can you help with my recent order?",
+        },
+    )
+    assert contact.status_code == 200
+
+    as_admin(client, db)
+    response = client.get("/v1/admin/contact-messages")
+    assert response.status_code == 200
+    items = response.json()["items"]
+    assert items[0]["name"] == "Riya Nair"
+    assert items[0]["email"] == "riya@example.test"
+    assert items[0]["subject"] == "Order help"
+    assert items[0]["status"] == "new"
 
 
 # --- Orders -----------------------------------------------------------------

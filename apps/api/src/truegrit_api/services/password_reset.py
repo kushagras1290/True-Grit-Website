@@ -22,7 +22,7 @@ from truegrit_api.errors import ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
 from truegrit_api.services.email import OutboundEmail
-from truegrit_api.services.email_templates import render_password_reset
+from truegrit_api.services.email_templates import render_password_reset, render_staff_invitation
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
 
@@ -33,6 +33,36 @@ def _reset_email_body(reset_url: str, minutes: int) -> str:
         f"Reset it here (valid for {minutes} minutes):\n{reset_url}\n\n"
         "If you didn't ask for this, you can safely ignore this email."
     )
+
+
+def _invite_email_body(display_name: str, setup_url: str, minutes: int) -> str:
+    return (
+        f"Hi {display_name},\n\n"
+        "You have been invited to the True Grit admin portal.\n\n"
+        f"Set your password here (valid for {minutes} minutes):\n{setup_url}\n\n"
+        "If you were not expecting this invite, you can ignore this email."
+    )
+
+
+async def _mint_reset_url(
+    db: Database,
+    *,
+    user_id: str,
+    reset_base_url: str,
+    settings: Settings,
+) -> str:
+    token = secrets.token_urlsafe(32)
+    now = datetime.now(UTC)
+    expires_at = (now + timedelta(minutes=settings.password_reset_lifetime_minutes)).strftime(
+        "%Y-%m-%dT%H:%M:%SZ"
+    )
+    await db.execute(
+        "INSERT INTO password_reset_tokens (id, user_id, token_hash, expires_at, created_at)"
+        " VALUES (?, ?, ?, ?, ?)",
+        (new_id("prt"), user_id, hash_token(token), expires_at, utc_now_iso()),
+    )
+    separator = "&" if "?" in reset_base_url else "?"
+    return f"{reset_base_url}{separator}token={token}"
 
 
 async def request_password_reset(
@@ -54,18 +84,78 @@ async def request_password_reset(
     if user is None:
         return None
 
-    token = secrets.token_urlsafe(32)
-    now = datetime.now(UTC)
-    expires_at = (now + timedelta(minutes=settings.password_reset_lifetime_minutes)).strftime(
-        "%Y-%m-%dT%H:%M:%SZ"
+    reset_url = await _mint_reset_url(
+        db,
+        user_id=user["id"],
+        reset_base_url=reset_base_url,
+        settings=settings,
     )
-    await db.execute(
-        "INSERT INTO password_reset_tokens (id, user_id, token_hash, expires_at, created_at)"
-        " VALUES (?, ?, ?, ?, ?)",
-        (new_id("prt"), user["id"], hash_token(token), expires_at, utc_now_iso()),
+    return OutboundEmail(
+        to=user["email"],
+        subject="Reset your True Grit password",
+        body=_reset_email_body(reset_url, settings.password_reset_lifetime_minutes),
+        html_body=render_password_reset(reset_url, settings.password_reset_lifetime_minutes),
     )
-    separator = "&" if "?" in reset_base_url else "?"
-    reset_url = f"{reset_base_url}{separator}token={token}"
+
+
+async def request_staff_invitation_email(
+    db: Database,
+    *,
+    user_id: str,
+    reset_base_url: str,
+    settings: Settings,
+) -> OutboundEmail | None:
+    user = await db.fetch_one(
+        """
+        SELECT id, email, display_name
+        FROM users
+        WHERE id = ? AND user_type = 'staff' AND status = 'invited'
+        """,
+        (user_id,),
+    )
+    if user is None:
+        return None
+    setup_url = await _mint_reset_url(
+        db,
+        user_id=user["id"],
+        reset_base_url=reset_base_url,
+        settings=settings,
+    )
+    return OutboundEmail(
+        to=user["email"],
+        subject="You are invited to True Grit",
+        body=_invite_email_body(
+            user["display_name"], setup_url, settings.password_reset_lifetime_minutes
+        ),
+        html_body=render_staff_invitation(
+            user["display_name"], setup_url, settings.password_reset_lifetime_minutes
+        ),
+    )
+
+
+async def request_staff_password_reset_for_user(
+    db: Database,
+    *,
+    user_id: str,
+    reset_base_url: str,
+    settings: Settings,
+) -> OutboundEmail | None:
+    user = await db.fetch_one(
+        """
+        SELECT id, email
+        FROM users
+        WHERE id = ? AND user_type = 'staff' AND status = 'active'
+        """,
+        (user_id,),
+    )
+    if user is None:
+        return None
+    reset_url = await _mint_reset_url(
+        db,
+        user_id=user["id"],
+        reset_base_url=reset_base_url,
+        settings=settings,
+    )
     return OutboundEmail(
         to=user["email"],
         subject="Reset your True Grit password",
@@ -90,7 +180,7 @@ async def confirm_password_reset(
     row = await db.fetch_one(
         """
         SELECT prt.id, prt.user_id, prt.expires_at, prt.used_at,
-               u.email, u.user_type
+               u.email, u.user_type, u.status
         FROM password_reset_tokens prt
         JOIN users u ON u.id = prt.user_id
         WHERE prt.token_hash = ?
@@ -120,6 +210,11 @@ async def confirm_password_reset(
                 "UPDATE sessions SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL",
                 (now, row["user_id"]),
             ),
+            (
+                "UPDATE users SET status = 'active', updated_at = ?"
+                " WHERE id = ? AND status = 'invited'",
+                (now, row["user_id"]),
+            ),
             audit_statement(
                 action="password.changed",
                 entity_type="user",
@@ -131,6 +226,7 @@ async def confirm_password_reset(
                 after={
                     "email": row["email"],
                     "userType": row["user_type"],
+                    "activatedFromInvite": row["status"] == "invited",
                     "credentialChanged": True,
                     "passwordStored": False,
                 },

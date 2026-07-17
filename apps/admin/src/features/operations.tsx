@@ -26,7 +26,13 @@ import {
   Th,
 } from "../components/ui";
 import { useToast } from "../components/toast";
-import { ApiError, api, type AdminFarmRow, type AdminRole } from "../lib/api";
+import {
+  ApiError,
+  api,
+  type AdminContactMessageRow,
+  type AdminFarmRow,
+  type AdminRole,
+} from "../lib/api";
 import { formatDateTime, formatMoney } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
 
@@ -928,7 +934,7 @@ function InviteUserModal({ onClose }: { onClose: () => void }) {
       }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["users"] });
-      toast.success("Invitation created.");
+      toast.success("Invitation email sent.");
       onClose();
     },
     onError: (error) =>
@@ -1025,16 +1031,13 @@ function ResetFarmOwnerPasswordModal({
   onClose: () => void;
 }) {
   const toast = useToast();
-  const [result, setResult] = useState<{
-    email: string;
-    temporaryPassword: string;
-  } | null>(null);
+  const [result, setResult] = useState<{ email: string } | null>(null);
 
   const mutation = useMutation({
     mutationFn: () => api.resetFarmOwnerPassword(user.id),
     onSuccess: (response) => {
       setResult(response);
-      toast.success("Temporary password generated.");
+      toast.success("Password reset email sent.");
     },
     onError: (error) =>
       toast.error(
@@ -1042,32 +1045,15 @@ function ResetFarmOwnerPasswordModal({
       ),
   });
 
-  async function copyTemporaryPassword() {
-    if (!result) return;
-    await navigator.clipboard.writeText(result.temporaryPassword);
-    toast.success("Temporary password copied.");
-  }
-
   return (
-    <Modal title={`Reset password - ${user.displayName}`} onClose={onClose}>
+    <Modal title={`Password - ${user.displayName}`} onClose={onClose}>
       {result ? (
         <div className="space-y-4">
           <p className="text-sm text-ink-muted">
-            Share this temporary password with {result.email}. It will not be shown again.
+            A password reset link has been sent to {result.email}. The farm owner can use it to set
+            a new password.
           </p>
-          <Field label="Temporary password" htmlFor="temporary-password">
-            <Input
-              id="temporary-password"
-              type="text"
-              readOnly
-              value={result.temporaryPassword}
-              className="font-mono"
-            />
-          </Field>
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="secondary" onClick={copyTemporaryPassword}>
-              Copy
-            </Button>
             <Button type="button" variant="primary" onClick={onClose}>
               Done
             </Button>
@@ -1076,8 +1062,8 @@ function ResetFarmOwnerPasswordModal({
       ) : (
         <div className="space-y-4">
           <p className="text-sm text-ink-muted">
-            This signs the farm owner out everywhere and replaces their password with a new
-            temporary password.
+            Send a secure password reset link to this farm owner. They will set their new password
+            from the admin reset page.
           </p>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="secondary" onClick={onClose}>
@@ -1089,7 +1075,7 @@ function ResetFarmOwnerPasswordModal({
               onClick={() => mutation.mutate()}
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? "Generating..." : "Generate temporary password"}
+              {mutation.isPending ? "Sending..." : "Send reset email"}
             </Button>
           </div>
         </div>
@@ -1376,15 +1362,6 @@ export function UsersPage() {
                           >
                             Roles
                           </button>
-                          {user.roles.some((role) => role.toLowerCase().includes("farm owner")) ? (
-                            <button
-                              type="button"
-                              className="text-sm text-ink-muted underline-offset-4 hover:text-brand hover:underline"
-                              onClick={() => setResettingPassword(user)}
-                            >
-                              Reset password
-                            </button>
-                          ) : null}
                           <button
                             type="button"
                             className="text-sm text-ink-muted underline-offset-4 hover:text-danger hover:underline"
@@ -1406,6 +1383,15 @@ export function UsersPage() {
                           >
                             {user.status === "disabled" ? "Enable" : "Disable"}
                           </button>
+                          {user.roles.some((role) => role.toLowerCase().includes("farm owner")) ? (
+                            <button
+                              type="button"
+                              className="text-sm text-ink-muted underline-offset-4 hover:text-brand hover:underline"
+                              onClick={() => setResettingPassword(user)}
+                            >
+                              Password
+                            </button>
+                          ) : null}
                         </div>
                       </PermissionGate>
                     </Td>
@@ -1447,6 +1433,74 @@ export function UsersPage() {
           </div>
         )}
       </section>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Contact attempts
+// ---------------------------------------------------------------------------
+
+function ContactMessageCard({ message }: { message: AdminContactMessageRow }) {
+  return (
+    <article className="rounded-md border border-line bg-surface p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="font-display text-lg text-ink">{message.subject}</h2>
+          <p className="mt-1 text-sm text-ink-muted">
+            {message.name} ·{" "}
+            <a href={`mailto:${message.email}`} className="text-brand hover:underline">
+              {message.email}
+            </a>
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <StatusPill status={message.status} />
+          <span className="text-xs text-ink-muted">{formatDateTime(message.createdAt)}</span>
+        </div>
+      </div>
+      <p className="mt-4 whitespace-pre-wrap text-sm leading-6 text-ink">{message.message}</p>
+    </article>
+  );
+}
+
+export function ContactAttemptsPage() {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["contact-messages"],
+    queryFn: api.contactMessages,
+  });
+  const messages = data ?? [];
+
+  return (
+    <div>
+      <PageHeader
+        title="Contact Attempts"
+        description="Messages submitted from the storefront Contact us page."
+      />
+
+      {isError ? (
+        <EmptyState
+          title="Contact attempts unavailable"
+          hint="Only main admins can view customer contact messages."
+        />
+      ) : null}
+
+      {!isError ? (
+        <div className="space-y-3">
+          {isLoading ? (
+            <DataTableShell>
+              <LoadingRows columns={3} />
+            </DataTableShell>
+          ) : messages.length === 0 ? (
+            <EmptyState
+              title="No contact attempts"
+              hint="Messages sent from the storefront contact page will appear here."
+            />
+          ) : (
+            messages.map((message) => <ContactMessageCard key={message.id} message={message} />)
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }

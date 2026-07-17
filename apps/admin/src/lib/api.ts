@@ -214,6 +214,17 @@ export interface AdminFarmRow {
   updatedAt: string;
 }
 
+export interface AdminContactMessageRow {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  status: "new" | "read" | "archived";
+  createdAt: string;
+  handledAt: string | null;
+}
+
 export type ArchiveKind = "product" | "category" | "farm" | "page";
 
 export interface ArchiveRow {
@@ -634,10 +645,17 @@ export const api = {
 
   resetFarmOwnerPassword: (
     id: string,
-  ): Promise<{ id: string; email: string; temporaryPassword: string }> =>
+  ): Promise<{ id: string; email: string; emailSent: boolean }> =>
     demoMode
-      ? demo({ id, email: "owner@demo.test", temporaryPassword: "TempOwner-123456" })
-      : post(`/v1/admin/users/${id}/temporary-password`),
+      ? demo({ id, email: "owner@demo.test", emailSent: true })
+      : post(`/v1/admin/users/${id}/password-reset-email`),
+
+  contactMessages: (): Promise<AdminContactMessageRow[]> =>
+    demoMode
+      ? demo([])
+      : get<{ items: AdminContactMessageRow[] }>("/v1/admin/contact-messages").then(
+          (body) => body.items,
+        ),
 
   farms: (): Promise<AdminFarmRow[]> =>
     demoMode

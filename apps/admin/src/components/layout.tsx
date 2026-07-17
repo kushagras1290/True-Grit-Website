@@ -10,6 +10,7 @@ import {
   KeyRound,
   LayoutDashboard,
   LogOut,
+  Mail,
   Menu,
   Package,
   ScrollText,
@@ -92,6 +93,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         permission: "settings.view",
       },
       { to: "/media", label: "Media Library", icon: <Image size={16} />, permission: "media.view" },
+      {
+        to: "/contact-attempts",
+        label: "Contact Attempts",
+        icon: <Mail size={16} />,
+        permission: "users.view",
+      },
     ],
   },
   {

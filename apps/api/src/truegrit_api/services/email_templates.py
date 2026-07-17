@@ -138,6 +138,31 @@ def render_password_reset(reset_url: str, minutes: int) -> str:
         body_html=body_html
     )
 
+def render_staff_invitation(display_name: str, setup_url: str, minutes: int) -> str:
+    """Renders the HTML for a staff admin invitation email."""
+    subject = "You are invited to True Grit"
+    header_title = "True Grit Admin"
+
+    body_html = f"""
+    <h2 style="color: #1e293b; margin-top: 0;">Hi {display_name},</h2>
+    <p>You have been invited to the True Grit admin portal.</p>
+    <p>Use the button below to set your password and activate your account. This link is valid for <strong>{minutes} minutes</strong>.</p>
+    <div style="text-align: center;">
+        <a href="{setup_url}" class="btn">Set My Password</a>
+    </div>
+    <p style="margin-top: 24px; font-size: 14px; color: #64748b;">
+        If the button doesn't work, copy and paste this URL into your browser:<br>
+        <a href="{setup_url}" style="color: #198754; word-break: break-all;">{setup_url}</a>
+    </p>
+    <p style="margin-bottom: 0;">Best regards,<br>The True Grit Team</p>
+    """
+
+    return _BASE_HTML.format(
+        subject=subject,
+        header_title=header_title,
+        body_html=body_html
+    )
+
 def render_order_confirmation(customer_name: str, reference: str, total: str) -> str:
     """Renders the HTML for the customer order confirmation email."""
     subject = f"Order {reference} confirmed"

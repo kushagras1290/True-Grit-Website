@@ -63,7 +63,12 @@ from truegrit_api.services.email import send_email
 from truegrit_api.services.inventory import adjust_inventory, clear_inventory_levels
 from truegrit_api.services.media import save_image_bytes, save_image_upload
 from truegrit_api.services.orders import update_order_status
-from truegrit_api.services.password_reset import confirm_password_reset, request_password_reset
+from truegrit_api.services.password_reset import (
+    confirm_password_reset,
+    request_password_reset,
+    request_staff_invitation_email,
+    request_staff_password_reset_for_user,
+)
 from truegrit_api.services.publishing import publish_category, publish_product
 from truegrit_api.services.site_documents import SITE_DOCUMENT_TYPES, default_site_documents
 from truegrit_api.util.ids import new_id
@@ -1766,14 +1771,49 @@ async def list_roles_endpoint(
     }
 
 
+@router.get("/contact-messages")
+async def list_contact_messages_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("users.view"))],
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+) -> Any:
+    if principal.farm_id is not None:
+        raise PermissionDeniedError("Only main admins can view contact attempts.")
+    rows = await db.fetch_all(
+        """
+        SELECT id, name, email, subject, message, status, created_at, handled_at
+        FROM contact_messages
+        ORDER BY created_at DESC
+        LIMIT ?
+        """,
+        (limit,),
+    )
+    return {
+        "items": [
+            {
+                "id": row["id"],
+                "name": row["name"],
+                "email": row["email"],
+                "subject": row["subject"],
+                "message": row["message"],
+                "status": row["status"],
+                "createdAt": row["created_at"],
+                "handledAt": row["handled_at"],
+            }
+            for row in rows
+        ]
+    }
+
+
 @router.post("/users/invite")
 async def invite_user_endpoint(
     payload: UserInviteRequest,
     request: Request,
+    background: BackgroundTasks,
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(require_permission("users.invite"))],
 ) -> Any:
-    return await invite_user(
+    result = await invite_user(
         db,
         principal,
         _request_id(request),
@@ -1781,6 +1821,23 @@ async def invite_user_endpoint(
         display_name=payload.display_name,
         role_ids=payload.role_ids,
     )
+    settings = get_settings()
+    email = await request_staff_invitation_email(
+        db,
+        user_id=result["id"],
+        reset_base_url=f"{settings.public_admin_url}/reset-password",
+        settings=settings,
+    )
+    if email is not None:
+        background.add_task(
+            send_email,
+            email.to,
+            email.subject,
+            email.body,
+            settings,
+            email.html_body,
+        )
+    return {**result, "emailSent": email is not None}
 
 
 @router.patch("/users/{user_id}/status")
@@ -1839,6 +1896,68 @@ async def reset_farm_owner_password_endpoint(
     if principal.farm_id is not None:
         raise PermissionDeniedError("Only main admins can reset farm owner passwords.")
     return await reset_farm_owner_password(db, principal, _request_id(request), user_id)
+
+
+@router.post("/users/{user_id}/password-reset-email")
+async def email_farm_owner_password_reset_endpoint(
+    user_id: str,
+    request: Request,
+    background: BackgroundTasks,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("users.manage_roles"))],
+) -> Any:
+    if principal.farm_id is not None:
+        raise PermissionDeniedError("Only main admins can reset farm owner passwords.")
+    user = await db.fetch_one(
+        """
+        SELECT u.id, u.email, u.status, fm.farm_id
+        FROM users u
+        JOIN farm_members fm ON fm.user_id = u.id
+        WHERE u.id = ? AND u.user_type = 'staff'
+        """,
+        (user_id,),
+    )
+    if user is None:
+        raise NotFoundError("Farm owner not found.")
+    if user["status"] == "disabled":
+        raise ValidationAppError("Enable this farm owner before resetting their password.")
+
+    settings = get_settings()
+    email = await request_staff_password_reset_for_user(
+        db,
+        user_id=user_id,
+        reset_base_url=f"{settings.public_admin_url}/reset-password",
+        settings=settings,
+    )
+    if email is None:
+        raise ValidationAppError("This farm owner must be active before a reset email can be sent.")
+    background.add_task(
+        send_email,
+        email.to,
+        email.subject,
+        email.body,
+        settings,
+        email.html_body,
+    )
+    await db.batch(
+        [
+            audit_statement(
+                action="farm_owner.password_reset_email",
+                entity_type="user",
+                entity_id=user_id,
+                actor_id=principal.user_id,
+                request_id=_request_id(request),
+                created_at=utc_now_iso(),
+                after={
+                    "email": user["email"],
+                    "farmId": user["farm_id"],
+                    "resetEmailSent": True,
+                    "passwordStored": False,
+                },
+            )
+        ]
+    )
+    return {"id": user_id, "email": user["email"], "emailSent": True}
 
 
 # ---------------------------------------------------------------------------

@@ -234,6 +234,7 @@ def test_staff_password_reset_flow(
     assert after == {
         "email": "owner@devika.test",
         "userType": "staff",
+        "activatedFromInvite": False,
         "credentialChanged": True,
         "passwordStored": False,
     }
