@@ -18,7 +18,9 @@ from truegrit_api.auth.principal import Principal
 from truegrit_api.config import get_settings
 from truegrit_api.errors import ConflictError, NotFoundError
 from truegrit_api.platform.database import Database
+from truegrit_api.repositories.content import ReturnRequestRepository
 from truegrit_api.services.checkout import CheckoutLine, place_order
+from truegrit_api.services.returns import create_return_request
 from truegrit_api.services.contact import contactable_email
 from truegrit_api.services.email import send_email
 from truegrit_api.services.email_templates import render_farm_order_notification, render_order_confirmation
@@ -458,3 +460,70 @@ async def my_order_detail(
             for item in items
         ],
     }
+
+
+class ReturnRequestCreate(_CamelModel):
+    order_item_id: str | None = Field(default=None, max_length=64)
+    reason_code: str = Field(min_length=1, max_length=32)
+    description: str = Field(min_length=10, max_length=2000)
+    requested_refund_amount_minor: int | None = Field(default=None, ge=0)
+    evidence_media_ids: list[str] = Field(default_factory=list, max_length=6)
+
+
+def _return_request_payload(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "orderReference": row["public_reference"],
+        "reasonCode": row["reason_code"],
+        "status": row["status"],
+        "resolutionType": row["resolution_type"],
+        "requestedAt": row["requested_at"],
+        "resolvedAt": row["resolved_at"],
+    }
+
+
+@router.get("/orders/{reference}/return-requests")
+async def my_return_requests(
+    reference: str,
+    customer: Annotated[Principal, Depends(get_current_customer)],
+    db: Annotated[Database, Depends(get_database)],
+) -> Any:
+    order = await db.fetch_one(
+        "SELECT id FROM orders WHERE public_reference = ? AND customer_user_id = ?",
+        (reference, customer.user_id),
+    )
+    if order is None:
+        raise NotFoundError("Order not found.")
+    rows = await ReturnRequestRepository(db).list_for_customer(customer.user_id)
+    return {
+        "items": [
+            _return_request_payload(row) for row in rows if row["order_id"] == order["id"]
+        ]
+    }
+
+
+@router.post("/orders/{reference}/return-requests")
+async def create_my_return_request(
+    reference: str,
+    payload: ReturnRequestCreate,
+    request: Request,
+    customer: Annotated[Principal, Depends(get_current_customer)],
+    db: Annotated[Database, Depends(get_database)],
+) -> Any:
+    order = await db.fetch_one(
+        "SELECT id FROM orders WHERE public_reference = ? AND customer_user_id = ?",
+        (reference, customer.user_id),
+    )
+    if order is None:
+        raise NotFoundError("Order not found.")
+    return await create_return_request(
+        db,
+        customer,
+        getattr(request.state, "request_id", "unknown"),
+        order_id=order["id"],
+        order_item_id=payload.order_item_id,
+        reason_code=payload.reason_code,
+        description=payload.description,
+        requested_refund_amount_minor=payload.requested_refund_amount_minor,
+        evidence_media_ids=payload.evidence_media_ids,
+    )

@@ -635,6 +635,45 @@ export function getMyOrder(reference: string): Promise<OrderDetail> {
   return request<OrderDetail>(`/v1/public/orders/${encodeURIComponent(reference)}`);
 }
 
+export type ReturnReasonCode =
+  | "damaged"
+  | "wrong_item"
+  | "quality_issue"
+  | "not_as_described"
+  | "missing_item"
+  | "other";
+
+export interface ReturnRequestSummary {
+  id: string;
+  orderReference: string;
+  reasonCode: ReturnReasonCode;
+  status: string;
+  resolutionType: string | null;
+  requestedAt: string;
+  resolvedAt: string | null;
+}
+
+export function listMyReturnRequests(reference: string): Promise<ReturnRequestSummary[]> {
+  return request<{ items: ReturnRequestSummary[] }>(
+    `/v1/public/orders/${encodeURIComponent(reference)}/return-requests`,
+  ).then((body) => body.items);
+}
+
+export function createReturnRequest(
+  reference: string,
+  input: {
+    orderItemId?: string;
+    reasonCode: ReturnReasonCode;
+    description: string;
+    requestedRefundAmountMinor?: number;
+  },
+): Promise<ReturnRequestSummary> {
+  return request<ReturnRequestSummary>(
+    `/v1/public/orders/${encodeURIComponent(reference)}/return-requests`,
+    { method: "POST", body: JSON.stringify(input) },
+  );
+}
+
 export function sendContactMessage(input: ContactMessage): Promise<{ ok: boolean; id: string }> {
   return request<{ ok: boolean; id: string }>("/v1/public/contact", {
     method: "POST",

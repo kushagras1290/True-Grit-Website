@@ -4,6 +4,8 @@ import { cn } from "@truegrit/ui";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Archive,
+  BarChart3,
+  BookOpen,
   ClipboardList,
   FolderTree,
   Image,
@@ -13,11 +15,13 @@ import {
   Mail,
   Menu,
   Package,
+  RotateCcw,
   ScrollText,
   Settings,
   ShieldCheck,
   ShoppingCart,
   Sprout,
+  UtensilsCrossed,
   Users,
   Warehouse,
   X,
@@ -77,6 +81,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         permission: "orders.view",
       },
       {
+        to: "/returns",
+        label: "Returns",
+        icon: <RotateCcw size={16} />,
+        permission: "returns.view",
+      },
+      {
         to: "/archive",
         label: "Archive",
         icon: <Archive size={16} />,
@@ -92,6 +102,13 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         label: "Site Control",
         icon: <Settings size={16} />,
         permission: "settings.view",
+      },
+      { to: "/blog", label: "Blog", icon: <BookOpen size={16} />, permission: "articles.view" },
+      {
+        to: "/recipes",
+        label: "Recipes",
+        icon: <UtensilsCrossed size={16} />,
+        permission: "recipes.view",
       },
       { to: "/media", label: "Media Library", icon: <Image size={16} />, permission: "media.view" },
       {
@@ -117,6 +134,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         label: "Audit Log",
         icon: <ScrollText size={16} />,
         permission: "audit.view",
+      },
+      {
+        to: "/reports",
+        label: "Owner Reports",
+        icon: <BarChart3 size={16} />,
+        permission: "reports.query",
       },
       // No permission: everyone who can sign in owns their own password, farm
       // -scoped sub-admins included.

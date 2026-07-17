@@ -16,7 +16,7 @@ from truegrit_api.platform.database import Database
 _PRODUCT_BASE_SQL = """
 SELECT
   p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
-  p.seo_title, p.seo_description,
+  p.seo_title, p.seo_description, p.return_eligible,
   COALESCE(
     NULLIF(p.image_url, ''),
     (
@@ -36,20 +36,29 @@ LEFT JOIN media_assets m ON m.id = p.primary_media_id
 """
 
 
-def geo_release_clause(country: str | None, alias: str = "p") -> tuple[str, list[Any]]:
-    """SQL fragment limiting rows to products released in `country`.
+def geo_release_clause(
+    country: str | None,
+    alias: str = "p",
+    *,
+    table: str = "product_release_countries",
+    id_column: str = "product_id",
+) -> tuple[str, list[Any]]:
+    """SQL fragment limiting rows to entities released in `country`.
 
-    Products are either released globally or to an explicit country list. When
-    no country is known (internal callers, older clients) nothing is filtered —
-    the storefront always forwards the visitor's country, so public surfaces
-    stay geo-locked there.
+    Entities are either released globally or to an explicit country list, in a
+    `{table}(id_column, country_code)` side table alongside a `release_scope`
+    column on the entity itself — the same shape for products
+    (`product_release_countries`) and categories (`category_release_countries`).
+    When no country is known (internal callers, older clients) nothing is
+    filtered — the storefront always forwards the visitor's country, so public
+    surfaces stay geo-locked there.
     """
     if not country:
         return "", []
     return (
         f" AND ({alias}.release_scope = 'global' OR EXISTS ("
-        "SELECT 1 FROM product_release_countries prc"
-        f" WHERE prc.product_id = {alias}.id AND prc.country_code = ?))",
+        f"SELECT 1 FROM {table} rc"
+        f" WHERE rc.{id_column} = {alias}.id AND rc.country_code = ?))",
         [country],
     )
 
@@ -324,6 +333,7 @@ class CatalogueRepository:
                     {"label": "Delivery", "detail": "Shipped with full lot traceability"},
                 ],
                 "related_slugs": [entry["slug"] for entry in related],
+                "return_eligible": bool(row["return_eligible"]),
                 "seo": {
                     "title": row["seo_title"] or row["name"],
                     "description": row["seo_description"] or summary["_short_description"],

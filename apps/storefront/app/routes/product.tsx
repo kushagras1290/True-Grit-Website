@@ -177,6 +177,12 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
                 {product.storageGuidance}
               </p>
             ) : null}
+            <p className="text-ink-muted">
+              <span className="font-medium text-ink">Returns: </span>
+              {product.returnEligible
+                ? "Eligible for return — see our returns policy."
+                : "Not eligible for return due to the nature of this product."}
+            </p>
           </div>
         </div>
       </div>

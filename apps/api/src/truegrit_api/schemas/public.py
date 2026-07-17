@@ -90,6 +90,7 @@ class ProductDetail(ProductSummary):
     variants: list[VariantSummary]
     traceability: list[TraceabilityStep]
     related_slugs: list[str]
+    return_eligible: bool
     seo: SeoDocument
 
 
@@ -175,6 +176,7 @@ class RecipeDetail(PublicModel):
     servings: int
     dietary_tags: list[str]
     ingredients: list[RecipeIngredient]
+    blocks: list[dict[str, Any]]
     steps: list[str]
     seo: SeoDocument
 
@@ -191,7 +193,7 @@ class ArticleDetail(PublicModel):
     author_name: str
     published_at: str
     reading_minutes: int
-    body: list[str]
+    blocks: list[dict[str, Any]]
     pull_quote: str | None = None
     seo: SeoDocument
 

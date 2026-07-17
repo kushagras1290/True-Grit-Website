@@ -6,7 +6,7 @@ import type {
   ProductSummary,
   PublicPageBlock,
 } from "@truegrit/contracts";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router";
 
 import { CategoryTile, ProductGrid, Section } from "./catalogue";
@@ -15,6 +15,51 @@ export interface BlockData {
   productsBySlug: Map<string, ProductSummary>;
   categoriesBySlug: Map<string, CategorySummary>;
   farmsBySlug: Map<string, FarmDetail>;
+}
+
+// Matches the API's inline link syntax exactly (domain/blocks.py
+// `_INLINE_LINK_PATTERN`): `[label](href)`, href already revalidated
+// server-side (only `/`, `https://`, `http://`, `mailto:`, never `//`). This
+// is the ONLY way a link can appear in rich text — raw HTML is rejected at
+// save time (ADR-005), so there is nothing here for dangerouslySetInnerHTML
+// to ever need.
+const INLINE_LINK_PATTERN = /\[([^[\]\n]{1,120})\]\(([^\s()]{1,512})\)/g;
+
+function renderRichTextParagraph(paragraph: string) {
+  const nodes: ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+  INLINE_LINK_PATTERN.lastIndex = 0;
+  while ((match = INLINE_LINK_PATTERN.exec(paragraph)) !== null) {
+    const [full, label, href] = match;
+    if (match.index > lastIndex) {
+      nodes.push(paragraph.slice(lastIndex, match.index));
+    }
+    const isInternal = href!.startsWith("/") && !href!.startsWith("//");
+    nodes.push(
+      isInternal ? (
+        <Link key={key++} to={href!} className="text-brand underline underline-offset-2 hover:no-underline">
+          {label}
+        </Link>
+      ) : (
+        <a
+          key={key++}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-brand underline underline-offset-2 hover:no-underline"
+        >
+          {label}
+        </a>
+      ),
+    );
+    lastIndex = match.index + full!.length;
+  }
+  if (lastIndex < paragraph.length) {
+    nodes.push(paragraph.slice(lastIndex));
+  }
+  return nodes;
 }
 
 function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "hero" }> }) {
@@ -206,7 +251,7 @@ export function CmsBlock({ block, data }: { block: PublicPageBlock; data: BlockD
         <Section>
           <div className="mx-auto max-w-2xl space-y-4 text-base text-ink">
             {block.props.paragraphs.map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
+              <p key={index}>{renderRichTextParagraph(paragraph)}</p>
             ))}
           </div>
         </Section>

@@ -42,7 +42,7 @@ export function meta({ data }: Route.MetaArgs) {
   const query = data?.results.query;
   return seoMeta({
     title: query ? `Search: ${query}` : "Search the market",
-    description: "Search products, farms, recipes and journal stories.",
+    description: "Search products, farms, recipes and blog stories.",
     canonicalPath: "/search",
     indexing: "noindex",
   });
@@ -51,7 +51,7 @@ export function meta({ data }: Route.MetaArgs) {
 const GROUP_LABELS: Record<string, string> = {
   farms: "Farms",
   recipes: "Recipes",
-  articles: "Journal",
+  articles: "Blog",
 };
 
 export default function SearchPage({ loaderData }: Route.ComponentProps) {

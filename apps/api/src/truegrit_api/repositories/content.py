@@ -14,31 +14,40 @@ class CategoryRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
+    async def get_published_by_slug(
+        self, slug: str, country: str | None = None
+    ) -> dict[str, Any] | None:
+        geo_sql, geo_params = geo_release_clause(
+            country, alias="categories", table="category_release_countries", id_column="category_id"
+        )
         return await self._db.fetch_one(
-            """
+            f"""
             SELECT id, name, slug, short_description, hero_eyebrow, hero_title,
                    hero_description, theme_key, season_label, product_assignment_mode,
                    product_rule_json, seo_title, seo_description, hero_image_url,
                    hero_image_alt, updated_at
             FROM categories
-            WHERE slug = ? AND status = 'published' AND visibility = 'public'
+            WHERE slug = ? AND status = 'published' AND visibility = 'public'{geo_sql}
             """,
-            (slug,),
+            (slug, *geo_params),
         )
 
-    async def list_published(self) -> list[dict[str, Any]]:
+    async def list_published(self, country: str | None = None) -> list[dict[str, Any]]:
+        geo_sql, geo_params = geo_release_clause(
+            country, alias="c", table="category_release_countries", id_column="category_id"
+        )
         return await self._db.fetch_all(
-            """
+            f"""
             SELECT c.id, c.name, c.slug, c.short_description, c.theme_key, c.season_label,
                    c.hero_image_url,
                    (SELECT COUNT(*) FROM product_categories pc
                      JOIN products p ON p.id = pc.product_id
                     WHERE pc.category_id = c.id AND p.status = 'published') AS product_count
             FROM categories c
-            WHERE c.status = 'published' AND c.visibility = 'public'
+            WHERE c.status = 'published' AND c.visibility = 'public'{geo_sql}
             ORDER BY c.sort_order, c.name
-            """
+            """,
+            tuple(geo_params),
         )
 
     async def get_by_id(self, category_id: str) -> dict[str, Any] | None:
@@ -87,6 +96,14 @@ class PageRepository:
                 "indexing": page["indexing_policy"],
             },
         }
+
+    async def list_published(self) -> list[dict[str, Any]]:
+        """Slug + updated_at for every publicly visible page — the sitemap's
+        only source for CMS pages, so a newly published page appears without
+        any code change."""
+        return await self._db.fetch_all(
+            "SELECT slug, updated_at FROM pages WHERE status = 'published' ORDER BY slug"
+        )
 
 
 class FarmRepository:
@@ -167,15 +184,21 @@ class FarmRepository:
         }
 
 
+_RECIPE_PUBLIC_COLUMNS = """
+    id, title, slug, excerpt, prep_minutes, cook_minutes, servings,
+    dietary_tags_json, published_version_id, seo_title, seo_description,
+    seo_keywords, canonical_url, indexing_policy
+"""
+
+
 class RecipeRepository:
     def __init__(self, db: Database):
         self._db = db
 
     async def list_published(self) -> list[dict[str, Any]]:
         rows = await self._db.fetch_all(
-            """
-            SELECT id, title, slug, excerpt, prep_minutes, cook_minutes, servings,
-                   dietary_tags_json, published_version_id, seo_title, seo_description
+            f"""
+            SELECT {_RECIPE_PUBLIC_COLUMNS}
             FROM recipes
             WHERE status = 'published'
             ORDER BY published_at DESC, title
@@ -185,9 +208,8 @@ class RecipeRepository:
 
     async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
         row = await self._db.fetch_one(
-            """
-            SELECT id, title, slug, excerpt, prep_minutes, cook_minutes, servings,
-                   dietary_tags_json, published_version_id, seo_title, seo_description
+            f"""
+            SELECT {_RECIPE_PUBLIC_COLUMNS}
             FROM recipes
             WHERE slug = ? AND status = 'published'
             """,
@@ -217,6 +239,7 @@ class RecipeRepository:
         )
         tags = json.loads(row["dietary_tags_json"] or "[]")
         steps = content.get("steps") if isinstance(content, dict) else []
+        blocks = content.get("blocks") if isinstance(content, dict) else []
         return {
             "id": row["id"],
             "title": row["title"],
@@ -234,14 +257,129 @@ class RecipeRepository:
                 }
                 for entry in ingredients
             ],
+            "blocks": [b for b in blocks if isinstance(b, dict) and b.get("enabled", True)]
+            if isinstance(blocks, list)
+            else [],
             "steps": [str(step) for step in steps] if isinstance(steps, list) else [],
             "seo": {
                 "title": row["seo_title"] or row["title"],
                 "description": row["seo_description"] or row["excerpt"] or "",
-                "canonical_path": f"/recipes/{row['slug']}",
-                "indexing": "index",
+                "keywords": row["seo_keywords"],
+                "canonical_path": row["canonical_url"] or f"/recipes/{row['slug']}",
+                "indexing": row["indexing_policy"],
             },
         }
+
+    async def list_admin(
+        self,
+        *,
+        chef_user_id: str | None = None,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> list[dict[str, Any]]:
+        """Admin listing. `chef_user_id` scopes results to one chef's own
+        recipes — the caller only passes it for principals without
+        `recipes.approve` (i.e. the `chef` role), never for reviewers."""
+        return await self._db.fetch_all(
+            """
+            SELECT r.id, r.title, r.slug, r.status, r.updated_at, r.published_at,
+                   COALESCE(u.display_name, 'Unassigned') AS chef_name,
+                   (SELECT MAX(version_number) FROM recipe_versions WHERE recipe_id = r.id)
+                     AS latest_version_number,
+                   (SELECT version_number FROM recipe_versions WHERE id = r.published_version_id)
+                     AS published_version_number
+            FROM recipes r
+            LEFT JOIN users u ON u.id = r.chef_user_id
+            WHERE (? IS NULL OR r.chef_user_id = ?)
+            ORDER BY r.updated_at DESC
+            LIMIT ? OFFSET ?
+            """,
+            (chef_user_id, chef_user_id, min(max(limit, 1), 100), max(offset, 0)),
+        )
+
+    async def get_admin_detail(self, recipe_id: str) -> dict[str, Any] | None:
+        row = await self._db.fetch_one(
+            """
+            SELECT r.id, r.title, r.slug, r.excerpt, r.prep_minutes, r.cook_minutes,
+                   r.servings, r.dietary_tags_json, r.status, r.chef_user_id,
+                   r.seo_title, r.seo_description, r.seo_keywords, r.canonical_url,
+                   r.indexing_policy, r.updated_at, r.published_version_id,
+                   COALESCE(latest.content_json, v.content_json, '{"blocks":[],"steps":[]}') AS content_json
+            FROM recipes r
+            LEFT JOIN recipe_versions v ON v.id = r.published_version_id
+            LEFT JOIN (
+              SELECT rv.recipe_id, rv.content_json
+              FROM recipe_versions rv
+              JOIN (
+                SELECT recipe_id, MAX(version_number) AS version_number
+                FROM recipe_versions GROUP BY recipe_id
+              ) mx ON mx.recipe_id = rv.recipe_id AND mx.version_number = rv.version_number
+            ) latest ON latest.recipe_id = r.id
+            WHERE r.id = ?
+            """,
+            (recipe_id,),
+        )
+        if row is None:
+            return None
+        content = json.loads(row["content_json"] or '{"blocks":[],"steps":[]}')
+        ingredients = await self._db.fetch_all(
+            """
+            SELECT ri.id, ri.label, ri.quantity_text, ri.product_id, ri.sort_order,
+                   p.slug AS product_slug
+            FROM recipe_ingredients ri
+            LEFT JOIN products p ON p.id = ri.product_id
+            WHERE ri.recipe_id = ?
+            ORDER BY ri.sort_order, ri.label
+            """,
+            (recipe_id,),
+        )
+        tags = json.loads(row["dietary_tags_json"] or "[]")
+        return {
+            "id": row["id"],
+            "title": row["title"],
+            "slug": row["slug"],
+            "excerpt": row["excerpt"] or "",
+            "prep_minutes": int(row["prep_minutes"] or 0),
+            "cook_minutes": int(row["cook_minutes"] or 0),
+            "servings": int(row["servings"] or 0),
+            "dietary_tags": [str(tag) for tag in tags] if isinstance(tags, list) else [],
+            "status": row["status"],
+            "chef_user_id": row["chef_user_id"],
+            "seo_title": row["seo_title"] or "",
+            "seo_description": row["seo_description"] or "",
+            "seo_keywords": row["seo_keywords"] or "",
+            "canonical_url": row["canonical_url"] or "",
+            "indexing_policy": row["indexing_policy"],
+            "updated_at": row["updated_at"],
+            "blocks": content.get("blocks", []) if isinstance(content, dict) else [],
+            "steps": content.get("steps", []) if isinstance(content, dict) else [],
+            "ingredients": [
+                {
+                    "id": entry["id"],
+                    "label": entry["label"],
+                    "quantity_text": entry["quantity_text"] or "",
+                    "product_id": entry["product_id"],
+                    "product_slug": entry["product_slug"],
+                }
+                for entry in ingredients
+            ],
+        }
+
+    async def next_version_number(self, recipe_id: str) -> int:
+        row = await self._db.fetch_one(
+            "SELECT COALESCE(MAX(version_number), 0) AS max_version"
+            " FROM recipe_versions WHERE recipe_id = ?",
+            (recipe_id,),
+        )
+        return int(row["max_version"]) + 1 if row else 1
+
+
+_ARTICLE_PUBLIC_COLUMNS = """
+    a.id, a.title, a.slug, a.excerpt, a.reading_minutes, a.published_at,
+    a.published_version_id, a.seo_title, a.seo_description, a.seo_keywords,
+    a.canonical_url, a.indexing_policy,
+    COALESCE(u.display_name, 'True Grit') AS author_name
+"""
 
 
 class ArticleRepository:
@@ -250,10 +388,8 @@ class ArticleRepository:
 
     async def list_published(self) -> list[dict[str, Any]]:
         rows = await self._db.fetch_all(
-            """
-            SELECT a.id, a.title, a.slug, a.excerpt, a.reading_minutes, a.published_at,
-                   a.published_version_id, a.seo_title, a.seo_description,
-                   COALESCE(u.display_name, 'True Grit') AS author_name
+            f"""
+            SELECT {_ARTICLE_PUBLIC_COLUMNS}
             FROM articles a
             LEFT JOIN users u ON u.id = a.author_user_id
             WHERE a.status = 'published'
@@ -264,10 +400,8 @@ class ArticleRepository:
 
     async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
         row = await self._db.fetch_one(
-            """
-            SELECT a.id, a.title, a.slug, a.excerpt, a.reading_minutes, a.published_at,
-                   a.published_version_id, a.seo_title, a.seo_description,
-                   COALESCE(u.display_name, 'True Grit') AS author_name
+            f"""
+            SELECT {_ARTICLE_PUBLIC_COLUMNS}
             FROM articles a
             LEFT JOIN users u ON u.id = a.author_user_id
             WHERE a.slug = ? AND a.status = 'published'
@@ -286,7 +420,7 @@ class ArticleRepository:
                 (row["published_version_id"],),
             )
         content = json.loads(version["content_json"]) if version else {}
-        body = content.get("body") if isinstance(content, dict) else []
+        blocks = content.get("blocks") if isinstance(content, dict) else []
         return {
             "id": row["id"],
             "title": row["title"],
@@ -295,15 +429,97 @@ class ArticleRepository:
             "author_name": row["author_name"],
             "published_at": row["published_at"] or "",
             "reading_minutes": int(row["reading_minutes"] or 1),
-            "body": [str(paragraph) for paragraph in body] if isinstance(body, list) else [],
+            "blocks": [b for b in blocks if isinstance(b, dict) and b.get("enabled", True)]
+            if isinstance(blocks, list)
+            else [],
             "pull_quote": content.get("pullQuote") if isinstance(content, dict) else None,
             "seo": {
                 "title": row["seo_title"] or row["title"],
                 "description": row["seo_description"] or row["excerpt"] or "",
-                "canonical_path": f"/journal/{row['slug']}",
-                "indexing": "index",
+                "keywords": row["seo_keywords"],
+                "canonical_path": row["canonical_url"] or f"/blog/{row['slug']}",
+                "indexing": row["indexing_policy"],
             },
         }
+
+    async def list_admin(
+        self,
+        *,
+        author_user_id: str | None = None,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> list[dict[str, Any]]:
+        """Admin listing. `author_user_id` scopes results to one blogger's own
+        articles — the caller only passes it for principals without
+        `articles.approve` (i.e. the `blogger` role), never for reviewers."""
+        return await self._db.fetch_all(
+            """
+            SELECT a.id, a.title, a.slug, a.status, a.updated_at, a.published_at,
+                   COALESCE(u.display_name, 'Unassigned') AS author_name,
+                   (SELECT MAX(version_number) FROM article_versions WHERE article_id = a.id)
+                     AS latest_version_number,
+                   (SELECT version_number FROM article_versions WHERE id = a.published_version_id)
+                     AS published_version_number
+            FROM articles a
+            LEFT JOIN users u ON u.id = a.author_user_id
+            WHERE (? IS NULL OR a.author_user_id = ?)
+            ORDER BY a.updated_at DESC
+            LIMIT ? OFFSET ?
+            """,
+            (author_user_id, author_user_id, min(max(limit, 1), 100), max(offset, 0)),
+        )
+
+    async def get_admin_detail(self, article_id: str) -> dict[str, Any] | None:
+        row = await self._db.fetch_one(
+            """
+            SELECT a.id, a.title, a.slug, a.excerpt, a.reading_minutes, a.status,
+                   a.author_user_id, a.hero_media_id, a.seo_title, a.seo_description,
+                   a.seo_keywords, a.canonical_url, a.indexing_policy, a.updated_at,
+                   a.published_version_id,
+                   COALESCE(latest.content_json, v.content_json, '{"blocks":[]}') AS content_json
+            FROM articles a
+            LEFT JOIN article_versions v ON v.id = a.published_version_id
+            LEFT JOIN (
+              SELECT av.article_id, av.content_json
+              FROM article_versions av
+              JOIN (
+                SELECT article_id, MAX(version_number) AS version_number
+                FROM article_versions GROUP BY article_id
+              ) mx ON mx.article_id = av.article_id AND mx.version_number = av.version_number
+            ) latest ON latest.article_id = a.id
+            WHERE a.id = ?
+            """,
+            (article_id,),
+        )
+        if row is None:
+            return None
+        content = json.loads(row["content_json"] or '{"blocks":[]}')
+        return {
+            "id": row["id"],
+            "title": row["title"],
+            "slug": row["slug"],
+            "excerpt": row["excerpt"] or "",
+            "reading_minutes": int(row["reading_minutes"] or 1),
+            "status": row["status"],
+            "author_user_id": row["author_user_id"],
+            "hero_media_id": row["hero_media_id"],
+            "seo_title": row["seo_title"] or "",
+            "seo_description": row["seo_description"] or "",
+            "seo_keywords": row["seo_keywords"] or "",
+            "canonical_url": row["canonical_url"] or "",
+            "indexing_policy": row["indexing_policy"],
+            "updated_at": row["updated_at"],
+            "blocks": content.get("blocks", []) if isinstance(content, dict) else [],
+            "pull_quote": content.get("pullQuote") if isinstance(content, dict) else None,
+        }
+
+    async def next_version_number(self, article_id: str) -> int:
+        row = await self._db.fetch_one(
+            "SELECT COALESCE(MAX(version_number), 0) AS max_version"
+            " FROM article_versions WHERE article_id = ?",
+            (article_id,),
+        )
+        return int(row["max_version"]) + 1 if row else 1
 
 
 class SiteDocumentRepository:
@@ -457,6 +673,59 @@ class SearchRepository:
 
         total = sum(len(group["items"]) for group in groups)
         return {"query": query, "total": total, "groups": groups}
+
+
+class ReturnRequestRepository:
+    def __init__(self, db: Database):
+        self._db = db
+
+    async def list_admin(
+        self, *, status: str | None = None, limit: int = 50, offset: int = 0
+    ) -> list[dict[str, Any]]:
+        return await self._db.fetch_all(
+            """
+            SELECT rr.id, rr.order_id, o.public_reference, rr.customer_user_id,
+                   COALESCE(u.display_name, o.customer_email) AS customer_name,
+                   rr.reason_code, rr.status, rr.requested_refund_amount_minor,
+                   rr.resolution_type, rr.resolution_amount_minor, rr.requested_at,
+                   rr.resolved_at
+            FROM return_requests rr
+            JOIN orders o ON o.id = rr.order_id
+            LEFT JOIN users u ON u.id = rr.customer_user_id
+            WHERE (? IS NULL OR rr.status = ?)
+            ORDER BY rr.requested_at DESC
+            LIMIT ? OFFSET ?
+            """,
+            (status, status, min(max(limit, 1), 100), max(offset, 0)),
+        )
+
+    async def get_admin_detail(self, return_id: str) -> dict[str, Any] | None:
+        return await self._db.fetch_one(
+            """
+            SELECT rr.*, o.public_reference, o.total_minor AS order_total_minor,
+                   o.currency_code, COALESCE(u.display_name, o.customer_email) AS customer_name,
+                   oi.product_name, oi.variant_name
+            FROM return_requests rr
+            JOIN orders o ON o.id = rr.order_id
+            LEFT JOIN users u ON u.id = rr.customer_user_id
+            LEFT JOIN order_items oi ON oi.id = rr.order_item_id
+            WHERE rr.id = ?
+            """,
+            (return_id,),
+        )
+
+    async def list_for_customer(self, customer_user_id: str) -> list[dict[str, Any]]:
+        return await self._db.fetch_all(
+            """
+            SELECT rr.id, rr.order_id, o.public_reference, rr.reason_code, rr.status,
+                   rr.resolution_type, rr.requested_at, rr.resolved_at
+            FROM return_requests rr
+            JOIN orders o ON o.id = rr.order_id
+            WHERE rr.customer_user_id = ?
+            ORDER BY rr.requested_at DESC
+            """,
+            (customer_user_id,),
+        )
 
 
 class AuditRepository:

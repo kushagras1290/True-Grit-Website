@@ -6,9 +6,10 @@ import { seoMeta } from "../lib/seo";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
+  const country = resolveCountry(request);
   const [categories, products] = await Promise.all([
-    loadCategories(runtime),
-    loadAllProducts(resolveCountry(request), runtime),
+    loadCategories(country, runtime),
+    loadAllProducts(country, runtime),
   ]);
   return { categories, products };
 }

@@ -3,7 +3,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { AdminUserRow } from "@truegrit/contracts";
+import type { AdminMediaAssetRow, AdminUserRow } from "@truegrit/contracts";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useParams } from "react-router";
@@ -15,6 +15,7 @@ import {
   DataTableShell,
   EmptyState,
   Field,
+  ImagePreview,
   Input,
   LoadingRows,
   Modal,
@@ -747,69 +748,183 @@ function Row({ label, value }: { label: string; value: string }) {
 // Media
 // ---------------------------------------------------------------------------
 
-const DEMO_MEDIA = [
-  {
-    id: "med_hero_home",
-    name: "harvest-table.jpg",
-    alt: "A wooden harvest table with seasonal organic produce",
-    size: "482 KB",
-    dims: "2400 × 1500",
-  },
-  {
-    id: "med_farm_devika",
-    name: "devika-fields.jpg",
-    alt: "Morning light over the terraced fields of Devika Organics",
-    size: "391 KB",
-    dims: "2000 × 1250",
-  },
-  {
-    id: "med_prod_mango",
-    name: "alphonso-crate.jpg",
-    alt: "A crate of ripe Alphonso mangoes",
-    size: "287 KB",
-    dims: "1600 × 1600",
-  },
-];
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function EditMediaModal({
+  asset,
+  onClose,
+}: {
+  asset: AdminMediaAssetRow;
+  onClose: () => void;
+}) {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const [altText, setAltText] = useState(asset.altText);
+  const [caption, setCaption] = useState(asset.caption);
+
+  const mutation = useMutation({
+    mutationFn: () => api.updateMediaAsset(asset.id, { altText, caption }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-media"] });
+      toast.success("Media details saved.");
+      onClose();
+    },
+    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not save."),
+  });
+
+  return (
+    <Modal title="Edit media" onClose={onClose}>
+      <div className="space-y-4">
+        <ImagePreview src={asset.url} alt={altText} label={asset.originalFilename} className="h-32 w-full" />
+        <Field label="Alt text" htmlFor="media-alt">
+          <Input id="media-alt" value={altText} onChange={(event) => setAltText(event.target.value)} />
+        </Field>
+        <Field label="Caption" htmlFor="media-caption">
+          <Textarea
+            id="media-caption"
+            rows={2}
+            value={caption}
+            onChange={(event) => setCaption(event.target.value)}
+          />
+        </Field>
+        <div className="flex justify-end gap-2">
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            variant="primary"
+            disabled={mutation.isPending}
+            onClick={() => mutation.mutate()}
+          >
+            {mutation.isPending ? "Saving…" : "Save"}
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
 
 export function MediaPage() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const { data, isLoading } = useQuery({ queryKey: ["admin-media"], queryFn: api.mediaLibrary });
+  const [editing, setEditing] = useState<AdminMediaAssetRow | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const assets = data ?? [];
+
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => api.uploadImage(file),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-media"] });
+      toast.success("Image uploaded.");
+    },
+    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not upload."),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => api.deleteMediaAsset(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-media"] });
+      setDeletingId(null);
+      toast.success("Image deleted.");
+    },
+    onError: (error) => {
+      toast.error(error instanceof ApiError ? error.message : "Could not delete.");
+      setDeletingId(null);
+    },
+  });
+
   return (
     <div>
       <PageHeader
         title="Media Library"
-        description="Uploads go through presigned R2 URLs, are checksummed, and quarantine on failed validation."
+        description="Every uploaded image, with alt text and captions editable in place."
         actions={
           <PermissionGate permission="media.upload">
-            <Button variant="primary" title="Uploads require the R2 storage binding" disabled>
-              Upload (needs R2)
-            </Button>
+            <label>
+              <Button
+                variant="primary"
+                type="button"
+                disabled={uploadMutation.isPending}
+                onClick={(event) => (event.currentTarget.nextElementSibling as HTMLInputElement)?.click()}
+              >
+                {uploadMutation.isPending ? "Uploading…" : "Upload image"}
+              </Button>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="hidden"
+                onChange={(event) => {
+                  const file = event.currentTarget.files?.[0];
+                  if (file) uploadMutation.mutate(file);
+                  event.currentTarget.value = "";
+                }}
+              />
+            </label>
           </PermissionGate>
         }
       />
-      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {DEMO_MEDIA.map((asset) => (
-          <li
-            key={asset.id}
-            className="overflow-hidden rounded-md border border-line bg-surface shadow-card"
-          >
-            <div
-              role="img"
-              aria-label={asset.alt}
-              className="flex h-36 items-end bg-gradient-to-br from-subtle to-canvas p-3"
+      {editing ? <EditMediaModal asset={editing} onClose={() => setEditing(null)} /> : null}
+      {deletingId ? (
+        <ConfirmDialog
+          title="Delete image"
+          description="This permanently removes the image from storage. Images still referenced by a product, page, article or recipe cannot be deleted."
+          confirmLabel="Delete image"
+          pendingLabel="Deleting…"
+          isPending={deleteMutation.isPending}
+          onCancel={() => setDeletingId(null)}
+          onConfirm={() => deleteMutation.mutate(deletingId)}
+        />
+      ) : null}
+
+      {isLoading ? (
+        <p className="text-sm text-ink-muted">Loading media…</p>
+      ) : assets.length === 0 ? (
+        <EmptyState title="No media uploaded yet" hint="Upload an image to get started." />
+      ) : (
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {assets.map((asset) => (
+            <li
+              key={asset.id}
+              className="overflow-hidden rounded-md border border-line bg-surface shadow-card"
             >
-              <span className="rounded-sm bg-surface/90 px-2 py-0.5 text-xs text-ink-muted">
-                {asset.dims}
-              </span>
-            </div>
-            <div className="px-3 py-2.5">
-              <p className="truncate text-sm font-medium text-ink">{asset.name}</p>
-              <p className="truncate text-xs text-ink-muted" title={asset.alt}>
-                alt: {asset.alt}
-              </p>
-              <p className="mt-1 text-xs text-ink-muted">{asset.size} · ready</p>
-            </div>
-          </li>
-        ))}
-      </ul>
+              <ImagePreview
+                src={asset.url}
+                alt={asset.altText}
+                label={asset.originalFilename}
+                className="h-36 w-full rounded-none"
+              />
+              <div className="px-3 py-2.5">
+                <p className="truncate text-sm font-medium text-ink">{asset.originalFilename}</p>
+                <p className="truncate text-xs text-ink-muted" title={asset.altText}>
+                  alt: {asset.altText || "—"}
+                </p>
+                <p className="mt-1 text-xs text-ink-muted">
+                  {formatBytes(asset.sizeBytes)}
+                  {asset.widthPx && asset.heightPx ? ` · ${asset.widthPx} × ${asset.heightPx}` : ""}
+                </p>
+                <div className="mt-2 flex gap-2">
+                  <PermissionGate permission="media.edit">
+                    <Button variant="secondary" onClick={() => setEditing(asset)}>
+                      Edit
+                    </Button>
+                  </PermissionGate>
+                  <PermissionGate permission="media.delete">
+                    <Button variant="destructive" onClick={() => setDeletingId(asset.id)}>
+                      Delete
+                    </Button>
+                  </PermissionGate>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

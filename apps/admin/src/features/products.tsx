@@ -576,6 +576,7 @@ function AvailabilityTab({
 }) {
   const [globalRelease, setGlobalRelease] = useState(product.releaseScope !== "selected");
   const [countries, setCountries] = useState<string[]>(product.releaseCountries);
+  const [returnEligible, setReturnEligible] = useState(product.returnEligible);
   const [links, setLinks] = useState(product.linkedProducts);
   const [pendingLinkId, setPendingLinkId] = useState("");
   const { data: allProducts } = useQuery({ queryKey: ["admin-products"], queryFn: api.products });
@@ -583,6 +584,7 @@ function AvailabilityTab({
   const dirty =
     globalRelease !== (product.releaseScope !== "selected") ||
     countries.join(",") !== product.releaseCountries.join(",") ||
+    returnEligible !== product.returnEligible ||
     links.map((entry) => entry.id).join(",") !==
       product.linkedProducts.map((entry) => entry.id).join(",");
 
@@ -652,6 +654,25 @@ function AvailabilityTab({
             ) : null}
           </fieldset>
         ) : null}
+      </section>
+
+      <section className="space-y-3">
+        <div>
+          <h2 className="font-display text-lg text-ink">Returns</h2>
+          <p className="text-sm text-ink-muted">
+            Uncheck this for products that genuinely cannot be returned (e.g. certain fresh
+            perishables). Customers won't be able to file a return request against an ineligible
+            product.
+          </p>
+        </div>
+        <label className="flex items-center gap-2 text-sm text-ink">
+          <input
+            type="checkbox"
+            checked={returnEligible}
+            onChange={(event) => setReturnEligible(event.target.checked)}
+          />
+          Eligible for return
+        </label>
       </section>
 
       <section className="space-y-3">
@@ -746,6 +767,7 @@ function AvailabilityTab({
           onSave({
             releaseScope: globalRelease ? "global" : "selected",
             releaseCountries: globalRelease ? [] : countries,
+            returnEligible,
             linkedProductIds: links.map((entry) => entry.id),
           })
         }

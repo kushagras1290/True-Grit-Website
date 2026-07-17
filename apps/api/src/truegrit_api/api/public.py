@@ -6,7 +6,7 @@ import json
 import re
 from typing import Annotated, Any
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, Query, Response
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
@@ -41,7 +41,11 @@ from truegrit_api.schemas.public import (
     SearchResponse,
 )
 from truegrit_api.services.email import send_email
-from truegrit_api.services.site_documents import default_site_documents
+from truegrit_api.services.site_documents import (
+    SITE_DOCUMENT_TYPES,
+    SITEMAP_GENERATORS,
+    default_site_documents,
+)
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
 
@@ -149,6 +153,19 @@ async def site_document(key: str, db: Annotated[Database, Depends(get_database)]
     }
 
 
+@router.get("/sitemaps/{kind}")
+async def sitemap_kind(kind: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+    """Per-type sitemap files linked from the sitemap index. Always
+    mechanically generated from live D1 content — unlike `sitemap_xml` above,
+    there is no owner-override path here, so these can never go stale behind
+    a forgotten manual edit."""
+    generator = SITEMAP_GENERATORS.get(kind)
+    if generator is None:
+        raise NotFoundError("Sitemap not found.")
+    xml = await generator(db, get_settings())
+    return Response(content=xml, media_type=SITE_DOCUMENT_TYPES["sitemap_xml"])
+
+
 @router.post("/contact")
 async def contact(
     payload: ContactRequest,
@@ -199,7 +216,7 @@ async def category_page(
 ) -> Any:
     validate_slug(slug)
     visitor_country = _normalize_country(country)
-    category = await CategoryRepository(db).get_published_by_slug(slug)
+    category = await CategoryRepository(db).get_published_by_slug(slug, country=visitor_country)
     if category is None:
         raise NotFoundError("Category not found.")
 
@@ -246,8 +263,11 @@ async def category_page(
 
 
 @router.get("/categories")
-async def categories(db: Annotated[Database, Depends(get_database)]) -> Any:
-    rows = await CategoryRepository(db).list_published()
+async def categories(
+    db: Annotated[Database, Depends(get_database)],
+    country: Annotated[str | None, Query(max_length=2)] = None,
+) -> Any:
+    rows = await CategoryRepository(db).list_published(country=_normalize_country(country))
     return {
         "items": [
             {

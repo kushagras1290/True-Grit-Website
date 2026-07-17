@@ -120,6 +120,7 @@ class AdminRepository:
                    NULLIF(p.image_alt, '') AS image_alt,
                    p.updated_at,
                    p.release_scope,
+                   p.return_eligible,
                    COALESCE(f.name, b.name, '') AS farm_name
             FROM products p
             LEFT JOIN farms f ON f.id = p.farm_id
@@ -167,15 +168,25 @@ class AdminRepository:
         return product
 
     async def get_category_detail(self, category_id: str) -> dict[str, Any] | None:
-        return await self._db.fetch_one(
+        category = await self._db.fetch_one(
             """
             SELECT id, name, slug, short_description, hero_eyebrow, hero_title, hero_description,
                    season_label, theme_key, visibility, status, seo_title, seo_description,
-                   hero_image_url, hero_image_alt, product_assignment_mode, updated_at
+                   hero_image_url, hero_image_alt, product_assignment_mode, updated_at,
+                   release_scope
             FROM categories WHERE id = ? AND archived_at IS NULL
             """,
             (category_id,),
         )
+        if category is None:
+            return None
+        release_rows = await self._db.fetch_all(
+            "SELECT country_code FROM category_release_countries WHERE category_id = ?"
+            " ORDER BY country_code",
+            (category_id,),
+        )
+        category["release_countries"] = [row["country_code"] for row in release_rows]
+        return category
 
     async def list_users(self) -> list[dict[str, Any]]:
         return await self._db.fetch_all(

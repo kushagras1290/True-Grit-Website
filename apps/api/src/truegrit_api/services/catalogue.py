@@ -28,6 +28,7 @@ _PRODUCT_EDITABLE = (
     "seo_description",
     "image_url",
     "image_alt",
+    "return_eligible",
 )
 _CATEGORY_EDITABLE = (
     "name",
@@ -139,7 +140,7 @@ async def update_product(
 ) -> dict[str, Any]:
     current = await db.fetch_one(
         "SELECT id, name, slug, short_description, seo_title, seo_description,"
-        " image_url, image_alt, status"
+        " image_url, image_alt, status, return_eligible"
         " FROM products WHERE id = ? AND archived_at IS NULL",
         (product_id,),
     )
@@ -147,6 +148,8 @@ async def update_product(
         raise NotFoundError("Product not found.")
 
     updates = _collect_updates(fields, _PRODUCT_EDITABLE, current)
+    if "return_eligible" in updates:
+        updates["return_eligible"] = 1 if updates["return_eligible"] else 0
     if "name" in updates:
         updates["name"] = _clean_name(updates["name"])
     if "slug" in updates:
@@ -244,6 +247,62 @@ async def set_product_release(
     ]
     await db.batch(statements)
     return {"id": product_id, "release_scope": scope, "release_countries": codes}
+
+
+async def set_category_release(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    category_id: str,
+    *,
+    scope: str,
+    countries: list[str],
+) -> dict[str, Any]:
+    """Replace a category's geo release: global, or a specific country list.
+    Mirrors `set_product_release` exactly so a category page can be limited to
+    selected countries the same way a product can."""
+    if scope not in ("global", "selected"):
+        raise ValidationAppError("Release scope must be 'global' or 'selected'.")
+    codes = _normalize_country_codes(countries) if scope == "selected" else []
+    if scope == "selected" and not codes:
+        raise ValidationAppError("Pick at least one country, or release globally.")
+
+    current = await db.fetch_one(
+        "SELECT id, release_scope FROM categories WHERE id = ? AND archived_at IS NULL",
+        (category_id,),
+    )
+    if current is None:
+        raise NotFoundError("Category not found.")
+
+    now = utc_now_iso()
+    statements: list[tuple[str, Any]] = [
+        ("DELETE FROM category_release_countries WHERE category_id = ?", (category_id,)),
+        *[
+            (
+                "INSERT INTO category_release_countries"
+                " (category_id, country_code, added_at, added_by) VALUES (?, ?, ?, ?)",
+                (category_id, code, now, actor.user_id),
+            )
+            for code in codes
+        ],
+        (
+            "UPDATE categories SET release_scope = ?, updated_at = ?, updated_by = ?"
+            " WHERE id = ?",
+            (scope, now, actor.user_id, category_id),
+        ),
+        audit_statement(
+            action="category.release_updated",
+            entity_type="category",
+            entity_id=category_id,
+            actor_id=actor.user_id,
+            request_id=request_id,
+            created_at=now,
+            before={"release_scope": current["release_scope"]},
+            after={"release_scope": scope, "countries": codes},
+        ),
+    ]
+    await db.batch(statements)
+    return {"id": category_id, "release_scope": scope, "release_countries": codes}
 
 
 async def set_product_links(

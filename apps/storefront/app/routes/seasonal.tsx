@@ -14,7 +14,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const country = resolveCountry(request);
   const [cms, categories] = await Promise.all([
     loadCmsRoute("seasonal", request, context),
-    loadCategories(runtime),
+    loadCategories(country, runtime),
   ]);
   const seasonalCategories = categories.filter((category) => category.seasonLabel);
   const seasonalPages = await Promise.all(
@@ -95,14 +95,14 @@ export default function SeasonalPage({ loaderData }: Route.ComponentProps) {
           <div className="rounded-md border border-line bg-surface p-6">
             <p className="font-medium text-ink">Seasonal updates</p>
             <p className="mt-2 text-sm text-ink-muted">
-              Browse the journal for field notes, harvest timing and ingredient ideas tied to the
+              Browse the blog for field notes, harvest timing and ingredient ideas tied to the
               current market.
             </p>
             <Link
-              to="/journal"
+              to="/blog"
               className="mt-5 inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90"
             >
-              Read the journal
+              Read the blog
             </Link>
           </div>
         </div>

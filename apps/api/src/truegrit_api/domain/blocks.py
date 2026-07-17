@@ -7,6 +7,7 @@ rejected on save; the storefront independently fails safely on render.
 
 from __future__ import annotations
 
+import re
 from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, Field, TypeAdapter, ValidationError, field_validator
@@ -16,11 +17,33 @@ from truegrit_api.errors import ValidationAppError
 _SAFE_HREF_PREFIXES = ("/", "https://", "http://", "mailto:")
 MAX_BLOCKS = 40
 
+# Inline link syntax allowed inside rich-text paragraphs: `[label](href)`.
+# This is the only way a link can appear in body copy — raw `<a>`/HTML is
+# still rejected outright (ADR-005). The storefront renderer parses the same
+# pattern to build real anchor elements; it never uses dangerouslySetInnerHTML.
+_INLINE_LINK_PATTERN = re.compile(r"\[(?P<label>[^\[\]\n]{1,120})\]\((?P<href>[^\s()]{1,512})\)")
+MAX_LINKS_PER_PARAGRAPH = 5
+MAX_PARAGRAPH_LENGTH = 4000
+
 
 def validate_href(href: str) -> str:
     if not href.startswith(_SAFE_HREF_PREFIXES) or href.startswith("//"):
         raise ValueError(f"Unsafe link destination: {href!r}")
     return href
+
+
+def validate_inline_links(paragraph: str) -> None:
+    """Validate every `[label](href)` span in a rich-text paragraph.
+
+    Raises ValueError on an unsafe href or too many links in one paragraph.
+    Text outside the pattern (including stray literal brackets) is untouched —
+    it renders as plain text, so it carries no injection risk.
+    """
+    matches = _INLINE_LINK_PATTERN.findall(paragraph)
+    if len(matches) > MAX_LINKS_PER_PARAGRAPH:
+        raise ValueError(f"A paragraph cannot contain more than {MAX_LINKS_PER_PARAGRAPH} links.")
+    for _label, href in matches:
+        validate_href(href)
 
 
 class BlockAction(BaseModel):
@@ -128,15 +151,19 @@ class FaqBlock(_BlockBase):
 
 
 class RichTextProps(BaseModel):
-    # Restricted rich text: plain paragraphs only in Release 1. No raw HTML ever.
+    # Restricted rich text: plain paragraphs with an optional safe inline link
+    # syntax `[label](href)`. No raw HTML ever.
     paragraphs: list[str] = Field(min_length=1, max_length=60)
 
     @field_validator("paragraphs")
     @classmethod
-    def _no_markup(cls, value: list[str]) -> list[str]:
+    def _safe_paragraphs(cls, value: list[str]) -> list[str]:
         for paragraph in value:
             if "<" in paragraph or ">" in paragraph:
                 raise ValueError("Rich text paragraphs cannot contain markup.")
+            if len(paragraph) > MAX_PARAGRAPH_LENGTH:
+                raise ValueError(f"Rich text paragraphs cannot exceed {MAX_PARAGRAPH_LENGTH} characters.")
+            validate_inline_links(paragraph)
         return value
 
 

@@ -45,6 +45,7 @@ import {
 } from "../components/ui";
 import { useToast } from "../components/toast";
 import { ApiError, api, type AdminCategoryDetail } from "../lib/api";
+import { COUNTRIES } from "../lib/countries";
 import { formatDate } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
 import { blockTitle, reorderBlocks, toggleBlock, type BuilderState } from "./builder";
@@ -535,7 +536,86 @@ function CategorySettingsForm({
   );
 }
 
-const EDITOR_TABS = ["Settings", "Layout"] as const;
+function CategoryAvailabilityTab({
+  category,
+  onSave,
+  saving,
+}: {
+  category: AdminCategoryDetail;
+  onSave: (values: Record<string, unknown>) => void;
+  saving: boolean;
+}) {
+  const [globalRelease, setGlobalRelease] = useState(category.releaseScope !== "selected");
+  const [countries, setCountries] = useState<string[]>(category.releaseCountries);
+
+  const dirty =
+    globalRelease !== (category.releaseScope !== "selected") ||
+    countries.join(",") !== category.releaseCountries.join(",");
+
+  function toggleCountry(code: string) {
+    setCountries((current) =>
+      current.includes(code) ? current.filter((entry) => entry !== code) : [...current, code],
+    );
+  }
+
+  return (
+    <div className="max-w-2xl space-y-4">
+      <div>
+        <h2 className="font-display text-lg text-ink">Where this category is released</h2>
+        <p className="text-sm text-ink-muted">
+          Visitors outside the released countries will not see this category page at all — the same
+          per-country control already used for products.
+        </p>
+      </div>
+      <label className="flex items-center gap-2 text-sm text-ink">
+        <input
+          type="checkbox"
+          checked={globalRelease}
+          onChange={(event) => setGlobalRelease(event.target.checked)}
+        />
+        Release everywhere
+      </label>
+      {!globalRelease ? (
+        <fieldset className="rounded-md border border-line px-4 py-3">
+          <legend className="px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
+            Release only in these countries
+          </legend>
+          <div className="grid max-h-64 grid-cols-2 gap-x-4 gap-y-1.5 overflow-y-auto sm:grid-cols-3">
+            {COUNTRIES.map((country) => (
+              <label key={country.code} className="flex items-center gap-2 text-sm text-ink">
+                <input
+                  type="checkbox"
+                  checked={countries.includes(country.code)}
+                  onChange={() => toggleCountry(country.code)}
+                />
+                {country.name}
+              </label>
+            ))}
+          </div>
+          {countries.length === 0 ? (
+            <p className="mt-2 text-xs text-danger">
+              Pick at least one country, or release everywhere.
+            </p>
+          ) : null}
+        </fieldset>
+      ) : null}
+      <Button
+        variant="primary"
+        disabled={saving || !dirty || (!globalRelease && countries.length === 0)}
+        onClick={() =>
+          onSave({
+            releaseScope: globalRelease ? "global" : "selected",
+            releaseCountries: globalRelease ? [] : countries,
+          })
+        }
+      >
+        {saving ? "Saving…" : "Save availability"}
+      </Button>
+    </div>
+  );
+}
+
+const EDITOR_TABS = ["Settings", "Availability", "Layout"] as const;
 
 export function CategoryEditorPage() {
   const { id = "" } = useParams();
@@ -693,6 +773,12 @@ export function CategoryEditorPage() {
 
       {tab === "Settings" ? (
         <CategorySettingsForm
+          category={category}
+          onSave={(values) => saveMutation.mutate(values)}
+          saving={saveMutation.isPending}
+        />
+      ) : tab === "Availability" ? (
+        <CategoryAvailabilityTab
           category={category}
           onSave={(values) => saveMutation.mutate(values)}
           saving={saveMutation.isPending}

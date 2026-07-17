@@ -21,7 +21,7 @@ from truegrit_api.auth.rate_limit import (
 )
 from truegrit_api.auth.sessions import end_session, hash_token, start_session
 from truegrit_api.config import Settings, get_settings
-from truegrit_api.domain.blocks import validate_href
+from truegrit_api.domain.blocks import validate_blocks, validate_href
 from truegrit_api.domain.slugs import slugify, validate_slug
 from truegrit_api.errors import (
     AuthenticationError,
@@ -32,10 +32,15 @@ from truegrit_api.errors import (
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.admin import AdminRepository
 from truegrit_api.repositories.content import (
+    ArticleRepository,
     AuditRepository,
     CategoryRepository,
+    RecipeRepository,
+    ReturnRequestRepository,
     SiteDocumentRepository,
 )
+from truegrit_api.services import articles as article_service
+from truegrit_api.services import recipes as recipe_service
 from truegrit_api.services.access import (
     adopt_bootstrap_owner,
     change_own_password,
@@ -54,6 +59,7 @@ from truegrit_api.services.catalogue import (
     archive_product,
     create_category,
     create_product,
+    set_category_release,
     set_highlighted_products,
     set_product_links,
     set_product_release,
@@ -63,7 +69,7 @@ from truegrit_api.services.catalogue import (
 from truegrit_api.services.contact import contactable_email
 from truegrit_api.services.email import send_email
 from truegrit_api.services.inventory import adjust_inventory, clear_inventory_levels
-from truegrit_api.services.media import save_image_bytes, save_image_upload
+from truegrit_api.services.media import delete_media, list_media, save_image_bytes, save_image_upload, update_media
 from truegrit_api.services.orders import update_order_status
 from truegrit_api.services.password_reset import (
     confirm_password_reset,
@@ -71,7 +77,9 @@ from truegrit_api.services.password_reset import (
     request_staff_invitation_email,
     request_staff_password_reset_for_user,
 )
-from truegrit_api.services.publishing import publish_category, publish_product
+from truegrit_api.services.publishing import publish_article, publish_category, publish_product, publish_recipe
+from truegrit_api.services.reports import list_reports, run_report
+from truegrit_api.services.returns import decide_return_request, resolve_return_request
 from truegrit_api.services.site_documents import SITE_DOCUMENT_TYPES, default_site_documents
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
@@ -844,6 +852,15 @@ async def update_cms_page(
     statements: list[tuple[str, tuple[Any, ...]]] = []
     next_status = updates.get("status", current["status"])
     if payload.blocks is not None:
+        # Validated the same way articles/recipes are — never trust raw block
+        # JSON straight from the request onto disk (ADR-005). This was
+        # previously skipped for pages; unknown/unsafe blocks were only ever
+        # caught by the storefront's defensive renderer, not rejected here.
+        validated_blocks = validate_blocks(payload.blocks)
+        blocks_json = [
+            block.model_dump(mode="json", by_alias=True, exclude_none=True)
+            for block in validated_blocks
+        ]
         next_version_row = await db.fetch_one(
             "SELECT COALESCE(MAX(version_number), 0) + 1 AS version_number"
             " FROM page_versions WHERE page_id = ?",
@@ -864,7 +881,7 @@ async def update_cms_page(
                     version_id,
                     page_id,
                     int(next_version_row["version_number"]),
-                    json.dumps({"blocks": payload.blocks}, separators=(",", ":")),
+                    json.dumps({"blocks": blocks_json}, separators=(",", ":")),
                     payload.change_summary or "Updated from admin CMS editor.",
                     workflow_state,
                     now,
@@ -904,6 +921,512 @@ async def update_cms_page(
     if page is None:
         raise NotFoundError("Page not found.")
     return page
+
+
+# ---------------------------------------------------------------------------
+# Articles (blog) — authored by `blogger`, reviewed/published by `articles.approve`/`.publish`
+# ---------------------------------------------------------------------------
+
+
+class ArticleCreateRequest(_CamelModel):
+    title: str = Field(min_length=3, max_length=180)
+    slug: str | None = Field(default=None, max_length=96)
+    excerpt: str | None = Field(default=None, max_length=300)
+
+
+class ArticleUpdateRequest(_CamelModel):
+    title: str | None = Field(default=None, min_length=3, max_length=180)
+    slug: str | None = Field(default=None, max_length=96)
+    excerpt: str | None = Field(default=None, max_length=300)
+    hero_media_id: str | None = Field(default=None, max_length=64)
+    reading_minutes: int | None = Field(default=None, ge=1, le=60)
+    author_user_id: str | None = Field(default=None, max_length=64)
+    seo_title: str | None = Field(default=None, max_length=160)
+    seo_description: str | None = Field(default=None, max_length=320)
+    seo_keywords: str | None = Field(default=None, max_length=500)
+    canonical_url: str | None = Field(default=None, max_length=300)
+    indexing_policy: str | None = Field(default=None, max_length=16)
+    blocks: list[dict[str, Any]] | None = Field(default=None, max_length=40)
+    pull_quote: str | None = Field(default=None, max_length=400)
+
+
+class ChangesRequestedRequest(_CamelModel):
+    note: str = Field(min_length=1, max_length=500)
+
+
+def _article_summary(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "title": row["title"],
+        "slug": row["slug"],
+        "status": row["status"],
+        "authorName": row["author_name"],
+        "updatedAt": row["updated_at"],
+        "publishedAt": row["published_at"],
+        "hasDraftChanges": row["latest_version_number"] != row["published_version_number"],
+    }
+
+
+def _article_detail(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "title": row["title"],
+        "slug": row["slug"],
+        "excerpt": row["excerpt"],
+        "readingMinutes": row["reading_minutes"],
+        "status": row["status"],
+        "authorUserId": row["author_user_id"],
+        "heroMediaId": row["hero_media_id"],
+        "seoTitle": row["seo_title"],
+        "seoDescription": row["seo_description"],
+        "seoKeywords": row["seo_keywords"],
+        "canonicalUrl": row["canonical_url"],
+        "indexingPolicy": row["indexing_policy"],
+        "updatedAt": row["updated_at"],
+        "blocks": row["blocks"],
+        "pullQuote": row["pull_quote"],
+    }
+
+
+@router.get("/articles")
+async def list_articles_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("articles.view"))],
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    scope = None if principal.has("articles.approve") else principal.user_id
+    rows = await ArticleRepository(db).list_admin(author_user_id=scope, limit=limit, offset=offset)
+    return {"items": [_article_summary(row) for row in rows], "limit": limit, "offset": offset}
+
+
+@router.post("/articles")
+async def create_article_endpoint(
+    payload: ArticleCreateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("articles.create"))],
+) -> Any:
+    return await article_service.create_article(
+        db, principal, _request_id(request), title=payload.title, slug=payload.slug, excerpt=payload.excerpt
+    )
+
+
+@router.get("/articles/{article_id}")
+async def get_article_endpoint(
+    article_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("articles.view"))],
+) -> Any:
+    row = await ArticleRepository(db).get_admin_detail(article_id)
+    if row is None:
+        raise NotFoundError("Article not found.")
+    article_service.assert_owns_or_reviews(row, principal)
+    return _article_detail(row)
+
+
+@router.patch("/articles/{article_id}")
+async def update_article_endpoint(
+    article_id: str,
+    payload: ArticleUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("articles.edit"))],
+) -> Any:
+    fields = payload.model_dump(exclude_unset=True)
+    await article_service.update_article(db, principal, _request_id(request), article_id, fields=fields)
+    row = await ArticleRepository(db).get_admin_detail(article_id)
+    if row is None:
+        raise NotFoundError("Article not found.")
+    return _article_detail(row)
+
+
+@router.post("/articles/{article_id}/submit-for-review")
+async def submit_article_endpoint(
+    article_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("articles.edit"))],
+) -> Any:
+    return await article_service.submit_article(db, principal, _request_id(request), article_id)
+
+
+@router.post("/articles/{article_id}/approve")
+async def approve_article_endpoint(
+    article_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("articles.approve"))],
+) -> Any:
+    return await article_service.approve_article(db, principal, _request_id(request), article_id)
+
+
+@router.post("/articles/{article_id}/request-changes")
+async def request_article_changes_endpoint(
+    article_id: str,
+    payload: ChangesRequestedRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("articles.approve"))],
+) -> Any:
+    return await article_service.request_article_changes(
+        db, principal, _request_id(request), article_id, payload.note
+    )
+
+
+@router.post("/articles/{article_id}/publish")
+async def publish_article_endpoint(
+    article_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("articles.publish"))],
+) -> Any:
+    return await publish_article(db, article_id, principal, _request_id(request))
+
+
+@router.post("/articles/{article_id}/unpublish")
+async def unpublish_article_endpoint(
+    article_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("articles.publish"))],
+) -> Any:
+    return await article_service.unpublish_article(db, principal, _request_id(request), article_id)
+
+
+# ---------------------------------------------------------------------------
+# Recipes — authored by `chef`, reviewed/published by `recipes.approve`/`.publish`
+# ---------------------------------------------------------------------------
+
+
+class RecipeCreateRequest(_CamelModel):
+    title: str = Field(min_length=3, max_length=180)
+    slug: str | None = Field(default=None, max_length=96)
+    excerpt: str | None = Field(default=None, max_length=300)
+
+
+class RecipeIngredientInput(_CamelModel):
+    label: str = Field(min_length=1, max_length=200)
+    quantity_text: str | None = Field(default=None, max_length=80)
+    product_id: str | None = Field(default=None, max_length=64)
+
+
+class RecipeUpdateRequest(_CamelModel):
+    title: str | None = Field(default=None, min_length=3, max_length=180)
+    slug: str | None = Field(default=None, max_length=96)
+    excerpt: str | None = Field(default=None, max_length=300)
+    prep_minutes: int | None = Field(default=None, ge=0, le=600)
+    cook_minutes: int | None = Field(default=None, ge=0, le=600)
+    servings: int | None = Field(default=None, ge=1, le=50)
+    hero_media_id: str | None = Field(default=None, max_length=64)
+    chef_user_id: str | None = Field(default=None, max_length=64)
+    dietary_tags: list[str] | None = Field(default=None, max_length=12)
+    seo_title: str | None = Field(default=None, max_length=160)
+    seo_description: str | None = Field(default=None, max_length=320)
+    seo_keywords: str | None = Field(default=None, max_length=500)
+    canonical_url: str | None = Field(default=None, max_length=300)
+    indexing_policy: str | None = Field(default=None, max_length=16)
+    blocks: list[dict[str, Any]] | None = Field(default=None, max_length=40)
+    steps: list[str] | None = Field(default=None, max_length=30)
+    ingredients: list[RecipeIngredientInput] | None = Field(default=None, max_length=40)
+
+
+def _recipe_summary(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "title": row["title"],
+        "slug": row["slug"],
+        "status": row["status"],
+        "chefName": row["chef_name"],
+        "updatedAt": row["updated_at"],
+        "publishedAt": row["published_at"],
+        "hasDraftChanges": row["latest_version_number"] != row["published_version_number"],
+    }
+
+
+def _recipe_detail(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "title": row["title"],
+        "slug": row["slug"],
+        "excerpt": row["excerpt"],
+        "prepMinutes": row["prep_minutes"],
+        "cookMinutes": row["cook_minutes"],
+        "servings": row["servings"],
+        "dietaryTags": row["dietary_tags"],
+        "status": row["status"],
+        "chefUserId": row["chef_user_id"],
+        "seoTitle": row["seo_title"],
+        "seoDescription": row["seo_description"],
+        "seoKeywords": row["seo_keywords"],
+        "canonicalUrl": row["canonical_url"],
+        "indexingPolicy": row["indexing_policy"],
+        "updatedAt": row["updated_at"],
+        "blocks": row["blocks"],
+        "steps": row["steps"],
+        "ingredients": [
+            {
+                "id": entry["id"],
+                "label": entry["label"],
+                "quantityText": entry["quantity_text"],
+                "productId": entry["product_id"],
+                "productSlug": entry["product_slug"],
+            }
+            for entry in row["ingredients"]
+        ],
+    }
+
+
+@router.get("/recipes")
+async def list_recipes_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("recipes.view"))],
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    scope = None if principal.has("recipes.approve") else principal.user_id
+    rows = await RecipeRepository(db).list_admin(chef_user_id=scope, limit=limit, offset=offset)
+    return {"items": [_recipe_summary(row) for row in rows], "limit": limit, "offset": offset}
+
+
+@router.post("/recipes")
+async def create_recipe_endpoint(
+    payload: RecipeCreateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("recipes.create"))],
+) -> Any:
+    return await recipe_service.create_recipe(
+        db, principal, _request_id(request), title=payload.title, slug=payload.slug, excerpt=payload.excerpt
+    )
+
+
+@router.get("/recipes/{recipe_id}")
+async def get_recipe_endpoint(
+    recipe_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("recipes.view"))],
+) -> Any:
+    row = await RecipeRepository(db).get_admin_detail(recipe_id)
+    if row is None:
+        raise NotFoundError("Recipe not found.")
+    recipe_service.assert_owns_or_reviews(row, principal)
+    return _recipe_detail(row)
+
+
+@router.patch("/recipes/{recipe_id}")
+async def update_recipe_endpoint(
+    recipe_id: str,
+    payload: RecipeUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("recipes.edit"))],
+) -> Any:
+    fields = payload.model_dump(exclude_unset=True)
+    await recipe_service.update_recipe(db, principal, _request_id(request), recipe_id, fields=fields)
+    row = await RecipeRepository(db).get_admin_detail(recipe_id)
+    if row is None:
+        raise NotFoundError("Recipe not found.")
+    return _recipe_detail(row)
+
+
+@router.post("/recipes/{recipe_id}/submit-for-review")
+async def submit_recipe_endpoint(
+    recipe_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("recipes.edit"))],
+) -> Any:
+    return await recipe_service.submit_recipe(db, principal, _request_id(request), recipe_id)
+
+
+@router.post("/recipes/{recipe_id}/approve")
+async def approve_recipe_endpoint(
+    recipe_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("recipes.approve"))],
+) -> Any:
+    return await recipe_service.approve_recipe(db, principal, _request_id(request), recipe_id)
+
+
+@router.post("/recipes/{recipe_id}/request-changes")
+async def request_recipe_changes_endpoint(
+    recipe_id: str,
+    payload: ChangesRequestedRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("recipes.approve"))],
+) -> Any:
+    return await recipe_service.request_recipe_changes(
+        db, principal, _request_id(request), recipe_id, payload.note
+    )
+
+
+@router.post("/recipes/{recipe_id}/publish")
+async def publish_recipe_endpoint(
+    recipe_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("recipes.publish"))],
+) -> Any:
+    return await publish_recipe(db, recipe_id, principal, _request_id(request))
+
+
+@router.post("/recipes/{recipe_id}/unpublish")
+async def unpublish_recipe_endpoint(
+    recipe_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("recipes.publish"))],
+) -> Any:
+    return await recipe_service.unpublish_recipe(db, principal, _request_id(request), recipe_id)
+
+
+# ---------------------------------------------------------------------------
+# Return requests (RMA) — customers file from the storefront; staff review here
+# ---------------------------------------------------------------------------
+
+
+class ReturnDecisionRequest(_CamelModel):
+    decision: str = Field(min_length=1, max_length=20)
+
+
+class ReturnResolveRequest(_CamelModel):
+    resolution_type: str = Field(min_length=1, max_length=20)
+    resolution_amount_minor: int | None = Field(default=None, ge=0)
+    resolution_notes: str | None = Field(default=None, max_length=1000)
+
+
+def _return_request_admin_row(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "orderReference": row["public_reference"],
+        "customerName": row["customer_name"],
+        "reasonCode": row["reason_code"],
+        "status": row["status"],
+        "requestedRefundAmountMinor": row["requested_refund_amount_minor"],
+        "resolutionType": row["resolution_type"],
+        "resolutionAmountMinor": row["resolution_amount_minor"],
+        "requestedAt": row["requested_at"],
+        "resolvedAt": row["resolved_at"],
+    }
+
+
+@router.get("/returns")
+async def list_returns_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("returns.view"))],
+    status: Annotated[str | None, Query(max_length=20)] = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    rows = await ReturnRequestRepository(db).list_admin(status=status, limit=limit, offset=offset)
+    return {"items": [_return_request_admin_row(row) for row in rows], "limit": limit, "offset": offset}
+
+
+@router.get("/returns/{return_id}")
+async def get_return_endpoint(
+    return_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("returns.view"))],
+) -> Any:
+    row = await ReturnRequestRepository(db).get_admin_detail(return_id)
+    if row is None:
+        raise NotFoundError("Return request not found.")
+    return {
+        "id": row["id"],
+        "orderReference": row["public_reference"],
+        "orderTotalMinor": row["order_total_minor"],
+        "currencyCode": row["currency_code"],
+        "customerName": row["customer_name"],
+        "productName": row["product_name"],
+        "variantName": row["variant_name"],
+        "reasonCode": row["reason_code"],
+        "description": row["description"],
+        "evidenceMediaIds": json.loads(row["evidence_media_ids_json"] or "[]"),
+        "status": row["status"],
+        "requestedRefundAmountMinor": row["requested_refund_amount_minor"],
+        "resolutionType": row["resolution_type"],
+        "resolutionAmountMinor": row["resolution_amount_minor"],
+        "resolutionNotes": row["resolution_notes"],
+        "requestedAt": row["requested_at"],
+        "resolvedAt": row["resolved_at"],
+    }
+
+
+@router.post("/returns/{return_id}/decide")
+async def decide_return_endpoint(
+    return_id: str,
+    payload: ReturnDecisionRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("returns.manage"))],
+) -> Any:
+    return await decide_return_request(
+        db, principal, _request_id(request), return_id, decision=payload.decision
+    )
+
+
+@router.post("/returns/{return_id}/resolve")
+async def resolve_return_endpoint(
+    return_id: str,
+    payload: ReturnResolveRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("returns.manage"))],
+) -> Any:
+    return await resolve_return_request(
+        db,
+        principal,
+        _request_id(request),
+        return_id,
+        resolution_type=payload.resolution_type,
+        resolution_amount_minor=payload.resolution_amount_minor,
+        resolution_notes=payload.resolution_notes,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Owner reports console — curated, parameterized, read-only queries only
+# ---------------------------------------------------------------------------
+
+
+class ReportRunRequest(_CamelModel):
+    filters: dict[str, str] = Field(default_factory=dict)
+
+
+@router.get("/reports")
+async def list_reports_endpoint(
+    _principal: Annotated[Principal, Depends(require_permission("reports.query"))],
+) -> Any:
+    return {"items": list_reports()}
+
+
+@router.post("/reports/{report_id}/run")
+async def run_report_endpoint(
+    report_id: str,
+    payload: ReportRunRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("reports.query"))],
+) -> Any:
+    result = await run_report(db, report_id, payload.filters)
+    await db.execute(
+        "INSERT INTO audit_logs"
+        " (id, actor_user_id, action, entity_type, entity_id,"
+        "  before_summary_json, after_summary_json, request_id, source, created_at)"
+        " VALUES (?, ?, 'report.executed', 'report', ?, NULL, ?, ?, 'admin', ?)",
+        (
+            new_id("aud"),
+            principal.user_id,
+            report_id,
+            json.dumps({"filters": payload.filters, "rows": len(result["rows"])}),
+            _request_id(request),
+            utc_now_iso(),
+        ),
+    )
+    return result
 
 
 @router.get("/archive")
@@ -1168,7 +1691,8 @@ async def update_highlights(
 @router.post("/media/images")
 async def upload_image_endpoint(
     request: Request,
-    _principal: Annotated[Principal, Depends(require_permission("media.upload"))],
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("media.upload"))],
     filename: Annotated[str | None, Query(min_length=1, max_length=180)] = None,
 ) -> Any:
     content_type = (request.headers.get("content-type") or "").split(";", 1)[0].lower()
@@ -1176,21 +1700,89 @@ async def upload_image_endpoint(
         payload = ImageUploadRequest.model_validate(await request.json())
         saved = await save_image_upload(
             request.app.state.media,
+            db,
+            principal,
             content_type=payload.content_type,
             data_base64=payload.data_base64,
+            original_filename=filename,
         )
     else:
         # Browser uploads use the raw File body. Avoid base64 JSON here: in
         # Python Workers that path burns enough CPU for real photos to be
         # terminated before CORS headers are written.
-        _ = filename
         saved = await save_image_bytes(
             request.app.state.media,
+            db,
+            principal,
             content_type=content_type,
             data=await request.body(),
+            original_filename=filename,
         )
     base_url = str(request.base_url).rstrip("/")
     return {"id": saved["id"], "url": f"{base_url}{saved['path']}"}
+
+
+class MediaUpdateRequest(_CamelModel):
+    alt_text: str | None = Field(default=None, max_length=300)
+    caption: str | None = Field(default=None, max_length=500)
+
+
+def _media_row(row: dict[str, Any], base_url: str) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "url": f"{base_url}/media/{row['object_key']}",
+        "originalFilename": row["original_filename"],
+        "mimeType": row["mime_type"],
+        "sizeBytes": row["size_bytes"],
+        "widthPx": row["width_px"],
+        "heightPx": row["height_px"],
+        "altText": row["alt_text"] or "",
+        "caption": row["caption"] or "",
+        "createdAt": row["created_at"],
+    }
+
+
+@router.get("/media")
+async def list_media_endpoint(
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("media.view"))],
+    limit: Annotated[int, Query(ge=1, le=200)] = 60,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    rows = await list_media(db, limit=limit, offset=offset)
+    base_url = str(request.base_url).rstrip("/")
+    return {
+        "items": [_media_row(row, base_url) for row in rows],
+        "limit": limit,
+        "offset": offset,
+    }
+
+
+@router.patch("/media/{media_id}")
+async def update_media_endpoint(
+    media_id: str,
+    payload: MediaUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("media.edit"))],
+) -> Any:
+    row = await update_media(
+        db, principal, _request_id(request), media_id, alt_text=payload.alt_text, caption=payload.caption
+    )
+    base_url = str(request.base_url).rstrip("/")
+    return _media_row(row, base_url)
+
+
+@router.delete("/media/{media_id}")
+async def delete_media_endpoint(
+    media_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("media.delete"))],
+) -> Any:
+    await delete_media(request.app.state.media, db, principal, _request_id(request), media_id)
+    return {"id": media_id, "deleted": True}
 
 
 @router.get("/products")
@@ -1353,6 +1945,7 @@ class ProductUpdateRequest(_CamelModel):
     release_scope: str | None = Field(default=None, max_length=16)
     release_countries: list[str] | None = Field(default=None, max_length=100)
     linked_product_ids: list[str] | None = Field(default=None, max_length=12)
+    return_eligible: bool | None = Field(default=None)
 
 
 class ProductBulkDeleteRequest(_CamelModel):
@@ -1407,6 +2000,7 @@ async def get_product_endpoint(
         "updatedAt": detail["updated_at"],
         "releaseScope": detail["release_scope"],
         "releaseCountries": detail["release_countries"],
+        "returnEligible": bool(detail["return_eligible"]),
         "linkedProducts": [
             {
                 "id": linked["id"],
@@ -1561,6 +2155,8 @@ class CategoryUpdateRequest(_CamelModel):
     seo_description: str | None = Field(default=None, max_length=320)
     hero_image_url: str | None = Field(default=None, max_length=1000)
     hero_image_alt: str | None = Field(default=None, max_length=200)
+    release_scope: str | None = Field(default=None, max_length=16)
+    release_countries: list[str] | None = Field(default=None, max_length=100)
 
 
 class CategoryBulkDeleteRequest(_CamelModel):
@@ -1612,6 +2208,8 @@ async def get_category_endpoint(
         "heroImageUrl": detail["hero_image_url"] or "",
         "heroImageAlt": detail["hero_image_alt"] or detail["name"],
         "productAssignmentMode": detail["product_assignment_mode"],
+        "releaseScope": detail["release_scope"],
+        "releaseCountries": detail["release_countries"],
         "updatedAt": detail["updated_at"],
     }
 
@@ -1625,7 +2223,32 @@ async def update_category_endpoint(
     principal: Annotated[Principal, Depends(require_permission("categories.edit"))],
 ) -> Any:
     fields = payload.model_dump(exclude_unset=True)
-    return await update_category(db, principal, _request_id(request), category_id, fields=fields)
+
+    # Geo release is relational, not a simple column — applied through its own
+    # audited service, mirroring update_product_endpoint exactly.
+    changed = False
+    release_scope = fields.pop("release_scope", None)
+    release_countries = fields.pop("release_countries", None)
+    if release_scope is None and release_countries is not None:
+        row = await db.fetch_one("SELECT release_scope FROM categories WHERE id = ?", (category_id,))
+        release_scope = row["release_scope"] if row else "global"
+    if release_scope is not None:
+        await set_category_release(
+            db,
+            principal,
+            _request_id(request),
+            category_id,
+            scope=release_scope,
+            countries=release_countries or [],
+        )
+        changed = True
+
+    if fields:
+        result = await update_category(db, principal, _request_id(request), category_id, fields=fields)
+        result["changed"] = result.get("changed", False) or changed
+        return result
+    row = await db.fetch_one("SELECT status FROM categories WHERE id = ?", (category_id,))
+    return {"id": category_id, "status": row["status"] if row else "draft", "changed": changed}
 
 
 @router.delete("/categories/{category_id}")

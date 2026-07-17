@@ -27,7 +27,7 @@ def test_health(client: TestClient):
 def test_bootstrap_navigation_and_announcement(client: TestClient):
     body = client.get("/v1/public/bootstrap").json()
     labels = [item["label"] for item in body["navigation"]]
-    assert labels == ["Shop", "Seasonal", "Farmers", "Recipes", "Journal", "Our Standards"]
+    assert labels == ["Shop", "Seasonal", "Farmers", "Recipes", "Blog", "Our Standards"]
     assert body["navigation"][1]["path"] == "/seasonal"
     assert [item["path"] for item in body["footerNavigation"]] == [
         "/about",
@@ -88,8 +88,18 @@ def test_public_pages_and_site_documents_have_generated_defaults(client: TestCli
     assert robots["contentType"].startswith("text/plain")
 
     sitemap = client.get("/v1/public/site-documents/sitemap_xml").json()
-    assert "/product/organic-alphonso-mangoes" in sitemap["content"]
+    assert "<sitemapindex" in sitemap["content"]
+    assert "/sitemaps/products.xml" in sitemap["content"]
     assert sitemap["contentType"].startswith("application/xml")
+
+    products_sitemap = client.get("/v1/public/sitemaps/products").text
+    assert "/product/organic-alphonso-mangoes" in products_sitemap
+
+    pages_sitemap = client.get("/v1/public/sitemaps/pages").text
+    assert "/about" in pages_sitemap
+
+    blog_sitemap = client.get("/v1/public/sitemaps/blog").text
+    assert "/blog/quiet-revival-of-indian-millets" in blog_sitemap
 
     llms = client.get("/v1/public/site-documents/llms_txt").json()
     assert "## Core Pages" in llms["content"]

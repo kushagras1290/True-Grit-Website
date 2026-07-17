@@ -8,13 +8,23 @@
  */
 
 import type {
+  AdminArticleDetail,
+  AdminArticleRow,
   AdminCategoryRow,
   AdminInventoryRow,
+  AdminMediaAssetRow,
   AdminOrderRow,
   AdminProductRow,
+  AdminRecipeDetail,
+  AdminRecipeRow,
+  AdminReturnRequestDetail,
+  AdminReturnRequestRow,
   AdminUserRow,
   AuditLogRow,
+  ContentBlock,
   PublicPageBlock,
+  ReportDefinitionSummary,
+  ReportRunResult,
 } from "@truegrit/contracts";
 import {
   adminCategories,
@@ -22,9 +32,11 @@ import {
   adminOrders,
   adminProducts,
   adminUsers,
+  articles as demoArticles,
   auditLog,
   homePage,
   products,
+  recipes as demoRecipes,
 } from "@truegrit/contracts/fixtures";
 
 const API_URL: string | undefined = import.meta.env.VITE_API_URL as string | undefined;
@@ -161,6 +173,7 @@ export interface AdminProductDetail {
   updatedAt: string;
   releaseScope: "global" | "selected";
   releaseCountries: string[];
+  returnEligible: boolean;
   linkedProducts: AdminLinkedProduct[];
   variants: Array<{
     id: string;
@@ -190,6 +203,8 @@ export interface AdminCategoryDetail {
   heroImageUrl: string;
   heroImageAlt: string;
   productAssignmentMode: string;
+  releaseScope: "global" | "selected";
+  releaseCountries: string[];
   updatedAt: string;
 }
 
@@ -434,6 +449,7 @@ export const api = {
       updatedAt: new Date().toISOString(),
       releaseScope: "global",
       releaseCountries: [],
+      returnEligible: true,
       linkedProducts: [],
       variants: product.variants.map((variant) => ({
         id: variant.id,
@@ -534,6 +550,8 @@ export const api = {
       heroImageUrl: "",
       heroImageAlt: category.name,
       productAssignmentMode: "manual",
+      releaseScope: "global",
+      releaseCountries: [],
       updatedAt: category.updatedAt,
     });
   },
@@ -946,4 +964,236 @@ export const api = {
       : postFile(`/v1/admin/media/images?filename=${encodeURIComponent(file.name)}`, file),
 
   homeBlocks: (): Promise<PublicPageBlock[]> => demo(homePage.blocks),
+
+  // --- Articles (blog) -------------------------------------------------
+
+  articles: (): Promise<AdminArticleRow[]> =>
+    demoMode
+      ? demo(
+          demoArticles.map((article) => ({
+            id: article.id,
+            title: article.title,
+            slug: article.slug,
+            status: "published" as const,
+            authorName: article.authorName,
+            updatedAt: article.publishedAt,
+            publishedAt: article.publishedAt,
+            hasDraftChanges: false,
+          })),
+        )
+      : get<{ items: AdminArticleRow[] }>("/v1/admin/articles").then((body) => body.items),
+
+  getArticle: (id: string): Promise<AdminArticleDetail> => {
+    if (!demoMode) return get<AdminArticleDetail>(`/v1/admin/articles/${id}`);
+    const article = demoArticles.find((entry) => entry.id === id) ?? demoArticles[0]!;
+    return demo<AdminArticleDetail>({
+      id: article.id,
+      title: article.title,
+      slug: article.slug,
+      excerpt: article.excerpt,
+      readingMinutes: article.readingMinutes,
+      status: "published",
+      authorUserId: null,
+      heroMediaId: null,
+      seoTitle: article.seo.title,
+      seoDescription: article.seo.description,
+      seoKeywords: article.seo.keywords ?? "",
+      canonicalUrl: article.seo.canonicalPath,
+      indexingPolicy: article.seo.indexing,
+      updatedAt: article.publishedAt,
+      blocks: article.blocks,
+      pullQuote: article.pullQuote,
+    });
+  },
+
+  createArticle: (input: {
+    title: string;
+    slug?: string;
+    excerpt?: string;
+  }): Promise<{ id: string }> =>
+    demoMode ? demo({ id: `art_${Date.now().toString(36)}` }) : post("/v1/admin/articles", input),
+
+  updateArticle: (id: string, input: Record<string, unknown>): Promise<AdminArticleDetail> =>
+    demoMode ? api.getArticle(id) : patch(`/v1/admin/articles/${id}`, input),
+
+  submitArticle: (id: string): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id, status: "in_review" })
+      : post(`/v1/admin/articles/${id}/submit-for-review`),
+
+  approveArticle: (id: string): Promise<{ id: string; status: string }> =>
+    demoMode ? demo({ id, status: "approved" }) : post(`/v1/admin/articles/${id}/approve`),
+
+  requestArticleChanges: (id: string, note: string): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id, status: "draft" })
+      : post(`/v1/admin/articles/${id}/request-changes`, { note }),
+
+  publishArticle: (id: string): Promise<{ id: string; status: string; version: number }> =>
+    demoMode
+      ? demo({ id, status: "published", version: 1 })
+      : post(`/v1/admin/articles/${id}/publish`),
+
+  unpublishArticle: (id: string): Promise<{ id: string; status: string }> =>
+    demoMode ? demo({ id, status: "unpublished" }) : post(`/v1/admin/articles/${id}/unpublish`),
+
+  // --- Recipes -----------------------------------------------------------
+
+  recipes: (): Promise<AdminRecipeRow[]> =>
+    demoMode
+      ? demo(
+          demoRecipes.map((recipe) => ({
+            id: recipe.id,
+            title: recipe.title,
+            slug: recipe.slug,
+            status: "published" as const,
+            chefName: "Demo Chef",
+            updatedAt: new Date().toISOString(),
+            publishedAt: new Date().toISOString(),
+            hasDraftChanges: false,
+          })),
+        )
+      : get<{ items: AdminRecipeRow[] }>("/v1/admin/recipes").then((body) => body.items),
+
+  getRecipe: (id: string): Promise<AdminRecipeDetail> => {
+    if (!demoMode) return get<AdminRecipeDetail>(`/v1/admin/recipes/${id}`);
+    const recipe = demoRecipes.find((entry) => entry.id === id) ?? demoRecipes[0]!;
+    return demo<AdminRecipeDetail>({
+      id: recipe.id,
+      title: recipe.title,
+      slug: recipe.slug,
+      excerpt: recipe.excerpt,
+      prepMinutes: recipe.prepMinutes,
+      cookMinutes: recipe.cookMinutes,
+      servings: recipe.servings,
+      dietaryTags: recipe.dietaryTags,
+      status: "published",
+      chefUserId: null,
+      seoTitle: recipe.seo.title,
+      seoDescription: recipe.seo.description,
+      seoKeywords: recipe.seo.keywords ?? "",
+      canonicalUrl: recipe.seo.canonicalPath,
+      indexingPolicy: recipe.seo.indexing,
+      updatedAt: new Date().toISOString(),
+      blocks: recipe.blocks,
+      steps: recipe.steps,
+      ingredients: recipe.ingredients.map((ingredient, index) => ({
+        id: `demo_ing_${index}`,
+        label: ingredient.label,
+        quantityText: ingredient.quantityText,
+        productId: null,
+        productSlug: ingredient.productSlug,
+      })),
+    });
+  },
+
+  createRecipe: (input: {
+    title: string;
+    slug?: string;
+    excerpt?: string;
+  }): Promise<{ id: string }> =>
+    demoMode ? demo({ id: `rcp_${Date.now().toString(36)}` }) : post("/v1/admin/recipes", input),
+
+  updateRecipe: (id: string, input: Record<string, unknown>): Promise<AdminRecipeDetail> =>
+    demoMode ? api.getRecipe(id) : patch(`/v1/admin/recipes/${id}`, input),
+
+  submitRecipe: (id: string): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id, status: "in_review" })
+      : post(`/v1/admin/recipes/${id}/submit-for-review`),
+
+  approveRecipe: (id: string): Promise<{ id: string; status: string }> =>
+    demoMode ? demo({ id, status: "approved" }) : post(`/v1/admin/recipes/${id}/approve`),
+
+  requestRecipeChanges: (id: string, note: string): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id, status: "draft" })
+      : post(`/v1/admin/recipes/${id}/request-changes`, { note }),
+
+  publishRecipe: (id: string): Promise<{ id: string; status: string; version: number }> =>
+    demoMode
+      ? demo({ id, status: "published", version: 1 })
+      : post(`/v1/admin/recipes/${id}/publish`),
+
+  unpublishRecipe: (id: string): Promise<{ id: string; status: string }> =>
+    demoMode ? demo({ id, status: "unpublished" }) : post(`/v1/admin/recipes/${id}/unpublish`),
+
+  // --- Return requests -----------------------------------------------------
+
+  returns: (status?: string): Promise<AdminReturnRequestRow[]> =>
+    demoMode
+      ? demo([])
+      : get<{ items: AdminReturnRequestRow[] }>(
+          `/v1/admin/returns${status ? `?status=${encodeURIComponent(status)}` : ""}`,
+        ).then((body) => body.items),
+
+  getReturn: (id: string): Promise<AdminReturnRequestDetail> =>
+    demoMode
+      ? Promise.reject(new ApiError("Demo mode has no return requests yet.", 404, "not_found"))
+      : get<AdminReturnRequestDetail>(`/v1/admin/returns/${id}`),
+
+  decideReturn: (id: string, decision: string): Promise<{ id: string; status: string }> =>
+    demoMode ? demo({ id, status: decision }) : post(`/v1/admin/returns/${id}/decide`, { decision }),
+
+  resolveReturn: (
+    id: string,
+    input: { resolutionType: string; resolutionAmountMinor?: number | null; resolutionNotes?: string },
+  ): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id, status: "completed" })
+      : post(`/v1/admin/returns/${id}/resolve`, input),
+
+  // --- Media library ---------------------------------------------------
+
+  mediaLibrary: (): Promise<AdminMediaAssetRow[]> =>
+    demoMode
+      ? demo([])
+      : get<{ items: AdminMediaAssetRow[] }>("/v1/admin/media").then((body) => body.items),
+
+  updateMediaAsset: (
+    id: string,
+    input: { altText?: string; caption?: string },
+  ): Promise<AdminMediaAssetRow> =>
+    demoMode
+      ? demo({
+          id,
+          url: "",
+          originalFilename: "",
+          mimeType: "image/png",
+          sizeBytes: 0,
+          widthPx: null,
+          heightPx: null,
+          altText: input.altText ?? "",
+          caption: input.caption ?? "",
+          createdAt: new Date().toISOString(),
+        })
+      : patch(`/v1/admin/media/${id}`, input),
+
+  deleteMediaAsset: (id: string): Promise<{ id: string; deleted: boolean }> =>
+    demoMode ? demo({ id, deleted: true }) : del(`/v1/admin/media/${id}`),
+
+  // --- Owner reports console --------------------------------------------
+
+  reports: (): Promise<ReportDefinitionSummary[]> =>
+    demoMode ? demo([]) : get<{ items: ReportDefinitionSummary[] }>("/v1/admin/reports").then((body) => body.items),
+
+  runReport: (id: string, filters: Record<string, string>): Promise<ReportRunResult> =>
+    demoMode
+      ? demo({ id, label: id, columns: [], rows: [] })
+      : post(`/v1/admin/reports/${id}/run`, { filters }),
+
+  // --- Category geo release ---------------------------------------------
+
+  setCategoryRelease: (
+    id: string,
+    input: { releaseScope: "global" | "selected"; releaseCountries: string[] },
+  ): Promise<{ id: string }> =>
+    demoMode
+      ? demo({ id })
+      : patch(`/v1/admin/categories/${id}`, {
+          releaseScope: input.releaseScope,
+          releaseCountries: input.releaseCountries,
+        }),
 };
+
+export type { ContentBlock };

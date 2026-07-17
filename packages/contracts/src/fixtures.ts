@@ -143,6 +143,7 @@ export const products: ProductDetail[] = [
       { label: "Delivery", detail: "Ships every Tuesday, orchard to door within 48 hours" },
     ],
     relatedSlugs: ["organic-baby-spinach", "sprouted-ragi-flour"],
+    returnEligible: true,
     seo: {
       title: "Organic Alphonso Mangoes — Ratnagiri, carbide-free",
       description:
@@ -194,6 +195,7 @@ export const products: ProductDetail[] = [
       { label: "Delivery", detail: "Same-day dispatch on a cold chain" },
     ],
     relatedSlugs: ["sprouted-ragi-flour", "wood-pressed-groundnut-oil"],
+    returnEligible: true,
     seo: {
       title: "Organic Baby Spinach — harvested at dawn",
       description: "Certified organic baby spinach from the Anandvan Collective.",
@@ -253,6 +255,7 @@ export const products: ProductDetail[] = [
       { label: "Delivery", detail: "Ships within 2 days of milling" },
     ],
     relatedSlugs: ["himalayan-red-rajma", "wood-pressed-groundnut-oil"],
+    returnEligible: true,
     seo: {
       title: "Sprouted Ragi Flour — stone-milled finger millet",
       description: "Certified organic sprouted ragi flour from the Anandvan Collective.",
@@ -309,6 +312,7 @@ export const products: ProductDetail[] = [
       { label: "Delivery", detail: "Ships in protective sleeves within 3 days" },
     ],
     relatedSlugs: ["sprouted-ragi-flour", "organic-baby-spinach"],
+    returnEligible: true,
     seo: {
       title: "Wood-Pressed Groundnut Oil — single origin",
       description: "Certified organic wood-pressed groundnut oil from the Anandvan Collective.",
@@ -360,6 +364,7 @@ export const products: ProductDetail[] = [
       { label: "Delivery", detail: "Ships from the Mumbai fulfilment centre" },
     ],
     relatedSlugs: ["sprouted-ragi-flour"],
+    returnEligible: true,
     seo: {
       title: "Himalayan Red Rajma — Uttarkashi terraces",
       description: "Certified organic red rajma grown at altitude by Himgiri Terraces.",
@@ -543,6 +548,31 @@ export const recipes: RecipeDetail[] = [
       { label: "Cumin seeds", quantityText: "1 tsp", productSlug: null },
       { label: "Salt", quantityText: "to taste", productSlug: null },
     ],
+    blocks: [
+      {
+        id: "blk_dosa_intro",
+        type: "rich_text",
+        version: 1,
+        enabled: true,
+        props: {
+          paragraphs: [
+            "This dosa uses sprouted [ragi flour](/product/sprouted-ragi-flour) for a nutty batter that crisps fast and needs no overnight fermentation.",
+          ],
+        },
+      },
+      {
+        id: "blk_dosa_products",
+        type: "product_collection",
+        version: 1,
+        enabled: true,
+        props: {
+          heading: "Shop this recipe",
+          source: "manual",
+          productSlugs: ["sprouted-ragi-flour", "organic-baby-spinach", "wood-pressed-groundnut-oil"],
+          limit: 4,
+        },
+      },
+    ],
     steps: [
       "Whisk the ragi flour with 2½ cups of water and salt into a thin, pourable batter. Rest 15 minutes.",
       "Fold in the chopped spinach and cumin seeds.",
@@ -569,19 +599,41 @@ export const articles: ArticleDetail[] = [
     authorName: "Kabir Mehta",
     publishedAt: "2026-07-05T00:00:00Z",
     readingMinutes: 6,
-    body: [
-      "For most of the twentieth century, millets fed India. Then subsidised rice and wheat pushed them to the margins — hardy grains recast as poor man's food, grown on the land nobody irrigated.",
-      "That story is reversing. Millets need a fraction of the water that rice demands, tolerate heat that wilts wheat, and grow on soil still recovering from decades of intensive farming. For collectives like Anandvan in Wardha, they are not nostalgia — they are the only crop that makes agronomic sense on regenerating land.",
-      "The revival is also a flavour story. Sprouted ragi has a sweetness that refined flour never had. Little millet cooks into a pilaf with real bite. A generation of cooks is rediscovering grains their grandmothers never abandoned.",
-      "What the movement needs now is steady demand: buyers who return every month, not just when a headline celebrates ancient grains. That steadiness is what lets a farmer plant a rain-fed crop with confidence.",
+    blocks: [
+      {
+        id: "blk_millets_body",
+        type: "rich_text",
+        version: 1,
+        enabled: true,
+        props: {
+          paragraphs: [
+            "For most of the twentieth century, millets fed India. Then subsidised rice and wheat pushed them to the margins — hardy grains recast as poor man's food, grown on the land nobody irrigated.",
+            "That story is reversing. Millets need a fraction of the water that rice demands, tolerate heat that wilts wheat, and grow on soil still recovering from decades of intensive farming. For collectives like Anandvan in Wardha, they are not nostalgia — they are the only crop that makes agronomic sense on regenerating land.",
+            "The revival is also a flavour story. [Sprouted ragi](/product/sprouted-ragi-flour) has a sweetness that refined flour never had. Little millet cooks into a pilaf with real bite. A generation of cooks is rediscovering grains their grandmothers never abandoned. Try it in our [crisp sprouted ragi dosa](/recipes/crisp-sprouted-ragi-dosa).",
+            "What the movement needs now is steady demand: buyers who return every month, not just when a headline celebrates ancient grains. That steadiness is what lets a farmer plant a rain-fed crop with confidence.",
+          ],
+        },
+      },
+      {
+        id: "blk_millets_products",
+        type: "product_collection",
+        version: 1,
+        enabled: true,
+        props: {
+          heading: "Shop the grains in this story",
+          source: "manual",
+          productSlugs: ["sprouted-ragi-flour", "organic-baby-spinach"],
+          limit: 4,
+        },
+      },
     ],
     pullQuote:
       "Millets are not nostalgia — they are the only crop that makes sense on regenerating land.",
     seo: {
-      title: "The quiet revival of Indian millets — True Grit journal",
+      title: "The quiet revival of Indian millets — True Grit blog",
       description:
         "How a generation of farmers is bringing climate-resilient grains back to the Indian table.",
-      canonicalPath: "/journal/quiet-revival-of-indian-millets",
+      canonicalPath: "/blog/quiet-revival-of-indian-millets",
       indexing: "index",
     },
   },

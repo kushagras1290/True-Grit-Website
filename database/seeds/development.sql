@@ -6,7 +6,9 @@ INSERT INTO users (id, email, display_name, user_type, status, email_verified_at
   ('usr_admin', 'admin@truegrit.test', 'Asha Rao', 'staff', 'active', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z'),
   ('usr_editor', 'editor@truegrit.test', 'Kabir Mehta', 'staff', 'active', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z'),
   ('usr_pm', 'catalogue@truegrit.test', 'Meera Iyer', 'staff', 'active', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z'),
-  ('usr_ops', 'ops@truegrit.test', 'Dev Sharma', 'staff', 'active', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
+  ('usr_ops', 'ops@truegrit.test', 'Dev Sharma', 'staff', 'active', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z'),
+  ('usr_blogger', 'blogger@truegrit.test', 'Naina Kapoor', 'staff', 'active', '2026-07-17T00:00:00Z', '2026-07-17T00:00:00Z', '2026-07-17T00:00:00Z'),
+  ('usr_chef', 'chef@truegrit.test', 'Rohan Das', 'staff', 'active', '2026-07-17T00:00:00Z', '2026-07-17T00:00:00Z', '2026-07-17T00:00:00Z');
 
 -- Roles
 INSERT OR IGNORE INTO roles (id, key, name, description, is_system, created_at) VALUES
@@ -118,7 +120,9 @@ INSERT INTO user_roles (user_id, role_id, assigned_at, assigned_by) VALUES
   ('usr_editor', 'rol_content_editor', '2026-07-01T00:00:00Z', 'usr_admin'),
   ('usr_pm', 'rol_product_manager', '2026-07-01T00:00:00Z', 'usr_admin'),
   ('usr_ops', 'rol_inventory_manager', '2026-07-01T00:00:00Z', 'usr_admin'),
-  ('usr_ops', 'rol_order_manager', '2026-07-01T00:00:00Z', 'usr_admin');
+  ('usr_ops', 'rol_order_manager', '2026-07-01T00:00:00Z', 'usr_admin'),
+  ('usr_blogger', 'rol_blogger', '2026-07-17T00:00:00Z', 'usr_admin'),
+  ('usr_chef', 'rol_chef', '2026-07-17T00:00:00Z', 'usr_admin');
 
 -- Farm-owner sub-admin: a staff user scoped to a single farm (see 0009).
 INSERT INTO roles (id, key, name, description, is_system, created_at) VALUES
@@ -391,7 +395,7 @@ INSERT INTO articles (id, internal_name, title, slug, excerpt, author_user_id, h
 
 INSERT INTO article_versions (id, article_id, version_number, content_json, workflow_state, created_at, created_by) VALUES
   ('arv_millets_1', 'art_millets', 1,
-   '{"body":["For most of the twentieth century, millets fed India. Then subsidised rice and wheat pushed them to the margins - hardy grains recast as poor man''s food, grown on the land nobody irrigated.","That story is reversing. Millets need a fraction of the water that rice demands, tolerate heat that wilts wheat, and grow on soil still recovering from decades of intensive farming. For collectives like Anandvan in Wardha, they are not nostalgia - they are the only crop that makes agronomic sense on regenerating land.","The revival is also a flavour story. Sprouted ragi has a sweetness that refined flour never had. Little millet cooks into a pilaf with real bite. A generation of cooks is rediscovering grains their grandmothers never abandoned.","What the movement needs now is steady demand: buyers who return every month, not just when a headline celebrates ancient grains. That steadiness is what lets a farmer plant a rain-fed crop with confidence."],"pullQuote":"Millets are not nostalgia - they are the only crop that makes sense on regenerating land."}',
+   '{"blocks":[{"id":"blk_millets_body","type":"rich_text","version":1,"enabled":true,"props":{"paragraphs":["For most of the twentieth century, millets fed India. Then subsidised rice and wheat pushed them to the margins - hardy grains recast as poor man''s food, grown on the land nobody irrigated.","That story is reversing. Millets need a fraction of the water that rice demands, tolerate heat that wilts wheat, and grow on soil still recovering from decades of intensive farming. For collectives like Anandvan in Wardha, they are not nostalgia - they are the only crop that makes agronomic sense on regenerating land.","The revival is also a flavour story. [Sprouted ragi](/product/sprouted-ragi-flour) has a sweetness that refined flour never had. Little millet cooks into a pilaf with real bite. A generation of cooks is rediscovering grains their grandmothers never abandoned. Try it in our [crisp sprouted ragi dosa](/recipes/crisp-sprouted-ragi-dosa).","What the movement needs now is steady demand: buyers who return every month, not just when a headline celebrates ancient grains. That steadiness is what lets a farmer plant a rain-fed crop with confidence."]}},{"id":"blk_millets_products","type":"product_collection","version":1,"enabled":true,"props":{"heading":"Shop the grains in this story","source":"manual","productSlugs":["sprouted-ragi-flour","organic-baby-spinach"],"limit":4}}],"pullQuote":"Millets are not nostalgia - they are the only crop that makes sense on regenerating land."}',
    'published', '2026-07-05T00:00:00Z', 'usr_editor');
 
 -- Recipe
@@ -403,7 +407,7 @@ INSERT INTO recipes (id, internal_name, title, slug, excerpt, prep_minutes, cook
 
 INSERT INTO recipe_versions (id, recipe_id, version_number, content_json, workflow_state, created_at, created_by) VALUES
   ('rcv_ragi_dosa_1', 'rcp_ragi_dosa', 1,
-   '{"steps":["Whisk the ragi flour with 2 1/2 cups of water and salt into a thin, pourable batter. Rest 15 minutes.","Fold in the chopped spinach and cumin seeds.","Heat a cast-iron tawa until water beads dance. Wipe with a few drops of groundnut oil.","Pour a ladle of batter from the outside in, lace-style. Drizzle oil around the edge.","Cook 2-3 minutes until the edges lift and crisp. Serve hot with chutney."]}',
+   '{"blocks":[{"id":"blk_dosa_intro","type":"rich_text","version":1,"enabled":true,"props":{"paragraphs":["This dosa uses sprouted [ragi flour](/product/sprouted-ragi-flour) for a nutty batter that crisps fast and needs no overnight fermentation."]}},{"id":"blk_dosa_products","type":"product_collection","version":1,"enabled":true,"props":{"heading":"Shop this recipe","source":"manual","productSlugs":["sprouted-ragi-flour","organic-baby-spinach","wood-pressed-groundnut-oil"],"limit":4}}],"steps":["Whisk the ragi flour with 2 1/2 cups of water and salt into a thin, pourable batter. Rest 15 minutes.","Fold in the chopped spinach and cumin seeds.","Heat a cast-iron tawa until water beads dance. Wipe with a few drops of groundnut oil.","Pour a ladle of batter from the outside in, lace-style. Drizzle oil around the edge.","Cook 2-3 minutes until the edges lift and crisp. Serve hot with chutney."]}',
    'published', '2026-07-06T00:00:00Z', 'usr_editor');
 
 INSERT INTO recipe_ingredients (id, recipe_id, label, quantity_text, product_id, sort_order) VALUES
@@ -421,7 +425,7 @@ INSERT INTO navigation_items (id, menu_id, parent_id, label, destination_type, d
   ('nit_seasonal', 'nav_header', NULL, 'Seasonal', 'internal_path', '/seasonal', 2, 1),
   ('nit_farmers', 'nav_header', NULL, 'Farmers', 'internal_path', '/farms', 3, 1),
   ('nit_recipes', 'nav_header', NULL, 'Recipes', 'internal_path', '/recipes', 4, 1),
-  ('nit_journal', 'nav_header', NULL, 'Journal', 'internal_path', '/journal', 5, 1),
+  ('nit_journal', 'nav_header', NULL, 'Blog', 'internal_path', '/blog', 5, 1),
   ('nit_standards', 'nav_header', NULL, 'Our Standards', 'internal_path', '/standards', 6, 1),
   ('nit_footer_about', 'nav_footer', NULL, 'About', 'internal_path', '/about', 1, 1),
   ('nit_footer_delivery', 'nav_footer', NULL, 'Delivery', 'internal_path', '/delivery', 2, 1),

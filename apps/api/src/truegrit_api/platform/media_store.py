@@ -39,6 +39,10 @@ class MediaStore(Protocol):
         """Return ``(bytes, content_type)`` for ``key`` or ``None`` if absent."""
         ...
 
+    async def delete(self, key: str) -> None:
+        """Remove the object at ``key``. A no-op if it does not exist."""
+        ...
+
 
 class LocalMediaStore:
     """Filesystem-backed store for local development and tests."""
@@ -59,6 +63,9 @@ class LocalMediaStore:
         if not target.is_file():
             return None
         return target.read_bytes(), content_type_for(key)
+
+    async def delete(self, key: str) -> None:
+        self._path(key).unlink(missing_ok=True)
 
 
 class R2MediaStore:
@@ -83,3 +90,6 @@ class R2MediaStore:
         to_py = getattr(buffer, "to_py", None)
         raw = to_py() if callable(to_py) else buffer
         return bytes(raw), content_type_for(key)
+
+    async def delete(self, key: str) -> None:
+        await self._bucket.delete(key)

@@ -136,8 +136,15 @@ export async function loadCategoryPage(
   return getCategoryPage(slug);
 }
 
-export async function loadCategories(runtime?: CatalogueRuntime): Promise<CategorySummary[]> {
-  return listFromApi<CategorySummary>("/v1/public/categories", categories, runtime);
+export async function loadCategories(
+  country?: string,
+  runtime?: CatalogueRuntime,
+): Promise<CategorySummary[]> {
+  return listFromApi<CategorySummary>(
+    withCountry("/v1/public/categories", country),
+    categories,
+    runtime,
+  );
 }
 
 export async function loadAllProducts(
@@ -266,6 +273,29 @@ export async function loadSiteDocument(
   return body ? { content: body.content, contentType: body.contentType } : null;
 }
 
+export type SitemapKind = "products" | "categories" | "pages" | "blog" | "recipes" | "farms";
+
+/** Per-type sitemap XML, always mechanically generated from live D1 content —
+ * unlike `sitemap_xml` (the index), there is no owner-override path here, so
+ * these can never go stale. Raw XML, not JSON, so this bypasses `fromApi`. */
+export async function loadSitemapXml(kind: SitemapKind, runtime?: CatalogueRuntime): Promise<string> {
+  const baseUrl = apiUrl(runtime);
+  const empty = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n</urlset>\n';
+  if (!baseUrl) return empty;
+  try {
+    const request = new Request(`${baseUrl}/v1/public/sitemaps/${kind}`, {
+      headers: { accept: "application/xml" },
+    });
+    const response = runtime?.apiWorker
+      ? await runtime.apiWorker.fetch(request)
+      : await fetch(request);
+    if (!response.ok) return empty;
+    return await response.text();
+  } catch {
+    return empty;
+  }
+}
+
 export interface SearchGroups {
   query: string;
   total: number;
@@ -321,7 +351,7 @@ export async function runSearch(
 
   const articleItems = articles
     .filter((article) => matches(article.title))
-    .map((article) => ({ id: article.id, name: article.title, path: `/journal/${article.slug}` }));
+    .map((article) => ({ id: article.id, name: article.title, path: `/blog/${article.slug}` }));
   if (articleItems.length) groups.push({ group: "articles", items: articleItems });
 
   return {

@@ -12,7 +12,7 @@ import json
 
 from truegrit_api.auth.principal import Principal
 from truegrit_api.domain.workflow import assert_transition
-from truegrit_api.errors import NotFoundError
+from truegrit_api.errors import ConflictError, NotFoundError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.content import CategoryRepository
 from truegrit_api.util.ids import new_id
@@ -218,3 +218,116 @@ async def publish_product(
     )
 
     return {"id": product_id, "status": "published", "version": version_number}
+
+
+async def _publish_content_version(
+    db: Database,
+    *,
+    entity_domain: str,
+    entity_table: str,
+    version_table: str,
+    entity_id: str,
+    actor: Principal,
+    request_id: str,
+) -> dict[str, str | int]:
+    """Shared publish mechanics for articles and recipes: unlike categories and
+    products (which snapshot the entity row's own columns into a brand new
+    version at publish time), articles/recipes already keep their editable
+    content in the latest version row — created by the ordinary edit endpoint.
+    Publishing here means promoting that existing row rather than duplicating
+    it, so the version history only grows on real content edits."""
+    entity = await db.fetch_one(f"SELECT * FROM {entity_table} WHERE id = ?", (entity_id,))
+    if entity is None:
+        raise NotFoundError(f"{entity_domain.capitalize()[:-1]} not found.")
+
+    current_status = entity["status"]
+    workflow_current = _WORKFLOW_EQUIVALENT.get(current_status, current_status)
+    assert_transition(entity_domain, workflow_current, "published", actor.permissions)
+
+    latest_version = await db.fetch_one(
+        f"SELECT id, version_number FROM {version_table}"
+        f" WHERE {entity_domain[:-1]}_id = ? ORDER BY version_number DESC LIMIT 1",
+        (entity_id,),
+    )
+    if latest_version is None:
+        raise ConflictError("Add content before publishing.")
+
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                f"UPDATE {version_table} SET workflow_state = 'published',"
+                " approved_at = COALESCE(approved_at, ?), approved_by = COALESCE(approved_by, ?),"
+                " published_at = ? WHERE id = ?",
+                (now, actor.user_id, now, latest_version["id"]),
+            ),
+            (
+                f"UPDATE {entity_table} SET status = 'published', published_version_id = ?,"
+                " published_at = ?, updated_at = ?, updated_by = ? WHERE id = ?",
+                (latest_version["id"], now, now, actor.user_id, entity_id),
+            ),
+            (
+                "INSERT INTO audit_logs"
+                " (id, actor_user_id, action, entity_type, entity_id,"
+                "  before_summary_json, after_summary_json, request_id, source, created_at)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'admin', ?)",
+                (
+                    new_id("aud"),
+                    actor.user_id,
+                    f"{entity_domain[:-1]}.published",
+                    entity_domain[:-1],
+                    entity_id,
+                    json.dumps({"status": current_status}),
+                    json.dumps(
+                        {"status": "published", "version": latest_version["version_number"]}
+                    ),
+                    request_id,
+                    now,
+                ),
+            ),
+            (
+                "INSERT INTO outbox_events"
+                " (id, event_type, event_version, aggregate_type, aggregate_id,"
+                "  payload_json, status, available_at, created_at)"
+                " VALUES (?, ?, 1, ?, ?, ?, 'pending', ?, ?)",
+                (
+                    new_id("evt"),
+                    f"content.{entity_domain[:-1]}.published.v1",
+                    entity_domain[:-1],
+                    entity_id,
+                    json.dumps({"id": entity_id, "version": latest_version["version_number"]}),
+                    now,
+                    now,
+                ),
+            ),
+        ]
+    )
+    return {"id": entity_id, "status": "published", "version": latest_version["version_number"]}
+
+
+async def publish_article(
+    db: Database, article_id: str, actor: Principal, request_id: str
+) -> dict[str, str | int]:
+    return await _publish_content_version(
+        db,
+        entity_domain="articles",
+        entity_table="articles",
+        version_table="article_versions",
+        entity_id=article_id,
+        actor=actor,
+        request_id=request_id,
+    )
+
+
+async def publish_recipe(
+    db: Database, recipe_id: str, actor: Principal, request_id: str
+) -> dict[str, str | int]:
+    return await _publish_content_version(
+        db,
+        entity_domain="recipes",
+        entity_table="recipes",
+        version_table="recipe_versions",
+        entity_id=recipe_id,
+        actor=actor,
+        request_id=request_id,
+    )

@@ -1,4 +1,4 @@
-import { articles, categories, products, recipes } from "@truegrit/contracts/fixtures";
+import { categories, products } from "@truegrit/contracts/fixtures";
 
 import { catalogueRuntime, loadSiteDocument } from "./catalogue.server";
 
@@ -60,7 +60,7 @@ function fallbackDocument(
         `- Shop: ${absolute(request, "/shop")}`,
         `- Farmers: ${absolute(request, "/farms")}`,
         `- Recipes: ${absolute(request, "/recipes")}`,
-        `- Journal: ${absolute(request, "/journal")}`,
+        `- Blog: ${absolute(request, "/blog")}`,
         `- Standards: ${absolute(request, "/standards")}`,
         "",
         "## Product Categories",
@@ -78,35 +78,20 @@ function fallbackDocument(
     };
   }
 
-  const paths = [
-    "/",
-    "/shop",
-    "/seasonal",
-    "/farms",
-    "/recipes",
-    "/journal",
-    "/standards",
-    "/about",
-    "/delivery",
-    "/returns",
-    "/contact",
-    "/privacy",
-    "/terms",
-    "/help",
-    ...categories.map((category) => `/category/${category.slug}`),
-    ...products.map((product) => `/product/${product.slug}`),
-    ...recipes.map((recipe) => `/recipes/${recipe.slug}`),
-    ...articles.map((article) => `/journal/${article.slug}`),
-  ];
-  const urls = [...new Set(paths)]
-    .map((path) => `  <url><loc>${escapeXml(absolute(request, path))}</loc></url>`)
+  // sitemap_xml is an index in demo mode too, mirroring the real backend
+  // shape (`services/site_documents.py::sitemap_index_xml`) — the per-type
+  // files behind it (`/sitemaps/*.xml`) carry the actual product/category/
+  // blog/recipe/farm/page URLs.
+  const kinds = ["products", "categories", "pages", "blog", "recipes", "farms"];
+  const entries = kinds
+    .map((kind) => `  <sitemap><loc>${escapeXml(absolute(request, `/sitemaps/${kind}.xml`))}</loc></sitemap>`)
     .join("\n");
   return {
     content:
       '<?xml version="1.0" encoding="UTF-8"?>\n' +
-      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-      `${urls}\n` +
-      "</urlset>\n",
+      '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+      `${entries}\n` +
+      "</sitemapindex>\n",
     contentType: "application/xml; charset=utf-8",
   };
 }

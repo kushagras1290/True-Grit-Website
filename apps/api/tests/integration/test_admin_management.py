@@ -232,7 +232,7 @@ def test_admin_image_upload_returns_public_media_url(client: TestClient, db: SQL
     )
     assert response.status_code == 200
     body = response.json()
-    assert body["url"].startswith("http://testserver/media/images/img_")
+    assert body["url"].startswith("http://testserver/media/images/med_")
     assert body["url"].endswith(".png")
 
 
@@ -245,7 +245,7 @@ def test_admin_raw_image_upload_returns_public_media_url(client: TestClient, db:
     )
     assert response.status_code == 200
     body = response.json()
-    assert body["url"].startswith("http://testserver/media/images/img_")
+    assert body["url"].startswith("http://testserver/media/images/med_")
     assert body["url"].endswith(".png")
 
 

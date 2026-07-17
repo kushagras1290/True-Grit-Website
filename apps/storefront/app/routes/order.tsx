@@ -5,9 +5,138 @@ import { Link, useParams } from "react-router";
 
 import type { Route } from "./+types/order";
 import { Section } from "../components/catalogue";
-import { getMyOrder, type OrderDetail } from "../lib/commerce";
+import {
+  createReturnRequest,
+  getMyOrder,
+  listMyReturnRequests,
+  type OrderDetail,
+  type ReturnReasonCode,
+  type ReturnRequestSummary,
+} from "../lib/commerce";
 import { useCustomer } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
+
+const REASON_OPTIONS: Array<{ value: ReturnReasonCode; label: string }> = [
+  { value: "damaged", label: "Arrived damaged" },
+  { value: "wrong_item", label: "Wrong item" },
+  { value: "quality_issue", label: "Quality issue" },
+  { value: "not_as_described", label: "Not as described" },
+  { value: "missing_item", label: "Missing item" },
+  { value: "other", label: "Something else" },
+];
+
+const RETURN_ELIGIBLE_ORDER_STATUSES = new Set(["confirmed", "processing", "completed"]);
+
+function ReturnRequestSection({ order, reference }: { order: OrderDetail; reference: string }) {
+  const [requests, setRequests] = useState<ReturnRequestSummary[] | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [reasonCode, setReasonCode] = useState<ReturnReasonCode>("damaged");
+  const [description, setDescription] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    listMyReturnRequests(reference)
+      .then((items) => active && setRequests(items))
+      .catch(() => active && setRequests([]));
+    return () => {
+      active = false;
+    };
+  }, [reference]);
+
+  if (!RETURN_ELIGIBLE_ORDER_STATUSES.has(order.orderStatus) || requests === null) return null;
+
+  const openRequest = requests.find((entry) => entry.status !== "rejected");
+
+  async function submitReturn() {
+    if (description.trim().length < 10) {
+      setError("Describe the issue in at least 10 characters.");
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      const created = await createReturnRequest(reference, {
+        reasonCode,
+        description: description.trim(),
+      });
+      setRequests((current) => [created, ...(current ?? [])]);
+      setShowForm(false);
+      setDescription("");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not submit the return request.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="rounded-md border border-line bg-surface p-5">
+      <h2 className="font-display text-lg text-ink">Returns</h2>
+      {openRequest ? (
+        <div className="mt-2 text-sm text-ink-muted">
+          <p>
+            Return request status: <span className="font-medium text-ink capitalize">{openRequest.status.replaceAll("_", " ")}</span>
+          </p>
+          <p className="mt-1">Requested {new Date(openRequest.requestedAt).toLocaleDateString()}</p>
+        </div>
+      ) : showForm ? (
+        <div className="mt-3 space-y-3">
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium text-ink">Reason</span>
+            <select
+              className="min-h-9 w-full rounded-sm border border-line-strong bg-surface px-3 text-sm text-ink"
+              value={reasonCode}
+              onChange={(event) => setReasonCode(event.target.value as ReturnReasonCode)}
+            >
+              {REASON_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium text-ink">What happened?</span>
+            <textarea
+              className="min-h-20 w-full rounded-sm border border-line-strong bg-surface px-3 py-2 text-sm text-ink"
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              placeholder="Include what's wrong and any details that will help support."
+            />
+          </label>
+          {error ? <p className="text-sm text-danger">{error}</p> : null}
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={submitReturn}
+              disabled={submitting}
+              className="min-h-9 rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90 disabled:opacity-50"
+            >
+              {submitting ? "Submitting…" : "Submit request"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              className="min-h-9 rounded-sm border border-line-strong px-4 text-sm text-ink hover:bg-subtle/50"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setShowForm(true)}
+          className="mt-3 min-h-9 rounded-sm border border-line-strong px-4 text-sm text-ink hover:bg-subtle/50"
+        >
+          Request a return
+        </button>
+      )}
+    </div>
+  );
+}
 
 export function meta(_args: Route.MetaArgs) {
   return seoMeta({
@@ -164,6 +293,8 @@ export default function OrderPage(_props: Route.ComponentProps) {
       <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
         <div className="space-y-6">
           <TrackingTimeline order={order} />
+
+          <ReturnRequestSection order={order} reference={reference} />
 
           <div className="overflow-x-auto rounded-md border border-line bg-surface">
             <table className="w-full min-w-[420px] text-left text-sm">

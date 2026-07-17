@@ -9,6 +9,7 @@ import { ToastProvider } from "./components/toast";
 import { EmptyState } from "./components/ui";
 import { AccountPage } from "./features/account";
 import { ArchivePage } from "./features/archive";
+import { ArticleEditorPage, ArticleListPage } from "./features/articles";
 import { AdminLoginPage, AdminResetPasswordPage, RequireAdminAuth } from "./features/auth";
 import { CategoryEditorPage, CategoryListPage } from "./features/categories";
 import { DashboardPage } from "./features/dashboard";
@@ -23,6 +24,9 @@ import {
   UsersPage,
 } from "./features/operations";
 import { ProductEditorPage, ProductListPage } from "./features/products";
+import { RecipeEditorPage, RecipeListPage } from "./features/recipes";
+import { ReportsPage } from "./features/reports";
+import { ReturnDetailPage, ReturnsListPage } from "./features/returns";
 import { ScopeManagementPage } from "./features/scopes";
 import { SiteControlPage } from "./features/site-control";
 
@@ -56,13 +60,20 @@ createRoot(document.getElementById("root")!).render(
               <Route path="farms" element={<FarmsPage />} />
               <Route path="orders" element={<OrdersPage />} />
               <Route path="orders/:id" element={<OrderDetailPage />} />
+              <Route path="returns" element={<ReturnsListPage />} />
+              <Route path="returns/:id" element={<ReturnDetailPage />} />
               <Route path="archive" element={<ArchivePage />} />
               <Route path="site-control" element={<SiteControlPage />} />
+              <Route path="blog" element={<ArticleListPage />} />
+              <Route path="blog/:id" element={<ArticleEditorPage />} />
+              <Route path="recipes" element={<RecipeListPage />} />
+              <Route path="recipes/:id" element={<RecipeEditorPage />} />
               <Route path="media" element={<MediaPage />} />
               <Route path="contact-attempts" element={<ContactAttemptsPage />} />
               <Route path="users" element={<UsersPage />} />
               <Route path="scopes" element={<ScopeManagementPage />} />
               <Route path="audit" element={<AuditPage />} />
+              <Route path="reports" element={<ReportsPage />} />
               <Route path="account" element={<AccountPage />} />
               <Route
                 path="*"

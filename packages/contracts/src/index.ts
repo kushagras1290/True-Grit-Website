@@ -108,6 +108,7 @@ export interface ProductDetail extends ProductSummary {
   variants: VariantSummary[];
   traceability: TraceabilityStep[];
   relatedSlugs: string[];
+  returnEligible: boolean;
   seo: SeoDocument;
 }
 
@@ -189,6 +190,8 @@ export interface RecipeSummary {
 
 export interface RecipeDetail extends RecipeSummary {
   ingredients: RecipeIngredient[];
+  /** Optional intro/story section, rendered before the ingredients and steps. */
+  blocks: ContentBlock[];
   steps: string[];
   seo: SeoDocument;
 }
@@ -204,7 +207,7 @@ export interface ArticleSummary {
 }
 
 export interface ArticleDetail extends ArticleSummary {
-  body: string[];
+  blocks: ContentBlock[];
   pullQuote: string | null;
   seo: SeoDocument;
 }
@@ -294,6 +297,14 @@ export interface PublicPage {
   seo: SeoDocument;
 }
 
+/**
+ * The block subset allowed inside article/recipe body content — a hero and a
+ * newsletter signup don't make sense mid-article, so only these four appear
+ * there. `rich_text` paragraphs may contain the inline link syntax
+ * `[label](href)`; `product_collection` is how a post "highlights" products.
+ */
+export type ContentBlock = RichTextBlock | ProductCollectionBlock | FarmerStoryBlock | FaqBlock;
+
 // ---------------------------------------------------------------------------
 // Admin DTOs (subset used by the admin SPA)
 // ---------------------------------------------------------------------------
@@ -339,6 +350,13 @@ export interface AdminCategoryRow {
   updatedAt: string;
 }
 
+/** Geo release fields present on the category detail (not the list row) —
+ * the same shape a product's release scope already uses. */
+export interface CategoryReleaseFields {
+  releaseScope: "global" | "selected";
+  releaseCountries: string[];
+}
+
 export interface AdminInventoryRow {
   variantId: string;
   productName: string;
@@ -381,6 +399,191 @@ export interface AuditLogRow {
   entityId: string;
   requestId: string;
   createdAt: string;
+}
+
+// ---------------------------------------------------------------------------
+// Admin content authoring: articles (blog), recipes — blogger/chef roles
+// ---------------------------------------------------------------------------
+
+export interface AdminArticleRow {
+  id: string;
+  title: string;
+  slug: string;
+  status: EntityStatus;
+  authorName: string;
+  updatedAt: string;
+  publishedAt: string | null;
+  /** True when a newer, unpublished draft version exists past the live one. */
+  hasDraftChanges: boolean;
+}
+
+export interface AdminArticleDetail {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  readingMinutes: number;
+  status: EntityStatus;
+  authorUserId: string | null;
+  heroMediaId: string | null;
+  seoTitle: string;
+  seoDescription: string;
+  seoKeywords: string;
+  canonicalUrl: string;
+  indexingPolicy: "index" | "noindex";
+  updatedAt: string;
+  blocks: ContentBlock[];
+  pullQuote: string | null;
+}
+
+export interface AdminRecipeRow {
+  id: string;
+  title: string;
+  slug: string;
+  status: EntityStatus;
+  chefName: string;
+  updatedAt: string;
+  publishedAt: string | null;
+  hasDraftChanges: boolean;
+}
+
+export interface AdminRecipeIngredient {
+  id: string;
+  label: string;
+  quantityText: string;
+  productId: string | null;
+  productSlug: string | null;
+}
+
+export interface AdminRecipeDetail {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  prepMinutes: number;
+  cookMinutes: number;
+  servings: number;
+  dietaryTags: string[];
+  status: EntityStatus;
+  chefUserId: string | null;
+  seoTitle: string;
+  seoDescription: string;
+  seoKeywords: string;
+  canonicalUrl: string;
+  indexingPolicy: "index" | "noindex";
+  updatedAt: string;
+  blocks: ContentBlock[];
+  steps: string[];
+  ingredients: AdminRecipeIngredient[];
+}
+
+// ---------------------------------------------------------------------------
+// Return requests (RMA)
+// ---------------------------------------------------------------------------
+
+export type ReturnReasonCode =
+  | "damaged"
+  | "wrong_item"
+  | "quality_issue"
+  | "not_as_described"
+  | "missing_item"
+  | "other";
+
+export type ReturnStatus =
+  | "requested"
+  | "under_review"
+  | "approved"
+  | "rejected"
+  | "refunded"
+  | "replaced"
+  | "completed"
+  | "cancelled";
+
+export type ReturnResolutionType = "refund" | "replacement" | "store_credit" | "none";
+
+export interface ReturnRequestSummary {
+  id: string;
+  orderReference: string;
+  reasonCode: ReturnReasonCode;
+  status: ReturnStatus;
+  resolutionType: ReturnResolutionType | null;
+  requestedAt: string;
+  resolvedAt: string | null;
+}
+
+export interface AdminReturnRequestRow {
+  id: string;
+  orderReference: string;
+  customerName: string;
+  reasonCode: ReturnReasonCode;
+  status: ReturnStatus;
+  requestedRefundAmountMinor: number | null;
+  resolutionType: ReturnResolutionType | null;
+  resolutionAmountMinor: number | null;
+  requestedAt: string;
+  resolvedAt: string | null;
+}
+
+export interface AdminReturnRequestDetail {
+  id: string;
+  orderReference: string;
+  orderTotalMinor: number;
+  currencyCode: string;
+  customerName: string;
+  productName: string | null;
+  variantName: string | null;
+  reasonCode: ReturnReasonCode;
+  description: string;
+  evidenceMediaIds: string[];
+  status: ReturnStatus;
+  requestedRefundAmountMinor: number | null;
+  resolutionType: ReturnResolutionType | null;
+  resolutionAmountMinor: number | null;
+  resolutionNotes: string | null;
+  requestedAt: string;
+  resolvedAt: string | null;
+}
+
+// ---------------------------------------------------------------------------
+// Media library
+// ---------------------------------------------------------------------------
+
+export interface AdminMediaAssetRow {
+  id: string;
+  url: string;
+  originalFilename: string;
+  mimeType: string;
+  sizeBytes: number;
+  widthPx: number | null;
+  heightPx: number | null;
+  altText: string;
+  caption: string;
+  createdAt: string;
+}
+
+// ---------------------------------------------------------------------------
+// Owner reports console (curated, parameterized, read-only)
+// ---------------------------------------------------------------------------
+
+export interface ReportParamDefinition {
+  key: string;
+  label: string;
+  kind: "date" | "country";
+  required: boolean;
+}
+
+export interface ReportDefinitionSummary {
+  id: string;
+  label: string;
+  description: string;
+  params: ReportParamDefinition[];
+}
+
+export interface ReportRunResult {
+  id: string;
+  label: string;
+  columns: string[];
+  rows: Array<Array<string | number | null>>;
 }
 
 export interface ApiErrorBody {

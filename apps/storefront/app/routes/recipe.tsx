@@ -3,34 +3,61 @@ import { data, Link } from "react-router";
 
 import type { Route } from "./+types/recipe";
 import { Breadcrumbs, Section } from "../components/catalogue";
-import { catalogueRuntime, loadProductDetailsBySlugs, loadRecipe } from "../lib/catalogue.server";
+import { CmsBlock, type BlockData } from "../components/blocks";
+import {
+  catalogueRuntime,
+  loadFarms,
+  loadProductDetailsBySlugs,
+  loadProductsBySlugs,
+  loadRecipe,
+} from "../lib/catalogue.server";
 import { useCart } from "../lib/cart";
 import { resolveCountry } from "../lib/geo.server";
-import { seoMeta } from "../lib/seo";
+import { recipeJsonLd, seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
   const recipe = await loadRecipe(params.slug, runtime);
   if (!recipe) throw data("Recipe not found", { status: 404 });
-  const productSlugs = recipe.ingredients.flatMap((entry) => entry.productSlug ?? []);
-  return {
-    recipe,
-    ingredientProducts: await loadProductDetailsBySlugs(
-      productSlugs,
-      resolveCountry(request),
-      runtime,
-    ),
-  };
+  const country = resolveCountry(request);
+  const ingredientSlugs = recipe.ingredients.flatMap((entry) => entry.productSlug ?? []);
+  const blockProductSlugs = recipe.blocks.flatMap((block) =>
+    block.type === "product_collection" ? block.props.productSlugs : [],
+  );
+  const [ingredientProducts, blockProducts, farms] = await Promise.all([
+    loadProductDetailsBySlugs(ingredientSlugs, country, runtime),
+    loadProductsBySlugs(blockProductSlugs, country, runtime),
+    loadFarms(runtime),
+  ]);
+  return { recipe, ingredientProducts, blockProducts, farms };
 }
 
 export function meta({ data: loaderData }: Route.MetaArgs) {
-  return seoMeta(loaderData?.recipe.seo);
+  if (!loaderData) return seoMeta(null);
+  return [
+    ...seoMeta(loaderData.recipe.seo),
+    recipeJsonLd({
+      title: loaderData.recipe.title,
+      excerpt: loaderData.recipe.excerpt,
+      prepMinutes: loaderData.recipe.prepMinutes,
+      cookMinutes: loaderData.recipe.cookMinutes,
+      servings: loaderData.recipe.servings,
+      ingredients: loaderData.recipe.ingredients,
+      steps: loaderData.recipe.steps,
+      canonicalPath: loaderData.recipe.seo.canonicalPath,
+    }),
+  ];
 }
 
 export default function RecipePage({ loaderData }: Route.ComponentProps) {
-  const { recipe, ingredientProducts } = loaderData;
+  const { recipe, ingredientProducts, blockProducts, farms } = loaderData;
   const { add } = useCart();
   const [addedAll, setAddedAll] = useState(false);
+  const blockData: BlockData = {
+    productsBySlug: new Map(blockProducts.map((product) => [product.slug, product])),
+    categoriesBySlug: new Map(),
+    farmsBySlug: new Map(farms.map((farm) => [farm.slug, farm])),
+  };
 
   const availableProducts = ingredientProducts.filter(
     (product) => product.availability !== "out_of_stock" && product.variants.length > 0,
@@ -56,6 +83,10 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
           <p className="mt-3 text-base text-ink-muted">{recipe.excerpt}</p>
         </div>
       </header>
+
+      {recipe.blocks.map((block) => (
+        <CmsBlock key={block.id} block={block} data={blockData} />
+      ))}
 
       <Section>
         <div className="grid gap-10 md:grid-cols-[1fr_2fr]">

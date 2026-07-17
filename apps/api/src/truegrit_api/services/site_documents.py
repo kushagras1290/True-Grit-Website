@@ -1,4 +1,16 @@
-"""Owner-managed public crawler documents with generated defaults."""
+"""Owner-managed public crawler documents, plus the dynamic sitemap family.
+
+The sitemap is a small index pointing at one sub-sitemap per content type
+(products, categories, pages, blog, recipes, farms) — the same shape a large
+storefront's generated sitemap takes (an index fanning out to per-type
+files), so a future jump to sharded per-type files (`products1.xml`,
+`products2.xml`, ...) only ever means adding pagination inside one function,
+never restructuring the index. Sub-sitemaps are always generated live from
+D1 on request; only the index itself goes through the owner-overridable
+``site_documents`` table (so an owner can still hand-edit it if they ever
+need to), because the sub-sitemaps are mechanically derived and should never
+go stale behind a forgotten manual edit.
+"""
 
 from __future__ import annotations
 
@@ -12,6 +24,7 @@ from truegrit_api.repositories.content import (
     ArticleRepository,
     CategoryRepository,
     FarmRepository,
+    PageRepository,
     RecipeRepository,
 )
 
@@ -21,6 +34,17 @@ SITE_DOCUMENT_TYPES = {
     "llms_txt": "text/plain; charset=utf-8",
 }
 
+# kind -> (changefreq, priority), matched to how often each content type
+# actually changes.
+SITEMAP_KINDS: dict[str, tuple[str, str]] = {
+    "products": ("weekly", "0.8"),
+    "categories": ("monthly", "0.6"),
+    "pages": ("monthly", "0.5"),
+    "blog": ("weekly", "0.6"),
+    "recipes": ("weekly", "0.6"),
+    "farms": ("monthly", "0.5"),
+}
+
 
 def _origin(settings: Settings) -> str:
     return settings.public_storefront_url.rstrip("/")
@@ -28,6 +52,25 @@ def _origin(settings: Settings) -> str:
 
 def _url(settings: Settings, path: str) -> str:
     return f"{_origin(settings)}{path}"
+
+
+def _urlset(settings: Settings, entries: list[tuple[str, str | None]], kind: str) -> str:
+    changefreq, priority = SITEMAP_KINDS[kind]
+    rows = []
+    for path, lastmod in entries:
+        loc = escape(_url(settings, path))
+        lastmod_tag = f"<lastmod>{escape(lastmod)}</lastmod>" if lastmod else ""
+        rows.append(
+            f"  <url><loc>{loc}</loc>{lastmod_tag}"
+            f"<changefreq>{changefreq}</changefreq><priority>{priority}</priority></url>"
+        )
+    body = "\n".join(rows)
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{body}\n"
+        "</urlset>\n"
+    )
 
 
 def default_robots_txt(settings: Settings) -> str:
@@ -45,47 +88,66 @@ def default_robots_txt(settings: Settings) -> str:
     )
 
 
-async def default_sitemap_xml(db: Database, settings: Settings) -> str:
-    static_paths = [
-        "/",
-        "/shop",
-        "/seasonal",
-        "/farms",
-        "/recipes",
-        "/journal",
-        "/standards",
-        "/about",
-        "/delivery",
-        "/returns",
-        "/contact",
-        "/privacy",
-        "/terms",
-        "/help",
-    ]
-    categories = await CategoryRepository(db).list_published()
-    products = await CatalogueRepository(db).list_all_published()
-    farms = await FarmRepository(db).list_published()
-    recipes = await RecipeRepository(db).list_published()
-    articles = await ArticleRepository(db).list_published()
-
-    paths = [
-        *static_paths,
-        *(f"/category/{entry['slug']}" for entry in categories),
-        *(f"/product/{entry['slug']}" for entry in products),
-        *(f"/farms/{entry['slug']}" for entry in farms),
-        *(f"/recipes/{entry['slug']}" for entry in recipes),
-        *(f"/journal/{entry['slug']}" for entry in articles),
-    ]
-    unique_paths = list(dict.fromkeys(paths))
-    urls = "\n".join(
-        f"  <url><loc>{escape(_url(settings, path))}</loc></url>" for path in unique_paths
+def sitemap_index_xml(settings: Settings) -> str:
+    entries = "\n".join(
+        f"  <sitemap><loc>{escape(_url(settings, f'/sitemaps/{kind}.xml'))}</loc></sitemap>"
+        for kind in SITEMAP_KINDS
     )
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        f"{urls}\n"
-        "</urlset>\n"
+        '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{entries}\n"
+        "</sitemapindex>\n"
     )
+
+
+async def sitemap_products_xml(db: Database, settings: Settings) -> str:
+    products = await CatalogueRepository(db).list_all_published()
+    entries = [(f"/product/{p['slug']}", p.get("updated_at")) for p in products]
+    return _urlset(settings, entries, "products")
+
+
+async def sitemap_categories_xml(db: Database, settings: Settings) -> str:
+    categories = await CategoryRepository(db).list_published()
+    entries: list[tuple[str, str | None]] = [(f"/category/{c['slug']}", None) for c in categories]
+    return _urlset(settings, entries, "categories")
+
+
+async def sitemap_pages_xml(db: Database, settings: Settings) -> str:
+    pages = await PageRepository(db).list_published()
+    entries = [
+        ("/" if page["slug"] == "home" else f"/{page['slug']}", page.get("updated_at"))
+        for page in pages
+    ]
+    return _urlset(settings, entries, "pages")
+
+
+async def sitemap_blog_xml(db: Database, settings: Settings) -> str:
+    articles = await ArticleRepository(db).list_published()
+    entries = [(f"/blog/{a['slug']}", a.get("published_at") or None) for a in articles]
+    return _urlset(settings, entries, "blog")
+
+
+async def sitemap_recipes_xml(db: Database, settings: Settings) -> str:
+    recipes = await RecipeRepository(db).list_published()
+    entries: list[tuple[str, str | None]] = [(f"/recipes/{r['slug']}", None) for r in recipes]
+    return _urlset(settings, entries, "recipes")
+
+
+async def sitemap_farms_xml(db: Database, settings: Settings) -> str:
+    farms = await FarmRepository(db).list_published()
+    entries: list[tuple[str, str | None]] = [(f"/farms/{f['slug']}", None) for f in farms]
+    return _urlset(settings, entries, "farms")
+
+
+SITEMAP_GENERATORS = {
+    "products": sitemap_products_xml,
+    "categories": sitemap_categories_xml,
+    "pages": sitemap_pages_xml,
+    "blog": sitemap_blog_xml,
+    "recipes": sitemap_recipes_xml,
+    "farms": sitemap_farms_xml,
+}
 
 
 async def default_llms_txt(db: Database, settings: Settings) -> str:
@@ -104,7 +166,7 @@ async def default_llms_txt(db: Database, settings: Settings) -> str:
         f"- Shop: {_url(settings, '/shop')}",
         f"- Farmers: {_url(settings, '/farms')}",
         f"- Recipes: {_url(settings, '/recipes')}",
-        f"- Journal: {_url(settings, '/journal')}",
+        f"- Blog: {_url(settings, '/blog')}",
         f"- Standards: {_url(settings, '/standards')}",
         "",
         "## Product Categories",
@@ -140,7 +202,7 @@ async def default_site_documents(db: Database, settings: Settings) -> dict[str, 
         },
         "sitemap_xml": {
             "key": "sitemap_xml",
-            "content": await default_sitemap_xml(db, settings),
+            "content": sitemap_index_xml(settings),
             "content_type": SITE_DOCUMENT_TYPES["sitemap_xml"],
             "updated_at": "",
         },
