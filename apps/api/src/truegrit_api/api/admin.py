@@ -6,7 +6,7 @@ import hmac
 import json
 from typing import Annotated, Any
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Query, Request, Response
+from fastapi import APIRouter, Depends, Query, Request, Response
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic.alias_generators import to_camel
 
@@ -40,6 +40,7 @@ from truegrit_api.services.access import (
     adopt_bootstrap_owner,
     change_own_password,
     create_farm_owner,
+    create_user,
     delete_users,
     invite_user,
     reset_farm_owner_password,
@@ -1718,6 +1719,13 @@ class UserInviteRequest(_CamelModel):
     role_ids: list[str] = Field(default_factory=list)
 
 
+class UserCreateRequest(_CamelModel):
+    email: str = Field(min_length=3, max_length=254)
+    display_name: str = Field(min_length=2, max_length=120)
+    role_ids: list[str] = Field(default_factory=list)
+    password: str = Field(min_length=1, max_length=256)
+
+
 class UserStatusRequest(_CamelModel):
     status: str = Field(max_length=16)
 
@@ -1809,7 +1817,6 @@ async def list_contact_messages_endpoint(
 async def invite_user_endpoint(
     payload: UserInviteRequest,
     request: Request,
-    background: BackgroundTasks,
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(require_permission("users.invite"))],
 ) -> Any:
@@ -1829,15 +1836,28 @@ async def invite_user_endpoint(
         settings=settings,
     )
     if email is not None:
-        background.add_task(
-            send_email,
-            email.to,
-            email.subject,
-            email.body,
-            settings,
-            email.html_body,
-        )
+        send_email(email.to, email.subject, email.body, settings, email.html_body)
     return {**result, "emailSent": email is not None}
+
+
+@router.post("/users")
+async def create_user_endpoint(
+    payload: UserCreateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("users.invite"))],
+) -> Any:
+    if principal.farm_id is not None:
+        raise PermissionDeniedError("Only main admins can add users.")
+    return await create_user(
+        db,
+        principal,
+        _request_id(request),
+        email=payload.email,
+        display_name=payload.display_name,
+        role_ids=payload.role_ids,
+        password=payload.password,
+    )
 
 
 @router.patch("/users/{user_id}/status")
@@ -1899,28 +1919,24 @@ async def reset_farm_owner_password_endpoint(
 
 
 @router.post("/users/{user_id}/password-reset-email")
-async def email_farm_owner_password_reset_endpoint(
+async def email_user_password_reset_endpoint(
     user_id: str,
     request: Request,
-    background: BackgroundTasks,
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(require_permission("users.manage_roles"))],
 ) -> Any:
     if principal.farm_id is not None:
-        raise PermissionDeniedError("Only main admins can reset farm owner passwords.")
+        raise PermissionDeniedError("Only main admins can reset user passwords.")
     user = await db.fetch_one(
         """
-        SELECT u.id, u.email, u.status, fm.farm_id
+        SELECT u.id, u.email, u.status
         FROM users u
-        JOIN farm_members fm ON fm.user_id = u.id
-        WHERE u.id = ? AND u.user_type = 'staff'
+        WHERE u.id = ? AND u.user_type = 'staff' AND u.deleted_at IS NULL
         """,
         (user_id,),
     )
     if user is None:
-        raise NotFoundError("Farm owner not found.")
-    if user["status"] == "disabled":
-        raise ValidationAppError("Enable this farm owner before resetting their password.")
+        raise NotFoundError("User not found.")
 
     settings = get_settings()
     email = await request_staff_password_reset_for_user(
@@ -1930,19 +1946,12 @@ async def email_farm_owner_password_reset_endpoint(
         settings=settings,
     )
     if email is None:
-        raise ValidationAppError("This farm owner must be active before a reset email can be sent.")
-    background.add_task(
-        send_email,
-        email.to,
-        email.subject,
-        email.body,
-        settings,
-        email.html_body,
-    )
+        raise ValidationAppError("This user cannot receive a reset email.")
+    send_email(email.to, email.subject, email.body, settings, email.html_body)
     await db.batch(
         [
             audit_statement(
-                action="farm_owner.password_reset_email",
+                action="user.password_reset_email",
                 entity_type="user",
                 entity_id=user_id,
                 actor_id=principal.user_id,
@@ -1950,7 +1959,7 @@ async def email_farm_owner_password_reset_endpoint(
                 created_at=utc_now_iso(),
                 after={
                     "email": user["email"],
-                    "farmId": user["farm_id"],
+                    "status": user["status"],
                     "resetEmailSent": True,
                     "passwordStored": False,
                 },
@@ -2372,7 +2381,6 @@ async def create_farm_owner_endpoint(
 async def staff_password_reset_request(
     payload: StaffResetRequest,
     request: Request,
-    background: BackgroundTasks,
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
     settings = get_settings()
@@ -2392,14 +2400,7 @@ async def staff_password_reset_request(
         settings=settings,
     )
     if email is not None:
-        background.add_task(
-            send_email,
-            email.to,
-            email.subject,
-            email.body,
-            settings,
-            email.html_body,
-        )
+        send_email(email.to, email.subject, email.body, settings, email.html_body)
     return {"ok": True}
 
 

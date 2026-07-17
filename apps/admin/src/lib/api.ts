@@ -629,6 +629,16 @@ export const api = {
       ? demo({ id: `usr_${Date.now().toString(36)}`, status: "invited" })
       : post("/v1/admin/users/invite", input),
 
+  createUser: (input: {
+    email: string;
+    displayName: string;
+    roleIds: string[];
+    password: string;
+  }): Promise<{ id: string; email: string; status: string }> =>
+    demoMode
+      ? demo({ id: `usr_${Date.now().toString(36)}`, email: input.email, status: "active" })
+      : post("/v1/admin/users", input),
+
   setUserStatus: (id: string, status: string): Promise<{ id: string; status: string }> =>
     demoMode ? demo({ id, status }) : patch(`/v1/admin/users/${id}/status`, { status }),
 
@@ -643,11 +653,11 @@ export const api = {
       ? demo({ deletedIds: userIds, count: userIds.length })
       : post("/v1/admin/users/bulk-delete", { userIds }),
 
-  resetFarmOwnerPassword: (
+  sendUserPasswordReset: (
     id: string,
   ): Promise<{ id: string; email: string; emailSent: boolean }> =>
     demoMode
-      ? demo({ id, email: "owner@demo.test", emailSent: true })
+      ? demo({ id, email: "user@demo.test", emailSent: true })
       : post(`/v1/admin/users/${id}/password-reset-email`),
 
   contactMessages: (): Promise<AdminContactMessageRow[]> =>

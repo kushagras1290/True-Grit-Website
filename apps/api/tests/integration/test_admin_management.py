@@ -302,6 +302,43 @@ def test_user_cannot_disable_self(client: TestClient, db: SQLiteDatabase):
     assert response.status_code == 422
 
 
+def test_owner_can_create_user_with_password(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    response = client.post(
+        "/v1/admin/users",
+        json={
+            "email": "active-staff@truegrit.test",
+            "displayName": "Active Staff",
+            "roleIds": ["rol_inventory_manager"],
+            "password": "activepass123",
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["email"] == "active-staff@truegrit.test"
+    assert body["status"] == "active"
+
+    login = client.post(
+        "/v1/admin/auth/login",
+        json={"email": "active-staff@truegrit.test", "password": "activepass123"},
+    )
+    assert login.status_code == 200
+
+    audit = db._conn.execute(
+        """
+        SELECT action, actor_user_id, after_summary_json
+        FROM audit_logs
+        WHERE action = 'user.created' AND entity_id = ?
+        ORDER BY created_at DESC
+        LIMIT 1
+        """,
+        (body["id"],),
+    ).fetchone()
+    assert audit is not None
+    assert audit["actor_user_id"] == "usr_admin"
+    assert '"passwordStored": false' in audit["after_summary_json"]
+
+
 def test_owner_can_delete_users_individually_and_in_bulk(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
     role_id = "rol_inventory"
@@ -453,7 +490,7 @@ def test_owner_can_issue_farm_owner_temporary_password(client: TestClient, db: S
     assert temporary_password not in audit["after_summary_json"]
 
 
-def test_owner_can_email_farm_owner_password_reset(
+def test_owner_can_email_user_password_reset(
     client: TestClient, db: SQLiteDatabase, monkeypatch
 ):
     as_admin(client, db)
@@ -465,10 +502,10 @@ def test_owner_can_email_farm_owner_password_reset(
         ),
     )
 
-    response = client.post("/v1/admin/users/usr_farmowner/password-reset-email")
+    response = client.post("/v1/admin/users/usr_ops/password-reset-email")
     assert response.status_code == 200
     assert response.json()["emailSent"] is True
-    assert captured["to"] == "owner@devika.test"
+    assert captured["to"] == "ops@truegrit.test"
     assert captured["subject"] == "Reset your True Grit password"
     assert "Reset it here" in captured["body"]
 
@@ -480,7 +517,7 @@ def test_owner_can_email_farm_owner_password_reset(
     assert confirmed.status_code == 200
     login = client.post(
         "/v1/admin/auth/login",
-        json={"email": "owner@devika.test", "password": "freshfarmowner123"},
+        json={"email": "ops@truegrit.test", "password": "freshfarmowner123"},
     )
     assert login.status_code == 200
 
@@ -488,7 +525,7 @@ def test_owner_can_email_farm_owner_password_reset(
         """
         SELECT action, actor_user_id, after_summary_json
         FROM audit_logs
-        WHERE action = 'farm_owner.password_reset_email' AND entity_id = 'usr_farmowner'
+        WHERE action = 'user.password_reset_email' AND entity_id = 'usr_ops'
         ORDER BY created_at DESC
         LIMIT 1
         """

@@ -142,14 +142,22 @@ async def request_staff_password_reset_for_user(
 ) -> OutboundEmail | None:
     user = await db.fetch_one(
         """
-        SELECT id, email
+        SELECT id, email, display_name, status
         FROM users
-        WHERE id = ? AND user_type = 'staff' AND status = 'active'
+        WHERE id = ? AND user_type = 'staff' AND deleted_at IS NULL
+          AND status IN ('active', 'invited', 'disabled')
         """,
         (user_id,),
     )
     if user is None:
         return None
+    if user["status"] == "invited":
+        return await request_staff_invitation_email(
+            db,
+            user_id=user_id,
+            reset_base_url=reset_base_url,
+            settings=settings,
+        )
     reset_url = await _mint_reset_url(
         db,
         user_id=user["id"],

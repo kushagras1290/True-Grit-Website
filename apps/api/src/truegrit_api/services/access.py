@@ -52,6 +52,18 @@ async def _validate_roles(db: Database, role_ids: list[str]) -> list[str]:
     return unique
 
 
+async def _ensure_no_farm_owner_role(db: Database, role_ids: list[str]) -> None:
+    if not role_ids:
+        return
+    placeholders = ", ".join("?" for _ in role_ids)
+    rows = await db.fetch_all(
+        f"SELECT id, key FROM roles WHERE id IN ({placeholders})",
+        role_ids,
+    )
+    if any(row["key"] == "farm_owner" for row in rows):
+        raise ValidationAppError("Use Add farm owner to assign the farm owner role.")
+
+
 async def invite_user(
     db: Database,
     actor: Principal,
@@ -70,6 +82,7 @@ async def invite_user(
     if await db.fetch_one("SELECT id FROM users WHERE email = ?", (email,)) is not None:
         raise ConflictError("A user with this email already exists.")
     roles = await _validate_roles(db, role_ids)
+    await _ensure_no_farm_owner_role(db, roles)
 
     user_id = new_id("usr")
     now = utc_now_iso()
@@ -101,6 +114,70 @@ async def invite_user(
     )
     await db.batch(statements)
     return {"id": user_id, "email": email, "status": "invited"}
+
+
+async def create_user(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    email: str,
+    display_name: str,
+    role_ids: list[str],
+    password: str,
+) -> dict[str, Any]:
+    email = (email or "").strip().lower()
+    display_name = (display_name or "").strip()
+    settings = get_settings()
+    if not _EMAIL_PATTERN.match(email):
+        raise ValidationAppError("Enter a valid email address.")
+    if len(display_name) < 2:
+        raise ValidationAppError("Enter the person's name.")
+    if len(password) < settings.password_min_length:
+        raise ValidationAppError(
+            f"Password must be at least {settings.password_min_length} characters."
+        )
+    if await db.fetch_one("SELECT id FROM users WHERE email = ?", (email,)) is not None:
+        raise ConflictError("A user with this email already exists.")
+    roles = await _validate_roles(db, role_ids)
+    await _ensure_no_farm_owner_role(db, roles)
+
+    user_id = new_id("usr")
+    now = utc_now_iso()
+    password_hash = hash_password(password, iterations=settings.pbkdf2_iterations)
+    statements: list[Any] = [
+        (
+            "INSERT INTO users (id, email, display_name, user_type, status,"
+            " created_at, updated_at) VALUES (?, ?, ?, 'staff', 'active', ?, ?)",
+            (user_id, email, display_name, now, now),
+        ),
+        (
+            "INSERT INTO user_credentials (user_id, password_hash, created_at, updated_at)"
+            " VALUES (?, ?, ?, ?)",
+            (user_id, password_hash, now, now),
+        ),
+    ]
+    for role_id in roles:
+        statements.append(
+            (
+                "INSERT INTO user_roles (user_id, role_id, assigned_at, assigned_by)"
+                " VALUES (?, ?, ?, ?)",
+                (user_id, role_id, now, actor.user_id),
+            )
+        )
+    statements.append(
+        audit_statement(
+            action="user.created",
+            entity_type="user",
+            entity_id=user_id,
+            actor_id=actor.user_id,
+            request_id=request_id,
+            created_at=now,
+            after={"email": email, "roles": roles, "passwordStored": False},
+        )
+    )
+    await db.batch(statements)
+    return {"id": user_id, "email": email, "status": "active"}
 
 
 async def set_user_status(

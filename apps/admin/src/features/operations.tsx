@@ -825,6 +825,12 @@ const inviteSchema = z.object({
 
 type InviteForm = z.infer<typeof inviteSchema>;
 
+const userCreateSchema = inviteSchema.extend({
+  password: z.string().min(10, "At least 10 characters").max(256),
+});
+
+type UserCreateForm = z.infer<typeof userCreateSchema>;
+
 function RoleDropdown({
   id,
   roles,
@@ -919,6 +925,7 @@ function InviteUserModal({ onClose }: { onClose: () => void }) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const roles = useQuery({ queryKey: ["roles"], queryFn: api.roles });
+  const assignableRoles = (roles.data ?? []).filter((role) => role.key !== "farm_owner");
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const form = useForm<InviteForm>({
     resolver: zodResolver(inviteSchema),
@@ -957,7 +964,7 @@ function InviteUserModal({ onClose }: { onClose: () => void }) {
         <Field label="Roles" htmlFor="invite-roles">
           <RoleDropdown
             id="invite-roles"
-            roles={roles.data ?? []}
+            roles={assignableRoles}
             selected={selectedRoles}
             onChange={setSelectedRoles}
             label="Invite user roles"
@@ -970,6 +977,77 @@ function InviteUserModal({ onClose }: { onClose: () => void }) {
           </Button>
           <Button type="submit" variant="primary" disabled={mutation.isPending}>
             {mutation.isPending ? "Inviting…" : "Send invite"}
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+function AddUserModal({ onClose }: { onClose: () => void }) {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const roles = useQuery({ queryKey: ["roles"], queryFn: api.roles });
+  const assignableRoles = (roles.data ?? []).filter((role) => role.key !== "farm_owner");
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const form = useForm<UserCreateForm>({
+    resolver: zodResolver(userCreateSchema),
+    defaultValues: { email: "", displayName: "", password: "" },
+  });
+
+  const mutation = useMutation({
+    mutationFn: (values: UserCreateForm) =>
+      api.createUser({
+        email: values.email,
+        displayName: values.displayName,
+        password: values.password,
+        roleIds: selectedRoles,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("User created. They can sign in with the password you set.");
+      onClose();
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not add the user."),
+  });
+
+  return (
+    <Modal title="Add user" onClose={onClose}>
+      <form className="space-y-4" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
+        <Field label="Email" htmlFor="add-user-email" error={form.formState.errors.email?.message}>
+          <Input id="add-user-email" type="email" {...form.register("email")} />
+        </Field>
+        <Field
+          label="Name"
+          htmlFor="add-user-name"
+          error={form.formState.errors.displayName?.message}
+        >
+          <Input id="add-user-name" {...form.register("displayName")} />
+        </Field>
+        <Field
+          label="Temporary password"
+          htmlFor="add-user-password"
+          error={form.formState.errors.password?.message}
+        >
+          <Input id="add-user-password" type="text" {...form.register("password")} />
+        </Field>
+        <Field label="Roles" htmlFor="add-user-roles">
+          <RoleDropdown
+            id="add-user-roles"
+            roles={assignableRoles}
+            selected={selectedRoles}
+            onChange={setSelectedRoles}
+            label="New user roles"
+            disabled={roles.isLoading}
+          />
+        </Field>
+        <div className="flex justify-end gap-2 pt-1">
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="primary" disabled={mutation.isPending}>
+            {mutation.isPending ? "Creating..." : "Add user"}
           </Button>
         </div>
       </form>
@@ -1023,7 +1101,7 @@ function EditRolesModal({ user, onClose }: { user: AdminUserRow; onClose: () => 
   );
 }
 
-function ResetFarmOwnerPasswordModal({
+function ResetUserPasswordModal({
   user,
   onClose,
 }: {
@@ -1034,14 +1112,14 @@ function ResetFarmOwnerPasswordModal({
   const [result, setResult] = useState<{ email: string } | null>(null);
 
   const mutation = useMutation({
-    mutationFn: () => api.resetFarmOwnerPassword(user.id),
+    mutationFn: () => api.sendUserPasswordReset(user.id),
     onSuccess: (response) => {
       setResult(response);
       toast.success("Password reset email sent.");
     },
     onError: (error) =>
       toast.error(
-        error instanceof ApiError ? error.message : "Could not reset this farm owner password.",
+        error instanceof ApiError ? error.message : "Could not send the password reset email.",
       ),
   });
 
@@ -1050,8 +1128,8 @@ function ResetFarmOwnerPasswordModal({
       {result ? (
         <div className="space-y-4">
           <p className="text-sm text-ink-muted">
-            A password reset link has been sent to {result.email}. The farm owner can use it to set
-            a new password.
+            A password reset link has been sent to {result.email}. They can use it to set a new
+            password.
           </p>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="primary" onClick={onClose}>
@@ -1062,8 +1140,8 @@ function ResetFarmOwnerPasswordModal({
       ) : (
         <div className="space-y-4">
           <p className="text-sm text-ink-muted">
-            Send a secure password reset link to this farm owner. They will set their new password
-            from the admin reset page.
+            Send a secure password reset link to this user. They will set their new password from
+            the admin reset page.
           </p>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="secondary" onClick={onClose}>
@@ -1161,6 +1239,7 @@ export function UsersPage() {
   const { data, isLoading, isError } = useQuery({ queryKey: ["users"], queryFn: api.users });
   const roles = useQuery({ queryKey: ["roles"], queryFn: api.roles });
   const [inviting, setInviting] = useState(false);
+  const [addingUser, setAddingUser] = useState(false);
   const [addingOwner, setAddingOwner] = useState(false);
   const [editingRoles, setEditingRoles] = useState<AdminUserRow | null>(null);
   const [resettingPassword, setResettingPassword] = useState<AdminUserRow | null>(null);
@@ -1237,6 +1316,9 @@ export function UsersPage() {
               <Button variant="secondary" onClick={() => setAddingOwner(true)}>
                 Add farm owner
               </Button>
+              <Button variant="secondary" onClick={() => setAddingUser(true)}>
+                Add user
+              </Button>
               <Button variant="primary" onClick={() => setInviting(true)}>
                 Invite user
               </Button>
@@ -1245,12 +1327,13 @@ export function UsersPage() {
         }
       />
       {inviting ? <InviteUserModal onClose={() => setInviting(false)} /> : null}
+      {addingUser ? <AddUserModal onClose={() => setAddingUser(false)} /> : null}
       {addingOwner ? <AddFarmOwnerModal onClose={() => setAddingOwner(false)} /> : null}
       {editingRoles ? (
         <EditRolesModal user={editingRoles} onClose={() => setEditingRoles(null)} />
       ) : null}
       {resettingPassword ? (
-        <ResetFarmOwnerPasswordModal
+        <ResetUserPasswordModal
           user={resettingPassword}
           onClose={() => setResettingPassword(null)}
         />
@@ -1383,15 +1466,13 @@ export function UsersPage() {
                           >
                             {user.status === "disabled" ? "Enable" : "Disable"}
                           </button>
-                          {user.roles.some((role) => role.toLowerCase().includes("farm owner")) ? (
-                            <button
-                              type="button"
-                              className="text-sm text-ink-muted underline-offset-4 hover:text-brand hover:underline"
-                              onClick={() => setResettingPassword(user)}
-                            >
-                              Password
-                            </button>
-                          ) : null}
+                          <button
+                            type="button"
+                            className="text-sm text-ink-muted underline-offset-4 hover:text-brand hover:underline"
+                            onClick={() => setResettingPassword(user)}
+                          >
+                            Password
+                          </button>
                         </div>
                       </PermissionGate>
                     </Td>

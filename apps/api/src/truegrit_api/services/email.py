@@ -12,8 +12,11 @@ mail outage can never break an order or a password reset.
 
 from __future__ import annotations
 
+import json
 import smtplib
 import ssl
+import urllib.error
+import urllib.request
 from dataclasses import dataclass
 from email.message import EmailMessage
 from typing import Protocol
@@ -72,8 +75,38 @@ class SmtpEmailSender:
             server.send_message(email)
 
 
+class ResendEmailSender:
+    def __init__(self, settings: Settings) -> None:
+        self._settings = settings
+
+    def send(self, message: OutboundEmail) -> None:
+        settings = self._settings
+        payload: dict[str, object] = {
+            "from": settings.email_from,
+            "to": [message.to],
+            "subject": message.subject,
+            "text": message.body,
+        }
+        if message.html_body:
+            payload["html"] = message.html_body
+        request = urllib.request.Request(
+            settings.resend_api_url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+                "authorization": f"Bearer {settings.resend_api_key}",
+                "content-type": "application/json",
+            },
+            method="POST",
+        )
+        with urllib.request.urlopen(request, timeout=settings.smtp_timeout_seconds) as response:
+            if response.status >= 400:
+                raise OSError(f"Resend API returned HTTP {response.status}")
+
+
 def get_email_sender(settings: Settings | None = None) -> EmailSender:
     settings = settings or get_settings()
+    if settings.resend_api_key:
+        return ResendEmailSender(settings)
     if settings.smtp_host:
         return SmtpEmailSender(settings)
     return ConsoleEmailSender()
@@ -88,5 +121,5 @@ def send_email(
         get_email_sender(settings).send(
             OutboundEmail(to=to, subject=subject, body=body, html_body=html_body)
         )
-    except (smtplib.SMTPException, OSError, ssl.SSLError) as exc:
+    except (smtplib.SMTPException, OSError, ssl.SSLError, urllib.error.URLError) as exc:
         log_event("error", "email_send_failed", to=to, error_type=type(exc).__name__)

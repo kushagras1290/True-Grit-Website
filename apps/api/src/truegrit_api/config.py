@@ -65,6 +65,8 @@ class Settings(BaseSettings):
     # Transactional email (order notifications, password resets). Empty smtp_host
     # falls back to a console sender that logs the message — safe for local dev
     # and keeps email-triggering flows testable without a real mail server.
+    resend_api_key: str = ""
+    resend_api_url: str = "https://api.resend.com/emails"
     smtp_host: str = ""
     smtp_port: int = 587
     smtp_username: str = ""
