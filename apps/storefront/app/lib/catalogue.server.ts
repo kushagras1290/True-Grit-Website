@@ -20,20 +20,31 @@ import type {
 import {
   articles,
   bootstrap,
+  categories,
   farms,
   getCategoryPage,
   homePage,
   products,
   recipes,
-  categories,
 } from "@truegrit/contracts/fixtures";
 
-function apiUrl(): string {
-  return (process.env.PUBLIC_API_URL || "").trim().replace(/\/+$/, "");
+export interface CatalogueRuntime {
+  apiUrl?: string;
 }
 
-async function fromApi<T>(path: string): Promise<T | null> {
-  const baseUrl = apiUrl();
+export function catalogueRuntime(context: unknown): CatalogueRuntime {
+  return {
+    apiUrl: (context as { cloudflare?: { env?: { PUBLIC_API_URL?: string } } } | undefined)
+      ?.cloudflare?.env?.PUBLIC_API_URL,
+  };
+}
+
+function apiUrl(runtime?: CatalogueRuntime): string {
+  return (runtime?.apiUrl || process.env.PUBLIC_API_URL || "").trim().replace(/\/+$/, "");
+}
+
+async function fromApi<T>(path: string, runtime?: CatalogueRuntime): Promise<T | null> {
+  const baseUrl = apiUrl(runtime);
   if (!baseUrl) return null;
   try {
     const response = await fetch(`${baseUrl}${path}`, {
@@ -60,47 +71,69 @@ function withCountry(path: string, country?: string): string {
 // supplied fixture when the API is not configured or returns nothing — a
 // storefront should degrade to demo data, never crash a page, if a list is
 // briefly unavailable.
-async function listFromApi<T>(path: string, fallback: T[]): Promise<T[]> {
-  if (!apiUrl()) return fallback;
-  const body = await fromApi<{ items: T[] }>(path);
+async function listFromApi<T>(
+  path: string,
+  fallback: T[],
+  runtime?: CatalogueRuntime,
+): Promise<T[]> {
+  if (!apiUrl(runtime)) return fallback;
+  const body = await fromApi<{ items: T[] }>(path, runtime);
   return body?.items ?? fallback;
 }
 
-export async function loadBootstrap(): Promise<PublicBootstrap> {
-  if (apiUrl()) return (await fromApi<PublicBootstrap>("/v1/public/bootstrap")) ?? bootstrap;
+export async function loadBootstrap(runtime?: CatalogueRuntime): Promise<PublicBootstrap> {
+  if (apiUrl(runtime))
+    return (await fromApi<PublicBootstrap>("/v1/public/bootstrap", runtime)) ?? bootstrap;
   return bootstrap;
 }
 
-export async function loadHome(): Promise<PublicPage> {
-  if (apiUrl()) return (await fromApi<PublicPage>("/v1/public/home")) ?? homePage;
+export async function loadHome(runtime?: CatalogueRuntime): Promise<PublicPage> {
+  if (apiUrl(runtime)) return (await fromApi<PublicPage>("/v1/public/home", runtime)) ?? homePage;
   return homePage;
 }
 
 export async function loadCategoryPage(
   slug: string,
   country?: string,
+  runtime?: CatalogueRuntime,
 ): Promise<PublicCategoryPage | null> {
-  if (apiUrl()) {
+  if (apiUrl(runtime)) {
     return (
-      (await fromApi<PublicCategoryPage>(withCountry(`/v1/public/categories/${slug}`, country))) ??
-      getCategoryPage(slug)
+      (await fromApi<PublicCategoryPage>(
+        withCountry(`/v1/public/categories/${slug}`, country),
+        runtime,
+      )) ?? getCategoryPage(slug)
     );
   }
   return getCategoryPage(slug);
 }
 
-export async function loadCategories(): Promise<CategorySummary[]> {
-  return listFromApi<CategorySummary>("/v1/public/categories", categories);
+export async function loadCategories(runtime?: CatalogueRuntime): Promise<CategorySummary[]> {
+  return listFromApi<CategorySummary>("/v1/public/categories", categories, runtime);
 }
 
-export async function loadAllProducts(country?: string): Promise<ProductSummary[]> {
-  return listFromApi<ProductSummary>(withCountry("/v1/public/products", country), products);
+export async function loadAllProducts(
+  country?: string,
+  runtime?: CatalogueRuntime,
+): Promise<ProductSummary[]> {
+  return listFromApi<ProductSummary>(
+    withCountry("/v1/public/products", country),
+    products,
+    runtime,
+  );
 }
 
-export async function loadProduct(slug: string, country?: string): Promise<ProductDetail | null> {
-  if (apiUrl()) {
+export async function loadProduct(
+  slug: string,
+  country?: string,
+  runtime?: CatalogueRuntime,
+): Promise<ProductDetail | null> {
+  if (apiUrl(runtime)) {
     return (
-      (await fromApi<ProductDetail>(withCountry(`/v1/public/products/${slug}`, country))) ??
+      (await fromApi<ProductDetail>(
+        withCountry(`/v1/public/products/${slug}`, country),
+        runtime,
+      )) ??
       products.find((product) => product.slug === slug) ??
       null
     );
@@ -117,22 +150,25 @@ export async function loadProduct(slug: string, country?: string): Promise<Produ
 export async function loadProductDetailsBySlugs(
   slugs: string[],
   country?: string,
+  runtime?: CatalogueRuntime,
 ): Promise<ProductDetail[]> {
   if (slugs.length === 0) return [];
-  const details = await Promise.all(slugs.map((slug) => loadProduct(slug, country)));
+  const details = await Promise.all(slugs.map((slug) => loadProduct(slug, country, runtime)));
   return details.filter((product): product is ProductDetail => product !== null);
 }
 
 export async function loadProductsBySlugs(
   slugs: string[],
   country?: string,
+  runtime?: CatalogueRuntime,
 ): Promise<ProductSummary[]> {
   if (slugs.length === 0) return [];
-  if (apiUrl()) {
+  if (apiUrl(runtime)) {
     const query = slugs.map((slug) => encodeURIComponent(slug)).join(",");
     return listFromApi<ProductSummary>(
       withCountry(`/v1/public/products?slugs=${query}`, country),
       [],
+      runtime,
     );
   }
   const bySlug = new Map(products.map((product) => [product.slug, product]));
@@ -144,10 +180,14 @@ export async function loadProductsBySlugs(
  * Site Control; falls back to the first fixture products in demo mode so the
  * box is reviewable without the API.
  */
-export async function loadHighlightedProducts(country?: string): Promise<ProductSummary[]> {
+export async function loadHighlightedProducts(
+  country?: string,
+  runtime?: CatalogueRuntime,
+): Promise<ProductSummary[]> {
   return listFromApi<ProductSummary>(
     withCountry("/v1/public/highlights", country),
     products.slice(0, 4),
+    runtime,
   );
 }
 
@@ -184,10 +224,15 @@ export interface SearchGroups {
   }>;
 }
 
-export async function runSearch(query: string, country?: string): Promise<SearchGroups> {
-  if (apiUrl()) {
+export async function runSearch(
+  query: string,
+  country?: string,
+  runtime?: CatalogueRuntime,
+): Promise<SearchGroups> {
+  if (apiUrl(runtime)) {
     const result = await fromApi<SearchGroups>(
       withCountry(`/v1/public/search?q=${encodeURIComponent(query)}`, country),
+      runtime,
     );
     if (result) return result;
   }

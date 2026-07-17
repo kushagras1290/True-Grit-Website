@@ -3,18 +3,22 @@ import { data, Link } from "react-router";
 
 import type { Route } from "./+types/recipe";
 import { Breadcrumbs, Section } from "../components/catalogue";
-import { loadProductDetailsBySlugs, loadRecipe } from "../lib/catalogue.server";
+import { catalogueRuntime, loadProductDetailsBySlugs, loadRecipe } from "../lib/catalogue.server";
 import { useCart } from "../lib/cart";
 import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader({ params, request }: Route.LoaderArgs) {
+export async function loader({ params, request, context }: Route.LoaderArgs) {
   const recipe = await loadRecipe(params.slug);
   if (!recipe) throw data("Recipe not found", { status: 404 });
   const productSlugs = recipe.ingredients.flatMap((entry) => entry.productSlug ?? []);
   return {
     recipe,
-    ingredientProducts: await loadProductDetailsBySlugs(productSlugs, resolveCountry(request)),
+    ingredientProducts: await loadProductDetailsBySlugs(
+      productSlugs,
+      resolveCountry(request),
+      catalogueRuntime(context),
+    ),
   };
 }
 

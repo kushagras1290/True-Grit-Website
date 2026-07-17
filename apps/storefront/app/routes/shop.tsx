@@ -1,13 +1,14 @@
 import type { Route } from "./+types/shop";
 import { CategoryTile, ProductGrid, Section } from "../components/catalogue";
-import { loadAllProducts, loadCategories } from "../lib/catalogue.server";
+import { catalogueRuntime, loadAllProducts, loadCategories } from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request, context }: Route.LoaderArgs) {
+  const runtime = catalogueRuntime(context);
   const [categories, products] = await Promise.all([
-    loadCategories(),
-    loadAllProducts(resolveCountry(request)),
+    loadCategories(runtime),
+    loadAllProducts(resolveCountry(request), runtime),
   ]);
   return { categories, products };
 }

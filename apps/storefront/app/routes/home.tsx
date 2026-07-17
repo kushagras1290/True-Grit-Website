@@ -1,18 +1,25 @@
 import type { Route } from "./+types/home";
 import { CmsBlock, type BlockData } from "../components/blocks";
-import { loadCategories, loadFarms, loadHome, loadProductsBySlugs } from "../lib/catalogue.server";
+import {
+  catalogueRuntime,
+  loadCategories,
+  loadFarms,
+  loadHome,
+  loadProductsBySlugs,
+} from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const page = await loadHome();
+export async function loader({ request, context }: Route.LoaderArgs) {
+  const runtime = catalogueRuntime(context);
+  const page = await loadHome(runtime);
   const productSlugs = page.blocks.flatMap((block) =>
     block.type === "product_collection" ? block.props.productSlugs : [],
   );
   const [categories, farms, products] = await Promise.all([
-    loadCategories(),
+    loadCategories(runtime),
     loadFarms(),
-    loadProductsBySlugs(productSlugs, resolveCountry(request)),
+    loadProductsBySlugs(productSlugs, resolveCountry(request), runtime),
   ]);
   return { page, products, categories, farms };
 }

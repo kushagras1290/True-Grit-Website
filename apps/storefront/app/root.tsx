@@ -13,7 +13,7 @@ import {
 import type { Route } from "./+types/root";
 import appCss from "./app.css?url";
 import { Footer, Header } from "./components/chrome";
-import { loadBootstrap } from "./lib/catalogue.server";
+import { catalogueRuntime, loadBootstrap } from "./lib/catalogue.server";
 import { CartProvider } from "./lib/cart";
 import { CurrencyProvider } from "./lib/currency";
 import { CustomerProvider } from "./lib/customer-auth";
@@ -29,14 +29,28 @@ export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: appCss },
 ];
 
-export async function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request, context }: Route.LoaderArgs) {
+  const runtime = catalogueRuntime(context);
+  const env = (
+    context as {
+      cloudflare?: {
+        env?: {
+          PUBLIC_API_URL?: string;
+          PUBLIC_FACEBOOK_APP_ID?: string;
+          PUBLIC_FACEBOOK_LOGIN_VISIBLE?: string;
+        };
+      };
+    }
+  ).cloudflare?.env;
   return {
-    bootstrap: await loadBootstrap(),
+    bootstrap: await loadBootstrap(runtime),
     country: resolveCountry(request),
     publicEnv: {
-      PUBLIC_API_URL: process.env.PUBLIC_API_URL || "",
-      PUBLIC_FACEBOOK_APP_ID: process.env.PUBLIC_FACEBOOK_APP_ID || "",
-      PUBLIC_FACEBOOK_LOGIN_VISIBLE: process.env.PUBLIC_FACEBOOK_LOGIN_VISIBLE || "",
+      PUBLIC_API_URL: runtime.apiUrl || process.env.PUBLIC_API_URL || "",
+      PUBLIC_FACEBOOK_APP_ID:
+        env?.PUBLIC_FACEBOOK_APP_ID || process.env.PUBLIC_FACEBOOK_APP_ID || "",
+      PUBLIC_FACEBOOK_LOGIN_VISIBLE:
+        env?.PUBLIC_FACEBOOK_LOGIN_VISIBLE || process.env.PUBLIC_FACEBOOK_LOGIN_VISIBLE || "",
     },
   };
 }

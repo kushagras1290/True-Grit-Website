@@ -3,6 +3,7 @@ import { Form, Link } from "react-router";
 import type { Route } from "./+types/search";
 import { ProductGrid, Section } from "../components/catalogue";
 import {
+  catalogueRuntime,
   loadHighlightedProducts,
   loadProductsBySlugs,
   runSearch,
@@ -11,19 +12,20 @@ import {
 import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request, context }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const country = resolveCountry(request);
+  const runtime = catalogueRuntime(context);
   const query = (url.searchParams.get("q") ?? "").slice(0, 120);
   const [results, highlights] = await Promise.all([
     query
-      ? runSearch(query, country)
+      ? runSearch(query, country, runtime)
       : Promise.resolve<SearchGroups>({
           query: "",
           total: 0,
           groups: [],
         }),
-    loadHighlightedProducts(country),
+    loadHighlightedProducts(country, runtime),
   ]);
 
   // Product hits become full price cards; slugs come from the search payload
@@ -31,7 +33,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   const productSlugs = (results.groups.find((group) => group.group === "products")?.items ?? [])
     .map((item) => item.slug ?? item.path.replace("/product/", ""))
     .filter(Boolean);
-  const productResults = await loadProductsBySlugs(productSlugs, country);
+  const productResults = await loadProductsBySlugs(productSlugs, country, runtime);
 
   return { results, productResults, highlights };
 }

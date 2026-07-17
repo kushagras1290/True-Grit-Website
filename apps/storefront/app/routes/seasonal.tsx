@@ -3,13 +3,14 @@ import { Link } from "react-router";
 import type { Route } from "./+types/seasonal";
 import { CategoryTile, ProductGrid, Section } from "../components/catalogue";
 import { StaticHero } from "../components/static-page";
-import { loadCategories, loadProductsBySlugs } from "../lib/catalogue.server";
+import { catalogueRuntime, loadCategories, loadProductsBySlugs } from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 import { products as allProducts } from "@truegrit/contracts/fixtures";
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const categories = await loadCategories();
+export async function loader({ request, context }: Route.LoaderArgs) {
+  const runtime = catalogueRuntime(context);
+  const categories = await loadCategories(runtime);
   const seasonalCategories = categories.filter((category) => category.seasonLabel);
   // The curated seasonal slot: in-season drops, selected by the demo fixture's
   // slug convention. The product data itself is loaded live when the API is on.
@@ -20,6 +21,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       )
       .map((product) => product.slug),
     resolveCountry(request),
+    runtime,
   );
 
   return { seasonalCategories, seasonalProducts };

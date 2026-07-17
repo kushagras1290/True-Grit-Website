@@ -9,17 +9,18 @@ import {
   ProductGrid,
   Section,
 } from "../components/catalogue";
-import { loadProduct, loadProductsBySlugs } from "../lib/catalogue.server";
+import { catalogueRuntime, loadProduct, loadProductsBySlugs } from "../lib/catalogue.server";
 import { useCart } from "../lib/cart";
 import { usePriceFormatter } from "../lib/currency";
 import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader({ params, request }: Route.LoaderArgs) {
+export async function loader({ params, request, context }: Route.LoaderArgs) {
   const country = resolveCountry(request);
-  const product = await loadProduct(params.slug, country);
+  const runtime = catalogueRuntime(context);
+  const product = await loadProduct(params.slug, country, runtime);
   if (!product) throw data("Product not found", { status: 404 });
-  return { product, related: await loadProductsBySlugs(product.relatedSlugs, country) };
+  return { product, related: await loadProductsBySlugs(product.relatedSlugs, country, runtime) };
 }
 
 export function meta({ data: loaderData }: Route.MetaArgs) {
