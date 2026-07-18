@@ -2,7 +2,7 @@
 
 import { cn } from "@truegrit/ui";
 import { AlertTriangle, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type {
   ButtonHTMLAttributes,
   InputHTMLAttributes,
@@ -47,41 +47,6 @@ export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElem
         className,
       )}
       {...props}
-    />
-  );
-}
-
-export function SearchBox({
-  value,
-  onSearch,
-  placeholder,
-  "aria-label": ariaLabel,
-}: {
-  value: string;
-  onSearch: (value: string) => void;
-  placeholder?: string;
-  "aria-label"?: string;
-}) {
-  const [draft, setDraft] = useState(value);
-  const onSearchRef = useRef(onSearch);
-  onSearchRef.current = onSearch;
-
-  useEffect(() => {
-    setDraft(value);
-  }, [value]);
-
-  useEffect(() => {
-    const handle = window.setTimeout(() => onSearchRef.current(draft), 300);
-    return () => window.clearTimeout(handle);
-  }, [draft]);
-
-  return (
-    <Input
-      type="search"
-      value={draft}
-      onChange={(event) => setDraft(event.target.value)}
-      placeholder={placeholder}
-      aria-label={ariaLabel}
     />
   );
 }
@@ -348,37 +313,6 @@ export function DataTableShell({ children }: { children: ReactNode }) {
   );
 }
 
-export function Pagination({
-  page,
-  onPageChange,
-  rowCount,
-  limit,
-}: {
-  page: number;
-  onPageChange: (page: number) => void;
-  rowCount: number;
-  limit: number;
-}) {
-  const hasNextPage = rowCount >= limit;
-  if (page === 1 && !hasNextPage) return null;
-
-  return (
-    <div className="mt-4 flex items-center justify-between border-t border-line pt-4">
-      <Button
-        variant="secondary"
-        disabled={page === 1}
-        onClick={() => onPageChange(Math.max(1, page - 1))}
-      >
-        Previous
-      </Button>
-      <span className="text-sm font-medium text-ink-muted">Page {page}</span>
-      <Button variant="secondary" disabled={!hasNextPage} onClick={() => onPageChange(page + 1)}>
-        Next
-      </Button>
-    </div>
-  );
-}
-
 export function Th({ children, className }: { children?: ReactNode; className?: string }) {
   return (
     <th
@@ -398,5 +332,81 @@ export function Td({ children, className, ...props }: TdHTMLAttributes<HTMLTable
     <td className={cn("px-3 py-3 align-middle text-ink", className)} {...props}>
       {children}
     </td>
+  );
+}
+
+/** Previous/Next pager for admin list pages. Backend list endpoints return a
+ * plain page of rows with no total count, so "has more" is inferred from
+ * whether the page came back full (`rowCount >= limit`) rather than from a
+ * separate COUNT(*) — one fewer query per list, at the cost of the Next
+ * button staying enabled for one extra (empty) page when the count lands
+ * exactly on a page boundary. */
+export function Pagination({
+  page,
+  onPageChange,
+  rowCount,
+  limit,
+}: {
+  page: number;
+  onPageChange: (page: number) => void;
+  rowCount: number;
+  limit: number;
+}) {
+  if (page === 1 && rowCount < limit) return null;
+  return (
+    <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={page === 1}
+        onClick={() => onPageChange(Math.max(1, page - 1))}
+      >
+        Previous
+      </Button>
+      <span className="text-sm font-medium text-ink-muted">Page {page}</span>
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={rowCount < limit}
+        onClick={() => onPageChange(page + 1)}
+      >
+        Next
+      </Button>
+    </div>
+  );
+}
+
+/** Debounced search box for admin list pages: fires `onSearch` 300ms after
+ * typing stops so every keystroke doesn't trigger a request. */
+export function SearchBox({
+  value,
+  onSearch,
+  placeholder,
+  "aria-label": ariaLabel,
+}: {
+  value: string;
+  onSearch: (value: string) => void;
+  placeholder?: string;
+  "aria-label"?: string;
+}) {
+  const [draft, setDraft] = useState(value);
+
+  useEffect(() => setDraft(value), [value]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (draft !== value) onSearch(draft);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [draft, value, onSearch]);
+
+  return (
+    <Input
+      type="search"
+      value={draft}
+      placeholder={placeholder ?? "Search..."}
+      aria-label={ariaLabel ?? placeholder ?? "Search"}
+      onChange={(event) => setDraft(event.target.value)}
+    />
   );
 }

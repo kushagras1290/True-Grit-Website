@@ -13,6 +13,7 @@ import { ArticleEditorPage, ArticleListPage } from "./features/articles";
 import { AdminLoginPage, AdminResetPasswordPage, RequireAdminAuth } from "./features/auth";
 import { CategoryEditorPage, CategoryListPage } from "./features/categories";
 import { DashboardPage } from "./features/dashboard";
+import { DbBrowserPage } from "./features/db-browser";
 import {
   AuditPage,
   ContactAttemptsPage,
@@ -28,6 +29,7 @@ import { RecipeEditorPage, RecipeListPage } from "./features/recipes";
 import { ReportsPage } from "./features/reports";
 import { ReturnDetailPage, ReturnsListPage } from "./features/returns";
 import { ScopeManagementPage } from "./features/scopes";
+import { ServerLogsPage } from "./features/server-logs";
 import { SiteControlPage } from "./features/site-control";
 
 const queryClient = new QueryClient({
@@ -74,6 +76,8 @@ createRoot(document.getElementById("root")!).render(
               <Route path="scopes" element={<ScopeManagementPage />} />
               <Route path="audit" element={<AuditPage />} />
               <Route path="reports" element={<ReportsPage />} />
+              <Route path="server-logs" element={<ServerLogsPage />} />
+              <Route path="db-browser" element={<DbBrowserPage />} />
               <Route path="account" element={<AccountPage />} />
               <Route
                 path="*"
