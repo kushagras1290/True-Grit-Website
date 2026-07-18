@@ -819,9 +819,9 @@ export const api = {
     email: string;
     displayName: string;
     roleIds: string[];
-  }): Promise<{ id: string; status: string }> =>
+  }): Promise<{ id: string; status: string; emailSent: boolean }> =>
     demoMode
-      ? demo({ id: `usr_${Date.now().toString(36)}`, status: "invited" })
+      ? demo({ id: `usr_${Date.now().toString(36)}`, status: "invited", emailSent: true })
       : post("/v1/admin/users/invite", input),
 
   createUser: (input: {

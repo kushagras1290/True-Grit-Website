@@ -3005,7 +3005,7 @@ async def email_user_password_reset_endpoint(
     )
     if email is None:
         raise ValidationAppError("This user cannot receive a reset email.")
-    send_email(email.to, email.subject, email.body, settings, email.html_body)
+    email_sent = send_email(email.to, email.subject, email.body, settings, email.html_body)
     await db.batch(
         [
             audit_statement(
@@ -3018,13 +3018,13 @@ async def email_user_password_reset_endpoint(
                 after={
                     "email": user["email"],
                     "status": user["status"],
-                    "resetEmailSent": True,
+                    "resetEmailSent": email_sent,
                     "passwordStored": False,
                 },
             )
         ]
     )
-    return {"id": user_id, "email": user["email"], "emailSent": True}
+    return {"id": user_id, "email": user["email"], "emailSent": email_sent}
 
 
 # ---------------------------------------------------------------------------

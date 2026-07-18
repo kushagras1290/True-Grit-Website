@@ -1179,9 +1179,15 @@ function InviteUserModal({ onClose }: { onClose: () => void }) {
         displayName: values.displayName,
         roleIds: selectedRoles,
       }),
-    onSuccess: async () => {
+    onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: ["users"] });
-      toast.success("Invitation email sent.");
+      if (result.emailSent) {
+        toast.success("Invitation email sent.");
+      } else {
+        toast.error(
+          "User invited, but the invitation email could not be delivered. Share a password reset link with them manually.",
+        );
+      }
       onClose();
     },
     onError: (error) =>
@@ -1355,7 +1361,13 @@ function ResetUserPasswordModal({
     mutationFn: () => api.sendUserPasswordReset(user.id),
     onSuccess: (response) => {
       setResult(response);
-      toast.success("Password reset email sent.");
+      if (response.emailSent) {
+        toast.success("Password reset email sent.");
+      } else {
+        toast.error(
+          "Reset link created, but the email could not be delivered. Share the link with them manually.",
+        );
+      }
     },
     onError: (error) =>
       toast.error(
