@@ -1,6 +1,25 @@
 import type { SeoDocument } from "@truegrit/contracts";
 
+import type { RouteSeoOverride } from "./catalogue.server";
+
 const SITE_NAME = "True Grit";
+
+/** Merge an admin-saved route SEO override onto a route's hardcoded fallback
+ * metadata — same idea as a CMS page's own `seo` object taking priority over
+ * `fallbackSeo`, for routes that have no CMS page record to carry it on. */
+export function mergeRouteSeo(
+  override: RouteSeoOverride | null | undefined,
+  fallback: SeoDocument,
+): SeoDocument {
+  if (!override) return fallback;
+  return {
+    title: override.seoTitle || fallback.title,
+    description: override.seoDescription || fallback.description,
+    keywords: override.seoKeywords || fallback.keywords,
+    indexing: override.indexingPolicy,
+    canonicalPath: fallback.canonicalPath,
+  };
+}
 
 /** Build route `meta` entries from a backend-owned SEO document. Emits a
  * root-relative `<link rel="canonical">` alongside the usual meta tags —

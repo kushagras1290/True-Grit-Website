@@ -122,6 +122,26 @@ export async function loadPage(
   return fromApi<PublicPage>(`/v1/public/pages/${encodeURIComponent(slug)}`, runtime);
 }
 
+export interface RouteSeoOverride {
+  path: string;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  seoKeywords: string | null;
+  indexingPolicy: "index" | "noindex";
+}
+
+/** Admin-editable SEO for a route that has no single-segment CMS page record
+ * (e.g. `/blog/submit`). Returns null when no override was saved — the
+ * caller should fall back to its own hardcoded metadata, same as `loadPage`
+ * falling back to `fallbackSeo`. */
+export async function loadRouteSeo(
+  path: string,
+  runtime?: CatalogueRuntime,
+): Promise<RouteSeoOverride | null> {
+  if (!apiUrl(runtime)) return null;
+  return fromApi<RouteSeoOverride>(`/v1/public/route-seo?path=${encodeURIComponent(path)}`, runtime);
+}
+
 // Matches DEFAULT_PAGE_SIZE in apps/api/src/truegrit_api/api/public.py.
 export const CATALOGUE_PAGE_SIZE = 24;
 
@@ -279,7 +299,14 @@ export async function loadSiteDocument(
   return body ? { content: body.content, contentType: body.contentType } : null;
 }
 
-export type SitemapKind = "products" | "categories" | "pages" | "blog" | "recipes" | "farms";
+export type SitemapKind =
+  | "products"
+  | "categories"
+  | "pages"
+  | "blog"
+  | "recipes"
+  | "farms"
+  | "discussions";
 
 /** Per-type sitemap XML, always mechanically generated from live D1 content —
  * unlike `sitemap_xml` (the index), there is no owner-override path here, so

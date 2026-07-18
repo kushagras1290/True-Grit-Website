@@ -633,6 +633,19 @@ export interface CommunitySettings {
 }
 
 // ---------------------------------------------------------------------------
+// Route SEO overrides (routes with no single-segment CMS page record)
+// ---------------------------------------------------------------------------
+
+export interface AdminRouteSeo {
+  path: string;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  seoKeywords: string | null;
+  indexingPolicy: "index" | "noindex";
+  updatedAt: string | null;
+}
+
+// ---------------------------------------------------------------------------
 // Media library
 // ---------------------------------------------------------------------------
 

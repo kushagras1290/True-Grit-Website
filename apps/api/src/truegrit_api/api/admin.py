@@ -39,6 +39,7 @@ from truegrit_api.repositories.content import (
     DiscussionRepository,
     RecipeRepository,
     ReturnRequestRepository,
+    RouteSeoRepository,
     SiteDocumentRepository,
 )
 from truegrit_api.services import articles as article_service
@@ -781,6 +782,78 @@ async def update_site_documents(
         await db.batch(statements)
     rows = await SiteDocumentRepository(db).list()
     return await _site_document_payload(db, rows)
+
+
+def _route_seo_payload(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "path": row["path"],
+        "seoTitle": row["seo_title"],
+        "seoDescription": row["seo_description"],
+        "seoKeywords": row["seo_keywords"],
+        "indexingPolicy": row["indexing_policy"],
+        "updatedAt": row["updated_at"],
+    }
+
+
+class RouteSeoUpdate(_CamelModel):
+    path: str = Field(min_length=1, max_length=200)
+    seo_title: str | None = Field(default=None, max_length=160)
+    seo_description: str | None = Field(default=None, max_length=320)
+    seo_keywords: str | None = Field(default=None, max_length=500)
+    indexing_policy: str = Field(default="index", max_length=16)
+
+    @field_validator("path")
+    @classmethod
+    def _leading_slash(cls, value: str) -> str:
+        value = value.strip()
+        if not value.startswith("/") or value.startswith("//"):
+            raise ValueError("Path must start with a single '/'.")
+        return value
+
+
+@router.get("/route-seo")
+async def list_route_seo_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("settings.view"))],
+) -> Any:
+    rows = await RouteSeoRepository(db).list()
+    return {"items": [_route_seo_payload(row) for row in rows]}
+
+
+@router.patch("/route-seo")
+async def update_route_seo_endpoint(
+    payload: RouteSeoUpdate,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    if payload.indexing_policy not in ("index", "noindex"):
+        raise ValidationAppError("Unsupported indexing policy.")
+    now = utc_now_iso()
+    await db.execute(
+        """
+        INSERT INTO route_seo_overrides
+          (path, seo_title, seo_description, seo_keywords, indexing_policy, updated_at, updated_by)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(path) DO UPDATE SET
+          seo_title = excluded.seo_title,
+          seo_description = excluded.seo_description,
+          seo_keywords = excluded.seo_keywords,
+          indexing_policy = excluded.indexing_policy,
+          updated_at = excluded.updated_at,
+          updated_by = excluded.updated_by
+        """,
+        (
+            payload.path,
+            (payload.seo_title or "").strip() or None,
+            (payload.seo_description or "").strip() or None,
+            (payload.seo_keywords or "").strip() or None,
+            payload.indexing_policy,
+            now,
+            principal.user_id,
+        ),
+    )
+    row = await RouteSeoRepository(db).get(payload.path)
+    return _route_seo_payload(row) if row else {"path": payload.path}
 
 
 async def _page_detail(db: Database, page_id: str) -> dict[str, Any] | None:

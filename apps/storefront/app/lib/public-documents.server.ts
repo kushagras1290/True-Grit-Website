@@ -61,6 +61,7 @@ function fallbackDocument(
         `- Farmers: ${absolute(request, "/farms")}`,
         `- Recipes: ${absolute(request, "/recipes")}`,
         `- Blog: ${absolute(request, "/blog")}`,
+        `- Community: ${absolute(request, "/community")}`,
         `- Standards: ${absolute(request, "/standards")}`,
         "",
         "## Product Categories",
@@ -82,7 +83,7 @@ function fallbackDocument(
   // shape (`services/site_documents.py::sitemap_index_xml`) — the per-type
   // files behind it (`/sitemaps/*.xml`) carry the actual product/category/
   // blog/recipe/farm/page URLs.
-  const kinds = ["products", "categories", "pages", "blog", "recipes", "farms"];
+  const kinds = ["products", "categories", "pages", "blog", "recipes", "farms", "discussions"];
   const entries = kinds
     .map((kind) => `  <sitemap><loc>${escapeXml(absolute(request, `/sitemaps/${kind}.xml`))}</loc></sitemap>`)
     .join("\n");

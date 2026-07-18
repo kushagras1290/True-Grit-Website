@@ -562,6 +562,27 @@ class SiteDocumentRepository:
         )
 
 
+class RouteSeoRepository:
+    """Admin-editable SEO overrides for storefront routes that are not backed
+    by a single-segment CMS page record (see migration 0035)."""
+
+    def __init__(self, db: Database):
+        self._db = db
+
+    async def get(self, path: str) -> dict[str, Any] | None:
+        return await self._db.fetch_one(
+            "SELECT path, seo_title, seo_description, seo_keywords, indexing_policy, updated_at"
+            " FROM route_seo_overrides WHERE path = ?",
+            (path,),
+        )
+
+    async def list(self) -> list[dict[str, Any]]:
+        return await self._db.fetch_all(
+            "SELECT path, seo_title, seo_description, seo_keywords, indexing_policy, updated_at"
+            " FROM route_seo_overrides ORDER BY path"
+        )
+
+
 class NavigationRepository:
     def __init__(self, db: Database):
         self._db = db
@@ -920,6 +941,13 @@ class DiscussionRepository:
             ORDER BY c.created_at ASC
             """,
             (discussion_id,),
+        )
+
+    async def list_all_visible_for_sitemap(self, limit: int = 5000) -> list[dict[str, Any]]:
+        return await self._db.fetch_all(
+            "SELECT id, updated_at FROM discussions WHERE status = 'visible'"
+            " ORDER BY created_at DESC LIMIT ?",
+            (limit,),
         )
 
 

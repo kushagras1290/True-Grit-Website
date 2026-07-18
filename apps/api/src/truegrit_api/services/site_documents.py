@@ -23,6 +23,7 @@ from truegrit_api.repositories.catalogue import CatalogueRepository
 from truegrit_api.repositories.content import (
     ArticleRepository,
     CategoryRepository,
+    DiscussionRepository,
     FarmRepository,
     PageRepository,
     RecipeRepository,
@@ -43,6 +44,7 @@ SITEMAP_KINDS: dict[str, tuple[str, str]] = {
     "blog": ("weekly", "0.6"),
     "recipes": ("weekly", "0.6"),
     "farms": ("monthly", "0.5"),
+    "discussions": ("weekly", "0.3"),
 }
 
 
@@ -140,6 +142,17 @@ async def sitemap_farms_xml(db: Database, settings: Settings) -> str:
     return _urlset(settings, entries, "farms")
 
 
+async def sitemap_discussions_xml(db: Database, settings: Settings) -> str:
+    """Community discussion threads. Same "always live" contract as every
+    other sub-sitemap: a newly started (or newly hidden) discussion is
+    reflected on the next request, no manual step."""
+    discussions = await DiscussionRepository(db).list_all_visible_for_sitemap()
+    entries: list[tuple[str, str | None]] = [
+        (f"/community/{d['id']}", d.get("updated_at")) for d in discussions
+    ]
+    return _urlset(settings, entries, "discussions")
+
+
 SITEMAP_GENERATORS = {
     "products": sitemap_products_xml,
     "categories": sitemap_categories_xml,
@@ -147,18 +160,24 @@ SITEMAP_GENERATORS = {
     "blog": sitemap_blog_xml,
     "recipes": sitemap_recipes_xml,
     "farms": sitemap_farms_xml,
+    "discussions": sitemap_discussions_xml,
 }
+
+
+_LLMS_LIST_CAP = 50
 
 
 async def default_llms_txt(db: Database, settings: Settings) -> str:
     categories = await CategoryRepository(db).list_published()
-    products, _total = await CatalogueRepository(db).list_all_published(limit=50)
+    products, _total = await CatalogueRepository(db).list_all_published(limit=_LLMS_LIST_CAP)
+    articles = (await ArticleRepository(db).list_published())[:_LLMS_LIST_CAP]
+    recipes = (await RecipeRepository(db).list_published())[:_LLMS_LIST_CAP]
     lines = [
         "# True Grit",
         "",
         (
             "Traceable organic food from verified farms, with published product, farm, "
-            "recipe, and policy pages."
+            "recipe, blog and community pages."
         ),
         "",
         "## Core Pages",
@@ -167,6 +186,7 @@ async def default_llms_txt(db: Database, settings: Settings) -> str:
         f"- Farmers: {_url(settings, '/farms')}",
         f"- Recipes: {_url(settings, '/recipes')}",
         f"- Blog: {_url(settings, '/blog')}",
+        f"- Community: {_url(settings, '/community')}",
         f"- Standards: {_url(settings, '/standards')}",
         "",
         "## Product Categories",
@@ -180,6 +200,12 @@ async def default_llms_txt(db: Database, settings: Settings) -> str:
             f"- {entry['name']}: {_url(settings, '/product/' + entry['slug'])}"
             for entry in products
         ],
+        "",
+        "## Blog Articles",
+        *[f"- {entry['title']}: {_url(settings, '/blog/' + entry['slug'])}" for entry in articles],
+        "",
+        "## Recipes",
+        *[f"- {entry['title']}: {_url(settings, '/recipes/' + entry['slug'])}" for entry in recipes],
         "",
         "## Policies",
         f"- Delivery: {_url(settings, '/delivery')}",

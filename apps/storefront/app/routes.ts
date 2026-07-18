@@ -10,6 +10,7 @@ export default [
   route("sitemaps/blog.xml", "routes/sitemaps.blog.xml.ts"),
   route("sitemaps/recipes.xml", "routes/sitemaps.recipes.xml.ts"),
   route("sitemaps/farms.xml", "routes/sitemaps.farms.xml.ts"),
+  route("sitemaps/discussions.xml", "routes/sitemaps.discussions.xml.ts"),
   route("llms.txt", "routes/llms.txt.ts"),
   route("shop", "routes/shop.tsx"),
   route("seasonal", "routes/seasonal.tsx"),

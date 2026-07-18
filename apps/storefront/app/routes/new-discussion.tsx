@@ -1,10 +1,10 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
 
 import type { Route } from "./+types/new-discussion";
 import { Section } from "../components/catalogue";
 import { useCustomer, AuthError } from "../lib/customer-auth";
-import { communitySettings, createDiscussion } from "../lib/community";
+import { createDiscussion } from "../lib/community";
 import { seoMeta } from "../lib/seo";
 
 export function meta(_args: Route.MetaArgs) {
@@ -23,15 +23,8 @@ const FIELD =
 export default function NewDiscussionPage(_props: Route.ComponentProps) {
   const { customer, status } = useCustomer();
   const navigate = useNavigate();
-  const [minMonths, setMinMonths] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    communitySettings()
-      .then((settings) => setMinMonths(settings.minAccountAgeMonths))
-      .catch(() => setMinMonths(null));
-  }, []);
 
   if (status === "loading") {
     return (
@@ -77,12 +70,6 @@ export default function NewDiscussionPage(_props: Route.ComponentProps) {
 
   return (
     <Section eyebrow="Community" heading="Start a discussion">
-      {minMonths !== null && minMonths > 0 ? (
-        <p className="mb-6 max-w-2xl text-xs text-ink-muted">
-          Starting a discussion needs an account at least {minMonths} month{minMonths === 1 ? "" : "s"}{" "}
-          old. Anyone signed in can comment on any discussion.
-        </p>
-      ) : null}
       <form className="max-w-2xl space-y-4" onSubmit={handleSubmit}>
         {error ? <p className="text-sm text-danger">{error}</p> : null}
         <label className="block space-y-1">

@@ -22,6 +22,7 @@ import type {
   AdminRecipeRow,
   AdminReturnRequestDetail,
   AdminReturnRequestRow,
+  AdminRouteSeo,
   AdminServerLogRow,
   AdminSubmissionDetail,
   AdminSubmissionRow,
@@ -584,6 +585,8 @@ export const api = {
       productType: "general",
       status: "published",
       farmName: product.farmName,
+      farmId: null,
+      categoryIds: [],
       seoTitle: product.seo.title,
       seoDescription: product.seo.description,
       imageUrl: product.imageUrl ?? "",
@@ -1522,6 +1525,31 @@ export const api = {
     demoMode
       ? demo({ minAccountAgeMonths })
       : patch(`/v1/admin/community-settings`, { minAccountAgeMonths }),
+
+  // --- Route SEO overrides ---------------------------------------------
+
+  routeSeoList: (): Promise<AdminRouteSeo[]> =>
+    demoMode
+      ? demo([])
+      : get<{ items: AdminRouteSeo[] }>(`/v1/admin/route-seo`).then((body) => body.items),
+
+  updateRouteSeo: (input: {
+    path: string;
+    seoTitle?: string;
+    seoDescription?: string;
+    seoKeywords?: string;
+    indexingPolicy: "index" | "noindex";
+  }): Promise<AdminRouteSeo> =>
+    demoMode
+      ? demo({
+          path: input.path,
+          seoTitle: input.seoTitle ?? null,
+          seoDescription: input.seoDescription ?? null,
+          seoKeywords: input.seoKeywords ?? null,
+          indexingPolicy: input.indexingPolicy,
+          updatedAt: new Date().toISOString(),
+        })
+      : patch(`/v1/admin/route-seo`, input),
 
   // --- Media library ---------------------------------------------------
 

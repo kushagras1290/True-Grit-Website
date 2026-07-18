@@ -3,17 +3,24 @@ import { Link } from "react-router";
 
 import type { Route } from "./+types/community";
 import { Section } from "../components/catalogue";
+import { catalogueRuntime, loadRouteSeo } from "../lib/catalogue.server";
 import { useCustomer } from "../lib/customer-auth";
 import { listDiscussions, type DiscussionSummary } from "../lib/community";
-import { seoMeta } from "../lib/seo";
+import { mergeRouteSeo, seoMeta } from "../lib/seo";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Community",
-    description: "Open discussions with the True Grit community.",
-    canonicalPath: "/community",
-    indexing: "index",
-  });
+const fallbackSeo = {
+  title: "Community",
+  description: "Open discussions with the True Grit community.",
+  canonicalPath: "/community",
+  indexing: "index",
+} as const;
+
+export async function loader({ context }: Route.LoaderArgs) {
+  return { seoOverride: await loadRouteSeo("/community", catalogueRuntime(context)) };
+}
+
+export function meta({ data }: Route.MetaArgs) {
+  return seoMeta(mergeRouteSeo(data?.seoOverride, fallbackSeo));
 }
 
 export default function CommunityPage(_props: Route.ComponentProps) {

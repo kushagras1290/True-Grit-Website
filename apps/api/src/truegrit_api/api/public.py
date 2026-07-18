@@ -23,6 +23,7 @@ from truegrit_api.repositories.content import (
     NavigationRepository,
     PageRepository,
     RecipeRepository,
+    RouteSeoRepository,
     SearchRepository,
     SiteDocumentRepository,
 )
@@ -155,6 +156,27 @@ async def site_document(key: str, db: Annotated[Database, Depends(get_database)]
         "content": document["content"],
         "contentType": document["content_type"],
         "updatedAt": document["updated_at"],
+    }
+
+
+@router.get("/route-seo")
+async def route_seo(
+    db: Annotated[Database, Depends(get_database)],
+    path: Annotated[str, Query(min_length=1, max_length=200)],
+) -> Any:
+    """SEO override for a storefront route that isn't backed by a CMS page
+    (e.g. `/blog/submit`) — see `RouteSeoRepository`. A missing row means the
+    caller should fall back to its own hardcoded metadata."""
+    override = await RouteSeoRepository(db).get(path)
+    if override is None:
+        raise NotFoundError("No SEO override for this route.")
+    return {
+        "path": override["path"],
+        "seoTitle": override["seo_title"],
+        "seoDescription": override["seo_description"],
+        "seoKeywords": override["seo_keywords"],
+        "indexingPolicy": override["indexing_policy"],
+        "updatedAt": override["updated_at"],
     }
 
 

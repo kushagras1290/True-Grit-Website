@@ -548,6 +548,7 @@ export function SiteControlPage() {
       </form>
 
       <CmsPagesSection />
+      <RouteSeoSection />
       <SiteDocumentsSection />
       <FreshFavouritesSection form={form} />
       <HighlightsSection />
@@ -868,6 +869,139 @@ function CmsPagesSection() {
           ) : null}
         </div>
       )}
+    </section>
+  );
+}
+
+/** Storefront routes that carry SEO metadata but have no single-segment CMS
+ * page record to hold it (see migration 0035 — `pages.slug` can't contain a
+ * `/`, so nested routes like `/blog/submit` can't use the CMS page editor
+ * above). Each entry falls back to sensible hardcoded metadata in its own
+ * route file until an admin saves an override here. */
+const MANAGEABLE_ROUTES = [
+  { path: "/blog/submit", label: "Post a blog (submission form)" },
+  { path: "/recipes/submit", label: "Post a recipe (submission form)" },
+  { path: "/community", label: "Community" },
+] as const;
+
+const routeSeoSchema = z.object({
+  seoTitle: z.string().max(160),
+  seoDescription: z.string().max(320),
+  seoKeywords: z.string().max(500),
+  indexingPolicy: z.enum(["index", "noindex"]),
+});
+
+type RouteSeoForm = z.infer<typeof routeSeoSchema>;
+
+function routeSeoDefaults(entry?: { seoTitle: string | null; seoDescription: string | null; seoKeywords: string | null; indexingPolicy: "index" | "noindex" }): RouteSeoForm {
+  return {
+    seoTitle: entry?.seoTitle ?? "",
+    seoDescription: entry?.seoDescription ?? "",
+    seoKeywords: entry?.seoKeywords ?? "",
+    indexingPolicy: entry?.indexingPolicy ?? "index",
+  };
+}
+
+function RouteSeoSection() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const [selectedPath, setSelectedPath] = useState<string>(MANAGEABLE_ROUTES[0].path);
+  const { data: overrides, isLoading } = useQuery({
+    queryKey: ["route-seo"],
+    queryFn: api.routeSeoList,
+  });
+  const selected = overrides?.find((entry) => entry.path === selectedPath);
+  const form = useForm<RouteSeoForm>({
+    resolver: zodResolver(routeSeoSchema),
+    defaultValues: routeSeoDefaults(),
+  });
+
+  useEffect(() => {
+    form.reset(routeSeoDefaults(selected));
+  }, [selectedPath, selected, form]);
+
+  const mutation = useMutation({
+    mutationFn: (values: RouteSeoForm) =>
+      api.updateRouteSeo({
+        path: selectedPath,
+        seoTitle: values.seoTitle,
+        seoDescription: values.seoDescription,
+        seoKeywords: values.seoKeywords,
+        indexingPolicy: values.indexingPolicy,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["route-seo"] });
+      toast.success("Route SEO saved.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not save route SEO."),
+  });
+
+  return (
+    <section className="mt-10 space-y-4 border-t border-line pt-5">
+      <div>
+        <h2 className="font-display text-lg text-ink">Page SEO</h2>
+        <p className="text-sm text-ink-muted">
+          Title, description, keywords and indexing for storefront routes that aren't backed by a
+          CMS page above. Leave a field blank to keep that route's built-in default.
+        </p>
+      </div>
+      <div className="grid gap-6 xl:grid-cols-[16rem_minmax(0,1fr)]">
+        <div className="space-y-2">
+          {MANAGEABLE_ROUTES.map((route) => (
+            <button
+              key={route.path}
+              type="button"
+              className={`block w-full rounded-md border px-3 py-3 text-left text-sm ${
+                selectedPath === route.path
+                  ? "border-brand bg-subtle/60"
+                  : "border-line bg-surface hover:bg-subtle/40"
+              }`}
+              onClick={() => setSelectedPath(route.path)}
+            >
+              <span className="block font-medium text-ink">{route.label}</span>
+              <span className="mt-1 block text-xs text-ink-muted">{route.path}</span>
+            </button>
+          ))}
+        </div>
+
+        {isLoading ? (
+          <p className="text-sm text-ink-muted">Loading...</p>
+        ) : (
+          <form
+            className="space-y-4"
+            onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
+          >
+            <Field label="SEO title" htmlFor="route-seo-title">
+              <Input
+                id="route-seo-title"
+                placeholder="Falls back to the route's built-in title"
+                {...form.register("seoTitle")}
+              />
+            </Field>
+            <Field label="SEO description" htmlFor="route-seo-description">
+              <Textarea
+                id="route-seo-description"
+                rows={3}
+                placeholder="Falls back to the route's built-in description"
+                {...form.register("seoDescription")}
+              />
+            </Field>
+            <Field label="SEO keywords" htmlFor="route-seo-keywords">
+              <Input id="route-seo-keywords" {...form.register("seoKeywords")} />
+            </Field>
+            <Field label="Search indexing" htmlFor="route-seo-indexing">
+              <Select id="route-seo-indexing" {...form.register("indexingPolicy")}>
+                <option value="index">Index</option>
+                <option value="noindex">No index</option>
+              </Select>
+            </Field>
+            <Button type="submit" variant="primary" disabled={mutation.isPending}>
+              {mutation.isPending ? "Saving..." : "Save page SEO"}
+            </Button>
+          </form>
+        )}
+      </div>
     </section>
   );
 }

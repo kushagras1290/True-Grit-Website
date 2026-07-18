@@ -4,16 +4,23 @@ import { Link } from "react-router";
 import type { Route } from "./+types/submit-recipe";
 import { Section } from "../components/catalogue";
 import { SubmissionForm } from "../components/submission-form";
+import { catalogueRuntime, loadRouteSeo } from "../lib/catalogue.server";
 import { useCustomer } from "../lib/customer-auth";
-import { seoMeta } from "../lib/seo";
+import { mergeRouteSeo, seoMeta } from "../lib/seo";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Post a recipe",
-    description: "Share a recipe with the True Grit community.",
-    canonicalPath: "/recipes/submit",
-    indexing: "noindex",
-  });
+const fallbackSeo = {
+  title: "Post a recipe",
+  description: "Share a recipe with the True Grit community.",
+  canonicalPath: "/recipes/submit",
+  indexing: "noindex",
+} as const;
+
+export async function loader({ context }: Route.LoaderArgs) {
+  return { seoOverride: await loadRouteSeo("/recipes/submit", catalogueRuntime(context)) };
+}
+
+export function meta({ data }: Route.MetaArgs) {
+  return seoMeta(mergeRouteSeo(data?.seoOverride, fallbackSeo));
 }
 
 export default function SubmitRecipePage(_props: Route.ComponentProps) {

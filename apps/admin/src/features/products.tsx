@@ -157,7 +157,6 @@ export function ProductListPage() {
   const [creating, setCreating] = useState(false);
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
-  const [editingVariant, setEditingVariant] = useState<AdminProductDetail["variants"][0] | "new" | null>(null);
 
   const deleteMutation = useMutation({
     mutationFn: (productIds: string[]) => api.deleteProducts(productIds),
@@ -267,14 +266,6 @@ export function ProductListPage() {
         }
       />
       {creating ? <CreateProductModal onClose={() => setCreating(false)} /> : null}
-      {editingVariant && (
-        <VariantEditorModal
-          productId={product.id}
-          variant={editingVariant === "new" ? undefined : editingVariant}
-          onClose={() => setEditingVariant(null)}
-          onSuccess={() => invalidate()}
-        />
-      )}
       {confirmingDelete ? (
         <ConfirmDialog
           title={
@@ -505,25 +496,30 @@ export function ProductEditorPage() {
     ]);
 
   const saveMutation = useMutation({
-    mutationFn: async (values: GeneralForm) => {
+    // Shared by the General, Availability and SEO tabs below, each of which
+    // patches a different subset of product fields — so this accepts
+    // whatever partial update `api.updateProduct` itself accepts, and only
+    // narrows the two fields (sku, listPrice) it actually inspects.
+    mutationFn: async (values: Record<string, unknown>) => {
       await api.updateProduct(id, values);
-      const skuStr = values.sku?.trim();
-      if (skuStr && values.listPrice !== undefined) {
-        if (product?.variants?.length) {
-          const v = product.variants[0];
-          if (skuStr !== v.sku || Math.round(values.listPrice * 100) !== v.listMinor) {
-            await api.updateVariant(id, v.id, {
+      const skuStr = typeof values.sku === "string" ? values.sku.trim() : undefined;
+      const listPrice = typeof values.listPrice === "number" ? values.listPrice : undefined;
+      if (skuStr && listPrice !== undefined) {
+        const [existingVariant] = product?.variants ?? [];
+        if (existingVariant) {
+          if (skuStr !== existingVariant.sku || Math.round(listPrice * 100) !== existingVariant.listMinor) {
+            await api.updateVariant(id, existingVariant.id, {
               sku: skuStr,
-              listMinor: Math.round(values.listPrice * 100),
-              saleMinor: v.saleMinor === null ? -1 : v.saleMinor,
-              name: v.name,
+              listMinor: Math.round(listPrice * 100),
+              saleMinor: existingVariant.saleMinor === null ? -1 : existingVariant.saleMinor,
+              name: existingVariant.name,
             });
           }
         } else {
           await api.createVariant(id, {
             name: "Default",
             sku: skuStr,
-            listMinor: Math.round(values.listPrice * 100),
+            listMinor: Math.round(listPrice * 100),
           });
         }
       }
