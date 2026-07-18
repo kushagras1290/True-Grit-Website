@@ -556,7 +556,10 @@ export function SiteControlPage() {
 }
 
 function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<SiteForm>> }) {
-  const { data: allProducts, isLoading } = useQuery({ queryKey: ["admin-products"], queryFn: api.products });
+  const { data: allProducts, isLoading } = useQuery({
+    queryKey: ["admin-products", "all"],
+    queryFn: () => api.products({ limit: 100 }),
+  });
   const [pendingId, setPendingId] = useState("");
   
   const currentSlugs = form.watch("freshFavourites");
@@ -965,7 +968,10 @@ function HighlightsSection() {
     queryKey: ["highlights"],
     queryFn: api.highlights,
   });
-  const { data: allProducts } = useQuery({ queryKey: ["admin-products"], queryFn: api.products });
+  const { data: allProducts } = useQuery({
+    queryKey: ["admin-products", "all"],
+    queryFn: () => api.products({ limit: 100 }),
+  });
   const [items, setItems] = useState<AdminLinkedProduct[] | null>(null);
   const [pendingId, setPendingId] = useState("");
 

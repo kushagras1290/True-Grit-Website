@@ -334,3 +334,79 @@ export function Td({ children, className, ...props }: TdHTMLAttributes<HTMLTable
     </td>
   );
 }
+
+/** Previous/Next pager for admin list pages. Backend list endpoints return a
+ * plain page of rows with no total count, so "has more" is inferred from
+ * whether the page came back full (`rowCount >= limit`) rather than from a
+ * separate COUNT(*) — one fewer query per list, at the cost of the Next
+ * button staying enabled for one extra (empty) page when the count lands
+ * exactly on a page boundary. */
+export function Pagination({
+  page,
+  onPageChange,
+  rowCount,
+  limit,
+}: {
+  page: number;
+  onPageChange: (page: number) => void;
+  rowCount: number;
+  limit: number;
+}) {
+  if (page === 1 && rowCount < limit) return null;
+  return (
+    <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={page === 1}
+        onClick={() => onPageChange(Math.max(1, page - 1))}
+      >
+        Previous
+      </Button>
+      <span className="text-sm font-medium text-ink-muted">Page {page}</span>
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={rowCount < limit}
+        onClick={() => onPageChange(page + 1)}
+      >
+        Next
+      </Button>
+    </div>
+  );
+}
+
+/** Debounced search box for admin list pages: fires `onSearch` 300ms after
+ * typing stops so every keystroke doesn't trigger a request. */
+export function SearchBox({
+  value,
+  onSearch,
+  placeholder,
+  "aria-label": ariaLabel,
+}: {
+  value: string;
+  onSearch: (value: string) => void;
+  placeholder?: string;
+  "aria-label"?: string;
+}) {
+  const [draft, setDraft] = useState(value);
+
+  useEffect(() => setDraft(value), [value]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (draft !== value) onSearch(draft);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [draft, value, onSearch]);
+
+  return (
+    <Input
+      type="search"
+      value={draft}
+      placeholder={placeholder ?? "Search..."}
+      aria-label={ariaLabel ?? placeholder ?? "Search"}
+      onChange={(event) => setDraft(event.target.value)}
+    />
+  );
+}

@@ -7,6 +7,24 @@ from typing import Any
 from truegrit_api.platform.database import Database
 
 MAX_PAGE_SIZE = 100
+DEFAULT_SEARCH_LIMIT = 5
+
+# Escaping user-typed '%'/'_' before they reach LIKE keeps a literal percent
+# sign or underscore in a search term (e.g. a discount code "50%") from being
+# reinterpreted as a wildcard. '!' is the escape character because it has no
+# meaning of its own in SQL LIKE patterns.
+_LIKE_ESCAPE_CHAR = "!"
+_LIKE_ESCAPE_TRANSLATION = str.maketrans(
+    {
+        _LIKE_ESCAPE_CHAR: _LIKE_ESCAPE_CHAR * 2,
+        "%": f"{_LIKE_ESCAPE_CHAR}%",
+        "_": f"{_LIKE_ESCAPE_CHAR}_",
+    }
+)
+
+
+def _like_term(raw: str) -> str:
+    return f"%{raw.translate(_LIKE_ESCAPE_TRANSLATION)}%"
 
 
 class AdminRepository:
@@ -14,9 +32,14 @@ class AdminRepository:
         self._db = db
 
     async def list_products(
-        self, limit: int = 50, offset: int = 0, farm_id: str | None = None
+        self,
+        limit: int = 50,
+        offset: int = 0,
+        farm_id: str | None = None,
+        search: str | None = None,
     ) -> list[dict[str, Any]]:
         limit = min(max(limit, 1), MAX_PAGE_SIZE)
+        like = f"%{search}%" if search else None
         return await self._db.fetch_all(
             """
             SELECT
@@ -57,14 +80,26 @@ class AdminRepository:
             LEFT JOIN media_assets m ON m.id = p.primary_media_id
             WHERE p.archived_at IS NULL
               AND (? IS NULL OR p.farm_id = ?)
+              AND (
+                ? IS NULL
+                OR p.name LIKE ?
+                OR p.slug LIKE ?
+                OR EXISTS (
+                  SELECT 1 FROM product_variants pv
+                  WHERE pv.product_id = p.id AND pv.sku LIKE ?
+                )
+              )
             ORDER BY p.updated_at DESC, p.name
             LIMIT ? OFFSET ?
             """,
-            (farm_id, farm_id, limit, max(offset, 0)),
+            (farm_id, farm_id, like, like, like, like, limit, max(offset, 0)),
         )
 
-    async def list_categories(self, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
+    async def list_categories(
+        self, limit: int = 50, offset: int = 0, search: str | None = None
+    ) -> list[dict[str, Any]]:
         limit = min(max(limit, 1), MAX_PAGE_SIZE)
+        like = f"%{search}%" if search else None
         return await self._db.fetch_all(
             """
             SELECT
@@ -76,18 +111,29 @@ class AdminRepository:
             FROM categories c
             LEFT JOIN categories parent ON parent.id = c.parent_id
             WHERE c.archived_at IS NULL
+              AND (? IS NULL OR c.name LIKE ? OR c.slug LIKE ?)
             ORDER BY c.sort_order, c.name
             LIMIT ? OFFSET ?
             """,
-            (limit, max(offset, 0)),
+            (like, like, like, limit, max(offset, 0)),
         )
 
     async def list_inventory(
-        self, limit: int = 100, offset: int = 0, farm_id: str | None = None
+        self,
+        limit: int = 100,
+        offset: int = 0,
+        farm_id: str | None = None,
+        search: str | None = None,
     ) -> list[dict[str, Any]]:
         limit = min(max(limit, 1), 200)
+        search_clause = ""
+        params: list[Any] = [farm_id, farm_id]
+        if search:
+            search_clause = "AND (p.name LIKE ? OR v.sku LIKE ?)"
+            params.extend([f"%{search}%", f"%{search}%"])
+        params.extend([limit, max(offset, 0)])
         return await self._db.fetch_all(
-            """
+            f"""
             SELECT
               il.variant_id, p.id AS product_id, p.status AS product_status,
               p.name AS product_name, v.name AS variant_name, v.sku,
@@ -98,10 +144,11 @@ class AdminRepository:
             JOIN products p ON p.id = v.product_id
             JOIN inventory_locations loc ON loc.id = il.location_id
             WHERE (? IS NULL OR p.farm_id = ?) AND p.archived_at IS NULL
+            {search_clause}
             ORDER BY (il.on_hand - il.reserved - il.reorder_threshold) ASC, p.name
             LIMIT ? OFFSET ?
             """,
-            (farm_id, farm_id, limit, max(offset, 0)),
+            tuple(params),
         )
 
     async def get_product_detail(self, product_id: str) -> dict[str, Any] | None:
@@ -198,18 +245,29 @@ class AdminRepository:
         category["release_countries"] = [row["country_code"] for row in release_rows]
         return category
 
-    async def list_users(self) -> list[dict[str, Any]]:
+    async def list_users(
+        self, limit: int = 50, offset: int = 0, search: str | None = None
+    ) -> list[dict[str, Any]]:
+        limit = min(max(limit, 1), MAX_PAGE_SIZE)
+        where_clause = "WHERE u.user_type = 'staff' AND u.deleted_at IS NULL"
+        params: list[Any] = []
+        if search:
+            where_clause += " AND (u.display_name LIKE ? OR u.email LIKE ?)"
+            params.extend([f"%{search}%", f"%{search}%"])
+        params.extend([limit, max(offset, 0)])
         return await self._db.fetch_all(
-            """
+            f"""
             SELECT u.id, u.display_name, u.email, u.status, u.last_sign_in_at,
               (SELECT GROUP_CONCAT(r.name, ', ') FROM user_roles ur
                 JOIN roles r ON r.id = ur.role_id WHERE ur.user_id = u.id) AS role_names,
               (SELECT GROUP_CONCAT(ur.role_id, ',') FROM user_roles ur
                 WHERE ur.user_id = u.id) AS role_ids
             FROM users u
-            WHERE u.user_type = 'staff' AND u.deleted_at IS NULL
+            {where_clause}
             ORDER BY u.display_name
-            """
+            LIMIT ? OFFSET ?
+            """,
+            tuple(params),
         )
 
     async def list_roles(self) -> list[dict[str, Any]]:
@@ -253,17 +311,26 @@ class AdminRepository:
             """
         )
 
-    async def list_orders(self, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
+    async def list_orders(
+        self, limit: int = 50, offset: int = 0, search: str | None = None
+    ) -> list[dict[str, Any]]:
         limit = min(max(limit, 1), MAX_PAGE_SIZE)
+        where_clause = ""
+        params: list[Any] = []
+        if search:
+            where_clause = "WHERE public_reference LIKE ? OR customer_email LIKE ?"
+            params.extend([f"%{search}%", f"%{search}%"])
+        params.extend([limit, max(offset, 0)])
         return await self._db.fetch_all(
-            """
+            f"""
             SELECT id, public_reference, customer_email, currency_code, total_minor,
                    order_status, payment_status, fulfilment_status, placed_at, created_at
             FROM orders
+            {where_clause}
             ORDER BY COALESCE(placed_at, created_at) DESC
             LIMIT ? OFFSET ?
             """,
-            (limit, max(offset, 0)),
+            tuple(params),
         )
 
     async def get_order_detail(self, order_id: str) -> dict[str, Any] | None:
@@ -288,3 +355,76 @@ class AdminRepository:
             (order_id,),
         )
         return order
+
+    async def search_products(
+        self, term: str, *, limit: int = DEFAULT_SEARCH_LIMIT, farm_id: str | None = None
+    ) -> list[dict[str, Any]]:
+        pattern = _like_term(term)
+        return await self._db.fetch_all(
+            """
+            SELECT p.id, p.name, p.slug,
+              (SELECT v.sku FROM product_variants v
+                WHERE v.product_id = p.id ORDER BY v.sort_order LIMIT 1) AS sku
+            FROM products p
+            WHERE p.archived_at IS NULL
+              AND (? IS NULL OR p.farm_id = ?)
+              AND (
+                p.name LIKE ? ESCAPE '!'
+                OR p.slug LIKE ? ESCAPE '!'
+                OR EXISTS (
+                  SELECT 1 FROM product_variants v2
+                  WHERE v2.product_id = p.id AND v2.sku LIKE ? ESCAPE '!'
+                )
+              )
+            ORDER BY p.name
+            LIMIT ?
+            """,
+            (farm_id, farm_id, pattern, pattern, pattern, limit),
+        )
+
+    async def search_orders(
+        self, term: str, *, limit: int = DEFAULT_SEARCH_LIMIT
+    ) -> list[dict[str, Any]]:
+        pattern = _like_term(term)
+        return await self._db.fetch_all(
+            """
+            SELECT id, public_reference, customer_email, order_status, total_minor, currency_code
+            FROM orders
+            WHERE public_reference LIKE ? ESCAPE '!' OR customer_email LIKE ? ESCAPE '!'
+            ORDER BY COALESCE(placed_at, created_at) DESC
+            LIMIT ?
+            """,
+            (pattern, pattern, limit),
+        )
+
+    async def search_users(
+        self, term: str, *, limit: int = DEFAULT_SEARCH_LIMIT
+    ) -> list[dict[str, Any]]:
+        pattern = _like_term(term)
+        return await self._db.fetch_all(
+            """
+            SELECT id, display_name, email, status
+            FROM users
+            WHERE user_type = 'staff' AND deleted_at IS NULL
+              AND (display_name LIKE ? ESCAPE '!' OR email LIKE ? ESCAPE '!')
+            ORDER BY display_name
+            LIMIT ?
+            """,
+            (pattern, pattern, limit),
+        )
+
+    async def search_categories(
+        self, term: str, *, limit: int = DEFAULT_SEARCH_LIMIT
+    ) -> list[dict[str, Any]]:
+        pattern = _like_term(term)
+        return await self._db.fetch_all(
+            """
+            SELECT id, name, slug, status
+            FROM categories
+            WHERE archived_at IS NULL
+              AND (name LIKE ? ESCAPE '!' OR slug LIKE ? ESCAPE '!')
+            ORDER BY name
+            LIMIT ?
+            """,
+            (pattern, pattern, limit),
+        )

@@ -25,3 +25,10 @@ __pycache__/
 Thumbs.db
 .react-router/
 uv.lock.tmp
+.claude/
+# Ad-hoc screenshots/generated images dropped at the repo root instead of a
+# real assets folder — never intentional, not referenced by any app.
+/*.png
+/*.jpg
+/*.jpeg
+/*.webp

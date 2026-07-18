@@ -144,6 +144,7 @@ export interface PublicCategoryPage {
   };
   subcategories: CategorySummary[];
   products: ProductSummary[];
+  productsTotal: number;
   faq: FaqItem[];
   seo: SeoDocument;
   updatedAt: string;
@@ -587,6 +588,25 @@ export interface ReportRunResult {
   label: string;
   columns: string[];
   rows: Array<Array<string | number | null>>;
+}
+
+// ---------------------------------------------------------------------------
+// Owner-only: server logs and read-only DB browser
+// ---------------------------------------------------------------------------
+
+export interface AdminServerLogRow {
+  id: string;
+  level: string;
+  event: string;
+  fields: Record<string, unknown>;
+  createdAt: string;
+}
+
+export interface AdminDbBrowserTableData {
+  columns: string[];
+  rows: Array<Array<string | number | null>>;
+  limit: number;
+  offset: number;
 }
 
 export interface ApiErrorBody {

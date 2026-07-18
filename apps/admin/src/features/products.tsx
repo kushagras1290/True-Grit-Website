@@ -7,7 +7,6 @@ import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
   type SortingState,
@@ -30,6 +29,8 @@ import {
   LoadingRows,
   Modal,
   PageHeader,
+  Pagination,
+  SearchBox,
   Select,
   StatusPill,
   Td,
@@ -139,11 +140,19 @@ function CreateProductModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+const PRODUCTS_PAGE_LIMIT = 25;
+
 export function ProductListPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery({ queryKey: ["admin-products"], queryFn: api.products });
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const offset = (page - 1) * PRODUCTS_PAGE_LIMIT;
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-products", page, searchQuery],
+    queryFn: () =>
+      api.products({ limit: PRODUCTS_PAGE_LIMIT, offset, search: searchQuery || undefined }),
+  });
   const [sorting, setSorting] = useState<SortingState>([]);
   const [creating, setCreating] = useState(false);
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
@@ -204,11 +213,9 @@ export function ProductListPage() {
   const table = useReactTable({
     data: data ?? [],
     columns,
-    state: { globalFilter, sorting },
-    onGlobalFilterChange: setGlobalFilter,
+    state: { sorting },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
   const visibleRows = table.getRowModel().rows;
@@ -285,14 +292,14 @@ export function ProductListPage() {
       ) : null}
 
       <div className="mb-4 max-w-sm">
-        <label htmlFor="product-search" className="sr-only">
-          Search products
-        </label>
-        <Input
-          id="product-search"
-          placeholder="Search by name, SKU, farm…"
-          value={globalFilter}
-          onChange={(event) => setGlobalFilter(event.target.value)}
+        <SearchBox
+          value={searchQuery}
+          onSearch={(value) => {
+            setSearchQuery(value);
+            setPage(1);
+          }}
+          placeholder="Search by name, SKU or slug…"
+          aria-label="Search products"
         />
       </div>
 
@@ -354,6 +361,12 @@ export function ProductListPage() {
           <EmptyState title="No products match" hint="Adjust the search or create a product." />
         </div>
       ) : null}
+      <Pagination
+        page={page}
+        onPageChange={setPage}
+        rowCount={(data ?? []).length}
+        limit={PRODUCTS_PAGE_LIMIT}
+      />
     </div>
   );
 }
@@ -735,7 +748,10 @@ function AvailabilityTab({
   const [returnEligible, setReturnEligible] = useState(product.returnEligible);
   const [links, setLinks] = useState(product.linkedProducts);
   const [pendingLinkId, setPendingLinkId] = useState("");
-  const { data: allProducts } = useQuery({ queryKey: ["admin-products"], queryFn: api.products });
+  const { data: allProducts } = useQuery({
+    queryKey: ["admin-products", "all"],
+    queryFn: () => api.products({ limit: 100 }),
+  });
 
   const dirty =
     globalRelease !== (product.releaseScope !== "selected") ||

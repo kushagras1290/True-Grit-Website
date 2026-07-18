@@ -1040,9 +1040,12 @@ async def list_articles_endpoint(
     principal: Annotated[Principal, Depends(require_permission("articles.view"))],
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: Annotated[str | None, Query(max_length=200)] = None,
 ) -> Any:
     scope = None if principal.has("articles.approve") else principal.user_id
-    rows = await ArticleRepository(db).list_admin(author_user_id=scope, limit=limit, offset=offset)
+    rows = await ArticleRepository(db).list_admin(
+        author_user_id=scope, limit=limit, offset=offset, search=search
+    )
     return {"items": [_article_summary(row) for row in rows], "limit": limit, "offset": offset}
 
 
@@ -1229,9 +1232,12 @@ async def list_recipes_endpoint(
     principal: Annotated[Principal, Depends(require_permission("recipes.view"))],
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: Annotated[str | None, Query(max_length=200)] = None,
 ) -> Any:
     scope = None if principal.has("recipes.approve") else principal.user_id
-    rows = await RecipeRepository(db).list_admin(chef_user_id=scope, limit=limit, offset=offset)
+    rows = await RecipeRepository(db).list_admin(
+        chef_user_id=scope, limit=limit, offset=offset, search=search
+    )
     return {"items": [_recipe_summary(row) for row in rows], "limit": limit, "offset": offset}
 
 
@@ -1366,8 +1372,11 @@ async def list_returns_endpoint(
     status: Annotated[str | None, Query(max_length=20)] = None,
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
 ) -> Any:
-    rows = await ReturnRequestRepository(db).list_admin(status=status, limit=limit, offset=offset)
+    rows = await ReturnRequestRepository(db).list_admin(
+        status=status, limit=limit, offset=offset, search=search
+    )
     return {"items": [_return_request_admin_row(row) for row in rows], "limit": limit, "offset": offset}
 
 
@@ -1479,9 +1488,19 @@ async def run_report_endpoint(
 async def list_archive_endpoint(
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(get_current_staff)],
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    search: Annotated[str | None, Query(max_length=200)] = None,
 ) -> Any:
     if not _can_view_archive(principal):
         raise PermissionDeniedError()
+
+    # Results are unioned across four entity tables, then sorted together, so
+    # each per-table fetch must cover the whole page window (offset + limit)
+    # rather than just `limit` — otherwise a later page could drop rows that
+    # only look "later" because another kind's rows sorted ahead of them.
+    fetch_cap = min(offset + limit, 100)
+    like = f"%{search}%" if search else None
 
     items: list[dict[str, Any]] = []
     if principal.has("products.view"):
@@ -1496,10 +1515,11 @@ async def list_archive_endpoint(
             LEFT JOIN users u ON u.id = p.updated_by
             WHERE (p.archived_at IS NOT NULL OR p.status = 'archived')
               AND (? IS NULL OR p.farm_id = ?)
+              AND (? IS NULL OR p.name LIKE ? OR p.slug LIKE ?)
             ORDER BY COALESCE(p.archived_at, p.updated_at) DESC, p.name
-            LIMIT 100
+            LIMIT ?
             """,
-            (principal.farm_id, principal.farm_id),
+            (principal.farm_id, principal.farm_id, like, like, like, fetch_cap),
         )
         items.extend(_archive_row("product", row) for row in product_rows)
 
@@ -1512,10 +1532,12 @@ async def list_archive_endpoint(
             FROM categories c
             LEFT JOIN categories parent ON parent.id = c.parent_id
             LEFT JOIN users u ON u.id = c.updated_by
-            WHERE c.archived_at IS NOT NULL OR c.status = 'archived'
+            WHERE (c.archived_at IS NOT NULL OR c.status = 'archived')
+              AND (? IS NULL OR c.name LIKE ? OR c.slug LIKE ?)
             ORDER BY COALESCE(c.archived_at, c.updated_at) DESC, c.name
-            LIMIT 100
-            """
+            LIMIT ?
+            """,
+            (like, like, like, fetch_cap),
         )
         items.extend(_archive_row("category", row) for row in category_rows)
 
@@ -1528,9 +1550,11 @@ async def list_archive_endpoint(
             FROM farms f
             LEFT JOIN users u ON u.id = f.updated_by
             WHERE f.status = 'archived'
+              AND (? IS NULL OR f.name LIKE ? OR f.slug LIKE ?)
             ORDER BY f.updated_at DESC, f.name
-            LIMIT 100
-            """
+            LIMIT ?
+            """,
+            (like, like, like, fetch_cap),
         )
         items.extend(_archive_row("farm", row) for row in farm_rows)
 
@@ -1542,15 +1566,18 @@ async def list_archive_endpoint(
                    p.page_type AS detail
             FROM pages p
             LEFT JOIN users u ON u.id = p.updated_by
-            WHERE p.archived_at IS NOT NULL OR p.status = 'archived'
+            WHERE (p.archived_at IS NOT NULL OR p.status = 'archived')
+              AND (? IS NULL OR p.title LIKE ? OR p.slug LIKE ?)
             ORDER BY COALESCE(p.archived_at, p.updated_at) DESC, p.slug
-            LIMIT 100
-            """
+            LIMIT ?
+            """,
+            (like, like, like, fetch_cap),
         )
         items.extend(_archive_row("page", row) for row in page_rows)
 
     items.sort(key=lambda item: item["archivedAt"], reverse=True)
-    return {"items": items}
+    page = items[offset : offset + limit]
+    return {"items": page, "limit": limit, "offset": offset}
 
 
 @router.post("/archive/{kind}/{item_id}/restore")
@@ -1692,6 +1719,92 @@ async def restore_archive_item_endpoint(
         ]
     )
     return {"id": item_id, "kind": kind, "status": "draft"}
+
+
+# ---------------------------------------------------------------------------
+# Global search
+# ---------------------------------------------------------------------------
+
+SEARCH_MIN_QUERY_LENGTH = 2
+SEARCH_RESULT_LIMIT = 5
+
+
+@router.get("/search")
+async def global_search_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(get_current_staff)],
+    q: Annotated[str, Query(max_length=120)] = "",
+) -> Any:
+    """Cross-entity "jump to" search for the admin dashboard. Any authenticated
+    staff member may call this endpoint, but each entity group is only
+    populated if the principal actually holds that entity's `.view`
+    permission — a user without `orders.view` gets an empty `orders` list,
+    never a 403 for the whole request, so one search box works for everyone."""
+    term = q.strip()
+    empty: dict[str, list[dict[str, Any]]] = {
+        "products": [],
+        "orders": [],
+        "users": [],
+        "categories": [],
+    }
+    if len(term) < SEARCH_MIN_QUERY_LENGTH:
+        return empty
+
+    repo = AdminRepository(db)
+
+    if principal.has("products.view"):
+        rows = await repo.search_products(
+            term, limit=SEARCH_RESULT_LIMIT, farm_id=principal.farm_id
+        )
+        empty["products"] = [
+            {
+                "id": row["id"],
+                "name": row["name"],
+                "slug": row["slug"],
+                "sku": row["sku"] or "—",
+            }
+            for row in rows
+        ]
+
+    if principal.has("orders.view"):
+        rows = await repo.search_orders(term, limit=SEARCH_RESULT_LIMIT)
+        empty["orders"] = [
+            {
+                "id": row["id"],
+                "publicReference": row["public_reference"],
+                "customerEmail": contactable_email(row["customer_email"]),
+                "orderStatus": row["order_status"],
+                "totalMinor": row["total_minor"],
+                "currencyCode": row["currency_code"],
+            }
+            for row in rows
+        ]
+
+    if principal.has("users.view"):
+        rows = await repo.search_users(term, limit=SEARCH_RESULT_LIMIT)
+        empty["users"] = [
+            {
+                "id": row["id"],
+                "displayName": row["display_name"],
+                "email": row["email"],
+                "status": row["status"],
+            }
+            for row in rows
+        ]
+
+    if principal.has("categories.view"):
+        rows = await repo.search_categories(term, limit=SEARCH_RESULT_LIMIT)
+        empty["categories"] = [
+            {
+                "id": row["id"],
+                "name": row["name"],
+                "slug": row["slug"],
+                "status": row["status"],
+            }
+            for row in rows
+        ]
+
+    return empty
 
 
 class HighlightsUpdateRequest(_CamelModel):
@@ -1838,9 +1951,10 @@ async def list_products(
     principal: Annotated[Principal, Depends(require_permission("products.view"))],
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: Annotated[str | None, Query(max_length=200)] = None,
 ) -> Any:
     rows = await AdminRepository(db).list_products(
-        limit=limit, offset=offset, farm_id=principal.farm_id
+        limit=limit, offset=offset, farm_id=principal.farm_id, search=search
     )
     items = []
     for row in rows:
@@ -1878,8 +1992,9 @@ async def list_categories(
     _principal: Annotated[Principal, Depends(require_permission("categories.view"))],
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: Annotated[str | None, Query(max_length=200)] = None,
 ) -> Any:
-    rows = await AdminRepository(db).list_categories(limit=limit, offset=offset)
+    rows = await AdminRepository(db).list_categories(limit=limit, offset=offset, search=search)
     return {
         "items": [
             {
@@ -1923,9 +2038,10 @@ async def list_inventory(
     principal: Annotated[Principal, Depends(require_permission("inventory.view"))],
     limit: Annotated[int, Query(ge=1, le=200)] = 100,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
 ) -> Any:
     rows = await AdminRepository(db).list_inventory(
-        limit=limit, offset=offset, farm_id=principal.farm_id
+        limit=limit, offset=offset, farm_id=principal.farm_id, search=search
     )
     return {
         "items": [
@@ -1954,8 +2070,9 @@ async def audit_log(
     db: Annotated[Database, Depends(get_database)],
     _principal: Annotated[Principal, Depends(require_permission("audit.view"))],
     limit: Annotated[int, Query(ge=1, le=200)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
 ) -> Any:
-    rows = await AuditRepository(db).recent(limit=limit)
+    rows = await AuditRepository(db).recent(limit=limit, offset=offset)
     return {
         "items": [
             {
@@ -1968,7 +2085,107 @@ async def audit_log(
                 "createdAt": row["created_at"],
             }
             for row in rows
-        ]
+        ],
+        "limit": limit,
+        "offset": offset,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Owner-only: server logs and read-only DB browser.
+#
+# Both are hard-gated to the super_admin role via `_require_owner`, on top of
+# the `audit.view` permission dependency — a farm-owner sub-admin granted
+# `audit.view` through Scope Management must still be rejected. See
+# `_require_owner` above for why the permission check alone is not enough.
+# ---------------------------------------------------------------------------
+
+
+@router.get("/server-logs")
+async def list_server_logs(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("audit.view"))],
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    await _require_owner(db, principal)
+    rows = await db.fetch_all(
+        """
+        SELECT id, level, event, fields_json, created_at
+        FROM application_logs
+        ORDER BY created_at DESC, id DESC
+        LIMIT ? OFFSET ?
+        """,
+        (limit, offset),
+    )
+    return {
+        "items": [
+            {
+                "id": row["id"],
+                "level": row["level"],
+                "event": row["event"],
+                "fields": json.loads(row["fields_json"]),
+                "createdAt": row["created_at"],
+            }
+            for row in rows
+        ],
+        "limit": limit,
+        "offset": offset,
+    }
+
+
+# Tables holding password hashes or session/rate-limit secrets. Excluded from
+# both the table list and direct row access below — defense-in-depth only,
+# since the owner already has unrestricted DB access via the Cloudflare
+# dashboard regardless of what this read-only browser exposes.
+_DB_BROWSER_BLOCKED_TABLES = frozenset({"user_credentials", "sessions", "auth_rate_limits"})
+
+
+async def _db_browser_allowed_tables(db: Database) -> list[str]:
+    """The allowlist of real, browsable table names, straight from sqlite_master
+    minus the sensitive-table blocklist. This is the single source of truth
+    both endpoints below validate `table_name` against before it is ever
+    interpolated into a query string."""
+    rows = await db.fetch_all(
+        "SELECT name FROM sqlite_master WHERE type='table'"
+        " AND name NOT LIKE 'sqlite_%' ORDER BY name"
+    )
+    return [row["name"] for row in rows if row["name"] not in _DB_BROWSER_BLOCKED_TABLES]
+
+
+@router.get("/db-browser/tables")
+async def list_db_browser_tables(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("audit.view"))],
+) -> Any:
+    await _require_owner(db, principal)
+    return {"items": await _db_browser_allowed_tables(db)}
+
+
+@router.get("/db-browser/tables/{table_name}")
+async def get_db_browser_table(
+    table_name: str,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("audit.view"))],
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    await _require_owner(db, principal)
+    if table_name not in await _db_browser_allowed_tables(db):
+        raise NotFoundError("Table not found.")
+    # Safe to interpolate only because table_name was just checked for an
+    # exact match against sqlite_master above — `?` binds values, not
+    # identifiers, so this is the one place a table name may be spliced in.
+    columns = [row["name"] for row in await db.fetch_all(f"PRAGMA table_info({table_name})")]
+    rows = await db.fetch_all(
+        f"SELECT * FROM {table_name} LIMIT ? OFFSET ?",
+        (limit, offset),
+    )
+    return {
+        "columns": columns,
+        "rows": [[row.get(column) for column in columns] for row in rows],
+        "limit": limit,
+        "offset": offset,
     }
 
 
@@ -2527,8 +2744,11 @@ async def _assert_scope_owner(db: Database, principal: Principal) -> None:
 async def list_users_endpoint(
     db: Annotated[Database, Depends(get_database)],
     _principal: Annotated[Principal, Depends(require_permission("users.view"))],
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
 ) -> Any:
-    rows = await AdminRepository(db).list_users()
+    rows = await AdminRepository(db).list_users(limit=limit, offset=offset, search=search)
     return {
         "items": [
             {
@@ -2541,7 +2761,9 @@ async def list_users_endpoint(
                 "lastSignInAt": row["last_sign_in_at"],
             }
             for row in rows
-        ]
+        ],
+        "limit": limit,
+        "offset": offset,
     }
 
 
@@ -2606,17 +2828,26 @@ async def list_contact_messages_endpoint(
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(require_permission("users.view"))],
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
 ) -> Any:
     if principal.farm_id is not None:
         raise PermissionDeniedError("Only main admins can view contact attempts.")
+    where_clause = ""
+    params: list[Any] = []
+    if search:
+        where_clause = "WHERE name LIKE ? OR email LIKE ? OR subject LIKE ?"
+        params.extend([f"%{search}%", f"%{search}%", f"%{search}%"])
+    params.extend([limit, max(offset, 0)])
     rows = await db.fetch_all(
-        """
+        f"""
         SELECT id, name, email, subject, message, status, created_at, handled_at
         FROM contact_messages
+        {where_clause}
         ORDER BY created_at DESC
-        LIMIT ?
+        LIMIT ? OFFSET ?
         """,
-        (limit,),
+        tuple(params),
     )
     return {
         "items": [
@@ -2631,7 +2862,9 @@ async def list_contact_messages_endpoint(
                 "handledAt": row["handled_at"],
             }
             for row in rows
-        ]
+        ],
+        "limit": limit,
+        "offset": offset,
     }
 
 
@@ -2657,9 +2890,12 @@ async def invite_user_endpoint(
         reset_base_url=f"{settings.public_admin_url}/reset-password",
         settings=settings,
     )
-    if email is not None:
+    email_sent = (
         send_email(email.to, email.subject, email.body, settings, email.html_body)
-    return {**result, "emailSent": email is not None}
+        if email is not None
+        else False
+    )
+    return {**result, "emailSent": email_sent}
 
 
 @router.post("/users")
@@ -2769,7 +3005,7 @@ async def email_user_password_reset_endpoint(
     )
     if email is None:
         raise ValidationAppError("This user cannot receive a reset email.")
-    send_email(email.to, email.subject, email.body, settings, email.html_body)
+    email_sent = send_email(email.to, email.subject, email.body, settings, email.html_body)
     await db.batch(
         [
             audit_statement(
@@ -2782,13 +3018,13 @@ async def email_user_password_reset_endpoint(
                 after={
                     "email": user["email"],
                     "status": user["status"],
-                    "resetEmailSent": True,
+                    "resetEmailSent": email_sent,
                     "passwordStored": False,
                 },
             )
         ]
     )
-    return {"id": user_id, "email": user["email"], "emailSent": True}
+    return {"id": user_id, "email": user["email"], "emailSent": email_sent}
 
 
 # ---------------------------------------------------------------------------
@@ -2806,8 +3042,9 @@ async def list_orders_endpoint(
     _principal: Annotated[Principal, Depends(require_permission("orders.view"))],
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
 ) -> Any:
-    rows = await AdminRepository(db).list_orders(limit=limit, offset=offset)
+    rows = await AdminRepository(db).list_orders(limit=limit, offset=offset, search=search)
     return {
         "items": [
             {
@@ -2949,19 +3186,34 @@ def _farm_response(row: Any) -> dict[str, Any]:
 async def list_farms_endpoint(
     db: Annotated[Database, Depends(get_database)],
     _principal: Annotated[Principal, Depends(require_permission("users.view"))],
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
 ) -> Any:
+    where_clause = "WHERE f.status != 'archived'"
+    params: list[Any] = []
+    if search:
+        where_clause += " AND (f.name LIKE ? OR f.farmer_name LIKE ?)"
+        params.extend([f"%{search}%", f"%{search}%"])
+    params.extend([limit, max(offset, 0)])
     rows = await db.fetch_all(
-        """
+        f"""
         SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.country_code,
                f.story_json, f.established_year, f.status, f.updated_at,
                (SELECT COUNT(*) FROM products p
                  WHERE p.farm_id = f.id AND p.archived_at IS NULL) AS product_count
         FROM farms f
-        WHERE f.status != 'archived'
+        {where_clause}
         ORDER BY f.name
-        """
+        LIMIT ? OFFSET ?
+        """,
+        tuple(params),
     )
-    return {"items": [_farm_response(row) for row in rows]}
+    return {
+        "items": [_farm_response(row) for row in rows],
+        "limit": limit,
+        "offset": offset,
+    }
 
 
 @router.post("/farms")

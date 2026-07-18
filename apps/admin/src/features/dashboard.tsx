@@ -2,11 +2,27 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Activity, RefreshCw } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router";
 
-import { Button, EmptyState, PageHeader, StatusPill } from "../components/ui";
+import { Button, EmptyState, PageHeader, SearchBox, StatusPill } from "../components/ui";
 import { api, demoMode } from "../lib/api";
 import { formatDateTime, formatMoney } from "../lib/format";
+
+const SEARCH_MIN_QUERY_LENGTH = 2;
+
+interface DashboardSearchResultItem {
+  id: string;
+  to: string;
+  primary: string;
+  secondary: string;
+}
+
+interface DashboardSearchResultGroup {
+  key: string;
+  label: string;
+  items: DashboardSearchResultItem[];
+}
 
 function StatCard({
   label,
@@ -33,22 +49,75 @@ function StatCard({
 }
 
 export function DashboardPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const trimmedSearchQuery = searchQuery.trim();
+  const searchActive = trimmedSearchQuery.length >= SEARCH_MIN_QUERY_LENGTH;
+  const search = useQuery({
+    queryKey: ["admin-search", trimmedSearchQuery],
+    queryFn: () => api.search(trimmedSearchQuery),
+    enabled: searchActive,
+  });
+  const searchResultGroups: DashboardSearchResultGroup[] = search.data
+    ? [
+        {
+          key: "products",
+          label: "Products",
+          items: search.data.products.map((product) => ({
+            id: product.id,
+            to: `/products/${product.id}`,
+            primary: product.name,
+            secondary: product.sku,
+          })),
+        },
+        {
+          key: "orders",
+          label: "Orders",
+          items: search.data.orders.map((order) => ({
+            id: order.id,
+            to: `/orders/${order.id}`,
+            primary: order.publicReference,
+            secondary: order.customerEmail ?? "No email on file",
+          })),
+        },
+        {
+          key: "users",
+          label: "Users",
+          items: search.data.users.map((user) => ({
+            id: user.id,
+            to: "/users",
+            primary: user.displayName,
+            secondary: user.email,
+          })),
+        },
+        {
+          key: "categories",
+          label: "Categories",
+          items: search.data.categories.map((category) => ({
+            id: category.id,
+            to: `/categories/${category.id}`,
+            primary: category.name,
+            secondary: category.slug,
+          })),
+        },
+      ].filter((group) => group.items.length > 0)
+    : [];
+
   const liveQueryOptions = { refetchInterval: 10_000, refetchIntervalInBackground: true };
-  const orders = useQuery({ queryKey: ["orders"], queryFn: api.orders, ...liveQueryOptions });
+  const orders = useQuery({ queryKey: ["orders"], queryFn: () => api.orders(), ...liveQueryOptions });
   const inventory = useQuery({
     queryKey: ["inventory"],
-    queryFn: api.inventory,
+    queryFn: () => api.inventory(),
     ...liveQueryOptions,
   });
-  const audit = useQuery({ queryKey: ["audit"], queryFn: api.audit, ...liveQueryOptions });
+  const audit = useQuery({ queryKey: ["audit"], queryFn: () => api.audit(), ...liveQueryOptions });
   const products = useQuery({
     queryKey: ["admin-products"],
-    queryFn: api.products,
+    queryFn: () => api.products({ limit: 100 }),
     ...liveQueryOptions,
   });
   const categories = useQuery({
     queryKey: ["admin-categories"],
-    queryFn: api.categories,
+    queryFn: () => api.categories({ limit: 100 }),
     ...liveQueryOptions,
   });
   const homeBlocks = useQuery({
@@ -113,6 +182,55 @@ export function DashboardPage() {
           </Button>
         }
       />
+
+      <section className="mb-6" aria-labelledby="global-search-heading">
+        <h2 id="global-search-heading" className="sr-only">
+          Search products, orders, users and categories
+        </h2>
+        <SearchBox
+          value={searchQuery}
+          onSearch={setSearchQuery}
+          placeholder="Search products, orders, users, categories…"
+          aria-label="Search products, orders, users and categories"
+        />
+        {trimmedSearchQuery.length > 0 && (
+          <div className="mt-3 rounded-md border border-line bg-surface shadow-card">
+            {!searchActive ? (
+              <p className="px-4 py-3 text-sm text-ink-muted">Keep typing to search…</p>
+            ) : search.isFetching ? (
+              <p className="px-4 py-3 text-sm text-ink-muted">Searching…</p>
+            ) : searchResultGroups.length === 0 ? (
+              <EmptyState
+                title="No matches"
+                hint={`Nothing found for "${trimmedSearchQuery}".`}
+              />
+            ) : (
+              <div className="divide-y divide-line">
+                {searchResultGroups.map((group) => (
+                  <div key={group.key} className="px-4 py-3">
+                    <p className="mb-2 text-xs font-semibold tracking-wide text-ink-muted uppercase">
+                      {group.label}
+                    </p>
+                    <ul className="space-y-1">
+                      {group.items.map((item) => (
+                        <li key={item.id}>
+                          <Link
+                            to={item.to}
+                            className="flex items-center justify-between gap-3 rounded-sm px-2 py-1.5 hover:bg-canvas"
+                          >
+                            <span className="text-sm font-medium text-ink">{item.primary}</span>
+                            <span className="text-xs text-ink-muted">{item.secondary}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </section>
 
       <section className="mb-6 grid gap-4 border-y border-line bg-surface px-4 py-4 shadow-card md:grid-cols-4">
         <div className="flex items-center gap-3">

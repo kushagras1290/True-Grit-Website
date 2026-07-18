@@ -122,16 +122,22 @@ export async function loadPage(
   return fromApi<PublicPage>(`/v1/public/pages/${encodeURIComponent(slug)}`, runtime);
 }
 
+// Matches DEFAULT_PAGE_SIZE in apps/api/src/truegrit_api/api/public.py.
+export const CATALOGUE_PAGE_SIZE = 24;
+
 export async function loadCategoryPage(
   slug: string,
   country?: string,
   runtime?: CatalogueRuntime,
+  page = 1,
 ): Promise<PublicCategoryPage | null> {
+  const offset = (Math.max(page, 1) - 1) * CATALOGUE_PAGE_SIZE;
   if (apiUrl(runtime)) {
-    return fromApi<PublicCategoryPage>(
-      withCountry(`/v1/public/categories/${slug}`, country),
-      runtime,
+    const path = withCountry(
+      `/v1/public/categories/${slug}?limit=${CATALOGUE_PAGE_SIZE}&offset=${offset}`,
+      country,
     );
+    return fromApi<PublicCategoryPage>(path, runtime);
   }
   return getCategoryPage(slug);
 }

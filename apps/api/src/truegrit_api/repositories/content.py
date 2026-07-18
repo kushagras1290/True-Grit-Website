@@ -276,10 +276,12 @@ class RecipeRepository:
         chef_user_id: str | None = None,
         limit: int = 50,
         offset: int = 0,
+        search: str | None = None,
     ) -> list[dict[str, Any]]:
         """Admin listing. `chef_user_id` scopes results to one chef's own
         recipes — the caller only passes it for principals without
         `recipes.approve` (i.e. the `chef` role), never for reviewers."""
+        like = f"%{search}%" if search else None
         return await self._db.fetch_all(
             """
             SELECT r.id, r.title, r.slug, r.status, r.updated_at, r.published_at,
@@ -291,10 +293,20 @@ class RecipeRepository:
             FROM recipes r
             LEFT JOIN users u ON u.id = r.chef_user_id
             WHERE (? IS NULL OR r.chef_user_id = ?)
+              AND (? IS NULL OR r.title LIKE ? OR r.slug LIKE ? OR r.excerpt LIKE ?)
             ORDER BY r.updated_at DESC
             LIMIT ? OFFSET ?
             """,
-            (chef_user_id, chef_user_id, min(max(limit, 1), 100), max(offset, 0)),
+            (
+                chef_user_id,
+                chef_user_id,
+                like,
+                like,
+                like,
+                like,
+                min(max(limit, 1), 100),
+                max(offset, 0),
+            ),
         )
 
     async def get_admin_detail(self, recipe_id: str) -> dict[str, Any] | None:
@@ -448,10 +460,12 @@ class ArticleRepository:
         author_user_id: str | None = None,
         limit: int = 50,
         offset: int = 0,
+        search: str | None = None,
     ) -> list[dict[str, Any]]:
         """Admin listing. `author_user_id` scopes results to one blogger's own
         articles — the caller only passes it for principals without
         `articles.approve` (i.e. the `blogger` role), never for reviewers."""
+        like = f"%{search}%" if search else None
         return await self._db.fetch_all(
             """
             SELECT a.id, a.title, a.slug, a.status, a.updated_at, a.published_at,
@@ -463,10 +477,20 @@ class ArticleRepository:
             FROM articles a
             LEFT JOIN users u ON u.id = a.author_user_id
             WHERE (? IS NULL OR a.author_user_id = ?)
+              AND (? IS NULL OR a.title LIKE ? OR a.slug LIKE ? OR a.excerpt LIKE ?)
             ORDER BY a.updated_at DESC
             LIMIT ? OFFSET ?
             """,
-            (author_user_id, author_user_id, min(max(limit, 1), 100), max(offset, 0)),
+            (
+                author_user_id,
+                author_user_id,
+                like,
+                like,
+                like,
+                like,
+                min(max(limit, 1), 100),
+                max(offset, 0),
+            ),
         )
 
     async def get_admin_detail(self, article_id: str) -> dict[str, Any] | None:
@@ -680,10 +704,21 @@ class ReturnRequestRepository:
         self._db = db
 
     async def list_admin(
-        self, *, status: str | None = None, limit: int = 50, offset: int = 0
+        self,
+        *,
+        status: str | None = None,
+        limit: int = 50,
+        offset: int = 0,
+        search: str | None = None,
     ) -> list[dict[str, Any]]:
+        search_clause = ""
+        params: list[Any] = [status, status]
+        if search:
+            search_clause = "AND (o.public_reference LIKE ? OR oi.product_name LIKE ?)"
+            params.extend([f"%{search}%", f"%{search}%"])
+        params.extend([min(max(limit, 1), 100), max(offset, 0)])
         return await self._db.fetch_all(
-            """
+            f"""
             SELECT rr.id, rr.order_id, o.public_reference, rr.customer_user_id,
                    COALESCE(u.display_name, o.customer_email) AS customer_name,
                    rr.reason_code, rr.status, rr.requested_refund_amount_minor,
@@ -692,11 +727,13 @@ class ReturnRequestRepository:
             FROM return_requests rr
             JOIN orders o ON o.id = rr.order_id
             LEFT JOIN users u ON u.id = rr.customer_user_id
+            LEFT JOIN order_items oi ON oi.id = rr.order_item_id
             WHERE (? IS NULL OR rr.status = ?)
+            {search_clause}
             ORDER BY rr.requested_at DESC
             LIMIT ? OFFSET ?
             """,
-            (status, status, min(max(limit, 1), 100), max(offset, 0)),
+            tuple(params),
         )
 
     async def get_admin_detail(self, return_id: str) -> dict[str, Any] | None:
@@ -732,7 +769,7 @@ class AuditRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def recent(self, limit: int = 50) -> list[dict[str, Any]]:
+    async def recent(self, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
         return await self._db.fetch_all(
             """
             SELECT a.id, COALESCE(u.display_name, 'system') AS actor_name, a.action,
@@ -740,7 +777,7 @@ class AuditRepository:
             FROM audit_logs a
             LEFT JOIN users u ON u.id = a.actor_user_id
             ORDER BY a.created_at DESC
-            LIMIT ?
+            LIMIT ? OFFSET ?
             """,
-            (min(max(limit, 1), 200),),
+            (min(max(limit, 1), 200), max(offset, 0)),
         )

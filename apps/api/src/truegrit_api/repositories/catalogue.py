@@ -10,8 +10,14 @@ from __future__ import annotations
 from typing import Any
 
 from truegrit_api.domain.inventory import InventoryLevel, availability_label
+from truegrit_api.domain.rules import MAX_LIMIT as RULE_MAX_LIMIT
 from truegrit_api.domain.rules import compile_rule
 from truegrit_api.platform.database import Database
+
+# Static category assignment has no owner-configured rule ceiling, so it
+# borrows the rule engine's own pool cap for consistency between the two
+# assignment modes (see `compile_rule`'s `limit`, which defaults this same way).
+_STATIC_CATEGORY_POOL_LIMIT = RULE_MAX_LIMIT
 
 _PRODUCT_BASE_SQL = """
 SELECT
@@ -195,45 +201,99 @@ class CatalogueRepository:
         ]
 
     async def list_published_by_rule(
-        self, rule_json: dict[str, Any], country: str | None = None
-    ) -> list[dict[str, Any]]:
+        self,
+        rule_json: dict[str, Any],
+        *,
+        country: str | None = None,
+        limit: int = 24,
+        offset: int = 0,
+    ) -> tuple[list[dict[str, Any]], int]:
+        """Products matching a category's rule, one page at a time.
+
+        `compiled.limit` (the rule's own `"limit"` field, e.g. 96) caps the
+        *total eligible pool* the category will ever surface — a merchandising
+        ceiling set by the category editor. `limit`/`offset` page through that
+        pool for display; they are a different concept and never widen it.
+        Returns `(page_of_products, total_eligible)` where `total_eligible` is
+        the actual match count clamped to the pool ceiling, so callers can
+        compute real page counts without a second round trip.
+        """
         compiled = compile_rule(rule_json)
         geo_sql, geo_params = geo_release_clause(country)
+        count_row = await self._db.fetch_one(
+            f"SELECT COUNT(*) AS cnt FROM products p"
+            f" WHERE p.status = 'published' AND {compiled.where_sql}{geo_sql}",
+            [*compiled.params, *geo_params],
+        )
+        total = min(int(count_row["cnt"]) if count_row else 0, compiled.limit)
+        safe_offset = max(offset, 0)
+        if safe_offset >= total:
+            return [], total
+        page_limit = min(max(limit, 1), total - safe_offset)
         rows = await self._db.fetch_all(
             f"{_PRODUCT_BASE_SQL} WHERE p.status = 'published' AND {compiled.where_sql}"
-            f"{geo_sql} ORDER BY {compiled.order_sql} LIMIT ?",
-            [*compiled.params, *geo_params, compiled.limit],
+            f"{geo_sql} ORDER BY {compiled.order_sql} LIMIT ? OFFSET ?",
+            [*compiled.params, *geo_params, page_limit, safe_offset],
         )
-        return await self._assemble(rows)
+        return await self._assemble(rows), total
 
     async def list_all_published(
-        self, limit: int = 200, country: str | None = None
-    ) -> list[dict[str, Any]]:
-        """Every published product, newest first. Backs the storefront's shop
-        grid, so it reflects admin publishes without any per-category rule."""
+        self, *, limit: int = 200, offset: int = 0, country: str | None = None
+    ) -> tuple[list[dict[str, Any]], int]:
+        """Every published product, newest first, one page at a time. Backs
+        the storefront's shop grid, so it reflects admin publishes without any
+        per-category rule. Returns `(page_of_products, total_published)`."""
         geo_sql, geo_params = geo_release_clause(country)
+        count_row = await self._db.fetch_one(
+            f"SELECT COUNT(*) AS cnt FROM products p WHERE p.status = 'published'{geo_sql}",
+            geo_params,
+        )
+        total = int(count_row["cnt"]) if count_row else 0
         rows = await self._db.fetch_all(
             f"{_PRODUCT_BASE_SQL} WHERE p.status = 'published'{geo_sql}"
-            " ORDER BY p.updated_at DESC, p.name LIMIT ?",
-            (*geo_params, limit),
+            " ORDER BY p.updated_at DESC, p.name LIMIT ? OFFSET ?",
+            (*geo_params, max(limit, 1), max(offset, 0)),
         )
-        return await self._assemble(rows)
+        return await self._assemble(rows), total
 
     async def list_published_by_category(
-        self, category_id: str, country: str | None = None
-    ) -> list[dict[str, Any]]:
+        self,
+        category_id: str,
+        *,
+        country: str | None = None,
+        limit: int = 24,
+        offset: int = 0,
+    ) -> tuple[list[dict[str, Any]], int]:
+        """Products statically assigned to a category, one page at a time.
+        Returns `(page_of_products, total_eligible)`, `total_eligible` clamped
+        to `_STATIC_CATEGORY_POOL_LIMIT` for parity with the rule-based path."""
         geo_sql, geo_params = geo_release_clause(country)
+        count_row = await self._db.fetch_one(
+            f"""
+            SELECT COUNT(*) AS cnt
+            FROM products p
+            JOIN product_categories pc ON pc.product_id = p.id
+            WHERE pc.category_id = ? AND p.status = 'published'{geo_sql}
+            """,
+            (category_id, *geo_params),
+        )
+        matched = int(count_row["cnt"]) if count_row else 0
+        total = min(matched, _STATIC_CATEGORY_POOL_LIMIT)
+        safe_offset = max(offset, 0)
+        if safe_offset >= total:
+            return [], total
+        page_limit = min(max(limit, 1), total - safe_offset)
         rows = await self._db.fetch_all(
             f"""
             {_PRODUCT_BASE_SQL}
             JOIN product_categories pc ON pc.product_id = p.id
             WHERE pc.category_id = ? AND p.status = 'published'{geo_sql}
             ORDER BY pc.sort_order, p.name
-            LIMIT 200
+            LIMIT ? OFFSET ?
             """,
-            (category_id, *geo_params),
+            (category_id, *geo_params, page_limit, safe_offset),
         )
-        return await self._assemble(rows)
+        return await self._assemble(rows), total
 
     async def list_published_by_slugs(
         self, slugs: list[str], country: str | None = None

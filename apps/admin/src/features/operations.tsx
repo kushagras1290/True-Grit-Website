@@ -20,6 +20,8 @@ import {
   LoadingRows,
   Modal,
   PageHeader,
+  Pagination,
+  SearchBox,
   Select,
   StatusPill,
   Td,
@@ -75,7 +77,14 @@ type FarmForm = z.infer<typeof farmSchema>;
 export function InventoryPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery({ queryKey: ["inventory"], queryFn: api.inventory });
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const limit = 25;
+  const offset = (page - 1) * limit;
+  const { data, isLoading } = useQuery({
+    queryKey: ["inventory", page, searchQuery],
+    queryFn: () => api.inventory({ limit, offset, search: searchQuery || undefined }),
+  });
   const [selectedVariantIds, setSelectedVariantIds] = useState<string[]>([]);
   const [confirmingClear, setConfirmingClear] = useState(false);
 
@@ -161,6 +170,17 @@ export function InventoryPage() {
           onConfirm={() => clearMutation.mutate(selectedVariantIds)}
         />
       ) : null}
+      <div className="mb-4 max-w-sm">
+        <SearchBox
+          value={searchQuery}
+          onSearch={(value) => {
+            setSearchQuery(value);
+            setPage(1);
+          }}
+          placeholder="Search by product or SKU..."
+          aria-label="Search inventory"
+        />
+      </div>
       <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
         <DataTableShell>
           <thead className="bg-canvas">
@@ -243,6 +263,7 @@ export function InventoryPage() {
             </tbody>
           )}
         </DataTableShell>
+        <Pagination page={page} onPageChange={setPage} rowCount={rows.length} limit={limit} />
 
         <PermissionGate
           permission="inventory.adjust"
@@ -447,7 +468,14 @@ function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void
 export function FarmsPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery({ queryKey: ["farms"], queryFn: api.farms });
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const limit = 25;
+  const offset = (page - 1) * limit;
+  const { data, isLoading } = useQuery({
+    queryKey: ["farms", page, searchQuery],
+    queryFn: () => api.farms({ limit, offset, search: searchQuery || undefined }),
+  });
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState<AdminFarmRow | null>(null);
   const [confirmingDelete, setConfirmingDelete] = useState<AdminFarmRow | null>(null);
@@ -499,6 +527,17 @@ export function FarmsPage() {
           onConfirm={() => deleteMutation.mutate(confirmingDelete.id)}
         />
       ) : null}
+      <div className="mb-4 max-w-sm">
+        <SearchBox
+          value={searchQuery}
+          onSearch={(value) => {
+            setSearchQuery(value);
+            setPage(1);
+          }}
+          placeholder="Search by farm or farmer name..."
+          aria-label="Search farms"
+        />
+      </div>
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
@@ -552,6 +591,7 @@ export function FarmsPage() {
           </tbody>
         )}
       </DataTableShell>
+      <Pagination page={page} onPageChange={setPage} rowCount={(data ?? []).length} limit={limit} />
     </div>
   );
 }
@@ -561,7 +601,14 @@ export function FarmsPage() {
 // ---------------------------------------------------------------------------
 
 export function OrdersPage() {
-  const { data, isLoading } = useQuery({ queryKey: ["orders"], queryFn: api.orders });
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const limit = 25;
+  const offset = (page - 1) * limit;
+  const { data, isLoading } = useQuery({
+    queryKey: ["orders", page, searchQuery],
+    queryFn: () => api.orders({ limit, offset, search: searchQuery || undefined }),
+  });
 
   return (
     <div>
@@ -569,6 +616,17 @@ export function OrdersPage() {
         title="Orders"
         description="Snapshots at purchase time — catalogue edits never rewrite an order."
       />
+      <div className="mb-4 max-w-sm">
+        <SearchBox
+          value={searchQuery}
+          onSearch={(value) => {
+            setSearchQuery(value);
+            setPage(1);
+          }}
+          placeholder="Search by reference or customer email..."
+          aria-label="Search orders"
+        />
+      </div>
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
@@ -618,6 +676,7 @@ export function OrdersPage() {
           />
         </div>
       ) : null}
+      <Pagination page={page} onPageChange={setPage} rowCount={(data ?? []).length} limit={limit} />
     </div>
   );
 }
@@ -1120,9 +1179,15 @@ function InviteUserModal({ onClose }: { onClose: () => void }) {
         displayName: values.displayName,
         roleIds: selectedRoles,
       }),
-    onSuccess: async () => {
+    onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: ["users"] });
-      toast.success("Invitation email sent.");
+      if (result.emailSent) {
+        toast.success("Invitation email sent.");
+      } else {
+        toast.error(
+          "User invited, but the invitation email could not be delivered. Share a password reset link with them manually.",
+        );
+      }
       onClose();
     },
     onError: (error) =>
@@ -1296,7 +1361,13 @@ function ResetUserPasswordModal({
     mutationFn: () => api.sendUserPasswordReset(user.id),
     onSuccess: (response) => {
       setResult(response);
-      toast.success("Password reset email sent.");
+      if (response.emailSent) {
+        toast.success("Password reset email sent.");
+      } else {
+        toast.error(
+          "Reset link created, but the email could not be delivered. Share the link with them manually.",
+        );
+      }
     },
     onError: (error) =>
       toast.error(
@@ -1355,7 +1426,7 @@ type FarmOwnerForm = z.infer<typeof farmOwnerSchema>;
 function AddFarmOwnerModal({ onClose }: { onClose: () => void }) {
   const toast = useToast();
   const queryClient = useQueryClient();
-  const farms = useQuery({ queryKey: ["farms"], queryFn: api.farms });
+  const farms = useQuery({ queryKey: ["farms"], queryFn: () => api.farms({ limit: 100 }) });
   const form = useForm<FarmOwnerForm>({
     resolver: zodResolver(farmOwnerSchema),
     defaultValues: { email: "", displayName: "", farmId: "", password: "" },
@@ -1417,7 +1488,14 @@ function AddFarmOwnerModal({ onClose }: { onClose: () => void }) {
 export function UsersPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { data, isLoading, isError } = useQuery({ queryKey: ["users"], queryFn: api.users });
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const limit = 25;
+  const offset = (page - 1) * limit;
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["users", page, searchQuery],
+    queryFn: () => api.users({ limit, offset, search: searchQuery || undefined }),
+  });
   const roles = useQuery({ queryKey: ["roles"], queryFn: api.roles });
   const [inviting, setInviting] = useState(false);
   const [addingUser, setAddingUser] = useState(false);
@@ -1547,6 +1625,20 @@ export function UsersPage() {
       ) : null}
 
       {!isError ? (
+        <div className="mb-4 max-w-sm">
+          <SearchBox
+            value={searchQuery}
+            onSearch={(value) => {
+              setSearchQuery(value);
+              setPage(1);
+            }}
+            placeholder="Search by name or email..."
+            aria-label="Search users"
+          />
+        </div>
+      ) : null}
+
+      {!isError ? (
         <DataTableShell>
           <thead className="bg-canvas">
             <tr>
@@ -1664,6 +1756,9 @@ export function UsersPage() {
           )}
         </DataTableShell>
       ) : null}
+      {!isError ? (
+        <Pagination page={page} onPageChange={setPage} rowCount={users.length} limit={limit} />
+      ) : null}
 
       <section className="mt-8 space-y-3 border-t border-line pt-5">
         <div>
@@ -1727,9 +1822,13 @@ function ContactMessageCard({ message }: { message: AdminContactMessageRow }) {
 }
 
 export function ContactAttemptsPage() {
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const limit = 25;
+  const offset = (page - 1) * limit;
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["contact-messages"],
-    queryFn: api.contactMessages,
+    queryKey: ["contact-messages", page, searchQuery],
+    queryFn: () => api.contactMessages({ limit, offset, search: searchQuery || undefined }),
   });
   const messages = data ?? [];
 
@@ -1748,6 +1847,20 @@ export function ContactAttemptsPage() {
       ) : null}
 
       {!isError ? (
+        <div className="mb-4 max-w-sm">
+          <SearchBox
+            value={searchQuery}
+            onSearch={(value) => {
+              setSearchQuery(value);
+              setPage(1);
+            }}
+            placeholder="Search by name, email or subject..."
+            aria-label="Search contact attempts"
+          />
+        </div>
+      ) : null}
+
+      {!isError ? (
         <div className="space-y-3">
           {isLoading ? (
             <DataTableShell>
@@ -1763,6 +1876,9 @@ export function ContactAttemptsPage() {
           )}
         </div>
       ) : null}
+      {!isError ? (
+        <Pagination page={page} onPageChange={setPage} rowCount={messages.length} limit={limit} />
+      ) : null}
     </div>
   );
 }
@@ -1772,7 +1888,14 @@ export function ContactAttemptsPage() {
 // ---------------------------------------------------------------------------
 
 export function AuditPage() {
-  const { data, isLoading } = useQuery({ queryKey: ["audit"], queryFn: api.audit });
+  const [page, setPage] = useState(1);
+  const limit = 25;
+  const offset = (page - 1) * limit;
+  const { data, isLoading } = useQuery({
+    queryKey: ["audit", page],
+    queryFn: () => api.audit({ limit, offset }),
+  });
+  const rows = data ?? [];
 
   return (
     <div>
@@ -1794,7 +1917,7 @@ export function AuditPage() {
           <LoadingRows columns={5} />
         ) : (
           <tbody>
-            {(data ?? []).map((entry) => (
+            {rows.map((entry) => (
               <tr key={entry.id} className="border-t border-line">
                 <Td className="font-medium">{entry.actorName}</Td>
                 <Td>{entry.action}</Td>
@@ -1808,6 +1931,7 @@ export function AuditPage() {
           </tbody>
         )}
       </DataTableShell>
+      <Pagination page={page} onPageChange={setPage} rowCount={rows.length} limit={limit} />
     </div>
   );
 }

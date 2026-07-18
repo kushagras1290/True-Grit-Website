@@ -16,10 +16,16 @@ _REDACTED_KEYS = frozenset(
 )
 
 
-def log_event(level: str, event: str, /, **fields: Any) -> None:
-    safe_fields = {
+def redact_fields(fields: dict[str, Any]) -> dict[str, Any]:
+    """Mask any field whose key implies sensitive content. Shared by `log_event`
+    and `services.log_persistence.persist_log` so stdout logs and the persisted
+    `application_logs` copy can never diverge on what counts as safe to keep."""
+    return {
         key: ("[redacted]" if any(marker in key.lower() for marker in _REDACTED_KEYS) else value)
         for key, value in fields.items()
     }
-    record = {"level": level, "event": event, "ts": time.time(), **safe_fields}
+
+
+def log_event(level: str, event: str, /, **fields: Any) -> None:
+    record = {"level": level, "event": event, "ts": time.time(), **redact_fields(fields)}
     sys.stdout.write(json.dumps(record, default=str) + "\n")

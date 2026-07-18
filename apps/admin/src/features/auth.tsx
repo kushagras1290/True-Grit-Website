@@ -4,7 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from "react-router";
 
 import { Button, Field, Input } from "../components/ui";
-import { ADMIN_AUTH_EXPIRED_EVENT, ApiError, api, demoMode } from "../lib/api";
+import { ADMIN_AUTH_EXPIRED_EVENT, ApiError, api, demoMode, describeRateLimitError } from "../lib/api";
 import { useMe } from "../lib/permissions";
 
 function isUnauthorizedError(error: unknown) {
@@ -21,6 +21,10 @@ function ForgotPassword() {
     mutationFn: (email: string) => api.requestPasswordReset(email),
     onSuccess: () => setDone(true),
   });
+  const error =
+    mutation.error instanceof ApiError
+      ? describeRateLimitError(mutation.error)
+      : "Could not send the reset link. Try again.";
 
   if (!open) {
     return (
@@ -51,6 +55,11 @@ function ForgotPassword() {
       <Field label="Email for reset link" htmlFor="reset-email">
         <Input id="reset-email" name="email" type="email" required />
       </Field>
+      {mutation.isError ? (
+        <p role="alert" className="text-sm text-danger">
+          {error}
+        </p>
+      ) : null}
       <Button type="submit" variant="secondary" disabled={mutation.isPending}>
         {mutation.isPending ? "Sending…" : "Send reset link"}
       </Button>
@@ -133,7 +142,9 @@ export function AdminLoginPage() {
     },
   });
   const error =
-    mutation.error instanceof ApiError ? mutation.error.message : "Sign in failed. Try again.";
+    mutation.error instanceof ApiError
+      ? describeRateLimitError(mutation.error)
+      : "Sign in failed. Try again.";
 
   return (
     <main className="grid min-h-screen grid-cols-1 bg-canvas lg:grid-cols-[minmax(0,1fr)_28rem]">
