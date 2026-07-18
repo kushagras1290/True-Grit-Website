@@ -8,6 +8,7 @@ import {
   BarChart3,
   BookOpen,
   ClipboardList,
+  Database,
   FolderTree,
   Image,
   KeyRound,
@@ -24,6 +25,7 @@ import {
   ShieldCheck,
   ShoppingCart,
   Sprout,
+  Terminal,
   UtensilsCrossed,
   Users,
   Warehouse,
@@ -154,6 +156,18 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         label: "Owner Reports",
         icon: <BarChart3 size={16} />,
         permission: "reports.query",
+      },
+      {
+        to: "/server-logs",
+        label: "Server Logs",
+        icon: <Terminal size={16} />,
+        permission: "audit.view",
+      },
+      {
+        to: "/db-browser",
+        label: "SQL Tables",
+        icon: <Database size={16} />,
+        permission: "audit.view",
       },
       // No permission: everyone who can sign in owns their own password, farm
       // -scoped sub-admins included.
