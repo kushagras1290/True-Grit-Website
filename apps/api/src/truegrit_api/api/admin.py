@@ -2889,9 +2889,12 @@ async def invite_user_endpoint(
         reset_base_url=f"{settings.public_admin_url}/reset-password",
         settings=settings,
     )
-    if email is not None:
+    email_sent = (
         send_email(email.to, email.subject, email.body, settings, email.html_body)
-    return {**result, "emailSent": email is not None}
+        if email is not None
+        else False
+    )
+    return {**result, "emailSent": email_sent}
 
 
 @router.post("/users")

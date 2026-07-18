@@ -7,7 +7,12 @@ hides that behind a tiny ``EmailSender`` protocol: a real SMTP sender when
 dev-safe and keeps the flows that trigger email fully testable.
 
 Sending is best-effort: a failure is logged, never raised into the caller, so a
-mail outage can never break an order or a password reset.
+mail outage can never break an order or a password reset. `send_email` reports
+what actually happened via its return value (`True` delivered, `False` failed)
+so callers that need to know -- e.g. to tell a user "invite created but the
+email could not be confirmed sent" -- can check it. Fire-and-forget callers
+(most background-task sends) can keep ignoring the return value exactly as
+before; nothing about their behaviour changes.
 """
 
 from __future__ import annotations
@@ -114,12 +119,19 @@ def get_email_sender(settings: Settings | None = None) -> EmailSender:
 
 def send_email(
     to: str, subject: str, body: str, settings: Settings | None = None, html_body: str | None = None
-) -> None:
+) -> bool:
     """Best-effort send. Logs and swallows transport errors so the caller's
-    primary action (order, reset) is never blocked by mail delivery."""
+    primary action (order, reset) is never blocked by mail delivery.
+
+    Returns True if the configured transport accepted the message, False if it
+    raised. Never raises itself -- callers that only want fire-and-forget
+    semantics (e.g. `BackgroundTasks.add_task(send_email, ...)`) can continue to
+    ignore the return value with no change in behaviour."""
     try:
         get_email_sender(settings).send(
             OutboundEmail(to=to, subject=subject, body=body, html_body=html_body)
         )
+        return True
     except (smtplib.SMTPException, OSError, ssl.SSLError, urllib.error.URLError) as exc:
         log_event("error", "email_send_failed", to=to, error_type=type(exc).__name__)
+        return False
