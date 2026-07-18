@@ -16,7 +16,7 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
     pageNumber,
   );
   if (!page) throw data("Category not found", { status: 404 });
-  return { page, pageNumber };
+  return { page, pageNumber, pageSize: CATALOGUE_PAGE_SIZE };
 }
 
 export function meta({ data: loaderData }: Route.MetaArgs) {
@@ -24,7 +24,7 @@ export function meta({ data: loaderData }: Route.MetaArgs) {
 }
 
 export default function CategoryPage({ loaderData }: Route.ComponentProps) {
-  const { page, pageNumber } = loaderData;
+  const { page, pageNumber, pageSize } = loaderData;
   return (
     <>
       <Breadcrumbs items={page.breadcrumbs} />
@@ -55,7 +55,7 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
           {page.productsTotal} product{page.productsTotal === 1 ? "" : "s"}
         </p>
         <ProductGrid products={page.products} />
-        <PageLinkPagination page={pageNumber} pageSize={CATALOGUE_PAGE_SIZE} total={page.productsTotal} />
+        <PageLinkPagination page={pageNumber} pageSize={pageSize} total={page.productsTotal} />
       </Section>
 
       {page.faq.length > 0 ? (
