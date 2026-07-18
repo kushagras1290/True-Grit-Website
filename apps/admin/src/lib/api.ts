@@ -867,6 +867,35 @@ export const api = {
   ): Promise<{ id: string; permissionIds: string[] }> =>
     demoMode ? demo({ id, permissionIds }) : patch(`/v1/admin/roles/${id}/permissions`, { permissionIds }),
 
+  createRole: (input: {
+    name: string;
+    description: string;
+    permissionIds: string[];
+  }): Promise<AdminRole> =>
+    demoMode
+      ? demo({
+          id: `rol_${Date.now().toString(36)}`,
+          key: input.name.toLowerCase().replace(/\s+/g, "-"),
+          name: input.name,
+          description: input.description,
+          isSystem: false,
+          locked: false,
+          permissionIds: input.permissionIds,
+          permissionKeys: [],
+        })
+      : post("/v1/admin/roles", input),
+
+  updateRole: (
+    id: string,
+    input: { name: string; description: string },
+  ): Promise<{ id: string; key: string; name: string; description: string }> =>
+    demoMode
+      ? demo({ id, key: id, name: input.name, description: input.description })
+      : patch(`/v1/admin/roles/${id}`, input),
+
+  deleteRole: (id: string): Promise<{ id: string; deleted: boolean }> =>
+    demoMode ? demo({ id, deleted: true }) : del(`/v1/admin/roles/${id}`),
+
   inviteUser: (input: {
     email: string;
     displayName: string;

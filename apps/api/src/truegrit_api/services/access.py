@@ -15,6 +15,7 @@ from typing import Any
 from truegrit_api.auth.passwords import hash_password, verify_password
 from truegrit_api.auth.principal import Principal
 from truegrit_api.config import get_settings
+from truegrit_api.domain.slugs import slugify
 from truegrit_api.errors import (
     AuthenticationError,
     ConflictError,
@@ -158,6 +159,137 @@ async def set_role_permissions(
     )
     await db.batch(statements)
     return {"id": role_id, "permissionIds": after}
+
+
+async def create_role(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    name: str,
+    description: str,
+    permission_ids: list[str],
+) -> dict[str, Any]:
+    """Create a custom role from the admin UI. Never `is_system` -- that flag
+    marks only the built-in roles migrations/seed data create, which is what
+    lets `delete_role` tell "safe to remove" apart from "would break code that
+    assumes this role exists"."""
+    key = slugify(name)
+    if key in _LOCKED_ROLE_KEYS:
+        raise ValidationAppError("That role name is reserved.")
+    existing = await db.fetch_one("SELECT id FROM roles WHERE key = ?", (key,))
+    if existing is not None:
+        raise ConflictError(f"A role named '{name}' already exists.")
+
+    permissions = await _validate_permissions(db, permission_ids)
+    role_id = new_id("rol")
+    now = utc_now_iso()
+    statements: list[Any] = [
+        (
+            "INSERT INTO roles (id, key, name, description, is_system, created_at)"
+            " VALUES (?, ?, ?, ?, 0, ?)",
+            (role_id, key, name, description, now),
+        )
+    ]
+    for permission_id in permissions:
+        statements.append(
+            (
+                "INSERT INTO role_permissions (role_id, permission_id) VALUES (?, ?)",
+                (role_id, permission_id),
+            )
+        )
+    statements.append(
+        audit_statement(
+            action="role.created",
+            entity_type="role",
+            entity_id=role_id,
+            actor_id=actor.user_id,
+            request_id=request_id,
+            created_at=now,
+            after={"key": key, "name": name, "permissionIds": permissions},
+        )
+    )
+    await db.batch(statements)
+    return {
+        "id": role_id,
+        "key": key,
+        "name": name,
+        "description": description,
+        "isSystem": False,
+        "locked": False,
+        "permissionIds": permissions,
+        "permissionKeys": [],
+    }
+
+
+async def update_role(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    role_id: str,
+    *,
+    name: str,
+    description: str,
+) -> dict[str, Any]:
+    """Rename/redescribe a custom role. The key (used everywhere permissions
+    are checked) never changes after creation, so renaming can't silently
+    detach a role from code or seed data that references its original key."""
+    role = await db.fetch_one("SELECT id, key, is_system FROM roles WHERE id = ?", (role_id,))
+    if role is None:
+        raise NotFoundError("Role not found.")
+    if role["is_system"]:
+        raise ValidationAppError("Built-in roles cannot be renamed here.")
+
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                "UPDATE roles SET name = ?, description = ? WHERE id = ?",
+                (name, description, role_id),
+            ),
+            audit_statement(
+                action="role.updated",
+                entity_type="role",
+                entity_id=role_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"name": name, "description": description},
+            ),
+        ]
+    )
+    return {"id": role_id, "key": role["key"], "name": name, "description": description}
+
+
+async def delete_role(db: Database, actor: Principal, request_id: str, role_id: str) -> None:
+    """Delete a custom (non-system) role that nobody currently holds. System
+    roles are never deletable here -- only ones this same admin surface
+    created, so there's no risk of removing something code depends on."""
+    role = await db.fetch_one("SELECT id, key, is_system FROM roles WHERE id = ?", (role_id,))
+    if role is None:
+        raise NotFoundError("Role not found.")
+    if role["is_system"]:
+        raise ValidationAppError("Built-in roles cannot be deleted.")
+    holder = await db.fetch_one("SELECT 1 FROM user_roles WHERE role_id = ? LIMIT 1", (role_id,))
+    if holder is not None:
+        raise ConflictError("Unassign this role from every user before deleting it.")
+
+    now = utc_now_iso()
+    await db.batch(
+        [
+            ("DELETE FROM role_permissions WHERE role_id = ?", (role_id,)),
+            ("DELETE FROM roles WHERE id = ?", (role_id,)),
+            audit_statement(
+                action="role.deleted",
+                entity_type="role",
+                entity_id=role_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                before={"key": role["key"]},
+            ),
+        ]
+    )
 
 
 async def invite_user(

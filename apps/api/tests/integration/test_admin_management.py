@@ -406,6 +406,87 @@ def test_owner_cannot_edit_locked_or_unsafe_scopes(client: TestClient, db: SQLit
     assert unsafe.status_code == 422
 
 
+def test_owner_can_create_rename_and_delete_a_custom_role(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    permission_ids = {
+        permission["key"]: permission["id"]
+        for permission in client.get("/v1/admin/permissions").json()["items"]
+    }
+
+    created = client.post(
+        "/v1/admin/roles",
+        json={
+            "name": "Warehouse Lead",
+            "description": "Adjust stock and view products",
+            "permissionIds": [permission_ids["inventory.view"], permission_ids["inventory.adjust"]],
+        },
+    )
+    assert created.status_code == 200
+    body = created.json()
+    assert body["key"] == "warehouse-lead"
+    assert body["isSystem"] is False
+    assert body["locked"] is False
+    assert sorted(body["permissionIds"]) == sorted(
+        [permission_ids["inventory.view"], permission_ids["inventory.adjust"]]
+    )
+    role_id = body["id"]
+
+    roles = client.get("/v1/admin/roles").json()["items"]
+    assert any(role["id"] == role_id for role in roles)
+
+    duplicate = client.post(
+        "/v1/admin/roles", json={"name": "Warehouse Lead", "permissionIds": []}
+    )
+    assert duplicate.status_code == 409
+
+    renamed = client.patch(
+        f"/v1/admin/roles/{role_id}",
+        json={"name": "Warehouse Manager", "description": "Updated"},
+    )
+    assert renamed.status_code == 200
+    assert renamed.json()["name"] == "Warehouse Manager"
+    assert renamed.json()["key"] == "warehouse-lead"  # key is immutable after creation
+
+    assigned = client.post(
+        "/v1/admin/users/invite",
+        json={
+            "email": "warehouse@truegrit.test",
+            "displayName": "Warehouse User",
+            "roleIds": [role_id],
+        },
+    )
+    assert assigned.status_code == 200
+
+    blocked_delete = client.delete(f"/v1/admin/roles/{role_id}")
+    assert blocked_delete.status_code == 409
+
+    unassigned = client.patch(
+        f"/v1/admin/users/{assigned.json()['id']}/roles", json={"roleIds": []}
+    )
+    assert unassigned.status_code == 200
+
+    deleted = client.delete(f"/v1/admin/roles/{role_id}")
+    assert deleted.status_code == 200
+    assert client.get("/v1/admin/roles").json()["items"]
+    assert not any(role["id"] == role_id for role in client.get("/v1/admin/roles").json()["items"])
+
+
+def test_system_roles_cannot_be_renamed_or_deleted(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    renamed = client.patch(
+        "/v1/admin/roles/rol_inventory_manager", json={"name": "Something else"}
+    )
+    assert renamed.status_code == 422
+    deleted = client.delete("/v1/admin/roles/rol_inventory_manager")
+    assert deleted.status_code == 422
+
+
+def test_only_owner_can_create_roles(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    response = client.post("/v1/admin/roles", json={"name": "Shouldn't work", "permissionIds": []})
+    assert response.status_code == 403
+
+
 def test_owner_can_delete_users_individually_and_in_bulk(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
     role_id = "rol_inventory"

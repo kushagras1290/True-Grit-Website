@@ -39,6 +39,7 @@ import {
 } from "../lib/api";
 import { formatDateTime, formatMoney } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
+import { ManageRolesModal } from "./scopes";
 
 // ---------------------------------------------------------------------------
 // Inventory
@@ -1604,6 +1605,7 @@ export function UsersPage() {
   const [resettingPassword, setResettingPassword] = useState<AdminUserRow | null>(null);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [confirmingDelete, setConfirmingDelete] = useState<AdminUserRow[] | null>(null);
+  const [managingRoles, setManagingRoles] = useState(false);
 
   const statusMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) => api.setUserStatus(id, status),
@@ -1661,30 +1663,38 @@ export function UsersPage() {
         title="Users & Roles"
         description="Roles are collections of permissions; the API checks permissions, never role names."
         actions={
-          <PermissionGate permission="users.invite">
-            <div className="flex gap-2">
-              {selectedUserIds.length > 0 ? (
-                <Button
-                  variant="destructive"
-                  onClick={() => setConfirmingDelete(selectedUsers)}
-                  disabled={deleteMutation.isPending}
-                >
-                  Delete selected ({selectedUserIds.length})
+          <div className="flex gap-2">
+            <PermissionGate permission="users.manage_roles">
+              <Button variant="secondary" onClick={() => setManagingRoles(true)}>
+                Add / edit roles
+              </Button>
+            </PermissionGate>
+            <PermissionGate permission="users.invite">
+              <div className="flex gap-2">
+                {selectedUserIds.length > 0 ? (
+                  <Button
+                    variant="destructive"
+                    onClick={() => setConfirmingDelete(selectedUsers)}
+                    disabled={deleteMutation.isPending}
+                  >
+                    Delete selected ({selectedUserIds.length})
+                  </Button>
+                ) : null}
+                <Button variant="secondary" onClick={() => setAddingOwner(true)}>
+                  Add farm owner
                 </Button>
-              ) : null}
-              <Button variant="secondary" onClick={() => setAddingOwner(true)}>
-                Add farm owner
-              </Button>
-              <Button variant="secondary" onClick={() => setAddingUser(true)}>
-                Add user
-              </Button>
-              <Button variant="primary" onClick={() => setInviting(true)}>
-                Invite user
-              </Button>
-            </div>
-          </PermissionGate>
+                <Button variant="secondary" onClick={() => setAddingUser(true)}>
+                  Add user
+                </Button>
+                <Button variant="primary" onClick={() => setInviting(true)}>
+                  Invite user
+                </Button>
+              </div>
+            </PermissionGate>
+          </div>
         }
       />
+      {managingRoles ? <ManageRolesModal onClose={() => setManagingRoles(false)} /> : null}
       {inviting ? <InviteUserModal onClose={() => setInviting(false)} /> : null}
       {addingUser ? <AddUserModal onClose={() => setAddingUser(false)} /> : null}
       {addingOwner ? <AddFarmOwnerModal onClose={() => setAddingOwner(false)} /> : null}

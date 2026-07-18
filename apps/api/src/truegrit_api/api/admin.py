@@ -45,13 +45,16 @@ from truegrit_api.services.access import (
     adopt_bootstrap_owner,
     change_own_password,
     create_farm_owner,
+    create_role,
     create_user,
+    delete_role,
     delete_users,
     invite_user,
     reset_farm_owner_password,
     set_role_permissions,
     set_user_roles,
     set_user_status,
+    update_role,
 )
 from truegrit_api.services.audit import audit_statement
 from truegrit_api.services.catalogue import (
@@ -69,7 +72,13 @@ from truegrit_api.services.catalogue import (
 from truegrit_api.services.contact import contactable_email
 from truegrit_api.services.email import send_email
 from truegrit_api.services.inventory import adjust_inventory, clear_inventory_levels
-from truegrit_api.services.media import delete_media, list_media, save_image_bytes, save_image_upload, update_media
+from truegrit_api.services.media import (
+    delete_media,
+    list_media,
+    save_image_bytes,
+    save_image_upload,
+    update_media,
+)
 from truegrit_api.services.orders import issue_refund, update_order_status
 from truegrit_api.services.password_reset import (
     confirm_password_reset,
@@ -77,7 +86,12 @@ from truegrit_api.services.password_reset import (
     request_staff_invitation_email,
     request_staff_password_reset_for_user,
 )
-from truegrit_api.services.publishing import publish_article, publish_category, publish_product, publish_recipe
+from truegrit_api.services.publishing import (
+    publish_article,
+    publish_category,
+    publish_product,
+    publish_recipe,
+)
 from truegrit_api.services.reports import list_reports, run_report
 from truegrit_api.services.returns import decide_return_request, resolve_return_request
 from truegrit_api.services.site_documents import SITE_DOCUMENT_TYPES, default_site_documents
@@ -2719,6 +2733,17 @@ class RolePermissionsRequest(_CamelModel):
     permission_ids: list[str] = Field(default_factory=list)
 
 
+class RoleCreateRequest(_CamelModel):
+    name: str = Field(min_length=3, max_length=80)
+    description: str = Field(default="", max_length=300)
+    permission_ids: list[str] = Field(default_factory=list)
+
+
+class RoleUpdateRequest(_CamelModel):
+    name: str = Field(min_length=3, max_length=80)
+    description: str = Field(default="", max_length=300)
+
+
 class UserBulkDeleteRequest(_CamelModel):
     user_ids: list[str] = Field(min_length=1, max_length=100)
 
@@ -2821,6 +2846,55 @@ async def set_role_permissions_endpoint(
         role_id,
         permission_ids=payload.permission_ids,
     )
+
+
+@router.post("/roles")
+async def create_role_endpoint(
+    payload: RoleCreateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("users.manage_roles"))],
+) -> Any:
+    await _assert_scope_owner(db, principal)
+    return await create_role(
+        db,
+        principal,
+        _request_id(request),
+        name=payload.name,
+        description=payload.description,
+        permission_ids=payload.permission_ids,
+    )
+
+
+@router.patch("/roles/{role_id}")
+async def update_role_endpoint(
+    role_id: str,
+    payload: RoleUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("users.manage_roles"))],
+) -> Any:
+    await _assert_scope_owner(db, principal)
+    return await update_role(
+        db,
+        principal,
+        _request_id(request),
+        role_id,
+        name=payload.name,
+        description=payload.description,
+    )
+
+
+@router.delete("/roles/{role_id}")
+async def delete_role_endpoint(
+    role_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("users.manage_roles"))],
+) -> Any:
+    await _assert_scope_owner(db, principal)
+    await delete_role(db, principal, _request_id(request), role_id)
+    return {"id": role_id, "deleted": True}
 
 
 @router.get("/contact-messages")
