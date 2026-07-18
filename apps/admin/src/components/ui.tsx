@@ -2,7 +2,7 @@
 
 import { cn } from "@truegrit/ui";
 import { AlertTriangle, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type {
   ButtonHTMLAttributes,
   InputHTMLAttributes,
@@ -47,6 +47,41 @@ export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElem
         className,
       )}
       {...props}
+    />
+  );
+}
+
+export function SearchBox({
+  value,
+  onSearch,
+  placeholder,
+  "aria-label": ariaLabel,
+}: {
+  value: string;
+  onSearch: (value: string) => void;
+  placeholder?: string;
+  "aria-label"?: string;
+}) {
+  const [draft, setDraft] = useState(value);
+  const onSearchRef = useRef(onSearch);
+  onSearchRef.current = onSearch;
+
+  useEffect(() => {
+    setDraft(value);
+  }, [value]);
+
+  useEffect(() => {
+    const handle = window.setTimeout(() => onSearchRef.current(draft), 300);
+    return () => window.clearTimeout(handle);
+  }, [draft]);
+
+  return (
+    <Input
+      type="search"
+      value={draft}
+      onChange={(event) => setDraft(event.target.value)}
+      placeholder={placeholder}
+      aria-label={ariaLabel}
     />
   );
 }
@@ -309,6 +344,37 @@ export function DataTableShell({ children }: { children: ReactNode }) {
   return (
     <div className="overflow-x-auto rounded-md border border-line bg-surface shadow-card">
       <table className="w-full min-w-[640px] border-collapse text-left text-sm">{children}</table>
+    </div>
+  );
+}
+
+export function Pagination({
+  page,
+  onPageChange,
+  rowCount,
+  limit,
+}: {
+  page: number;
+  onPageChange: (page: number) => void;
+  rowCount: number;
+  limit: number;
+}) {
+  const hasNextPage = rowCount >= limit;
+  if (page === 1 && !hasNextPage) return null;
+
+  return (
+    <div className="mt-4 flex items-center justify-between border-t border-line pt-4">
+      <Button
+        variant="secondary"
+        disabled={page === 1}
+        onClick={() => onPageChange(Math.max(1, page - 1))}
+      >
+        Previous
+      </Button>
+      <span className="text-sm font-medium text-ink-muted">Page {page}</span>
+      <Button variant="secondary" disabled={!hasNextPage} onClick={() => onPageChange(page + 1)}>
+        Next
+      </Button>
     </div>
   );
 }

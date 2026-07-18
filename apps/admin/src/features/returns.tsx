@@ -14,6 +14,8 @@ import {
   Input,
   LoadingRows,
   PageHeader,
+  Pagination,
+  SearchBox,
   Select,
   StatusPill,
   Td,
@@ -36,9 +38,19 @@ const REASON_LABELS: Record<string, string> = {
 
 export function ReturnsListPage() {
   const [statusFilter, setStatusFilter] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const limit = 25;
+  const offset = (page - 1) * limit;
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-returns", statusFilter],
-    queryFn: () => api.returns(statusFilter || undefined),
+    queryKey: ["admin-returns", statusFilter, searchQuery, page],
+    queryFn: () =>
+      api.returns({
+        status: statusFilter || undefined,
+        limit,
+        offset,
+        search: searchQuery || undefined,
+      }),
   });
   const returns = data ?? [];
 
@@ -48,7 +60,13 @@ export function ReturnsListPage() {
         title="Returns"
         description="Customer-filed return requests, from request through resolution."
         actions={
-          <Select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+          <Select
+            value={statusFilter}
+            onChange={(event) => {
+              setStatusFilter(event.target.value);
+              setPage(1);
+            }}
+          >
             <option value="">All statuses</option>
             <option value="requested">Requested</option>
             <option value="under_review">Under review</option>
@@ -60,6 +78,17 @@ export function ReturnsListPage() {
           </Select>
         }
       />
+      <div className="mb-4 max-w-sm">
+        <SearchBox
+          value={searchQuery}
+          onSearch={(value) => {
+            setSearchQuery(value);
+            setPage(1);
+          }}
+          placeholder="Search by order reference or product..."
+          aria-label="Search returns"
+        />
+      </div>
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
@@ -100,6 +129,7 @@ export function ReturnsListPage() {
           </tbody>
         )}
       </DataTableShell>
+      <Pagination page={page} onPageChange={setPage} rowCount={returns.length} limit={limit} />
     </div>
   );
 }

@@ -83,11 +83,21 @@ class AdminRepository:
         )
 
     async def list_inventory(
-        self, limit: int = 100, offset: int = 0, farm_id: str | None = None
+        self,
+        limit: int = 100,
+        offset: int = 0,
+        farm_id: str | None = None,
+        search: str | None = None,
     ) -> list[dict[str, Any]]:
         limit = min(max(limit, 1), 200)
+        search_clause = ""
+        params: list[Any] = [farm_id, farm_id]
+        if search:
+            search_clause = "AND (p.name LIKE ? OR v.sku LIKE ?)"
+            params.extend([f"%{search}%", f"%{search}%"])
+        params.extend([limit, max(offset, 0)])
         return await self._db.fetch_all(
-            """
+            f"""
             SELECT
               il.variant_id, p.id AS product_id, p.status AS product_status,
               p.name AS product_name, v.name AS variant_name, v.sku,
@@ -98,10 +108,11 @@ class AdminRepository:
             JOIN products p ON p.id = v.product_id
             JOIN inventory_locations loc ON loc.id = il.location_id
             WHERE (? IS NULL OR p.farm_id = ?) AND p.archived_at IS NULL
+            {search_clause}
             ORDER BY (il.on_hand - il.reserved - il.reorder_threshold) ASC, p.name
             LIMIT ? OFFSET ?
             """,
-            (farm_id, farm_id, limit, max(offset, 0)),
+            tuple(params),
         )
 
     async def get_product_detail(self, product_id: str) -> dict[str, Any] | None:
@@ -198,18 +209,29 @@ class AdminRepository:
         category["release_countries"] = [row["country_code"] for row in release_rows]
         return category
 
-    async def list_users(self) -> list[dict[str, Any]]:
+    async def list_users(
+        self, limit: int = 50, offset: int = 0, search: str | None = None
+    ) -> list[dict[str, Any]]:
+        limit = min(max(limit, 1), MAX_PAGE_SIZE)
+        where_clause = "WHERE u.user_type = 'staff' AND u.deleted_at IS NULL"
+        params: list[Any] = []
+        if search:
+            where_clause += " AND (u.display_name LIKE ? OR u.email LIKE ?)"
+            params.extend([f"%{search}%", f"%{search}%"])
+        params.extend([limit, max(offset, 0)])
         return await self._db.fetch_all(
-            """
+            f"""
             SELECT u.id, u.display_name, u.email, u.status, u.last_sign_in_at,
               (SELECT GROUP_CONCAT(r.name, ', ') FROM user_roles ur
                 JOIN roles r ON r.id = ur.role_id WHERE ur.user_id = u.id) AS role_names,
               (SELECT GROUP_CONCAT(ur.role_id, ',') FROM user_roles ur
                 WHERE ur.user_id = u.id) AS role_ids
             FROM users u
-            WHERE u.user_type = 'staff' AND u.deleted_at IS NULL
+            {where_clause}
             ORDER BY u.display_name
-            """
+            LIMIT ? OFFSET ?
+            """,
+            tuple(params),
         )
 
     async def list_roles(self) -> list[dict[str, Any]]:
@@ -253,17 +275,26 @@ class AdminRepository:
             """
         )
 
-    async def list_orders(self, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
+    async def list_orders(
+        self, limit: int = 50, offset: int = 0, search: str | None = None
+    ) -> list[dict[str, Any]]:
         limit = min(max(limit, 1), MAX_PAGE_SIZE)
+        where_clause = ""
+        params: list[Any] = []
+        if search:
+            where_clause = "WHERE public_reference LIKE ? OR customer_email LIKE ?"
+            params.extend([f"%{search}%", f"%{search}%"])
+        params.extend([limit, max(offset, 0)])
         return await self._db.fetch_all(
-            """
+            f"""
             SELECT id, public_reference, customer_email, currency_code, total_minor,
                    order_status, payment_status, fulfilment_status, placed_at, created_at
             FROM orders
+            {where_clause}
             ORDER BY COALESCE(placed_at, created_at) DESC
             LIMIT ? OFFSET ?
             """,
-            (limit, max(offset, 0)),
+            tuple(params),
         )
 
     async def get_order_detail(self, order_id: str) -> dict[str, Any] | None:

@@ -1366,8 +1366,11 @@ async def list_returns_endpoint(
     status: Annotated[str | None, Query(max_length=20)] = None,
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
 ) -> Any:
-    rows = await ReturnRequestRepository(db).list_admin(status=status, limit=limit, offset=offset)
+    rows = await ReturnRequestRepository(db).list_admin(
+        status=status, limit=limit, offset=offset, search=search
+    )
     return {"items": [_return_request_admin_row(row) for row in rows], "limit": limit, "offset": offset}
 
 
@@ -1923,9 +1926,10 @@ async def list_inventory(
     principal: Annotated[Principal, Depends(require_permission("inventory.view"))],
     limit: Annotated[int, Query(ge=1, le=200)] = 100,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
 ) -> Any:
     rows = await AdminRepository(db).list_inventory(
-        limit=limit, offset=offset, farm_id=principal.farm_id
+        limit=limit, offset=offset, farm_id=principal.farm_id, search=search
     )
     return {
         "items": [
@@ -1954,8 +1958,9 @@ async def audit_log(
     db: Annotated[Database, Depends(get_database)],
     _principal: Annotated[Principal, Depends(require_permission("audit.view"))],
     limit: Annotated[int, Query(ge=1, le=200)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
 ) -> Any:
-    rows = await AuditRepository(db).recent(limit=limit)
+    rows = await AuditRepository(db).recent(limit=limit, offset=offset)
     return {
         "items": [
             {
@@ -1968,7 +1973,9 @@ async def audit_log(
                 "createdAt": row["created_at"],
             }
             for row in rows
-        ]
+        ],
+        "limit": limit,
+        "offset": offset,
     }
 
 
@@ -2527,8 +2534,11 @@ async def _assert_scope_owner(db: Database, principal: Principal) -> None:
 async def list_users_endpoint(
     db: Annotated[Database, Depends(get_database)],
     _principal: Annotated[Principal, Depends(require_permission("users.view"))],
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
 ) -> Any:
-    rows = await AdminRepository(db).list_users()
+    rows = await AdminRepository(db).list_users(limit=limit, offset=offset, search=search)
     return {
         "items": [
             {
@@ -2541,7 +2551,9 @@ async def list_users_endpoint(
                 "lastSignInAt": row["last_sign_in_at"],
             }
             for row in rows
-        ]
+        ],
+        "limit": limit,
+        "offset": offset,
     }
 
 
@@ -2606,17 +2618,26 @@ async def list_contact_messages_endpoint(
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(require_permission("users.view"))],
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
 ) -> Any:
     if principal.farm_id is not None:
         raise PermissionDeniedError("Only main admins can view contact attempts.")
+    where_clause = ""
+    params: list[Any] = []
+    if search:
+        where_clause = "WHERE name LIKE ? OR email LIKE ? OR subject LIKE ?"
+        params.extend([f"%{search}%", f"%{search}%", f"%{search}%"])
+    params.extend([limit, max(offset, 0)])
     rows = await db.fetch_all(
-        """
+        f"""
         SELECT id, name, email, subject, message, status, created_at, handled_at
         FROM contact_messages
+        {where_clause}
         ORDER BY created_at DESC
-        LIMIT ?
+        LIMIT ? OFFSET ?
         """,
-        (limit,),
+        tuple(params),
     )
     return {
         "items": [
@@ -2631,7 +2652,9 @@ async def list_contact_messages_endpoint(
                 "handledAt": row["handled_at"],
             }
             for row in rows
-        ]
+        ],
+        "limit": limit,
+        "offset": offset,
     }
 
 
@@ -2806,8 +2829,9 @@ async def list_orders_endpoint(
     _principal: Annotated[Principal, Depends(require_permission("orders.view"))],
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
 ) -> Any:
-    rows = await AdminRepository(db).list_orders(limit=limit, offset=offset)
+    rows = await AdminRepository(db).list_orders(limit=limit, offset=offset, search=search)
     return {
         "items": [
             {
@@ -2949,19 +2973,34 @@ def _farm_response(row: Any) -> dict[str, Any]:
 async def list_farms_endpoint(
     db: Annotated[Database, Depends(get_database)],
     _principal: Annotated[Principal, Depends(require_permission("users.view"))],
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
 ) -> Any:
+    where_clause = "WHERE f.status != 'archived'"
+    params: list[Any] = []
+    if search:
+        where_clause += " AND (f.name LIKE ? OR f.farmer_name LIKE ?)"
+        params.extend([f"%{search}%", f"%{search}%"])
+    params.extend([limit, max(offset, 0)])
     rows = await db.fetch_all(
-        """
+        f"""
         SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.country_code,
                f.story_json, f.established_year, f.status, f.updated_at,
                (SELECT COUNT(*) FROM products p
                  WHERE p.farm_id = f.id AND p.archived_at IS NULL) AS product_count
         FROM farms f
-        WHERE f.status != 'archived'
+        {where_clause}
         ORDER BY f.name
-        """
+        LIMIT ? OFFSET ?
+        """,
+        tuple(params),
     )
-    return {"items": [_farm_response(row) for row in rows]}
+    return {
+        "items": [_farm_response(row) for row in rows],
+        "limit": limit,
+        "offset": offset,
+    }
 
 
 @router.post("/farms")
