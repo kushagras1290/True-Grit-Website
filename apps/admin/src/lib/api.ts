@@ -294,6 +294,43 @@ export interface AdminOrderDetail {
   }>;
 }
 
+export interface AdminSearchProductResult {
+  id: string;
+  name: string;
+  slug: string;
+  sku: string;
+}
+
+export interface AdminSearchOrderResult {
+  id: string;
+  publicReference: string;
+  customerEmail: string | null;
+  orderStatus: string;
+  totalMinor: number;
+  currencyCode: string;
+}
+
+export interface AdminSearchUserResult {
+  id: string;
+  displayName: string;
+  email: string;
+  status: string;
+}
+
+export interface AdminSearchCategoryResult {
+  id: string;
+  name: string;
+  slug: string;
+  status: string;
+}
+
+export interface AdminSearchResults {
+  products: AdminSearchProductResult[];
+  orders: AdminSearchOrderResult[];
+  users: AdminSearchUserResult[];
+  categories: AdminSearchCategoryResult[];
+}
+
 export interface Me {
   id: string;
   displayName: string;
@@ -428,6 +465,58 @@ export const api = {
       return;
     }
     await post<{ ok: boolean }>("/v1/admin/auth/logout");
+  },
+
+  search: (query: string): Promise<AdminSearchResults> => {
+    const empty: AdminSearchResults = { products: [], orders: [], users: [], categories: [] };
+    const trimmed = query.trim();
+    if (trimmed.length < 2) return demo(empty);
+    if (!demoMode) return get<AdminSearchResults>(`/v1/admin/search?q=${encodeURIComponent(trimmed)}`);
+
+    const term = trimmed.toLowerCase();
+    const matches = (...values: Array<string | null | undefined>) =>
+      values.some((value) => value?.toLowerCase().includes(term));
+
+    return demo({
+      products: adminProducts
+        .filter((product) => matches(product.name, product.sku, product.slug))
+        .slice(0, 5)
+        .map((product) => ({
+          id: product.id,
+          name: product.name,
+          slug: product.slug,
+          sku: product.sku,
+        })),
+      orders: adminOrders
+        .filter((order) => matches(order.publicReference, order.customerEmail))
+        .slice(0, 5)
+        .map((order) => ({
+          id: order.id,
+          publicReference: order.publicReference,
+          customerEmail: order.customerEmail,
+          orderStatus: order.orderStatus,
+          totalMinor: order.totalMinor,
+          currencyCode: order.currencyCode,
+        })),
+      users: adminUsers
+        .filter((user) => matches(user.displayName, user.email))
+        .slice(0, 5)
+        .map((user) => ({
+          id: user.id,
+          displayName: user.displayName,
+          email: user.email,
+          status: user.status,
+        })),
+      categories: adminCategories
+        .filter((category) => matches(category.name, category.slug))
+        .slice(0, 5)
+        .map((category) => ({
+          id: category.id,
+          name: category.name,
+          slug: category.slug,
+          status: category.status,
+        })),
+    });
   },
 
   products: ({

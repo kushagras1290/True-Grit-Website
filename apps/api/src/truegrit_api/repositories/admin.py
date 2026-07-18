@@ -7,6 +7,24 @@ from typing import Any
 from truegrit_api.platform.database import Database
 
 MAX_PAGE_SIZE = 100
+DEFAULT_SEARCH_LIMIT = 5
+
+# Escaping user-typed '%'/'_' before they reach LIKE keeps a literal percent
+# sign or underscore in a search term (e.g. a discount code "50%") from being
+# reinterpreted as a wildcard. '!' is the escape character because it has no
+# meaning of its own in SQL LIKE patterns.
+_LIKE_ESCAPE_CHAR = "!"
+_LIKE_ESCAPE_TRANSLATION = str.maketrans(
+    {
+        _LIKE_ESCAPE_CHAR: _LIKE_ESCAPE_CHAR * 2,
+        "%": f"{_LIKE_ESCAPE_CHAR}%",
+        "_": f"{_LIKE_ESCAPE_CHAR}_",
+    }
+)
+
+
+def _like_term(raw: str) -> str:
+    return f"%{raw.translate(_LIKE_ESCAPE_TRANSLATION)}%"
 
 
 class AdminRepository:
@@ -337,3 +355,76 @@ class AdminRepository:
             (order_id,),
         )
         return order
+
+    async def search_products(
+        self, term: str, *, limit: int = DEFAULT_SEARCH_LIMIT, farm_id: str | None = None
+    ) -> list[dict[str, Any]]:
+        pattern = _like_term(term)
+        return await self._db.fetch_all(
+            """
+            SELECT p.id, p.name, p.slug,
+              (SELECT v.sku FROM product_variants v
+                WHERE v.product_id = p.id ORDER BY v.sort_order LIMIT 1) AS sku
+            FROM products p
+            WHERE p.archived_at IS NULL
+              AND (? IS NULL OR p.farm_id = ?)
+              AND (
+                p.name LIKE ? ESCAPE '!'
+                OR p.slug LIKE ? ESCAPE '!'
+                OR EXISTS (
+                  SELECT 1 FROM product_variants v2
+                  WHERE v2.product_id = p.id AND v2.sku LIKE ? ESCAPE '!'
+                )
+              )
+            ORDER BY p.name
+            LIMIT ?
+            """,
+            (farm_id, farm_id, pattern, pattern, pattern, limit),
+        )
+
+    async def search_orders(
+        self, term: str, *, limit: int = DEFAULT_SEARCH_LIMIT
+    ) -> list[dict[str, Any]]:
+        pattern = _like_term(term)
+        return await self._db.fetch_all(
+            """
+            SELECT id, public_reference, customer_email, order_status, total_minor, currency_code
+            FROM orders
+            WHERE public_reference LIKE ? ESCAPE '!' OR customer_email LIKE ? ESCAPE '!'
+            ORDER BY COALESCE(placed_at, created_at) DESC
+            LIMIT ?
+            """,
+            (pattern, pattern, limit),
+        )
+
+    async def search_users(
+        self, term: str, *, limit: int = DEFAULT_SEARCH_LIMIT
+    ) -> list[dict[str, Any]]:
+        pattern = _like_term(term)
+        return await self._db.fetch_all(
+            """
+            SELECT id, display_name, email, status
+            FROM users
+            WHERE user_type = 'staff' AND deleted_at IS NULL
+              AND (display_name LIKE ? ESCAPE '!' OR email LIKE ? ESCAPE '!')
+            ORDER BY display_name
+            LIMIT ?
+            """,
+            (pattern, pattern, limit),
+        )
+
+    async def search_categories(
+        self, term: str, *, limit: int = DEFAULT_SEARCH_LIMIT
+    ) -> list[dict[str, Any]]:
+        pattern = _like_term(term)
+        return await self._db.fetch_all(
+            """
+            SELECT id, name, slug, status
+            FROM categories
+            WHERE archived_at IS NULL
+              AND (name LIKE ? ESCAPE '!' OR slug LIKE ? ESCAPE '!')
+            ORDER BY name
+            LIMIT ?
+            """,
+            (pattern, pattern, limit),
+        )
