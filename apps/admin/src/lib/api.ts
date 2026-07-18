@@ -619,10 +619,16 @@ export const api = {
       ? demo({ deletedIds: categoryIds, count: categoryIds.length })
       : post("/v1/admin/categories/bulk-delete", { categoryIds }),
 
-  inventory: (): Promise<AdminInventoryRow[]> =>
+  inventory: ({
+    limit = 100,
+    offset = 0,
+    search,
+  }: { limit?: number; offset?: number; search?: string } = {}): Promise<AdminInventoryRow[]> =>
     demoMode
       ? demo(adminInventory)
-      : get<{ items: AdminInventoryRow[] }>("/v1/admin/inventory").then((body) => body.items),
+      : get<{ items: AdminInventoryRow[] }>(
+          `/v1/admin/inventory?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ).then((body) => body.items),
 
   adjustInventory: (input: {
     variantId?: string;
@@ -641,10 +647,16 @@ export const api = {
           note: "Bulk cleared from the admin inventory table.",
         }),
 
-  orders: (): Promise<AdminOrderRow[]> =>
+  orders: ({
+    limit = 50,
+    offset = 0,
+    search,
+  }: { limit?: number; offset?: number; search?: string } = {}): Promise<AdminOrderRow[]> =>
     demoMode
       ? demo(adminOrders)
-      : get<{ items: AdminOrderRow[] }>("/v1/admin/orders").then((body) => body.items),
+      : get<{ items: AdminOrderRow[] }>(
+          `/v1/admin/orders?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ).then((body) => body.items),
 
   getOrder: (id: string): Promise<AdminOrderDetail> => {
     if (!demoMode) return get<AdminOrderDetail>(`/v1/admin/orders/${id}`);
@@ -672,10 +684,16 @@ export const api = {
   updateOrderStatus: (id: string, status: string): Promise<{ orderStatus: string }> =>
     demoMode ? demo({ orderStatus: status }) : patch(`/v1/admin/orders/${id}/status`, { status }),
 
-  users: (): Promise<AdminUserRow[]> =>
+  users: ({
+    limit = 50,
+    offset = 0,
+    search,
+  }: { limit?: number; offset?: number; search?: string } = {}): Promise<AdminUserRow[]> =>
     demoMode
       ? demo(adminUsers)
-      : get<{ items: AdminUserRow[] }>("/v1/admin/users").then((body) => body.items),
+      : get<{ items: AdminUserRow[] }>(
+          `/v1/admin/users?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ).then((body) => body.items),
 
   roles: (): Promise<AdminRole[]> =>
     demoMode ? demo([]) : get<{ items: AdminRole[] }>("/v1/admin/roles").then((body) => body.items),
@@ -731,14 +749,26 @@ export const api = {
       ? demo({ id, email: "user@demo.test", emailSent: true })
       : post(`/v1/admin/users/${id}/password-reset-email`),
 
-  contactMessages: (): Promise<AdminContactMessageRow[]> =>
+  contactMessages: ({
+    limit = 50,
+    offset = 0,
+    search,
+  }: {
+    limit?: number;
+    offset?: number;
+    search?: string;
+  } = {}): Promise<AdminContactMessageRow[]> =>
     demoMode
       ? demo([])
-      : get<{ items: AdminContactMessageRow[] }>("/v1/admin/contact-messages").then(
-          (body) => body.items,
-        ),
+      : get<{ items: AdminContactMessageRow[] }>(
+          `/v1/admin/contact-messages?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ).then((body) => body.items),
 
-  farms: (): Promise<AdminFarmRow[]> =>
+  farms: ({
+    limit = 50,
+    offset = 0,
+    search,
+  }: { limit?: number; offset?: number; search?: string } = {}): Promise<AdminFarmRow[]> =>
     demoMode
       ? demo([
           {
@@ -755,7 +785,9 @@ export const api = {
             updatedAt: "2026-07-01T00:00:00Z",
           },
         ])
-      : get<{ items: AdminFarmRow[] }>("/v1/admin/farms").then((body) => body.items),
+      : get<{ items: AdminFarmRow[] }>(
+          `/v1/admin/farms?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ).then((body) => body.items),
 
   createFarm: (input: {
     name: string;
@@ -844,10 +876,15 @@ export const api = {
       ? demo({ ok: true })
       : post("/v1/admin/auth/password-reset/confirm", { token, newPassword }),
 
-  audit: (): Promise<AuditLogRow[]> =>
+  audit: ({
+    limit = 50,
+    offset = 0,
+  }: { limit?: number; offset?: number } = {}): Promise<AuditLogRow[]> =>
     demoMode
       ? demo(auditLog)
-      : get<{ items: AuditLogRow[] }>("/v1/admin/audit").then((body) => body.items),
+      : get<{ items: AuditLogRow[] }>(`/v1/admin/audit?limit=${limit}&offset=${offset}`).then(
+          (body) => body.items,
+        ),
 
   siteControl: (): Promise<SiteControl> =>
     demoMode
@@ -1165,11 +1202,21 @@ export const api = {
 
   // --- Return requests -----------------------------------------------------
 
-  returns: (status?: string): Promise<AdminReturnRequestRow[]> =>
+  returns: ({
+    status,
+    limit = 50,
+    offset = 0,
+    search,
+  }: {
+    status?: string;
+    limit?: number;
+    offset?: number;
+    search?: string;
+  } = {}): Promise<AdminReturnRequestRow[]> =>
     demoMode
       ? demo([])
       : get<{ items: AdminReturnRequestRow[] }>(
-          `/v1/admin/returns${status ? `?status=${encodeURIComponent(status)}` : ""}`,
+          `/v1/admin/returns?limit=${limit}&offset=${offset}${status ? `&status=${encodeURIComponent(status)}` : ""}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
         ).then((body) => body.items),
 
   getReturn: (id: string): Promise<AdminReturnRequestDetail> =>

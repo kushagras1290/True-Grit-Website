@@ -704,10 +704,21 @@ class ReturnRequestRepository:
         self._db = db
 
     async def list_admin(
-        self, *, status: str | None = None, limit: int = 50, offset: int = 0
+        self,
+        *,
+        status: str | None = None,
+        limit: int = 50,
+        offset: int = 0,
+        search: str | None = None,
     ) -> list[dict[str, Any]]:
+        search_clause = ""
+        params: list[Any] = [status, status]
+        if search:
+            search_clause = "AND (o.public_reference LIKE ? OR oi.product_name LIKE ?)"
+            params.extend([f"%{search}%", f"%{search}%"])
+        params.extend([min(max(limit, 1), 100), max(offset, 0)])
         return await self._db.fetch_all(
-            """
+            f"""
             SELECT rr.id, rr.order_id, o.public_reference, rr.customer_user_id,
                    COALESCE(u.display_name, o.customer_email) AS customer_name,
                    rr.reason_code, rr.status, rr.requested_refund_amount_minor,
@@ -716,11 +727,13 @@ class ReturnRequestRepository:
             FROM return_requests rr
             JOIN orders o ON o.id = rr.order_id
             LEFT JOIN users u ON u.id = rr.customer_user_id
+            LEFT JOIN order_items oi ON oi.id = rr.order_item_id
             WHERE (? IS NULL OR rr.status = ?)
+            {search_clause}
             ORDER BY rr.requested_at DESC
             LIMIT ? OFFSET ?
             """,
-            (status, status, min(max(limit, 1), 100), max(offset, 0)),
+            tuple(params),
         )
 
     async def get_admin_detail(self, return_id: str) -> dict[str, Any] | None:
@@ -756,7 +769,7 @@ class AuditRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def recent(self, limit: int = 50) -> list[dict[str, Any]]:
+    async def recent(self, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
         return await self._db.fetch_all(
             """
             SELECT a.id, COALESCE(u.display_name, 'system') AS actor_name, a.action,
@@ -764,7 +777,7 @@ class AuditRepository:
             FROM audit_logs a
             LEFT JOIN users u ON u.id = a.actor_user_id
             ORDER BY a.created_at DESC
-            LIMIT ?
+            LIMIT ? OFFSET ?
             """,
-            (min(max(limit, 1), 200),),
+            (min(max(limit, 1), 200), max(offset, 0)),
         )
