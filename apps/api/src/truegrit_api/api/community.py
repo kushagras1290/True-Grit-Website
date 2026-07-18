@@ -20,7 +20,11 @@ from truegrit_api.auth.principal import Principal
 from truegrit_api.errors import NotFoundError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.content import DiscussionRepository
-from truegrit_api.services.discussions import create_comment, create_discussion, get_min_account_age_months
+from truegrit_api.services.discussions import (
+    create_comment,
+    create_discussion,
+    get_min_account_age_months,
+)
 
 router = APIRouter(tags=["storefront-community"])
 
@@ -70,7 +74,9 @@ async def list_discussions(
 
 
 @router.get("/community/discussions/{discussion_id}")
-async def discussion_detail(discussion_id: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+async def discussion_detail(
+    discussion_id: str, db: Annotated[Database, Depends(get_database)]
+) -> Any:
     repo = DiscussionRepository(db)
     row = await repo.get_public_detail(discussion_id)
     if row is None:

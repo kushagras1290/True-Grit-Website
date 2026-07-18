@@ -94,7 +94,8 @@ async def create_article(
             ),
             (
                 "INSERT INTO article_versions"
-                " (id, article_id, version_number, content_json, workflow_state, created_at, created_by)"
+                " (id, article_id, version_number, content_json, workflow_state,"
+                " created_at, created_by)"
                 " VALUES (?, ?, 1, ?, 'draft', ?, ?)",
                 (version_id, article_id, json.dumps({"blocks": []}), now, actor.user_id),
             ),
@@ -155,20 +156,31 @@ async def update_article(
             # for the next review + publish cycle.
             version_id = new_id("arv")
             next_number_row = await db.fetch_one(
-                "SELECT COALESCE(MAX(version_number), 0) + 1 AS n FROM article_versions WHERE article_id = ?",
+                "SELECT COALESCE(MAX(version_number), 0) + 1 AS n"
+                " FROM article_versions WHERE article_id = ?",
                 (article_id,),
             )
+            assert next_number_row is not None  # COALESCE aggregate always returns one row
             statements.append(
                 (
                     "INSERT INTO article_versions"
-                    " (id, article_id, version_number, content_json, workflow_state, created_at, created_by)"
+                    " (id, article_id, version_number, content_json, workflow_state,"
+                    " created_at, created_by)"
                     " VALUES (?, ?, ?, ?, 'draft', ?, ?)",
-                    (version_id, article_id, int(next_number_row["n"]), content_json, now, actor.user_id),
+                    (
+                        version_id,
+                        article_id,
+                        int(next_number_row["n"]),
+                        content_json,
+                        now,
+                        actor.user_id,
+                    ),
                 )
             )
         else:
             latest = await db.fetch_one(
-                "SELECT id FROM article_versions WHERE article_id = ? ORDER BY version_number DESC LIMIT 1",
+                "SELECT id FROM article_versions WHERE article_id = ?"
+                " ORDER BY version_number DESC LIMIT 1",
                 (article_id,),
             )
             if latest is None:
@@ -201,7 +213,10 @@ async def update_article(
                 request_id=request_id,
                 created_at=now,
                 before={"status": current["status"]},
-                after={"status": updates.get("status", current["status"]), "contentChanged": content_changed},
+                after={
+                    "status": updates.get("status", current["status"]),
+                    "contentChanged": content_changed,
+                },
             )
         )
         await db.batch(statements)
@@ -246,13 +261,17 @@ async def _transition(
     return {"id": article_id, "status": target}
 
 
-async def submit_article(db: Database, actor: Principal, request_id: str, article_id: str) -> dict[str, Any]:
+async def submit_article(
+    db: Database, actor: Principal, request_id: str, article_id: str
+) -> dict[str, Any]:
     return await _transition(
         db, actor, request_id, article_id, target="in_review", action="article.submitted"
     )
 
 
-async def approve_article(db: Database, actor: Principal, request_id: str, article_id: str) -> dict[str, Any]:
+async def approve_article(
+    db: Database, actor: Principal, request_id: str, article_id: str
+) -> dict[str, Any]:
     return await _transition(
         db, actor, request_id, article_id, target="approved", action="article.approved"
     )
@@ -290,7 +309,9 @@ async def request_article_changes(
     return {"id": article_id, "status": "draft"}
 
 
-async def unpublish_article(db: Database, actor: Principal, request_id: str, article_id: str) -> dict[str, Any]:
+async def unpublish_article(
+    db: Database, actor: Principal, request_id: str, article_id: str
+) -> dict[str, Any]:
     current = await db.fetch_one("SELECT * FROM articles WHERE id = ?", (article_id,))
     if current is None:
         raise NotFoundError("Article not found.")
@@ -302,7 +323,8 @@ async def unpublish_article(db: Database, actor: Principal, request_id: str, art
     await db.batch(
         [
             (
-                "UPDATE articles SET status = 'unpublished', updated_at = ?, updated_by = ? WHERE id = ?",
+                "UPDATE articles SET status = 'unpublished', updated_at = ?, updated_by = ?"
+                " WHERE id = ?",
                 (now, actor.user_id, article_id),
             ),
             audit_statement(

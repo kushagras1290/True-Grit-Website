@@ -209,7 +209,9 @@ async def create_paypal_order(
             headers={"authorization": f"Bearer {token}"},
         )
     except HttpError as exc:
-        log_event("error", "paypal_create_failed", reference=reference, error_type=type(exc).__name__)
+        log_event(
+            "error", "paypal_create_failed", reference=reference, error_type=type(exc).__name__
+        )
         raise PaymentError("Could not start the payment. Please try again.") from exc
 
     paypal_order_id = (result or {}).get("id")
@@ -247,7 +249,9 @@ async def capture_paypal_order(
             paypal_order_id=paypal_order_id,
             error_type=type(exc).__name__,
         )
-        raise PaymentError("We could not confirm this payment. You were not charged twice.") from exc
+        raise PaymentError(
+            "We could not confirm this payment. You were not charged twice."
+        ) from exc
 
     if not isinstance(result, dict) or result.get("status") != "COMPLETED":
         raise PaymentError("This payment was not completed.")

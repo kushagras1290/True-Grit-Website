@@ -17,7 +17,8 @@ _BASE_HTML = """
     <title>{subject}</title>
     <style>
         body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+              Arial, sans-serif;
             background-color: #f7f9fc;
             margin: 0;
             padding: 0;
@@ -105,7 +106,8 @@ _BASE_HTML = """
             </div>
             <div class="footer">
                 &copy; 2026 True Grit. All rights reserved.<br>
-                <span style="font-size: 12px;">This is an automated message, please do not reply directly to this email.</span>
+                <span style="font-size: 12px;">This is an automated message, please do not
+                reply directly to this email.</span>
             </div>
         </div>
     </div>
@@ -113,15 +115,17 @@ _BASE_HTML = """
 </html>
 """
 
+
 def render_password_reset(reset_url: str, minutes: int) -> str:
     """Renders the HTML for the password reset email."""
     subject = "Reset your True Grit password"
     header_title = "True Grit"
-    
+
     body_html = f"""
     <h2 style="color: #1e293b; margin-top: 0;">Password Reset Request</h2>
     <p>We received a request to reset your password for your account.</p>
-    <p>You can reset your password by clicking the button below. This link is valid for <strong>{minutes} minutes</strong>.</p>
+    <p>You can reset your password by clicking the button below. This link is valid for
+    <strong>{minutes} minutes</strong>.</p>
     <div style="text-align: center;">
         <a href="{reset_url}" class="btn">Reset My Password</a>
     </div>
@@ -130,15 +134,13 @@ def render_password_reset(reset_url: str, minutes: int) -> str:
         <a href="{reset_url}" style="color: #198754; word-break: break-all;">{reset_url}</a>
     </p>
     <p style="margin-top: 24px; font-size: 14px; color: #64748b;">
-        If you didn't ask to reset your password, you can safely ignore this email. Your password will remain unchanged.
+        If you didn't ask to reset your password, you can safely ignore this email.
+        Your password will remain unchanged.
     </p>
     """
-    
-    return _BASE_HTML.format(
-        subject=subject,
-        header_title=header_title,
-        body_html=body_html
-    )
+
+    return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)
+
 
 def render_staff_invitation(display_name: str, setup_url: str, minutes: int) -> str:
     """Renders the HTML for a staff admin invitation email."""
@@ -148,7 +150,8 @@ def render_staff_invitation(display_name: str, setup_url: str, minutes: int) -> 
     body_html = f"""
     <h2 style="color: #1e293b; margin-top: 0;">Hi {display_name},</h2>
     <p>You have been invited to the True Grit admin portal.</p>
-    <p>Use the button below to set your password and activate your account. This link is valid for <strong>{minutes} minutes</strong>.</p>
+    <p>Use the button below to set your password and activate your account. This link is
+    valid for <strong>{minutes} minutes</strong>.</p>
     <div style="text-align: center;">
         <a href="{setup_url}" class="btn">Set My Password</a>
     </div>
@@ -159,65 +162,60 @@ def render_staff_invitation(display_name: str, setup_url: str, minutes: int) -> 
     <p style="margin-bottom: 0;">Best regards,<br>The True Grit Team</p>
     """
 
-    return _BASE_HTML.format(
-        subject=subject,
-        header_title=header_title,
-        body_html=body_html
-    )
+    return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)
+
 
 def render_order_confirmation(customer_name: str, reference: str, total: str) -> str:
     """Renders the HTML for the customer order confirmation email."""
     subject = f"Order {reference} confirmed"
     header_title = "True Grit"
-    
+
     body_html = f"""
     <h2 style="color: #1e293b; margin-top: 0;">Hi {customer_name},</h2>
     <p>Thank you for shopping with True Grit! Your order has been successfully confirmed.</p>
-    
+
     <div class="order-panel">
         <h3 style="margin-top: 0; color: #0f5132;">Order Summary</h3>
         <div class="order-detail"><strong>Order Reference:</strong> {reference}</div>
         <div class="order-detail"><strong>Total Amount:</strong> {total}</div>
         <div class="order-detail"><strong>Payment Method:</strong> Cash on Delivery</div>
     </div>
-    
+
     <p>We are currently processing your order and will let you know as soon as it ships.</p>
     <p>If you have any questions, feel free to contact our support team.</p>
     <p style="margin-bottom: 0;">Best regards,<br>The True Grit Team</p>
     """
-    
-    return _BASE_HTML.format(
-        subject=subject,
-        header_title=header_title,
-        body_html=body_html
-    )
 
-def render_farm_order_notification(owner_name: str, farm_name: str, reference: str, admin_url: str) -> str:
+    return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)
+
+
+def render_farm_order_notification(
+    owner_name: str, farm_name: str, reference: str, admin_url: str
+) -> str:
     """Renders the HTML for the farm owner new order notification."""
     subject = f"Order Received: {reference}"
     header_title = "True Grit Partner"
-    
+
     body_html = f"""
     <h2 style="color: #1e293b; margin-top: 0;">Hi {owner_name},</h2>
     <p>Good news! A new order has been received for <strong>{farm_name}</strong>.</p>
-    
+
     <div class="order-panel">
         <h3 style="margin-top: 0; color: #0f5132;">Order Details</h3>
         <div class="order-detail"><strong>Order Reference:</strong> {reference}</div>
     </div>
-    
-    <p>Please check your dashboard to view the full order details and prepare the items for fulfilment.</p>
+
+    <p>Please check your dashboard to view the full order details and prepare the items
+    for fulfilment.</p>
     <div style="text-align: center;">
-        <a href="{admin_url}/orders" class="btn" style="background-color: #3b82f6;">Go to Dashboard</a>
+        <a href="{admin_url}/orders" class="btn"
+        style="background-color: #3b82f6;">Go to Dashboard</a>
     </div>
     <p style="margin-bottom: 0; margin-top: 24px;">Best regards,<br>The True Grit System</p>
     """
 
-    return _BASE_HTML.format(
-        subject=subject,
-        header_title=header_title,
-        body_html=body_html
-    )
+    return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)
+
 
 def render_submission_approved(contact_name: str, content_type: str, title: str, url: str) -> str:
     """Renders the HTML for a community blog/recipe submission that went live.
@@ -235,18 +233,16 @@ def render_submission_approved(contact_name: str, content_type: str, title: str,
 
     body_html = f"""
     <h2 style="color: #1e293b; margin-top: 0;">Hi {safe_name},</h2>
-    <p>Great news — your {kind} <strong>&ldquo;{safe_title}&rdquo;</strong> has been approved and is now live on True Grit.</p>
+    <p>Great news — your {kind} <strong>&ldquo;{safe_title}&rdquo;</strong> has been
+    approved and is now live on True Grit.</p>
     <div style="text-align: center;">
         <a href="{url}" class="btn">View it live</a>
     </div>
     <p style="margin-bottom: 0;">Thanks for contributing to the community!<br>The True Grit Team</p>
     """
 
-    return _BASE_HTML.format(
-        subject=subject,
-        header_title=header_title,
-        body_html=body_html
-    )
+    return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)
+
 
 def render_submission_changes_requested(
     contact_name: str, content_type: str, title: str, note: str, edit_url: str
@@ -261,7 +257,8 @@ def render_submission_changes_requested(
 
     body_html = f"""
     <h2 style="color: #1e293b; margin-top: 0;">Hi {safe_name},</h2>
-    <p>Thanks for submitting your {kind} <strong>&ldquo;{safe_title}&rdquo;</strong>. Our editors would like a few changes before it can be published:</p>
+    <p>Thanks for submitting your {kind} <strong>&ldquo;{safe_title}&rdquo;</strong>. Our
+    editors would like a few changes before it can be published:</p>
     <div class="order-panel">
         <div class="order-detail">{safe_note}</div>
     </div>
@@ -271,13 +268,12 @@ def render_submission_changes_requested(
     <p style="margin-bottom: 0;">The True Grit Team</p>
     """
 
-    return _BASE_HTML.format(
-        subject=subject,
-        header_title=header_title,
-        body_html=body_html
-    )
+    return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)
 
-def render_submission_rejected(contact_name: str, content_type: str, title: str, reason: str) -> str:
+
+def render_submission_rejected(
+    contact_name: str, content_type: str, title: str, reason: str
+) -> str:
     """Renders the HTML declining a community blog/recipe submission."""
     kind = "blog post" if content_type == "article" else "recipe"
     subject = f"About your {kind} submission"
@@ -288,15 +284,13 @@ def render_submission_rejected(contact_name: str, content_type: str, title: str,
 
     body_html = f"""
     <h2 style="color: #1e293b; margin-top: 0;">Hi {safe_name},</h2>
-    <p>Thank you for submitting your {kind} <strong>&ldquo;{safe_title}&rdquo;</strong>. After review, we won't be publishing it this time.</p>
+    <p>Thank you for submitting your {kind} <strong>&ldquo;{safe_title}&rdquo;</strong>.
+    After review, we won't be publishing it this time.</p>
     <div class="order-panel">
         <div class="order-detail">{safe_reason}</div>
     </div>
-    <p style="margin-bottom: 0;">We'd love to see future submissions from you.<br>The True Grit Team</p>
+    <p style="margin-bottom: 0;">We'd love to see future submissions from you.<br>
+    The True Grit Team</p>
     """
 
-    return _BASE_HTML.format(
-        subject=subject,
-        header_title=header_title,
-        body_html=body_html
-    )
+    return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)

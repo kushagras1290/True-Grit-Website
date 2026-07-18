@@ -316,7 +316,8 @@ class RecipeRepository:
                    r.servings, r.dietary_tags_json, r.status, r.chef_user_id,
                    r.seo_title, r.seo_description, r.seo_keywords, r.canonical_url,
                    r.indexing_policy, r.updated_at, r.published_version_id,
-                   COALESCE(latest.content_json, v.content_json, '{"blocks":[],"steps":[]}') AS content_json
+                   COALESCE(latest.content_json, v.content_json, '{"blocks":[],"steps":[]}')
+                     AS content_json
             FROM recipes r
             LEFT JOIN recipe_versions v ON v.id = r.published_version_id
             LEFT JOIN (
@@ -802,13 +803,16 @@ class ContentSubmissionRepository:
         search_clause = ""
         params: list[Any] = [content_type, content_type, status, status]
         if search:
-            search_clause = "AND (cs.title LIKE ? OR cs.contact_name LIKE ? OR cs.contact_email LIKE ?)"
+            search_clause = (
+                "AND (cs.title LIKE ? OR cs.contact_name LIKE ? OR cs.contact_email LIKE ?)"
+            )
             params.extend([f"%{search}%", f"%{search}%", f"%{search}%"])
         params.extend([min(max(limit, 1), 100), max(offset, 0)])
         return await self._db.fetch_all(
             f"""
             SELECT cs.id, cs.content_type, cs.status, cs.title, cs.contact_name, cs.contact_email,
-                   cs.contact_phone, cs.submitter_user_id, cs.created_at, cs.updated_at, cs.reviewed_at
+                   cs.contact_phone, cs.submitter_user_id, cs.created_at, cs.updated_at,
+                   cs.reviewed_at
             FROM content_submissions cs
             WHERE (? IS NULL OR cs.content_type = ?) AND (? IS NULL OR cs.status = ?)
             {search_clause}
@@ -820,12 +824,15 @@ class ContentSubmissionRepository:
 
     async def count_pending(self) -> int:
         row = await self._db.fetch_one(
-            "SELECT COUNT(*) AS n FROM content_submissions WHERE status IN ('submitted', 'under_review')"
+            "SELECT COUNT(*) AS n FROM content_submissions "
+            "WHERE status IN ('submitted', 'under_review')"
         )
         return int(row["n"]) if row else 0
 
     async def get_admin_detail(self, submission_id: str) -> dict[str, Any] | None:
-        return await self._db.fetch_one("SELECT * FROM content_submissions WHERE id = ?", (submission_id,))
+        return await self._db.fetch_one(
+            "SELECT * FROM content_submissions WHERE id = ?", (submission_id,)
+        )
 
     async def list_for_customer(self, customer_user_id: str) -> list[dict[str, Any]]:
         return await self._db.fetch_all(
@@ -841,7 +848,9 @@ class ContentSubmissionRepository:
             (customer_user_id,),
         )
 
-    async def get_for_customer(self, customer_user_id: str, submission_id: str) -> dict[str, Any] | None:
+    async def get_for_customer(
+        self, customer_user_id: str, submission_id: str
+    ) -> dict[str, Any] | None:
         return await self._db.fetch_one(
             """
             SELECT id, content_type, status, title, excerpt, body, contact_name, contact_email,
@@ -898,7 +907,12 @@ class DiscussionRepository:
         )
 
     async def list_admin(
-        self, *, status: str | None = None, limit: int = 50, offset: int = 0, search: str | None = None
+        self,
+        *,
+        status: str | None = None,
+        limit: int = 50,
+        offset: int = 0,
+        search: str | None = None,
     ) -> list[dict[str, Any]]:
         search_clause = ""
         params: list[Any] = [status, status]

@@ -23,7 +23,7 @@ from truegrit_api.services.media import media_root
 
 
 def create_app(db: Database | None = None, media: MediaStore | None = None) -> FastAPI:
-    settings = get_settings()
+    get_settings()  # fail fast if required env vars are missing
     app = FastAPI(
         title="True Grit API",
         version="1.0.0",

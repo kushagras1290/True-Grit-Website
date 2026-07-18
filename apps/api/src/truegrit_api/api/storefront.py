@@ -20,10 +20,12 @@ from truegrit_api.errors import ConflictError, NotFoundError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.content import ReturnRequestRepository
 from truegrit_api.services.checkout import CheckoutLine, place_order
-from truegrit_api.services.returns import create_return_request
 from truegrit_api.services.contact import contactable_email
 from truegrit_api.services.email import send_email
-from truegrit_api.services.email_templates import render_farm_order_notification, render_order_confirmation
+from truegrit_api.services.email_templates import (
+    render_farm_order_notification,
+    render_order_confirmation,
+)
 from truegrit_api.services.payments import (
     PaymentError,
     capture_paypal_order,
@@ -31,6 +33,7 @@ from truegrit_api.services.payments import (
     create_razorpay_order,
     verify_razorpay_signature,
 )
+from truegrit_api.services.returns import create_return_request
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
 
@@ -97,7 +100,11 @@ async def checkout(
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
     settings = get_settings()
-    method = payload.payment_method if payload.payment_method in settings.enabled_payment_methods else "cod"
+    method = (
+        payload.payment_method
+        if payload.payment_method in settings.enabled_payment_methods
+        else "cod"
+    )
     result = await place_order(
         db,
         customer,
@@ -367,11 +374,8 @@ async def _queue_order_emails(
             f"{owner['farm_name']}. Please prepare it for fulfilment.",
             settings,
             render_farm_order_notification(
-                owner['display_name'], 
-                owner['farm_name'], 
-                reference, 
-                settings.public_admin_url
-            )
+                owner["display_name"], owner["farm_name"], reference, settings.public_admin_url
+            ),
         )
 
 
@@ -496,9 +500,7 @@ async def my_return_requests(
         raise NotFoundError("Order not found.")
     rows = await ReturnRequestRepository(db).list_for_customer(customer.user_id)
     return {
-        "items": [
-            _return_request_payload(row) for row in rows if row["order_id"] == order["id"]
-        ]
+        "items": [_return_request_payload(row) for row in rows if row["order_id"] == order["id"]]
     }
 
 

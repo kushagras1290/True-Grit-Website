@@ -503,7 +503,7 @@ def _home_favourites(page: dict[str, Any]) -> dict[str, Any]:
             "eyebrow": "Fresh favourites",
             "heading": "Fresh favourites",
             "productSlugs": [],
-        }
+        },
     }
 
 
@@ -1153,7 +1153,12 @@ async def create_article_endpoint(
     principal: Annotated[Principal, Depends(require_permission("articles.create"))],
 ) -> Any:
     return await article_service.create_article(
-        db, principal, _request_id(request), title=payload.title, slug=payload.slug, excerpt=payload.excerpt
+        db,
+        principal,
+        _request_id(request),
+        title=payload.title,
+        slug=payload.slug,
+        excerpt=payload.excerpt,
     )
 
 
@@ -1179,7 +1184,9 @@ async def update_article_endpoint(
     principal: Annotated[Principal, Depends(require_permission("articles.edit"))],
 ) -> Any:
     fields = payload.model_dump(exclude_unset=True)
-    await article_service.update_article(db, principal, _request_id(request), article_id, fields=fields)
+    await article_service.update_article(
+        db, principal, _request_id(request), article_id, fields=fields
+    )
     row = await ArticleRepository(db).get_admin_detail(article_id)
     if row is None:
         raise NotFoundError("Article not found.")
@@ -1345,7 +1352,12 @@ async def create_recipe_endpoint(
     principal: Annotated[Principal, Depends(require_permission("recipes.create"))],
 ) -> Any:
     return await recipe_service.create_recipe(
-        db, principal, _request_id(request), title=payload.title, slug=payload.slug, excerpt=payload.excerpt
+        db,
+        principal,
+        _request_id(request),
+        title=payload.title,
+        slug=payload.slug,
+        excerpt=payload.excerpt,
     )
 
 
@@ -1371,7 +1383,9 @@ async def update_recipe_endpoint(
     principal: Annotated[Principal, Depends(require_permission("recipes.edit"))],
 ) -> Any:
     fields = payload.model_dump(exclude_unset=True)
-    await recipe_service.update_recipe(db, principal, _request_id(request), recipe_id, fields=fields)
+    await recipe_service.update_recipe(
+        db, principal, _request_id(request), recipe_id, fields=fields
+    )
     row = await RecipeRepository(db).get_admin_detail(recipe_id)
     if row is None:
         raise NotFoundError("Recipe not found.")
@@ -1473,7 +1487,11 @@ async def list_returns_endpoint(
     rows = await ReturnRequestRepository(db).list_admin(
         status=status, limit=limit, offset=offset, search=search
     )
-    return {"items": [_return_request_admin_row(row) for row in rows], "limit": limit, "offset": offset}
+    return {
+        "items": [_return_request_admin_row(row) for row in rows],
+        "limit": limit,
+        "offset": offset,
+    }
 
 
 @router.get("/returns/{return_id}")
@@ -1595,7 +1613,11 @@ async def list_submissions_endpoint(
     rows = await ContentSubmissionRepository(db).list_admin(
         content_type=content_type, status=status, limit=limit, offset=offset, search=search
     )
-    return {"items": [_submission_admin_summary(row) for row in rows], "limit": limit, "offset": offset}
+    return {
+        "items": [_submission_admin_summary(row) for row in rows],
+        "limit": limit,
+        "offset": offset,
+    }
 
 
 @router.get("/submissions/pending-count")
@@ -1629,7 +1651,12 @@ async def decide_submission_endpoint(
 ) -> Any:
     settings = get_settings()
     result = await submission_service.decide_submission(
-        db, principal, _request_id(request), submission_id, decision=payload.decision, note=payload.note
+        db,
+        principal,
+        _request_id(request),
+        submission_id,
+        decision=payload.decision,
+        note=payload.note,
     )
     row = await ContentSubmissionRepository(db).get_admin_detail(submission_id)
     if row is not None:
@@ -1639,18 +1666,24 @@ async def decide_submission_endpoint(
             background.add_task(
                 send_email,
                 row["contact_email"],
-                f"Your {'blog post' if row['content_type'] == 'article' else 'recipe'} is live on True Grit",
-                f"Hi {row['contact_name']}, your submission \"{row['title']}\" has been approved and is now live: {live_url}",
+                f"Your {'blog post' if row['content_type'] == 'article' else 'recipe'} "
+                "is live on True Grit",
+                f'Hi {row["contact_name"]}, your submission "{row["title"]}" has been '
+                f"approved and is now live: {live_url}",
                 settings,
-                render_submission_approved(row["contact_name"], row["content_type"], row["title"], live_url),
+                render_submission_approved(
+                    row["contact_name"], row["content_type"], row["title"], live_url
+                ),
             )
         elif payload.decision == "changes_requested" and payload.note:
             edit_url = f"{settings.public_storefront_url}/account/submissions/{submission_id}/edit"
             background.add_task(
                 send_email,
                 row["contact_email"],
-                f"Changes requested on your {'blog post' if row['content_type'] == 'article' else 'recipe'} submission",
-                f"Hi {row['contact_name']}, changes were requested on \"{row['title']}\": {payload.note}\nEdit and resubmit: {edit_url}",
+                f"Changes requested on your "
+                f"{'blog post' if row['content_type'] == 'article' else 'recipe'} submission",
+                f'Hi {row["contact_name"]}, changes were requested on "{row["title"]}": '
+                f"{payload.note}\nEdit and resubmit: {edit_url}",
                 settings,
                 render_submission_changes_requested(
                     row["contact_name"], row["content_type"], row["title"], payload.note, edit_url
@@ -1660,10 +1693,14 @@ async def decide_submission_endpoint(
             background.add_task(
                 send_email,
                 row["contact_email"],
-                f"About your {'blog post' if row['content_type'] == 'article' else 'recipe'} submission",
-                f"Hi {row['contact_name']}, after review we will not be publishing \"{row['title']}\": {payload.note}",
+                f"About your "
+                f"{'blog post' if row['content_type'] == 'article' else 'recipe'} submission",
+                f'Hi {row["contact_name"]}, after review we will not be publishing '
+                f'"{row["title"]}": {payload.note}',
                 settings,
-                render_submission_rejected(row["contact_name"], row["content_type"], row["title"], payload.note),
+                render_submission_rejected(
+                    row["contact_name"], row["content_type"], row["title"], payload.note
+                ),
             )
     return result
 
@@ -1706,8 +1743,14 @@ async def list_discussions_admin_endpoint(
     offset: Annotated[int, Query(ge=0)] = 0,
     search: str | None = None,
 ) -> Any:
-    rows = await DiscussionRepository(db).list_admin(status=status, limit=limit, offset=offset, search=search)
-    return {"items": [_discussion_admin_summary(row) for row in rows], "limit": limit, "offset": offset}
+    rows = await DiscussionRepository(db).list_admin(
+        status=status, limit=limit, offset=offset, search=search
+    )
+    return {
+        "items": [_discussion_admin_summary(row) for row in rows],
+        "limit": limit,
+        "offset": offset,
+    }
 
 
 @router.get("/discussions/{discussion_id}")
@@ -1755,7 +1798,12 @@ async def moderate_discussion_endpoint(
     principal: Annotated[Principal, Depends(require_permission("discussions.moderate"))],
 ) -> Any:
     return await discussion_service.moderate_discussion(
-        db, principal, _request_id(request), discussion_id, action=payload.action, reason=payload.reason
+        db,
+        principal,
+        _request_id(request),
+        discussion_id,
+        action=payload.action,
+        reason=payload.reason,
     )
 
 
@@ -1766,7 +1814,9 @@ async def delete_discussion_endpoint(
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(require_permission("discussions.moderate"))],
 ) -> Any:
-    return await discussion_service.delete_discussion(db, principal, _request_id(request), discussion_id)
+    return await discussion_service.delete_discussion(
+        db, principal, _request_id(request), discussion_id
+    )
 
 
 @router.post("/discussions/comments/{comment_id}/moderate")
@@ -1778,7 +1828,12 @@ async def moderate_comment_endpoint(
     principal: Annotated[Principal, Depends(require_permission("discussions.moderate"))],
 ) -> Any:
     return await discussion_service.moderate_comment(
-        db, principal, _request_id(request), comment_id, action=payload.action, reason=payload.reason
+        db,
+        principal,
+        _request_id(request),
+        comment_id,
+        action=payload.action,
+        reason=payload.reason,
     )
 
 
@@ -2298,7 +2353,12 @@ async def update_media_endpoint(
     principal: Annotated[Principal, Depends(require_permission("media.edit"))],
 ) -> Any:
     row = await update_media(
-        db, principal, _request_id(request), media_id, alt_text=payload.alt_text, caption=payload.caption
+        db,
+        principal,
+        _request_id(request),
+        media_id,
+        alt_text=payload.alt_text,
+        caption=payload.caption,
     )
     base_url = str(request.base_url).rstrip("/")
     return _media_row(row, base_url)
@@ -2724,14 +2784,17 @@ class VariantCreateRequest(_CamelModel):
     list_minor: int = Field(ge=0)
     sale_minor: int | None = Field(default=None)
 
+
 class VariantUpdateRequest(_CamelModel):
     name: str | None = Field(default=None, max_length=140)
     sku: str | None = Field(default=None, max_length=64)
     list_minor: int | None = Field(default=None, ge=0)
     sale_minor: int | None = Field(default=None)
 
+
 class ProductStatusRequest(_CamelModel):
     status: str = Field(pattern="^(draft|active|archived)$")
+
 
 @router.post("/products/{product_id}/variants")
 async def create_variant_endpoint(
@@ -2742,6 +2805,7 @@ async def create_variant_endpoint(
     principal: Annotated[Principal, Depends(require_permission("products.edit"))],
 ) -> Any:
     from ..services.catalogue import create_variant
+
     variant_id = await create_variant(
         db,
         principal,
@@ -2765,6 +2829,7 @@ async def update_variant_endpoint(
     principal: Annotated[Principal, Depends(require_permission("products.edit"))],
 ) -> Any:
     from ..services.catalogue import update_variant
+
     return await update_variant(
         db,
         principal,
@@ -2777,6 +2842,7 @@ async def update_variant_endpoint(
         sale_minor=payload.sale_minor,
     )
 
+
 @router.patch("/products/{product_id}/status")
 async def set_product_status_endpoint(
     product_id: str,
@@ -2786,6 +2852,7 @@ async def set_product_status_endpoint(
     principal: Annotated[Principal, Depends(require_permission("products.publish"))],
 ) -> Any:
     from ..services.catalogue import set_product_status
+
     await _assert_product_scope(db, product_id, principal)
     return await set_product_status(
         db,
@@ -2949,7 +3016,9 @@ async def update_category_endpoint(
     release_scope = fields.pop("release_scope", None)
     release_countries = fields.pop("release_countries", None)
     if release_scope is None and release_countries is not None:
-        row = await db.fetch_one("SELECT release_scope FROM categories WHERE id = ?", (category_id,))
+        row = await db.fetch_one(
+            "SELECT release_scope FROM categories WHERE id = ?", (category_id,)
+        )
         release_scope = row["release_scope"] if row else "global"
     if release_scope is not None:
         await set_category_release(
@@ -2963,7 +3032,9 @@ async def update_category_endpoint(
         changed = True
 
     if fields:
-        result = await update_category(db, principal, _request_id(request), category_id, fields=fields)
+        result = await update_category(
+            db, principal, _request_id(request), category_id, fields=fields
+        )
         result["changed"] = result.get("changed", False) or changed
         return result
     row = await db.fetch_one("SELECT status FROM categories WHERE id = ?", (category_id,))
@@ -3164,7 +3235,9 @@ async def list_roles_endpoint(
                 "isSystem": bool(row["is_system"]),
                 "locked": row["key"] == "super_admin",
                 "permissionIds": row["permission_ids"].split(",") if row["permission_ids"] else [],
-                "permissionKeys": row["permission_keys"].split(",") if row["permission_keys"] else [],
+                "permissionKeys": row["permission_keys"].split(",")
+                if row["permission_keys"]
+                else [],
             }
             for row in rows
         ]
@@ -3180,8 +3253,7 @@ async def list_permissions_endpoint(
     rows = await AdminRepository(db).list_permissions()
     return {
         "items": [
-            {"id": row["id"], "key": row["key"], "description": row["description"]}
-            for row in rows
+            {"id": row["id"], "key": row["key"], "description": row["description"]} for row in rows
         ]
     }
 
@@ -4001,4 +4073,3 @@ async def staff_password_reset_confirm(
         request_id=_request_id(request),
         source="admin",
     )
-

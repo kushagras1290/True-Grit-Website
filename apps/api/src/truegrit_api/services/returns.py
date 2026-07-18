@@ -17,7 +17,12 @@ import json
 from typing import Any
 
 from truegrit_api.auth.principal import Principal
-from truegrit_api.errors import ConflictError, NotFoundError, PermissionDeniedError, ValidationAppError
+from truegrit_api.errors import (
+    ConflictError,
+    NotFoundError,
+    PermissionDeniedError,
+    ValidationAppError,
+)
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
 from truegrit_api.util.ids import new_id
@@ -100,7 +105,10 @@ async def create_return_request(
     )
     if existing is not None:
         raise ConflictError("A return request is already open for this order.")
-    if requested_refund_amount_minor is not None and requested_refund_amount_minor > order["total_minor"]:
+    if (
+        requested_refund_amount_minor is not None
+        and requested_refund_amount_minor > order["total_minor"]
+    ):
         raise ValidationAppError("Requested amount cannot exceed the order total.")
 
     now = utc_now_iso()
@@ -220,8 +228,9 @@ async def resolve_return_request(
     target_status = _RESOLUTION_TARGET_STATUS[resolution_type]
     statements: list[tuple[str, Any]] = [
         (
-            "UPDATE return_requests SET status = ?, resolution_type = ?, resolution_amount_minor = ?,"
-            " resolution_notes = ?, resolved_at = ?, resolved_by = ?, updated_at = ? WHERE id = ?",
+            "UPDATE return_requests SET status = ?, resolution_type = ?,"
+            " resolution_amount_minor = ?, resolution_notes = ?, resolved_at = ?,"
+            " resolved_by = ?, updated_at = ? WHERE id = ?",
             (
                 target_status,
                 resolution_type,
@@ -249,13 +258,22 @@ async def resolve_return_request(
         ),
     ]
     if resolution_type == "refund" and refund_amount > 0:
-        new_payment_status = "refunded" if refund_amount >= order["total_minor"] else "partially_refunded"
+        new_payment_status = (
+            "refunded" if refund_amount >= order["total_minor"] else "partially_refunded"
+        )
         statements.append(
             (
                 "INSERT INTO order_adjustments"
                 " (id, order_id, adjustment_type, label, amount_minor, created_at, created_by)"
                 " VALUES (?, ?, 'refund', ?, ?, ?, ?)",
-                (new_id("adj"), current["order_id"], "Return refund", -refund_amount, now, actor.user_id),
+                (
+                    new_id("adj"),
+                    current["order_id"],
+                    "Return refund",
+                    -refund_amount,
+                    now,
+                    actor.user_id,
+                ),
             )
         )
         statements.append(

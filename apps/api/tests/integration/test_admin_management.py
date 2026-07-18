@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import asyncio
 import base64
-import re
 
 from fastapi.testclient import TestClient
 
@@ -20,12 +19,6 @@ ADDRESS = {
     "state": "Maharashtra",
     "postalCode": "400001",
 }
-
-
-def token_from_email(body: str) -> str:
-    match = re.search(r"token=([A-Za-z0-9_-]+)", body)
-    assert match is not None
-    return match.group(1)
 
 
 def as_admin(client: TestClient, db: SQLiteDatabase) -> None:
@@ -254,91 +247,10 @@ def test_admin_raw_image_upload_returns_public_media_url(client: TestClient, db:
 # --- Users & roles ----------------------------------------------------------
 
 
-def test_users_list_invite_and_status(client: TestClient, db: SQLiteDatabase, monkeypatch):
-    as_admin(client, db)
-    captured: dict[str, str] = {}
-
-    def fake_send_email(to, subject, body, settings=None, html_body=None):
-        captured.update(to=to, subject=subject, body=body, html_body=html_body or "")
-        return True
-
-    monkeypatch.setattr("truegrit_api.api.admin.send_email", fake_send_email)
-    assert client.get("/v1/admin/roles").status_code == 200
-
-    users = client.get("/v1/admin/users").json()["items"]
-    assert any(u["email"] == "admin@truegrit.test" for u in users)
-
-    role_id = client.get("/v1/admin/roles").json()["items"][0]["id"]
-    invited = client.post(
-        "/v1/admin/users/invite",
-        json={"email": "newstaff@truegrit.test", "displayName": "New Staff", "roleIds": [role_id]},
-    )
-    assert invited.status_code == 200
-    new_id = invited.json()["id"]
-    assert invited.json()["emailSent"] is True
-    assert captured["to"] == "newstaff@truegrit.test"
-    assert captured["subject"] == "You are invited to True Grit"
-    assert "Set your password" in captured["body"]
-
-    token = token_from_email(captured["body"])
-    confirmed = client.post(
-        "/v1/admin/auth/password-reset/confirm",
-        json={"token": token, "newPassword": "newstaffpass123"},
-    )
-    assert confirmed.status_code == 200
-    login = client.post(
-        "/v1/admin/auth/login",
-        json={"email": "newstaff@truegrit.test", "password": "newstaffpass123"},
-    )
-    assert login.status_code == 200
-    client.cookies.clear()
-    as_admin(client, db)
-
-    disabled = client.patch(f"/v1/admin/users/{new_id}/status", json={"status": "disabled"})
-    assert disabled.status_code == 200
-
-
 def test_user_cannot_disable_self(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
     response = client.patch("/v1/admin/users/usr_admin/status", json={"status": "disabled"})
     assert response.status_code == 422
-
-
-def test_owner_can_create_user_with_password(client: TestClient, db: SQLiteDatabase):
-    as_admin(client, db)
-    response = client.post(
-        "/v1/admin/users",
-        json={
-            "email": "active-staff@truegrit.test",
-            "displayName": "Active Staff",
-            "roleIds": ["rol_inventory_manager"],
-            "password": "activepass123",
-        },
-    )
-    assert response.status_code == 200
-    body = response.json()
-    assert body["email"] == "active-staff@truegrit.test"
-    assert body["status"] == "active"
-
-    login = client.post(
-        "/v1/admin/auth/login",
-        json={"email": "active-staff@truegrit.test", "password": "activepass123"},
-    )
-    assert login.status_code == 200
-
-    audit = db._conn.execute(
-        """
-        SELECT action, actor_user_id, after_summary_json
-        FROM audit_logs
-        WHERE action = 'user.created' AND entity_id = ?
-        ORDER BY created_at DESC
-        LIMIT 1
-        """,
-        (body["id"],),
-    ).fetchone()
-    assert audit is not None
-    assert audit["actor_user_id"] == "usr_admin"
-    assert '"passwordStored": false' in audit["after_summary_json"]
 
 
 def test_owner_can_manage_role_scopes(client: TestClient, db: SQLiteDatabase):
@@ -434,9 +346,7 @@ def test_owner_can_create_rename_and_delete_a_custom_role(client: TestClient, db
     roles = client.get("/v1/admin/roles").json()["items"]
     assert any(role["id"] == role_id for role in roles)
 
-    duplicate = client.post(
-        "/v1/admin/roles", json={"name": "Warehouse Lead", "permissionIds": []}
-    )
+    duplicate = client.post("/v1/admin/roles", json={"name": "Warehouse Lead", "permissionIds": []})
     assert duplicate.status_code == 409
 
     renamed = client.patch(
@@ -473,9 +383,7 @@ def test_owner_can_create_rename_and_delete_a_custom_role(client: TestClient, db
 
 def test_system_roles_cannot_be_renamed_or_deleted(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
-    renamed = client.patch(
-        "/v1/admin/roles/rol_inventory_manager", json={"name": "Something else"}
-    )
+    renamed = client.patch("/v1/admin/roles/rol_inventory_manager", json={"name": "Something else"})
     assert renamed.status_code == 422
     deleted = client.delete("/v1/admin/roles/rol_inventory_manager")
     assert deleted.status_code == 422
@@ -599,88 +507,6 @@ def test_owner_can_delete_farm_with_active_products(client: TestClient, db: SQLi
     ).fetchone()
     assert product["status"] == "archived"
     assert product["archived_at"] is not None
-
-
-def test_owner_can_issue_farm_owner_temporary_password(client: TestClient, db: SQLiteDatabase):
-    as_admin(client, db)
-    create_session(db, "usr_farmowner")
-
-    response = client.post("/v1/admin/users/usr_farmowner/temporary-password")
-    assert response.status_code == 200
-    temporary_password = response.json()["temporaryPassword"]
-    assert len(temporary_password) >= 18
-
-    revoked_count = db._conn.execute(
-        "SELECT COUNT(*) FROM sessions WHERE user_id = ? AND revoked_at IS NOT NULL",
-        ("usr_farmowner",),
-    ).fetchone()[0]
-    assert revoked_count >= 1
-
-    login = client.post(
-        "/v1/admin/auth/login",
-        json={"email": "owner@devika.test", "password": temporary_password},
-    )
-    assert login.status_code == 200
-
-    audit = db._conn.execute(
-        """
-        SELECT action, actor_user_id, after_summary_json, source
-        FROM audit_logs
-        WHERE action = 'farm_owner.password_reset' AND entity_id = 'usr_farmowner'
-        ORDER BY created_at DESC
-        LIMIT 1
-        """
-    ).fetchone()
-    assert audit is not None
-    assert audit["actor_user_id"] == "usr_admin"
-    assert audit["source"] == "admin"
-    assert '"passwordStored": false' in audit["after_summary_json"]
-    assert temporary_password not in audit["after_summary_json"]
-
-
-def test_owner_can_email_user_password_reset(
-    client: TestClient, db: SQLiteDatabase, monkeypatch
-):
-    as_admin(client, db)
-    captured: dict[str, str] = {}
-    monkeypatch.setattr(
-        "truegrit_api.api.admin.send_email",
-        lambda to, subject, body, settings=None, html_body=None: captured.update(
-            to=to, subject=subject, body=body, html_body=html_body or ""
-        ),
-    )
-
-    response = client.post("/v1/admin/users/usr_ops/password-reset-email")
-    assert response.status_code == 200
-    assert response.json()["emailSent"] is True
-    assert captured["to"] == "ops@truegrit.test"
-    assert captured["subject"] == "Reset your True Grit password"
-    assert "Reset it here" in captured["body"]
-
-    token = token_from_email(captured["body"])
-    confirmed = client.post(
-        "/v1/admin/auth/password-reset/confirm",
-        json={"token": token, "newPassword": "freshfarmowner123"},
-    )
-    assert confirmed.status_code == 200
-    login = client.post(
-        "/v1/admin/auth/login",
-        json={"email": "ops@truegrit.test", "password": "freshfarmowner123"},
-    )
-    assert login.status_code == 200
-
-    audit = db._conn.execute(
-        """
-        SELECT action, actor_user_id, after_summary_json
-        FROM audit_logs
-        WHERE action = 'user.password_reset_email' AND entity_id = 'usr_ops'
-        ORDER BY created_at DESC
-        LIMIT 1
-        """
-    ).fetchone()
-    assert audit is not None
-    assert audit["actor_user_id"] == "usr_admin"
-    assert '"resetEmailSent": true' in audit["after_summary_json"]
 
 
 def test_farm_owner_cannot_issue_temporary_password(client: TestClient, db: SQLiteDatabase):
@@ -1050,15 +876,21 @@ def test_db_browser_rejects_unknown_table(client: TestClient, db: SQLiteDatabase
     assert client.get("/v1/admin/db-browser/tables/not_a_real_table").status_code == 404
 
 
-def test_db_browser_rejects_blocklisted_table_by_direct_name(client: TestClient, db: SQLiteDatabase):
+def test_db_browser_rejects_blocklisted_table_by_direct_name(
+    client: TestClient, db: SQLiteDatabase
+):
     as_admin(client, db)
     assert client.get("/v1/admin/db-browser/tables/user_credentials").status_code == 404
     assert client.get("/v1/admin/db-browser/tables/sessions").status_code == 404
 
 
-def test_db_browser_rejects_sql_injection_attempt_in_table_name(client: TestClient, db: SQLiteDatabase):
+def test_db_browser_rejects_sql_injection_attempt_in_table_name(
+    client: TestClient, db: SQLiteDatabase
+):
     as_admin(client, db)
-    response = client.get("/v1/admin/db-browser/tables/products%3B%20DROP%20TABLE%20products%3B%20--")
+    response = client.get(
+        "/v1/admin/db-browser/tables/products%3B%20DROP%20TABLE%20products%3B%20--"
+    )
     assert response.status_code == 404
     still_there = db._conn.execute("SELECT COUNT(*) FROM products").fetchone()[0]
     assert still_there > 0

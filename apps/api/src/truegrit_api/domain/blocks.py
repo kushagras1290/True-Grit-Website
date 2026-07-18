@@ -162,7 +162,9 @@ class RichTextProps(BaseModel):
             if "<" in paragraph or ">" in paragraph:
                 raise ValueError("Rich text paragraphs cannot contain markup.")
             if len(paragraph) > MAX_PARAGRAPH_LENGTH:
-                raise ValueError(f"Rich text paragraphs cannot exceed {MAX_PARAGRAPH_LENGTH} characters.")
+                raise ValueError(
+                    f"Rich text paragraphs cannot exceed {MAX_PARAGRAPH_LENGTH} characters."
+                )
             validate_inline_links(paragraph)
         return value
 

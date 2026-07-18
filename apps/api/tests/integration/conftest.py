@@ -14,11 +14,11 @@ from fastapi.testclient import TestClient
 # and covered by dedicated checkout tests below.
 os.environ.setdefault("PAYMENT_COD_MAX_MINOR", "100000000")
 
-from truegrit_api.auth.sessions import hash_token  # noqa: E402
-from truegrit_api.config import get_settings  # noqa: E402
-from truegrit_api.main import create_app  # noqa: E402
-from truegrit_api.platform.database import SQLiteDatabase, build_local_database  # noqa: E402
-from truegrit_api.services.sms import OutboundSms  # noqa: E402
+from truegrit_api.auth.sessions import hash_token
+from truegrit_api.config import get_settings
+from truegrit_api.main import create_app
+from truegrit_api.platform.database import SQLiteDatabase, build_local_database
+from truegrit_api.services.sms import OutboundSms
 
 get_settings.cache_clear()
 

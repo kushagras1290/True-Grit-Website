@@ -205,7 +205,10 @@ async def default_llms_txt(db: Database, settings: Settings) -> str:
         *[f"- {entry['title']}: {_url(settings, '/blog/' + entry['slug'])}" for entry in articles],
         "",
         "## Recipes",
-        *[f"- {entry['title']}: {_url(settings, '/recipes/' + entry['slug'])}" for entry in recipes],
+        *[
+            f"- {entry['title']}: {_url(settings, '/recipes/' + entry['slug'])}"
+            for entry in recipes
+        ],
         "",
         "## Policies",
         f"- Delivery: {_url(settings, '/delivery')}",

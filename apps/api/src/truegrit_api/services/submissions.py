@@ -131,7 +131,11 @@ def _validate_recipe_fields(
 
     tags = [t.strip() for t in (dietary_tags or []) if t.strip()][:_MAX_TAGS]
 
-    for label, value in (("Prep time", prep_minutes), ("Cook time", cook_minutes), ("Servings", servings)):
+    for label, value in (
+        ("Prep time", prep_minutes),
+        ("Cook time", cook_minutes),
+        ("Servings", servings),
+    ):
         if value is not None and (value < 0 or value > 100_000):
             raise ValidationAppError(f"{label} is out of range.")
 
@@ -366,14 +370,30 @@ def _promote_to_article(
             " (id, article_id, version_number, content_json, workflow_state, created_at,"
             "  created_by, approved_at, approved_by, published_at)"
             " VALUES (?, ?, 1, ?, 'published', ?, ?, ?, ?, ?)",
-            (version_id, article_id, content_json, now, current["submitter_user_id"], now, actor.user_id, now),
+            (
+                version_id,
+                article_id,
+                content_json,
+                now,
+                current["submitter_user_id"],
+                now,
+                actor.user_id,
+                now,
+            ),
         ),
         (
             "INSERT INTO audit_logs"
             " (id, actor_user_id, action, entity_type, entity_id,"
             "  before_summary_json, after_summary_json, request_id, source, created_at)"
             " VALUES (?, ?, 'article.published', 'article', ?, NULL, ?, ?, 'admin', ?)",
-            (new_id("aud"), actor.user_id, article_id, json.dumps({"status": "published"}), request_id, now),
+            (
+                new_id("aud"),
+                actor.user_id,
+                article_id,
+                json.dumps({"status": "published"}),
+                request_id,
+                now,
+            ),
         ),
         (
             "INSERT INTO outbox_events"
@@ -424,14 +444,30 @@ def _promote_to_recipe(
             " (id, recipe_id, version_number, content_json, workflow_state, created_at,"
             "  created_by, approved_at, approved_by, published_at)"
             " VALUES (?, ?, 1, ?, 'published', ?, ?, ?, ?, ?)",
-            (version_id, recipe_id, content_json, now, current["submitter_user_id"], now, actor.user_id, now),
+            (
+                version_id,
+                recipe_id,
+                content_json,
+                now,
+                current["submitter_user_id"],
+                now,
+                actor.user_id,
+                now,
+            ),
         ),
         (
             "INSERT INTO audit_logs"
             " (id, actor_user_id, action, entity_type, entity_id,"
             "  before_summary_json, after_summary_json, request_id, source, created_at)"
             " VALUES (?, ?, 'recipe.published', 'recipe', ?, NULL, ?, ?, 'admin', ?)",
-            (new_id("aud"), actor.user_id, recipe_id, json.dumps({"status": "published"}), request_id, now),
+            (
+                new_id("aud"),
+                actor.user_id,
+                recipe_id,
+                json.dumps({"status": "published"}),
+                request_id,
+                now,
+            ),
         ),
         (
             "INSERT INTO outbox_events"
@@ -447,7 +483,13 @@ def _promote_to_recipe(
                 "INSERT INTO recipe_ingredients"
                 " (id, recipe_id, label, quantity_text, product_id, sort_order)"
                 " VALUES (?, ?, ?, ?, NULL, ?)",
-                (new_id("ing"), recipe_id, entry["label"], entry.get("quantityText") or None, index),
+                (
+                    new_id("ing"),
+                    recipe_id,
+                    entry["label"],
+                    entry.get("quantityText") or None,
+                    index,
+                ),
             )
         )
     return recipe_id, statements
@@ -481,7 +523,9 @@ async def decide_submission(
         table = "articles" if current["content_type"] == "article" else "recipes"
         slug = await _unique_slug(db, table, slugify(current["title"]))
         if current["content_type"] == "article":
-            entity_id, promote_statements = _promote_to_article(current, actor, now, slug, request_id)
+            entity_id, promote_statements = _promote_to_article(
+                current, actor, now, slug, request_id
+            )
             statements.extend(promote_statements)
             statements.append(
                 (
@@ -492,7 +536,9 @@ async def decide_submission(
                 )
             )
         else:
-            entity_id, promote_statements = _promote_to_recipe(current, actor, now, slug, request_id)
+            entity_id, promote_statements = _promote_to_recipe(
+                current, actor, now, slug, request_id
+            )
             statements.extend(promote_statements)
             statements.append(
                 (

@@ -22,7 +22,6 @@ from truegrit_api.services.sms import (
     get_sms_sender,
 )
 
-
 AppEnv = Literal["development", "test", "staging", "production"]
 
 

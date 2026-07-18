@@ -9,11 +9,10 @@ deletion; the store only ever holds bytes.
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Any
-
 import base64
 import binascii
+from pathlib import Path
+from typing import Any
 
 from truegrit_api.auth.principal import Principal
 from truegrit_api.errors import ConflictError, NotFoundError, ValidationAppError
@@ -97,7 +96,9 @@ async def save_image_bytes(
     return {"id": image_id, "path": f"/media/{key}"}
 
 
-async def list_media(db: Database, *, limit: int = 60, offset: int = 0, search: str | None = None) -> list[dict[str, Any]]:
+async def list_media(
+    db: Database, *, limit: int = 60, offset: int = 0, search: str | None = None
+) -> list[dict[str, Any]]:
     return await MediaRepository(db).list_all(limit=limit, offset=offset, search=search)
 
 

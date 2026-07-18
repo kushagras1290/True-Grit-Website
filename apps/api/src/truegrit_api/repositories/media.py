@@ -24,15 +24,17 @@ class MediaRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def list_all(self, *, limit: int = 60, offset: int = 0, search: str | None = None) -> list[dict[str, Any]]:
+    async def list_all(
+        self, *, limit: int = 60, offset: int = 0, search: str | None = None
+    ) -> list[dict[str, Any]]:
         where_clause = ""
         params: list[Any] = []
         if search:
             where_clause = "WHERE original_filename LIKE ? OR alt_text LIKE ?"
             params.extend([f"%{search}%", f"%{search}%"])
-            
+
         params.extend([min(max(limit, 1), 200), max(offset, 0)])
-        
+
         return await self._db.fetch_all(
             f"""
             SELECT id, object_key, original_filename, mime_type, size_bytes,
@@ -47,9 +49,7 @@ class MediaRepository:
         )
 
     async def get(self, media_id: str) -> dict[str, Any] | None:
-        return await self._db.fetch_one(
-            "SELECT * FROM media_assets WHERE id = ?", (media_id,)
-        )
+        return await self._db.fetch_one("SELECT * FROM media_assets WHERE id = ?", (media_id,))
 
     async def references(self, media_id: str) -> list[str]:
         """Human-readable labels for every record still pointing at this

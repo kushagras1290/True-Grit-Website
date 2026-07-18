@@ -66,7 +66,7 @@ class SmtpEmailSender:
         email["To"] = message.to
         email["Subject"] = message.subject
         email.set_content(message.body)
-        
+
         if message.html_body:
             email.add_alternative(message.html_body, subtype="html")
 

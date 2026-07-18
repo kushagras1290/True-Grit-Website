@@ -17,7 +17,12 @@ from datetime import UTC, datetime
 from typing import Any
 
 from truegrit_api.auth.principal import Principal
-from truegrit_api.errors import ConflictError, NotFoundError, PermissionDeniedError, ValidationAppError
+from truegrit_api.errors import (
+    ConflictError,
+    NotFoundError,
+    PermissionDeniedError,
+    ValidationAppError,
+)
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
 from truegrit_api.util.ids import new_id
@@ -54,7 +59,9 @@ def _months_ago(now: datetime, months: int) -> datetime:
 
 
 async def get_min_account_age_months(db: Database) -> int:
-    row = await db.fetch_one("SELECT value FROM app_settings WHERE key = ?", (_MIN_ACCOUNT_AGE_KEY,))
+    row = await db.fetch_one(
+        "SELECT value FROM app_settings WHERE key = ?", (_MIN_ACCOUNT_AGE_KEY,)
+    )
     if row is None:
         return _DEFAULT_MIN_ACCOUNT_AGE_MONTHS
     try:
@@ -67,14 +74,17 @@ async def set_min_account_age_months(
     db: Database, actor: Principal, request_id: str, months: int
 ) -> dict[str, Any]:
     if months < 0 or months > _MAX_MIN_ACCOUNT_AGE_MONTHS:
-        raise ValidationAppError(f"Enter a value between 0 and {_MAX_MIN_ACCOUNT_AGE_MONTHS} months.")
+        raise ValidationAppError(
+            f"Enter a value between 0 and {_MAX_MIN_ACCOUNT_AGE_MONTHS} months."
+        )
     now = utc_now_iso()
     await db.batch(
         [
             (
                 "INSERT INTO app_settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, ?)"
                 " ON CONFLICT(key) DO UPDATE SET"
-                "  value = excluded.value, updated_at = excluded.updated_at, updated_by = excluded.updated_by",
+                "  value = excluded.value, updated_at = excluded.updated_at,"
+                " updated_by = excluded.updated_by",
                 (_MIN_ACCOUNT_AGE_KEY, str(months), now, actor.user_id),
             ),
             audit_statement(
@@ -149,8 +159,12 @@ async def create_comment(
 ) -> dict[str, Any]:
     body = body.strip()
     if len(body) < _MIN_COMMENT or len(body) > _MAX_COMMENT:
-        raise ValidationAppError(f"Comments must be between {_MIN_COMMENT} and {_MAX_COMMENT} characters.")
-    discussion = await db.fetch_one("SELECT id, status FROM discussions WHERE id = ?", (discussion_id,))
+        raise ValidationAppError(
+            f"Comments must be between {_MIN_COMMENT} and {_MAX_COMMENT} characters."
+        )
+    discussion = await db.fetch_one(
+        "SELECT id, status FROM discussions WHERE id = ?", (discussion_id,)
+    )
     if discussion is None or discussion["status"] == "removed":
         raise NotFoundError("Discussion not found.")
     if discussion["status"] != "visible":
@@ -187,7 +201,13 @@ async def create_comment(
 
 
 async def moderate_discussion(
-    db: Database, actor: Principal, request_id: str, discussion_id: str, *, action: str, reason: str | None = None
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    discussion_id: str,
+    *,
+    action: str,
+    reason: str | None = None,
 ) -> dict[str, Any]:
     target = _DISCUSSION_MODERATION_ACTIONS.get(action)
     if target is None:
@@ -220,7 +240,9 @@ async def moderate_discussion(
     return {"id": discussion_id, "status": target}
 
 
-async def delete_discussion(db: Database, actor: Principal, request_id: str, discussion_id: str) -> dict[str, Any]:
+async def delete_discussion(
+    db: Database, actor: Principal, request_id: str, discussion_id: str
+) -> dict[str, Any]:
     current = await db.fetch_one("SELECT id FROM discussions WHERE id = ?", (discussion_id,))
     if current is None:
         raise NotFoundError("Discussion not found.")
@@ -242,7 +264,13 @@ async def delete_discussion(db: Database, actor: Principal, request_id: str, dis
 
 
 async def moderate_comment(
-    db: Database, actor: Principal, request_id: str, comment_id: str, *, action: str, reason: str | None = None
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    comment_id: str,
+    *,
+    action: str,
+    reason: str | None = None,
 ) -> dict[str, Any]:
     target = _COMMENT_MODERATION_ACTIONS.get(action)
     if target is None:
@@ -275,7 +303,9 @@ async def moderate_comment(
     return {"id": comment_id, "status": target}
 
 
-async def delete_comment(db: Database, actor: Principal, request_id: str, comment_id: str) -> dict[str, Any]:
+async def delete_comment(
+    db: Database, actor: Principal, request_id: str, comment_id: str
+) -> dict[str, Any]:
     current = await db.fetch_one(
         "SELECT id, discussion_id FROM discussion_comments WHERE id = ?", (comment_id,)
     )

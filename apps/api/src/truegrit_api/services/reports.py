@@ -160,7 +160,8 @@ _REPORTS: dict[str, ReportDefinition] = {
         label="Content pipeline",
         description="How many blog articles and recipes sit in each workflow status.",
         sql="""
-            SELECT 'article' AS content_type, status, COUNT(*) AS items FROM articles GROUP BY status
+            SELECT 'article' AS content_type, status, COUNT(*) AS items
+              FROM articles GROUP BY status
             UNION ALL
             SELECT 'recipe' AS content_type, status, COUNT(*) AS items FROM recipes GROUP BY status
             ORDER BY content_type, status

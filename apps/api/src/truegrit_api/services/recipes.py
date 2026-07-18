@@ -104,9 +104,16 @@ async def create_recipe(
             ),
             (
                 "INSERT INTO recipe_versions"
-                " (id, recipe_id, version_number, content_json, workflow_state, created_at, created_by)"
+                " (id, recipe_id, version_number, content_json, workflow_state,"
+                " created_at, created_by)"
                 " VALUES (?, ?, 1, ?, 'draft', ?, ?)",
-                (version_id, recipe_id, json.dumps({"blocks": [], "steps": []}), now, actor.user_id),
+                (
+                    version_id,
+                    recipe_id,
+                    json.dumps({"blocks": [], "steps": []}),
+                    now,
+                    actor.user_id,
+                ),
             ),
             audit_statement(
                 action="recipe.created",
@@ -123,7 +130,7 @@ async def create_recipe(
 
 
 async def _replace_ingredients(
-    db: Database, recipe_id: str, ingredients: list[dict[str, Any]]
+    recipe_id: str, ingredients: list[dict[str, Any]]
 ) -> list[tuple[str, Any]]:
     if len(ingredients) > _MAX_INGREDIENTS:
         raise ValidationAppError(f"A recipe supports at most {_MAX_INGREDIENTS} ingredients.")
@@ -189,7 +196,7 @@ async def update_recipe(
 
     statements: list[tuple[str, Any]] = []
     if "ingredients" in fields and fields["ingredients"] is not None:
-        statements.extend(await _replace_ingredients(db, recipe_id, fields["ingredients"]))
+        statements.extend(await _replace_ingredients(recipe_id, fields["ingredients"]))
 
     content_changed = "blocks" in fields or "steps" in fields
     if content_changed:
@@ -199,26 +206,40 @@ async def update_recipe(
         if current["status"] == "published":
             version_id = new_id("rcv")
             next_number_row = await db.fetch_one(
-                "SELECT COALESCE(MAX(version_number), 0) + 1 AS n FROM recipe_versions WHERE recipe_id = ?",
+                "SELECT COALESCE(MAX(version_number), 0) + 1 AS n"
+                " FROM recipe_versions WHERE recipe_id = ?",
                 (recipe_id,),
             )
+            assert next_number_row is not None  # COALESCE aggregate always returns one row
             statements.append(
                 (
                     "INSERT INTO recipe_versions"
-                    " (id, recipe_id, version_number, content_json, workflow_state, created_at, created_by)"
+                    " (id, recipe_id, version_number, content_json, workflow_state,"
+                    " created_at, created_by)"
                     " VALUES (?, ?, ?, ?, 'draft', ?, ?)",
-                    (version_id, recipe_id, int(next_number_row["n"]), content_json, now, actor.user_id),
+                    (
+                        version_id,
+                        recipe_id,
+                        int(next_number_row["n"]),
+                        content_json,
+                        now,
+                        actor.user_id,
+                    ),
                 )
             )
         else:
             latest = await db.fetch_one(
-                "SELECT id FROM recipe_versions WHERE recipe_id = ? ORDER BY version_number DESC LIMIT 1",
+                "SELECT id FROM recipe_versions WHERE recipe_id = ?"
+                " ORDER BY version_number DESC LIMIT 1",
                 (recipe_id,),
             )
             if latest is None:
                 raise ConflictError("Recipe has no version to edit.")
             statements.append(
-                ("UPDATE recipe_versions SET content_json = ? WHERE id = ?", (content_json, latest["id"]))
+                (
+                    "UPDATE recipe_versions SET content_json = ? WHERE id = ?",
+                    (content_json, latest["id"]),
+                )
             )
             if current["status"] in ("in_review", "approved"):
                 updates["status"] = "draft"
@@ -241,7 +262,10 @@ async def update_recipe(
                 request_id=request_id,
                 created_at=now,
                 before={"status": current["status"]},
-                after={"status": updates.get("status", current["status"]), "contentChanged": content_changed},
+                after={
+                    "status": updates.get("status", current["status"]),
+                    "contentChanged": content_changed,
+                },
             )
         )
         await db.batch(statements)
@@ -286,13 +310,17 @@ async def _transition(
     return {"id": recipe_id, "status": target}
 
 
-async def submit_recipe(db: Database, actor: Principal, request_id: str, recipe_id: str) -> dict[str, Any]:
+async def submit_recipe(
+    db: Database, actor: Principal, request_id: str, recipe_id: str
+) -> dict[str, Any]:
     return await _transition(
         db, actor, request_id, recipe_id, target="in_review", action="recipe.submitted"
     )
 
 
-async def approve_recipe(db: Database, actor: Principal, request_id: str, recipe_id: str) -> dict[str, Any]:
+async def approve_recipe(
+    db: Database, actor: Principal, request_id: str, recipe_id: str
+) -> dict[str, Any]:
     return await _transition(
         db, actor, request_id, recipe_id, target="approved", action="recipe.approved"
     )
@@ -327,7 +355,9 @@ async def request_recipe_changes(
     return {"id": recipe_id, "status": "draft"}
 
 
-async def unpublish_recipe(db: Database, actor: Principal, request_id: str, recipe_id: str) -> dict[str, Any]:
+async def unpublish_recipe(
+    db: Database, actor: Principal, request_id: str, recipe_id: str
+) -> dict[str, Any]:
     current = await db.fetch_one("SELECT * FROM recipes WHERE id = ?", (recipe_id,))
     if current is None:
         raise NotFoundError("Recipe not found.")
@@ -339,7 +369,8 @@ async def unpublish_recipe(db: Database, actor: Principal, request_id: str, reci
     await db.batch(
         [
             (
-                "UPDATE recipes SET status = 'unpublished', updated_at = ?, updated_by = ? WHERE id = ?",
+                "UPDATE recipes SET status = 'unpublished', updated_at = ?, updated_by = ?"
+                " WHERE id = ?",
                 (now, actor.user_id, recipe_id),
             ),
             audit_statement(
