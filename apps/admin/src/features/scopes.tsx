@@ -15,6 +15,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api, type AdminPermission, type AdminRole } from "../lib/api";
 
 const GROUP_LABELS: Record<string, string> = {
+  articles: "Blog",
   audit: "Audit",
   categories: "Categories",
   customers: "Customers",
@@ -23,6 +24,9 @@ const GROUP_LABELS: Record<string, string> = {
   orders: "Orders",
   pages: "CMS pages",
   products: "Products",
+  recipes: "Recipes",
+  reports: "Owner reports",
+  returns: "Returns",
   settings: "Settings",
   users: "Users and roles",
 };
