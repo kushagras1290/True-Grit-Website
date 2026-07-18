@@ -60,8 +60,12 @@ class RateLimitError(AppError):
     code = "rate_limited"
     http_status = 429
 
-    def __init__(self, message: str = "Too many requests. Try again shortly."):
-        super().__init__(message)
+    def __init__(
+        self,
+        message: str = "Too many requests. Try again shortly.",
+        details: dict[str, Any] | None = None,
+    ):
+        super().__init__(message, details)
 
 
 class PhoneRequiredError(AppError):

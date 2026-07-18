@@ -31,6 +31,10 @@ def _iso(moment: datetime) -> str:
     return moment.strftime(_ISO_FORMAT)
 
 
+def _parse_iso(value: str) -> datetime:
+    return datetime.strptime(value, _ISO_FORMAT).replace(tzinfo=UTC)
+
+
 def hash_identifier(value: str) -> str:
     """SHA-256 so rate-limit keys never store raw IPs or emails."""
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
@@ -62,7 +66,9 @@ async def enforce_rate_limit(
 ) -> None:
     """Count one attempt against `key` and raise RateLimitError (HTTP 429) once
     it exceeds `rule.max_attempts` within `rule.window_seconds`. The attempt that
-    trips the limit is itself counted and rejected."""
+    trips the limit is itself counted and rejected. The raised error's
+    `details.retryAfterSeconds` tells the caller when the window resets, so a
+    client can show "try again in N minutes" instead of a bare rejection."""
     if rule.max_attempts < 1:
         raise RateLimitError()
     moment = now or datetime.now(UTC)
@@ -89,6 +95,10 @@ async def enforce_rate_limit(
         """,
         (key, now_iso, expires_iso, window_threshold_iso, window_threshold_iso),
     )
-    row = await db.fetch_one("SELECT count FROM auth_rate_limits WHERE key = ?", (key,))
+    row = await db.fetch_one(
+        "SELECT count, window_start FROM auth_rate_limits WHERE key = ?", (key,)
+    )
     if row is not None and row["count"] > rule.max_attempts:
-        raise RateLimitError()
+        reset_at = _parse_iso(row["window_start"]) + timedelta(seconds=rule.window_seconds)
+        retry_after_seconds = max(1, int((reset_at - moment).total_seconds()))
+        raise RateLimitError(details={"retryAfterSeconds": retry_after_seconds})

@@ -60,13 +60,14 @@ function notifyAuthExpired(path: string) {
 
 async function apiErrorFromResponse(response: Response, path: string): Promise<ApiError> {
   const body = (await response.json().catch(() => null)) as {
-    error?: { code?: string; message?: string };
+    error?: { code?: string; message?: string; details?: Record<string, unknown> };
   } | null;
   if (response.status === 401) notifyAuthExpired(path);
   return new ApiError(
     body?.error?.message ?? `Request failed (${response.status})`,
     response.status,
     body?.error?.code ?? "request_failed",
+    body?.error?.details,
   );
 }
 
@@ -146,9 +147,25 @@ export class ApiError extends Error {
     message: string,
     public status: number,
     public code: string,
+    public details?: Record<string, unknown>,
   ) {
     super(message);
   }
+}
+
+/**
+ * Friendly wait-time message for a rate-limited response, e.g. "Too many
+ * attempts. Try again in about 5 minutes." Returns the backend's own message
+ * when the error isn't a rate limit, or when it didn't include a reset time.
+ */
+export function describeRateLimitError(error: ApiError): string {
+  if (error.status !== 429) return error.message;
+  const retryAfterSeconds = error.details?.retryAfterSeconds;
+  if (typeof retryAfterSeconds !== "number" || !Number.isFinite(retryAfterSeconds)) {
+    return error.message;
+  }
+  const minutes = Math.max(1, Math.round(retryAfterSeconds / 60));
+  return `Too many attempts. Try again in about ${minutes} minute${minutes === 1 ? "" : "s"}.`;
 }
 
 export interface AdminLinkedProduct {

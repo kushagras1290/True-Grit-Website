@@ -255,12 +255,12 @@ def test_admin_raw_image_upload_returns_public_media_url(client: TestClient, db:
 def test_users_list_invite_and_status(client: TestClient, db: SQLiteDatabase, monkeypatch):
     as_admin(client, db)
     captured: dict[str, str] = {}
-    monkeypatch.setattr(
-        "truegrit_api.api.admin.send_email",
-        lambda to, subject, body, settings=None, html_body=None: captured.update(
-            to=to, subject=subject, body=body, html_body=html_body or ""
-        ),
-    )
+
+    def fake_send_email(to, subject, body, settings=None, html_body=None):
+        captured.update(to=to, subject=subject, body=body, html_body=html_body or "")
+        return True
+
+    monkeypatch.setattr("truegrit_api.api.admin.send_email", fake_send_email)
     assert client.get("/v1/admin/roles").status_code == 200
 
     users = client.get("/v1/admin/users").json()["items"]
