@@ -276,10 +276,12 @@ class RecipeRepository:
         chef_user_id: str | None = None,
         limit: int = 50,
         offset: int = 0,
+        search: str | None = None,
     ) -> list[dict[str, Any]]:
         """Admin listing. `chef_user_id` scopes results to one chef's own
         recipes — the caller only passes it for principals without
         `recipes.approve` (i.e. the `chef` role), never for reviewers."""
+        like = f"%{search}%" if search else None
         return await self._db.fetch_all(
             """
             SELECT r.id, r.title, r.slug, r.status, r.updated_at, r.published_at,
@@ -291,10 +293,20 @@ class RecipeRepository:
             FROM recipes r
             LEFT JOIN users u ON u.id = r.chef_user_id
             WHERE (? IS NULL OR r.chef_user_id = ?)
+              AND (? IS NULL OR r.title LIKE ? OR r.slug LIKE ? OR r.excerpt LIKE ?)
             ORDER BY r.updated_at DESC
             LIMIT ? OFFSET ?
             """,
-            (chef_user_id, chef_user_id, min(max(limit, 1), 100), max(offset, 0)),
+            (
+                chef_user_id,
+                chef_user_id,
+                like,
+                like,
+                like,
+                like,
+                min(max(limit, 1), 100),
+                max(offset, 0),
+            ),
         )
 
     async def get_admin_detail(self, recipe_id: str) -> dict[str, Any] | None:
@@ -448,10 +460,12 @@ class ArticleRepository:
         author_user_id: str | None = None,
         limit: int = 50,
         offset: int = 0,
+        search: str | None = None,
     ) -> list[dict[str, Any]]:
         """Admin listing. `author_user_id` scopes results to one blogger's own
         articles — the caller only passes it for principals without
         `articles.approve` (i.e. the `blogger` role), never for reviewers."""
+        like = f"%{search}%" if search else None
         return await self._db.fetch_all(
             """
             SELECT a.id, a.title, a.slug, a.status, a.updated_at, a.published_at,
@@ -463,10 +477,20 @@ class ArticleRepository:
             FROM articles a
             LEFT JOIN users u ON u.id = a.author_user_id
             WHERE (? IS NULL OR a.author_user_id = ?)
+              AND (? IS NULL OR a.title LIKE ? OR a.slug LIKE ? OR a.excerpt LIKE ?)
             ORDER BY a.updated_at DESC
             LIMIT ? OFFSET ?
             """,
-            (author_user_id, author_user_id, min(max(limit, 1), 100), max(offset, 0)),
+            (
+                author_user_id,
+                author_user_id,
+                like,
+                like,
+                like,
+                like,
+                min(max(limit, 1), 100),
+                max(offset, 0),
+            ),
         )
 
     async def get_admin_detail(self, article_id: str) -> dict[str, Any] | None:

@@ -1040,9 +1040,12 @@ async def list_articles_endpoint(
     principal: Annotated[Principal, Depends(require_permission("articles.view"))],
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: Annotated[str | None, Query(max_length=200)] = None,
 ) -> Any:
     scope = None if principal.has("articles.approve") else principal.user_id
-    rows = await ArticleRepository(db).list_admin(author_user_id=scope, limit=limit, offset=offset)
+    rows = await ArticleRepository(db).list_admin(
+        author_user_id=scope, limit=limit, offset=offset, search=search
+    )
     return {"items": [_article_summary(row) for row in rows], "limit": limit, "offset": offset}
 
 
@@ -1229,9 +1232,12 @@ async def list_recipes_endpoint(
     principal: Annotated[Principal, Depends(require_permission("recipes.view"))],
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: Annotated[str | None, Query(max_length=200)] = None,
 ) -> Any:
     scope = None if principal.has("recipes.approve") else principal.user_id
-    rows = await RecipeRepository(db).list_admin(chef_user_id=scope, limit=limit, offset=offset)
+    rows = await RecipeRepository(db).list_admin(
+        chef_user_id=scope, limit=limit, offset=offset, search=search
+    )
     return {"items": [_recipe_summary(row) for row in rows], "limit": limit, "offset": offset}
 
 
@@ -1479,9 +1485,19 @@ async def run_report_endpoint(
 async def list_archive_endpoint(
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(get_current_staff)],
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    search: Annotated[str | None, Query(max_length=200)] = None,
 ) -> Any:
     if not _can_view_archive(principal):
         raise PermissionDeniedError()
+
+    # Results are unioned across four entity tables, then sorted together, so
+    # each per-table fetch must cover the whole page window (offset + limit)
+    # rather than just `limit` — otherwise a later page could drop rows that
+    # only look "later" because another kind's rows sorted ahead of them.
+    fetch_cap = min(offset + limit, 100)
+    like = f"%{search}%" if search else None
 
     items: list[dict[str, Any]] = []
     if principal.has("products.view"):
@@ -1496,10 +1512,11 @@ async def list_archive_endpoint(
             LEFT JOIN users u ON u.id = p.updated_by
             WHERE (p.archived_at IS NOT NULL OR p.status = 'archived')
               AND (? IS NULL OR p.farm_id = ?)
+              AND (? IS NULL OR p.name LIKE ? OR p.slug LIKE ?)
             ORDER BY COALESCE(p.archived_at, p.updated_at) DESC, p.name
-            LIMIT 100
+            LIMIT ?
             """,
-            (principal.farm_id, principal.farm_id),
+            (principal.farm_id, principal.farm_id, like, like, like, fetch_cap),
         )
         items.extend(_archive_row("product", row) for row in product_rows)
 
@@ -1512,10 +1529,12 @@ async def list_archive_endpoint(
             FROM categories c
             LEFT JOIN categories parent ON parent.id = c.parent_id
             LEFT JOIN users u ON u.id = c.updated_by
-            WHERE c.archived_at IS NOT NULL OR c.status = 'archived'
+            WHERE (c.archived_at IS NOT NULL OR c.status = 'archived')
+              AND (? IS NULL OR c.name LIKE ? OR c.slug LIKE ?)
             ORDER BY COALESCE(c.archived_at, c.updated_at) DESC, c.name
-            LIMIT 100
-            """
+            LIMIT ?
+            """,
+            (like, like, like, fetch_cap),
         )
         items.extend(_archive_row("category", row) for row in category_rows)
 
@@ -1528,9 +1547,11 @@ async def list_archive_endpoint(
             FROM farms f
             LEFT JOIN users u ON u.id = f.updated_by
             WHERE f.status = 'archived'
+              AND (? IS NULL OR f.name LIKE ? OR f.slug LIKE ?)
             ORDER BY f.updated_at DESC, f.name
-            LIMIT 100
-            """
+            LIMIT ?
+            """,
+            (like, like, like, fetch_cap),
         )
         items.extend(_archive_row("farm", row) for row in farm_rows)
 
@@ -1542,15 +1563,18 @@ async def list_archive_endpoint(
                    p.page_type AS detail
             FROM pages p
             LEFT JOIN users u ON u.id = p.updated_by
-            WHERE p.archived_at IS NOT NULL OR p.status = 'archived'
+            WHERE (p.archived_at IS NOT NULL OR p.status = 'archived')
+              AND (? IS NULL OR p.title LIKE ? OR p.slug LIKE ?)
             ORDER BY COALESCE(p.archived_at, p.updated_at) DESC, p.slug
-            LIMIT 100
-            """
+            LIMIT ?
+            """,
+            (like, like, like, fetch_cap),
         )
         items.extend(_archive_row("page", row) for row in page_rows)
 
     items.sort(key=lambda item: item["archivedAt"], reverse=True)
-    return {"items": items}
+    page = items[offset : offset + limit]
+    return {"items": page, "limit": limit, "offset": offset}
 
 
 @router.post("/archive/{kind}/{item_id}/restore")
@@ -1838,9 +1862,10 @@ async def list_products(
     principal: Annotated[Principal, Depends(require_permission("products.view"))],
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: Annotated[str | None, Query(max_length=200)] = None,
 ) -> Any:
     rows = await AdminRepository(db).list_products(
-        limit=limit, offset=offset, farm_id=principal.farm_id
+        limit=limit, offset=offset, farm_id=principal.farm_id, search=search
     )
     items = []
     for row in rows:
@@ -1878,8 +1903,9 @@ async def list_categories(
     _principal: Annotated[Principal, Depends(require_permission("categories.view"))],
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
+    search: Annotated[str | None, Query(max_length=200)] = None,
 ) -> Any:
-    rows = await AdminRepository(db).list_categories(limit=limit, offset=offset)
+    rows = await AdminRepository(db).list_categories(limit=limit, offset=offset, search=search)
     return {
         "items": [
             {

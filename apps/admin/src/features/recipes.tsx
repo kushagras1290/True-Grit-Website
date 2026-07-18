@@ -20,6 +20,8 @@ import {
   LoadingRows,
   Modal,
   PageHeader,
+  Pagination,
+  SearchBox,
   Select,
   StatusPill,
   Td,
@@ -94,8 +96,17 @@ function CreateRecipeModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+const RECIPES_PAGE_LIMIT = 25;
+
 export function RecipeListPage() {
-  const { data, isLoading } = useQuery({ queryKey: ["admin-recipes"], queryFn: api.recipes });
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const offset = (page - 1) * RECIPES_PAGE_LIMIT;
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-recipes", page, searchQuery],
+    queryFn: () =>
+      api.recipes({ limit: RECIPES_PAGE_LIMIT, offset, search: searchQuery || undefined }),
+  });
   const [creating, setCreating] = useState(false);
   const recipes = data ?? [];
 
@@ -113,6 +124,18 @@ export function RecipeListPage() {
         }
       />
       {creating ? <CreateRecipeModal onClose={() => setCreating(false)} /> : null}
+
+      <div className="mb-4 max-w-sm">
+        <SearchBox
+          value={searchQuery}
+          onSearch={(value) => {
+            setSearchQuery(value);
+            setPage(1);
+          }}
+          placeholder="Search by title, slug or excerpt…"
+          aria-label="Search recipes"
+        />
+      </div>
 
       <DataTableShell>
         <thead className="bg-canvas">
@@ -160,6 +183,12 @@ export function RecipeListPage() {
           </tbody>
         )}
       </DataTableShell>
+      <Pagination
+        page={page}
+        onPageChange={setPage}
+        rowCount={recipes.length}
+        limit={RECIPES_PAGE_LIMIT}
+      />
     </div>
   );
 }

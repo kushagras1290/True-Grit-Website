@@ -20,6 +20,8 @@ import {
   LoadingRows,
   Modal,
   PageHeader,
+  Pagination,
+  SearchBox,
   Select,
   StatusPill,
   Td,
@@ -94,8 +96,17 @@ function CreateArticleModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+const ARTICLES_PAGE_LIMIT = 25;
+
 export function ArticleListPage() {
-  const { data, isLoading } = useQuery({ queryKey: ["admin-articles"], queryFn: api.articles });
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const offset = (page - 1) * ARTICLES_PAGE_LIMIT;
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-articles", page, searchQuery],
+    queryFn: () =>
+      api.articles({ limit: ARTICLES_PAGE_LIMIT, offset, search: searchQuery || undefined }),
+  });
   const [creating, setCreating] = useState(false);
   const articles = data ?? [];
 
@@ -113,6 +124,18 @@ export function ArticleListPage() {
         }
       />
       {creating ? <CreateArticleModal onClose={() => setCreating(false)} /> : null}
+
+      <div className="mb-4 max-w-sm">
+        <SearchBox
+          value={searchQuery}
+          onSearch={(value) => {
+            setSearchQuery(value);
+            setPage(1);
+          }}
+          placeholder="Search by title, slug or excerpt…"
+          aria-label="Search blog posts"
+        />
+      </div>
 
       <DataTableShell>
         <thead className="bg-canvas">
@@ -160,6 +183,12 @@ export function ArticleListPage() {
           </tbody>
         )}
       </DataTableShell>
+      <Pagination
+        page={page}
+        onPageChange={setPage}
+        rowCount={articles.length}
+        limit={ARTICLES_PAGE_LIMIT}
+      />
     </div>
   );
 }
