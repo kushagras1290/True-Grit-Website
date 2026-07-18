@@ -158,6 +158,18 @@ export default function AccountPage(_props: Route.ComponentProps) {
           >
             View basket
           </Link>
+          <Link
+            to="/account/submissions"
+            className="inline-flex min-h-11 w-full items-center justify-center rounded-sm border border-line px-4 text-sm font-medium text-ink hover:bg-canvas"
+          >
+            Your submissions
+          </Link>
+          <Link
+            to="/community"
+            className="inline-flex min-h-11 w-full items-center justify-center rounded-sm border border-line px-4 text-sm font-medium text-ink hover:bg-canvas"
+          >
+            Community
+          </Link>
           <button
             type="button"
             onClick={handleSignOut}

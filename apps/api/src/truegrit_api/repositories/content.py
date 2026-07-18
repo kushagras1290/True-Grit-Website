@@ -765,6 +765,164 @@ class ReturnRequestRepository:
         )
 
 
+class ContentSubmissionRepository:
+    def __init__(self, db: Database):
+        self._db = db
+
+    async def list_admin(
+        self,
+        *,
+        content_type: str | None = None,
+        status: str | None = None,
+        limit: int = 50,
+        offset: int = 0,
+        search: str | None = None,
+    ) -> list[dict[str, Any]]:
+        search_clause = ""
+        params: list[Any] = [content_type, content_type, status, status]
+        if search:
+            search_clause = "AND (cs.title LIKE ? OR cs.contact_name LIKE ? OR cs.contact_email LIKE ?)"
+            params.extend([f"%{search}%", f"%{search}%", f"%{search}%"])
+        params.extend([min(max(limit, 1), 100), max(offset, 0)])
+        return await self._db.fetch_all(
+            f"""
+            SELECT cs.id, cs.content_type, cs.status, cs.title, cs.contact_name, cs.contact_email,
+                   cs.contact_phone, cs.submitter_user_id, cs.created_at, cs.updated_at, cs.reviewed_at
+            FROM content_submissions cs
+            WHERE (? IS NULL OR cs.content_type = ?) AND (? IS NULL OR cs.status = ?)
+            {search_clause}
+            ORDER BY cs.created_at DESC
+            LIMIT ? OFFSET ?
+            """,
+            tuple(params),
+        )
+
+    async def count_pending(self) -> int:
+        row = await self._db.fetch_one(
+            "SELECT COUNT(*) AS n FROM content_submissions WHERE status IN ('submitted', 'under_review')"
+        )
+        return int(row["n"]) if row else 0
+
+    async def get_admin_detail(self, submission_id: str) -> dict[str, Any] | None:
+        return await self._db.fetch_one("SELECT * FROM content_submissions WHERE id = ?", (submission_id,))
+
+    async def list_for_customer(self, customer_user_id: str) -> list[dict[str, Any]]:
+        return await self._db.fetch_all(
+            """
+            SELECT id, content_type, status, title, excerpt, body, contact_name, contact_email,
+                   contact_phone, prep_minutes, cook_minutes, servings, dietary_tags_json,
+                   ingredients_json, steps_json, reviewer_notes, created_at, updated_at,
+                   published_article_id, published_recipe_id
+            FROM content_submissions
+            WHERE submitter_user_id = ?
+            ORDER BY created_at DESC
+            """,
+            (customer_user_id,),
+        )
+
+    async def get_for_customer(self, customer_user_id: str, submission_id: str) -> dict[str, Any] | None:
+        return await self._db.fetch_one(
+            """
+            SELECT id, content_type, status, title, excerpt, body, contact_name, contact_email,
+                   contact_phone, prep_minutes, cook_minutes, servings, dietary_tags_json,
+                   ingredients_json, steps_json, reviewer_notes, created_at, updated_at,
+                   published_article_id, published_recipe_id
+            FROM content_submissions
+            WHERE id = ? AND submitter_user_id = ?
+            """,
+            (submission_id, customer_user_id),
+        )
+
+
+class DiscussionRepository:
+    def __init__(self, db: Database):
+        self._db = db
+
+    async def list_public(self, *, limit: int = 30, offset: int = 0) -> list[dict[str, Any]]:
+        return await self._db.fetch_all(
+            """
+            SELECT d.id, d.title, d.body, d.comment_count, d.last_activity_at, d.created_at,
+                   u.display_name AS author_name
+            FROM discussions d
+            JOIN users u ON u.id = d.author_user_id
+            WHERE d.status = 'visible'
+            ORDER BY d.last_activity_at DESC
+            LIMIT ? OFFSET ?
+            """,
+            (min(max(limit, 1), 100), max(offset, 0)),
+        )
+
+    async def get_public_detail(self, discussion_id: str) -> dict[str, Any] | None:
+        return await self._db.fetch_one(
+            """
+            SELECT d.id, d.title, d.body, d.comment_count, d.last_activity_at, d.created_at,
+                   u.display_name AS author_name
+            FROM discussions d
+            JOIN users u ON u.id = d.author_user_id
+            WHERE d.id = ? AND d.status = 'visible'
+            """,
+            (discussion_id,),
+        )
+
+    async def list_comments_public(self, discussion_id: str) -> list[dict[str, Any]]:
+        return await self._db.fetch_all(
+            """
+            SELECT c.id, c.body, c.created_at, u.display_name AS author_name
+            FROM discussion_comments c
+            JOIN users u ON u.id = c.author_user_id
+            WHERE c.discussion_id = ? AND c.status = 'visible'
+            ORDER BY c.created_at ASC
+            """,
+            (discussion_id,),
+        )
+
+    async def list_admin(
+        self, *, status: str | None = None, limit: int = 50, offset: int = 0, search: str | None = None
+    ) -> list[dict[str, Any]]:
+        search_clause = ""
+        params: list[Any] = [status, status]
+        if search:
+            search_clause = "AND (d.title LIKE ? OR u.display_name LIKE ?)"
+            params.extend([f"%{search}%", f"%{search}%"])
+        params.extend([min(max(limit, 1), 100), max(offset, 0)])
+        return await self._db.fetch_all(
+            f"""
+            SELECT d.id, d.title, d.status, d.comment_count, d.last_activity_at, d.created_at,
+                   u.display_name AS author_name
+            FROM discussions d
+            JOIN users u ON u.id = d.author_user_id
+            WHERE (? IS NULL OR d.status = ?)
+            {search_clause}
+            ORDER BY d.last_activity_at DESC
+            LIMIT ? OFFSET ?
+            """,
+            tuple(params),
+        )
+
+    async def get_admin_detail(self, discussion_id: str) -> dict[str, Any] | None:
+        return await self._db.fetch_one(
+            """
+            SELECT d.*, u.display_name AS author_name, u.email AS author_email
+            FROM discussions d
+            JOIN users u ON u.id = d.author_user_id
+            WHERE d.id = ?
+            """,
+            (discussion_id,),
+        )
+
+    async def list_comments_admin(self, discussion_id: str) -> list[dict[str, Any]]:
+        return await self._db.fetch_all(
+            """
+            SELECT c.*, u.display_name AS author_name
+            FROM discussion_comments c
+            JOIN users u ON u.id = c.author_user_id
+            WHERE c.discussion_id = ?
+            ORDER BY c.created_at ASC
+            """,
+            (discussion_id,),
+        )
+
+
 class AuditRepository:
     def __init__(self, db: Database):
         self._db = db

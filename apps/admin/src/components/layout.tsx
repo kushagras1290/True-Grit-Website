@@ -1,7 +1,7 @@
 /** Admin shell: permission-aware sidebar navigation, top bar, demo-mode notice. */
 
 import { cn } from "@truegrit/ui";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Archive,
   ArrowLeft,
@@ -11,11 +11,13 @@ import {
   Database,
   FolderTree,
   Image,
+  Inbox,
   KeyRound,
   LayoutDashboard,
   LogOut,
   Mail,
   Menu,
+  MessageSquare,
   Package,
   PanelLeftClose,
   PanelLeftOpen,
@@ -55,6 +57,9 @@ interface NavEntry {
   label: string;
   icon: ReactNode;
   permission: string | string[] | null;
+  /** Key into the `badges` map passed to SidebarNav — shows a small count
+   * pill next to the label (e.g. pending submissions awaiting review). */
+  badgeKey?: string;
 }
 
 const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
@@ -135,10 +140,28 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
       },
       { to: "/media", label: "Media Library", icon: <Image size={16} />, permission: "media.view" },
       {
+        to: "/submissions",
+        label: "Submissions",
+        icon: <Inbox size={16} />,
+        permission: "submissions.view",
+        badgeKey: "submissionsPending",
+      },
+      {
         to: "/contact-attempts",
         label: "Contact Attempts",
         icon: <Mail size={16} />,
         permission: "users.view",
+      },
+    ],
+  },
+  {
+    heading: "Community",
+    entries: [
+      {
+        to: "/community",
+        label: "Discussions",
+        icon: <MessageSquare size={16} />,
+        permission: "discussions.view",
       },
     ],
   },
@@ -188,11 +211,13 @@ function SidebarNav({
   subtitle,
   onNavigate,
   collapsed = false,
+  badges = {},
 }: {
   permissions: ReadonlySet<string>;
   subtitle: string;
   onNavigate?: () => void;
   collapsed?: boolean;
+  badges?: Record<string, number>;
 }) {
   return (
     <>
@@ -239,7 +264,16 @@ function SidebarNav({
                       }
                     >
                       {entry.icon}
-                      {collapsed ? null : entry.label}
+                      {collapsed ? null : (
+                        <span className="flex flex-1 items-center justify-between gap-2">
+                          {entry.label}
+                          {entry.badgeKey && badges[entry.badgeKey] ? (
+                            <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-brand px-1.5 py-0.5 text-[11px] font-semibold leading-none text-ink-inverse">
+                              {badges[entry.badgeKey]}
+                            </span>
+                          ) : null}
+                        </span>
+                      )}
                     </NavLink>
                   </li>
                 ))}
@@ -265,6 +299,13 @@ export function Shell() {
   useEffect(() => {
     localStorage.setItem(SIDEBAR_COLLAPSED_KEY, collapsed ? "1" : "0");
   }, [collapsed]);
+  const { data: pendingSubmissions } = useQuery({
+    queryKey: ["submissions-pending-count"],
+    queryFn: api.submissionsPendingCount,
+    enabled: permissions.has("submissions.view"),
+    refetchInterval: 60_000,
+  });
+  const badges = { submissionsPending: pendingSubmissions ?? 0 };
   const logout = useMutation({
     mutationFn: api.logout,
     onSuccess: () => {
@@ -291,7 +332,12 @@ export function Shell() {
         )}
       >
         <div className="flex-1 overflow-y-auto">
-          <SidebarNav permissions={permissions} subtitle={subtitle} collapsed={collapsed} />
+          <SidebarNav
+            permissions={permissions}
+            subtitle={subtitle}
+            collapsed={collapsed}
+            badges={badges}
+          />
         </div>
         <button
           type="button"
@@ -323,6 +369,7 @@ export function Shell() {
               permissions={permissions}
               subtitle={subtitle}
               onNavigate={() => setMobileOpen(false)}
+              badges={badges}
             />
           </div>
         </div>

@@ -549,6 +549,90 @@ export interface AdminReturnRequestDetail {
 }
 
 // ---------------------------------------------------------------------------
+// Community blog/recipe submissions
+// ---------------------------------------------------------------------------
+
+export type SubmissionContentType = "article" | "recipe";
+
+export type SubmissionStatus = "submitted" | "under_review" | "changes_requested" | "approved" | "rejected";
+
+export interface SubmissionIngredient {
+  label: string;
+  quantityText: string;
+}
+
+export interface AdminSubmissionRow {
+  id: string;
+  contentType: SubmissionContentType;
+  status: SubmissionStatus;
+  title: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string | null;
+  createdAt: string;
+  updatedAt: string;
+  reviewedAt: string | null;
+}
+
+export interface AdminSubmissionDetail extends AdminSubmissionRow {
+  excerpt: string | null;
+  body: string;
+  prepMinutes: number | null;
+  cookMinutes: number | null;
+  servings: number | null;
+  dietaryTags: string[];
+  ingredients: SubmissionIngredient[];
+  steps: string[];
+  reviewerNotes: string | null;
+  publishedArticleId: string | null;
+  publishedRecipeId: string | null;
+}
+
+// ---------------------------------------------------------------------------
+// Community discussions
+// ---------------------------------------------------------------------------
+
+export type DiscussionStatus = "visible" | "hidden" | "archived" | "removed";
+export type DiscussionCommentStatus = "visible" | "hidden" | "removed";
+
+export interface AdminDiscussionRow {
+  id: string;
+  title: string;
+  status: DiscussionStatus;
+  authorName: string;
+  commentCount: number;
+  lastActivityAt: string;
+  createdAt: string;
+}
+
+export interface AdminDiscussionComment {
+  id: string;
+  body: string;
+  status: DiscussionCommentStatus;
+  authorName: string;
+  createdAt: string;
+  moderationReason: string | null;
+}
+
+export interface AdminDiscussionDetail {
+  id: string;
+  title: string;
+  body: string;
+  status: DiscussionStatus;
+  authorName: string;
+  authorEmail: string;
+  commentCount: number;
+  lastActivityAt: string;
+  createdAt: string;
+  moderationReason: string | null;
+  comments: AdminDiscussionComment[];
+}
+
+export interface CommunitySettings {
+  minAccountAgeMonths: number;
+}
+
+// ---------------------------------------------------------------------------
 // Media library
 // ---------------------------------------------------------------------------
 

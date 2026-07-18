@@ -6,7 +6,7 @@ import hmac
 import json
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, Query, Request, Response
+from fastapi import APIRouter, BackgroundTasks, Depends, Query, Request, Response
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic.alias_generators import to_camel
 
@@ -35,12 +35,16 @@ from truegrit_api.repositories.content import (
     ArticleRepository,
     AuditRepository,
     CategoryRepository,
+    ContentSubmissionRepository,
+    DiscussionRepository,
     RecipeRepository,
     ReturnRequestRepository,
     SiteDocumentRepository,
 )
 from truegrit_api.services import articles as article_service
+from truegrit_api.services import discussions as discussion_service
 from truegrit_api.services import recipes as recipe_service
+from truegrit_api.services import submissions as submission_service
 from truegrit_api.services.access import (
     adopt_bootstrap_owner,
     change_own_password,
@@ -71,6 +75,11 @@ from truegrit_api.services.catalogue import (
 )
 from truegrit_api.services.contact import contactable_email
 from truegrit_api.services.email import send_email
+from truegrit_api.services.email_templates import (
+    render_submission_approved,
+    render_submission_changes_requested,
+    render_submission_rejected,
+)
 from truegrit_api.services.inventory import adjust_inventory, clear_inventory_levels
 from truegrit_api.services.media import (
     delete_media,
@@ -1453,6 +1462,280 @@ async def resolve_return_endpoint(
         resolution_type=payload.resolution_type,
         resolution_amount_minor=payload.resolution_amount_minor,
         resolution_notes=payload.resolution_notes,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Community blog/recipe submissions — customer-submitted, staff-reviewed;
+# approval promotes straight into articles/recipes as published (see
+# services.submissions for why there is no separate publish step here).
+# ---------------------------------------------------------------------------
+
+
+class SubmissionDecisionRequest(_CamelModel):
+    decision: str = Field(min_length=1, max_length=20)
+    note: str | None = Field(default=None, max_length=2000)
+
+
+def _submission_admin_summary(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "contentType": row["content_type"],
+        "status": row["status"],
+        "title": row["title"],
+        "contactName": row["contact_name"],
+        "contactEmail": row["contact_email"],
+        "contactPhone": row["contact_phone"],
+        "createdAt": row["created_at"],
+        "updatedAt": row["updated_at"],
+        "reviewedAt": row["reviewed_at"],
+    }
+
+
+def _submission_admin_detail(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        **_submission_admin_summary(row),
+        "excerpt": row["excerpt"],
+        "body": row["body"],
+        "prepMinutes": row["prep_minutes"],
+        "cookMinutes": row["cook_minutes"],
+        "servings": row["servings"],
+        "dietaryTags": json.loads(row["dietary_tags_json"]) if row["dietary_tags_json"] else [],
+        "ingredients": json.loads(row["ingredients_json"]) if row["ingredients_json"] else [],
+        "steps": json.loads(row["steps_json"]) if row["steps_json"] else [],
+        "reviewerNotes": row["reviewer_notes"],
+        "publishedArticleId": row["published_article_id"],
+        "publishedRecipeId": row["published_recipe_id"],
+    }
+
+
+@router.get("/submissions")
+async def list_submissions_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("submissions.view"))],
+    content_type: Annotated[str | None, Query(max_length=16)] = None,
+    status: Annotated[str | None, Query(max_length=20)] = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
+) -> Any:
+    rows = await ContentSubmissionRepository(db).list_admin(
+        content_type=content_type, status=status, limit=limit, offset=offset, search=search
+    )
+    return {"items": [_submission_admin_summary(row) for row in rows], "limit": limit, "offset": offset}
+
+
+@router.get("/submissions/pending-count")
+async def submissions_pending_count_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("submissions.view"))],
+) -> Any:
+    return {"count": await ContentSubmissionRepository(db).count_pending()}
+
+
+@router.get("/submissions/{submission_id}")
+async def get_submission_endpoint(
+    submission_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("submissions.view"))],
+) -> Any:
+    row = await ContentSubmissionRepository(db).get_admin_detail(submission_id)
+    if row is None:
+        raise NotFoundError("Submission not found.")
+    return _submission_admin_detail(row)
+
+
+@router.post("/submissions/{submission_id}/decide")
+async def decide_submission_endpoint(
+    submission_id: str,
+    payload: SubmissionDecisionRequest,
+    request: Request,
+    background: BackgroundTasks,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("submissions.review"))],
+) -> Any:
+    settings = get_settings()
+    result = await submission_service.decide_submission(
+        db, principal, _request_id(request), submission_id, decision=payload.decision, note=payload.note
+    )
+    row = await ContentSubmissionRepository(db).get_admin_detail(submission_id)
+    if row is not None:
+        kind_path = "blog" if row["content_type"] == "article" else "recipes"
+        if payload.decision == "approved" and result.get("slug"):
+            live_url = f"{settings.public_storefront_url}/{kind_path}/{result['slug']}"
+            background.add_task(
+                send_email,
+                row["contact_email"],
+                f"Your {'blog post' if row['content_type'] == 'article' else 'recipe'} is live on True Grit",
+                f"Hi {row['contact_name']}, your submission \"{row['title']}\" has been approved and is now live: {live_url}",
+                settings,
+                render_submission_approved(row["contact_name"], row["content_type"], row["title"], live_url),
+            )
+        elif payload.decision == "changes_requested" and payload.note:
+            edit_url = f"{settings.public_storefront_url}/account/submissions/{submission_id}/edit"
+            background.add_task(
+                send_email,
+                row["contact_email"],
+                f"Changes requested on your {'blog post' if row['content_type'] == 'article' else 'recipe'} submission",
+                f"Hi {row['contact_name']}, changes were requested on \"{row['title']}\": {payload.note}\nEdit and resubmit: {edit_url}",
+                settings,
+                render_submission_changes_requested(
+                    row["contact_name"], row["content_type"], row["title"], payload.note, edit_url
+                ),
+            )
+        elif payload.decision == "rejected" and payload.note:
+            background.add_task(
+                send_email,
+                row["contact_email"],
+                f"About your {'blog post' if row['content_type'] == 'article' else 'recipe'} submission",
+                f"Hi {row['contact_name']}, after review we will not be publishing \"{row['title']}\": {payload.note}",
+                settings,
+                render_submission_rejected(row["contact_name"], row["content_type"], row["title"], payload.note),
+            )
+    return result
+
+
+# ---------------------------------------------------------------------------
+# Community discussions — moderation. Discussions/comments are created from
+# the storefront (api.community); staff here can hide, restore, archive or
+# permanently delete any thread or comment, and set the minimum account age
+# required to start a new discussion.
+# ---------------------------------------------------------------------------
+
+
+class DiscussionModerationRequest(_CamelModel):
+    action: str = Field(min_length=1, max_length=20)
+    reason: str | None = Field(default=None, max_length=500)
+
+
+class CommunitySettingsUpdateRequest(_CamelModel):
+    min_account_age_months: int = Field(ge=0, le=120)
+
+
+def _discussion_admin_summary(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "title": row["title"],
+        "status": row["status"],
+        "authorName": row["author_name"],
+        "commentCount": row["comment_count"],
+        "lastActivityAt": row["last_activity_at"],
+        "createdAt": row["created_at"],
+    }
+
+
+@router.get("/discussions")
+async def list_discussions_admin_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("discussions.view"))],
+    status: Annotated[str | None, Query(max_length=20)] = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    search: str | None = None,
+) -> Any:
+    rows = await DiscussionRepository(db).list_admin(status=status, limit=limit, offset=offset, search=search)
+    return {"items": [_discussion_admin_summary(row) for row in rows], "limit": limit, "offset": offset}
+
+
+@router.get("/discussions/{discussion_id}")
+async def get_discussion_admin_endpoint(
+    discussion_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("discussions.view"))],
+) -> Any:
+    repo = DiscussionRepository(db)
+    row = await repo.get_admin_detail(discussion_id)
+    if row is None:
+        raise NotFoundError("Discussion not found.")
+    comments = await repo.list_comments_admin(discussion_id)
+    return {
+        "id": row["id"],
+        "title": row["title"],
+        "body": row["body"],
+        "status": row["status"],
+        "authorName": row["author_name"],
+        "authorEmail": row["author_email"],
+        "commentCount": row["comment_count"],
+        "lastActivityAt": row["last_activity_at"],
+        "createdAt": row["created_at"],
+        "moderationReason": row["moderation_reason"],
+        "comments": [
+            {
+                "id": comment["id"],
+                "body": comment["body"],
+                "status": comment["status"],
+                "authorName": comment["author_name"],
+                "createdAt": comment["created_at"],
+                "moderationReason": comment["moderation_reason"],
+            }
+            for comment in comments
+        ],
+    }
+
+
+@router.post("/discussions/{discussion_id}/moderate")
+async def moderate_discussion_endpoint(
+    discussion_id: str,
+    payload: DiscussionModerationRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("discussions.moderate"))],
+) -> Any:
+    return await discussion_service.moderate_discussion(
+        db, principal, _request_id(request), discussion_id, action=payload.action, reason=payload.reason
+    )
+
+
+@router.delete("/discussions/{discussion_id}")
+async def delete_discussion_endpoint(
+    discussion_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("discussions.moderate"))],
+) -> Any:
+    return await discussion_service.delete_discussion(db, principal, _request_id(request), discussion_id)
+
+
+@router.post("/discussions/comments/{comment_id}/moderate")
+async def moderate_comment_endpoint(
+    comment_id: str,
+    payload: DiscussionModerationRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("discussions.moderate"))],
+) -> Any:
+    return await discussion_service.moderate_comment(
+        db, principal, _request_id(request), comment_id, action=payload.action, reason=payload.reason
+    )
+
+
+@router.delete("/discussions/comments/{comment_id}")
+async def delete_comment_endpoint(
+    comment_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("discussions.moderate"))],
+) -> Any:
+    return await discussion_service.delete_comment(db, principal, _request_id(request), comment_id)
+
+
+@router.get("/community-settings")
+async def get_community_settings_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("settings.community"))],
+) -> Any:
+    return {"minAccountAgeMonths": await discussion_service.get_min_account_age_months(db)}
+
+
+@router.patch("/community-settings")
+async def update_community_settings_endpoint(
+    payload: CommunitySettingsUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.community"))],
+) -> Any:
+    return await discussion_service.set_min_account_age_months(
+        db, principal, _request_id(request), payload.min_account_age_months
     )
 
 

@@ -24,6 +24,7 @@ const GROUP_LABELS: Record<string, string> = {
   audit: "Audit",
   categories: "Categories",
   customers: "Customers",
+  discussions: "Community",
   inventory: "Inventory",
   media: "Media",
   orders: "Orders",
@@ -33,6 +34,7 @@ const GROUP_LABELS: Record<string, string> = {
   reports: "Owner reports",
   returns: "Returns",
   settings: "Settings",
+  submissions: "Submissions",
   users: "Users and roles",
 };
 

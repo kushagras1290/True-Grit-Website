@@ -12,6 +12,8 @@ import type {
   AdminArticleRow,
   AdminCategoryRow,
   AdminDbBrowserTableData,
+  AdminDiscussionDetail,
+  AdminDiscussionRow,
   AdminInventoryRow,
   AdminMediaAssetRow,
   AdminOrderRow,
@@ -21,8 +23,11 @@ import type {
   AdminReturnRequestDetail,
   AdminReturnRequestRow,
   AdminServerLogRow,
+  AdminSubmissionDetail,
+  AdminSubmissionRow,
   AdminUserRow,
   AuditLogRow,
+  CommunitySettings,
   ContentBlock,
   PublicPageBlock,
   ReportDefinitionSummary,
@@ -1421,6 +1426,102 @@ export const api = {
     demoMode
       ? demo({ id, status: "completed" })
       : post(`/v1/admin/returns/${id}/resolve`, input),
+
+  // --- Community blog/recipe submissions ------------------------------------
+
+  submissions: ({
+    contentType,
+    status,
+    limit = 50,
+    offset = 0,
+    search,
+  }: {
+    contentType?: string;
+    status?: string;
+    limit?: number;
+    offset?: number;
+    search?: string;
+  } = {}): Promise<AdminSubmissionRow[]> =>
+    demoMode
+      ? demo([])
+      : get<{ items: AdminSubmissionRow[] }>(
+          `/v1/admin/submissions?limit=${limit}&offset=${offset}${contentType ? `&content_type=${encodeURIComponent(contentType)}` : ""}${status ? `&status=${encodeURIComponent(status)}` : ""}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ).then((body) => body.items),
+
+  submissionsPendingCount: (): Promise<number> =>
+    demoMode
+      ? demo(0)
+      : get<{ count: number }>(`/v1/admin/submissions/pending-count`).then((body) => body.count),
+
+  getSubmission: (id: string): Promise<AdminSubmissionDetail> =>
+    demoMode
+      ? Promise.reject(new ApiError("Demo mode has no submissions yet.", 404, "not_found"))
+      : get<AdminSubmissionDetail>(`/v1/admin/submissions/${id}`),
+
+  decideSubmission: (
+    id: string,
+    decision: string,
+    note?: string,
+  ): Promise<{ id: string; status: string; publishedId?: string; slug?: string }> =>
+    demoMode
+      ? demo({ id, status: decision })
+      : post(`/v1/admin/submissions/${id}/decide`, { decision, note }),
+
+  // --- Community discussions -------------------------------------------------
+
+  discussions: ({
+    status,
+    limit = 50,
+    offset = 0,
+    search,
+  }: {
+    status?: string;
+    limit?: number;
+    offset?: number;
+    search?: string;
+  } = {}): Promise<AdminDiscussionRow[]> =>
+    demoMode
+      ? demo([])
+      : get<{ items: AdminDiscussionRow[] }>(
+          `/v1/admin/discussions?limit=${limit}&offset=${offset}${status ? `&status=${encodeURIComponent(status)}` : ""}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ).then((body) => body.items),
+
+  getDiscussion: (id: string): Promise<AdminDiscussionDetail> =>
+    demoMode
+      ? Promise.reject(new ApiError("Demo mode has no discussions yet.", 404, "not_found"))
+      : get<AdminDiscussionDetail>(`/v1/admin/discussions/${id}`),
+
+  moderateDiscussion: (id: string, action: string, reason?: string): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id, status: action })
+      : post(`/v1/admin/discussions/${id}/moderate`, { action, reason }),
+
+  deleteDiscussion: (id: string): Promise<{ id: string; deleted: boolean }> =>
+    demoMode ? demo({ id, deleted: true }) : del(`/v1/admin/discussions/${id}`),
+
+  moderateComment: (
+    commentId: string,
+    action: string,
+    reason?: string,
+  ): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id: commentId, status: action })
+      : post(`/v1/admin/discussions/comments/${commentId}/moderate`, { action, reason }),
+
+  deleteComment: (commentId: string): Promise<{ id: string; deleted: boolean }> =>
+    demoMode
+      ? demo({ id: commentId, deleted: true })
+      : del(`/v1/admin/discussions/comments/${commentId}`),
+
+  communitySettings: (): Promise<CommunitySettings> =>
+    demoMode
+      ? demo({ minAccountAgeMonths: 6 })
+      : get<CommunitySettings>(`/v1/admin/community-settings`),
+
+  updateCommunitySettings: (minAccountAgeMonths: number): Promise<CommunitySettings> =>
+    demoMode
+      ? demo({ minAccountAgeMonths })
+      : patch(`/v1/admin/community-settings`, { minAccountAgeMonths }),
 
   // --- Media library ---------------------------------------------------
 

@@ -210,7 +210,7 @@ Cloudflare resources use explicit environment suffixes (`truegrit-api-dev|stagin
   engine, product detail, farms, recipes, journal, search foundation, admin console, RBAC,
   publishing workflows, media metadata, audit log.
 - **Delivered on top of Release 1:**
-  - **Customer accounts** — Google + Facebook + email/password sign-in, order history.
+  - **Customer accounts** — Google + Facebook + email/password + phone/OTP sign-in, order history.
   - **Operations console (real CRUD)** — products and categories create/edit/publish/archive with
     versioning + audit, persisted inventory adjustments, user/role management, order status
     transitions.
@@ -219,15 +219,37 @@ Cloudflare resources use explicit environment suffixes (`truegrit-api-dev|stagin
     Provisioned **only from the main admin panel** (Users → Add farm owner). Seeded demo:
     `owner@devika.test` / `devikafarm1`.
   - **Checkout** — server-authoritative cart → order (price + stock revalidated, inventory
-    reserved), cash-on-delivery. A live payment gateway (intent + webhook) is the remaining piece.
-  - **Transactional email** — pluggable sender (SMTP via `SMTP_*`, or a console sender when
-    unconfigured). On checkout the customer gets a confirmation and each involved farm owner is
-    notified. See `apps/api/.env.example` for the SMTP settings.
+    reserved), cash-on-delivery plus a live Razorpay gateway; PayPal and Stripe are scaffolded
+    behind explicit go-live flags pending a tested checkout flow for each.
+  - **Transactional email** — pluggable sender (Resend in production, SMTP for local dev, or a
+    console sender when unconfigured). Order confirmations, farm-owner notifications, staff
+    invitations, password resets, and community submission decisions all go through it. See
+    `apps/api/.env.example` for the settings.
   - **Password reset** — self-service on all portals: "Forgot password?" on the storefront account
     menu and the admin sign-in, emailing a single-use, time-boxed link to `/reset-password`; a
     successful reset revokes existing sessions.
-- **Still to come:** payment gateway, coupons/promotions, bundles, subscriptions, recommendations,
-  reviews, analytics.
+  - **Returns (RMA)** — customers file a return against their own order; staff with
+    `returns.manage` triage (under review / approved / rejected) and resolve it (refund,
+    replacement, store credit), with refunds ledgered against the order.
+  - **Dynamic role management** — beyond the seeded roles, an owner can create, rename, re-scope
+    and delete fully custom roles from the admin Scope Management page; permission changes revoke
+    affected sessions immediately.
+  - **Blogger / Chef authoring roles** — staff-side content contributors who can draft and edit
+    articles/recipes but not approve or publish them; Manager/Publisher/Owner review and publish.
+  - **Community blog/recipe submissions** — signed-in customers pitch a post or recipe from
+    `/blog/submit` or `/recipes/submit` (contact name, email, phone optional, plus every field for
+    the content type). Submissions are highlighted in the admin Submissions section (nav badge on
+    the pending count); Owner/Admin/Blogger/Chef can approve (publishes immediately as a live
+    blog post or recipe, credited to the submitter), reject, or request changes — each decision
+    emails the submitter, and a "changes requested" submission can be revised and resubmitted from
+    `/account/submissions`.
+  - **Community discussions** — signed-in customers start threads and comment at `/community`.
+    Starting a thread requires an account at least N months old (`discussions.min_account_age_months`,
+    default 6, admin-editable); commenting has no tenure requirement. Staff with
+    `discussions.moderate` get a dedicated admin section to hide, restore, archive or permanently
+    delete any discussion or comment.
+- **Still to come:** coupons/promotions, bundles, subscriptions, recommendations, reviews,
+  analytics.
 
 The defining capability: an admin creates a category, configures content and product rules,
 previews, publishes — and the public storefront renders it automatically, with audit and cache

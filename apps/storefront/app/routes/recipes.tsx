@@ -21,6 +21,17 @@ export function meta(_args: Route.MetaArgs) {
 export default function RecipesPage({ loaderData }: Route.ComponentProps) {
   return (
     <Section eyebrow="From the kitchen" heading="Cook with the season">
+      <div className="mb-8 flex items-center justify-between gap-3">
+        <p className="max-w-lg text-sm text-ink-muted">
+          Got a recipe worth sharing? Pitch it to the community and our editors will review it.
+        </p>
+        <Link
+          to="/recipes/submit"
+          className="inline-flex min-h-11 shrink-0 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90"
+        >
+          Post a recipe
+        </Link>
+      </div>
       <div className="grid gap-6 md:grid-cols-3">
         {loaderData.recipes.map((recipe) => (
           <Link

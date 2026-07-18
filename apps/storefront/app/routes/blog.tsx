@@ -21,6 +21,17 @@ export function meta(_args: Route.MetaArgs) {
 export default function BlogPage({ loaderData }: Route.ComponentProps) {
   return (
     <Section eyebrow="The blog" heading="Stories worth chewing on">
+      <div className="mx-auto mb-8 flex max-w-2xl items-center justify-between gap-3">
+        <p className="text-sm text-ink-muted">
+          Have a story to tell? Pitch a post and our editors will review it.
+        </p>
+        <Link
+          to="/blog/submit"
+          className="inline-flex min-h-11 shrink-0 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90"
+        >
+          Post a blog
+        </Link>
+      </div>
       <div className="mx-auto max-w-2xl space-y-8">
         {loaderData.articles.map((article) => (
           <Link

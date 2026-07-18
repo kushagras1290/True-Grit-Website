@@ -6,10 +6,12 @@ from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from truegrit_api.api.admin import router as admin_router
+from truegrit_api.api.community import router as community_router
 from truegrit_api.api.customer_auth import router as customer_auth_router
 from truegrit_api.api.phone_auth import router as phone_auth_router
 from truegrit_api.api.public import router as public_router
 from truegrit_api.api.storefront import router as storefront_router
+from truegrit_api.api.submissions import router as submissions_router
 from truegrit_api.config import get_settings
 from truegrit_api.middleware.error_handler import install_error_handlers
 from truegrit_api.middleware.rate_limit import RateLimitMiddleware
@@ -67,6 +69,8 @@ def create_app(db: Database | None = None, media: MediaStore | None = None) -> F
     app.include_router(customer_auth_router, prefix="/v1/public/auth")
     app.include_router(phone_auth_router, prefix="/v1/public/auth")
     app.include_router(storefront_router, prefix="/v1/public")
+    app.include_router(submissions_router, prefix="/v1/public")
+    app.include_router(community_router, prefix="/v1/public")
     app.include_router(admin_router, prefix="/v1/admin")
 
     @app.get("/health/live", tags=["health"])

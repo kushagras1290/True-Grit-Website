@@ -12,6 +12,7 @@ import { ArchivePage } from "./features/archive";
 import { ArticleEditorPage, ArticleListPage } from "./features/articles";
 import { AdminLoginPage, AdminResetPasswordPage, RequireAdminAuth } from "./features/auth";
 import { CategoryEditorPage, CategoryListPage } from "./features/categories";
+import { DiscussionDetailPage, DiscussionsListPage } from "./features/community";
 import { DashboardPage } from "./features/dashboard";
 import { DbBrowserPage } from "./features/db-browser";
 import {
@@ -32,6 +33,7 @@ import { ReturnDetailPage, ReturnsListPage } from "./features/returns";
 import { ScopeManagementPage } from "./features/scopes";
 import { ServerLogsPage } from "./features/server-logs";
 import { SiteControlPage } from "./features/site-control";
+import { SubmissionDetailPage, SubmissionsListPage } from "./features/submissions";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -73,6 +75,10 @@ createRoot(document.getElementById("root")!).render(
               <Route path="recipes" element={<RecipeListPage />} />
               <Route path="recipes/:id" element={<RecipeEditorPage />} />
               <Route path="media" element={<MediaPage />} />
+              <Route path="submissions" element={<SubmissionsListPage />} />
+              <Route path="submissions/:id" element={<SubmissionDetailPage />} />
+              <Route path="community" element={<DiscussionsListPage />} />
+              <Route path="community/:id" element={<DiscussionDetailPage />} />
               <Route path="contact-attempts" element={<ContactAttemptsPage />} />
               <Route path="users" element={<UsersPage />} />
               <Route path="scopes" element={<ScopeManagementPage />} />

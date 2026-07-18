@@ -5,6 +5,8 @@ Uses inline CSS and tables for maximum cross-client compatibility.
 
 from __future__ import annotations
 
+import html
+
 # Base HTML wrapper with clean, modern styling
 _BASE_HTML = """
 <!DOCTYPE html>
@@ -210,7 +212,89 @@ def render_farm_order_notification(owner_name: str, farm_name: str, reference: s
     </div>
     <p style="margin-bottom: 0; margin-top: 24px;">Best regards,<br>The True Grit System</p>
     """
-    
+
+    return _BASE_HTML.format(
+        subject=subject,
+        header_title=header_title,
+        body_html=body_html
+    )
+
+def render_submission_approved(contact_name: str, content_type: str, title: str, url: str) -> str:
+    """Renders the HTML for a community blog/recipe submission that went live.
+
+    `contact_name` and `title` come from public form input, so they are
+    HTML-escaped before interpolation -- unlike the other templates in this
+    file, whose inputs are staff/customer account fields validated at
+    registration.
+    """
+    kind = "blog post" if content_type == "article" else "recipe"
+    subject = f"Your {kind} is live on True Grit"
+    header_title = "True Grit"
+    safe_name = html.escape(contact_name)
+    safe_title = html.escape(title)
+
+    body_html = f"""
+    <h2 style="color: #1e293b; margin-top: 0;">Hi {safe_name},</h2>
+    <p>Great news — your {kind} <strong>&ldquo;{safe_title}&rdquo;</strong> has been approved and is now live on True Grit.</p>
+    <div style="text-align: center;">
+        <a href="{url}" class="btn">View it live</a>
+    </div>
+    <p style="margin-bottom: 0;">Thanks for contributing to the community!<br>The True Grit Team</p>
+    """
+
+    return _BASE_HTML.format(
+        subject=subject,
+        header_title=header_title,
+        body_html=body_html
+    )
+
+def render_submission_changes_requested(
+    contact_name: str, content_type: str, title: str, note: str, edit_url: str
+) -> str:
+    """Renders the HTML asking a community contributor to revise a submission."""
+    kind = "blog post" if content_type == "article" else "recipe"
+    subject = f"Changes requested on your {kind} submission"
+    header_title = "True Grit"
+    safe_name = html.escape(contact_name)
+    safe_title = html.escape(title)
+    safe_note = html.escape(note)
+
+    body_html = f"""
+    <h2 style="color: #1e293b; margin-top: 0;">Hi {safe_name},</h2>
+    <p>Thanks for submitting your {kind} <strong>&ldquo;{safe_title}&rdquo;</strong>. Our editors would like a few changes before it can be published:</p>
+    <div class="order-panel">
+        <div class="order-detail">{safe_note}</div>
+    </div>
+    <div style="text-align: center;">
+        <a href="{edit_url}" class="btn">Edit and resubmit</a>
+    </div>
+    <p style="margin-bottom: 0;">The True Grit Team</p>
+    """
+
+    return _BASE_HTML.format(
+        subject=subject,
+        header_title=header_title,
+        body_html=body_html
+    )
+
+def render_submission_rejected(contact_name: str, content_type: str, title: str, reason: str) -> str:
+    """Renders the HTML declining a community blog/recipe submission."""
+    kind = "blog post" if content_type == "article" else "recipe"
+    subject = f"About your {kind} submission"
+    header_title = "True Grit"
+    safe_name = html.escape(contact_name)
+    safe_title = html.escape(title)
+    safe_reason = html.escape(reason)
+
+    body_html = f"""
+    <h2 style="color: #1e293b; margin-top: 0;">Hi {safe_name},</h2>
+    <p>Thank you for submitting your {kind} <strong>&ldquo;{safe_title}&rdquo;</strong>. After review, we won't be publishing it this time.</p>
+    <div class="order-panel">
+        <div class="order-detail">{safe_reason}</div>
+    </div>
+    <p style="margin-bottom: 0;">We'd love to see future submissions from you.<br>The True Grit Team</p>
+    """
+
     return _BASE_HTML.format(
         subject=subject,
         header_title=header_title,
