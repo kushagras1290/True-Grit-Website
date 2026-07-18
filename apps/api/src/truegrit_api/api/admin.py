@@ -1973,6 +1973,103 @@ async def audit_log(
 
 
 # ---------------------------------------------------------------------------
+# Owner-only: server logs and read-only DB browser.
+#
+# Both are hard-gated to the super_admin role via `_require_owner`, on top of
+# the `audit.view` permission dependency — a farm-owner sub-admin granted
+# `audit.view` through Scope Management must still be rejected. See
+# `_require_owner` above for why the permission check alone is not enough.
+# ---------------------------------------------------------------------------
+
+
+@router.get("/server-logs")
+async def list_server_logs(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("audit.view"))],
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    await _require_owner(db, principal)
+    rows = await db.fetch_all(
+        """
+        SELECT id, level, event, fields_json, created_at
+        FROM application_logs
+        ORDER BY created_at DESC, id DESC
+        LIMIT ? OFFSET ?
+        """,
+        (limit, offset),
+    )
+    return {
+        "items": [
+            {
+                "id": row["id"],
+                "level": row["level"],
+                "event": row["event"],
+                "fields": json.loads(row["fields_json"]),
+                "createdAt": row["created_at"],
+            }
+            for row in rows
+        ],
+        "limit": limit,
+        "offset": offset,
+    }
+
+
+# Tables holding password hashes or session/rate-limit secrets. Excluded from
+# both the table list and direct row access below — defense-in-depth only,
+# since the owner already has unrestricted DB access via the Cloudflare
+# dashboard regardless of what this read-only browser exposes.
+_DB_BROWSER_BLOCKED_TABLES = frozenset({"user_credentials", "sessions", "auth_rate_limits"})
+
+
+async def _db_browser_allowed_tables(db: Database) -> list[str]:
+    """The allowlist of real, browsable table names, straight from sqlite_master
+    minus the sensitive-table blocklist. This is the single source of truth
+    both endpoints below validate `table_name` against before it is ever
+    interpolated into a query string."""
+    rows = await db.fetch_all(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name"
+    )
+    return [row["name"] for row in rows if row["name"] not in _DB_BROWSER_BLOCKED_TABLES]
+
+
+@router.get("/db-browser/tables")
+async def list_db_browser_tables(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("audit.view"))],
+) -> Any:
+    await _require_owner(db, principal)
+    return {"items": await _db_browser_allowed_tables(db)}
+
+
+@router.get("/db-browser/tables/{table_name}")
+async def get_db_browser_table(
+    table_name: str,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("audit.view"))],
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    await _require_owner(db, principal)
+    if table_name not in await _db_browser_allowed_tables(db):
+        raise NotFoundError("Table not found.")
+    # Safe to interpolate only because table_name was just checked for an
+    # exact match against sqlite_master above — `?` binds values, not
+    # identifiers, so this is the one place a table name may be spliced in.
+    columns = [row["name"] for row in await db.fetch_all(f"PRAGMA table_info({table_name})")]
+    rows = await db.fetch_all(
+        f"SELECT * FROM {table_name} LIMIT ? OFFSET ?",
+        (limit, offset),
+    )
+    return {
+        "columns": columns,
+        "rows": [[row.get(column) for column in columns] for row in rows],
+        "limit": limit,
+        "offset": offset,
+    }
+
+
+# ---------------------------------------------------------------------------
 # Product mutations
 # ---------------------------------------------------------------------------
 

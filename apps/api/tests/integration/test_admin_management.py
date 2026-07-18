@@ -3,6 +3,7 @@ products, categories, inventory, users, and orders."""
 
 from __future__ import annotations
 
+import asyncio
 import base64
 import re
 
@@ -10,6 +11,7 @@ from fastapi.testclient import TestClient
 
 from tests.integration.conftest import SESSION_COOKIE, create_session
 from truegrit_api.platform.database import SQLiteDatabase
+from truegrit_api.services.log_persistence import persist_log
 
 ADDRESS = {
     "recipientName": "Riya Nair",
@@ -809,3 +811,99 @@ def test_owner_can_manage_cms_page_seo_and_blocks(client: TestClient, db: SQLite
     assert public_home["title"] == "Owner managed home"
     assert public_home["seo"]["title"] == "Owner CMS SEO"
     assert public_home["blocks"][-1]["props"]["paragraphs"] == ["Owner managed CMS block."]
+
+
+# --- Owner-only: server logs & DB browser ------------------------------------
+
+
+def test_owner_can_view_server_logs(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    asyncio.run(persist_log(db, "error", "app_error", requestId="req_test_1", code="boom"))
+
+    response = client.get("/v1/admin/server-logs")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["limit"] == 50
+    assert body["offset"] == 0
+    entry = next(item for item in body["items"] if item["event"] == "app_error")
+    assert entry["level"] == "error"
+    assert entry["fields"]["code"] == "boom"
+    assert entry["fields"]["requestId"] == "req_test_1"
+
+
+def test_server_logs_pagination_is_capped_and_parameterized(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    assert client.get("/v1/admin/server-logs?limit=101").status_code == 422
+    assert client.get("/v1/admin/server-logs?limit=0").status_code == 422
+    assert client.get("/v1/admin/server-logs?offset=-1").status_code == 422
+    ok = client.get("/v1/admin/server-logs?limit=5&offset=0")
+    assert ok.status_code == 200
+    assert ok.json()["limit"] == 5
+
+
+def test_owner_can_browse_db_tables(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    tables = client.get("/v1/admin/db-browser/tables")
+    assert tables.status_code == 200
+    names = tables.json()["items"]
+    assert "products" in names
+    assert "user_credentials" not in names
+    assert "sessions" not in names
+    assert "auth_rate_limits" not in names
+
+    detail = client.get("/v1/admin/db-browser/tables/products?limit=5")
+    assert detail.status_code == 200
+    body = detail.json()
+    assert "id" in body["columns"]
+    assert "name" in body["columns"]
+    assert isinstance(body["rows"], list)
+    assert len(body["rows"]) <= 5
+
+
+def test_db_browser_rejects_unknown_table(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    assert client.get("/v1/admin/db-browser/tables/not_a_real_table").status_code == 404
+
+
+def test_db_browser_rejects_blocklisted_table_by_direct_name(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    assert client.get("/v1/admin/db-browser/tables/user_credentials").status_code == 404
+    assert client.get("/v1/admin/db-browser/tables/sessions").status_code == 404
+
+
+def test_db_browser_rejects_sql_injection_attempt_in_table_name(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    response = client.get("/v1/admin/db-browser/tables/products%3B%20DROP%20TABLE%20products%3B%20--")
+    assert response.status_code == 404
+    still_there = db._conn.execute("SELECT COUNT(*) FROM products").fetchone()[0]
+    assert still_there > 0
+
+
+def test_only_owner_can_view_server_logs_or_db_browser_even_with_audit_view_granted(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    permission_ids = {
+        permission["key"]: permission["id"]
+        for permission in client.get("/v1/admin/permissions").json()["items"]
+    }
+    grant = client.patch(
+        "/v1/admin/roles/rol_farm_owner/permissions",
+        json={
+            "permissionIds": [
+                permission_ids["products.view"],
+                permission_ids["audit.view"],
+            ]
+        },
+    )
+    assert grant.status_code == 200
+
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    me = client.get("/v1/admin/me").json()
+    assert "audit.view" in me["permissions"]  # confirms the grant took effect
+
+    # The permission alone is not authorization: _require_owner still blocks a
+    # non-super_admin principal from every route in both feature groups.
+    assert client.get("/v1/admin/server-logs").status_code == 403
+    assert client.get("/v1/admin/db-browser/tables").status_code == 403
+    assert client.get("/v1/admin/db-browser/tables/products").status_code == 403

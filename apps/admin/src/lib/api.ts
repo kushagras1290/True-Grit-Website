@@ -11,6 +11,7 @@ import type {
   AdminArticleDetail,
   AdminArticleRow,
   AdminCategoryRow,
+  AdminDbBrowserTableData,
   AdminInventoryRow,
   AdminMediaAssetRow,
   AdminOrderRow,
@@ -19,6 +20,7 @@ import type {
   AdminRecipeRow,
   AdminReturnRequestDetail,
   AdminReturnRequestRow,
+  AdminServerLogRow,
   AdminUserRow,
   AuditLogRow,
   ContentBlock,
@@ -1194,6 +1196,32 @@ export const api = {
     demoMode
       ? demo({ id, label: id, columns: [], rows: [] })
       : post(`/v1/admin/reports/${id}/run`, { filters }),
+
+  // --- Owner-only: server logs -------------------------------------------
+
+  serverLogs: ({ limit = 50, offset = 0 }: { limit?: number; offset?: number } = {}): Promise<
+    AdminServerLogRow[]
+  > =>
+    demoMode
+      ? demo([])
+      : get<{ items: AdminServerLogRow[] }>(`/v1/admin/server-logs?limit=${limit}&offset=${offset}`).then(
+          (body) => body.items,
+        ),
+
+  // --- Owner-only: read-only DB browser -----------------------------------
+
+  dbBrowserTables: (): Promise<string[]> =>
+    demoMode ? demo([]) : get<{ items: string[] }>("/v1/admin/db-browser/tables").then((body) => body.items),
+
+  dbBrowserTable: (
+    tableName: string,
+    { limit = 50, offset = 0 }: { limit?: number; offset?: number } = {},
+  ): Promise<AdminDbBrowserTableData> =>
+    demoMode
+      ? demo({ columns: [], rows: [], limit, offset })
+      : get(
+          `/v1/admin/db-browser/tables/${encodeURIComponent(tableName)}?limit=${limit}&offset=${offset}`,
+        ),
 
   // --- Category geo release ---------------------------------------------
 
