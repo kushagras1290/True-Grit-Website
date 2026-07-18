@@ -54,6 +54,11 @@ router = APIRouter(tags=["public"])
 _EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 _COUNTRY_PATTERN = re.compile(r"^[A-Za-z]{2}$")
 
+# Storefront grid pagination. 24 divides evenly into the grid's 2/3/4-column
+# breakpoints (12/8/6 full rows); the cap keeps a single request bounded.
+DEFAULT_PAGE_SIZE = 24
+MAX_PAGE_SIZE = 48
+
 
 def _normalize_country(country: str | None) -> str | None:
     """Uppercase a two-letter ISO country code; anything else is rejected.
@@ -213,6 +218,8 @@ async def category_page(
     slug: str,
     db: Annotated[Database, Depends(get_database)],
     country: Annotated[str | None, Query(max_length=2)] = None,
+    limit: Annotated[int, Query(ge=1, le=MAX_PAGE_SIZE)] = DEFAULT_PAGE_SIZE,
+    offset: Annotated[int, Query(ge=0)] = 0,
 ) -> Any:
     validate_slug(slug)
     visitor_country = _normalize_country(country)
@@ -223,12 +230,12 @@ async def category_page(
     catalogue = CatalogueRepository(db)
     rule_json = category["product_rule_json"]
     if category["product_assignment_mode"] in {"dynamic", "hybrid"} and rule_json:
-        products = await catalogue.list_published_by_rule(
-            json.loads(rule_json), country=visitor_country
+        products, products_total = await catalogue.list_published_by_rule(
+            json.loads(rule_json), country=visitor_country, limit=limit, offset=offset
         )
     else:
-        products = await catalogue.list_published_by_category(
-            category["id"], country=visitor_country
+        products, products_total = await catalogue.list_published_by_category(
+            category["id"], country=visitor_country, limit=limit, offset=offset
         )
 
     return {
@@ -251,6 +258,7 @@ async def category_page(
         },
         "subcategories": [],
         "products": products,
+        "products_total": products_total,
         "faq": _STANDARDS_FAQ,
         "seo": {
             "title": category["seo_title"] or f"{category['name']} — True Grit",
@@ -332,13 +340,18 @@ async def products_list(
     db: Annotated[Database, Depends(get_database)],
     slugs: Annotated[str | None, Query(max_length=4000)] = None,
     country: Annotated[str | None, Query(max_length=2)] = None,
+    limit: Annotated[int, Query(ge=1, le=MAX_PAGE_SIZE)] = DEFAULT_PAGE_SIZE,
+    offset: Annotated[int, Query(ge=0)] = 0,
 ) -> Any:
     """Published products for storefront grids.
 
     With `?slugs=a,b,c` returns exactly those, in the given order (home-page
-    product collections). Without it, every published product, newest first (the
-    shop grid). `?country=XX` hides products not released in that country.
-    Declared before `/products/{slug}` so the literal path wins.
+    product collections) — `limit`/`offset` do not apply, since that request
+    is already a bounded, exact set. Without it, a page of published products,
+    newest first (the shop grid), windowed by `limit`/`offset`; `total` is the
+    full published count so the caller can compute page numbers.
+    `?country=XX` hides products not released in that country. Declared before
+    `/products/{slug}` so the literal path wins.
     """
     visitor_country = _normalize_country(country)
     catalogue = CatalogueRepository(db)
@@ -349,9 +362,12 @@ async def products_list(
             if wanted
             else []
         )
+        total = len(items)
     else:
-        items = await catalogue.list_all_published(country=visitor_country)
-    return {"items": items}
+        items, total = await catalogue.list_all_published(
+            limit=limit, offset=offset, country=visitor_country
+        )
+    return {"items": items, "total": total}
 
 
 @router.get("/highlights", response_model=ProductListResponse)
@@ -361,7 +377,7 @@ async def highlighted_products(
 ) -> Any:
     """The owner-curated highlight slots (search page box), curated order."""
     items = await CatalogueRepository(db).list_highlighted(country=_normalize_country(country))
-    return {"items": items}
+    return {"items": items, "total": len(items)}
 
 
 @router.get("/products/{slug}", response_model=ProductDetail)

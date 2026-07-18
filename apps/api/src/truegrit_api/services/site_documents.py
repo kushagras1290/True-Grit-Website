@@ -102,7 +102,7 @@ def sitemap_index_xml(settings: Settings) -> str:
 
 
 async def sitemap_products_xml(db: Database, settings: Settings) -> str:
-    products = await CatalogueRepository(db).list_all_published()
+    products, _total = await CatalogueRepository(db).list_all_published()
     entries = [(f"/product/{p['slug']}", p.get("updated_at")) for p in products]
     return _urlset(settings, entries, "products")
 
@@ -152,7 +152,7 @@ SITEMAP_GENERATORS = {
 
 async def default_llms_txt(db: Database, settings: Settings) -> str:
     categories = await CategoryRepository(db).list_published()
-    products = await CatalogueRepository(db).list_all_published(limit=50)
+    products, _total = await CatalogueRepository(db).list_all_published(limit=50)
     lines = [
         "# True Grit",
         "",

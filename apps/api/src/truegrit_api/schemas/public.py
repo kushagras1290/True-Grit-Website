@@ -64,6 +64,7 @@ class ProductSummary(PublicModel):
 
 class ProductListResponse(PublicModel):
     items: list[ProductSummary]
+    total: int
 
 
 class VariantSummary(PublicModel):
@@ -128,6 +129,7 @@ class PublicCategoryPage(PublicModel):
     hero: CategoryHero
     subcategories: list[CategorySummary]
     products: list[ProductSummary]
+    products_total: int
     faq: list[FaqItem]
     seo: SeoDocument
     updated_at: str
