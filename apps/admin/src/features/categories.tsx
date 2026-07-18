@@ -37,6 +37,8 @@ import {
   LoadingRows,
   Modal,
   PageHeader,
+  Pagination,
+  SearchBox,
   Select,
   StatusPill,
   Td,
@@ -109,10 +111,19 @@ function CreateCategoryModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+const CATEGORIES_PAGE_LIMIT = 25;
+
 export function CategoryListPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery({ queryKey: ["admin-categories"], queryFn: api.categories });
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const offset = (page - 1) * CATEGORIES_PAGE_LIMIT;
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-categories", page, searchQuery],
+    queryFn: () =>
+      api.categories({ limit: CATEGORIES_PAGE_LIMIT, offset, search: searchQuery || undefined }),
+  });
   const [creating, setCreating] = useState(false);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -187,6 +198,18 @@ export function CategoryListPage() {
         />
       ) : null}
 
+      <div className="mb-4 max-w-sm">
+        <SearchBox
+          value={searchQuery}
+          onSearch={(value) => {
+            setSearchQuery(value);
+            setPage(1);
+          }}
+          placeholder="Search by name or slug…"
+          aria-label="Search categories"
+        />
+      </div>
+
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
@@ -246,6 +269,17 @@ export function CategoryListPage() {
           </tbody>
         )}
       </DataTableShell>
+      {!isLoading && categories.length === 0 ? (
+        <div className="mt-4">
+          <EmptyState title="No categories match" hint="Adjust the search or create a category." />
+        </div>
+      ) : null}
+      <Pagination
+        page={page}
+        onPageChange={setPage}
+        rowCount={categories.length}
+        limit={CATEGORIES_PAGE_LIMIT}
+      />
     </div>
   );
 }

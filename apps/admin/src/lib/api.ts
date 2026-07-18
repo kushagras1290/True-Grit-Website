@@ -428,10 +428,16 @@ export const api = {
     await post<{ ok: boolean }>("/v1/admin/auth/logout");
   },
 
-  products: (): Promise<AdminProductRow[]> =>
+  products: ({
+    limit = 25,
+    offset = 0,
+    search,
+  }: { limit?: number; offset?: number; search?: string } = {}): Promise<AdminProductRow[]> =>
     demoMode
       ? demo(adminProducts)
-      : get<{ items: AdminProductRow[] }>("/v1/admin/products").then((body) => body.items),
+      : get<{ items: AdminProductRow[] }>(
+          `/v1/admin/products?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ).then((body) => body.items),
 
   getProduct: (id: string): Promise<AdminProductDetail> => {
     if (!demoMode) return get<AdminProductDetail>(`/v1/admin/products/${id}`);
@@ -511,7 +517,11 @@ export const api = {
       ? demo({ deletedIds: productIds, count: productIds.length })
       : post("/v1/admin/products/bulk-delete", { productIds }),
 
-  archive: (): Promise<ArchiveRow[]> =>
+  archive: ({
+    limit = 25,
+    offset = 0,
+    search,
+  }: { limit?: number; offset?: number; search?: string } = {}): Promise<ArchiveRow[]> =>
     demoMode
       ? demo([
           {
@@ -526,7 +536,9 @@ export const api = {
             detail: "Demo farm",
           },
         ])
-      : get<{ items: ArchiveRow[] }>("/v1/admin/archive").then((body) => body.items),
+      : get<{ items: ArchiveRow[] }>(
+          `/v1/admin/archive?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ).then((body) => body.items),
 
   restoreArchiveItem: (
     kind: ArchiveKind,
@@ -536,10 +548,16 @@ export const api = {
       ? demo({ id, kind, status: "draft" })
       : post(`/v1/admin/archive/${kind}/${id}/restore`),
 
-  categories: (): Promise<AdminCategoryRow[]> =>
+  categories: ({
+    limit = 25,
+    offset = 0,
+    search,
+  }: { limit?: number; offset?: number; search?: string } = {}): Promise<AdminCategoryRow[]> =>
     demoMode
       ? demo(adminCategories)
-      : get<{ items: AdminCategoryRow[] }>("/v1/admin/categories").then((body) => body.items),
+      : get<{ items: AdminCategoryRow[] }>(
+          `/v1/admin/categories?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ).then((body) => body.items),
 
   getCategory: (id: string): Promise<AdminCategoryDetail> => {
     if (!demoMode) return get<AdminCategoryDetail>(`/v1/admin/categories/${id}`);
@@ -980,7 +998,11 @@ export const api = {
 
   // --- Articles (blog) -------------------------------------------------
 
-  articles: (): Promise<AdminArticleRow[]> =>
+  articles: ({
+    limit = 25,
+    offset = 0,
+    search,
+  }: { limit?: number; offset?: number; search?: string } = {}): Promise<AdminArticleRow[]> =>
     demoMode
       ? demo(
           demoArticles.map((article) => ({
@@ -994,7 +1016,9 @@ export const api = {
             hasDraftChanges: false,
           })),
         )
-      : get<{ items: AdminArticleRow[] }>("/v1/admin/articles").then((body) => body.items),
+      : get<{ items: AdminArticleRow[] }>(
+          `/v1/admin/articles?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ).then((body) => body.items),
 
   getArticle: (id: string): Promise<AdminArticleDetail> => {
     if (!demoMode) return get<AdminArticleDetail>(`/v1/admin/articles/${id}`);
@@ -1052,7 +1076,11 @@ export const api = {
 
   // --- Recipes -----------------------------------------------------------
 
-  recipes: (): Promise<AdminRecipeRow[]> =>
+  recipes: ({
+    limit = 25,
+    offset = 0,
+    search,
+  }: { limit?: number; offset?: number; search?: string } = {}): Promise<AdminRecipeRow[]> =>
     demoMode
       ? demo(
           demoRecipes.map((recipe) => ({
@@ -1066,7 +1094,9 @@ export const api = {
             hasDraftChanges: false,
           })),
         )
-      : get<{ items: AdminRecipeRow[] }>("/v1/admin/recipes").then((body) => body.items),
+      : get<{ items: AdminRecipeRow[] }>(
+          `/v1/admin/recipes?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ).then((body) => body.items),
 
   getRecipe: (id: string): Promise<AdminRecipeDetail> => {
     if (!demoMode) return get<AdminRecipeDetail>(`/v1/admin/recipes/${id}`);

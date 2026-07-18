@@ -43,12 +43,12 @@ export function DashboardPage() {
   const audit = useQuery({ queryKey: ["audit"], queryFn: api.audit, ...liveQueryOptions });
   const products = useQuery({
     queryKey: ["admin-products"],
-    queryFn: api.products,
+    queryFn: () => api.products({ limit: 100 }),
     ...liveQueryOptions,
   });
   const categories = useQuery({
     queryKey: ["admin-categories"],
-    queryFn: api.categories,
+    queryFn: () => api.categories({ limit: 100 }),
     ...liveQueryOptions,
   });
   const homeBlocks = useQuery({

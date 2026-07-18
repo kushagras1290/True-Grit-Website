@@ -334,3 +334,74 @@ export function Td({ children, className, ...props }: TdHTMLAttributes<HTMLTable
     </td>
   );
 }
+
+const SEARCH_DEBOUNCE_MS = 300;
+
+export function SearchBox({
+  value,
+  onSearch,
+  placeholder = "Search...",
+  "aria-label": ariaLabel,
+}: {
+  value: string;
+  onSearch: (value: string) => void;
+  placeholder?: string;
+  "aria-label"?: string;
+}) {
+  const [draft, setDraft] = useState(value);
+
+  useEffect(() => {
+    setDraft(value);
+  }, [value]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => onSearch(draft), SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [draft, onSearch]);
+
+  return (
+    <Input
+      type="search"
+      value={draft}
+      placeholder={placeholder}
+      aria-label={ariaLabel ?? placeholder}
+      onChange={(event) => setDraft(event.target.value)}
+    />
+  );
+}
+
+export function Pagination({
+  page,
+  onPageChange,
+  rowCount,
+  limit,
+}: {
+  page: number;
+  onPageChange: (page: number) => void;
+  rowCount: number;
+  limit: number;
+}) {
+  if (page === 1 && rowCount < limit) return null;
+
+  return (
+    <div className="mt-4 flex items-center justify-between border-t border-line pt-4">
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={page === 1}
+        onClick={() => onPageChange(Math.max(1, page - 1))}
+      >
+        Previous
+      </Button>
+      <span className="text-sm font-medium text-ink-muted">Page {page}</span>
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={rowCount < limit}
+        onClick={() => onPageChange(page + 1)}
+      >
+        Next
+      </Button>
+    </div>
+  );
+}

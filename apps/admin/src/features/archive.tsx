@@ -8,6 +8,8 @@ import {
   EmptyState,
   LoadingRows,
   PageHeader,
+  Pagination,
+  SearchBox,
   StatusPill,
   Td,
   Th,
@@ -36,11 +38,20 @@ function kindLabel(kind: ArchiveKind) {
   return kind;
 }
 
+const ARCHIVE_PAGE_LIMIT = 25;
+
 export function ArchivePage() {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [filter, setFilter] = useState<"all" | ArchiveKind>("all");
-  const archive = useQuery({ queryKey: ["archive"], queryFn: api.archive });
+  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const offset = (page - 1) * ARCHIVE_PAGE_LIMIT;
+  const archive = useQuery({
+    queryKey: ["archive", page, searchQuery],
+    queryFn: () =>
+      api.archive({ limit: ARCHIVE_PAGE_LIMIT, offset, search: searchQuery || undefined }),
+  });
   const restore = useMutation({
     mutationFn: (row: ArchiveRow) => api.restoreArchiveItem(row.kind, row.id),
     onSuccess: async (result) => {
@@ -85,6 +96,18 @@ export function ArchivePage() {
             {entry.label}
           </button>
         ))}
+      </div>
+
+      <div className="mb-4 max-w-sm">
+        <SearchBox
+          value={searchQuery}
+          onSearch={(value) => {
+            setSearchQuery(value);
+            setPage(1);
+          }}
+          placeholder="Search by name or slug…"
+          aria-label="Search archive"
+        />
       </div>
 
       {archive.isLoading ? (
@@ -156,6 +179,12 @@ export function ArchivePage() {
           </tbody>
         </DataTableShell>
       )}
+      <Pagination
+        page={page}
+        onPageChange={setPage}
+        rowCount={(archive.data ?? []).length}
+        limit={ARCHIVE_PAGE_LIMIT}
+      />
     </section>
   );
 }

@@ -14,9 +14,14 @@ class AdminRepository:
         self._db = db
 
     async def list_products(
-        self, limit: int = 50, offset: int = 0, farm_id: str | None = None
+        self,
+        limit: int = 50,
+        offset: int = 0,
+        farm_id: str | None = None,
+        search: str | None = None,
     ) -> list[dict[str, Any]]:
         limit = min(max(limit, 1), MAX_PAGE_SIZE)
+        like = f"%{search}%" if search else None
         return await self._db.fetch_all(
             """
             SELECT
@@ -57,14 +62,26 @@ class AdminRepository:
             LEFT JOIN media_assets m ON m.id = p.primary_media_id
             WHERE p.archived_at IS NULL
               AND (? IS NULL OR p.farm_id = ?)
+              AND (
+                ? IS NULL
+                OR p.name LIKE ?
+                OR p.slug LIKE ?
+                OR EXISTS (
+                  SELECT 1 FROM product_variants pv
+                  WHERE pv.product_id = p.id AND pv.sku LIKE ?
+                )
+              )
             ORDER BY p.updated_at DESC, p.name
             LIMIT ? OFFSET ?
             """,
-            (farm_id, farm_id, limit, max(offset, 0)),
+            (farm_id, farm_id, like, like, like, like, limit, max(offset, 0)),
         )
 
-    async def list_categories(self, limit: int = 50, offset: int = 0) -> list[dict[str, Any]]:
+    async def list_categories(
+        self, limit: int = 50, offset: int = 0, search: str | None = None
+    ) -> list[dict[str, Any]]:
         limit = min(max(limit, 1), MAX_PAGE_SIZE)
+        like = f"%{search}%" if search else None
         return await self._db.fetch_all(
             """
             SELECT
@@ -76,10 +93,11 @@ class AdminRepository:
             FROM categories c
             LEFT JOIN categories parent ON parent.id = c.parent_id
             WHERE c.archived_at IS NULL
+              AND (? IS NULL OR c.name LIKE ? OR c.slug LIKE ?)
             ORDER BY c.sort_order, c.name
             LIMIT ? OFFSET ?
             """,
-            (limit, max(offset, 0)),
+            (like, like, like, limit, max(offset, 0)),
         )
 
     async def list_inventory(
