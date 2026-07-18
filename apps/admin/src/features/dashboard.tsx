@@ -103,13 +103,13 @@ export function DashboardPage() {
     : [];
 
   const liveQueryOptions = { refetchInterval: 10_000, refetchIntervalInBackground: true };
-  const orders = useQuery({ queryKey: ["orders"], queryFn: api.orders, ...liveQueryOptions });
+  const orders = useQuery({ queryKey: ["orders"], queryFn: () => api.orders(), ...liveQueryOptions });
   const inventory = useQuery({
     queryKey: ["inventory"],
-    queryFn: api.inventory,
+    queryFn: () => api.inventory(),
     ...liveQueryOptions,
   });
-  const audit = useQuery({ queryKey: ["audit"], queryFn: api.audit, ...liveQueryOptions });
+  const audit = useQuery({ queryKey: ["audit"], queryFn: () => api.audit(), ...liveQueryOptions });
   const products = useQuery({
     queryKey: ["admin-products"],
     queryFn: () => api.products({ limit: 100 }),

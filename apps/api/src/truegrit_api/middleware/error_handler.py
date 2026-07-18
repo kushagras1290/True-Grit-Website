@@ -27,7 +27,9 @@ def _envelope(
     return {"error": body}
 
 
-async def _persist_log_best_effort(request: Request, level: str, event: str, /, **fields: Any) -> None:
+async def _persist_log_best_effort(
+    request: Request, level: str, event: str, /, **fields: Any
+) -> None:
     """Write the 5xx/unhandled event to `application_logs` for the owner's
     Server Logs page. Best-effort: we are already inside an exception handler,
     so a persistence failure here (e.g. `db` unset in a unit test app, or the
@@ -48,7 +50,9 @@ def install_error_handlers(app: FastAPI) -> None:
         if exc.http_status >= 500:
             request_id = _request_id(request)
             log_event("error", "app_error", request_id=request_id, code=exc.code)
-            await _persist_log_best_effort(request, "error", "app_error", request_id=request_id, code=exc.code)
+            await _persist_log_best_effort(
+                request, "error", "app_error", request_id=request_id, code=exc.code
+            )
         return JSONResponse(
             status_code=exc.http_status,
             content=_envelope(request, exc.code, exc.message, exc.details),
@@ -75,7 +79,11 @@ def install_error_handlers(app: FastAPI) -> None:
             error_type=type(exc).__name__,
         )
         await _persist_log_best_effort(
-            request, "error", "unhandled_exception", request_id=request_id, error_type=type(exc).__name__
+            request,
+            "error",
+            "unhandled_exception",
+            request_id=request_id,
+            error_type=type(exc).__name__,
         )
         return JSONResponse(
             status_code=500,

@@ -887,16 +887,15 @@ def test_only_owner_can_view_server_logs_or_db_browser_even_with_audit_view_gran
         permission["key"]: permission["id"]
         for permission in client.get("/v1/admin/permissions").json()["items"]
     }
-    grant = client.patch(
-        "/v1/admin/roles/rol_farm_owner/permissions",
-        json={
-            "permissionIds": [
-                permission_ids["products.view"],
-                permission_ids["audit.view"],
-            ]
-        },
+    # The PATCH endpoint enforces a business rule that farm-owner sub-admins
+    # can only ever hold products/inventory/media permissions, so it refuses
+    # to grant audit.view through the API (422) -- insert directly to isolate
+    # what this test actually checks: the owner-hard-gate, not that rule.
+    db._conn.execute(
+        "INSERT INTO role_permissions (role_id, permission_id) VALUES ('rol_farm_owner', ?)",
+        (permission_ids["audit.view"],),
     )
-    assert grant.status_code == 200
+    db._conn.commit()
 
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     me = client.get("/v1/admin/me").json()

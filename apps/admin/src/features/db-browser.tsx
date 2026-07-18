@@ -32,8 +32,9 @@ export function DbBrowserPage() {
   });
 
   useEffect(() => {
-    if (!selectedTable && tables && tables.length > 0) {
-      setSelectedTable(tables[0]);
+    const firstTable = tables?.[0];
+    if (!selectedTable && firstTable) {
+      setSelectedTable(firstTable);
     }
   }, [tables, selectedTable]);
 

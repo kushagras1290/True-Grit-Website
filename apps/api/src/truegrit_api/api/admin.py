@@ -2147,7 +2147,8 @@ async def _db_browser_allowed_tables(db: Database) -> list[str]:
     both endpoints below validate `table_name` against before it is ever
     interpolated into a query string."""
     rows = await db.fetch_all(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name"
+        "SELECT name FROM sqlite_master WHERE type='table'"
+        " AND name NOT LIKE 'sqlite_%' ORDER BY name"
     )
     return [row["name"] for row in rows if row["name"] not in _DB_BROWSER_BLOCKED_TABLES]
 

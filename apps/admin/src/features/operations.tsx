@@ -1414,7 +1414,7 @@ type FarmOwnerForm = z.infer<typeof farmOwnerSchema>;
 function AddFarmOwnerModal({ onClose }: { onClose: () => void }) {
   const toast = useToast();
   const queryClient = useQueryClient();
-  const farms = useQuery({ queryKey: ["farms"], queryFn: api.farms });
+  const farms = useQuery({ queryKey: ["farms"], queryFn: () => api.farms({ limit: 100 }) });
   const form = useForm<FarmOwnerForm>({
     resolver: zodResolver(farmOwnerSchema),
     defaultValues: { email: "", displayName: "", farmId: "", password: "" },
