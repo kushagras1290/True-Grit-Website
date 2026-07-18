@@ -2,18 +2,21 @@ import { data } from "react-router";
 
 import type { Route } from "./+types/category";
 import { Breadcrumbs, ProductGrid, Section } from "../components/catalogue";
-import { catalogueRuntime, loadCategoryPage } from "../lib/catalogue.server";
+import { PageLinkPagination } from "../components/pagination";
+import { CATALOGUE_PAGE_SIZE, catalogueRuntime, loadCategoryPage } from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
+  const pageNumber = Math.max(1, Number(new URL(request.url).searchParams.get("page")) || 1);
   const page = await loadCategoryPage(
     params.slug,
     resolveCountry(request),
     catalogueRuntime(context),
+    pageNumber,
   );
   if (!page) throw data("Category not found", { status: 404 });
-  return { page };
+  return { page, pageNumber };
 }
 
 export function meta({ data: loaderData }: Route.MetaArgs) {
@@ -21,7 +24,7 @@ export function meta({ data: loaderData }: Route.MetaArgs) {
 }
 
 export default function CategoryPage({ loaderData }: Route.ComponentProps) {
-  const { page } = loaderData;
+  const { page, pageNumber } = loaderData;
   return (
     <>
       <Breadcrumbs items={page.breadcrumbs} />
@@ -49,9 +52,10 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
 
       <Section>
         <p className="mb-5 text-sm text-ink-muted" role="status">
-          {page.products.length} product{page.products.length === 1 ? "" : "s"}
+          {page.productsTotal} product{page.productsTotal === 1 ? "" : "s"}
         </p>
         <ProductGrid products={page.products} />
+        <PageLinkPagination page={pageNumber} pageSize={CATALOGUE_PAGE_SIZE} total={page.productsTotal} />
       </Section>
 
       {page.faq.length > 0 ? (

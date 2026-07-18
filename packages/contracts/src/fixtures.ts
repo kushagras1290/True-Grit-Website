@@ -431,6 +431,7 @@ export function getCategoryPage(slug: string): PublicCategoryPage | null {
     },
     subcategories: [],
     products: products.filter((product) => slugs.includes(product.slug)),
+    productsTotal: products.filter((product) => slugs.includes(product.slug)).length,
     faq: [
       {
         question: "How do you verify these farms?",

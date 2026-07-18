@@ -144,6 +144,7 @@ export interface PublicCategoryPage {
   };
   subcategories: CategorySummary[];
   products: ProductSummary[];
+  productsTotal: number;
   faq: FaqItem[];
   seo: SeoDocument;
   updatedAt: string;
