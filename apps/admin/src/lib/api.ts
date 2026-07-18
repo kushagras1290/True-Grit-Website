@@ -309,6 +309,26 @@ export interface AdminOrderDetail {
     unitMinor: number;
     lineTotalMinor: number;
   }>;
+  payment: {
+    provider: string;
+    status: string;
+    amountMinor: number;
+    currencyCode: string;
+    refundedMinor: number;
+  } | null;
+}
+
+export interface AdminRefundRow {
+  id: string;
+  orderId: string;
+  orderReference: string;
+  currencyCode: string;
+  actorName: string;
+  paymentStatus: string | null;
+  refundedMinor: number | null;
+  reason: string | null;
+  providerRefundId: string | null;
+  createdAt: string;
 }
 
 export interface AdminSearchProductResult {
@@ -784,11 +804,43 @@ export const api = {
       deliveryStatus: "not_ready",
       placedAt: order.placedAt,
       items: [],
+      payment:
+        order.paymentStatus === "not_required"
+          ? null
+          : {
+              provider: "razorpay",
+              status: order.paymentStatus,
+              amountMinor: order.totalMinor,
+              currencyCode: order.currencyCode,
+              refundedMinor: 0,
+            },
     });
   },
 
   updateOrderStatus: (id: string, status: string): Promise<{ orderStatus: string }> =>
     demoMode ? demo({ orderStatus: status }) : patch(`/v1/admin/orders/${id}/status`, { status }),
+
+  refundOrder: (
+    id: string,
+    input: { amountMinor?: number; reason: string },
+  ): Promise<{ paymentStatus: string; refundedMinor: number; totalRefundedMinor: number }> =>
+    demoMode
+      ? demo({
+          paymentStatus: "refunded",
+          refundedMinor: input.amountMinor ?? 0,
+          totalRefundedMinor: input.amountMinor ?? 0,
+        })
+      : post(`/v1/admin/orders/${id}/refund`, input),
+
+  refunds: ({
+    limit = 50,
+    offset = 0,
+  }: { limit?: number; offset?: number } = {}): Promise<AdminRefundRow[]> =>
+    demoMode
+      ? demo([])
+      : get<{ items: AdminRefundRow[] }>(
+          `/v1/admin/refunds?limit=${limit}&offset=${offset}`,
+        ).then((body) => body.items),
 
   users: ({
     limit = 50,

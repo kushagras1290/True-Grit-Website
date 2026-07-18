@@ -34,6 +34,7 @@ import {
   api,
   type AdminContactMessageRow,
   type AdminFarmRow,
+  type AdminOrderDetail,
   type AdminRole,
 } from "../lib/api";
 import { formatDateTime, formatMoney } from "../lib/format";
@@ -689,10 +690,88 @@ const ORDER_TRANSITIONS: Record<string, string[]> = {
   cancelled: [],
 };
 
+const REFUNDABLE_PAYMENT_STATUSES = new Set(["paid", "partially_refunded"]);
+
+const refundSchema = z.object({
+  amount: z.coerce.number().min(0.01, "Enter an amount greater than zero").optional(),
+  reason: z.string().min(3, "A reason is required for the audit trail").max(300),
+});
+
+type RefundForm = z.infer<typeof refundSchema>;
+
+function RefundModal({
+  order,
+  onClose,
+}: {
+  order: AdminOrderDetail;
+  onClose: () => void;
+}) {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const remainingMinor = (order.payment?.amountMinor ?? 0) - (order.payment?.refundedMinor ?? 0);
+  const form = useForm<RefundForm>({
+    resolver: zodResolver(refundSchema),
+    defaultValues: { amount: remainingMinor / 100, reason: "" },
+  });
+
+  const mutation = useMutation({
+    mutationFn: (values: RefundForm) =>
+      api.refundOrder(order.id, {
+        amountMinor: Math.round(values.amount! * 100),
+        reason: values.reason,
+      }),
+    onSuccess: async (result) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["order", order.id] }),
+        queryClient.invalidateQueries({ queryKey: ["orders"] }),
+      ]);
+      toast.success(
+        `Refunded ${formatMoney(result.refundedMinor, order.currencyCode)}.`,
+      );
+      onClose();
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not issue the refund."),
+  });
+
+  return (
+    <Modal title="Issue refund" onClose={onClose}>
+      <form
+        className="space-y-4"
+        onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
+      >
+        <p className="text-sm text-ink-muted">
+          Up to {formatMoney(remainingMinor, order.currencyCode)} remains unrefunded on this{" "}
+          {order.payment?.provider} payment.
+        </p>
+        <Field
+          label={`Refund amount (${order.currencyCode})`}
+          htmlFor="refund-amount"
+          error={form.formState.errors.amount?.message}
+        >
+          <Input id="refund-amount" type="number" step="0.01" {...form.register("amount")} />
+        </Field>
+        <Field label="Reason" htmlFor="refund-reason" error={form.formState.errors.reason?.message}>
+          <Textarea id="refund-reason" {...form.register("reason")} />
+        </Field>
+        <div className="flex justify-end gap-2">
+          <Button type="button" variant="secondary" onClick={onClose} disabled={mutation.isPending}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="destructive" disabled={mutation.isPending}>
+            {mutation.isPending ? "Refunding..." : "Issue refund"}
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
 export function OrderDetailPage() {
   const { id = "" } = useParams();
   const toast = useToast();
   const queryClient = useQueryClient();
+  const [refunding, setRefunding] = useState(false);
   const {
     data: order,
     isLoading,
@@ -812,8 +891,29 @@ export function OrderDetailPage() {
               )}
             </div>
           </PermissionGate>
+          {order.payment &&
+          order.payment.provider !== "cod" &&
+          REFUNDABLE_PAYMENT_STATUSES.has(order.payment.status) &&
+          order.payment.amountMinor > order.payment.refundedMinor ? (
+            <PermissionGate permission="orders.refund">
+              <div className="border-t border-line pt-3">
+                <p className="mb-2 text-xs font-semibold tracking-wide text-ink-muted uppercase">
+                  Payment
+                </p>
+                <p className="mb-2 text-sm text-ink-muted">
+                  {formatMoney(order.payment.refundedMinor, order.currencyCode)} refunded of{" "}
+                  {formatMoney(order.payment.amountMinor, order.currencyCode)} paid via{" "}
+                  {order.payment.provider}.
+                </p>
+                <Button variant="destructive" onClick={() => setRefunding(true)}>
+                  Issue refund
+                </Button>
+              </div>
+            </PermissionGate>
+          ) : null}
         </aside>
       </div>
+      {refunding ? <RefundModal order={order} onClose={() => setRefunding(false)} /> : null}
     </div>
   );
 }

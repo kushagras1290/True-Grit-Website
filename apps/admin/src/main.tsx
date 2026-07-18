@@ -27,6 +27,7 @@ import {
 import { ProductEditorPage, ProductListPage } from "./features/products";
 import { RecipeEditorPage, RecipeListPage } from "./features/recipes";
 import { ReportsPage } from "./features/reports";
+import { RefundsOversightPage } from "./features/refunds";
 import { ReturnDetailPage, ReturnsListPage } from "./features/returns";
 import { ScopeManagementPage } from "./features/scopes";
 import { ServerLogsPage } from "./features/server-logs";
@@ -64,6 +65,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="orders/:id" element={<OrderDetailPage />} />
               <Route path="returns" element={<ReturnsListPage />} />
               <Route path="returns/:id" element={<ReturnDetailPage />} />
+              <Route path="refunds" element={<RefundsOversightPage />} />
               <Route path="archive" element={<ArchivePage />} />
               <Route path="site-control" element={<SiteControlPage />} />
               <Route path="blog" element={<ArticleListPage />} />

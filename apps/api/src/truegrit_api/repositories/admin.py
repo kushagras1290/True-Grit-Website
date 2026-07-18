@@ -354,6 +354,19 @@ class AdminRepository:
             """,
             (order_id,),
         )
+        payment = await self._db.fetch_one(
+            """
+            SELECT id, provider, amount_minor, currency_code, status,
+                   COALESCE(
+                     (SELECT SUM(amount_minor) FROM payment_events
+                       WHERE payment_id = payments.id AND event_type = 'refund'),
+                     0
+                   ) AS refunded_minor
+            FROM payments WHERE order_id = ? ORDER BY created_at DESC LIMIT 1
+            """,
+            (order_id,),
+        )
+        order["payment"] = payment
         return order
 
     async def search_products(

@@ -716,6 +716,110 @@ def test_completed_order_consumes_reserved_inventory(client: TestClient, db: SQL
     assert after_complete["reserved"] == before["reserved"]
 
 
+def _seed_paid_razorpay_payment(db: SQLiteDatabase, order_id: str, amount_minor: int) -> None:
+    now = "2026-07-15T00:00:00Z"
+    db._conn.execute(
+        "INSERT INTO payments"
+        " (id, order_id, provider, provider_intent_id, amount_minor, currency_code,"
+        "  status, created_at, updated_at)"
+        " VALUES (?, ?, 'razorpay', 'pay_test123', ?, 'INR', 'paid', ?, ?)",
+        (f"pay_{order_id}", order_id, amount_minor, now, now),
+    )
+    db._conn.commit()
+
+
+def test_owner_can_issue_and_oversee_refund(client: TestClient, db: SQLiteDatabase, monkeypatch):
+    as_admin(client, db)
+    _seed_paid_razorpay_payment(db, "ord_1001", 94800)
+
+    async def fake_refund(settings, *, payment_id, amount_minor, idempotency_key):
+        assert payment_id == "pay_test123"
+        return "rfnd_test123"
+
+    monkeypatch.setattr("truegrit_api.services.orders.refund_razorpay_payment", fake_refund)
+
+    response = client.post(
+        "/v1/admin/orders/ord_1001/refund",
+        json={"reason": "Customer requested cancellation"},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["paymentStatus"] == "refunded"
+    assert body["refundedMinor"] == 94800
+
+    detail = client.get("/v1/admin/orders/ord_1001").json()
+    assert detail["paymentStatus"] == "refunded"
+    assert detail["payment"]["status"] == "refunded"
+    assert detail["payment"]["refundedMinor"] == 94800
+
+    refunds = client.get("/v1/admin/refunds").json()["items"]
+    match = next(r for r in refunds if r["orderReference"] == "TG-1001")
+    assert match["reason"] == "Customer requested cancellation"
+    assert match["refundedMinor"] == 94800
+    assert match["providerRefundId"] == "rfnd_test123"
+
+
+def test_refund_cannot_exceed_remaining_balance_or_double_refund(
+    client: TestClient, db: SQLiteDatabase, monkeypatch
+):
+    as_admin(client, db)
+    _seed_paid_razorpay_payment(db, "ord_1001", 94800)
+
+    async def fake_refund(settings, *, payment_id, amount_minor, idempotency_key):
+        return "rfnd_test123"
+
+    monkeypatch.setattr("truegrit_api.services.orders.refund_razorpay_payment", fake_refund)
+
+    too_much = client.post(
+        "/v1/admin/orders/ord_1001/refund",
+        json={"amountMinor": 200_000, "reason": "Too much"},
+    )
+    assert too_much.status_code == 422
+
+    full = client.post("/v1/admin/orders/ord_1001/refund", json={"reason": "Full refund"})
+    assert full.status_code == 200
+
+    again = client.post("/v1/admin/orders/ord_1001/refund", json={"reason": "Second attempt"})
+    assert again.status_code == 409
+
+
+def test_refund_blocked_for_cod_orders(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    now = "2026-07-15T00:00:00Z"
+    db._conn.execute(
+        "INSERT INTO payments"
+        " (id, order_id, provider, provider_intent_id, amount_minor, currency_code,"
+        "  status, created_at, updated_at)"
+        " VALUES ('pay_cod_1001', 'ord_1001', 'cod', NULL, 94800, 'INR', 'paid', ?, ?)",
+        (now, now),
+    )
+    db._conn.commit()
+
+    response = client.post("/v1/admin/orders/ord_1001/refund", json={"reason": "test"})
+    assert response.status_code == 422
+
+
+def test_refund_requires_orders_refund_permission_even_with_orders_view(
+    client: TestClient, db: SQLiteDatabase
+):
+    # rol_inventory holds orders.view but not orders.cancel/orders.refund --
+    # the route's own dependency only demands orders.view, so this proves the
+    # *inner* orders.refund check in issue_refund() is actually enforced.
+    db._conn.execute(
+        "INSERT INTO user_roles (user_id, role_id, assigned_at, assigned_by)"
+        " VALUES ('usr_editor', 'rol_inventory', '2026-07-15T00:00:00Z', 'usr_admin')"
+    )
+    db._conn.commit()
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
+
+    me = client.get("/v1/admin/me").json()
+    assert "orders.view" in me["permissions"]
+    assert "orders.refund" not in me["permissions"]
+
+    response = client.post("/v1/admin/orders/ord_1001/refund", json={"reason": "test"})
+    assert response.status_code == 403
+
+
 def test_owner_can_manage_site_control(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
     response = client.patch(

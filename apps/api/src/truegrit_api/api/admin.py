@@ -70,7 +70,7 @@ from truegrit_api.services.contact import contactable_email
 from truegrit_api.services.email import send_email
 from truegrit_api.services.inventory import adjust_inventory, clear_inventory_levels
 from truegrit_api.services.media import delete_media, list_media, save_image_bytes, save_image_upload, update_media
-from truegrit_api.services.orders import update_order_status
+from truegrit_api.services.orders import issue_refund, update_order_status
 from truegrit_api.services.password_reset import (
     confirm_password_reset,
     request_password_reset,
@@ -3036,6 +3036,11 @@ class OrderStatusRequest(_CamelModel):
     status: str = Field(max_length=32)
 
 
+class OrderRefundRequest(_CamelModel):
+    amount_minor: int | None = Field(default=None, ge=1)
+    reason: str = Field(min_length=3, max_length=300)
+
+
 @router.get("/orders")
 async def list_orders_endpoint(
     db: Annotated[Database, Depends(get_database)],
@@ -3105,6 +3110,17 @@ async def get_order_endpoint(
             }
             for item in order["items"]
         ],
+        "payment": (
+            {
+                "provider": order["payment"]["provider"],
+                "status": order["payment"]["status"],
+                "amountMinor": order["payment"]["amount_minor"],
+                "currencyCode": order["payment"]["currency_code"],
+                "refundedMinor": order["payment"]["refunded_minor"],
+            }
+            if order["payment"] is not None
+            else None
+        ),
     }
 
 
@@ -3119,6 +3135,69 @@ async def update_order_status_endpoint(
     return await update_order_status(
         db, principal, _request_id(request), order_id, target_status=payload.status
     )
+
+
+@router.post("/orders/{order_id}/refund")
+async def refund_order_endpoint(
+    order_id: str,
+    payload: OrderRefundRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("orders.view"))],
+) -> Any:
+    return await issue_refund(
+        db,
+        principal,
+        _request_id(request),
+        order_id,
+        amount_minor=payload.amount_minor,
+        reason=payload.reason,
+    )
+
+
+@router.get("/refunds")
+async def list_refunds_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("audit.view"))],
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    """Owner-only oversight of every refund issued, regardless of who issued it
+    -- read from the audit trail rather than payment_events so actor and
+    reason (never stored on payment_events itself) come along for free."""
+    await _require_owner(db, principal)
+    rows = await db.fetch_all(
+        """
+        SELECT al.id, al.entity_id AS order_id, al.actor_user_id,
+               u.display_name AS actor_name, al.after_summary_json, al.created_at,
+               o.public_reference, o.currency_code
+        FROM audit_logs al
+        JOIN orders o ON o.id = al.entity_id
+        LEFT JOIN users u ON u.id = al.actor_user_id
+        WHERE al.action = 'order.refunded'
+        ORDER BY al.created_at DESC
+        LIMIT ? OFFSET ?
+        """,
+        (limit, offset),
+    )
+    items = []
+    for row in rows:
+        after = json.loads(row["after_summary_json"] or "{}")
+        items.append(
+            {
+                "id": row["id"],
+                "orderId": row["order_id"],
+                "orderReference": row["public_reference"],
+                "currencyCode": row["currency_code"],
+                "actorName": row["actor_name"] or "Unknown",
+                "paymentStatus": after.get("paymentStatus"),
+                "refundedMinor": after.get("refundedNow"),
+                "reason": after.get("reason"),
+                "providerRefundId": after.get("providerRefundId"),
+                "createdAt": row["created_at"],
+            }
+        )
+    return {"items": items, "limit": limit, "offset": offset}
 
 
 # ---------------------------------------------------------------------------

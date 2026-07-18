@@ -34,6 +34,7 @@ from truegrit_api.logging import log_event
 from truegrit_api.platform.http import HttpError, post_form_async, post_json_async
 
 _RAZORPAY_ORDERS_URL = "https://api.razorpay.com/v1/orders"
+_RAZORPAY_PAYMENTS_URL = "https://api.razorpay.com/v1/payments"
 # Both INR and every currency PayPal is likely to be configured with here (USD,
 # GBP, EUR, AUD, CAD, SGD) are two-decimal. A zero-decimal presentment currency
 # (JPY) would need its own exponent table; `paypal_currency` is validated against
@@ -89,6 +90,34 @@ def verify_razorpay_signature(
         hashlib.sha256,
     ).hexdigest()
     return hmac.compare_digest(expected, signature or "")
+
+
+async def refund_razorpay_payment(
+    settings: Settings, *, payment_id: str, amount_minor: int, idempotency_key: str
+) -> str:
+    """Refund (fully or partially) a captured Razorpay payment and return the
+    refund id. `idempotency_key` — Razorpay's own retry-safety header — should
+    be derived from the caller's own refund record id, so a retried request
+    after a dropped response can never create a second refund at Razorpay."""
+    if not settings.razorpay_enabled:
+        raise PaymentError("Online refunds are not available right now.")
+    credentials = f"{settings.razorpay_key_id}:{settings.razorpay_key_secret}".encode()
+    authorization = "Basic " + base64.b64encode(credentials).decode("ascii")
+    try:
+        result = await post_json_async(
+            f"{_RAZORPAY_PAYMENTS_URL}/{payment_id}/refund",
+            body={"amount": amount_minor},
+            headers={
+                "authorization": authorization,
+                "X-Razorpay-Idempotency-Key": idempotency_key,
+            },
+        )
+    except HttpError as exc:
+        raise PaymentError("The refund could not be processed. Please try again.") from exc
+    refund_id = (result or {}).get("id")
+    if not refund_id:
+        raise PaymentError("The payment provider did not confirm the refund.")
+    return str(refund_id)
 
 
 # --- PayPal (international) --------------------------------------------------
@@ -249,6 +278,48 @@ async def capture_paypal_order(
     if not capture_id:
         raise PaymentError("This payment was not completed.")
     return str(capture_id)
+
+
+async def refund_paypal_capture(
+    settings: Settings,
+    *,
+    capture_id: str,
+    amount_minor: int,
+    currency: str,
+    idempotency_key: str,
+) -> str:
+    """Refund (fully or partially) a captured PayPal payment and return the
+    refund id. `idempotency_key` maps to PayPal's own `PayPal-Request-Id`
+    retry-safety header, for the same reason `refund_razorpay_payment` takes
+    one: a retried request after a dropped response must not double-refund."""
+    if not settings.paypal_enabled:
+        raise PaymentError("International refunds are not available right now.")
+    token = await _paypal_access_token(settings)
+    try:
+        result = await post_json_async(
+            f"{settings.paypal_api_base}/v2/payments/captures/{capture_id}/refund",
+            body={
+                "amount": {
+                    "currency_code": currency,
+                    "value": format_paypal_amount(amount_minor),
+                }
+            },
+            headers={
+                "authorization": f"Bearer {token}",
+                "PayPal-Request-Id": idempotency_key,
+            },
+        )
+    except HttpError as exc:
+        log_event(
+            "error", "paypal_refund_failed", capture_id=capture_id, error_type=type(exc).__name__
+        )
+        raise PaymentError("The refund could not be processed. Please try again.") from exc
+    if not isinstance(result, dict) or result.get("status") not in {"COMPLETED", "PENDING"}:
+        raise PaymentError("The payment provider did not confirm the refund.")
+    refund_id = result.get("id")
+    if not refund_id:
+        raise PaymentError("The payment provider did not confirm the refund.")
+    return str(refund_id)
 
 
 def _first_capture(result: dict[str, Any]) -> dict[str, Any] | None:

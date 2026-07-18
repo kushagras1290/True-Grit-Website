@@ -19,6 +19,7 @@ import {
   Package,
   PanelLeftClose,
   PanelLeftOpen,
+  Receipt,
   RotateCcw,
   ScrollText,
   Settings,
@@ -101,6 +102,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         label: "Returns",
         icon: <RotateCcw size={16} />,
         permission: "returns.view",
+      },
+      {
+        to: "/refunds",
+        label: "Payments & Refunds",
+        icon: <Receipt size={16} />,
+        permission: "audit.view",
       },
       {
         to: "/archive",

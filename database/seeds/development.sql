@@ -46,7 +46,8 @@ INSERT INTO permissions (id, key, description) VALUES
   ('prm_media_archive', 'media.archive', 'Archive media'),
   ('prm_orders_view', 'orders.view', 'View orders'),
   ('prm_orders_cancel', 'orders.cancel', 'Cancel orders'),
-  ('prm_orders_refund', 'orders.refund', 'Refund orders'),
+  -- orders.refund is now seeded by migration 0032, not here (same reason
+  -- articles.*/recipes.*/etc. aren't in this list -- they're seeded by 0025).
   ('prm_inventory_view', 'inventory.view', 'View inventory'),
   ('prm_inventory_adjust', 'inventory.adjust', 'Adjust inventory'),
   ('prm_customers_view', 'customers.view', 'View customers'),
