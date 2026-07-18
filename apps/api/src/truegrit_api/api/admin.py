@@ -1694,6 +1694,92 @@ async def restore_archive_item_endpoint(
     return {"id": item_id, "kind": kind, "status": "draft"}
 
 
+# ---------------------------------------------------------------------------
+# Global search
+# ---------------------------------------------------------------------------
+
+SEARCH_MIN_QUERY_LENGTH = 2
+SEARCH_RESULT_LIMIT = 5
+
+
+@router.get("/search")
+async def global_search_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(get_current_staff)],
+    q: Annotated[str, Query(max_length=120)] = "",
+) -> Any:
+    """Cross-entity "jump to" search for the admin dashboard. Any authenticated
+    staff member may call this endpoint, but each entity group is only
+    populated if the principal actually holds that entity's `.view`
+    permission — a user without `orders.view` gets an empty `orders` list,
+    never a 403 for the whole request, so one search box works for everyone."""
+    term = q.strip()
+    empty: dict[str, list[dict[str, Any]]] = {
+        "products": [],
+        "orders": [],
+        "users": [],
+        "categories": [],
+    }
+    if len(term) < SEARCH_MIN_QUERY_LENGTH:
+        return empty
+
+    repo = AdminRepository(db)
+
+    if principal.has("products.view"):
+        rows = await repo.search_products(
+            term, limit=SEARCH_RESULT_LIMIT, farm_id=principal.farm_id
+        )
+        empty["products"] = [
+            {
+                "id": row["id"],
+                "name": row["name"],
+                "slug": row["slug"],
+                "sku": row["sku"] or "—",
+            }
+            for row in rows
+        ]
+
+    if principal.has("orders.view"):
+        rows = await repo.search_orders(term, limit=SEARCH_RESULT_LIMIT)
+        empty["orders"] = [
+            {
+                "id": row["id"],
+                "publicReference": row["public_reference"],
+                "customerEmail": contactable_email(row["customer_email"]),
+                "orderStatus": row["order_status"],
+                "totalMinor": row["total_minor"],
+                "currencyCode": row["currency_code"],
+            }
+            for row in rows
+        ]
+
+    if principal.has("users.view"):
+        rows = await repo.search_users(term, limit=SEARCH_RESULT_LIMIT)
+        empty["users"] = [
+            {
+                "id": row["id"],
+                "displayName": row["display_name"],
+                "email": row["email"],
+                "status": row["status"],
+            }
+            for row in rows
+        ]
+
+    if principal.has("categories.view"):
+        rows = await repo.search_categories(term, limit=SEARCH_RESULT_LIMIT)
+        empty["categories"] = [
+            {
+                "id": row["id"],
+                "name": row["name"],
+                "slug": row["slug"],
+                "status": row["status"],
+            }
+            for row in rows
+        ]
+
+    return empty
+
+
 class HighlightsUpdateRequest(_CamelModel):
     product_ids: list[str] = Field(max_length=12)
 

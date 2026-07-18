@@ -1,8 +1,8 @@
 /** Restrained admin primitives — one button hierarchy, quiet surfaces, no card zoo. */
 
 import { cn } from "@truegrit/ui";
-import { AlertTriangle, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { AlertTriangle, Search, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import type {
   ButtonHTMLAttributes,
   InputHTMLAttributes,
@@ -48,6 +48,56 @@ export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElem
       )}
       {...props}
     />
+  );
+}
+
+const SEARCH_DEBOUNCE_MS = 300;
+
+export function SearchBox({
+  value,
+  onSearch,
+  placeholder,
+  "aria-label": ariaLabel,
+}: {
+  value: string;
+  onSearch: (value: string) => void;
+  placeholder?: string;
+  "aria-label"?: string;
+}) {
+  const [draft, setDraft] = useState(value);
+  const onSearchRef = useRef(onSearch);
+  onSearchRef.current = onSearch;
+  const skipNextDebounce = useRef(true);
+
+  useEffect(() => {
+    setDraft(value);
+    skipNextDebounce.current = true;
+  }, [value]);
+
+  useEffect(() => {
+    if (skipNextDebounce.current) {
+      skipNextDebounce.current = false;
+      return;
+    }
+    const timer = window.setTimeout(() => onSearchRef.current(draft), SEARCH_DEBOUNCE_MS);
+    return () => window.clearTimeout(timer);
+  }, [draft]);
+
+  return (
+    <div className="relative">
+      <Search
+        size={15}
+        className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-ink-muted"
+      />
+      <Input
+        type="search"
+        value={draft}
+        onChange={(event) => setDraft(event.target.value)}
+        placeholder={placeholder}
+        aria-label={ariaLabel}
+        className="pl-9"
+      />
+    </div>
   );
 }
 
