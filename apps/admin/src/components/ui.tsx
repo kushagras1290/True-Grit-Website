@@ -335,41 +335,12 @@ export function Td({ children, className, ...props }: TdHTMLAttributes<HTMLTable
   );
 }
 
-const SEARCH_DEBOUNCE_MS = 300;
-
-export function SearchBox({
-  value,
-  onSearch,
-  placeholder = "Search...",
-  "aria-label": ariaLabel,
-}: {
-  value: string;
-  onSearch: (value: string) => void;
-  placeholder?: string;
-  "aria-label"?: string;
-}) {
-  const [draft, setDraft] = useState(value);
-
-  useEffect(() => {
-    setDraft(value);
-  }, [value]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => onSearch(draft), SEARCH_DEBOUNCE_MS);
-    return () => clearTimeout(timer);
-  }, [draft, onSearch]);
-
-  return (
-    <Input
-      type="search"
-      value={draft}
-      placeholder={placeholder}
-      aria-label={ariaLabel ?? placeholder}
-      onChange={(event) => setDraft(event.target.value)}
-    />
-  );
-}
-
+/** Previous/Next pager for admin list pages. Backend list endpoints return a
+ * plain page of rows with no total count, so "has more" is inferred from
+ * whether the page came back full (`rowCount >= limit`) rather than from a
+ * separate COUNT(*) — one fewer query per list, at the cost of the Next
+ * button staying enabled for one extra (empty) page when the count lands
+ * exactly on a page boundary. */
 export function Pagination({
   page,
   onPageChange,
@@ -382,9 +353,8 @@ export function Pagination({
   limit: number;
 }) {
   if (page === 1 && rowCount < limit) return null;
-
   return (
-    <div className="mt-4 flex items-center justify-between border-t border-line pt-4">
+    <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
       <Button
         type="button"
         variant="secondary"
@@ -403,5 +373,40 @@ export function Pagination({
         Next
       </Button>
     </div>
+  );
+}
+
+/** Debounced search box for admin list pages: fires `onSearch` 300ms after
+ * typing stops so every keystroke doesn't trigger a request. */
+export function SearchBox({
+  value,
+  onSearch,
+  placeholder,
+  "aria-label": ariaLabel,
+}: {
+  value: string;
+  onSearch: (value: string) => void;
+  placeholder?: string;
+  "aria-label"?: string;
+}) {
+  const [draft, setDraft] = useState(value);
+
+  useEffect(() => setDraft(value), [value]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (draft !== value) onSearch(draft);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [draft, value, onSearch]);
+
+  return (
+    <Input
+      type="search"
+      value={draft}
+      placeholder={placeholder ?? "Search..."}
+      aria-label={ariaLabel ?? placeholder ?? "Search"}
+      onChange={(event) => setDraft(event.target.value)}
+    />
   );
 }
