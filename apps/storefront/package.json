@@ -13,6 +13,7 @@
   "dependencies": {
     "@react-router/node": "^7.9.6",
     "@react-router/serve": "^7.9.6",
+    "@sentry/react": "^10.66.0",
     "@truegrit/contracts": "workspace:*",
     "@truegrit/ui": "workspace:*",
     "isbot": "^5.1.17",

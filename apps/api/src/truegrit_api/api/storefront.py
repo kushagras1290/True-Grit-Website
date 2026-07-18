@@ -221,7 +221,7 @@ async def capture_paypal_payment(
     order = await db.fetch_one(
         """
         SELECT o.id, o.public_reference, o.currency_code, o.total_minor,
-               p.provider_reference, p.amount_minor AS charge_minor, p.status AS payment_status
+               p.provider_intent_id, p.amount_minor AS charge_minor, p.status AS payment_status
         FROM orders o
         JOIN payments p ON p.order_id = o.id AND p.provider = 'paypal'
         WHERE o.id = ? AND o.customer_user_id = ? AND o.order_status = 'pending_payment'
@@ -232,14 +232,14 @@ async def capture_paypal_payment(
         raise NotFoundError("Order not found or already processed.")
     # Capture the id we created, not the one the client handed us. Trusting the
     # client's id would let it swap in some other (cheaper) PayPal order.
-    if str(order["provider_reference"]) != payload.paypal_order_id:
+    if str(order["provider_intent_id"]) != payload.paypal_order_id:
         raise PaymentError("This payment does not belong to that order.")
     if str(order["payment_status"]) == "paid":
         raise ConflictError("This order has already been paid.")
 
     capture_id = await capture_paypal_order(
         get_settings(),
-        paypal_order_id=str(order["provider_reference"]),
+        paypal_order_id=str(order["provider_intent_id"]),
         expected_minor=int(order["charge_minor"]),
     )
 

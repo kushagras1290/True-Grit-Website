@@ -22,5 +22,12 @@
     "PUBLIC_FACEBOOK_APP_ID": "",
     // Keep false until Facebook Login is ready for customers.
     "PUBLIC_FACEBOOK_LOGIN_VISIBLE": "false",
+    // Client-side Sentry error reporting (see app/lib/sentry.client.ts). Empty
+    // until a Sentry project exists — no DSN means no Sentry.init call, ever.
+    // GO-LIVE: create a Sentry project, copy its DSN from
+    // Project Settings -> Client Keys (DSN), and set it here. DSNs carry only
+    // a public key and are meant to be client-visible, so this is safe as a
+    // plain var (same as PUBLIC_FACEBOOK_APP_ID above).
+    "PUBLIC_SENTRY_DSN": "",
   },
 }

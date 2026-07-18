@@ -36,10 +36,19 @@ async def start_session(
     user_id: str,
     settings: Settings,
     user_agent_summary: str,
-) -> None:
+) -> str:
     """Create a session for `user_id`, stamp the user's last sign-in, and set the
     session cookie on `response`. Session row insert and user update are batched
-    so a partial write can never leave a session without its sign-in stamp."""
+    so a partial write can never leave a session without its sign-in stamp.
+
+    Returns the plaintext CSRF token for this session. The session cookie is
+    HttpOnly (JS cannot read it) and — because the storefront/admin and API
+    live on different registrable domains — is issued with SameSite=None, so
+    it carries no CSRF protection of its own. The caller must hand this token
+    to the client (e.g. in the login response body); the client then resends
+    it as `X-CSRF-Token` on state-changing requests, and
+    `verify_csrf_token` checks it against the hash stored here.
+    """
     now = utc_now_iso()
     token = secrets.token_urlsafe(32)
     csrf_secret = secrets.token_urlsafe(32)
@@ -79,6 +88,47 @@ async def start_session(
         samesite=settings.session_cookie_samesite,
         path="/",
     )
+    return csrf_secret
+
+
+async def verify_csrf_token(db: Database, session_token: str, provided_token: str | None) -> bool:
+    """Constant-time check that `provided_token` (the `X-CSRF-Token` header)
+    matches the CSRF secret bound to the session behind `session_token` (the
+    session cookie). Called on every state-changing authenticated request —
+    see `truegrit_api.auth.dependencies`."""
+    if not provided_token:
+        return False
+    row = await db.fetch_one(
+        "SELECT csrf_secret_hash FROM sessions WHERE token_hash = ? AND revoked_at IS NULL"
+        " AND expires_at > ?",
+        (hash_token(session_token), utc_now_iso()),
+    )
+    if row is None or not row["csrf_secret_hash"]:
+        return False
+    return secrets.compare_digest(row["csrf_secret_hash"], hash_token(provided_token))
+
+
+async def rotate_csrf_token(db: Database, session_token: str) -> str | None:
+    """Issue a fresh CSRF secret for the session behind `session_token` and
+    return it in plaintext, or None if that session is not live.
+
+    Backs the `GET .../auth/csrf` endpoints: a page reload loses whatever
+    token the client held in memory (it is deliberately never persisted to a
+    cookie or storage), so the client re-establishes one against its still-
+    valid session cookie. A GET so it never itself needs a CSRF token to call.
+    """
+    row = await db.fetch_one(
+        "SELECT id FROM sessions WHERE token_hash = ? AND revoked_at IS NULL AND expires_at > ?",
+        (hash_token(session_token), utc_now_iso()),
+    )
+    if row is None:
+        return None
+    csrf_secret = secrets.token_urlsafe(32)
+    await db.execute(
+        "UPDATE sessions SET csrf_secret_hash = ? WHERE id = ?",
+        (hash_token(csrf_secret), row["id"]),
+    )
+    return csrf_secret
 
 
 async def end_session(

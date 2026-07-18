@@ -83,9 +83,20 @@ def client(db: SQLiteDatabase) -> TestClient:
     return TestClient(create_app(db=db), raise_server_exceptions=False)
 
 
-def create_session(db: SQLiteDatabase, user_id: str) -> str:
-    """Insert a real session row and return the raw cookie token."""
+def create_session(db: SQLiteDatabase, client: TestClient | None, user_id: str) -> str:
+    """Insert a real session row and return the raw cookie token.
+
+    Mints the session's CSRF secret itself (rather than a throwaway random
+    value whose hash alone gets stored) so callers can actually present it.
+    When `client` is given, this sets it as that client's default
+    `X-CSRF-Token` header — mirroring what a real login response plus
+    attaching the returned token would do — so subsequent non-GET requests
+    made as this session pass `verify_csrf_token`. Pass `client=None` for
+    session rows that are only seeded for a fixture's contents and never
+    made a `TestClient`'s active identity (the cookie is never set for them).
+    """
     token = secrets.token_urlsafe(32)
+    csrf_secret = secrets.token_urlsafe(32)
     db._conn.execute(  # test-only direct access
         "INSERT INTO sessions (id, user_id, token_hash, csrf_secret_hash, expires_at,"
         " last_seen_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -93,11 +104,13 @@ def create_session(db: SQLiteDatabase, user_id: str) -> str:
             f"ses_{secrets.token_hex(8)}",
             user_id,
             hash_token(token),
-            hash_token(secrets.token_urlsafe(16)),
+            hash_token(csrf_secret),
             "2027-01-01T00:00:00Z",
             "2026-07-11T00:00:00Z",
             "2026-07-11T00:00:00Z",
         ),
     )
     db._conn.commit()
+    if client is not None:
+        client.headers["x-csrf-token"] = csrf_secret
     return token

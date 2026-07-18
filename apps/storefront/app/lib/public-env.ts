@@ -2,6 +2,7 @@ export interface PublicRuntimeEnv {
   PUBLIC_API_URL?: string;
   PUBLIC_FACEBOOK_APP_ID?: string;
   PUBLIC_FACEBOOK_LOGIN_VISIBLE?: string;
+  PUBLIC_SENTRY_DSN?: string;
 }
 
 declare global {
@@ -14,6 +15,7 @@ const BUILD_API_URL = import.meta.env.VITE_API_URL as string | undefined;
 const BUILD_FACEBOOK_APP_ID = import.meta.env.VITE_FACEBOOK_APP_ID as string | undefined;
 const BUILD_FACEBOOK_LOGIN_VISIBLE = import.meta.env.VITE_FACEBOOK_LOGIN_VISIBLE as
   string | undefined;
+const BUILD_SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN as string | undefined;
 
 function normalizeUrl(value: string | undefined): string {
   return value?.trim().replace(/\/+$/, "") ?? "";
@@ -77,4 +79,18 @@ export function isFacebookLoginVisible(): boolean {
     );
   }
   return isEnabledFlag(processEnv("PUBLIC_FACEBOOK_LOGIN_VISIBLE") || BUILD_FACEBOOK_LOGIN_VISIBLE);
+}
+
+/** Sentry DSN, or "" when error reporting is not configured. Same
+ * runtime-var-first, build-var-fallback resolution as `getPublicApiUrl` /
+ * `getPublicFacebookAppId`, so a deployed Worker's `PUBLIC_SENTRY_DSN` var
+ * always wins over whatever was baked in at build time. */
+export function getPublicSentryDsn(): string {
+  if (typeof window !== "undefined") {
+    return (
+      normalizeUrl(window.__TRUEGRIT_PUBLIC_ENV__?.PUBLIC_SENTRY_DSN) ||
+      normalizeUrl(BUILD_SENTRY_DSN)
+    );
+  }
+  return normalizeUrl(processEnv("PUBLIC_SENTRY_DSN") || BUILD_SENTRY_DSN);
 }

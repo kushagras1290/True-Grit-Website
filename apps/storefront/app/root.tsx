@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   isRouteErrorResponse,
   Link,
@@ -18,6 +19,9 @@ import { CartProvider } from "./lib/cart";
 import { CurrencyProvider } from "./lib/currency";
 import { CustomerProvider } from "./lib/customer-auth";
 import { resolveCountry } from "./lib/geo.server";
+// `.client` module: exports are undefined during SSR, so these are only ever
+// called from `useEffect` below — see lib/sentry.client.ts's docstring.
+import { captureError, initSentryClient } from "./lib/sentry.client";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -38,6 +42,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
           PUBLIC_API_URL?: string;
           PUBLIC_FACEBOOK_APP_ID?: string;
           PUBLIC_FACEBOOK_LOGIN_VISIBLE?: string;
+          PUBLIC_SENTRY_DSN?: string;
         };
       };
     }
@@ -51,6 +56,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
         env?.PUBLIC_FACEBOOK_APP_ID || process.env.PUBLIC_FACEBOOK_APP_ID || "",
       PUBLIC_FACEBOOK_LOGIN_VISIBLE:
         env?.PUBLIC_FACEBOOK_LOGIN_VISIBLE || process.env.PUBLIC_FACEBOOK_LOGIN_VISIBLE || "",
+      PUBLIC_SENTRY_DSN: env?.PUBLIC_SENTRY_DSN || process.env.PUBLIC_SENTRY_DSN || "",
     },
   };
 }
@@ -77,6 +83,14 @@ export default function App() {
   const { bootstrap, country, publicEnv } = useLoaderData<typeof loader>();
   const location = useLocation();
   const isPaymentWindow = location.pathname === "/payment/razorpay";
+
+  // Client-only and a no-op when PUBLIC_SENTRY_DSN is unset (the default) —
+  // see lib/sentry.client.ts. useEffect never runs during SSR, which is what
+  // makes calling a `.client` module export here safe.
+  useEffect(() => {
+    initSentryClient();
+  }, []);
+
   return (
     <>
       <script
@@ -118,6 +132,13 @@ export default function App() {
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   const notFound = isRouteErrorResponse(error) && error.status === 404;
+
+  // A 404 is routing, not a bug — only report genuine errors. Client-only and
+  // a no-op when unconfigured; see lib/sentry.client.ts.
+  useEffect(() => {
+    if (!notFound) captureError(error);
+  }, [error, notFound]);
+
   return (
     <div className="mx-auto max-w-xl px-4 py-24 text-center">
       <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">

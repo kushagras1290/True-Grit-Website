@@ -43,6 +43,21 @@ class PermissionDeniedError(AppError):
         super().__init__(message)
 
 
+class CsrfError(AppError):
+    """A state-changing request arrived without a valid X-CSRF-Token.
+
+    Its own code (distinct from permission_denied) so a client can tell "you
+    need a fresh CSRF token" apart from "you are not allowed to do this" and
+    react by refetching one instead of showing a dead-end permission error.
+    """
+
+    code = "csrf_invalid"
+    http_status = 403
+
+    def __init__(self, message: str = "Missing or invalid CSRF token."):
+        super().__init__(message)
+
+
 class NotFoundError(AppError):
     code = "not_found"
     http_status = 404

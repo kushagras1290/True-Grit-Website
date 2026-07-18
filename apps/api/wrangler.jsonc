@@ -73,7 +73,19 @@
     "PAYPAL_ENVIRONMENT": "sandbox",
     "PAYPAL_CLIENT_ID": "",
     "PAYPAL_CURRENCY": "USD",
-    "PAYPAL_INR_PER_UNIT": "0"
+    "PAYPAL_INR_PER_UNIT": "0",
+
+    // --- Error tracking (Sentry) ---
+    // Empty until a Sentry project exists. The minimal envelope-based reporter
+    // (services/sentry_reporter.py — sentry-sdk cannot run on Python Workers'
+    // Pyodide runtime) treats "" as "not configured" and makes no network call.
+    //
+    // GO-LIVE: create a Sentry project, copy its DSN from
+    // Project Settings -> Client Keys (DSN), and paste it here. DSNs carry only
+    // a public key and are safe to commit (Sentry's own guidance); use
+    // `wrangler secret put SENTRY_DSN` instead only if you would rather it not
+    // sit in source control.
+    "SENTRY_DSN": ""
   }
   // NOTE: every value in `vars` must be a JSON *string*. worker.py's env bridge
   // copies only strings into os.environ, so a bare `false` or `0` here would be

@@ -44,7 +44,7 @@ from truegrit_api.auth.rate_limit import (
     enforce_rate_limit,
     hash_identifier,
 )
-from truegrit_api.auth.sessions import end_session, start_session
+from truegrit_api.auth.sessions import end_session, rotate_csrf_token, start_session
 from truegrit_api.config import Settings, get_settings
 from truegrit_api.errors import AuthenticationError, ConflictError, ValidationAppError
 from truegrit_api.platform.database import Database
@@ -144,7 +144,7 @@ async def _sign_in_with_oauth_identity(
     name: str,
     settings: Settings,
     user_agent_summary: str,
-) -> dict[str, Any]:
+) -> tuple[dict[str, Any], str]:
     now = utc_now_iso()
     link = await db.fetch_one(
         "SELECT user_id FROM oauth_identities WHERE provider = ? AND provider_subject = ?",
@@ -211,10 +211,10 @@ async def _sign_in_with_oauth_identity(
     if user is None:
         raise AuthenticationError("This account is not available.")
 
-    await start_session(
+    csrf_token = await start_session(
         db, response, user_id=user_id, settings=settings, user_agent_summary=user_agent_summary
     )
-    return user
+    return user, csrf_token
 
 
 async def _limit_by_ip(
@@ -320,11 +320,12 @@ async def register(
             ),
         ]
     )
-    await start_session(
+    csrf_token = await start_session(
         db, response, user_id=user_id, settings=settings, user_agent_summary="customer-register"
     )
     return {
         "ok": True,
+        "csrfToken": csrf_token,
         "customer": {
             "id": user_id,
             "displayName": name,
@@ -382,10 +383,10 @@ async def login(
     ):
         raise AuthenticationError("Invalid email or password.")
 
-    await start_session(
+    csrf_token = await start_session(
         db, response, user_id=row["id"], settings=settings, user_agent_summary="customer-login"
     )
-    return {"ok": True, "customer": _customer_payload(row)}
+    return {"ok": True, "csrfToken": csrf_token, "customer": _customer_payload(row)}
 
 
 @router.post("/google")
@@ -408,7 +409,7 @@ async def google_login(
     # The default verifier is async (Workers fetch for JWKS); tests may patch it
     # with a synchronous stub — accept either.
     identity = await verified if inspect.isawaitable(verified) else verified
-    user = await _sign_in_with_oauth_identity(
+    user, csrf_token = await _sign_in_with_oauth_identity(
         db,
         response,
         provider="google",
@@ -418,7 +419,7 @@ async def google_login(
         settings=settings,
         user_agent_summary="customer-google",
     )
-    return {"ok": True, "customer": _customer_payload(user)}
+    return {"ok": True, "csrfToken": csrf_token, "customer": _customer_payload(user)}
 
 
 @router.post("/facebook")
@@ -442,7 +443,7 @@ async def facebook_login(
         app_id=settings.facebook_app_id,
         app_secret=settings.facebook_app_secret,
     )
-    user = await _sign_in_with_oauth_identity(
+    user, csrf_token = await _sign_in_with_oauth_identity(
         db,
         response,
         provider="facebook",
@@ -452,7 +453,7 @@ async def facebook_login(
         settings=settings,
         user_agent_summary="customer-facebook",
     )
-    return {"ok": True, "customer": _customer_payload(user)}
+    return {"ok": True, "csrfToken": csrf_token, "customer": _customer_payload(user)}
 
 
 @router.post("/logout")
@@ -474,6 +475,23 @@ async def me(principal: Annotated[Principal, Depends(get_current_customer)]) -> 
         "phone": principal.phone_e164,
         "phoneVerified": principal.has_verified_phone,
     }
+
+
+@router.get("/csrf")
+async def csrf(
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    # get_current_customer never requires X-CSRF-Token on a GET (see
+    # _enforce_csrf), which is exactly what makes this endpoint usable as the
+    # bootstrap for obtaining that token in the first place.
+    _principal: Annotated[Principal, Depends(get_current_customer)],
+) -> Any:
+    settings = get_settings()
+    token = request.cookies.get(settings.session_cookie_name)
+    csrf_token = await rotate_csrf_token(db, token) if token else None
+    if csrf_token is None:
+        raise AuthenticationError()
+    return {"csrfToken": csrf_token}
 
 
 class _CamelModel(BaseModel):

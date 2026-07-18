@@ -241,6 +241,7 @@ def test_attach_phone_to_existing_account(client: TestClient, sms_outbox):
         client, sms_outbox, phoneVerificationToken=verify_phone_token(client, sms_outbox)
     )
     assert registered.status_code == 200
+    client.headers["x-csrf-token"] = registered.json()["csrfToken"]
 
     # A different number, verified through the authenticated add-phone route.
     token = verify_phone_token(
@@ -263,7 +264,10 @@ def test_sign_in_token_cannot_be_used_to_attach(client: TestClient, sms_outbox):
     """Purpose scoping: proof minted for signing in must not mutate an account."""
     from tests.integration.test_customer_auth_api import register
 
-    register(client, sms_outbox, phoneVerificationToken=verify_phone_token(client, sms_outbox))
+    registered = register(
+        client, sms_outbox, phoneVerificationToken=verify_phone_token(client, sms_outbox)
+    )
+    client.headers["x-csrf-token"] = registered.json()["csrfToken"]
     sign_in_token = verify_phone_token(
         client, sms_outbox, phone="9999900004", start_path="/v1/public/auth/phone/start"
     )
