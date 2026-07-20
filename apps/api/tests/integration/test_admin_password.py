@@ -34,13 +34,7 @@ def _owner_env(monkeypatch: pytest.MonkeyPatch):
 
 
 def sign_in(client: TestClient, email: str, password: str):
-    """Sign in through the real endpoint and, on success, attach the CSRF
-    token it returns — mirroring how a real client presents it on the next
-    state-changing request."""
-    response = client.post("/v1/admin/auth/login", json={"email": email, "password": password})
-    if response.status_code == 200:
-        client.headers["x-csrf-token"] = response.json()["csrfToken"]
-    return response
+    return client.post("/v1/admin/auth/login", json={"email": email, "password": password})
 
 
 def stored_hash(db: SQLiteDatabase, user_id: str) -> str | None:
@@ -184,7 +178,7 @@ def test_changing_password_keeps_the_caller_signed_in(client: TestClient):
 
 def test_changing_password_revokes_other_sessions(client: TestClient, db: SQLiteDatabase):
     """A rotation ejects whoever prompted it — every session but the caller's."""
-    other_session = create_session(db, client, "usr_admin")
+    other_session = create_session(db, "usr_admin")
     assert sign_in(client, ENV_EMAIL, ENV_PASSWORD).status_code == 200
     assert change_password(client, ENV_PASSWORD, NEW_PASSWORD).status_code == 200
 

@@ -66,39 +66,6 @@ function notifyAuthExpired(path: string) {
   window.dispatchEvent(new CustomEvent(ADMIN_AUTH_EXPIRED_EVENT));
 }
 
-// The session cookie is HttpOnly and issued cross-site (the admin console and
-// API are on different registrable domains), so it carries no CSRF
-// protection on its own — see auth/dependencies.py's `_enforce_csrf` on the
-// API. The API hands back a CSRF token in the body of every session-creating
-// response (login) and via `GET /v1/admin/csrf` for an already-authenticated
-// session (e.g. after a page reload, when this in-memory value is lost).
-// Deliberately module-scoped state rather than a cookie or localStorage: it
-// never needs to survive a reload on its own, and keeping it out of storage
-// means it isn't sitting there for anything else on the page to read later.
-let csrfToken: string | null = null;
-let csrfTokenPromise: Promise<string | null> | null = null;
-
-function setCsrfToken(token: string | null): void {
-  csrfToken = token;
-}
-
-async function ensureCsrfToken(): Promise<string | null> {
-  if (csrfToken) return csrfToken;
-  if (!csrfTokenPromise) {
-    csrfTokenPromise = fetch(`${API_URL}/v1/admin/csrf`, { credentials: "include" })
-      .then((response) => (response.ok ? response.json() : null))
-      .then((body: { csrfToken?: string } | null) => {
-        csrfToken = body?.csrfToken ?? null;
-        return csrfToken;
-      })
-      .catch(() => null)
-      .finally(() => {
-        csrfTokenPromise = null;
-      });
-  }
-  return csrfTokenPromise;
-}
-
 async function apiErrorFromResponse(response: Response, path: string): Promise<ApiError> {
   const body = (await response.json().catch(() => null)) as {
     error?: { code?: string; message?: string; details?: Record<string, unknown> };
@@ -120,89 +87,67 @@ async function get<T>(path: string): Promise<T> {
   return (await response.json()) as T;
 }
 
-/**
- * Perform a state-changing request with the CSRF header attached, retrying
- * once with a freshly-issued token if the API rejects it as stale (e.g. it
- * was rotated by another tab, or this tab never had one yet).
- */
-async function mutate<T>(
-  path: string,
-  init: (token: string | null) => RequestInit,
-): Promise<T> {
-  const attempt = async (token: string | null) => {
-    const response = await fetch(`${API_URL}${path}`, init(token));
-    if (!response.ok) {
-      throw await apiErrorFromResponse(response, path);
-    }
-    return (await response.json()) as T;
-  };
-  const token = await ensureCsrfToken();
-  try {
-    return await attempt(token);
-  } catch (error) {
-    if (error instanceof ApiError && error.code === "csrf_invalid") {
-      setCsrfToken(null);
-      const refreshed = await ensureCsrfToken();
-      return attempt(refreshed);
-    }
-    throw error;
-  }
-}
-
 async function post<T>(path: string, body?: unknown): Promise<T> {
-  return mutate<T>(path, (token) => ({
+  const response = await fetch(`${API_URL}${path}`, {
     method: "POST",
     credentials: "include",
-    headers: {
-      ...(body ? { "content-type": "application/json" } : {}),
-      ...(token ? { "x-csrf-token": token } : {}),
-    },
+    headers: body ? { "content-type": "application/json" } : undefined,
     body: body ? JSON.stringify(body) : undefined,
-  }));
+  });
+  if (!response.ok) {
+    throw await apiErrorFromResponse(response, path);
+  }
+  return (await response.json()) as T;
 }
 
 async function patch<T>(path: string, body?: unknown): Promise<T> {
-  return mutate<T>(path, (token) => ({
+  const response = await fetch(`${API_URL}${path}`, {
     method: "PATCH",
     credentials: "include",
-    headers: {
-      ...(body ? { "content-type": "application/json" } : {}),
-      ...(token ? { "x-csrf-token": token } : {}),
-    },
+    headers: body ? { "content-type": "application/json" } : undefined,
     body: body ? JSON.stringify(body) : undefined,
-  }));
+  });
+  if (!response.ok) {
+    throw await apiErrorFromResponse(response, path);
+  }
+  return (await response.json()) as T;
 }
 
 async function put<T>(path: string, body?: unknown): Promise<T> {
-  return mutate<T>(path, (token) => ({
+  const response = await fetch(`${API_URL}${path}`, {
     method: "PUT",
     credentials: "include",
-    headers: {
-      ...(body ? { "content-type": "application/json" } : {}),
-      ...(token ? { "x-csrf-token": token } : {}),
-    },
+    headers: body ? { "content-type": "application/json" } : undefined,
     body: body ? JSON.stringify(body) : undefined,
-  }));
+  });
+  if (!response.ok) {
+    throw await apiErrorFromResponse(response, path);
+  }
+  return (await response.json()) as T;
 }
 
 async function postFile<T>(path: string, file: File): Promise<T> {
-  return mutate<T>(path, (token) => ({
+  const response = await fetch(`${API_URL}${path}`, {
     method: "POST",
     credentials: "include",
-    headers: {
-      "content-type": file.type || "application/octet-stream",
-      ...(token ? { "x-csrf-token": token } : {}),
-    },
+    headers: { "content-type": file.type || "application/octet-stream" },
     body: file,
-  }));
+  });
+  if (!response.ok) {
+    throw await apiErrorFromResponse(response, path);
+  }
+  return (await response.json()) as T;
 }
 
 async function del<T>(path: string): Promise<T> {
-  return mutate<T>(path, (token) => ({
+  const response = await fetch(`${API_URL}${path}`, {
     method: "DELETE",
     credentials: "include",
-    headers: token ? { "x-csrf-token": token } : undefined,
-  }));
+  });
+  if (!response.ok) {
+    throw await apiErrorFromResponse(response, path);
+  }
+  return (await response.json()) as T;
 }
 
 export class ApiError extends Error {
@@ -554,14 +499,7 @@ export const api = {
       setDemoSession(true);
       return;
     }
-    // Login itself has no session yet, so it cannot carry a CSRF token —
-    // call the underlying `post` directly rather than through `mutate`'s
-    // token flow, then seed the token the response hands back.
-    const result = await post<{ ok: boolean; csrfToken?: string }>("/v1/admin/auth/login", {
-      email,
-      password,
-    });
-    setCsrfToken(result.csrfToken ?? null);
+    await post<{ ok: boolean }>("/v1/admin/auth/login", { email, password });
   },
 
   logout: async (): Promise<void> => {
@@ -569,11 +507,7 @@ export const api = {
       setDemoSession(false);
       return;
     }
-    try {
-      await post<{ ok: boolean }>("/v1/admin/auth/logout");
-    } finally {
-      setCsrfToken(null);
-    }
+    await post<{ ok: boolean }>("/v1/admin/auth/logout");
   },
 
   search: (query: string): Promise<AdminSearchResults> => {

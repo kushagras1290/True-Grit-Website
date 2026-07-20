@@ -12,7 +12,6 @@ from truegrit_api.api.phone_auth import router as phone_auth_router
 from truegrit_api.api.public import router as public_router
 from truegrit_api.api.storefront import router as storefront_router
 from truegrit_api.api.submissions import router as submissions_router
-from truegrit_api.api.webhooks import router as webhooks_router
 from truegrit_api.config import get_settings
 from truegrit_api.middleware.error_handler import install_error_handlers
 from truegrit_api.middleware.rate_limit import RateLimitMiddleware
@@ -42,15 +41,10 @@ def create_app(db: Database | None = None, media: MediaStore | None = None) -> F
     app.add_middleware(RequestIdMiddleware)
     app.add_middleware(
         CORSMiddleware,
-        # Fixed allow-list, never a wildcard: allow_credentials=True means any
-        # origin this reflects can make authenticated requests using a
-        # signed-in user's session cookie. `get_settings().allowed_origins` is
-        # exactly the deployed storefront/admin origins (plus their
-        # localhost/127.0.0.1 sibling in dev) — see config.py.
-        allow_origins=get_settings().allowed_origins,
+        allow_origin_regex=".*",
         allow_credentials=True,
-        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        allow_headers=["Content-Type", "X-CSRF-Token"],
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
     install_error_handlers(app)
 
@@ -78,7 +72,6 @@ def create_app(db: Database | None = None, media: MediaStore | None = None) -> F
     app.include_router(submissions_router, prefix="/v1/public")
     app.include_router(community_router, prefix="/v1/public")
     app.include_router(admin_router, prefix="/v1/admin")
-    app.include_router(webhooks_router, prefix="/webhooks")
 
     @app.get("/health/live", tags=["health"])
     async def live() -> dict[str, str]:

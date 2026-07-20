@@ -12,7 +12,6 @@ from truegrit_api.errors import AppError
 from truegrit_api.logging import log_event
 from truegrit_api.platform.database import Database
 from truegrit_api.services.log_persistence import persist_log
-from truegrit_api.services.sentry_reporter import report_exception_async
 
 
 def _request_id(request: Request) -> str:
@@ -45,17 +44,6 @@ async def _persist_log_best_effort(
         log_event("error", "application_log_persist_failed", request_id=_request_id(request))
 
 
-async def _report_to_sentry_best_effort(request: Request, exc: BaseException) -> None:
-    """Send `exc` to Sentry if `SENTRY_DSN` is configured. `report_exception_async`
-    already swallows its own errors and never raises (see its docstring); this
-    wrapper is defense-in-depth against a future change there — reporting must
-    never become the reason a request handler's response fails to send."""
-    try:
-        await report_exception_async(exc, request_id=_request_id(request))
-    except Exception:
-        log_event("error", "sentry_report_failed", request_id=_request_id(request))
-
-
 def install_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(AppError)
     async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
@@ -65,7 +53,6 @@ def install_error_handlers(app: FastAPI) -> None:
             await _persist_log_best_effort(
                 request, "error", "app_error", request_id=request_id, code=exc.code
             )
-            await _report_to_sentry_best_effort(request, exc)
         return JSONResponse(
             status_code=exc.http_status,
             content=_envelope(request, exc.code, exc.message, exc.details),
@@ -98,7 +85,6 @@ def install_error_handlers(app: FastAPI) -> None:
             request_id=request_id,
             error_type=type(exc).__name__,
         )
-        await _report_to_sentry_best_effort(request, exc)
         return JSONResponse(
             status_code=500,
             content=_envelope(request, "internal_error", "Something went wrong."),

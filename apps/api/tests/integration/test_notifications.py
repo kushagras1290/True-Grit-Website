@@ -39,7 +39,7 @@ def _token_from(body: str) -> str | None:
 
 
 def test_admin_creates_farm_owner_who_can_sign_in(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_admin"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
     farms = client.get("/v1/admin/farms").json()["items"]
     farm_id = next(farm["id"] for farm in farms if farm["name"] == "Devika Organics")
 
@@ -64,7 +64,7 @@ def test_admin_creates_farm_owner_who_can_sign_in(client: TestClient, db: SQLite
 
 
 def test_farm_owner_cannot_create_farm_owner(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_farmowner"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     response = client.post(
         "/v1/admin/farm-owners",
         json={
@@ -88,7 +88,7 @@ def test_checkout_emails_customer_and_farm_owner(
         "truegrit_api.api.storefront.send_email",
         lambda to, subject, body, settings=None, html_body=None: sent.append(to),
     )
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_cust_riya"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_cust_riya"))
     response = client.post(
         "/v1/public/checkout",
         json={

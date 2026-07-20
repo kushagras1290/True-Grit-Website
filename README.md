@@ -202,7 +202,7 @@ browser sends it on cross-site API calls.
 Cloudflare resources use explicit environment suffixes (`truegrit-api-dev|staging|prod`,
 `truegrit-dev|staging|prod` D1, `truegrit-media-*` R2, `truegrit-jobs-*` queues). See
 `infrastructure/cloudflare/README.md` for the full resource map and provisioning commands, and
-`docs/runbooks/` for deployment, migration, backup/restore, and incident procedures.
+`docs/runbooks/` for deployment, migration, and incident procedures.
 
 ## Release scope
 

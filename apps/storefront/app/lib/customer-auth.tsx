@@ -22,13 +22,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { apiRequest, AuthError, setCsrfToken } from "./api-client";
-import { getPublicFacebookAppId, hasPublicApiUrl } from "./public-env";
-
-// Re-exported so existing `import { AuthError } from "./customer-auth"` call
-// sites (commerce.ts, submissions.ts, community.ts) keep working — the class
-// itself now lives in api-client.ts alongside the fetch wrapper that throws it.
-export { AuthError };
+import { getPublicApiUrl, getPublicFacebookAppId, hasPublicApiUrl } from "./public-env";
 
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
 export const authDemoMode = !hasPublicApiUrl();
@@ -75,6 +69,44 @@ export interface PhoneVerification {
 }
 
 export type AuthStatus = "loading" | "authenticated" | "anonymous";
+
+export class AuthError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+    public code: string,
+  ) {
+    super(message);
+    this.name = "AuthError";
+  }
+}
+
+interface ApiErrorBody {
+  error?: { code?: string; message?: string };
+}
+
+async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  const apiUrl = getPublicApiUrl();
+  if (!apiUrl) {
+    throw new AuthError("This action needs the live API.", 503, "demo_mode");
+  }
+  const response = await fetch(`${apiUrl}${path}`, {
+    ...init,
+    credentials: "include",
+    headers: init?.body
+      ? { "content-type": "application/json", ...(init?.headers ?? {}) }
+      : init?.headers,
+  });
+  if (!response.ok) {
+    const body = (await response.json().catch(() => null)) as ApiErrorBody | null;
+    throw new AuthError(
+      body?.error?.message ?? `Request failed (${response.status})`,
+      response.status,
+      body?.error?.code ?? "request_failed",
+    );
+  }
+  return (await response.json()) as T;
+}
 
 // --- Demo-mode session (no API configured) ----------------------------------
 
@@ -297,11 +329,10 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
       setStatus("authenticated");
       return;
     }
-    const { customer: account, csrfToken } = await apiRequest<{
-      customer: CustomerAccount;
-      csrfToken?: string;
-    }>("/v1/public/auth/register", { method: "POST", body: JSON.stringify(input) });
-    setCsrfToken(csrfToken ?? null);
+    const { customer: account } = await apiRequest<{ customer: CustomerAccount }>(
+      "/v1/public/auth/register",
+      { method: "POST", body: JSON.stringify(input) },
+    );
     setCustomer(account);
     setStatus("authenticated");
   }, []);
@@ -312,11 +343,10 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
       setStatus("authenticated");
       return;
     }
-    const { customer: account, csrfToken } = await apiRequest<{
-      customer: CustomerAccount;
-      csrfToken?: string;
-    }>("/v1/public/auth/login", { method: "POST", body: JSON.stringify({ email, password }) });
-    setCsrfToken(csrfToken ?? null);
+    const { customer: account } = await apiRequest<{ customer: CustomerAccount }>(
+      "/v1/public/auth/login",
+      { method: "POST", body: JSON.stringify({ email, password }) },
+    );
     setCustomer(account);
     setStatus("authenticated");
   }, []);
@@ -327,11 +357,10 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
       setStatus("authenticated");
       return;
     }
-    const { customer: account, csrfToken } = await apiRequest<{
-      customer: CustomerAccount;
-      csrfToken?: string;
-    }>("/v1/public/auth/google", { method: "POST", body: JSON.stringify({ credential }) });
-    setCsrfToken(csrfToken ?? null);
+    const { customer: account } = await apiRequest<{ customer: CustomerAccount }>(
+      "/v1/public/auth/google",
+      { method: "POST", body: JSON.stringify({ credential }) },
+    );
     setCustomer(account);
     setStatus("authenticated");
   }, []);
@@ -344,11 +373,10 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
       setStatus("authenticated");
       return;
     }
-    const { customer: account, csrfToken } = await apiRequest<{
-      customer: CustomerAccount;
-      csrfToken?: string;
-    }>("/v1/public/auth/facebook", { method: "POST", body: JSON.stringify({ accessToken }) });
-    setCsrfToken(csrfToken ?? null);
+    const { customer: account } = await apiRequest<{ customer: CustomerAccount }>(
+      "/v1/public/auth/facebook",
+      { method: "POST", body: JSON.stringify({ accessToken }) },
+    );
     setCustomer(account);
     setStatus("authenticated");
   }, []);
@@ -360,14 +388,10 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
       setStatus("authenticated");
       return;
     }
-    const { customer: account, csrfToken } = await apiRequest<{
-      customer: CustomerAccount;
-      csrfToken?: string;
-    }>("/v1/public/auth/phone/complete", {
-      method: "POST",
-      body: JSON.stringify({ verificationToken, name }),
-    });
-    setCsrfToken(csrfToken ?? null);
+    const { customer: account } = await apiRequest<{ customer: CustomerAccount }>(
+      "/v1/public/auth/phone/complete",
+      { method: "POST", body: JSON.stringify({ verificationToken, name }) },
+    );
     setCustomer(account);
     setStatus("authenticated");
   }, []);
@@ -391,9 +415,9 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
     if (authDemoMode) {
       if (typeof window !== "undefined") window.localStorage.removeItem(DEMO_SESSION_KEY);
     } else {
-      await apiRequest<{ ok: boolean }>("/v1/public/auth/logout", { method: "POST" })
-        .catch(() => undefined)
-        .finally(() => setCsrfToken(null));
+      await apiRequest<{ ok: boolean }>("/v1/public/auth/logout", { method: "POST" }).catch(
+        () => undefined,
+      );
     }
     setCustomer(null);
     setStatus("anonymous");

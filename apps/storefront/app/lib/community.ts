@@ -6,7 +6,8 @@
  * here since this is live, user-generated content rather than catalogue data.
  */
 
-import { apiRequest as request, AuthError } from "./api-client";
+import { AuthError } from "./customer-auth";
+import { getPublicApiUrl } from "./public-env";
 
 export interface DiscussionSummary {
   id: string;
@@ -40,6 +41,32 @@ export interface CommunitySettings {
   minAccountAgeMonths: number;
 }
 
+interface ApiErrorBody {
+  error?: { code?: string; message?: string };
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const apiUrl = getPublicApiUrl();
+  if (!apiUrl) {
+    throw new AuthError("Community needs the live API (set VITE_API_URL).", 503, "demo_mode");
+  }
+  const response = await fetch(`${apiUrl}${path}`, {
+    ...init,
+    credentials: "include",
+    headers: init?.body
+      ? { "content-type": "application/json", ...(init?.headers ?? {}) }
+      : init?.headers,
+  });
+  if (!response.ok) {
+    const body = (await response.json().catch(() => null)) as ApiErrorBody | null;
+    throw new AuthError(
+      body?.error?.message ?? `Request failed (${response.status})`,
+      response.status,
+      body?.error?.code ?? "request_failed",
+    );
+  }
+  return (await response.json()) as T;
+}
 
 export function communitySettings(): Promise<CommunitySettings> {
   return request<CommunitySettings>("/v1/public/community/settings");

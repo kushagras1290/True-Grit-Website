@@ -32,17 +32,6 @@ class Settings(BaseSettings):
     # `cookie_secure` enforces.
     session_cookie_samesite: Literal["lax", "strict", "none"] = "lax"
 
-    # Error tracking (Sentry). Empty by default: no Sentry account is
-    # configured, and `services.sentry_reporter` treats an empty DSN as "not
-    # configured" and never makes a network call — same convention as
-    # `fast2sms_api_key`/`resend_api_key` below. A DSN's public key is meant to
-    # be client-visible (Sentry's own guidance), so it is safe to set directly
-    # in `wrangler.jsonc`'s `vars` rather than as a secret. GO-LIVE: create a
-    # Sentry project, copy its DSN from Project Settings -> Client Keys (DSN),
-    # and set it here (or via `wrangler secret put SENTRY_DSN` if you would
-    # rather it not sit in source control).
-    sentry_dsn: str = ""
-
     # Storefront customer authentication.
     # Empty provider ids/secrets disable federated sign-in; the storefront then
     # shows those buttons in a "not configured" state.

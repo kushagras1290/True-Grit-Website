@@ -6,8 +6,8 @@
  * surface a clear error and the checkout UI explains that a live API is needed.
  */
 
-import { apiRequest as request, AuthError } from "./api-client";
-import { hasPublicApiUrl } from "./public-env";
+import { AuthError } from "./customer-auth";
+import { getPublicApiUrl, hasPublicApiUrl } from "./public-env";
 
 export const commerceLive = hasPublicApiUrl();
 
@@ -101,6 +101,33 @@ export interface ContactMessage {
   email: string;
   subject: string;
   message: string;
+}
+
+interface ApiErrorBody {
+  error?: { code?: string; message?: string };
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const apiUrl = getPublicApiUrl();
+  if (!apiUrl) {
+    throw new AuthError("Checkout needs the live API (set VITE_API_URL).", 503, "demo_mode");
+  }
+  const response = await fetch(`${apiUrl}${path}`, {
+    ...init,
+    credentials: "include",
+    headers: init?.body
+      ? { "content-type": "application/json", ...(init?.headers ?? {}) }
+      : init?.headers,
+  });
+  if (!response.ok) {
+    const body = (await response.json().catch(() => null)) as ApiErrorBody | null;
+    throw new AuthError(
+      body?.error?.message ?? `Request failed (${response.status})`,
+      response.status,
+      body?.error?.code ?? "request_failed",
+    );
+  }
+  return (await response.json()) as T;
 }
 
 export function getPaymentMethods(): Promise<PaymentMethodsInfo> {

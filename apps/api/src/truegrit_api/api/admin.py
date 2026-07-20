@@ -19,7 +19,7 @@ from truegrit_api.auth.rate_limit import (
     enforce_rate_limit,
     hash_identifier,
 )
-from truegrit_api.auth.sessions import end_session, hash_token, rotate_csrf_token, start_session
+from truegrit_api.auth.sessions import end_session, hash_token, start_session
 from truegrit_api.config import Settings, get_settings
 from truegrit_api.domain.blocks import validate_blocks, validate_href
 from truegrit_api.domain.slugs import slugify, validate_slug
@@ -257,10 +257,10 @@ async def login(
     if user is None or not credential_ok:
         raise AuthenticationError("Invalid admin email or password.")
 
-    csrf_token = await start_session(
+    await start_session(
         db, response, user_id=user["id"], settings=settings, user_agent_summary="admin-login"
     )
-    return {"ok": True, "csrfToken": csrf_token}
+    return {"ok": True}
 
 
 @router.post("/auth/logout")
@@ -321,21 +321,6 @@ async def me(
         "farmId": principal.farm_id,
         "farmName": farm_name,
     }
-
-
-@router.get("/csrf")
-async def csrf(
-    request: Request,
-    db: Annotated[Database, Depends(get_database)],
-    # get_current_staff never requires X-CSRF-Token on a GET, which is what
-    # makes this endpoint usable as the bootstrap for obtaining that token.
-    _principal: Annotated[Principal, Depends(get_current_staff)],
-) -> Any:
-    token = request.cookies.get(get_settings().session_cookie_name)
-    csrf_token = await rotate_csrf_token(db, token) if token else None
-    if csrf_token is None:
-        raise AuthenticationError()
-    return {"csrfToken": csrf_token}
 
 
 def _validate_image_url(value: str) -> str:

@@ -17,7 +17,7 @@ ADDRESS = {
 
 
 def as_customer(client: TestClient, db: SQLiteDatabase) -> None:
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_cust_riya"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_cust_riya"))
 
 
 def test_checkout_requires_a_verified_mobile(client: TestClient, db: SQLiteDatabase):

@@ -22,7 +22,7 @@ def _fast_hashing(monkeypatch: pytest.MonkeyPatch):
 
 
 def as_farm_owner(client: TestClient, db: SQLiteDatabase) -> None:
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_farmowner"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
 
 
 def test_farm_owner_can_sign_in_with_password(client: TestClient):
@@ -128,7 +128,7 @@ def test_farm_owner_inventory_is_scoped(client: TestClient, db: SQLiteDatabase):
 
 
 def test_super_admin_is_not_scoped(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_admin"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
     me = client.get("/v1/admin/me").json()
     assert me["farmId"] is None
     names = [row["name"] for row in client.get("/v1/admin/products").json()["items"]]

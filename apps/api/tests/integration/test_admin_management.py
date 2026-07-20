@@ -22,11 +22,11 @@ ADDRESS = {
 
 
 def as_admin(client: TestClient, db: SQLiteDatabase) -> None:
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_admin"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
 
 
 def as_editor(client: TestClient, db: SQLiteDatabase) -> None:
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_editor"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
 
 
 # --- Products ---------------------------------------------------------------
@@ -255,7 +255,7 @@ def test_user_cannot_disable_self(client: TestClient, db: SQLiteDatabase):
 
 def test_owner_can_manage_role_scopes(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
-    create_session(db, None, "usr_ops")  # second row only; not the active session
+    create_session(db, "usr_ops")
     permissions = client.get("/v1/admin/permissions")
     assert permissions.status_code == 200
     permission_ids = {
@@ -294,7 +294,7 @@ def test_owner_can_manage_role_scopes(client: TestClient, db: SQLiteDatabase):
 
 
 def test_only_owner_can_manage_role_scopes(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_farmowner"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     assert client.get("/v1/admin/permissions").status_code == 403
     response = client.patch(
         "/v1/admin/roles/rol_farm_owner/permissions",
@@ -390,7 +390,7 @@ def test_system_roles_cannot_be_renamed_or_deleted(client: TestClient, db: SQLit
 
 
 def test_only_owner_can_create_roles(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_farmowner"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     response = client.post("/v1/admin/roles", json={"name": "Shouldn't work", "permissionIds": []})
     assert response.status_code == 403
 
@@ -510,13 +510,13 @@ def test_owner_can_delete_farm_with_active_products(client: TestClient, db: SQLi
 
 
 def test_farm_owner_cannot_issue_temporary_password(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_farmowner"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     response = client.post("/v1/admin/users/usr_farmowner/temporary-password")
     assert response.status_code == 403
 
 
 def test_farm_owner_cannot_email_password_reset(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_farmowner"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     response = client.post("/v1/admin/users/usr_farmowner/password-reset-email")
     assert response.status_code == 403
 
@@ -567,7 +567,7 @@ def test_order_invalid_transition_conflicts(client: TestClient, db: SQLiteDataba
 
 
 def test_order_cancellation_releases_reserved_inventory(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_cust_riya"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_cust_riya"))
     before = db._conn.execute(
         "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
     ).fetchone()
@@ -596,7 +596,7 @@ def test_order_cancellation_releases_reserved_inventory(client: TestClient, db: 
 
 
 def test_completed_order_consumes_reserved_inventory(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_cust_riya"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_cust_riya"))
     before = db._conn.execute(
         "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
     ).fetchone()
@@ -717,7 +717,7 @@ def test_refund_requires_orders_refund_permission_even_with_orders_view(
         " VALUES ('usr_editor', 'rol_inventory', '2026-07-15T00:00:00Z', 'usr_admin')"
     )
     db._conn.commit()
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_editor"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
 
     me = client.get("/v1/admin/me").json()
     assert "orders.view" in me["permissions"]
@@ -776,7 +776,7 @@ def test_owner_can_manage_site_control(client: TestClient, db: SQLiteDatabase):
 
 
 def test_farm_owner_cannot_manage_site_control(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_farmowner"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     assert client.get("/v1/admin/site-control").status_code == 403
     assert client.patch("/v1/admin/site-control", json={"seoTitle": "Nope"}).status_code == 403
 
@@ -914,7 +914,7 @@ def test_only_owner_can_view_server_logs_or_db_browser_even_with_audit_view_gran
     )
     db._conn.commit()
 
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_farmowner"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     me = client.get("/v1/admin/me").json()
     assert "audit.view" in me["permissions"]  # confirms the grant took effect
 

@@ -172,10 +172,10 @@ async def phone_complete(
     else:
         summary = "customer-phone-login"
 
-    csrf_token = await start_session(
+    await start_session(
         db, response, user_id=user["id"], settings=settings, user_agent_summary=summary
     )
-    return {"ok": True, "csrfToken": csrf_token, "customer": account_payload(user)}
+    return {"ok": True, "customer": account_payload(user)}
 
 
 @router.post("/phone/attach")

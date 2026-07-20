@@ -143,7 +143,7 @@ def test_me_requires_authentication(client: TestClient):
 
 
 def test_staff_session_cannot_access_customer_me(client: TestClient, db: SQLiteDatabase):
-    token = create_session(db, client, "usr_admin")
+    token = create_session(db, "usr_admin")
     client.cookies.set(SESSION_COOKIE, token)
     assert client.get("/v1/public/auth/me").status_code == 401
 

@@ -20,19 +20,19 @@ def test_invalid_session_rejected(client: TestClient):
 
 
 def test_permission_matrix(client: TestClient, db: SQLiteDatabase):
-    editor_token = create_session(db, client, "usr_editor")  # content editor: no products.view
+    editor_token = create_session(db, "usr_editor")  # content editor: no products.view
     client.cookies.set(SESSION_COOKIE, editor_token)
     assert client.get("/v1/admin/products").status_code == 403
     assert client.get("/v1/admin/categories").status_code == 200
 
-    pm_token = create_session(db, client, "usr_pm")  # product manager: products.view, no publish
+    pm_token = create_session(db, "usr_pm")  # product manager: products.view, no publish
     client.cookies.set(SESSION_COOKIE, pm_token)
     assert client.get("/v1/admin/products").status_code == 200
     assert client.post("/v1/admin/categories/cat_fresh_fruits/publish").status_code == 403
 
 
 def test_me_returns_permissions(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_admin"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
     body = client.get("/v1/admin/me").json()
     assert body["displayName"] == "Asha Rao"
     assert "categories.publish" in body["permissions"]
@@ -48,10 +48,10 @@ def test_site_documents_are_owner_only(client: TestClient, db: SQLiteDatabase):
     )
     db._conn.commit()
 
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_editor"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
     assert client.get("/v1/admin/site-documents").status_code == 403
 
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_admin"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
     current = client.get("/v1/admin/site-documents")
     assert current.status_code == 200
     assert "Sitemap:" in current.json()["robotsTxt"]
@@ -67,7 +67,7 @@ def test_site_documents_are_owner_only(client: TestClient, db: SQLiteDatabase):
 
 
 def test_product_list_shape(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_admin"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
     items = client.get("/v1/admin/products").json()["items"]
     assert len(items) == 5
     alphonso = next(item for item in items if item["id"] == "prd_alphonso")
@@ -79,7 +79,7 @@ def test_product_list_shape(client: TestClient, db: SQLiteDatabase):
 
 
 def test_publish_category_writes_audit_and_outbox(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_admin"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
 
     response = client.post("/v1/admin/categories/cat_fresh_fruits/publish")
     assert response.status_code == 200
@@ -111,12 +111,12 @@ def test_publish_category_writes_audit_and_outbox(client: TestClient, db: SQLite
 
 
 def test_publish_unknown_category_404(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_admin"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
     assert client.post("/v1/admin/categories/cat_missing/publish").status_code == 404
 
 
 def test_product_release_roundtrip(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_admin"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
 
     response = client.patch(
         "/v1/admin/products/prd_rajma",
@@ -142,7 +142,7 @@ def test_product_release_roundtrip(client: TestClient, db: SQLiteDatabase):
 
 
 def test_product_release_validation(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_admin"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
     empty = client.patch(
         "/v1/admin/products/prd_rajma",
         json={"releaseScope": "selected", "releaseCountries": []},
@@ -158,7 +158,7 @@ def test_product_release_validation(client: TestClient, db: SQLiteDatabase):
 
 
 def test_product_links_roundtrip(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_admin"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
 
     response = client.patch(
         "/v1/admin/products/prd_rajma",
@@ -186,7 +186,7 @@ def test_product_links_roundtrip(client: TestClient, db: SQLiteDatabase):
 
 
 def test_highlights_admin_roundtrip(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_admin"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
 
     response = client.put("/v1/admin/highlights", json={"productIds": ["prd_ragi", "prd_alphonso"]})
     assert response.status_code == 200, response.text
@@ -205,20 +205,20 @@ def test_highlights_admin_roundtrip(client: TestClient, db: SQLiteDatabase):
 
 
 def test_highlights_require_settings_permission(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_editor"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
     assert client.put("/v1/admin/highlights", json={"productIds": []}).status_code == 403
 
 
 def test_inventory_view_permission(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_ops"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_ops"))
     items = client.get("/v1/admin/inventory").json()["items"]
     assert items[0]["sku"] == "TRG-RJM-500"  # closest to reorder threshold sorts first
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_editor"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
     assert client.get("/v1/admin/inventory").status_code == 403
 
 
 def test_inventory_bulk_clear_keeps_reserved_and_audits(client: TestClient, db: SQLiteDatabase):
-    client.cookies.set(SESSION_COOKIE, create_session(db, client, "usr_ops"))
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_ops"))
     response = client.post(
         "/v1/admin/inventory/bulk-clear",
         json={
