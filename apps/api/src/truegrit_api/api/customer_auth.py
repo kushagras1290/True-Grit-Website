@@ -36,7 +36,7 @@ from pydantic.alias_generators import to_camel
 from truegrit_api.auth.dependencies import get_current_customer, get_database
 from truegrit_api.auth.facebook import verify_facebook_access_token
 from truegrit_api.auth.google import verify_google_id_token
-from truegrit_api.auth.passwords import hash_password, verify_password
+from truegrit_api.auth.passwords import hash_password, verify_password_async
 from truegrit_api.auth.principal import Principal
 from truegrit_api.auth.rate_limit import (
     RateLimitRule,
@@ -373,7 +373,7 @@ async def login(
     )
     stored_hash = row["password_hash"] if row is not None else _dummy_password_hash()
     if (
-        not verify_password(
+        not await verify_password_async(
             payload.password,
             stored_hash,
             max_iterations=settings.pbkdf2_verify_max_iterations,

@@ -12,7 +12,7 @@ import secrets
 import string
 from typing import Any
 
-from truegrit_api.auth.passwords import hash_password, verify_password
+from truegrit_api.auth.passwords import hash_password, verify_password_async
 from truegrit_api.auth.principal import Principal
 from truegrit_api.config import get_settings
 from truegrit_api.domain.slugs import slugify
@@ -729,7 +729,7 @@ async def change_own_password(
         raise ValidationAppError(
             "This account has no password yet. Use the reset link on the sign-in page to set one."
         )
-    if not verify_password(
+    if not await verify_password_async(
         current_password,
         credential["password_hash"],
         max_iterations=settings.pbkdf2_verify_max_iterations,

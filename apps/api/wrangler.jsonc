@@ -4,10 +4,6 @@
   "main": "src/worker.py",
   "compatibility_date": "2026-07-11",
   "compatibility_flags": ["python_workers"],
-  // PBKDF2 verification for existing 50k-round staff hashes exceeds the
-  // default Python Worker CPU window. Without this allowance Cloudflare kills
-  // login before the application can return either JSON or CORS headers.
-  "limits": { "cpu_ms": 300000 },
   "observability": {
     "enabled": false,
     "head_sampling_rate": 1,

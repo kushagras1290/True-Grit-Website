@@ -11,7 +11,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic.alias_generators import to_camel
 
 from truegrit_api.auth.dependencies import get_current_staff, get_database, require_permission
-from truegrit_api.auth.passwords import password_hash_iterations, verify_password
+from truegrit_api.auth.passwords import password_hash_iterations, verify_password_async
 from truegrit_api.auth.principal import Principal
 from truegrit_api.auth.rate_limit import (
     RateLimitRule,
@@ -229,7 +229,7 @@ async def login(
     # The account's own stored password is the only thing that authenticates.
     # This is how every staff user signs in, farm-owner sub-admins included.
     stored_hash = await _stored_password_hash(db, user["id"]) if user is not None else None
-    credential_ok = stored_hash is not None and verify_password(
+    credential_ok = stored_hash is not None and await verify_password_async(
         payload.password, stored_hash, max_iterations=settings.pbkdf2_verify_max_iterations
     )
 

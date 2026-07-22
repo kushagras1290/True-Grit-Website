@@ -9,7 +9,15 @@ from truegrit_api.auth.passwords import (
     hash_password,
     password_hash_iterations,
     verify_password,
+    verify_password_async,
 )
+
+
+@pytest.mark.asyncio
+async def test_async_verification_falls_back_outside_workers():
+    encoded = hash_password("worker-safe", iterations=FAST_ITERATIONS)
+    assert await verify_password_async("worker-safe", encoded) is True
+    assert await verify_password_async("wrong", encoded) is False
 
 FAST_ITERATIONS = 1000
 

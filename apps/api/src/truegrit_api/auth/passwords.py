@@ -84,3 +84,53 @@ def verify_password(password: str, encoded: str, *, max_iterations: int | None =
         "sha256", password.encode("utf-8"), salt, iterations, dklen=len(expected)
     )
     return hmac.compare_digest(candidate, expected)
+
+
+async def verify_password_async(
+    password: str, encoded: str, *, max_iterations: int | None = None
+) -> bool:
+    """Verify with native Web Crypto in Workers and stdlib PBKDF2 elsewhere.
+
+    Pyodide's ``hashlib.pbkdf2_hmac`` consumes the Free-plan CPU allowance for
+    established 50k-round hashes. Browser/Worker Web Crypto performs the same
+    PBKDF2-HMAC-SHA256 operation natively, outside the Python interpreter.
+    """
+    try:
+        algorithm, iterations_raw, salt_b64, hash_b64 = encoded.split("$")
+        if algorithm != _ALGORITHM:
+            return False
+        iterations = int(iterations_raw)
+        if max_iterations is not None and iterations > max_iterations:
+            return False
+        salt = _b64decode(salt_b64)
+        expected = _b64decode(hash_b64)
+    except (ValueError, TypeError):
+        return False
+    if iterations < 1 or not salt or not expected:
+        return False
+
+    try:
+        from js import Uint8Array, crypto
+        from pyodide.ffi import to_js
+    except ModuleNotFoundError:
+        return verify_password(password, encoded, max_iterations=max_iterations)
+
+    password_bytes = Uint8Array.new(to_js(list(password.encode("utf-8"))))
+    salt_bytes = Uint8Array.new(to_js(list(salt)))
+    key = await crypto.subtle.importKey(
+        "raw", password_bytes, to_js({"name": "PBKDF2"}), False, to_js(["deriveBits"])
+    )
+    derived = await crypto.subtle.deriveBits(
+        to_js(
+            {
+                "name": "PBKDF2",
+                "salt": salt_bytes,
+                "iterations": iterations,
+                "hash": "SHA-256",
+            }
+        ),
+        key,
+        len(expected) * 8,
+    )
+    candidate = bytes(Uint8Array.new(derived).to_py())
+    return hmac.compare_digest(candidate, expected)
