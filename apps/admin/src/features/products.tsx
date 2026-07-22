@@ -980,11 +980,9 @@ function GeneralTab({
     mutationFn: (file: File) => api.uploadImage(file),
     onSuccess: (result) => {
       const imageAlt = form.getValues("imageAlt") || product.name;
-      const nextValues = { ...form.getValues(), imageUrl: result.url, imageAlt };
       form.setValue("imageUrl", result.url, { shouldDirty: true, shouldValidate: true });
       form.setValue("imageAlt", imageAlt, { shouldDirty: true, shouldValidate: true });
-      onSave(nextValues);
-      toast.success("Image uploaded; saving thumbnail.");
+      toast.success("Image uploaded. Save the draft to apply it to this product.");
     },
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not upload image."),
@@ -1082,7 +1080,11 @@ function GeneralTab({
           {...form.register("imageAlt")}
         />
       </Field>
-      <Button type="submit" variant="primary" disabled={saving || !form.formState.isDirty}>
+      <Button
+        type="submit"
+        variant="primary"
+        disabled={saving || uploadMutation.isPending || !form.formState.isDirty}
+      >
         {saving ? "Saving…" : "Save draft"}
       </Button>
     </form>

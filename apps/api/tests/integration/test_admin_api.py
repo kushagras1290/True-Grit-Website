@@ -78,6 +78,35 @@ def test_product_list_shape(client: TestClient, db: SQLiteDatabase):
     assert alphonso["availableStock"] == 174  # (120-4) + (60-2)
 
 
+def test_product_image_replacement_with_full_editor_payload(
+    client: TestClient, db: SQLiteDatabase
+):
+    """Replacing an image must tolerate the unchanged farm/categories that
+    the general editor submits alongside the new URL."""
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
+    detail = client.get("/v1/admin/products/prd_alphonso").json()
+
+    response = client.patch(
+        "/v1/admin/products/prd_alphonso",
+        json={
+            "name": detail["name"],
+            "slug": detail["slug"],
+            "shortDescription": detail["shortDescription"],
+            "imageUrl": "/media/images/med_replacement.jpg",
+            "imageAlt": "Replacement Alphonso mango image",
+            "farmId": detail["farmId"],
+            "categoryIds": detail["categoryIds"],
+        },
+    )
+
+    assert response.status_code == 200, response.text
+    updated = client.get("/v1/admin/products/prd_alphonso").json()
+    assert updated["imageUrl"] == "/media/images/med_replacement.jpg"
+    assert updated["imageAlt"] == "Replacement Alphonso mango image"
+    assert updated["farmId"] == detail["farmId"]
+    assert updated["categoryIds"] == detail["categoryIds"]
+
+
 def test_publish_category_writes_audit_and_outbox(client: TestClient, db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
 

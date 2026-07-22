@@ -77,6 +77,8 @@ def install_error_handlers(app: FastAPI) -> None:
             "unhandled_exception",
             request_id=request_id,
             error_type=type(exc).__name__,
+            path=request.url.path,
+            error=str(exc)[:500],
         )
         await _persist_log_best_effort(
             request,
@@ -84,6 +86,8 @@ def install_error_handlers(app: FastAPI) -> None:
             "unhandled_exception",
             request_id=request_id,
             error_type=type(exc).__name__,
+            path=request.url.path,
+            error=str(exc)[:500],
         )
         return JSONResponse(
             status_code=500,

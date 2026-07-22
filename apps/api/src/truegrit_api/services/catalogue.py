@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import re
 from typing import Any
+from urllib.parse import urlparse
 
 from truegrit_api.auth.principal import Principal
 from truegrit_api.domain.slugs import slugify, validate_slug
@@ -30,6 +31,7 @@ _PRODUCT_EDITABLE = (
     "image_alt",
     "return_eligible",
     "farm_id",
+    "primary_media_id",
 )
 _CATEGORY_EDITABLE = (
     "name",
@@ -141,12 +143,26 @@ async def update_product(
 ) -> dict[str, Any]:
     current = await db.fetch_one(
         "SELECT id, name, slug, short_description, seo_title, seo_description,"
-        " image_url, image_alt, status, return_eligible"
+        " image_url, image_alt, status, return_eligible, farm_id, primary_media_id"
         " FROM products WHERE id = ? AND archived_at IS NULL",
         (product_id,),
     )
     if current is None:
         raise NotFoundError("Product not found.")
+
+    # The admin reader deliberately prefers primary_media_id over image_url.
+    # Keep both representations in sync when an editor replaces the URL;
+    # otherwise the stale primary asset wins after reload and the UI continues
+    # requesting the old (possibly deleted) object.
+    if "image_url" in fields:
+        image_path = urlparse(str(fields["image_url"] or "")).path
+        object_key = image_path.removeprefix("/media/") if image_path.startswith("/media/") else None
+        media = (
+            await db.fetch_one("SELECT id FROM media_assets WHERE object_key = ?", (object_key,))
+            if object_key
+            else None
+        )
+        fields["primary_media_id"] = media["id"] if media else None
 
     updates = _collect_updates(fields, _PRODUCT_EDITABLE, current)
     if "return_eligible" in updates:

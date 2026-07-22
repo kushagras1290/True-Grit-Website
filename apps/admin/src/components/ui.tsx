@@ -172,14 +172,25 @@ export function Field({
   error?: string;
   children: ReactNode;
 }) {
+  const errorId = `${htmlFor}-error`;
   return (
-    <div className="space-y-1.5">
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-ink">
+    <div
+      className={cn(
+        "space-y-1.5",
+        error &&
+          "[&_input]:border-danger [&_input]:bg-danger/5 [&_select]:border-danger [&_select]:bg-danger/5 [&_textarea]:border-danger [&_textarea]:bg-danger/5",
+      )}
+      data-invalid={error ? "true" : undefined}
+    >
+      <label
+        htmlFor={htmlFor}
+        className={cn("block text-sm font-medium text-ink", error && "text-danger")}
+      >
         {label}
       </label>
       {children}
       {error ? (
-        <p id={`${htmlFor}-error`} role="alert" className="text-xs text-danger">
+        <p id={errorId} role="alert" className="text-xs font-medium text-danger">
           {error}
         </p>
       ) : null}
