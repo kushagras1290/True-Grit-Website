@@ -362,7 +362,7 @@ export interface CategoryReleaseFields {
 export interface AdminInventoryRow {
   variantId: string;
   productId: string;
-  productStatus: "draft" | "active" | "archived";
+  productStatus: "draft" | "published" | "unpublished" | "archived";
   productName: string;
   variantName: string;
   sku: string;

@@ -212,6 +212,57 @@ def test_inventory_adjustment_cannot_go_below_reserved(client: TestClient, db: S
     assert response.status_code == 422
 
 
+def test_enabled_product_without_stock_appears_and_accepts_first_adjustment(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    product_id = client.post(
+        "/v1/admin/products", json={"name": "Inventory Starter", "productType": "general"}
+    ).json()["id"]
+    created_variant = client.post(
+        f"/v1/admin/products/{product_id}/variants",
+        json={"name": "Default", "sku": "INV-START-1", "listMinor": 10000},
+    )
+    assert created_variant.status_code == 200, created_variant.text
+    assert client.patch(
+        f"/v1/admin/products/{product_id}/status", json={"status": "published"}
+    ).status_code == 200
+
+    row = next(
+        item for item in client.get("/v1/admin/inventory").json()["items"]
+        if item["sku"] == "INV-START-1"
+    )
+    assert row["onHand"] == 0
+    assert row["locationName"] == "Not assigned"
+
+    adjusted = client.post(
+        "/v1/admin/inventory/adjustments",
+        json={
+            "sku": "INV-START-1",
+            "quantityDelta": 12,
+            "reasonCode": "receipt",
+            "note": "Initial stock receipt",
+        },
+    )
+    assert adjusted.status_code == 200, adjusted.text
+    assert adjusted.json()["onHand"] == 12
+
+
+def test_notifications_are_role_aware(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    owner = client.get("/v1/admin/notifications")
+    assert owner.status_code == 200, owner.text
+    owner_ids = {item["id"] for item in owner.json()["items"]}
+    assert "inventory" in owner_ids
+
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
+    editor = client.get("/v1/admin/notifications")
+    assert editor.status_code == 200, editor.text
+    editor_ids = {item["id"] for item in editor.json()["items"]}
+    assert "orders" not in editor_ids
+    assert "inventory" not in editor_ids
+
+
 # --- Media ------------------------------------------------------------------
 
 

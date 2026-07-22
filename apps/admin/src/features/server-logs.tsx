@@ -35,12 +35,12 @@ function LevelPill({ level }: { level: string }) {
 
 const LIMIT = 50;
 
-export function ServerLogsPage() {
+export function AdminLogsPage() {
   const [page, setPage] = useState(1);
   const offset = (page - 1) * LIMIT;
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-server-logs", page],
+    queryKey: ["admin-logs", page],
     queryFn: () => api.serverLogs({ limit: LIMIT, offset }),
   });
 
@@ -49,8 +49,8 @@ export function ServerLogsPage() {
   return (
     <div>
       <PageHeader
-        title="Server Logs"
-        description="Owner-only. 5xx application errors and unhandled exceptions, newest first. Everything else stays in Cloudflare's own log tail."
+        title="Admin Logs"
+        description="Super-admin only. Application errors and unhandled exceptions, newest first."
       />
       <DataTableShell>
         <thead className="bg-canvas">

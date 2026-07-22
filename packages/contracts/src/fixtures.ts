@@ -823,7 +823,7 @@ export const adminCategories: AdminCategoryRow[] = categories.map((category) => 
 
 export const adminInventory: AdminInventoryRow[] = [
   {
-    variantId: "var_alphonso_1kg", productId: "prod_dummy", productStatus: "active",
+    variantId: "var_alphonso_1kg", productId: "prod_dummy", productStatus: "published",
     productName: "Organic Alphonso Mangoes",
     variantName: "1 kg box",
     sku: "TRG-MNG-1KG",
@@ -834,7 +834,7 @@ export const adminInventory: AdminInventoryRow[] = [
     updatedAt: "2026-07-01T00:00:00Z",
   },
   {
-    variantId: "var_alphonso_2kg", productId: "prod_dummy", productStatus: "active",
+    variantId: "var_alphonso_2kg", productId: "prod_dummy", productStatus: "published",
     productName: "Organic Alphonso Mangoes",
     variantName: "2 kg box",
     sku: "TRG-MNG-2KG",
@@ -845,7 +845,7 @@ export const adminInventory: AdminInventoryRow[] = [
     updatedAt: "2026-07-01T00:00:00Z",
   },
   {
-    variantId: "var_spinach_250g", productId: "prod_dummy", productStatus: "active",
+    variantId: "var_spinach_250g", productId: "prod_dummy", productStatus: "published",
     productName: "Organic Baby Spinach",
     variantName: "250 g bunch",
     sku: "TRG-SPN-250",
@@ -856,7 +856,7 @@ export const adminInventory: AdminInventoryRow[] = [
     updatedAt: "2026-07-01T00:00:00Z",
   },
   {
-    variantId: "var_ragi_500g", productId: "prod_dummy", productStatus: "active",
+    variantId: "var_ragi_500g", productId: "prod_dummy", productStatus: "published",
     productName: "Sprouted Ragi Flour",
     variantName: "500 g pack",
     sku: "TRG-RGI-500",
@@ -867,7 +867,7 @@ export const adminInventory: AdminInventoryRow[] = [
     updatedAt: "2026-07-01T00:00:00Z",
   },
   {
-    variantId: "var_ragi_1kg", productId: "prod_dummy", productStatus: "active",
+    variantId: "var_ragi_1kg", productId: "prod_dummy", productStatus: "published",
     productName: "Sprouted Ragi Flour",
     variantName: "1 kg pack",
     sku: "TRG-RGI-1KG",
@@ -878,7 +878,7 @@ export const adminInventory: AdminInventoryRow[] = [
     updatedAt: "2026-07-01T00:00:00Z",
   },
   {
-    variantId: "var_oil_500ml", productId: "prod_dummy", productStatus: "active",
+    variantId: "var_oil_500ml", productId: "prod_dummy", productStatus: "published",
     productName: "Wood-Pressed Groundnut Oil",
     variantName: "500 ml bottle",
     sku: "TRG-GNO-500",
@@ -889,7 +889,7 @@ export const adminInventory: AdminInventoryRow[] = [
     updatedAt: "2026-07-01T00:00:00Z",
   },
   {
-    variantId: "var_oil_1l", productId: "prod_dummy", productStatus: "active",
+    variantId: "var_oil_1l", productId: "prod_dummy", productStatus: "published",
     productName: "Wood-Pressed Groundnut Oil",
     variantName: "1 L bottle",
     sku: "TRG-GNO-1L",
@@ -900,7 +900,7 @@ export const adminInventory: AdminInventoryRow[] = [
     updatedAt: "2026-07-01T00:00:00Z",
   },
   {
-    variantId: "var_rajma_500g", productId: "prod_dummy", productStatus: "active",
+    variantId: "var_rajma_500g", productId: "prod_dummy", productStatus: "published",
     productName: "Himalayan Red Rajma",
     variantName: "500 g pack",
     sku: "TRG-RJM-500",

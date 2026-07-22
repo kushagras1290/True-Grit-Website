@@ -218,7 +218,7 @@ async def set_product_status(
     product_id: str,
     status: str,
 ) -> dict[str, Any]:
-    if status not in {"draft", "active", "archived"}:
+    if status not in {"published", "unpublished"}:
         raise ValidationAppError("Invalid status.")
 
     current = await db.fetch_one(

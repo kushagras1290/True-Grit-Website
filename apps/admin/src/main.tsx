@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 
 import "./styles/app.css";
 import { Shell } from "./components/layout";
@@ -31,9 +31,10 @@ import { ReportsPage } from "./features/reports";
 import { RefundsOversightPage } from "./features/refunds";
 import { ReturnDetailPage, ReturnsListPage } from "./features/returns";
 import { ScopeManagementPage } from "./features/scopes";
-import { ServerLogsPage } from "./features/server-logs";
+import { AdminLogsPage } from "./features/server-logs";
 import { SiteControlPage } from "./features/site-control";
 import { SubmissionDetailPage, SubmissionsListPage } from "./features/submissions";
+import { RequireSuperAdmin } from "./lib/permissions";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -84,7 +85,15 @@ createRoot(document.getElementById("root")!).render(
               <Route path="scopes" element={<ScopeManagementPage />} />
               <Route path="audit" element={<AuditPage />} />
               <Route path="reports" element={<ReportsPage />} />
-              <Route path="server-logs" element={<ServerLogsPage />} />
+              <Route
+                path="admin-logs"
+                element={
+                  <RequireSuperAdmin>
+                    <AdminLogsPage />
+                  </RequireSuperAdmin>
+                }
+              />
+              <Route path="server-logs" element={<Navigate to="/admin-logs" replace />} />
               <Route path="db-browser" element={<DbBrowserPage />} />
               <Route path="account" element={<AccountPage />} />
               <Route

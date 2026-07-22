@@ -36,6 +36,12 @@ def test_me_returns_permissions(client: TestClient, db: SQLiteDatabase):
     body = client.get("/v1/admin/me").json()
     assert body["displayName"] == "Asha Rao"
     assert "categories.publish" in body["permissions"]
+    assert body["isSuperAdmin"] is True
+
+
+def test_me_identifies_non_super_admin(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_pm"))
+    assert client.get("/v1/admin/me").json()["isSuperAdmin"] is False
 
 
 def test_site_documents_are_owner_only(client: TestClient, db: SQLiteDatabase):

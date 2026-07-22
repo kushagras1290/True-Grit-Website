@@ -313,6 +313,16 @@ async def me(
     if principal.farm_id is not None:
         farm = await db.fetch_one("SELECT name FROM farms WHERE id = ?", (principal.farm_id,))
         farm_name = farm["name"] if farm else None
+    super_admin = await db.fetch_one(
+        """
+        SELECT 1
+        FROM user_roles ur
+        JOIN roles r ON r.id = ur.role_id
+        WHERE ur.user_id = ? AND r.key = 'super_admin'
+        LIMIT 1
+        """,
+        (principal.user_id,),
+    )
     return {
         "id": principal.user_id,
         "displayName": principal.display_name,
@@ -320,7 +330,106 @@ async def me(
         "permissions": sorted(principal.permissions),
         "farmId": principal.farm_id,
         "farmName": farm_name,
+        "isSuperAdmin": super_admin is not None,
     }
+
+
+@router.get("/notifications")
+async def admin_notifications(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(get_current_staff)],
+) -> Any:
+    """Live, role-aware work queue for the admin header.
+
+    Notifications are derived from current state, so resolving the underlying
+    order/return/submission immediately removes the item without maintaining a
+    second read/unread ledger that can become stale.
+    """
+    owner = await db.fetch_one(
+        "SELECT 1 FROM user_roles ur JOIN roles r ON r.id = ur.role_id"
+        " WHERE ur.user_id = ? AND r.key = 'super_admin' LIMIT 1",
+        (principal.user_id,),
+    )
+    see_all = owner is not None
+    items: list[dict[str, Any]] = []
+
+    async def add(
+        *, permission: str, key: str, title: str, message: str, href: str, sql: str,
+        params: tuple[Any, ...] = (), severity: str = "warning"
+    ) -> None:
+        if not see_all and permission not in principal.permissions:
+            return
+        row = await db.fetch_one(sql, params)
+        count = int(row["count"] if row else 0)
+        if count:
+            items.append(
+                {"id": key, "title": title, "message": message, "count": count,
+                 "href": href, "severity": severity}
+            )
+
+    farm_id = principal.farm_id
+    farm_filter = (
+        " AND EXISTS (SELECT 1 FROM order_items oi JOIN products p ON p.id = oi.product_id"
+        " WHERE oi.order_id = o.id AND p.farm_id = ?)"
+        if farm_id else ""
+    )
+    farm_params: tuple[Any, ...] = (farm_id,) if farm_id else ()
+    await add(
+        permission="orders.view", key="orders", title="Orders need fulfilment",
+        message="Confirmed or processing orders still need fulfilment.", href="/orders",
+        sql="SELECT COUNT(*) AS count FROM orders o WHERE o.order_status IN ('confirmed','processing')"
+        " AND o.fulfilment_status NOT IN ('fulfilled','cancelled')" + farm_filter,
+        params=farm_params,
+    )
+    await add(
+        permission="returns.view", key="returns", title="Returns need review",
+        message="Return requests are waiting for a decision.", href="/returns",
+        sql="SELECT COUNT(*) AS count FROM return_requests rr JOIN orders o ON o.id = rr.order_id"
+        " WHERE rr.status IN ('requested','under_review')" + farm_filter,
+        params=farm_params,
+    )
+    await add(
+        permission="submissions.view", key="submissions", title="Submissions need review",
+        message="Community submissions are awaiting review.", href="/submissions",
+        sql="SELECT COUNT(*) AS count FROM content_submissions"
+        " WHERE status IN ('submitted','under_review')",
+    )
+    await add(
+        permission="users.view", key="contacts", title="New contact messages",
+        message="Customer contact messages have not been handled.", href="/contact-attempts",
+        sql="SELECT COUNT(*) AS count FROM contact_messages WHERE status = 'new'",
+    )
+    await add(
+        permission="products.view", key="products", title="Products not yet enabled",
+        message="Products are still in a draft or review state.", href="/products",
+        sql="SELECT COUNT(*) AS count FROM products WHERE archived_at IS NULL"
+        " AND status IN ('draft','in_review','approved','scheduled')"
+        " AND (? IS NULL OR farm_id = ?)",
+        params=(farm_id, farm_id), severity="info",
+    )
+    if see_all or "inventory.view" in principal.permissions:
+        inventory_rows = await db.fetch_all(
+            """SELECT v.id FROM product_variants v JOIN products p ON p.id = v.product_id
+               LEFT JOIN inventory_levels il ON il.variant_id = v.id
+               WHERE p.status = 'published' AND p.archived_at IS NULL
+                 AND (? IS NULL OR p.farm_id = ?)
+               GROUP BY v.id HAVING COALESCE(SUM(il.on_hand - il.reserved), 0)
+                 <= COALESCE(MAX(il.reorder_threshold), 0)""",
+            (farm_id, farm_id),
+        )
+        if inventory_rows:
+            items.append(
+                {
+                    "id": "inventory",
+                    "title": "Inventory needs attention",
+                    "message": "Enabled variants are out of stock or below their reorder threshold.",
+                    "count": len(inventory_rows),
+                    "href": "/inventory",
+                    "severity": "danger",
+                }
+            )
+
+    return {"items": items, "total": sum(item["count"] for item in items)}
 
 
 def _validate_image_url(value: str) -> str:
@@ -2793,7 +2902,7 @@ class VariantUpdateRequest(_CamelModel):
 
 
 class ProductStatusRequest(_CamelModel):
-    status: str = Field(pattern="^(draft|active|archived)$")
+    status: str = Field(pattern="^(published|unpublished)$")
 
 
 @router.post("/products/{product_id}/variants")

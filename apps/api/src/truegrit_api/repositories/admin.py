@@ -135,15 +135,18 @@ class AdminRepository:
         return await self._db.fetch_all(
             f"""
             SELECT
-              il.variant_id, p.id AS product_id, p.status AS product_status,
+              v.id AS variant_id, p.id AS product_id, p.status AS product_status,
               p.name AS product_name, v.name AS variant_name, v.sku,
-              loc.name AS location_name, il.on_hand, il.reserved,
-              il.reorder_threshold, il.updated_at
-            FROM inventory_levels il
-            JOIN product_variants v ON v.id = il.variant_id
+              COALESCE(loc.name, 'Not assigned') AS location_name,
+              COALESCE(il.on_hand, 0) AS on_hand, COALESCE(il.reserved, 0) AS reserved,
+              COALESCE(il.reorder_threshold, 0) AS reorder_threshold,
+              COALESCE(il.updated_at, p.updated_at) AS updated_at
+            FROM product_variants v
             JOIN products p ON p.id = v.product_id
-            JOIN inventory_locations loc ON loc.id = il.location_id
+            LEFT JOIN inventory_levels il ON il.variant_id = v.id
+            LEFT JOIN inventory_locations loc ON loc.id = il.location_id
             WHERE (? IS NULL OR p.farm_id = ?) AND p.archived_at IS NULL
+              AND (p.status = 'published' OR il.variant_id IS NOT NULL)
             {search_clause}
             ORDER BY (il.on_hand - il.reserved - il.reorder_threshold) ASC, p.name
             LIMIT ? OFFSET ?

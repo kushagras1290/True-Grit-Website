@@ -239,11 +239,12 @@ export function InventoryPage() {
                     <Td>
                       <div className="flex items-center gap-2">
                         <StatusPill status={row.productStatus} />
-                        <PermissionGate permission="products.edit">
+                        <PermissionGate permission="products.publish">
                           <Button
                             variant="secondary"
                             onClick={() => {
-                              const nextStatus = row.productStatus === "active" ? "draft" : "active";
+                              const nextStatus =
+                                row.productStatus === "published" ? "unpublished" : "published";
                               api.updateProductStatus(row.productId, nextStatus)
                                 .then(() => {
                                   toast.success("Product status updated.");
@@ -254,7 +255,7 @@ export function InventoryPage() {
                                 });
                             }}
                           >
-                            {row.productStatus === "active" ? "Disable" : "Enable"}
+                            {row.productStatus === "published" ? "Disable" : "Enable"}
                           </Button>
                         </PermissionGate>
                       </div>

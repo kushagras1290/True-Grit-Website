@@ -7,8 +7,10 @@
 
 import { useQuery } from "@tanstack/react-query";
 import type { ReactNode } from "react";
+import { Navigate } from "react-router";
 
 import { api } from "./api";
+import { EmptyState } from "../components/ui";
 
 export function useMe() {
   return useQuery({ queryKey: ["me"], queryFn: api.me, staleTime: 5 * 60_000 });
@@ -30,4 +32,19 @@ export function PermissionGate({
 }) {
   const permissions = usePermissions();
   return permissions.has(permission) ? children : fallback;
+}
+
+export function RequireSuperAdmin({ children }: { children: ReactNode }) {
+  const { data: me, isLoading, isError } = useMe();
+  if (isLoading) return <p className="text-sm text-ink-muted">Checking access…</p>;
+  if (isError) return <Navigate to="/login" replace />;
+  if (!me?.isSuperAdmin) {
+    return (
+      <EmptyState
+        title="Super administrator access required"
+        hint="This page contains sensitive application diagnostics."
+      />
+    );
+  }
+  return children;
 }

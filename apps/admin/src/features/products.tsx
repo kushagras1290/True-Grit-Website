@@ -543,7 +543,7 @@ export function ProductEditorPage() {
   });
 
   const statusMutation = useMutation({
-    mutationFn: (status: "draft" | "active" | "archived") => api.updateProductStatus(id, status),
+    mutationFn: (status: "published" | "unpublished") => api.updateProductStatus(id, status),
     onSuccess: async () => {
       await invalidate();
       toast.success(`Product status updated.`);
@@ -588,18 +588,22 @@ export function ProductEditorPage() {
               permission="products.publish"
               fallback={
                 <Button disabled title="Requires products.publish">
-                  {product.status === "active" ? "Disable" : "Enable"}
+                  {product.status === "published" ? "Disable" : "Enable"}
                 </Button>
               }
             >
               <Button
                 variant="primary"
-                onClick={() => statusMutation.mutate(product.status === "active" ? "draft" : "active")}
+                onClick={() =>
+                  statusMutation.mutate(
+                    product.status === "published" ? "unpublished" : "published",
+                  )
+                }
                 disabled={statusMutation.isPending}
               >
                 {statusMutation.isPending
                   ? "Updating…"
-                  : product.status === "active"
+                  : product.status === "published"
                     ? "Disable"
                     : "Enable"}
               </Button>

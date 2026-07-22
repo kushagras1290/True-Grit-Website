@@ -381,6 +381,16 @@ export interface Me {
   permissions: string[];
   farmId?: string | null;
   farmName?: string | null;
+  isSuperAdmin: boolean;
+}
+
+export interface AdminNotification {
+  id: string;
+  title: string;
+  message: string;
+  count: number;
+  href: string;
+  severity: "warning" | "danger" | "info";
 }
 
 export interface SiteControl {
@@ -438,6 +448,7 @@ const DEMO_ME: Me = {
   id: "usr_admin",
   displayName: "Asha Rao",
   email: "admin@truegrit.test",
+  isSuperAdmin: true,
   permissions: [
     "products.view",
     "products.create",
@@ -489,6 +500,9 @@ export const api = {
     }
     return demo(DEMO_ME);
   },
+
+  notifications: (): Promise<{ items: AdminNotification[]; total: number }> =>
+    demoMode ? demo({ items: [], total: 0 }) : get("/v1/admin/notifications"),
 
   login: async (email: string, password: string): Promise<void> => {
     if (demoMode) {
@@ -631,7 +645,7 @@ export const api = {
   updateVariant: (productId: string, variantId: string, input: { name?: string; sku?: string; listMinor?: number; saleMinor?: number | null }): Promise<{ id: string }> =>
     demoMode ? demo({ id: variantId }) : patch(`/v1/admin/products/${productId}/variants/${variantId}`, input),
 
-  updateProductStatus: (productId: string, status: "draft" | "active" | "archived"): Promise<{ id: string }> =>
+  updateProductStatus: (productId: string, status: "published" | "unpublished"): Promise<{ id: string }> =>
     demoMode ? demo({ id: productId }) : patch(`/v1/admin/products/${productId}/status`, { status }),
 
   publishProduct: (

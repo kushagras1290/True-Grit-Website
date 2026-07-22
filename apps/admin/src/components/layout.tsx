@@ -6,6 +6,7 @@ import {
   Archive,
   ArrowLeft,
   BarChart3,
+  Bell,
   BookOpen,
   ClipboardList,
   Database,
@@ -38,7 +39,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router";
 
 import { Button } from "./ui";
-import { api, demoMode } from "../lib/api";
+import { api, demoMode, type AdminNotification } from "../lib/api";
 import { useMe, usePermissions } from "../lib/permissions";
 
 const SIDEBAR_COLLAPSED_KEY = "truegrit.admin.sidebar-collapsed";
@@ -60,6 +61,7 @@ interface NavEntry {
   /** Key into the `badges` map passed to SidebarNav — shows a small count
    * pill next to the label (e.g. pending submissions awaiting review). */
   badgeKey?: string;
+  superAdminOnly?: boolean;
 }
 
 const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
@@ -188,10 +190,11 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         permission: "reports.query",
       },
       {
-        to: "/server-logs",
-        label: "Server Logs",
+        to: "/admin-logs",
+        label: "Admin Logs",
         icon: <Terminal size={16} />,
         permission: "audit.view",
+        superAdminOnly: true,
       },
       {
         to: "/db-browser",
@@ -208,12 +211,14 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
 
 function SidebarNav({
   permissions,
+  isSuperAdmin,
   subtitle,
   onNavigate,
   collapsed = false,
   badges = {},
 }: {
   permissions: ReadonlySet<string>;
+  isSuperAdmin: boolean;
   subtitle: string;
   onNavigate?: () => void;
   collapsed?: boolean;
@@ -231,10 +236,11 @@ function SidebarNav({
         {NAV_GROUPS.map((group) => {
           const visible = group.entries.filter(
             (entry) =>
-              entry.permission === null ||
-              (Array.isArray(entry.permission)
-                ? entry.permission.some((permission) => permissions.has(permission))
-                : permissions.has(entry.permission)),
+              (!entry.superAdminOnly || isSuperAdmin) &&
+              (entry.permission === null ||
+                (Array.isArray(entry.permission)
+                  ? entry.permission.some((permission) => permissions.has(permission))
+                  : permissions.has(entry.permission))),
           );
           if (visible.length === 0) return null;
           return (
@@ -286,6 +292,80 @@ function SidebarNav({
   );
 }
 
+function NotificationPanel({
+  items,
+  total,
+  onNavigate,
+}: {
+  items: AdminNotification[];
+  total: number;
+  onNavigate: (href: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        className="relative flex h-9 w-9 items-center justify-center rounded-sm text-ink hover:bg-canvas"
+        aria-label={`Notifications${total ? `, ${total} pending` : ""}`}
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <Bell size={17} />
+        {total ? (
+          <span className="absolute -top-1 -right-1 inline-flex min-w-5 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-semibold leading-5 text-ink-inverse">
+            {total > 99 ? "99+" : total}
+          </span>
+        ) : null}
+      </button>
+      {open ? (
+        <div className="absolute right-0 z-50 mt-2 w-[min(24rem,calc(100vw-2rem))] rounded-md border border-line bg-surface p-2 shadow-overlay">
+          <div className="border-b border-line px-2 py-2">
+            <p className="font-display text-base text-ink">Notifications</p>
+            <p className="text-xs text-ink-muted">Pending work for your role</p>
+          </div>
+          <div className="max-h-96 overflow-y-auto py-1">
+            {items.length ? (
+              items.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className="flex w-full gap-3 rounded-sm px-2 py-3 text-left hover:bg-canvas"
+                  onClick={() => {
+                    setOpen(false);
+                    onNavigate(item.href);
+                  }}
+                >
+                  <span
+                    className={cn(
+                      "mt-0.5 inline-flex min-w-7 items-center justify-center rounded-full px-1.5 py-1 text-xs font-semibold",
+                      item.severity === "danger"
+                        ? "bg-danger/10 text-danger"
+                        : item.severity === "info"
+                          ? "bg-subtle text-brand"
+                        : "bg-warning/10 text-warning",
+                    )}
+                  >
+                    {item.count}
+                  </span>
+                  <span>
+                    <span className="block text-sm font-medium text-ink">{item.title}</span>
+                    <span className="mt-0.5 block text-xs leading-5 text-ink-muted">
+                      {item.message}
+                    </span>
+                  </span>
+                </button>
+              ))
+            ) : (
+              <p className="px-2 py-6 text-center text-sm text-ink-muted">Nothing pending.</p>
+            )}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export function Shell() {
   const permissions = usePermissions();
   const { data: me } = useMe();
@@ -306,6 +386,11 @@ export function Shell() {
     refetchInterval: 60_000,
   });
   const badges = { submissionsPending: pendingSubmissions ?? 0 };
+  const { data: notifications } = useQuery({
+    queryKey: ["admin-notifications"],
+    queryFn: api.notifications,
+    refetchInterval: 60_000,
+  });
   const logout = useMutation({
     mutationFn: api.logout,
     onSuccess: () => {
@@ -334,6 +419,7 @@ export function Shell() {
         <div className="flex-1 overflow-y-auto">
           <SidebarNav
             permissions={permissions}
+            isSuperAdmin={me?.isSuperAdmin ?? false}
             subtitle={subtitle}
             collapsed={collapsed}
             badges={badges}
@@ -367,6 +453,7 @@ export function Shell() {
             </div>
             <SidebarNav
               permissions={permissions}
+              isSuperAdmin={me?.isSuperAdmin ?? false}
               subtitle={subtitle}
               onNavigate={() => setMobileOpen(false)}
               badges={badges}
@@ -409,6 +496,11 @@ export function Shell() {
             </div>
           </div>
           <div className="flex items-center gap-3 text-sm text-ink">
+            <NotificationPanel
+              items={notifications?.items ?? []}
+              total={notifications?.total ?? 0}
+              onNavigate={navigate}
+            />
             {me ? (
               <span className="hidden sm:inline">
                 {me.displayName} <span className="text-ink-muted">· {me.email}</span>

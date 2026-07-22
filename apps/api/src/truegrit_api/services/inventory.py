@@ -44,7 +44,7 @@ async def adjust_inventory(
     if len(note) > _MAX_NOTE_LENGTH:
         raise ValidationAppError("Note must be at most 300 characters.")
 
-    level = await _resolve_level(db, variant_id, location_id)
+    level = await _resolve_level(db, variant_id, location_id, allow_create=True)
     new_on_hand = level["on_hand"] + quantity_delta
     if new_on_hand < 0:
         raise ValidationAppError("Adjustment would drive on-hand below zero.")
@@ -53,13 +53,23 @@ async def adjust_inventory(
 
     resolved_location = level["location_id"]
     now = utc_now_iso()
+    level_statement = (
+        (
+            "INSERT INTO inventory_levels"
+            " (variant_id, location_id, on_hand, reserved, reorder_threshold, version, updated_at)"
+            " VALUES (?, ?, ?, 0, 0, 1, ?)",
+            (variant_id, resolved_location, new_on_hand, now),
+        )
+        if level.get("new")
+        else (
+            "UPDATE inventory_levels SET on_hand = ?, version = version + 1, updated_at = ?"
+            " WHERE variant_id = ? AND location_id = ?",
+            (new_on_hand, now, variant_id, resolved_location),
+        )
+    )
     await db.batch(
         [
-            (
-                "UPDATE inventory_levels SET on_hand = ?, version = version + 1, updated_at = ?"
-                " WHERE variant_id = ? AND location_id = ?",
-                (new_on_hand, now, variant_id, resolved_location),
-            ),
+            level_statement,
             (
                 "INSERT INTO inventory_movements"
                 " (id, variant_id, location_id, movement_type, quantity_delta,"
@@ -169,7 +179,9 @@ async def clear_inventory_levels(
     return {"clearedIds": cleared, "count": len(cleared)}
 
 
-async def _resolve_level(db: Database, variant_id: str, location_id: str | None) -> dict[str, Any]:
+async def _resolve_level(
+    db: Database, variant_id: str, location_id: str | None, *, allow_create: bool = False
+) -> dict[str, Any]:
     if location_id:
         level = await db.fetch_one(
             "SELECT location_id, on_hand, reserved FROM inventory_levels"
@@ -185,6 +197,13 @@ async def _resolve_level(db: Database, variant_id: str, location_id: str | None)
         (variant_id,),
     )
     if not levels:
+        if allow_create:
+            location = await db.fetch_one(
+                "SELECT id FROM inventory_locations WHERE active = 1 ORDER BY created_at, id LIMIT 1"
+            )
+            if location is None:
+                raise NotFoundError("No active inventory location exists.")
+            return {"location_id": location["id"], "on_hand": 0, "reserved": 0, "new": True}
         raise NotFoundError("No stock level exists for that variant.")
     if len(levels) > 1:
         raise ValidationAppError("This variant has multiple locations; specify one.")
