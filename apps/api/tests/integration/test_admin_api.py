@@ -107,6 +107,33 @@ def test_product_image_replacement_with_full_editor_payload(
     assert updated["categoryIds"] == detail["categoryIds"]
 
 
+def test_primary_variant_create_and_update(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
+
+    created = client.post(
+        "/v1/admin/products/prd_spinach/variants",
+        json={"name": "Family pack", "sku": "TRG-SPINACH-FAMILY", "listMinor": 49900},
+    )
+    assert created.status_code == 200, created.text
+    variant_id = created.json()["id"]
+
+    updated = client.patch(
+        f"/v1/admin/products/prd_spinach/variants/{variant_id}",
+        json={
+            "name": "Family pack",
+            "sku": "TRG-SPINACH-FAMILY-2",
+            "listMinor": 45900,
+        },
+    )
+    assert updated.status_code == 200, updated.text
+    assert updated.json()["changed"] is True
+
+    detail = client.get("/v1/admin/products/prd_spinach").json()
+    variant = next(item for item in detail["variants"] if item["id"] == variant_id)
+    assert variant["sku"] == "TRG-SPINACH-FAMILY-2"
+    assert variant["listMinor"] == 45900
+
+
 def test_publish_category_writes_audit_and_outbox(client: TestClient, db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
 

@@ -266,16 +266,14 @@ async def create_variant(
     row = await db.fetch_one("SELECT id FROM product_variants WHERE sku = ?", (sku,))
     if row:
         raise ConflictError("A variant with this SKU already exists.")
+    if sale_minor is not None and sale_minor > list_minor:
+        raise ValidationAppError("Sale price cannot be greater than list price.")
 
-    import secrets
+    variant_id = new_id("var")
+    price_id = new_id("vpr")
+    now = utc_now_iso()
 
-    from ..utils import now_utc
-
-    variant_id = f"var_{secrets.token_urlsafe(16)}"
-    price_id = f"vpr_{secrets.token_urlsafe(16)}"
-    now = now_utc().isoformat()
-
-    await db.execute_batch(
+    await db.batch(
         [
             (
                 "INSERT INTO product_variants"
@@ -286,9 +284,9 @@ async def create_variant(
             (
                 "INSERT INTO variant_prices"
                 " (id, variant_id, market_code, currency_code, list_amount_minor,"
-                " sale_amount_minor, starts_at, status, created_at)"
-                " VALUES (?, ?, 'IN', 'INR', ?, ?, ?, 'active', ?)",
-                (price_id, variant_id, list_minor, sale_minor, now, now),
+                " sale_amount_minor, starts_at, status, created_at, created_by)"
+                " VALUES (?, ?, 'IN', 'INR', ?, ?, ?, 'active', ?, ?)",
+                (price_id, variant_id, list_minor, sale_minor, now, now, actor.user_id),
             ),
             audit_statement(
                 action="variant.created",
@@ -334,11 +332,7 @@ async def update_variant(
         (variant_id,),
     )
 
-    import secrets
-
-    from ..utils import now_utc
-
-    now = now_utc().isoformat()
+    now = utc_now_iso()
     batch = []
     after = {}
 
@@ -374,6 +368,8 @@ async def update_variant(
         new_sale = sale_minor if sale_minor is not None else current_sale
         if sale_minor == -1:  # hack to clear it
             new_sale = None
+        if new_sale is not None and new_sale > new_list:
+            raise ValidationAppError("Sale price cannot be greater than list price.")
 
         if new_list != price["list_amount_minor"] or new_sale != current_sale:
             batch.append(
@@ -386,15 +382,15 @@ async def update_variant(
             after["list_minor"] = new_list
             after["sale_minor"] = new_sale
     elif list_minor is not None:
-        price_id = f"vpr_{secrets.token_urlsafe(16)}"
+        price_id = new_id("vpr")
         real_sale = None if sale_minor == -1 else sale_minor
         batch.append(
             (
                 "INSERT INTO variant_prices"
                 " (id, variant_id, market_code, currency_code, list_amount_minor,"
-                " sale_amount_minor, starts_at, status, created_at)"
-                " VALUES (?, ?, 'IN', 'INR', ?, ?, ?, 'active', ?)",
-                (price_id, variant_id, list_minor, real_sale, now, now),
+                " sale_amount_minor, starts_at, status, created_at, created_by)"
+                " VALUES (?, ?, 'IN', 'INR', ?, ?, ?, 'active', ?, ?)",
+                (price_id, variant_id, list_minor, real_sale, now, now, actor.user_id),
             )
         )
         after["list_minor"] = list_minor
@@ -412,7 +408,7 @@ async def update_variant(
                 after=after,
             )
         )
-        await db.execute_batch(batch)
+        await db.batch(batch)
         return {"id": variant_id, "changed": True}
 
     return {"id": variant_id, "changed": False}
