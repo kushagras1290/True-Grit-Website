@@ -195,16 +195,24 @@ class RecipeRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def list_published(self) -> list[dict[str, Any]]:
+    async def list_published(self, *, limit: int = 12, offset: int = 0) -> list[dict[str, Any]]:
         rows = await self._db.fetch_all(
             f"""
             SELECT {_RECIPE_PUBLIC_COLUMNS}
             FROM recipes
             WHERE status = 'published'
             ORDER BY published_at DESC, title
-            """
+            LIMIT ? OFFSET ?
+            """,
+            (min(max(limit, 1), 100), max(offset, 0)),
         )
         return [await self._detail_from_row(row) for row in rows]
+
+    async def count_published(self) -> int:
+        row = await self._db.fetch_one(
+            "SELECT COUNT(*) AS total FROM recipes WHERE status = 'published'"
+        )
+        return int(row["total"]) if row else 0
 
     async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
         row = await self._db.fetch_one(
@@ -399,7 +407,7 @@ class ArticleRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def list_published(self) -> list[dict[str, Any]]:
+    async def list_published(self, *, limit: int = 10, offset: int = 0) -> list[dict[str, Any]]:
         rows = await self._db.fetch_all(
             f"""
             SELECT {_ARTICLE_PUBLIC_COLUMNS}
@@ -407,9 +415,17 @@ class ArticleRepository:
             LEFT JOIN users u ON u.id = a.author_user_id
             WHERE a.status = 'published'
             ORDER BY a.published_at DESC, a.title
-            """
+            LIMIT ? OFFSET ?
+            """,
+            (min(max(limit, 1), 100), max(offset, 0)),
         )
         return [await self._detail_from_row(row) for row in rows]
+
+    async def count_published(self) -> int:
+        row = await self._db.fetch_one(
+            "SELECT COUNT(*) AS total FROM articles WHERE status = 'published'"
+        )
+        return int(row["total"]) if row else 0
 
     async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
         row = await self._db.fetch_one(
@@ -881,6 +897,12 @@ class DiscussionRepository:
             """,
             (min(max(limit, 1), 100), max(offset, 0)),
         )
+
+    async def count_public(self) -> int:
+        row = await self._db.fetch_one(
+            "SELECT COUNT(*) AS total FROM discussions WHERE status = 'visible'"
+        )
+        return int(row["total"]) if row else 0
 
     async def get_public_detail(self, discussion_id: str) -> dict[str, Any] | None:
         return await self._db.fetch_one(

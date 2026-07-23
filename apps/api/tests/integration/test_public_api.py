@@ -5,9 +5,7 @@ from truegrit_api.platform.database import SQLiteDatabase
 
 def _restrict_product(db: SQLiteDatabase, product_id: str, countries: list[str]) -> None:
     """Seed helper: limit a product's release to the given countries."""
-    db._conn.execute(
-        "UPDATE products SET release_scope = 'selected' WHERE id = ?", (product_id,)
-    )
+    db._conn.execute("UPDATE products SET release_scope = 'selected' WHERE id = ?", (product_id,))
     for code in countries:
         db._conn.execute(
             "INSERT INTO product_release_countries (product_id, country_code, added_at, added_by)"
@@ -65,13 +63,48 @@ def test_public_content_surfaces_read_from_database(client: TestClient):
     assert farm["name"] == "Devika Organics"
     assert farm["productSlugs"] == ["organic-alphonso-mangoes"]
 
-    recipes = client.get("/v1/public/recipes").json()["items"]
-    assert [recipe["slug"] for recipe in recipes] == ["crisp-sprouted-ragi-dosa"]
-    assert recipes[0]["ingredients"][0]["productSlug"] == "sprouted-ragi-flour"
+    recipe_page = client.get("/v1/public/recipes").json()
+    assert recipe_page["total"] == 51
+    assert recipe_page["limit"] == 12
+    assert len(recipe_page["items"]) == 12
+    ragi_recipe = client.get("/v1/public/recipes/crisp-sprouted-ragi-dosa").json()
+    assert ragi_recipe["ingredients"][0]["productSlug"] == "sprouted-ragi-flour"
 
-    articles = client.get("/v1/public/articles").json()["items"]
-    assert [article["slug"] for article in articles] == ["quiet-revival-of-indian-millets"]
-    assert articles[0]["authorName"] == "Kabir Mehta"
+    article_page = client.get("/v1/public/articles").json()
+    assert article_page["total"] == 51
+    assert article_page["limit"] == 10
+    assert len(article_page["items"]) == 10
+    millet_article = client.get("/v1/public/articles/quiet-revival-of-indian-millets").json()
+    assert millet_article["authorName"] == "Kabir Mehta"
+
+
+def test_public_content_lists_support_pagination(client: TestClient):
+    first_recipes = client.get("/v1/public/recipes", params={"limit": 12, "offset": 0}).json()
+    second_recipes = client.get("/v1/public/recipes", params={"limit": 12, "offset": 12}).json()
+    assert first_recipes["total"] == second_recipes["total"] == 51
+    assert first_recipes["offset"] == 0
+    assert second_recipes["offset"] == 12
+    assert {item["id"] for item in first_recipes["items"]}.isdisjoint(
+        item["id"] for item in second_recipes["items"]
+    )
+
+    first_articles = client.get("/v1/public/articles", params={"limit": 10, "offset": 0}).json()
+    last_articles = client.get("/v1/public/articles", params={"limit": 10, "offset": 50}).json()
+    assert first_articles["total"] == last_articles["total"] == 51
+    assert len(first_articles["items"]) == 10
+    assert len(last_articles["items"]) == 1
+
+
+def test_community_discussions_return_total_for_pagination(client: TestClient):
+    first_page = client.get(
+        "/v1/public/community/discussions", params={"limit": 12, "offset": 0}
+    ).json()
+    last_page = client.get(
+        "/v1/public/community/discussions", params={"limit": 12, "offset": 96}
+    ).json()
+    assert first_page["total"] == last_page["total"] == 100
+    assert len(first_page["items"]) == 12
+    assert len(last_page["items"]) == 4
 
 
 def test_public_pages_and_site_documents_have_generated_defaults(client: TestClient):
@@ -263,9 +296,7 @@ def test_country_param_must_be_two_letters(client: TestClient):
 # ---------------------------------------------------------------------------
 
 
-def test_highlights_return_curated_order_published_only(
-    client: TestClient, db: SQLiteDatabase
-):
+def test_highlights_return_curated_order_published_only(client: TestClient, db: SQLiteDatabase):
     db._conn.executescript(
         """
         INSERT INTO highlighted_products (product_id, sort_order, added_at, added_by) VALUES

@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 
 import type { Route } from "./+types/community";
 import { Section } from "../components/catalogue";
+import { PageLinkPagination } from "../components/pagination";
 import { catalogueRuntime, loadRouteSeo } from "../lib/catalogue.server";
-import { useCustomer } from "../lib/customer-auth";
 import { listDiscussions, type DiscussionSummary } from "../lib/community";
+import { useCustomer } from "../lib/customer-auth";
 import { mergeRouteSeo, seoMeta } from "../lib/seo";
 
+const DISCUSSIONS_PAGE_SIZE = 12;
 const fallbackSeo = {
   title: "Community",
   description: "Open discussions with the True Grit community.",
@@ -25,18 +27,27 @@ export function meta({ data }: Route.MetaArgs) {
 
 export default function CommunityPage(_props: Route.ComponentProps) {
   const { status } = useCustomer();
+  const [searchParams] = useSearchParams();
+  const page = Math.max(1, Number(searchParams.get("page")) || 1);
   const [discussions, setDiscussions] = useState<DiscussionSummary[] | null>(null);
+  const [total, setTotal] = useState(0);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     let active = true;
-    listDiscussions()
-      .then((items) => active && setDiscussions(items))
+    setDiscussions(null);
+    setFailed(false);
+    listDiscussions(DISCUSSIONS_PAGE_SIZE, (page - 1) * DISCUSSIONS_PAGE_SIZE)
+      .then((result) => {
+        if (!active) return;
+        setDiscussions(result.items);
+        setTotal(result.total);
+      })
       .catch(() => active && setFailed(true));
     return () => {
       active = false;
     };
-  }, []);
+  }, [page]);
 
   return (
     <Section eyebrow="Community" heading="Open discussions">
@@ -61,22 +72,29 @@ export default function CommunityPage(_props: Route.ComponentProps) {
       ) : discussions === null ? (
         <p className="text-sm text-ink-muted">Loading discussions…</p>
       ) : discussions.length === 0 ? (
-        <p className="text-sm text-ink-muted">No discussions yet — be the first to start one.</p>
+        <p className="text-sm text-ink-muted">No discussions yet. Be the first to start one.</p>
       ) : (
-        <ul className="mx-auto max-w-2xl divide-y divide-line rounded-md border border-line bg-surface">
-          {discussions.map((entry) => (
-            <li key={entry.id}>
-              <Link to={`/community/${entry.id}`} className="block px-5 py-4 hover:bg-canvas/60">
-                <h2 className="font-display text-lg text-ink">{entry.title}</h2>
-                <p className="mt-1 text-sm text-ink-muted">{entry.excerpt}</p>
-                <p className="mt-2 text-xs text-ink-muted">
-                  {entry.authorName} · {entry.commentCount} comment{entry.commentCount === 1 ? "" : "s"} ·{" "}
-                  {new Date(entry.lastActivityAt).toLocaleDateString()}
-                </p>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className="mx-auto max-w-2xl">
+          <p className="mb-4 text-sm text-ink-muted" role="status">
+            {total} discussion{total === 1 ? "" : "s"}
+          </p>
+          <ul className="divide-y divide-line overflow-hidden rounded-md border border-line bg-surface">
+            {discussions.map((entry) => (
+              <li key={entry.id}>
+                <Link to={`/community/${entry.id}`} className="block px-5 py-4 hover:bg-canvas/60">
+                  <h2 className="font-display text-lg text-ink">{entry.title}</h2>
+                  <p className="mt-1 line-clamp-2 text-sm text-ink-muted">{entry.excerpt}</p>
+                  <p className="mt-2 text-xs text-ink-muted">
+                    {entry.authorName} · {entry.commentCount} comment
+                    {entry.commentCount === 1 ? "" : "s"} ·{" "}
+                    {new Date(entry.lastActivityAt).toLocaleDateString()}
+                  </p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <PageLinkPagination page={page} pageSize={DISCUSSIONS_PAGE_SIZE} total={total} />
+        </div>
       )}
     </Section>
   );

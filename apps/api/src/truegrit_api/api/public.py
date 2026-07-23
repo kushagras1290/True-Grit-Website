@@ -81,6 +81,7 @@ class ContactRequest(_CamelModel):
     subject: str = Field(min_length=3, max_length=160)
     message: str = Field(min_length=10, max_length=2000)
 
+
 _STANDARDS_FAQ = [
     {
         "question": "How do you verify these farms?",
@@ -225,11 +226,7 @@ async def contact(
         send_email,
         to,
         f"Contact form: {payload.subject.strip()}",
-        (
-            f"Name: {payload.name.strip()}\n"
-            f"Email: {email}\n\n"
-            f"{payload.message.strip()}"
-        ),
+        (f"Name: {payload.name.strip()}\nEmail: {email}\n\n{payload.message.strip()}"),
         settings,
     )
     return {"ok": True, "id": message_id}
@@ -330,8 +327,18 @@ async def farm_detail(slug: str, db: Annotated[Database, Depends(get_database)])
 
 
 @router.get("/recipes", response_model=RecipeListResponse)
-async def recipes_list(db: Annotated[Database, Depends(get_database)]) -> Any:
-    return {"items": await RecipeRepository(db).list_published()}
+async def recipes_list(
+    db: Annotated[Database, Depends(get_database)],
+    limit: Annotated[int, Query(ge=1, le=100)] = 12,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    repository = RecipeRepository(db)
+    return {
+        "items": await repository.list_published(limit=limit, offset=offset),
+        "total": await repository.count_published(),
+        "limit": limit,
+        "offset": offset,
+    }
 
 
 @router.get("/recipes/{slug}", response_model=RecipeDetail)
@@ -344,8 +351,18 @@ async def recipe_detail(slug: str, db: Annotated[Database, Depends(get_database)
 
 
 @router.get("/articles", response_model=ArticleListResponse)
-async def articles_list(db: Annotated[Database, Depends(get_database)]) -> Any:
-    return {"items": await ArticleRepository(db).list_published()}
+async def articles_list(
+    db: Annotated[Database, Depends(get_database)],
+    limit: Annotated[int, Query(ge=1, le=100)] = 10,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    repository = ArticleRepository(db)
+    return {
+        "items": await repository.list_published(limit=limit, offset=offset),
+        "total": await repository.count_published(),
+        "limit": limit,
+        "offset": offset,
+    }
 
 
 @router.get("/articles/{slug}", response_model=ArticleDetail)

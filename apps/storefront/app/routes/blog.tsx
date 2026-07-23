@@ -2,11 +2,19 @@ import { Link } from "react-router";
 
 import type { Route } from "./+types/blog";
 import { Section } from "../components/catalogue";
+import { PageLinkPagination } from "../components/pagination";
 import { catalogueRuntime, loadArticles } from "../lib/catalogue.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader({ context }: Route.LoaderArgs) {
-  return { articles: await loadArticles(catalogueRuntime(context)) };
+const BLOG_PAGE_SIZE = 10;
+
+export async function loader({ context, request }: Route.LoaderArgs) {
+  const page = Math.max(1, Number(new URL(request.url).searchParams.get("page")) || 1);
+  return {
+    page,
+    pageSize: BLOG_PAGE_SIZE,
+    articles: await loadArticles(page, BLOG_PAGE_SIZE, catalogueRuntime(context)),
+  };
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -32,8 +40,11 @@ export default function BlogPage({ loaderData }: Route.ComponentProps) {
           Post a blog
         </Link>
       </div>
-      <div className="mx-auto max-w-2xl space-y-8">
-        {loaderData.articles.map((article) => (
+      <p className="mx-auto mb-5 max-w-2xl text-sm text-ink-muted" role="status">
+        {loaderData.articles.total} stor{loaderData.articles.total === 1 ? "y" : "ies"}
+      </p>
+      <div className="mx-auto max-w-2xl space-y-6">
+        {loaderData.articles.items.map((article) => (
           <Link
             key={article.id}
             to={`/blog/${article.slug}`}
@@ -48,6 +59,13 @@ export default function BlogPage({ loaderData }: Route.ComponentProps) {
             <p className="mt-2 text-base text-ink-muted">{article.excerpt}</p>
           </Link>
         ))}
+      </div>
+      <div className="mx-auto max-w-2xl">
+        <PageLinkPagination
+          page={loaderData.page}
+          pageSize={loaderData.pageSize}
+          total={loaderData.articles.total}
+        />
       </div>
     </Section>
   );

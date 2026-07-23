@@ -185,6 +185,9 @@ class RecipeDetail(PublicModel):
 
 class RecipeListResponse(PublicModel):
     items: list[RecipeDetail]
+    total: int
+    limit: int
+    offset: int
 
 
 class ArticleDetail(PublicModel):
@@ -202,6 +205,9 @@ class ArticleDetail(PublicModel):
 
 class ArticleListResponse(PublicModel):
     items: list[ArticleDetail]
+    total: int
+    limit: int
+    offset: int
 
 
 class SearchResultGroup(PublicModel):

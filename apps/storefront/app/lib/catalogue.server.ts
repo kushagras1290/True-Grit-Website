@@ -90,6 +90,29 @@ async function listFromApi<T>(
   return body?.items ?? [];
 }
 
+export interface PaginatedContent<T> {
+  items: T[];
+  total: number;
+}
+
+async function paginatedFromApi<T>(
+  path: string,
+  fallback: T[],
+  limit: number,
+  offset: number,
+  runtime?: CatalogueRuntime,
+): Promise<PaginatedContent<T>> {
+  if (!apiUrl(runtime)) {
+    return { items: fallback.slice(offset, offset + limit), total: fallback.length };
+  }
+  const separator = path.includes("?") ? "&" : "?";
+  const body = await fromApi<{ items: T[]; total: number }>(
+    `${path}${separator}limit=${limit}&offset=${offset}`,
+    runtime,
+  );
+  return { items: body?.items ?? [], total: body?.total ?? 0 };
+}
+
 export async function loadBootstrap(runtime?: CatalogueRuntime): Promise<PublicBootstrap> {
   if (apiUrl(runtime)) {
     return (
@@ -139,7 +162,10 @@ export async function loadRouteSeo(
   runtime?: CatalogueRuntime,
 ): Promise<RouteSeoOverride | null> {
   if (!apiUrl(runtime)) return null;
-  return fromApi<RouteSeoOverride>(`/v1/public/route-seo?path=${encodeURIComponent(path)}`, runtime);
+  return fromApi<RouteSeoOverride>(
+    `/v1/public/route-seo?path=${encodeURIComponent(path)}`,
+    runtime,
+  );
 }
 
 // Matches DEFAULT_PAGE_SIZE in apps/api/src/truegrit_api/api/public.py.
@@ -259,8 +285,18 @@ export async function loadFarm(
   return farms.find((farm) => farm.slug === slug) ?? null;
 }
 
-export async function loadRecipes(runtime?: CatalogueRuntime): Promise<RecipeDetail[]> {
-  return listFromApi<RecipeDetail>("/v1/public/recipes", recipes, runtime);
+export async function loadRecipes(
+  page: number,
+  pageSize: number,
+  runtime?: CatalogueRuntime,
+): Promise<PaginatedContent<RecipeDetail>> {
+  return paginatedFromApi<RecipeDetail>(
+    "/v1/public/recipes",
+    recipes,
+    pageSize,
+    (page - 1) * pageSize,
+    runtime,
+  );
 }
 
 export async function loadRecipe(
@@ -273,8 +309,18 @@ export async function loadRecipe(
   return recipes.find((recipe) => recipe.slug === slug) ?? null;
 }
 
-export async function loadArticles(runtime?: CatalogueRuntime): Promise<ArticleDetail[]> {
-  return listFromApi<ArticleDetail>("/v1/public/articles", articles, runtime);
+export async function loadArticles(
+  page: number,
+  pageSize: number,
+  runtime?: CatalogueRuntime,
+): Promise<PaginatedContent<ArticleDetail>> {
+  return paginatedFromApi<ArticleDetail>(
+    "/v1/public/articles",
+    articles,
+    pageSize,
+    (page - 1) * pageSize,
+    runtime,
+  );
 }
 
 export async function loadArticle(
@@ -300,20 +346,18 @@ export async function loadSiteDocument(
 }
 
 export type SitemapKind =
-  | "products"
-  | "categories"
-  | "pages"
-  | "blog"
-  | "recipes"
-  | "farms"
-  | "discussions";
+  "products" | "categories" | "pages" | "blog" | "recipes" | "farms" | "discussions";
 
 /** Per-type sitemap XML, always mechanically generated from live D1 content —
  * unlike `sitemap_xml` (the index), there is no owner-override path here, so
  * these can never go stale. Raw XML, not JSON, so this bypasses `fromApi`. */
-export async function loadSitemapXml(kind: SitemapKind, runtime?: CatalogueRuntime): Promise<string> {
+export async function loadSitemapXml(
+  kind: SitemapKind,
+  runtime?: CatalogueRuntime,
+): Promise<string> {
   const baseUrl = apiUrl(runtime);
-  const empty = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n</urlset>\n';
+  const empty =
+    '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n</urlset>\n';
   if (!baseUrl) return empty;
   try {
     const request = new Request(`${baseUrl}/v1/public/sitemaps/${kind}`, {

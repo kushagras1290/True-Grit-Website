@@ -69,8 +69,14 @@ async def list_discussions(
     limit: Annotated[int, Query(ge=1, le=100)] = 30,
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> Any:
-    rows = await DiscussionRepository(db).list_public(limit=limit, offset=offset)
-    return {"items": [_discussion_summary(row) for row in rows], "limit": limit, "offset": offset}
+    repository = DiscussionRepository(db)
+    rows = await repository.list_public(limit=limit, offset=offset)
+    return {
+        "items": [_discussion_summary(row) for row in rows],
+        "total": await repository.count_public(),
+        "limit": limit,
+        "offset": offset,
+    }
 
 
 @router.get("/community/discussions/{discussion_id}")

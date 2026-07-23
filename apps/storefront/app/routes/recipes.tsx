@@ -2,11 +2,19 @@ import { Link } from "react-router";
 
 import type { Route } from "./+types/recipes";
 import { Section } from "../components/catalogue";
+import { PageLinkPagination } from "../components/pagination";
 import { catalogueRuntime, loadRecipes } from "../lib/catalogue.server";
 import { seoMeta } from "../lib/seo";
 
-export async function loader({ context }: Route.LoaderArgs) {
-  return { recipes: await loadRecipes(catalogueRuntime(context)) };
+const RECIPE_PAGE_SIZE = 12;
+
+export async function loader({ context, request }: Route.LoaderArgs) {
+  const page = Math.max(1, Number(new URL(request.url).searchParams.get("page")) || 1);
+  return {
+    page,
+    pageSize: RECIPE_PAGE_SIZE,
+    recipes: await loadRecipes(page, RECIPE_PAGE_SIZE, catalogueRuntime(context)),
+  };
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -32,8 +40,11 @@ export default function RecipesPage({ loaderData }: Route.ComponentProps) {
           Post a recipe
         </Link>
       </div>
-      <div className="grid gap-6 md:grid-cols-3">
-        {loaderData.recipes.map((recipe) => (
+      <p className="mb-5 text-sm text-ink-muted" role="status">
+        {loaderData.recipes.total} recipe{loaderData.recipes.total === 1 ? "" : "s"}
+      </p>
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {loaderData.recipes.items.map((recipe) => (
           <Link
             key={recipe.id}
             to={`/recipes/${recipe.slug}`}
@@ -56,6 +67,11 @@ export default function RecipesPage({ loaderData }: Route.ComponentProps) {
           </Link>
         ))}
       </div>
+      <PageLinkPagination
+        page={loaderData.page}
+        pageSize={loaderData.pageSize}
+        total={loaderData.recipes.total}
+      />
     </Section>
   );
 }

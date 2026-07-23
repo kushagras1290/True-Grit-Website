@@ -41,6 +41,11 @@ export interface CommunitySettings {
   minAccountAgeMonths: number;
 }
 
+export interface DiscussionPage {
+  items: DiscussionSummary[];
+  total: number;
+}
+
 interface ApiErrorBody {
   error?: { code?: string; message?: string };
 }
@@ -72,10 +77,10 @@ export function communitySettings(): Promise<CommunitySettings> {
   return request<CommunitySettings>("/v1/public/community/settings");
 }
 
-export function listDiscussions(limit = 30, offset = 0): Promise<DiscussionSummary[]> {
-  return request<{ items: DiscussionSummary[] }>(
+export function listDiscussions(limit = 12, offset = 0): Promise<DiscussionPage> {
+  return request<DiscussionPage>(
     `/v1/public/community/discussions?limit=${limit}&offset=${offset}`,
-  ).then((body) => body.items);
+  );
 }
 
 export function getDiscussion(id: string): Promise<DiscussionDetail> {
@@ -83,7 +88,10 @@ export function getDiscussion(id: string): Promise<DiscussionDetail> {
 }
 
 export function createDiscussion(input: { title: string; body: string }): Promise<{ id: string }> {
-  return request("/v1/public/community/discussions", { method: "POST", body: JSON.stringify(input) });
+  return request("/v1/public/community/discussions", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
 }
 
 export function createComment(discussionId: string, body: string): Promise<{ id: string }> {
