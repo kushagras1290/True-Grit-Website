@@ -74,8 +74,10 @@ def test_site_documents_are_owner_only(client: TestClient, db: SQLiteDatabase):
 
 def test_product_list_shape(client: TestClient, db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
-    items = client.get("/v1/admin/products").json()["items"]
-    assert len(items) == 5
+    # Pinned with `search` rather than reading a fixed row off page one: the
+    # catalogue holds hundreds of products, and this asserts row shape, not
+    # catalogue size.
+    items = client.get("/v1/admin/products", params={"search": "Alphonso"}).json()["items"]
     alphonso = next(item for item in items if item["id"] == "prd_alphonso")
     assert alphonso["sku"] == "TRG-MNG-1KG"
     assert "imageUrl" in alphonso
@@ -84,9 +86,17 @@ def test_product_list_shape(client: TestClient, db: SQLiteDatabase):
     assert alphonso["availableStock"] == 174  # (120-4) + (60-2)
 
 
-def test_product_image_replacement_with_full_editor_payload(
+def test_product_list_pages_rather_than_returning_everything(
     client: TestClient, db: SQLiteDatabase
 ):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
+    first = client.get("/v1/admin/products", params={"limit": 10}).json()["items"]
+    second = client.get("/v1/admin/products", params={"limit": 10, "offset": 10}).json()["items"]
+    assert len(first) == len(second) == 10
+    assert not {row["id"] for row in first} & {row["id"] for row in second}
+
+
+def test_product_image_replacement_with_full_editor_payload(client: TestClient, db: SQLiteDatabase):
     """Replacing an image must tolerate the unchanged farm/categories that
     the general editor submits alongside the new URL."""
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))

@@ -61,7 +61,10 @@ def test_public_content_surfaces_read_from_database(client: TestClient):
     }
     farm = client.get("/v1/public/farms/devika-organics").json()
     assert farm["name"] == "Devika Organics"
-    assert farm["productSlugs"] == ["organic-alphonso-mangoes"]
+    # Containment, not equality: this farm now supplies a large slice of the
+    # catalogue, and the contract under test is that its own products are
+    # listed — not how many it happens to have.
+    assert "organic-alphonso-mangoes" in farm["productSlugs"]
 
     recipe_page = client.get("/v1/public/recipes").json()
     assert recipe_page["total"] == 301
@@ -204,6 +207,17 @@ def test_categories_list_orders_departments_before_their_own_sections(client: Te
         assert all(
             item["level"] == 1 and item["parentId"] == section["parentId"] for item in between
         ), f"{section['slug']} is separated from its department by another branch"
+
+
+def test_category_page_accepts_a_country(client: TestClient):
+    """The storefront forwards the visitor's country on every catalogue request,
+    so the geo clause's table alias must match the query's own alias. When it
+    did not, every category page 500'd for real traffic while passing every
+    test that omitted `?country=`."""
+    for slug in ("fruits", "tropical-fruits", "fresh-fruits"):
+        response = client.get(f"/v1/public/categories/{slug}", params={"country": "IN"})
+        assert response.status_code == 200, f"{slug}: {response.text}"
+        assert response.json()["slug"] == slug
 
 
 def test_department_page_lists_its_published_sections(client: TestClient):
@@ -363,15 +377,28 @@ def test_search_zero_results_is_safe(client: TestClient):
     assert body == {"query": "zzzzunknownterm", "total": 0, "groups": []}
 
 
+def _search_product_slugs(client: TestClient, query: str, **params: str) -> set[str]:
+    body = client.get("/v1/public/search", params={"q": query, **params}).json()
+    return {
+        item["slug"]
+        for group in body["groups"]
+        if group["group"] == "products"
+        for item in group["items"]
+    }
+
+
 def test_search_reflects_live_catalogue(client: TestClient, db: SQLiteDatabase):
     # Product hits come from the live products table, so an unpublish takes
     # effect immediately (the FTS shadow table is only seeded, never synced).
+    # Asserted on the one product being unpublished rather than on the absence
+    # of every "ragi" result — the catalogue carries many other ragi products,
+    # and they are meant to keep matching.
+    assert "sprouted-ragi-flour" in _search_product_slugs(client, "ragi")
+
     db._conn.execute("UPDATE products SET status = 'unpublished' WHERE id = 'prd_ragi'")
     db._conn.commit()
-    body = client.get("/v1/public/search", params={"q": "ragi"}).json()
-    product_groups = [group for group in body["groups"] if group["group"] == "products"]
-    names = [item["name"] for group in product_groups for item in group["items"]]
-    assert all("Ragi" not in name for name in names)
+
+    assert "sprouted-ragi-flour" not in _search_product_slugs(client, "ragi")
 
 
 def test_search_product_items_carry_slug(client: TestClient):
@@ -412,11 +439,15 @@ def test_geo_release_locks_product_detail(client: TestClient, db: SQLiteDatabase
 
 
 def test_geo_release_filters_search_and_category(client: TestClient, db: SQLiteDatabase):
+    # Scoped to the restricted product: other rajma products stay globally
+    # released and must keep matching, so an empty result set would prove
+    # nothing about geo filtering.
+    assert "himalayan-red-rajma" in _search_product_slugs(client, "rajma", country="IN")
+
     _restrict_product(db, "prd_rajma", ["US"])
 
-    search = client.get("/v1/public/search", params={"q": "rajma", "country": "IN"}).json()
-    product_groups = [group for group in search["groups"] if group["group"] == "products"]
-    assert not product_groups
+    assert "himalayan-red-rajma" not in _search_product_slugs(client, "rajma", country="IN")
+    assert "himalayan-red-rajma" in _search_product_slugs(client, "rajma", country="US")
 
     category = client.get(
         "/v1/public/categories/grains-and-millets", params={"country": "IN"}

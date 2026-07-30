@@ -17,8 +17,10 @@ class CategoryRepository:
     async def get_published_by_slug(
         self, slug: str, country: str | None = None
     ) -> dict[str, Any] | None:
+        # Alias must match the FROM clause below: the self-join for the parent
+        # department means the table can no longer be referenced by its own name.
         geo_sql, geo_params = geo_release_clause(
-            country, alias="categories", table="category_release_countries", id_column="category_id"
+            country, alias="c", table="category_release_countries", id_column="category_id"
         )
         return await self._db.fetch_one(
             f"""
@@ -713,7 +715,22 @@ class SearchRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def _expand_terms(self, query: str) -> list[str]:
+    # Relevance tiers for an expanded search term. A catalogue of hundreds of
+    # products always overflows the result limit, so which matches survive is
+    # decided here rather than by alphabetical luck.
+    #
+    # A term resolved from a *multi-word* synonym phrase is the strongest
+    # signal: "finger millet" names one thing, and matching it beats matching
+    # the loose word "millet", which every millet product in the catalogue
+    # carries. A word the visitor actually typed comes next, and a synonym
+    # expanded outwards from one of those words comes last — it broadens
+    # recall and must never outrank what was literally asked for.
+    _RANK_PHRASE_SYNONYM = 0
+    _RANK_TYPED = 1
+    _RANK_EXPANSION = 2
+
+    async def _expand_terms(self, query: str) -> list[tuple[str, int]]:
+        """Search terms paired with their relevance tier, best first."""
         normalized = _FTS_SANITIZE.sub(" ", query).lower()
         terms = [term for term in normalized.split() if len(term) >= 2][:6]
         if not terms:
@@ -722,16 +739,19 @@ class SearchRepository:
         # match "finger millet", and a query phrased as "finger millet" (the
         # synonym, possibly multi-word) should match "ragi". The table is tiny,
         # so scan it rather than juggle phrase placeholders.
-        expanded = list(terms)
+        ranked: dict[str, int] = dict.fromkeys(terms, self._RANK_TYPED)
         rows = await self._db.fetch_all("SELECT term, synonym FROM search_synonyms")
         for row in rows:
             term = row["term"].lower()
             synonym = row["synonym"].lower()
-            if term in terms and synonym not in expanded:
-                expanded.append(synonym)
-            if synonym in normalized and term not in expanded:
-                expanded.append(term)
-        return expanded
+            if term in terms and synonym not in ranked:
+                ranked[synonym] = self._RANK_EXPANSION
+            if synonym in normalized and term not in terms:
+                # Multi-word phrases identify the intent; a single-word synonym
+                # is just another way of saying a word already typed.
+                rank = self._RANK_PHRASE_SYNONYM if " " in synonym else self._RANK_EXPANSION
+                ranked[term] = min(rank, ranked.get(term, rank))
+        return sorted(ranked.items(), key=lambda entry: (entry[1], entry[0]))
 
     async def search(
         self, query: str, limit: int = 20, country: str | None = None
@@ -739,34 +759,46 @@ class SearchRepository:
         terms = await self._expand_terms(query)
         if not terms:
             return {"query": query, "total": 0, "groups": []}
-        match = " OR ".join(f'"{term}"*' for term in terms)
+        match = " OR ".join(f'"{term}"*' for term, _ in terms)
 
         # Products are searched against the live catalogue (not the FTS shadow
         # table, which only the seed populates) so results always reflect what
         # is actually published — and only what is released in the visitor's
         # country.
-        term_clause = " OR ".join(
+        match_sql = (
             "(p.name LIKE ? OR p.slug LIKE ? OR p.short_description LIKE ?"
             " OR f.name LIKE ? OR t.label LIKE ?)"
-            for _ in terms
         )
+        term_clause = " OR ".join(match_sql for _ in terms)
         term_params: list[Any] = []
-        for term in terms:
+        for term, _rank in terms:
             like = f"%{term}%"
             term_params.extend([like, like, like, like, like])
+
+        # Rank by the best tier any of a product's fields matched, so the limit
+        # keeps the most relevant rows rather than the alphabetically first.
+        # A product matching several terms scores its strongest one via MIN.
+        rank_sql = " ".join(f"WHEN {match_sql} THEN {rank}" for _term, rank in terms)
+        rank_params: list[Any] = []
+        for term, _rank in terms:
+            like = f"%{term}%"
+            rank_params.extend([like, like, like, like, like])
+
         geo_sql, geo_params = geo_release_clause(country)
         product_rows = await self._db.fetch_all(
             f"""
-            SELECT DISTINCT p.id, p.name, p.slug
+            SELECT p.id, p.name, p.slug,
+                   MIN(CASE {rank_sql} ELSE {self._RANK_EXPANSION + 1} END) AS relevance
             FROM products p
             LEFT JOIN farms f ON f.id = p.farm_id
             LEFT JOIN product_tags pt ON pt.product_id = p.id
             LEFT JOIN tags t ON t.id = pt.tag_id
             WHERE p.status = 'published' AND ({term_clause}){geo_sql}
-            ORDER BY p.name
+            GROUP BY p.id, p.name, p.slug
+            ORDER BY relevance, p.name
             LIMIT ?
             """,
-            (*term_params, *geo_params, limit),
+            (*rank_params, *term_params, *geo_params, limit),
         )
         content_rows = await self._db.fetch_all(
             "SELECT entity_type, entity_id AS id, title AS name, slug FROM search_content"

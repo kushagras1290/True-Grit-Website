@@ -190,7 +190,9 @@ def test_inventory_adjustment_persists_and_audits(client: TestClient, db: SQLite
     assert response.status_code == 200
     assert response.json()["onHand"] == 130  # seeded 120 + 10
 
-    inventory = client.get("/v1/admin/inventory").json()["items"]
+    # Searched, not read off page one: the inventory list is paginated and the
+    # catalogue is far larger than a single page.
+    inventory = client.get("/v1/admin/inventory", params={"search": "TRG-MNG-1KG"}).json()["items"]
     mango = next(row for row in inventory if row["sku"] == "TRG-MNG-1KG")
     assert mango["onHand"] == 130
     assert "inventory.adjusted" in [
@@ -224,12 +226,16 @@ def test_enabled_product_without_stock_appears_and_accepts_first_adjustment(
         json={"name": "Default", "sku": "INV-START-1", "listMinor": 10000},
     )
     assert created_variant.status_code == 200, created_variant.text
-    assert client.patch(
-        f"/v1/admin/products/{product_id}/status", json={"status": "published"}
-    ).status_code == 200
+    assert (
+        client.patch(
+            f"/v1/admin/products/{product_id}/status", json={"status": "published"}
+        ).status_code
+        == 200
+    )
 
     row = next(
-        item for item in client.get("/v1/admin/inventory").json()["items"]
+        item
+        for item in client.get("/v1/admin/inventory").json()["items"]
         if item["sku"] == "INV-START-1"
     )
     assert row["onHand"] == 0
@@ -550,14 +556,27 @@ def test_owner_can_update_and_delete_empty_farm(client: TestClient, db: SQLiteDa
 
 def test_owner_can_delete_farm_with_active_products(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
+    # Counted from the seed rather than hardcoded: how many products a farm
+    # carries is catalogue data, while "every one of them is archived with the
+    # farm" is the behaviour under test.
+    active_before = db._conn.execute(
+        "SELECT COUNT(*) AS c FROM products WHERE farm_id = 'farm_devika' AND archived_at IS NULL"
+    ).fetchone()["c"]
+    assert active_before > 0, "the fixture must have active products for this to mean anything"
+
     response = client.delete("/v1/admin/farms/farm_devika")
     assert response.status_code == 200
-    assert response.json()["archivedProductCount"] == 1
+    assert response.json()["archivedProductCount"] == active_before
+
     product = db._conn.execute(
         "SELECT status, archived_at FROM products WHERE id = 'prd_alphonso'"
     ).fetchone()
     assert product["status"] == "archived"
     assert product["archived_at"] is not None
+    remaining = db._conn.execute(
+        "SELECT COUNT(*) AS c FROM products WHERE farm_id = 'farm_devika' AND archived_at IS NULL"
+    ).fetchone()["c"]
+    assert remaining == 0
 
 
 def test_farm_owner_cannot_issue_temporary_password(client: TestClient, db: SQLiteDatabase):
