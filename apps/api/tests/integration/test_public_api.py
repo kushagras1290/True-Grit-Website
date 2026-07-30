@@ -64,14 +64,14 @@ def test_public_content_surfaces_read_from_database(client: TestClient):
     assert farm["productSlugs"] == ["organic-alphonso-mangoes"]
 
     recipe_page = client.get("/v1/public/recipes").json()
-    assert recipe_page["total"] == 51
+    assert recipe_page["total"] == 301
     assert recipe_page["limit"] == 12
     assert len(recipe_page["items"]) == 12
     ragi_recipe = client.get("/v1/public/recipes/crisp-sprouted-ragi-dosa").json()
     assert ragi_recipe["ingredients"][0]["productSlug"] == "sprouted-ragi-flour"
 
     article_page = client.get("/v1/public/articles").json()
-    assert article_page["total"] == 51
+    assert article_page["total"] == 201
     assert article_page["limit"] == 10
     assert len(article_page["items"]) == 10
     millet_article = client.get("/v1/public/articles/quiet-revival-of-indian-millets").json()
@@ -81,7 +81,7 @@ def test_public_content_surfaces_read_from_database(client: TestClient):
 def test_public_content_lists_support_pagination(client: TestClient):
     first_recipes = client.get("/v1/public/recipes", params={"limit": 12, "offset": 0}).json()
     second_recipes = client.get("/v1/public/recipes", params={"limit": 12, "offset": 12}).json()
-    assert first_recipes["total"] == second_recipes["total"] == 51
+    assert first_recipes["total"] == second_recipes["total"] == 301
     assert first_recipes["offset"] == 0
     assert second_recipes["offset"] == 12
     assert {item["id"] for item in first_recipes["items"]}.isdisjoint(
@@ -89,8 +89,8 @@ def test_public_content_lists_support_pagination(client: TestClient):
     )
 
     first_articles = client.get("/v1/public/articles", params={"limit": 10, "offset": 0}).json()
-    last_articles = client.get("/v1/public/articles", params={"limit": 10, "offset": 50}).json()
-    assert first_articles["total"] == last_articles["total"] == 51
+    last_articles = client.get("/v1/public/articles", params={"limit": 10, "offset": 200}).json()
+    assert first_articles["total"] == last_articles["total"] == 201
     assert len(first_articles["items"]) == 10
     assert len(last_articles["items"]) == 1
 
@@ -100,11 +100,11 @@ def test_community_discussions_return_total_for_pagination(client: TestClient):
         "/v1/public/community/discussions", params={"limit": 12, "offset": 0}
     ).json()
     last_page = client.get(
-        "/v1/public/community/discussions", params={"limit": 12, "offset": 96}
+        "/v1/public/community/discussions", params={"limit": 12, "offset": 192}
     ).json()
-    assert first_page["total"] == last_page["total"] == 100
+    assert first_page["total"] == last_page["total"] == 200
     assert len(first_page["items"]) == 12
-    assert len(last_page["items"]) == 4
+    assert len(last_page["items"]) == 8
 
 
 def test_public_pages_and_site_documents_have_generated_defaults(client: TestClient):

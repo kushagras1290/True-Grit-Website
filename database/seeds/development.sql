@@ -913,3 +913,549 @@ JOIN member_ids members
   );
 
 DROP TABLE seed_discussion_topics;
+
+-- Large editorial expansion requested for the public library. The rows below
+-- use the same CMS/version/community tables as admin-created content. Dates and
+-- community activity are deliberately distributed rather than clustered on a
+-- single import day.
+CREATE TEMP TABLE expansion_recipe_ingredients (
+  n INTEGER PRIMARY KEY,
+  family TEXT NOT NULL,
+  ingredient TEXT NOT NULL,
+  slug TEXT NOT NULL,
+  partner TEXT NOT NULL,
+  note TEXT NOT NULL
+);
+
+INSERT INTO expansion_recipe_ingredients VALUES
+  (1,'vegetable','cauliflower','cauliflower','coriander','Roast until the small florets are deeply browned'),
+  (2,'vegetable','aubergine','aubergine','tamarind','Salt briefly, then cook until the centre is silky'),
+  (3,'vegetable','potato','potato','fresh fenugreek','Keep the pieces even so they colour together'),
+  (4,'vegetable','sweet potato','sweet-potato','lime','Balance its sweetness with heat and acidity'),
+  (5,'vegetable','pumpkin','pumpkin','coconut','Choose a dense pumpkin that will not turn watery'),
+  (6,'vegetable','bottle gourd','bottle-gourd','roasted cumin','Squeeze grated gourd only when the recipe needs a dry mixture'),
+  (7,'vegetable','ridge gourd','ridge-gourd','chana dal','Peel only the tough ridges and keep the tender skin'),
+  (8,'vegetable','okra','okra','black pepper','Dry every pod before it reaches the pan'),
+  (9,'vegetable','green beans','green-beans','sesame','Cook just until tender so the beans keep their snap'),
+  (10,'vegetable','beetroot','beetroot','fresh coconut','Cut small and evenly to shorten the cooking time'),
+  (11,'pulse','chickpeas','chickpeas','spinach','Let the beans simmer in the masala long enough to take on flavour'),
+  (12,'pulse','kidney beans','kidney-beans','smoked chilli','Use fully tender beans and keep some cooking liquor'),
+  (13,'pulse','black chickpeas','black-chickpeas','raw mango','Soak overnight for an even, creamy centre'),
+  (14,'pulse','whole green moong','green-moong','ginger','Cook until tender while keeping the skins intact'),
+  (15,'pulse','red lentils','red-lentils','caramelised garlic','Watch the pot because split lentils soften quickly'),
+  (16,'pulse','toor dal','toor-dal','tomato','Whisk only after the lentils are completely soft'),
+  (17,'pulse','chana dal','chana-dal','dill','Soak briefly so the grains cook through without collapsing'),
+  (18,'pulse','cowpeas','cowpeas','mustard seeds','Keep a little bite for a more satisfying finished dish'),
+  (19,'pulse','white peas','white-peas','mint','Soak well and skim the cooking water for a clean broth'),
+  (20,'pulse','horse gram','horse-gram','pepper','Give this firm pulse a long soak and patient simmer'),
+  (21,'grain','ragi','ragi','banana','Rest ragi batter so the flour hydrates fully'),
+  (22,'grain','jowar','jowar','spring onion','Use hot water when shaping jowar dough'),
+  (23,'grain','bajra','bajra','garlic','Serve bajra warm while its nutty aroma is strongest'),
+  (24,'grain','foxtail millet','foxtail-millet','lemon','Cool cooked millet before seasoning for separate grains'),
+  (25,'grain','little millet','little-millet','curd','Cook a little softer when the grain will be mixed with yoghurt'),
+  (26,'grain','red rice','red-rice','peanuts','A long soak helps the bran turn tender'),
+  (27,'grain','brown rice','brown-rice','mushrooms','Cook by absorption and rest covered before fluffing'),
+  (28,'grain','rolled oats','rolled-oats','garden vegetables','Toast the oats first for a less sticky finish'),
+  (29,'grain','thick poha','thick-poha','lemon','Rinse briefly and allow the flakes to soften off the heat'),
+  (30,'grain','amaranth grain','amaranth-grain','dates','Toast gently to bring out its warm, earthy aroma'),
+  (31,'greens','spinach','spinach','corn','Cook the leaves briefly to preserve their colour'),
+  (32,'greens','mustard greens','mustard-greens','white beans','Longer cooking mellows the leaves without flattening their character'),
+  (33,'greens','amaranth leaves','amaranth-leaves','garlic','Wash around the stems carefully where soil collects'),
+  (34,'greens','fresh fenugreek','fresh-fenugreek','potato','Use the tender stems and balance the pleasant bitterness'),
+  (35,'greens','radish leaves','radish-leaves','moong dal','Chop finely to soften their prickly raw texture'),
+  (36,'greens','beet greens','beet-greens','sesame','Start the red stems several minutes before the leaves'),
+  (37,'greens','dill leaves','dill-leaves','chana dal','Add dill late enough to keep its fragrance'),
+  (38,'greens','colocasia leaves','colocasia-leaves','tamarind','Cook thoroughly and include enough souring ingredient'),
+  (39,'greens','coriander','coriander','pumpkin seeds','Use the stems as well as the leaves for deeper flavour'),
+  (40,'greens','curry leaves','curry-leaves','coconut','Bloom dry leaves in hot fat without blackening them'),
+  (41,'fruit','raw mango','raw-mango','mustard','Taste the fruit first and adjust souring accordingly'),
+  (42,'fruit','ripe mango','ripe-mango','pistachio','Keep ripe fruit chilled and add it at the last moment'),
+  (43,'fruit','guava','guava','red chilli','Use firm guava so the wedges hold their shape'),
+  (44,'fruit','banana','banana','cardamom','Very ripe bananas give the softest texture'),
+  (45,'fruit','pineapple','pineapple','black pepper','A hot pan concentrates the fruit without making it jammy'),
+  (46,'fruit','papaya','papaya','lime','Choose just-ripe fruit for savoury preparations'),
+  (47,'fruit','sweet lime','sweet-lime','ginger','Add the juice away from direct heat to keep it bright'),
+  (48,'fruit','pomegranate','pomegranate','mint','Fold the seeds in last so they remain crisp'),
+  (49,'fruit','apple','apple','fennel','Leave the peel on when it is clean and tender'),
+  (50,'fruit','pear','pear','walnuts','Use fruit that is fragrant but still firm');
+
+CREATE TEMP TABLE expansion_recipe_styles (
+  style INTEGER PRIMARY KEY,
+  label TEXT NOT NULL
+);
+
+INSERT INTO expansion_recipe_styles VALUES
+  (1,'weeknight'),(2,'roasted'),(3,'breakfast'),(4,'one-pot'),(5,'street-style');
+
+INSERT INTO recipes (
+  id, internal_name, title, slug, excerpt, prep_minutes, cook_minutes, servings,
+  dietary_tags_json, status, published_version_id, published_at, seo_title,
+  seo_description, created_at, created_by, updated_at, updated_by
+)
+SELECT
+  printf('rcp_expansion_%03d', ((ingredients.n - 1) * 5) + styles.style),
+  ingredients.ingredient || ' ' || styles.label || ' recipe',
+  CASE styles.style
+    WHEN 1 THEN 'Weeknight ' || ingredients.ingredient || ' with ' || ingredients.partner
+    WHEN 2 THEN 'Roasted ' || ingredients.ingredient || ' and ' || ingredients.partner
+    WHEN 3 THEN ingredients.ingredient || ' breakfast bowl with ' || ingredients.partner
+    WHEN 4 THEN 'One-pot ' || ingredients.ingredient || ' and ' || ingredients.partner
+    ELSE 'Street-style ' || ingredients.ingredient || ' with ' || ingredients.partner
+  END,
+  styles.label || '-' || ingredients.slug || '-' || replace(ingredients.partner, ' ', '-'),
+  CASE styles.style
+    WHEN 1 THEN 'A practical ' || ingredients.ingredient || ' supper with ' || ingredients.partner || ' and everyday spices.'
+    WHEN 2 THEN ingredients.ingredient || ' cooked until deeply flavoured and finished with ' || ingredients.partner || '.'
+    WHEN 3 THEN 'A filling morning bowl of ' || ingredients.ingredient || ', ' || ingredients.partner || ' and toasted spices.'
+    WHEN 4 THEN ingredients.ingredient || ' and ' || ingredients.partner || ' cooked together for a low-fuss family meal.'
+    ELSE 'A lively ' || ingredients.ingredient || ' plate with ' || ingredients.partner || ', herbs and a sharp finish.'
+  END,
+  8 + ((ingredients.n * 3 + styles.style * 5) % 23),
+  10 + ((ingredients.n * 7 + styles.style * 4) % 36),
+  2 + ((ingredients.n + styles.style) % 5),
+  CASE
+    WHEN ingredients.family IN ('vegetable','pulse','greens') THEN '["plant-based","gluten-free"]'
+    WHEN ingredients.family = 'fruit' THEN '["vegetarian","gluten-free"]'
+    ELSE '["vegetarian"]'
+  END,
+  'published',
+  printf('rcv_expansion_%03d_1', ((ingredients.n - 1) * 5) + styles.style),
+  datetime('2025-08-01T08:00:00Z', printf('+%d days', ((ingredients.n * 37 + styles.style * 19) % 360))),
+  CASE styles.style
+    WHEN 1 THEN 'Weeknight ' || ingredients.ingredient || ' with ' || ingredients.partner
+    WHEN 2 THEN 'Roasted ' || ingredients.ingredient || ' and ' || ingredients.partner
+    WHEN 3 THEN ingredients.ingredient || ' breakfast bowl with ' || ingredients.partner
+    WHEN 4 THEN 'One-pot ' || ingredients.ingredient || ' and ' || ingredients.partner
+    ELSE 'Street-style ' || ingredients.ingredient || ' with ' || ingredients.partner
+  END || ' recipe',
+  'A tested recipe built around ' || ingredients.ingredient || ' and ' || ingredients.partner || '.',
+  '2025-07-20T08:00:00Z', 'usr_editor',
+  datetime('2025-08-01T08:00:00Z', printf('+%d days', ((ingredients.n * 37 + styles.style * 19) % 360))),
+  'usr_editor'
+FROM expansion_recipe_ingredients ingredients
+CROSS JOIN expansion_recipe_styles styles;
+
+INSERT INTO recipe_versions (
+  id, recipe_id, version_number, content_json, workflow_state, created_at,
+  created_by, approved_at, approved_by, published_at
+)
+SELECT
+  printf('rcv_expansion_%03d_1', ((ingredients.n - 1) * 5) + styles.style),
+  printf('rcp_expansion_%03d', ((ingredients.n - 1) * 5) + styles.style),
+  1,
+  json_object(
+    'blocks', json_array(
+      json_object(
+        'id', printf('blk_expansion_recipe_%03d_intro', ((ingredients.n - 1) * 5) + styles.style),
+        'type', 'rich_text', 'version', 1, 'enabled', json('true'),
+        'props', json_object('paragraphs', json_array(
+          ingredients.note || '. This version pairs it with ' || ingredients.partner || ' and keeps the seasoning measured.',
+          CASE styles.style
+            WHEN 1 THEN 'Designed for an ordinary evening, it uses one wide pan and ingredients that are easy to keep at home.'
+            WHEN 2 THEN 'High heat builds browned edges while the centre stays tender, so give the pieces room on the tray.'
+            WHEN 3 THEN 'The components can be prepared ahead, but assemble the bowl shortly before eating for the best texture.'
+            WHEN 4 THEN 'Add ingredients in the order they soften, then rest the covered pot before serving.'
+            ELSE 'Keep the final herbs, crunch and souring ingredient separate until the plate reaches the table.'
+          END
+        ))
+      ),
+      json_object(
+        'id', printf('blk_expansion_recipe_%03d_products', ((ingredients.n - 1) * 5) + styles.style),
+        'type', 'product_collection', 'version', 1, 'enabled', json('true'),
+        'props', json_object(
+          'heading', 'Shop ingredients for this recipe', 'source', 'manual',
+          'productSlugs', CASE (ingredients.n % 5)
+            WHEN 0 THEN json_array('organic-baby-spinach','wood-pressed-groundnut-oil')
+            WHEN 1 THEN json_array('sprouted-ragi-flour','wood-pressed-groundnut-oil')
+            WHEN 2 THEN json_array('himalayan-red-rajma','organic-baby-spinach')
+            WHEN 3 THEN json_array('organic-alphonso-mangoes','wood-pressed-groundnut-oil')
+            ELSE json_array('organic-baby-spinach','himalayan-red-rajma')
+          END,
+          'limit', 4
+        )
+      )
+    ),
+    'steps', json_array(
+      'Prepare the ' || ingredients.ingredient || ' and measure the ' || ingredients.partner || ' before heating the pan.',
+      CASE styles.style
+        WHEN 2 THEN 'Heat the oven and spread everything in a single layer.'
+        WHEN 3 THEN 'Toast the dry spices and prepare the base until fragrant.'
+        ELSE 'Warm a wide pan and bloom the whole spices in a little oil.'
+      END,
+      'Add the ' || ingredients.ingredient || ' and cook patiently, following this cue: ' || lower(ingredients.note) || '.',
+      'Fold in the ' || ingredients.partner || ', season with salt and adjust the consistency with a splash of water if needed.',
+      'Rest for five minutes, taste again and finish with fresh herbs or lime before serving.'
+    )
+  ),
+  'published', '2025-07-20T08:00:00Z', 'usr_editor',
+  datetime('2025-08-01T07:30:00Z', printf('+%d days', ((ingredients.n * 37 + styles.style * 19) % 360))),
+  'usr_admin',
+  datetime('2025-08-01T08:00:00Z', printf('+%d days', ((ingredients.n * 37 + styles.style * 19) % 360)))
+FROM expansion_recipe_ingredients ingredients
+CROSS JOIN expansion_recipe_styles styles;
+
+INSERT INTO recipe_ingredients (id, recipe_id, label, quantity_text, product_id, sort_order)
+SELECT
+  printf('ing_expansion_%03d_1', ((ingredients.n - 1) * 5) + styles.style),
+  printf('rcp_expansion_%03d', ((ingredients.n - 1) * 5) + styles.style),
+  ingredients.ingredient, CASE ingredients.family WHEN 'grain' THEN '1 1/2 cups' WHEN 'pulse' THEN '2 cups cooked' ELSE '500 g' END,
+  NULL, 1
+FROM expansion_recipe_ingredients ingredients CROSS JOIN expansion_recipe_styles styles
+UNION ALL
+SELECT
+  printf('ing_expansion_%03d_2', ((ingredients.n - 1) * 5) + styles.style),
+  printf('rcp_expansion_%03d', ((ingredients.n - 1) * 5) + styles.style),
+  ingredients.partner, 'to taste', NULL, 2
+FROM expansion_recipe_ingredients ingredients CROSS JOIN expansion_recipe_styles styles
+UNION ALL
+SELECT
+  printf('ing_expansion_%03d_3', ((ingredients.n - 1) * 5) + styles.style),
+  printf('rcp_expansion_%03d', ((ingredients.n - 1) * 5) + styles.style),
+  'Cooking oil and everyday spices', 'as needed', NULL, 3
+FROM expansion_recipe_ingredients ingredients CROSS JOIN expansion_recipe_styles styles;
+
+INSERT INTO search_content (entity_type, entity_id, title, slug, excerpt, keywords)
+SELECT
+  'recipe',
+  printf('rcp_expansion_%03d', ((ingredients.n - 1) * 5) + styles.style),
+  CASE styles.style
+    WHEN 1 THEN 'Weeknight ' || ingredients.ingredient || ' with ' || ingredients.partner
+    WHEN 2 THEN 'Roasted ' || ingredients.ingredient || ' and ' || ingredients.partner
+    WHEN 3 THEN ingredients.ingredient || ' breakfast bowl with ' || ingredients.partner
+    WHEN 4 THEN 'One-pot ' || ingredients.ingredient || ' and ' || ingredients.partner
+    ELSE 'Street-style ' || ingredients.ingredient || ' with ' || ingredients.partner
+  END,
+  styles.label || '-' || ingredients.slug || '-' || replace(ingredients.partner, ' ', '-'),
+  'A practical recipe featuring ' || ingredients.ingredient || ' and ' || ingredients.partner || '.',
+  ingredients.ingredient || ' ' || ingredients.partner || ' ' || styles.label
+FROM expansion_recipe_ingredients ingredients
+CROSS JOIN expansion_recipe_styles styles;
+
+DROP TABLE expansion_recipe_styles;
+DROP TABLE expansion_recipe_ingredients;
+
+CREATE TEMP TABLE expansion_blog_topics (
+  n INTEGER PRIMARY KEY,
+  subject TEXT NOT NULL,
+  slug TEXT NOT NULL,
+  observation TEXT NOT NULL,
+  practice TEXT NOT NULL,
+  takeaway TEXT NOT NULL
+);
+
+INSERT INTO expansion_blog_topics VALUES
+  (1,'morning harvests','morning-harvests','Tender crops hold more moisture before the day becomes hot.','Growers plan cutting, shade and packing as one continuous job.','Freshness depends on handling after harvest as much as the hour of picking.'),
+  (2,'seed selection','seed-selection','Saving seed begins by noticing healthy plants long before harvest.','Farmers mark plants with the flavour, vigour and timing they want to keep.','A seed line survives through repeated observation, not nostalgia alone.'),
+  (3,'monsoon sowing','monsoon-sowing','The first rain is not always the right rain for sowing.','Farmers check soil depth and the forecast before committing valuable seed.','Timing is a practical judgement shaped by local memory and current weather.'),
+  (4,'soil organic matter','soil-organic-matter','Organic matter affects water, nutrients and the way soil holds together.','Compost, roots and retained crop residue rebuild it gradually.','The useful change is steady resilience rather than an overnight transformation.'),
+  (5,'farm ponds','farm-ponds','A well-placed pond slows water that would otherwise leave the farm.','Design must account for soil, overflow, safety and downstream users.','Water storage works best as part of a wider landscape plan.'),
+  (6,'mixed cropping','mixed-cropping','Different crops can share light, rooting depth and risk.','Useful mixtures are chosen for compatible timing and manageable harvest work.','Diversity in a field should solve a real agronomic or livelihood problem.'),
+  (7,'natural pest control','natural-pest-control','Predatory insects need habitat before a pest outbreak begins.','Flowering borders and careful spraying decisions protect useful species.','Ecological pest control is patient management, not the absence of intervention.'),
+  (8,'seasonal labour','seasonal-labour','Harvest quality depends on people arriving at the right moment.','Fair planning includes safe hours, drinking water and predictable payment.','The human work behind fresh food belongs in every conversation about quality.'),
+  (9,'field mulching','field-mulching','A surface cover can reduce heat and soften the impact of rain.','Farmers choose straw, leaves or living cover according to local risks.','Mulch is most useful when its source and side effects are considered.'),
+  (10,'compost maturity','compost-maturity','Finished compost smells earthy and no longer heats dramatically.','Growers watch moisture, air and the breakdown of the original materials.','Applying immature material can move a problem from the pile into the field.'),
+  (11,'tomato ripeness','tomato-ripeness','Aroma develops while fruit remains attached to a healthy vine.','Shorter supply routes allow farmers to pick closer to eating ripeness.','Colour alone cannot tell the full story of flavour.'),
+  (12,'leafy green storage','leafy-green-storage','Leaves lose moisture quickly and decay when held wet.','Dry cloth, loose packing and prompt cooling create a useful balance.','Good storage begins by removing damaged leaves before they affect the bunch.'),
+  (13,'pulse soaking','pulse-soaking','Water reaches the centre of older, denser pulses slowly.','A planned soak shortens cooking and often improves texture.','The age and variety of a pulse matter as much as the clock.'),
+  (14,'whole grain milling','whole-grain-milling','Natural oils and aromas begin changing as soon as grain is milled.','Small batches and cool airtight storage protect fresh flour.','Buy at a pace that matches how quickly the kitchen actually cooks.'),
+  (15,'cold pressed oils','cold-pressed-oils','The press cannot improve stale or poorly dried seed.','Millers protect raw seed from moisture, heat and contamination.','Fresh oil starts with good agriculture and ends with careful storage.'),
+  (16,'market grading','market-grading','Sorting separates damage from harmless differences in shape and size.','Clear grades help match produce to fresh sale, processing or quick use.','Good grading should reduce waste without pretending every crop is identical.'),
+  (17,'reusable crates','reusable-crates','Rigid crates prevent crushing better than overfilled sacks.','Cleaning, return routes and ownership must be organised for reuse to work.','Packaging is a system, not simply a material choice.'),
+  (18,'cooling fresh produce','cooling-fresh-produce','Harvested vegetables continue to respire and generate heat.','Shade and crop-appropriate cooling slow water loss.','Temperature decisions must suit the crop rather than follow one rule.'),
+  (19,'farm traceability','farm-traceability','A useful lot record connects food to place, date and handling.','Labels remain meaningful only when each transfer preserves the link.','Traceability should help answer practical questions, not decorate a package.'),
+  (20,'organic inspections','organic-inspections','Certification reviews records, fields, inputs and handling systems.','Farmers maintain evidence throughout the year, not only on inspection day.','A certificate is one part of trust and should be readable by customers.'),
+  (21,'rain-fed millets','rain-fed-millets','Millets tolerate conditions that make many grains unreliable.','Variety choice, sowing date and soil cover still decide the harvest.','Resilient crops reduce risk but do not remove it.'),
+  (22,'legumes in rotation','legumes-in-rotation','Legume roots work with bacteria that can add nitrogen to the system.','Farmers place them where the following crop can benefit.','Rotation value includes soil cover, income and pest interruption.'),
+  (23,'hedgerows','hedgerows','Living boundaries slow wind and provide food for useful insects.','Mixed native species offer more than a single uniform hedge.','Productive land can make room for habitat without becoming unmanaged.'),
+  (24,'pollinator seasons','pollinator-seasons','Bees need food before and after the main crop flowers.','Overlapping blooms and nesting places support resident populations.','Pollination depends on year-round habitat, not a rented moment.'),
+  (25,'hand weeding','hand-weeding','Young weeds are easier to remove before roots and seed develop.','Timing work after light moisture reduces effort and soil disturbance.','Avoiding herbicide replaces a product with skilled, repeated labour.'),
+  (26,'cover crops','cover-crops','Living roots feed soil organisms between cash crops.','Species are chosen for rainfall, duration and the next planting window.','A cover crop must fit the farm calendar to deliver its promise.'),
+  (27,'reduced tillage','reduced-tillage','Every pass with machinery changes pores and soil aggregates.','Growers reduce disturbance while managing weeds and crop residue.','The right level of tillage depends on soil, climate and available tools.'),
+  (28,'agroforestry','agroforestry','Trees can moderate heat, hold soil and diversify farm income.','Spacing and pruning prevent harmful competition with crops.','A useful tree system is designed for decades as well as seasons.'),
+  (29,'shade-grown coffee','shade-grown-coffee','Canopy changes temperature, ripening speed and wildlife habitat.','Farmers adjust shade to balance quality with disease pressure.','The words shade grown describe a spectrum that deserves specifics.'),
+  (30,'orchard floor care','orchard-floor-care','Bare orchard soil heats quickly and loses structure under hard rain.','Mown cover, mulch and managed grazing each offer different options.','The ground between trees is part of the crop system.'),
+  (31,'mango flowering','mango-flowering','Warmth, humidity and wind affect flowers before fruit is visible.','Orchardists monitor bloom health and avoid unnecessary disturbance.','A mango season begins months before the first crate.'),
+  (32,'banana circles','banana-circles','Bananas use steady moisture and abundant organic material.','Circular planting basins can collect biomass and household greywater safely.','A good design matches water supply, sanitation and available space.'),
+  (33,'coconut diversity','coconut-diversity','Tall and dwarf coconut lines differ in timing, stature and use.','Farmers choose material for local wind, water and market needs.','One familiar crop contains more diversity than a shop shelf suggests.'),
+  (34,'kitchen herb gardens','kitchen-herb-gardens','Frequently cut herbs earn their place close to the kitchen.','Regular pinching, drainage and morning light keep plants productive.','A small useful garden can matter more than a large neglected one.'),
+  (35,'balcony composting','balcony-composting','Small bins turn sour when wet scraps overwhelm dry material.','Chopped browns, airflow and modest portions restore balance.','Successful composting is mostly observation of moisture and smell.'),
+  (36,'saving cooking water','saving-cooking-water','Unsalted vegetable and pulse water can carry flavour and starch.','Cooks cool and reuse it in soups, doughs or the next pot of dal.','Reuse is helpful when food safety and excess salt are considered.'),
+  (37,'root-to-leaf cooking','root-to-leaf-cooking','Many tender stems and leaves are ingredients rather than waste.','Separate parts by cooking time and taste before using unfamiliar greens.','Whole-plant cooking begins with judgement, not a rule to eat everything.'),
+  (38,'seasonal meal planning','seasonal-meal-planning','Fragile produce should be scheduled before sturdy roots and pumpkins.','A weekly sort makes the order of cooking visible.','Planning around perishability saves more food than collecting recipes.'),
+  (39,'pantry turnover','pantry-turnover','Large stores of flour, oil and spices lose quality slowly.','Smaller containers and dated purchases reveal what the kitchen uses.','A useful pantry is active, not merely full.'),
+  (40,'safe grain cooling','safe-grain-cooling','Deep pots of cooked grain cool slowly at the centre.','Shallow containers release heat before prompt refrigeration.','Good leftovers begin with safe cooling, not reheating alone.'),
+  (41,'fermented batters','fermented-batters','Warmth, grain ratio and grinding texture shape fermentation.','Cooks watch aroma and rise instead of trusting the clock alone.','A living batter needs clean tools and room to expand.'),
+  (42,'pickling seasons','pickling-seasons','Preserving starts when produce is abundant, firm and full of flavour.','Salt, acidity, dryness and clean jars each control a different risk.','A reliable pickle method respects both tradition and food safety.'),
+  (43,'sun drying','sun-drying','Drying succeeds when moisture leaves faster than spoilage can begin.','Thin even pieces, clean screens and protection from night humidity matter.','Sun is only one part of a controlled drying process.'),
+  (44,'jaggery making','jaggery-making','Cane juice changes flavour as it is clarified and concentrated.','Experienced makers judge foam, heat and finishing point by sight and feel.','Colour varies naturally and should not replace questions about process.'),
+  (45,'small dairy herds','small-dairy-herds','Milk quality begins with animal health, feed and clean handling.','Cooling and traceable collection protect work done at the farm.','Scale alone does not determine care or quality.'),
+  (46,'farm-gate pricing','farm-gate-pricing','The price at the farm must cover more than visible harvest work.','Seed, failed crops, certification, packing and delayed payment all matter.','Fair pricing starts by recognising risk across the season.'),
+  (47,'short supply chains','short-supply-chains','Fewer kilometres do not guarantee careful handling.','Clear orders, reusable crates and reliable collection keep local trade fresh.','Distance and logistics must be judged together.'),
+  (48,'community seed banks','community-seed-banks','Shared seed collections protect access to locally adapted varieties.','Records, regeneration plots and agreed borrowing rules keep seed viable.','A seed bank succeeds when seed continues to grow in fields.'),
+  (49,'farm weather records','farm-weather-records','Local rainfall and temperature can differ from a distant station.','Simple daily notes become useful when kept consistently.','Farm decisions improve when memory is supported by a record.'),
+  (50,'eating with the seasons','eating-with-the-seasons','Availability changes with weather, place and the limits of a harvest.','Cooks preserve some abundance and allow other ingredients to disappear.','Seasonality is a practice of attention rather than a purity test.');
+
+CREATE TEMP TABLE expansion_blog_angles (
+  angle INTEGER PRIMARY KEY,
+  prefix TEXT NOT NULL,
+  suffix TEXT NOT NULL
+);
+
+INSERT INTO expansion_blog_angles VALUES
+  (1,'A closer look at ',''),
+  (2,'What cooks should know about ',''),
+  (3,'Notes from the field: ','');
+
+INSERT INTO articles (
+  id, internal_name, title, slug, excerpt, author_user_id, hero_media_id,
+  reading_minutes, status, published_version_id, published_at, seo_title,
+  seo_description, created_at, created_by, updated_at, updated_by
+)
+SELECT
+  printf('art_expansion_%03d', ((topics.n - 1) * 3) + angles.angle),
+  topics.subject || ' article ' || angles.angle,
+  angles.prefix || topics.subject || angles.suffix,
+  CASE angles.angle WHEN 1 THEN 'closer-look-' WHEN 2 THEN 'cooks-guide-' ELSE 'field-notes-' END || topics.slug,
+  topics.observation,
+  'usr_editor', NULL, 4 + ((topics.n + angles.angle) % 5), 'published',
+  printf('arv_expansion_%03d_1', ((topics.n - 1) * 3) + angles.angle),
+  datetime('2025-08-01T09:00:00Z', printf('+%d days', ((topics.n * 43 + angles.angle * 29) % 360))),
+  angles.prefix || topics.subject || angles.suffix,
+  topics.observation,
+  '2025-07-20T09:00:00Z', 'usr_editor',
+  datetime('2025-08-01T09:00:00Z', printf('+%d days', ((topics.n * 43 + angles.angle * 29) % 360))),
+  'usr_editor'
+FROM expansion_blog_topics topics CROSS JOIN expansion_blog_angles angles;
+
+INSERT INTO article_versions (
+  id, article_id, version_number, content_json, workflow_state, created_at,
+  created_by, approved_at, approved_by, published_at
+)
+SELECT
+  printf('arv_expansion_%03d_1', ((topics.n - 1) * 3) + angles.angle),
+  printf('art_expansion_%03d', ((topics.n - 1) * 3) + angles.angle),
+  1,
+  json_object(
+    'blocks', json_array(
+      json_object(
+        'id', printf('blk_expansion_article_%03d_body', ((topics.n - 1) * 3) + angles.angle),
+        'type', 'rich_text', 'version', 1, 'enabled', json('true'),
+        'props', json_object('paragraphs',
+          CASE angles.angle
+            WHEN 1 THEN json_array(
+              topics.observation,
+              topics.practice || ' The details vary with farm size, climate and the people doing the work.',
+              topics.takeaway || ' Looking closely makes the ordinary parts of food production easier to value.'
+            )
+            WHEN 2 THEN json_array(
+              topics.observation || ' That difference often reaches the kitchen in flavour, texture or storage life.',
+              topics.takeaway || ' For a cook, the practical response is to buy thoughtfully, store carefully and taste before following a fixed time.',
+              topics.practice || ' Asking how an ingredient was grown or handled can be more useful than relying on a broad label.'
+            )
+            ELSE json_array(
+              topics.practice || ' On a working farm, the decision sits alongside weather, labour and the next crop.',
+              topics.observation || ' It is the kind of change that becomes visible through repeated seasons rather than one photograph.',
+              topics.takeaway || ' The field offers fewer simple answers than a slogan, but far more useful ones.'
+            )
+          END
+        )
+      ),
+      json_object(
+        'id', printf('blk_expansion_article_%03d_products', ((topics.n - 1) * 3) + angles.angle),
+        'type', 'product_collection', 'version', 1, 'enabled', json('true'),
+        'props', json_object(
+          'heading', 'Products connected to this story', 'source', 'manual',
+          'productSlugs', CASE (topics.n % 5)
+            WHEN 0 THEN json_array('organic-baby-spinach','sprouted-ragi-flour')
+            WHEN 1 THEN json_array('organic-baby-spinach','wood-pressed-groundnut-oil')
+            WHEN 2 THEN json_array('sprouted-ragi-flour','himalayan-red-rajma')
+            WHEN 3 THEN json_array('organic-alphonso-mangoes','wood-pressed-groundnut-oil')
+            ELSE json_array('himalayan-red-rajma','organic-baby-spinach')
+          END,
+          'limit', 4
+        )
+      )
+    )
+  ),
+  'published', '2025-07-20T09:00:00Z', 'usr_editor',
+  datetime('2025-08-01T08:30:00Z', printf('+%d days', ((topics.n * 43 + angles.angle * 29) % 360))),
+  'usr_admin',
+  datetime('2025-08-01T09:00:00Z', printf('+%d days', ((topics.n * 43 + angles.angle * 29) % 360)))
+FROM expansion_blog_topics topics CROSS JOIN expansion_blog_angles angles;
+
+INSERT INTO search_content (entity_type, entity_id, title, slug, excerpt, keywords)
+SELECT
+  'article',
+  printf('art_expansion_%03d', ((topics.n - 1) * 3) + angles.angle),
+  angles.prefix || topics.subject || angles.suffix,
+  CASE angles.angle WHEN 1 THEN 'closer-look-' WHEN 2 THEN 'cooks-guide-' ELSE 'field-notes-' END || topics.slug,
+  topics.observation,
+  topics.subject || ' farming food season'
+FROM expansion_blog_topics topics CROSS JOIN expansion_blog_angles angles;
+
+DROP TABLE expansion_blog_angles;
+
+-- The 50 editorial subjects create two genuinely different community prompts
+-- each: one practical question and one experience-sharing thread.
+WITH
+  member_ids(position, user_id) AS (
+    VALUES
+      (0,'usr_community_anita'),(1,'usr_community_farhan'),
+      (2,'usr_community_leela'),(3,'usr_community_nikhil'),
+      (4,'usr_community_jo'),(5,'usr_community_maya'),
+      (6,'usr_community_aman'),(7,'usr_community_saira')
+  ),
+  thread_kinds(kind, title_prefix, body_prefix) AS (
+    VALUES
+      (1,'How are you handling ','I would like practical advice on '),
+      (2,'What have you noticed about ','I am curious about first-hand experiences with ')
+  )
+INSERT INTO discussions (
+  id, author_user_id, title, body, status, comment_count, last_activity_at,
+  created_at, updated_at
+)
+SELECT
+  printf('dsc_expansion_%03d', ((topics.n - 1) * 2) + kinds.kind),
+  members.user_id,
+  kinds.title_prefix || topics.subject || '?',
+  kinds.body_prefix || topics.subject || '. ' ||
+    CASE kinds.kind
+      WHEN 1 THEN topics.practice || ' What has worked reliably for you, and what would you change next time?'
+      ELSE topics.observation || ' I would especially value details about season, place and what you observed over time.'
+    END,
+  'visible',
+  20 + ((((topics.n - 1) * 2) + kinds.kind) * 7 % 11),
+  datetime('2026-01-01T12:00:00Z', printf('+%d days', ((((topics.n - 1) * 2) + kinds.kind) * 31) % 205)),
+  datetime('2025-10-01T09:00:00Z', printf('+%d days', ((((topics.n - 1) * 2) + kinds.kind) * 17) % 250)),
+  datetime('2026-01-01T12:00:00Z', printf('+%d days', ((((topics.n - 1) * 2) + kinds.kind) * 31) % 205))
+FROM expansion_blog_topics topics
+CROSS JOIN thread_kinds kinds
+JOIN member_ids members ON members.position = ((((topics.n - 1) * 2) + kinds.kind) % 8);
+
+WITH RECURSIVE
+  comment_numbers(comment_number) AS (
+    SELECT 1
+    UNION ALL
+    SELECT comment_number + 1 FROM comment_numbers WHERE comment_number < 30
+  ),
+  member_ids(position, user_id) AS (
+    VALUES
+      (0,'usr_community_anita'),(1,'usr_community_farhan'),
+      (2,'usr_community_leela'),(3,'usr_community_nikhil'),
+      (4,'usr_community_jo'),(5,'usr_community_maya'),
+      (6,'usr_community_aman'),(7,'usr_community_saira')
+  )
+INSERT INTO discussion_comments (
+  id, discussion_id, author_user_id, body, status, created_at, updated_at
+)
+SELECT
+  printf('dcm_expansion_%03d_%02d', thread_number, numbers.comment_number),
+  printf('dsc_expansion_%03d', thread_number),
+  members.user_id,
+  CASE (numbers.comment_number % 12)
+    WHEN 0 THEN 'Coming back with an update: the smaller batch was easier to manage and the result held up well after a few days.'
+    WHEN 1 THEN 'We tried this last season. The timing mattered more than the exact quantity, especially once the weather turned humid.'
+    WHEN 2 THEN 'My family handles it a little differently, but the principle is the same: start gently and adjust after tasting.'
+    WHEN 3 THEN 'This is useful context. I would keep one variable the same and change only the step you are unsure about.'
+    WHEN 4 THEN 'The local variety behaved differently for me, so it may help to note where yours came from and how mature it was.'
+    WHEN 5 THEN 'A wider vessel and a little patience made the biggest difference in my kitchen. Crowding caused most of my earlier trouble.'
+    WHEN 6 THEN 'I appreciate the detail about storage. That is often where a good ingredient loses quality before we even begin cooking.'
+    WHEN 7 THEN 'Would love to hear a follow-up after the next attempt. Results over two or three batches are much easier to trust.'
+    WHEN 8 THEN 'We use the tender stems and leaves separately because their cooking times are not the same. It also reduces waste.'
+    WHEN 9 THEN 'The advice about observing rather than following the clock exactly is spot on. Each harvest arrives a little different.'
+    WHEN 10 THEN 'I made a half quantity and it worked well. The final seasoning needed less than half, so tasting at the end helped.'
+    ELSE 'Thanks for starting this discussion. I have added the main suggestion to my notes for the next market delivery.'
+  END,
+  'visible',
+  datetime(
+    '2026-01-01T08:00:00Z',
+    printf('+%d days', (thread_number * 31) % 205),
+    printf('+%d minutes', numbers.comment_number * 43)
+  ),
+  datetime(
+    '2026-01-01T08:00:00Z',
+    printf('+%d days', (thread_number * 31) % 205),
+    printf('+%d minutes', numbers.comment_number * 43)
+  )
+FROM (
+  SELECT ((topics.n - 1) * 2) + kinds.kind AS thread_number
+  FROM expansion_blog_topics topics
+  CROSS JOIN (SELECT 1 AS kind UNION ALL SELECT 2) kinds
+) threads
+CROSS JOIN comment_numbers numbers
+JOIN member_ids members ON members.position = ((threads.thread_number + numbers.comment_number * 3) % 8)
+WHERE numbers.comment_number <= 20 + ((threads.thread_number * 7) % 11);
+
+-- Bring the original 100 library discussions up from 10 comments to a varied
+-- 20-30 comments. The deterministic spread keeps development databases
+-- reproducible while avoiding identical activity counts.
+WITH RECURSIVE
+  extra_numbers(comment_number) AS (
+    SELECT 11
+    UNION ALL
+    SELECT comment_number + 1 FROM extra_numbers WHERE comment_number < 30
+  ),
+  original_threads AS (
+    SELECT
+      id,
+      row_number() OVER (ORDER BY id) AS thread_number,
+      20 + ((row_number() OVER (ORDER BY id) * 7) % 11) AS target_count,
+      created_at
+    FROM discussions
+    WHERE id LIKE 'dsc_library_%'
+  ),
+  member_ids(position, user_id) AS (
+    VALUES
+      (0,'usr_community_anita'),(1,'usr_community_farhan'),
+      (2,'usr_community_leela'),(3,'usr_community_nikhil'),
+      (4,'usr_community_jo'),(5,'usr_community_maya'),
+      (6,'usr_community_aman'),(7,'usr_community_saira')
+  )
+INSERT INTO discussion_comments (
+  id, discussion_id, author_user_id, body, status, created_at, updated_at
+)
+SELECT
+  printf('dcm_growth_%03d_%02d', threads.thread_number, numbers.comment_number),
+  threads.id,
+  members.user_id,
+  CASE (numbers.comment_number % 8)
+    WHEN 0 THEN 'I tested this with the latest delivery and the result was consistent. Keeping the pieces even was the key.'
+    WHEN 1 THEN 'One more detail that helped here was letting everything rest before making the final adjustment.'
+    WHEN 2 THEN 'Our climate is quite humid, so I used a little less water and kept the container more open.'
+    WHEN 3 THEN 'This worked at half quantity too. I shortened the cooking time but kept the resting time unchanged.'
+    WHEN 4 THEN 'The ingredient itself made a difference. A fresher batch needed less cooking and had a cleaner flavour.'
+    WHEN 5 THEN 'I would recommend writing down the timing once it works. It is surprisingly easy to forget by next season.'
+    WHEN 6 THEN 'A useful thread. The comments about temperature explain why my earlier attempt behaved so differently.'
+    ELSE 'Reporting back after a second try: the simpler method was more reliable and there was less washing up.'
+  END,
+  'visible',
+  datetime(threads.created_at, printf('+%d minutes', numbers.comment_number * 47)),
+  datetime(threads.created_at, printf('+%d minutes', numbers.comment_number * 47))
+FROM original_threads threads
+CROSS JOIN extra_numbers numbers
+JOIN member_ids members ON members.position = ((threads.thread_number + numbers.comment_number) % 8)
+WHERE numbers.comment_number <= threads.target_count;
+
+UPDATE discussions
+SET
+  comment_count = (
+    SELECT COUNT(*) FROM discussion_comments comments
+    WHERE comments.discussion_id = discussions.id AND comments.status = 'visible'
+  ),
+  last_activity_at = COALESCE(
+    (
+      SELECT MAX(created_at) FROM discussion_comments comments
+      WHERE comments.discussion_id = discussions.id AND comments.status = 'visible'
+    ),
+    last_activity_at
+  ),
+  updated_at = COALESCE(
+    (
+      SELECT MAX(created_at) FROM discussion_comments comments
+      WHERE comments.discussion_id = discussions.id AND comments.status = 'visible'
+    ),
+    updated_at
+  )
+WHERE id LIKE 'dsc_library_%' OR id LIKE 'dsc_expansion_%';
+
+DROP TABLE expansion_blog_topics;

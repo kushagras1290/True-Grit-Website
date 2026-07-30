@@ -204,7 +204,7 @@ class RecipeRepository:
             ORDER BY published_at DESC, title
             LIMIT ? OFFSET ?
             """,
-            (min(max(limit, 1), 100), max(offset, 0)),
+            (min(max(limit, 1), 5000), max(offset, 0)),
         )
         return [await self._detail_from_row(row) for row in rows]
 
@@ -417,7 +417,7 @@ class ArticleRepository:
             ORDER BY a.published_at DESC, a.title
             LIMIT ? OFFSET ?
             """,
-            (min(max(limit, 1), 100), max(offset, 0)),
+            (min(max(limit, 1), 5000), max(offset, 0)),
         )
         return [await self._detail_from_row(row) for row in rows]
 

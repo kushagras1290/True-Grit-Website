@@ -125,13 +125,13 @@ async def sitemap_pages_xml(db: Database, settings: Settings) -> str:
 
 
 async def sitemap_blog_xml(db: Database, settings: Settings) -> str:
-    articles = await ArticleRepository(db).list_published()
+    articles = await ArticleRepository(db).list_published(limit=5000)
     entries = [(f"/blog/{a['slug']}", a.get("published_at") or None) for a in articles]
     return _urlset(settings, entries, "blog")
 
 
 async def sitemap_recipes_xml(db: Database, settings: Settings) -> str:
-    recipes = await RecipeRepository(db).list_published()
+    recipes = await RecipeRepository(db).list_published(limit=5000)
     entries: list[tuple[str, str | None]] = [(f"/recipes/{r['slug']}", None) for r in recipes]
     return _urlset(settings, entries, "recipes")
 
@@ -170,8 +170,8 @@ _LLMS_LIST_CAP = 50
 async def default_llms_txt(db: Database, settings: Settings) -> str:
     categories = await CategoryRepository(db).list_published()
     products, _total = await CatalogueRepository(db).list_all_published(limit=_LLMS_LIST_CAP)
-    articles = (await ArticleRepository(db).list_published())[:_LLMS_LIST_CAP]
-    recipes = (await RecipeRepository(db).list_published())[:_LLMS_LIST_CAP]
+    articles = await ArticleRepository(db).list_published(limit=_LLMS_LIST_CAP)
+    recipes = await RecipeRepository(db).list_published(limit=_LLMS_LIST_CAP)
     lines = [
         "# True Grit",
         "",
