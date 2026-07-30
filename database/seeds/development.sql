@@ -1912,3 +1912,244 @@ SET content_json = json_set(
   12
 )
 WHERE page_id = 'pag_home';
+
+-- Additional complete-market departments. These records are normal catalogue
+-- entities: each has a published version, categories, variant, INR price,
+-- inventory, search data and a direct product image editable from admin.
+CREATE TEMP TABLE extra_catalogue_sections (
+  n INTEGER PRIMARY KEY,
+  department_order INTEGER NOT NULL,
+  department_name TEXT NOT NULL,
+  department_slug TEXT NOT NULL,
+  section_order INTEGER NOT NULL,
+  section_name TEXT NOT NULL,
+  section_slug TEXT NOT NULL,
+  products_json TEXT NOT NULL
+);
+
+INSERT INTO extra_catalogue_sections VALUES
+  (1,1,'Frozen and Chilled Foods','frozen-chilled',1,'Frozen Fruits and Vegetables','frozen-fruit-vegetables','["Frozen Green Peas","Frozen Sweet Corn","Frozen Mixed Vegetables","Frozen Mango Cubes","Frozen Strawberry","Frozen Blueberry","Frozen Spinach","Frozen Edamame"]'),
+  (2,1,'Frozen and Chilled Foods','frozen-chilled',2,'Frozen Meals and Snacks','frozen-meals-snacks','["Vegetable Momos","Millet Vegetable Patties","Spinach Corn Samosas","Quinoa Khichdi Bowl","Brown Rice Biryani Bowl","Vegetable Curry Bowl","Ragi Idli Pack","Sweet Potato Tikkis"]'),
+  (3,2,'Organic Baby and Kids','baby-kids',1,'Baby Food and Porridge','baby-food-porridge','["Rice Moong Baby Cereal","Ragi Banana Porridge","Oats Apple Porridge","Millet Vegetable Porridge","Sprouted Wheat Cereal","Mango Fruit Puree","Apple Pear Puree","Sweet Potato Puree"]'),
+  (4,2,'Organic Baby and Kids','baby-kids',2,'Kids Snacks and Drinks','kids-snacks-drinks','["Banana Millet Puffs","Carrot Oat Biscuits","Ragi Cocoa Cookies","Fruit and Nut Mini Bar","Apple Cinnamon Bites","Mango Yoghurt Melts","Kids Sattu Drink","Strawberry Millet Drink"]'),
+  (5,3,'Natural Pet Care','pet-care',1,'Dog Food and Treats','dog-food-treats','["Pumpkin Oat Dog Biscuits","Sweet Potato Dog Chews","Chicken Turmeric Dog Treats","Millet Vegetable Dog Meal","Brown Rice Dog Meal","Coconut Dental Chews","Peanut Butter Dog Bites","Moringa Dog Supplement"]'),
+  (6,3,'Natural Pet Care','pet-care',2,'Cat Food and Grooming','cat-food-grooming','["Fish Cat Treats","Chicken Cat Bites","Pumpkin Cat Meal","Cat Grass Growing Kit","Neem Pet Shampoo","Oatmeal Pet Wash","Natural Paw Balm","Bamboo Pet Grooming Brush"]'),
+  (7,4,'Wellness and Supplements','wellness-supplements',1,'Superfoods and Greens','superfoods-greens','["Moringa Leaf Powder","Spirulina Powder","Wheatgrass Powder","Barley Grass Powder","Amla Powder","Beetroot Powder","Baobab Powder","Acai Berry Powder"]'),
+  (8,4,'Wellness and Supplements','wellness-supplements',2,'Herbal Supplements','herbal-supplements','["Ashwagandha Capsules","Triphala Tablets","Giloy Capsules","Brahmi Capsules","Shatavari Capsules","Turmeric Curcumin Capsules","Tulsi Capsules","Neem Leaf Capsules"]'),
+  (9,5,'Eco Living Essentials','eco-living',1,'Reusable Kitchen','reusable-kitchen','["Beeswax Food Wrap Set","Organic Cotton Produce Bags","Bamboo Cutlery Set","Coconut Bottle Brush","Natural Dish Scrub Set","Reusable Tea Strainer","Bamboo Drinking Straws","Cotton Kitchen Towels"]'),
+  (10,5,'Eco Living Essentials','eco-living',2,'Sustainable Storage','sustainable-storage','["Steel Lunch Box","Glass Pantry Jar Set","Cotton Bread Bag","Reusable Snack Pouches","Bamboo Spice Box","Steel Water Bottle","Natural Fibre Basket","Silicone Freezer Bag"]'),
+  (11,6,'Ready to Cook Meals','ready-to-cook',1,'Indian Meal Mixes','indian-meal-mixes','["Vegetable Khichdi Mix","Millet Biryani Mix","Dal Tadka Meal Mix","Sambar Rice Mix","Palak Curry Base","Makhani Curry Base","Coconut Curry Base","Rajma Masala Meal Kit"]'),
+  (12,6,'Ready to Cook Meals','ready-to-cook',2,'Instant Breakfast Staples','instant-breakfast-staples','["Instant Idli Mix","Instant Dosa Mix","Millet Upma Mix","Vegetable Poha Mix","Ragi Pancake Mix","Instant Moong Cheela Mix","Oats Uttapam Mix","Quinoa Pongal Mix"]'),
+  (13,7,'Global Organic Pantry','global-pantry',1,'Mediterranean Pantry','mediterranean-pantry','["Extra Virgin Olive Oil","Green Olives","Kalamata Olives","Sun Dried Tomatoes","Organic Hummus","Tahini Dressing","Whole Wheat Couscous","Za''atar Seasoning"]'),
+  (14,7,'Global Organic Pantry','global-pantry',2,'East Asian Pantry','east-asian-pantry','["Brown Rice Noodles","Buckwheat Soba Noodles","Organic Tamari","White Miso Paste","Red Miso Paste","Toasted Sesame Oil","Nori Seaweed Sheets","Rice Paper Wrappers"]'),
+  (15,8,'Fermented and Cultured Foods','fermented-foods',1,'Kombucha and Cultured Drinks','kombucha-cultured-drinks','["Ginger Kombucha","Hibiscus Kombucha","Lemongrass Kombucha","Mango Kombucha","Beet Kvass","Water Kefir","Coconut Kefir","Kanji Drink"]'),
+  (16,8,'Fermented and Cultured Foods','fermented-foods',2,'Ferments and Starters','ferments-starters','["Classic Sauerkraut","Beet Sauerkraut","Vegetable Kimchi","Fermented Carrots","Fermented Cucumber","Sourdough Starter","Kombucha SCOBY","Water Kefir Grains"]'),
+  (17,9,'Flowers and Puja Essentials','flowers-puja',1,'Fresh Flowers and Petals','fresh-flowers-petals','["Marigold Garland","Jasmine Garland","Fresh Lotus Flowers","Fresh Rose Bunch","Loose Marigold Petals","Loose Rose Petals","Chrysanthemum Bunch","Tuberose Bunch"]'),
+  (18,9,'Flowers and Puja Essentials','flowers-puja',2,'Natural Puja Supplies','natural-puja-supplies','["Natural Incense Sticks","Herbal Dhoop Cones","Cotton Puja Wicks","Cow Ghee Diyas","Natural Camphor","Sandalwood Powder","Kumkum Powder","Brass Puja Diya"]'),
+  (19,10,'Organic Gift Hampers','gift-hampers',1,'Wellness Gift Hampers','wellness-gift-hampers','["Tea and Honey Hamper","Natural Self Care Hamper","Superfood Starter Hamper","Coffee Lovers Hamper","Healthy Snacking Hamper","Herbal Wellness Hamper","New Parent Care Hamper","Sustainable Home Hamper"]'),
+  (20,10,'Organic Gift Hampers','gift-hampers',2,'Festival Gift Hampers','festival-gift-hampers','["Diwali Organic Hamper","Holi Natural Colours Hamper","Raksha Bandhan Hamper","Eid Dry Fruit Hamper","Christmas Pantry Hamper","Harvest Festival Hamper","Wedding Favour Hamper","Corporate Organic Hamper"]');
+
+INSERT INTO categories (
+  id, internal_name, name, slug, parent_id, path, level, sort_order, status,
+  visibility, short_description, hero_eyebrow, hero_title, hero_description,
+  theme_key, product_assignment_mode, published_version_id, seo_title,
+  seo_description, hero_image_url, hero_image_alt, created_at, created_by,
+  updated_at, updated_by
+)
+SELECT
+  'cat_extra_' || department_slug, department_name || ' department',
+  department_name, department_slug, NULL, '/' || department_slug, 0,
+  40 + department_order, 'published', 'public',
+  'Explore our complete ' || lower(department_name) || ' range.',
+  'More of the market', department_name,
+  'A practical collection of ' || lower(department_name) || ' selected for quality and everyday use.',
+  CASE (department_order % 4) WHEN 0 THEN 'forest' WHEN 1 THEN 'sage' WHEN 2 THEN 'terracotta' ELSE 'charcoal' END,
+  'manual', 'ctv_extra_' || department_slug || '_1',
+  department_name || ' | True Grit Organic Market',
+  'Shop ' || lower(department_name) || ' with transparent product information.',
+  '/media/catalogue/generated/' || department_slug || '.webp',
+  department_name || ' collection',
+  '2026-01-15T08:00:00Z', 'usr_editor', '2026-07-30T10:00:00Z', 'usr_editor'
+FROM extra_catalogue_sections
+GROUP BY department_order, department_name, department_slug;
+
+INSERT INTO categories (
+  id, internal_name, name, slug, parent_id, path, level, sort_order, status,
+  visibility, short_description, hero_eyebrow, hero_title, hero_description,
+  theme_key, product_assignment_mode, published_version_id, seo_title,
+  seo_description, hero_image_url, hero_image_alt, created_at, created_by,
+  updated_at, updated_by
+)
+SELECT
+  'cat_extra_' || section_slug, section_name || ' section', section_name,
+  section_slug, 'cat_extra_' || department_slug,
+  '/' || department_slug || '/' || section_slug, 1, section_order,
+  'published', 'public',
+  'A focused selection of ' || lower(section_name) || ' with current stock and clear product details.',
+  department_name, section_name,
+  'Browse ' || lower(section_name) || ' selected for a complete organic marketplace.',
+  CASE (n % 4) WHEN 0 THEN 'forest' WHEN 1 THEN 'sage' WHEN 2 THEN 'terracotta' ELSE 'charcoal' END,
+  'manual', 'ctv_extra_' || section_slug || '_1',
+  section_name || ' | True Grit Organic Market',
+  'Shop ' || lower(section_name) || ' online from True Grit.',
+  '/media/catalogue/generated/' || department_slug || '.webp',
+  section_name || ' collection',
+  '2026-01-15T08:00:00Z', 'usr_editor', '2026-07-30T10:00:00Z', 'usr_editor'
+FROM extra_catalogue_sections;
+
+INSERT INTO category_versions (
+  id, category_id, version_number, content_json, change_summary, workflow_state,
+  created_at, created_by, approved_at, approved_by, published_at
+)
+SELECT
+  'ctv_extra_' || department_slug || '_1', 'cat_extra_' || department_slug,
+  1, json_object('blocks', json_array()), 'Initial expanded department',
+  'published', '2026-01-15T08:00:00Z', 'usr_editor',
+  '2026-07-30T09:30:00Z', 'usr_admin', '2026-07-30T10:00:00Z'
+FROM extra_catalogue_sections GROUP BY department_slug
+UNION ALL
+SELECT
+  'ctv_extra_' || section_slug || '_1', 'cat_extra_' || section_slug,
+  1, json_object('blocks', json_array()), 'Initial expanded category',
+  'published', '2026-01-15T08:00:00Z', 'usr_editor',
+  '2026-07-30T09:30:00Z', 'usr_admin', '2026-07-30T10:00:00Z'
+FROM extra_catalogue_sections;
+
+CREATE TEMP TABLE extra_catalogue_products AS
+SELECT
+  ((sections.n - 1) * 8) + CAST(items.key AS INTEGER) + 1 AS product_number,
+  sections.department_order, sections.department_name, sections.department_slug,
+  sections.section_name, sections.section_slug,
+  CAST(items.key AS INTEGER) + 1 AS product_order,
+  CAST(items.value AS TEXT) AS product_name,
+  'organic-' || lower(replace(replace(replace(CAST(items.value AS TEXT), ' ', '-'), '&', 'and'), '/', '-')) AS product_slug
+FROM extra_catalogue_sections AS sections, json_each(sections.products_json) AS items;
+
+INSERT INTO products (
+  id, internal_name, name, slug, product_type, status, short_description,
+  published_version_id, seo_title, seo_description, image_url, image_alt,
+  created_at, created_by, updated_at, updated_by
+)
+SELECT
+  printf('prd_extra_%04d', product_number), product_name || ' catalogue product',
+  'Organic ' || product_name, product_slug, replace(section_slug, '-', '_'),
+  'published',
+  product_name || ' selected for dependable quality and practical everyday use.',
+  printf('pvr_extra_%04d_1', product_number),
+  'Organic ' || product_name || ' | Buy Online',
+  'Shop organic ' || lower(product_name) || ' with current stock and clear product details.',
+  '/media/catalogue/generated/' || department_slug || '.webp',
+  'Organic ' || product_name,
+  datetime('2026-01-15T08:00:00Z', printf('+%d days', (product_number * 13) % 190)),
+  'usr_pm',
+  datetime('2026-01-15T08:00:00Z', printf('+%d days', (product_number * 13) % 190)),
+  'usr_pm'
+FROM extra_catalogue_products;
+
+INSERT INTO product_versions (
+  id, product_id, version_number, content_json, change_summary, workflow_state,
+  created_at, created_by, approved_at, approved_by, published_at
+)
+SELECT
+  printf('pvr_extra_%04d_1', product_number),
+  printf('prd_extra_%04d', product_number), 1,
+  json_object('blocks', json_array(json_object(
+    'id', printf('blk_extra_%04d_overview', product_number),
+    'type', 'rich_text', 'version', 1, 'enabled', json('true'),
+    'props', json_object('paragraphs', json_array(
+      'Our organic ' || lower(product_name) || ' is selected for dependable quality and straightforward everyday use.',
+      'Review the current pack for ingredient, storage, origin and best-before information.'
+    ))
+  ))),
+  'Initial expanded catalogue listing', 'published',
+  '2026-07-30T09:00:00Z', 'usr_pm', '2026-07-30T09:30:00Z',
+  'usr_admin', '2026-07-30T10:00:00Z'
+FROM extra_catalogue_products;
+
+INSERT INTO product_categories (
+  product_id, category_id, is_primary, sort_order, assigned_at, assigned_by
+)
+SELECT printf('prd_extra_%04d', product_number), 'cat_extra_' || section_slug,
+       1, product_order, '2026-07-30T10:00:00Z', 'usr_pm'
+FROM extra_catalogue_products
+UNION ALL
+SELECT printf('prd_extra_%04d', product_number), 'cat_extra_' || department_slug,
+       0, product_number, '2026-07-30T10:00:00Z', 'usr_pm'
+FROM extra_catalogue_products;
+
+INSERT INTO product_variants (
+  id, product_id, sku, name, option_values_json, weight_value, weight_unit,
+  package_description, status, sort_order, created_at, updated_at
+)
+SELECT
+  printf('var_extra_%04d', product_number),
+  printf('prd_extra_%04d', product_number),
+  printf('TGE-%04d', product_number),
+  CASE WHEN department_order IN (5,9,10) THEN '1 unit' ELSE 'Standard pack' END,
+  json_object('pack', 'standard'),
+  CASE WHEN department_order IN (5,9,10) THEN 1 ELSE 500 END,
+  CASE WHEN department_order IN (5,9,10) THEN 'unit' ELSE 'g' END,
+  CASE WHEN department_order IN (5,9,10) THEN 'Single retail unit' ELSE 'Resealable retail pack' END,
+  'active', 1, '2026-07-30T10:00:00Z', '2026-07-30T10:00:00Z'
+FROM extra_catalogue_products;
+
+INSERT INTO variant_prices (
+  id, variant_id, market_code, currency_code, list_amount_minor,
+  sale_amount_minor, tax_inclusive, status, created_at, created_by
+)
+SELECT
+  printf('prc_extra_%04d', product_number),
+  printf('var_extra_%04d', product_number), 'IN', 'INR',
+  9900 + ((product_number * 251) % 140000),
+  CASE WHEN product_number % 9 = 0
+    THEN CAST((9900 + ((product_number * 251) % 140000)) * 0.9 AS INTEGER)
+    ELSE NULL END,
+  1, 'active', '2026-07-30T10:00:00Z', 'usr_pm'
+FROM extra_catalogue_products;
+
+INSERT INTO inventory_levels (
+  variant_id, location_id, on_hand, reserved, reorder_threshold, version, updated_at
+)
+SELECT printf('var_extra_%04d', product_number), 'loc_mumbai',
+       30 + ((product_number * 31) % 170), product_number % 4,
+       10 + (product_number % 15), 1, '2026-07-30T10:00:00Z'
+FROM extra_catalogue_products;
+
+INSERT INTO search_products (
+  product_id, name, slug, brand_name, farm_name, category_names, keywords,
+  short_description
+)
+SELECT
+  printf('prd_extra_%04d', product_number), 'Organic ' || product_name,
+  product_slug, '', '', department_name || ', ' || section_name,
+  lower(product_name || ' ' || department_name || ' ' || section_name || ' organic natural'),
+  product_name || ' selected for dependable quality and everyday use.'
+FROM extra_catalogue_products;
+
+-- Make every pre-existing published product carry an explicit database image,
+-- rather than depending on a presentation-time fallback.
+UPDATE products
+SET
+  image_url = (
+    SELECT c.hero_image_url
+    FROM product_categories AS pc
+    JOIN categories AS c ON c.id = pc.category_id
+    WHERE pc.product_id = products.id
+      AND NULLIF(TRIM(c.hero_image_url), '') IS NOT NULL
+    ORDER BY pc.is_primary DESC, pc.sort_order, c.id
+    LIMIT 1
+  ),
+  image_alt = COALESCE(NULLIF(TRIM(image_alt), ''), name)
+WHERE status = 'published'
+  AND archived_at IS NULL
+  AND NULLIF(TRIM(image_url), '') IS NULL
+  AND EXISTS (
+    SELECT 1
+    FROM product_categories AS pc
+    JOIN categories AS c ON c.id = pc.category_id
+    WHERE pc.product_id = products.id
+      AND NULLIF(TRIM(c.hero_image_url), '') IS NOT NULL
+  );
+
+DROP TABLE extra_catalogue_products;
+DROP TABLE extra_catalogue_sections;
