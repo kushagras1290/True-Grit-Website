@@ -4,14 +4,20 @@
   "main": "src/worker.py",
   "compatibility_date": "2026-07-11",
   "compatibility_flags": ["python_workers"],
-  // The entire FastAPI app runs inside Pyodide, where large JSON payloads and
-  // request marshalling cost orders of magnitude more CPU than native JS.
-  // Without this raised budget Cloudflare kills the isolate mid-request
-  // ("exceededCpu" in the Worker logs), the platform's error response carries
-  // no CORS headers, and the admin sees the failure as a CORS error. Removed
-  // once before (commit 68eaf84) on the assumption it only served PBKDF2 —
-  // it guards every Pyodide request, so keep it.
-  "limits": { "cpu_ms": 300000 },
+  // DO NOT add a `limits` block here. This account is on the Workers Free
+  // plan, which rejects the deploy outright:
+  //   "CPU limits are not supported for the Free plan" [code: 100328]
+  // That is why commit 68eaf84 removed `limits.cpu_ms` — not because native
+  // crypto made it unnecessary. It has now been added and reverted twice.
+  //
+  // The Free plan caps CPU at 10 ms per request, and this whole FastAPI app
+  // runs in Pyodide, where marshalling payloads between JS and Python costs
+  // far more CPU than native JS. Requests that blow the cap are killed with
+  // outcome `exceededCpu`, and Cloudflare's own error response carries no
+  // Access-Control-Allow-Origin header — which the browser reports as a CORS
+  // failure, masking the real cause. Raising the ceiling needs the Workers
+  // Paid plan; until then the only lever is doing less work per request (see
+  // the R2 direct-serve path for /media/* in src/worker.py).
   "observability": {
     "enabled": false,
     "head_sampling_rate": 1,
