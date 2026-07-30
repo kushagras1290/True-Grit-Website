@@ -7,6 +7,7 @@ import { PageLinkPagination } from "../components/pagination";
 import { catalogueRuntime, loadRouteSeo } from "../lib/catalogue.server";
 import { listDiscussions, type DiscussionSummary } from "../lib/community";
 import { useCustomer } from "../lib/customer-auth";
+import { mediaUrl } from "../lib/media";
 import { mergeRouteSeo, seoMeta } from "../lib/seo";
 
 const DISCUSSIONS_PAGE_SIZE = 12;
@@ -82,6 +83,14 @@ export default function CommunityPage(_props: Route.ComponentProps) {
             {discussions.map((entry) => (
               <li key={entry.id}>
                 <Link to={`/community/${entry.id}`} className="block px-5 py-4 hover:bg-canvas/60">
+                  {entry.imageUrl ? (
+                    <img
+                      src={mediaUrl(entry.imageUrl)}
+                      alt={entry.imageAlt || ""}
+                      className="mb-4 aspect-[16/7] w-full rounded-sm object-cover"
+                      loading="lazy"
+                    />
+                  ) : null}
                   <h2 className="font-display text-lg text-ink">{entry.title}</h2>
                   <p className="mt-1 line-clamp-2 text-sm text-ink-muted">{entry.excerpt}</p>
                   <p className="mt-2 text-xs text-ink-muted">

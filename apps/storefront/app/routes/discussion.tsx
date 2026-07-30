@@ -5,6 +5,7 @@ import type { Route } from "./+types/discussion";
 import { Section } from "../components/catalogue";
 import { AuthError, useCustomer } from "../lib/customer-auth";
 import { createComment, getDiscussion, type DiscussionDetail } from "../lib/community";
+import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
 
 export function meta(_args: Route.MetaArgs) {
@@ -85,6 +86,13 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
     <Section eyebrow="Community" heading={discussion.title}>
       <div className="mx-auto max-w-2xl space-y-8">
         <div>
+          {discussion.imageUrl ? (
+            <img
+              src={mediaUrl(discussion.imageUrl)}
+              alt={discussion.imageAlt || discussion.title}
+              className="mb-5 aspect-video w-full rounded-md object-cover"
+            />
+          ) : null}
           <p className="text-xs text-ink-muted">
             {discussion.authorName} · {new Date(discussion.createdAt).toLocaleDateString()}
           </p>

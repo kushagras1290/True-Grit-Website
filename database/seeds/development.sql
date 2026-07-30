@@ -2187,5 +2187,20 @@ SET image_url = CASE id
     updated_at = '2026-07-30T12:00:00Z'
 WHERE id IN ('prd_alphonso', 'prd_spinach', 'prd_ragi', 'prd_groundnut_oil', 'prd_rajma');
 
+UPDATE articles
+SET hero_image_url = '/content/default-blog.webp',
+    hero_image_alt = 'True Grit organic living journal'
+WHERE NULLIF(TRIM(hero_image_url), '') IS NULL;
+
+UPDATE recipes
+SET hero_image_url = '/content/default-recipe.webp',
+    hero_image_alt = 'Wholesome organic home-cooked meal'
+WHERE NULLIF(TRIM(hero_image_url), '') IS NULL;
+
+UPDATE discussions
+SET image_url = '/content/default-discussion.webp',
+    image_alt = 'True Grit community table'
+WHERE NULLIF(TRIM(image_url), '') IS NULL;
+
 DROP TABLE extra_catalogue_products;
 DROP TABLE extra_catalogue_sections;

@@ -896,7 +896,8 @@ class DiscussionRepository:
     async def list_public(self, *, limit: int = 30, offset: int = 0) -> list[dict[str, Any]]:
         return await self._db.fetch_all(
             """
-            SELECT d.id, d.title, d.body, d.comment_count, d.last_activity_at, d.created_at,
+            SELECT d.id, d.title, d.body, d.image_url, d.image_alt,
+                   d.comment_count, d.last_activity_at, d.created_at,
                    u.display_name AS author_name
             FROM discussions d
             JOIN users u ON u.id = d.author_user_id
@@ -916,7 +917,8 @@ class DiscussionRepository:
     async def get_public_detail(self, discussion_id: str) -> dict[str, Any] | None:
         return await self._db.fetch_one(
             """
-            SELECT d.id, d.title, d.body, d.comment_count, d.last_activity_at, d.created_at,
+            SELECT d.id, d.title, d.body, d.image_url, d.image_alt,
+                   d.comment_count, d.last_activity_at, d.created_at,
                    u.display_name AS author_name
             FROM discussions d
             JOIN users u ON u.id = d.author_user_id

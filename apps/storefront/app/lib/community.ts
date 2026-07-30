@@ -13,6 +13,8 @@ export interface DiscussionSummary {
   id: string;
   title: string;
   excerpt: string;
+  imageUrl: string | null;
+  imageAlt: string | null;
   authorName: string;
   commentCount: number;
   lastActivityAt: string;
@@ -30,6 +32,8 @@ export interface DiscussionDetail {
   id: string;
   title: string;
   body: string;
+  imageUrl: string | null;
+  imageAlt: string | null;
   authorName: string;
   commentCount: number;
   lastActivityAt: string;
