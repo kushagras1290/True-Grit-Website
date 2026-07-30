@@ -210,6 +210,20 @@ export async function loadAllProducts(
   );
 }
 
+export async function loadProductPage(
+  page: number,
+  country?: string,
+  runtime?: CatalogueRuntime,
+): Promise<PaginatedContent<ProductSummary>> {
+  return paginatedFromApi<ProductSummary>(
+    withCountry("/v1/public/products", country),
+    products,
+    CATALOGUE_PAGE_SIZE,
+    (Math.max(page, 1) - 1) * CATALOGUE_PAGE_SIZE,
+    runtime,
+  );
+}
+
 export async function loadProduct(
   slug: string,
   country?: string,

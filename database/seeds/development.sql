@@ -1874,3 +1874,17 @@ FROM market_catalogue_products;
 
 DROP TABLE market_catalogue_products;
 DROP TABLE market_catalogue_sections;
+
+-- Department photography is deliberately shared by each department and its
+-- four focused subcategories. Product cards inherit their primary category
+-- image until an owner uploads a product-specific photograph in the admin.
+UPDATE categories
+SET
+  hero_image_url = '/media/catalogue/generated/' || (
+    SELECT COALESCE(parent.slug, categories.slug)
+    FROM categories AS current
+    LEFT JOIN categories AS parent ON parent.id = current.parent_id
+    WHERE current.id = categories.id
+  ) || '.webp',
+  hero_image_alt = name || ' organic market selection'
+WHERE id LIKE 'cat_market_%';

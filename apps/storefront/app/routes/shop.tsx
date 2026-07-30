@@ -1,17 +1,26 @@
 import type { Route } from "./+types/shop";
 import { CategoryTile, ProductGrid, Section } from "../components/catalogue";
-import { catalogueRuntime, loadAllProducts, loadCategories } from "../lib/catalogue.server";
+import { PageLinkPagination } from "../components/pagination";
+import {
+  CATALOGUE_PAGE_SIZE,
+  catalogueRuntime,
+  loadCategories,
+  loadProductPage,
+} from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
   const country = resolveCountry(request);
-  const [categories, products] = await Promise.all([
+  const requestedPage = Number(new URL(request.url).searchParams.get("page") ?? "1");
+  const pageNumber =
+    Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+  const [categories, productPage] = await Promise.all([
     loadCategories(country, runtime),
-    loadAllProducts(country, runtime),
+    loadProductPage(pageNumber, country, runtime),
   ]);
-  return { categories, products };
+  return { categories, productPage, pageNumber, pageSize: CATALOGUE_PAGE_SIZE };
 }
 
 export function meta(_args: Route.MetaArgs) {
@@ -25,7 +34,7 @@ export function meta(_args: Route.MetaArgs) {
 }
 
 export default function Shop({ loaderData }: Route.ComponentProps) {
-  const productCount = loaderData.products.length;
+  const productCount = loaderData.productPage.total;
   const categoryCount = loaderData.categories.length;
   return (
     <>
@@ -58,7 +67,12 @@ export default function Shop({ loaderData }: Route.ComponentProps) {
         </div>
       </Section>
       <Section eyebrow="Everything" heading="All products" tone="surface">
-        <ProductGrid products={loaderData.products} />
+        <ProductGrid products={loaderData.productPage.items} />
+        <PageLinkPagination
+          page={loaderData.pageNumber}
+          pageSize={loaderData.pageSize}
+          total={loaderData.productPage.total}
+        />
       </Section>
     </>
   );
