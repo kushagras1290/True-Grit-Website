@@ -20,6 +20,8 @@ import { CustomerProvider } from "./lib/customer-auth";
 import { resolveCountry } from "./lib/geo.server";
 
 export const links: Route.LinksFunction = () => [
+  { rel: "icon", href: "/favicon.png", type: "image/png" },
+  { rel: "apple-touch-icon", href: "/brand/true-grit-mark.webp" },
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
   {

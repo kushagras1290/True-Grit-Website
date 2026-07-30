@@ -492,8 +492,19 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
                 <span className="block h-0.5 w-3.5 bg-ink" />
               </span>
             </button>
-            <Link to="/" className="font-display text-xl font-semibold tracking-tight text-brand">
-              TRUE GRIT
+            <Link
+              to="/"
+              aria-label="True Grit home"
+              className="inline-flex items-center gap-2 font-display text-xl font-semibold tracking-tight text-brand"
+            >
+              <img
+                src="/brand/true-grit-mark.webp"
+                alt=""
+                width={36}
+                height={36}
+                className="h-9 w-9 rounded-full object-cover"
+              />
+              <span>TRUE GRIT</span>
             </Link>
           </div>
 
