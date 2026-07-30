@@ -16,6 +16,7 @@ import {
   DataTableShell,
   EmptyState,
   Field,
+  ImagePreview,
   Input,
   LoadingRows,
   Modal,
@@ -99,6 +100,8 @@ function CreateArticleModal({ onClose }: { onClose: () => void }) {
 const ARTICLES_PAGE_LIMIT = 25;
 
 export function ArticleListPage() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const offset = (page - 1) * ARTICLES_PAGE_LIMIT;
@@ -109,6 +112,20 @@ export function ArticleListPage() {
   });
   const [creating, setCreating] = useState(false);
   const articles = data ?? [];
+
+  // One-click enable/disable. The public API only serves published articles,
+  // so a disabled post drops off /blog (and anywhere else it is linked)
+  // immediately — no storefront redeploy involved.
+  const toggleMutation = useMutation({
+    mutationFn: ({ id, publish }: { id: string; publish: boolean }) =>
+      publish ? api.publishArticle(id) : api.unpublishArticle(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
+      toast.success("Article visibility updated.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not update the article."),
+  });
 
   return (
     <div>
@@ -175,6 +192,22 @@ export function ArticleListPage() {
                         Draft changes pending
                       </span>
                     ) : null}
+                    {article.status === "published" || article.status === "unpublished" ? (
+                      <PermissionGate permission="articles.publish">
+                        <Button
+                          variant="secondary"
+                          disabled={toggleMutation.isPending}
+                          onClick={() =>
+                            toggleMutation.mutate({
+                              id: article.id,
+                              publish: article.status !== "published",
+                            })
+                          }
+                        >
+                          {article.status === "published" ? "Disable" : "Enable"}
+                        </Button>
+                      </PermissionGate>
+                    ) : null}
                   </div>
                 </Td>
                 <Td>{formatDateTime(article.updatedAt)}</Td>
@@ -193,11 +226,24 @@ export function ArticleListPage() {
   );
 }
 
+const bannerImageUrlSchema = z
+  .string()
+  .max(1000)
+  .refine(
+    (value) =>
+      value === "" ||
+      (value.startsWith("/") && !value.startsWith("//")) ||
+      z.string().url().safeParse(value).success,
+    "Enter a valid image URL",
+  );
+
 const editSchema = z.object({
   title: z.string().min(3, "At least 3 characters").max(180),
   slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and single hyphens"),
   excerpt: z.string().max(300),
   readingMinutes: z.coerce.number().int().min(1).max(60),
+  heroImageUrl: bannerImageUrlSchema,
+  heroImageAlt: z.string().max(200),
   seoTitle: z.string().max(160),
   seoDescription: z.string().max(320),
   seoKeywords: z.string().max(500),
@@ -215,6 +261,8 @@ function articleDefaults(article: AdminArticleDetail): EditForm {
     slug: article.slug,
     excerpt: article.excerpt,
     readingMinutes: article.readingMinutes,
+    heroImageUrl: article.heroImageUrl,
+    heroImageAlt: article.heroImageAlt,
     seoTitle: article.seoTitle,
     seoDescription: article.seoDescription,
     seoKeywords: article.seoKeywords,
@@ -304,6 +352,8 @@ export function ArticleEditorPage() {
         slug: values.slug,
         excerpt: values.excerpt,
         readingMinutes: values.readingMinutes,
+        heroImageUrl: values.heroImageUrl,
+        heroImageAlt: values.heroImageAlt,
         seoTitle: values.seoTitle,
         seoDescription: values.seoDescription,
         seoKeywords: values.seoKeywords,
@@ -366,6 +416,22 @@ export function ArticleEditorPage() {
       toast.success("Unpublished.");
     },
     onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not unpublish."),
+  });
+
+  const bannerUploadMutation = useMutation({
+    mutationFn: (file: File) => api.uploadImage(file),
+    onSuccess: (result) => {
+      form.setValue("heroImageUrl", result.url, { shouldDirty: true, shouldValidate: true });
+      if (!form.getValues("heroImageAlt")) {
+        form.setValue("heroImageAlt", form.getValues("title"), {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+      toast.success("Banner uploaded — save to apply.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not upload the banner."),
   });
 
   if (isLoading) return <p className="text-sm text-ink-muted">Loading article…</p>;
@@ -460,6 +526,57 @@ export function ArticleEditorPage() {
             <Field label="Pull quote" htmlFor="art-e-quote">
               <Input id="art-e-quote" {...form.register("pullQuote")} />
             </Field>
+          </div>
+
+          <div className="border-t border-line pt-5">
+            <h2 className="font-display text-lg text-ink">Banner image</h2>
+            <p className="text-sm text-ink-muted">
+              Shown at the top of the post and as its thumbnail on the blog listing.
+            </p>
+            <div className="mt-3 space-y-4">
+              <Field
+                label="Banner image URL"
+                htmlFor="art-e-hero-url"
+                error={form.formState.errors.heroImageUrl?.message}
+              >
+                <Input
+                  id="art-e-hero-upload"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  className="mb-2"
+                  disabled={bannerUploadMutation.isPending || saveMutation.isPending}
+                  onChange={(event) => {
+                    const file = event.currentTarget.files?.[0];
+                    if (file) bannerUploadMutation.mutate(file);
+                    event.currentTarget.value = "";
+                  }}
+                />
+                <Input
+                  id="art-e-hero-url"
+                  placeholder={
+                    bannerUploadMutation.isPending ? "Uploading image…" : "/media/images/…"
+                  }
+                  {...form.register("heroImageUrl")}
+                />
+                {form.watch("heroImageUrl") ? (
+                  <div className="mt-3">
+                    <ImagePreview
+                      src={form.watch("heroImageUrl")}
+                      alt={form.watch("heroImageAlt")}
+                      label={article.title || "Article banner"}
+                      className="h-32 w-full max-w-md"
+                    />
+                  </div>
+                ) : null}
+              </Field>
+              <Field label="Banner alt text" htmlFor="art-e-hero-alt">
+                <Input
+                  id="art-e-hero-alt"
+                  placeholder="Describes the banner for screen readers"
+                  {...form.register("heroImageAlt")}
+                />
+              </Field>
+            </div>
           </div>
 
           <div className="border-t border-line pt-5">

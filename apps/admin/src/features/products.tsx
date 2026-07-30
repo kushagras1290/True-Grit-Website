@@ -170,6 +170,22 @@ export function ProductListPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not delete products."),
   });
 
+  // One-click enable/disable. Unpublished products vanish from the public
+  // API, so the storefront (homepage collections, shop grid, search) stops
+  // showing them immediately — no redeploy, no cache to bust by hand.
+  const statusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: "published" | "unpublished" }) =>
+      api.updateProductStatus(id, status),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      toast.success("Product visibility updated.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not update the product."),
+  });
+  const toggleProductStatus = statusMutation.mutate;
+  const togglePending = statusMutation.isPending;
+
   const columns = useMemo(
     () => [
       columnHelper.accessor("name", {
@@ -192,7 +208,27 @@ export function ProductListPage() {
       columnHelper.accessor("sku", { header: "SKU" }),
       columnHelper.accessor("status", {
         header: "Status",
-        cell: (info) => <StatusPill status={info.getValue()} />,
+        cell: (info) => (
+          <div className="flex items-center gap-2">
+            <StatusPill status={info.getValue()} />
+            {info.getValue() === "published" || info.getValue() === "unpublished" ? (
+              <PermissionGate permission="products.publish">
+                <Button
+                  variant="secondary"
+                  disabled={togglePending}
+                  onClick={() =>
+                    toggleProductStatus({
+                      id: info.row.original.id,
+                      status: info.getValue() === "published" ? "unpublished" : "published",
+                    })
+                  }
+                >
+                  {info.getValue() === "published" ? "Disable" : "Enable"}
+                </Button>
+              </PermissionGate>
+            ) : null}
+          </div>
+        ),
       }),
       columnHelper.accessor((row) => row.categories.join(", "), {
         id: "categories",
@@ -206,7 +242,7 @@ export function ProductListPage() {
         cell: (info) => formatDate(info.getValue()),
       }),
     ],
-    [],
+    [toggleProductStatus, togglePending],
   );
 
   const table = useReactTable({

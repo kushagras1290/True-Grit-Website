@@ -538,6 +538,8 @@ export const recipes: RecipeDetail[] = [
     cookMinutes: 20,
     servings: 4,
     dietaryTags: ["gluten-free", "plant-based"],
+    heroImageUrl: "/homepage-hero-roots.png",
+    heroImageAlt: "Fresh roots and pulses from organic soil",
     ingredients: [
       { label: "Sprouted ragi flour", quantityText: "2 cups", productSlug: "sprouted-ragi-flour" },
       {
@@ -600,6 +602,8 @@ export const articles: ArticleDetail[] = [
     authorName: "Kabir Mehta",
     publishedAt: "2026-07-05T00:00:00Z",
     readingMinutes: 6,
+    heroImageUrl: "/homepage-hero-roots.png",
+    heroImageAlt: "Millet grains and pulses from organic soil",
     blocks: [
       {
         id: "blk_millets_body",

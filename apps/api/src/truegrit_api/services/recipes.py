@@ -32,6 +32,8 @@ _METADATA_FIELDS = (
     "cook_minutes",
     "servings",
     "hero_media_id",
+    "hero_image_url",
+    "hero_image_alt",
     "seo_title",
     "seo_description",
     "seo_keywords",

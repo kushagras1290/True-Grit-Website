@@ -177,6 +177,8 @@ class RecipeDetail(PublicModel):
     cook_minutes: int
     servings: int
     dietary_tags: list[str]
+    hero_image_url: str | None = None
+    hero_image_alt: str | None = None
     ingredients: list[RecipeIngredient]
     blocks: list[dict[str, Any]]
     steps: list[str]
@@ -198,6 +200,8 @@ class ArticleDetail(PublicModel):
     author_name: str
     published_at: str
     reading_minutes: int
+    hero_image_url: str | None = None
+    hero_image_alt: str | None = None
     blocks: list[dict[str, Any]]
     pull_quote: str | None = None
     seo: SeoDocument

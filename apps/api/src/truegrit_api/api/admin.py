@@ -1190,6 +1190,8 @@ class ArticleUpdateRequest(_CamelModel):
     slug: str | None = Field(default=None, max_length=96)
     excerpt: str | None = Field(default=None, max_length=300)
     hero_media_id: str | None = Field(default=None, max_length=64)
+    hero_image_url: str | None = Field(default=None, max_length=1000)
+    hero_image_alt: str | None = Field(default=None, max_length=200)
     reading_minutes: int | None = Field(default=None, ge=1, le=60)
     author_user_id: str | None = Field(default=None, max_length=64)
     seo_title: str | None = Field(default=None, max_length=160)
@@ -1199,6 +1201,13 @@ class ArticleUpdateRequest(_CamelModel):
     indexing_policy: str | None = Field(default=None, max_length=16)
     blocks: list[dict[str, Any]] | None = Field(default=None, max_length=40)
     pull_quote: str | None = Field(default=None, max_length=400)
+
+    @field_validator("hero_image_url")
+    @classmethod
+    def _safe_hero_image_url(cls, value: str | None) -> str | None:
+        if value in (None, ""):
+            return value
+        return _validate_image_url(value)
 
 
 class ChangesRequestedRequest(_CamelModel):
@@ -1228,6 +1237,8 @@ def _article_detail(row: dict[str, Any]) -> dict[str, Any]:
         "status": row["status"],
         "authorUserId": row["author_user_id"],
         "heroMediaId": row["hero_media_id"],
+        "heroImageUrl": row["hero_image_url"],
+        "heroImageAlt": row["hero_image_alt"],
         "seoTitle": row["seo_title"],
         "seoDescription": row["seo_description"],
         "seoKeywords": row["seo_keywords"],
@@ -1380,6 +1391,8 @@ class RecipeUpdateRequest(_CamelModel):
     cook_minutes: int | None = Field(default=None, ge=0, le=600)
     servings: int | None = Field(default=None, ge=1, le=50)
     hero_media_id: str | None = Field(default=None, max_length=64)
+    hero_image_url: str | None = Field(default=None, max_length=1000)
+    hero_image_alt: str | None = Field(default=None, max_length=200)
     chef_user_id: str | None = Field(default=None, max_length=64)
     dietary_tags: list[str] | None = Field(default=None, max_length=12)
     seo_title: str | None = Field(default=None, max_length=160)
@@ -1390,6 +1403,13 @@ class RecipeUpdateRequest(_CamelModel):
     blocks: list[dict[str, Any]] | None = Field(default=None, max_length=40)
     steps: list[str] | None = Field(default=None, max_length=30)
     ingredients: list[RecipeIngredientInput] | None = Field(default=None, max_length=40)
+
+    @field_validator("hero_image_url")
+    @classmethod
+    def _safe_hero_image_url(cls, value: str | None) -> str | None:
+        if value in (None, ""):
+            return value
+        return _validate_image_url(value)
 
 
 def _recipe_summary(row: dict[str, Any]) -> dict[str, Any]:
@@ -1417,6 +1437,8 @@ def _recipe_detail(row: dict[str, Any]) -> dict[str, Any]:
         "dietaryTags": row["dietary_tags"],
         "status": row["status"],
         "chefUserId": row["chef_user_id"],
+        "heroImageUrl": row["hero_image_url"],
+        "heroImageAlt": row["hero_image_alt"],
         "seoTitle": row["seo_title"],
         "seoDescription": row["seo_description"],
         "seoKeywords": row["seo_keywords"],
@@ -3148,6 +3170,29 @@ async def update_category_endpoint(
         return result
     row = await db.fetch_one("SELECT status FROM categories WHERE id = ?", (category_id,))
     return {"id": category_id, "status": row["status"] if row else "draft", "changed": changed}
+
+
+class CategoryStatusRequest(_CamelModel):
+    status: str = Field(pattern="^(published|unpublished)$")
+
+
+@router.patch("/categories/{category_id}/status")
+async def set_category_status_endpoint(
+    category_id: str,
+    payload: CategoryStatusRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("categories.publish"))],
+) -> Any:
+    from ..services.catalogue import set_category_status
+
+    return await set_category_status(
+        db,
+        principal,
+        _request_id(request),
+        category_id,
+        payload.status,
+    )
 
 
 @router.delete("/categories/{category_id}")

@@ -4,6 +4,7 @@ import type { Route } from "./+types/recipes";
 import { Section } from "../components/catalogue";
 import { PageLinkPagination } from "../components/pagination";
 import { catalogueRuntime, loadRecipes } from "../lib/catalogue.server";
+import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
 
 const RECIPE_PAGE_SIZE = 12;
@@ -48,8 +49,16 @@ export default function RecipesPage({ loaderData }: Route.ComponentProps) {
           <Link
             key={recipe.id}
             to={`/recipes/${recipe.slug}`}
-            className="group rounded-md border border-line bg-surface p-6 shadow-card transition-transform duration-200 hover:-translate-y-0.5"
+            className="group overflow-hidden rounded-md border border-line bg-surface p-6 shadow-card transition-transform duration-200 hover:-translate-y-0.5"
           >
+            {recipe.heroImageUrl ? (
+              <img
+                src={mediaUrl(recipe.heroImageUrl)}
+                alt={recipe.heroImageAlt || ""}
+                loading="lazy"
+                className="-mx-6 -mt-6 mb-5 aspect-[16/9] w-[calc(100%+3rem)] max-w-none object-cover"
+              />
+            ) : null}
             <p className="text-xs text-ink-muted">
               {recipe.prepMinutes + recipe.cookMinutes} min · serves {recipe.servings}
             </p>

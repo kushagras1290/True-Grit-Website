@@ -187,7 +187,7 @@ class FarmRepository:
 _RECIPE_PUBLIC_COLUMNS = """
     id, title, slug, excerpt, prep_minutes, cook_minutes, servings,
     dietary_tags_json, published_version_id, seo_title, seo_description,
-    seo_keywords, canonical_url, indexing_policy
+    seo_keywords, canonical_url, indexing_policy, hero_image_url, hero_image_alt
 """
 
 
@@ -257,6 +257,8 @@ class RecipeRepository:
             "cook_minutes": int(row["cook_minutes"] or 0),
             "servings": int(row["servings"] or 0),
             "dietary_tags": [str(tag) for tag in tags] if isinstance(tags, list) else [],
+            "hero_image_url": row["hero_image_url"] or None,
+            "hero_image_alt": row["hero_image_alt"] or None,
             "ingredients": [
                 {
                     "label": entry["label"],
@@ -324,6 +326,7 @@ class RecipeRepository:
                    r.servings, r.dietary_tags_json, r.status, r.chef_user_id,
                    r.seo_title, r.seo_description, r.seo_keywords, r.canonical_url,
                    r.indexing_policy, r.updated_at, r.published_version_id,
+                   r.hero_image_url, r.hero_image_alt,
                    COALESCE(latest.content_json, v.content_json, '{"blocks":[],"steps":[]}')
                      AS content_json
             FROM recipes r
@@ -366,6 +369,8 @@ class RecipeRepository:
             "dietary_tags": [str(tag) for tag in tags] if isinstance(tags, list) else [],
             "status": row["status"],
             "chef_user_id": row["chef_user_id"],
+            "hero_image_url": row["hero_image_url"] or "",
+            "hero_image_alt": row["hero_image_alt"] or "",
             "seo_title": row["seo_title"] or "",
             "seo_description": row["seo_description"] or "",
             "seo_keywords": row["seo_keywords"] or "",
@@ -398,7 +403,7 @@ class RecipeRepository:
 _ARTICLE_PUBLIC_COLUMNS = """
     a.id, a.title, a.slug, a.excerpt, a.reading_minutes, a.published_at,
     a.published_version_id, a.seo_title, a.seo_description, a.seo_keywords,
-    a.canonical_url, a.indexing_policy,
+    a.canonical_url, a.indexing_policy, a.hero_image_url, a.hero_image_alt,
     COALESCE(u.display_name, 'True Grit') AS author_name
 """
 
@@ -458,6 +463,8 @@ class ArticleRepository:
             "author_name": row["author_name"],
             "published_at": row["published_at"] or "",
             "reading_minutes": int(row["reading_minutes"] or 1),
+            "hero_image_url": row["hero_image_url"] or None,
+            "hero_image_alt": row["hero_image_alt"] or None,
             "blocks": [b for b in blocks if isinstance(b, dict) and b.get("enabled", True)]
             if isinstance(blocks, list)
             else [],
@@ -516,7 +523,7 @@ class ArticleRepository:
             SELECT a.id, a.title, a.slug, a.excerpt, a.reading_minutes, a.status,
                    a.author_user_id, a.hero_media_id, a.seo_title, a.seo_description,
                    a.seo_keywords, a.canonical_url, a.indexing_policy, a.updated_at,
-                   a.published_version_id,
+                   a.published_version_id, a.hero_image_url, a.hero_image_alt,
                    COALESCE(latest.content_json, v.content_json, '{"blocks":[]}') AS content_json
             FROM articles a
             LEFT JOIN article_versions v ON v.id = a.published_version_id
@@ -544,6 +551,8 @@ class ArticleRepository:
             "status": row["status"],
             "author_user_id": row["author_user_id"],
             "hero_media_id": row["hero_media_id"],
+            "hero_image_url": row["hero_image_url"] or "",
+            "hero_image_alt": row["hero_image_alt"] or "",
             "seo_title": row["seo_title"] or "",
             "seo_description": row["seo_description"] or "",
             "seo_keywords": row["seo_keywords"] or "",

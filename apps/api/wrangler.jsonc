@@ -4,6 +4,14 @@
   "main": "src/worker.py",
   "compatibility_date": "2026-07-11",
   "compatibility_flags": ["python_workers"],
+  // The entire FastAPI app runs inside Pyodide, where large JSON payloads and
+  // request marshalling cost orders of magnitude more CPU than native JS.
+  // Without this raised budget Cloudflare kills the isolate mid-request
+  // ("exceededCpu" in the Worker logs), the platform's error response carries
+  // no CORS headers, and the admin sees the failure as a CORS error. Removed
+  // once before (commit 68eaf84) on the assumption it only served PBKDF2 —
+  // it guards every Pyodide request, so keep it.
+  "limits": { "cpu_ms": 300000 },
   "observability": {
     "enabled": false,
     "head_sampling_rate": 1,

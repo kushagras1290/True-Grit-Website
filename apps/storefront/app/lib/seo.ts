@@ -53,6 +53,7 @@ export function articleJsonLd(article: {
   authorName: string;
   publishedAt: string;
   canonicalPath: string;
+  imageUrl?: string;
 }) {
   return {
     "script:ld+json": {
@@ -63,6 +64,7 @@ export function articleJsonLd(article: {
       author: { "@type": "Person", name: article.authorName },
       datePublished: article.publishedAt,
       mainEntityOfPage: article.canonicalPath,
+      ...(article.imageUrl ? { image: article.imageUrl } : {}),
     },
   };
 }
@@ -77,6 +79,7 @@ export function recipeJsonLd(recipe: {
   ingredients: Array<{ label: string; quantityText: string }>;
   steps: string[];
   canonicalPath: string;
+  imageUrl?: string;
 }) {
   return {
     "script:ld+json": {
@@ -92,6 +95,7 @@ export function recipeJsonLd(recipe: {
       ),
       recipeInstructions: recipe.steps.map((step) => ({ "@type": "HowToStep", text: step })),
       mainEntityOfPage: recipe.canonicalPath,
+      ...(recipe.imageUrl ? { image: recipe.imageUrl } : {}),
     },
   };
 }

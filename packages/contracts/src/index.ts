@@ -187,6 +187,9 @@ export interface RecipeSummary {
   cookMinutes: number;
   servings: number;
   dietaryTags: string[];
+  /** Banner image shown on the recipe page and as the listing thumbnail. */
+  heroImageUrl?: string | null;
+  heroImageAlt?: string | null;
 }
 
 export interface RecipeDetail extends RecipeSummary {
@@ -205,6 +208,9 @@ export interface ArticleSummary {
   authorName: string;
   publishedAt: string;
   readingMinutes: number;
+  /** Banner image shown on the article page and as the listing thumbnail. */
+  heroImageUrl?: string | null;
+  heroImageAlt?: string | null;
 }
 
 export interface ArticleDetail extends ArticleSummary {
@@ -430,6 +436,8 @@ export interface AdminArticleDetail {
   status: EntityStatus;
   authorUserId: string | null;
   heroMediaId: string | null;
+  heroImageUrl: string;
+  heroImageAlt: string;
   seoTitle: string;
   seoDescription: string;
   seoKeywords: string;
@@ -470,6 +478,8 @@ export interface AdminRecipeDetail {
   dietaryTags: string[];
   status: EntityStatus;
   chefUserId: string | null;
+  heroImageUrl: string;
+  heroImageAlt: string;
   seoTitle: string;
   seoDescription: string;
   seoKeywords: string;

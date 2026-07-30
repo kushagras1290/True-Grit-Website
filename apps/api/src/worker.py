@@ -67,11 +67,26 @@ def _bridge_worker_env(env: Any) -> None:
             os.environ[key] = value
 
 
-def _response(body: str, status: int, headers: dict[str, str]) -> Any:
-    from js import Response
+def _js_object(value: Any) -> Any:
+    """Convert a Python dict tree into plain JS objects.
+
+    Pyodide's default ``to_js`` turns a dict into a JS ``Map``, which the web
+    platform APIs used here read as an object with **no** properties: a
+    ``Response`` built with a Map init drops the status *and every header*
+    (including Access-Control-Allow-Origin, so the browser reports the request
+    as a CORS failure), and an R2 ``put`` with Map options loses its
+    httpMetadata. ``Object.fromEntries`` is the documented Workers pattern.
+    """
+    from js import Object
     from pyodide.ffi import to_js
 
-    return Response.new(body, to_js({"status": status, "headers": headers}))
+    return to_js(value, dict_converter=Object.fromEntries)
+
+
+def _response(body: str, status: int, headers: dict[str, str]) -> Any:
+    from js import Response
+
+    return Response.new(body, _js_object({"status": status, "headers": headers}))
 
 
 def _json_response(body: str, status: int, headers: dict[str, str]) -> Any:
@@ -139,7 +154,6 @@ async def _authorized_media_uploader(env: Any, token: str) -> str | None:
 
 async def _upload_media_direct(env: Any, request: Any) -> Any:
     from js import Response
-    from pyodide.ffi import to_js
 
     headers = _cors_headers(env, request)
     method = str(request.method).upper()
@@ -182,7 +196,7 @@ async def _upload_media_direct(env: Any, request: Any) -> Any:
     await env.MEDIA_BUCKET.put(
         key,
         request.body,
-        to_js({"httpMetadata": {"contentType": content_type}}),
+        _js_object({"httpMetadata": {"contentType": content_type}}),
     )
 
     # This bypasses the FastAPI /v1/admin/media/images route entirely (see
@@ -215,8 +229,51 @@ async def _upload_media_direct(env: Any, request: Any) -> Any:
 
     return Response.new(
         f'{{"id":"{image_id}","url":"/media/{key}"}}',
-        to_js({"status": 200, "headers": {**headers, "content-type": "application/json"}}),
+        _js_object({"status": 200, "headers": {**headers, "content-type": "application/json"}}),
     )
+
+
+async def _serve_media_direct(env: Any, request: Any, path: str) -> Any:
+    """Stream a media object straight from R2, bypassing FastAPI/Pyodide.
+
+    Serving images through the ASGI app converts every byte JS -> Python ->
+    JS, which for real photos burns enough CPU that Cloudflare kills the
+    isolate (`exceededCpu` in the Worker logs). The platform's 503 carries no
+    Access-Control-Allow-Origin header, so the admin/storefront see the whole
+    image-change flow die as a "CORS error". Media is public, so a wildcard
+    origin is safe — the response never varies on credentials.
+    """
+    from js import Response
+
+    headers = {"access-control-allow-origin": "*"}
+    method = str(request.method).upper()
+    if method == "OPTIONS":
+        return _response(
+            "",
+            204,
+            {
+                **headers,
+                "access-control-allow-methods": "GET, HEAD, OPTIONS",
+                "access-control-allow-headers": "content-type",
+                "access-control-max-age": "86400",
+            },
+        )
+
+    from truegrit_api.platform.media_store import content_type_for
+
+    key = path[len("/media/") :]
+    obj = await env.MEDIA_BUCKET.get(key)
+    if obj is None:
+        return _json_response('{"detail":"Media not found."}', 404, headers)
+    response_headers = {
+        **headers,
+        "content-type": content_type_for(key),
+        "content-length": str(obj.size),
+        "cache-control": "public, max-age=86400",
+        "etag": str(obj.httpEtag),
+    }
+    body = None if method == "HEAD" else obj.body
+    return Response.new(body, _js_object({"status": 200, "headers": response_headers}))
 
 
 class Default(WorkerEntrypoint):
@@ -227,6 +284,8 @@ class Default(WorkerEntrypoint):
         try:
             if path == "/v1/admin/media/images" and method in {"POST", "OPTIONS"}:
                 return await _upload_media_direct(self.env, request)
+            if path.startswith("/media/") and method in {"GET", "HEAD", "OPTIONS"}:
+                return await _serve_media_direct(self.env, request, path)
             if _app is None:
                 _bridge_worker_env(self.env)
                 _app = create_app(

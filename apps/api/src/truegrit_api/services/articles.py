@@ -31,6 +31,8 @@ _METADATA_FIELDS = (
     "title",
     "excerpt",
     "hero_media_id",
+    "hero_image_url",
+    "hero_image_alt",
     "reading_minutes",
     "seo_title",
     "seo_description",

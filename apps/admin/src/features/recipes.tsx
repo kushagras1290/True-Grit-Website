@@ -16,6 +16,7 @@ import {
   DataTableShell,
   EmptyState,
   Field,
+  ImagePreview,
   Input,
   LoadingRows,
   Modal,
@@ -99,6 +100,8 @@ function CreateRecipeModal({ onClose }: { onClose: () => void }) {
 const RECIPES_PAGE_LIMIT = 25;
 
 export function RecipeListPage() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const offset = (page - 1) * RECIPES_PAGE_LIMIT;
@@ -109,6 +112,19 @@ export function RecipeListPage() {
   });
   const [creating, setCreating] = useState(false);
   const recipes = data ?? [];
+
+  // One-click enable/disable — a disabled recipe drops off /recipes via the
+  // public API immediately (mirrors the blog list toggle).
+  const toggleMutation = useMutation({
+    mutationFn: ({ id, publish }: { id: string; publish: boolean }) =>
+      publish ? api.publishRecipe(id) : api.unpublishRecipe(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-recipes"] });
+      toast.success("Recipe visibility updated.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not update the recipe."),
+  });
 
   return (
     <div>
@@ -175,6 +191,22 @@ export function RecipeListPage() {
                         Draft changes pending
                       </span>
                     ) : null}
+                    {recipe.status === "published" || recipe.status === "unpublished" ? (
+                      <PermissionGate permission="recipes.publish">
+                        <Button
+                          variant="secondary"
+                          disabled={toggleMutation.isPending}
+                          onClick={() =>
+                            toggleMutation.mutate({
+                              id: recipe.id,
+                              publish: recipe.status !== "published",
+                            })
+                          }
+                        >
+                          {recipe.status === "published" ? "Disable" : "Enable"}
+                        </Button>
+                      </PermissionGate>
+                    ) : null}
                   </div>
                 </Td>
                 <Td>{formatDateTime(recipe.updatedAt)}</Td>
@@ -193,6 +225,17 @@ export function RecipeListPage() {
   );
 }
 
+const bannerImageUrlSchema = z
+  .string()
+  .max(1000)
+  .refine(
+    (value) =>
+      value === "" ||
+      (value.startsWith("/") && !value.startsWith("//")) ||
+      z.string().url().safeParse(value).success,
+    "Enter a valid image URL",
+  );
+
 const editSchema = z.object({
   title: z.string().min(3, "At least 3 characters").max(180),
   slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and single hyphens"),
@@ -201,6 +244,8 @@ const editSchema = z.object({
   cookMinutes: z.coerce.number().int().min(0).max(600),
   servings: z.coerce.number().int().min(1).max(50),
   dietaryTagsText: z.string().max(200),
+  heroImageUrl: bannerImageUrlSchema,
+  heroImageAlt: z.string().max(200),
   seoTitle: z.string().max(160),
   seoDescription: z.string().max(320),
   seoKeywords: z.string().max(500),
@@ -221,6 +266,8 @@ function recipeDefaults(recipe: AdminRecipeDetail): EditForm {
     cookMinutes: recipe.cookMinutes,
     servings: recipe.servings,
     dietaryTagsText: recipe.dietaryTags.join(", "),
+    heroImageUrl: recipe.heroImageUrl,
+    heroImageAlt: recipe.heroImageAlt,
     seoTitle: recipe.seoTitle,
     seoDescription: recipe.seoDescription,
     seoKeywords: recipe.seoKeywords,
@@ -380,6 +427,8 @@ export function RecipeEditorPage() {
           .split(",")
           .map((tag) => tag.trim())
           .filter(Boolean),
+        heroImageUrl: values.heroImageUrl,
+        heroImageAlt: values.heroImageAlt,
         seoTitle: values.seoTitle,
         seoDescription: values.seoDescription,
         seoKeywords: values.seoKeywords,
@@ -449,6 +498,22 @@ export function RecipeEditorPage() {
       toast.success("Unpublished.");
     },
     onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not unpublish."),
+  });
+
+  const bannerUploadMutation = useMutation({
+    mutationFn: (file: File) => api.uploadImage(file),
+    onSuccess: (result) => {
+      form.setValue("heroImageUrl", result.url, { shouldDirty: true, shouldValidate: true });
+      if (!form.getValues("heroImageAlt")) {
+        form.setValue("heroImageAlt", form.getValues("title"), {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+      toast.success("Banner uploaded — save to apply.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not upload the banner."),
   });
 
   if (isLoading) return <p className="text-sm text-ink-muted">Loading recipe…</p>;
@@ -550,6 +615,57 @@ export function RecipeEditorPage() {
           <Field label="Dietary tags (comma separated)" htmlFor="rcp-e-tags">
             <Input id="rcp-e-tags" placeholder="gluten-free, plant-based" {...form.register("dietaryTagsText")} />
           </Field>
+
+          <div className="border-t border-line pt-5">
+            <h2 className="font-display text-lg text-ink">Banner image</h2>
+            <p className="text-sm text-ink-muted">
+              Shown at the top of the recipe and as its thumbnail on the recipes listing.
+            </p>
+            <div className="mt-3 space-y-4">
+              <Field
+                label="Banner image URL"
+                htmlFor="rcp-e-hero-url"
+                error={form.formState.errors.heroImageUrl?.message}
+              >
+                <Input
+                  id="rcp-e-hero-upload"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  className="mb-2"
+                  disabled={bannerUploadMutation.isPending || saveMutation.isPending}
+                  onChange={(event) => {
+                    const file = event.currentTarget.files?.[0];
+                    if (file) bannerUploadMutation.mutate(file);
+                    event.currentTarget.value = "";
+                  }}
+                />
+                <Input
+                  id="rcp-e-hero-url"
+                  placeholder={
+                    bannerUploadMutation.isPending ? "Uploading image…" : "/media/images/…"
+                  }
+                  {...form.register("heroImageUrl")}
+                />
+                {form.watch("heroImageUrl") ? (
+                  <div className="mt-3">
+                    <ImagePreview
+                      src={form.watch("heroImageUrl")}
+                      alt={form.watch("heroImageAlt")}
+                      label={recipe.title || "Recipe banner"}
+                      className="h-32 w-full max-w-md"
+                    />
+                  </div>
+                ) : null}
+              </Field>
+              <Field label="Banner alt text" htmlFor="rcp-e-hero-alt">
+                <Input
+                  id="rcp-e-hero-alt"
+                  placeholder="Describes the banner for screen readers"
+                  {...form.register("heroImageAlt")}
+                />
+              </Field>
+            </div>
+          </div>
 
           <div className="border-t border-line pt-5">
             <h2 className="font-display text-lg text-ink">Ingredients</h2>

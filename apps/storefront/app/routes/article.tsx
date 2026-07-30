@@ -5,6 +5,7 @@ import { Breadcrumbs } from "../components/catalogue";
 import { CmsBlock, type BlockData } from "../components/blocks";
 import { catalogueRuntime, loadArticle, loadFarms, loadProductsBySlugs } from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
+import { mediaUrl } from "../lib/media";
 import { articleJsonLd, seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
@@ -31,6 +32,7 @@ export function meta({ data: loaderData }: Route.MetaArgs) {
       authorName: loaderData.article.authorName,
       publishedAt: loaderData.article.publishedAt,
       canonicalPath: loaderData.article.seo.canonicalPath,
+      imageUrl: mediaUrl(loaderData.article.heroImageUrl) ?? undefined,
     }),
   ];
 }
@@ -52,6 +54,17 @@ export default function ArticlePage({ loaderData }: Route.ComponentProps) {
           { label: article.title, path: `/blog/${article.slug}` },
         ]}
       />
+      {article.heroImageUrl ? (
+        <div className="mx-auto max-w-4xl px-4 pt-6 sm:px-6">
+          <img
+            src={mediaUrl(article.heroImageUrl)}
+            alt={article.heroImageAlt || article.title}
+            className="aspect-[21/9] w-full rounded-md object-cover"
+            fetchPriority="high"
+          />
+        </div>
+      ) : null}
+
       <article className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
         <header>
           <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">

@@ -4,6 +4,7 @@ import type { Route } from "./+types/blog";
 import { Section } from "../components/catalogue";
 import { PageLinkPagination } from "../components/pagination";
 import { catalogueRuntime, loadArticles } from "../lib/catalogue.server";
+import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
 
 const BLOG_PAGE_SIZE = 10;
@@ -48,15 +49,25 @@ export default function BlogPage({ loaderData }: Route.ComponentProps) {
           <Link
             key={article.id}
             to={`/blog/${article.slug}`}
-            className="group block border-t border-line pt-6"
+            className="group flex gap-5 border-t border-line pt-6"
           >
-            <p className="text-xs text-ink-muted">
-              {article.authorName} · {article.readingMinutes} min read
-            </p>
-            <h2 className="mt-1.5 font-display text-2xl text-ink group-hover:text-brand">
-              {article.title}
-            </h2>
-            <p className="mt-2 text-base text-ink-muted">{article.excerpt}</p>
+            {article.heroImageUrl ? (
+              <img
+                src={mediaUrl(article.heroImageUrl)}
+                alt={article.heroImageAlt || ""}
+                loading="lazy"
+                className="h-24 w-32 shrink-0 rounded-md object-cover sm:h-28 sm:w-40"
+              />
+            ) : null}
+            <span className="min-w-0">
+              <p className="text-xs text-ink-muted">
+                {article.authorName} · {article.readingMinutes} min read
+              </p>
+              <h2 className="mt-1.5 font-display text-2xl text-ink group-hover:text-brand">
+                {article.title}
+              </h2>
+              <p className="mt-2 text-base text-ink-muted">{article.excerpt}</p>
+            </span>
           </Link>
         ))}
       </div>

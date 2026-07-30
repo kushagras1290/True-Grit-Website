@@ -759,6 +759,14 @@ export const api = {
       ? demo({ status: "published", version: 1 })
       : post(`/v1/admin/categories/${id}/publish`),
 
+  updateCategoryStatus: (
+    categoryId: string,
+    status: "published" | "unpublished",
+  ): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id: categoryId, status })
+      : patch(`/v1/admin/categories/${categoryId}/status`, { status }),
+
   deleteCategory: (id: string): Promise<{ id: string; status: string }> =>
     demoMode ? demo({ id, status: "archived" }) : del(`/v1/admin/categories/${id}`),
 
@@ -1280,6 +1288,8 @@ export const api = {
       status: "published",
       authorUserId: null,
       heroMediaId: null,
+      heroImageUrl: article.heroImageUrl ?? "",
+      heroImageAlt: article.heroImageAlt ?? "",
       seoTitle: article.seo.title,
       seoDescription: article.seo.description,
       seoKeywords: article.seo.keywords ?? "",
@@ -1360,6 +1370,8 @@ export const api = {
       dietaryTags: recipe.dietaryTags,
       status: "published",
       chefUserId: null,
+      heroImageUrl: recipe.heroImageUrl ?? "",
+      heroImageAlt: recipe.heroImageAlt ?? "",
       seoTitle: recipe.seo.title,
       seoDescription: recipe.seo.description,
       seoKeywords: recipe.seo.keywords ?? "",

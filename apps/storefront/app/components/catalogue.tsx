@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 import { usePriceFormatter } from "../lib/currency";
+import { mediaUrl } from "../lib/media";
 import { getPublicApiUrl } from "../lib/public-env";
 
 const PRODUCE_GLYPHS: Record<string, string> = {
@@ -67,7 +68,12 @@ export function ProduceFrame({
       className={`relative flex items-center justify-center overflow-hidden bg-subtle ${className}`}
     >
       {resolvedImageUrl ? (
-        <img src={resolvedImageUrl} alt="" className="h-full w-full object-cover" loading="lazy" />
+        <img
+          src={mediaUrl(resolvedImageUrl)}
+          alt=""
+          className="h-full w-full object-cover"
+          loading="lazy"
+        />
       ) : (
         <>
           <span
@@ -176,7 +182,7 @@ export function CategoryTile({ category }: { category: CategorySummary }) {
       {category.imageUrl ? (
         <>
           <img
-            src={category.imageUrl}
+            src={mediaUrl(category.imageUrl)}
             alt=""
             loading="lazy"
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"

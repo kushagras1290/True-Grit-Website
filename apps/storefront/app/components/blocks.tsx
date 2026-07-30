@@ -9,7 +9,9 @@ import type {
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router";
 
-import { CategoryTile, ProductGrid, Section } from "./catalogue";
+import { mediaUrl } from "../lib/media";
+import { CategoryTile, ProductCard, Section } from "./catalogue";
+import { Slider } from "./slider";
 
 export interface BlockData {
   productsBySlug: Map<string, ProductSummary>;
@@ -100,7 +102,7 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
             aria-label={activeSlide.label}
           >
             <img
-              src={activeSlide.imageUrl}
+              src={mediaUrl(activeSlide.imageUrl)}
               alt={activeSlide.imageAlt || activeSlide.label}
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]"
               fetchPriority="high"
@@ -181,29 +183,48 @@ export function CmsBlock({ block, data }: { block: PublicPageBlock; data: BlockD
       return <HeroBlockView block={block} />;
 
     case "category_collection": {
+      // Resolved through the live categories map, so an unpublished
+      // (disabled) category simply drops out of the row — the public API
+      // stops returning it and flatMap skips the missing slug.
       const categories = block.props.categorySlugs.flatMap(
         (slug) => data.categoriesBySlug.get(slug) ?? [],
       );
       if (categories.length === 0) return null;
       return (
         <Section eyebrow="The market" heading={block.props.heading}>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <Slider ariaLabel={block.props.heading}>
             {categories.map((category) => (
-              <CategoryTile key={category.id} category={category} />
+              <div
+                key={category.id}
+                className="w-[calc(50%-0.5rem)] shrink-0 snap-start sm:w-[calc(33.3%-0.7rem)] lg:w-[calc(25%-0.75rem)]"
+              >
+                <CategoryTile category={category} />
+              </div>
             ))}
-          </div>
+          </Slider>
         </Section>
       );
     }
 
     case "product_collection": {
+      // Same live-data contract as categories: disabled products are absent
+      // from the API response, so they never render here.
       const products = block.props.productSlugs
         .slice(0, block.props.limit)
         .flatMap((slug) => data.productsBySlug.get(slug) ?? []);
       if (products.length === 0) return null;
       return (
         <Section eyebrow="Picked this week" heading={block.props.heading} tone="surface">
-          <ProductGrid products={products} />
+          <Slider ariaLabel={block.props.heading}>
+            {products.map((product) => (
+              <div
+                key={product.id}
+                className="w-[calc(50%-0.5rem)] shrink-0 snap-start sm:w-[calc(33.3%-0.7rem)] lg:w-[calc(25%-0.75rem)]"
+              >
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </Slider>
         </Section>
       );
     }

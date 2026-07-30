@@ -143,6 +143,20 @@ export function CategoryListPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not delete categories."),
   });
 
+  // One-click enable/disable. The public API only lists published categories,
+  // so a disabled category disappears from the homepage category collection
+  // and navigation immediately — driven by the API, never by a static build.
+  const statusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: "published" | "unpublished" }) =>
+      api.updateCategoryStatus(id, status),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-categories"] });
+      toast.success("Category visibility updated.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not update the category."),
+  });
+
   function toggleCategory(categoryId: string) {
     setSelectedCategoryIds((current) =>
       current.includes(categoryId)
@@ -261,7 +275,26 @@ export function CategoryListPage() {
                 <Td>{category.productCount}</Td>
                 <Td className="text-ink-muted">{category.visibility}</Td>
                 <Td>
-                  <StatusPill status={category.status} />
+                  <div className="flex items-center gap-2">
+                    <StatusPill status={category.status} />
+                    {category.status === "published" || category.status === "unpublished" ? (
+                      <PermissionGate permission="categories.publish">
+                        <Button
+                          variant="secondary"
+                          disabled={statusMutation.isPending}
+                          onClick={() =>
+                            statusMutation.mutate({
+                              id: category.id,
+                              status:
+                                category.status === "published" ? "unpublished" : "published",
+                            })
+                          }
+                        >
+                          {category.status === "published" ? "Disable" : "Enable"}
+                        </Button>
+                      </PermissionGate>
+                    ) : null}
+                  </div>
                 </Td>
                 <Td>{formatDate(category.updatedAt)}</Td>
               </tr>

@@ -13,6 +13,7 @@ import {
 } from "../lib/catalogue.server";
 import { useCart } from "../lib/cart";
 import { resolveCountry } from "../lib/geo.server";
+import { mediaUrl } from "../lib/media";
 import { recipeJsonLd, seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
@@ -45,6 +46,7 @@ export function meta({ data: loaderData }: Route.MetaArgs) {
       ingredients: loaderData.recipe.ingredients,
       steps: loaderData.recipe.steps,
       canonicalPath: loaderData.recipe.seo.canonicalPath,
+      imageUrl: mediaUrl(loaderData.recipe.heroImageUrl) ?? undefined,
     }),
   ];
 }
@@ -73,6 +75,14 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
         ]}
       />
       <header className="mx-auto max-w-[80rem] px-4 pt-6 sm:px-6">
+        {recipe.heroImageUrl ? (
+          <img
+            src={mediaUrl(recipe.heroImageUrl)}
+            alt={recipe.heroImageAlt || recipe.title}
+            className="mb-6 aspect-[21/9] w-full rounded-md object-cover"
+            fetchPriority="high"
+          />
+        ) : null}
         <div className="max-w-2xl">
           <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
             Prep {recipe.prepMinutes} min · cook {recipe.cookMinutes} min · serves {recipe.servings}

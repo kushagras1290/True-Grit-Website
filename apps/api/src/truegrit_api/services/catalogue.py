@@ -800,6 +800,43 @@ async def update_category(
     return {"id": category_id, "status": current["status"], "changed": True}
 
 
+async def set_category_status(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    category_id: str,
+    status: str,
+) -> dict[str, Any]:
+    """One-click enable/disable. An unpublished category disappears from the
+    public API immediately, so homepage category collections and navigation
+    stop showing it without any storefront redeploy (mirrors
+    ``set_product_status``)."""
+    if status not in {"published", "unpublished"}:
+        raise ValidationAppError("Invalid status.")
+
+    current = await db.fetch_one(
+        "SELECT status FROM categories WHERE id = ? AND archived_at IS NULL", (category_id,)
+    )
+    if current is None:
+        raise NotFoundError("Category not found.")
+
+    if current["status"] == status:
+        return {"id": category_id, "status": status, "changed": False}
+
+    await _apply_update(
+        db,
+        table="categories",
+        entity_type="category",
+        action=f"category.status.{status}",
+        entity_id=category_id,
+        actor=actor,
+        request_id=request_id,
+        current=current,
+        updates={"status": status},
+    )
+    return {"id": category_id, "status": status, "changed": True}
+
+
 async def archive_category(
     db: Database, actor: Principal, request_id: str, category_id: str
 ) -> dict[str, Any]:
