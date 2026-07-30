@@ -104,6 +104,10 @@ class CategorySummary(PublicModel):
     season_label: str | None = None
     image_url: str | None = None
     product_count: int
+    # Tree position: `parent_id` is None for a department, set for a
+    # subcategory; `level` is 0 for departments and 1 for subcategories.
+    parent_id: str | None = None
+    level: int = 0
 
 
 class FaqItem(PublicModel):

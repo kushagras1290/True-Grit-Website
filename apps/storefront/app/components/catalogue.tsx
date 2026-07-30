@@ -5,7 +5,7 @@
  * into the same frame via Cloudflare Images at integration time. */
 
 import type { CategorySummary, ProductSummary } from "@truegrit/contracts";
-import { themeVars, type ThemeKey } from "@truegrit/ui";
+import { themeVars } from "@truegrit/ui";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
@@ -168,37 +168,115 @@ export function ProductGrid({ products }: { products: ProductSummary[] }) {
   );
 }
 
-export function CategoryTile({ category }: { category: CategorySummary }) {
+/**
+ * Tile aspect per surface. Portrait tiles read as *content* and stack into a
+ * wall when there are many, so only the tall `feature` variant keeps 4:5;
+ * `rail` is landscape because a horizontal browse band is navigation, and its
+ * height sets how much of the page the band costs.
+ */
+const CATEGORY_TILE_ASPECT = {
+  feature: "aspect-[4/5]",
+  rail: "aspect-[3/2]",
+} as const;
+
+export type CategoryTileVariant = keyof typeof CATEGORY_TILE_ASPECT;
+
+/**
+ * A category as an image tile.
+ *
+ * Roughly three quarters of the catalogue's categories carry no hero image, so
+ * the no-image state is a deliberate typographic treatment — a large initial
+ * over the theme colour, matching `ProduceFrame` — rather than a bare colour
+ * block. A grid that mixes photographs with flat swatches reads as broken; one
+ * that mixes photographs with a consistent lettered fallback reads as designed.
+ */
+export function CategoryTile({
+  category,
+  variant = "feature",
+  productCount = category.productCount,
+}: {
+  category: CategorySummary;
+  variant?: CategoryTileVariant;
+  productCount?: number;
+}) {
+  const imageUrl = mediaUrl(category.imageUrl);
   return (
     <Link
       to={`/category/${category.slug}`}
-      style={themeVars(category.themeKey as ThemeKey)}
-      className="group relative flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-md p-5"
+      style={themeVars(category.themeKey)}
+      className={`group relative flex ${CATEGORY_TILE_ASPECT[variant]} flex-col justify-end overflow-hidden rounded-md p-5`}
     >
       <span
         aria-hidden
         className="absolute inset-0 bg-[var(--theme-bg)] transition-transform duration-200 group-hover:scale-[1.02]"
       />
-      {category.imageUrl ? (
+      {imageUrl ? (
         <>
           <img
-            src={mediaUrl(category.imageUrl)}
+            src={imageUrl}
             alt=""
             loading="lazy"
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
           />
-          <span aria-hidden className="absolute inset-0 bg-black/25" />
+          <span aria-hidden className="absolute inset-0 bg-black/35" />
         </>
-      ) : null}
-      <span className={"relative " + (category.imageUrl ? "text-white" : "text-[var(--theme-fg)]")}>
+      ) : (
+        <span
+          aria-hidden
+          className="absolute inset-0 flex items-center justify-center overflow-hidden"
+        >
+          <span className="font-display text-[6rem] leading-none text-[var(--theme-fg)] opacity-15 select-none">
+            {category.name.charAt(0).toUpperCase()}
+          </span>
+        </span>
+      )}
+      <span className={"relative " + (imageUrl ? "text-white" : "text-[var(--theme-fg)]")}>
         {category.seasonLabel ? (
-          <span className="mb-2 inline-block rounded-full bg-white/15 px-2.5 py-0.5 text-xs">
+          <span className="mb-2 inline-block rounded-full bg-white/20 px-2.5 py-0.5 text-xs">
             {category.seasonLabel}
           </span>
         ) : null}
         <span className="block font-display text-xl leading-tight">{category.name}</span>
-        <span className="mt-1 block text-sm opacity-80">{category.productCount} products</span>
+        <span className="mt-1 block text-sm opacity-80">
+          {productCount} product{productCount === 1 ? "" : "s"}
+        </span>
       </span>
+    </Link>
+  );
+}
+
+/**
+ * One category as a pill link with its product count.
+ *
+ * Subcategories deliberately share their department's photograph, so rendering
+ * a row of them as image tiles produces four identical pictures side by side.
+ * As chips they read as what they are — navigation into a narrower slice — and
+ * a department's sections fit on one line instead of a second tile grid.
+ */
+export function CategoryChip({
+  label,
+  count,
+  href,
+  active = false,
+}: {
+  label: string;
+  count: number;
+  href: string;
+  active?: boolean;
+}) {
+  return (
+    <Link
+      to={href}
+      aria-current={active ? "true" : undefined}
+      className={
+        "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition-colors " +
+        (active
+          ? "border-brand bg-brand text-ink-inverse"
+          : "border-line-strong text-ink hover:bg-canvas hover:text-brand")
+      }
+    >
+      {label}
+      <span className={active ? "opacity-70" : "text-ink-muted"}>{count}</span>
     </Link>
   );
 }

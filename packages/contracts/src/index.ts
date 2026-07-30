@@ -65,7 +65,7 @@ export interface PublicBootstrap {
 
 export type ProductAvailability = "in_stock" | "low_stock" | "out_of_stock";
 
-export type CategoryTheme = "forest" | "sage" | "terracotta" | "charcoal";
+export type CategoryTheme = "forest" | "sage" | "terracotta" | "charcoal" | "gold";
 
 export interface ProductSummary {
   id: string;
@@ -121,6 +121,29 @@ export interface CategorySummary {
   seasonLabel: string | null;
   imageUrl: string | null;
   productCount: number;
+  /** Owning department, or `null` for a department (a root category). */
+  parentId: string | null;
+  /** Depth in the category tree: `0` for departments, `1` for subcategories. */
+  level: number;
+}
+
+/** A department with its subcategories resolved — the shape the shop sidebar
+ * and department rail consume. Built from the flat `CategorySummary[]` the
+ * public API returns, so grouping costs no extra request. */
+export interface CategoryTreeNode {
+  department: CategorySummary;
+  children: CategorySummary[];
+  /**
+   * Products reachable through this department, without double counting.
+   *
+   * The catalogue assigns a product to both its section and its owning
+   * department (`is_primary` distinguishes them), so a department's own
+   * `productCount` already covers its subcategories. Categories whose products
+   * are only assigned at the leaf would report 0 on the department, so this is
+   * the larger of the department's own count and its children's sum — correct
+   * under either assignment style, and never inflated by the overlap.
+   */
+  totalProductCount: number;
 }
 
 export interface FaqItem {
@@ -496,12 +519,7 @@ export interface AdminRecipeDetail {
 // ---------------------------------------------------------------------------
 
 export type ReturnReasonCode =
-  | "damaged"
-  | "wrong_item"
-  | "quality_issue"
-  | "not_as_described"
-  | "missing_item"
-  | "other";
+  "damaged" | "wrong_item" | "quality_issue" | "not_as_described" | "missing_item" | "other";
 
 export type ReturnStatus =
   | "requested"
@@ -564,7 +582,8 @@ export interface AdminReturnRequestDetail {
 
 export type SubmissionContentType = "article" | "recipe";
 
-export type SubmissionStatus = "submitted" | "under_review" | "changes_requested" | "approved" | "rejected";
+export type SubmissionStatus =
+  "submitted" | "under_review" | "changes_requested" | "approved" | "rejected";
 
 export interface SubmissionIngredient {
   label: string;

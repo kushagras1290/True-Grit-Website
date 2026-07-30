@@ -22,33 +22,95 @@ class CategoryRepository:
         )
         return await self._db.fetch_one(
             f"""
-            SELECT id, name, slug, short_description, hero_eyebrow, hero_title,
-                   hero_description, theme_key, season_label, product_assignment_mode,
-                   product_rule_json, seo_title, seo_description, hero_image_url,
-                   hero_image_alt, updated_at
-            FROM categories
-            WHERE slug = ? AND status = 'published' AND visibility = 'public'{geo_sql}
+            SELECT c.id, c.name, c.slug, c.short_description, c.hero_eyebrow, c.hero_title,
+                   c.hero_description, c.theme_key, c.season_label, c.product_assignment_mode,
+                   c.product_rule_json, c.seo_title, c.seo_description, c.hero_image_url,
+                   c.hero_image_alt, c.updated_at, c.parent_id,
+                   parent.name AS parent_name, parent.slug AS parent_slug
+            FROM categories c
+            LEFT JOIN categories parent
+              ON parent.id = c.parent_id
+             AND parent.status = 'published' AND parent.visibility = 'public'
+            WHERE c.slug = ? AND c.status = 'published' AND c.visibility = 'public'{geo_sql}
             """,
             (slug, *geo_params),
         )
 
     async def list_published(self, country: str | None = None) -> list[dict[str, Any]]:
+        """Every published category, in tree order: each department immediately
+        followed by its own subcategories.
+
+        `sort_order` is only meaningful among siblings — a subcategory's
+        `sort_order` positions it within its department, not within the whole
+        catalogue. Ordering by it globally therefore interleaves the levels
+        (subcategories at 1-4 sort ahead of departments at 11-50, so the list
+        opens with unrelated subcategories). Sorting by the *department's*
+        position first, then level, then position within the department, keeps
+        every branch contiguous and lets callers group the flat list without a
+        second request.
+        """
         geo_sql, geo_params = geo_release_clause(
             country, alias="c", table="category_release_countries", id_column="category_id"
         )
         return await self._db.fetch_all(
             f"""
             SELECT c.id, c.name, c.slug, c.short_description, c.theme_key, c.season_label,
-                   c.hero_image_url,
+                   c.hero_image_url, c.parent_id, c.level,
                    (SELECT COUNT(*) FROM product_categories pc
                      JOIN products p ON p.id = pc.product_id
                     WHERE pc.category_id = c.id AND p.status = 'published') AS product_count
             FROM categories c
+            LEFT JOIN categories root ON root.id = c.parent_id
             WHERE c.status = 'published' AND c.visibility = 'public'{geo_sql}
-            ORDER BY c.sort_order, c.name
+            ORDER BY COALESCE(root.sort_order, c.sort_order),
+                     COALESCE(root.name, c.name),
+                     c.level,
+                     c.sort_order,
+                     c.name
             """,
             tuple(geo_params),
         )
+
+    async def list_published_children(
+        self, parent_id: str, country: str | None = None
+    ) -> list[dict[str, Any]]:
+        """Published subcategories of one department, in editor-defined order.
+        Backs the drill-down on a department page, which would otherwise dead-end
+        in a flat product grid."""
+        geo_sql, geo_params = geo_release_clause(
+            country, alias="c", table="category_release_countries", id_column="category_id"
+        )
+        return await self._db.fetch_all(
+            f"""
+            SELECT c.id, c.name, c.slug, c.short_description, c.theme_key, c.season_label,
+                   c.hero_image_url, c.parent_id, c.level,
+                   (SELECT COUNT(*) FROM product_categories pc
+                     JOIN products p ON p.id = pc.product_id
+                    WHERE pc.category_id = c.id AND p.status = 'published') AS product_count
+            FROM categories c
+            WHERE c.parent_id = ? AND c.status = 'published'
+              AND c.visibility = 'public'{geo_sql}
+            ORDER BY c.sort_order, c.name
+            """,
+            (parent_id, *geo_params),
+        )
+
+    async def get_published_id_by_slug(self, slug: str, country: str | None = None) -> str | None:
+        """Resolve a category slug to its id for filtering product queries.
+        Returns None for a slug that is missing, unpublished, non-public or not
+        released in `country`, so a filter can never widen visibility."""
+        geo_sql, geo_params = geo_release_clause(
+            country, alias="c", table="category_release_countries", id_column="category_id"
+        )
+        row = await self._db.fetch_one(
+            f"""
+            SELECT c.id FROM categories c
+            WHERE c.slug = ? AND c.status = 'published'
+              AND c.visibility = 'public'{geo_sql}
+            """,
+            (slug, *geo_params),
+        )
+        return str(row["id"]) if row else None
 
     async def get_by_id(self, category_id: str) -> dict[str, Any] | None:
         return await self._db.fetch_one(

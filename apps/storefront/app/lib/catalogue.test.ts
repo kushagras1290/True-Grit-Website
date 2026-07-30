@@ -8,6 +8,7 @@ import {
   loadCategoryPage,
   loadHighlightedProducts,
   loadProduct,
+  loadProductPage,
   loadProductsBySlugs,
   runSearch,
 } from "./catalogue.server";
@@ -66,6 +67,50 @@ describe("demo catalogue", () => {
     const highlights = await loadHighlightedProducts("IN");
     expect(highlights.length).toBeGreaterThan(0);
     expect(highlights[0]?.slug).toBe(products[0]?.slug);
+  });
+
+  it("exposes tree position on every category so the shop can group them", () => {
+    const departments = categories.filter((category) => category.level === 0);
+    const subcategories = categories.filter((category) => category.level === 1);
+    expect(departments.every((category) => category.parentId === null)).toBe(true);
+    expect(subcategories.length).toBeGreaterThan(0);
+    expect(
+      subcategories.every((child) =>
+        departments.some((department) => department.id === child.parentId),
+      ),
+    ).toBe(true);
+  });
+
+  it("resolves a department's sections for the drill-down", async () => {
+    const page = await loadCategoryPage("fresh-fruits");
+    expect(page?.subcategories.map((category) => category.slug)).toEqual(["stone-fruit"]);
+  });
+});
+
+describe("shop grid filtering", () => {
+  it("returns the full catalogue when no category is selected", async () => {
+    const page = await loadProductPage(1);
+    expect(page.total).toBe(products.length);
+  });
+
+  it("narrows the grid to the selected category", async () => {
+    const page = await loadProductPage(1, undefined, undefined, "grains-and-millets");
+    expect(page.items.map((product) => product.slug)).toEqual([
+      "sprouted-ragi-flour",
+      "himalayan-red-rajma",
+    ]);
+    expect(page.total).toBe(2);
+  });
+
+  it("narrows to a subcategory, not just a department", async () => {
+    const page = await loadProductPage(1, undefined, undefined, "stone-fruit");
+    expect(page.items.map((product) => product.slug)).toEqual(["organic-alphonso-mangoes"]);
+  });
+
+  // A stale bookmark must not silently widen back to the whole catalogue.
+  it("returns an empty page for an unknown category", async () => {
+    const page = await loadProductPage(1, undefined, undefined, "not-a-category");
+    expect(page).toEqual({ items: [], total: 0 });
   });
 });
 

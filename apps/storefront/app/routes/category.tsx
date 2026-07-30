@@ -1,10 +1,11 @@
 import { data } from "react-router";
 
 import type { Route } from "./+types/category";
-import { Breadcrumbs, ProductGrid, Section } from "../components/catalogue";
+import { Breadcrumbs, CategoryChip, ProductGrid, Section } from "../components/catalogue";
 import { PageLinkPagination } from "../components/pagination";
 import { CATALOGUE_PAGE_SIZE, catalogueRuntime, loadCategoryPage } from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
+import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
@@ -42,7 +43,7 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
           </div>
           {page.hero.imageUrl ? (
             <img
-              src={page.hero.imageUrl}
+              src={mediaUrl(page.hero.imageUrl)}
               alt={page.hero.imageAlt ?? ""}
               className="aspect-[4/3] w-full rounded-md object-cover"
             />
@@ -51,6 +52,27 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
       </header>
 
       <Section>
+        {/* A department used to dead-end in a flat grid of everything beneath
+            it. Its sections are the natural next step, so they head the grid. */}
+        {page.subcategories.length > 0 ? (
+          <div className="mb-7">
+            <h2 className="mb-3 text-xs font-semibold tracking-[0.14em] text-accent uppercase">
+              Sections in {page.name}
+            </h2>
+            <ul className="flex flex-wrap gap-2">
+              {page.subcategories.map((subcategory) => (
+                <li key={subcategory.id}>
+                  <CategoryChip
+                    label={subcategory.name}
+                    count={subcategory.productCount}
+                    href={`/category/${subcategory.slug}`}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
         <p className="mb-5 text-sm text-ink-muted" role="status">
           {page.productsTotal} product{page.productsTotal === 1 ? "" : "s"}
         </p>

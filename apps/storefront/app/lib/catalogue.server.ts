@@ -24,6 +24,7 @@ import {
   farms,
   getCategoryPage,
   homePage,
+  productSlugsForCategory,
   products,
   recipes,
 } from "@truegrit/contracts/fixtures";
@@ -210,14 +211,29 @@ export async function loadAllProducts(
   );
 }
 
+/**
+ * One page of the shop grid, optionally narrowed to a single category.
+ *
+ * `categorySlug` is the shop page's in-place sidebar filter. The API resolves
+ * an unknown or unpublished slug to an empty page rather than the full
+ * catalogue, so a stale bookmark shows an empty state instead of silently
+ * ignoring the filter — fixture mode matches that behaviour.
+ */
 export async function loadProductPage(
   page: number,
   country?: string,
   runtime?: CatalogueRuntime,
+  categorySlug?: string | null,
 ): Promise<PaginatedContent<ProductSummary>> {
+  const path = categorySlug
+    ? `/v1/public/products?category=${encodeURIComponent(categorySlug)}`
+    : "/v1/public/products";
+  const fallback = categorySlug
+    ? products.filter((product) => productSlugsForCategory(categorySlug).includes(product.slug))
+    : products;
   return paginatedFromApi<ProductSummary>(
-    withCountry("/v1/public/products", country),
-    products,
+    withCountry(path, country),
+    fallback,
     CATALOGUE_PAGE_SIZE,
     (Math.max(page, 1) - 1) * CATALOGUE_PAGE_SIZE,
     runtime,

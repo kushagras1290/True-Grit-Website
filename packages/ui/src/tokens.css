@@ -16,6 +16,7 @@
   --palette-terracotta-deep: #9c5a41;
   --palette-charcoal: #202820;
   --palette-grey-green: #69736b;
+  --palette-gold: #a8813c;
   --palette-paper: #ffffff;
 
   /* Colour roles */
@@ -28,6 +29,7 @@
   --color-text-inverse: var(--palette-ivory);
   --color-brand-primary: var(--palette-forest);
   --color-brand-accent: var(--palette-terracotta);
+  --color-brand-gold: var(--palette-gold);
   --color-border-subtle: color-mix(in srgb, #24483a 14%, transparent);
   --color-border-strong: color-mix(in srgb, #24483a 32%, transparent);
   --color-danger: #a2442e;
@@ -80,6 +82,9 @@
   /* Layout */
   --container-max: 80rem;
   --touch-target: 44px;
+  /* Height of the sticky site header. Sub-navigation that sticks below it
+     offsets by this, so the two never overlap. */
+  --header-height: 4.25rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -165,6 +165,145 @@ def test_unknown_and_invalid_category_slugs(client: TestClient):
     assert response.json()["error"]["code"] == "validation_error"
 
 
+# ---------------------------------------------------------------------------
+# Category hierarchy (shop sidebar, department rail, drill-down)
+# ---------------------------------------------------------------------------
+
+
+def test_categories_list_exposes_tree_position(client: TestClient):
+    items = client.get("/v1/public/categories").json()["items"]
+    by_slug = {item["slug"]: item for item in items}
+
+    department = by_slug["fruits"]
+    assert department["level"] == 0
+    assert department["parentId"] is None
+
+    section = by_slug["tropical-fruits"]
+    assert section["level"] == 1
+    assert section["parentId"] == department["id"]
+
+
+def test_categories_list_orders_departments_before_their_own_sections(client: TestClient):
+    """`sort_order` is only meaningful among siblings, so ordering by it globally
+    used to open the list with unrelated subcategories (sort_order 1-4) ahead of
+    every department (11-50). Each branch must now be contiguous."""
+    items = client.get("/v1/public/categories").json()["items"]
+    assert items[0]["level"] == 0, "the list must start with a department"
+
+    positions = {item["id"]: index for index, item in enumerate(items)}
+    departments = [item for item in items if item["level"] == 0]
+    assert len(departments) >= 20
+
+    for section in (item for item in items if item["level"] == 1):
+        parent_index = positions[section["parentId"]]
+        assert parent_index < positions[section["id"]], (
+            f"{section['slug']} appears before its own department"
+        )
+        # Contiguity: nothing from another branch sits between the two.
+        between = items[parent_index + 1 : positions[section["id"]]]
+        assert all(
+            item["level"] == 1 and item["parentId"] == section["parentId"] for item in between
+        ), f"{section['slug']} is separated from its department by another branch"
+
+
+def test_department_page_lists_its_published_sections(client: TestClient):
+    body = client.get("/v1/public/categories/fruits").json()
+    slugs = [item["slug"] for item in body["subcategories"]]
+    assert slugs == [
+        "tropical-fruits",
+        "citrus-fruits",
+        "berries-small-fruits",
+        "melons-orchard-fruits",
+    ]
+    assert all(item["level"] == 1 for item in body["subcategories"])
+
+
+def test_section_page_breadcrumbs_name_the_department(client: TestClient):
+    body = client.get("/v1/public/categories/tropical-fruits").json()
+    assert [crumb["label"] for crumb in body["breadcrumbs"]] == [
+        "Home",
+        "Shop",
+        "Fresh Fruits",
+        "Tropical Fruits",
+    ]
+    assert body["breadcrumbs"][2]["path"] == "/shop?category=fruits"
+    # A department has no parent, so its trail is unchanged.
+    department = client.get("/v1/public/categories/fruits").json()
+    assert [crumb["label"] for crumb in department["breadcrumbs"]] == [
+        "Home",
+        "Shop",
+        "Fresh Fruits",
+    ]
+
+
+def test_unpublished_department_hides_its_sections(client: TestClient, db: SQLiteDatabase):
+    """Un-publishing a department must not leave its sections claiming a parent
+    the storefront can no longer see, or they would surface as top-level."""
+    db._conn.execute("UPDATE categories SET status = 'unpublished' WHERE slug = 'fruits'")
+    db._conn.commit()
+
+    items = client.get("/v1/public/categories").json()["items"]
+    assert "fruits" not in {item["slug"] for item in items}
+    orphan = next(item for item in items if item["slug"] == "tropical-fruits")
+    # Still reports its parent, so the storefront's tree builder drops it rather
+    # than promoting it into the department rail.
+    assert orphan["parentId"] == "cat_market_fruits"
+    assert client.get("/v1/public/categories/fruits").status_code == 404
+
+
+# ---------------------------------------------------------------------------
+# Shop grid filtering (?category=)
+# ---------------------------------------------------------------------------
+
+
+def test_products_list_filters_by_category(client: TestClient):
+    body = client.get("/v1/public/products", params={"category": "tropical-fruits"}).json()
+    assert body["total"] == 8
+    assert len(body["items"]) == 8
+
+    department = client.get("/v1/public/products", params={"category": "fruits"}).json()
+    assert department["total"] == 32, "a department covers all four of its sections"
+
+
+def test_products_list_category_filter_paginates(client: TestClient):
+    first = client.get(
+        "/v1/public/products", params={"category": "fruits", "limit": 10, "offset": 0}
+    ).json()
+    second = client.get(
+        "/v1/public/products", params={"category": "fruits", "limit": 10, "offset": 10}
+    ).json()
+    assert first["total"] == second["total"] == 32
+    assert len(first["items"]) == len(second["items"]) == 10
+    assert not {p["slug"] for p in first["items"]} & {p["slug"] for p in second["items"]}
+
+
+def test_unknown_category_filter_returns_empty_not_everything(client: TestClient):
+    """A stale bookmark must not silently widen into the full catalogue."""
+    body = client.get("/v1/public/products", params={"category": "not-a-category"}).json()
+    assert body == {"items": [], "total": 0}
+
+
+def test_unpublished_category_filter_returns_empty(client: TestClient, db: SQLiteDatabase):
+    db._conn.execute("UPDATE categories SET status = 'unpublished' WHERE slug = 'tropical-fruits'")
+    db._conn.commit()
+    body = client.get("/v1/public/products", params={"category": "tropical-fruits"}).json()
+    assert body == {"items": [], "total": 0}
+
+
+def test_invalid_category_filter_is_rejected(client: TestClient):
+    response = client.get("/v1/public/products", params={"category": "DROP TABLE"})
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "validation_error"
+
+
+def test_slugs_take_precedence_over_category_filter(client: TestClient):
+    body = client.get(
+        "/v1/public/products",
+        params={"slugs": "organic-alphonso-mangoes", "category": "tropical-fruits"},
+    ).json()
+    assert [product["slug"] for product in body["items"]] == ["organic-alphonso-mangoes"]
+
+
 def test_product_detail_contract(client: TestClient):
     body = client.get("/v1/public/products/organic-alphonso-mangoes").json()
     assert body["name"] == "Organic Alphonso Mangoes"

@@ -12,7 +12,7 @@ from pydantic.alias_generators import to_camel
 
 from truegrit_api.auth.dependencies import get_database
 from truegrit_api.config import get_settings
-from truegrit_api.domain.slugs import validate_slug
+from truegrit_api.domain.slugs import MAX_SLUG_LENGTH, validate_slug
 from truegrit_api.errors import NotFoundError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.catalogue import CatalogueRepository
@@ -256,14 +256,30 @@ async def category_page(
         products, products_total = await catalogue.list_published_by_category(
             category["id"], country=visitor_country, limit=limit, offset=offset
         )
+    subcategories = await CategoryRepository(db).list_published_children(
+        category["id"], country=visitor_country
+    )
 
     return {
         "id": category["id"],
         "name": category["name"],
         "slug": category["slug"],
+        # A subcategory sits under its department, so the trail names it. The
+        # department link filters the shop grid rather than pointing at the
+        # department page, matching where the visitor came from.
         "breadcrumbs": [
             {"label": "Home", "path": "/"},
             {"label": "Shop", "path": "/shop"},
+            *(
+                [
+                    {
+                        "label": category["parent_name"],
+                        "path": f"/shop?category={category['parent_slug']}",
+                    }
+                ]
+                if category["parent_name"]
+                else []
+            ),
             {"label": category["name"], "path": f"/category/{category['slug']}"},
         ],
         "theme_key": category["theme_key"] or "forest",
@@ -275,7 +291,7 @@ async def category_page(
             "image_url": category["hero_image_url"],
             "image_alt": category["hero_image_alt"] or category["name"],
         },
-        "subcategories": [],
+        "subcategories": [_category_summary(row) for row in subcategories],
         "products": products,
         "products_total": products_total,
         "faq": _STANDARDS_FAQ,
@@ -289,27 +305,33 @@ async def category_page(
     }
 
 
+def _category_summary(row: dict[str, Any]) -> dict[str, Any]:
+    """Row -> `CategorySummary`. `parentId` and `level` let the storefront group
+    the flat list into departments and subcategories in one request."""
+    return {
+        "id": row["id"],
+        "name": row["name"],
+        "slug": row["slug"],
+        "shortDescription": row["short_description"] or "",
+        "themeKey": row["theme_key"] or "forest",
+        "seasonLabel": row["season_label"],
+        "imageUrl": row["hero_image_url"],
+        "productCount": row["product_count"],
+        "parentId": row["parent_id"],
+        "level": row["level"] or 0,
+    }
+
+
 @router.get("/categories")
 async def categories(
     db: Annotated[Database, Depends(get_database)],
     country: Annotated[str | None, Query(max_length=2)] = None,
 ) -> Any:
+    """Every published category in tree order — departments each followed by
+    their own subcategories. Returned flat rather than nested so a single
+    response serves both the shop sidebar and the department rail."""
     rows = await CategoryRepository(db).list_published(country=_normalize_country(country))
-    return {
-        "items": [
-            {
-                "id": row["id"],
-                "name": row["name"],
-                "slug": row["slug"],
-                "shortDescription": row["short_description"] or "",
-                "themeKey": row["theme_key"] or "forest",
-                "seasonLabel": row["season_label"],
-                "imageUrl": row["hero_image_url"],
-                "productCount": row["product_count"],
-            }
-            for row in rows
-        ]
-    }
+    return {"items": [_category_summary(row) for row in rows]}
 
 
 @router.get("/farms", response_model=FarmListResponse)
@@ -378,6 +400,7 @@ async def article_detail(slug: str, db: Annotated[Database, Depends(get_database
 async def products_list(
     db: Annotated[Database, Depends(get_database)],
     slugs: Annotated[str | None, Query(max_length=4000)] = None,
+    category: Annotated[str | None, Query(max_length=MAX_SLUG_LENGTH)] = None,
     country: Annotated[str | None, Query(max_length=2)] = None,
     limit: Annotated[int, Query(ge=1, le=MAX_PAGE_SIZE)] = DEFAULT_PAGE_SIZE,
     offset: Annotated[int, Query(ge=0)] = 0,
@@ -389,6 +412,13 @@ async def products_list(
     is already a bounded, exact set. Without it, a page of published products,
     newest first (the shop grid), windowed by `limit`/`offset`; `total` is the
     full published count so the caller can compute page numbers.
+
+    `?category=<slug>` narrows the grid to one department or subcategory, for
+    the shop page's in-place sidebar filter. An unknown, unpublished or
+    geo-excluded slug yields an empty page rather than the unfiltered
+    catalogue, so a filter can never silently widen what is visible. `slugs`
+    takes precedence — it is already an exact set.
+
     `?country=XX` hides products not released in that country. Declared before
     `/products/{slug}` so the literal path wins.
     """
@@ -402,6 +432,16 @@ async def products_list(
             else []
         )
         total = len(items)
+    elif category is not None:
+        validate_slug(category)
+        category_id = await CategoryRepository(db).get_published_id_by_slug(
+            category, country=visitor_country
+        )
+        if category_id is None:
+            return {"items": [], "total": 0}
+        items, total = await catalogue.list_published_by_category(
+            category_id, country=visitor_country, limit=limit, offset=offset
+        )
     else:
         items, total = await catalogue.list_all_published(
             limit=limit, offset=offset, country=visitor_country

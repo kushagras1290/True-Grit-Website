@@ -48,6 +48,11 @@ export const bootstrap: PublicBootstrap = {
   },
 };
 
+/**
+ * Demo catalogue tree. Ordered exactly as the public API orders it — each
+ * department immediately followed by its own subcategories — so fixture mode
+ * exercises the same grouping code path as live data.
+ */
 export const categories: CategorySummary[] = [
   {
     id: "cat_fresh_fruits",
@@ -58,6 +63,20 @@ export const categories: CategorySummary[] = [
     seasonLabel: "Mango season",
     imageUrl: "/homepage-hero.png",
     productCount: 1,
+    parentId: null,
+    level: 0,
+  },
+  {
+    id: "cat_stone_fruit",
+    name: "Stone Fruit",
+    slug: "stone-fruit",
+    shortDescription: "Mangoes, peaches and plums at the peak of their short season.",
+    themeKey: "terracotta",
+    seasonLabel: "Mango season",
+    imageUrl: null,
+    productCount: 1,
+    parentId: "cat_fresh_fruits",
+    level: 1,
   },
   {
     id: "cat_vegetables",
@@ -68,6 +87,20 @@ export const categories: CategorySummary[] = [
     seasonLabel: null,
     imageUrl: "/homepage-hero-greens.png",
     productCount: 1,
+    parentId: null,
+    level: 0,
+  },
+  {
+    id: "cat_leafy_greens",
+    name: "Leafy Greens",
+    slug: "leafy-greens",
+    shortDescription: "Spinach, amaranth and mustard greens cut to order.",
+    themeKey: "sage",
+    seasonLabel: null,
+    imageUrl: null,
+    productCount: 1,
+    parentId: "cat_vegetables",
+    level: 1,
   },
   {
     id: "cat_grains",
@@ -78,6 +111,8 @@ export const categories: CategorySummary[] = [
     seasonLabel: null,
     imageUrl: "/homepage-hero-roots.png",
     productCount: 2,
+    parentId: null,
+    level: 0,
   },
   {
     id: "cat_oils",
@@ -88,6 +123,8 @@ export const categories: CategorySummary[] = [
     seasonLabel: null,
     imageUrl: "/homepage-hero-citrus.png",
     productCount: 1,
+    parentId: null,
+    level: 0,
   },
 ];
 
@@ -374,12 +411,22 @@ export const products: ProductDetail[] = [
   },
 ];
 
+/** Products per category slug. Subcategory entries repeat their department's
+ * products, mirroring live data where a product is assigned to both its section
+ * and its owning department. */
 const categoryProducts: Record<string, string[]> = {
   "fresh-fruits": ["organic-alphonso-mangoes"],
+  "stone-fruit": ["organic-alphonso-mangoes"],
   "organic-vegetables": ["organic-baby-spinach"],
+  "leafy-greens": ["organic-baby-spinach"],
   "grains-and-millets": ["sprouted-ragi-flour", "himalayan-red-rajma"],
   "cold-pressed-oils": ["wood-pressed-groundnut-oil"],
 };
+
+/** Product slugs assigned to a category, for demo-mode filtered grids. */
+export function productSlugsForCategory(slug: string): string[] {
+  return categoryProducts[slug] ?? [];
+}
 
 const categoryHeroes: Record<string, { eyebrow: string; title: string; description: string }> = {
   "fresh-fruits": {
@@ -406,6 +453,17 @@ const categoryHeroes: Record<string, { eyebrow: string; title: string; descripti
     description:
       "Small-batch oils pressed at low temperature to keep flavour and nutrition intact.",
   },
+  "stone-fruit": {
+    eyebrow: "Fresh Fruits",
+    title: "Stone fruit",
+    description:
+      "Mangoes, peaches and plums picked at the peak of a season that lasts weeks, not months.",
+  },
+  "leafy-greens": {
+    eyebrow: "Organic Vegetables",
+    title: "Leafy greens",
+    description: "Spinach, amaranth and mustard greens cut to order and packed the same morning.",
+  },
 };
 
 export function getCategoryPage(slug: string): PublicCategoryPage | null {
@@ -429,7 +487,7 @@ export function getCategoryPage(slug: string): PublicCategoryPage | null {
       imageUrl: category.imageUrl,
       imageAlt: category.name,
     },
-    subcategories: [],
+    subcategories: categories.filter((entry) => entry.parentId === category.id),
     products: products.filter((product) => slugs.includes(product.slug)),
     productsTotal: products.filter((product) => slugs.includes(product.slug)).length,
     faq: [
@@ -571,7 +629,11 @@ export const recipes: RecipeDetail[] = [
         props: {
           heading: "Shop this recipe",
           source: "manual",
-          productSlugs: ["sprouted-ragi-flour", "organic-baby-spinach", "wood-pressed-groundnut-oil"],
+          productSlugs: [
+            "sprouted-ragi-flour",
+            "organic-baby-spinach",
+            "wood-pressed-groundnut-oil",
+          ],
           limit: 4,
         },
       },
@@ -818,7 +880,7 @@ export const adminCategories: AdminCategoryRow[] = categories.map((category) => 
   imageUrl: category.imageUrl ?? "",
   imageAlt: category.name,
   slug: category.slug,
-  parentName: null,
+  parentName: categories.find((parent) => parent.id === category.parentId)?.name ?? null,
   productCount: category.productCount,
   visibility: "public",
   status: "published",
@@ -827,7 +889,9 @@ export const adminCategories: AdminCategoryRow[] = categories.map((category) => 
 
 export const adminInventory: AdminInventoryRow[] = [
   {
-    variantId: "var_alphonso_1kg", productId: "prod_dummy", productStatus: "published",
+    variantId: "var_alphonso_1kg",
+    productId: "prod_dummy",
+    productStatus: "published",
     productName: "Organic Alphonso Mangoes",
     variantName: "1 kg box",
     sku: "TRG-MNG-1KG",
@@ -838,7 +902,9 @@ export const adminInventory: AdminInventoryRow[] = [
     updatedAt: "2026-07-01T00:00:00Z",
   },
   {
-    variantId: "var_alphonso_2kg", productId: "prod_dummy", productStatus: "published",
+    variantId: "var_alphonso_2kg",
+    productId: "prod_dummy",
+    productStatus: "published",
     productName: "Organic Alphonso Mangoes",
     variantName: "2 kg box",
     sku: "TRG-MNG-2KG",
@@ -849,7 +915,9 @@ export const adminInventory: AdminInventoryRow[] = [
     updatedAt: "2026-07-01T00:00:00Z",
   },
   {
-    variantId: "var_spinach_250g", productId: "prod_dummy", productStatus: "published",
+    variantId: "var_spinach_250g",
+    productId: "prod_dummy",
+    productStatus: "published",
     productName: "Organic Baby Spinach",
     variantName: "250 g bunch",
     sku: "TRG-SPN-250",
@@ -860,7 +928,9 @@ export const adminInventory: AdminInventoryRow[] = [
     updatedAt: "2026-07-01T00:00:00Z",
   },
   {
-    variantId: "var_ragi_500g", productId: "prod_dummy", productStatus: "published",
+    variantId: "var_ragi_500g",
+    productId: "prod_dummy",
+    productStatus: "published",
     productName: "Sprouted Ragi Flour",
     variantName: "500 g pack",
     sku: "TRG-RGI-500",
@@ -871,7 +941,9 @@ export const adminInventory: AdminInventoryRow[] = [
     updatedAt: "2026-07-01T00:00:00Z",
   },
   {
-    variantId: "var_ragi_1kg", productId: "prod_dummy", productStatus: "published",
+    variantId: "var_ragi_1kg",
+    productId: "prod_dummy",
+    productStatus: "published",
     productName: "Sprouted Ragi Flour",
     variantName: "1 kg pack",
     sku: "TRG-RGI-1KG",
@@ -882,7 +954,9 @@ export const adminInventory: AdminInventoryRow[] = [
     updatedAt: "2026-07-01T00:00:00Z",
   },
   {
-    variantId: "var_oil_500ml", productId: "prod_dummy", productStatus: "published",
+    variantId: "var_oil_500ml",
+    productId: "prod_dummy",
+    productStatus: "published",
     productName: "Wood-Pressed Groundnut Oil",
     variantName: "500 ml bottle",
     sku: "TRG-GNO-500",
@@ -893,7 +967,9 @@ export const adminInventory: AdminInventoryRow[] = [
     updatedAt: "2026-07-01T00:00:00Z",
   },
   {
-    variantId: "var_oil_1l", productId: "prod_dummy", productStatus: "published",
+    variantId: "var_oil_1l",
+    productId: "prod_dummy",
+    productStatus: "published",
     productName: "Wood-Pressed Groundnut Oil",
     variantName: "1 L bottle",
     sku: "TRG-GNO-1L",
@@ -904,7 +980,9 @@ export const adminInventory: AdminInventoryRow[] = [
     updatedAt: "2026-07-01T00:00:00Z",
   },
   {
-    variantId: "var_rajma_500g", productId: "prod_dummy", productStatus: "published",
+    variantId: "var_rajma_500g",
+    productId: "prod_dummy",
+    productStatus: "published",
     productName: "Himalayan Red Rajma",
     variantName: "500 g pack",
     sku: "TRG-RJM-500",
