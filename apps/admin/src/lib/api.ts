@@ -416,6 +416,7 @@ export interface SiteControl {
   seoTitle: string;
   seoDescription: string;
   seoKeywords: string;
+  featuredCategories: string[];
   freshFavourites: string[];
 }
 
@@ -1158,6 +1159,7 @@ export const api = {
           seoTitle: "True Grit - traceable organic food from verified farms",
           seoDescription: "Fresh organic produce and trusted local farms.",
           seoKeywords: "organic food, traceable produce, Indian farms",
+          featuredCategories: adminCategories.slice(0, 12).map((category) => category.slug),
           freshFavourites: products.slice(0, 4).map((p) => p.slug),
         })
       : get<SiteControl>("/v1/admin/site-control"),

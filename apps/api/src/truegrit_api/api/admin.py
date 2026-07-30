@@ -475,7 +475,8 @@ class SiteControlUpdate(_CamelModel):
     seo_title: str | None = Field(default=None, max_length=160)
     seo_description: str | None = Field(default=None, max_length=320)
     seo_keywords: str | None = Field(default=None, max_length=500)
-    fresh_favourites: list[str] | None = None
+    featured_categories: list[str] | None = Field(default=None, max_length=12)
+    fresh_favourites: list[str] | None = Field(default=None, max_length=12)
 
     @field_validator("hero_image_url")
     @classmethod
@@ -616,6 +617,20 @@ def _home_favourites(page: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _home_categories(page: dict[str, Any]) -> dict[str, Any]:
+    content = json.loads(page["content_json"])
+    for block in content.get("blocks", []):
+        if block.get("type") == "category_collection":
+            return block
+    return {
+        "id": "blk_categories",
+        "type": "category_collection",
+        "version": 1,
+        "enabled": True,
+        "props": {"heading": "Shop by category", "categorySlugs": []},
+    }
+
+
 @router.get("/site-control")
 async def get_site_control(
     db: Annotated[Database, Depends(get_database)],
@@ -658,6 +673,7 @@ async def get_site_control(
         "seoTitle": page["seo_title"] or "",
         "seoDescription": page["seo_description"] or "",
         "seoKeywords": page["seo_keywords"] or "",
+        "featuredCategories": _home_categories(page)["props"].get("categorySlugs", []),
         "freshFavourites": _home_favourites(page)["props"].get("productSlugs", []),
     }
 
@@ -742,6 +758,22 @@ async def update_site_control(
         label = fields.get("secondary_action_label", current.get("label", "")) or ""
         href = fields.get("secondary_action_href", current.get("href", "")) or ""
         props["secondaryAction"] = {"label": label, "href": href} if label and href else None
+
+    if "featured_categories" in fields:
+        category_block: dict[str, Any] | None = next(
+            (block for block in blocks if block.get("type") == "category_collection"), None
+        )
+        if category_block is None:
+            category_block = {
+                "id": "blk_categories",
+                "type": "category_collection",
+                "version": 1,
+                "enabled": True,
+                "props": {"heading": "Shop by category", "categorySlugs": []},
+            }
+            blocks.append(category_block)
+        category_props: dict[str, Any] = category_block.setdefault("props", {})
+        category_props["categorySlugs"] = list(dict.fromkeys(fields["featured_categories"]))
 
     if "fresh_favourites" in fields:
         fav_block: dict[str, Any] | None = next(

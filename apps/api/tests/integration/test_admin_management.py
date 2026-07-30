@@ -808,6 +808,12 @@ def test_owner_can_manage_site_control(client: TestClient, db: SQLiteDatabase):
             "seoTitle": "Owner managed SEO title",
             "seoDescription": "Owner managed SEO description.",
             "seoKeywords": "organic, farm fresh, true grit",
+            "featuredCategories": ["fruits", "vegetables", "staple-grains"],
+            "freshFavourites": [
+                "organic-kesar-mango",
+                "organic-mature-spinach",
+                "organic-brown-basmati-rice",
+            ],
         },
     )
     assert response.status_code == 200
@@ -817,6 +823,12 @@ def test_owner_can_manage_site_control(client: TestClient, db: SQLiteDatabase):
     assert body["heroImageAlt"] == "Organic mangoes held in a sunlit orchard"
     assert body["heroSlides"][1]["enabled"] is False
     assert body["seoKeywords"] == "organic, farm fresh, true grit"
+    assert body["featuredCategories"] == ["fruits", "vegetables", "staple-grains"]
+    assert body["freshFavourites"] == [
+        "organic-kesar-mango",
+        "organic-mature-spinach",
+        "organic-brown-basmati-rice",
+    ]
 
     public_home = client.get("/v1/public/home").json()
     assert public_home["seo"]["keywords"] == "organic, farm fresh, true grit"
@@ -824,6 +836,17 @@ def test_owner_can_manage_site_control(client: TestClient, db: SQLiteDatabase):
     assert public_home["blocks"][0]["props"]["imageUrl"] == "/homepage-hero.png"
     assert public_home["blocks"][0]["props"]["slides"][1]["href"] == "/category/organic-vegetables"
     assert public_home["blocks"][0]["props"]["slides"][1]["enabled"] is False
+    assert public_home["blocks"][1]["props"]["categorySlugs"] == [
+        "fruits",
+        "vegetables",
+        "staple-grains",
+    ]
+    assert public_home["blocks"][2]["props"]["productSlugs"] == [
+        "organic-kesar-mango",
+        "organic-mature-spinach",
+        "organic-brown-basmati-rice",
+    ]
+    assert public_home["blocks"][2]["props"]["limit"] == 3
 
 
 def test_farm_owner_cannot_manage_site_control(client: TestClient, db: SQLiteDatabase):

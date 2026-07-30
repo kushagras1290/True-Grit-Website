@@ -1888,3 +1888,27 @@ SET
   ) || '.webp',
   hero_image_alt = name || ' organic market selection'
 WHERE id LIKE 'cat_market_%';
+
+UPDATE page_versions
+SET content_json = json_set(
+  content_json,
+  '$.blocks[1].props.categorySlugs',
+  json('[
+    "fruits", "vegetables", "staple-grains", "pulses-legumes",
+    "flours-baking", "oils-cooking-fats", "spices-seasonings",
+    "natural-sweeteners", "nuts-seeds-dried-fruit", "breakfast-spreads",
+    "pantry-condiments", "snacks-treats"
+  ]'),
+  '$.blocks[2].props.productSlugs',
+  json('[
+    "organic-kesar-mango", "organic-mature-spinach",
+    "organic-brown-basmati-rice", "organic-moong-dal",
+    "organic-whole-wheat-atta", "organic-cold-pressed-mustard-oil",
+    "organic-turmeric-powder", "organic-wild-forest-honey",
+    "organic-kashmiri-almonds", "organic-rolled-oats",
+    "organic-roasted-makhana", "organic-assam-black-tea"
+  ]'),
+  '$.blocks[2].props.limit',
+  12
+)
+WHERE page_id = 'pag_home';

@@ -89,7 +89,8 @@ const siteSchema = z.object({
   seoTitle: z.string().min(3).max(160),
   seoDescription: z.string().max(320),
   seoKeywords: z.string().max(500),
-  freshFavourites: z.array(z.string()),
+  featuredCategories: z.array(z.string()).max(12),
+  freshFavourites: z.array(z.string()).max(12),
 });
 
 type SiteForm = z.infer<typeof siteSchema>;
@@ -160,6 +161,7 @@ function defaults(data?: SiteControl): SiteForm {
     seoTitle: data?.seoTitle ?? "",
     seoDescription: data?.seoDescription ?? "",
     seoKeywords: data?.seoKeywords ?? "",
+    featuredCategories: data?.featuredCategories ?? [],
     freshFavourites: data?.freshFavourites ?? [],
   };
 }
@@ -550,9 +552,135 @@ export function SiteControlPage() {
       <CmsPagesSection />
       <RouteSeoSection />
       <SiteDocumentsSection />
+      <FeaturedCategoriesSection form={form} />
       <FreshFavouritesSection form={form} />
       <HighlightsSection />
     </div>
+  );
+}
+
+function FeaturedCategoriesSection({ form }: { form: ReturnType<typeof useForm<SiteForm>> }) {
+  const { data: allCategories, isLoading } = useQuery({
+    queryKey: ["admin-categories", "homepage-picker"],
+    queryFn: async () => {
+      const [firstPage, secondPage] = await Promise.all([
+        api.categories({ limit: 100 }),
+        api.categories({ limit: 100, offset: 100 }),
+      ]);
+      return [...firstPage, ...secondPage];
+    },
+  });
+  const [pendingId, setPendingId] = useState("");
+  const currentSlugs = form.watch("featuredCategories");
+  const currentCategories = currentSlugs
+    .map((slug) => allCategories?.find((category) => category.slug === slug))
+    .filter(Boolean) as NonNullable<typeof allCategories>;
+  const addable = (allCategories ?? []).filter(
+    (category) =>
+      category.status === "published" && !currentSlugs.includes(category.slug),
+  );
+
+  function move(index: number, delta: number) {
+    const current = form.getValues("featuredCategories");
+    const target = index + delta;
+    if (target < 0 || target >= current.length) return;
+    const next = [...current];
+    [next[index], next[target]] = [next[target]!, next[index]!];
+    form.setValue("featuredCategories", next, { shouldDirty: true, shouldValidate: true });
+  }
+
+  return (
+    <section className="mt-10 space-y-4 border-t border-line pt-5">
+      <div>
+        <h2 className="font-display text-lg text-ink">Homepage categories</h2>
+        <p className="text-sm text-ink-muted">
+          Choose up to 12 published categories for the homepage slider. Customers see four at a
+          time on desktop, in this order. Saves with “Save site controls”.
+        </p>
+      </div>
+      {isLoading ? (
+        <p className="text-sm text-ink-muted">Loading categories...</p>
+      ) : currentCategories.length === 0 ? (
+        <p className="max-w-xl rounded-md border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
+          No homepage categories selected.
+        </p>
+      ) : (
+        <ul className="max-w-xl divide-y divide-line rounded-md border border-line">
+          {currentCategories.map((category, index) => (
+            <li key={category.id} className="flex items-center gap-2 px-3 py-2 text-sm">
+              <span className="w-5 text-xs text-ink-muted">{index + 1}.</span>
+              <span className="flex-1 font-medium text-ink">{category.name}</span>
+              <StatusPill status={category.status} />
+              <button
+                type="button"
+                aria-label={`Move ${category.name} up`}
+                className="min-h-8 min-w-8 rounded-sm border border-line text-xs disabled:opacity-40"
+                disabled={index === 0}
+                onClick={() => move(index, -1)}
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                aria-label={`Move ${category.name} down`}
+                className="min-h-8 min-w-8 rounded-sm border border-line text-xs disabled:opacity-40"
+                disabled={index === currentSlugs.length - 1}
+                onClick={() => move(index, 1)}
+              >
+                ↓
+              </button>
+              <button
+                type="button"
+                aria-label={`Remove ${category.name}`}
+                className="min-h-8 rounded-sm border border-line px-2 text-xs text-danger"
+                onClick={() =>
+                  form.setValue(
+                    "featuredCategories",
+                    currentSlugs.filter((slug) => slug !== category.slug),
+                    { shouldDirty: true, shouldValidate: true },
+                  )
+                }
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div className="flex max-w-xl gap-2">
+        <Select
+          aria-label="Category to add to the homepage"
+          value={pendingId}
+          onChange={(event) => setPendingId(event.target.value)}
+          className="flex-1"
+        >
+          <option value="">Add a category…</option>
+          {addable.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </Select>
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={!pendingId || currentSlugs.length >= 12}
+          onClick={() => {
+            const category = addable.find((entry) => entry.id === pendingId);
+            if (!category) return;
+            form.setValue(
+              "featuredCategories",
+              [...currentSlugs, category.slug],
+              { shouldDirty: true, shouldValidate: true },
+            );
+            setPendingId("");
+          }}
+        >
+          Add category
+        </Button>
+      </div>
+      <p className="text-xs text-ink-muted">{currentSlugs.length} of 12 slots used</p>
+    </section>
   );
 }
 
