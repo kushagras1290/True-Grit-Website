@@ -1459,3 +1459,418 @@ SET
 WHERE id LIKE 'dsc_library_%' OR id LIKE 'dsc_expansion_%';
 
 DROP TABLE expansion_blog_topics;
+
+-- Comprehensive organic-market catalogue expansion. Twenty departments and
+-- eighty focused subcategories cover food, pantry, wellbeing, home and garden.
+-- Each subcategory carries eight real catalogue products with variants, prices,
+-- stock, search data and editable published versions.
+CREATE TEMP TABLE market_catalogue_sections (
+  n INTEGER PRIMARY KEY,
+  department_order INTEGER NOT NULL,
+  department_name TEXT NOT NULL,
+  department_slug TEXT NOT NULL,
+  section_order INTEGER NOT NULL,
+  section_name TEXT NOT NULL,
+  section_slug TEXT NOT NULL,
+  products_json TEXT NOT NULL
+);
+
+INSERT INTO market_catalogue_sections VALUES
+  (1,1,'Fresh Fruits','fruits',1,'Tropical Fruits','tropical-fruits','["Kesar Mango","Dasheri Mango","Papaya","Pineapple","Dragon Fruit","Passion Fruit","Custard Apple","Sapota"]'),
+  (2,1,'Fresh Fruits','fruits',2,'Citrus Fruits','citrus-fruits','["Nagpur Orange","Sweet Lime","Kinnow","Grapefruit","Eureka Lemon","Kagzi Lime","Pomelo","Galgal"]'),
+  (3,1,'Fresh Fruits','fruits',3,'Berries and Small Fruits','berries-small-fruits','["Strawberry","Cape Gooseberry","Mulberry","Jamun","Karonda","Phalsa","Raspberry","Blueberry"]'),
+  (4,1,'Fresh Fruits','fruits',4,'Melons and Orchard Fruits','melons-orchard-fruits','["Watermelon","Muskmelon","Kashmiri Apple","Green Pear","White Guava","Pomegranate","Fresh Fig","Indian Jujube"]'),
+  (5,2,'Fresh Vegetables','vegetables',1,'Leafy Vegetables','leafy-vegetables','["Mature Spinach","Red Amaranth","Green Amaranth","Mustard Greens","Fenugreek Leaves","Bathua Greens","Malabar Spinach","Sorrel Leaves"]'),
+  (6,2,'Fresh Vegetables','vegetables',2,'Roots and Tubers','roots-tubers','["Red Carrot","Beetroot","White Radish","Purple Sweet Potato","Baby Potato","Elephant Yam","Taro Root","Fresh Turmeric Root"]'),
+  (7,2,'Fresh Vegetables','vegetables',3,'Gourds and Squashes','gourds-squashes','["Bottle Gourd","Ridge Gourd","Bitter Gourd","Snake Gourd","Ivy Gourd","Ash Gourd","Yellow Pumpkin","Zucchini"]'),
+  (8,2,'Fresh Vegetables','vegetables',4,'Cruciferous and Stem Vegetables','cruciferous-stem-vegetables','["Cauliflower","Green Cabbage","Red Cabbage","Broccoli","Kohlrabi","Brussels Sprouts","Celery","Leek"]'),
+  (9,3,'Fresh Herbs and Aromatics','herbs-aromatics',1,'Culinary Herbs','culinary-herbs','["Coriander Bunch","Mint Bunch","Fresh Dill","Fresh Basil","Fresh Oregano","Fresh Thyme","Fresh Rosemary","Fresh Parsley"]'),
+  (10,3,'Fresh Herbs and Aromatics','herbs-aromatics',2,'Microgreens','microgreens','["Radish Microgreens","Mustard Microgreens","Sunflower Shoots","Pea Shoots","Broccoli Microgreens","Beet Microgreens","Amaranth Microgreens","Coriander Microgreens"]'),
+  (11,3,'Fresh Herbs and Aromatics','herbs-aromatics',3,'Edible Flowers','edible-flowers','["Marigold Petals","Rose Petals","Nasturtium Flowers","Butterfly Pea Flowers","Hibiscus Flowers","Banana Blossoms","Moringa Flowers","Pumpkin Blossoms"]'),
+  (12,3,'Fresh Herbs and Aromatics','herbs-aromatics',4,'Fresh Aromatics','fresh-aromatics','["Fresh Ginger","Fresh Garlic","Green Chilli","Birds Eye Chilli","Lemongrass","Fresh Curry Leaves","Spring Onion","Fresh Galangal"]'),
+  (13,4,'Rice, Grains and Millets','staple-grains',1,'Rice Varieties','rice-varieties','["Brown Basmati Rice","Red Rice","Black Rice","Gobindobhog Rice","Sona Masoori Rice","Kolam Rice","Navara Rice","Hand Pounded Rice"]'),
+  (14,4,'Rice, Grains and Millets','staple-grains',2,'Wheat and Barley','wheat-barley','["Khapli Wheat","Sharbati Wheat","Lokwan Wheat","Emmer Wheat Berries","Pearl Barley","Hulless Barley","Wheat Dalia","Barley Dalia"]'),
+  (15,4,'Rice, Grains and Millets','staple-grains',3,'Millets','millets','["Whole Ragi","Whole Jowar","Whole Bajra","Foxtail Millet","Little Millet","Kodo Millet","Barnyard Millet","Proso Millet"]'),
+  (16,4,'Rice, Grains and Millets','staple-grains',4,'Ancient and Alternative Grains','ancient-alternative-grains','["Amaranth Grain","Buckwheat Groats","Quinoa","Job Tears","Sama Rice","Sorghum Grits","Corn Grits","Rolled Barley"]'),
+  (17,5,'Pulses and Legumes','pulses-legumes',1,'Lentils and Dals','lentils-dals','["Toor Dal","Moong Dal","Masoor Dal","Chana Dal","Urad Dal","Moong Chilka Dal","Masoor Chilka Dal","Urad Chilka Dal"]'),
+  (18,5,'Pulses and Legumes','pulses-legumes',2,'Beans','beans','["Kashmiri Rajma","Chitra Rajma","Black Eyed Beans","Moth Beans","Adzuki Beans","White Beans","Lima Beans","Hyacinth Beans"]'),
+  (19,5,'Pulses and Legumes','pulses-legumes',3,'Chickpeas','chickpeas','["Kabuli Chickpeas","Desi Black Chickpeas","Green Chickpeas","Brown Chickpeas","Roasted Chickpeas","Split Chickpeas","Sprouted Chickpeas","Chickpea Grits"]'),
+  (20,5,'Pulses and Legumes','pulses-legumes',4,'Peas and Specialty Pulses','peas-specialty-pulses','["Yellow Peas","Green Peas Dried","Horse Gram","Whole Green Moong","Whole Black Urad","Whole Masoor","Cowpeas","Pigeon Peas Whole"]'),
+  (21,6,'Flours and Baking','flours-baking',1,'Wheat Flours','wheat-flours','["Whole Wheat Atta","Khapli Wheat Atta","Sharbati Atta","Multigrain Atta","Whole Wheat Bread Flour","Durum Wheat Flour","Wheat Bran","Fine Semolina"]'),
+  (22,6,'Flours and Baking','flours-baking',2,'Millet Flours','millet-flours','["Ragi Flour","Jowar Flour","Bajra Flour","Foxtail Millet Flour","Kodo Millet Flour","Barnyard Millet Flour","Little Millet Flour","Proso Millet Flour"]'),
+  (23,6,'Flours and Baking','flours-baking',3,'Gluten Free Flours','gluten-free-flours','["Brown Rice Flour","Chickpea Flour","Buckwheat Flour","Amaranth Flour","Corn Flour","Tapioca Flour","Coconut Flour","Green Banana Flour"]'),
+  (24,6,'Flours and Baking','flours-baking',4,'Specialty Baking Ingredients','specialty-baking','["Almond Meal","Flaxseed Meal","Cocoa Powder","Cacao Nibs","Baking Soda","Natural Vanilla Powder","Arrowroot Starch","Dry Active Yeast"]'),
+  (25,7,'Oils and Cooking Fats','oils-cooking-fats',1,'Cold Pressed Speciality Oils','cold-pressed-speciality-oils','["Cold Pressed Mustard Oil","Cold Pressed Sesame Oil","Cold Pressed Coconut Oil","Cold Pressed Sunflower Oil","Cold Pressed Safflower Oil","Cold Pressed Flaxseed Oil","Cold Pressed Niger Seed Oil","Cold Pressed Rice Bran Oil"]'),
+  (26,7,'Oils and Cooking Fats','oils-cooking-fats',2,'Traditional Cooking Fats','traditional-cooking-fats','["A2 Cow Ghee","Buffalo Ghee","Cultured Cow Ghee","Bilona Ghee","Coconut Ghee Blend","Grass Fed Butter","White Butter","Cooking Coconut Cream"]'),
+  (27,7,'Oils and Cooking Fats','oils-cooking-fats',3,'Seed Oils','seed-oils','["Pumpkin Seed Oil","Hemp Seed Oil","Watermelon Seed Oil","Black Seed Oil","Perilla Seed Oil","Poppy Seed Oil","Chia Seed Oil","Grape Seed Oil"]'),
+  (28,7,'Oils and Cooking Fats','oils-cooking-fats',4,'Nut Oils','nut-oils','["Almond Oil Culinary","Walnut Oil","Cashew Oil","Hazelnut Oil","Pistachio Oil","Macadamia Oil","Peanut Oil Roasted","Apricot Kernel Oil"]'),
+  (29,8,'Spices and Seasonings','spices-seasonings',1,'Whole Spices','whole-spices','["Cumin Seeds","Coriander Seeds","Black Peppercorns","Green Cardamom","Black Cardamom","Cloves","Cinnamon Sticks","Fennel Seeds"]'),
+  (30,8,'Spices and Seasonings','spices-seasonings',2,'Ground Spices','ground-spices','["Turmeric Powder","Coriander Powder","Cumin Powder","Black Pepper Powder","Dry Ginger Powder","Garlic Powder","Onion Powder","Fennel Powder"]'),
+  (31,8,'Spices and Seasonings','spices-seasonings',3,'Spice Blends','spice-blends','["Garam Masala","Sambar Masala","Rasam Powder","Chaat Masala","Pav Bhaji Masala","Kitchen King Masala","Biryani Masala","Panch Phoron"]'),
+  (32,8,'Spices and Seasonings','spices-seasonings',4,'Chillies and Peppers','chillies-peppers','["Kashmiri Chilli Powder","Guntur Chilli Powder","Byadgi Chilli","Bhut Jolokia Flakes","Dried Red Chillies","Green Peppercorns","Long Pepper","Cubeb Pepper"]'),
+  (33,9,'Natural Sweeteners','natural-sweeteners',1,'Jaggery','jaggery','["Cane Jaggery Block","Jaggery Powder","Palm Jaggery","Coconut Jaggery","Date Palm Jaggery","Liquid Jaggery","Spiced Jaggery Bites","Jaggery Cubes"]'),
+  (34,9,'Natural Sweeteners','natural-sweeteners',2,'Honey','honey','["Wild Forest Honey","Mustard Blossom Honey","Litchi Honey","Jamun Honey","Himalayan Multifloral Honey","Ajwain Honey","Eucalyptus Honey","Raw Comb Honey"]'),
+  (35,9,'Natural Sweeteners','natural-sweeteners',3,'Syrups and Nectar','syrups-nectar','["Date Syrup","Coconut Nectar","Maple Syrup","Agave Nectar","Carob Syrup","Molasses","Rice Malt Syrup","Palm Nectar"]'),
+  (36,9,'Natural Sweeteners','natural-sweeteners',4,'Natural Sugars','natural-sugars','["Raw Cane Sugar","Muscovado Sugar","Coconut Sugar","Date Sugar","Palm Sugar","Demerara Sugar","Rock Sugar","Stevia Leaf Powder"]'),
+  (37,10,'Nuts, Seeds and Dried Fruit','nuts-seeds-dried-fruit',1,'Nuts','nuts','["Kashmiri Almonds","Walnuts","Cashews","Pistachios","Hazelnuts","Brazil Nuts","Pecans","Macadamia Nuts"]'),
+  (38,10,'Nuts, Seeds and Dried Fruit','nuts-seeds-dried-fruit',2,'Seeds','seeds','["Pumpkin Seeds","Sunflower Seeds","Flax Seeds","Chia Seeds","White Sesame Seeds","Black Sesame Seeds","Hemp Hearts","Watermelon Seeds"]'),
+  (39,10,'Nuts, Seeds and Dried Fruit','nuts-seeds-dried-fruit',3,'Dried Fruits','dried-fruits','["Medjool Dates","Black Raisins","Golden Raisins","Dried Apricots","Dried Figs","Dried Cranberries","Dried Mulberries","Dried Prunes"]'),
+  (40,10,'Nuts, Seeds and Dried Fruit','nuts-seeds-dried-fruit',4,'Trail Mixes','trail-mixes','["Classic Nut Trail Mix","Seed and Berry Mix","Spiced Indian Trail Mix","Cacao Energy Mix","Himalayan Fruit Mix","Roasted Seed Mix","Kids Fruit and Nut Mix","Unsalted Trek Mix"]'),
+  (41,11,'Breakfast and Spreads','breakfast-spreads',1,'Cereals and Porridge','cereals-porridge','["Rolled Oats","Steel Cut Oats","Millet Porridge Mix","Ragi Porridge Mix","Barley Porridge","Red Rice Flakes","Quinoa Flakes","Multigrain Dalia"]'),
+  (42,11,'Breakfast and Spreads','breakfast-spreads',2,'Granola and Muesli','granola-muesli','["Almond Honey Granola","Cacao Millet Granola","Fruit and Seed Muesli","No Sugar Muesli","Coconut Granola","Ragi Crunch Granola","Quinoa Nut Granola","Spiced Apple Muesli"]'),
+  (43,11,'Breakfast and Spreads','breakfast-spreads',3,'Nut and Seed Spreads','nut-seed-spreads','["Smooth Peanut Butter","Crunchy Peanut Butter","Almond Butter","Cashew Butter","Tahini","Sunflower Seed Butter","Hazelnut Cacao Spread","Mixed Nut Butter"]'),
+  (44,11,'Breakfast and Spreads','breakfast-spreads',4,'Traditional Breakfast Mixes','traditional-breakfast-mixes','["Idli Batter Mix","Dosa Batter Mix","Ragi Dosa Mix","Adai Mix","Poha Breakfast Mix","Upma Mix","Millet Pongal Mix","Moong Cheela Mix"]'),
+  (45,12,'Pantry and Condiments','pantry-condiments',1,'Sauces and Chutneys','sauces-chutneys','["Tomato Chilli Sauce","Green Chilli Sauce","Tamarind Date Chutney","Mint Coriander Chutney","Garlic Chutney","Peanut Chutney","Mango Chutney","Coconut Chutney Powder"]'),
+  (46,12,'Pantry and Condiments','pantry-condiments',2,'Pickles','pickles','["Raw Mango Pickle","Lemon Pickle","Mixed Vegetable Pickle","Green Chilli Pickle","Garlic Pickle","Gongura Pickle","Bamboo Shoot Pickle","Amla Pickle"]'),
+  (47,12,'Pantry and Condiments','pantry-condiments',3,'Salt and Seasoning','salt-seasoning','["Pink Rock Salt","Sea Salt","Black Salt","Smoked Salt","Herb Salt","Garlic Salt","Celery Salt","Mineral Salt Flakes"]'),
+  (48,12,'Pantry and Condiments','pantry-condiments',4,'Vinegars and Ferments','vinegars-ferments','["Apple Cider Vinegar","Coconut Vinegar","Sugarcane Vinegar","Rice Vinegar","Kombucha Vinegar","Ginger Vinegar","Raw Mango Vinegar","Balsamic Style Vinegar"]'),
+  (49,13,'Snacks and Treats','snacks-treats',1,'Savoury Snacks','savoury-snacks','["Roasted Makhana","Masala Peanuts","Roasted Chana","Millet Chivda","Jowar Puffs","Bajra Namkeen","Banana Chips","Sweet Potato Chips"]'),
+  (50,13,'Snacks and Treats','snacks-treats',2,'Sweet Snacks','sweet-snacks','["Sesame Jaggery Chikki","Peanut Chikki","Ragi Laddoo","Date Nut Bites","Coconut Jaggery Bites","Dry Fruit Laddoo","Amaranth Chikki","Til Rewari"]'),
+  (51,13,'Snacks and Treats','snacks-treats',3,'Crackers and Crisps','crackers-crisps','["Ragi Crackers","Seed Crackers","Whole Wheat Mathri","Millet Khakhra","Chickpea Crisps","Rice Papad","Lentil Crackers","Flaxseed Lavash"]'),
+  (52,13,'Snacks and Treats','snacks-treats',4,'Energy Bars','energy-bars','["Date Almond Bar","Peanut Cacao Bar","Ragi Energy Bar","Seed Protein Bar","Coconut Cashew Bar","Fig Walnut Bar","Apricot Millet Bar","Coffee Cacao Bar"]'),
+  (53,14,'Tea, Coffee and Beverages','tea-coffee-beverages',1,'Tea','tea','["Assam Black Tea","Darjeeling First Flush","Nilgiri Black Tea","Kangra Green Tea","White Tea","Oolong Tea","Masala Chai Blend","Kashmiri Kahwa"]'),
+  (54,14,'Tea, Coffee and Beverages','tea-coffee-beverages',2,'Coffee','coffee','["Arabica Coffee Beans","Robusta Coffee Beans","Monsoon Malabar Coffee","Filter Coffee Blend","Single Estate Coffee","Cold Brew Coffee","Decaf Arabica Coffee","Coffee Drip Bags"]'),
+  (55,14,'Tea, Coffee and Beverages','tea-coffee-beverages',3,'Herbal Infusions','herbal-infusions','["Tulsi Infusion","Lemongrass Infusion","Hibiscus Infusion","Moringa Infusion","Ginger Turmeric Infusion","Chamomile Infusion","Butterfly Pea Infusion","Peppermint Infusion"]'),
+  (56,14,'Tea, Coffee and Beverages','tea-coffee-beverages',4,'Drink Mixes','drink-mixes','["Raw Cacao Drink Mix","Turmeric Latte Mix","Ragi Malt","Sattu Drink Mix","Aam Panna Mix","Jaljeera Mix","Beetroot Latte Mix","Spiced Almond Drink Mix"]'),
+  (57,15,'Dairy and Farm Fresh','dairy-farm-fresh',1,'Milk and Cream','milk-cream','["A2 Cow Milk","Buffalo Milk","Cow Milk","Goat Milk","Fresh Cream","Cultured Buttermilk","Spiced Buttermilk","Fresh Malai"]'),
+  (58,15,'Dairy and Farm Fresh','dairy-farm-fresh',2,'Yoghurt and Cultured Dairy','yoghurt-cultured-dairy','["Natural Cow Yoghurt","Buffalo Yoghurt","Greek Style Yoghurt","Mango Yoghurt","Probiotic Yoghurt","Hung Curd","Fresh Lassi","Mango Lassi"]'),
+  (59,15,'Dairy and Farm Fresh','dairy-farm-fresh',3,'Cheese and Paneer','cheese-paneer','["Fresh Cow Paneer","Buffalo Paneer","Malai Paneer","Smoked Paneer","Cheddar Cheese","Gouda Cheese","Feta Style Cheese","Mozzarella Cheese"]'),
+  (60,15,'Dairy and Farm Fresh','dairy-farm-fresh',4,'Ghee and Butter','ghee-butter','["Cow Milk Ghee","Buffalo Milk Ghee","Cultured Ghee","A2 Bilona Ghee","Salted Butter","Unsalted Butter","Cultured Butter","Herb Butter"]'),
+  (61,16,'Plant Based Foods','plant-based-foods',1,'Plant Milks','plant-milks','["Almond Milk","Oat Milk","Coconut Milk Beverage","Cashew Milk","Millet Milk","Rice Milk","Soy Milk","Peanut Milk"]'),
+  (62,16,'Plant Based Foods','plant-based-foods',2,'Tofu and Fermented Protein','tofu-fermented-protein','["Firm Tofu","Silken Tofu","Smoked Tofu","Herb Tofu","Soy Tempeh","Chickpea Tempeh","Black Bean Tempeh","Fermented Tofu"]'),
+  (63,16,'Plant Based Foods','plant-based-foods',3,'Vegan Spreads and Cheese','vegan-spreads-cheese','["Cashew Cheese Spread","Almond Feta","Coconut Yoghurt","Vegan Herb Butter","Sunflower Seed Pate","Smoked Cashew Cheese","Vegan Mayonnaise","Coconut Cream Cheese"]'),
+  (64,16,'Plant Based Foods','plant-based-foods',4,'Plant Protein','plant-protein','["Pea Protein Powder","Hemp Protein Powder","Brown Rice Protein","Pumpkin Seed Protein","Sattu Protein Mix","Sprouted Moong Protein","Soy Protein Chunks","Jackfruit Protein Mix"]'),
+  (65,17,'Bakery and Breads','bakery-breads',1,'Artisan Breads','artisan-breads','["Whole Wheat Sourdough","Multigrain Sourdough","Ragi Sourdough","Seeded Rye Bread","Khapli Wheat Bread","Millet Sandwich Bread","Olive Herb Bread","Walnut Raisin Bread"]'),
+  (66,17,'Bakery and Breads','bakery-breads',2,'Flatbreads and Wraps','flatbreads-wraps','["Whole Wheat Roti Pack","Jowar Bhakri","Bajra Roti","Ragi Roti","Multigrain Wraps","Spinach Wraps","Beetroot Wraps","Khapli Thepla"]'),
+  (67,17,'Bakery and Breads','bakery-breads',3,'Cookies and Biscuits','cookies-biscuits','["Ragi Cookies","Jowar Cookies","Whole Wheat Jaggery Biscuits","Almond Cookies","Coconut Cookies","Seeded Crackle Biscuits","Oat Raisin Cookies","Ginger Millet Cookies"]'),
+  (68,17,'Bakery and Breads','bakery-breads',4,'Cakes and Tea Bakes','cakes-tea-bakes','["Banana Walnut Loaf","Carrot Jaggery Cake","Ragi Chocolate Cake","Lemon Millet Cake","Date Almond Loaf","Orange Semolina Cake","Coconut Tea Cake","Apple Cinnamon Loaf"]'),
+  (69,18,'Natural Personal Care','natural-personal-care',1,'Skin Care','skin-care','["Rose Face Cleanser","Neem Face Wash","Aloe Face Gel","Turmeric Face Mask","Kumkumadi Face Oil","Shea Body Butter","Rose Water Toner","Herbal Lip Balm"]'),
+  (70,18,'Natural Personal Care','natural-personal-care',2,'Hair Care','hair-care','["Amla Hair Oil","Bhringraj Hair Oil","Herbal Shampoo","Neem Shampoo","Hibiscus Conditioner","Shikakai Powder","Reetha Powder","Herbal Hair Mask"]'),
+  (71,18,'Natural Personal Care','natural-personal-care',3,'Bath and Body','bath-body','["Neem Bath Soap","Sandalwood Soap","Charcoal Soap","Rose Soap","Handmade Body Wash","Herbal Hand Wash","Natural Deodorant","Foot Care Balm"]'),
+  (72,18,'Natural Personal Care','natural-personal-care',4,'Oral Care','oral-care','["Herbal Toothpaste","Neem Tooth Powder","Bamboo Toothbrush","Copper Tongue Cleaner","Clove Mouth Rinse","Herbal Gum Oil","Miswak Sticks","Natural Dental Floss"]'),
+  (73,19,'Natural Home Care','natural-home-care',1,'Laundry Care','laundry-care','["Soapnut Laundry Liquid","Natural Laundry Powder","Delicate Wash","Laundry Bar","Fabric Rinse","Stain Remover","Wool Wash","Laundry Soap Berries"]'),
+  (74,19,'Natural Home Care','natural-home-care',2,'Dish Care','dish-care','["Natural Dishwash Liquid","Dishwash Bar","Dishwasher Powder","Copper Cleaner","Coconut Scrub Pad","Bottle Cleaning Powder","Lemon Dish Gel","Enzyme Dish Cleaner"]'),
+  (75,19,'Natural Home Care','natural-home-care',3,'Surface Care','surface-care','["Natural Floor Cleaner","Kitchen Cleaner","Bathroom Cleaner","Glass Cleaner","Wood Surface Oil","Stone Cleaner","Multipurpose Cleaner","Enzyme Drain Cleaner"]'),
+  (76,19,'Natural Home Care','natural-home-care',4,'Home Fragrance and Pest Care','home-fragrance-pest-care','["Citronella Incense","Natural Mosquito Spray","Neem Pest Spray","Cedar Wardrobe Blocks","Herbal Room Spray","Beeswax Candle","Camphor Tablets","Lemongrass Diffuser Oil"]'),
+  (77,20,'Organic Gardening','organic-gardening',1,'Vegetable and Herb Seeds','vegetable-herb-seeds','["Tomato Seeds","Okra Seeds","Spinach Seeds","Coriander Seeds for Planting","Chilli Seeds","Bottle Gourd Seeds","Carrot Seeds","Basil Seeds for Planting"]'),
+  (78,20,'Organic Gardening','organic-gardening',2,'Soil and Compost','soil-compost','["Vermicompost","Farmyard Compost","Leaf Compost","Coco Peat Block","Potting Soil Mix","Neem Cake Powder","Mustard Cake Fertiliser","Biochar Soil Blend"]'),
+  (79,20,'Organic Gardening','organic-gardening',3,'Plant Nutrition and Protection','plant-nutrition-protection','["Seaweed Plant Tonic","Panchagavya Concentrate","Jeevamrit Concentrate","Neem Oil Garden Spray","Trichoderma Bio Fungicide","Sticky Pest Traps","Diatomaceous Earth","Micronutrient Plant Mix"]'),
+  (80,20,'Organic Gardening','organic-gardening',4,'Garden Tools and Supplies','garden-tools-supplies','["Hand Trowel","Hand Cultivator","Pruning Shears","Coconut Coir Pots","Bamboo Plant Labels","Natural Jute Twine","Seedling Tray","Watering Can"]');
+
+INSERT INTO categories (
+  id, internal_name, name, slug, parent_id, path, level, sort_order, status,
+  visibility, short_description, hero_eyebrow, hero_title, hero_description,
+  theme_key, product_assignment_mode, product_rule_json, published_version_id,
+  seo_title, seo_description, created_at, created_by, updated_at, updated_by
+)
+SELECT
+  'cat_market_' || department_slug,
+  department_name || ' department',
+  department_name,
+  department_slug,
+  NULL,
+  '/' || department_slug,
+  0,
+  department_order + 10,
+  'published',
+  'public',
+  'Explore our complete ' || lower(department_name) || ' range, selected for traceability, quality and practical everyday use.',
+  'The complete market',
+  department_name,
+  'A broad collection of ' || lower(department_name) || ', organised so the full range stays easy to browse.',
+  CASE (department_order % 5)
+    WHEN 0 THEN 'terracotta' WHEN 1 THEN 'sage' WHEN 2 THEN 'forest'
+    WHEN 3 THEN 'charcoal' ELSE 'gold'
+  END,
+  'manual',
+  NULL,
+  'ctv_market_' || department_slug || '_1',
+  department_name || ' | True Grit Organic Market',
+  'Shop traceable ' || lower(department_name) || ' from the True Grit organic market.',
+  '2025-06-01T08:00:00Z',
+  'usr_editor',
+  '2026-07-30T08:00:00Z',
+  'usr_editor'
+FROM market_catalogue_sections
+GROUP BY department_order, department_name, department_slug;
+
+INSERT INTO categories (
+  id, internal_name, name, slug, parent_id, path, level, sort_order, status,
+  visibility, short_description, hero_eyebrow, hero_title, hero_description,
+  theme_key, product_assignment_mode, product_rule_json, published_version_id,
+  seo_title, seo_description, created_at, created_by, updated_at, updated_by
+)
+SELECT
+  'cat_market_' || section_slug,
+  section_name || ' section',
+  section_name,
+  section_slug,
+  'cat_market_' || department_slug,
+  '/' || department_slug || '/' || section_slug,
+  1,
+  section_order,
+  'published',
+  'public',
+  'A considered selection of ' || lower(section_name) || ' for a well-stocked organic home.',
+  department_name,
+  section_name,
+  'Browse the full ' || lower(section_name) || ' range with clear pricing, stock and product information.',
+  CASE (n % 5)
+    WHEN 0 THEN 'terracotta' WHEN 1 THEN 'sage' WHEN 2 THEN 'forest'
+    WHEN 3 THEN 'charcoal' ELSE 'gold'
+  END,
+  'manual',
+  NULL,
+  'ctv_market_' || section_slug || '_1',
+  section_name || ' | True Grit Organic Market',
+  'Shop ' || lower(section_name) || ' online with traceable sourcing and transparent product details.',
+  '2025-06-01T08:00:00Z',
+  'usr_editor',
+  '2026-07-30T08:00:00Z',
+  'usr_editor'
+FROM market_catalogue_sections;
+
+INSERT INTO category_versions (
+  id, category_id, version_number, content_json, change_summary, workflow_state,
+  created_at, created_by, approved_at, approved_by, published_at
+)
+SELECT
+  'ctv_market_' || department_slug || '_1',
+  'cat_market_' || department_slug,
+  1,
+  json_object('blocks', json_array()),
+  'Initial comprehensive department',
+  'published',
+  '2025-06-01T08:00:00Z',
+  'usr_editor',
+  '2026-07-30T07:30:00Z',
+  'usr_admin',
+  '2026-07-30T08:00:00Z'
+FROM market_catalogue_sections
+GROUP BY department_slug
+UNION ALL
+SELECT
+  'ctv_market_' || section_slug || '_1',
+  'cat_market_' || section_slug,
+  1,
+  json_object('blocks', json_array()),
+  'Initial comprehensive category',
+  'published',
+  '2025-06-01T08:00:00Z',
+  'usr_editor',
+  '2026-07-30T07:30:00Z',
+  'usr_admin',
+  '2026-07-30T08:00:00Z'
+FROM market_catalogue_sections;
+
+CREATE TEMP TABLE market_catalogue_products AS
+SELECT
+  ((sections.n - 1) * 8) + CAST(products.key AS INTEGER) + 1 AS product_number,
+  sections.department_order,
+  sections.department_name,
+  sections.department_slug,
+  sections.section_name,
+  sections.section_slug,
+  CAST(products.key AS INTEGER) + 1 AS product_order,
+  CAST(products.value AS TEXT) AS product_name,
+  'organic-' ||
+    lower(replace(replace(replace(CAST(products.value AS TEXT), ' ', '-'), '&', 'and'), '/', '-'))
+    AS product_slug
+FROM market_catalogue_sections sections, json_each(sections.products_json) products;
+
+INSERT INTO products (
+  id, internal_name, name, slug, product_type, farm_id, status,
+  short_description, published_version_id, seo_title, seo_description,
+  created_at, created_by, updated_at, updated_by
+)
+SELECT
+  printf('prd_market_%04d', product_number),
+  product_name || ' catalogue product',
+  'Organic ' || product_name,
+  product_slug,
+  replace(section_slug, '-', '_'),
+  CASE
+    WHEN department_order BETWEEN 1 AND 3 THEN
+      CASE (product_number % 3) WHEN 0 THEN 'farm_devika' WHEN 1 THEN 'farm_anandvan' ELSE 'farm_himgiri' END
+    WHEN department_order BETWEEN 4 AND 10 THEN
+      CASE (product_number % 2) WHEN 0 THEN 'farm_anandvan' ELSE 'farm_himgiri' END
+    ELSE NULL
+  END,
+  'published',
+  product_name || ' selected for dependable quality, clear provenance and everyday use.',
+  printf('pvr_market_%04d_1', product_number),
+  'Organic ' || product_name || ' | Buy Online',
+  'Shop organic ' || lower(product_name) || ' with transparent sourcing, current stock and secure delivery.',
+  datetime('2025-07-01T08:00:00Z', printf('+%d days', (product_number * 17) % 365)),
+  'usr_pm',
+  datetime('2025-07-01T08:00:00Z', printf('+%d days', (product_number * 17) % 365)),
+  'usr_pm'
+FROM market_catalogue_products;
+
+INSERT INTO product_versions (
+  id, product_id, version_number, content_json, change_summary, workflow_state,
+  created_at, created_by, approved_at, approved_by, published_at
+)
+SELECT
+  printf('pvr_market_%04d_1', product_number),
+  printf('prd_market_%04d', product_number),
+  1,
+  json_object(
+    'blocks', json_array(
+      json_object(
+        'id', printf('blk_market_product_%04d_overview', product_number),
+        'type', 'rich_text',
+        'version', 1,
+        'enabled', json('true'),
+        'props', json_object('paragraphs', json_array(
+          'Our organic ' || lower(product_name) || ' is selected for clean flavour, dependable quality and practical everyday use.',
+          'Store in a cool, dry place or refrigerate when fresh. Check the pack label for the current lot, origin and best-before guidance.'
+        ))
+      )
+    )
+  ),
+  'Initial comprehensive catalogue listing',
+  'published',
+  datetime('2025-07-01T08:00:00Z', printf('+%d days', (product_number * 17) % 365)),
+  'usr_pm',
+  datetime('2025-07-01T08:30:00Z', printf('+%d days', (product_number * 17) % 365)),
+  'usr_admin',
+  datetime('2025-07-01T09:00:00Z', printf('+%d days', (product_number * 17) % 365))
+FROM market_catalogue_products;
+
+INSERT INTO product_categories (
+  product_id, category_id, is_primary, sort_order, assigned_at, assigned_by
+)
+SELECT
+  printf('prd_market_%04d', product_number),
+  'cat_market_' || section_slug,
+  1,
+  product_order,
+  '2026-07-30T08:00:00Z',
+  'usr_pm'
+FROM market_catalogue_products
+UNION ALL
+SELECT
+  printf('prd_market_%04d', product_number),
+  'cat_market_' || department_slug,
+  0,
+  product_number,
+  '2026-07-30T08:00:00Z',
+  'usr_pm'
+FROM market_catalogue_products;
+
+INSERT INTO product_variants (
+  id, product_id, sku, name, option_values_json, weight_value, weight_unit,
+  package_description, status, sort_order, created_at, updated_at
+)
+SELECT
+  printf('var_market_%04d', product_number),
+  printf('prd_market_%04d', product_number),
+  printf('TGX-%04d', product_number),
+  CASE
+    WHEN department_order IN (1,2,3) THEN 'Fresh pack'
+    WHEN department_order IN (7,14,15,16,18,19) THEN '500 ml pack'
+    WHEN department_order = 20 THEN '1 unit'
+    ELSE '500 g pack'
+  END,
+  json_object('pack', 'standard'),
+  CASE
+    WHEN department_order IN (1,2,3) THEN 500
+    WHEN department_order IN (7,14,15,16,18,19) THEN 500
+    WHEN department_order = 20 THEN 1
+    ELSE 500
+  END,
+  CASE
+    WHEN department_order IN (7,14,15,16,18,19) THEN 'ml'
+    WHEN department_order = 20 THEN 'unit'
+    ELSE 'g'
+  END,
+  CASE
+    WHEN department_order IN (1,2,3) THEN 'Fresh produce pack'
+    WHEN department_order = 20 THEN 'Single retail unit'
+    ELSE 'Resealable retail pack'
+  END,
+  'active',
+  1,
+  '2026-07-30T08:00:00Z',
+  '2026-07-30T08:00:00Z'
+FROM market_catalogue_products;
+
+INSERT INTO variant_prices (
+  id, variant_id, market_code, currency_code, list_amount_minor,
+  sale_amount_minor, tax_inclusive, status, created_at, created_by
+)
+SELECT
+  printf('prc_market_%04d', product_number),
+  printf('var_market_%04d', product_number),
+  'IN',
+  'INR',
+  6900 + ((product_number * 137) % 90000),
+  CASE
+    WHEN product_number % 7 = 0
+      THEN CAST((6900 + ((product_number * 137) % 90000)) * 0.9 AS INTEGER)
+    ELSE NULL
+  END,
+  1,
+  'active',
+  '2026-07-30T08:00:00Z',
+  'usr_pm'
+FROM market_catalogue_products;
+
+INSERT INTO inventory_levels (
+  variant_id, location_id, on_hand, reserved, reorder_threshold, version, updated_at
+)
+SELECT
+  printf('var_market_%04d', product_number),
+  'loc_mumbai',
+  25 + ((product_number * 29) % 176),
+  product_number % 5,
+  12 + (product_number % 19),
+  1,
+  '2026-07-30T08:00:00Z'
+FROM market_catalogue_products;
+
+INSERT INTO product_certifications (
+  product_id, certification_id, claim_review_state
+)
+SELECT
+  printf('prd_market_%04d', product_number),
+  CASE (product_number % 3)
+    WHEN 0 THEN 'cert_india_organic'
+    WHEN 1 THEN 'cert_jaivik_bharat'
+    ELSE 'cert_pgs_india'
+  END,
+  'approved'
+FROM market_catalogue_products
+WHERE department_order <= 17;
+
+INSERT INTO product_tags (product_id, tag_id)
+SELECT printf('prd_market_%04d', product_number), 'tag_plant_based'
+FROM market_catalogue_products
+WHERE department_order NOT IN (15)
+UNION ALL
+SELECT printf('prd_market_%04d', product_number), 'tag_traditional'
+FROM market_catalogue_products
+WHERE department_order IN (4,5,6,7,8,9,12,13,14);
+
+INSERT INTO search_products (
+  product_id, name, slug, brand_name, farm_name, category_names, keywords,
+  short_description
+)
+SELECT
+  printf('prd_market_%04d', product_number),
+  'Organic ' || product_name,
+  product_slug,
+  '',
+  CASE
+    WHEN department_order BETWEEN 1 AND 3 THEN 'Partner organic farms'
+    WHEN department_order BETWEEN 4 AND 10 THEN 'Verified producer network'
+    ELSE ''
+  END,
+  department_name || ', ' || section_name,
+  lower(product_name || ' ' || department_name || ' ' || section_name || ' organic natural'),
+  product_name || ' selected for dependable quality, clear provenance and everyday use.'
+FROM market_catalogue_products;
+
+DROP TABLE market_catalogue_products;
+DROP TABLE market_catalogue_sections;
