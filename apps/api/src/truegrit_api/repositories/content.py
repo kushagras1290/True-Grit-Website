@@ -6,6 +6,7 @@ import json
 import re
 from typing import Any
 
+from truegrit_api.domain.sitemap import SITEMAP_MAX_URLS
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.catalogue import geo_release_clause
 
@@ -71,6 +72,20 @@ class CategoryRepository:
                      c.name
             """,
             tuple(geo_params),
+        )
+
+    async def list_slugs_for_sitemap(
+        self, *, limit: int = SITEMAP_MAX_URLS
+    ) -> list[dict[str, Any]]:
+        """Slug + updated_at for every indexable public category. Skips the
+        per-category product COUNT that `list_published` runs for navigation
+        badges — a sitemap never reads it."""
+        return await self._db.fetch_all(
+            "SELECT slug, updated_at FROM categories"
+            " WHERE status = 'published' AND visibility = 'public'"
+            " AND indexing_policy = 'index'"
+            " ORDER BY slug LIMIT ?",
+            (limit,),
         )
 
     async def list_published_children(
@@ -161,12 +176,18 @@ class PageRepository:
             },
         }
 
-    async def list_published(self) -> list[dict[str, Any]]:
-        """Slug + updated_at for every publicly visible page — the sitemap's
+    async def list_slugs_for_sitemap(
+        self, *, limit: int = SITEMAP_MAX_URLS
+    ) -> list[dict[str, Any]]:
+        """Slug + updated_at for every indexable published page — the sitemap's
         only source for CMS pages, so a newly published page appears without
-        any code change."""
+        any code change. Pages flipped to `noindex` in the CMS drop out of the
+        sitemap on the same publish, keeping the two signals consistent."""
         return await self._db.fetch_all(
-            "SELECT slug, updated_at FROM pages WHERE status = 'published' ORDER BY slug"
+            "SELECT slug, updated_at FROM pages"
+            " WHERE status = 'published' AND indexing_policy = 'index'"
+            " ORDER BY slug LIMIT ?",
+            (limit,),
         )
 
 
@@ -193,6 +214,17 @@ class FarmRepository:
             """
         )
         return [await self._detail_from_row(row) for row in rows]
+
+    async def list_slugs_for_sitemap(
+        self, *, limit: int = SITEMAP_MAX_URLS
+    ) -> list[dict[str, Any]]:
+        """Slug + updated_at for every published farm. `list_published` runs a
+        certification lookup and story assembly per farm to build profile
+        cards; the sitemap needs neither."""
+        return await self._db.fetch_all(
+            "SELECT slug, updated_at FROM farms WHERE status = 'published' ORDER BY slug LIMIT ?",
+            (limit,),
+        )
 
     async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
         row = await self._db.fetch_one(
@@ -277,6 +309,24 @@ class RecipeRepository:
             "SELECT COUNT(*) AS total FROM recipes WHERE status = 'published'"
         )
         return int(row["total"]) if row else 0
+
+    async def list_slugs_for_sitemap(
+        self, *, limit: int = SITEMAP_MAX_URLS
+    ) -> list[dict[str, Any]]:
+        """Slug + freshness for every indexable published recipe.
+
+        `list_published` calls `_detail_from_row` per row, and each of those
+        loads the recipe's version body and its ingredient list — two extra
+        queries and a JSON parse per recipe. Asking it for the whole
+        catalogue at once is what timed this endpoint out; the sitemap reads
+        the two columns it actually renders instead.
+        """
+        return await self._db.fetch_all(
+            "SELECT slug, COALESCE(updated_at, published_at) AS updated_at FROM recipes"
+            " WHERE status = 'published' AND indexing_policy = 'index'"
+            " ORDER BY published_at DESC, slug LIMIT ?",
+            (limit,),
+        )
 
     async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
         row = await self._db.fetch_one(
@@ -495,6 +545,19 @@ class ArticleRepository:
             "SELECT COUNT(*) AS total FROM articles WHERE status = 'published'"
         )
         return int(row["total"]) if row else 0
+
+    async def list_slugs_for_sitemap(
+        self, *, limit: int = SITEMAP_MAX_URLS
+    ) -> list[dict[str, Any]]:
+        """Slug + freshness for every indexable published article. Same reason
+        as recipes: `list_published` loads each article's version body to
+        render blog cards, which the sitemap never uses."""
+        return await self._db.fetch_all(
+            "SELECT slug, COALESCE(updated_at, published_at) AS updated_at FROM articles"
+            " WHERE status = 'published' AND indexing_policy = 'index'"
+            " ORDER BY published_at DESC, slug LIMIT ?",
+            (limit,),
+        )
 
     async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
         row = await self._db.fetch_one(
@@ -1084,7 +1147,9 @@ class DiscussionRepository:
             (discussion_id,),
         )
 
-    async def list_all_visible_for_sitemap(self, limit: int = 5000) -> list[dict[str, Any]]:
+    async def list_all_visible_for_sitemap(
+        self, limit: int = SITEMAP_MAX_URLS
+    ) -> list[dict[str, Any]]:
         return await self._db.fetch_all(
             "SELECT id, updated_at FROM discussions WHERE status = 'visible'"
             " ORDER BY created_at DESC LIMIT ?",

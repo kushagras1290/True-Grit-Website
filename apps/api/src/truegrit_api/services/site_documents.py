@@ -1,23 +1,33 @@
 """Owner-managed public crawler documents, plus the dynamic sitemap family.
 
 The sitemap is a small index pointing at one sub-sitemap per content type
-(products, categories, pages, blog, recipes, farms) — the same shape a large
-storefront's generated sitemap takes (an index fanning out to per-type
-files), so a future jump to sharded per-type files (`products1.xml`,
-`products2.xml`, ...) only ever means adding pagination inside one function,
-never restructuring the index. Sub-sitemaps are always generated live from
-D1 on request; only the index itself goes through the owner-overridable
-``site_documents`` table (so an owner can still hand-edit it if they ever
-need to), because the sub-sitemaps are mechanically derived and should never
-go stale behind a forgotten manual edit.
+(products, categories, pages, blog, recipes, farms, discussions) — the same
+shape a large storefront's generated sitemap takes (an index fanning out to
+per-type files), so a future jump to sharded per-type files
+(`products1.xml`, `products2.xml`, ...) only ever means adding pagination
+inside one function, never restructuring the index. Sub-sitemaps are always
+generated live from D1 on request; only the index itself goes through the
+owner-overridable ``site_documents`` table (so an owner can still hand-edit
+it if they ever need to), because the sub-sitemaps are mechanically derived
+and should never go stale behind a forgotten manual edit.
+
+Every generator reads through a repository's `list_slugs_for_sitemap`, which
+selects only the slug and timestamp columns a `<url>` renders. That is not an
+optimisation detail — the generators used to reuse the storefront's own
+listing queries, which assemble prices, inventory, version bodies and
+ingredient lists per row. Asking those for the whole catalogue at once
+exceeded the Worker CPU limit, so `/sitemaps/products` returned 500 and
+`/sitemaps/recipes` timed out, and the storefront published empty urlsets in
+their place. Keep sitemap reads on the narrow queries.
 """
 
 from __future__ import annotations
 
 from html import escape
-from typing import Any
+from typing import Any, NamedTuple
 
 from truegrit_api.config import Settings
+from truegrit_api.domain.sitemap import SITEMAP_MAX_URLS, w3c_datetime
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.catalogue import CatalogueRepository
 from truegrit_api.repositories.content import (
@@ -47,6 +57,39 @@ SITEMAP_KINDS: dict[str, tuple[str, str]] = {
     "discussions": ("weekly", "0.3"),
 }
 
+# Storefront landing routes that live in code (`apps/storefront/app/routes.ts`)
+# rather than the CMS `pages` table, so no repository query can discover them.
+# Without this list the site's main hubs — the shop, the blog index, the farmer
+# directory — were absent from the sitemap entirely while every policy page was
+# present. They ride in the `pages` file and outrank it on priority because
+# they are the entry points crawlers should reach first.
+#
+# Add a route here only if it is indexable: `/cart`, `/checkout`, `/account/*`,
+# `/payment/*`, `/search` and the submission forms are deliberately absent, and
+# robots.txt disallows the private ones.
+STOREFRONT_LANDING_PATHS: tuple[str, ...] = (
+    "/shop",
+    "/seasonal",
+    "/farms",
+    "/recipes",
+    "/blog",
+    "/community",
+    "/contact",
+)
+_LANDING_PRIORITY = "0.9"
+_LANDING_CHANGEFREQ = "weekly"
+
+
+class SitemapEntry(NamedTuple):
+    """One `<url>` row. `changefreq`/`priority` default to the values the kind
+    declares in `SITEMAP_KINDS`; only entries that genuinely differ from their
+    neighbours (the landing hubs inside `pages`) set them."""
+
+    path: str
+    lastmod: object = None
+    changefreq: str | None = None
+    priority: str | None = None
+
 
 def _origin(settings: Settings) -> str:
     return settings.public_storefront_url.rstrip("/")
@@ -56,12 +99,17 @@ def _url(settings: Settings, path: str) -> str:
     return f"{_origin(settings)}{path}"
 
 
-def _urlset(settings: Settings, entries: list[tuple[str, str | None]], kind: str) -> str:
-    changefreq, priority = SITEMAP_KINDS[kind]
+def _urlset(settings: Settings, entries: list[SitemapEntry], kind: str) -> str:
+    default_changefreq, default_priority = SITEMAP_KINDS[kind]
     rows = []
-    for path, lastmod in entries:
-        loc = escape(_url(settings, path))
+    for entry in entries[:SITEMAP_MAX_URLS]:
+        loc = escape(_url(settings, entry.path))
+        # A malformed <lastmod> invalidates the whole file, so an unparseable
+        # timestamp is dropped rather than echoed through (see `w3c_datetime`).
+        lastmod = w3c_datetime(entry.lastmod)
         lastmod_tag = f"<lastmod>{escape(lastmod)}</lastmod>" if lastmod else ""
+        changefreq = entry.changefreq or default_changefreq
+        priority = entry.priority or default_priority
         rows.append(
             f"  <url><loc>{loc}</loc>{lastmod_tag}"
             f"<changefreq>{changefreq}</changefreq><priority>{priority}</priority></url>"
@@ -104,41 +152,58 @@ def sitemap_index_xml(settings: Settings) -> str:
 
 
 async def sitemap_products_xml(db: Database, settings: Settings) -> str:
-    products, _total = await CatalogueRepository(db).list_all_published()
-    entries = [(f"/product/{p['slug']}", p.get("updated_at")) for p in products]
+    products = await CatalogueRepository(db).list_slugs_for_sitemap()
+    entries = [SitemapEntry(f"/product/{p['slug']}", p["updated_at"]) for p in products]
     return _urlset(settings, entries, "products")
 
 
 async def sitemap_categories_xml(db: Database, settings: Settings) -> str:
-    categories = await CategoryRepository(db).list_published()
-    entries: list[tuple[str, str | None]] = [(f"/category/{c['slug']}", None) for c in categories]
+    categories = await CategoryRepository(db).list_slugs_for_sitemap()
+    entries = [SitemapEntry(f"/category/{c['slug']}", c["updated_at"]) for c in categories]
     return _urlset(settings, entries, "categories")
 
 
 async def sitemap_pages_xml(db: Database, settings: Settings) -> str:
-    pages = await PageRepository(db).list_published()
+    """CMS pages plus the code-backed landing routes.
+
+    A page published in the admin appears here on the next request with no
+    code change — that is the whole contract of this file. The landing paths
+    are merged in for routes that have no CMS row at all; a CMS page always
+    wins a collision, because it carries a real `lastmod` and an owner may
+    have deliberately taken it out of the index.
+    """
+    pages = await PageRepository(db).list_slugs_for_sitemap()
     entries = [
-        ("/" if page["slug"] == "home" else f"/{page['slug']}", page.get("updated_at"))
+        SitemapEntry(
+            "/" if page["slug"] == "home" else f"/{page['slug']}",
+            page["updated_at"],
+        )
         for page in pages
     ]
+    known = {entry.path for entry in entries}
+    entries.extend(
+        SitemapEntry(path, None, _LANDING_CHANGEFREQ, _LANDING_PRIORITY)
+        for path in STOREFRONT_LANDING_PATHS
+        if path not in known
+    )
     return _urlset(settings, entries, "pages")
 
 
 async def sitemap_blog_xml(db: Database, settings: Settings) -> str:
-    articles = await ArticleRepository(db).list_published(limit=5000)
-    entries = [(f"/blog/{a['slug']}", a.get("published_at") or None) for a in articles]
+    articles = await ArticleRepository(db).list_slugs_for_sitemap()
+    entries = [SitemapEntry(f"/blog/{a['slug']}", a["updated_at"]) for a in articles]
     return _urlset(settings, entries, "blog")
 
 
 async def sitemap_recipes_xml(db: Database, settings: Settings) -> str:
-    recipes = await RecipeRepository(db).list_published(limit=5000)
-    entries: list[tuple[str, str | None]] = [(f"/recipes/{r['slug']}", None) for r in recipes]
+    recipes = await RecipeRepository(db).list_slugs_for_sitemap()
+    entries = [SitemapEntry(f"/recipes/{r['slug']}", r["updated_at"]) for r in recipes]
     return _urlset(settings, entries, "recipes")
 
 
 async def sitemap_farms_xml(db: Database, settings: Settings) -> str:
-    farms = await FarmRepository(db).list_published()
-    entries: list[tuple[str, str | None]] = [(f"/farms/{f['slug']}", None) for f in farms]
+    farms = await FarmRepository(db).list_slugs_for_sitemap()
+    entries = [SitemapEntry(f"/farms/{f['slug']}", f["updated_at"]) for f in farms]
     return _urlset(settings, entries, "farms")
 
 
@@ -147,9 +212,7 @@ async def sitemap_discussions_xml(db: Database, settings: Settings) -> str:
     other sub-sitemap: a newly started (or newly hidden) discussion is
     reflected on the next request, no manual step."""
     discussions = await DiscussionRepository(db).list_all_visible_for_sitemap()
-    entries: list[tuple[str, str | None]] = [
-        (f"/community/{d['id']}", d.get("updated_at")) for d in discussions
-    ]
+    entries = [SitemapEntry(f"/community/{d['id']}", d["updated_at"]) for d in discussions]
     return _urlset(settings, entries, "discussions")
 
 

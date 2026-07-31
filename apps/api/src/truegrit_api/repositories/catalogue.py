@@ -12,6 +12,7 @@ from typing import Any
 from truegrit_api.domain.inventory import InventoryLevel, availability_label
 from truegrit_api.domain.rules import MAX_LIMIT as RULE_MAX_LIMIT
 from truegrit_api.domain.rules import compile_rule
+from truegrit_api.domain.sitemap import SITEMAP_MAX_URLS
 from truegrit_api.platform.database import Database
 
 # Static category assignment has no owner-configured rule ceiling, so it
@@ -255,6 +256,27 @@ class CatalogueRepository:
             (*geo_params, max(limit, 1), max(offset, 0)),
         )
         return await self._assemble(rows), total
+
+    async def list_slugs_for_sitemap(
+        self, *, limit: int = SITEMAP_MAX_URLS
+    ) -> list[dict[str, Any]]:
+        """Slug + updated_at for every indexable published product.
+
+        Deliberately not `list_all_published`: that assembles variants,
+        prices, inventory and tags across four queries to build storefront
+        cards. A sitemap needs two columns, and paying the card cost for
+        every product at once overran the Worker CPU budget, which is what
+        made `/sitemaps/products` return 500 and the storefront publish an
+        empty urlset in its place. `noindex` products are excluded — listing
+        a URL whose own page tells crawlers not to index it is a
+        contradiction that costs crawl budget.
+        """
+        return await self._db.fetch_all(
+            "SELECT slug, updated_at FROM products"
+            " WHERE status = 'published' AND indexing_policy = 'index'"
+            " ORDER BY updated_at DESC, slug LIMIT ?",
+            (limit,),
+        )
 
     async def list_published_by_category(
         self,

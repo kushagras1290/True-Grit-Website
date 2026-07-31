@@ -394,17 +394,26 @@ export async function loadSiteDocument(
 export type SitemapKind =
   "products" | "categories" | "pages" | "blog" | "recipes" | "farms" | "discussions";
 
+const EMPTY_URLSET =
+  '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n</urlset>\n';
+
 /** Per-type sitemap XML, always mechanically generated from live D1 content —
  * unlike `sitemap_xml` (the index), there is no owner-override path here, so
- * these can never go stale. Raw XML, not JSON, so this bypasses `fromApi`. */
+ * these can never go stale. Raw XML, not JSON, so this bypasses `fromApi`.
+ *
+ * `null` means "the API did not answer", which is deliberately distinct from
+ * an empty urlset. A 200 carrying zero URLs is an authoritative statement that
+ * the section has no pages, and a crawler acting on it drops URLs it already
+ * knows about; a 5xx just tells it to come back later. Callers must not
+ * collapse the two — see the `sitemaps.*.xml` routes. */
 export async function loadSitemapXml(
   kind: SitemapKind,
   runtime?: CatalogueRuntime,
-): Promise<string> {
+): Promise<string | null> {
   const baseUrl = apiUrl(runtime);
-  const empty =
-    '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n</urlset>\n';
-  if (!baseUrl) return empty;
+  // Demo-data mode has no backing catalogue to enumerate. Honest and stable:
+  // there is genuinely nothing to list, so an empty urlset is the true answer.
+  if (!baseUrl) return EMPTY_URLSET;
   try {
     const request = new Request(`${baseUrl}/v1/public/sitemaps/${kind}`, {
       headers: { accept: "application/xml" },
@@ -412,11 +421,31 @@ export async function loadSitemapXml(
     const response = runtime?.apiWorker
       ? await runtime.apiWorker.fetch(request)
       : await fetch(request);
-    if (!response.ok) return empty;
+    if (!response.ok) return null;
     return await response.text();
   } catch {
-    return empty;
+    return null;
   }
+}
+
+/** Shared response builder for the seven `/sitemaps/*.xml` routes. */
+export async function sitemapResponse(
+  kind: SitemapKind,
+  runtime?: CatalogueRuntime,
+): Promise<Response> {
+  const xml = await loadSitemapXml(kind, runtime);
+  if (xml === null) {
+    return new Response("Sitemap temporarily unavailable.", {
+      status: 503,
+      headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" },
+    });
+  }
+  return new Response(xml, {
+    headers: {
+      "content-type": "application/xml; charset=utf-8",
+      "cache-control": "public, max-age=300",
+    },
+  });
 }
 
 export interface SearchGroups {
