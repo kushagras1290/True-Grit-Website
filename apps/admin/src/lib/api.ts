@@ -483,6 +483,167 @@ export interface CmsPageDetail extends CmsPageRow {
   blocks: PublicPageBlock[];
 }
 
+/** One farm's revenue line on the Revenue page.
+ *
+ * Every amount is integer minor units (ADR-006) — paise for INR. `commissionBps`
+ * is basis points (1500 = 15%); `commissionSource` says whether that came from
+ * this farm's own override or the house default.
+ *
+ * `outstandingPayoutMinor` is the number the "Issue payment" button pays: net
+ * revenue on lines no payout has settled yet, less the platform's cut. */
+export interface FarmRevenueRow {
+  farmId: string;
+  farmName: string;
+  farmSlug: string;
+  farmerName: string;
+  region: string;
+  status: string;
+  currencyCode: string;
+  ownerUserId: string | null;
+  ownerName: string;
+  ownerEmail: string;
+  commissionBps: number;
+  commissionPercent: number;
+  commissionSource: "farm" | "default";
+  orderCount: number;
+  grossMinor: number;
+  refundedMinor: number;
+  netRevenueMinor: number;
+  commissionMinor: number;
+  farmEarningsMinor: number;
+  paidOutMinor: number;
+  payoutCount: number;
+  outstandingItemCount: number;
+  outstandingGrossMinor: number;
+  outstandingRefundedMinor: number;
+  outstandingNetMinor: number;
+  outstandingCommissionMinor: number;
+  outstandingPayoutMinor: number;
+}
+
+export interface FarmRevenueSummary {
+  defaultCommissionBps: number;
+  defaultCommissionPercent: number;
+  farms: FarmRevenueRow[];
+  totals: {
+    grossMinor: number;
+    refundedMinor: number;
+    netRevenueMinor: number;
+    commissionMinor: number;
+    farmEarningsMinor: number;
+    paidOutMinor: number;
+    outstandingPayoutMinor: number;
+  };
+}
+
+export interface FarmRevenueLine {
+  orderItemId: string;
+  orderId: string;
+  orderReference: string;
+  orderedAt: string;
+  productName: string;
+  variantName: string;
+  quantity: number;
+  currencyCode: string;
+  grossMinor: number;
+  refundedMinor: number;
+  netMinor: number;
+  /** True once a payout has settled this line; it can never be paid again. */
+  settled: boolean;
+  payoutId: string | null;
+}
+
+export interface FarmPayout {
+  id: string;
+  farmId: string;
+  farmName: string;
+  currencyCode: string;
+  grossMinor: number;
+  refundedMinor: number;
+  netRevenueMinor: number;
+  commissionBps: number;
+  commissionPercent: number;
+  commissionMinor: number;
+  payoutMinor: number;
+  itemCount: number;
+  status: string;
+  reference: string;
+  note: string;
+  provider: string;
+  providerReference: string;
+  paidToUserId: string | null;
+  paidToName: string;
+  createdAt: string;
+  createdByName: string;
+}
+
+export interface FarmRevenueDetail {
+  summary: FarmRevenueRow;
+  lines: FarmRevenueLine[];
+  payouts: FarmPayout[];
+}
+
+export interface FarmPayoutResult {
+  payoutId: string;
+  farmId: string;
+  farmName: string;
+  currencyCode: string;
+  payoutMinor: number;
+  commissionMinor: number;
+  itemCount: number;
+}
+
+const DEMO_REVENUE: FarmRevenueSummary = {
+  defaultCommissionBps: 1500,
+  defaultCommissionPercent: 15,
+  farms: [],
+  totals: {
+    grossMinor: 0,
+    refundedMinor: 0,
+    netRevenueMinor: 0,
+    commissionMinor: 0,
+    farmEarningsMinor: 0,
+    paidOutMinor: 0,
+    outstandingPayoutMinor: 0,
+  },
+};
+
+function demoFarmRevenueDetail(farmId: string): FarmRevenueDetail {
+  return {
+    summary: {
+      farmId,
+      farmName: "Demo farm",
+      farmSlug: farmId,
+      farmerName: "",
+      region: "",
+      status: "published",
+      currencyCode: "INR",
+      ownerUserId: null,
+      ownerName: "",
+      ownerEmail: "",
+      commissionBps: 1500,
+      commissionPercent: 15,
+      commissionSource: "default",
+      orderCount: 0,
+      grossMinor: 0,
+      refundedMinor: 0,
+      netRevenueMinor: 0,
+      commissionMinor: 0,
+      farmEarningsMinor: 0,
+      paidOutMinor: 0,
+      payoutCount: 0,
+      outstandingItemCount: 0,
+      outstandingGrossMinor: 0,
+      outstandingRefundedMinor: 0,
+      outstandingNetMinor: 0,
+      outstandingCommissionMinor: 0,
+      outstandingPayoutMinor: 0,
+    },
+    lines: [],
+    payouts: [],
+  };
+}
+
 const DEMO_ME: Me = {
   id: "usr_admin",
   displayName: "Asha Rao",
@@ -515,6 +676,8 @@ const DEMO_ME: Me = {
     "audit.view",
     "settings.view",
     "settings.edit",
+    "revenue.view",
+    "revenue.manage",
   ],
 };
 
@@ -1728,6 +1891,56 @@ export const api = {
     demoMode
       ? demo({ id, label: id, columns: [], rows: [] })
       : post(`/v1/admin/reports/${id}/run`, { filters }),
+
+  // --- Farm revenue & payouts --------------------------------------------
+
+  revenue: (): Promise<FarmRevenueSummary> =>
+    demoMode ? demo(DEMO_REVENUE) : get<FarmRevenueSummary>("/v1/admin/revenue"),
+
+  farmRevenue: (farmId: string): Promise<FarmRevenueDetail> =>
+    demoMode
+      ? demo(demoFarmRevenueDetail(farmId))
+      : get<FarmRevenueDetail>(`/v1/admin/revenue/farms/${farmId}`),
+
+  payouts: (limit = 100): Promise<FarmPayout[]> =>
+    demoMode
+      ? demo([])
+      : get<{ items: FarmPayout[] }>(`/v1/admin/revenue/payouts?limit=${limit}`).then(
+          (body) => body.items,
+        ),
+
+  setDefaultCommission: (percent: number): Promise<{ defaultCommissionBps: number }> =>
+    demoMode
+      ? demo({ defaultCommissionBps: Math.round(percent * 100) })
+      : patch("/v1/admin/revenue/commission", { percent }),
+
+  /** `percent: null` clears the farm's override and returns it to the house
+   *  default — distinct from 0, which charges the farm nothing. */
+  setFarmCommission: (
+    farmId: string,
+    percent: number | null,
+  ): Promise<{ commissionBps: number; commissionSource: "farm" | "default" }> =>
+    demoMode
+      ? demo({
+          commissionBps: percent === null ? 1500 : Math.round(percent * 100),
+          commissionSource: percent === null ? ("default" as const) : ("farm" as const),
+        })
+      : patch(`/v1/admin/revenue/farms/${farmId}/commission`, { percent }),
+
+  /** Records a payout settling every outstanding line for the farm. This does
+   *  not move money — no disbursement rail is configured; the operator
+   *  transfers out of band and files the reference. `expectedPayoutMinor` is
+   *  the amount shown on screen, so a balance that moved underneath is
+   *  rejected rather than silently paying a different number. */
+  issueFarmPayout: (
+    farmId: string,
+    body: { reference: string; note: string; expectedPayoutMinor: number },
+  ): Promise<FarmPayoutResult> =>
+    demoMode
+      ? Promise.reject(
+          new ApiError("Payouts are disabled in demo mode.", 400, "demo_mode_read_only"),
+        )
+      : post(`/v1/admin/revenue/farms/${farmId}/payouts`, body),
 
   // --- Owner-only: server logs -------------------------------------------
 

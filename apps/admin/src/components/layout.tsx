@@ -32,6 +32,7 @@ import {
   Terminal,
   UtensilsCrossed,
   Users,
+  Wallet,
   Warehouse,
   X,
 } from "lucide-react";
@@ -115,6 +116,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         label: "Payments & Refunds",
         icon: <Receipt size={16} />,
         permission: "audit.view",
+      },
+      {
+        to: "/revenue",
+        label: "Revenue",
+        icon: <Wallet size={16} />,
+        permission: "revenue.view",
       },
       {
         to: "/archive",

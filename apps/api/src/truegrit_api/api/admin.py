@@ -109,6 +109,14 @@ from truegrit_api.services.publishing import (
 )
 from truegrit_api.services.reports import list_reports, run_report
 from truegrit_api.services.returns import decide_return_request, resolve_return_request
+from truegrit_api.services.revenue import (
+    farm_revenue_detail,
+    farm_revenue_summary,
+    issue_farm_payout,
+    list_payouts,
+    set_default_commission,
+    set_farm_commission,
+)
 from truegrit_api.services.site_documents import SITE_DOCUMENT_TYPES, default_site_documents
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
@@ -4383,4 +4391,108 @@ async def staff_password_reset_confirm(
         settings=get_settings(),
         request_id=_request_id(request),
         source="admin",
+    )
+
+
+# ---------------------------------------------------------------------------
+# Farm revenue & payouts
+#
+# Two permissions, because reading what a farm earned and moving money to it
+# are different jobs: `revenue.view` for the console, `revenue.manage` for the
+# commission rate and the payout button.
+# ---------------------------------------------------------------------------
+
+
+class DefaultCommissionRequest(_CamelModel):
+    percent: float = Field(ge=0, le=100)
+
+
+class FarmCommissionRequest(_CamelModel):
+    # `None` clears the override and returns the farm to the house default,
+    # which is deliberately distinct from 0 ("this farm is charged nothing").
+    percent: float | None = Field(default=None, ge=0, le=100)
+
+
+class FarmPayoutRequest(_CamelModel):
+    reference: str = Field(default="", max_length=120)
+    note: str = Field(default="", max_length=500)
+    # The amount the operator saw on screen. A mismatch means the balance moved
+    # under them, and the payout is refused rather than silently paying a
+    # different number than the one approved.
+    expected_payout_minor: int | None = Field(default=None, ge=0)
+
+
+@router.get("/revenue")
+async def farm_revenue_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("revenue.view"))],
+) -> Any:
+    return await farm_revenue_summary(db)
+
+
+@router.get("/revenue/payouts")
+async def farm_payouts_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("revenue.view"))],
+    limit: Annotated[int, Query(ge=1, le=200)] = 100,
+) -> Any:
+    return await list_payouts(db, limit=limit)
+
+
+@router.get("/revenue/farms/{farm_id}")
+async def farm_revenue_detail_endpoint(
+    farm_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("revenue.view"))],
+) -> Any:
+    return await farm_revenue_detail(db, farm_id)
+
+
+@router.patch("/revenue/commission")
+async def set_default_commission_endpoint(
+    payload: DefaultCommissionRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("revenue.manage"))],
+) -> Any:
+    return await set_default_commission(
+        db, principal, _request_id(request), percent=payload.percent
+    )
+
+
+@router.patch("/revenue/farms/{farm_id}/commission")
+async def set_farm_commission_endpoint(
+    farm_id: str,
+    payload: FarmCommissionRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("revenue.manage"))],
+) -> Any:
+    return await set_farm_commission(
+        db, principal, _request_id(request), farm_id=farm_id, percent=payload.percent
+    )
+
+
+@router.post("/revenue/farms/{farm_id}/payouts")
+async def issue_farm_payout_endpoint(
+    farm_id: str,
+    payload: FarmPayoutRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("revenue.manage"))],
+) -> Any:
+    """Record a payout settling every outstanding line for this farm.
+
+    This writes the ledger entry and marks the lines paid; it does not move
+    money — no disbursement rail is configured (see `services/revenue.py`).
+    The operator transfers out of band and files the reference.
+    """
+    return await issue_farm_payout(
+        db,
+        principal,
+        _request_id(request),
+        farm_id=farm_id,
+        reference=payload.reference,
+        note=payload.note,
+        expected_payout_minor=payload.expected_payout_minor,
     )

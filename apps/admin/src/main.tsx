@@ -29,6 +29,7 @@ import { ProductEditorPage, ProductListPage } from "./features/products";
 import { RecipeEditorPage, RecipeListPage } from "./features/recipes";
 import { ReportsPage } from "./features/reports";
 import { RefundsOversightPage } from "./features/refunds";
+import { FarmRevenueDetailPage, RevenuePage } from "./features/revenue";
 import { ReturnDetailPage, ReturnsListPage } from "./features/returns";
 import { ScopeManagementPage } from "./features/scopes";
 import { AdminLogsPage } from "./features/server-logs";
@@ -69,6 +70,8 @@ createRoot(document.getElementById("root")!).render(
               <Route path="returns" element={<ReturnsListPage />} />
               <Route path="returns/:id" element={<ReturnDetailPage />} />
               <Route path="refunds" element={<RefundsOversightPage />} />
+              <Route path="revenue" element={<RevenuePage />} />
+              <Route path="revenue/:farmId" element={<FarmRevenueDetailPage />} />
               <Route path="archive" element={<ArchivePage />} />
               <Route path="site-control" element={<SiteControlPage />} />
               <Route path="blog" element={<ArticleListPage />} />
