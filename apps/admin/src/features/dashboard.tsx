@@ -103,7 +103,11 @@ export function DashboardPage() {
     : [];
 
   const liveQueryOptions = { refetchInterval: 10_000, refetchIntervalInBackground: true };
-  const orders = useQuery({ queryKey: ["orders"], queryFn: () => api.orders(), ...liveQueryOptions });
+  const orders = useQuery({
+    queryKey: ["orders"],
+    queryFn: () => api.orders(),
+    ...liveQueryOptions,
+  });
   const inventory = useQuery({
     queryKey: ["inventory"],
     queryFn: () => api.inventory(),
@@ -200,10 +204,7 @@ export function DashboardPage() {
             ) : search.isFetching ? (
               <p className="px-4 py-3 text-sm text-ink-muted">Searching…</p>
             ) : searchResultGroups.length === 0 ? (
-              <EmptyState
-                title="No matches"
-                hint={`Nothing found for "${trimmedSearchQuery}".`}
-              />
+              <EmptyState title="No matches" hint={`Nothing found for "${trimmedSearchQuery}".`} />
             ) : (
               <div className="divide-y divide-line">
                 {searchResultGroups.map((group) => (

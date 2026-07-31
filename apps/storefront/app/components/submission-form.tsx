@@ -138,7 +138,12 @@ export function SubmissionForm({
       </label>
       <label className="block space-y-1">
         <Label>Short excerpt (optional)</Label>
-        <input name="excerpt" maxLength={400} defaultValue={initial?.excerpt ?? ""} className={FIELD} />
+        <input
+          name="excerpt"
+          maxLength={400}
+          defaultValue={initial?.excerpt ?? ""}
+          className={FIELD}
+        />
       </label>
 
       {contentType === "recipe" ? (
@@ -194,7 +199,9 @@ export function SubmissionForm({
                   onChange={(event) => {
                     const value = event.target.value;
                     setIngredients(
-                      ingredients.map((item, i) => (i === index ? { ...item, label: value } : item)),
+                      ingredients.map((item, i) =>
+                        i === index ? { ...item, label: value } : item,
+                      ),
                     );
                   }}
                   placeholder="Ingredient"

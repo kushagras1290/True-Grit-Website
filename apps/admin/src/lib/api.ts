@@ -529,7 +529,8 @@ export const api = {
     const empty: AdminSearchResults = { products: [], orders: [], users: [], categories: [] };
     const trimmed = query.trim();
     if (trimmed.length < 2) return demo(empty);
-    if (!demoMode) return get<AdminSearchResults>(`/v1/admin/search?q=${encodeURIComponent(trimmed)}`);
+    if (!demoMode)
+      return get<AdminSearchResults>(`/v1/admin/search?q=${encodeURIComponent(trimmed)}`);
 
     const term = trimmed.toLowerCase();
     const matches = (...values: Array<string | null | undefined>) =>
@@ -640,14 +641,30 @@ export const api = {
   updateProduct: (id: string, input: Record<string, unknown>): Promise<{ id: string }> =>
     demoMode ? demo({ id }) : patch(`/v1/admin/products/${id}`, input),
 
-  createVariant: (productId: string, input: { name: string; sku: string; listMinor: number; saleMinor?: number | null }): Promise<{ id: string }> =>
-    demoMode ? demo({ id: `var_${Date.now()}` }) : post(`/v1/admin/products/${productId}/variants`, input),
+  createVariant: (
+    productId: string,
+    input: { name: string; sku: string; listMinor: number; saleMinor?: number | null },
+  ): Promise<{ id: string }> =>
+    demoMode
+      ? demo({ id: `var_${Date.now()}` })
+      : post(`/v1/admin/products/${productId}/variants`, input),
 
-  updateVariant: (productId: string, variantId: string, input: { name?: string; sku?: string; listMinor?: number; saleMinor?: number | null }): Promise<{ id: string }> =>
-    demoMode ? demo({ id: variantId }) : patch(`/v1/admin/products/${productId}/variants/${variantId}`, input),
+  updateVariant: (
+    productId: string,
+    variantId: string,
+    input: { name?: string; sku?: string; listMinor?: number; saleMinor?: number | null },
+  ): Promise<{ id: string }> =>
+    demoMode
+      ? demo({ id: variantId })
+      : patch(`/v1/admin/products/${productId}/variants/${variantId}`, input),
 
-  updateProductStatus: (productId: string, status: "published" | "unpublished"): Promise<{ id: string }> =>
-    demoMode ? demo({ id: productId }) : patch(`/v1/admin/products/${productId}/status`, { status }),
+  updateProductStatus: (
+    productId: string,
+    status: "published" | "unpublished",
+  ): Promise<{ id: string }> =>
+    demoMode
+      ? demo({ id: productId })
+      : patch(`/v1/admin/products/${productId}/status`, { status }),
 
   publishProduct: (
     id: string,
@@ -863,15 +880,14 @@ export const api = {
         })
       : post(`/v1/admin/orders/${id}/refund`, input),
 
-  refunds: ({
-    limit = 50,
-    offset = 0,
-  }: { limit?: number; offset?: number } = {}): Promise<AdminRefundRow[]> =>
+  refunds: ({ limit = 50, offset = 0 }: { limit?: number; offset?: number } = {}): Promise<
+    AdminRefundRow[]
+  > =>
     demoMode
       ? demo([])
-      : get<{ items: AdminRefundRow[] }>(
-          `/v1/admin/refunds?limit=${limit}&offset=${offset}`,
-        ).then((body) => body.items),
+      : get<{ items: AdminRefundRow[] }>(`/v1/admin/refunds?limit=${limit}&offset=${offset}`).then(
+          (body) => body.items,
+        ),
 
   users: ({
     limit = 50,
@@ -896,7 +912,9 @@ export const api = {
     id: string,
     permissionIds: string[],
   ): Promise<{ id: string; permissionIds: string[] }> =>
-    demoMode ? demo({ id, permissionIds }) : patch(`/v1/admin/roles/${id}/permissions`, { permissionIds }),
+    demoMode
+      ? demo({ id, permissionIds })
+      : patch(`/v1/admin/roles/${id}/permissions`, { permissionIds }),
 
   createRole: (input: {
     name: string;
@@ -1094,10 +1112,9 @@ export const api = {
       ? demo({ ok: true })
       : post("/v1/admin/auth/password-reset/confirm", { token, newPassword }),
 
-  audit: ({
-    limit = 50,
-    offset = 0,
-  }: { limit?: number; offset?: number } = {}): Promise<AuditLogRow[]> =>
+  audit: ({ limit = 50, offset = 0 }: { limit?: number; offset?: number } = {}): Promise<
+    AuditLogRow[]
+  > =>
     demoMode
       ? demo(auditLog)
       : get<{ items: AuditLogRow[] }>(`/v1/admin/audit?limit=${limit}&offset=${offset}`).then(
@@ -1448,15 +1465,19 @@ export const api = {
       : get<AdminReturnRequestDetail>(`/v1/admin/returns/${id}`),
 
   decideReturn: (id: string, decision: string): Promise<{ id: string; status: string }> =>
-    demoMode ? demo({ id, status: decision }) : post(`/v1/admin/returns/${id}/decide`, { decision }),
+    demoMode
+      ? demo({ id, status: decision })
+      : post(`/v1/admin/returns/${id}/decide`, { decision }),
 
   resolveReturn: (
     id: string,
-    input: { resolutionType: string; resolutionAmountMinor?: number | null; resolutionNotes?: string },
+    input: {
+      resolutionType: string;
+      resolutionAmountMinor?: number | null;
+      resolutionNotes?: string;
+    },
   ): Promise<{ id: string; status: string }> =>
-    demoMode
-      ? demo({ id, status: "completed" })
-      : post(`/v1/admin/returns/${id}/resolve`, input),
+    demoMode ? demo({ id, status: "completed" }) : post(`/v1/admin/returns/${id}/resolve`, input),
 
   // --- Community blog/recipe submissions ------------------------------------
 
@@ -1522,7 +1543,11 @@ export const api = {
       ? Promise.reject(new ApiError("Demo mode has no discussions yet.", 404, "not_found"))
       : get<AdminDiscussionDetail>(`/v1/admin/discussions/${id}`),
 
-  moderateDiscussion: (id: string, action: string, reason?: string): Promise<{ id: string; status: string }> =>
+  moderateDiscussion: (
+    id: string,
+    action: string,
+    reason?: string,
+  ): Promise<{ id: string; status: string }> =>
     demoMode
       ? demo({ id, status: action })
       : post(`/v1/admin/discussions/${id}/moderate`, { action, reason }),
@@ -1581,10 +1606,16 @@ export const api = {
 
   // --- Media library ---------------------------------------------------
 
-  mediaLibrary: ({ limit = 60, offset = 0, search }: { limit?: number, offset?: number, search?: string } = {}): Promise<AdminMediaAssetRow[]> =>
+  mediaLibrary: ({
+    limit = 60,
+    offset = 0,
+    search,
+  }: { limit?: number; offset?: number; search?: string } = {}): Promise<AdminMediaAssetRow[]> =>
     demoMode
       ? demo([]) // Assume empty or mock for demo
-      : get<{ items: AdminMediaAssetRow[] }>(`/v1/admin/media?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ''}`).then((body) => body.items),
+      : get<{ items: AdminMediaAssetRow[] }>(
+          `/v1/admin/media?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ).then((body) => body.items),
 
   updateMediaAsset: (
     id: string,
@@ -1611,7 +1642,9 @@ export const api = {
   // --- Owner reports console --------------------------------------------
 
   reports: (): Promise<ReportDefinitionSummary[]> =>
-    demoMode ? demo([]) : get<{ items: ReportDefinitionSummary[] }>("/v1/admin/reports").then((body) => body.items),
+    demoMode
+      ? demo([])
+      : get<{ items: ReportDefinitionSummary[] }>("/v1/admin/reports").then((body) => body.items),
 
   runReport: (id: string, filters: Record<string, string>): Promise<ReportRunResult> =>
     demoMode
@@ -1625,14 +1658,16 @@ export const api = {
   > =>
     demoMode
       ? demo([])
-      : get<{ items: AdminServerLogRow[] }>(`/v1/admin/server-logs?limit=${limit}&offset=${offset}`).then(
-          (body) => body.items,
-        ),
+      : get<{ items: AdminServerLogRow[] }>(
+          `/v1/admin/server-logs?limit=${limit}&offset=${offset}`,
+        ).then((body) => body.items),
 
   // --- Owner-only: read-only DB browser -----------------------------------
 
   dbBrowserTables: (): Promise<string[]> =>
-    demoMode ? demo([]) : get<{ items: string[] }>("/v1/admin/db-browser/tables").then((body) => body.items),
+    demoMode
+      ? demo([])
+      : get<{ items: string[] }>("/v1/admin/db-browser/tables").then((body) => body.items),
 
   dbBrowserTable: (
     tableName: string,
@@ -1659,4 +1694,3 @@ export const api = {
 };
 
 export type { ContentBlock };
-

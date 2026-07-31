@@ -301,7 +301,9 @@ export function PhoneAuthPanel({ onDone }: { onDone: () => void }) {
       <form className="space-y-3" onSubmit={handleNameSubmit}>
         <div>
           <p className="text-sm font-medium text-ink">Almost there</p>
-          <p className="text-xs text-ink-muted">Your number is verified. What should we call you?</p>
+          <p className="text-xs text-ink-muted">
+            Your number is verified. What should we call you?
+          </p>
         </div>
         <label className="block space-y-1">
           <span className="text-xs font-medium text-ink-muted">Name</span>

@@ -46,9 +46,7 @@ export default function ContactPage(_props: Route.ComponentProps) {
     <>
       <header className="bg-brand text-ink-inverse">
         <div className="mx-auto max-w-[80rem] px-4 py-16 sm:px-6">
-          <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-80">
-            Contact us
-          </p>
+          <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-80">Contact us</p>
           <h1 className="mt-3 max-w-2xl font-display text-4xl leading-tight">
             Questions about an order, farm, product or partnership?
           </h1>

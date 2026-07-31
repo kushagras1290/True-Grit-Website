@@ -76,9 +76,17 @@ function CreateRecipeModal({ onClose }: { onClose: () => void }) {
     <Modal title="New recipe" onClose={onClose}>
       <form className="space-y-4" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
         <Field label="Title" htmlFor="rcp-title" error={form.formState.errors.title?.message}>
-          <Input id="rcp-title" placeholder="Crisp sprouted ragi dosa" {...form.register("title")} />
+          <Input
+            id="rcp-title"
+            placeholder="Crisp sprouted ragi dosa"
+            {...form.register("title")}
+          />
         </Field>
-        <Field label="Slug (optional)" htmlFor="rcp-slug" error={form.formState.errors.slug?.message}>
+        <Field
+          label="Slug (optional)"
+          htmlFor="rcp-slug"
+          error={form.formState.errors.slug?.message}
+        >
           <Input id="rcp-slug" placeholder="crisp-sprouted-ragi-dosa" {...form.register("slug")} />
         </Field>
         <Field label="Excerpt (optional)" htmlFor="rcp-excerpt">
@@ -177,7 +185,10 @@ export function RecipeListPage() {
             {recipes.map((recipe) => (
               <tr key={recipe.id} className="border-t border-line hover:bg-canvas/60">
                 <Td>
-                  <Link to={`/recipes/${recipe.id}`} className="font-medium text-brand hover:underline">
+                  <Link
+                    to={`/recipes/${recipe.id}`}
+                    className="font-medium text-brand hover:underline"
+                  >
                     {recipe.title}
                   </Link>
                   <span className="block text-xs text-ink-muted">/recipes/{recipe.slug}</span>
@@ -238,7 +249,9 @@ const bannerImageUrlSchema = z
 
 const editSchema = z.object({
   title: z.string().min(3, "At least 3 characters").max(180),
-  slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and single hyphens"),
+  slug: z
+    .string()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and single hyphens"),
   excerpt: z.string().max(300),
   prepMinutes: z.coerce.number().int().min(0).max(600),
   cookMinutes: z.coerce.number().int().min(0).max(600),
@@ -292,7 +305,12 @@ function RequestChangesModal({
     <Modal title="Request changes" onClose={onClose}>
       <div className="space-y-4">
         <Field label="What needs to change?" htmlFor="rrc-note">
-          <Textarea id="rrc-note" rows={4} value={note} onChange={(event) => setNote(event.target.value)} />
+          <Textarea
+            id="rrc-note"
+            rows={4}
+            value={note}
+            onChange={(event) => setNote(event.target.value)}
+          />
         </Field>
         <div className="flex justify-end gap-2">
           <Button type="button" variant="secondary" onClick={onClose}>
@@ -328,7 +346,13 @@ function IngredientsEditor({
   function add() {
     onChange([
       ...ingredients,
-      { id: `new_${Date.now().toString(36)}`, label: "", quantityText: "", productId: null, productSlug: null },
+      {
+        id: `new_${Date.now().toString(36)}`,
+        label: "",
+        quantityText: "",
+        productId: null,
+        productSlug: null,
+      },
     ]);
   }
 
@@ -459,7 +483,8 @@ export function RecipeEditorPage() {
       await invalidate();
       toast.success("Submitted for review.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not submit."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not submit."),
   });
 
   const approveMutation = useMutation({
@@ -468,7 +493,8 @@ export function RecipeEditorPage() {
       await invalidate();
       toast.success("Approved.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not approve."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not approve."),
   });
 
   const requestChangesMutation = useMutation({
@@ -488,7 +514,8 @@ export function RecipeEditorPage() {
       await invalidate();
       toast.success(`Published — version ${result.version} is now live.`);
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not publish."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not publish."),
   });
 
   const unpublishMutation = useMutation({
@@ -497,7 +524,8 @@ export function RecipeEditorPage() {
       await invalidate();
       toast.success("Unpublished.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not unpublish."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not unpublish."),
   });
 
   const bannerUploadMutation = useMutation({
@@ -541,7 +569,10 @@ export function RecipeEditorPage() {
                 <Button variant="secondary" onClick={() => setRequestingChanges(true)}>
                   Request changes
                 </Button>
-                <Button onClick={() => approveMutation.mutate()} disabled={approveMutation.isPending}>
+                <Button
+                  onClick={() => approveMutation.mutate()}
+                  disabled={approveMutation.isPending}
+                >
                   {approveMutation.isPending ? "Approving…" : "Approve"}
                 </Button>
               </PermissionGate>
@@ -589,7 +620,10 @@ export function RecipeEditorPage() {
       ) : null}
 
       <fieldset disabled={!canEdit} className="max-w-3xl space-y-5">
-        <form className="space-y-5" onSubmit={form.handleSubmit((values) => saveMutation.mutate(values))}>
+        <form
+          className="space-y-5"
+          onSubmit={form.handleSubmit((values) => saveMutation.mutate(values))}
+        >
           <div className="grid gap-4 md:grid-cols-2">
             <Field label="Title" htmlFor="rcp-e-title" error={form.formState.errors.title?.message}>
               <Input id="rcp-e-title" {...form.register("title")} />
@@ -613,7 +647,11 @@ export function RecipeEditorPage() {
             </Field>
           </div>
           <Field label="Dietary tags (comma separated)" htmlFor="rcp-e-tags">
-            <Input id="rcp-e-tags" placeholder="gluten-free, plant-based" {...form.register("dietaryTagsText")} />
+            <Input
+              id="rcp-e-tags"
+              placeholder="gluten-free, plant-based"
+              {...form.register("dietaryTagsText")}
+            />
           </Field>
 
           <div className="border-t border-line pt-5">
@@ -691,7 +729,11 @@ export function RecipeEditorPage() {
                 <Input id="rcp-e-seo-keywords" {...form.register("seoKeywords")} />
               </Field>
               <Field label="Canonical URL" htmlFor="rcp-e-canonical">
-                <Input id="rcp-e-canonical" placeholder="/recipes/my-recipe" {...form.register("canonicalUrl")} />
+                <Input
+                  id="rcp-e-canonical"
+                  placeholder="/recipes/my-recipe"
+                  {...form.register("canonicalUrl")}
+                />
               </Field>
               <Field label="Search indexing" htmlFor="rcp-e-indexing">
                 <Select id="rcp-e-indexing" {...form.register("indexingPolicy")}>
@@ -727,7 +769,9 @@ export function RecipeEditorPage() {
           </div>
 
           <div className="flex items-center justify-between">
-            <p className="text-xs text-ink-muted">Last updated {formatDateTime(recipe.updatedAt)}</p>
+            <p className="text-xs text-ink-muted">
+              Last updated {formatDateTime(recipe.updatedAt)}
+            </p>
             <Button type="submit" variant="primary" disabled={saveMutation.isPending}>
               {saveMutation.isPending ? "Saving…" : "Save"}
             </Button>

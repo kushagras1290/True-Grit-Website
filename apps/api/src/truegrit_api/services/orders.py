@@ -201,9 +201,7 @@ async def issue_refund(
     if not actor.has("orders.refund"):
         raise PermissionDeniedError("Issuing refunds requires the orders.refund permission.")
 
-    order = await db.fetch_one(
-        "SELECT id, payment_status FROM orders WHERE id = ?", (order_id,)
-    )
+    order = await db.fetch_one("SELECT id, payment_status FROM orders WHERE id = ?", (order_id,))
     if order is None:
         raise NotFoundError("Order not found.")
 

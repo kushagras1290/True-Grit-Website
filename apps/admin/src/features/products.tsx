@@ -463,7 +463,10 @@ function VariantEditorModal({
         saleMinor: values.saleMinor ? Math.round(values.saleMinor * 100) : null,
       };
       if (variant) {
-        return api.updateVariant(productId, variant.id, { ...payload, saleMinor: payload.saleMinor === null ? -1 : payload.saleMinor });
+        return api.updateVariant(productId, variant.id, {
+          ...payload,
+          saleMinor: payload.saleMinor === null ? -1 : payload.saleMinor,
+        });
       }
       return api.createVariant(productId, payload);
     },
@@ -472,24 +475,52 @@ function VariantEditorModal({
       onSuccess();
       onClose();
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Failed to save variant."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Failed to save variant."),
   });
 
   return (
     <Modal title={variant ? "Edit Variant" : "Add Variant"} onClose={onClose}>
       <form onSubmit={form.handleSubmit((v) => mutation.mutate(v))} className="space-y-4">
-        <Field htmlFor="variant-name" label="Variant Name" error={form.formState.errors.name?.message}>
+        <Field
+          htmlFor="variant-name"
+          label="Variant Name"
+          error={form.formState.errors.name?.message}
+        >
           <Input id="variant-name" placeholder="e.g. 500g Pack" {...form.register("name")} />
         </Field>
         <Field htmlFor="variant-sku" label="SKU" error={form.formState.errors.sku?.message}>
           <Input id="variant-sku" placeholder="e.g. TO-HONEY-500" {...form.register("sku")} />
         </Field>
         <div className="grid grid-cols-2 gap-4">
-          <Field htmlFor="variant-list" label="List Price (₹)" error={form.formState.errors.listMinor?.message}>
-            <Input id="variant-list" type="number" step="0.01" min="0" {...form.register("listMinor", { valueAsNumber: true })} />
+          <Field
+            htmlFor="variant-list"
+            label="List Price (₹)"
+            error={form.formState.errors.listMinor?.message}
+          >
+            <Input
+              id="variant-list"
+              type="number"
+              step="0.01"
+              min="0"
+              {...form.register("listMinor", { valueAsNumber: true })}
+            />
           </Field>
-          <Field htmlFor="variant-sale" label="Sale Price (₹)" error={form.formState.errors.saleMinor?.message}>
-            <Input id="variant-sale" type="number" step="0.01" min="0" placeholder="Optional" {...form.register("saleMinor", { setValueAs: (v) => (v === "" || isNaN(parseFloat(v)) ? null : parseFloat(v)) })} />
+          <Field
+            htmlFor="variant-sale"
+            label="Sale Price (₹)"
+            error={form.formState.errors.saleMinor?.message}
+          >
+            <Input
+              id="variant-sale"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="Optional"
+              {...form.register("saleMinor", {
+                setValueAs: (v) => (v === "" || isNaN(parseFloat(v)) ? null : parseFloat(v)),
+              })}
+            />
           </Field>
         </div>
         <div className="flex justify-end gap-3 pt-4 border-t border-line">
@@ -505,7 +536,6 @@ function VariantEditorModal({
   );
 }
 
-
 export function ProductEditorPage() {
   const { id = "" } = useParams();
   const navigate = useNavigate();
@@ -513,7 +543,9 @@ export function ProductEditorPage() {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<(typeof EDITOR_TABS)[number]>("General");
   const [confirmingDelete, setConfirmingDelete] = useState(false);
-  const [editingVariant, setEditingVariant] = useState<AdminProductDetail["variants"][0] | "new" | null>(null);
+  const [editingVariant, setEditingVariant] = useState<
+    AdminProductDetail["variants"][0] | "new" | null
+  >(null);
 
   const {
     data: product,
@@ -543,7 +575,10 @@ export function ProductEditorPage() {
       if (skuStr && listPrice !== undefined) {
         const [existingVariant] = product?.variants ?? [];
         if (existingVariant) {
-          if (skuStr !== existingVariant.sku || Math.round(listPrice * 100) !== existingVariant.listMinor) {
+          if (
+            skuStr !== existingVariant.sku ||
+            Math.round(listPrice * 100) !== existingVariant.listMinor
+          ) {
             await api.updateVariant(id, existingVariant.id, {
               sku: skuStr,
               listMinor: Math.round(listPrice * 100),
@@ -698,7 +733,7 @@ export function ProductEditorPage() {
       ) : null}
 
       {tab === "Variants" ? (
-                <DataTableShell>
+        <DataTableShell>
           <div className="flex items-center justify-between p-4 border-b border-line bg-canvas">
             <h2 className="font-display text-lg text-ink">Variants</h2>
             <Button variant="secondary" onClick={() => setEditingVariant("new")}>
@@ -706,46 +741,45 @@ export function ProductEditorPage() {
             </Button>
           </div>
           <table className="w-full text-left text-sm">
-          <thead className="bg-canvas border-b border-line">
-            <tr>
-              <Th>Variant</Th>
-              <Th>SKU</Th>
-              <Th>List price</Th>
-              <Th>Sale price</Th>
-              <Th>Available</Th>
-              <Th>Status</Th>
-              <Th></Th>
-            </tr>
-          </thead>
-          <tbody>
-            {product.variants.length === 0 ? (
-              <tr className="border-t border-line">
-                <Td className="text-ink-muted">No variants yet.</Td>
-                <Td /> <Td /> <Td /> <Td /> <Td /> <Td />
+            <thead className="bg-canvas border-b border-line">
+              <tr>
+                <Th>Variant</Th>
+                <Th>SKU</Th>
+                <Th>List price</Th>
+                <Th>Sale price</Th>
+                <Th>Available</Th>
+                <Th>Status</Th>
+                <Th></Th>
               </tr>
-            ) : (
-              product.variants.map((variant) => (
-                <tr key={variant.id} className="border-t border-line">
-                  <Td className="font-medium">{variant.name}</Td>
-                  <Td>{variant.sku}</Td>
-                  <Td>{variant.listMinor === null ? "-" : formatMoney(variant.listMinor)}</Td>
-                  <Td>{variant.saleMinor === null ? "-" : formatMoney(variant.saleMinor)}</Td>
-                  <Td>{variant.available}</Td>
-                  <Td>
-                    <StatusPill status={variant.status} />
-                  </Td>
-                  <Td className="text-right">
-                    <Button variant="secondary" onClick={() => setEditingVariant(variant)}>
-                      Edit
-                    </Button>
-                  </Td>
+            </thead>
+            <tbody>
+              {product.variants.length === 0 ? (
+                <tr className="border-t border-line">
+                  <Td className="text-ink-muted">No variants yet.</Td>
+                  <Td /> <Td /> <Td /> <Td /> <Td /> <Td />
                 </tr>
-              ))
-            )}
-          </tbody>
+              ) : (
+                product.variants.map((variant) => (
+                  <tr key={variant.id} className="border-t border-line">
+                    <Td className="font-medium">{variant.name}</Td>
+                    <Td>{variant.sku}</Td>
+                    <Td>{variant.listMinor === null ? "-" : formatMoney(variant.listMinor)}</Td>
+                    <Td>{variant.saleMinor === null ? "-" : formatMoney(variant.saleMinor)}</Td>
+                    <Td>{variant.available}</Td>
+                    <Td>
+                      <StatusPill status={variant.status} />
+                    </Td>
+                    <Td className="text-right">
+                      <Button variant="secondary" onClick={() => setEditingVariant(variant)}>
+                        Edit
+                      </Button>
+                    </Td>
+                  </tr>
+                ))
+              )}
+            </tbody>
           </table>
         </DataTableShell>
-
       ) : null}
 
       {tab === "Availability & Links" ? (
@@ -1010,9 +1044,12 @@ function GeneralTab({
       listPrice: product.variants?.[0]?.listMinor ? product.variants[0].listMinor / 100 : undefined,
     },
   });
-  
+
   const { data: farms = [] } = useQuery({ queryKey: ["farms"], queryFn: () => api.farms() });
-  const { data: categories = [] } = useQuery({ queryKey: ["categories"], queryFn: () => api.categories() });
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => api.categories(),
+  });
 
   const watchedImageUrl = form.watch("imageUrl");
   const watchedImageAlt = form.watch("imageAlt");
@@ -1037,15 +1074,32 @@ function GeneralTab({
         <Input id="slug" {...form.register("slug")} />
       </Field>
       <div className="grid grid-cols-2 gap-4">
-        <Field label="SKU (Primary Variant)" htmlFor="sku" error={form.formState.errors.sku?.message}>
+        <Field
+          label="SKU (Primary Variant)"
+          htmlFor="sku"
+          error={form.formState.errors.sku?.message}
+        >
           <Input id="sku" {...form.register("sku")} placeholder="TRG-123" />
         </Field>
-        <Field label="Price (₹) (Primary Variant)" htmlFor="listPrice" error={form.formState.errors.listPrice?.message}>
-          <Input id="listPrice" type="number" step="0.01" {...form.register("listPrice")} placeholder="199.00" />
+        <Field
+          label="Price (₹) (Primary Variant)"
+          htmlFor="listPrice"
+          error={form.formState.errors.listPrice?.message}
+        >
+          <Input
+            id="listPrice"
+            type="number"
+            step="0.01"
+            {...form.register("listPrice")}
+            placeholder="199.00"
+          />
         </Field>
       </div>
       <Field label="Farm" htmlFor="farmId" error={form.formState.errors.farmId?.message}>
-        <Select id="farmId" {...form.register("farmId", { setValueAs: (v) => (v === "" ? null : v) })}>
+        <Select
+          id="farmId"
+          {...form.register("farmId", { setValueAs: (v) => (v === "" ? null : v) })}
+        >
           <option value="">No farm assigned</option>
           {farms.map((f) => (
             <option key={f.id} value={f.id}>
@@ -1054,14 +1108,18 @@ function GeneralTab({
           ))}
         </Select>
       </Field>
-      <Field label="Categories" htmlFor="categoryIds" error={form.formState.errors.categoryIds?.message}>
+      <Field
+        label="Categories"
+        htmlFor="categoryIds"
+        error={form.formState.errors.categoryIds?.message}
+      >
         <div className="flex flex-col gap-2 max-h-48 overflow-y-auto border border-line rounded-md p-3">
           {categories.map((c) => (
             <label key={c.id} className="flex items-center gap-2 cursor-pointer">
-              <input 
-                type="checkbox" 
-                value={c.id} 
-                {...form.register("categoryIds")} 
+              <input
+                type="checkbox"
+                value={c.id}
+                {...form.register("categoryIds")}
                 className="w-4 h-4 text-primary rounded border-line focus:ring-primary"
               />
               <span className="text-sm">{c.name}</span>
@@ -1163,5 +1221,3 @@ function SeoTab({
     </form>
   );
 }
-
-

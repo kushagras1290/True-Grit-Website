@@ -208,8 +208,8 @@ export function SiteControlPage() {
   }
 
   function onInvalidSubmit(errors: typeof form.formState.errors) {
-    const firstError = Object.values(errors).find(
-      (error): error is { message?: string } => Boolean(error?.message),
+    const firstError = Object.values(errors).find((error): error is { message?: string } =>
+      Boolean(error?.message),
     );
     toast.error(firstError?.message ?? "Fix the highlighted fields before saving.");
   }
@@ -576,8 +576,7 @@ function FeaturedCategoriesSection({ form }: { form: ReturnType<typeof useForm<S
     .map((slug) => allCategories?.find((category) => category.slug === slug))
     .filter(Boolean) as NonNullable<typeof allCategories>;
   const addable = (allCategories ?? []).filter(
-    (category) =>
-      category.status === "published" && !currentSlugs.includes(category.slug),
+    (category) => category.status === "published" && !currentSlugs.includes(category.slug),
   );
 
   function move(index: number, delta: number) {
@@ -594,8 +593,8 @@ function FeaturedCategoriesSection({ form }: { form: ReturnType<typeof useForm<S
       <div>
         <h2 className="font-display text-lg text-ink">Homepage categories</h2>
         <p className="text-sm text-ink-muted">
-          Choose up to 12 published categories for the homepage slider. Customers see four at a
-          time on desktop, in this order. Saves with “Save site controls”.
+          Choose up to 12 published categories for the homepage slider. Customers see four at a time
+          on desktop, in this order. Saves with “Save site controls”.
         </p>
       </div>
       {isLoading ? (
@@ -668,11 +667,10 @@ function FeaturedCategoriesSection({ form }: { form: ReturnType<typeof useForm<S
           onClick={() => {
             const category = addable.find((entry) => entry.id === pendingId);
             if (!category) return;
-            form.setValue(
-              "featuredCategories",
-              [...currentSlugs, category.slug],
-              { shouldDirty: true, shouldValidate: true },
-            );
+            form.setValue("featuredCategories", [...currentSlugs, category.slug], {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
             setPendingId("");
           }}
         >
@@ -690,10 +688,12 @@ function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<Site
     queryFn: () => api.products({ limit: 100 }),
   });
   const [pendingId, setPendingId] = useState("");
-  
+
   const currentSlugs = form.watch("freshFavourites");
-  const currentProducts = currentSlugs.map(slug => allProducts?.find(p => p.slug === slug)).filter(Boolean) as AdminLinkedProduct[];
-  const addable = (allProducts ?? []).filter(row => !currentSlugs.includes(row.slug));
+  const currentProducts = currentSlugs
+    .map((slug) => allProducts?.find((p) => p.slug === slug))
+    .filter(Boolean) as AdminLinkedProduct[];
+  const addable = (allProducts ?? []).filter((row) => !currentSlugs.includes(row.slug));
 
   function move(index: number, delta: number) {
     const current = form.getValues("freshFavourites") || [];
@@ -713,8 +713,8 @@ function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<Site
       <div>
         <h2 className="font-display text-lg text-ink">Fresh Favourites</h2>
         <p className="text-sm text-ink-muted">
-          Shown in the Fresh favourites section on the homepage. Only published
-          products appear to customers. Saves with "Save site controls" button.
+          Shown in the Fresh favourites section on the homepage. Only published products appear to
+          customers. Saves with "Save site controls" button.
         </p>
       </div>
       {isLoading ? (
@@ -754,7 +754,11 @@ function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<Site
                 className="min-h-8 rounded-sm border border-line px-2 text-xs text-danger"
                 onClick={() => {
                   const current = form.getValues("freshFavourites") || [];
-                  form.setValue("freshFavourites", current.filter(slug => slug !== entry.slug), { shouldDirty: true, shouldValidate: true });
+                  form.setValue(
+                    "freshFavourites",
+                    current.filter((slug) => slug !== entry.slug),
+                    { shouldDirty: true, shouldValidate: true },
+                  );
                 }}
               >
                 Remove
@@ -785,7 +789,10 @@ function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<Site
             const row = addable.find((entry) => entry.id === pendingId);
             if (!row) return;
             const current = form.getValues("freshFavourites") || [];
-            form.setValue("freshFavourites", [...current, row.slug], { shouldDirty: true, shouldValidate: true });
+            form.setValue("freshFavourites", [...current, row.slug], {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
             setPendingId("");
           }}
         >
@@ -1021,7 +1028,12 @@ const routeSeoSchema = z.object({
 
 type RouteSeoForm = z.infer<typeof routeSeoSchema>;
 
-function routeSeoDefaults(entry?: { seoTitle: string | null; seoDescription: string | null; seoKeywords: string | null; indexingPolicy: "index" | "noindex" }): RouteSeoForm {
+function routeSeoDefaults(entry?: {
+  seoTitle: string | null;
+  seoDescription: string | null;
+  seoKeywords: string | null;
+  indexingPolicy: "index" | "noindex";
+}): RouteSeoForm {
   return {
     seoTitle: entry?.seoTitle ?? "",
     seoDescription: entry?.seoDescription ?? "",

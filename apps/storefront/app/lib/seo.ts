@@ -90,8 +90,8 @@ export function recipeJsonLd(recipe: {
       prepTime: `PT${recipe.prepMinutes}M`,
       cookTime: `PT${recipe.cookMinutes}M`,
       recipeYield: `${recipe.servings} servings`,
-      recipeIngredient: recipe.ingredients.map(
-        (ingredient) => `${ingredient.quantityText} ${ingredient.label}`.trim(),
+      recipeIngredient: recipe.ingredients.map((ingredient) =>
+        `${ingredient.quantityText} ${ingredient.label}`.trim(),
       ),
       recipeInstructions: recipe.steps.map((step) => ({ "@type": "HowToStep", text: step })),
       mainEntityOfPage: recipe.canonicalPath,

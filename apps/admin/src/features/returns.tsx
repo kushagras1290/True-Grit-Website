@@ -105,7 +105,10 @@ export function ReturnsListPage() {
           <tbody>
             <tr>
               <td colSpan={5} className="px-3 py-8">
-                <EmptyState title="No return requests" hint="Requests filed from the storefront appear here." />
+                <EmptyState
+                  title="No return requests"
+                  hint="Requests filed from the storefront appear here."
+                />
               </td>
             </tr>
           </tbody>
@@ -114,7 +117,10 @@ export function ReturnsListPage() {
             {returns.map((entry) => (
               <tr key={entry.id} className="border-t border-line hover:bg-canvas/60">
                 <Td>
-                  <Link to={`/returns/${entry.id}`} className="font-medium text-brand hover:underline">
+                  <Link
+                    to={`/returns/${entry.id}`}
+                    className="font-medium text-brand hover:underline"
+                  >
                     {entry.orderReference}
                   </Link>
                 </Td>
@@ -138,9 +144,9 @@ export function ReturnDetailPage() {
   const { id = "" } = useParams();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const [resolutionType, setResolutionType] = useState<"refund" | "replacement" | "store_credit" | "none">(
-    "refund",
-  );
+  const [resolutionType, setResolutionType] = useState<
+    "refund" | "replacement" | "store_credit" | "none"
+  >("refund");
   const [resolutionAmount, setResolutionAmount] = useState("");
   const [resolutionNotes, setResolutionNotes] = useState("");
 
@@ -167,7 +173,8 @@ export function ReturnDetailPage() {
       await invalidate();
       toast.success("Return request updated.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not update."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not update."),
   });
 
   const resolveMutation = useMutation({
@@ -184,7 +191,8 @@ export function ReturnDetailPage() {
       await invalidate();
       toast.success("Return resolved.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not resolve."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not resolve."),
   });
 
   if (isLoading) return <p className="text-sm text-ink-muted">Loading return request…</p>;
@@ -204,7 +212,9 @@ export function ReturnDetailPage() {
             <dl className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <dt className="text-ink-muted">Reason</dt>
-                <dd className="font-medium text-ink">{REASON_LABELS[entry.reasonCode] ?? entry.reasonCode}</dd>
+                <dd className="font-medium text-ink">
+                  {REASON_LABELS[entry.reasonCode] ?? entry.reasonCode}
+                </dd>
               </div>
               <div>
                 <dt className="text-ink-muted">Product</dt>
@@ -295,7 +305,9 @@ export function ReturnDetailPage() {
                   <Select
                     id="ret-resolution-type"
                     value={resolutionType}
-                    onChange={(event) => setResolutionType(event.target.value as typeof resolutionType)}
+                    onChange={(event) =>
+                      setResolutionType(event.target.value as typeof resolutionType)
+                    }
                   >
                     <option value="refund">Refund</option>
                     <option value="replacement">Replacement</option>

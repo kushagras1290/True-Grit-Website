@@ -41,7 +41,11 @@ function renderRichTextParagraph(paragraph: string) {
     const isInternal = href!.startsWith("/") && !href!.startsWith("//");
     nodes.push(
       isInternal ? (
-        <Link key={key++} to={href!} className="text-brand underline underline-offset-2 hover:no-underline">
+        <Link
+          key={key++}
+          to={href!}
+          className="text-brand underline underline-offset-2 hover:no-underline"
+        >
           {label}
         </Link>
       ) : (

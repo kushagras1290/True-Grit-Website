@@ -74,9 +74,7 @@ def test_article_banner_rejects_unsafe_url(client: TestClient, db: SQLiteDatabas
     as_admin(client, db)
     article_id = _admin_id_by_slug(client, "articles", ARTICLE_SLUG)
     for unsafe in ("javascript:alert(1)", "//evil.example/x.png", "data:image/png;base64,AAAA"):
-        response = client.patch(
-            f"/v1/admin/articles/{article_id}", json={"heroImageUrl": unsafe}
-        )
+        response = client.patch(f"/v1/admin/articles/{article_id}", json={"heroImageUrl": unsafe})
         assert response.status_code == 422, unsafe
 
 

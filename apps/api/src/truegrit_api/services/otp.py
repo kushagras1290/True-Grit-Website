@@ -131,9 +131,7 @@ async def _enforce_issue_limits(
     await enforce_rate_limit(
         db,
         key=f"otp:ip:{hash_identifier(client_ip_value)}",
-        rule=RateLimitRule(
-            settings.rate_limit_otp_per_ip, settings.rate_limit_otp_window_seconds
-        ),
+        rule=RateLimitRule(settings.rate_limit_otp_per_ip, settings.rate_limit_otp_window_seconds),
     )
 
 

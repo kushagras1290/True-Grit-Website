@@ -343,7 +343,7 @@ function NotificationPanel({
                         ? "bg-danger/10 text-danger"
                         : item.severity === "info"
                           ? "bg-subtle text-brand"
-                        : "bg-warning/10 text-warning",
+                          : "bg-warning/10 text-warning",
                     )}
                   >
                     {item.count}

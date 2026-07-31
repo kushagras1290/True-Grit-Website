@@ -245,13 +245,18 @@ export function InventoryPage() {
                             onClick={() => {
                               const nextStatus =
                                 row.productStatus === "published" ? "unpublished" : "published";
-                              api.updateProductStatus(row.productId, nextStatus)
+                              api
+                                .updateProductStatus(row.productId, nextStatus)
                                 .then(() => {
                                   toast.success("Product status updated.");
                                   queryClient.invalidateQueries({ queryKey: ["inventory"] });
                                 })
                                 .catch((error) => {
-                                  toast.error(error instanceof ApiError ? error.message : "Failed to update product.");
+                                  toast.error(
+                                    error instanceof ApiError
+                                      ? error.message
+                                      : "Failed to update product.",
+                                  );
                                 });
                             }}
                           >
@@ -701,13 +706,7 @@ const refundSchema = z.object({
 
 type RefundForm = z.infer<typeof refundSchema>;
 
-function RefundModal({
-  order,
-  onClose,
-}: {
-  order: AdminOrderDetail;
-  onClose: () => void;
-}) {
+function RefundModal({ order, onClose }: { order: AdminOrderDetail; onClose: () => void }) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const remainingMinor = (order.payment?.amountMinor ?? 0) - (order.payment?.refundedMinor ?? 0);
@@ -727,9 +726,7 @@ function RefundModal({
         queryClient.invalidateQueries({ queryKey: ["order", order.id] }),
         queryClient.invalidateQueries({ queryKey: ["orders"] }),
       ]);
-      toast.success(
-        `Refunded ${formatMoney(result.refundedMinor, order.currencyCode)}.`,
-      );
+      toast.success(`Refunded ${formatMoney(result.refundedMinor, order.currencyCode)}.`);
       onClose();
     },
     onError: (error) =>
@@ -738,10 +735,7 @@ function RefundModal({
 
   return (
     <Modal title="Issue refund" onClose={onClose}>
-      <form
-        className="space-y-4"
-        onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
-      >
+      <form className="space-y-4" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
         <p className="text-sm text-ink-muted">
           Up to {formatMoney(remainingMinor, order.currencyCode)} remains unrefunded on this{" "}
           {order.payment?.provider} payment.
@@ -939,13 +933,7 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function EditMediaModal({
-  asset,
-  onClose,
-}: {
-  asset: AdminMediaAssetRow;
-  onClose: () => void;
-}) {
+function EditMediaModal({ asset, onClose }: { asset: AdminMediaAssetRow; onClose: () => void }) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [altText, setAltText] = useState(asset.altText);
@@ -964,9 +952,18 @@ function EditMediaModal({
   return (
     <Modal title="Edit media" onClose={onClose}>
       <div className="space-y-4">
-        <ImagePreview src={asset.url} alt={altText} label={asset.originalFilename} className="h-32 w-full" />
+        <ImagePreview
+          src={asset.url}
+          alt={altText}
+          label={asset.originalFilename}
+          className="h-32 w-full"
+        />
         <Field label="Alt text" htmlFor="media-alt">
-          <Input id="media-alt" value={altText} onChange={(event) => setAltText(event.target.value)} />
+          <Input
+            id="media-alt"
+            value={altText}
+            onChange={(event) => setAltText(event.target.value)}
+          />
         </Field>
         <Field label="Caption" htmlFor="media-caption">
           <Textarea
@@ -1002,11 +999,11 @@ export function MediaPage() {
   const limit = 6;
   const offset = (page - 1) * limit;
 
-  const { data, isLoading } = useQuery({ 
-    queryKey: ["admin-media", page, searchQuery], 
-    queryFn: () => api.mediaLibrary({ limit, offset, search: searchQuery || undefined }) 
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-media", page, searchQuery],
+    queryFn: () => api.mediaLibrary({ limit, offset, search: searchQuery || undefined }),
   });
-  
+
   const [editing, setEditing] = useState<AdminMediaAssetRow | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const assets = data ?? [];
@@ -1017,7 +1014,8 @@ export function MediaPage() {
       await queryClient.invalidateQueries({ queryKey: ["admin-media"] });
       toast.success("Image uploaded.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not upload."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not upload."),
   });
 
   const deleteMutation = useMutation({
@@ -1045,7 +1043,9 @@ export function MediaPage() {
                 variant="primary"
                 type="button"
                 disabled={uploadMutation.isPending}
-                onClick={(event) => (event.currentTarget.nextElementSibling as HTMLInputElement)?.click()}
+                onClick={(event) =>
+                  (event.currentTarget.nextElementSibling as HTMLInputElement)?.click()
+                }
               >
                 {uploadMutation.isPending ? "Uploading…" : "Upload image"}
               </Button>
@@ -1132,13 +1132,13 @@ export function MediaPage() {
           ))}
         </ul>
       )}
-      
+
       {assets.length > 0 || page > 1 ? (
         <div className="mt-8 flex justify-between border-t border-line pt-4">
           <Button
             variant="secondary"
             disabled={page === 1}
-            onClick={() => setPage(p => Math.max(1, p - 1))}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
           >
             Previous
           </Button>
@@ -1146,7 +1146,7 @@ export function MediaPage() {
           <Button
             variant="secondary"
             disabled={assets.length < limit}
-            onClick={() => setPage(p => p + 1)}
+            onClick={() => setPage((p) => p + 1)}
           >
             Next
           </Button>
@@ -1449,13 +1449,7 @@ function EditRolesModal({ user, onClose }: { user: AdminUserRow; onClose: () => 
   );
 }
 
-function ResetUserPasswordModal({
-  user,
-  onClose,
-}: {
-  user: AdminUserRow;
-  onClose: () => void;
-}) {
+function ResetUserPasswordModal({ user, onClose }: { user: AdminUserRow; onClose: () => void }) {
   const toast = useToast();
   const [result, setResult] = useState<{ email: string } | null>(null);
 

@@ -199,7 +199,8 @@ async def _resolve_level(
     if not levels:
         if allow_create:
             location = await db.fetch_one(
-                "SELECT id FROM inventory_locations WHERE active = 1 ORDER BY created_at, id LIMIT 1"
+                "SELECT id FROM inventory_locations WHERE active = 1"
+                " ORDER BY created_at, id LIMIT 1"
             )
             if location is None:
                 raise NotFoundError("No active inventory location exists.")

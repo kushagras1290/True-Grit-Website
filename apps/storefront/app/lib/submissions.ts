@@ -13,11 +13,7 @@ import { getPublicApiUrl } from "./public-env";
 export type SubmissionContentType = "article" | "recipe";
 
 export type SubmissionStatus =
-  | "submitted"
-  | "under_review"
-  | "changes_requested"
-  | "approved"
-  | "rejected";
+  "submitted" | "under_review" | "changes_requested" | "approved" | "rejected";
 
 export interface SubmissionIngredientInput {
   label: string;
@@ -82,7 +78,9 @@ export function createSubmission(input: SubmissionInput): Promise<{ id: string; 
 }
 
 export function listMySubmissions(): Promise<SubmissionDetail[]> {
-  return request<{ items: SubmissionDetail[] }>("/v1/public/submissions").then((body) => body.items);
+  return request<{ items: SubmissionDetail[] }>("/v1/public/submissions").then(
+    (body) => body.items,
+  );
 }
 
 export function getMySubmission(id: string): Promise<SubmissionDetail> {

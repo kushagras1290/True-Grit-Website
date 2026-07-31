@@ -124,8 +124,9 @@ async def _authorized_media_uploader(env: Any, token: str) -> str | None:
     lacks `media.upload`. Returning the id (not just a bool) lets the direct
     upload path below attribute the `media_assets` row it writes."""
     token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
-    row = await env.DB.prepare(
-        """
+    row = (
+        await env.DB.prepare(
+            """
         SELECT u.id
         FROM sessions s
         JOIN users u ON u.id = s.user_id
@@ -134,13 +135,17 @@ async def _authorized_media_uploader(env: Any, token: str) -> str | None:
           AND s.expires_at > ?
           AND u.status = 'active'
         """
-    ).bind(token_hash, datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")).first()
+        )
+        .bind(token_hash, datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"))
+        .first()
+    )
     row = _to_py(row)
     if row is None:
         return None
     user_id = dict(row)["id"]
-    permission = await env.DB.prepare(
-        """
+    permission = (
+        await env.DB.prepare(
+            """
         SELECT 1
         FROM user_roles ur
         JOIN role_permissions rp ON rp.role_id = ur.role_id
@@ -148,7 +153,10 @@ async def _authorized_media_uploader(env: Any, token: str) -> str | None:
         WHERE ur.user_id = ? AND p.key = 'media.upload'
         LIMIT 1
         """
-    ).bind(user_id).first()
+        )
+        .bind(user_id)
+        .first()
+    )
     return user_id if permission is not None else None
 
 
@@ -208,24 +216,28 @@ async def _upload_media_direct(env: Any, request: Any) -> Any:
     query = parse_qs(urlparse(str(request.url)).query)
     original_filename = (query.get("filename") or [f"{image_id}{extension}"])[0][:180]
     now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
-    await env.DB.prepare(
-        """
+    await (
+        env.DB.prepare(
+            """
         INSERT INTO media_assets
           (id, object_key, original_filename, mime_type, size_bytes, alt_text,
            visibility, processing_status, created_at, created_by, updated_at, updated_by)
         VALUES (?, ?, ?, ?, ?, NULL, 'public', 'ready', ?, ?, ?, ?)
         """
-    ).bind(
-        image_id,
-        key,
-        original_filename,
-        content_type,
-        max(size_bytes, 0),
-        now,
-        user_id,
-        now,
-        user_id,
-    ).run()
+        )
+        .bind(
+            image_id,
+            key,
+            original_filename,
+            content_type,
+            max(size_bytes, 0),
+            now,
+            user_id,
+            now,
+            user_id,
+        )
+        .run()
+    )
 
     return Response.new(
         f'{{"id":"{image_id}","url":"/media/{key}"}}',

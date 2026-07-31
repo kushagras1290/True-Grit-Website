@@ -76,10 +76,22 @@ function CreateArticleModal({ onClose }: { onClose: () => void }) {
     <Modal title="New blog post" onClose={onClose}>
       <form className="space-y-4" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
         <Field label="Title" htmlFor="art-title" error={form.formState.errors.title?.message}>
-          <Input id="art-title" placeholder="The quiet revival of Indian millets" {...form.register("title")} />
+          <Input
+            id="art-title"
+            placeholder="The quiet revival of Indian millets"
+            {...form.register("title")}
+          />
         </Field>
-        <Field label="Slug (optional)" htmlFor="art-slug" error={form.formState.errors.slug?.message}>
-          <Input id="art-slug" placeholder="quiet-revival-of-indian-millets" {...form.register("slug")} />
+        <Field
+          label="Slug (optional)"
+          htmlFor="art-slug"
+          error={form.formState.errors.slug?.message}
+        >
+          <Input
+            id="art-slug"
+            placeholder="quiet-revival-of-indian-millets"
+            {...form.register("slug")}
+          />
         </Field>
         <Field label="Excerpt (optional)" htmlFor="art-excerpt">
           <Textarea id="art-excerpt" rows={2} {...form.register("excerpt")} />
@@ -169,7 +181,10 @@ export function ArticleListPage() {
           <tbody>
             <tr>
               <td colSpan={4} className="px-3 py-8">
-                <EmptyState title="No blog posts yet" hint="Create the first draft to get started." />
+                <EmptyState
+                  title="No blog posts yet"
+                  hint="Create the first draft to get started."
+                />
               </td>
             </tr>
           </tbody>
@@ -178,7 +193,10 @@ export function ArticleListPage() {
             {articles.map((article) => (
               <tr key={article.id} className="border-t border-line hover:bg-canvas/60">
                 <Td>
-                  <Link to={`/blog/${article.id}`} className="font-medium text-brand hover:underline">
+                  <Link
+                    to={`/blog/${article.id}`}
+                    className="font-medium text-brand hover:underline"
+                  >
                     {article.title}
                   </Link>
                   <span className="block text-xs text-ink-muted">/blog/{article.slug}</span>
@@ -239,7 +257,9 @@ const bannerImageUrlSchema = z
 
 const editSchema = z.object({
   title: z.string().min(3, "At least 3 characters").max(180),
-  slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and single hyphens"),
+  slug: z
+    .string()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and single hyphens"),
   excerpt: z.string().max(300),
   readingMinutes: z.coerce.number().int().min(1).max(60),
   heroImageUrl: bannerImageUrlSchema,
@@ -287,7 +307,12 @@ function RequestChangesModal({
     <Modal title="Request changes" onClose={onClose}>
       <div className="space-y-4">
         <Field label="What needs to change?" htmlFor="rc-note">
-          <Textarea id="rc-note" rows={4} value={note} onChange={(event) => setNote(event.target.value)} />
+          <Textarea
+            id="rc-note"
+            rows={4}
+            value={note}
+            onChange={(event) => setNote(event.target.value)}
+          />
         </Field>
         <div className="flex justify-end gap-2">
           <Button type="button" variant="secondary" onClick={onClose}>
@@ -377,7 +402,8 @@ export function ArticleEditorPage() {
       await invalidate();
       toast.success("Submitted for review.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not submit."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not submit."),
   });
 
   const approveMutation = useMutation({
@@ -386,7 +412,8 @@ export function ArticleEditorPage() {
       await invalidate();
       toast.success("Approved.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not approve."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not approve."),
   });
 
   const requestChangesMutation = useMutation({
@@ -406,7 +433,8 @@ export function ArticleEditorPage() {
       await invalidate();
       toast.success(`Published — version ${result.version} is now live.`);
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not publish."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not publish."),
   });
 
   const unpublishMutation = useMutation({
@@ -415,7 +443,8 @@ export function ArticleEditorPage() {
       await invalidate();
       toast.success("Unpublished.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not unpublish."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not unpublish."),
   });
 
   const bannerUploadMutation = useMutation({
@@ -459,7 +488,10 @@ export function ArticleEditorPage() {
                 <Button variant="secondary" onClick={() => setRequestingChanges(true)}>
                   Request changes
                 </Button>
-                <Button onClick={() => approveMutation.mutate()} disabled={approveMutation.isPending}>
+                <Button
+                  onClick={() => approveMutation.mutate()}
+                  disabled={approveMutation.isPending}
+                >
                   {approveMutation.isPending ? "Approving…" : "Approve"}
                 </Button>
               </PermissionGate>
@@ -507,7 +539,10 @@ export function ArticleEditorPage() {
       ) : null}
 
       <fieldset disabled={!canEdit} className="max-w-3xl space-y-5">
-        <form className="space-y-5" onSubmit={form.handleSubmit((values) => saveMutation.mutate(values))}>
+        <form
+          className="space-y-5"
+          onSubmit={form.handleSubmit((values) => saveMutation.mutate(values))}
+        >
           <div className="grid gap-4 md:grid-cols-2">
             <Field label="Title" htmlFor="art-e-title" error={form.formState.errors.title?.message}>
               <Input id="art-e-title" {...form.register("title")} />
@@ -521,7 +556,13 @@ export function ArticleEditorPage() {
           </Field>
           <div className="grid gap-4 md:grid-cols-2">
             <Field label="Reading minutes" htmlFor="art-e-reading">
-              <Input id="art-e-reading" type="number" min={1} max={60} {...form.register("readingMinutes")} />
+              <Input
+                id="art-e-reading"
+                type="number"
+                min={1}
+                max={60}
+                {...form.register("readingMinutes")}
+              />
             </Field>
             <Field label="Pull quote" htmlFor="art-e-quote">
               <Input id="art-e-quote" {...form.register("pullQuote")} />
@@ -589,7 +630,11 @@ export function ArticleEditorPage() {
                 <Input id="art-e-seo-keywords" {...form.register("seoKeywords")} />
               </Field>
               <Field label="Canonical URL" htmlFor="art-e-canonical">
-                <Input id="art-e-canonical" placeholder="/blog/my-post" {...form.register("canonicalUrl")} />
+                <Input
+                  id="art-e-canonical"
+                  placeholder="/blog/my-post"
+                  {...form.register("canonicalUrl")}
+                />
               </Field>
               <Field label="Search indexing" htmlFor="art-e-indexing">
                 <Select id="art-e-indexing" {...form.register("indexingPolicy")}>
@@ -607,8 +652,8 @@ export function ArticleEditorPage() {
             <h2 className="font-display text-lg text-ink">Body</h2>
             <p className="text-sm text-ink-muted">
               A list of content blocks (rich_text, product_collection, farmer_story, faq). Inside a
-              rich_text paragraph, write <code className="font-mono text-xs">[label](/path)</code> to
-              add a link — plain text and internal/external URLs only, never raw HTML.
+              rich_text paragraph, write <code className="font-mono text-xs">[label](/path)</code>{" "}
+              to add a link — plain text and internal/external URLs only, never raw HTML.
             </p>
             <Field
               label="Blocks JSON"
@@ -625,7 +670,9 @@ export function ArticleEditorPage() {
           </div>
 
           <div className="flex items-center justify-between">
-            <p className="text-xs text-ink-muted">Last updated {formatDateTime(article.updatedAt)}</p>
+            <p className="text-xs text-ink-muted">
+              Last updated {formatDateTime(article.updatedAt)}
+            </p>
             <Button type="submit" variant="primary" disabled={saveMutation.isPending}>
               {saveMutation.isPending ? "Saving…" : "Save"}
             </Button>

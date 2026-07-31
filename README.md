@@ -85,7 +85,7 @@ tokens are verified server-side against Meta's Graph API. Relevant environment v
 | `VITE_API_URL`                                                  | storefront | Browser calls the customer-auth API with cookies. Unset ⇒ demo mode (faked localStorage session).           |
 | `VITE_GOOGLE_CLIENT_ID`                                         | storefront | Public Google OAuth client id for the Google button. Unset ⇒ the button shows "not configured".             |
 | `GOOGLE_CLIENT_ID`                                              | api        | Same client id; the API accepts only Google tokens whose `aud` matches it. Empty ⇒ Google sign-in disabled. |
-| `FAST2SMS_API_KEY`                                              | api        | SMS provider key for passcodes. Empty ⇒ console sender in dev; **refused in staging/production**.            |
+| `FAST2SMS_API_KEY`                                              | api        | SMS provider key for passcodes. Empty ⇒ console sender in dev; **refused in staging/production**.           |
 
 Sign in with X (Twitter) is **not** implemented: X discontinued its free API tier on 6 February 2026
 and routes new developers to pay-per-use only, so every sign-in would be a billed API call.

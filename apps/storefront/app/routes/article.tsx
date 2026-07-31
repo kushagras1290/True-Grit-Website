@@ -3,7 +3,12 @@ import { data } from "react-router";
 import type { Route } from "./+types/article";
 import { Breadcrumbs } from "../components/catalogue";
 import { CmsBlock, type BlockData } from "../components/blocks";
-import { catalogueRuntime, loadArticle, loadFarms, loadProductsBySlugs } from "../lib/catalogue.server";
+import {
+  catalogueRuntime,
+  loadArticle,
+  loadFarms,
+  loadProductsBySlugs,
+} from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
 import { mediaUrl } from "../lib/media";
 import { articleJsonLd, seoMeta } from "../lib/seo";

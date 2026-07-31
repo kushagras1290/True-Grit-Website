@@ -354,8 +354,15 @@ async def admin_notifications(
     items: list[dict[str, Any]] = []
 
     async def add(
-        *, permission: str, key: str, title: str, message: str, href: str, sql: str,
-        params: tuple[Any, ...] = (), severity: str = "warning"
+        *,
+        permission: str,
+        key: str,
+        title: str,
+        message: str,
+        href: str,
+        sql: str,
+        params: tuple[Any, ...] = (),
+        severity: str = "warning",
     ) -> None:
         if not see_all and permission not in principal.permissions:
             return
@@ -363,49 +370,73 @@ async def admin_notifications(
         count = int(row["count"] if row else 0)
         if count:
             items.append(
-                {"id": key, "title": title, "message": message, "count": count,
-                 "href": href, "severity": severity}
+                {
+                    "id": key,
+                    "title": title,
+                    "message": message,
+                    "count": count,
+                    "href": href,
+                    "severity": severity,
+                }
             )
 
     farm_id = principal.farm_id
     farm_filter = (
         " AND EXISTS (SELECT 1 FROM order_items oi JOIN products p ON p.id = oi.product_id"
         " WHERE oi.order_id = o.id AND p.farm_id = ?)"
-        if farm_id else ""
+        if farm_id
+        else ""
     )
     farm_params: tuple[Any, ...] = (farm_id,) if farm_id else ()
     await add(
-        permission="orders.view", key="orders", title="Orders need fulfilment",
-        message="Confirmed or processing orders still need fulfilment.", href="/orders",
-        sql="SELECT COUNT(*) AS count FROM orders o WHERE o.order_status IN ('confirmed','processing')"
+        permission="orders.view",
+        key="orders",
+        title="Orders need fulfilment",
+        message="Confirmed or processing orders still need fulfilment.",
+        href="/orders",
+        sql="SELECT COUNT(*) AS count FROM orders o"
+        " WHERE o.order_status IN ('confirmed','processing')"
         " AND o.fulfilment_status NOT IN ('fulfilled','cancelled')" + farm_filter,
         params=farm_params,
     )
     await add(
-        permission="returns.view", key="returns", title="Returns need review",
-        message="Return requests are waiting for a decision.", href="/returns",
+        permission="returns.view",
+        key="returns",
+        title="Returns need review",
+        message="Return requests are waiting for a decision.",
+        href="/returns",
         sql="SELECT COUNT(*) AS count FROM return_requests rr JOIN orders o ON o.id = rr.order_id"
         " WHERE rr.status IN ('requested','under_review')" + farm_filter,
         params=farm_params,
     )
     await add(
-        permission="submissions.view", key="submissions", title="Submissions need review",
-        message="Community submissions are awaiting review.", href="/submissions",
+        permission="submissions.view",
+        key="submissions",
+        title="Submissions need review",
+        message="Community submissions are awaiting review.",
+        href="/submissions",
         sql="SELECT COUNT(*) AS count FROM content_submissions"
         " WHERE status IN ('submitted','under_review')",
     )
     await add(
-        permission="users.view", key="contacts", title="New contact messages",
-        message="Customer contact messages have not been handled.", href="/contact-attempts",
+        permission="users.view",
+        key="contacts",
+        title="New contact messages",
+        message="Customer contact messages have not been handled.",
+        href="/contact-attempts",
         sql="SELECT COUNT(*) AS count FROM contact_messages WHERE status = 'new'",
     )
     await add(
-        permission="products.view", key="products", title="Products not yet enabled",
-        message="Products are still in a draft or review state.", href="/products",
+        permission="products.view",
+        key="products",
+        title="Products not yet enabled",
+        message="Products are still in a draft or review state.",
+        href="/products",
         sql="SELECT COUNT(*) AS count FROM products WHERE archived_at IS NULL"
         " AND status IN ('draft','in_review','approved','scheduled')"
         " AND (? IS NULL OR farm_id = ?)",
-        params=(farm_id, farm_id), severity="info",
+        params=(farm_id, farm_id),
+        severity="info",
     )
     if see_all or "inventory.view" in principal.permissions:
         inventory_rows = await db.fetch_all(
@@ -422,7 +453,9 @@ async def admin_notifications(
                 {
                     "id": "inventory",
                     "title": "Inventory needs attention",
-                    "message": "Enabled variants are out of stock or below their reorder threshold.",
+                    "message": (
+                        "Enabled variants are out of stock or below their reorder threshold."
+                    ),
                     "count": len(inventory_rows),
                     "href": "/inventory",
                     "severity": "danger",
@@ -1858,7 +1891,7 @@ async def decide_submission_endpoint(
                 row["contact_email"],
                 f"About your "
                 f"{'blog post' if row['content_type'] == 'article' else 'recipe'} submission",
-                f'Hi {row["contact_name"]}, after review we will not be publishing '
+                f"Hi {row['contact_name']}, after review we will not be publishing "
                 f'"{row["title"]}": {payload.note}',
                 settings,
                 render_submission_rejected(

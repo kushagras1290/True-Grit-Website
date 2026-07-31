@@ -85,7 +85,10 @@ function fallbackDocument(
   // blog/recipe/farm/page URLs.
   const kinds = ["products", "categories", "pages", "blog", "recipes", "farms", "discussions"];
   const entries = kinds
-    .map((kind) => `  <sitemap><loc>${escapeXml(absolute(request, `/sitemaps/${kind}.xml`))}</loc></sitemap>`)
+    .map(
+      (kind) =>
+        `  <sitemap><loc>${escapeXml(absolute(request, `/sitemaps/${kind}.xml`))}</loc></sitemap>`,
+    )
     .join("\n");
   return {
     content:

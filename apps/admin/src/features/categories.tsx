@@ -129,7 +129,8 @@ export function CategoryListPage() {
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const categories = data ?? [];
   const allSelected =
-    categories.length > 0 && categories.every((category) => selectedCategoryIds.includes(category.id));
+    categories.length > 0 &&
+    categories.every((category) => selectedCategoryIds.includes(category.id));
 
   const deleteMutation = useMutation({
     mutationFn: (categoryIds: string[]) => api.deleteCategories(categoryIds),
@@ -285,8 +286,7 @@ export function CategoryListPage() {
                           onClick={() =>
                             statusMutation.mutate({
                               id: category.id,
-                              status:
-                                category.status === "published" ? "unpublished" : "published",
+                              status: category.status === "published" ? "unpublished" : "published",
                             })
                           }
                         >

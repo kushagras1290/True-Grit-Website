@@ -98,9 +98,7 @@ class Fast2SmsSender:
     async def send(self, message: OutboundSms) -> None:
         if not is_indian_mobile(message.to_e164):
             # Route limitation, not a bad number: say so precisely.
-            raise SmsDeliveryError(
-                "We can only text Indian mobile numbers at the moment."
-            )
+            raise SmsDeliveryError("We can only text Indian mobile numbers at the moment.")
         payload: dict[str, Any] = {
             "route": _FAST2SMS_OTP_ROUTE,
             "variables_values": message.body,

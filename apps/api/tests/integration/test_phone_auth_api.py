@@ -62,9 +62,7 @@ def test_phone_signin_returns_existing_account(client: TestClient, sms_outbox):
     user_id = first.json()["customer"]["id"]
     client.cookies.clear()
 
-    token = verify_phone_token(
-        client, sms_outbox, start_path="/v1/public/auth/phone/start"
-    )
+    token = verify_phone_token(client, sms_outbox, start_path="/v1/public/auth/phone/start")
     again = client.post("/v1/public/auth/phone/complete", json={"verificationToken": token})
     assert again.status_code == 200
     # Same account, not a second one — the mobile is the identifier.

@@ -70,7 +70,8 @@ export function CreateRoleModal({
   const [description, setDescription] = useState("");
 
   const mutation = useMutation({
-    mutationFn: () => api.createRole({ name: name.trim(), description: description.trim(), permissionIds: [] }),
+    mutationFn: () =>
+      api.createRole({ name: name.trim(), description: description.trim(), permissionIds: [] }),
     onSuccess: async (role) => {
       await queryClient.invalidateQueries({ queryKey: ["roles"] });
       toast.success(`Role "${role.name}" created — choose its permissions below.`);
@@ -134,7 +135,8 @@ export function RenameRoleModal({ role, onClose }: { role: AdminRole; onClose: (
   const [description, setDescription] = useState(role.description);
 
   const mutation = useMutation({
-    mutationFn: () => api.updateRole(role.id, { name: name.trim(), description: description.trim() }),
+    mutationFn: () =>
+      api.updateRole(role.id, { name: name.trim(), description: description.trim() }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["roles"] });
       toast.success("Role updated.");
@@ -371,10 +373,7 @@ export function ScopeManagementPage() {
       ) : null}
 
       {roles.isError || permissions.isError ? (
-        <EmptyState
-          title="Scopes unavailable"
-          hint="Only the owner can manage role scopes."
-        />
+        <EmptyState title="Scopes unavailable" hint="Only the owner can manage role scopes." />
       ) : (
         <div className="grid gap-5 xl:grid-cols-[360px_minmax(0,1fr)]">
           <DataTableShell>

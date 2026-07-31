@@ -77,7 +77,10 @@ function ReturnRequestSection({ order, reference }: { order: OrderDetail; refere
       {openRequest ? (
         <div className="mt-2 text-sm text-ink-muted">
           <p>
-            Return request status: <span className="font-medium text-ink capitalize">{openRequest.status.replaceAll("_", " ")}</span>
+            Return request status:{" "}
+            <span className="font-medium text-ink capitalize">
+              {openRequest.status.replaceAll("_", " ")}
+            </span>
           </p>
           <p className="mt-1">Requested {new Date(openRequest.requestedAt).toLocaleDateString()}</p>
         </div>
@@ -148,9 +151,7 @@ export function meta(_args: Route.MetaArgs) {
 }
 
 type State =
-  | { kind: "loading" }
-  | { kind: "error"; message: string }
-  | { kind: "loaded"; order: OrderDetail };
+  { kind: "loading" } | { kind: "error"; message: string } | { kind: "loaded"; order: OrderDetail };
 
 const TRACK_STEPS = [
   { label: "Order placed", description: "We've received your order." },
@@ -208,9 +209,7 @@ function TrackingTimeline({ order }: { order: OrderDetail }) {
             </div>
             <div className="pb-1">
               <p
-                className={`text-sm font-medium ${
-                  done || current ? "text-ink" : "text-ink-muted"
-                }`}
+                className={`text-sm font-medium ${done || current ? "text-ink" : "text-ink-muted"}`}
               >
                 {item.label}
                 {current ? (

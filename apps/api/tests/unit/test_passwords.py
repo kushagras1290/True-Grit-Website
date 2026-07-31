@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import asyncio
+
 import pytest
 
 from truegrit_api.auth.passwords import (
@@ -12,14 +14,17 @@ from truegrit_api.auth.passwords import (
     verify_password_async,
 )
 
-
-@pytest.mark.asyncio
-async def test_async_verification_falls_back_outside_workers():
-    encoded = hash_password("worker-safe", iterations=FAST_ITERATIONS)
-    assert await verify_password_async("worker-safe", encoded) is True
-    assert await verify_password_async("wrong", encoded) is False
-
 FAST_ITERATIONS = 1000
+
+
+def test_async_verification_falls_back_outside_workers():
+    # Driven with `asyncio.run` rather than `@pytest.mark.asyncio`: the project
+    # has no pytest-asyncio plugin, so a bare `async def` test is collected but
+    # never awaited — it reports as a failure while asserting nothing. This
+    # matches how the other async units here are exercised.
+    encoded = hash_password("worker-safe", iterations=FAST_ITERATIONS)
+    assert asyncio.run(verify_password_async("worker-safe", encoded)) is True
+    assert asyncio.run(verify_password_async("wrong", encoded)) is False
 
 
 def test_hash_roundtrip_verifies():
@@ -31,9 +36,9 @@ def test_hash_roundtrip_verifies():
 
 def test_over_budget_hash_is_not_verified():
     encoded = hash_password("correct horse battery", iterations=FAST_ITERATIONS + 1)
-    assert verify_password(
-        "correct horse battery", encoded, max_iterations=FAST_ITERATIONS
-    ) is False
+    assert (
+        verify_password("correct horse battery", encoded, max_iterations=FAST_ITERATIONS) is False
+    )
 
 
 def test_wrong_password_rejected():

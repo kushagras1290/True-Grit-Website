@@ -94,7 +94,9 @@ export function DbBrowserPage() {
                   {row.map((cell, cellIndex) => (
                     <Td
                       key={cellIndex}
-                      className={cell === null ? "font-mono text-xs text-ink-muted" : "font-mono text-xs"}
+                      className={
+                        cell === null ? "font-mono text-xs text-ink-muted" : "font-mono text-xs"
+                      }
                     >
                       {formatCell(cell)}
                     </Td>

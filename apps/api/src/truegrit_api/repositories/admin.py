@@ -194,7 +194,7 @@ class AdminRepository:
         product["release_countries"] = [row["country_code"] for row in release_rows]
         category_rows = await self._db.fetch_all(
             "SELECT category_id FROM product_categories WHERE product_id = ? ORDER BY sort_order",
-            (product_id,)
+            (product_id,),
         )
         product["category_ids"] = [row["category_id"] for row in category_rows]
         product["linked_products"] = await self._db.fetch_all(

@@ -112,7 +112,9 @@ export function SubmissionsListPage() {
                     {entry.title}
                   </Link>
                 </Td>
-                <Td className="text-ink-muted">{CONTENT_TYPE_LABELS[entry.contentType] ?? entry.contentType}</Td>
+                <Td className="text-ink-muted">
+                  {CONTENT_TYPE_LABELS[entry.contentType] ?? entry.contentType}
+                </Td>
                 <Td className="text-ink-muted">
                   {entry.contactName}
                   <span className="block text-xs">{entry.contactEmail}</span>
@@ -151,7 +153,10 @@ function PageHeaderWithFilters({
         </p>
       </div>
       <div className="flex gap-2">
-        <Select value={contentTypeFilter} onChange={(event) => setContentTypeFilter(event.target.value)}>
+        <Select
+          value={contentTypeFilter}
+          onChange={(event) => setContentTypeFilter(event.target.value)}
+        >
           <option value="">All types</option>
           <option value="article">Blog posts</option>
           <option value="recipe">Recipes</option>
@@ -199,12 +204,11 @@ export function SubmissionDetailPage() {
       await invalidate();
       setNote("");
       toast.success(
-        result.status === "approved"
-          ? "Submission approved and published."
-          : "Submission updated.",
+        result.status === "approved" ? "Submission approved and published." : "Submission updated.",
       );
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not update."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not update."),
   });
 
   if (isLoading) return <p className="text-sm text-ink-muted">Loading submission…</p>;
@@ -219,8 +223,8 @@ export function SubmissionDetailPage() {
         <div>
           <h1 className="font-display text-2xl text-ink">{entry.title}</h1>
           <p className="text-sm text-ink-muted">
-            {CONTENT_TYPE_LABELS[entry.contentType] ?? entry.contentType} · submitted by {entry.contactName} (
-            {entry.contactEmail}
+            {CONTENT_TYPE_LABELS[entry.contentType] ?? entry.contentType} · submitted by{" "}
+            {entry.contactName} ({entry.contactEmail}
             {entry.contactPhone ? `, ${entry.contactPhone}` : ""})
           </p>
         </div>

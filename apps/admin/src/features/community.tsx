@@ -51,10 +51,7 @@ function CommunitySettingsPanel() {
   return (
     <PermissionGate permission="settings.community">
       <div className="mb-6 flex flex-wrap items-end gap-3 rounded-md border border-line bg-surface p-4">
-        <Field
-          label="Minimum account age to start a discussion (months)"
-          htmlFor="min-account-age"
-        >
+        <Field label="Minimum account age to start a discussion (months)" htmlFor="min-account-age">
           <Input
             id="min-account-age"
             type="number"
@@ -149,7 +146,10 @@ export function DiscussionsListPage() {
           <tbody>
             <tr>
               <td colSpan={5} className="px-3 py-8">
-                <EmptyState title="No discussions" hint="Threads started from the storefront appear here." />
+                <EmptyState
+                  title="No discussions"
+                  hint="Threads started from the storefront appear here."
+                />
               </td>
             </tr>
           </tbody>
@@ -158,7 +158,10 @@ export function DiscussionsListPage() {
             {discussions.map((entry) => (
               <tr key={entry.id} className="border-t border-line hover:bg-canvas/60">
                 <Td>
-                  <Link to={`/community/${entry.id}`} className="font-medium text-brand hover:underline">
+                  <Link
+                    to={`/community/${entry.id}`}
+                    className="font-medium text-brand hover:underline"
+                  >
                     {entry.title}
                   </Link>
                 </Td>
@@ -207,7 +210,8 @@ export function DiscussionDetailPage() {
       await invalidate();
       toast.success("Discussion updated.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not update."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not update."),
   });
 
   const deleteMutation = useMutation({
@@ -216,7 +220,8 @@ export function DiscussionDetailPage() {
       await invalidate();
       toast.success("Discussion deleted.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not delete."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not delete."),
   });
 
   const moderateCommentMutation = useMutation({
@@ -226,7 +231,8 @@ export function DiscussionDetailPage() {
       await invalidate();
       toast.success("Comment updated.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not update."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not update."),
   });
 
   const deleteCommentMutation = useMutation({
@@ -235,7 +241,8 @@ export function DiscussionDetailPage() {
       await invalidate();
       toast.success("Comment deleted.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not delete."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not delete."),
   });
 
   if (isLoading) return <p className="text-sm text-ink-muted">Loading discussion…</p>;
@@ -266,7 +273,9 @@ export function DiscussionDetailPage() {
           ) : null}
 
           <div>
-            <h2 className="mb-2 font-display text-lg text-ink">Comments ({entry.comments.length})</h2>
+            <h2 className="mb-2 font-display text-lg text-ink">
+              Comments ({entry.comments.length})
+            </h2>
             {entry.comments.length === 0 ? (
               <p className="text-sm text-ink-muted">No comments yet.</p>
             ) : (
@@ -281,7 +290,9 @@ export function DiscussionDetailPage() {
                     </div>
                     <p className="mt-2 whitespace-pre-wrap text-sm text-ink">{comment.body}</p>
                     {comment.moderationReason ? (
-                      <p className="mt-1 text-xs text-ink-muted">Reason: {comment.moderationReason}</p>
+                      <p className="mt-1 text-xs text-ink-muted">
+                        Reason: {comment.moderationReason}
+                      </p>
                     ) : null}
                     <PermissionGate permission="discussions.moderate">
                       <div className="mt-3 flex flex-wrap gap-2">
@@ -290,7 +301,10 @@ export function DiscussionDetailPage() {
                             variant="secondary"
                             className="min-h-8 px-2.5 text-xs"
                             onClick={() =>
-                              moderateCommentMutation.mutate({ commentId: comment.id, action: "restore" })
+                              moderateCommentMutation.mutate({
+                                commentId: comment.id,
+                                action: "restore",
+                              })
                             }
                             disabled={moderateCommentMutation.isPending}
                           >
@@ -301,7 +315,10 @@ export function DiscussionDetailPage() {
                             variant="secondary"
                             className="min-h-8 px-2.5 text-xs"
                             onClick={() =>
-                              moderateCommentMutation.mutate({ commentId: comment.id, action: "hide" })
+                              moderateCommentMutation.mutate({
+                                commentId: comment.id,
+                                action: "hide",
+                              })
                             }
                             disabled={moderateCommentMutation.isPending}
                           >

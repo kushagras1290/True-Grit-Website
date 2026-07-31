@@ -798,9 +798,7 @@ async def reset_farm_owner_password(
 
     settings = get_settings()
     temporary_password = _temporary_password(max(settings.password_min_length + 8, 18))
-    password_hash = hash_password(
-        temporary_password, iterations=settings.pbkdf2_iterations
-    )
+    password_hash = hash_password(temporary_password, iterations=settings.pbkdf2_iterations)
     now = utc_now_iso()
     await db.batch(
         [

@@ -156,7 +156,9 @@ async def update_product(
     # requesting the old (possibly deleted) object.
     if "image_url" in fields:
         image_path = urlparse(str(fields["image_url"] or "")).path
-        object_key = image_path.removeprefix("/media/") if image_path.startswith("/media/") else None
+        object_key = (
+            image_path.removeprefix("/media/") if image_path.startswith("/media/") else None
+        )
         media = (
             await db.fetch_one("SELECT id FROM media_assets WHERE object_key = ?", (object_key,))
             if object_key

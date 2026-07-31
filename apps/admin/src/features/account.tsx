@@ -74,9 +74,7 @@ export function AccountPage() {
             <h2 className="font-display text-lg text-ink">Signed in as</h2>
             <p className="text-sm text-ink">{me?.displayName ?? "—"}</p>
             <p className="text-sm text-ink-muted">{me?.email ?? "—"}</p>
-            {me?.farmName ? (
-              <p className="text-sm text-ink-muted">Farm · {me.farmName}</p>
-            ) : null}
+            {me?.farmName ? <p className="text-sm text-ink-muted">Farm · {me.farmName}</p> : null}
           </section>
 
           <section className="space-y-4 border-t border-line pt-5">

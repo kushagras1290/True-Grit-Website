@@ -69,8 +69,7 @@ class FacebookTokenVerifier:
             raise FacebookAuthError("Facebook sign-in token has expired.")
 
         profile = await self._get_json(
-            f"{self._base_url}/me?"
-            + urlencode({"fields": "id,name,email", "access_token": token})
+            f"{self._base_url}/me?" + urlencode({"fields": "id,name,email", "access_token": token})
         )
         if not isinstance(profile, dict) or str(profile.get("id", "")).strip() != subject:
             raise FacebookAuthError("Facebook sign-in token account could not be verified.")

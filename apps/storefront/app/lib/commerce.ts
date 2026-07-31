@@ -402,9 +402,7 @@ export function readPaypalWindowPayload(token: string): PaypalWindowPayload | nu
   }
 }
 
-function isPaypalWindowMessage(
-  data: unknown,
-): data is {
+function isPaypalWindowMessage(data: unknown): data is {
   source: "truegrit:paypal";
   token: string;
   status: "paid" | "failed" | "cancelled";
@@ -636,12 +634,7 @@ export function getMyOrder(reference: string): Promise<OrderDetail> {
 }
 
 export type ReturnReasonCode =
-  | "damaged"
-  | "wrong_item"
-  | "quality_issue"
-  | "not_as_described"
-  | "missing_item"
-  | "other";
+  "damaged" | "wrong_item" | "quality_issue" | "not_as_described" | "missing_item" | "other";
 
 export interface ReturnRequestSummary {
   id: string;

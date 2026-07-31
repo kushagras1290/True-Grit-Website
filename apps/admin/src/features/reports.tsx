@@ -29,7 +29,8 @@ export function ReportsPage() {
 
   const runMutation = useMutation({
     mutationFn: () => api.runReport(selectedId, filters),
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not run report."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not run report."),
   });
 
   function selectReport(id: string) {
@@ -76,13 +77,20 @@ export function ReportsPage() {
                 {selected.params.length > 0 ? (
                   <div className="grid gap-4 sm:grid-cols-2">
                     {selected.params.map((param) => (
-                      <Field key={param.key} label={param.label} htmlFor={`report-param-${param.key}`}>
+                      <Field
+                        key={param.key}
+                        label={param.label}
+                        htmlFor={`report-param-${param.key}`}
+                      >
                         <Input
                           id={`report-param-${param.key}`}
                           placeholder={param.kind === "date" ? "YYYY-MM-DD" : "IN"}
                           value={filters[param.key] ?? ""}
                           onChange={(event) =>
-                            setFilters((current) => ({ ...current, [param.key]: event.target.value }))
+                            setFilters((current) => ({
+                              ...current,
+                              [param.key]: event.target.value,
+                            }))
                           }
                         />
                       </Field>
