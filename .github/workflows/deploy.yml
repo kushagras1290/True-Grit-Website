@@ -1,12 +1,12 @@
 name: Deploy dev
 
 # Auto-deploys the whole project to the Cloudflare dev environment on every push
-# to master/Testing (or manual dispatch). Requires one repository secret:
+# to main/Testing (or manual dispatch). Requires one repository secret:
 #   CLOUDFLARE_API_TOKEN — a token with Workers Scripts, D1, R2, KV, and Queues
 #   edit permissions on the target account.
 on:
   push:
-    branches: [master, Testing]
+    branches: [main, Testing]
   workflow_dispatch:
 
 permissions:
