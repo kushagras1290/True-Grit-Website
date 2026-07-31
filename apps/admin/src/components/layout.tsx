@@ -226,11 +226,23 @@ function SidebarNav({
 }) {
   return (
     <>
-      <div className={cn("border-b border-line py-5", collapsed ? "px-3 text-center" : "px-5")}>
-        <p className="font-display text-lg tracking-tight text-brand">
-          {collapsed ? "TG" : "TRUE GRIT"}
-        </p>
-        {collapsed ? null : <p className="text-xs text-ink-muted">{subtitle}</p>}
+      {/* The storefront's mark, so the console reads as the same product rather
+          than a separate tool. It stays visible when the sidebar collapses —
+          that narrow rail is where the wordmark has to give way, not the logo. */}
+      <div className={cn("border-b border-line py-5", collapsed ? "px-3" : "px-5")}>
+        <div className={cn("flex items-center gap-2.5", collapsed && "justify-center")}>
+          <img
+            src="/brand/true-grit-mark.webp"
+            alt=""
+            width={32}
+            height={32}
+            className="h-8 w-8 shrink-0 rounded-full object-cover"
+          />
+          {collapsed ? null : (
+            <p className="font-display text-lg tracking-tight text-brand">TRUE GRIT</p>
+          )}
+        </div>
+        {collapsed ? null : <p className="mt-1.5 text-xs text-ink-muted">{subtitle}</p>}
       </div>
       <nav aria-label="Admin navigation" className="space-y-6 px-3 py-5">
         {NAV_GROUPS.map((group) => {

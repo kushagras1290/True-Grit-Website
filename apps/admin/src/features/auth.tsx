@@ -156,9 +156,20 @@ export function AdminLoginPage() {
     <main className="grid min-h-screen grid-cols-1 bg-canvas lg:grid-cols-[minmax(0,1fr)_28rem]">
       <section className="flex min-h-[18rem] items-end bg-brand px-6 py-10 text-ink-inverse lg:min-h-screen lg:px-12">
         <div className="max-w-xl">
-          <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-75">
-            True Grit Admin
-          </p>
+          {/* Same mark as the storefront and the sidebar — the first screen of
+              the console should already look like the product it manages. */}
+          <div className="flex items-center gap-3">
+            <img
+              src="/brand/true-grit-mark.webp"
+              alt=""
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full object-cover"
+            />
+            <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-75">
+              True Grit Admin
+            </p>
+          </div>
           <h1 className="mt-4 font-display text-4xl leading-tight lg:text-5xl">
             Live marketplace control room.
           </h1>

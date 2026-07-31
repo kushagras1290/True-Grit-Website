@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router";
 
 import type { Route } from "./+types/checkout";
 import { Section } from "../components/catalogue";
+import { ContactForm } from "../components/contact-form";
 import { useCart } from "../lib/cart";
 import {
   commerceLive,
@@ -19,6 +20,7 @@ import {
 import { usePriceFormatter, useDisplayCurrency } from "../lib/currency";
 import { AuthError, useCustomer } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
+import { useSiteSettings } from "../lib/site-settings";
 
 export function meta(_args: Route.MetaArgs) {
   return seoMeta({
@@ -38,6 +40,7 @@ const FIELD =
 
 export default function CheckoutPage(_props: Route.ComponentProps) {
   const { customer, status } = useCustomer();
+  const { payments } = useSiteSettings();
   const { lines, subtotalMinor, clear } = useCart();
   const formatPrice = usePriceFormatter();
   const displayCurrency = useDisplayCurrency();
@@ -57,7 +60,7 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
   const paypalAllowed = payment !== null && payment.methods.includes("paypal");
 
   useEffect(() => {
-    if (!commerceLive) return;
+    if (!commerceLive || !payments.enabled) return;
     let active = true;
     getPaymentMethods()
       .then((info) => {
@@ -69,12 +72,58 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
     return () => {
       active = false;
     };
-  }, []);
+  }, [payments.enabled]);
 
   // Cart total past the COD ceiling => force online payment.
   useEffect(() => {
     if (method === "cod" && !codAllowed && razorpayAllowed) setMethod("razorpay");
   }, [method, codAllowed, razorpayAllowed]);
+
+  // Ordering switched off in the admin console. This is checked before the
+  // session and the basket: whether they are signed in or how full the basket
+  // is changes nothing, and the API refuses this checkout either way. Rather
+  // than a dead end, take their details so the interest is not lost.
+  if (!payments.enabled) {
+    return (
+      <Section eyebrow="Checkout" heading="Ordering is paused">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
+          <div className="max-w-2xl space-y-5">
+            <p className="text-base text-ink-muted">{payments.disabledNotice}</p>
+            <ContactForm
+              defaultSubject="Order enquiry"
+              messagePlaceholder="Tell us what you were hoping to order and where it would be delivered."
+              submitLabel="Send enquiry"
+              successMessage="Thanks — we have your details and will be in touch as soon as ordering reopens."
+            />
+          </div>
+          <aside className="space-y-5">
+            <div>
+              <h2 className="font-display text-lg text-ink">Your basket is safe</h2>
+              <p className="mt-2 text-sm text-ink-muted">
+                Nothing has been cleared. When ordering reopens, everything you picked will still be
+                here.
+              </p>
+              <Link
+                to="/cart"
+                className="mt-4 inline-flex min-h-11 items-center rounded-sm border border-line px-5 text-sm font-medium text-ink hover:bg-canvas"
+              >
+                Back to basket
+              </Link>
+            </div>
+            <div>
+              <h2 className="font-display text-lg text-ink">Prefer email?</h2>
+              <a
+                href="mailto:support@truegrit.test"
+                className="mt-2 block text-sm text-brand underline-offset-4 hover:underline"
+              >
+                support@truegrit.test
+              </a>
+            </div>
+          </aside>
+        </div>
+      </Section>
+    );
+  }
 
   if (status === "loading") {
     return (

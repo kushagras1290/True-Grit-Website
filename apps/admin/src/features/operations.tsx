@@ -1283,12 +1283,18 @@ function InviteUserModal({ onClose }: { onClose: () => void }) {
       }),
     onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: ["users"] });
-      if (result.emailSent) {
-        toast.success("Invitation email sent.");
-      } else {
+      if (!result.emailSent) {
         toast.error(
           "User invited, but the invitation email could not be delivered. Share a password reset link with them manually.",
         );
+      } else if (result.emailTransport === "console") {
+        // The console sender reports success without delivering anything. Say
+        // so, or the operator waits for mail that was only ever logged.
+        toast.error(
+          "User invited, but no mail transport is configured — the invitation was only written to the API log. Set RESEND_API_KEY or SMTP_HOST to send it.",
+        );
+      } else {
+        toast.success("Invitation email sent.");
       }
       onClose();
     },
@@ -1457,12 +1463,16 @@ function ResetUserPasswordModal({ user, onClose }: { user: AdminUserRow; onClose
     mutationFn: () => api.sendUserPasswordReset(user.id),
     onSuccess: (response) => {
       setResult(response);
-      if (response.emailSent) {
-        toast.success("Password reset email sent.");
-      } else {
+      if (!response.emailSent) {
         toast.error(
           "Reset link created, but the email could not be delivered. Share the link with them manually.",
         );
+      } else if (response.emailTransport === "console") {
+        toast.error(
+          "Reset link created, but no mail transport is configured — it was only written to the API log. Set RESEND_API_KEY or SMTP_HOST to send it.",
+        );
+      } else {
+        toast.success("Password reset email sent.");
       }
     },
     onError: (error) =>

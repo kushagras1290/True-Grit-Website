@@ -2,10 +2,10 @@ import { data } from "react-router";
 
 import type { Route } from "./+types/category";
 import { Breadcrumbs, CategoryChip, ProductGrid, Section } from "../components/catalogue";
+import { PageBanner } from "../components/page-banner";
 import { PageLinkPagination } from "../components/pagination";
 import { CATALOGUE_PAGE_SIZE, catalogueRuntime, loadCategoryPage } from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
-import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
@@ -29,27 +29,17 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
   return (
     <>
       <Breadcrumbs items={page.breadcrumbs} />
-      <header className="mx-auto max-w-[80rem] px-4 pt-6 pb-2 sm:px-6">
-        <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_24rem] md:items-end">
-          <div className="max-w-2xl">
-            <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-              {page.hero.eyebrow}
-              {page.hero.seasonLabel ? ` - ${page.hero.seasonLabel}` : ""}
-            </p>
-            <h1 className="mt-2 font-display text-3xl leading-tight text-ink md:text-4xl">
-              {page.hero.title}
-            </h1>
-            <p className="mt-3 text-base text-ink-muted">{page.hero.description}</p>
-          </div>
-          {page.hero.imageUrl ? (
-            <img
-              src={mediaUrl(page.hero.imageUrl)}
-              alt={page.hero.imageAlt ?? ""}
-              className="aspect-[4/3] w-full rounded-md object-cover"
-            />
-          ) : null}
-        </div>
-      </header>
+      {/* The same banner frame as the homepage hero and the blog, so every
+          category opens with the same shape whether or not an image has been
+          uploaded for it — the band is reserved either way, rather than the
+          page reflowing the first time someone sets one. */}
+      <PageBanner
+        imageUrl={page.hero.imageUrl}
+        imageAlt={page.hero.imageAlt}
+        eyebrow={`${page.hero.eyebrow}${page.hero.seasonLabel ? ` - ${page.hero.seasonLabel}` : ""}`}
+        heading={page.hero.title}
+        description={page.hero.description}
+      />
 
       <Section>
         {/* A department used to dead-end in a flat grid of everything beneath

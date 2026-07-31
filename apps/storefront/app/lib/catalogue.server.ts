@@ -29,6 +29,8 @@ import {
   recipes,
 } from "@truegrit/contracts/fixtures";
 
+import { DEFAULT_SITE_SETTINGS, normalizeSiteSettings, type SiteSettings } from "./site-settings";
+
 export interface CatalogueRuntime {
   apiUrl?: string;
   apiWorker?: {
@@ -125,6 +127,20 @@ export async function loadBootstrap(runtime?: CatalogueRuntime): Promise<PublicB
     );
   }
   return bootstrap;
+}
+
+/**
+ * Owner-controlled switches for sign-in methods, taking payments, and the blog
+ * banner. Loaded in the root loader so every route renders against the same
+ * answer.
+ *
+ * An unreachable API (or demo-data mode) resolves to the shipped defaults, not
+ * to "everything off": a settings fetch failing must not lock customers out of
+ * a storefront that is otherwise working.
+ */
+export async function loadSiteSettings(runtime?: CatalogueRuntime): Promise<SiteSettings> {
+  if (!apiUrl(runtime)) return DEFAULT_SITE_SETTINGS;
+  return normalizeSiteSettings(await fromApi<unknown>("/v1/public/settings", runtime));
 }
 
 export async function loadHome(runtime?: CatalogueRuntime): Promise<PublicPage> {

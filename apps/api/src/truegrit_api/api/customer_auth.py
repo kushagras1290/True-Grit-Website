@@ -46,10 +46,20 @@ from truegrit_api.auth.rate_limit import (
 )
 from truegrit_api.auth.sessions import end_session, start_session
 from truegrit_api.config import Settings, get_settings
-from truegrit_api.errors import AuthenticationError, ConflictError, ValidationAppError
+from truegrit_api.errors import (
+    AuthenticationError,
+    ConflictError,
+    PermissionDeniedError,
+    ValidationAppError,
+)
 from truegrit_api.platform.database import Database
 from truegrit_api.services.contact import contactable_email
 from truegrit_api.services.email import send_email
+from truegrit_api.services.email_templates import render_customer_welcome
+from truegrit_api.services.feature_settings import (
+    assert_sign_in_method_enabled,
+    load_storefront_settings,
+)
 from truegrit_api.services.otp import (
     PURPOSE_REGISTER,
     PhoneVerificationRequiredError,
@@ -246,6 +256,7 @@ async def register(
     payload: RegisterRequest,
     request: Request,
     response: Response,
+    background: BackgroundTasks,
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
     settings = get_settings()
@@ -257,6 +268,14 @@ async def register(
         max_attempts=settings.rate_limit_register_per_ip,
         window=settings.rate_limit_register_window_seconds,
     )
+    # Both switches matter here: registration can be frozen on its own, and it
+    # also needs the email/password credential this route creates.
+    feature_settings = await load_storefront_settings(db)
+    if not feature_settings.registration or not feature_settings.password_sign_in:
+        raise PermissionDeniedError("New accounts are not being created at the moment.")
+    # A number can only be demanded while one can actually be verified — the
+    # switch may be off, or the deployment may have no way to deliver a passcode.
+    phone_verifiable = feature_settings.phone_otp_sign_in and settings.sms_enabled
     name = payload.name.strip()
     email = _normalize_email(payload.email)
     if not name:
@@ -286,7 +305,10 @@ async def register(
             raise ConflictError(
                 "That mobile number is already linked to an account. Sign in with it instead."
             )
-    elif settings.phone_required_at_registration:
+    elif settings.phone_required_at_registration and phone_verifiable:
+        # Only demand a verified number while there is a way to verify one. With
+        # passcodes switched off in the admin console, insisting on a phone proof
+        # would make registration impossible instead of merely stricter.
         raise PhoneVerificationRequiredError("Verify your mobile number to create an account.")
 
     user_id = new_id("usr")
@@ -323,6 +345,25 @@ async def register(
     await start_session(
         db, response, user_id=user_id, settings=settings, user_agent_summary="customer-register"
     )
+    # Welcome mail is a background task for the same reason order confirmations
+    # are: `send_email` already swallows transport errors, and the account has
+    # been created either way — a mail outage must not turn a successful sign-up
+    # into a failed request.
+    background.add_task(
+        send_email,
+        email,
+        "Welcome to True Grit",
+        (
+            f"Hi {name},\n\n"
+            "Your True Grit account is ready. You can track orders, save delivery"
+            " addresses and follow the farms behind everything you buy.\n\n"
+            f"{settings.public_storefront_url}\n\n"
+            "If you did not create this account, please contact us and we will close it.\n\n"
+            "The True Grit Team"
+        ),
+        settings,
+        render_customer_welcome(name, settings.public_storefront_url),
+    )
     return {
         "ok": True,
         "customer": {
@@ -344,6 +385,7 @@ async def login(
 ) -> Any:
     settings = get_settings()
     email = payload.email.strip().lower()
+    await assert_sign_in_method_enabled(db, "password")
     # Limit before the expensive password hash so an attacker cannot burn CPU.
     await _limit_by_ip(
         db,
@@ -396,6 +438,7 @@ async def google_login(
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
     settings = get_settings()
+    await assert_sign_in_method_enabled(db, "google")
     await _limit_by_ip(
         db,
         request,
@@ -429,6 +472,7 @@ async def facebook_login(
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
     settings = get_settings()
+    await assert_sign_in_method_enabled(db, "facebook")
     await _limit_by_ip(
         db,
         request,

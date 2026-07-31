@@ -13,11 +13,12 @@ import {
 import type { Route } from "./+types/root";
 import appCss from "./app.css?url";
 import { Footer, Header } from "./components/chrome";
-import { catalogueRuntime, loadBootstrap } from "./lib/catalogue.server";
+import { catalogueRuntime, loadBootstrap, loadSiteSettings } from "./lib/catalogue.server";
 import { CartProvider } from "./lib/cart";
 import { CurrencyProvider } from "./lib/currency";
 import { CustomerProvider } from "./lib/customer-auth";
 import { resolveCountry } from "./lib/geo.server";
+import { SiteSettingsProvider } from "./lib/site-settings";
 
 export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.png", type: "image/png" },
@@ -39,20 +40,24 @@ export async function loader({ request, context }: Route.LoaderArgs) {
         env?: {
           PUBLIC_API_URL?: string;
           PUBLIC_FACEBOOK_APP_ID?: string;
-          PUBLIC_FACEBOOK_LOGIN_VISIBLE?: string;
         };
       };
     }
   ).cloudflare?.env;
+  // Both in one round trip: the header needs the sign-in switches on first
+  // paint, or it flashes a button the API would refuse.
+  const [bootstrap, siteSettings] = await Promise.all([
+    loadBootstrap(runtime),
+    loadSiteSettings(runtime),
+  ]);
   return {
-    bootstrap: await loadBootstrap(runtime),
+    bootstrap,
+    siteSettings,
     country: resolveCountry(request),
     publicEnv: {
       PUBLIC_API_URL: runtime.apiUrl || process.env.PUBLIC_API_URL || "",
       PUBLIC_FACEBOOK_APP_ID:
         env?.PUBLIC_FACEBOOK_APP_ID || process.env.PUBLIC_FACEBOOK_APP_ID || "",
-      PUBLIC_FACEBOOK_LOGIN_VISIBLE:
-        env?.PUBLIC_FACEBOOK_LOGIN_VISIBLE || process.env.PUBLIC_FACEBOOK_LOGIN_VISIBLE || "",
     },
   };
 }
@@ -76,7 +81,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { bootstrap, country, publicEnv } = useLoaderData<typeof loader>();
+  const { bootstrap, siteSettings, country, publicEnv } = useLoaderData<typeof loader>();
   const location = useLocation();
   const isPaymentWindow = location.pathname === "/payment/razorpay";
   return (
@@ -89,31 +94,33 @@ export default function App() {
           )};`,
         }}
       />
-      <CustomerProvider>
-        <CartProvider>
-          <CurrencyProvider country={country}>
-            {isPaymentWindow ? (
-              <main id="content">
-                <Outlet />
-              </main>
-            ) : (
-              <>
-                <a
-                  href="#content"
-                  className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-surface focus:px-3 focus:py-2"
-                >
-                  Skip to content
-                </a>
-                <Header bootstrap={bootstrap} />
+      <SiteSettingsProvider settings={siteSettings}>
+        <CustomerProvider>
+          <CartProvider>
+            <CurrencyProvider country={country}>
+              {isPaymentWindow ? (
                 <main id="content">
                   <Outlet />
                 </main>
-                <Footer bootstrap={bootstrap} />
-              </>
-            )}
-          </CurrencyProvider>
-        </CartProvider>
-      </CustomerProvider>
+              ) : (
+                <>
+                  <a
+                    href="#content"
+                    className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-surface focus:px-3 focus:py-2"
+                  >
+                    Skip to content
+                  </a>
+                  <Header bootstrap={bootstrap} />
+                  <main id="content">
+                    <Outlet />
+                  </main>
+                  <Footer bootstrap={bootstrap} />
+                </>
+              )}
+            </CurrencyProvider>
+          </CartProvider>
+        </CustomerProvider>
+      </SiteSettingsProvider>
     </>
   );
 }

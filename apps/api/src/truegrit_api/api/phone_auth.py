@@ -36,6 +36,7 @@ from truegrit_api.domain.phone import MAX_PHONE_INPUT_LENGTH, normalize_phone
 from truegrit_api.errors import AuthenticationError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.services import otp as otp_service
+from truegrit_api.services.feature_settings import assert_sign_in_method_enabled
 from truegrit_api.services.phone_accounts import (
     account_payload,
     attach_verified_phone,
@@ -101,6 +102,7 @@ async def phone_start(
     The response is identical whether or not the number has an account.
     """
     settings = get_settings()
+    await assert_sign_in_method_enabled(db, "phone")
     phone_e164 = normalize_phone(payload.phone)
     challenge = await otp_service.issue_challenge(
         db,
@@ -117,8 +119,10 @@ async def phone_resend(
     payload: PhoneResendRequest,
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
+    settings = get_settings()
+    await assert_sign_in_method_enabled(db, "phone")
     challenge = await otp_service.resend_challenge(
-        db, challenge_id=payload.challenge_id, settings=get_settings()
+        db, challenge_id=payload.challenge_id, settings=settings
     )
     return {"ok": True, **_challenge_payload(challenge)}
 
@@ -154,6 +158,7 @@ async def phone_complete(
 ) -> Any:
     """Exchange proof of a number for a session — signing in or signing up."""
     settings = get_settings()
+    await assert_sign_in_method_enabled(db, "phone")
     redeemed = await otp_service.redeem_token(
         db, token=payload.verification_token, expected_purpose=otp_service.PURPOSE_SIGN_IN
     )
@@ -213,6 +218,7 @@ async def phone_attach_start(
 ) -> Any:
     """Text a passcode to a number the signed-in customer wants to add."""
     settings = get_settings()
+    await assert_sign_in_method_enabled(db, "phone")
     phone_e164 = normalize_phone(payload.phone)
     challenge = await otp_service.issue_challenge(
         db,
@@ -238,6 +244,7 @@ async def phone_register_start(
     sign anyone in.
     """
     settings = get_settings()
+    await assert_sign_in_method_enabled(db, "phone")
     phone_e164 = normalize_phone(payload.phone)
     challenge = await otp_service.issue_challenge(
         db,

@@ -75,11 +75,16 @@ from truegrit_api.services.catalogue import (
     update_product,
 )
 from truegrit_api.services.contact import contactable_email
-from truegrit_api.services.email import send_email
+from truegrit_api.services.email import email_transport_name, send_email
 from truegrit_api.services.email_templates import (
     render_submission_approved,
     render_submission_changes_requested,
     render_submission_rejected,
+)
+from truegrit_api.services.feature_settings import (
+    load_public_settings,
+    load_storefront_settings,
+    update_storefront_settings,
 )
 from truegrit_api.services.inventory import adjust_inventory, clear_inventory_levels
 from truegrit_api.services.media import (
@@ -1918,6 +1923,25 @@ class CommunitySettingsUpdateRequest(_CamelModel):
     min_account_age_months: int = Field(ge=0, le=120)
 
 
+class StorefrontSettingsUpdateRequest(_CamelModel):
+    """Runtime switches for sign-in methods, taking payments, and the blog banner.
+
+    Every field is optional and only the ones actually sent are written
+    (`exclude_unset` in the handler), so a PATCH that flips one switch cannot
+    silently overwrite the rest with whatever the client last rendered.
+    """
+
+    google_sign_in: bool | None = None
+    facebook_sign_in: bool | None = None
+    phone_otp_sign_in: bool | None = None
+    password_sign_in: bool | None = None
+    registration: bool | None = None
+    payments: bool | None = None
+    payments_disabled_notice: str | None = Field(default=None, max_length=600)
+    blog_banner_image_url: str | None = Field(default=None, max_length=1000)
+    blog_banner_image_alt: str | None = Field(default=None, max_length=200)
+
+
 def _discussion_admin_summary(row: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": row["id"],
@@ -2061,6 +2085,66 @@ async def update_community_settings_endpoint(
     return await discussion_service.set_min_account_age_months(
         db, principal, _request_id(request), payload.min_account_age_months
     )
+
+
+# ---------------------------------------------------------------------------
+# Storefront feature switches — sign-in methods, taking payments, blog banner.
+#
+# Gated on settings.view/settings.edit, the same pair that guards Site Control:
+# these decide whether customers can sign in or spend money, so they belong with
+# the owner, not with everyone who can edit a product.
+# ---------------------------------------------------------------------------
+
+
+def _storefront_settings_response(
+    stored: Any,
+    effective: Any,
+) -> dict[str, Any]:
+    """Both the switches as set and the state they actually resolve to.
+
+    The console needs both: a checkbox has to show what the operator chose,
+    while the warning next to it has to say when that choice is inert because
+    the deployment has no Google client id, no SMS key, or no gateway.
+    """
+    return {
+        "settings": stored.to_camel_dict(),
+        "effective": {
+            "googleSignIn": effective.google_sign_in,
+            "facebookSignIn": effective.facebook_sign_in,
+            "phoneOtpSignIn": effective.phone_otp_sign_in,
+            "passwordSignIn": effective.password_sign_in,
+            "registration": effective.registration,
+            "payments": effective.payments,
+            "anySignInAvailable": effective.any_sign_in_available,
+        },
+    }
+
+
+@router.get("/storefront-settings")
+async def get_storefront_settings_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("settings.view"))],
+) -> Any:
+    settings = get_settings()
+    stored = await load_storefront_settings(db)
+    return _storefront_settings_response(stored, await load_public_settings(db, settings))
+
+
+@router.patch("/storefront-settings")
+async def update_storefront_settings_endpoint(
+    payload: StorefrontSettingsUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    settings = get_settings()
+    stored = await update_storefront_settings(
+        db,
+        principal,
+        _request_id(request),
+        updates=payload.model_dump(exclude_unset=True, exclude_none=True),
+    )
+    return _storefront_settings_response(stored, await load_public_settings(db, settings))
 
 
 # ---------------------------------------------------------------------------
@@ -3616,7 +3700,10 @@ async def invite_user_endpoint(
         if email is not None
         else False
     )
-    return {**result, "emailSent": email_sent}
+    # The console sender "succeeds" without delivering anything, so a bare
+    # emailSent=true would tell the operator an invitation arrived when no mail
+    # transport is configured at all. Report which transport handled it.
+    return {**result, "emailSent": email_sent, "emailTransport": email_transport_name(settings)}
 
 
 @router.post("/users")
@@ -3745,7 +3832,12 @@ async def email_user_password_reset_endpoint(
             )
         ]
     )
-    return {"id": user_id, "email": user["email"], "emailSent": email_sent}
+    return {
+        "id": user_id,
+        "email": user["email"],
+        "emailSent": email_sent,
+        "emailTransport": email_transport_name(settings),
+    }
 
 
 # ---------------------------------------------------------------------------

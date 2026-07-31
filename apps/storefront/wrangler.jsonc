@@ -18,9 +18,9 @@
     // Runtime public API origin. The browser receives this value from SSR so
     // production builds cannot accidentally keep a local VITE_API_URL baked in.
     "PUBLIC_API_URL": "https://truegrit-api-dev.kushagras1234890.workers.dev",
-    // Public Facebook app id for the storefront account menu.
+    // Public Facebook app id for the storefront account menu. Whether the
+    // button is *shown* is an admin-console switch (Site Control -> Storefront
+    // switches), not an env flag — see migration 0040.
     "PUBLIC_FACEBOOK_APP_ID": "",
-    // Keep false until Facebook Login is ready for customers.
-    "PUBLIC_FACEBOOK_LOGIN_VISIBLE": "false",
   },
 }

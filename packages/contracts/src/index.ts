@@ -662,6 +662,43 @@ export interface CommunitySettings {
 }
 
 // ---------------------------------------------------------------------------
+// Storefront feature switches (app_settings, migration 0040)
+//
+// `settings` is what the owner chose; `effective` is what that resolves to once
+// the API's own configuration is taken into account (no Google client id, no
+// SMS key, no payment gateway). The console shows both: a ticked box whose
+// effective value is false is a real state, and the operator needs to be told
+// why rather than left wondering.
+// ---------------------------------------------------------------------------
+
+export interface StorefrontSettings {
+  googleSignIn: boolean;
+  facebookSignIn: boolean;
+  phoneOtpSignIn: boolean;
+  passwordSignIn: boolean;
+  registration: boolean;
+  payments: boolean;
+  paymentsDisabledNotice: string;
+  blogBannerImageUrl: string;
+  blogBannerImageAlt: string;
+}
+
+export interface StorefrontSettingsEffective {
+  googleSignIn: boolean;
+  facebookSignIn: boolean;
+  phoneOtpSignIn: boolean;
+  passwordSignIn: boolean;
+  registration: boolean;
+  payments: boolean;
+  anySignInAvailable: boolean;
+}
+
+export interface StorefrontSettingsResponse {
+  settings: StorefrontSettings;
+  effective: StorefrontSettingsEffective;
+}
+
+// ---------------------------------------------------------------------------
 // Route SEO overrides (routes with no single-segment CMS page record)
 // ---------------------------------------------------------------------------
 

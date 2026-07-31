@@ -24,6 +24,7 @@ import {
   type SiteControl,
   type SiteDocuments,
 } from "../lib/api";
+import type { StorefrontSettings, StorefrontSettingsEffective } from "@truegrit/contracts";
 import { formatDateTime } from "../lib/format";
 
 const imageUrlSchema = z
@@ -549,6 +550,7 @@ export function SiteControlPage() {
         </aside>
       </form>
 
+      <StorefrontSwitchesSection />
       <CmsPagesSection />
       <RouteSeoSection />
       <SiteDocumentsSection />
@@ -556,6 +558,332 @@ export function SiteControlPage() {
       <FreshFavouritesSection form={form} />
       <HighlightsSection />
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Storefront switches: sign-in methods, taking payments, and the blog banner.
+//
+// Each switch saves on its own the moment it is toggled — there is no "save"
+// button to forget. A kill-switch that only half-applied because someone
+// navigated away would be worse than no kill-switch at all.
+// ---------------------------------------------------------------------------
+
+interface SignInSwitch {
+  field: keyof StorefrontSettings;
+  effectiveField: keyof StorefrontSettingsEffective;
+  label: string;
+  description: string;
+  /** Shown when the switch is on but the deployment cannot honour it. */
+  unavailableHint: string;
+}
+
+const SIGN_IN_SWITCHES: SignInSwitch[] = [
+  {
+    field: "phoneOtpSignIn",
+    effectiveField: "phoneOtpSignIn",
+    label: "Mobile number + SMS passcode",
+    description: "Sign in and sign up with nothing but a phone number.",
+    unavailableHint: "No SMS provider configured (FAST2SMS_API_KEY), so passcodes cannot be sent.",
+  },
+  {
+    field: "passwordSignIn",
+    effectiveField: "passwordSignIn",
+    label: "Email + password",
+    description: "The classic credential pair, including the password-reset flow.",
+    unavailableHint: "",
+  },
+  {
+    field: "registration",
+    effectiveField: "registration",
+    label: "New account sign-ups",
+    description:
+      "Turn off to freeze new registrations while existing customers keep signing in normally.",
+    unavailableHint: "Needs email + password or mobile passcodes to be on as well.",
+  },
+  {
+    field: "googleSignIn",
+    effectiveField: "googleSignIn",
+    label: "Sign in with Google",
+    description: "Google Identity Services button in the storefront account menu.",
+    unavailableHint: "No GOOGLE_CLIENT_ID configured on the API, so the button stays hidden.",
+  },
+  {
+    field: "facebookSignIn",
+    effectiveField: "facebookSignIn",
+    label: "Continue with Facebook",
+    description: "Facebook Login button in the storefront account menu.",
+    unavailableHint:
+      "No FACEBOOK_APP_ID / FACEBOOK_APP_SECRET configured on the API, so the button stays hidden.",
+  },
+];
+
+function SwitchRow({
+  label,
+  description,
+  checked,
+  effective,
+  unavailableHint,
+  disabled,
+  onChange,
+}: {
+  label: string;
+  description: string;
+  checked: boolean;
+  effective: boolean;
+  unavailableHint: string;
+  disabled: boolean;
+  onChange: (next: boolean) => void;
+}) {
+  return (
+    <li className="flex items-start justify-between gap-4 border-t border-line py-3 first:border-t-0">
+      <div className="min-w-0">
+        <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-ink">
+          <input
+            type="checkbox"
+            checked={checked}
+            disabled={disabled}
+            onChange={(event) => onChange(event.target.checked)}
+          />
+          {label}
+        </label>
+        <p className="mt-1 text-sm text-ink-muted">{description}</p>
+        {/* Ticked but inert. Saying nothing here is how an operator ends up
+            certain a method is live when the API cannot offer it. */}
+        {checked && !effective && unavailableHint ? (
+          <p className="mt-1 text-sm text-warning">{unavailableHint}</p>
+        ) : null}
+      </div>
+      {/* What customers get, which is not always what the box says — hence its
+          own wording rather than echoing the checkbox. */}
+      <span
+        className={
+          "inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-medium " +
+          (effective ? "bg-success/10 text-success" : "border border-line bg-canvas text-ink-muted")
+        }
+      >
+        {effective ? "Live" : "Off"}
+      </span>
+    </li>
+  );
+}
+
+function StorefrontSwitchesSection() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["storefront-settings"],
+    queryFn: api.storefrontSettings,
+  });
+
+  // Local drafts for the free-text fields; the checkboxes save immediately.
+  const [notice, setNotice] = useState<string | null>(null);
+  const [bannerUrl, setBannerUrl] = useState<string | null>(null);
+  const [bannerAlt, setBannerAlt] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!data) return;
+    setNotice(null);
+    setBannerUrl(null);
+    setBannerAlt(null);
+  }, [data]);
+
+  const mutation = useMutation({
+    mutationFn: (input: Partial<StorefrontSettings>) => api.updateStorefrontSettings(input),
+    onSuccess: async (result) => {
+      queryClient.setQueryData(["storefront-settings"], result);
+      await queryClient.invalidateQueries({ queryKey: ["storefront-settings"] });
+      toast.success("Storefront switches saved.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not save the switches."),
+  });
+
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => api.uploadImage(file),
+    onSuccess: (result) => {
+      setBannerUrl(result.url);
+      mutation.mutate({ blogBannerImageUrl: result.url });
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not upload the banner."),
+  });
+
+  if (isLoading) {
+    return (
+      <section className="mt-10 border-t border-line pt-5">
+        <p className="text-sm text-ink-muted">Loading storefront switches...</p>
+      </section>
+    );
+  }
+  if (isError || !data) {
+    return (
+      <section className="mt-10 border-t border-line pt-5">
+        <EmptyState
+          title="Storefront switches unavailable"
+          hint="Requires owner settings access."
+        />
+      </section>
+    );
+  }
+
+  const { settings, effective } = data;
+  const noticeValue = notice ?? settings.paymentsDisabledNotice;
+  const bannerUrlValue = bannerUrl ?? settings.blogBannerImageUrl;
+  const bannerAltValue = bannerAlt ?? settings.blogBannerImageAlt;
+
+  return (
+    <section className="mt-10 space-y-8 border-t border-line pt-5">
+      <div>
+        <h2 className="font-display text-lg text-ink">Storefront switches</h2>
+        <p className="text-sm text-ink-muted">
+          Turn sign-in methods and ordering on or off without a deploy. The pill on the right is
+          what customers actually get: a switch can only ever take a feature away, never add one the
+          API is not configured for.
+        </p>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
+          Sign-in methods
+        </h3>
+        {/* Locking every route out of a live storefront is a legitimate thing to
+            want, but never a thing to do by accident. */}
+        {!effective.anySignInAvailable ? (
+          <p className="mt-3 rounded-md border border-danger/40 bg-danger/5 px-4 py-3 text-sm text-danger">
+            No sign-in method is available. Customers cannot sign in or reach their orders until at
+            least one is switched back on.
+          </p>
+        ) : null}
+        <ul className="mt-3 max-w-3xl">
+          {SIGN_IN_SWITCHES.map((entry) => (
+            <SwitchRow
+              key={entry.field}
+              label={entry.label}
+              description={entry.description}
+              checked={Boolean(settings[entry.field])}
+              effective={effective[entry.effectiveField]}
+              unavailableHint={entry.unavailableHint}
+              disabled={mutation.isPending}
+              onChange={(next) => mutation.mutate({ [entry.field]: next })}
+            />
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
+          Taking payments
+        </h3>
+        <ul className="mt-3 max-w-3xl">
+          <SwitchRow
+            label="Accept orders and payments"
+            description="Off closes checkout entirely and shows customers a contact form instead, so interest is still captured. Baskets are left untouched."
+            checked={settings.payments}
+            effective={effective.payments}
+            unavailableHint="No payment method is configured on the API (cash on delivery, Razorpay, PayPal or Stripe)."
+            disabled={mutation.isPending}
+            onChange={(next) => mutation.mutate({ payments: next })}
+          />
+        </ul>
+        <div className="mt-4 max-w-2xl">
+          <Field label="Message shown when ordering is off" htmlFor="paymentsDisabledNotice">
+            <Textarea
+              id="paymentsDisabledNotice"
+              rows={3}
+              value={noticeValue}
+              onChange={(event) => setNotice(event.target.value)}
+              maxLength={600}
+            />
+          </Field>
+          <p className="mt-1 text-xs text-ink-muted">
+            Appears above the contact form on checkout and in the basket summary. Up to 600
+            characters.
+          </p>
+          <Button
+            type="button"
+            variant="secondary"
+            className="mt-2"
+            disabled={mutation.isPending || noticeValue === settings.paymentsDisabledNotice}
+            onClick={() => mutation.mutate({ paymentsDisabledNotice: noticeValue })}
+          >
+            {mutation.isPending ? "Saving..." : "Save message"}
+          </Button>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
+          Blog banner
+        </h3>
+        <p className="mt-1 max-w-2xl text-sm text-ink-muted">
+          The banner across the top of <code>/blog</code>, rendered at the same size as the homepage
+          hero. Left blank, the shipped hero image is used so the space is never empty.
+        </p>
+        <div className="mt-4 grid max-w-3xl gap-4 md:grid-cols-[minmax(0,1fr)_16rem] md:items-start">
+          <div className="space-y-4">
+            <Field label="Banner image URL" htmlFor="blogBannerImageUrl">
+              <Input
+                id="blogBannerImageUrl"
+                placeholder="/homepage-hero.png"
+                value={bannerUrlValue}
+                onChange={(event) => setBannerUrl(event.target.value)}
+              />
+            </Field>
+            <Field label="Banner alt text" htmlFor="blogBannerImageAlt">
+              <Input
+                id="blogBannerImageAlt"
+                value={bannerAltValue}
+                onChange={(event) => setBannerAlt(event.target.value)}
+              />
+            </Field>
+            <p className="-mt-2 text-xs text-ink-muted">
+              Describe the image for screen readers. Leave blank if it is purely decorative — the
+              banner heading already carries the meaning.
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={
+                  mutation.isPending ||
+                  (bannerUrlValue === settings.blogBannerImageUrl &&
+                    bannerAltValue === settings.blogBannerImageAlt)
+                }
+                onClick={() =>
+                  mutation.mutate({
+                    blogBannerImageUrl: bannerUrlValue,
+                    blogBannerImageAlt: bannerAltValue,
+                  })
+                }
+              >
+                {mutation.isPending ? "Saving..." : "Save banner"}
+              </Button>
+              <label className="inline-flex min-h-9 cursor-pointer items-center rounded-sm border border-line px-3 text-sm text-ink hover:bg-canvas">
+                {uploadMutation.isPending ? "Uploading..." : "Upload image"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  disabled={uploadMutation.isPending}
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    event.target.value = "";
+                    if (file) uploadMutation.mutate(file);
+                  }}
+                />
+              </label>
+            </div>
+          </div>
+          <ImagePreview
+            src={bannerUrlValue}
+            alt={bannerAltValue}
+            label="Blog banner"
+            className="h-32 w-full"
+          />
+        </div>
+      </div>
+    </section>
   );
 }
 

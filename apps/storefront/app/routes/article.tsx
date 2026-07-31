@@ -3,6 +3,7 @@ import { data } from "react-router";
 import type { Route } from "./+types/article";
 import { Breadcrumbs } from "../components/catalogue";
 import { CmsBlock, type BlockData } from "../components/blocks";
+import { PageBanner } from "../components/page-banner";
 import {
   catalogueRuntime,
   loadArticle,
@@ -59,34 +60,27 @@ export default function ArticlePage({ loaderData }: Route.ComponentProps) {
           { label: article.title, path: `/blog/${article.slug}` },
         ]}
       />
-      {article.heroImageUrl ? (
-        <div className="mx-auto max-w-4xl px-4 pt-6 sm:px-6">
-          <img
-            src={mediaUrl(article.heroImageUrl)}
-            alt={article.heroImageAlt || article.title}
-            className="aspect-[21/9] w-full rounded-md object-cover"
-            fetchPriority="high"
-          />
-        </div>
-      ) : null}
+      {/* Full-bleed and hero-sized, matching the homepage banner and the blog
+          index — a post used to open with a boxed 21:9 strip that read as a
+          thumbnail rather than a banner. The title lives in the banner, so the
+          article body below starts at the byline. */}
+      <PageBanner
+        imageUrl={article.heroImageUrl}
+        imageAlt={article.heroImageAlt}
+        eyebrow={`${article.authorName} · ${article.readingMinutes} min read`}
+        heading={article.title}
+        description={article.excerpt}
+      />
 
-      <article className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
-        <header>
-          <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-            {article.authorName} · {article.readingMinutes} min read
-          </p>
-          <h1 className="mt-3 font-display text-3xl leading-tight text-ink md:text-4xl">
-            {article.title}
-          </h1>
-          <p className="mt-3 text-lg text-ink-muted">{article.excerpt}</p>
-        </header>
-
-        {article.pullQuote ? (
-          <blockquote className="mt-8 border-l-4 border-accent py-1 pl-5 font-display text-xl leading-snug text-brand">
+      {/* Only rendered when there is a quote — an empty band of padding between
+          the banner and the first content block reads as a broken layout. */}
+      {article.pullQuote ? (
+        <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
+          <blockquote className="border-l-4 border-accent py-1 pl-5 font-display text-xl leading-snug text-brand">
             {article.pullQuote}
           </blockquote>
-        ) : null}
-      </article>
+        </div>
+      ) : null}
 
       {article.blocks.map((block) => (
         <CmsBlock key={block.id} block={block} data={blockData} />

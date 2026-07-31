@@ -11,6 +11,9 @@ from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# Standard implicit-TLS ("SMTPS") port. 587 and 25 are the STARTTLS ports.
+SMTPS_PORT = 465
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_prefix="", extra="ignore")
@@ -72,7 +75,15 @@ class Settings(BaseSettings):
     smtp_port: int = 587
     smtp_username: str = ""
     smtp_password: str = ""
+    # STARTTLS: connect in plaintext on 587/25, then upgrade. Leave on unless
+    # the server genuinely has no TLS (a local mail catcher).
     smtp_use_tls: bool = True
+    # Implicit TLS ("SMTPS"): the socket is encrypted from the first byte and
+    # STARTTLS must NOT be sent. This is what port 465 means. Left unset it is
+    # inferred from the port, because getting it wrong is silent — a plaintext
+    # client on 465 simply waits for a handshake that never arrives and dies at
+    # the timeout, which is how invitation mail can appear to "just not send".
+    smtp_implicit_tls_override: bool | None = None
     smtp_timeout_seconds: int = 10
     email_from: str = "True Grit <no-reply@truegrit.test>"
     contact_recipient_email: str = ""
@@ -175,6 +186,24 @@ class Settings(BaseSettings):
     # flow actually exists and has been tested end to end.
     payment_paypal_visible: bool = False
     payment_stripe_visible: bool = False
+
+    @property
+    def smtp_implicit_tls(self) -> bool:
+        """Whether to open the SMTP socket already wrapped in TLS.
+
+        Defaults to "port 465 means SMTPS", which is true of every mainstream
+        provider, and stays overridable for the rare server on a non-standard
+        port. `SMTP_IMPLICIT_TLS_OVERRIDE=true|false` wins when set.
+        """
+        if self.smtp_implicit_tls_override is not None:
+            return self.smtp_implicit_tls_override
+        return self.smtp_port == SMTPS_PORT
+
+    @property
+    def email_configured(self) -> bool:
+        """True when a real transport is available. False means the console
+        sender, which logs the message instead of delivering it."""
+        return bool(self.resend_api_key or self.smtp_host)
 
     @property
     def fast2sms_enabled(self) -> bool:

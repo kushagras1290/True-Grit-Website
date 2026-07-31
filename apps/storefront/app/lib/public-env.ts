@@ -1,7 +1,6 @@
 export interface PublicRuntimeEnv {
   PUBLIC_API_URL?: string;
   PUBLIC_FACEBOOK_APP_ID?: string;
-  PUBLIC_FACEBOOK_LOGIN_VISIBLE?: string;
 }
 
 declare global {
@@ -12,8 +11,6 @@ declare global {
 
 const BUILD_API_URL = import.meta.env.VITE_API_URL as string | undefined;
 const BUILD_FACEBOOK_APP_ID = import.meta.env.VITE_FACEBOOK_APP_ID as string | undefined;
-const BUILD_FACEBOOK_LOGIN_VISIBLE = import.meta.env.VITE_FACEBOOK_LOGIN_VISIBLE as
-  string | undefined;
 
 function normalizeUrl(value: string | undefined): string {
   return value?.trim().replace(/\/+$/, "") ?? "";
@@ -66,15 +63,7 @@ export function getPublicFacebookAppId(): string {
   return normalizeUrl(processEnv("PUBLIC_FACEBOOK_APP_ID") || BUILD_FACEBOOK_APP_ID);
 }
 
-function isEnabledFlag(value: string | undefined): boolean {
-  return value?.trim().toLowerCase() === "true";
-}
-
-export function isFacebookLoginVisible(): boolean {
-  if (typeof window !== "undefined") {
-    return isEnabledFlag(
-      window.__TRUEGRIT_PUBLIC_ENV__?.PUBLIC_FACEBOOK_LOGIN_VISIBLE || BUILD_FACEBOOK_LOGIN_VISIBLE,
-    );
-  }
-  return isEnabledFlag(processEnv("PUBLIC_FACEBOOK_LOGIN_VISIBLE") || BUILD_FACEBOOK_LOGIN_VISIBLE);
-}
+// Whether the Facebook button is shown is no longer an env flag: it is an
+// admin-console switch (`auth.facebook.enabled`, migration 0040) delivered
+// through `lib/site-settings`. The app id below stays here because the Facebook
+// SDK needs it in the browser.

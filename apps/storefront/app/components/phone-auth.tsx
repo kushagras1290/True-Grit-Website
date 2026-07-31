@@ -23,6 +23,7 @@ import {
   type PhoneIntent,
   type PhoneVerification,
 } from "../lib/customer-auth";
+import { useSiteSettings } from "../lib/site-settings";
 
 const FIELD_CLASS =
   "min-h-11 w-full rounded-sm border border-line bg-canvas px-3 text-sm text-ink" +
@@ -354,6 +355,7 @@ export function PhoneAuthPanel({ onDone }: { onDone: () => void }) {
  */
 export function AddPhonePrompt({ onDone }: { onDone?: () => void }) {
   const { customer, attachPhone } = useCustomer();
+  const { auth } = useSiteSettings();
   const [dismissed, setDismissed] = useState(() => readPhonePromptDismissed());
   const [error, setError] = useState<string | null>(null);
   const [started, setStarted] = useState(false);
@@ -371,6 +373,9 @@ export function AddPhonePrompt({ onDone }: { onDone?: () => void }) {
     [attachPhone, onDone],
   );
 
+  // Never offer to verify a number while passcodes are switched off — the
+  // request would be refused, and there is nothing the customer could do.
+  if (!auth.phoneOtp) return null;
   if (customer === null || customer.phoneVerified || dismissed) return null;
 
   if (!started) {

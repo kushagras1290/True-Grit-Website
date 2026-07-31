@@ -2,11 +2,10 @@
 
 import type { PublicBootstrap } from "@truegrit/contracts";
 import { Search, ShoppingBasket, UserRound, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Form, Link, NavLink } from "react-router";
 
 import { useCart } from "../lib/cart";
-import { isFacebookLoginVisible } from "../lib/public-env";
 import {
   AuthError,
   FacebookSignInButton,
@@ -15,6 +14,7 @@ import {
   useCustomer,
   type PhoneVerification,
 } from "../lib/customer-auth";
+import { useSiteSettings, type SiteSettings } from "../lib/site-settings";
 import { AddPhonePrompt, PhoneAuthPanel, PhoneVerifier } from "./phone-auth";
 
 type AuthMode = "phone" | "signin" | "register";
@@ -85,6 +85,20 @@ const FIELD_CLASS =
   "min-h-11 w-full rounded-sm border border-line bg-canvas px-3 text-sm text-ink" +
   " placeholder:text-ink-muted focus:border-brand focus:outline-none";
 
+/** Name only the methods currently on offer, so the panel never advertises a
+ *  route the owner has switched off. */
+function signInSubtitle(auth: SiteSettings["auth"]): string {
+  const methods = [
+    auth.phoneOtp ? "your mobile" : null,
+    auth.password ? "email" : null,
+    auth.google ? "Google" : null,
+    auth.facebook ? "Facebook" : null,
+  ].filter((value): value is string => value !== null);
+  if (methods.length === 0) return "Sign-in is temporarily unavailable";
+  if (methods.length === 1) return `Sign in with ${methods[0]}`;
+  return `Sign in with ${methods.slice(0, -1).join(", ")} or ${methods.at(-1)}`;
+}
+
 function AccountSummary({
   email,
   phone,
@@ -143,17 +157,37 @@ function AccountSummary({
 function CustomerPortal() {
   const { customer, status, login, register, loginWithGoogle, loginWithFacebook, logout } =
     useCustomer();
+  // Which sign-in methods the owner has switched on, already ANDed with what
+  // the API is configured for — see lib/site-settings.
+  const { auth } = useSiteSettings();
   const [open, setOpen] = useState(false);
-  // Mobile first: it is the shortest path for most Indian customers and needs no
-  // password.
-  const [mode, setMode] = useState<AuthMode>("phone");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   // Proof of a mobile, held between the verify step and the account being
   // created. Registration will not submit without it.
   const [registerPhone, setRegisterPhone] = useState<PhoneVerification | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const showFacebookLogin = isFacebookLoginVisible();
+
+  // Only the tabs that lead somewhere. Mobile first where it is available: it is
+  // the shortest path for most Indian customers and needs no password.
+  const availableModes = useMemo<AuthMode[]>(() => {
+    const modes: AuthMode[] = [];
+    if (auth.phoneOtp) modes.push("phone");
+    if (auth.password) modes.push("signin");
+    if (auth.password && auth.registration) modes.push("register");
+    return modes;
+  }, [auth.phoneOtp, auth.password, auth.registration]);
+
+  const [mode, setMode] = useState<AuthMode>(() => availableModes[0] ?? "phone");
+
+  // A switch can be flipped while the panel is open. Fall back rather than
+  // leaving the customer staring at a form the API would now reject.
+  useEffect(() => {
+    if (availableModes.length > 0 && !availableModes.includes(mode)) {
+      setMode(availableModes[0]!);
+      setRegisterPhone(null);
+    }
+  }, [availableModes, mode]);
 
   useEffect(() => {
     if (!open) return;
@@ -216,7 +250,10 @@ function CustomerPortal() {
     setPending(true);
     try {
       if (mode === "register") {
-        if (registerPhone === null) {
+        // Only insist on the proof while passcodes are switched on: with them
+        // off the API drops the requirement too, so demanding it here would
+        // block a sign-up the server would happily accept.
+        if (auth.phoneOtp && registerPhone === null) {
           setError("Verify your mobile number first.");
           return;
         }
@@ -224,7 +261,7 @@ function CustomerPortal() {
           name: String(form.get("name") ?? ""),
           email,
           password,
-          phoneVerificationToken: registerPhone.verificationToken,
+          phoneVerificationToken: registerPhone?.verificationToken,
         });
       } else {
         await login(email, password);
@@ -252,10 +289,15 @@ function CustomerPortal() {
   }
 
   const signedIn = status === "authenticated" && customer !== null;
+  const showFederated = auth.google || auth.facebook;
   // The email/password form is the last step of registration, not the first:
   // while a new customer still owes us a verified number, the phone step stands
-  // in its place.
-  const showCredentialsForm = mode === "signin" || (mode === "register" && registerPhone !== null);
+  // in its place. With passcodes switched off there is no number to verify, so
+  // the form is the whole of registration.
+  const showCredentialsForm =
+    (mode === "signin" || (mode === "register" && (registerPhone !== null || !auth.phoneOtp))) &&
+    availableModes.includes(mode);
+  const noSignInAvailable = availableModes.length === 0 && !showFederated;
 
   return (
     <div className="relative" ref={containerRef}>
@@ -281,7 +323,7 @@ function CustomerPortal() {
               <p className="text-xs text-ink-muted">
                 {signedIn
                   ? (customer.email ?? customer.phone ?? "Signed in")
-                  : "Sign in with your mobile, email, or Google"}
+                  : signInSubtitle(auth)}
               </p>
             </div>
             <button
@@ -309,39 +351,67 @@ function CustomerPortal() {
             />
           ) : (
             <div className="space-y-4 px-4 py-4">
-              <div className="space-y-2">
-                <GoogleSignInButton onCredential={handleGoogle} onError={reportError} />
-                {showFacebookLogin ? (
-                  <FacebookSignInButton onAccessToken={handleFacebook} onError={reportError} />
-                ) : null}
-              </div>
+              {noSignInAvailable ? (
+                <p className="rounded-sm border border-dashed border-line px-3 py-4 text-center text-sm text-ink-muted">
+                  Signing in is temporarily unavailable. Please check back shortly or{" "}
+                  <Link to="/contact" className="text-brand hover:underline">
+                    contact us
+                  </Link>
+                  .
+                </p>
+              ) : null}
 
-              <div className="flex items-center gap-3 text-xs text-ink-muted">
-                <span className="h-px flex-1 bg-line" />
-                or
-                <span className="h-px flex-1 bg-line" />
-              </div>
+              {showFederated ? (
+                <div className="space-y-2">
+                  {auth.google ? (
+                    <GoogleSignInButton onCredential={handleGoogle} onError={reportError} />
+                  ) : null}
+                  {auth.facebook ? (
+                    <FacebookSignInButton onAccessToken={handleFacebook} onError={reportError} />
+                  ) : null}
+                </div>
+              ) : null}
 
-              <div className="grid grid-cols-3 gap-1 rounded-sm bg-canvas p-1 text-sm">
-                {(["phone", "signin", "register"] as const).map((value) => (
-                  <button
-                    key={value}
-                    type="button"
-                    className={
-                      "min-h-9 rounded-sm px-3 font-medium " +
-                      (mode === value ? "bg-surface text-ink shadow-sm" : "text-ink-muted")
-                    }
-                    aria-pressed={mode === value}
-                    onClick={() => switchMode(value)}
-                  >
-                    {AUTH_MODE_LABELS[value]}
-                  </button>
-                ))}
-              </div>
+              {/* The divider only earns its place when there is something on
+                  both sides of it. */}
+              {showFederated && availableModes.length > 0 ? (
+                <div className="flex items-center gap-3 text-xs text-ink-muted">
+                  <span className="h-px flex-1 bg-line" />
+                  or
+                  <span className="h-px flex-1 bg-line" />
+                </div>
+              ) : null}
 
-              {mode === "phone" ? <PhoneAuthPanel onDone={() => setOpen(false)} /> : null}
+              {/* A single remaining method needs no tab strip to choose between. */}
+              {availableModes.length > 1 ? (
+                <div
+                  className="grid gap-1 rounded-sm bg-canvas p-1 text-sm"
+                  style={{
+                    gridTemplateColumns: `repeat(${availableModes.length}, minmax(0, 1fr))`,
+                  }}
+                >
+                  {availableModes.map((value) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={
+                        "min-h-9 rounded-sm px-3 font-medium " +
+                        (mode === value ? "bg-surface text-ink shadow-sm" : "text-ink-muted")
+                      }
+                      aria-pressed={mode === value}
+                      onClick={() => switchMode(value)}
+                    >
+                      {AUTH_MODE_LABELS[value]}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
 
-              {mode === "register" && registerPhone === null ? (
+              {mode === "phone" && auth.phoneOtp ? (
+                <PhoneAuthPanel onDone={() => setOpen(false)} />
+              ) : null}
+
+              {mode === "register" && auth.phoneOtp && registerPhone === null ? (
                 <PhoneVerifier
                   intent="register"
                   heading="First, verify your mobile"

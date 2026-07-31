@@ -5,6 +5,7 @@ import { Section } from "../components/catalogue";
 import { useCart } from "../lib/cart";
 import { usePriceFormatter } from "../lib/currency";
 import { seoMeta } from "../lib/seo";
+import { useSiteSettings } from "../lib/site-settings";
 
 export function meta(_args: Route.MetaArgs) {
   return seoMeta({
@@ -17,6 +18,7 @@ export function meta(_args: Route.MetaArgs) {
 
 export default function CartPage(_props: Route.ComponentProps) {
   const { lines, subtotalMinor, setQuantity, remove } = useCart();
+  const { payments } = useSiteSettings();
   const formatPrice = usePriceFormatter();
 
   if (lines.length === 0) {
@@ -97,15 +99,36 @@ export default function CartPage(_props: Route.ComponentProps) {
               <dd className="text-ink-muted">Calculated at checkout</dd>
             </div>
           </dl>
-          <Link
-            to="/checkout"
-            className="mt-5 flex min-h-11 w-full items-center justify-center rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90"
-          >
-            Proceed to checkout
-          </Link>
-          <p className="mt-2 text-xs text-ink-muted">
-            Prices are re-validated server-side at checkout; your basket total here is an estimate.
-          </p>
+          {/* Ordering switched off in the admin console: the checkout route
+              already handles this, but sending someone through a button that
+              says "checkout" only to tell them they cannot is worse than saying
+              so here. The basket itself is untouched. */}
+          {payments.enabled ? (
+            <>
+              <Link
+                to="/checkout"
+                className="mt-5 flex min-h-11 w-full items-center justify-center rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90"
+              >
+                Proceed to checkout
+              </Link>
+              <p className="mt-2 text-xs text-ink-muted">
+                Prices are re-validated server-side at checkout; your basket total here is an
+                estimate.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="mt-5 rounded-sm border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
+                {payments.disabledNotice}
+              </p>
+              <Link
+                to="/checkout"
+                className="mt-3 flex min-h-11 w-full items-center justify-center rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90"
+              >
+                Register your interest
+              </Link>
+            </>
+          )}
         </aside>
       </div>
     </Section>

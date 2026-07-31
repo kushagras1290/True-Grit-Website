@@ -42,6 +42,7 @@ from truegrit_api.schemas.public import (
     SearchResponse,
 )
 from truegrit_api.services.email import send_email
+from truegrit_api.services.feature_settings import load_public_settings
 from truegrit_api.services.site_documents import (
     SITE_DOCUMENT_TYPES,
     SITEMAP_GENERATORS,
@@ -110,11 +111,38 @@ async def bootstrap(db: Annotated[Database, Depends(get_database)]) -> Any:
     }
 
 
+@router.get("/settings")
+async def storefront_settings(db: Annotated[Database, Depends(get_database)]) -> Any:
+    """Which sign-in methods and commerce features the storefront should offer.
+
+    The owner's switches (`app_settings`, migration 0040) ANDed with what this
+    deployment is actually configured for — so a `true` here always means the
+    feature will work, never just that someone ticked a box. Public and
+    unauthenticated: it carries no secrets, only what the account menu and
+    checkout need in order to render the truth on first paint.
+    """
+    return (await load_public_settings(db, get_settings())).to_camel_dict()
+
+
 @router.get("/payment-methods")
-async def payment_methods() -> Any:
+async def payment_methods(db: Annotated[Database, Depends(get_database)]) -> Any:
     """Which checkout methods the storefront should offer, plus the public
-    Razorpay key its widget needs. No secrets are exposed."""
+    Razorpay key its widget needs. No secrets are exposed.
+
+    With payments switched off in the admin console this reports no methods at
+    all, matching what `/v1/public/checkout` will now refuse to accept — the
+    storefront must never render a gateway the API would reject."""
     settings = get_settings()
+    public = await load_public_settings(db, settings)
+    if not public.payments:
+        return {
+            "methods": [],
+            "currency": settings.payment_currency,
+            "codMaxMinor": settings.payment_cod_max_minor,
+            "razorpayKeyId": "",
+            "paypalClientId": "",
+            "paypalCurrency": "",
+        }
     return {
         "methods": settings.enabled_payment_methods,
         "currency": settings.payment_currency,

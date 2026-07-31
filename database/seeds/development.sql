@@ -59,62 +59,140 @@ INSERT INTO permissions (id, key, description) VALUES
   ('prm_settings_view', 'settings.view', 'View settings'),
   ('prm_settings_edit', 'settings.edit', 'Edit settings');
 
--- Super admin gets everything
-INSERT INTO role_permissions (role_id, permission_id)
+-- Role permissions.
+--
+-- Migrations run before this seed, so every EXISTS-guarded grant in
+-- 0041_role_permission_baseline.sql no-ops against a fresh local database:
+-- the roles below do not exist yet when it runs. The grants are therefore
+-- restated here, keyed by permission key rather than row id so the two stay
+-- legible side by side. Keep them in step — a permission added to one belongs
+-- in the other.
+
+-- Super admin and Administrator both hold every permission. The super-admin-only
+-- diagnostics pages are gated on the `super_admin` role itself, not on a
+-- permission row, so this does not blur the two.
+INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
 SELECT 'rol_super_admin', id FROM permissions;
 
-INSERT INTO role_permissions (role_id, permission_id) VALUES
-  ('rol_content_editor', 'prm_pages_view'),
-  ('rol_content_editor', 'prm_pages_create'),
-  ('rol_content_editor', 'prm_pages_edit'),
-  ('rol_content_editor', 'prm_categories_view'),
-  ('rol_content_editor', 'prm_categories_edit'),
-  ('rol_content_editor', 'prm_media_view'),
-  ('rol_content_editor', 'prm_media_upload'),
-  ('rol_publisher', 'prm_pages_view'),
-  ('rol_publisher', 'prm_pages_approve'),
-  ('rol_publisher', 'prm_pages_publish'),
-  ('rol_publisher', 'prm_categories_view'),
-  ('rol_publisher', 'prm_categories_approve'),
-  ('rol_publisher', 'prm_categories_publish'),
-  ('rol_product_manager', 'prm_products_view'),
-  ('rol_product_manager', 'prm_products_create'),
-  ('rol_product_manager', 'prm_products_edit'),
-  ('rol_product_manager', 'prm_categories_view'),
-  ('rol_product_manager', 'prm_media_view'),
-  ('rol_product_manager', 'prm_media_upload'),
-  ('rol_inventory_manager', 'prm_inventory_view'),
-  ('rol_inventory_manager', 'prm_inventory_adjust'),
-  ('rol_inventory_manager', 'prm_products_view'),
-  ('rol_order_manager', 'prm_orders_view'),
-  ('rol_order_manager', 'prm_orders_cancel'),
-  ('rol_order_manager', 'prm_customers_view'),
-  ('rol_manager', 'prm_products_view'),
-  ('rol_manager', 'prm_products_create'),
-  ('rol_manager', 'prm_products_edit'),
-  ('rol_manager', 'prm_products_publish'),
-  ('rol_manager', 'prm_products_archive'),
-  ('rol_manager', 'prm_categories_view'),
-  ('rol_manager', 'prm_categories_create'),
-  ('rol_manager', 'prm_categories_edit'),
-  ('rol_manager', 'prm_categories_publish'),
-  ('rol_manager', 'prm_pages_view'),
-  ('rol_manager', 'prm_pages_create'),
-  ('rol_manager', 'prm_pages_edit'),
-  ('rol_manager', 'prm_pages_publish'),
-  ('rol_manager', 'prm_media_view'),
-  ('rol_manager', 'prm_media_upload'),
-  ('rol_manager', 'prm_media_edit'),
-  ('rol_manager', 'prm_orders_view'),
-  ('rol_manager', 'prm_orders_cancel'),
-  ('rol_manager', 'prm_inventory_view'),
-  ('rol_manager', 'prm_inventory_adjust'),
-  ('rol_manager', 'prm_customers_view'),
-  ('rol_manager', 'prm_audit_view'),
-  ('rol_inventory', 'prm_inventory_view'),
-  ('rol_inventory', 'prm_inventory_adjust'),
-  ('rol_inventory', 'prm_products_view'),
-  ('rol_inventory', 'prm_orders_view');
+INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
+SELECT 'rol_admin', id FROM permissions;
+
+-- Content Editor: drafts and edits content, including the media metadata that
+-- goes with it. Approving and publishing are deliberately elsewhere.
+INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
+SELECT 'rol_content_editor', id FROM permissions
+WHERE key IN (
+  'pages.view', 'pages.create', 'pages.edit',
+  'articles.view', 'articles.create', 'articles.edit',
+  'recipes.view', 'recipes.create', 'recipes.edit',
+  'categories.view', 'categories.edit',
+  'media.view', 'media.upload', 'media.edit', 'media.archive',
+  'submissions.view'
+);
+
+-- Publisher: approves and publishes. Needs the view grants for the lists it
+-- works from, or it is approving content it cannot see.
+INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
+SELECT 'rol_publisher', id FROM permissions
+WHERE key IN (
+  'pages.view', 'pages.approve', 'pages.publish',
+  'categories.view', 'categories.approve', 'categories.publish',
+  'articles.view', 'articles.approve', 'articles.publish',
+  'recipes.view', 'recipes.approve', 'recipes.publish',
+  'media.view',
+  'submissions.view', 'submissions.review'
+);
+
+-- Product Manager: owns the catalogue end to end, and can see the stock that
+-- decides whether a product is sellable.
+INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
+SELECT 'rol_product_manager', id FROM permissions
+WHERE key IN (
+  'products.view', 'products.create', 'products.edit',
+  'products.publish', 'products.archive',
+  'categories.view', 'categories.edit',
+  'media.view', 'media.upload', 'media.edit',
+  'inventory.view'
+);
+
+-- Inventory Manager: adjusts stock; orders are what consume it.
+INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
+SELECT 'rol_inventory_manager', id FROM permissions
+WHERE key IN (
+  'inventory.view', 'inventory.adjust',
+  'products.view', 'categories.view', 'orders.view'
+);
+
+-- Order Manager: fulfilment and post-delivery triage.
+INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
+SELECT 'rol_order_manager', id FROM permissions
+WHERE key IN (
+  'orders.view', 'orders.cancel', 'customers.view',
+  'products.view', 'inventory.view',
+  'returns.view', 'returns.manage'
+);
+
+-- Manager: runs the shop day to day — catalogue, content, stock, orders, and
+-- the community queues, plus the reads its console pages depend on (users.view
+-- backs Farms and Contact Attempts). settings.* is deliberately withheld: Site
+-- Control also holds the sign-in and payment kill-switches, which stay with the
+-- owner.
+INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
+SELECT 'rol_manager', id FROM permissions
+WHERE key IN (
+  'products.view', 'products.create', 'products.edit',
+  'products.approve', 'products.publish', 'products.archive',
+  'categories.view', 'categories.create', 'categories.edit',
+  'categories.approve', 'categories.publish',
+  'pages.view', 'pages.create', 'pages.edit', 'pages.approve', 'pages.publish',
+  'articles.view', 'articles.create', 'articles.edit',
+  'articles.approve', 'articles.publish',
+  'recipes.view', 'recipes.create', 'recipes.edit',
+  'recipes.approve', 'recipes.publish',
+  'media.view', 'media.upload', 'media.edit', 'media.archive', 'media.delete',
+  'orders.view', 'orders.cancel',
+  'inventory.view', 'inventory.adjust',
+  'returns.view', 'returns.manage',
+  'customers.view', 'users.view', 'audit.view',
+  'submissions.view', 'submissions.review',
+  'discussions.view', 'discussions.moderate'
+);
+
+-- Inventory: read-mostly monitoring sibling of Inventory Manager.
+INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
+SELECT 'rol_inventory', id FROM permissions
+WHERE key IN (
+  'inventory.view', 'inventory.adjust',
+  'products.view', 'categories.view', 'orders.view'
+);
+
+-- Blogger / Chef: authoring roles that draft their own content type and help
+-- clear the community queues, but never publish.
+INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
+SELECT 'rol_blogger', id FROM permissions
+WHERE key IN (
+  'articles.view', 'articles.create', 'articles.edit',
+  'media.view', 'media.upload',
+  'submissions.view', 'submissions.review', 'discussions.view'
+);
+
+INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
+SELECT 'rol_chef', id FROM permissions
+WHERE key IN (
+  'recipes.view', 'recipes.create', 'recipes.edit',
+  'media.view', 'media.upload',
+  'submissions.view', 'submissions.review', 'discussions.view'
+);
+
+-- Accounts: payments and refunds only. audit.view is what the "Payments &
+-- Refunds" console is gated on, and returns are where most refunds start.
+-- Catalogue, users and settings stay out of reach, as its description promises.
+INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
+SELECT 'rol_accounts', id FROM permissions
+WHERE key IN (
+  'orders.view', 'orders.cancel', 'orders.refund',
+  'returns.view', 'customers.view', 'audit.view'
+);
 
 INSERT INTO user_roles (user_id, role_id, assigned_at, assigned_by) VALUES
   ('usr_admin', 'rol_super_admin', '2026-07-01T00:00:00Z', 'usr_admin'),
@@ -129,16 +207,18 @@ INSERT INTO user_roles (user_id, role_id, assigned_at, assigned_by) VALUES
 INSERT INTO roles (id, key, name, description, is_system, created_at) VALUES
   ('rol_farm_owner', 'farm_owner', 'Farm Owner', 'Manage own farm products and stock', 1, '2026-07-01T00:00:00Z');
 
-INSERT INTO role_permissions (role_id, permission_id) VALUES
-  ('rol_farm_owner', 'prm_products_view'),
-  ('rol_farm_owner', 'prm_products_create'),
-  ('rol_farm_owner', 'prm_products_edit'),
-  ('rol_farm_owner', 'prm_products_publish'),
-  ('rol_farm_owner', 'prm_products_archive'),
-  ('rol_farm_owner', 'prm_media_view'),
-  ('rol_farm_owner', 'prm_media_upload'),
-  ('rol_farm_owner', 'prm_inventory_view'),
-  ('rol_farm_owner', 'prm_inventory_adjust');
+-- Scoping to a single farm is enforced in the API (via `farm_members`), not by
+-- these rows: orders.view here means "orders for my farm", not every order.
+INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
+SELECT 'rol_farm_owner', id FROM permissions
+WHERE key IN (
+  'products.view', 'products.create', 'products.edit',
+  'products.publish', 'products.archive',
+  'categories.view',
+  'media.view', 'media.upload',
+  'inventory.view', 'inventory.adjust',
+  'orders.view'
+);
 
 INSERT INTO users (id, email, display_name, user_type, status, email_verified_at, created_at, updated_at) VALUES
   ('usr_farmowner', 'owner@devika.test', 'Devika Kulkarni', 'staff', 'active', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');

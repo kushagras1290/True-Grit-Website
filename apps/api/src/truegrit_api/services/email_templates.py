@@ -142,13 +142,46 @@ def render_password_reset(reset_url: str, minutes: int) -> str:
     return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)
 
 
-def render_staff_invitation(display_name: str, setup_url: str, minutes: int) -> str:
-    """Renders the HTML for a staff admin invitation email."""
-    subject = "You are invited to True Grit"
-    header_title = "True Grit Admin"
+def render_customer_welcome(display_name: str, storefront_url: str) -> str:
+    """Renders the HTML welcoming a customer who has just signed up.
+
+    `display_name` is whatever the customer typed into the sign-up form, so it
+    is HTML-escaped before interpolation — same treatment as the community
+    submission templates below.
+    """
+    subject = "Welcome to True Grit"
+    header_title = "True Grit"
+    safe_name = html.escape(display_name)
+    safe_url = html.escape(storefront_url, quote=True)
 
     body_html = f"""
-    <h2 style="color: #1e293b; margin-top: 0;">Hi {display_name},</h2>
+    <h2 style="color: #1e293b; margin-top: 0;">Hi {safe_name},</h2>
+    <p>Your True Grit account is ready. You can now track orders, save delivery
+    addresses and follow the farms behind everything you buy.</p>
+    <div style="text-align: center;">
+        <a href="{safe_url}" class="btn">Start exploring the market</a>
+    </div>
+    <p style="margin-top: 24px; font-size: 14px; color: #64748b;">
+        If you did not create this account, please contact us and we will close it.
+    </p>
+    <p style="margin-bottom: 0;">Welcome aboard,<br>The True Grit Team</p>
+    """
+
+    return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)
+
+
+def render_staff_invitation(display_name: str, setup_url: str, minutes: int) -> str:
+    """Renders the HTML for a staff admin invitation email.
+
+    `display_name` is typed by whoever raised the invitation, so it is escaped
+    for the same reason the community templates escape theirs.
+    """
+    subject = "You are invited to True Grit"
+    header_title = "True Grit Admin"
+    safe_display_name = html.escape(display_name)
+
+    body_html = f"""
+    <h2 style="color: #1e293b; margin-top: 0;">Hi {safe_display_name},</h2>
     <p>You have been invited to the True Grit admin portal.</p>
     <p>Use the button below to set your password and activate your account. This link is
     valid for <strong>{minutes} minutes</strong>.</p>

@@ -24,10 +24,26 @@ import urllib.error
 import urllib.request
 from dataclasses import dataclass
 from email.message import EmailMessage
+from email.utils import formatdate, make_msgid, parseaddr
 from typing import Protocol
 
 from truegrit_api.config import Settings, get_settings
 from truegrit_api.logging import log_event
+
+_FALLBACK_MESSAGE_ID_DOMAIN = "truegrit.local"
+
+
+def _message_id_domain(email_from: str) -> str:
+    """Domain for the generated Message-ID, taken from the From address.
+
+    `make_msgid()` otherwise uses the machine's hostname, which on a container
+    or a Worker is an opaque id that matches nothing in DNS — exactly the shape
+    spam filters penalise.
+    """
+    _, address = parseaddr(email_from)
+    _, _, domain = address.partition("@")
+    domain = domain.strip()
+    return domain or _FALLBACK_MESSAGE_ID_DOMAIN
 
 
 @dataclass(frozen=True)
@@ -56,25 +72,59 @@ class ConsoleEmailSender:
 
 
 class SmtpEmailSender:
+    """stdlib SMTP, covering both transport styles providers actually use.
+
+    Port 465 is *implicit* TLS: the connection is encrypted from the first byte
+    and there is no STARTTLS command. Talking plain ``SMTP`` to it — which is
+    what this did — makes the server wait for a TLS handshake that never comes,
+    so the send hangs until the timeout and then fails with a socket error. That
+    is one of the two reasons sign-up and invitation mail silently went nowhere
+    on a Gmail/SES-style configuration; the other was the missing ``Message-ID``
+    and ``Date`` below, which many providers treat as a spam signal and drop.
+    """
+
     def __init__(self, settings: Settings) -> None:
         self._settings = settings
 
-    def send(self, message: OutboundEmail) -> None:
+    def _build(self, message: OutboundEmail) -> EmailMessage:
         settings = self._settings
         email = EmailMessage()
         email["From"] = settings.email_from
         email["To"] = message.to
         email["Subject"] = message.subject
+        # Providers score mail without a Date or Message-ID as suspicious, and
+        # some reject it outright. `smtplib` adds neither.
+        email["Date"] = formatdate(localtime=False)
+        email["Message-ID"] = make_msgid(domain=_message_id_domain(settings.email_from))
         email.set_content(message.body)
-
         if message.html_body:
             email.add_alternative(message.html_body, subtype="html")
+        return email
 
-        with smtplib.SMTP(
+    def _connect(self) -> smtplib.SMTP:
+        settings = self._settings
+        if settings.smtp_implicit_tls:
+            return smtplib.SMTP_SSL(
+                settings.smtp_host,
+                settings.smtp_port,
+                timeout=settings.smtp_timeout_seconds,
+                context=ssl.create_default_context(),
+            )
+        return smtplib.SMTP(
             settings.smtp_host, settings.smtp_port, timeout=settings.smtp_timeout_seconds
-        ) as server:
-            if settings.smtp_use_tls:
+        )
+
+    def send(self, message: OutboundEmail) -> None:
+        settings = self._settings
+        email = self._build(message)
+        with self._connect() as server:
+            # STARTTLS upgrades a plaintext connection; on an implicit-TLS port
+            # the socket is already encrypted and issuing it is an error.
+            if settings.smtp_use_tls and not settings.smtp_implicit_tls:
                 server.starttls(context=ssl.create_default_context())
+                # RFC 3207: everything learned before the upgrade is discarded,
+                # including the AUTH mechanisms this login depends on.
+                server.ehlo()
             if settings.smtp_username:
                 server.login(settings.smtp_username, settings.smtp_password)
             server.send_message(email)
@@ -127,11 +177,45 @@ def send_email(
     raised. Never raises itself -- callers that only want fire-and-forget
     semantics (e.g. `BackgroundTasks.add_task(send_email, ...)`) can continue to
     ignore the return value with no change in behaviour."""
+    resolved = settings or get_settings()
     try:
-        get_email_sender(settings).send(
+        get_email_sender(resolved).send(
             OutboundEmail(to=to, subject=subject, body=body, html_body=html_body)
         )
         return True
     except (smtplib.SMTPException, OSError, ssl.SSLError, urllib.error.URLError) as exc:
-        log_event("error", "email_send_failed", to=to, error_type=type(exc).__name__)
+        # The exception type alone ("OSError") is not enough to tell a wrong
+        # password from a blocked port from an unresolvable host, which is what
+        # anyone debugging "mail isn't sending" actually needs. The transport
+        # and its shape go in too; credentials never do.
+        log_event(
+            "error",
+            "email_send_failed",
+            to=to,
+            subject=subject,
+            transport=email_transport_name(resolved),
+            smtp_host=resolved.smtp_host,
+            smtp_port=resolved.smtp_port,
+            smtp_implicit_tls=resolved.smtp_implicit_tls,
+            smtp_starttls=resolved.smtp_use_tls and not resolved.smtp_implicit_tls,
+            smtp_authenticated=bool(resolved.smtp_username),
+            error_type=type(exc).__name__,
+            error=str(exc)[:300],
+        )
         return False
+
+
+def email_transport_name(settings: Settings | None = None) -> str:
+    """Which sender `get_email_sender` would pick: "resend", "smtp" or "console".
+
+    Callers that report delivery to a human need this, because the console
+    sender *succeeds* without delivering anything: "invitation sent" with no
+    transport configured is a message that never arrives, and the operator has
+    no way to tell from the result alone.
+    """
+    resolved = settings or get_settings()
+    if resolved.resend_api_key:
+        return "resend"
+    if resolved.smtp_host:
+        return "smtp"
+    return "console"

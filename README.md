@@ -76,16 +76,23 @@ sign-up/sign-in, "Sign in with Google", and "Continue with Facebook". Passwords 
 hashed; Google ID tokens are verified server-side against Google's JWKS, and Facebook user access
 tokens are verified server-side against Meta's Graph API. Relevant environment variables:
 
-| Variable                                                        | App        | Purpose                                                                                                     |
-| --------------------------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- |
-| `VITE_FACEBOOK_APP_ID` / `PUBLIC_FACEBOOK_APP_ID`               | storefront | Public Facebook app id for the Facebook button. Unset => the button shows "not configured".                 |
-| `VITE_FACEBOOK_LOGIN_VISIBLE` / `PUBLIC_FACEBOOK_LOGIN_VISIBLE` | storefront | Set to `true` only when the Facebook button should be visible to customers. Default `false`.                |
-| `FACEBOOK_APP_ID`                                               | api        | Same public Facebook app id; the API accepts only Facebook tokens issued to this app.                       |
-| `FACEBOOK_APP_SECRET`                                           | api        | Server-side Facebook app secret used to inspect access tokens. Empty => Facebook sign-in disabled.          |
-| `VITE_API_URL`                                                  | storefront | Browser calls the customer-auth API with cookies. Unset ⇒ demo mode (faked localStorage session).           |
-| `VITE_GOOGLE_CLIENT_ID`                                         | storefront | Public Google OAuth client id for the Google button. Unset ⇒ the button shows "not configured".             |
-| `GOOGLE_CLIENT_ID`                                              | api        | Same client id; the API accepts only Google tokens whose `aud` matches it. Empty ⇒ Google sign-in disabled. |
-| `FAST2SMS_API_KEY`                                              | api        | SMS provider key for passcodes. Empty ⇒ console sender in dev; **refused in staging/production**.           |
+| Variable                                          | App        | Purpose                                                                                                     |
+| ------------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------- |
+| `VITE_FACEBOOK_APP_ID` / `PUBLIC_FACEBOOK_APP_ID` | storefront | Public Facebook app id for the Facebook button. Unset => the button shows "not configured".                 |
+| `FACEBOOK_APP_ID`                                 | api        | Same public Facebook app id; the API accepts only Facebook tokens issued to this app.                       |
+| `FACEBOOK_APP_SECRET`                             | api        | Server-side Facebook app secret used to inspect access tokens. Empty => Facebook sign-in disabled.          |
+| `VITE_API_URL`                                    | storefront | Browser calls the customer-auth API with cookies. Unset ⇒ demo mode (faked localStorage session).           |
+| `VITE_GOOGLE_CLIENT_ID`                           | storefront | Public Google OAuth client id for the Google button. Unset ⇒ the button shows "not configured".             |
+| `GOOGLE_CLIENT_ID`                                | api        | Same client id; the API accepts only Google tokens whose `aud` matches it. Empty ⇒ Google sign-in disabled. |
+| `FAST2SMS_API_KEY`                                | api        | SMS provider key for passcodes. Empty ⇒ console sender in dev; **refused in staging/production**.           |
+
+**Which methods customers actually see is an admin setting, not an env var.** Site Control →
+_Storefront switches_ turns each of Google, Facebook, mobile passcodes, email/password and new
+sign-ups on or off at runtime (`app_settings`, migration 0040), and the API enforces every switch on
+the route itself — hiding a button stops the honest customer, not a replayed request. A switch can
+only ever take a method away: it is ANDed with the configuration above, so turning Google on without
+a `GOOGLE_CLIENT_ID` still shows nothing, and the console says why. Turning **every** method off is
+allowed — it is a legitimate "close the doors" state — and the console warns loudly before you do.
 
 Sign in with X (Twitter) is **not** implemented: X discontinued its free API tier on 6 February 2026
 and routes new developers to pay-per-use only, so every sign-in would be a billed API call.
@@ -115,8 +122,13 @@ Cash on delivery (≤ ₹399, one open COD order per customer) and Razorpay (UPI
 wallets) are the domestic options. **Keys alone never expose a gateway.** Razorpay is the only one
 with a finished checkout; PayPal sits behind `PAYMENT_PAYPAL_VISIBLE` and Stripe behind
 `PAYMENT_STRIPE_VISIBLE`, both defaulting to `false`, so pasting a key into `.env` cannot advertise a
-method that would strand a customer with an unpayable order. Same idea as
-`PUBLIC_FACEBOOK_LOGIN_VISIBLE`: configure first, reveal deliberately.
+method that would strand a customer with an unpayable order. Configure first, reveal deliberately.
+
+**Ordering has a kill-switch.** Site Control → _Storefront switches_ → "Accept orders and payments"
+closes checkout without a deploy: `/v1/public/checkout` refuses (so no stock is ever reserved for an
+order nobody can pay for), `/payment-methods` reports none, and the storefront shows a contact form
+in place of checkout with an admin-editable message, so interest is still captured. Baskets are left
+untouched, so nothing is lost when it is switched back on.
 
 **PayPal is international-only.** PayPal closed its domestic India business on 1 April 2021 — an
 Indian merchant cannot take INR from an Indian customer. The supported direction is an overseas buyer
@@ -222,9 +234,20 @@ Cloudflare resources use explicit environment suffixes (`truegrit-api-dev|stagin
     reserved), cash-on-delivery plus a live Razorpay gateway; PayPal and Stripe are scaffolded
     behind explicit go-live flags pending a tested checkout flow for each.
   - **Transactional email** — pluggable sender (Resend in production, SMTP for local dev, or a
-    console sender when unconfigured). Order confirmations, farm-owner notifications, staff
-    invitations, password resets, and community submission decisions all go through it. See
-    `apps/api/.env.example` for the settings.
+    console sender when unconfigured). Sign-up welcomes, order confirmations, farm-owner
+    notifications, staff invitations, password resets, and community submission decisions all go
+    through it. See `apps/api/.env.example` for the settings.
+
+    The SMTP sender speaks both transports: STARTTLS on 587/25, and implicit TLS on 465, inferred
+    from the port. Getting that wrong is silent — a plaintext client on 465 waits for a handshake
+    that never arrives and dies at the timeout — which is why "the invite email just doesn't send"
+    is usually a port, not a credential. Every message now also carries `Date` and a `Message-ID`
+    rooted in the `EMAIL_FROM` domain, both of which providers score against.
+
+    With **no** transport configured the console sender logs the message and reports success, so
+    the admin console shows which transport handled an invitation or reset rather than a bare
+    "sent" — otherwise an operator waits for mail that never left the process.
+
   - **Password reset** — self-service on all portals: "Forgot password?" on the storefront account
     menu and the admin sign-in, emailing a single-use, time-boxed link to `/reset-password`; a
     successful reset revokes existing sessions.

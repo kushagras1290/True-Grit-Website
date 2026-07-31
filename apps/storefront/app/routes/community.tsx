@@ -75,29 +75,43 @@ export default function CommunityPage(_props: Route.ComponentProps) {
       ) : discussions.length === 0 ? (
         <p className="text-sm text-ink-muted">No discussions yet. Be the first to start one.</p>
       ) : (
-        <div className="mx-auto max-w-2xl">
+        <div>
           <p className="mb-4 text-sm text-ink-muted" role="status">
             {total} discussion{total === 1 ? "" : "s"}
           </p>
-          <ul className="divide-y divide-line overflow-hidden rounded-md border border-line bg-surface">
+          {/* Three across at a normal desktop width, and the count follows the
+              space actually available: `auto-fill` recomputes on resize *and*
+              on browser zoom, so the row reflows to 2 or 1 instead of holding a
+              fixed column count and overflowing. `min(100%, …)` keeps the track
+              from exceeding the container on a narrow phone. */}
+          <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,21rem),1fr))] gap-5">
             {discussions.map((entry) => (
-              <li key={entry.id}>
-                <Link to={`/community/${entry.id}`} className="block px-5 py-4 hover:bg-canvas/60">
+              <li key={entry.id} className="flex">
+                <Link
+                  to={`/community/${entry.id}`}
+                  className="flex w-full flex-col overflow-hidden rounded-md border border-line bg-surface hover:bg-canvas/60"
+                >
                   {entry.imageUrl ? (
                     <img
                       src={mediaUrl(entry.imageUrl)}
                       alt={entry.imageAlt || ""}
-                      className="mb-4 aspect-[16/7] w-full rounded-sm object-cover"
+                      className="aspect-[16/9] w-full object-cover"
                       loading="lazy"
                     />
                   ) : null}
-                  <h2 className="font-display text-lg text-ink">{entry.title}</h2>
-                  <p className="mt-1 line-clamp-2 text-sm text-ink-muted">{entry.excerpt}</p>
-                  <p className="mt-2 text-xs text-ink-muted">
-                    {entry.authorName} · {entry.commentCount} comment
-                    {entry.commentCount === 1 ? "" : "s"} ·{" "}
-                    {new Date(entry.lastActivityAt).toLocaleDateString()}
-                  </p>
+                  <span className="flex flex-1 flex-col px-5 py-4">
+                    <h2 className="font-display text-lg leading-snug text-ink">{entry.title}</h2>
+                    <span className="mt-1 line-clamp-3 text-sm text-ink-muted">
+                      {entry.excerpt}
+                    </span>
+                    {/* Pushed to the bottom so the meta line sits flush across a
+                        row of cards whose titles differ in length. */}
+                    <span className="mt-auto pt-3 text-xs text-ink-muted">
+                      {entry.authorName} · {entry.commentCount} comment
+                      {entry.commentCount === 1 ? "" : "s"} ·{" "}
+                      {new Date(entry.lastActivityAt).toLocaleDateString()}
+                    </span>
+                  </span>
                 </Link>
               </li>
             ))}

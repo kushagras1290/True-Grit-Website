@@ -33,6 +33,8 @@ import type {
   PublicPageBlock,
   ReportDefinitionSummary,
   ReportRunResult,
+  StorefrontSettings,
+  StorefrontSettingsResponse,
 } from "@truegrit/contracts";
 import {
   adminCategories,
@@ -54,6 +56,42 @@ const DEMO_PASSWORD = "admin123";
 export const ADMIN_AUTH_EXPIRED_EVENT = "truegrit.admin.auth-expired";
 
 export const demoMode = !API_URL;
+
+/**
+ * Which sender actually handled a transactional email.
+ *
+ * `"console"` means the API has no mail transport configured and only logged
+ * the message — the send "succeeded" and nothing was delivered. Anything
+ * reporting a send to a human has to distinguish that case, or it will tell an
+ * operator an invitation arrived when it never left the process.
+ */
+export type EmailTransport = "resend" | "smtp" | "console";
+
+/** Mirrors the shipped defaults in migration 0040 so the switches page is
+ *  reviewable without an API. */
+const DEMO_STOREFRONT_SETTINGS: StorefrontSettingsResponse = {
+  settings: {
+    googleSignIn: true,
+    facebookSignIn: true,
+    phoneOtpSignIn: true,
+    passwordSignIn: true,
+    registration: true,
+    payments: true,
+    paymentsDisabledNotice:
+      "We are not taking orders at the moment. Leave your details and we will get in touch as soon as ordering reopens.",
+    blogBannerImageUrl: "",
+    blogBannerImageAlt: "",
+  },
+  effective: {
+    googleSignIn: true,
+    facebookSignIn: true,
+    phoneOtpSignIn: true,
+    passwordSignIn: true,
+    registration: true,
+    payments: true,
+    anySignInAvailable: true,
+  },
+};
 
 async function demo<T>(data: T): Promise<T> {
   await new Promise((resolve) => setTimeout(resolve, 120));
@@ -949,9 +987,19 @@ export const api = {
     email: string;
     displayName: string;
     roleIds: string[];
-  }): Promise<{ id: string; status: string; emailSent: boolean }> =>
+  }): Promise<{
+    id: string;
+    status: string;
+    emailSent: boolean;
+    emailTransport: EmailTransport;
+  }> =>
     demoMode
-      ? demo({ id: `usr_${Date.now().toString(36)}`, status: "invited", emailSent: true })
+      ? demo({
+          id: `usr_${Date.now().toString(36)}`,
+          status: "invited",
+          emailSent: true,
+          emailTransport: "console" as EmailTransport,
+        })
       : post("/v1/admin/users/invite", input),
 
   createUser: (input: {
@@ -980,9 +1028,19 @@ export const api = {
 
   sendUserPasswordReset: (
     id: string,
-  ): Promise<{ id: string; email: string; emailSent: boolean }> =>
+  ): Promise<{
+    id: string;
+    email: string;
+    emailSent: boolean;
+    emailTransport: EmailTransport;
+  }> =>
     demoMode
-      ? demo({ id, email: "user@demo.test", emailSent: true })
+      ? demo({
+          id,
+          email: "user@demo.test",
+          emailSent: true,
+          emailTransport: "console" as EmailTransport,
+        })
       : post(`/v1/admin/users/${id}/password-reset-email`),
 
   contactMessages: ({
@@ -1578,6 +1636,26 @@ export const api = {
     demoMode
       ? demo({ minAccountAgeMonths })
       : patch(`/v1/admin/community-settings`, { minAccountAgeMonths }),
+
+  // --- Storefront feature switches -------------------------------------
+  //
+  // Sign-in methods, taking payments, and the blog banner. Demo mode answers
+  // with everything on, matching the shipped defaults in migration 0040.
+
+  storefrontSettings: (): Promise<StorefrontSettingsResponse> =>
+    demoMode
+      ? demo(DEMO_STOREFRONT_SETTINGS)
+      : get<StorefrontSettingsResponse>(`/v1/admin/storefront-settings`),
+
+  updateStorefrontSettings: (
+    input: Partial<StorefrontSettings>,
+  ): Promise<StorefrontSettingsResponse> =>
+    demoMode
+      ? demo({
+          settings: { ...DEMO_STOREFRONT_SETTINGS.settings, ...input },
+          effective: DEMO_STOREFRONT_SETTINGS.effective,
+        })
+      : patch(`/v1/admin/storefront-settings`, input),
 
   // --- Route SEO overrides ---------------------------------------------
 

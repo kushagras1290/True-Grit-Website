@@ -2,6 +2,7 @@ import { Form, Link } from "react-router";
 
 import type { Route } from "./+types/search";
 import { ProductGrid, Section } from "../components/catalogue";
+import { ContactForm } from "../components/contact-form";
 import {
   catalogueRuntime,
   loadHighlightedProducts,
@@ -136,6 +137,47 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
           <ProductGrid products={highlights} />
         </Section>
       ) : null}
+
+      {/* Search is where a visitor discovers we do not stock what they came for.
+          Rather than end at a dead result set, give them a way to ask — the
+          subject arrives pre-filled with their query so the request is
+          actionable without any back-and-forth. */}
+      <Section
+        eyebrow="Still looking?"
+        heading="Tell us what you need and we will source it"
+        tone="surface"
+      >
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem]">
+          <div className="max-w-2xl">
+            <ContactForm
+              defaultSubject={
+                results.query ? `Product request: ${results.query}` : "Product request"
+              }
+              messagePlaceholder="Which product, quantity and city should we look at?"
+              submitLabel="Send request"
+              successMessage="Thanks — your request is with our sourcing team. We will reply by email."
+            />
+          </div>
+          <aside className="space-y-5">
+            <div>
+              <h3 className="font-display text-lg text-ink">Prefer email?</h3>
+              <a
+                href="mailto:support@truegrit.test"
+                className="mt-2 block text-sm text-brand underline-offset-4 hover:underline"
+              >
+                support@truegrit.test
+              </a>
+            </div>
+            <div>
+              <h3 className="font-display text-lg text-ink">What helps us</h3>
+              <p className="mt-2 text-sm text-ink-muted">
+                The variety or brand you have in mind, roughly how much you need, and your delivery
+                city.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </Section>
     </>
   );
 }
