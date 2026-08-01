@@ -10,6 +10,7 @@
 import { useState, type FormEvent } from "react";
 
 import { commerceLive, sendContactMessage } from "../lib/commerce";
+import { useLocaleContext } from "../lib/i18n/context";
 
 const FIELD =
   "min-h-11 w-full rounded-sm border border-line bg-canvas px-3 text-sm text-ink" +
@@ -32,10 +33,11 @@ export interface ContactFormProps {
 export function ContactForm({
   defaultSubject = "",
   messagePlaceholder,
-  submitLabel = "Send message",
-  successMessage = "Your message has been sent. We will reply by email.",
+  submitLabel,
+  successMessage,
   compact = false,
 }: ContactFormProps) {
+  const { t } = useLocaleContext();
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -49,14 +51,18 @@ export function ContactForm({
       await sendContactMessage({
         name: String(values.get("name") ?? ""),
         email: String(values.get("email") ?? ""),
+        phone: String(values.get("phone") ?? ""),
         subject: String(values.get("subject") ?? ""),
         message: String(values.get("message") ?? ""),
       });
       form.reset();
       setStatus("sent");
-    } catch {
+    } catch (caught) {
       setStatus("idle");
-      setError("Could not send your message. Email us directly at support@truegrit.test.");
+      // The API rejects an unringable number with a message naming the format
+      // it wants, which is more use than a generic failure — show it when we
+      // have one.
+      setError(caught instanceof Error && caught.message ? caught.message : t("contact.failed"));
     }
   }
 
@@ -64,7 +70,7 @@ export function ContactForm({
     <form className="space-y-4" onSubmit={handleSubmit}>
       {!commerceLive ? (
         <p className="rounded-sm border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
-          Demo mode - set <code>VITE_API_URL</code> to send contact emails.
+          {t("common.demoMode")}
         </p>
       ) : null}
       {status === "sent" ? (
@@ -72,7 +78,7 @@ export function ContactForm({
           role="status"
           className="rounded-sm border border-line bg-subtle px-4 py-3 text-sm text-brand"
         >
-          {successMessage}
+          {successMessage ?? t("contact.sent")}
         </p>
       ) : null}
       {error ? (
@@ -83,16 +89,31 @@ export function ContactForm({
 
       <div className={compact ? "space-y-4" : "grid gap-4 sm:grid-cols-2"}>
         <label className="block space-y-1">
-          <span className="text-xs font-medium text-ink-muted">Name</span>
+          <span className="text-xs font-medium text-ink-muted">{t("contact.name")}</span>
           <input name="name" required minLength={2} className={FIELD} />
         </label>
         <label className="block space-y-1">
-          <span className="text-xs font-medium text-ink-muted">Email</span>
+          <span className="text-xs font-medium text-ink-muted">{t("contact.email")}</span>
           <input name="email" type="email" required className={FIELD} />
         </label>
       </div>
+      {/* Required, not optional. Most of what arrives here is settled in one
+          call, and a phone-only account (which the storefront lets anyone open)
+          has no email address we could reply to at all. */}
       <label className="block space-y-1">
-        <span className="text-xs font-medium text-ink-muted">Subject</span>
+        <span className="text-xs font-medium text-ink-muted">{t("contact.phone")}</span>
+        <input
+          name="phone"
+          type="tel"
+          required
+          maxLength={24}
+          autoComplete="tel"
+          className={FIELD}
+        />
+        <span className="block text-xs text-ink-muted">{t("contact.phoneHint")}</span>
+      </label>
+      <label className="block space-y-1">
+        <span className="text-xs font-medium text-ink-muted">{t("contact.subject")}</span>
         <input
           name="subject"
           required
@@ -102,7 +123,7 @@ export function ContactForm({
         />
       </label>
       <label className="block space-y-1">
-        <span className="text-xs font-medium text-ink-muted">Message</span>
+        <span className="text-xs font-medium text-ink-muted">{t("contact.message")}</span>
         <textarea
           name="message"
           required
@@ -117,7 +138,7 @@ export function ContactForm({
         disabled={status === "sending"}
         className="inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90 disabled:opacity-50"
       >
-        {status === "sending" ? "Sending..." : submitLabel}
+        {status === "sending" ? t("contact.sending") : (submitLabel ?? t("contact.send"))}
       </button>
     </form>
   );

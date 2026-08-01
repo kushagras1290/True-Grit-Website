@@ -9,6 +9,7 @@ import {
   ProductGrid,
   Section,
 } from "../components/catalogue";
+import { ContactForm } from "../components/contact-form";
 import { catalogueRuntime, loadProduct, loadProductsBySlugs } from "../lib/catalogue.server";
 import { useCart } from "../lib/cart";
 import { usePriceFormatter } from "../lib/currency";
@@ -37,7 +38,12 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
 
   const variant = product.variants.find((entry) => entry.id === variantId) ?? product.variants[0];
   const price = variant ? (variant.saleMinor ?? variant.listMinor) : product.priceMinor;
-  const purchasable = variant ? variant.availability !== "out_of_stock" : false;
+  // Two independent gates on purchasability: out of stock is a variant-level,
+  // usually-temporary state; `acceptsOrders` is the per-product kill-switch an
+  // admin sets deliberately (mirroring Site Control's site-wide one, scoped to
+  // just this item — see migration 0048). Both are re-checked server-side at
+  // checkout, so this is UX, not the enforcement.
+  const purchasable = product.acceptsOrders && (variant ? variant.availability !== "out_of_stock" : false);
 
   return (
     <>
@@ -155,13 +161,29 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
               }}
               className="min-h-11 flex-1 rounded-sm bg-brand px-6 text-sm font-medium text-ink-inverse hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {purchasable ? "Add to basket" : "Out of stock"}
+              {!product.acceptsOrders
+                ? "Not available to order"
+                : purchasable
+                  ? "Add to basket"
+                  : "Out of stock"}
             </button>
           </div>
           <p role="status" className="mt-2 min-h-5 text-sm text-success">
             {added ? "Added to your basket." : ""}
           </p>
-          {variant ? <AvailabilityNote availability={variant.availability} /> : null}
+          {/* The per-product switch takes priority over ordinary stock status in
+              the wording: an admin turned ordering off deliberately, which reads
+              differently from "we sold out and will restock" — but both leave
+              the customer with nothing to click, so both get the same interest
+              form below rather than a dead end. */}
+          {!product.acceptsOrders ? (
+            <p className="mt-2 text-sm text-ink-muted">
+              We are not taking orders for this product right now. Leave your details below and
+              we will let you know when it is back.
+            </p>
+          ) : variant ? (
+            <AvailabilityNote availability={variant.availability} />
+          ) : null}
 
           <div className="mt-8 space-y-4 border-t border-line pt-6 text-sm">
             <p className="text-ink">{product.overview}</p>
@@ -184,6 +206,31 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
                 : "Not eligible for return due to the nature of this product."}
             </p>
           </div>
+
+          {/* Same fallback the checkout page shows when ordering is off
+              site-wide (components/contact-form.tsx) — here it is scoped to
+              this one product rather than the whole basket, and it covers
+              both reasons "Add to basket" is unavailable: the admin switch
+              (acceptsOrders) and ordinary out-of-stock. Either way the
+              customer is left with nothing to click, so either way they get a
+              way to leave their details instead of a dead end. */}
+          {!purchasable ? (
+            <div className="mt-8 border-t border-line pt-6">
+              <h2 className="font-display text-lg text-ink">Interested in this product?</h2>
+              <p className="mt-1 text-sm text-ink-muted">
+                We will get in touch as soon as {product.name} is available to order again.
+              </p>
+              <div className="mt-4">
+                <ContactForm
+                  compact
+                  defaultSubject={`Interest: ${product.name}`}
+                  messagePlaceholder={`Let us know how much ${product.name} you would like and where it would be delivered.`}
+                  submitLabel="Send enquiry"
+                  successMessage="Thanks — we have your details and will be in touch as soon as this is back."
+                />
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
 

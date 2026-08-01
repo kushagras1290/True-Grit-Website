@@ -3,6 +3,7 @@ import { data } from "react-router";
 import type { Route } from "./+types/article";
 import { Breadcrumbs } from "../components/catalogue";
 import { CmsBlock, type BlockData } from "../components/blocks";
+import { ContentComments } from "../components/content-comments";
 import { PageBanner } from "../components/page-banner";
 import {
   catalogueRuntime,
@@ -85,6 +86,8 @@ export default function ArticlePage({ loaderData }: Route.ComponentProps) {
       {article.blocks.map((block) => (
         <CmsBlock key={block.id} block={block} data={blockData} />
       ))}
+
+      <ContentComments contentType="article" slug={article.slug} />
     </>
   );
 }

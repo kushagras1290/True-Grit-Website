@@ -55,6 +55,30 @@ async def get_current_customer(
     return principal
 
 
+async def get_optional_customer(
+    request: Request, db: Annotated[Database, Depends(get_database)]
+) -> Principal | None:
+    """The signed-in customer if there is one, otherwise None.
+
+    For routes that are open to everyone but behave better when they know who
+    is calling — a farm partnership application is the case this exists for: it
+    must accept an anonymous grower, yet should attribute the application to an
+    account when the applicant happens to be signed in.
+
+    Never raises. An expired, forged or staff-session cookie resolves to None
+    rather than 401, because on these routes "not signed in" is a normal state,
+    not a failure — and a stale cookie must not turn a public form into an
+    error page.
+    """
+    token = request.cookies.get(get_settings().session_cookie_name)
+    if not token:
+        return None
+    principal = await resolve_session(db, token)
+    if principal is None or principal.user_type != "customer":
+        return None
+    return principal
+
+
 def require_permission(permission: str):
     async def dependency(
         principal: Annotated[Principal, Depends(get_current_staff)],

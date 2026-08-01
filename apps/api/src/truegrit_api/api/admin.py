@@ -35,6 +35,7 @@ from truegrit_api.repositories.content import (
     ArticleRepository,
     AuditRepository,
     CategoryRepository,
+    ContentCommentRepository,
     ContentSubmissionRepository,
     DiscussionRepository,
     RecipeRepository,
@@ -42,8 +43,11 @@ from truegrit_api.repositories.content import (
     RouteSeoRepository,
     SiteDocumentRepository,
 )
+from truegrit_api.repositories.partnerships import FarmPartnershipRequestRepository
 from truegrit_api.services import articles as article_service
+from truegrit_api.services import content_comments as content_comment_service
 from truegrit_api.services import discussions as discussion_service
+from truegrit_api.services import farm_partnerships as farm_partnership_service
 from truegrit_api.services import recipes as recipe_service
 from truegrit_api.services import submissions as submission_service
 from truegrit_api.services.access import (
@@ -74,9 +78,11 @@ from truegrit_api.services.catalogue import (
     update_category,
     update_product,
 )
-from truegrit_api.services.contact import contactable_email
+from truegrit_api.services.contact import contactable_email, display_contact
 from truegrit_api.services.email import email_transport_name, send_email
 from truegrit_api.services.email_templates import (
+    render_farm_partnership_approved,
+    render_farm_partnership_rejected,
     render_submission_approved,
     render_submission_changes_requested,
     render_submission_rejected,
@@ -430,6 +436,15 @@ async def admin_notifications(
         href="/submissions",
         sql="SELECT COUNT(*) AS count FROM content_submissions"
         " WHERE status IN ('submitted','under_review')",
+    )
+    await add(
+        permission="farm_requests.view",
+        key="farm-requests",
+        title="Farm applications need review",
+        message="Growers have applied to supply the market.",
+        href="/farm-requests",
+        sql="SELECT COUNT(*) AS count FROM farm_partnership_requests"
+        " WHERE status IN ('submitted','under_review','contacted')",
     )
     await add(
         permission="users.view",
@@ -1915,6 +1930,270 @@ async def decide_submission_endpoint(
 
 
 # ---------------------------------------------------------------------------
+# Farm partnership applications — growers apply from the storefront, staff
+# triage here. Unlike submissions above, approval records a decision and emails
+# the applicant; it does NOT create a `farms` row (see migration 0044).
+# ---------------------------------------------------------------------------
+
+
+class FarmRequestDecisionRequest(_CamelModel):
+    decision: str = Field(min_length=1, max_length=20)
+    note: str | None = Field(default=None, max_length=2000)
+
+
+class FarmRequestLinkRequest(_CamelModel):
+    farm_id: str = Field(min_length=1, max_length=64)
+
+
+def _farm_request_summary(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "status": row["status"],
+        "farmName": row["farm_name"],
+        "region": row["region"],
+        "state": row["state"],
+        "city": row["city"],
+        "contactName": row["contact_name"],
+        "contactEmail": row["contact_email"],
+        "contactPhone": row["contact_phone"],
+        "createdAt": row["created_at"],
+        "reviewedAt": row["reviewed_at"],
+        "linkedFarmId": row["linked_farm_id"],
+    }
+
+
+def _farm_request_detail(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        **_farm_request_summary(row),
+        "pincode": row["pincode"],
+        "establishedYear": row["established_year"],
+        "landAreaAcres": row["land_area_acres"],
+        "certification": row["certification"],
+        "primaryProduce": row["primary_produce"],
+        "farmingPractices": row["farming_practices"],
+        "websiteUrl": row["website_url"],
+        "message": row["message"],
+        "reviewerNotes": row["reviewer_notes"],
+        "reviewerName": row["reviewer_name"],
+        "submitterName": row["submitter_name"],
+        "linkedFarmName": row["linked_farm_name"],
+        "updatedAt": row["updated_at"],
+    }
+
+
+def _assert_main_admin(principal: Principal) -> None:
+    """Farm-owner sub-admins are scoped to their own farm; deciding who else
+    joins the marketplace is not theirs to see. Mirrors the same guard on the
+    contact inbox."""
+    if principal.farm_id is not None:
+        raise PermissionDeniedError("Only main admins can review farm applications.")
+
+
+@router.get("/farm-requests")
+async def list_farm_requests_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("farm_requests.view"))],
+    status: Annotated[str | None, Query(max_length=20)] = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    search: Annotated[str | None, Query(max_length=200)] = None,
+) -> Any:
+    _assert_main_admin(principal)
+    repository = FarmPartnershipRequestRepository(db)
+    rows = await repository.list_admin(status=status, search=search, limit=limit, offset=offset)
+    return {
+        "items": [_farm_request_summary(row) for row in rows],
+        "total": await repository.count(status=status, search=search),
+        "limit": limit,
+        "offset": offset,
+    }
+
+
+@router.get("/farm-requests/open-count")
+async def farm_requests_open_count_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("farm_requests.view"))],
+) -> Any:
+    _assert_main_admin(principal)
+    return {"count": await FarmPartnershipRequestRepository(db).count_open()}
+
+
+@router.get("/farm-requests/{entry_id}")
+async def get_farm_request_endpoint(
+    entry_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("farm_requests.view"))],
+) -> Any:
+    _assert_main_admin(principal)
+    row = await FarmPartnershipRequestRepository(db).get(entry_id)
+    if row is None:
+        raise NotFoundError("Farm application not found.")
+    return _farm_request_detail(row)
+
+
+@router.post("/farm-requests/{entry_id}/decide")
+async def decide_farm_request_endpoint(
+    entry_id: str,
+    payload: FarmRequestDecisionRequest,
+    request: Request,
+    background: BackgroundTasks,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("farm_requests.review"))],
+) -> Any:
+    _assert_main_admin(principal)
+    settings = get_settings()
+    result = await farm_partnership_service.decide_request(
+        db,
+        principal,
+        _request_id(request),
+        entry_id,
+        decision=payload.decision,
+        note=payload.note,
+    )
+
+    # Only the two terminal decisions are worth an email. 'under_review' and
+    # 'contacted' are internal pipeline states — telling an applicant "someone
+    # opened your form" is noise, and telling them "we called you" when the call
+    # is the notification is worse.
+    recipient = result["contactEmail"]
+    if recipient is not None and payload.decision in ("approved", "rejected"):
+        note = result["note"] or ""
+        if payload.decision == "approved":
+            background.add_task(
+                send_email,
+                recipient,
+                "Your farm application has been accepted",
+                (
+                    f"Hi {result['contactName']}, we would like to work with"
+                    f" {result['farmName']}. Our sourcing team will be in touch."
+                    + (f"\n\n{note}" if note else "")
+                ),
+                settings,
+                render_farm_partnership_approved(result["contactName"], result["farmName"], note),
+            )
+        else:
+            background.add_task(
+                send_email,
+                recipient,
+                "About your farm application",
+                (
+                    f"Hi {result['contactName']}, after reading your application for"
+                    f" {result['farmName']} we are not able to take it further right"
+                    f" now.\n\n{note}"
+                ),
+                settings,
+                render_farm_partnership_rejected(result["contactName"], result["farmName"], note),
+            )
+    return {"id": result["id"], "status": result["status"]}
+
+
+@router.post("/farm-requests/{entry_id}/link-farm")
+async def link_farm_request_endpoint(
+    entry_id: str,
+    payload: FarmRequestLinkRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("farm_requests.review"))],
+) -> Any:
+    _assert_main_admin(principal)
+    return await farm_partnership_service.attach_farm(
+        db, principal, _request_id(request), entry_id, payload.farm_id
+    )
+
+
+@router.delete("/farm-requests/{entry_id}")
+async def delete_farm_request_endpoint(
+    entry_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("farm_requests.review"))],
+) -> Any:
+    _assert_main_admin(principal)
+    return await farm_partnership_service.delete_request(
+        db, principal, _request_id(request), entry_id
+    )
+
+
+# ---------------------------------------------------------------------------
+# Reader comments on blog posts and recipes. Policed with `discussions.*`
+# rather than a parallel permission — see migration 0043.
+# ---------------------------------------------------------------------------
+
+
+class ContentCommentModerationRequest(_CamelModel):
+    action: str = Field(min_length=1, max_length=20)
+    reason: str | None = Field(default=None, max_length=500)
+
+
+@router.get("/content-comments")
+async def list_content_comments_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("discussions.view"))],
+    content_type: Annotated[str | None, Query(max_length=16)] = None,
+    status: Annotated[str | None, Query(max_length=20)] = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    search: Annotated[str | None, Query(max_length=200)] = None,
+) -> Any:
+    repository = ContentCommentRepository(db)
+    rows = await repository.list_admin(
+        content_type=content_type, status=status, search=search, limit=limit, offset=offset
+    )
+    return {
+        "items": [
+            {
+                "id": row["id"],
+                "contentType": row["content_type"],
+                "body": row["body"],
+                "status": row["status"],
+                "createdAt": row["created_at"],
+                "moderatedAt": row["moderated_at"],
+                "moderationReason": row["moderation_reason"],
+                "authorName": row["author_name"],
+                "authorEmail": display_contact(row["author_email"], None),
+                "parentTitle": row["parent_title"],
+                "parentSlug": row["parent_slug"],
+            }
+            for row in rows
+        ],
+        "total": await repository.count(content_type=content_type, status=status, search=search),
+        "enabled": await content_comment_service.is_enabled(db),
+        "limit": limit,
+        "offset": offset,
+    }
+
+
+@router.post("/content-comments/{comment_id}/moderate")
+async def moderate_content_comment_endpoint(
+    comment_id: str,
+    payload: ContentCommentModerationRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("discussions.moderate"))],
+) -> Any:
+    return await content_comment_service.moderate_comment(
+        db,
+        principal,
+        _request_id(request),
+        comment_id,
+        action=payload.action,
+        reason=payload.reason,
+    )
+
+
+@router.delete("/content-comments/{comment_id}")
+async def delete_content_comment_endpoint(
+    comment_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("discussions.moderate"))],
+) -> Any:
+    return await content_comment_service.delete_comment(
+        db, principal, _request_id(request), comment_id
+    )
+
+
+# ---------------------------------------------------------------------------
 # Community discussions — moderation. Discussions/comments are created from
 # the storefront (api.community); staff here can hide, restore, archive or
 # permanently delete any thread or comment, and set the minimum account age
@@ -2931,6 +3210,10 @@ class ProductUpdateRequest(_CamelModel):
     release_countries: list[str] | None = Field(default=None, max_length=100)
     linked_product_ids: list[str] | None = Field(default=None, max_length=12)
     return_eligible: bool | None = Field(default=None)
+    # Per-product order/payment switch (migration 0048), independent of the
+    # site-wide one on Site Control. False keeps the product page live and
+    # browsable while pulling only "Add to basket" -- see the migration.
+    accepts_orders: bool | None = Field(default=None)
     farm_id: str | None = Field(default=None)
     category_ids: list[str] | None = Field(default=None)
 
@@ -2990,6 +3273,7 @@ async def get_product_endpoint(
         "releaseScope": detail["release_scope"],
         "releaseCountries": detail["release_countries"],
         "returnEligible": bool(detail["return_eligible"]),
+        "acceptsOrders": bool(detail["accepts_orders"]),
         "linkedProducts": [
             {
                 "id": linked["id"],
@@ -3649,12 +3933,14 @@ async def list_contact_messages_endpoint(
     where_clause = ""
     params: list[Any] = []
     if search:
-        where_clause = "WHERE name LIKE ? OR email LIKE ? OR subject LIKE ?"
-        params.extend([f"%{search}%", f"%{search}%", f"%{search}%"])
+        # Phone included: "someone rang about this last week" is the lookup
+        # staff actually run, and it is the one field they are certain of.
+        where_clause = "WHERE name LIKE ? OR email LIKE ? OR subject LIKE ? OR phone_e164 LIKE ?"
+        params.extend([f"%{search}%", f"%{search}%", f"%{search}%", f"%{search}%"])
     params.extend([limit, max(offset, 0)])
     rows = await db.fetch_all(
         f"""
-        SELECT id, name, email, subject, message, status, created_at, handled_at
+        SELECT id, name, email, phone_e164, subject, message, status, created_at, handled_at
         FROM contact_messages
         {where_clause}
         ORDER BY created_at DESC
@@ -3668,6 +3954,10 @@ async def list_contact_messages_endpoint(
                 "id": row["id"],
                 "name": row["name"],
                 "email": row["email"],
+                # NULL for anything sent before migration 0045 added the
+                # column. The console renders that as "not given" rather than
+                # an empty cell that reads as a bug.
+                "phone": row["phone_e164"],
                 "subject": row["subject"],
                 "message": row["message"],
                 "status": row["status"],

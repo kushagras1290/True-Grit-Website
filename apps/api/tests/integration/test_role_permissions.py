@@ -38,6 +38,10 @@ REQUIRED_GRANTS: dict[str, set[str]] = {
         "submissions.review",
         "discussions.view",
         "discussions.moderate",
+        # Farm requests: deciding who supplies the market is a commercial call,
+        # so it sits with Manager and above and never with the content roles.
+        "farm_requests.view",
+        "farm_requests.review",
     },
     # Approving content it cannot list is not a job.
     "publisher": {

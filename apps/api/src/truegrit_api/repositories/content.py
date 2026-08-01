@@ -1157,6 +1157,95 @@ class DiscussionRepository:
         )
 
 
+class ContentCommentRepository:
+    """Admin-side reads over `content_comments` (migration 0043).
+
+    Public reads live in `services.content_comments`, which resolves the parent
+    by slug; these queries go the other way — across every post at once — which
+    is what a moderation queue needs. Writes are in the service.
+    """
+
+    def __init__(self, db: Database):
+        self._db = db
+
+    async def list_admin(
+        self,
+        *,
+        content_type: str | None = None,
+        status: str | None = None,
+        search: str | None = None,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> list[dict[str, Any]]:
+        """Every comment, newest first, with its parent's title and slug so a
+        moderator can open the post without a second round trip.
+
+        The parent is one of two tables, so both are LEFT JOINed and COALESCEd:
+        exactly one matches on any given row, guaranteed by the CHECK constraint
+        in 0043.
+        """
+        search_clause = ""
+        params: list[Any] = [content_type, content_type, status, status]
+        if search:
+            search_clause = "AND (c.body LIKE ? OR u.display_name LIKE ?)"
+            pattern = f"%{search}%"
+            params.extend([pattern, pattern])
+        params.extend([min(max(limit, 1), 100), max(offset, 0)])
+        return await self._db.fetch_all(
+            f"""
+            SELECT c.id, c.content_type, c.body, c.status, c.created_at,
+                   c.moderation_reason, c.moderated_at,
+                   u.display_name AS author_name, u.email AS author_email,
+                   COALESCE(a.title, r.title) AS parent_title,
+                   COALESCE(a.slug, r.slug) AS parent_slug
+            FROM content_comments c
+            JOIN users u ON u.id = c.author_user_id
+            LEFT JOIN articles a ON a.id = c.article_id
+            LEFT JOIN recipes r ON r.id = c.recipe_id
+            WHERE (? IS NULL OR c.content_type = ?)
+              AND (? IS NULL OR c.status = ?)
+            {search_clause}
+            ORDER BY c.created_at DESC
+            LIMIT ? OFFSET ?
+            """,
+            tuple(params),
+        )
+
+    async def count(
+        self,
+        *,
+        content_type: str | None = None,
+        status: str | None = None,
+        search: str | None = None,
+    ) -> int:
+        search_clause = ""
+        params: list[Any] = [content_type, content_type, status, status]
+        if search:
+            search_clause = "AND (c.body LIKE ? OR u.display_name LIKE ?)"
+            pattern = f"%{search}%"
+            params.extend([pattern, pattern])
+        row = await self._db.fetch_one(
+            f"""
+            SELECT COUNT(*) AS total
+            FROM content_comments c
+            JOIN users u ON u.id = c.author_user_id
+            WHERE (? IS NULL OR c.content_type = ?)
+              AND (? IS NULL OR c.status = ?)
+            {search_clause}
+            """,
+            tuple(params),
+        )
+        return int(row["total"]) if row else 0
+
+    async def count_visible(self) -> int:
+        """Feeds the admin dashboard tile. Visible rather than total, because a
+        hidden comment is already handled."""
+        row = await self._db.fetch_one(
+            "SELECT COUNT(*) AS total FROM content_comments WHERE status = 'visible'"
+        )
+        return int(row["total"]) if row else 0
+
+
 class AuditRepository:
     def __init__(self, db: Database):
         self._db = db

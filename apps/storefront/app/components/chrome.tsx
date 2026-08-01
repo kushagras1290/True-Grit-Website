@@ -14,7 +14,9 @@ import {
   useCustomer,
   type PhoneVerification,
 } from "../lib/customer-auth";
+import { useLocaleContext } from "../lib/i18n/context";
 import { useSiteSettings, type SiteSettings } from "../lib/site-settings";
+import { LanguageSwitcher } from "./language-switcher";
 import { AddPhonePrompt, PhoneAuthPanel, PhoneVerifier } from "./phone-auth";
 
 type AuthMode = "phone" | "signin" | "register";
@@ -114,13 +116,14 @@ function AccountSummary({
   onSignOut: () => void;
   pending: boolean;
 }) {
+  const { t } = useLocaleContext();
   return (
     <div className="space-y-3 px-4 py-4">
       <div>
         <p className="text-sm font-medium text-ink">{name}</p>
         {/* A phone-only account has no address, so lead with whichever
             identifier this customer actually has. */}
-        <p className="text-xs text-ink-muted">{email ?? phone ?? "No contact on file"}</p>
+        <p className="text-xs text-ink-muted">{email ?? phone ?? t("auth.noContact")}</p>
         {email && phone ? <p className="text-xs text-ink-muted">{phone}</p> : null}
       </div>
 
@@ -132,14 +135,14 @@ function AccountSummary({
           className="rounded-sm border border-line px-3 py-2 text-center hover:bg-canvas"
           onClick={onNavigate}
         >
-          Your account
+          {t("auth.yourAccount")}
         </Link>
         <Link
           to="/cart"
           className="rounded-sm border border-line px-3 py-2 text-center hover:bg-canvas"
           onClick={onNavigate}
         >
-          Cart
+          {t("common.cart")}
         </Link>
       </div>
       <button
@@ -148,7 +151,7 @@ function AccountSummary({
         onClick={onSignOut}
         disabled={pending}
       >
-        {pending ? "Signing out…" : "Sign out"}
+        {pending ? t("auth.signingOut") : t("auth.signOut")}
       </button>
     </div>
   );
@@ -503,10 +506,11 @@ function CustomerPortal() {
 /** Global product search: an inline box on wider screens; small screens keep
  * the icon that leads to the full search page. Both land on /search. */
 function GlobalSearch() {
+  const { t } = useLocaleContext();
   return (
     <Form method="get" action="/search" role="search" className="hidden lg:block">
       <label htmlFor="global-search" className="sr-only">
-        Search products
+        {t("common.searchProducts")}
       </label>
       <div className="relative">
         <Search
@@ -518,7 +522,7 @@ function GlobalSearch() {
           id="global-search"
           name="q"
           type="search"
-          placeholder="Search products…"
+          placeholder={t("common.searchPlaceholder")}
           autoComplete="off"
           className="min-h-9 w-44 rounded-full border border-line bg-surface pr-3 pl-8 text-sm text-ink transition-[width] duration-200 placeholder:text-ink-muted focus:w-64 focus:border-brand focus:outline-none"
         />
@@ -529,6 +533,7 @@ function GlobalSearch() {
 
 export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
   const { count } = useCart();
+  const { t } = useLocaleContext();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -555,7 +560,9 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
               aria-controls="mobile-nav"
               onClick={() => setMenuOpen((open) => !open)}
             >
-              <span className="sr-only">{menuOpen ? "Close menu" : "Open menu"}</span>
+              <span className="sr-only">
+                {menuOpen ? t("common.closeMenu") : t("common.openMenu")}
+              </span>
               <span aria-hidden className="space-y-1">
                 <span className="block h-0.5 w-5 bg-ink" />
                 <span className="block h-0.5 w-5 bg-ink" />
@@ -601,14 +608,14 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
             <Link
               to="/search"
               className="flex min-h-11 min-w-11 items-center justify-center text-ink hover:text-brand lg:hidden"
-              aria-label="Search"
+              aria-label={t("common.search")}
             >
               <Search size={19} />
             </Link>
             <Link
               to="/cart"
               className="relative flex min-h-11 min-w-11 items-center justify-center text-ink hover:text-brand"
-              aria-label={`Cart, ${count} item${count === 1 ? "" : "s"}`}
+              aria-label={t("common.cartWithCount", { count })}
             >
               <ShoppingBasket size={20} />
               {count > 0 ? (
@@ -642,6 +649,12 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
                 </li>
               ))}
             </ul>
+            {/* The switcher is in the mobile menu as well as the footer:
+                a visitor who cannot read the page should not have to scroll
+                past the whole of it to find the way out. */}
+            <div className="border-t border-line px-4 py-3">
+              <LanguageSwitcher />
+            </div>
           </nav>
         ) : null}
       </header>
@@ -650,18 +663,27 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
 }
 
 export function Footer({ bootstrap }: { bootstrap: PublicBootstrap }) {
+  const { t } = useLocaleContext();
   return (
     <footer className="mt-20 bg-inverse text-ink-inverse">
       <div className="mx-auto grid max-w-[80rem] gap-10 px-4 py-14 sm:px-6 md:grid-cols-[2fr_1fr_1fr]">
         <div>
           <p className="font-display text-2xl">TRUE GRIT</p>
-          <p className="mt-3 max-w-sm text-sm opacity-80">
-            Traceable organic food from verified farms, responsible brands and seasonal harvests —
-            delivered with complete transparency.
-          </p>
+          <p className="mt-3 max-w-sm text-sm opacity-80">{t("footer.tagline")}</p>
+          {/* The permanent home of the language control. The header carries one
+              too on small screens, but this is the one that is always present
+              and always in the same place. */}
+          <div className="mt-6">
+            <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-70">
+              {t("language.label")}
+            </p>
+            <LanguageSwitcher tone="dark" className="mt-2" />
+          </div>
         </div>
-        <nav aria-label="Footer market">
-          <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-70">Market</p>
+        <nav aria-label={t("footer.market")}>
+          <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-70">
+            {t("footer.market")}
+          </p>
           <ul className="mt-3 space-y-2 text-sm">
             {bootstrap.navigation.map((item) => (
               <li key={item.path}>
@@ -672,8 +694,10 @@ export function Footer({ bootstrap }: { bootstrap: PublicBootstrap }) {
             ))}
           </ul>
         </nav>
-        <nav aria-label="Footer support">
-          <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-70">Support</p>
+        <nav aria-label={t("footer.support")}>
+          <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-70">
+            {t("footer.support")}
+          </p>
           <ul className="mt-3 space-y-2 text-sm">
             {bootstrap.footerNavigation.map((item) => (
               <li key={item.path}>
@@ -686,7 +710,7 @@ export function Footer({ bootstrap }: { bootstrap: PublicBootstrap }) {
         </nav>
       </div>
       <div className="border-t border-white/10 px-4 py-4 text-center text-xs opacity-60">
-        © 2026 True Grit. Certified organic, honestly traded.
+        {t("footer.rights")}
       </div>
     </footer>
   );

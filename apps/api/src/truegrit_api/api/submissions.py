@@ -17,6 +17,7 @@ from pydantic.alias_generators import to_camel
 
 from truegrit_api.auth.dependencies import get_current_customer, get_database
 from truegrit_api.auth.principal import Principal
+from truegrit_api.domain.phone import MAX_PHONE_INPUT_LENGTH
 from truegrit_api.errors import NotFoundError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.content import ContentSubmissionRepository
@@ -38,7 +39,10 @@ class SubmissionCreateRequest(_CamelModel):
     content_type: str = Field(max_length=16)
     contact_name: str = Field(min_length=1, max_length=160)
     contact_email: str = Field(min_length=3, max_length=254)
-    contact_phone: str | None = Field(default=None, max_length=32)
+    # Required, not optional as it was: an editor's one clarifying question is
+    # a phone call. `services.submissions` normalises it to E.164 and rejects
+    # anything unringable with a message naming the expected format.
+    contact_phone: str = Field(min_length=1, max_length=MAX_PHONE_INPUT_LENGTH)
     title: str = Field(min_length=1, max_length=200)
     excerpt: str | None = Field(default=None, max_length=400)
     body: str = Field(min_length=1, max_length=40_000)

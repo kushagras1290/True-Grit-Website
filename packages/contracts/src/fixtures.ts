@@ -145,6 +145,7 @@ export const products: ProductDetail[] = [
     tags: [],
     imageUrl: "/homepage-hero.png",
     imageAlt: "A crate of ripe Alphonso mangoes",
+    acceptsOrders: true,
     shortDescription: "Ratnagiri Alphonso, tree-ripened and carbide-free, from Devika Organics.",
     overview:
       "Grown on three-generation orchards in Ratnagiri, these Alphonso mangoes ripen on the tree and are packed the same day. No carbide, no cold storage — just fruit at its honest best.",
@@ -205,6 +206,7 @@ export const products: ProductDetail[] = [
     tags: ["Plant Based"],
     imageUrl: "/homepage-hero-greens.png",
     imageAlt: "A fresh bunch of baby spinach leaves",
+    acceptsOrders: true,
     shortDescription: "Tender baby spinach, harvested at dawn and chilled within the hour.",
     overview:
       "Cut young for tenderness, this spinach comes from rotating beds on regenerated soil. Harvested at dawn, washed in cold spring water and chilled within the hour.",
@@ -256,6 +258,7 @@ export const products: ProductDetail[] = [
     tags: ["Gluten Free", "Traditional Indian"],
     imageUrl: "/homepage-hero-roots.png",
     imageAlt: "Stone-milled ragi flour in a cloth bag",
+    acceptsOrders: true,
     shortDescription:
       "Stone-milled finger millet, sprouted for easier digestion and deeper flavour.",
     overview:
@@ -316,6 +319,7 @@ export const products: ProductDetail[] = [
     tags: [],
     imageUrl: "/homepage-hero-citrus.png",
     imageAlt: "A glass bottle of golden groundnut oil",
+    acceptsOrders: true,
     shortDescription:
       "Single-origin groundnuts, wood-pressed at low RPM within a week of shelling.",
     overview:
@@ -373,6 +377,7 @@ export const products: ProductDetail[] = [
     tags: ["High Protein", "Plant Based"],
     imageUrl: "/homepage-hero-roots.png",
     imageAlt: "Deep red kidney beans from Himalayan terraces",
+    acceptsOrders: true,
     shortDescription:
       "Small red kidney beans from high-altitude terraces, famous for their quick cooking.",
     overview:

@@ -23,7 +23,7 @@ _STATIC_CATEGORY_POOL_LIMIT = RULE_MAX_LIMIT
 _PRODUCT_BASE_SQL = """
 SELECT
   p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
-  p.seo_title, p.seo_description, p.return_eligible,
+  p.seo_title, p.seo_description, p.return_eligible, p.accepts_orders,
   COALESCE(
     '/media/' || m.object_key,
     NULLIF(p.image_url, ''),
@@ -181,6 +181,7 @@ class CatalogueRepository:
             "tags": tags,
             "image_url": row["image_url"],
             "image_alt": row["image_alt"] or row["name"],
+            "accepts_orders": bool(row["accepts_orders"]),
             "_variants": variant_summaries,
             "_farm_slug": row["farm_slug"] or "",
             "_short_description": row["short_description"] or "",

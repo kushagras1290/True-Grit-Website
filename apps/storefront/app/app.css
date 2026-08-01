@@ -52,3 +52,28 @@ body {
 ::selection {
   background: var(--color-bg-subtle);
 }
+
+/* The language switcher's submit button exists for visitors without
+   JavaScript: with it, changing the `<select>` submits the form on its own and
+   a second click is friction. `js-enabled` is set on <html> by the inline
+   bootstrap in root.tsx, so the button is present in the served HTML — the
+   only state a no-JS visitor ever sees — and hidden the instant scripting is
+   confirmed. Doing it the other way round (hide by default, reveal with JS)
+   would leave the fallback path with no way to submit at all. */
+html.js-enabled .language-switcher-submit {
+  display: none;
+}
+
+/* Right-to-left scripts. Layout direction comes from `dir` on <html>, which
+   flips flexbox, text alignment and logical properties for free; these two
+   rules cover the places the codebase still uses physical values. */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] blockquote {
+  border-left: 0;
+  border-right: 4px solid var(--color-accent);
+  padding-left: 0;
+  padding-right: 1.25rem;
+}

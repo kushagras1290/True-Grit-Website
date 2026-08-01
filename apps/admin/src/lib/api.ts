@@ -11,9 +11,12 @@ import type {
   AdminArticleDetail,
   AdminArticleRow,
   AdminCategoryRow,
+  AdminContentCommentRow,
   AdminDbBrowserTableData,
   AdminDiscussionDetail,
   AdminDiscussionRow,
+  AdminFarmRequestDetail,
+  AdminFarmRequestRow,
   AdminInventoryRow,
   AdminMediaAssetRow,
   AdminOrderRow,
@@ -239,6 +242,10 @@ export interface AdminProductDetail {
   releaseScope: "global" | "selected";
   releaseCountries: string[];
   returnEligible: boolean;
+  /** Per-product order/payment switch (migration 0048), independent of the
+   *  site-wide one on Site Control. False keeps the product page live and
+   *  browsable while pulling only "Add to basket". */
+  acceptsOrders: boolean;
   linkedProducts: AdminLinkedProduct[];
   variants: Array<{
     id: string;
@@ -308,6 +315,10 @@ export interface AdminContactMessageRow {
   id: string;
   name: string;
   email: string;
+  /** E.164, or null for a message sent before migration 0045 added the
+   *  column. Most contact traffic is settled by phone, so this is the field
+   *  staff actually reach for. */
+  phone: string | null;
   subject: string;
   message: string;
   status: "new" | "read" | "archived";
@@ -812,6 +823,7 @@ export const api = {
       releaseScope: "global",
       releaseCountries: [],
       returnEligible: true,
+      acceptsOrders: true,
       linkedProducts: [],
       variants: product.variants.map((variant) => ({
         id: variant.id,
@@ -1789,6 +1801,94 @@ export const api = {
     demoMode
       ? demo({ id: commentId, deleted: true })
       : del(`/v1/admin/discussions/comments/${commentId}`),
+
+  // --- Reader comments on articles/recipes ------------------------------
+  //
+  // Policed with the same `discussions.*` permissions as community threads
+  // (migration 0043) rather than a parallel grant.
+
+  contentComments: ({
+    contentType,
+    status,
+    limit = 50,
+    offset = 0,
+    search,
+  }: {
+    contentType?: string;
+    status?: string;
+    limit?: number;
+    offset?: number;
+    search?: string;
+  } = {}): Promise<{ items: AdminContentCommentRow[]; total: number; enabled: boolean }> =>
+    demoMode
+      ? demo({ items: [], total: 0, enabled: true })
+      : get<{ items: AdminContentCommentRow[]; total: number; enabled: boolean }>(
+          `/v1/admin/content-comments?limit=${limit}&offset=${offset}${contentType ? `&content_type=${encodeURIComponent(contentType)}` : ""}${status ? `&status=${encodeURIComponent(status)}` : ""}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ),
+
+  moderateContentComment: (
+    commentId: string,
+    action: string,
+    reason?: string,
+  ): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id: commentId, status: action })
+      : post(`/v1/admin/content-comments/${commentId}/moderate`, { action, reason }),
+
+  deleteContentComment: (commentId: string): Promise<{ id: string; deleted: boolean }> =>
+    demoMode
+      ? demo({ id: commentId, deleted: true })
+      : del(`/v1/admin/content-comments/${commentId}`),
+
+  // --- Farm partnership applications -------------------------------------
+  //
+  // Growers apply from the storefront with no account required; staff with
+  // `farm_requests.review` triage here. Approval records a decision only --
+  // it does not create a `farms` row (migration 0044).
+
+  farmRequests: ({
+    status,
+    limit = 50,
+    offset = 0,
+    search,
+  }: {
+    status?: string;
+    limit?: number;
+    offset?: number;
+    search?: string;
+  } = {}): Promise<{ items: AdminFarmRequestRow[]; total: number }> =>
+    demoMode
+      ? demo({ items: [], total: 0 })
+      : get<{ items: AdminFarmRequestRow[]; total: number }>(
+          `/v1/admin/farm-requests?limit=${limit}&offset=${offset}${status ? `&status=${encodeURIComponent(status)}` : ""}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ),
+
+  farmRequestsOpenCount: (): Promise<number> =>
+    demoMode
+      ? demo(0)
+      : get<{ count: number }>("/v1/admin/farm-requests/open-count").then((body) => body.count),
+
+  getFarmRequest: (id: string): Promise<AdminFarmRequestDetail> =>
+    demoMode
+      ? Promise.reject(new ApiError("Demo mode has no farm applications yet.", 404, "not_found"))
+      : get<AdminFarmRequestDetail>(`/v1/admin/farm-requests/${id}`),
+
+  decideFarmRequest: (
+    id: string,
+    decision: string,
+    note?: string,
+  ): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id, status: decision })
+      : post(`/v1/admin/farm-requests/${id}/decide`, { decision, note }),
+
+  linkFarmRequestToFarm: (id: string, farmId: string): Promise<{ id: string; linkedFarmId: string }> =>
+    demoMode
+      ? demo({ id, linkedFarmId: farmId })
+      : post(`/v1/admin/farm-requests/${id}/link-farm`, { farmId }),
+
+  deleteFarmRequest: (id: string): Promise<{ id: string; deleted: boolean }> =>
+    demoMode ? demo({ id, deleted: true }) : del(`/v1/admin/farm-requests/${id}`),
 
   communitySettings: (): Promise<CommunitySettings> =>
     demoMode

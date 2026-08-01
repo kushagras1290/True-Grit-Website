@@ -4,6 +4,7 @@ import { data, Link } from "react-router";
 import type { Route } from "./+types/recipe";
 import { Breadcrumbs, Section } from "../components/catalogue";
 import { CmsBlock, type BlockData } from "../components/blocks";
+import { ContentComments } from "../components/content-comments";
 import { PageBanner } from "../components/page-banner";
 import {
   catalogueRuntime,
@@ -161,6 +162,8 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
           </div>
         </div>
       </Section>
+
+      <ContentComments contentType="recipe" slug={recipe.slug} />
     </>
   );
 }

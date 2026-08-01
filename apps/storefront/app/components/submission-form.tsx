@@ -7,6 +7,7 @@
 import { useState, type FormEvent } from "react";
 
 import { AuthError } from "../lib/customer-auth";
+import { useLocaleContext } from "../lib/i18n/context";
 import {
   createSubmission,
   updateSubmission,
@@ -40,6 +41,7 @@ export function SubmissionForm({
   defaultContactPhone?: string;
   onSuccess: (result: { id: string; status: string }) => void;
 }) {
+  const { t } = useLocaleContext();
   const [ingredients, setIngredients] = useState<SubmissionIngredientInput[]>(
     initial?.ingredients?.length ? initial.ingredients : [{ label: "", quantityText: "" }],
   );
@@ -56,7 +58,7 @@ export function SubmissionForm({
       contentType,
       contactName: String(form.get("contactName") ?? ""),
       contactEmail: String(form.get("contactEmail") ?? ""),
-      contactPhone: String(form.get("contactPhone") ?? "") || undefined,
+      contactPhone: String(form.get("contactPhone") ?? ""),
       title: String(form.get("title") ?? ""),
       excerpt: String(form.get("excerpt") ?? "") || undefined,
       body: String(form.get("body") ?? ""),
@@ -114,14 +116,21 @@ export function SubmissionForm({
             className={FIELD}
           />
         </label>
+        {/* Required now, not optional: an editor's one clarifying question
+            about a submitted piece is a phone call, and a pitch nobody can
+            follow up on stalls in the review queue. */}
         <label className="block space-y-1">
-          <Label>Phone (optional)</Label>
+          <Label>{t("submit.phone")}</Label>
           <input
             name="contactPhone"
             type="tel"
+            required
+            maxLength={24}
+            autoComplete="tel"
             defaultValue={initial?.contactPhone ?? defaultContactPhone ?? ""}
             className={FIELD}
           />
+          <span className="block text-xs text-ink-muted">{t("submit.phoneHint")}</span>
         </label>
       </div>
 

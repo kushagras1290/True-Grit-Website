@@ -327,3 +327,94 @@ def render_submission_rejected(
     """
 
     return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)
+
+
+# --------------------------------------------------------------------------
+# Farm partnership applications
+#
+# Every input to these three templates comes from an unauthenticated public
+# form, so all of it is HTML-escaped before interpolation -- there is no
+# account validation upstream to lean on, unlike the order and reset templates
+# above whose inputs are account fields.
+# --------------------------------------------------------------------------
+
+
+def render_farm_partnership_received(contact_name: str, farm_name: str) -> str:
+    """Acknowledges a farm partnership application to the grower who sent it.
+
+    Worth sending on its own: without it the form is a void, and the most
+    common consequence of a void is the same application submitted four more
+    times.
+    """
+    subject = "We have your farm application"
+    header_title = "True Grit"
+    safe_name = html.escape(contact_name)
+    safe_farm = html.escape(farm_name)
+
+    body_html = f"""
+    <h2 style="color: #1e293b; margin-top: 0;">Hi {safe_name},</h2>
+    <p>Thank you for telling us about <strong>{safe_farm}</strong>. Your application to
+    supply True Grit has reached our sourcing team.</p>
+    <p>Someone will read it properly and call you on the number you gave us. We look at
+    growing practices, certification and how far the produce has to travel, so the first
+    conversation is usually a few questions rather than a decision.</p>
+    <p style="margin-bottom: 0;">Thanks for thinking of us.<br>The True Grit Team</p>
+    """
+
+    return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)
+
+
+def render_farm_partnership_approved(contact_name: str, farm_name: str, note: str) -> str:
+    """Tells a grower their farm has been accepted.
+
+    `note` is optional here, unlike on the rejection: an acceptance is not made
+    confusing by the absence of a reason.
+    """
+    subject = "Your farm application has been accepted"
+    header_title = "True Grit"
+    safe_name = html.escape(contact_name)
+    safe_farm = html.escape(farm_name)
+    note_html = (
+        f"""
+    <div class="order-panel">
+        <div class="order-detail">{html.escape(note)}</div>
+    </div>
+    """
+        if note
+        else ""
+    )
+
+    body_html = f"""
+    <h2 style="color: #1e293b; margin-top: 0;">Hi {safe_name},</h2>
+    <p>Good news — we would like to work with <strong>{safe_farm}</strong>.</p>
+    {note_html}
+    <p>Our sourcing team will be in touch to walk through certification paperwork,
+    pricing and delivery before anything of yours goes on sale.</p>
+    <p style="margin-bottom: 0;">Welcome aboard.<br>The True Grit Team</p>
+    """
+
+    return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)
+
+
+def render_farm_partnership_rejected(contact_name: str, farm_name: str, reason: str) -> str:
+    """Declines a farm partnership application. The reason is mandatory at the
+    service layer, because "no" with no explanation is the outcome that
+    reliably produces a second identical application."""
+    subject = "About your farm application"
+    header_title = "True Grit"
+    safe_name = html.escape(contact_name)
+    safe_farm = html.escape(farm_name)
+    safe_reason = html.escape(reason)
+
+    body_html = f"""
+    <h2 style="color: #1e293b; margin-top: 0;">Hi {safe_name},</h2>
+    <p>Thank you for telling us about <strong>{safe_farm}</strong>. After reading your
+    application, we are not able to take it further right now.</p>
+    <div class="order-panel">
+        <div class="order-detail">{safe_reason}</div>
+    </div>
+    <p style="margin-bottom: 0;">What we can take changes with the season and with what
+    our customers ask for, so please do get in touch again.<br>The True Grit Team</p>
+    """
+
+    return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)

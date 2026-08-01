@@ -1,10 +1,19 @@
-"""Community discussions: public reads, customer-authenticated writes.
+"""Community: discussion threads, and reader comments on blog posts/recipes.
 
 Anyone (signed in or not) can browse visible discussions and their comments --
 the same "public read, authenticated write" split as the rest of the
 storefront's catalogue. Starting a thread or commenting requires
 `get_current_customer`; `services.discussions` enforces the minimum-account-age
 rule for starting a thread. Staff moderation lives in `api.admin`.
+
+Comments on published articles and recipes live here too rather than in
+`api.storefront`: they are the same conversation surface, authored by the same
+customers and policed by the same `discussions.moderate` permission. What they
+are *not* is the same table -- see migration 0043 for why a comment on a post
+cannot be a `discussion_comments` row. Note the deliberate asymmetry with
+threads: commenting on a post has no account-age requirement, because the
+tenure rule exists to stop throwaway accounts *starting* conversations, and a
+post's conversation is started by the editorial team.
 """
 
 from __future__ import annotations
@@ -20,6 +29,7 @@ from truegrit_api.auth.principal import Principal
 from truegrit_api.errors import NotFoundError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.content import DiscussionRepository
+from truegrit_api.services import content_comments
 from truegrit_api.services.discussions import (
     create_comment,
     create_discussion,
@@ -134,4 +144,38 @@ async def create_comment_endpoint(
 ) -> Any:
     return await create_comment(
         db, customer, _request_id(request), discussion_id, body=payload.body
+    )
+
+
+@router.get("/content/{content_type}/{slug}/comments")
+async def list_content_comments_endpoint(
+    content_type: str,
+    slug: str,
+    db: Annotated[Database, Depends(get_database)],
+) -> Any:
+    """The visible comment thread on a published article or recipe.
+
+    `enabled` rides along with the list so the storefront can render an
+    existing thread read-only when the owner has closed commenting, rather than
+    hiding a conversation that already happened.
+    """
+    items = await content_comments.list_public_comments(db, content_type, slug)
+    return {
+        "items": items,
+        "total": len(items),
+        "enabled": await content_comments.is_enabled(db),
+    }
+
+
+@router.post("/content/{content_type}/{slug}/comments")
+async def create_content_comment_endpoint(
+    content_type: str,
+    slug: str,
+    payload: CommentCreateRequest,
+    request: Request,
+    customer: Annotated[Principal, Depends(get_current_customer)],
+    db: Annotated[Database, Depends(get_database)],
+) -> Any:
+    return await content_comments.create_comment(
+        db, customer, _request_id(request), content_type, slug, body=payload.body
     )

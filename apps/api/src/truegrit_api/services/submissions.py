@@ -19,6 +19,7 @@ from typing import Any
 
 from truegrit_api.auth.principal import Principal
 from truegrit_api.domain.blocks import validate_blocks
+from truegrit_api.domain.phone import normalize_phone
 from truegrit_api.domain.slugs import slugify
 from truegrit_api.errors import ConflictError, NotFoundError, ValidationAppError
 from truegrit_api.platform.database import Database
@@ -90,7 +91,12 @@ def _validate_common_fields(
     return {
         "contact_name": contact_name,
         "contact_email": contact_email,
-        "contact_phone": (contact_phone or "").strip()[:32] or None,
+        # Required now, and normalised to E.164 rather than stored as typed.
+        # An editor asking one clarifying question is the normal path through
+        # this queue, and it is a phone call. The column stays nullable because
+        # submissions filed before this became mandatory legitimately have no
+        # number -- see the same reasoning on `contact_messages` (0045).
+        "contact_phone": normalize_phone(contact_phone or ""),
         "title": title,
         "excerpt": (excerpt or "").strip()[:400] or None,
         "body": body,
@@ -233,7 +239,7 @@ async def create_submission(
                 actor_id=customer.user_id,
                 request_id=request_id,
                 created_at=now,
-                source="storefront",
+                source="api",
                 after={"contentType": content_type, "title": fields["title"]},
             ),
         ]
@@ -328,7 +334,7 @@ async def update_submission(
                 actor_id=customer.user_id,
                 request_id=request_id,
                 created_at=now,
-                source="storefront",
+                source="api",
                 before={"status": current["status"]},
                 after={"status": "submitted"},
             ),

@@ -116,19 +116,40 @@ def test_contact_form_records_message_and_sends_email(
         json={
             "name": "Riya Nair",
             "email": "riya@example.test",
+            # Typed the way a customer actually types it: no country code, one
+            # space. It must land in the column as E.164.
+            "phone": "98765 43210",
             "subject": "Order help",
             "message": "Please help with my latest order delivery.",
         },
     )
     assert response.status_code == 200
     row = db._conn.execute(
-        "SELECT email, subject, message FROM contact_messages WHERE id = ?",
+        "SELECT email, phone_e164, subject, message FROM contact_messages WHERE id = ?",
         (response.json()["id"],),
     ).fetchone()
     assert row["email"] == "riya@example.test"
+    assert row["phone_e164"] == "+919876543210"
     assert row["subject"] == "Order help"
     assert "latest order" in row["message"]
     assert sent == [("support@truegrit.test", "Contact form: Order help")]
+
+
+def test_contact_form_requires_a_reachable_phone_number(client: TestClient):
+    """The number is what makes the inbox actionable, so an absent or
+    unringable one is refused rather than stored as typed."""
+    base = {
+        "name": "Riya Nair",
+        "email": "riya@example.test",
+        "subject": "Order help",
+        "message": "Please help with my latest order delivery.",
+    }
+    assert client.post("/v1/public/contact", json=base).status_code == 422
+    # 10 digits but starting with 1: not an Indian mobile, and not marked
+    # international either.
+    assert (
+        client.post("/v1/public/contact", json={**base, "phone": "1234567890"}).status_code == 422
+    )
 
 
 # --- Customer password reset ------------------------------------------------

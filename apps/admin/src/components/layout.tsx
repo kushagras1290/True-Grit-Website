@@ -11,6 +11,7 @@ import {
   ClipboardList,
   Database,
   FolderTree,
+  HandHeart,
   Image,
   Images,
   Inbox,
@@ -101,6 +102,13 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         permission: "users.view",
       },
       {
+        to: "/farm-requests",
+        label: "Farm Requests",
+        icon: <HandHeart size={16} />,
+        permission: "farm_requests.view",
+        badgeKey: "farmRequestsOpen",
+      },
+      {
         to: "/orders",
         label: "Orders",
         icon: <ShoppingCart size={16} />,
@@ -176,6 +184,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
       {
         to: "/community",
         label: "Discussions",
+        icon: <MessageSquare size={16} />,
+        permission: "discussions.view",
+      },
+      {
+        to: "/content-comments",
+        label: "Post Comments",
         icon: <MessageSquare size={16} />,
         permission: "discussions.view",
       },
@@ -411,7 +425,16 @@ export function Shell() {
     enabled: permissions.has("submissions.view"),
     refetchInterval: 60_000,
   });
-  const badges = { submissionsPending: pendingSubmissions ?? 0 };
+  const { data: openFarmRequests } = useQuery({
+    queryKey: ["farm-requests-open-count"],
+    queryFn: api.farmRequestsOpenCount,
+    enabled: permissions.has("farm_requests.view"),
+    refetchInterval: 60_000,
+  });
+  const badges = {
+    submissionsPending: pendingSubmissions ?? 0,
+    farmRequestsOpen: openFarmRequests ?? 0,
+  };
   const { data: notifications } = useQuery({
     queryKey: ["admin-notifications"],
     queryFn: api.notifications,

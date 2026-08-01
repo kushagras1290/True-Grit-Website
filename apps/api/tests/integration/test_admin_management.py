@@ -597,6 +597,7 @@ def test_owner_can_view_contact_attempts(client: TestClient, db: SQLiteDatabase)
         json={
             "name": "Riya Nair",
             "email": "riya@example.test",
+            "phone": "+91 98765 43210",
             "subject": "Order help",
             "message": "Can you help with my recent order?",
         },
@@ -609,8 +610,16 @@ def test_owner_can_view_contact_attempts(client: TestClient, db: SQLiteDatabase)
     items = response.json()["items"]
     assert items[0]["name"] == "Riya Nair"
     assert items[0]["email"] == "riya@example.test"
+    # Surfaced to the console so staff can ring back without opening the row.
+    assert items[0]["phone"] == "+919876543210"
     assert items[0]["subject"] == "Order help"
     assert items[0]["status"] == "new"
+
+    # The number is searchable: "someone rang about this" is the lookup staff
+    # actually run, and it is the field they are certain of.
+    found = client.get("/v1/admin/contact-messages", params={"search": "9876543210"})
+    assert found.status_code == 200
+    assert [item["id"] for item in found.json()["items"]] == [contact.json()["id"]]
 
 
 # --- Orders -----------------------------------------------------------------

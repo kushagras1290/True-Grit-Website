@@ -99,6 +99,9 @@ export interface OrderDetail {
 export interface ContactMessage {
   name: string;
   email: string;
+  /** Required. Normalised to E.164 by the API, which rejects anything it
+   *  cannot ring — see `domain/phone.py`. */
+  phone: string;
   subject: string;
   message: string;
 }

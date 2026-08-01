@@ -146,7 +146,7 @@ async def create_discussion(
                 actor_id=customer.user_id,
                 request_id=request_id,
                 created_at=now,
-                source="storefront",
+                source="api",
                 after={"title": title},
             ),
         ]
@@ -192,7 +192,7 @@ async def create_comment(
                 actor_id=customer.user_id,
                 request_id=request_id,
                 created_at=now,
-                source="storefront",
+                source="api",
                 after={"discussionId": discussion_id},
             ),
         ]

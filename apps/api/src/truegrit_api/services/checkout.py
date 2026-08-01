@@ -64,7 +64,8 @@ async def _resolve_line(db: Database, line: CheckoutLine, now: str) -> dict[str,
     variant = await db.fetch_one(
         """
         SELECT v.id AS variant_id, v.sku, v.name AS variant_name,
-               p.id AS product_id, p.name AS product_name, p.status
+               p.id AS product_id, p.name AS product_name, p.status,
+               p.accepts_orders
         FROM product_variants v
         JOIN products p ON p.id = v.product_id
         WHERE v.id = ? AND v.status = 'active'
@@ -73,6 +74,14 @@ async def _resolve_line(db: Database, line: CheckoutLine, now: str) -> dict[str,
     )
     if variant is None or variant["status"] != "published":
         raise ConflictError("An item in your basket is no longer available.")
+    # Per-product switch (migration 0048), independent of the site-wide one
+    # already checked by the route before `place_order` is ever called: a
+    # product can be pulled from sale on its own without touching every other
+    # order in flight. Re-checked here rather than trusted from the browser
+    # cart for the same reason price and stock are -- the cart is only ever an
+    # estimate.
+    if not variant["accepts_orders"]:
+        raise ConflictError(f"{variant['product_name']} is not currently available to order.")
 
     price = await db.fetch_one(
         """

@@ -60,6 +60,10 @@ class ProductSummary(PublicModel):
     tags: list[str]
     image_url: str | None = None
     image_alt: str
+    # Per-product order/payment switch (migration 0048), independent of the
+    # site-wide one on Site Control. False means the product is still shown
+    # and browsable -- just not currently orderable.
+    accepts_orders: bool = True
 
 
 class ProductListResponse(PublicModel):

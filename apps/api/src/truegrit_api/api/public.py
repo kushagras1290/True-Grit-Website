@@ -12,6 +12,7 @@ from pydantic.alias_generators import to_camel
 
 from truegrit_api.auth.dependencies import get_database
 from truegrit_api.config import get_settings
+from truegrit_api.domain.phone import MAX_PHONE_INPUT_LENGTH, normalize_phone
 from truegrit_api.domain.slugs import MAX_SLUG_LENGTH, validate_slug
 from truegrit_api.errors import NotFoundError, ValidationAppError
 from truegrit_api.platform.database import Database
@@ -79,6 +80,11 @@ class _CamelModel(BaseModel):
 class ContactRequest(_CamelModel):
     name: str = Field(min_length=2, max_length=120)
     email: str = Field(min_length=3, max_length=254)
+    # Required: most of what arrives here is answered in one call and ten
+    # emails, and a phone-only account (0016) has no address we could reply to
+    # at all. Normalised to E.164 by the route, so it is comparable with
+    # `users.phone_e164`. Rows predating migration 0045 keep NULL.
+    phone: str = Field(min_length=1, max_length=MAX_PHONE_INPUT_LENGTH)
     subject: str = Field(min_length=3, max_length=160)
     message: str = Field(min_length=10, max_length=2000)
 
@@ -231,18 +237,23 @@ async def contact(
     email = payload.email.strip().lower()
     if not _EMAIL_PATTERN.match(email):
         raise ValidationAppError("Enter a valid email address.")
+    # Raises ValidationAppError with a message naming the expected format, so a
+    # mistyped number is corrected rather than silently stored unringable.
+    phone = normalize_phone(payload.phone)
 
     now = utc_now_iso()
     message_id = new_id("msg")
     await db.execute(
         """
-        INSERT INTO contact_messages (id, name, email, subject, message, status, created_at)
-        VALUES (?, ?, ?, ?, ?, 'new', ?)
+        INSERT INTO contact_messages
+          (id, name, email, phone_e164, subject, message, status, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, 'new', ?)
         """,
         (
             message_id,
             payload.name.strip(),
             email,
+            phone,
             payload.subject.strip(),
             payload.message.strip(),
             now,
@@ -254,7 +265,10 @@ async def contact(
         send_email,
         to,
         f"Contact form: {payload.subject.strip()}",
-        (f"Name: {payload.name.strip()}\nEmail: {email}\n\n{payload.message.strip()}"),
+        (
+            f"Name: {payload.name.strip()}\nEmail: {email}\nPhone: {phone}\n\n"
+            f"{payload.message.strip()}"
+        ),
         settings,
     )
     return {"ok": True, "id": message_id}

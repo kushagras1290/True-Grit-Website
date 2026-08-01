@@ -1924,6 +1924,16 @@ function ContactMessageCard({ message }: { message: AdminContactMessageRow }) {
             <a href={`mailto:${message.email}`} className="text-brand hover:underline">
               {message.email}
             </a>
+            {/* Phone is what most follow-up actually goes through; absent only
+                for messages sent before migration 0045 added the column. */}
+            {message.phone ? (
+              <>
+                {" · "}
+                <a href={`tel:${message.phone}`} className="text-brand hover:underline">
+                  {message.phone}
+                </a>
+              </>
+            ) : null}
           </p>
         </div>
         <div className="flex items-center gap-2">

@@ -13,8 +13,10 @@ import { ArticleEditorPage, ArticleListPage } from "./features/articles";
 import { AdminLoginPage, AdminResetPasswordPage, RequireAdminAuth } from "./features/auth";
 import { CategoryEditorPage, CategoryListPage } from "./features/categories";
 import { DiscussionDetailPage, DiscussionsListPage } from "./features/community";
+import { ContentCommentsPage } from "./features/content-comments";
 import { DashboardPage } from "./features/dashboard";
 import { DbBrowserPage } from "./features/db-browser";
+import { FarmRequestDetailPage, FarmRequestsListPage } from "./features/farm-requests";
 import { ImageGuidePage } from "./features/image-guide";
 import {
   AuditPage,
@@ -66,6 +68,8 @@ createRoot(document.getElementById("root")!).render(
               <Route path="categories/:id" element={<CategoryEditorPage />} />
               <Route path="inventory" element={<InventoryPage />} />
               <Route path="farms" element={<FarmsPage />} />
+              <Route path="farm-requests" element={<FarmRequestsListPage />} />
+              <Route path="farm-requests/:id" element={<FarmRequestDetailPage />} />
               <Route path="orders" element={<OrdersPage />} />
               <Route path="orders/:id" element={<OrderDetailPage />} />
               <Route path="returns" element={<ReturnsListPage />} />
@@ -85,6 +89,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="submissions/:id" element={<SubmissionDetailPage />} />
               <Route path="community" element={<DiscussionsListPage />} />
               <Route path="community/:id" element={<DiscussionDetailPage />} />
+              <Route path="content-comments" element={<ContentCommentsPage />} />
               <Route path="contact-attempts" element={<ContactAttemptsPage />} />
               <Route path="users" element={<UsersPage />} />
               <Route path="scopes" element={<ScopeManagementPage />} />

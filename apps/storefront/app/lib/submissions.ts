@@ -24,7 +24,10 @@ export interface SubmissionInput {
   contentType: SubmissionContentType;
   contactName: string;
   contactEmail: string;
-  contactPhone?: string;
+  /** Required. Editors ring rather than write when they have a question about
+   *  a pitch, so the API normalises this to E.164 and refuses a number it
+   *  cannot call. */
+  contactPhone: string;
   title: string;
   excerpt?: string;
   body: string;

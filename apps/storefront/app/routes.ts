@@ -18,6 +18,8 @@ export default [
   route("product/:slug", "routes/product.tsx"),
   route("search", "routes/search.tsx"),
   route("farms", "routes/farms.tsx"),
+  // Before `farms/:slug`, or "partner" is read as a farm slug and 404s.
+  route("farms/partner", "routes/farm-partner.tsx"),
   route("farms/:slug", "routes/farm.tsx"),
   route("recipes", "routes/recipes.tsx"),
   route("recipes/submit", "routes/submit-recipe.tsx"),
@@ -45,5 +47,8 @@ export default [
   route("account/submissions", "routes/my-submissions.tsx"),
   route("account/submissions/:id/edit", "routes/edit-submission.tsx"),
   route("reset-password", "routes/reset-password.tsx"),
+  // Resource route: sets the language cookie and redirects back. Posted to by
+  // the switcher's plain form so it works before hydration.
+  route("language", "routes/language.ts"),
   route("*", "routes/not-found.tsx"),
 ] satisfies RouteConfig;

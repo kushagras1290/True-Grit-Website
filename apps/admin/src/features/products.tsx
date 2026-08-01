@@ -816,6 +816,7 @@ function AvailabilityTab({
   const [globalRelease, setGlobalRelease] = useState(product.releaseScope !== "selected");
   const [countries, setCountries] = useState<string[]>(product.releaseCountries);
   const [returnEligible, setReturnEligible] = useState(product.returnEligible);
+  const [acceptsOrders, setAcceptsOrders] = useState(product.acceptsOrders);
   const [links, setLinks] = useState(product.linkedProducts);
   const [pendingLinkId, setPendingLinkId] = useState("");
   const { data: allProducts } = useQuery({
@@ -827,6 +828,7 @@ function AvailabilityTab({
     globalRelease !== (product.releaseScope !== "selected") ||
     countries.join(",") !== product.releaseCountries.join(",") ||
     returnEligible !== product.returnEligible ||
+    acceptsOrders !== product.acceptsOrders ||
     links.map((entry) => entry.id).join(",") !==
       product.linkedProducts.map((entry) => entry.id).join(",");
 
@@ -896,6 +898,27 @@ function AvailabilityTab({
             ) : null}
           </fieldset>
         ) : null}
+      </section>
+
+      <section className="space-y-3">
+        <div>
+          <h2 className="font-display text-lg text-ink">Ordering</h2>
+          <p className="text-sm text-ink-muted">
+            The same kill-switch as Site Control's "Accept orders and payments", scoped to just
+            this product. Uncheck it when this one item runs out or fails a quality check — the
+            page stays live and browsable, but "Add to basket" is replaced with a message and a
+            contact form until you switch it back on. This is independent of the site-wide switch:
+            turning ordering off here has no effect on any other product.
+          </p>
+        </div>
+        <label className="flex items-center gap-2 text-sm text-ink">
+          <input
+            type="checkbox"
+            checked={acceptsOrders}
+            onChange={(event) => setAcceptsOrders(event.target.checked)}
+          />
+          Accept orders and payments for this product
+        </label>
       </section>
 
       <section className="space-y-3">
@@ -1010,6 +1033,7 @@ function AvailabilityTab({
             releaseScope: globalRelease ? "global" : "selected",
             releaseCountries: globalRelease ? [] : countries,
             returnEligible,
+            acceptsOrders,
             linkedProductIds: links.map((entry) => entry.id),
           })
         }

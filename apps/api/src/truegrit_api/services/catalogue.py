@@ -30,6 +30,7 @@ _PRODUCT_EDITABLE = (
     "image_url",
     "image_alt",
     "return_eligible",
+    "accepts_orders",
     "farm_id",
     "primary_media_id",
 )
@@ -143,7 +144,8 @@ async def update_product(
 ) -> dict[str, Any]:
     current = await db.fetch_one(
         "SELECT id, name, slug, short_description, seo_title, seo_description,"
-        " image_url, image_alt, status, return_eligible, farm_id, primary_media_id"
+        " image_url, image_alt, status, return_eligible, accepts_orders, farm_id,"
+        " primary_media_id"
         " FROM products WHERE id = ? AND archived_at IS NULL",
         (product_id,),
     )
@@ -169,6 +171,8 @@ async def update_product(
     updates = _collect_updates(fields, _PRODUCT_EDITABLE, current)
     if "return_eligible" in updates:
         updates["return_eligible"] = 1 if updates["return_eligible"] else 0
+    if "accepts_orders" in updates:
+        updates["accepts_orders"] = 1 if updates["accepts_orders"] else 0
     if "name" in updates:
         updates["name"] = _clean_name(updates["name"])
     if "slug" in updates:

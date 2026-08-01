@@ -82,6 +82,10 @@ export interface ProductSummary {
   tags: string[];
   imageUrl: string | null;
   imageAlt: string;
+  /** Per-product order/payment switch (migration 0048), independent of the
+   *  site-wide one on Site Control. False means the product is still shown
+   *  and browsable -- just not currently orderable. */
+  acceptsOrders: boolean;
 }
 
 export interface VariantSummary {
@@ -659,6 +663,71 @@ export interface AdminDiscussionDetail {
 
 export interface CommunitySettings {
   minAccountAgeMonths: number;
+}
+
+// ---------------------------------------------------------------------------
+// Reader comments on published articles/recipes (migration 0043)
+// ---------------------------------------------------------------------------
+
+export type ContentCommentContentType = "article" | "recipe";
+export type ContentCommentStatus = "visible" | "hidden" | "removed";
+
+export interface AdminContentCommentRow {
+  id: string;
+  contentType: ContentCommentContentType;
+  body: string;
+  status: ContentCommentStatus;
+  createdAt: string;
+  moderatedAt: string | null;
+  moderationReason: string | null;
+  authorName: string;
+  /** Resolved through `contactable_email` server-side; null for a phone-only
+   *  account rather than a placeholder address. */
+  authorEmail: string | null;
+  /** Title and slug of the article or recipe the comment is attached to, so
+   *  a moderator can open the post without a second lookup. */
+  parentTitle: string;
+  parentSlug: string;
+}
+
+// ---------------------------------------------------------------------------
+// Farm partnership applications (migration 0044) -- growers apply from the
+// storefront to supply the marketplace; staff triage the pipeline here.
+// Approval records a decision only; it does not create a `farms` row -- see
+// the migration for why this is not modelled on content submissions.
+// ---------------------------------------------------------------------------
+
+export type FarmRequestStatus = "submitted" | "under_review" | "contacted" | "approved" | "rejected";
+
+export interface AdminFarmRequestRow {
+  id: string;
+  status: FarmRequestStatus;
+  farmName: string;
+  region: string;
+  state: string | null;
+  city: string | null;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  createdAt: string;
+  reviewedAt: string | null;
+  linkedFarmId: string | null;
+}
+
+export interface AdminFarmRequestDetail extends AdminFarmRequestRow {
+  pincode: string | null;
+  establishedYear: number | null;
+  landAreaAcres: string | null;
+  certification: string | null;
+  primaryProduce: string | null;
+  farmingPractices: string | null;
+  websiteUrl: string | null;
+  message: string;
+  reviewerNotes: string | null;
+  reviewerName: string | null;
+  submitterName: string | null;
+  linkedFarmName: string | null;
+  updatedAt: string;
 }
 
 // ---------------------------------------------------------------------------
