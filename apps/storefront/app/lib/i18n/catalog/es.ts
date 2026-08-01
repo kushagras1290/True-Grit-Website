@@ -49,7 +49,8 @@ const es: LocaleMessages = {
   "auth.mobile": "Móvil",
   "auth.forgotPassword": "¿Olvidaste tu contraseña?",
   "auth.send": "Enviar",
-  "auth.resetLinkSent": "Si ese correo tiene una cuenta, ya te hemos enviado un enlace de restablecimiento.",
+  "auth.resetLinkSent":
+    "Si ese correo tiene una cuenta, ya te hemos enviado un enlace de restablecimiento.",
   "auth.pleaseWait": "Espera un momento…",
   "auth.noContact": "Sin datos de contacto",
   "auth.unavailable": "El inicio de sesión no está disponible por el momento",
@@ -57,7 +58,8 @@ const es: LocaleMessages = {
   "contact.name": "Nombre",
   "contact.email": "Correo electrónico",
   "contact.phone": "Teléfono",
-  "contact.phoneHint": "Para poder llamarte — incluye el prefijo del país si el número no es de la India.",
+  "contact.phoneHint":
+    "Para poder llamarte — incluye el prefijo del país si el número no es de la India.",
   "contact.subject": "Asunto",
   "contact.message": "Mensaje",
   "contact.send": "Enviar mensaje",
@@ -94,7 +96,8 @@ const es: LocaleMessages = {
   "partner.contactName": "Tu nombre",
   "partner.contactEmail": "Correo electrónico",
   "partner.contactPhone": "Número de móvil",
-  "partner.contactPhoneHint": "Llamamos antes de escribir. Incluye el prefijo del país si el número no es de la India.",
+  "partner.contactPhoneHint":
+    "Llamamos antes de escribir. Incluye el prefijo del país si el número no es de la India.",
   "partner.farmName": "Nombre de la granja o cooperativa",
   "partner.region": "Región o distrito",
   "partner.state": "Estado o provincia",

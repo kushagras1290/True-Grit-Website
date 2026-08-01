@@ -115,8 +115,7 @@ const as: LocaleMessages = {
   "partner.successTitle": "আবেদন পালোঁ",
   "partner.successBody": "ধন্যবাদ। আমাৰ দলে পঢ়ি আপুনি দিয়া নম্বৰত ফ'ন কৰিব।",
   "partner.closedTitle": "আবেদন বন্ধ",
-  "partner.closedBody":
-    "আমি এতিয়া নতুন আবেদন লোৱা নাই। আমাক লিখক, পুনৰ খোলাৰ সময়ত জনাম।",
+  "partner.closedBody": "আমি এতিয়া নতুন আবেদন লোৱা নাই। আমাক লিখক, পুনৰ খোলাৰ সময়ত জনাম।",
   "partner.failed": "আপোনাৰ আবেদন পঠিয়াব পৰা নগ'ল। বিৱৰণ চাই পুনৰ চেষ্টা কৰক।",
 
   "submit.phone": "মোবাইল নম্বৰ",

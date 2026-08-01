@@ -115,8 +115,7 @@ const kok: LocaleMessages = {
   "partner.successTitle": "अर्ज मेळ्ळो",
   "partner.successBody": "देव बरें करूं. आमचो गट वाचून तुमी दिल्ल्या क्रमांकाचेर कॉल करतलो.",
   "partner.closedTitle": "अर्ज बंद आसात",
-  "partner.closedBody":
-    "आमी सद्या नवे अर्ज घेनात. आमकां बरयात, परत उगडल्यार कळयतलीं.",
+  "partner.closedBody": "आमी सद्या नवे अर्ज घेनात. आमकां बरयात, परत उगडल्यार कळयतलीं.",
   "partner.failed": "तुमचो अर्ज धाडपाक जायना. तपशील तपासून परत यत्न करा.",
 
   "submit.phone": "मोबायल क्रमांक",

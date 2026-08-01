@@ -94,7 +94,8 @@ const ko: LocaleMessages = {
   "partner.contactName": "이름",
   "partner.contactEmail": "이메일",
   "partner.contactPhone": "휴대폰 번호",
-  "partner.contactPhoneHint": "메일을 보내기 전에 먼저 전화드립니다. 인도 외 번호는 국가 코드를 포함해 주세요.",
+  "partner.contactPhoneHint":
+    "메일을 보내기 전에 먼저 전화드립니다. 인도 외 번호는 국가 코드를 포함해 주세요.",
   "partner.farmName": "농장 또는 조합 이름",
   "partner.region": "지역 또는 구",
   "partner.state": "주",

@@ -115,8 +115,7 @@ const bn: LocaleMessages = {
   "partner.successTitle": "আবেদন পৌঁছেছে",
   "partner.successBody": "ধন্যবাদ। আমাদের দল এটি পড়ে আপনার দেওয়া নম্বরে ফোন করবে।",
   "partner.closedTitle": "আবেদন বন্ধ",
-  "partner.closedBody":
-    "আমরা এখন নতুন আবেদন নিচ্ছি না। আমাদের লিখুন, আবার খুললে জানাব।",
+  "partner.closedBody": "আমরা এখন নতুন আবেদন নিচ্ছি না। আমাদের লিখুন, আবার খুললে জানাব।",
   "partner.failed": "আপনার আবেদন পাঠানো গেল না। তথ্য যাচাই করে আবার চেষ্টা করুন।",
 
   "submit.phone": "মোবাইল নম্বর",

@@ -94,7 +94,8 @@ const kn: LocaleMessages = {
   "partner.contactName": "ನಿಮ್ಮ ಹೆಸರು",
   "partner.contactEmail": "ಇಮೇಲ್",
   "partner.contactPhone": "ಮೊಬೈಲ್ ಸಂಖ್ಯೆ",
-  "partner.contactPhoneHint": "ಬರೆಯುವ ಮೊದಲು ನಾವು ಕರೆ ಮಾಡುತ್ತೇವೆ. ಭಾರತದ ಹೊರಗಿನ ಸಂಖ್ಯೆಗಳಿಗೆ ದೇಶದ ಕೋಡ್ ಸೇರಿಸಿ.",
+  "partner.contactPhoneHint":
+    "ಬರೆಯುವ ಮೊದಲು ನಾವು ಕರೆ ಮಾಡುತ್ತೇವೆ. ಭಾರತದ ಹೊರಗಿನ ಸಂಖ್ಯೆಗಳಿಗೆ ದೇಶದ ಕೋಡ್ ಸೇರಿಸಿ.",
   "partner.farmName": "ತೋಟ ಅಥವಾ ಸಂಘದ ಹೆಸರು",
   "partner.region": "ಪ್ರದೇಶ ಅಥವಾ ಜಿಲ್ಲೆ",
   "partner.state": "ರಾಜ್ಯ",

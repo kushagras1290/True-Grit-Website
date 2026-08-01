@@ -904,11 +904,11 @@ function AvailabilityTab({
         <div>
           <h2 className="font-display text-lg text-ink">Ordering</h2>
           <p className="text-sm text-ink-muted">
-            The same kill-switch as Site Control's "Accept orders and payments", scoped to just
-            this product. Uncheck it when this one item runs out or fails a quality check — the
-            page stays live and browsable, but "Add to basket" is replaced with a message and a
-            contact form until you switch it back on. This is independent of the site-wide switch:
-            turning ordering off here has no effect on any other product.
+            The same kill-switch as Site Control's "Accept orders and payments", scoped to just this
+            product. Uncheck it when this one item runs out or fails a quality check — the page
+            stays live and browsable, but "Add to basket" is replaced with a message and a contact
+            form until you switch it back on. This is independent of the site-wide switch: turning
+            ordering off here has no effect on any other product.
           </p>
         </div>
         <label className="flex items-center gap-2 text-sm text-ink">

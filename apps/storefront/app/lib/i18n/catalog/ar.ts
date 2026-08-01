@@ -115,8 +115,7 @@ const ar: LocaleMessages = {
   "partner.successTitle": "تم استلام الطلب",
   "partner.successBody": "شكرًا لك. سيقرأ فريقنا طلبك ويتصل بك على الرقم الذي تركته.",
   "partner.closedTitle": "الطلبات مغلقة",
-  "partner.closedBody":
-    "لا نستقبل طلبات جديدة حاليًا. راسلنا وسنعلمك عند إعادة الفتح.",
+  "partner.closedBody": "لا نستقبل طلبات جديدة حاليًا. راسلنا وسنعلمك عند إعادة الفتح.",
   "partner.failed": "تعذّر إرسال طلبك. يرجى مراجعة البيانات والمحاولة مرة أخرى.",
 
   "submit.phone": "رقم الجوال",

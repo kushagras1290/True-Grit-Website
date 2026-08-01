@@ -57,7 +57,8 @@ const id: LocaleMessages = {
   "contact.name": "Nama",
   "contact.email": "Email",
   "contact.phone": "Telepon",
-  "contact.phoneHint": "Agar kami dapat menelepon balik — sertakan kode negara untuk nomor di luar India.",
+  "contact.phoneHint":
+    "Agar kami dapat menelepon balik — sertakan kode negara untuk nomor di luar India.",
   "contact.subject": "Subjek",
   "contact.message": "Pesan",
   "contact.send": "Kirim pesan",
@@ -94,7 +95,8 @@ const id: LocaleMessages = {
   "partner.contactName": "Nama Anda",
   "partner.contactEmail": "Email",
   "partner.contactPhone": "Nomor ponsel",
-  "partner.contactPhoneHint": "Kami menelepon sebelum menulis. Sertakan kode negara untuk nomor di luar India.",
+  "partner.contactPhoneHint":
+    "Kami menelepon sebelum menulis. Sertakan kode negara untuk nomor di luar India.",
   "partner.farmName": "Nama perkebunan atau koperasi",
   "partner.region": "Wilayah atau kabupaten",
   "partner.state": "Provinsi",
@@ -113,7 +115,8 @@ const id: LocaleMessages = {
   "partner.submit": "Kirim pengajuan",
   "partner.submitting": "Mengirim…",
   "partner.successTitle": "Pengajuan diterima",
-  "partner.successBody": "Terima kasih. Tim kami akan membacanya dan menelepon nomor yang Anda berikan.",
+  "partner.successBody":
+    "Terima kasih. Tim kami akan membacanya dan menelepon nomor yang Anda berikan.",
   "partner.closedTitle": "Pengajuan ditutup",
   "partner.closedBody":
     "Kami tidak menerima pengajuan baru saat ini. Hubungi kami, dan kami akan memberi tahu saat dibuka kembali.",

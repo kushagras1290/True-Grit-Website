@@ -57,7 +57,8 @@ const pl: LocaleMessages = {
   "contact.name": "Imię",
   "contact.email": "E-mail",
   "contact.phone": "Telefon",
-  "contact.phoneHint": "Abyśmy mogli oddzwonić — dla numerów spoza Indii podaj numer kierunkowy kraju.",
+  "contact.phoneHint":
+    "Abyśmy mogli oddzwonić — dla numerów spoza Indii podaj numer kierunkowy kraju.",
   "contact.subject": "Temat",
   "contact.message": "Wiadomość",
   "contact.send": "Wyślij wiadomość",
@@ -94,7 +95,8 @@ const pl: LocaleMessages = {
   "partner.contactName": "Twoje imię",
   "partner.contactEmail": "E-mail",
   "partner.contactPhone": "Numer telefonu komórkowego",
-  "partner.contactPhoneHint": "Dzwonimy, zanim napiszemy. Dla numerów spoza Indii podaj numer kierunkowy kraju.",
+  "partner.contactPhoneHint":
+    "Dzwonimy, zanim napiszemy. Dla numerów spoza Indii podaj numer kierunkowy kraju.",
   "partner.farmName": "Nazwa gospodarstwa lub spółdzielni",
   "partner.region": "Region lub powiat",
   "partner.state": "Stan lub województwo",

@@ -57,7 +57,8 @@ const sw: LocaleMessages = {
   "contact.name": "Jina",
   "contact.email": "Barua pepe",
   "contact.phone": "Simu",
-  "contact.phoneHint": "Ili tuweze kukupigia simu — ongeza msimbo wa nchi kwa nambari zilizo nje ya India.",
+  "contact.phoneHint":
+    "Ili tuweze kukupigia simu — ongeza msimbo wa nchi kwa nambari zilizo nje ya India.",
   "contact.subject": "Mada",
   "contact.message": "Ujumbe",
   "contact.send": "Tuma ujumbe",
@@ -94,7 +95,8 @@ const sw: LocaleMessages = {
   "partner.contactName": "Jina lako",
   "partner.contactEmail": "Barua pepe",
   "partner.contactPhone": "Nambari ya simu ya mkononi",
-  "partner.contactPhoneHint": "Tunapiga simu kabla ya kuandika. Ongeza msimbo wa nchi kwa nambari zilizo nje ya India.",
+  "partner.contactPhoneHint":
+    "Tunapiga simu kabla ya kuandika. Ongeza msimbo wa nchi kwa nambari zilizo nje ya India.",
   "partner.farmName": "Jina la shamba au chama",
   "partner.region": "Mkoa au wilaya",
   "partner.state": "Jimbo",

@@ -57,7 +57,8 @@ const sat: LocaleMessages = {
   "contact.name": "ᱧᱩᱛᱩᱢ",
   "contact.email": "ᱤᱢᱮᱞ",
   "contact.phone": "ᱯᱷᱳᱱ",
-  "contact.phoneHint": "ᱚᱱᱟ ᱛᱮ ᱟᱞᱮ ᱨᱩᱣᱲᱤ ᱯᱷᱳᱱ ᱫᱟᱲᱮᱭᱟᱜ ᱠᱚ — ᱦᱤᱸᱰ ᱠᱷᱚᱱ ᱵᱟᱦᱨᱮ ᱨᱮᱭᱟᱜ ᱮᱞ ᱞᱟᱹᱜᱤᱫ ᱫᱮᱥ ᱠᱳᱰ ᱡᱚᱲᱟᱣ ᱢᱮ᱾",
+  "contact.phoneHint":
+    "ᱚᱱᱟ ᱛᱮ ᱟᱞᱮ ᱨᱩᱣᱲᱤ ᱯᱷᱳᱱ ᱫᱟᱲᱮᱭᱟᱜ ᱠᱚ — ᱦᱤᱸᱰ ᱠᱷᱚᱱ ᱵᱟᱦᱨᱮ ᱨᱮᱭᱟᱜ ᱮᱞ ᱞᱟᱹᱜᱤᱫ ᱫᱮᱥ ᱠᱳᱰ ᱡᱚᱲᱟᱣ ᱢᱮ᱾",
   "contact.subject": "ᱵᱤᱥᱟᱭ",
   "contact.message": "ᱠᱷᱚᱵᱚᱨ",
   "contact.send": "ᱠᱷᱚᱵᱚᱨ ᱠᱩᱞ ᱢᱮ",
@@ -94,7 +95,8 @@ const sat: LocaleMessages = {
   "partner.contactName": "ᱟᱢᱟᱜ ᱧᱩᱛᱩᱢ",
   "partner.contactEmail": "ᱤᱢᱮᱞ",
   "partner.contactPhone": "ᱢᱳᱵᱟᱭᱤᱞ ᱮᱞ",
-  "partner.contactPhoneHint": "ᱚᱞ ᱦᱚᱸᱭ ᱥᱟᱶ ᱟᱞᱮ ᱯᱷᱳᱱ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ᱾ ᱦᱤᱸᱰ ᱠᱷᱚᱱ ᱵᱟᱦᱨᱮ ᱨᱮᱭᱟᱜ ᱮᱞ ᱞᱟᱹᱜᱤᱫ ᱫᱮᱥ ᱠᱳᱰ ᱡᱚᱲᱟᱣ ᱢᱮ᱾",
+  "partner.contactPhoneHint":
+    "ᱚᱞ ᱦᱚᱸᱭ ᱥᱟᱶ ᱟᱞᱮ ᱯᱷᱳᱱ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ᱾ ᱦᱤᱸᱰ ᱠᱷᱚᱱ ᱵᱟᱦᱨᱮ ᱨᱮᱭᱟᱜ ᱮᱞ ᱞᱟᱹᱜᱤᱫ ᱫᱮᱥ ᱠᱳᱰ ᱡᱚᱲᱟᱣ ᱢᱮ᱾",
   "partner.farmName": "ᱡᱚᱛ ᱥᱮ ᱥᱚᱢᱩᱦ ᱨᱮᱭᱟᱜ ᱧᱩᱛᱩᱢ",
   "partner.region": "ᱡᱟᱭᱜᱟ ᱥᱮ ᱡᱤᱞᱟ",
   "partner.state": "ᱨᱟᱡ",

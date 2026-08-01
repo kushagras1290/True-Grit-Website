@@ -94,7 +94,8 @@ const te: LocaleMessages = {
   "partner.contactName": "మీ పేరు",
   "partner.contactEmail": "ఇమెయిల్",
   "partner.contactPhone": "మొబైల్ నంబర్",
-  "partner.contactPhoneHint": "రాయడానికి ముందు కాల్ చేస్తాం. భారతదేశం వెలుపలి నంబర్లకు దేశ కోడ్ ఇవ్వండి.",
+  "partner.contactPhoneHint":
+    "రాయడానికి ముందు కాల్ చేస్తాం. భారతదేశం వెలుపలి నంబర్లకు దేశ కోడ్ ఇవ్వండి.",
   "partner.farmName": "పొలం లేదా సంఘం పేరు",
   "partner.region": "ప్రాంతం లేదా జిల్లా",
   "partner.state": "రాష్ట్రం",

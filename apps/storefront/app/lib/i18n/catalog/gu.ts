@@ -115,8 +115,7 @@ const gu: LocaleMessages = {
   "partner.successTitle": "અરજી મળી ગઈ",
   "partner.successBody": "આભાર. અમારી ટીમ વાંચીને તમે આપેલા નંબર પર ફોન કરશે.",
   "partner.closedTitle": "અરજીઓ બંધ છે",
-  "partner.closedBody":
-    "અમે હાલ નવી અરજીઓ લેતા નથી. અમને લખો, ફરી શરૂ થાય ત્યારે જણાવીશું.",
+  "partner.closedBody": "અમે હાલ નવી અરજીઓ લેતા નથી. અમને લખો, ફરી શરૂ થાય ત્યારે જણાવીશું.",
   "partner.failed": "તમારી અરજી મોકલી શકાઈ નહીં. વિગતો તપાસી ફરી પ્રયાસ કરો.",
 
   "submit.phone": "મોબાઇલ નંબર",

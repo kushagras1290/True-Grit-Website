@@ -57,13 +57,15 @@ const nl: LocaleMessages = {
   "contact.name": "Naam",
   "contact.email": "E-mail",
   "contact.phone": "Telefoon",
-  "contact.phoneHint": "Zodat we u kunnen terugbellen — voeg het landnummer toe voor nummers buiten India.",
+  "contact.phoneHint":
+    "Zodat we u kunnen terugbellen — voeg het landnummer toe voor nummers buiten India.",
   "contact.subject": "Onderwerp",
   "contact.message": "Bericht",
   "contact.send": "Bericht verzenden",
   "contact.sending": "Bezig met verzenden…",
   "contact.sent": "Uw bericht is verzonden. We antwoorden per e-mail.",
-  "contact.failed": "Bericht kon niet worden verzonden. Controleer de gegevens en probeer het opnieuw.",
+  "contact.failed":
+    "Bericht kon niet worden verzonden. Controleer de gegevens en probeer het opnieuw.",
 
   "comments.heading": "Reacties",
   "comments.headingWithCount": "Reacties ({count})",
@@ -94,7 +96,8 @@ const nl: LocaleMessages = {
   "partner.contactName": "Uw naam",
   "partner.contactEmail": "E-mail",
   "partner.contactPhone": "Mobiel nummer",
-  "partner.contactPhoneHint": "We bellen voordat we schrijven. Voeg het landnummer toe voor nummers buiten India.",
+  "partner.contactPhoneHint":
+    "We bellen voordat we schrijven. Voeg het landnummer toe voor nummers buiten India.",
   "partner.farmName": "Naam van boerderij of coöperatie",
   "partner.region": "Regio of district",
   "partner.state": "Staat of provincie",
@@ -117,7 +120,8 @@ const nl: LocaleMessages = {
   "partner.closedTitle": "Aanvragen zijn gesloten",
   "partner.closedBody":
     "We nemen op dit moment geen nieuwe aanvragen aan. Schrijf ons, dan laten we weten wanneer we heropenen.",
-  "partner.failed": "Uw aanvraag kon niet worden verzonden. Controleer de gegevens en probeer het opnieuw.",
+  "partner.failed":
+    "Uw aanvraag kon niet worden verzonden. Controleer de gegevens en probeer het opnieuw.",
 
   "submit.phone": "Mobiel nummer",
   "submit.phoneHint": "Onze redacteuren bellen als ze een vraag hebben over uw tekst.",

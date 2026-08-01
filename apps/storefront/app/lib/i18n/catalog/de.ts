@@ -49,7 +49,8 @@ const de: LocaleMessages = {
   "auth.mobile": "Mobil",
   "auth.forgotPassword": "Passwort vergessen?",
   "auth.send": "Senden",
-  "auth.resetLinkSent": "Falls zu dieser E-Mail ein Konto besteht, wurde ein Link zum Zurücksetzen gesendet.",
+  "auth.resetLinkSent":
+    "Falls zu dieser E-Mail ein Konto besteht, wurde ein Link zum Zurücksetzen gesendet.",
   "auth.pleaseWait": "Bitte warten…",
   "auth.noContact": "Keine Kontaktdaten hinterlegt",
   "auth.unavailable": "Die Anmeldung ist vorübergehend nicht verfügbar",
@@ -57,13 +58,15 @@ const de: LocaleMessages = {
   "contact.name": "Name",
   "contact.email": "E-Mail",
   "contact.phone": "Telefon",
-  "contact.phoneHint": "Damit wir zurückrufen können — bei Nummern außerhalb Indiens bitte die Landesvorwahl angeben.",
+  "contact.phoneHint":
+    "Damit wir zurückrufen können — bei Nummern außerhalb Indiens bitte die Landesvorwahl angeben.",
   "contact.subject": "Betreff",
   "contact.message": "Nachricht",
   "contact.send": "Nachricht senden",
   "contact.sending": "Wird gesendet…",
   "contact.sent": "Ihre Nachricht wurde gesendet. Wir antworten per E-Mail.",
-  "contact.failed": "Nachricht konnte nicht gesendet werden. Bitte Angaben prüfen und erneut versuchen.",
+  "contact.failed":
+    "Nachricht konnte nicht gesendet werden. Bitte Angaben prüfen und erneut versuchen.",
 
   "comments.heading": "Kommentare",
   "comments.headingWithCount": "Kommentare ({count})",
@@ -94,7 +97,8 @@ const de: LocaleMessages = {
   "partner.contactName": "Ihr Name",
   "partner.contactEmail": "E-Mail",
   "partner.contactPhone": "Mobilnummer",
-  "partner.contactPhoneHint": "Wir rufen an, bevor wir schreiben. Bei Nummern außerhalb Indiens bitte die Landesvorwahl angeben.",
+  "partner.contactPhoneHint":
+    "Wir rufen an, bevor wir schreiben. Bei Nummern außerhalb Indiens bitte die Landesvorwahl angeben.",
   "partner.farmName": "Name des Hofs oder der Genossenschaft",
   "partner.region": "Region oder Bezirk",
   "partner.state": "Bundesland",
@@ -118,7 +122,8 @@ const de: LocaleMessages = {
   "partner.closedTitle": "Bewerbungen sind derzeit geschlossen",
   "partner.closedBody":
     "Wir nehmen derzeit keine neuen Bewerbungen an. Schreiben Sie uns, wir informieren Sie bei Wiedereröffnung.",
-  "partner.failed": "Ihre Bewerbung konnte nicht gesendet werden. Bitte Angaben prüfen und erneut versuchen.",
+  "partner.failed":
+    "Ihre Bewerbung konnte nicht gesendet werden. Bitte Angaben prüfen und erneut versuchen.",
 
   "submit.phone": "Mobilnummer",
   "submit.phoneHint": "Unsere Redakteure rufen an, wenn sie eine Frage zu Ihrem Beitrag haben.",

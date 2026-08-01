@@ -94,7 +94,8 @@ const ru: LocaleMessages = {
   "partner.contactName": "Ваше имя",
   "partner.contactEmail": "Электронная почта",
   "partner.contactPhone": "Номер мобильного телефона",
-  "partner.contactPhoneHint": "Мы звоним, прежде чем писать. Укажите код страны для номеров вне Индии.",
+  "partner.contactPhoneHint":
+    "Мы звоним, прежде чем писать. Укажите код страны для номеров вне Индии.",
   "partner.farmName": "Название фермы или кооператива",
   "partner.region": "Регион или район",
   "partner.state": "Штат или область",

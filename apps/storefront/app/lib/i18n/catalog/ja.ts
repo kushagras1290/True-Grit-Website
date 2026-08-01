@@ -94,7 +94,8 @@ const ja: LocaleMessages = {
   "partner.contactName": "お名前",
   "partner.contactEmail": "メールアドレス",
   "partner.contactPhone": "携帯電話番号",
-  "partner.contactPhoneHint": "メール送信前にお電話いたします。インド国外の番号には国番号を付けてください。",
+  "partner.contactPhoneHint":
+    "メール送信前にお電話いたします。インド国外の番号には国番号を付けてください。",
   "partner.farmName": "農場または組合の名称",
   "partner.region": "地域または地区",
   "partner.state": "州",
@@ -113,7 +114,8 @@ const ja: LocaleMessages = {
   "partner.submit": "申請を送信",
   "partner.submitting": "送信中…",
   "partner.successTitle": "申請を受け付けました",
-  "partner.successBody": "ありがとうございます。担当チームが内容を確認し、ご記入の番号にご連絡いたします。",
+  "partner.successBody":
+    "ありがとうございます。担当チームが内容を確認し、ご記入の番号にご連絡いたします。",
   "partner.closedTitle": "現在申請を受け付けていません",
   "partner.closedBody":
     "現在、新規申請の受付を停止しています。お問い合わせいただければ、再開時にご連絡いたします。",

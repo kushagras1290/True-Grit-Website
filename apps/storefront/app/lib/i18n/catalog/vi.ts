@@ -94,7 +94,8 @@ const vi: LocaleMessages = {
   "partner.contactName": "Họ tên của bạn",
   "partner.contactEmail": "Email",
   "partner.contactPhone": "Số điện thoại di động",
-  "partner.contactPhoneHint": "Chúng tôi gọi trước khi viết thư. Thêm mã quốc gia cho số ngoài Ấn Độ.",
+  "partner.contactPhoneHint":
+    "Chúng tôi gọi trước khi viết thư. Thêm mã quốc gia cho số ngoài Ấn Độ.",
   "partner.farmName": "Tên trang trại hoặc hợp tác xã",
   "partner.region": "Khu vực hoặc huyện",
   "partner.state": "Bang/tỉnh",

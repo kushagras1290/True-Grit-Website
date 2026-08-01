@@ -116,9 +116,7 @@ def test_bad_fields_are_refused(client: TestClient, field: str, value: Any):
 def test_applications_can_be_closed_without_a_deploy(client: TestClient, db: SQLiteDatabase):
     """Hiding the storefront form stops the honest visitor; the route has to
     refuse too."""
-    db._conn.execute(
-        "UPDATE app_settings SET value = '0' WHERE key = 'farm_partnerships.enabled'"
-    )
+    db._conn.execute("UPDATE app_settings SET value = '0' WHERE key = 'farm_partnerships.enabled'")
     db._conn.commit()
 
     assert client.get("/v1/public/farm-partnerships/settings").json()["enabled"] is False
@@ -136,9 +134,7 @@ def test_a_grower_cannot_submit_the_same_application_all_day(client: TestClient)
 
     # A different grower is unaffected — the quota is per contact, not per IP.
     assert (
-        submit(
-            client, contactEmail="other@example.test", contactPhone="9123456780"
-        ).status_code
+        submit(client, contactEmail="other@example.test", contactPhone="9123456780").status_code
         == 200
     )
 
@@ -248,9 +244,7 @@ def test_the_queue_is_permission_gated(client: TestClient, db: SQLiteDatabase):
     assert client.get("/v1/admin/farm-requests").status_code == 403
 
 
-def test_a_farm_owner_cannot_see_other_growers_applications(
-    client: TestClient, db: SQLiteDatabase
-):
+def test_a_farm_owner_cannot_see_other_growers_applications(client: TestClient, db: SQLiteDatabase):
     """A farm-scoped sub-admin has no business reading who else wants in, even
     if a future role grant hands them the permission."""
     db._conn.execute(

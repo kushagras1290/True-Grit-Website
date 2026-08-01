@@ -57,7 +57,8 @@ const tr: LocaleMessages = {
   "contact.name": "Ad",
   "contact.email": "E-posta",
   "contact.phone": "Telefon",
-  "contact.phoneHint": "Sizi geri arayabilmemiz için — Hindistan dışındaki numaralar için ülke kodunu ekleyin.",
+  "contact.phoneHint":
+    "Sizi geri arayabilmemiz için — Hindistan dışındaki numaralar için ülke kodunu ekleyin.",
   "contact.subject": "Konu",
   "contact.message": "Mesaj",
   "contact.send": "Mesaj gönder",
@@ -94,7 +95,8 @@ const tr: LocaleMessages = {
   "partner.contactName": "Adınız",
   "partner.contactEmail": "E-posta",
   "partner.contactPhone": "Cep telefonu numarası",
-  "partner.contactPhoneHint": "Yazmadan önce ararız. Hindistan dışındaki numaralar için ülke kodunu ekleyin.",
+  "partner.contactPhoneHint":
+    "Yazmadan önce ararız. Hindistan dışındaki numaralar için ülke kodunu ekleyin.",
   "partner.farmName": "Çiftlik veya kooperatif adı",
   "partner.region": "Bölge veya ilçe",
   "partner.state": "Eyalet/il",

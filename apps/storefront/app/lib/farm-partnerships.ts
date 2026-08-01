@@ -81,9 +81,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return (await response.json()) as T;
 }
 
-export function submitFarmPartnership(
-  input: FarmPartnershipInput,
-): Promise<FarmPartnershipResult> {
+export function submitFarmPartnership(input: FarmPartnershipInput): Promise<FarmPartnershipResult> {
   return request("/v1/public/farm-partnerships", {
     method: "POST",
     body: JSON.stringify(input),

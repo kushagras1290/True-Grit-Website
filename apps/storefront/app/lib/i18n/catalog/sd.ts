@@ -57,7 +57,8 @@ const sd: LocaleMessages = {
   "contact.name": "نالو",
   "contact.email": "اي ميل",
   "contact.phone": "فون",
-  "contact.phoneHint": "ته جيئن اسان واپس فون ڪري سگهون — هندستان کان ٻاهر جي نمبرن لاءِ ملڪ جو ڪوڊ شامل ڪريو.",
+  "contact.phoneHint":
+    "ته جيئن اسان واپس فون ڪري سگهون — هندستان کان ٻاهر جي نمبرن لاءِ ملڪ جو ڪوڊ شامل ڪريو.",
   "contact.subject": "موضوع",
   "contact.message": "پيغام",
   "contact.send": "پيغام موڪليو",
@@ -94,7 +95,8 @@ const sd: LocaleMessages = {
   "partner.contactName": "توهان جو نالو",
   "partner.contactEmail": "اي ميل",
   "partner.contactPhone": "موبائل نمبر",
-  "partner.contactPhoneHint": "لکڻ کان اڳ اسين فون ڪريون ٿا. هندستان کان ٻاهر جي نمبرن لاءِ ملڪ جو ڪوڊ شامل ڪريو.",
+  "partner.contactPhoneHint":
+    "لکڻ کان اڳ اسين فون ڪريون ٿا. هندستان کان ٻاهر جي نمبرن لاءِ ملڪ جو ڪوڊ شامل ڪريو.",
   "partner.farmName": "زمين يا تنظيم جو نالو",
   "partner.region": "علائقو يا ضلعو",
   "partner.state": "رياست",

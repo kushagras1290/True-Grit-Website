@@ -115,8 +115,7 @@ const mai: LocaleMessages = {
   "partner.successTitle": "आवेदन भेटल",
   "partner.successBody": "धन्यवाद। हमर टीम पढ़ि कऽ अहाँक देल नंबर पर फोन करत।",
   "partner.closedTitle": "आवेदन बन्द अछि",
-  "partner.closedBody":
-    "हम एहि समय नव आवेदन नहि लऽ रहल छी। हमरा लिखू, फेर खुजला पर बता देब।",
+  "partner.closedBody": "हम एहि समय नव आवेदन नहि लऽ रहल छी। हमरा लिखू, फेर खुजला पर बता देब।",
   "partner.failed": "अहाँक आवेदन पठाएल नहि जा सकल। विवरण जाँचि कऽ फेर कोशिश करू।",
 
   "submit.phone": "मोबाइल नंबर",

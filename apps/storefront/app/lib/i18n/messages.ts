@@ -80,7 +80,8 @@ export const EN_MESSAGES = {
   "contact.name": "Name",
   "contact.email": "Email",
   "contact.phone": "Phone",
-  "contact.phoneHint": "So we can call you back — include the country code for numbers outside India.",
+  "contact.phoneHint":
+    "So we can call you back — include the country code for numbers outside India.",
   "contact.subject": "Subject",
   "contact.message": "Message",
   "contact.send": "Send message",
@@ -120,7 +121,8 @@ export const EN_MESSAGES = {
   "partner.contactName": "Your name",
   "partner.contactEmail": "Email",
   "partner.contactPhone": "Mobile number",
-  "partner.contactPhoneHint": "We call before we write. Include the country code for numbers outside India.",
+  "partner.contactPhoneHint":
+    "We call before we write. Include the country code for numbers outside India.",
   "partner.farmName": "Farm or collective name",
   "partner.region": "Region or district",
   "partner.state": "State",

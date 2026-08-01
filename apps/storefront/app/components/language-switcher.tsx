@@ -43,7 +43,12 @@ export function LanguageSwitcher({
       : "min-h-9 rounded-sm border border-line bg-canvas px-2 py-1 text-sm text-ink focus:border-brand focus:outline-none";
 
   return (
-    <form ref={formRef} method="post" action="/language" className={`flex items-center gap-2 ${className}`}>
+    <form
+      ref={formRef}
+      method="post"
+      action="/language"
+      className={`flex items-center gap-2 ${className}`}
+    >
       <input type="hidden" name="redirectTo" value={redirectTo} />
       <label htmlFor="language-select" className="sr-only">
         {t("language.change")}

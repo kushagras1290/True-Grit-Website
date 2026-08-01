@@ -70,14 +70,17 @@ export function ContentCommentsPage() {
   const moderateMutation = useMutation({
     mutationFn: ({ id, action }: { id: string; action: string }) => {
       const reason =
-        action === "hide" ? (prompt("Reason (shown only to staff, optional):") ?? undefined) : undefined;
+        action === "hide"
+          ? (prompt("Reason (shown only to staff, optional):") ?? undefined)
+          : undefined;
       return api.moderateContentComment(id, action, reason || undefined);
     },
     onSuccess: async () => {
       await invalidate();
       toast.success("Comment updated.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not update."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not update."),
   });
 
   const deleteMutation = useMutation({
@@ -86,7 +89,8 @@ export function ContentCommentsPage() {
       await invalidate();
       toast.success("Comment deleted.");
     },
-    onError: (error) => toast.error(error instanceof ApiError ? error.message : "Could not delete."),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not delete."),
   });
 
   return (
@@ -97,7 +101,9 @@ export function ContentCommentsPage() {
           <p className="text-sm text-ink-muted">
             Reader comments on blog posts and recipes.
             {data && !data.enabled ? (
-              <span className="ml-1 text-danger">Commenting is currently switched off site-wide.</span>
+              <span className="ml-1 text-danger">
+                Commenting is currently switched off site-wide.
+              </span>
             ) : null}
           </p>
         </div>
@@ -203,7 +209,9 @@ export function ContentCommentsPage() {
                       {entry.status !== "visible" ? (
                         <Button
                           variant="secondary"
-                          onClick={() => moderateMutation.mutate({ id: entry.id, action: "restore" })}
+                          onClick={() =>
+                            moderateMutation.mutate({ id: entry.id, action: "restore" })
+                          }
                           disabled={moderateMutation.isPending}
                         >
                           Restore

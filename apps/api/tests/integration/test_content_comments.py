@@ -62,9 +62,7 @@ def post_comment(client: TestClient, kind: str, slug: str, body: str):
 # --- Reading and writing ----------------------------------------------------
 
 
-@pytest.mark.parametrize(
-    ("kind", "slug"), [("article", ARTICLE_SLUG), ("recipe", RECIPE_SLUG)]
-)
+@pytest.mark.parametrize(("kind", "slug"), [("article", ARTICLE_SLUG), ("recipe", RECIPE_SLUG)])
 def test_a_customer_comments_and_everyone_can_read_it(
     client: TestClient, db: SQLiteDatabase, kind: str, slug: str
 ):

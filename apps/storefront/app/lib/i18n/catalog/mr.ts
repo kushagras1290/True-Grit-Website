@@ -94,7 +94,8 @@ const mr: LocaleMessages = {
   "partner.contactName": "तुमचे नाव",
   "partner.contactEmail": "ईमेल",
   "partner.contactPhone": "मोबाइल क्रमांक",
-  "partner.contactPhoneHint": "लिहिण्याआधी आम्ही फोन करतो. भारताबाहेरील क्रमांकांसाठी देश कोड द्या.",
+  "partner.contactPhoneHint":
+    "लिहिण्याआधी आम्ही फोन करतो. भारताबाहेरील क्रमांकांसाठी देश कोड द्या.",
   "partner.farmName": "शेत किंवा संस्थेचे नाव",
   "partner.region": "प्रदेश किंवा जिल्हा",
   "partner.state": "राज्य",
@@ -115,8 +116,7 @@ const mr: LocaleMessages = {
   "partner.successTitle": "अर्ज मिळाला",
   "partner.successBody": "धन्यवाद. आमची टीम तो वाचून तुम्ही दिलेल्या क्रमांकावर फोन करेल.",
   "partner.closedTitle": "अर्ज बंद आहेत",
-  "partner.closedBody":
-    "आम्ही सध्या नवे अर्ज घेत नाही. आम्हाला लिहा, पुन्हा सुरू झाल्यावर कळवू.",
+  "partner.closedBody": "आम्ही सध्या नवे अर्ज घेत नाही. आम्हाला लिहा, पुन्हा सुरू झाल्यावर कळवू.",
   "partner.failed": "तुमचा अर्ज पाठवता आला नाही. कृपया माहिती तपासून पुन्हा प्रयत्न करा.",
 
   "submit.phone": "मोबाइल क्रमांक",

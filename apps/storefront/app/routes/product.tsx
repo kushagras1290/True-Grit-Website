@@ -43,7 +43,8 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
   // admin sets deliberately (mirroring Site Control's site-wide one, scoped to
   // just this item — see migration 0048). Both are re-checked server-side at
   // checkout, so this is UX, not the enforcement.
-  const purchasable = product.acceptsOrders && (variant ? variant.availability !== "out_of_stock" : false);
+  const purchasable =
+    product.acceptsOrders && (variant ? variant.availability !== "out_of_stock" : false);
 
   return (
     <>
@@ -178,8 +179,8 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
               form below rather than a dead end. */}
           {!product.acceptsOrders ? (
             <p className="mt-2 text-sm text-ink-muted">
-              We are not taking orders for this product right now. Leave your details below and
-              we will let you know when it is back.
+              We are not taking orders for this product right now. Leave your details below and we
+              will let you know when it is back.
             </p>
           ) : variant ? (
             <AvailabilityNote availability={variant.availability} />

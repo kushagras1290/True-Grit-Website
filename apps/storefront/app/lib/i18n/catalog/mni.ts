@@ -57,7 +57,8 @@ const mni: LocaleMessages = {
   "contact.name": "ꯃꯃꯤꯡ",
   "contact.email": "ꯏꯃꯦꯏꯜ",
   "contact.phone": "ꯐꯣꯟ",
-  "contact.phoneHint": "ꯑꯩꯈꯣꯏꯅ ꯑꯃꯨꯛ ꯐꯣꯟ ꯇꯧꯅꯕꯒꯤꯗꯃꯛ — ꯏꯟꯗꯤꯌꯥꯗ ꯃꯄꯥꯟꯗꯒꯤ ꯅꯝꯕꯔꯒꯤꯗꯃꯛ ꯀꯪꯂꯦꯞꯀꯤ ꯀꯣꯗ ꯍꯥꯞꯆꯤꯜꯂꯨ꯫",
+  "contact.phoneHint":
+    "ꯑꯩꯈꯣꯏꯅ ꯑꯃꯨꯛ ꯐꯣꯟ ꯇꯧꯅꯕꯒꯤꯗꯃꯛ — ꯏꯟꯗꯤꯌꯥꯗ ꯃꯄꯥꯟꯗꯒꯤ ꯅꯝꯕꯔꯒꯤꯗꯃꯛ ꯀꯪꯂꯦꯞꯀꯤ ꯀꯣꯗ ꯍꯥꯞꯆꯤꯜꯂꯨ꯫",
   "contact.subject": "ꯋꯥꯐꯝ",
   "contact.message": "ꯋꯥꯐꯝ",
   "contact.send": "ꯋꯥꯐꯝ ꯊꯥꯗꯣꯛꯎ",
@@ -94,7 +95,8 @@ const mni: LocaleMessages = {
   "partner.contactName": "ꯅꯍꯥꯛꯀꯤ ꯃꯃꯤꯡ",
   "partner.contactEmail": "ꯏꯃꯦꯏꯜ",
   "partner.contactPhone": "ꯃꯣꯕꯥꯏꯜ ꯅꯝꯕꯔ",
-  "partner.contactPhoneHint": "ꯏꯅꯥ ꯃꯃꯥꯡꯗ ꯑꯩꯈꯣꯏꯅ ꯐꯣꯟ ꯇꯧꯒꯅꯤ꯫ ꯏꯟꯗꯤꯌꯥꯗ ꯃꯄꯥꯟꯗꯒꯤ ꯅꯝꯕꯔꯒꯤꯗꯃꯛ ꯀꯪꯂꯦꯞꯀꯤ ꯀꯣꯗ ꯍꯥꯞꯆꯤꯜꯂꯨ꯫",
+  "partner.contactPhoneHint":
+    "ꯏꯅꯥ ꯃꯃꯥꯡꯗ ꯑꯩꯈꯣꯏꯅ ꯐꯣꯟ ꯇꯧꯒꯅꯤ꯫ ꯏꯟꯗꯤꯌꯥꯗ ꯃꯄꯥꯟꯗꯒꯤ ꯅꯝꯕꯔꯒꯤꯗꯃꯛ ꯀꯪꯂꯦꯞꯀꯤ ꯀꯣꯗ ꯍꯥꯞꯆꯤꯜꯂꯨ꯫",
   "partner.farmName": "ꯂꯧꯄꯥꯛ ꯅꯇ꯭ꯔꯒ ꯏꯀꯥꯏꯒꯤ ꯃꯃꯤꯡ",
   "partner.region": "ꯉꯃꯗꯦꯡ ꯅꯇ꯭ꯔꯒ ꯗꯤꯁꯇ꯭ꯔꯤꯛꯠ",
   "partner.state": "ꯁꯇꯦꯠ",
@@ -115,8 +117,7 @@ const mni: LocaleMessages = {
   "partner.successTitle": "ꯑꯦꯄ꯭ꯂꯤꯀꯦꯁꯟ ꯐꯪꯈ꯭ꯔꯦ",
   "partner.successBody": "ꯊꯥꯒꯆꯔꯤ꯫ ꯑꯩꯈꯣꯏꯒꯤ ꯇꯤꯝꯅ ꯄꯥꯗꯒꯅꯤ ꯑꯃꯁꯨꯡ ꯅꯍꯥꯛꯀꯤ ꯅꯝꯕꯔꯗ ꯐꯣꯟ ꯇꯧꯒꯅꯤ꯫",
   "partner.closedTitle": "ꯑꯦꯄ꯭ꯂꯤꯀꯦꯁꯟ ꯊꯤꯡꯗꯣꯛꯈ꯭ꯔꯦ",
-  "partner.closedBody":
-    "ꯑꯩꯈꯣꯏꯅ ꯍꯧꯖꯤꯛ ꯑꯅꯧꯕ ꯑꯦꯄ꯭ꯂꯤꯀꯦꯁꯟ ꯂꯧꯗ꯭ꯔꯦ꯫ ꯑꯩꯈꯣꯏꯗ ꯏꯒꯨ, ꯑꯃꯨꯛ ꯍꯥꯡꯗꯣꯛꯄꯗ ꯍꯥꯏꯒꯅꯤ꯫",
+  "partner.closedBody": "ꯑꯩꯈꯣꯏꯅ ꯍꯧꯖꯤꯛ ꯑꯅꯧꯕ ꯑꯦꯄ꯭ꯂꯤꯀꯦꯁꯟ ꯂꯧꯗ꯭ꯔꯦ꯫ ꯑꯩꯈꯣꯏꯗ ꯏꯒꯨ, ꯑꯃꯨꯛ ꯍꯥꯡꯗꯣꯛꯄꯗ ꯍꯥꯏꯒꯅꯤ꯫",
   "partner.failed": "ꯅꯍꯥꯛꯀꯤ ꯑꯦꯄ꯭ꯂꯤꯀꯦꯁꯟ ꯊꯥꯗꯣꯛꯄ ꯉꯝꯗ꯭ꯔꯦ꯫ ꯃꯔꯤ ꯌꯦꯡꯁꯤꯟꯗꯨꯅ ꯑꯃꯨꯛ ꯍꯣꯠꯅꯧ꯫",
 
   "submit.phone": "ꯃꯣꯕꯥꯏꯜ ꯅꯝꯕꯔ",

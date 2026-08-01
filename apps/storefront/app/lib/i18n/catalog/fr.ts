@@ -49,7 +49,8 @@ const fr: LocaleMessages = {
   "auth.mobile": "Mobile",
   "auth.forgotPassword": "Mot de passe oublié ?",
   "auth.send": "Envoyer",
-  "auth.resetLinkSent": "Si un compte existe pour cet e-mail, un lien de réinitialisation a été envoyé.",
+  "auth.resetLinkSent":
+    "Si un compte existe pour cet e-mail, un lien de réinitialisation a été envoyé.",
   "auth.pleaseWait": "Veuillez patienter…",
   "auth.noContact": "Aucun contact enregistré",
   "auth.unavailable": "La connexion est temporairement indisponible",
@@ -57,7 +58,8 @@ const fr: LocaleMessages = {
   "contact.name": "Nom",
   "contact.email": "E-mail",
   "contact.phone": "Téléphone",
-  "contact.phoneHint": "Pour que nous puissions vous rappeler — ajoutez l'indicatif du pays pour les numéros hors Inde.",
+  "contact.phoneHint":
+    "Pour que nous puissions vous rappeler — ajoutez l'indicatif du pays pour les numéros hors Inde.",
   "contact.subject": "Sujet",
   "contact.message": "Message",
   "contact.send": "Envoyer le message",
@@ -94,7 +96,8 @@ const fr: LocaleMessages = {
   "partner.contactName": "Votre nom",
   "partner.contactEmail": "E-mail",
   "partner.contactPhone": "Numéro de mobile",
-  "partner.contactPhoneHint": "Nous appelons avant d'écrire. Ajoutez l'indicatif du pays pour les numéros hors Inde.",
+  "partner.contactPhoneHint":
+    "Nous appelons avant d'écrire. Ajoutez l'indicatif du pays pour les numéros hors Inde.",
   "partner.farmName": "Nom de la ferme ou de la coopérative",
   "partner.region": "Région ou district",
   "partner.state": "État ou région",
@@ -104,7 +107,8 @@ const fr: LocaleMessages = {
   "partner.landArea": "Surface cultivée",
   "partner.landAreaHint": "Par exemple : 12 acres, ou 4 hectares.",
   "partner.certification": "Certification",
-  "partner.certificationHint": "Organisme et statut de certification biologique, ou aucun pour l'instant.",
+  "partner.certificationHint":
+    "Organisme et statut de certification biologique, ou aucun pour l'instant.",
   "partner.primaryProduce": "Ce que vous cultivez",
   "partner.practices": "Comment vous cultivez",
   "partner.website": "Site web ou page sociale",
@@ -118,7 +122,8 @@ const fr: LocaleMessages = {
   "partner.closedTitle": "Les candidatures sont fermées",
   "partner.closedBody":
     "Nous n'acceptons pas de nouvelles candidatures pour le moment. Écrivez-nous, nous vous préviendrons à la réouverture.",
-  "partner.failed": "Impossible d'envoyer votre candidature. Vérifiez vos informations et réessayez.",
+  "partner.failed":
+    "Impossible d'envoyer votre candidature. Vérifiez vos informations et réessayez.",
 
   "submit.phone": "Numéro de mobile",
   "submit.phoneHint": "Nos rédacteurs appellent s'ils ont une question sur votre texte.",

@@ -1882,7 +1882,10 @@ export const api = {
       ? demo({ id, status: decision })
       : post(`/v1/admin/farm-requests/${id}/decide`, { decision, note }),
 
-  linkFarmRequestToFarm: (id: string, farmId: string): Promise<{ id: string; linkedFarmId: string }> =>
+  linkFarmRequestToFarm: (
+    id: string,
+    farmId: string,
+  ): Promise<{ id: string; linkedFarmId: string }> =>
     demoMode
       ? demo({ id, linkedFarmId: farmId })
       : post(`/v1/admin/farm-requests/${id}/link-farm`, { farmId }),

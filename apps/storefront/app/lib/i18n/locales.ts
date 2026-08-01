@@ -68,13 +68,25 @@ export const LOCALES: readonly LocaleDefinition[] = [
   { code: "brx", nativeName: "बर’", englishName: "Bodo", dir: "ltr", group: "indian" },
   { code: "sa", nativeName: "संस्कृतम्", englishName: "Sanskrit", dir: "ltr", group: "indian" },
 
-  { code: "zh-Hans", nativeName: "简体中文", englishName: "Chinese (Simplified)", dir: "ltr", group: "world" },
+  {
+    code: "zh-Hans",
+    nativeName: "简体中文",
+    englishName: "Chinese (Simplified)",
+    dir: "ltr",
+    group: "world",
+  },
   { code: "es", nativeName: "Español", englishName: "Spanish", dir: "ltr", group: "world" },
   { code: "ar", nativeName: "العربية", englishName: "Arabic", dir: "rtl", group: "world" },
   { code: "pt", nativeName: "Português", englishName: "Portuguese", dir: "ltr", group: "world" },
   { code: "fr", nativeName: "Français", englishName: "French", dir: "ltr", group: "world" },
   { code: "ru", nativeName: "Русский", englishName: "Russian", dir: "ltr", group: "world" },
-  { code: "id", nativeName: "Bahasa Indonesia", englishName: "Indonesian", dir: "ltr", group: "world" },
+  {
+    code: "id",
+    nativeName: "Bahasa Indonesia",
+    englishName: "Indonesian",
+    dir: "ltr",
+    group: "world",
+  },
   { code: "de", nativeName: "Deutsch", englishName: "German", dir: "ltr", group: "world" },
   { code: "ja", nativeName: "日本語", englishName: "Japanese", dir: "ltr", group: "world" },
   { code: "tr", nativeName: "Türkçe", englishName: "Turkish", dir: "ltr", group: "world" },
@@ -82,7 +94,13 @@ export const LOCALES: readonly LocaleDefinition[] = [
   { code: "ko", nativeName: "한국어", englishName: "Korean", dir: "ltr", group: "world" },
   { code: "it", nativeName: "Italiano", englishName: "Italian", dir: "ltr", group: "world" },
   { code: "fa", nativeName: "فارسی", englishName: "Persian", dir: "rtl", group: "world" },
-  { code: "zh-Hant", nativeName: "繁體中文", englishName: "Chinese (Traditional)", dir: "ltr", group: "world" },
+  {
+    code: "zh-Hant",
+    nativeName: "繁體中文",
+    englishName: "Chinese (Traditional)",
+    dir: "ltr",
+    group: "world",
+  },
   { code: "th", nativeName: "ไทย", englishName: "Thai", dir: "ltr", group: "world" },
   { code: "pl", nativeName: "Polski", englishName: "Polish", dir: "ltr", group: "world" },
   { code: "uk", nativeName: "Українська", englishName: "Ukrainian", dir: "ltr", group: "world" },
@@ -152,7 +170,9 @@ export function matchAcceptLanguage(header: string | null | undefined): LocaleDe
       const quality = qParameter ? Number.parseFloat(qParameter.trim().slice(2)) : 1;
       return { tag: tag.trim(), quality: Number.isFinite(quality) ? quality : 0 };
     })
-    .filter((entry): entry is { tag: string; quality: number } => entry !== null && entry.quality > 0)
+    .filter(
+      (entry): entry is { tag: string; quality: number } => entry !== null && entry.quality > 0,
+    )
     .sort((a, b) => b.quality - a.quality);
 
   for (const candidate of candidates) {

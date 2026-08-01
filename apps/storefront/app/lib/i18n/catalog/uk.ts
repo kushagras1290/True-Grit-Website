@@ -49,7 +49,8 @@ const uk: LocaleMessages = {
   "auth.mobile": "Мобільний",
   "auth.forgotPassword": "Забули пароль?",
   "auth.send": "Надіслати",
-  "auth.resetLinkSent": "Якщо обліковий запис із такою поштою існує, посилання для скидання вже надіслано.",
+  "auth.resetLinkSent":
+    "Якщо обліковий запис із такою поштою існує, посилання для скидання вже надіслано.",
   "auth.pleaseWait": "Зачекайте, будь ласка…",
   "auth.noContact": "Контактні дані не вказано",
   "auth.unavailable": "Вхід тимчасово недоступний",
@@ -94,7 +95,8 @@ const uk: LocaleMessages = {
   "partner.contactName": "Ваше ім'я",
   "partner.contactEmail": "Електронна пошта",
   "partner.contactPhone": "Номер мобільного телефону",
-  "partner.contactPhoneHint": "Ми телефонуємо, перш ніж писати. Вкажіть код країни для номерів поза Індією.",
+  "partner.contactPhoneHint":
+    "Ми телефонуємо, перш ніж писати. Вкажіть код країни для номерів поза Індією.",
   "partner.farmName": "Назва ферми або кооперативу",
   "partner.region": "Регіон або район",
   "partner.state": "Штат або область",

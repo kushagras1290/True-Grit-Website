@@ -94,7 +94,8 @@ const pa: LocaleMessages = {
   "partner.contactName": "ਤੁਹਾਡਾ ਨਾਮ",
   "partner.contactEmail": "ਈਮੇਲ",
   "partner.contactPhone": "ਮੋਬਾਈਲ ਨੰਬਰ",
-  "partner.contactPhoneHint": "ਲਿਖਣ ਤੋਂ ਪਹਿਲਾਂ ਅਸੀਂ ਫ਼ੋਨ ਕਰਦੇ ਹਾਂ। ਭਾਰਤ ਤੋਂ ਬਾਹਰ ਦੇ ਨੰਬਰਾਂ ਲਈ ਦੇਸ਼ ਕੋਡ ਲਾਓ।",
+  "partner.contactPhoneHint":
+    "ਲਿਖਣ ਤੋਂ ਪਹਿਲਾਂ ਅਸੀਂ ਫ਼ੋਨ ਕਰਦੇ ਹਾਂ। ਭਾਰਤ ਤੋਂ ਬਾਹਰ ਦੇ ਨੰਬਰਾਂ ਲਈ ਦੇਸ਼ ਕੋਡ ਲਾਓ।",
   "partner.farmName": "ਖੇਤ ਜਾਂ ਸਭਾ ਦਾ ਨਾਮ",
   "partner.region": "ਇਲਾਕਾ ਜਾਂ ਜ਼ਿਲ੍ਹਾ",
   "partner.state": "ਰਾਜ",

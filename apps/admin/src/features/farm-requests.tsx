@@ -336,8 +336,8 @@ export function FarmRequestDetailPage() {
               ) : (
                 <PermissionGate permission="farm_requests.review">
                   <p className="mt-1 text-sm text-ink-muted">
-                    Once you have created this grower's farm in the console, link the application
-                    to it here for provenance.
+                    Once you have created this grower's farm in the console, link the application to
+                    it here for provenance.
                   </p>
                   <div className="mt-3 flex gap-2">
                     <Input
@@ -421,7 +421,9 @@ export function FarmRequestDetailPage() {
                 className="w-full"
                 variant="destructive"
                 onClick={() => {
-                  if (confirm(`Delete the application from ${entry.farmName}? This cannot be undone.`)) {
+                  if (
+                    confirm(`Delete the application from ${entry.farmName}? This cannot be undone.`)
+                  ) {
                     deleteMutation.mutate();
                   }
                 }}

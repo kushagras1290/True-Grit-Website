@@ -57,7 +57,8 @@ const hi: LocaleMessages = {
   "contact.name": "नाम",
   "contact.email": "ईमेल",
   "contact.phone": "फ़ोन",
-  "contact.phoneHint": "ताकि हम आपको वापस कॉल कर सकें — भारत के बाहर के नंबरों के लिए देश कोड लगाएँ।",
+  "contact.phoneHint":
+    "ताकि हम आपको वापस कॉल कर सकें — भारत के बाहर के नंबरों के लिए देश कोड लगाएँ।",
   "contact.subject": "विषय",
   "contact.message": "संदेश",
   "contact.send": "संदेश भेजें",
@@ -94,7 +95,8 @@ const hi: LocaleMessages = {
   "partner.contactName": "आपका नाम",
   "partner.contactEmail": "ईमेल",
   "partner.contactPhone": "मोबाइल नंबर",
-  "partner.contactPhoneHint": "हम लिखने से पहले कॉल करते हैं। भारत के बाहर के नंबरों के लिए देश कोड लगाएँ।",
+  "partner.contactPhoneHint":
+    "हम लिखने से पहले कॉल करते हैं। भारत के बाहर के नंबरों के लिए देश कोड लगाएँ।",
   "partner.farmName": "खेत या समूह का नाम",
   "partner.region": "क्षेत्र या ज़िला",
   "partner.state": "राज्य",
@@ -113,8 +115,7 @@ const hi: LocaleMessages = {
   "partner.submit": "आवेदन भेजें",
   "partner.submitting": "भेजा जा रहा है…",
   "partner.successTitle": "आवेदन मिल गया",
-  "partner.successBody":
-    "धन्यवाद। हमारी टीम इसे पढ़कर आपके दिए नंबर पर कॉल करेगी।",
+  "partner.successBody": "धन्यवाद। हमारी टीम इसे पढ़कर आपके दिए नंबर पर कॉल करेगी।",
   "partner.closedTitle": "आवेदन बंद हैं",
   "partner.closedBody":
     "हम अभी नए आवेदन नहीं ले रहे हैं। कृपया हमें लिखें, दोबारा खुलने पर हम आपको बताएँगे।",

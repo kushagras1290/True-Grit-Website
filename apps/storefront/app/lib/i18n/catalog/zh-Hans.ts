@@ -25,8 +25,7 @@ const zhHans: LocaleMessages = {
   "common.notFoundBody": "您要找的页面可能已随季节变动。",
   "common.demoMode": "演示模式 — 请连接 API 以使用此表单。",
 
-  "footer.tagline":
-    "来自经过认证的农场、负责任的品牌和应季收成的可溯源有机食品 — 全程透明配送。",
+  "footer.tagline": "来自经过认证的农场、负责任的品牌和应季收成的可溯源有机食品 — 全程透明配送。",
   "footer.market": "市场",
   "footer.support": "支持",
   "footer.rights": "© 2026 True Grit。经认证的有机产品，诚信交易。",

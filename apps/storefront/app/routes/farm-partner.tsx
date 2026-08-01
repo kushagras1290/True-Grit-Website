@@ -99,9 +99,7 @@ export default function FarmPartnerPage(_props: Route.ComponentProps) {
       setStatus("idle");
       // The API writes its validation messages for the applicant, so show them
       // rather than a generic failure that hides which field is wrong.
-      setError(
-        caught instanceof FarmPartnershipError ? caught.message : t("partner.failed"),
-      );
+      setError(caught instanceof FarmPartnershipError ? caught.message : t("partner.failed"));
       if (caught instanceof FarmPartnershipError && caught.status === 403) setOpen(false);
     }
   }
@@ -162,12 +160,24 @@ export default function FarmPartnerPage(_props: Route.ComponentProps) {
               </legend>
               <label className="block space-y-1">
                 <Label>{t("partner.contactName")}</Label>
-                <input name="contactName" required minLength={2} maxLength={160} className={FIELD} />
+                <input
+                  name="contactName"
+                  required
+                  minLength={2}
+                  maxLength={160}
+                  className={FIELD}
+                />
               </label>
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="block space-y-1">
                   <Label>{t("partner.contactEmail")}</Label>
-                  <input name="contactEmail" type="email" required maxLength={254} className={FIELD} />
+                  <input
+                    name="contactEmail"
+                    type="email"
+                    required
+                    maxLength={254}
+                    className={FIELD}
+                  />
                 </label>
                 <label className="block space-y-1">
                   <Label>{t("partner.contactPhone")}</Label>
@@ -185,9 +195,7 @@ export default function FarmPartnerPage(_props: Route.ComponentProps) {
             </fieldset>
 
             <fieldset className="space-y-4">
-              <legend className="font-display text-lg text-ink">
-                {t("partner.sectionFarm")}
-              </legend>
+              <legend className="font-display text-lg text-ink">{t("partner.sectionFarm")}</legend>
               <label className="block space-y-1">
                 <Label>{t("partner.farmName")}</Label>
                 <input name="farmName" required minLength={2} maxLength={200} className={FIELD} />
@@ -199,7 +207,8 @@ export default function FarmPartnerPage(_props: Route.ComponentProps) {
                 </label>
                 <label className="block space-y-1">
                   <Label>
-                    {t("partner.state")} <span className="normal-case">({t("common.optional")})</span>
+                    {t("partner.state")}{" "}
+                    <span className="normal-case">({t("common.optional")})</span>
                   </Label>
                   <input name="state" maxLength={120} className={FIELD} />
                 </label>
@@ -207,7 +216,8 @@ export default function FarmPartnerPage(_props: Route.ComponentProps) {
               <div className="grid gap-4 sm:grid-cols-3">
                 <label className="block space-y-1">
                   <Label>
-                    {t("partner.city")} <span className="normal-case">({t("common.optional")})</span>
+                    {t("partner.city")}{" "}
+                    <span className="normal-case">({t("common.optional")})</span>
                   </Label>
                   <input name="city" maxLength={120} className={FIELD} />
                 </label>
@@ -236,9 +246,7 @@ export default function FarmPartnerPage(_props: Route.ComponentProps) {
             </fieldset>
 
             <fieldset className="space-y-4">
-              <legend className="font-display text-lg text-ink">
-                {t("partner.sectionStory")}
-              </legend>
+              <legend className="font-display text-lg text-ink">{t("partner.sectionStory")}</legend>
               <label className="block space-y-1">
                 <Label>
                   {t("partner.landArea")}{" "}
@@ -267,7 +275,12 @@ export default function FarmPartnerPage(_props: Route.ComponentProps) {
                   {t("partner.practices")}{" "}
                   <span className="normal-case">({t("common.optional")})</span>
                 </Label>
-                <textarea name="farmingPractices" maxLength={4000} rows={4} className={`${FIELD} py-3`} />
+                <textarea
+                  name="farmingPractices"
+                  maxLength={4000}
+                  rows={4}
+                  className={`${FIELD} py-3`}
+                />
               </label>
               <label className="block space-y-1">
                 <Label>

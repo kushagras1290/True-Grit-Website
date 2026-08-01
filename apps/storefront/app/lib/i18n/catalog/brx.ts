@@ -57,7 +57,8 @@ const brx: LocaleMessages = {
   "contact.name": "मुं",
   "contact.email": "ईमेल",
   "contact.phone": "फोन",
-  "contact.phoneHint": "जायखिनि आं फिन फोन खालामनो हागोन — भारतनि बाहागोन नाम्बारनिफोरनो देश कोड लाबो।",
+  "contact.phoneHint":
+    "जायखिनि आं फिन फोन खालामनो हागोन — भारतनि बाहागोन नाम्बारनिफोरनो देश कोड लाबो।",
   "contact.subject": "आर्जि",
   "contact.message": "बर",
   "contact.send": "बर फैथारना",
@@ -94,7 +95,8 @@ const brx: LocaleMessages = {
   "partner.contactName": "नोंथाङनि मुं",
   "partner.contactEmail": "ईमेल",
   "partner.contactPhone": "मबाइल नाम्बार",
-  "partner.contactPhoneHint": "लिरनायनि सिगां आं फोन खालामो। भारतनि बाहागोन नाम्बारनिफोरनो देश कोड लाबो।",
+  "partner.contactPhoneHint":
+    "लिरनायनि सिगां आं फोन खालामो। भारतनि बाहागोन नाम्बारनिफोरनो देश कोड लाबो।",
   "partner.farmName": "खामानि एबा दलनि मुं",
   "partner.region": "थां एबा जिला",
   "partner.state": "राज्य",
@@ -115,8 +117,7 @@ const brx: LocaleMessages = {
   "partner.successTitle": "आर्जि मोनबाय",
   "partner.successBody": "गोसो जानाय। आंनि दल फराय नोंथाङा होनाय नाम्बारआव फोन खालामगोन।",
   "partner.closedTitle": "आर्जिफोर बन्द दं",
-  "partner.closedBody":
-    "आं दानिनो गोदान आर्जि लायो नङा। आंनो लिरना, फिन खेवनायाव जागायगोन।",
+  "partner.closedBody": "आं दानिनो गोदान आर्जि लायो नङा। आंनो लिरना, फिन खेवनायाव जागायगोन।",
   "partner.failed": "नोंथाङनि आर्जि फैथारजाबाय नङा। बिबुं सोंगोसिनो नाजाब।",
 
   "submit.phone": "मबाइल नाम्बार",

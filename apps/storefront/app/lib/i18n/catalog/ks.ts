@@ -57,7 +57,8 @@ const ks: LocaleMessages = {
   "contact.name": "ناو",
   "contact.email": "ای میل",
   "contact.phone": "فون",
-  "contact.phoneHint": "یتھ اسہِ زِ واپس فون کریو — ہِندوستانہٕ بٲہرِن نمبرن خٲطرٕ کنٹری کوڈ شٲمِل کریو۔",
+  "contact.phoneHint":
+    "یتھ اسہِ زِ واپس فون کریو — ہِندوستانہٕ بٲہرِن نمبرن خٲطرٕ کنٹری کوڈ شٲمِل کریو۔",
   "contact.subject": "موضوع",
   "contact.message": "پیغام",
   "contact.send": "پیغام روازِو",
@@ -94,7 +95,8 @@ const ks: LocaleMessages = {
   "partner.contactName": "توہُک ناو",
   "partner.contactEmail": "ای میل",
   "partner.contactPhone": "موبائل نمبر",
-  "partner.contactPhoneHint": "لِکھنہٕ برونٹھ اسہِ چھُ فون کران۔ ہِندوستانہٕ بٲہرِن نمبرن خٲطرٕ کنٹری کوڈ شٲمِل کریو۔",
+  "partner.contactPhoneHint":
+    "لِکھنہٕ برونٹھ اسہِ چھُ فون کران۔ ہِندوستانہٕ بٲہرِن نمبرن خٲطرٕ کنٹری کوڈ شٲمِل کریو۔",
   "partner.farmName": "زمینہِ یا تنظیمہِ ناو",
   "partner.region": "علاقہٕ یا ضلع",
   "partner.state": "ریاست",

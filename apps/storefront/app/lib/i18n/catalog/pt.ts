@@ -57,7 +57,8 @@ const pt: LocaleMessages = {
   "contact.name": "Nome",
   "contact.email": "E-mail",
   "contact.phone": "Telefone",
-  "contact.phoneHint": "Para que possamos ligar de volta — inclua o indicativo do país para números fora da Índia.",
+  "contact.phoneHint":
+    "Para que possamos ligar de volta — inclua o indicativo do país para números fora da Índia.",
   "contact.subject": "Assunto",
   "contact.message": "Mensagem",
   "contact.send": "Enviar mensagem",
@@ -94,7 +95,8 @@ const pt: LocaleMessages = {
   "partner.contactName": "O seu nome",
   "partner.contactEmail": "E-mail",
   "partner.contactPhone": "Número de telemóvel",
-  "partner.contactPhoneHint": "Ligamos antes de escrever. Inclua o indicativo do país para números fora da Índia.",
+  "partner.contactPhoneHint":
+    "Ligamos antes de escrever. Inclua o indicativo do país para números fora da Índia.",
   "partner.farmName": "Nome da quinta ou cooperativa",
   "partner.region": "Região ou distrito",
   "partner.state": "Estado ou província",
@@ -117,7 +119,8 @@ const pt: LocaleMessages = {
   "partner.closedTitle": "As candidaturas estão fechadas",
   "partner.closedBody":
     "Não estamos a aceitar novas candidaturas neste momento. Escreva-nos e avisaremos quando reabrirmos.",
-  "partner.failed": "Não foi possível enviar a sua candidatura. Verifique os dados e tente novamente.",
+  "partner.failed":
+    "Não foi possível enviar a sua candidatura. Verifique os dados e tente novamente.",
 
   "submit.phone": "Número de telemóvel",
   "submit.phoneHint": "Os nossos editores ligam se tiverem alguma dúvida sobre o seu texto.",

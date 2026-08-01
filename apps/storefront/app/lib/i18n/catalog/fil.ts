@@ -57,7 +57,8 @@ const fil: LocaleMessages = {
   "contact.name": "Pangalan",
   "contact.email": "Email",
   "contact.phone": "Telepono",
-  "contact.phoneHint": "Para makatawag kami pabalik — isama ang country code para sa mga numero sa labas ng India.",
+  "contact.phoneHint":
+    "Para makatawag kami pabalik — isama ang country code para sa mga numero sa labas ng India.",
   "contact.subject": "Paksa",
   "contact.message": "Mensahe",
   "contact.send": "Ipadala ang mensahe",
@@ -94,7 +95,8 @@ const fil: LocaleMessages = {
   "partner.contactName": "Ang pangalan mo",
   "partner.contactEmail": "Email",
   "partner.contactPhone": "Numero ng mobile",
-  "partner.contactPhoneHint": "Tumatawag kami bago magsulat. Isama ang country code para sa mga numero sa labas ng India.",
+  "partner.contactPhoneHint":
+    "Tumatawag kami bago magsulat. Isama ang country code para sa mga numero sa labas ng India.",
   "partner.farmName": "Pangalan ng sakahan o kooperatiba",
   "partner.region": "Rehiyon o distrito",
   "partner.state": "Estado",
@@ -113,14 +115,17 @@ const fil: LocaleMessages = {
   "partner.submit": "Ipadala ang aplikasyon",
   "partner.submitting": "Ipinapadala…",
   "partner.successTitle": "Natanggap ang aplikasyon",
-  "partner.successBody": "Salamat. Babasahin ito ng aming team at tatawagan ka sa numerong ibinigay mo.",
+  "partner.successBody":
+    "Salamat. Babasahin ito ng aming team at tatawagan ka sa numerong ibinigay mo.",
   "partner.closedTitle": "Sarado ang mga aplikasyon",
   "partner.closedBody":
     "Sa ngayon ay hindi kami tumatanggap ng bagong aplikasyon. Sumulat sa amin, ipapaalam namin kapag muling bukas.",
-  "partner.failed": "Hindi maipadala ang iyong aplikasyon. Suriin ang mga detalye at subukang muli.",
+  "partner.failed":
+    "Hindi maipadala ang iyong aplikasyon. Suriin ang mga detalye at subukang muli.",
 
   "submit.phone": "Numero ng mobile",
-  "submit.phoneHint": "Tumatawag ang aming mga editor kung may tanong sila tungkol sa iyong sinulat.",
+  "submit.phoneHint":
+    "Tumatawag ang aming mga editor kung may tanong sila tungkol sa iyong sinulat.",
 };
 
 export default fil;

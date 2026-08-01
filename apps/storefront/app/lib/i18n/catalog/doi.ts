@@ -94,7 +94,8 @@ const doi: LocaleMessages = {
   "partner.contactName": "तुंदा नां",
   "partner.contactEmail": "ईमेल",
   "partner.contactPhone": "मोबाइल नंबर",
-  "partner.contactPhoneHint": "लिखने थमां पैह्‌ले असां फोन करदे आं। भारत थमां बाहरले नंबरें आस्तै देश कोड लाओ।",
+  "partner.contactPhoneHint":
+    "लिखने थमां पैह्‌ले असां फोन करदे आं। भारत थमां बाहरले नंबरें आस्तै देश कोड लाओ।",
   "partner.farmName": "खेतीबाड़ी जां संस्था दा नां",
   "partner.region": "इलाका जां जिला",
   "partner.state": "राज्य",
@@ -115,8 +116,7 @@ const doi: LocaleMessages = {
   "partner.successTitle": "अर्जी मिली गेई",
   "partner.successBody": "धन्नवाद। साढ़ी टीम पढ़ी करी तुंदे दित्ते नंबर पर फोन करग।",
   "partner.closedTitle": "अर्जियां बंद न्",
-  "partner.closedBody":
-    "अस हाल नमियां अर्जियां नेईं लैने। सांगी लिखो, फिरी खुह्‌लने पर दस्सांगे।",
+  "partner.closedBody": "अस हाल नमियां अर्जियां नेईं लैने। सांगी लिखो, फिरी खुह्‌लने पर दस्सांगे।",
   "partner.failed": "तुंदी अर्जी भेजी नेईं गेई। ब्यौरा जांची फिरी कोशश करो।",
 
   "submit.phone": "मोबाइल नंबर",

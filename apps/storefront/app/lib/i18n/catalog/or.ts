@@ -57,7 +57,8 @@ const or: LocaleMessages = {
   "contact.name": "ନାମ",
   "contact.email": "ଇମେଲ୍",
   "contact.phone": "ଫୋନ୍",
-  "contact.phoneHint": "ଯାହା ଫଳରେ ଆମେ ପୁଣି ଫୋନ୍ କରିପାରିବୁ — ଭାରତ ବାହାରର ନମ୍ବର ପାଇଁ ଦେଶ କୋଡ୍ ଦିଅନ୍ତୁ।",
+  "contact.phoneHint":
+    "ଯାହା ଫଳରେ ଆମେ ପୁଣି ଫୋନ୍ କରିପାରିବୁ — ଭାରତ ବାହାରର ନମ୍ବର ପାଇଁ ଦେଶ କୋଡ୍ ଦିଅନ୍ତୁ।",
   "contact.subject": "ବିଷୟ",
   "contact.message": "ସନ୍ଦେଶ",
   "contact.send": "ସନ୍ଦେଶ ପଠାନ୍ତୁ",
@@ -94,7 +95,8 @@ const or: LocaleMessages = {
   "partner.contactName": "ଆପଣଙ୍କ ନାମ",
   "partner.contactEmail": "ଇମେଲ୍",
   "partner.contactPhone": "ମୋବାଇଲ୍ ନମ୍ବର",
-  "partner.contactPhoneHint": "ଲେଖିବା ପୂର୍ବରୁ ଆମେ ଫୋନ୍ କରୁ। ଭାରତ ବାହାରର ନମ୍ବର ପାଇଁ ଦେଶ କୋଡ୍ ଦିଅନ୍ତୁ।",
+  "partner.contactPhoneHint":
+    "ଲେଖିବା ପୂର୍ବରୁ ଆମେ ଫୋନ୍ କରୁ। ଭାରତ ବାହାରର ନମ୍ବର ପାଇଁ ଦେଶ କୋଡ୍ ଦିଅନ୍ତୁ।",
   "partner.farmName": "ଚାଷଜମି କିମ୍ବା ସଂଘର ନାମ",
   "partner.region": "ଅଞ୍ଚଳ କିମ୍ବା ଜିଲ୍ଲା",
   "partner.state": "ରାଜ୍ୟ",
@@ -115,8 +117,7 @@ const or: LocaleMessages = {
   "partner.successTitle": "ଆବେଦନ ମିଳିଲା",
   "partner.successBody": "ଧନ୍ୟବାଦ। ଆମ ଦଳ ପଢ଼ି ଆପଣ ଦେଇଥିବା ନମ୍ବରକୁ ଫୋନ୍ କରିବ।",
   "partner.closedTitle": "ଆବେଦନ ବନ୍ଦ ଅଛି",
-  "partner.closedBody":
-    "ଆମେ ବର୍ତ୍ତମାନ ନୂଆ ଆବେଦନ ନେଉନାହୁଁ। ଆମକୁ ଲେଖନ୍ତୁ, ପୁଣି ଖୋଲିଲେ ଜଣାଇବୁ।",
+  "partner.closedBody": "ଆମେ ବର୍ତ୍ତମାନ ନୂଆ ଆବେଦନ ନେଉନାହୁଁ। ଆମକୁ ଲେଖନ୍ତୁ, ପୁଣି ଖୋଲିଲେ ଜଣାଇବୁ।",
   "partner.failed": "ଆପଣଙ୍କ ଆବେଦନ ପଠାଯାଇପାରିଲା ନାହିଁ। ବିବରଣୀ ଯାଞ୍ଚ କରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।",
 
   "submit.phone": "ମୋବାଇଲ୍ ନମ୍ବର",

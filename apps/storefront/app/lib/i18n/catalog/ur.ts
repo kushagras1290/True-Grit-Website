@@ -57,7 +57,8 @@ const ur: LocaleMessages = {
   "contact.name": "نام",
   "contact.email": "ای میل",
   "contact.phone": "فون",
-  "contact.phoneHint": "تاکہ ہم واپس کال کر سکیں — بھارت سے باہر کے نمبروں کے لیے کنٹری کوڈ شامل کریں۔",
+  "contact.phoneHint":
+    "تاکہ ہم واپس کال کر سکیں — بھارت سے باہر کے نمبروں کے لیے کنٹری کوڈ شامل کریں۔",
   "contact.subject": "موضوع",
   "contact.message": "پیغام",
   "contact.send": "پیغام بھیجیں",
@@ -94,7 +95,8 @@ const ur: LocaleMessages = {
   "partner.contactName": "آپ کا نام",
   "partner.contactEmail": "ای میل",
   "partner.contactPhone": "موبائل نمبر",
-  "partner.contactPhoneHint": "لکھنے سے پہلے ہم کال کرتے ہیں۔ بھارت سے باہر کے نمبروں کے لیے کنٹری کوڈ شامل کریں۔",
+  "partner.contactPhoneHint":
+    "لکھنے سے پہلے ہم کال کرتے ہیں۔ بھارت سے باہر کے نمبروں کے لیے کنٹری کوڈ شامل کریں۔",
   "partner.farmName": "کھیت یا تنظیم کا نام",
   "partner.region": "علاقہ یا ضلع",
   "partner.state": "ریاست",

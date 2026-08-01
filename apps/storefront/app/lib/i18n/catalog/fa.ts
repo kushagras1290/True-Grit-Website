@@ -57,7 +57,8 @@ const fa: LocaleMessages = {
   "contact.name": "نام",
   "contact.email": "ایمیل",
   "contact.phone": "تلفن",
-  "contact.phoneHint": "تا بتوانیم با شما تماس بگیریم — برای شماره‌های خارج از هند کد کشور را وارد کنید.",
+  "contact.phoneHint":
+    "تا بتوانیم با شما تماس بگیریم — برای شماره‌های خارج از هند کد کشور را وارد کنید.",
   "contact.subject": "موضوع",
   "contact.message": "پیام",
   "contact.send": "ارسال پیام",
@@ -94,7 +95,8 @@ const fa: LocaleMessages = {
   "partner.contactName": "نام شما",
   "partner.contactEmail": "ایمیل",
   "partner.contactPhone": "شماره موبایل",
-  "partner.contactPhoneHint": "پیش از نوشتن، تماس می‌گیریم. برای شماره‌های خارج از هند کد کشور را وارد کنید.",
+  "partner.contactPhoneHint":
+    "پیش از نوشتن، تماس می‌گیریم. برای شماره‌های خارج از هند کد کشور را وارد کنید.",
   "partner.farmName": "نام مزرعه یا تعاونی",
   "partner.region": "منطقه یا بخش",
   "partner.state": "استان",

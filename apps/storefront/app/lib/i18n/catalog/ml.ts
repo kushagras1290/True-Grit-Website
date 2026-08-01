@@ -57,7 +57,8 @@ const ml: LocaleMessages = {
   "contact.name": "പേര്",
   "contact.email": "ഇമെയിൽ",
   "contact.phone": "ഫോൺ",
-  "contact.phoneHint": "ഞങ്ങൾക്ക് തിരികെ വിളിക്കാൻ — ഇന്ത്യയ്ക്ക് പുറത്തുള്ള നമ്പറുകൾക്ക് രാജ്യ കോഡ് ചേർക്കുക.",
+  "contact.phoneHint":
+    "ഞങ്ങൾക്ക് തിരികെ വിളിക്കാൻ — ഇന്ത്യയ്ക്ക് പുറത്തുള്ള നമ്പറുകൾക്ക് രാജ്യ കോഡ് ചേർക്കുക.",
   "contact.subject": "വിഷയം",
   "contact.message": "സന്ദേശം",
   "contact.send": "സന്ദേശം അയയ്ക്കുക",
@@ -94,7 +95,8 @@ const ml: LocaleMessages = {
   "partner.contactName": "നിങ്ങളുടെ പേര്",
   "partner.contactEmail": "ഇമെയിൽ",
   "partner.contactPhone": "മൊബൈൽ നമ്പർ",
-  "partner.contactPhoneHint": "എഴുതുന്നതിനു മുൻപ് ഞങ്ങൾ വിളിക്കും. ഇന്ത്യയ്ക്ക് പുറത്തുള്ള നമ്പറുകൾക്ക് രാജ്യ കോഡ് ചേർക്കുക.",
+  "partner.contactPhoneHint":
+    "എഴുതുന്നതിനു മുൻപ് ഞങ്ങൾ വിളിക്കും. ഇന്ത്യയ്ക്ക് പുറത്തുള്ള നമ്പറുകൾക്ക് രാജ്യ കോഡ് ചേർക്കുക.",
   "partner.farmName": "കൃഷിയിടത്തിന്റെ അല്ലെങ്കിൽ സംഘത്തിന്റെ പേര്",
   "partner.region": "പ്രദേശം അല്ലെങ്കിൽ ജില്ല",
   "partner.state": "സംസ്ഥാനം",

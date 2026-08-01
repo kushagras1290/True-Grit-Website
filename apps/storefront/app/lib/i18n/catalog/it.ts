@@ -57,7 +57,8 @@ const it: LocaleMessages = {
   "contact.name": "Nome",
   "contact.email": "E-mail",
   "contact.phone": "Telefono",
-  "contact.phoneHint": "Per poterti richiamare — aggiungi il prefisso internazionale per i numeri fuori dall'India.",
+  "contact.phoneHint":
+    "Per poterti richiamare — aggiungi il prefisso internazionale per i numeri fuori dall'India.",
   "contact.subject": "Oggetto",
   "contact.message": "Messaggio",
   "contact.send": "Invia messaggio",
@@ -94,7 +95,8 @@ const it: LocaleMessages = {
   "partner.contactName": "Il tuo nome",
   "partner.contactEmail": "E-mail",
   "partner.contactPhone": "Numero di cellulare",
-  "partner.contactPhoneHint": "Chiamiamo prima di scrivere. Aggiungi il prefisso internazionale per i numeri fuori dall'India.",
+  "partner.contactPhoneHint":
+    "Chiamiamo prima di scrivere. Aggiungi il prefisso internazionale per i numeri fuori dall'India.",
   "partner.farmName": "Nome della fattoria o cooperativa",
   "partner.region": "Regione o distretto",
   "partner.state": "Stato o regione",

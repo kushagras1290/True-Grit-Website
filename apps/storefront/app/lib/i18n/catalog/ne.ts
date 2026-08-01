@@ -57,7 +57,8 @@ const ne: LocaleMessages = {
   "contact.name": "नाम",
   "contact.email": "इमेल",
   "contact.phone": "फोन",
-  "contact.phoneHint": "ताकि हामी फर्केर फोन गर्न सकौं — भारत बाहिरका नम्बरहरूका लागि देश कोड थप्नुहोस्।",
+  "contact.phoneHint":
+    "ताकि हामी फर्केर फोन गर्न सकौं — भारत बाहिरका नम्बरहरूका लागि देश कोड थप्नुहोस्।",
   "contact.subject": "विषय",
   "contact.message": "सन्देश",
   "contact.send": "सन्देश पठाउनुहोस्",
@@ -94,7 +95,8 @@ const ne: LocaleMessages = {
   "partner.contactName": "तपाईंको नाम",
   "partner.contactEmail": "इमेल",
   "partner.contactPhone": "मोबाइल नम्बर",
-  "partner.contactPhoneHint": "लेख्नुअघि हामी फोन गर्छौं। भारत बाहिरका नम्बरहरूका लागि देश कोड थप्नुहोस्।",
+  "partner.contactPhoneHint":
+    "लेख्नुअघि हामी फोन गर्छौं। भारत बाहिरका नम्बरहरूका लागि देश कोड थप्नुहोस्।",
   "partner.farmName": "खेतबारी वा समूहको नाम",
   "partner.region": "क्षेत्र वा जिल्ला",
   "partner.state": "राज्य",
