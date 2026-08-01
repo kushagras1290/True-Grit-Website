@@ -344,12 +344,7 @@ export type ContentBlock = RichTextBlock | ProductCollectionBlock | FarmerStoryB
 // ---------------------------------------------------------------------------
 
 export type WorkflowState =
-  | "draft"
-  | "in_review"
-  | "changes_requested"
-  | "approved"
-  | "scheduled"
-  | "published";
+  "draft" | "in_review" | "changes_requested" | "approved" | "scheduled" | "published";
 
 export type EntityStatus =
   | "draft"
@@ -528,12 +523,7 @@ export interface AdminRecipeDetail {
 // ---------------------------------------------------------------------------
 
 export type ReturnReasonCode =
-  | "damaged"
-  | "wrong_item"
-  | "quality_issue"
-  | "not_as_described"
-  | "missing_item"
-  | "other";
+  "damaged" | "wrong_item" | "quality_issue" | "not_as_described" | "missing_item" | "other";
 
 export type ReturnStatus =
   | "requested"
@@ -597,11 +587,7 @@ export interface AdminReturnRequestDetail {
 export type SubmissionContentType = "article" | "recipe";
 
 export type SubmissionStatus =
-  | "submitted"
-  | "under_review"
-  | "changes_requested"
-  | "approved"
-  | "rejected";
+  "submitted" | "under_review" | "changes_requested" | "approved" | "rejected";
 
 export interface SubmissionIngredient {
   label: string;
@@ -712,11 +698,7 @@ export interface AdminContentCommentRow {
 // ---------------------------------------------------------------------------
 
 export type FarmRequestStatus =
-  | "submitted"
-  | "under_review"
-  | "contacted"
-  | "approved"
-  | "rejected";
+  "submitted" | "under_review" | "contacted" | "approved" | "rejected";
 
 export interface AdminFarmRequestRow {
   id: string;
