@@ -59,18 +59,29 @@ def main() -> int:
             print(f"seed foreign_key_check violations: {violations}", file=sys.stderr)
             return 1
 
-        # Editorial fixtures are intentionally small and substantive. These
-        # checks prevent the old Cartesian-product blog generator (or another
-        # batch of three-paragraph filler) from quietly returning.
+        # The editorial library deliberately matches the original visible
+        # volume, but every family now has a reader job and quality floor.
+        # These checks prevent the old cosmetic three-title generator (or a
+        # one-author content dump) from quietly returning.
         articles = conn.execute(
-            "SELECT a.id, a.title, a.reading_minutes, v.content_json"
+            "SELECT a.id, a.title, a.slug, a.reading_minutes, a.author_user_id, v.content_json"
             " FROM articles a JOIN article_versions v ON v.id = a.published_version_id"
             " WHERE a.status = 'published' ORDER BY a.id"
         ).fetchall()
-        if len(articles) != 7:
-            print(f"expected 7 curated articles, found {len(articles)}", file=sys.stderr)
+        if len(articles) != 201:
+            print(f"expected 201 useful articles, found {len(articles)}", file=sys.stderr)
             return 1
-        for article_id, title, reading_minutes, raw_content in articles:
+        if len({row[1] for row in articles}) != len(articles) or len(
+            {row[2] for row in articles}
+        ) != len(articles):
+            print("published article titles and slugs must be unique", file=sys.stderr)
+            return 1
+        author_count = len({row[4] for row in articles if row[4]})
+        if author_count < 5:
+            print(f"expected at least 5 article authors, found {author_count}", file=sys.stderr)
+            return 1
+
+        for article_id, title, _slug, reading_minutes, _author_id, raw_content in articles:
             if article_id == "art_millets" or article_id.startswith(
                 ("art_library_", "art_expansion_")
             ):
@@ -90,9 +101,50 @@ def main() -> int:
                 if block.get("type") == "rich_text"
                 for paragraph in block.get("props", {}).get("paragraphs", [])
             ] + [str(item.get("answer", "")) for item in faq_items]
-            if len(faq_items) < 5 or len(" ".join(prose).split()) < 350 or reading_minutes < 6:
+            word_count = len(" ".join(prose).split())
+            if article_id.startswith("art_guide_"):
+                quality_floor = (5, 350, 6)
+            elif article_id.startswith("art_field_"):
+                quality_floor = (5, 180, 4)
+            elif article_id.startswith("art_case_"):
+                quality_floor = (5, 180, 3)
+            else:
+                print(f"unexpected published article family: {article_id}", file=sys.stderr)
+                return 1
+            min_faq, min_words, min_minutes = quality_floor
+            if (
+                len(faq_items) < min_faq
+                or word_count < min_words
+                or reading_minutes < min_minutes
+            ):
                 print(f"article is too thin to publish: {title}", file=sys.stderr)
                 return 1
+
+        discussions = conn.execute(
+            "SELECT id, title, body, author_user_id FROM discussions"
+            " WHERE status = 'visible' ORDER BY id"
+        ).fetchall()
+        if len(discussions) != 200:
+            print(f"expected 200 useful discussions, found {len(discussions)}", file=sys.stderr)
+            return 1
+        if any(row[0].startswith("dsc_expansion_") for row in discussions):
+            print("legacy generated discussion survived", file=sys.stderr)
+            return 1
+        editorial_discussions = [
+            row for row in discussions if row[0].startswith("dsc_editorial_")
+        ]
+        if len(editorial_discussions) != 100:
+            print(
+                f"expected 100 evidence-led discussions, found {len(editorial_discussions)}",
+                file=sys.stderr,
+            )
+            return 1
+        if any(len(row[2].split()) < 45 for row in editorial_discussions):
+            print("editorial discussion prompt is too thin", file=sys.stderr)
+            return 1
+        if len({row[3] for row in discussions}) < 8:
+            print("discussion library does not have enough distinct authors", file=sys.stderr)
+            return 1
 
         home_content = conn.execute(
             "SELECT content_json FROM page_versions WHERE id ="
