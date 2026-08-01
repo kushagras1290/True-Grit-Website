@@ -883,6 +883,197 @@ def test_farm_owner_cannot_manage_site_control(client: TestClient, db: SQLiteDat
     assert client.patch("/v1/admin/site-control", json={"seoTitle": "Nope"}).status_code == 403
 
 
+def test_hero_slide_limit_is_a_setting_not_a_constant(client: TestClient, db: SQLiteDatabase):
+    """Growing the carousel past the shipped twelve is an admin change.
+
+    The cap is stored in `app_settings`, so raising it and adding the extra
+    slides can happen in one save — no deploy in between.
+    """
+    as_admin(client, db)
+
+    def slide(index: int) -> dict[str, object]:
+        return {
+            "imageUrl": f"/homepage-hero-{index}.png",
+            "imageAlt": f"Banner {index}",
+            "href": "/shop",
+            "label": f"Banner {index}",
+            "enabled": True,
+        }
+
+    assert client.get("/v1/admin/site-control").json()["heroMaxSlides"] == 12
+
+    over_the_cap = client.patch(
+        "/v1/admin/site-control", json={"heroSlides": [slide(i) for i in range(13)]}
+    )
+    assert over_the_cap.status_code == 422
+    assert "12" in over_the_cap.json()["error"]["message"]
+
+    raised = client.patch(
+        "/v1/admin/site-control",
+        json={"heroMaxSlides": 15, "heroSlides": [slide(i) for i in range(13)]},
+    )
+    assert raised.status_code == 200
+    assert raised.json()["heroMaxSlides"] == 15
+    assert len(raised.json()["heroSlides"]) == 13
+
+    # The structural ceiling still binds whatever the setting says.
+    assert client.patch("/v1/admin/site-control", json={"heroMaxSlides": 500}).status_code == 422
+
+
+def test_lowering_the_slide_limit_does_not_delete_saved_slides(
+    client: TestClient, db: SQLiteDatabase
+):
+    """A cap is a rule for the next save, never a silent truncation of the last."""
+    as_admin(client, db)
+    before = len(client.get("/v1/admin/site-control").json()["heroSlides"])
+    assert before == 12
+
+    lowered = client.patch("/v1/admin/site-control", json={"heroMaxSlides": 3})
+    assert lowered.status_code == 200
+    assert lowered.json()["heroMaxSlides"] == 3
+    assert len(lowered.json()["heroSlides"]) == before
+
+
+def test_owner_can_manage_homepage_sections(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+
+    listed = client.get("/v1/admin/homepage/sections")
+    assert listed.status_code == 200
+    body = listed.json()
+    types = [section["type"] for section in body["sections"]]
+    assert types[0] == "hero"
+    assert "page_links" in types
+    assert {entry["type"] for entry in body["addableTypes"]} == {
+        "page_links",
+        "rich_text",
+        "faq",
+        "farmer_story",
+        "newsletter",
+    }
+
+    # The three sections Site Control's own editors bind to are undeletable but
+    # switchable; everything else can go.
+    by_type = {section["type"]: section for section in body["sections"]}
+    assert by_type["hero"]["removable"] is False
+    assert by_type["category_collection"]["removable"] is False
+    assert by_type["product_collection"]["removable"] is False
+    assert by_type["page_links"]["removable"] is True
+
+    snippets = by_type["page_links"]
+    hidden = client.patch(f"/v1/admin/homepage/sections/{snippets['id']}", json={"enabled": False})
+    assert hidden.status_code == 200
+
+    # A hidden section is filtered out server-side, not merely unrendered.
+    public_types = [block["type"] for block in client.get("/v1/public/home").json()["blocks"]]
+    assert "page_links" not in public_types
+
+    shown = client.patch(f"/v1/admin/homepage/sections/{snippets['id']}", json={"enabled": True})
+    assert shown.status_code == 200
+    assert "page_links" in [
+        block["type"] for block in client.get("/v1/public/home").json()["blocks"]
+    ]
+
+
+def test_homepage_section_props_are_validated_before_they_are_stored(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    sections = client.get("/v1/admin/homepage/sections").json()["sections"]
+    snippets = next(section for section in sections if section["type"] == "page_links")
+
+    unsafe = client.patch(
+        f"/v1/admin/homepage/sections/{snippets['id']}",
+        json={
+            "props": {
+                "heading": "Explore",
+                "intro": "",
+                "items": [{"label": "Anywhere", "description": "", "href": "javascript:alert(1)"}],
+            }
+        },
+    )
+    assert unsafe.status_code == 422
+
+    saved = client.patch(
+        f"/v1/admin/homepage/sections/{snippets['id']}",
+        json={
+            "props": {
+                "heading": "Find your way around",
+                "intro": "Short tour.",
+                "items": [
+                    {
+                        "label": "Recipes",
+                        "description": "Cooking for what is in your basket.",
+                        "href": "/recipes",
+                        "enabled": True,
+                    }
+                ],
+            }
+        },
+    )
+    assert saved.status_code == 200
+    stored = next(
+        section for section in saved.json()["sections"] if section["type"] == "page_links"
+    )
+    assert stored["heading"] == "Find your way around"
+    assert stored["summary"] == "1 page snippet"
+
+
+def test_owner_can_add_reorder_and_delete_a_custom_homepage_section(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    added = client.post("/v1/admin/homepage/sections", json={"type": "rich_text"})
+    assert added.status_code == 200
+    sections = added.json()["sections"]
+    new_section = sections[-1]
+    assert new_section["type"] == "rich_text"
+    # New sections arrive switched off so placeholder copy never reaches a
+    # customer between adding the section and writing it.
+    assert new_section["enabled"] is False
+    assert new_section["removable"] is True
+
+    ids = [section["id"] for section in sections]
+    reordered = client.post("/v1/admin/homepage/sections/order", json={"ids": [ids[-1], *ids[:-1]]})
+    assert reordered.status_code == 200
+    assert reordered.json()["sections"][0]["id"] == new_section["id"]
+
+    # A partial list would delete everything left out, so it is refused.
+    assert (
+        client.post(
+            "/v1/admin/homepage/sections/order", json={"ids": [new_section["id"]]}
+        ).status_code
+        == 422
+    )
+
+    removed = client.delete(f"/v1/admin/homepage/sections/{new_section['id']}")
+    assert removed.status_code == 200
+    assert new_section["id"] not in [section["id"] for section in removed.json()["sections"]]
+
+
+def test_curated_homepage_sections_cannot_be_deleted(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    sections = client.get("/v1/admin/homepage/sections").json()["sections"]
+    hero = next(section for section in sections if section["type"] == "hero")
+    refused = client.delete(f"/v1/admin/homepage/sections/{hero['id']}")
+    assert refused.status_code == 422
+    assert "untick" in refused.json()["error"]["message"].lower()
+
+
+def test_unknown_homepage_section_type_is_refused(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    assert (
+        client.post("/v1/admin/homepage/sections", json={"type": "custom_html"}).status_code == 422
+    )
+    assert client.post("/v1/admin/homepage/sections", json={"type": "hero"}).status_code == 422
+
+
+def test_farm_owner_cannot_manage_homepage_sections(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    assert client.get("/v1/admin/homepage/sections").status_code == 403
+    assert client.post("/v1/admin/homepage/sections", json={"type": "faq"}).status_code == 403
+    assert client.delete("/v1/admin/homepage/sections/blk_hero").status_code == 403
+
+
 def test_owner_can_manage_cms_page_seo_and_blocks(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
     pages = client.get("/v1/admin/pages")

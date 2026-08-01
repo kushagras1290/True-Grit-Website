@@ -28,6 +28,7 @@ from typing import Any, Final
 
 from truegrit_api.auth.principal import Principal
 from truegrit_api.config import Settings
+from truegrit_api.domain.blocks import DEFAULT_MAX_HERO_SLIDES, HERO_SLIDES_HARD_LIMIT
 from truegrit_api.errors import PermissionDeniedError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
@@ -42,6 +43,7 @@ KEY_PAYMENTS: Final = "commerce.payments.enabled"
 KEY_PAYMENTS_NOTICE: Final = "commerce.payments_disabled_notice"
 KEY_BLOG_BANNER_URL: Final = "banner.blog.image_url"
 KEY_BLOG_BANNER_ALT: Final = "banner.blog.image_alt"
+KEY_HERO_MAX_SLIDES: Final = "homepage.hero.max_slides"
 
 # Defaults must match migration 0040. They are what a missing or unparseable row
 # resolves to, which is why every one of them is the permissive value: a
@@ -135,6 +137,82 @@ def _validate_image_url(value: str, field: str) -> str:
 async def _read_values(db: Database) -> dict[str, str]:
     rows = await db.fetch_all("SELECT key, value FROM app_settings")
     return {row["key"]: row["value"] for row in rows}
+
+
+async def _write_setting(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    key: str,
+    value: str,
+    action: str,
+    changed: dict[str, Any],
+) -> None:
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                "INSERT INTO app_settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, ?)"
+                " ON CONFLICT(key) DO UPDATE SET"
+                "  value = excluded.value, updated_at = excluded.updated_at,"
+                "  updated_by = excluded.updated_by",
+                (key, value, now, actor.user_id),
+            ),
+            audit_statement(
+                action=action,
+                entity_type="app_setting",
+                entity_id=key,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after=changed,
+            ),
+        ]
+    )
+
+
+async def load_hero_max_slides(db: Database) -> int:
+    """How many banner slides Homepage Settings will let an owner curate.
+
+    Stored rather than hardcoded so growing the carousel past the shipped
+    twelve is an admin change, not a deploy. Read defensively: a missing,
+    non-numeric or out-of-range row resolves to the shipped default instead of
+    raising, because the value is read on the page that would otherwise be the
+    only place to fix it.
+    """
+    values = await _read_values(db)
+    return clamp_hero_max_slides(values.get(KEY_HERO_MAX_SLIDES))
+
+
+def clamp_hero_max_slides(raw: str | int | None) -> int:
+    try:
+        parsed = int(str(raw).strip())
+    except (TypeError, ValueError):
+        return DEFAULT_MAX_HERO_SLIDES
+    if parsed < 1:
+        return 1
+    return min(parsed, HERO_SLIDES_HARD_LIMIT)
+
+
+async def set_hero_max_slides(
+    db: Database, actor: Principal, request_id: str, *, value: int
+) -> int:
+    """Persist the carousel cap, refusing anything the block model could not store."""
+    if value < 1 or value > HERO_SLIDES_HARD_LIMIT:
+        raise ValidationAppError(
+            f"The banner carousel limit must be between 1 and {HERO_SLIDES_HARD_LIMIT} slides."
+        )
+    await _write_setting(
+        db,
+        actor,
+        request_id,
+        key=KEY_HERO_MAX_SLIDES,
+        value=str(value),
+        action="settings.homepage_updated",
+        changed={"hero_max_slides": value},
+    )
+    return value
 
 
 async def load_storefront_settings(db: Database) -> StorefrontSettings:

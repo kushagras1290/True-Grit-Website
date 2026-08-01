@@ -835,6 +835,92 @@ export const homePage: PublicPage = {
       },
     },
     {
+      id: "blk_page_links",
+      type: "page_links",
+      version: 1,
+      enabled: true,
+      props: {
+        heading: "Everything else on True Grit",
+        intro:
+          "A one-line tour of the rest of the site, so you can find what you need without hunting through the menu.",
+        items: [
+          {
+            label: "Shop the market",
+            description: "Every organic product we carry, filtered by food type, farm or price.",
+            href: "/shop",
+            enabled: true,
+          },
+          {
+            label: "What is in season",
+            description:
+              "The harvests running right now, so fruit and vegetables arrive at their best.",
+            href: "/seasonal",
+            enabled: true,
+          },
+          {
+            label: "Our farms",
+            description: "The certified growers behind each lot, with their paperwork and methods.",
+            href: "/farms",
+            enabled: true,
+          },
+          {
+            label: "Recipes",
+            description: "Straightforward cooking for the ingredients already in your basket.",
+            href: "/recipes",
+            enabled: true,
+          },
+          {
+            label: "Journal",
+            description: "Practical guides to buying, storing and reading labels on organic food.",
+            href: "/blog",
+            enabled: true,
+          },
+          {
+            label: "Community",
+            description: "Ask a question or compare notes with other customers and growers.",
+            href: "/community",
+            enabled: true,
+          },
+          {
+            label: "Our standards",
+            description: "What certified, traceable and fairly traded actually mean here.",
+            href: "/standards",
+            enabled: true,
+          },
+          {
+            label: "About True Grit",
+            description: "Why the market exists and how it is put together.",
+            href: "/about",
+            enabled: true,
+          },
+          {
+            label: "Delivery",
+            description: "Dispatch days, packing, and what it costs to get an order to you.",
+            href: "/delivery",
+            enabled: true,
+          },
+          {
+            label: "Returns and refunds",
+            description: "What to do when food arrives damaged, late or below standard.",
+            href: "/returns",
+            enabled: true,
+          },
+          {
+            label: "Help",
+            description: "Answers to the questions our support team is asked most often.",
+            href: "/help",
+            enabled: true,
+          },
+          {
+            label: "Contact us",
+            description: "Reach a person about an order, a farm, or anything else.",
+            href: "/contact",
+            enabled: true,
+          },
+        ],
+      },
+    },
+    {
       id: "blk_newsletter",
       type: "newsletter",
       version: 1,

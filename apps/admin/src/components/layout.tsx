@@ -12,6 +12,7 @@ import {
   Database,
   FolderTree,
   HandHeart,
+  Home,
   Image,
   Images,
   Inbox,
@@ -144,8 +145,14 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
     heading: "Content",
     entries: [
       {
+        to: "/homepage-settings",
+        label: "Homepage Settings",
+        icon: <Home size={16} />,
+        permission: "settings.view",
+      },
+      {
         to: "/site-control",
-        label: "Site Control",
+        label: "Site Settings",
         icon: <Settings size={16} />,
         permission: "settings.view",
       },

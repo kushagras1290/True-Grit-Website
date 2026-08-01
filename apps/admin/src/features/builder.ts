@@ -42,5 +42,7 @@ export function blockTitle(block: PublicPageBlock): string {
       return "Rich text";
     case "newsletter":
       return `Newsletter — ${block.props.heading}`;
+    case "page_links":
+      return `Page snippets — ${block.props.heading}`;
   }
 }

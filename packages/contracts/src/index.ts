@@ -312,6 +312,28 @@ export interface NewsletterBlock extends BlockBase {
   props: { heading: string; consentText: string };
 }
 
+/**
+ * One card in a `page_links` block: a short, human-written snippet describing
+ * another storefront page. `enabled` hides a single card without deleting the
+ * copy, the same way a hero slide is parked rather than thrown away.
+ */
+export interface PageLinkItem {
+  label: string;
+  description: string;
+  href: string;
+  enabled: boolean;
+}
+
+/**
+ * A directory of the rest of the site, rendered as small snippet cards. The
+ * homepage carries one so a first-time customer can see what else exists
+ * without hunting through the header menu.
+ */
+export interface PageLinksBlock extends BlockBase {
+  type: "page_links";
+  props: { heading: string; intro: string; items: PageLinkItem[] };
+}
+
 export type PublicPageBlock =
   | HeroBlock
   | CategoryCollectionBlock
@@ -319,7 +341,8 @@ export type PublicPageBlock =
   | FarmerStoryBlock
   | FaqBlock
   | RichTextBlock
-  | NewsletterBlock;
+  | NewsletterBlock
+  | PageLinksBlock;
 
 export type PublicBlockType = PublicPageBlock["type"];
 

@@ -28,6 +28,13 @@ export interface BlockData {
 // to ever need.
 const INLINE_LINK_PATTERN = /\[([^[\]\n]{1,120})\]\(([^\s()]{1,512})\)/g;
 
+/** A same-site path the router can handle, as opposed to an absolute URL or a
+ * `mailto:`. The API already rejects anything outside that allow-list; this
+ * only decides which element renders it. */
+function isInternalHref(href: string): boolean {
+  return href.startsWith("/") && !href.startsWith("//");
+}
+
 function renderRichTextParagraph(paragraph: string) {
   const nodes: ReactNode[] = [];
   let lastIndex = 0;
@@ -39,7 +46,7 @@ function renderRichTextParagraph(paragraph: string) {
     if (match.index > lastIndex) {
       nodes.push(paragraph.slice(lastIndex, match.index));
     }
-    const isInternal = href!.startsWith("/") && !href!.startsWith("//");
+    const isInternal = isInternalHref(href!);
     nodes.push(
       isInternal ? (
         <Link
@@ -320,6 +327,65 @@ export function CmsBlock({ block, data }: { block: PublicPageBlock; data: BlockD
           </div>
         </Section>
       );
+
+    case "page_links": {
+      // A card is parked by unticking it, not by deleting the copy — the same
+      // contract as a hero slide. An empty list therefore means "the owner
+      // hid every card", which is a section with nothing left to say.
+      const items = block.props.items.filter((item) => item.enabled);
+      if (items.length === 0) return null;
+      const cardClassName =
+        "group block h-full rounded-sm border border-line bg-surface p-4 transition-colors hover:border-brand/40 hover:bg-subtle/40";
+      return (
+        <Section eyebrow="Explore the site" heading={block.props.heading} tone="subtle">
+          {block.props.intro ? (
+            <p className="-mt-4 mb-8 max-w-2xl text-base text-ink-muted">{block.props.intro}</p>
+          ) : null}
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((item, index) => {
+              const body = (
+                <>
+                  <span className="flex items-baseline justify-between gap-3">
+                    <span className="font-medium text-ink group-hover:text-brand">
+                      {item.label}
+                    </span>
+                    <span
+                      aria-hidden
+                      className="text-brand transition-transform group-hover:translate-x-0.5"
+                    >
+                      →
+                    </span>
+                  </span>
+                  {item.description ? (
+                    <span className="mt-1.5 block text-sm leading-6 text-ink-muted">
+                      {item.description}
+                    </span>
+                  ) : null}
+                </>
+              );
+              return (
+                <li key={`${item.href}-${index}`}>
+                  {isInternalHref(item.href) ? (
+                    <Link to={item.href} className={cardClassName}>
+                      {body}
+                    </Link>
+                  ) : (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={cardClassName}
+                    >
+                      {body}
+                    </a>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </Section>
+      );
+    }
 
     default: {
       // A future backend may ship block types this build does not know.
