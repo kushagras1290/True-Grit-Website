@@ -17,6 +17,22 @@ from truegrit_api.errors import ValidationAppError
 _SAFE_HREF_PREFIXES = ("/", "https://", "http://", "mailto:")
 MAX_BLOCKS = 40
 
+# Structural ceiling on the banner carousel, enforced by the block model itself.
+#
+# This is *not* the number an operator works to -- that one is
+# `homepage.hero.max_slides` in `app_settings`, editable from Homepage Settings
+# so raising the carousel from twelve to fifteen needs no deploy. This constant
+# only stops a request pasting hundreds of slides into one block and blowing up
+# every homepage render, so it deliberately sits well above any sensible
+# configured value and should effectively never be the limit that bites.
+#
+# Migration 0047 ships twelve branded banners, which is why the shipped
+# configured default is twelve: a cap below what the product actually seeds
+# would make the homepage unsaveable -- the console loads the block, sends it
+# back untouched, and gets a 422 for content it never edited.
+HERO_SLIDES_HARD_LIMIT = 40
+DEFAULT_MAX_HERO_SLIDES = 12
+
 # Inline link syntax allowed inside rich-text paragraphs: `[label](href)`.
 # This is the only way a link can appear in body copy — raw `<a>`/HTML is
 # still rejected outright (ADR-005). The storefront renderer parses the same
@@ -84,13 +100,7 @@ class HeroProps(BaseModel):
     text: str = Field(max_length=600)
     image_url: str | None = Field(default=None, alias="imageUrl", max_length=1000)
     image_alt: str | None = Field(default=None, alias="imageAlt", max_length=200)
-    # 12, not 8: migration 0047 ships a twelve-banner branded carousel, and a
-    # cap below what the product actually seeds makes the homepage unsaveable
-    # -- the admin console loads the block, sends it back untouched, and gets a
-    # 422 for content it never edited. The ceiling exists to stop someone
-    # pasting hundreds of slides into one carousel, so it has to sit above the
-    # real library rather than under it.
-    slides: list[HeroSlide] = Field(default_factory=list, max_length=12)
+    slides: list[HeroSlide] = Field(default_factory=list, max_length=HERO_SLIDES_HARD_LIMIT)
     primary_action: BlockAction = Field(alias="primaryAction")
     secondary_action: BlockAction | None = Field(default=None, alias="secondaryAction")
 
@@ -192,6 +202,37 @@ class NewsletterBlock(_BlockBase):
     props: NewsletterProps
 
 
+class PageLinkItem(BaseModel):
+    """One snippet card pointing at another page.
+
+    `href` goes through the same allow-list as every other block link, so a
+    snippet cannot become a `javascript:` payload however it was authored.
+    """
+
+    label: str = Field(min_length=1, max_length=80)
+    description: str = Field(default="", max_length=240)
+    href: str = Field(min_length=1, max_length=512)
+    enabled: bool = True
+
+    @field_validator("href")
+    @classmethod
+    def _safe_href(cls, value: str) -> str:
+        return validate_href(value)
+
+
+class PageLinksProps(BaseModel):
+    heading: str = Field(min_length=1, max_length=120)
+    intro: str = Field(default="", max_length=400)
+    # 24 is roughly twice the storefront's public route count -- room for a
+    # campaign page or two without turning the homepage into a sitemap.
+    items: list[PageLinkItem] = Field(min_length=1, max_length=24)
+
+
+class PageLinksBlock(_BlockBase):
+    type: Literal["page_links"]
+    props: PageLinksProps
+
+
 PageBlock = Annotated[
     HeroBlock
     | CategoryCollectionBlock
@@ -199,7 +240,8 @@ PageBlock = Annotated[
     | FarmerStoryBlock
     | FaqBlock
     | RichTextBlock
-    | NewsletterBlock,
+    | NewsletterBlock
+    | PageLinksBlock,
     Field(discriminator="type"),
 ]
 
@@ -220,5 +262,14 @@ def validate_blocks(raw_blocks: Any) -> list[PageBlock]:
     except ValidationError as exc:
         raise ValidationAppError(
             "Page content failed validation.",
-            details={"issues": exc.errors(include_url=False, include_input=False)[:10]},
+            # `include_context=False` matters: for a failure raised by one of the
+            # custom field validators above, Pydantic puts the live ValueError
+            # object in `ctx`, which the JSON error renderer cannot serialise --
+            # so a perfectly ordinary "unsafe href" 422 came back as a 500. The
+            # human-readable reason is already in each issue's `msg`.
+            details={
+                "issues": exc.errors(include_url=False, include_input=False, include_context=False)[
+                    :10
+                ]
+            },
         ) from exc

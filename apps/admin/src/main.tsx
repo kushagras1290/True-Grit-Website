@@ -17,6 +17,7 @@ import { ContentCommentsPage } from "./features/content-comments";
 import { DashboardPage } from "./features/dashboard";
 import { DbBrowserPage } from "./features/db-browser";
 import { FarmRequestDetailPage, FarmRequestsListPage } from "./features/farm-requests";
+import { HomepageSettingsPage } from "./features/homepage-settings";
 import { ImageGuidePage } from "./features/image-guide";
 import {
   AuditPage,
@@ -78,7 +79,14 @@ createRoot(document.getElementById("root")!).render(
               <Route path="revenue" element={<RevenuePage />} />
               <Route path="revenue/:farmId" element={<FarmRevenueDetailPage />} />
               <Route path="archive" element={<ArchivePage />} />
+              <Route path="homepage-settings" element={<HomepageSettingsPage />} />
               <Route path="site-control" element={<SiteControlPage />} />
+              {/* The homepage controls used to live under Site Control; keep
+                  bookmarks and links from older docs working. */}
+              <Route
+                path="site-control/homepage"
+                element={<Navigate to="/homepage-settings" replace />}
+              />
               <Route path="blog" element={<ArticleListPage />} />
               <Route path="blog/:id" element={<ArticleEditorPage />} />
               <Route path="recipes" element={<RecipeListPage />} />

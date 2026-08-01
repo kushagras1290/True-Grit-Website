@@ -467,12 +467,42 @@ export interface SiteControl {
   seoKeywords: string;
   featuredCategories: string[];
   freshFavourites: string[];
+  /** How many banner slides Homepage Settings will curate. Stored in
+   *  `app_settings`, so raising it is an admin change rather than a deploy. */
+  heroMaxSlides: number;
+  /** The structural ceiling the block model enforces regardless of the setting
+   *  above — shown so an operator raising the cap knows how far it can go. */
+  heroSlidesHardLimit: number;
 }
 
 export interface SiteDocuments {
   robotsTxt: string;
   sitemapXml: string;
   llmsTxt: string;
+}
+
+/**
+ * One block of the homepage, as Homepage Settings sees it.
+ *
+ * `label` and `summary` are rendered server-side so the console never has to
+ * guess at a block type it was not built with. `removable` is false for the
+ * three sections Site Control's own editors bind to — they can be switched off
+ * but not deleted.
+ */
+export interface HomepageSection {
+  id: string;
+  type: string;
+  label: string;
+  heading: string;
+  summary: string;
+  enabled: boolean;
+  removable: boolean;
+  props: Record<string, unknown>;
+}
+
+export interface HomepageSectionsResponse {
+  sections: HomepageSection[];
+  addableTypes: Array<{ type: string; label: string }>;
 }
 
 export interface CmsPageRow {
@@ -691,6 +721,122 @@ const DEMO_ME: Me = {
     "revenue.manage",
   ],
 };
+
+// ---------------------------------------------------------------------------
+// Demo-mode homepage sections
+//
+// Mirrors `api/admin.py` closely enough that Homepage Settings is genuinely
+// reviewable without an API: toggling, reordering, adding and deleting all
+// behave, against an in-memory copy of the fixture homepage that resets on
+// reload. The real labels and summaries come from the server.
+// ---------------------------------------------------------------------------
+
+const DEMO_SECTION_LABELS: Record<string, string> = {
+  hero: "Banner carousel",
+  category_collection: "Category row",
+  product_collection: "Product row",
+  page_links: "Page snippets",
+  farmer_story: "Farmer quote",
+  faq: "Questions and answers",
+  rich_text: "Text block",
+  newsletter: "Newsletter signup",
+};
+
+const DEMO_ADDABLE_TYPES = ["page_links", "rich_text", "faq", "farmer_story", "newsletter"];
+
+const DEMO_NEW_SECTION_PROPS: Record<string, Record<string, unknown>> = {
+  page_links: {
+    heading: "More from True Grit",
+    intro: "",
+    items: [
+      {
+        label: "Shop the market",
+        description: "Every organic product we carry, in one place.",
+        href: "/shop",
+        enabled: true,
+      },
+    ],
+  },
+  rich_text: { paragraphs: ["Replace this with the copy for the new section."] },
+  faq: {
+    heading: "Common questions",
+    items: [{ question: "Replace this question.", answer: "Replace this answer." }],
+  },
+  farmer_story: {
+    farmSlug: "",
+    quote: "Replace this with the grower's words.",
+    attribution: "Grower name, farm name",
+  },
+  newsletter: {
+    heading: "A slower, better way to eat.",
+    consentText: "One considered letter a month. No noise, unsubscribe anytime.",
+  },
+};
+
+const DEMO_CLAIMED_SECTION_TYPES = ["hero", "category_collection", "product_collection"];
+
+let demoHomepageBlocks: PublicPageBlock[] | null = null;
+
+function demoBlocks(): PublicPageBlock[] {
+  demoHomepageBlocks ??= structuredClone(homePage.blocks);
+  return demoHomepageBlocks;
+}
+
+function demoSectionSummary(block: PublicPageBlock): string {
+  const plural = (count: number, one: string, many: string) =>
+    `${count} ${count === 1 ? one : many}`;
+  switch (block.type) {
+    case "hero":
+      return plural(block.props.slides?.length ?? 0, "banner slide", "banner slides");
+    case "category_collection":
+      return plural(block.props.categorySlugs.length, "category", "categories");
+    case "product_collection":
+      return plural(block.props.productSlugs.length, "product", "products");
+    case "page_links":
+      return plural(block.props.items.length, "page snippet", "page snippets");
+    case "faq":
+      return plural(block.props.items.length, "question", "questions");
+    case "rich_text":
+      return plural(block.props.paragraphs.length, "paragraph", "paragraphs");
+    case "farmer_story":
+      return block.props.attribution || "No attribution";
+    case "newsletter":
+      return block.props.heading || "Newsletter signup";
+  }
+}
+
+function demoSections(): HomepageSectionsResponse {
+  const blocks = demoBlocks();
+  const claimed = new Set(
+    DEMO_CLAIMED_SECTION_TYPES.map(
+      (type) => blocks.find((block) => block.type === type)?.id,
+    ).filter((id): id is string => Boolean(id)),
+  );
+  return {
+    sections: blocks.map((block) => ({
+      id: block.id,
+      type: block.type,
+      label: DEMO_SECTION_LABELS[block.type] ?? block.type,
+      heading: "heading" in block.props ? String(block.props.heading ?? "") : "",
+      summary: demoSectionSummary(block),
+      enabled: block.enabled,
+      removable: !claimed.has(block.id),
+      props: block.props as unknown as Record<string, unknown>,
+    })),
+    addableTypes: DEMO_ADDABLE_TYPES.map((type) => ({
+      type,
+      label: DEMO_SECTION_LABELS[type] ?? type,
+    })),
+  };
+}
+
+function demoSectionIndex(sectionId: string): number {
+  const index = demoBlocks().findIndex((block) => block.id === sectionId);
+  if (index === -1) {
+    throw new ApiError("Homepage section not found.", 404, "not_found");
+  }
+  return index;
+}
 
 function hasDemoSession(): boolean {
   return typeof window !== "undefined" && window.localStorage.getItem(DEMO_AUTH_KEY) === "active";
@@ -1411,11 +1557,62 @@ export const api = {
           seoKeywords: "organic food, traceable produce, Indian farms",
           featuredCategories: adminCategories.slice(0, 12).map((category) => category.slug),
           freshFavourites: products.slice(0, 4).map((p) => p.slug),
+          heroMaxSlides: 12,
+          heroSlidesHardLimit: 40,
         })
       : get<SiteControl>("/v1/admin/site-control"),
 
   updateSiteControl: (input: Partial<SiteControl>): Promise<SiteControl> =>
     demoMode ? demo(input as SiteControl) : patch("/v1/admin/site-control", input),
+
+  homepageSections: (): Promise<HomepageSectionsResponse> =>
+    demoMode ? demo(demoSections()) : get<HomepageSectionsResponse>("/v1/admin/homepage/sections"),
+
+  addHomepageSection: (type: string): Promise<HomepageSectionsResponse> => {
+    if (!demoMode) return post("/v1/admin/homepage/sections", { type });
+    const props = DEMO_NEW_SECTION_PROPS[type];
+    if (!props) {
+      throw new ApiError(`Cannot add a "${type}" section.`, 422, "validation_error");
+    }
+    demoBlocks().push({
+      id: `blk_demo_${Date.now().toString(36)}`,
+      type,
+      version: 1,
+      enabled: false,
+      props: structuredClone(props),
+    } as unknown as PublicPageBlock);
+    return demo(demoSections());
+  },
+
+  updateHomepageSection: (
+    sectionId: string,
+    input: { enabled?: boolean; props?: Record<string, unknown> },
+  ): Promise<HomepageSectionsResponse> => {
+    if (!demoMode) {
+      return patch(`/v1/admin/homepage/sections/${encodeURIComponent(sectionId)}`, input);
+    }
+    const blocks = demoBlocks();
+    const block = blocks[demoSectionIndex(sectionId)]!;
+    if (input.enabled !== undefined) block.enabled = input.enabled;
+    if (input.props !== undefined) {
+      block.props = structuredClone(input.props) as unknown as PublicPageBlock["props"];
+    }
+    return demo(demoSections());
+  },
+
+  deleteHomepageSection: (sectionId: string): Promise<HomepageSectionsResponse> => {
+    if (!demoMode) return del(`/v1/admin/homepage/sections/${encodeURIComponent(sectionId)}`);
+    demoBlocks().splice(demoSectionIndex(sectionId), 1);
+    return demo(demoSections());
+  },
+
+  reorderHomepageSections: (ids: string[]): Promise<HomepageSectionsResponse> => {
+    if (!demoMode) return post("/v1/admin/homepage/sections/order", { ids });
+    const blocks = demoBlocks();
+    const reordered = ids.map((id) => blocks[demoSectionIndex(id)]!);
+    blocks.splice(0, blocks.length, ...reordered);
+    return demo(demoSections());
+  },
 
   siteDocuments: (): Promise<SiteDocuments> =>
     demoMode

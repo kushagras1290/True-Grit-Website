@@ -65,6 +65,40 @@ Validate the D1 schema without Wrangler:
 pnpm db:validate
 ```
 
+### Editing the site from the admin console
+
+Two pages, split by what they change:
+
+| Admin page            | Owns                                                                                                                          |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Homepage Settings** | The homepage itself: which sections run and in what order, the banner carousel, category row, product row, page snippets, SEO |
+| **Site Settings**     | Everything site-wide: announcement banner, storefront switches, CMS pages, per-route SEO, crawler files, search highlights    |
+
+The homepage is a list of blocks in `page_versions.content_json`, and Homepage Settings edits that
+list directly. Every section carries a tickbox — unticking hides it from customers without losing
+its content, because `PageRepository.get_published_by_slug` filters disabled blocks out
+server-side rather than relying on the storefront to skip them. Sections can be reordered, and new
+ones (page snippets, text, Q&A, farmer quote, newsletter) can be added without a deploy.
+
+Two rules keep that safe. New sections arrive **switched off** with placeholder copy, so nothing
+half-written reaches a customer between adding a section and writing it. And the banner carousel,
+category row and product row **cannot be deleted** — they have dedicated curators on the same page,
+and deleting one would silently discard a curated slug list that editor still believes it owns.
+Untick them instead.
+
+**Page snippets** (`page_links`) is the homepage's directory of the rest of the site: one short,
+editable line per page so a first-time customer can see what exists without opening the header
+menu. Like every block type it is a registered shape (`domain/blocks.py`, `@truegrit/contracts`),
+so each link goes through the same allow-list as the rest and raw HTML is never stored (ADR-005).
+
+**Numbers that used to need a deploy are settings.** The banner carousel's slide cap lives in
+`app_settings` as `homepage.hero.max_slides` (migration 0051) and is editable on Homepage Settings,
+so growing the carousel past the shipped twelve is an editorial change. `HERO_SLIDES_HARD_LIMIT` in
+`domain/blocks.py` remains as a separate structural ceiling the block model enforces regardless, so
+a typo in that setting can widen the carousel but never let a request store hundreds of slides in
+one block. Lowering the cap never truncates slides already saved; it only stops the next save from
+growing past it.
+
 ### Image dimensions
 
 Use these exact export canvases for every image uploaded to or shipped with the website. The
@@ -114,7 +148,7 @@ tokens are verified server-side against Meta's Graph API. Relevant environment v
 | `GOOGLE_CLIENT_ID`                                | api        | Same client id; the API accepts only Google tokens whose `aud` matches it. Empty ⇒ Google sign-in disabled. |
 | `FAST2SMS_API_KEY`                                | api        | SMS provider key for passcodes. Empty ⇒ console sender in dev; **refused in staging/production**.           |
 
-**Which methods customers actually see is an admin setting, not an env var.** Site Control →
+**Which methods customers actually see is an admin setting, not an env var.** Site Settings →
 _Storefront switches_ turns each of Google, Facebook, mobile passcodes, email/password and new
 sign-ups on or off at runtime (`app_settings`, migration 0040), and the API enforces every switch on
 the route itself — hiding a button stops the honest customer, not a replayed request. A switch can
@@ -152,7 +186,7 @@ with a finished checkout; PayPal sits behind `PAYMENT_PAYPAL_VISIBLE` and Stripe
 `PAYMENT_STRIPE_VISIBLE`, both defaulting to `false`, so pasting a key into `.env` cannot advertise a
 method that would strand a customer with an unpayable order. Configure first, reveal deliberately.
 
-**Ordering has a kill-switch.** Site Control → _Storefront switches_ → "Accept orders and payments"
+**Ordering has a kill-switch.** Site Settings → _Storefront switches_ → "Accept orders and payments"
 closes checkout without a deploy: `/v1/public/checkout` refuses (so no stock is ever reserved for an
 order nobody can pay for), `/payment-methods` reports none, and the storefront shows a contact form
 in place of checkout with an admin-editable message, so interest is still captured. Baskets are left

@@ -21,7 +21,12 @@ from truegrit_api.auth.rate_limit import (
 )
 from truegrit_api.auth.sessions import end_session, hash_token, start_session
 from truegrit_api.config import Settings, get_settings
-from truegrit_api.domain.blocks import validate_blocks, validate_href
+from truegrit_api.domain.blocks import (
+    HERO_SLIDES_HARD_LIMIT,
+    MAX_BLOCKS,
+    validate_blocks,
+    validate_href,
+)
 from truegrit_api.domain.slugs import slugify, validate_slug
 from truegrit_api.errors import (
     AuthenticationError,
@@ -88,8 +93,10 @@ from truegrit_api.services.email_templates import (
     render_submission_rejected,
 )
 from truegrit_api.services.feature_settings import (
+    load_hero_max_slides,
     load_public_settings,
     load_storefront_settings,
+    set_hero_max_slides,
     update_storefront_settings,
 )
 from truegrit_api.services.inventory import adjust_inventory, clear_inventory_levels
@@ -528,7 +535,14 @@ class SiteControlUpdate(_CamelModel):
     hero_text: str | None = Field(default=None, max_length=500)
     hero_image_url: str | None = Field(default=None, max_length=1000)
     hero_image_alt: str | None = Field(default=None, max_length=200)
-    hero_slides: list[SiteControlHeroSlide] | None = Field(default=None, max_length=8)
+    # Bounded by the block model's structural ceiling, not by the operator's
+    # own limit: that one lives in `app_settings` and is enforced below, where
+    # a breach can be reported as "you allow N slides" rather than as a schema
+    # error against a number nobody set.
+    hero_slides: list[SiteControlHeroSlide] | None = Field(
+        default=None, max_length=HERO_SLIDES_HARD_LIMIT
+    )
+    hero_max_slides: int | None = Field(default=None, ge=1, le=HERO_SLIDES_HARD_LIMIT)
     primary_action_label: str | None = Field(default=None, max_length=80)
     primary_action_href: str | None = Field(default=None, max_length=200)
     secondary_action_label: str | None = Field(default=None, max_length=80)
@@ -623,7 +637,11 @@ def _normalize_hero_slides(slides: Any) -> list[dict[str, Any]]:
     if not isinstance(slides, list):
         return []
     normalized = []
-    for slide in slides[:8]:
+    # Read up to the structural ceiling, never the operator's configured cap.
+    # Truncating to the cap here would hide already-saved banners from Homepage
+    # Settings, and the next save would then write the shortened list back as
+    # the truth -- lowering the limit would silently delete slides.
+    for slide in slides[:HERO_SLIDES_HARD_LIMIT]:
         if not isinstance(slide, dict):
             continue
         image_url = str(slide.get("imageUrl") or "")
@@ -736,12 +754,17 @@ async def get_site_control(
         "seoKeywords": page["seo_keywords"] or "",
         "featuredCategories": _home_categories(page)["props"].get("categorySlugs", []),
         "freshFavourites": _home_favourites(page)["props"].get("productSlugs", []),
+        "heroMaxSlides": await load_hero_max_slides(db),
+        # The console shows this so an operator raising the cap can see how far
+        # it is allowed to go without guessing at a 422.
+        "heroSlidesHardLimit": HERO_SLIDES_HARD_LIMIT,
     }
 
 
 @router.patch("/site-control")
 async def update_site_control(
     payload: SiteControlUpdate,
+    request: Request,
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
 ) -> Any:
@@ -755,6 +778,24 @@ async def update_site_control(
     )
     if page is None:
         raise NotFoundError("Homepage not found.")
+
+    # Applied before the slides are checked, so raising the cap and adding the
+    # extra slides can happen in one save. Lowering it never truncates what is
+    # already stored -- it only stops the next save from growing past the new
+    # number, which is reported below rather than silently dropping banners.
+    hero_slide_limit = (
+        await set_hero_max_slides(
+            db, principal, _request_id(request), value=payload.hero_max_slides
+        )
+        if payload.hero_max_slides is not None
+        else await load_hero_max_slides(db)
+    )
+    if payload.hero_slides is not None and len(payload.hero_slides) > hero_slide_limit:
+        raise ValidationAppError(
+            f"The banner carousel is limited to {hero_slide_limit} slides."
+            " Raise the limit in Homepage Settings to add more."
+        )
+
     content = json.loads(page["content_json"])
     blocks = content.setdefault("blocks", [])
     hero = next((block for block in blocks if block.get("type") == "hero"), None)
@@ -913,6 +954,327 @@ async def update_site_control(
                 ),
             )
     return await get_site_control(db, principal)
+
+
+# ---------------------------------------------------------------------------
+# Homepage sections
+#
+# The homepage is a list of blocks in `page_versions.content_json`. Site
+# Control edits the *contents* of the three curated ones (banner, category row,
+# product row); these routes edit the *list itself* -- what is shown, in what
+# order, and what extra sections exist.
+#
+# Every write re-validates the whole block list through the same registry the
+# CMS page editor uses (ADR-005), so a section added here can never be a shape
+# the storefront does not know how to render.
+# ---------------------------------------------------------------------------
+
+# Human names for the section list. Falls back to the raw type for a block a
+# future build introduces before this map catches up.
+HOMEPAGE_SECTION_LABELS: dict[str, str] = {
+    "hero": "Banner carousel",
+    "category_collection": "Category row",
+    "product_collection": "Product row",
+    "page_links": "Page snippets",
+    "farmer_story": "Farmer quote",
+    "faq": "Questions and answers",
+    "rich_text": "Text block",
+    "newsletter": "Newsletter signup",
+}
+
+# Sections an owner may add from Homepage Settings. Deliberately the
+# self-contained ones: the catalogue-backed rows already have dedicated
+# curators on the same page, and a second copy of either would only compete
+# with them for the same slugs.
+ADDABLE_HOMEPAGE_SECTION_TYPES: tuple[str, ...] = (
+    "page_links",
+    "rich_text",
+    "faq",
+    "farmer_story",
+    "newsletter",
+)
+
+# Starting content for a new section. Written so the block validates on save
+# and reads as an obvious placeholder in the editor -- it never reaches a
+# customer, because new sections are created switched off.
+_NEW_SECTION_PROPS: dict[str, dict[str, Any]] = {
+    "page_links": {
+        "heading": "More from True Grit",
+        "intro": "",
+        "items": [
+            {
+                "label": "Shop the market",
+                "description": "Every organic product we carry, in one place.",
+                "href": "/shop",
+                "enabled": True,
+            }
+        ],
+    },
+    "rich_text": {"paragraphs": ["Replace this with the copy for the new section."]},
+    "faq": {
+        "heading": "Common questions",
+        "items": [{"question": "Replace this question.", "answer": "Replace this answer."}],
+    },
+    "farmer_story": {
+        "farmSlug": "",
+        "quote": "Replace this with the grower's words.",
+        "attribution": "Grower name, farm name",
+    },
+    "newsletter": {
+        "heading": "A slower, better way to eat.",
+        "consentText": "One considered letter a month. No noise, unsubscribe anytime.",
+    },
+}
+
+# Sections Site Control's own editors bind to. Only the first block of each
+# type is claimed -- a second product row added later is an ordinary custom
+# section and stays removable. Disabling a claimed section is always allowed;
+# deleting one would silently discard a curated slug list the other page still
+# believes it owns.
+_CLAIMED_SECTION_TYPES: tuple[str, ...] = ("hero", "category_collection", "product_collection")
+
+
+def _claimed_section_ids(blocks: list[dict[str, Any]]) -> set[str]:
+    claimed: set[str] = set()
+    for block_type in _CLAIMED_SECTION_TYPES:
+        first = next((block for block in blocks if block.get("type") == block_type), None)
+        if first is not None and isinstance(first.get("id"), str):
+            claimed.add(first["id"])
+    return claimed
+
+
+def _section_summary(block: dict[str, Any]) -> str:
+    """One line describing what is actually inside the section."""
+    props = block.get("props") or {}
+    block_type = block.get("type")
+    if block_type == "hero":
+        slides = props.get("slides")
+        count = len(slides) if isinstance(slides, list) else 0
+        return f"{count} banner slide{'' if count == 1 else 's'}"
+    if block_type == "category_collection":
+        slugs = props.get("categorySlugs")
+        count = len(slugs) if isinstance(slugs, list) else 0
+        return f"{count} categor{'y' if count == 1 else 'ies'}"
+    if block_type == "product_collection":
+        slugs = props.get("productSlugs")
+        count = len(slugs) if isinstance(slugs, list) else 0
+        return f"{count} product{'' if count == 1 else 's'}"
+    if block_type == "page_links":
+        items = props.get("items")
+        count = len(items) if isinstance(items, list) else 0
+        return f"{count} page snippet{'' if count == 1 else 's'}"
+    if block_type == "faq":
+        items = props.get("items")
+        count = len(items) if isinstance(items, list) else 0
+        return f"{count} question{'' if count == 1 else 's'}"
+    if block_type == "rich_text":
+        paragraphs = props.get("paragraphs")
+        count = len(paragraphs) if isinstance(paragraphs, list) else 0
+        return f"{count} paragraph{'' if count == 1 else 's'}"
+    if block_type == "farmer_story":
+        return str(props.get("attribution") or "No attribution")
+    if block_type == "newsletter":
+        return str(props.get("heading") or "Newsletter signup")
+    return ""
+
+
+def _section_payload(block: dict[str, Any], claimed: set[str]) -> dict[str, Any]:
+    block_type = str(block.get("type") or "")
+    block_id = str(block.get("id") or "")
+    props = block.get("props") or {}
+    return {
+        "id": block_id,
+        "type": block_type,
+        "label": HOMEPAGE_SECTION_LABELS.get(block_type, block_type or "Unknown section"),
+        "heading": str(props.get("heading") or ""),
+        "summary": _section_summary(block),
+        "enabled": bool(block.get("enabled", True)),
+        # False for the three sections Site Control's own editors own. The
+        # console greys out their delete button rather than letting the request
+        # fail after the fact.
+        "removable": block_id not in claimed,
+        "props": props,
+    }
+
+
+class HomepageSectionCreate(_CamelModel):
+    type: str = Field(min_length=1, max_length=40)
+
+
+class HomepageSectionUpdate(_CamelModel):
+    enabled: bool | None = None
+    props: dict[str, Any] | None = None
+
+
+class HomepageSectionOrder(_CamelModel):
+    ids: list[str] = Field(min_length=1, max_length=MAX_BLOCKS)
+
+
+async def _homepage_version(db: Database) -> dict[str, Any]:
+    page = await db.fetch_one(
+        """
+        SELECT p.id, p.published_version_id, v.content_json
+        FROM pages p
+        JOIN page_versions v ON v.id = p.published_version_id
+        WHERE p.slug = 'home' AND p.archived_at IS NULL
+        """
+    )
+    if page is None:
+        raise NotFoundError("Homepage not found.")
+    return page
+
+
+def _homepage_blocks(page: dict[str, Any]) -> list[dict[str, Any]]:
+    content = json.loads(page["content_json"])
+    blocks = content.get("blocks")
+    if not isinstance(blocks, list):
+        return []
+    return [block for block in blocks if isinstance(block, dict)]
+
+
+async def _write_homepage_blocks(
+    db: Database,
+    page: dict[str, Any],
+    blocks: list[dict[str, Any]],
+    principal: Principal,
+) -> list[dict[str, Any]]:
+    """Validate, persist, and return the saved sections.
+
+    Validation covers the whole list rather than the one block being touched:
+    a partial check would let the storefront receive a page this build cannot
+    render because of a block nobody edited today.
+    """
+    validated = validate_blocks(blocks)
+    normalized = [
+        block.model_dump(mode="json", by_alias=True, exclude_none=True) for block in validated
+    ]
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                "UPDATE page_versions SET content_json = ? WHERE id = ?",
+                (
+                    json.dumps({"blocks": normalized}, separators=(",", ":")),
+                    page["published_version_id"],
+                ),
+            ),
+            (
+                "UPDATE pages SET updated_at = ?, updated_by = ? WHERE id = ?",
+                (now, principal.user_id, page["id"]),
+            ),
+        ]
+    )
+    claimed = _claimed_section_ids(normalized)
+    return [_section_payload(block, claimed) for block in normalized]
+
+
+def _find_section(blocks: list[dict[str, Any]], section_id: str) -> int:
+    for index, block in enumerate(blocks):
+        if block.get("id") == section_id:
+            return index
+    raise NotFoundError("Homepage section not found.")
+
+
+@router.get("/homepage/sections")
+async def list_homepage_sections(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("settings.view"))],
+) -> Any:
+    blocks = _homepage_blocks(await _homepage_version(db))
+    claimed = _claimed_section_ids(blocks)
+    return {
+        "sections": [_section_payload(block, claimed) for block in blocks],
+        "addableTypes": [
+            {"type": block_type, "label": HOMEPAGE_SECTION_LABELS[block_type]}
+            for block_type in ADDABLE_HOMEPAGE_SECTION_TYPES
+        ],
+    }
+
+
+@router.post("/homepage/sections")
+async def create_homepage_section(
+    payload: HomepageSectionCreate,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    if payload.type not in ADDABLE_HOMEPAGE_SECTION_TYPES:
+        raise ValidationAppError(f"Cannot add a {payload.type!r} section from Homepage Settings.")
+    page = await _homepage_version(db)
+    blocks = _homepage_blocks(page)
+    if len(blocks) >= MAX_BLOCKS:
+        raise ValidationAppError(f"The homepage already has the maximum of {MAX_BLOCKS} sections.")
+    blocks.append(
+        {
+            "id": new_id("blk"),
+            "type": payload.type,
+            "version": 1,
+            # Switched off on purpose: a new section starts as placeholder copy,
+            # and placeholder copy must never reach a customer because someone
+            # was interrupted between adding it and writing it.
+            "enabled": False,
+            "props": json.loads(json.dumps(_NEW_SECTION_PROPS[payload.type])),
+        }
+    )
+    return {"sections": await _write_homepage_blocks(db, page, blocks, principal)}
+
+
+@router.patch("/homepage/sections/{section_id}")
+async def update_homepage_section(
+    section_id: str,
+    payload: HomepageSectionUpdate,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    page = await _homepage_version(db)
+    blocks = _homepage_blocks(page)
+    index = _find_section(blocks, section_id)
+    fields = payload.model_dump(exclude_unset=True)
+    if "enabled" in fields and payload.enabled is not None:
+        blocks[index]["enabled"] = payload.enabled
+    if "props" in fields and payload.props is not None:
+        # Type and id stay put: this route edits a section's contents, never
+        # what kind of section it is.
+        blocks[index]["props"] = payload.props
+    return {"sections": await _write_homepage_blocks(db, page, blocks, principal)}
+
+
+@router.delete("/homepage/sections/{section_id}")
+async def delete_homepage_section(
+    section_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    page = await _homepage_version(db)
+    blocks = _homepage_blocks(page)
+    index = _find_section(blocks, section_id)
+    if section_id in _claimed_section_ids(blocks):
+        raise ValidationAppError(
+            "This section is edited elsewhere in Homepage Settings and cannot be deleted."
+            " Untick it to hide it from customers instead."
+        )
+    blocks.pop(index)
+    return {"sections": await _write_homepage_blocks(db, page, blocks, principal)}
+
+
+@router.post("/homepage/sections/order")
+async def reorder_homepage_sections(
+    payload: HomepageSectionOrder,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    page = await _homepage_version(db)
+    blocks = _homepage_blocks(page)
+    by_id = {str(block.get("id")): block for block in blocks}
+    # An exact-set check, not a "reorder what I recognise". A short list would
+    # otherwise delete every section the caller left out, which is a very
+    # expensive way to spell "drag".
+    if len(payload.ids) != len(set(payload.ids)) or set(payload.ids) != set(by_id):
+        raise ValidationAppError("The new order must list every homepage section exactly once.")
+    return {
+        "sections": await _write_homepage_blocks(
+            db, page, [by_id[section_id] for section_id in payload.ids], principal
+        )
+    }
 
 
 async def _site_document_payload(db: Database, rows: list[dict[str, Any]]) -> dict[str, str]:
