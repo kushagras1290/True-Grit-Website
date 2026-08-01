@@ -16,7 +16,10 @@ from fastapi.testclient import TestClient
 from tests.integration.conftest import SESSION_COOKIE, create_session
 from truegrit_api.platform.database import SQLiteDatabase
 
-ARTICLE_SLUG = "quiet-revival-of-indian-millets"
+# Migration 0046 retired the generated demo posts (including the millet
+# article these tests used to name) and published a small curated library in
+# their place. Point at one of those instead of a slug that no longer exists.
+ARTICLE_SLUG = "choose-ragi-jowar-bajra-little-millet"
 RECIPE_SLUG = "crisp-sprouted-ragi-dosa"
 BANNER_URL = "/media/images/img_banner_test.webp"
 BANNER_ALT = "Millet fields at harvest"

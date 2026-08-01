@@ -43,11 +43,19 @@ def test_bootstrap_navigation_and_announcement(client: TestClient):
 def test_home_returns_published_blocks_only(client: TestClient):
     body = client.get("/v1/public/home").json()
     types = [block["type"] for block in body["blocks"]]
+    hero = body["blocks"][0]
     assert types[0] == "hero"
-    assert body["blocks"][0]["props"]["imageUrl"] == "/homepage-hero.png"
-    assert body["blocks"][0]["props"]["imageAlt"] == "Organic mangoes held in a sunlit orchard"
-    assert len(body["blocks"][0]["props"]["slides"]) == 5
-    assert body["blocks"][0]["props"]["slides"][1]["href"] == "/category/organic-vegetables"
+    # Migration 0047 replaced the single placeholder hero with the twelve-image
+    # branded banner library. Asserted by shape rather than by one hard-coded
+    # filename so re-art-directing the carousel does not break this test --
+    # what matters here is that the homepage serves a populated hero, not which
+    # picture is currently first.
+    assert hero["props"]["imageUrl"].startswith("/banners/home/")
+    assert hero["props"]["imageAlt"]
+    slides = hero["props"]["slides"]
+    assert len(slides) == 12
+    assert all(slide["imageUrl"].startswith("/banners/home/") for slide in slides)
+    assert all(slide["href"].startswith("/") for slide in slides)
     assert "product_collection" in types
     assert body["seo"]["title"].startswith("True Grit")
 
@@ -73,11 +81,13 @@ def test_public_content_surfaces_read_from_database(client: TestClient):
     ragi_recipe = client.get("/v1/public/recipes/crisp-sprouted-ragi-dosa").json()
     assert ragi_recipe["ingredients"][0]["productSlug"] == "sprouted-ragi-flour"
 
+    # Seven curated guides, since migration 0046 retired the 200 generated
+    # filler posts. Fewer than one page, so the listing returns them all.
     article_page = client.get("/v1/public/articles").json()
-    assert article_page["total"] == 201
+    assert article_page["total"] == 7
     assert article_page["limit"] == 10
-    assert len(article_page["items"]) == 10
-    millet_article = client.get("/v1/public/articles/quiet-revival-of-indian-millets").json()
+    assert len(article_page["items"]) == 7
+    millet_article = client.get("/v1/public/articles/choose-ragi-jowar-bajra-little-millet").json()
     assert millet_article["authorName"] == "Kabir Mehta"
 
 
@@ -91,11 +101,15 @@ def test_public_content_lists_support_pagination(client: TestClient):
         item["id"] for item in second_recipes["items"]
     )
 
+    # The curated article library (migration 0046) is seven posts, so page one
+    # holds all of them and an offset past the end returns an empty page rather
+    # than a partial one -- still the contract under test: `total` is the whole
+    # collection, independent of the window asked for.
     first_articles = client.get("/v1/public/articles", params={"limit": 10, "offset": 0}).json()
     last_articles = client.get("/v1/public/articles", params={"limit": 10, "offset": 200}).json()
-    assert first_articles["total"] == last_articles["total"] == 201
-    assert len(first_articles["items"]) == 10
-    assert len(last_articles["items"]) == 1
+    assert first_articles["total"] == last_articles["total"] == 7
+    assert len(first_articles["items"]) == 7
+    assert len(last_articles["items"]) == 0
 
 
 def test_community_discussions_return_total_for_pagination(client: TestClient):
@@ -135,7 +149,7 @@ def test_public_pages_and_site_documents_have_generated_defaults(client: TestCli
     assert "/about" in pages_sitemap
 
     blog_sitemap = client.get("/v1/public/sitemaps/blog").text
-    assert "/blog/quiet-revival-of-indian-millets" in blog_sitemap
+    assert "/blog/choose-ragi-jowar-bajra-little-millet" in blog_sitemap
 
     llms = client.get("/v1/public/site-documents/llms_txt").json()
     assert "## Core Pages" in llms["content"]

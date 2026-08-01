@@ -84,7 +84,13 @@ class HeroProps(BaseModel):
     text: str = Field(max_length=600)
     image_url: str | None = Field(default=None, alias="imageUrl", max_length=1000)
     image_alt: str | None = Field(default=None, alias="imageAlt", max_length=200)
-    slides: list[HeroSlide] = Field(default_factory=list, max_length=8)
+    # 12, not 8: migration 0047 ships a twelve-banner branded carousel, and a
+    # cap below what the product actually seeds makes the homepage unsaveable
+    # -- the admin console loads the block, sends it back untouched, and gets a
+    # 422 for content it never edited. The ceiling exists to stop someone
+    # pasting hundreds of slides into one carousel, so it has to sit above the
+    # real library rather than under it.
+    slides: list[HeroSlide] = Field(default_factory=list, max_length=12)
     primary_action: BlockAction = Field(alias="primaryAction")
     secondary_action: BlockAction | None = Field(default=None, alias="secondaryAction")
 
