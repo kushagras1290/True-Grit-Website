@@ -15,6 +15,7 @@ import { CategoryEditorPage, CategoryListPage } from "./features/categories";
 import { DiscussionDetailPage, DiscussionsListPage } from "./features/community";
 import { DashboardPage } from "./features/dashboard";
 import { DbBrowserPage } from "./features/db-browser";
+import { ImageGuidePage } from "./features/image-guide";
 import {
   AuditPage,
   ContactAttemptsPage,
@@ -79,6 +80,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="recipes" element={<RecipeListPage />} />
               <Route path="recipes/:id" element={<RecipeEditorPage />} />
               <Route path="media" element={<MediaPage />} />
+              <Route path="image-guide" element={<ImageGuidePage />} />
               <Route path="submissions" element={<SubmissionsListPage />} />
               <Route path="submissions/:id" element={<SubmissionDetailPage />} />
               <Route path="community" element={<DiscussionsListPage />} />

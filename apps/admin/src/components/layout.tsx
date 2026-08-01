@@ -12,6 +12,7 @@ import {
   Database,
   FolderTree,
   Image,
+  Images,
   Inbox,
   KeyRound,
   LayoutDashboard,
@@ -148,6 +149,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         permission: "recipes.view",
       },
       { to: "/media", label: "Media Library", icon: <Image size={16} />, permission: "media.view" },
+      {
+        to: "/image-guide",
+        label: "Image Size Guide",
+        icon: <Images size={16} />,
+        permission: null,
+      },
       {
         to: "/submissions",
         label: "Submissions",

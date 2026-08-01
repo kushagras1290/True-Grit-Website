@@ -65,6 +65,34 @@ Validate the D1 schema without Wrangler:
 pnpm db:validate
 ```
 
+### Image dimensions
+
+Use these exact export canvases for every image uploaded to or shipped with the website. The
+admin console repeats this reference at **Image Size Guide** and visualises each crop-safe area.
+
+| Image type                            | Exact canvas     | Centred safe area | Where it is used                                                                 |
+| ------------------------------------- | ---------------- | ----------------- | -------------------------------------------------------------------------------- |
+| Homepage and landing-page banner      | `1672 × 464 px`  | `440 × 400 px`    | Homepage carousel plus the Blog, Recipes, and Community landing pages            |
+| Category image                        | `1672 × 464 px`  | `360 × 400 px`    | Category page banner plus 3:2 rail and 4:5 feature tiles                         |
+| Article, recipe, and discussion image | `1672 × 464 px`  | `440 × 400 px`    | Detail-page banner plus 16:9 listing cards                                       |
+| Product image                         | `1200 × 1200 px` | `1080 × 1080 px`  | Product cards, product detail, and related-product grids                         |
+| True Grit brand mark                  | `256 × 256 px`   | `224 × 224 px`    | Storefront/admin navigation, authentication screens, and the banner brand lockup |
+| Browser favicon                       | `64 × 64 px`     | `48 × 48 px`      | Browser tabs, bookmarks, and shortcuts                                           |
+
+The canvas is the file's required outer size. The safe area is the centred region that must hold
+the essential subject. `object-cover` removes the edges on narrow screens and on reused card/tile
+surfaces; anything outside the safe area is expendable background.
+
+- Export photographs as WebP; keep banners at or below 250 KB and product images at or below
+  300 KB. Use PNG only for the favicon or when transparency is genuinely required.
+- Do not upload a 16:9 image for a website banner. Banner files must be `1672 × 464 px` before
+  upload, not merely cropped by CSS after upload.
+- Do not bake the True Grit name, logo, headings, buttons, or watermarks into photographs. The
+  interface adds the brand lockup and copy, and embedded text will be cropped on mobile.
+- Use sRGB, write useful alt text, and check the result at phone and desktop widths before
+  publishing. The upload API accepts JPG, PNG, WebP, and GIF files up to 5 MB, but those are
+  transport limits rather than recommended production targets.
+
 Both frontends run in **demo-data mode** when `VITE_API_URL` / `PUBLIC_API_URL` is not set: they
 render the deterministic fixture catalogue from `packages/contracts` so the full experience is
 reviewable before Cloudflare resources exist. Point them at a deployed API to go live.
