@@ -81,14 +81,16 @@ def test_public_content_surfaces_read_from_database(client: TestClient):
     ragi_recipe = client.get("/v1/public/recipes/crisp-sprouted-ragi-dosa").json()
     assert ragi_recipe["ingredients"][0]["productSlug"] == "sprouted-ragi-flour"
 
-    # Seven curated guides, since migration 0046 retired the 200 generated
-    # filler posts. Fewer than one page, so the listing returns them all.
+    # Migration 0050 restores the original visible volume without restoring
+    # the old three-template filler catalogue. The first page also proves the
+    # published byline is no longer one synthetic editor on every story.
     article_page = client.get("/v1/public/articles").json()
-    assert article_page["total"] == 7
+    assert article_page["total"] == 201
     assert article_page["limit"] == 10
-    assert len(article_page["items"]) == 7
+    assert len(article_page["items"]) == 10
+    assert len({item["authorName"] for item in article_page["items"]}) >= 3
     millet_article = client.get("/v1/public/articles/choose-ragi-jowar-bajra-little-millet").json()
-    assert millet_article["authorName"] == "Kabir Mehta"
+    assert millet_article["authorName"] == "True Grit Kitchen"
 
 
 def test_public_content_lists_support_pagination(client: TestClient):
@@ -101,15 +103,13 @@ def test_public_content_lists_support_pagination(client: TestClient):
         item["id"] for item in second_recipes["items"]
     )
 
-    # The curated article library (migration 0046) is seven posts, so page one
-    # holds all of them and an offset past the end returns an empty page rather
-    # than a partial one -- still the contract under test: `total` is the whole
-    # collection, independent of the window asked for.
+    # The restored library contains 201 distinct posts. An offset of 200 must
+    # return the final post while preserving the collection-wide total.
     first_articles = client.get("/v1/public/articles", params={"limit": 10, "offset": 0}).json()
     last_articles = client.get("/v1/public/articles", params={"limit": 10, "offset": 200}).json()
-    assert first_articles["total"] == last_articles["total"] == 7
-    assert len(first_articles["items"]) == 7
-    assert len(last_articles["items"]) == 0
+    assert first_articles["total"] == last_articles["total"] == 201
+    assert len(first_articles["items"]) == 10
+    assert len(last_articles["items"]) == 1
 
 
 def test_community_discussions_return_total_for_pagination(client: TestClient):
@@ -122,6 +122,7 @@ def test_community_discussions_return_total_for_pagination(client: TestClient):
     assert first_page["total"] == last_page["total"] == 200
     assert len(first_page["items"]) == 12
     assert len(last_page["items"]) == 8
+    assert all(not item["id"].startswith("dsc_expansion_") for item in first_page["items"])
 
 
 def test_public_pages_and_site_documents_have_generated_defaults(client: TestClient):

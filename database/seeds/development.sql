@@ -2828,7 +2828,17 @@ INSERT INTO articles (
   indexing_policy, hero_image_url, hero_image_alt
 )
 SELECT
-  id, 'Customer guide: ' || slug, title, slug, excerpt, 'usr_editor', NULL,
+  id, 'Customer guide: ' || slug, title, slug, excerpt,
+  CASE id
+    WHEN 'art_guide_organic_label' THEN 'usr_author_buying'
+    WHEN 'art_guide_produce_storage' THEN 'usr_author_food_care'
+    WHEN 'art_guide_pantry_sizes' THEN 'usr_author_kitchen'
+    WHEN 'art_guide_imperfect_produce' THEN 'usr_author_food_care'
+    WHEN 'art_guide_traceability' THEN 'usr_author_farms'
+    WHEN 'art_guide_millets' THEN 'usr_author_kitchen'
+    ELSE 'usr_author_kitchen'
+  END,
+  NULL,
   reading_minutes, 'published', 'arv_' || id || '_1', published_at, seo_title,
   seo_description, published_at, 'usr_editor', published_at, 'usr_editor', keywords,
   'index', '/banners/content/blog-editorial-guides.webp', image_alt
@@ -2851,6 +2861,122 @@ FROM curated_blog_articles
 WHERE EXISTS (SELECT 1 FROM articles WHERE articles.id = curated_blog_articles.id);
 
 DROP TABLE curated_blog_articles;
+
+-- Migration 0050 runs before development fixtures exist, so its community
+-- case-note backfill is intentionally empty on a fresh database. Replay that
+-- small, deterministic projection now that the 50 useful problem/outcome
+-- thread pairs exist. The 144 field guides already came from the migration;
+-- these 50 notes plus the seven long guides restore 201 published articles.
+WITH paired_threads AS (
+  SELECT
+    CAST(substr(question.id, 13, 3) AS INTEGER) AS n,
+    question.body AS problem,
+    outcome.title AS title,
+    outcome.body AS outcome
+  FROM discussions question
+  JOIN discussions outcome
+    ON outcome.id = substr(question.id, 1, length(question.id) - 1) || 'b'
+  WHERE question.id LIKE 'dsc_library_%_a'
+)
+INSERT OR IGNORE INTO articles (
+  id, internal_name, title, slug, excerpt, author_user_id, hero_media_id,
+  reading_minutes, status, published_version_id, published_at, seo_title,
+  seo_description, created_at, created_by, updated_at, updated_by, seo_keywords,
+  indexing_policy, hero_image_url, hero_image_alt
+)
+SELECT
+  printf('art_case_%03d', n),
+  'Community-tested kitchen note ' || n,
+  title,
+  'community-tested-kitchen-note-' || printf('%03d', n),
+  problem,
+  CASE n % 5
+    WHEN 0 THEN 'usr_author_community'
+    WHEN 1 THEN 'usr_author_food_care'
+    WHEN 2 THEN 'usr_author_kitchen'
+    WHEN 3 THEN 'usr_author_buying'
+    ELSE 'usr_author_farms'
+  END,
+  NULL,
+  3,
+  'published',
+  printf('arv_case_%03d_1', n),
+  datetime('2026-02-01T09:00:00Z', printf('+%d days', n)),
+  title,
+  problem,
+  '2026-01-20T09:00:00Z',
+  'usr_author_community',
+  datetime('2026-02-01T09:00:00Z', printf('+%d days', n)),
+  'usr_author_community',
+  'community tested kitchen storage cooking troubleshooting',
+  'index',
+  '/banners/content/blog-editorial-guides.webp',
+  'A practical True Grit community kitchen test and its result'
+FROM paired_threads;
+
+WITH paired_threads AS (
+  SELECT
+    CAST(substr(question.id, 13, 3) AS INTEGER) AS n,
+    question.body AS problem,
+    outcome.body AS outcome
+  FROM discussions question
+  JOIN discussions outcome
+    ON outcome.id = substr(question.id, 1, length(question.id) - 1) || 'b'
+  WHERE question.id LIKE 'dsc_library_%_a'
+)
+INSERT OR IGNORE INTO article_versions (
+  id, article_id, version_number, content_json, workflow_state, created_at,
+  created_by, approved_at, approved_by, published_at
+)
+SELECT
+  printf('arv_case_%03d_1', n),
+  printf('art_case_%03d', n),
+  1,
+  json_object(
+    'blocks', json_array(
+      json_object(
+        'id', printf('blk_case_%03d_story', n), 'type', 'rich_text',
+        'version', 1, 'enabled', json('true'),
+        'props', json_object('paragraphs', json_array(
+          problem,
+          outcome,
+          'Treat this as a tested starting point, not a universal guarantee. Variety, maturity, room temperature, refrigerator conditions and equipment can change the result. Try the smallest useful batch, record what you changed and keep the part that works in your kitchen.',
+          'Before repeating the method, inspect the food and the storage conditions again. Do not use a successful texture result to overrule mould, leaking decay, a rotten smell, unsafe holding time or appliance guidance. Quality experiments are useful only inside clear food-safety boundaries.'
+        ))
+      ),
+      json_object(
+        'id', printf('blk_case_%03d_checklist', n), 'type', 'faq',
+        'version', 1, 'enabled', json('true'),
+        'props', json_object(
+          'heading', 'Use the result without losing the context',
+          'items', json_array(
+            json_object('question','What was the starting problem?','answer',problem),
+            json_object('question','What changed in the successful attempt?','answer',outcome),
+            json_object('question','How should I test it?','answer','Change one factor, keep the batch small and note the time, temperature and result before repeating it.'),
+            json_object('question','When should I discard rather than rescue?','answer','Discard food with mould, leaking rot, an unmistakably rotten smell or a storage history that makes safety uncertain. A useful waste-reduction habit never depends on talking yourself past a warning sign.'),
+            json_object('question','Which details help other readers?','answer','Share the ingredient variety or form, approximate quantity, room or refrigerator conditions, timing and the result. Those details explain why two honest attempts may differ.')
+          )
+        )
+      )
+    ),
+    'pullQuote', outcome
+  ),
+  'published',
+  '2026-01-20T09:00:00Z',
+  'usr_author_community',
+  datetime('2026-02-01T08:30:00Z', printf('+%d days', n)),
+  'usr_author_buying',
+  datetime('2026-02-01T09:00:00Z', printf('+%d days', n))
+FROM paired_threads;
+
+INSERT OR IGNORE INTO search_content (entity_type, entity_id, title, slug, excerpt, keywords)
+SELECT 'article', id, title, slug, excerpt, seo_keywords
+FROM articles
+WHERE id LIKE 'art_case_%';
+
+-- Keep the 100 specific problem/outcome threads. Remove only the 100 old
+-- expansion prompts; migration 0050 supplied 100 evidence-led replacements.
+DELETE FROM discussions WHERE id LIKE 'dsc_expansion_%';
 
 -- Keep repository-backed banner paths and the database carousel identical
 -- after a development reseed.
