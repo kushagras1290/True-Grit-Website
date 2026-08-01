@@ -23,7 +23,12 @@ WHERE id = 'art_millets'
    OR id LIKE 'art_expansion_%'
    OR id LIKE 'art_guide_%';
 
-CREATE TEMP TABLE curated_blog_articles (
+-- A plain scratch table, not TEMP: D1 refuses `CREATE TEMP TABLE` outright
+-- (`not authorized: SQLITE_AUTH`), which fails the whole migration and blocks
+-- every deploy. Local SQLite allows temporary tables, so `pnpm db:validate`
+-- passes and the problem only shows up against the real database. It is
+-- dropped at the end of this file either way, so nothing is left behind.
+CREATE TABLE curated_blog_articles (
   id TEXT PRIMARY KEY,
   title TEXT NOT NULL,
   slug TEXT NOT NULL,

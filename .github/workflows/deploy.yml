@@ -33,6 +33,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      # Separates "the token cannot reach D1" from "the SQL was rejected".
+      # Both surface as failures on the step below, but they need opposite
+      # fixes -- a new API token vs. a corrected migration -- and D1 reports
+      # the second as `not authorized: SQLITE_AUTH`, which reads like the
+      # first. Never fails the build: it is evidence, not a gate.
+      - name: Check Cloudflare credentials reach D1
+        working-directory: apps/api
+        continue-on-error: true
+        run: |
+          npx --yes wrangler@4.110.0 whoami
+          npx --yes wrangler@4.110.0 d1 info truegrit-dev
       # Idempotent: already-applied migrations are skipped. Keeps the D1 schema
       # in sync when a push adds new migration files.
       - name: Apply D1 migrations
