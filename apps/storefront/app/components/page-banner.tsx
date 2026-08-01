@@ -35,6 +35,21 @@ export interface PageBannerProps {
   loading?: "eager" | "lazy";
 }
 
+/** Exact brand lockup shared by every photographic banner. */
+export function BannerBrandLockup() {
+  return (
+    <span className="inline-flex w-fit items-center gap-2.5 rounded-sm border border-white/25 bg-black/25 px-2.5 py-2 text-white shadow-sm backdrop-blur-sm">
+      <img
+        src="/brand/true-grit-mark.webp"
+        alt=""
+        aria-hidden
+        className="h-8 w-8 rounded-[0.2rem] object-cover"
+      />
+      <span className="font-display text-sm tracking-[0.18em] uppercase">True Grit</span>
+    </span>
+  );
+}
+
 export function PageBanner({
   imageUrl,
   imageAlt,
@@ -67,19 +82,22 @@ export function PageBanner({
         aria-hidden
         className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10"
       />
-      <div className="relative mx-auto flex min-h-[21rem] max-w-[80rem] flex-col justify-end px-4 py-10 sm:px-6 md:min-h-[29rem] md:py-14">
-        {eyebrow ? (
-          <p className="text-xs font-semibold tracking-[0.14em] text-white/80 uppercase">
-            {eyebrow}
-          </p>
-        ) : null}
-        <h1 className="mt-2 max-w-3xl font-display text-3xl leading-tight text-white md:text-5xl">
-          {heading}
-        </h1>
-        {description ? (
-          <p className="mt-3 max-w-2xl text-base text-white/85">{description}</p>
-        ) : null}
-        {children ? <div className="mt-5">{children}</div> : null}
+      <div className="relative mx-auto flex min-h-[21rem] max-w-[80rem] flex-col px-4 py-8 sm:px-6 md:min-h-[29rem] md:py-10">
+        <BannerBrandLockup />
+        <div className="mt-auto pt-12">
+          {eyebrow ? (
+            <p className="text-xs font-semibold tracking-[0.14em] text-white/80 uppercase">
+              {eyebrow}
+            </p>
+          ) : null}
+          <h1 className="mt-2 max-w-3xl font-display text-3xl leading-tight text-white md:text-5xl">
+            {heading}
+          </h1>
+          {description ? (
+            <p className="mt-3 max-w-2xl text-base text-white/85">{description}</p>
+          ) : null}
+          {children ? <div className="mt-5">{children}</div> : null}
+        </div>
       </div>
     </>
   );

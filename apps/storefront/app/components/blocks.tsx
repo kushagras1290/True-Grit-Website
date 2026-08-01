@@ -11,6 +11,7 @@ import { Link } from "react-router";
 
 import { mediaUrl } from "../lib/media";
 import { CategoryTile, ProductCard, Section } from "./catalogue";
+import { BannerBrandLockup } from "./page-banner";
 import { Slider } from "./slider";
 
 export interface BlockData {
@@ -112,7 +113,14 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
               fetchPriority="high"
               loading="eager"
             />
-            <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent px-5 pt-20 pb-5 text-sm font-medium text-white">
+            <span
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-black/20"
+            />
+            <span className="absolute top-5 left-5">
+              <BannerBrandLockup />
+            </span>
+            <span className="absolute inset-x-0 bottom-0 px-5 pt-20 pb-5 text-sm font-medium text-white">
               {activeSlide.label}
             </span>
           </Link>

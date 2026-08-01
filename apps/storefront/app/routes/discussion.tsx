@@ -3,9 +3,9 @@ import { Link, useParams } from "react-router";
 
 import type { Route } from "./+types/discussion";
 import { Section } from "../components/catalogue";
+import { PageBanner } from "../components/page-banner";
 import { AuthError, useCustomer } from "../lib/customer-auth";
 import { createComment, getDiscussion, type DiscussionDetail } from "../lib/community";
-import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
 
 export function meta(_args: Route.MetaArgs) {
@@ -83,70 +83,67 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
   }
 
   return (
-    <Section eyebrow="Community" heading={discussion.title}>
-      <div className="mx-auto max-w-2xl space-y-8">
-        <div>
-          {discussion.imageUrl ? (
-            <img
-              src={mediaUrl(discussion.imageUrl)}
-              alt={discussion.imageAlt || discussion.title}
-              className="mb-5 aspect-video w-full rounded-md object-cover"
-            />
-          ) : null}
-          <p className="text-xs text-ink-muted">
-            {discussion.authorName} · {new Date(discussion.createdAt).toLocaleDateString()}
-          </p>
-          <p className="mt-3 whitespace-pre-wrap text-sm text-ink">{discussion.body}</p>
-        </div>
+    <>
+      <PageBanner
+        imageUrl={discussion.imageUrl || "/banners/content/community-useful-conversations.webp"}
+        imageAlt={discussion.imageAlt || discussion.title}
+        eyebrow="Community discussion"
+        heading={discussion.title}
+        description={`${discussion.authorName} - ${new Date(discussion.createdAt).toLocaleDateString()}`}
+      />
+      <Section>
+        <div className="mx-auto max-w-2xl space-y-8">
+          <p className="whitespace-pre-wrap text-sm text-ink">{discussion.body}</p>
 
-        <div>
-          <h2 className="mb-3 font-display text-lg text-ink">
-            {discussion.comments.length} comment{discussion.comments.length === 1 ? "" : "s"}
-          </h2>
-          {discussion.comments.length === 0 ? (
-            <p className="text-sm text-ink-muted">No comments yet.</p>
+          <div>
+            <h2 className="mb-3 font-display text-lg text-ink">
+              {discussion.comments.length} comment{discussion.comments.length === 1 ? "" : "s"}
+            </h2>
+            {discussion.comments.length === 0 ? (
+              <p className="text-sm text-ink-muted">No comments yet.</p>
+            ) : (
+              <ul className="space-y-4">
+                {discussion.comments.map((comment) => (
+                  <li key={comment.id} className="border-t border-line pt-4">
+                    <p className="text-xs text-ink-muted">
+                      {comment.authorName} · {new Date(comment.createdAt).toLocaleDateString()}
+                    </p>
+                    <p className="mt-1 whitespace-pre-wrap text-sm text-ink">{comment.body}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {status === "authenticated" && customer ? (
+            <form className="space-y-3 border-t border-line pt-6" onSubmit={handleComment}>
+              {error ? <p className="text-sm text-danger">{error}</p> : null}
+              <label className="block space-y-1">
+                <span className="text-xs font-medium text-ink-muted">Add a comment</span>
+                <textarea
+                  required
+                  minLength={2}
+                  rows={3}
+                  value={commentBody}
+                  onChange={(event) => setCommentBody(event.target.value)}
+                  className={`${FIELD} py-2`}
+                />
+              </label>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90 disabled:opacity-50"
+              >
+                {submitting ? "Posting..." : "Post comment"}
+              </button>
+            </form>
           ) : (
-            <ul className="space-y-4">
-              {discussion.comments.map((comment) => (
-                <li key={comment.id} className="border-t border-line pt-4">
-                  <p className="text-xs text-ink-muted">
-                    {comment.authorName} · {new Date(comment.createdAt).toLocaleDateString()}
-                  </p>
-                  <p className="mt-1 whitespace-pre-wrap text-sm text-ink">{comment.body}</p>
-                </li>
-              ))}
-            </ul>
+            <p className="border-t border-line pt-6 text-sm text-ink-muted">
+              Sign in to join the discussion.
+            </p>
           )}
         </div>
-
-        {status === "authenticated" && customer ? (
-          <form className="space-y-3 border-t border-line pt-6" onSubmit={handleComment}>
-            {error ? <p className="text-sm text-danger">{error}</p> : null}
-            <label className="block space-y-1">
-              <span className="text-xs font-medium text-ink-muted">Add a comment</span>
-              <textarea
-                required
-                minLength={2}
-                rows={3}
-                value={commentBody}
-                onChange={(event) => setCommentBody(event.target.value)}
-                className={`${FIELD} py-2`}
-              />
-            </label>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90 disabled:opacity-50"
-            >
-              {submitting ? "Posting..." : "Post comment"}
-            </button>
-          </form>
-        ) : (
-          <p className="border-t border-line pt-6 text-sm text-ink-muted">
-            Sign in to join the discussion.
-          </p>
-        )}
-      </div>
-    </Section>
+      </Section>
+    </>
   );
 }

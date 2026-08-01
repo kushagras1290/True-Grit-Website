@@ -15,7 +15,7 @@ const BLOG_PAGE_SIZE = 12;
 
 // Ships with the storefront, so the banner has an image before an owner sets
 // one. Same asset the homepage hero falls back to.
-const FALLBACK_BANNER_IMAGE = "/homepage-hero.png";
+const FALLBACK_BANNER_IMAGE = "/banners/content/blog-editorial-guides.webp";
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   const page = Math.max(1, Number(new URL(request.url).searchParams.get("page")) || 1);
@@ -29,7 +29,7 @@ export async function loader({ context, request }: Route.LoaderArgs) {
 export function meta(_args: Route.MetaArgs) {
   return seoMeta({
     title: "Blog",
-    description: "Stories about food, farming and eating a little slower.",
+    description: "Practical guides for buying, storing and cooking traceable organic food well.",
     canonicalPath: "/blog",
     indexing: "index",
   });
@@ -43,9 +43,9 @@ export default function BlogPage({ loaderData }: Route.ComponentProps) {
       <PageBanner
         imageUrl={banners.blogImageUrl || FALLBACK_BANNER_IMAGE}
         imageAlt={banners.blogImageAlt}
-        eyebrow="The blog"
-        heading="Stories worth chewing on"
-        description="Notes from the field, the kitchen and everywhere in between."
+        eyebrow="Practical food guides"
+        heading="Useful answers for the food you actually buy"
+        description="Evidence-led guidance on labels, storage, seasonal cooking and getting better value from every order."
       />
 
       <Section>

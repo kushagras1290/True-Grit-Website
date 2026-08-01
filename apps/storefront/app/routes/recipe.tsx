@@ -4,6 +4,7 @@ import { data, Link } from "react-router";
 import type { Route } from "./+types/recipe";
 import { Breadcrumbs, Section } from "../components/catalogue";
 import { CmsBlock, type BlockData } from "../components/blocks";
+import { PageBanner } from "../components/page-banner";
 import {
   catalogueRuntime,
   loadFarms,
@@ -74,25 +75,13 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
           { label: recipe.title, path: `/recipes/${recipe.slug}` },
         ]}
       />
-      <header className="mx-auto max-w-[80rem] px-4 pt-6 sm:px-6">
-        {recipe.heroImageUrl ? (
-          <img
-            src={mediaUrl(recipe.heroImageUrl)}
-            alt={recipe.heroImageAlt || recipe.title}
-            className="mb-6 aspect-[21/9] w-full rounded-md object-cover"
-            fetchPriority="high"
-          />
-        ) : null}
-        <div className="max-w-2xl">
-          <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-            Prep {recipe.prepMinutes} min · cook {recipe.cookMinutes} min · serves {recipe.servings}
-          </p>
-          <h1 className="mt-2 font-display text-3xl leading-tight text-ink md:text-4xl">
-            {recipe.title}
-          </h1>
-          <p className="mt-3 text-base text-ink-muted">{recipe.excerpt}</p>
-        </div>
-      </header>
+      <PageBanner
+        imageUrl={recipe.heroImageUrl || "/banners/content/recipes-cook-with-purpose.webp"}
+        imageAlt={recipe.heroImageAlt || recipe.title}
+        eyebrow={`Prep ${recipe.prepMinutes} min - cook ${recipe.cookMinutes} min - serves ${recipe.servings}`}
+        heading={recipe.title}
+        description={recipe.excerpt}
+      />
 
       {recipe.blocks.map((block) => (
         <CmsBlock key={block.id} block={block} data={blockData} />
