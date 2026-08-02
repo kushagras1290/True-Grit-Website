@@ -27,7 +27,10 @@ INSERT OR IGNORE INTO tags (id, key, label, tag_group, created_at) VALUES
 -- organic grocery core; these departments fill the practical gaps customers
 -- expect from a full weekly market. Each row becomes one published category
 -- and eight fully buyable products with a variant, price, stock and search row.
-CREATE TEMP TABLE catalogue_completion_sections (
+-- D1 rejects CREATE TEMP TABLE with SQLITE_AUTH. These scratch tables are
+-- ordinary tables so the remote migration can run, then are removed below.
+DROP TABLE IF EXISTS catalogue_completion_sections;
+CREATE TABLE catalogue_completion_sections (
   n INTEGER PRIMARY KEY,
   department_order INTEGER NOT NULL,
   department_name TEXT NOT NULL,
@@ -173,7 +176,8 @@ SELECT
   '2026-08-02T05:45:00Z', 'usr_catalogue_system', '2026-08-02T06:00:00Z'
 FROM catalogue_completion_sections;
 
-CREATE TEMP TABLE catalogue_completion_products AS
+DROP TABLE IF EXISTS catalogue_completion_products;
+CREATE TABLE catalogue_completion_products AS
 SELECT
   ((sections.n - 1) * 8) + CAST(items.key AS INTEGER) + 1 AS product_number,
   sections.department_order, sections.department_name, sections.department_slug,
@@ -308,7 +312,8 @@ DROP TABLE catalogue_completion_sections;
 -- High-volume extension: four additional shopping aisles beneath every new
 -- department. Four styles crossed with four subjects produce sixteen distinct
 -- products per category without sacrificing readable, useful product names.
-CREATE TEMP TABLE mass_catalogue_sections (
+DROP TABLE IF EXISTS mass_catalogue_sections;
+CREATE TABLE mass_catalogue_sections (
   n INTEGER PRIMARY KEY,
   department_slug TEXT NOT NULL,
   section_order INTEGER NOT NULL,
@@ -420,7 +425,8 @@ SELECT
   '2026-08-02T06:45:00Z', 'usr_catalogue_system', '2026-08-02T07:00:00Z'
 FROM mass_catalogue_sections;
 
-CREATE TEMP TABLE mass_catalogue_products AS
+DROP TABLE IF EXISTS mass_catalogue_products;
+CREATE TABLE mass_catalogue_products AS
 SELECT
   ((sections.n - 1) * 16) + (CAST(styles.key AS INTEGER) * 4)
     + CAST(subjects.key AS INTEGER) + 1 AS product_number,
