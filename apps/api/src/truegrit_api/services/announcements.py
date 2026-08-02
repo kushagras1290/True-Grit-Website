@@ -49,8 +49,7 @@ def validate_country_scope(scope: str) -> str:
     code = candidate.upper()
     if not _COUNTRY_CODE_PATTERN.match(code) or code in _NOT_REAL_COUNTRIES:
         raise ValidationAppError(
-            "An announcement scope must be 'global' or a real two-letter country code,"
-            " such as IN."
+            "An announcement scope must be 'global' or a real two-letter country code, such as IN."
         )
     return code
 
@@ -120,10 +119,14 @@ async def save_announcement(
     if not message:
         raise ValidationAppError("The announcement needs a message.")
     if len(message) > MAX_MESSAGE_LENGTH:
-        raise ValidationAppError(f"The announcement message must be {MAX_MESSAGE_LENGTH} characters or fewer.")
+        raise ValidationAppError(
+            f"The announcement message must be {MAX_MESSAGE_LENGTH} characters or fewer."
+        )
     path = path.strip()
     if len(path) > MAX_PATH_LENGTH:
-        raise ValidationAppError(f"The announcement link must be {MAX_PATH_LENGTH} characters or fewer.")
+        raise ValidationAppError(
+            f"The announcement link must be {MAX_PATH_LENGTH} characters or fewer."
+        )
 
     if resolved != GLOBAL_SCOPE:
         existing = await db.fetch_one(
