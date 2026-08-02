@@ -14,7 +14,10 @@
  * than presenting a site nobody can sign into.
  */
 
+import type { StorefrontEffects, StorefrontTheme } from "@truegrit/contracts";
 import { createContext, useContext, type ReactNode } from "react";
+
+import { DEFAULT_EFFECTS, DEFAULT_THEME, normalizeEffects, normalizeTheme } from "./theme";
 
 export interface SiteSettings {
   auth: {
@@ -32,6 +35,11 @@ export interface SiteSettings {
     blogImageUrl: string;
     blogImageAlt: string;
   };
+  /** Owner-chosen colours: the site-wide set plus any per-path overrides.
+   *  Carried on this response rather than fetched separately so the first byte
+   *  of HTML is already the right colour. */
+  theme: StorefrontTheme;
+  effects: StorefrontEffects;
 }
 
 export const DEFAULT_PAYMENTS_DISABLED_NOTICE =
@@ -41,6 +49,8 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   auth: { google: true, facebook: true, phoneOtp: true, password: true, registration: true },
   payments: { enabled: true, disabledNotice: DEFAULT_PAYMENTS_DISABLED_NOTICE },
   banners: { blogImageUrl: "", blogImageAlt: "" },
+  theme: DEFAULT_THEME,
+  effects: DEFAULT_EFFECTS,
 };
 
 /** Coerce an untrusted API payload into a complete `SiteSettings`.
@@ -53,6 +63,8 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
     auth: Partial<SiteSettings["auth"]>;
     payments: Partial<SiteSettings["payments"]>;
     banners: Partial<SiteSettings["banners"]>;
+    theme: unknown;
+    effects: unknown;
   }>;
   const auth = source.auth ?? {};
   const payments = source.payments ?? {};
@@ -79,6 +91,8 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
       blogImageUrl: text(banners.blogImageUrl, ""),
       blogImageAlt: text(banners.blogImageAlt, ""),
     },
+    theme: normalizeTheme(source.theme),
+    effects: normalizeEffects(source.effects),
   };
 }
 

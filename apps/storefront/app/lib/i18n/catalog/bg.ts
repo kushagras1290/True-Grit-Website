@@ -1,0 +1,131 @@
+/** Bulgarian (Български). Keys and structure are defined in `../messages.ts`. */
+
+import type { LocaleMessages } from "../messages";
+
+const bg: LocaleMessages = {
+  "common.skipToContent": "Към съдържанието",
+  "common.search": "Търсене",
+  "common.searchProducts": "Търсене на продукти",
+  "common.searchPlaceholder": "Търсене на продукти…",
+  "common.cart": "Количка",
+  "common.cartWithCount": "Количка, {count} артикула",
+  "common.account": "Профил",
+  "common.openMenu": "Отвори менюто",
+  "common.closeMenu": "Затвори менюто",
+  "common.home": "Начало",
+  "common.loading": "Зареждане…",
+  "common.save": "Запази",
+  "common.cancel": "Отказ",
+  "common.remove": "Премахни",
+  "common.optional": "по избор",
+  "common.somethingWentWrong": "Нещо се обърка",
+  "common.tryAgain": "Моля, опитайте отново след малко.",
+  "common.backToMarket": "Обратно към пазара",
+  "common.notFoundTitle": "Тази нива е празна.",
+  "common.notFoundBody": "Страницата, която търсите, може да се е преместила със сезона.",
+  "common.demoMode": "Демо режим — свържете API, за да използвате тази форма.",
+
+  "footer.tagline":
+    "Проследими био храни от проверени ферми, отговорни марки и сезонни реколти — доставяни с пълна прозрачност.",
+  "footer.market": "Пазар",
+  "footer.support": "Поддръжка",
+  "footer.rights": "© 2026 True Grit. Сертифицирано био, честно търгувано.",
+
+  "language.label": "Език",
+  "language.change": "Смяна на езика",
+  "language.indian": "Индийски езици",
+  "language.world": "Световни езици",
+  "language.apply": "Приложи",
+
+  "auth.signIn": "Вход",
+  "auth.signOut": "Изход",
+  "auth.signingOut": "Излизане…",
+  "auth.signUp": "Регистрация",
+  "auth.createAccount": "Създай профил",
+  "auth.yourAccount": "Вашият профил",
+  "auth.email": "Имейл",
+  "auth.password": "Парола",
+  "auth.name": "Име",
+  "auth.mobile": "Мобилен телефон",
+  "auth.forgotPassword": "Забравена парола?",
+  "auth.send": "Изпрати",
+  "auth.resetLinkSent": "Ако има профил с този имейл, връзка за възстановяване е на път.",
+  "auth.pleaseWait": "Моля, изчакайте…",
+  "auth.noContact": "Няма запазени данни за контакт",
+  "auth.unavailable": "Влизането временно не е налично",
+
+  "contact.name": "Име",
+  "contact.email": "Имейл",
+  "contact.phone": "Телефон",
+  "contact.phoneHint":
+    "За да можем да ви позвъним — добавете код на държавата за номера извън Индия.",
+  "contact.subject": "Тема",
+  "contact.message": "Съобщение",
+  "contact.send": "Изпрати съобщение",
+  "contact.sending": "Изпращане…",
+  "contact.sent": "Съобщението ви беше изпратено. Ще отговорим по имейл.",
+  "contact.failed":
+    "Съобщението не можа да бъде изпратено. Моля, проверете данните и опитайте отново.",
+
+  "comments.heading": "Коментари",
+  "comments.headingWithCount": "Коментари ({count})",
+  "comments.none": "Все още няма коментари. Бъдете първи.",
+  "comments.signInPrompt": "Влезте, за да се присъедините към разговора.",
+  "comments.placeholder": "Споделете какво мислите…",
+  "comments.post": "Публикувай коментар",
+  "comments.posting": "Публикуване…",
+  "comments.closed": "Коментарите за тази публикация са затворени.",
+  "comments.failed": "Коментарът не можа да бъде публикуван. Опитайте отново.",
+  "comments.loading": "Зареждане на коментари…",
+
+  "farms.eyebrow": "Хората",
+  "farms.heading": "Ферми, за които гарантираме",
+  "farms.since": "От {year}",
+  "farms.partnerHeading": "Растете с True Grit",
+  "farms.partnerBody":
+    "Винаги търсим производители, които обработват земята точно както описваме на етикета. Разкажете ни за фермата си и екипът ни ще се свърже с вас.",
+  "farms.partnerButton": "Кандидатствай за участие",
+
+  "partner.eyebrow": "За производители",
+  "partner.title": "Станете партньор на True Grit",
+  "partner.intro":
+    "Разкажете ни за земята си, как отглеждате и какво имате за продан. Всяка кандидатура се чете от човек и ще ви позвъним на оставения номер.",
+  "partner.sectionContact": "Как да се свържем с вас",
+  "partner.sectionFarm": "За фермата",
+  "partner.sectionStory": "Вашите продукти и практики",
+  "partner.contactName": "Вашето име",
+  "partner.contactEmail": "Имейл",
+  "partner.contactPhone": "Мобилен номер",
+  "partner.contactPhoneHint":
+    "Първо се обаждаме, преди да пишем. Добавете код на държавата за номера извън Индия.",
+  "partner.farmName": "Име на фермата или кооперацията",
+  "partner.region": "Регион или околия",
+  "partner.state": "Област",
+  "partner.city": "Град или село",
+  "partner.pincode": "Пощенски код",
+  "partner.establishedYear": "Година на основаване",
+  "partner.landArea": "Обработваема площ",
+  "partner.landAreaHint": "Например: 12 акра или 4 хектара.",
+  "partner.certification": "Сертификация",
+  "partner.certificationHint": "Орган за био сертификация и статус, или все още няма.",
+  "partner.primaryProduce": "Какво отглеждате",
+  "partner.practices": "Как стопанисвате",
+  "partner.website": "Уебсайт или страница в социална мрежа",
+  "partner.message": "Друго, което трябва да знаем",
+  "partner.messageHint": "Поне няколко изречения — това четем първо.",
+  "partner.submit": "Изпрати кандидатурата",
+  "partner.submitting": "Изпращане…",
+  "partner.successTitle": "Кандидатурата е получена",
+  "partner.successBody":
+    "Благодарим ви. Екипът ни ще я прочете и ще ви позвъни на предоставения номер.",
+  "partner.closedTitle": "Кандидатстването в момента е затворено",
+  "partner.closedBody":
+    "В момента не приемаме нови кандидатури от ферми. Пишете ни и ще ви уведомим, когато отворят отново.",
+  "partner.failed":
+    "Кандидатурата не можа да бъде изпратена. Моля, проверете данните и опитайте отново.",
+
+  "submit.phone": "Мобилен номер",
+  "submit.phoneHint": "Нашите редактори звънят, ако имат въпрос относно вашия материал.",
+};
+
+export default bg;

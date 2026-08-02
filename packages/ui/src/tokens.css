@@ -18,12 +18,17 @@
   --palette-grey-green: #69736b;
   --palette-gold: #a8813c;
   --palette-paper: #ffffff;
+  --palette-linen: #d8c8b4;
 
   /* Colour roles */
   --color-bg-canvas: var(--palette-ivory);
   --color-bg-surface: var(--palette-paper);
   --color-bg-subtle: var(--palette-sage);
   --color-bg-inverse: var(--palette-forest-deep);
+  /* Sits behind every full-width banner, so it is what shows through while the
+     image loads and around it at aspect ratios the crop cannot fill. A role,
+     not a one-off: it was three copies of a literal hex before it was named. */
+  --color-banner-backdrop: var(--palette-linen);
   --color-text-primary: var(--palette-charcoal);
   --color-text-secondary: var(--palette-grey-green);
   --color-text-inverse: var(--palette-ivory);

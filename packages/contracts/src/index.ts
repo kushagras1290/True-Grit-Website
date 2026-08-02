@@ -76,6 +76,13 @@ export interface ProductSummary {
   certification: string;
   priceMinor: number;
   saleMinor: number | null;
+  /** Set only when an active price-adjustment rule changes what this visitor
+   *  pays (`services/price_adjustments.py`) -- null, not zero, so "no
+   *  adjustment" is distinguishable from "adjusted to no change". Below
+   *  `priceMinor` is a genuine discount (show `priceMinor` struck through);
+   *  above it is a genuine markup (show only `adjustedMinor`, never a fake
+   *  "was" price for it). */
+  adjustedMinor: number | null;
   currencyCode: string;
   unitLabel: string;
   availability: ProductAvailability;
@@ -94,6 +101,7 @@ export interface VariantSummary {
   sku: string;
   listMinor: number;
   saleMinor: number | null;
+  adjustedMinor: number | null;
   availability: ProductAvailability;
 }
 
@@ -789,6 +797,125 @@ export interface StorefrontSettingsEffective {
 export interface StorefrontSettingsResponse {
   settings: StorefrontSettings;
   effective: StorefrontSettingsEffective;
+}
+
+// ---------------------------------------------------------------------------
+// Appearance: colour theme and ambient effects
+// ---------------------------------------------------------------------------
+
+/**
+ * The storefront's colour roles, one per themeable CSS custom property.
+ *
+ * Semantic names, never raw palette names: an owner picks "the colour of a
+ * card" rather than "ivory", so a re-theme cannot leave a token whose name
+ * contradicts its value. Each key maps to a `--color-*` property declared in
+ * `@truegrit/ui/tokens.css`.
+ */
+export const THEME_TOKEN_KEYS = [
+  "bgCanvas",
+  "bgSurface",
+  "bgSubtle",
+  "bgInverse",
+  "bannerBackdrop",
+  "textPrimary",
+  "textSecondary",
+  "textInverse",
+  "brandPrimary",
+  "brandAccent",
+  "brandGold",
+  "borderSubtle",
+  "borderStrong",
+  "danger",
+  "success",
+  "warning",
+] as const;
+
+export type ThemeTokenKey = (typeof THEME_TOKEN_KEYS)[number];
+
+/**
+ * A sparse set of colour overrides.
+ *
+ * Sparse on purpose: a missing (or empty) key means "keep the shipped default",
+ * so a theme only ever carries what somebody deliberately changed. A partial or
+ * truncated payload therefore degrades to the stock palette rather than to a
+ * page of undefined colours.
+ */
+export type ThemeTokens = Partial<Record<ThemeTokenKey, string>>;
+
+/**
+ * The whole colour theme: one site-wide set plus per-path overrides.
+ *
+ * `pages` is keyed by storefront path (`/shop`, `/blog`). It ships in full on
+ * the first response so client-side navigation re-themes instantly, with no
+ * second request and no flash of the previous page's palette.
+ */
+export interface StorefrontTheme {
+  global: ThemeTokens;
+  pages: Record<string, ThemeTokens>;
+}
+
+/** Falling/drifting particle effects. `none` is the shipped default. */
+export const AMBIENT_EFFECT_KEYS = [
+  "none",
+  "snow",
+  "leaves",
+  "petals",
+  "rain",
+  "fireflies",
+  "bubbles",
+  "confetti",
+  "stars",
+  "embers",
+  "dust",
+  "seeds",
+  "hearts",
+  "sparkles",
+  "fog",
+  "meteors",
+] as const;
+
+export type AmbientEffectKey = (typeof AMBIENT_EFFECT_KEYS)[number];
+
+/** Pointer trails. `none` leaves the cursor completely alone. */
+export const CURSOR_TRAIL_KEYS = [
+  "none",
+  "dots",
+  "ribbon",
+  "comet",
+  "sparkle",
+  "bubbles",
+  "stars",
+  "hearts",
+  "snow",
+  "glow",
+  "rings",
+  "paint",
+  "fireflies",
+  "leaves",
+  "petals",
+  "embers",
+] as const;
+
+export type CursorTrailKey = (typeof CURSOR_TRAIL_KEYS)[number];
+
+export interface StorefrontEffects {
+  ambient: {
+    effect: AmbientEffectKey;
+    color: string;
+    /** 1 (barely there) to 5 (heavy). Caps the particle count. */
+    intensity: number;
+  };
+  cursor: {
+    trail: CursorTrailKey;
+    color: string;
+    /** Hides the native pointer so the trail *is* the cursor. */
+    hideNativeCursor: boolean;
+  };
+}
+
+export interface StorefrontAppearance {
+  theme: StorefrontTheme;
+  effects: StorefrontEffects;
 }
 
 // ---------------------------------------------------------------------------

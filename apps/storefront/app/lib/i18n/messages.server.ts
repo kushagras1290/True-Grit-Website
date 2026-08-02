@@ -2,12 +2,12 @@
  * Server-only catalogue registry.
  *
  * Every translation is imported here and nowhere else. Because this module is
- * only ever reached from a loader, the bundler keeps all forty-five catalogues
- * out of the browser build: a visitor downloads the English source (already in
- * `messages.ts`) plus the entries for the one language they chose.
+ * only ever reached from a loader, the bundler keeps every non-English
+ * catalogue out of the browser build: a visitor downloads the English source
+ * (already in `messages.ts`) plus the entries for the one language they chose.
  *
  * Static imports rather than dynamic ones on purpose. Cloudflare Workers have
- * no filesystem and a cold-start budget measured in milliseconds; forty-five
+ * no filesystem and a cold-start budget measured in milliseconds; dozens of
  * `await import()` calls would trade a few kilobytes of Worker bundle — which
  * costs the visitor nothing — for a round of module resolution on the request
  * path, which costs them latency.
@@ -60,6 +60,16 @@ import ur from "./catalog/ur";
 import vi from "./catalog/vi";
 import zhHans from "./catalog/zh-Hans";
 import zhHant from "./catalog/zh-Hant";
+import sv from "./catalog/sv";
+import nb from "./catalog/nb";
+import da from "./catalog/da";
+import fi from "./catalog/fi";
+import el from "./catalog/el";
+import cs from "./catalog/cs";
+import hu from "./catalog/hu";
+import ro from "./catalog/ro";
+import sk from "./catalog/sk";
+import bg from "./catalog/bg";
 
 /**
  * Locale code -> that locale's own entries.
@@ -113,6 +123,16 @@ export const CATALOGUES: Readonly<Record<string, LocaleMessages>> = {
   fil,
   sw,
   he,
+  sv,
+  nb,
+  da,
+  fi,
+  el,
+  cs,
+  hu,
+  ro,
+  sk,
+  bg,
 };
 
 /**

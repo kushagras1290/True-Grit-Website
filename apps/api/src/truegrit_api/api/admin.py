@@ -70,6 +70,25 @@ from truegrit_api.services.access import (
     set_user_status,
     update_role,
 )
+from truegrit_api.services.announcements import (
+    delete_country_announcement,
+    list_announcements,
+    save_announcement,
+)
+from truegrit_api.services.appearance import (
+    AMBIENT_EFFECT_KEYS,
+    CURSOR_TRAIL_KEYS,
+    GLOBAL_SCOPE,
+    THEME_TOKEN_KEYS,
+    clear_country_effects,
+    delete_theme_scope,
+    is_country_scope,
+    list_theme_scopes,
+    load_appearance,
+    save_effects,
+    save_theme_scope,
+)
+from truegrit_api.services.appearance import validate_tokens as validate_theme_tokens
 from truegrit_api.services.audit import audit_statement
 from truegrit_api.services.catalogue import (
     archive_category,
@@ -99,6 +118,13 @@ from truegrit_api.services.feature_settings import (
     set_hero_max_slides,
     update_storefront_settings,
 )
+from truegrit_api.services.homepage_geo import (
+    list_country_overrides as list_homepage_country_overrides,
+)
+from truegrit_api.services.homepage_geo import (
+    set_country_override as set_homepage_country_override,
+)
+from truegrit_api.services.homepage_geo import validate_country as validate_homepage_country
 from truegrit_api.services.inventory import adjust_inventory, clear_inventory_levels
 from truegrit_api.services.media import (
     delete_media,
@@ -113,6 +139,17 @@ from truegrit_api.services.password_reset import (
     request_password_reset,
     request_staff_invitation_email,
     request_staff_password_reset_for_user,
+)
+from truegrit_api.services.price_adjustments import MAX_PERCENT as PRICE_ADJUSTMENT_MAX_PERCENT
+from truegrit_api.services.price_adjustments import MIN_PERCENT as PRICE_ADJUSTMENT_MIN_PERCENT
+from truegrit_api.services.price_adjustments import (
+    delete_rule as delete_price_adjustment,
+)
+from truegrit_api.services.price_adjustments import (
+    list_rules as list_price_adjustments,
+)
+from truegrit_api.services.price_adjustments import (
+    save_rule as save_price_adjustment,
 )
 from truegrit_api.services.publishing import (
     publish_article,
@@ -527,9 +564,6 @@ class SiteControlHeroSlide(_CamelModel):
 
 
 class SiteControlUpdate(_CamelModel):
-    announcement_active: bool | None = None
-    announcement_message: str | None = Field(default=None, max_length=220)
-    announcement_path: str | None = Field(default=None, max_length=200)
     hero_eyebrow: str | None = Field(default=None, max_length=120)
     hero_heading: str | None = Field(default=None, max_length=160)
     hero_text: str | None = Field(default=None, max_length=500)
@@ -726,19 +760,12 @@ async def get_site_control(
     )
     if page is None:
         raise NotFoundError("Homepage not found.")
-    announcement = await db.fetch_one(
-        "SELECT message, destination_path, active FROM announcements"
-        " ORDER BY active DESC, updated_at DESC LIMIT 1"
-    )
     hero = _home_hero(page)["props"]
     slides = _normalize_hero_slides(hero.get("slides"))
     primary_slide = slides[0] if slides else {}
     primary = hero.get("primaryAction") or {}
     secondary = hero.get("secondaryAction") or {}
     return {
-        "announcementActive": bool(announcement["active"]) if announcement else False,
-        "announcementMessage": announcement["message"] if announcement else "",
-        "announcementPath": announcement["destination_path"] if announcement else "",
         "heroEyebrow": hero.get("eyebrow") or "",
         "heroHeading": hero.get("heading") or page["title"],
         "heroText": hero.get("text") or "",
@@ -927,32 +954,6 @@ async def update_site_control(
             page["id"],
         ),
     )
-    if {
-        "announcement_active",
-        "announcement_message",
-        "announcement_path",
-    } & set(fields):
-        existing = await db.fetch_one(
-            "SELECT id FROM announcements ORDER BY updated_at DESC LIMIT 1"
-        )
-        if existing:
-            await db.execute(
-                """
-                UPDATE announcements
-                SET active = COALESCE(?, active),
-                    message = COALESCE(?, message),
-                    destination_path = COALESCE(?, destination_path),
-                    updated_at = ?
-                WHERE id = ?
-                """,
-                (
-                    int(fields["announcement_active"]) if "announcement_active" in fields else None,
-                    fields.get("announcement_message"),
-                    fields.get("announcement_path"),
-                    now,
-                    existing["id"],
-                ),
-            )
     return await get_site_control(db, principal)
 
 
@@ -1275,6 +1276,291 @@ async def reorder_homepage_sections(
             db, page, [by_id[section_id] for section_id in payload.ids], principal
         )
     }
+
+
+class HomepageCountryOverrideUpdate(_CamelModel):
+    enabled: bool
+
+
+@router.get("/homepage/country-overrides")
+async def get_homepage_country_overrides(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("settings.view"))],
+) -> Any:
+    return {"overrides": await list_homepage_country_overrides(db)}
+
+
+@router.put("/homepage/country-overrides/{country}/{section_id}")
+async def put_homepage_country_override(
+    country: str,
+    section_id: str,
+    payload: HomepageCountryOverrideUpdate,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+    request: Request,
+) -> Any:
+    resolved = validate_homepage_country(country)
+    # The section must actually exist on the homepage today -- an override
+    # keyed to a stale or mistyped id would silently do nothing forever.
+    blocks = _homepage_blocks(await _homepage_version(db))
+    _find_section(blocks, section_id)
+    await set_homepage_country_override(
+        db,
+        principal,
+        _request_id(request),
+        country=resolved,
+        block_id=section_id,
+        enabled=payload.enabled,
+    )
+    return {"overrides": await list_homepage_country_overrides(db)}
+
+
+@router.delete("/homepage/country-overrides/{country}/{section_id}")
+async def delete_homepage_country_override(
+    country: str,
+    section_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+    request: Request,
+) -> Any:
+    resolved = validate_homepage_country(country)
+    await set_homepage_country_override(
+        db,
+        principal,
+        _request_id(request),
+        country=resolved,
+        block_id=section_id,
+        enabled=None,
+    )
+    return {"overrides": await list_homepage_country_overrides(db)}
+
+
+# ---------------------------------------------------------------------------
+# Price adjustments: a signed markup or discount, scopable by country, by a
+# single product, by a whole category, or combined with country. See
+# `services/price_adjustments.py` for resolution order and why a markup never
+# shows a fabricated "was" price.
+# ---------------------------------------------------------------------------
+
+
+class PriceAdjustmentUpdate(_CamelModel):
+    scope: str = Field(default="global", min_length=1, max_length=16)
+    product_id: str | None = Field(default=None, max_length=64)
+    category_id: str | None = Field(default=None, max_length=64)
+    percent: int = Field(ge=PRICE_ADJUSTMENT_MIN_PERCENT, le=PRICE_ADJUSTMENT_MAX_PERCENT)
+    active: bool = True
+
+
+@router.get("/price-adjustments")
+async def get_price_adjustments(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("settings.view"))],
+) -> Any:
+    return {"rules": await list_price_adjustments(db)}
+
+
+@router.put("/price-adjustments")
+async def put_price_adjustment(
+    payload: PriceAdjustmentUpdate,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+    request: Request,
+) -> Any:
+    await save_price_adjustment(
+        db,
+        principal,
+        _request_id(request),
+        scope=payload.scope,
+        product_id=payload.product_id,
+        category_id=payload.category_id,
+        percent=payload.percent,
+        active=payload.active,
+    )
+    return {"rules": await list_price_adjustments(db)}
+
+
+@router.delete("/price-adjustments/{rule_id}")
+async def remove_price_adjustment(
+    rule_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+    request: Request,
+) -> Any:
+    await delete_price_adjustment(db, principal, _request_id(request), rule_id=rule_id)
+    return {"rules": await list_price_adjustments(db)}
+
+
+# ---------------------------------------------------------------------------
+# Appearance: colours and ambient effects
+#
+# Colours are per scope -- 'global' plus a row per page that wants its own look
+# -- so they get list/save/delete routes. Effects are site-wide and live on the
+# global row, so they get one PUT. Both read back through the same public
+# payload the storefront uses, which is how the console's preview and the live
+# site are guaranteed to agree.
+# ---------------------------------------------------------------------------
+
+
+class ThemeScopeUpdate(_CamelModel):
+    scope: str = Field(min_length=1, max_length=200)
+    # Values are checked against a colour allow-list in the service: these
+    # strings end up interpolated into a stylesheet, so "it is a string" is not
+    # enough to let one through.
+    tokens: dict[str, Any] = Field(default_factory=dict)
+
+
+class EffectsUpdate(_CamelModel):
+    ambient: dict[str, Any] = Field(default_factory=dict)
+    cursor: dict[str, Any] = Field(default_factory=dict)
+    # Omitted or "global" saves the site-wide default; "country:XX" saves that
+    # country's override. Never a page path -- effects are a whole-visit
+    # decision, not something that makes sense to swap mid-browse.
+    scope: str = Field(default=GLOBAL_SCOPE, min_length=1, max_length=40)
+
+
+# A scope arrives on the URL without its leading slash (`appearance/theme/shop`
+# maps to the page `/shop`), because a doubled slash is not something a client
+# should have to get right for a delete to work. `global` and `country:XX` are
+# the two exceptions: each must reach the service layer exactly as typed, or
+# the literal word "global" would be reinterpreted as the page path "/global"
+# and "country:IN" as "/country:IN" -- neither of which is the scope the
+# caller meant, and the "site-wide palette cannot be deleted" guard would never
+# fire for the one request it exists to catch.
+def _resolve_url_scope(scope: str) -> str:
+    if scope == GLOBAL_SCOPE or is_country_scope(scope) or scope.startswith("/"):
+        return scope
+    return f"/{scope}"
+
+
+@router.get("/appearance")
+async def get_appearance(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("settings.view"))],
+) -> Any:
+    appearance = await load_appearance(db)
+    return {
+        **appearance,
+        "scopes": await list_theme_scopes(db),
+        # Shipped alongside the values so the console can render a swatch grid
+        # and a page/country picker without a second source of truth to drift
+        # from.
+        "tokenKeys": list(THEME_TOKEN_KEYS),
+        "ambientEffects": list(AMBIENT_EFFECT_KEYS),
+        "cursorTrails": list(CURSOR_TRAIL_KEYS),
+    }
+
+
+@router.put("/appearance/theme")
+async def put_theme_scope(
+    payload: ThemeScopeUpdate,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    await save_theme_scope(
+        db,
+        principal,
+        _request_id(request),
+        scope=payload.scope,
+        tokens=validate_theme_tokens(payload.tokens),
+    )
+    return await get_appearance(db, principal)
+
+
+@router.delete("/appearance/theme/{scope:path}")
+async def remove_theme_scope(
+    scope: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    await delete_theme_scope(db, principal, _request_id(request), scope=_resolve_url_scope(scope))
+    return await get_appearance(db, principal)
+
+
+@router.put("/appearance/effects")
+async def put_effects(
+    payload: EffectsUpdate,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    await save_effects(
+        db,
+        principal,
+        _request_id(request),
+        effects={"ambient": payload.ambient, "cursor": payload.cursor},
+        scope=payload.scope,
+    )
+    return await get_appearance(db, principal)
+
+
+@router.delete("/appearance/effects/{scope:path}")
+async def remove_country_effects(
+    scope: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    """Clear one country's effects override, reverting it to the global default.
+
+    Never touches that country's colours (if it has any) -- see
+    `clear_country_effects` for why the two must be independently clearable.
+    """
+    await clear_country_effects(
+        db, principal, _request_id(request), scope=_resolve_url_scope(scope)
+    )
+    return await get_appearance(db, principal)
+
+
+# ---------------------------------------------------------------------------
+# Announcement banner: site-wide, or one per visitor country
+# ---------------------------------------------------------------------------
+
+
+class AnnouncementUpdate(_CamelModel):
+    scope: str = Field(default="global", min_length=1, max_length=16)
+    active: bool = False
+    message: str = Field(default="", max_length=220)
+    path: str = Field(default="", max_length=200)
+
+
+@router.get("/announcements")
+async def get_announcements(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("settings.view"))],
+) -> Any:
+    return {"scopes": await list_announcements(db)}
+
+
+@router.put("/announcements")
+async def put_announcement(
+    payload: AnnouncementUpdate,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    await save_announcement(
+        db,
+        principal,
+        _request_id(request),
+        scope=payload.scope,
+        active=payload.active,
+        message=payload.message,
+        path=payload.path,
+    )
+    return {"scopes": await list_announcements(db)}
+
+
+@router.delete("/announcements/{scope}")
+async def remove_announcement(
+    scope: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    await delete_country_announcement(db, principal, _request_id(request), scope=scope)
+    return {"scopes": await list_announcements(db)}
 
 
 async def _site_document_payload(db: Database, rows: list[dict[str, Any]]) -> dict[str, str]:

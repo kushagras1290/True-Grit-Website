@@ -12,11 +12,11 @@ import { seoMeta } from "../lib/seo";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
-  const page = await loadHome(runtime);
+  const country = resolveCountry(request);
+  const page = await loadHome(country, runtime);
   const productSlugs = page.blocks.flatMap((block) =>
     block.type === "product_collection" ? block.props.productSlugs : [],
   );
-  const country = resolveCountry(request);
   const [categories, farms, products] = await Promise.all([
     loadCategories(country, runtime),
     loadFarms(runtime),

@@ -7,6 +7,8 @@
  * crawlers, which do not run JavaScript, seeing only English.
  */
 
+import { resolveCountry } from "../geo.server";
+import { matchCountryLocale } from "./geo-locale";
 import {
   DEFAULT_LOCALE,
   LOCALE_COOKIE_MAX_AGE_SECONDS,
@@ -38,31 +40,60 @@ function readCookie(header: string | null, name: string): string | null {
   return null;
 }
 
+/** Where a resolved locale came from — the root loader uses this to decide
+ *  whether the visitor gets a "we picked this for you" prompt (see
+ *  `LanguageSuggestionPrompt`). Only `"geo"` ever triggers one: a `"query"` or
+ *  `"cookie"` locale is something the visitor already chose, and a `"header"`
+ *  locale is what their own browser explicitly asked for — neither needs
+ *  second-guessing. */
+export type LocaleSource = "query" | "cookie" | "header" | "geo" | "default";
+
+export interface ResolvedLocale {
+  locale: LocaleDefinition;
+  source: LocaleSource;
+}
+
 /**
  * Which language to render, in priority order:
  *
  *   1. `?lang=` — an explicit link, and the switcher's no-JavaScript path.
  *   2. The cookie — what this visitor chose last time.
- *   3. `Accept-Language` — what their browser says, q-values honoured.
- *   4. English.
+ *   3. `Accept-Language`, when it names a real language — q-values honoured.
+ *   4. The visitor's country (Cloudflare's edge geo), when `Accept-Language`
+ *      resolved to nothing better than English.
+ *   5. English.
  *
- * The browser is consulted *after* the cookie, never before: an explicit choice
- * has to survive a browser whose language list says otherwise, which is the
- * common case for a Tamil speaker on an English-configured phone.
+ * The browser is consulted *before* geo whenever it names something other than
+ * English: an explicit non-English preference has to survive a country guess
+ * that disagrees with it, which is the common case for a Tamil speaker on an
+ * English-configured phone in Chennai. But a bare `en` from that header is
+ * ambiguous — a huge share of devices ship with English as their factory
+ * default regardless of who owns them or where — so it is treated as *no*
+ * signal and geo gets a turn before falling back to English for real. Step 4
+ * is why the switch is announced rather than silent: a guess from an IP
+ * address is still a guess, not a preference the visitor stated.
  */
-export function resolveLocale(request: Request): LocaleDefinition {
+export function resolveLocale(request: Request): ResolvedLocale {
   const url = new URL(request.url);
   const fromQuery = matchLocale(url.searchParams.get(LOCALE_QUERY_PARAM));
-  if (fromQuery) return fromQuery;
+  if (fromQuery) return { locale: fromQuery, source: "query" };
 
   const fromCookie = matchLocale(readCookie(request.headers.get("cookie"), LOCALE_COOKIE_NAME));
-  if (fromCookie) return fromCookie;
+  if (fromCookie) return { locale: fromCookie, source: "cookie" };
 
   const fromHeader = matchAcceptLanguage(request.headers.get("accept-language"));
-  if (fromHeader) return fromHeader;
+  if (fromHeader && fromHeader.code !== DEFAULT_LOCALE) {
+    return { locale: fromHeader, source: "header" };
+  }
 
+  const fromGeo = matchCountryLocale(resolveCountry(request));
+  if (fromGeo && fromGeo.code !== DEFAULT_LOCALE) {
+    return { locale: fromGeo, source: "geo" };
+  }
+
+  if (fromHeader) return { locale: fromHeader, source: "header" };
   // Non-null: DEFAULT_LOCALE is always a registered locale.
-  return getLocale(DEFAULT_LOCALE)!;
+  return { locale: getLocale(DEFAULT_LOCALE)!, source: "default" };
 }
 
 /**

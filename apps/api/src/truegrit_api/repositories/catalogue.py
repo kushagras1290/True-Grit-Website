@@ -14,6 +14,7 @@ from truegrit_api.domain.rules import MAX_LIMIT as RULE_MAX_LIMIT
 from truegrit_api.domain.rules import compile_rule
 from truegrit_api.domain.sitemap import SITEMAP_MAX_URLS
 from truegrit_api.platform.database import Database
+from truegrit_api.services.price_adjustments import apply_percent, resolve_adjustments
 
 # Static category assignment has no owner-configured rule ceiling, so it
 # borrows the rule engine's own pool cap for consistency between the two
@@ -139,14 +140,19 @@ class CatalogueRepository:
             tags.setdefault(row["product_id"], []).append(row["label"])
         return tags
 
-    def _variant_summary(self, row: dict[str, Any]) -> dict[str, Any]:
+    def _variant_summary(self, row: dict[str, Any], percent: int) -> dict[str, Any]:
         level = InventoryLevel(on_hand=max(int(row["available"]), 0), reserved=0)
+        list_minor = int(row["list_amount_minor"] or 0)
         return {
             "id": row["id"],
             "name": row["name"],
             "sku": row["sku"],
-            "list_minor": int(row["list_amount_minor"] or 0),
+            "list_minor": list_minor,
             "sale_minor": row["sale_amount_minor"],
+            # Only set when an active rule actually changes this visitor's
+            # price -- absent, not zero, so the storefront can tell "no
+            # adjustment" apart from "adjusted to the same amount".
+            "adjusted_minor": apply_percent(list_minor, percent) if percent else None,
             "availability": availability_label(level, int(row["reorder_threshold"])),
         }
 
@@ -156,8 +162,9 @@ class CatalogueRepository:
         variants: list[dict[str, Any]],
         certification: str,
         tags: list[str],
+        percent: int,
     ) -> dict[str, Any]:
-        variant_summaries = [self._variant_summary(entry) for entry in variants]
+        variant_summaries = [self._variant_summary(entry, percent) for entry in variants]
         lead = variant_summaries[0] if variant_summaries else None
         statuses = [entry["availability"] for entry in variant_summaries]
         if "in_stock" in statuses:
@@ -175,6 +182,7 @@ class CatalogueRepository:
             "certification": certification,
             "price_minor": lead["list_minor"] if lead else 0,
             "sale_minor": lead["sale_minor"] if lead else None,
+            "adjusted_minor": lead["adjusted_minor"] if lead else None,
             "currency_code": "INR",
             "unit_label": lead["name"] if lead else "",
             "availability": availability,
@@ -187,17 +195,21 @@ class CatalogueRepository:
             "_short_description": row["short_description"] or "",
         }
 
-    async def _assemble(self, rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    async def _assemble(
+        self, rows: list[dict[str, Any]], country: str | None = None
+    ) -> list[dict[str, Any]]:
         ids = [row["id"] for row in rows]
         variants = await self._variants_for(ids)
         certifications = await self._certifications_for(ids)
         tags = await self._tags_for(ids)
+        adjustments = await resolve_adjustments(self._db, ids, country)
         return [
             self._summarize(
                 row,
                 variants.get(row["id"], []),
                 certifications.get(row["id"], ""),
                 tags.get(row["id"], []),
+                adjustments.get(row["id"], 0),
             )
             for row in rows
         ]
@@ -237,7 +249,7 @@ class CatalogueRepository:
             f"{geo_sql} ORDER BY {compiled.order_sql} LIMIT ? OFFSET ?",
             [*compiled.params, *geo_params, page_limit, safe_offset],
         )
-        return await self._assemble(rows), total
+        return await self._assemble(rows, country), total
 
     async def list_all_published(
         self, *, limit: int = 200, offset: int = 0, country: str | None = None
@@ -256,7 +268,7 @@ class CatalogueRepository:
             " ORDER BY p.updated_at DESC, p.name LIMIT ? OFFSET ?",
             (*geo_params, max(limit, 1), max(offset, 0)),
         )
-        return await self._assemble(rows), total
+        return await self._assemble(rows, country), total
 
     async def list_slugs_for_sitemap(
         self, *, limit: int = SITEMAP_MAX_URLS
@@ -316,7 +328,7 @@ class CatalogueRepository:
             """,
             (category_id, *geo_params, page_limit, safe_offset),
         )
-        return await self._assemble(rows), total
+        return await self._assemble(rows, country), total
 
     async def list_published_by_slugs(
         self, slugs: list[str], country: str | None = None
@@ -330,7 +342,7 @@ class CatalogueRepository:
             f" AND p.slug IN ({placeholders}){geo_sql}",
             (*slugs, *geo_params),
         )
-        summaries = await self._assemble(rows)
+        summaries = await self._assemble(rows, country)
         order = {slug: index for index, slug in enumerate(slugs)}
         return sorted(summaries, key=lambda item: order.get(item["slug"], len(order)))
 
@@ -348,7 +360,7 @@ class CatalogueRepository:
             """,
             geo_params,
         )
-        return await self._assemble(rows)
+        return await self._assemble(rows, country)
 
     async def get_published_detail(
         self, slug: str, country: str | None = None
@@ -360,7 +372,7 @@ class CatalogueRepository:
         )
         if not rows:
             return None
-        summary = (await self._assemble(rows))[0]
+        summary = (await self._assemble(rows, country))[0]
         row = rows[0]
 
         # Owner-curated links fill the "goes well with" slots first; only when

@@ -16,6 +16,7 @@ import {
 import { useCart } from "../lib/cart";
 import { resolveCountry } from "../lib/geo.server";
 import { mediaUrl } from "../lib/media";
+import { variantEffectivePrice } from "../lib/pricing";
 import { recipeJsonLd, seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
@@ -128,7 +129,7 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
                         productName: product.name,
                         variantId: variant.id,
                         variantName: variant.name,
-                        unitMinor: variant.saleMinor ?? variant.listMinor,
+                        unitMinor: variantEffectivePrice(variant).amountMinor,
                       });
                     }
                     setAddedAll(true);

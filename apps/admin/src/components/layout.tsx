@@ -23,8 +23,10 @@ import {
   Menu,
   MessageSquare,
   Package,
+  Palette,
   PanelLeftClose,
   PanelLeftOpen,
+  Percent,
   Receipt,
   RotateCcw,
   ScrollText,
@@ -91,6 +93,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         permission: "categories.view",
       },
       {
+        to: "/price-adjustments",
+        label: "Sale & Discounts",
+        icon: <Percent size={16} />,
+        permission: "settings.view",
+      },
+      {
         to: "/inventory",
         label: "Inventory",
         icon: <Warehouse size={16} />,
@@ -148,6 +156,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         to: "/homepage-settings",
         label: "Homepage Settings",
         icon: <Home size={16} />,
+        permission: "settings.view",
+      },
+      {
+        to: "/appearance",
+        label: "Colours & Effects",
+        icon: <Palette size={16} />,
         permission: "settings.view",
       },
       {

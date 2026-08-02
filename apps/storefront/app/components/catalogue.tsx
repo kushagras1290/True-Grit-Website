@@ -11,6 +11,7 @@ import { Link } from "react-router";
 
 import { usePriceFormatter } from "../lib/currency";
 import { mediaUrl } from "../lib/media";
+import { productEffectivePrice } from "../lib/pricing";
 import { getPublicApiUrl } from "../lib/public-env";
 
 const PRODUCE_GLYPHS: Record<string, string> = {
@@ -105,7 +106,7 @@ export function AvailabilityNote({
 
 export function ProductCard({ product }: { product: ProductSummary }) {
   const price = usePriceFormatter();
-  const onSale = product.saleMinor !== null && product.saleMinor < product.priceMinor;
+  const effective = productEffectivePrice(product);
   return (
     <article className="group">
       <Link to={`/product/${product.slug}`} className="block">
@@ -123,13 +124,13 @@ export function ProductCard({ product }: { product: ProductSummary }) {
             {product.name}
           </h3>
           <p className="mt-1 text-sm text-ink">
-            {onSale ? (
+            {effective.originalMinor !== null ? (
               <>
-                <span className="font-semibold">{price(product.saleMinor!)}</span>{" "}
-                <s className="text-ink-muted">{price(product.priceMinor)}</s>
+                <span className="font-semibold">{price(effective.amountMinor)}</span>{" "}
+                <s className="text-ink-muted">{price(effective.originalMinor)}</s>
               </>
             ) : (
-              <span className="font-semibold">{price(product.priceMinor)}</span>
+              <span className="font-semibold">{price(effective.amountMinor)}</span>
             )}{" "}
             <span className="text-ink-muted">· {product.unitLabel}</span>
           </p>

@@ -106,11 +106,14 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
   if (slides.length > 0) {
     const activeSlide = slides[Math.min(activeIndex, slides.length - 1)]!;
     return (
-      <section className="bg-[#d8c8b4]">
+      <section className="bg-banner">
         <div className="relative w-full overflow-hidden">
           <Link
             to={activeSlide.href}
-            className="group relative block min-h-[21rem] overflow-hidden bg-white/25 md:min-h-[29rem]"
+            // Fixed, not minimum: matches BANNER_FRAME in page-banner.tsx so
+            // every uploaded slide (exported at exactly 1672×464px) is scaled
+            // to this one designed size, never stretched further by content.
+            className="group relative block h-[21rem] overflow-hidden bg-white/25 md:h-[29rem]"
             aria-label={activeSlide.label}
           >
             <img
@@ -334,21 +337,24 @@ export function CmsBlock({ block, data }: { block: PublicPageBlock; data: BlockD
       // hid every card", which is a section with nothing left to say.
       const items = block.props.items.filter((item) => item.enabled);
       if (items.length === 0) return null;
-      const cardClassName =
-        "group block h-full rounded-sm border border-line bg-surface p-4 transition-colors hover:border-brand/40 hover:bg-subtle/40";
+      // The same hairline-list rhythm as the FAQ block above (border-t + pt-4
+      // per row, gap-6, max-w-4xl), not a grid of card boxes: the homepage
+      // reads as one editorial page, and a wall of bordered tiles was the one
+      // section that broke that register.
+      const linkClassName = "group block";
       return (
-        <Section eyebrow="Explore the site" heading={block.props.heading} tone="subtle">
+        <Section eyebrow="Explore the site" heading={block.props.heading}>
           {block.props.intro ? (
-            <p className="-mt-4 mb-8 max-w-2xl text-base text-ink-muted">{block.props.intro}</p>
+            <p className="mx-auto -mt-4 mb-8 max-w-2xl text-base text-ink-muted">
+              {block.props.intro}
+            </p>
           ) : null}
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mx-auto grid max-w-4xl gap-6 md:grid-cols-2">
             {items.map((item, index) => {
               const body = (
                 <>
-                  <span className="flex items-baseline justify-between gap-3">
-                    <span className="font-medium text-ink group-hover:text-brand">
-                      {item.label}
-                    </span>
+                  <span className="flex items-baseline gap-1.5 font-medium text-ink group-hover:text-brand">
+                    {item.label}
                     <span
                       aria-hidden
                       className="text-brand transition-transform group-hover:translate-x-0.5"
@@ -357,16 +363,14 @@ export function CmsBlock({ block, data }: { block: PublicPageBlock; data: BlockD
                     </span>
                   </span>
                   {item.description ? (
-                    <span className="mt-1.5 block text-sm leading-6 text-ink-muted">
-                      {item.description}
-                    </span>
+                    <span className="mt-1.5 block text-sm text-ink-muted">{item.description}</span>
                   ) : null}
                 </>
               );
               return (
-                <li key={`${item.href}-${index}`}>
+                <li key={`${item.href}-${index}`} className="border-t border-line pt-4">
                   {isInternalHref(item.href) ? (
-                    <Link to={item.href} className={cardClassName}>
+                    <Link to={item.href} className={linkClassName}>
                       {body}
                     </Link>
                   ) : (
@@ -374,7 +378,7 @@ export function CmsBlock({ block, data }: { block: PublicPageBlock; data: BlockD
                       href={item.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={cardClassName}
+                      className={linkClassName}
                     >
                       {body}
                     </a>

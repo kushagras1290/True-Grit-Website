@@ -54,6 +54,12 @@ class ProductSummary(PublicModel):
     certification: str
     price_minor: int
     sale_minor: int | None = None
+    # Set only when an active price-adjustment rule (`services.price_adjustments`)
+    # changes what this visitor pays for this product; absent, not zero, so the
+    # storefront can tell "no adjustment" apart from "adjusted to no change".
+    # Positive-adjustment (markup) and negative-adjustment (genuine discount)
+    # render differently -- see the field's use in `packages/contracts`.
+    adjusted_minor: int | None = None
     currency_code: str
     unit_label: str
     availability: str
@@ -77,6 +83,7 @@ class VariantSummary(PublicModel):
     sku: str
     list_minor: int
     sale_minor: int | None = None
+    adjusted_minor: int | None = None
     availability: str
 
 
