@@ -16,7 +16,7 @@ import {
 } from "../lib/customer-auth";
 import { useLocaleContext } from "../lib/i18n/context";
 import { useSiteSettings, type SiteSettings } from "../lib/site-settings";
-import { LanguageSwitcher } from "./language-switcher";
+import { HeaderLanguageSwitcher, LanguageSwitcher } from "./language-switcher";
 import { AddPhonePrompt, PhoneAuthPanel, PhoneVerifier } from "./phone-auth";
 
 type AuthMode = "phone" | "signin" | "register";
@@ -603,6 +603,10 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
           </nav>
 
           <div className="flex items-center gap-1">
+            {/* Left of the search box on purpose — a returning visitor scans
+                right-to-left from search to cart, so the language control
+                needs to be the first thing in that path, not buried after it. */}
+            <HeaderLanguageSwitcher className="hidden sm:inline-flex" />
             <GlobalSearch />
             <CustomerPortal />
             <Link

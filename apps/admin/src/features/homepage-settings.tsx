@@ -40,6 +40,13 @@ import {
   type SiteControl,
 } from "../lib/api";
 
+/** Mirrors the identical helper in `site-control.tsx` / `appearance.tsx` — a
+ *  scope here is always a two-letter country code, never `'global'`; the
+ *  homepage's own section list (above) already is the global default. */
+function isRealCountryCode(code: string): boolean {
+  return /^[A-Z]{2}$/.test(code);
+}
+
 const MAX_CURATED_SLOTS = 12;
 
 /** Fallback for the banner-slide cap while `site-control` is still loading, or
@@ -324,6 +331,7 @@ export function HomepageSettingsPage() {
       />
 
       <HomepageSectionsSection />
+      <HomepageCountryOverridesSection />
 
       <form
         className="mt-10 grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]"
@@ -817,6 +825,209 @@ function HomepageSectionsSection() {
           onConfirm={() => deleteMutation.mutate(confirmDelete.id)}
         />
       ) : null}
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Per-country section overrides: "for visitors in this country, force this
+// one section on or off", layered on top of the tickboxes above rather than
+// replacing them. See `services/homepage_geo.py` — a country absent here
+// simply gets the section list as edited above; nothing changes for it.
+// ---------------------------------------------------------------------------
+
+type OverrideState = "inherit" | "shown" | "hidden";
+
+function overrideState(
+  overrides: Record<string, Record<string, boolean>>,
+  country: string,
+  sectionId: string,
+): OverrideState {
+  const value = overrides[country]?.[sectionId];
+  if (value === undefined) return "inherit";
+  return value ? "shown" : "hidden";
+}
+
+function HomepageCountryOverridesSection() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const sectionsQuery = useQuery({
+    queryKey: ["homepage-sections"],
+    queryFn: api.homepageSections,
+  });
+  const overridesQuery = useQuery({
+    queryKey: ["homepage-country-overrides"],
+    queryFn: api.homepageCountryOverrides,
+  });
+  const [country, setCountry] = useState<string | null>(null);
+  const [newCountry, setNewCountry] = useState("");
+
+  const overrides = overridesQuery.data?.overrides ?? {};
+  const knownCountries = Object.keys(overrides).sort();
+  const activeCountry = country ?? knownCountries[0] ?? null;
+
+  function applyResult(result: Awaited<ReturnType<typeof api.homepageCountryOverrides>>) {
+    queryClient.setQueryData(["homepage-country-overrides"], result);
+  }
+
+  const setMutation = useMutation({
+    mutationFn: ({ sectionId, enabled }: { sectionId: string; enabled: boolean }) => {
+      if (!activeCountry) throw new Error("No country selected.");
+      return api.setHomepageCountryOverride(activeCountry, sectionId, enabled);
+    },
+    onSuccess: applyResult,
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not save the override."),
+  });
+
+  const clearMutation = useMutation({
+    mutationFn: (sectionId: string) => {
+      if (!activeCountry) throw new Error("No country selected.");
+      return api.clearHomepageCountryOverride(activeCountry, sectionId);
+    },
+    onSuccess: applyResult,
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not clear the override."),
+  });
+
+  function addCountry() {
+    const code = newCountry.trim().toUpperCase();
+    if (!isRealCountryCode(code)) {
+      toast.error("A country needs a two-letter code, for example IN, US or DE.");
+      return;
+    }
+    setNewCountry("");
+    setCountry(code);
+  }
+
+  function setState(sectionId: string, state: OverrideState) {
+    if (state === "inherit") clearMutation.mutate(sectionId);
+    else setMutation.mutate({ sectionId, enabled: state === "shown" });
+  }
+
+  if (sectionsQuery.isLoading || overridesQuery.isLoading) {
+    return (
+      <section className="space-y-4 border-t border-line pt-5">
+        <p className="text-sm text-ink-muted">Loading country overrides...</p>
+      </section>
+    );
+  }
+  if (sectionsQuery.isError || overridesQuery.isError || !sectionsQuery.data) {
+    return (
+      <section className="space-y-4 border-t border-line pt-5">
+        <EmptyState title="Country overrides unavailable" hint="Requires owner settings access." />
+      </section>
+    );
+  }
+
+  const sections = sectionsQuery.data.sections;
+  const busy = setMutation.isPending || clearMutation.isPending;
+
+  return (
+    <section className="space-y-4 border-t border-line pt-5">
+      <div>
+        <h2 className="font-display text-lg text-ink">Homepage sections by country</h2>
+        <p className="max-w-3xl text-sm text-ink-muted">
+          Force a section on or off for visitors in one country, without changing what everyone else
+          sees. Leave a section on "Inherit" and it just follows the tickbox in the section list
+          above.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap items-end gap-3">
+        <div className="min-w-56">
+          <Field label="Editing" htmlFor="homepage-override-country">
+            <Select
+              id="homepage-override-country"
+              value={activeCountry ?? ""}
+              onChange={(event) => setCountry(event.target.value || null)}
+            >
+              {activeCountry ? null : <option value="">Add a country to begin…</option>}
+              {knownCountries.map((code) => (
+                <option key={code} value={code}>
+                  {code}
+                </option>
+              ))}
+              {activeCountry && !knownCountries.includes(activeCountry) ? (
+                <option value={activeCountry}>{activeCountry} (new)</option>
+              ) : null}
+            </Select>
+          </Field>
+        </div>
+        <div className="min-w-32">
+          <Field label="Add a country" htmlFor="homepage-override-new-country">
+            <Input
+              id="homepage-override-new-country"
+              value={newCountry}
+              placeholder="IN"
+              maxLength={2}
+              onChange={(event) => setNewCountry(event.target.value)}
+            />
+          </Field>
+        </div>
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={!newCountry.trim()}
+          onClick={addCountry}
+        >
+          Add country
+        </Button>
+      </div>
+
+      {activeCountry ? (
+        <ul className="divide-y divide-line rounded-md border border-line">
+          {sections.map((section) => {
+            const state = overrideState(overrides, activeCountry, section.id);
+            return (
+              <li
+                key={section.id}
+                className="flex flex-wrap items-center justify-between gap-3 px-3 py-3"
+              >
+                <div className="min-w-0">
+                  <span className="block text-sm font-medium text-ink">{section.label}</span>
+                  <span className="block text-xs text-ink-muted">
+                    Site-wide default: {section.enabled ? "shown" : "hidden"}
+                  </span>
+                </div>
+                <div
+                  className="flex shrink-0 gap-1.5"
+                  role="radiogroup"
+                  aria-label={`${section.label} for ${activeCountry}`}
+                >
+                  {(
+                    [
+                      ["inherit", "Inherit"],
+                      ["shown", "Always show"],
+                      ["hidden", "Always hide"],
+                    ] as const
+                  ).map(([value, label]) => (
+                    <button
+                      key={value}
+                      type="button"
+                      role="radio"
+                      aria-checked={state === value}
+                      disabled={busy}
+                      className={`min-h-8 rounded-sm border px-2.5 text-xs disabled:opacity-40 ${
+                        state === value
+                          ? "border-ink bg-ink text-ink-inverse"
+                          : "border-line text-ink"
+                      }`}
+                      onClick={() => setState(section.id, value)}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="max-w-xl rounded-md border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
+          No country overrides yet. Add a country above to give it its own section visibility.
+        </p>
+      )}
     </section>
   );
 }

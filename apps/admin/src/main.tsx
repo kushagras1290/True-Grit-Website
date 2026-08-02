@@ -8,6 +8,7 @@ import { Shell } from "./components/layout";
 import { ToastProvider } from "./components/toast";
 import { EmptyState } from "./components/ui";
 import { AccountPage } from "./features/account";
+import { AppearancePage } from "./features/appearance";
 import { ArchivePage } from "./features/archive";
 import { ArticleEditorPage, ArticleListPage } from "./features/articles";
 import { AdminLoginPage, AdminResetPasswordPage, RequireAdminAuth } from "./features/auth";
@@ -29,6 +30,7 @@ import {
   OrdersPage,
   UsersPage,
 } from "./features/operations";
+import { PriceAdjustmentsPage } from "./features/price-adjustments";
 import { ProductEditorPage, ProductListPage } from "./features/products";
 import { RecipeEditorPage, RecipeListPage } from "./features/recipes";
 import { ReportsPage } from "./features/reports";
@@ -67,6 +69,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="products/:id" element={<ProductEditorPage />} />
               <Route path="categories" element={<CategoryListPage />} />
               <Route path="categories/:id" element={<CategoryEditorPage />} />
+              <Route path="price-adjustments" element={<PriceAdjustmentsPage />} />
               <Route path="inventory" element={<InventoryPage />} />
               <Route path="farms" element={<FarmsPage />} />
               <Route path="farm-requests" element={<FarmRequestsListPage />} />
@@ -80,6 +83,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="revenue/:farmId" element={<FarmRevenueDetailPage />} />
               <Route path="archive" element={<ArchivePage />} />
               <Route path="homepage-settings" element={<HomepageSettingsPage />} />
+              <Route path="appearance" element={<AppearancePage />} />
               <Route path="site-control" element={<SiteControlPage />} />
               {/* The homepage controls used to live under Site Control; keep
                   bookmarks and links from older docs working. */}

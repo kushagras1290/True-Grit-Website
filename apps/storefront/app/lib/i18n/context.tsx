@@ -5,7 +5,7 @@
  * locale's *own* entries (`messages.server.ts`). This provider merges them over
  * the English source, which is already in the bundle, so:
  *
- *   * the client payload carries one language, not forty-five;
+ *   * the client payload carries one language, not fifty-five;
  *   * English requests carry nothing at all;
  *   * and `t()` can never return undefined, whatever the catalogue is missing.
  *

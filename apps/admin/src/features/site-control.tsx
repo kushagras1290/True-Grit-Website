@@ -1,11 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import {
   Button,
+  ConfirmDialog,
   EmptyState,
   Field,
   ImagePreview,
@@ -19,21 +20,19 @@ import { useToast } from "../components/toast";
 import {
   ApiError,
   api,
+  type AnnouncementScopeRow,
   type CmsPageDetail,
   type AdminLinkedProduct,
-  type SiteControl,
   type SiteDocuments,
 } from "../lib/api";
 import type { StorefrontSettings, StorefrontSettingsEffective } from "@truegrit/contracts";
 import { formatDateTime } from "../lib/format";
 
-const announcementSchema = z.object({
-  announcementActive: z.boolean(),
-  announcementMessage: z.string().max(220),
-  announcementPath: z.string().max(200),
-});
-
-type AnnouncementForm = z.infer<typeof announcementSchema>;
+/** Mirrors the identical helpers in `appearance.tsx` — a scope here is either
+ *  `'global'` or a two-letter country code, never a page path. */
+function isCountryScope(scope: string): boolean {
+  return scope !== "global";
+}
 
 const siteDocumentsSchema = z.object({
   robotsTxt: z.string().max(20_000),
@@ -59,112 +58,235 @@ const cmsPageSchema = z.object({
 
 type CmsPageForm = z.infer<typeof cmsPageSchema>;
 
-function announcementDefaults(data?: SiteControl): AnnouncementForm {
-  return {
-    announcementActive: data?.announcementActive ?? false,
-    announcementMessage: data?.announcementMessage ?? "",
-    announcementPath: data?.announcementPath ?? "",
-  };
-}
-
 export function SiteControlPage() {
-  const toast = useToast();
-  const queryClient = useQueryClient();
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["site-control"],
-    queryFn: api.siteControl,
-  });
-  const form = useForm<AnnouncementForm>({
-    resolver: zodResolver(announcementSchema),
-    defaultValues: announcementDefaults(),
-  });
-
-  useEffect(() => {
-    if (data) form.reset(announcementDefaults(data));
-  }, [data, form]);
-
-  const mutation = useMutation({
-    // Only the announcement fields are sent. The homepage fields live on their
-    // own page now, and PATCH ignores what it is not given -- so saving here
-    // can never quietly revert a banner someone changed there a minute ago.
-    mutationFn: (values: AnnouncementForm) =>
-      api.updateSiteControl({
-        announcementActive: values.announcementActive,
-        announcementMessage: values.announcementMessage,
-        announcementPath: values.announcementPath.trim(),
-      }),
-    onSuccess: async (result) => {
-      await queryClient.invalidateQueries({ queryKey: ["site-control"] });
-      form.reset(announcementDefaults(result));
-      toast.success("Announcement saved.");
-    },
-    onError: (error) =>
-      toast.error(error instanceof ApiError ? error.message : "Could not save the announcement."),
-  });
-
   return (
     <div>
       <PageHeader
         title="Site Settings"
         description="Site-wide controls: the announcement banner, storefront switches, CMS pages, per-route SEO and crawler files. The homepage itself has its own page."
       />
-
-      {isLoading ? (
-        <p className="text-sm text-ink-muted">Loading site settings...</p>
-      ) : isError ? (
-        <EmptyState title="Site settings unavailable" hint="Requires owner settings access." />
-      ) : (
-        <form
-          className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]"
-          onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
-        >
-          <section className="space-y-4 border-t border-line pt-5">
-            <div>
-              <h2 className="font-display text-lg text-ink">Announcement banner</h2>
-              <p className="text-sm text-ink-muted">
-                Appears above the customer storefront, on every page.
-              </p>
-            </div>
-            <label className="flex items-center gap-2 text-sm text-ink">
-              <input type="checkbox" {...form.register("announcementActive")} />
-              Show announcement
-            </label>
-            <Field label="Banner message" htmlFor="announcementMessage">
-              <Input id="announcementMessage" {...form.register("announcementMessage")} />
-            </Field>
-            <Field label="Banner link" htmlFor="announcementPath">
-              <Input
-                id="announcementPath"
-                placeholder="/category/fresh-fruits"
-                {...form.register("announcementPath")}
-              />
-            </Field>
-          </section>
-
-          <aside className="h-fit border-t border-line pt-5">
-            <h2 className="font-display text-lg text-ink">Owner permissions</h2>
-            <p className="mt-1 text-sm text-ink-muted">
-              Farm-owner accounts do not receive settings permissions, so they cannot access these
-              global storefront controls.
-            </p>
-            <Button
-              type="submit"
-              variant="primary"
-              className="mt-5 w-full"
-              disabled={mutation.isPending}
-            >
-              {mutation.isPending ? "Saving..." : "Save announcement"}
-            </Button>
-          </aside>
-        </form>
-      )}
-
+      <AnnouncementSection />
       <StorefrontSwitchesSection />
       <CmsPagesSection />
       <RouteSeoSection />
       <SiteDocumentsSection />
       <HighlightsSection />
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Announcement banner: site-wide, or one per visitor country. Mirrors the
+// Colours scope pattern in appearance.tsx (a country row fully replaces the
+// global banner for its visitors rather than merging with it — see
+// `services/announcements.py`).
+// ---------------------------------------------------------------------------
+
+const announcementFormSchema = z.object({
+  active: z.boolean(),
+  message: z.string().max(220),
+  path: z.string().max(200),
+});
+
+type AnnouncementFormValues = z.infer<typeof announcementFormSchema>;
+
+function announcementFormDefaults(row?: AnnouncementScopeRow): AnnouncementFormValues {
+  return {
+    active: row?.active ?? false,
+    message: row?.message ?? "",
+    path: row?.path ?? "",
+  };
+}
+
+function AnnouncementSection() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["announcements"],
+    queryFn: api.announcements,
+  });
+  const [scope, setScope] = useState("global");
+  const [newCountry, setNewCountry] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+
+  const scopes = data?.scopes ?? [];
+  const savedRow = scopes.find((row) => row.scope === scope);
+  const countryScopes = scopes.filter((row) => row.scope !== "global").map((row) => row.scope);
+
+  const form = useForm<AnnouncementFormValues>({
+    resolver: zodResolver(announcementFormSchema),
+    defaultValues: announcementFormDefaults(),
+  });
+
+  useEffect(() => {
+    form.reset(announcementFormDefaults(savedRow));
+    // `savedRow` is derived from `data` each render; comparing by scope + data
+    // keeps this from re-running (and clobbering an in-progress edit) on every
+    // unrelated query refetch.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scope, data]);
+
+  function applyResult(result: { scopes: AnnouncementScopeRow[] }) {
+    queryClient.setQueryData(["announcements"], result);
+    return queryClient.invalidateQueries({ queryKey: ["announcements"] });
+  }
+
+  const saveMutation = useMutation({
+    mutationFn: (values: AnnouncementFormValues) =>
+      api.saveAnnouncement({ scope, ...values, path: values.path.trim() }),
+    onSuccess: async (result) => {
+      await applyResult(result);
+      toast.success(
+        scope === "global" ? "Announcement saved." : `Announcement saved for ${scope}.`,
+      );
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not save the announcement."),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (target: string) => api.deleteAnnouncement(target),
+    onSuccess: async (result) => {
+      await applyResult(result);
+      setConfirmDelete(null);
+      setScope("global");
+      toast.success("Country announcement removed; it uses the site-wide banner again.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not remove the announcement."),
+  });
+
+  function addCountry() {
+    const code = newCountry.trim().toUpperCase();
+    if (!/^[A-Z]{2}$/.test(code)) {
+      toast.error("A country needs a two-letter code, for example IN, US or DE.");
+      return;
+    }
+    setNewCountry("");
+    setScope(code);
+  }
+
+  if (isLoading) {
+    return (
+      <section className="space-y-4 border-t border-line pt-5">
+        <p className="text-sm text-ink-muted">Loading announcements...</p>
+      </section>
+    );
+  }
+  if (isError) {
+    return (
+      <section className="space-y-4 border-t border-line pt-5">
+        <EmptyState title="Announcements unavailable" hint="Requires owner settings access." />
+      </section>
+    );
+  }
+
+  return (
+    <section className="space-y-4 border-t border-line pt-5">
+      <div>
+        <h2 className="font-display text-lg text-ink">Announcement banner</h2>
+        <p className="max-w-3xl text-sm text-ink-muted">
+          Appears above the customer storefront, on every page. A country's banner fully replaces
+          the site-wide one for its visitors when it is on — an owner silencing a market-specific
+          announcement does not have the general one reappear underneath it.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap items-end gap-3">
+        <div className="min-w-56">
+          <Field label="Editing" htmlFor="announcement-scope">
+            <Select
+              id="announcement-scope"
+              value={scope}
+              onChange={(event) => setScope(event.target.value)}
+            >
+              <option value="global">Whole site</option>
+              {countryScopes.map((countryScope) => (
+                <option key={countryScope} value={countryScope}>
+                  {countryScope}
+                </option>
+              ))}
+              {isCountryScope(scope) && !countryScopes.includes(scope) ? (
+                <option value={scope}>{scope} (unsaved)</option>
+              ) : null}
+            </Select>
+          </Field>
+        </div>
+        <div className="min-w-32">
+          <Field label="Give one country its own banner" htmlFor="announcement-new-country">
+            <Input
+              id="announcement-new-country"
+              value={newCountry}
+              placeholder="IN"
+              maxLength={2}
+              onChange={(event) => setNewCountry(event.target.value)}
+            />
+          </Field>
+        </div>
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={!newCountry.trim()}
+          onClick={addCountry}
+        >
+          Add country
+        </Button>
+        {isCountryScope(scope) && countryScopes.includes(scope) ? (
+          <Button type="button" variant="tertiary" onClick={() => setConfirmDelete(scope)}>
+            Remove country banner
+          </Button>
+        ) : null}
+      </div>
+
+      <form
+        className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]"
+        onSubmit={form.handleSubmit((values) => saveMutation.mutate(values))}
+      >
+        <div className="space-y-4">
+          <label className="flex items-center gap-2 text-sm text-ink">
+            <input type="checkbox" {...form.register("active")} />
+            Show announcement
+          </label>
+          <Field label="Banner message" htmlFor="announcementMessage">
+            <Input id="announcementMessage" {...form.register("message")} />
+          </Field>
+          <Field label="Banner link" htmlFor="announcementPath">
+            <Input
+              id="announcementPath"
+              placeholder="/category/fresh-fruits"
+              {...form.register("path")}
+            />
+          </Field>
+        </div>
+
+        <aside className="h-fit">
+          <Button
+            type="submit"
+            variant="primary"
+            className="w-full"
+            disabled={saveMutation.isPending}
+          >
+            {saveMutation.isPending
+              ? "Saving..."
+              : scope === "global"
+                ? "Save announcement"
+                : `Save announcement for ${scope}`}
+          </Button>
+        </aside>
+      </form>
+
+      {confirmDelete ? (
+        <ConfirmDialog
+          title={`Remove the announcement for ${confirmDelete}?`}
+          description="Visitors from this country go back to seeing the site-wide banner (or none, if that is off)."
+          confirmLabel="Remove country banner"
+          pendingLabel="Removing..."
+          isPending={deleteMutation.isPending}
+          onCancel={() => setConfirmDelete(null)}
+          onConfirm={() => deleteMutation.mutate(confirmDelete)}
+        />
+      ) : null}
+    </section>
   );
 }
 

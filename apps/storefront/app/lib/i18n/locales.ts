@@ -3,7 +3,7 @@
  *
  * Client-safe and deliberately tiny: this module carries only metadata, never
  * translations. The catalogues themselves are server-only (see
- * `messages.server.ts`) so a visitor downloads one language, not forty-five.
+ * `messages.server.ts`) so a visitor downloads one language, not fifty-five.
  *
  * Every entry is keyed by a BCP 47 tag, which is what `<html lang>`,
  * `Accept-Language`, `Intl.*` and hreflang all speak. Chinese is split into
@@ -14,7 +14,7 @@
 export type TextDirection = "ltr" | "rtl";
 
 /** Broad groupings, used only to keep the language menu navigable — a flat
- *  list of forty-five is a wall of text nobody scans. */
+ *  list of fifty-five is a wall of text nobody scans. */
 export type LocaleGroup = "indian" | "world";
 
 export interface LocaleDefinition {
@@ -108,6 +108,16 @@ export const LOCALES: readonly LocaleDefinition[] = [
   { code: "fil", nativeName: "Filipino", englishName: "Filipino", dir: "ltr", group: "world" },
   { code: "sw", nativeName: "Kiswahili", englishName: "Swahili", dir: "ltr", group: "world" },
   { code: "he", nativeName: "עברית", englishName: "Hebrew", dir: "rtl", group: "world" },
+  { code: "sv", nativeName: "Svenska", englishName: "Swedish", dir: "ltr", group: "world" },
+  { code: "nb", nativeName: "Norsk bokmål", englishName: "Norwegian", dir: "ltr", group: "world" },
+  { code: "da", nativeName: "Dansk", englishName: "Danish", dir: "ltr", group: "world" },
+  { code: "fi", nativeName: "Suomi", englishName: "Finnish", dir: "ltr", group: "world" },
+  { code: "el", nativeName: "Ελληνικά", englishName: "Greek", dir: "ltr", group: "world" },
+  { code: "cs", nativeName: "Čeština", englishName: "Czech", dir: "ltr", group: "world" },
+  { code: "hu", nativeName: "Magyar", englishName: "Hungarian", dir: "ltr", group: "world" },
+  { code: "ro", nativeName: "Română", englishName: "Romanian", dir: "ltr", group: "world" },
+  { code: "sk", nativeName: "Slovenčina", englishName: "Slovak", dir: "ltr", group: "world" },
+  { code: "bg", nativeName: "Български", englishName: "Bulgarian", dir: "ltr", group: "world" },
 ] as const;
 
 const BY_CODE: ReadonlyMap<string, LocaleDefinition> = new Map(

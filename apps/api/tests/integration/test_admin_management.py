@@ -1074,6 +1074,696 @@ def test_farm_owner_cannot_manage_homepage_sections(client: TestClient, db: SQLi
     assert client.delete("/v1/admin/homepage/sections/blk_hero").status_code == 403
 
 
+# --- Homepage sections: per-country overrides -------------------------------
+
+
+def test_owner_can_set_and_clear_a_homepage_country_override(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    sections = client.get("/v1/admin/homepage/sections").json()["sections"]
+    snippets = next(section for section in sections if section["type"] == "page_links")
+
+    empty = client.get("/v1/admin/homepage/country-overrides")
+    assert empty.status_code == 200
+    assert empty.json()["overrides"] == {}
+
+    # Force the section off for IN, even though it stays on globally. Lower
+    # case in the URL proves the country is normalised the same way the
+    # theme/announcement scopes are.
+    forced_off = client.put(
+        f"/v1/admin/homepage/country-overrides/in/{snippets['id']}", json={"enabled": False}
+    )
+    assert forced_off.status_code == 200
+    assert forced_off.json()["overrides"]["IN"][snippets["id"]] is False
+
+    public_in = client.get("/v1/public/home", params={"country": "IN"}).json()
+    assert "page_links" not in [block["type"] for block in public_in["blocks"]]
+    public_global = client.get("/v1/public/home").json()
+    assert "page_links" in [block["type"] for block in public_global["blocks"]]
+
+    cleared = client.delete(f"/v1/admin/homepage/country-overrides/IN/{snippets['id']}")
+    assert cleared.status_code == 200
+    assert cleared.json()["overrides"] == {}
+    public_in_after_clear = client.get("/v1/public/home", params={"country": "IN"}).json()
+    assert "page_links" in [block["type"] for block in public_in_after_clear["blocks"]]
+
+
+def test_homepage_country_override_can_force_a_disabled_section_on(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    sections = client.get("/v1/admin/homepage/sections").json()["sections"]
+    snippets = next(section for section in sections if section["type"] == "page_links")
+    client.patch(f"/v1/admin/homepage/sections/{snippets['id']}", json={"enabled": False})
+    assert "page_links" not in [
+        block["type"] for block in client.get("/v1/public/home").json()["blocks"]
+    ]
+
+    client.put(
+        f"/v1/admin/homepage/country-overrides/US/{snippets['id']}", json={"enabled": True}
+    )
+    forced_on = client.get("/v1/public/home", params={"country": "US"}).json()
+    assert "page_links" in [block["type"] for block in forced_on["blocks"]]
+    # Every other visitor still gets the section's own (disabled) default.
+    still_off = client.get("/v1/public/home", params={"country": "IN"}).json()
+    assert "page_links" not in [block["type"] for block in still_off["blocks"]]
+
+
+def test_homepage_country_override_rejects_bad_country_and_unknown_section(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    # XX (Cloudflare "unknown") and T1 (Tor) are sentinels, never real markets.
+    assert (
+        client.put(
+            "/v1/admin/homepage/country-overrides/XX/blk_hero", json={"enabled": True}
+        ).status_code
+        == 422
+    )
+    assert (
+        client.put(
+            "/v1/admin/homepage/country-overrides/USA/blk_hero", json={"enabled": True}
+        ).status_code
+        == 422
+    )
+    assert (
+        client.put(
+            "/v1/admin/homepage/country-overrides/IN/blk_not_real", json={"enabled": True}
+        ).status_code
+        == 404
+    )
+
+
+def test_farm_owner_cannot_manage_homepage_country_overrides(
+    client: TestClient, db: SQLiteDatabase
+):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    assert client.get("/v1/admin/homepage/country-overrides").status_code == 403
+    assert (
+        client.put(
+            "/v1/admin/homepage/country-overrides/IN/blk_hero", json={"enabled": True}
+        ).status_code
+        == 403
+    )
+    assert client.delete("/v1/admin/homepage/country-overrides/IN/blk_hero").status_code == 403
+
+
+# --- Announcement banner ------------------------------------------------------
+
+
+def test_owner_can_manage_the_global_announcement(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    seeded = client.get("/v1/admin/announcements")
+    assert seeded.status_code == 200
+    global_row = next(row for row in seeded.json()["scopes"] if row["scope"] == "global")
+    assert global_row["active"] is True
+    assert global_row["message"].startswith("Alphonso season")
+
+    saved = client.put(
+        "/v1/admin/announcements",
+        json={
+            "scope": "global",
+            "active": False,
+            "message": "Back soon.",
+            "path": "",
+        },
+    )
+    assert saved.status_code == 200
+    updated = next(row for row in saved.json()["scopes"] if row["scope"] == "global")
+    assert updated["active"] is False
+    assert updated["message"] == "Back soon."
+
+    # Switched off, so the storefront shows nothing.
+    assert client.get("/v1/public/bootstrap").json()["announcement"] is None
+
+
+def test_owner_can_add_and_remove_a_country_announcement(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    added = client.put(
+        "/v1/admin/announcements",
+        json={"scope": "in", "active": True, "message": "Diwali boxes open now.", "path": "/diwali"},
+    )
+    assert added.status_code == 200
+    scopes = {row["scope"]: row for row in added.json()["scopes"]}
+    assert scopes["IN"]["message"] == "Diwali boxes open now."
+
+    # A country's active banner replaces the global one for its visitors.
+    india = client.get("/v1/public/bootstrap", params={"country": "IN"}).json()
+    assert india["announcement"] == {"message": "Diwali boxes open now.", "path": "/diwali"}
+    elsewhere = client.get("/v1/public/bootstrap", params={"country": "FR"}).json()
+    assert elsewhere["announcement"]["message"].startswith("Alphonso season")
+
+    removed = client.delete("/v1/admin/announcements/IN")
+    assert removed.status_code == 200
+    assert "IN" not in {row["scope"] for row in removed.json()["scopes"]}
+    india_after_removal = client.get("/v1/public/bootstrap", params={"country": "IN"}).json()
+    assert india_after_removal["announcement"]["message"].startswith("Alphonso season")
+
+
+def test_switching_off_a_country_announcement_does_not_fall_back_to_global(
+    client: TestClient, db: SQLiteDatabase
+):
+    """A country row that exists but is inactive is a deliberate silence, not
+    a gap that should be filled by the site-wide banner underneath it."""
+    as_admin(client, db)
+    client.put(
+        "/v1/admin/announcements",
+        json={"scope": "DE", "active": False, "message": "placeholder", "path": ""},
+    )
+    germany = client.get("/v1/public/bootstrap", params={"country": "DE"}).json()
+    assert germany["announcement"] is None
+
+
+def test_the_global_announcement_cannot_be_deleted(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    refused = client.delete("/v1/admin/announcements/global")
+    assert refused.status_code == 422
+
+
+def test_announcement_scope_is_validated(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    for bad_scope in ("XX", "T1", "USA", ""):
+        response = client.put(
+            "/v1/admin/announcements",
+            json={"scope": bad_scope, "active": True, "message": "x", "path": ""},
+        )
+        assert response.status_code == 422, bad_scope
+    empty_message = client.put(
+        "/v1/admin/announcements",
+        json={"scope": "global", "active": True, "message": "   ", "path": ""},
+    )
+    assert empty_message.status_code == 422
+
+
+def test_deleting_an_announcement_scope_that_was_never_saved_is_404(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    assert client.delete("/v1/admin/announcements/JP").status_code == 404
+
+
+def test_farm_owner_cannot_manage_announcements(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    assert client.get("/v1/admin/announcements").status_code == 403
+    assert (
+        client.put(
+            "/v1/admin/announcements",
+            json={"scope": "global", "active": True, "message": "x", "path": ""},
+        ).status_code
+        == 403
+    )
+    assert client.delete("/v1/admin/announcements/IN").status_code == 403
+
+
+# --- Price adjustments -------------------------------------------------------
+
+
+def test_owner_can_save_update_and_delete_a_global_price_adjustment(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    empty = client.get("/v1/admin/price-adjustments")
+    assert empty.status_code == 200
+    assert empty.json()["rules"] == []
+
+    created = client.put(
+        "/v1/admin/price-adjustments", json={"scope": "global", "percent": -20, "active": True}
+    )
+    assert created.status_code == 200
+    rules = created.json()["rules"]
+    assert len(rules) == 1
+    assert rules[0]["scope"] == "global"
+    assert rules[0]["productId"] is None
+    assert rules[0]["categoryId"] is None
+    assert rules[0]["percent"] == -20
+    rule_id = rules[0]["id"]
+
+    # A second PUT for the same (scope, product, category) updates in place
+    # rather than creating a duplicate row.
+    updated = client.put(
+        "/v1/admin/price-adjustments", json={"scope": "global", "percent": -30, "active": True}
+    )
+    assert updated.status_code == 200
+    assert len(updated.json()["rules"]) == 1
+    assert updated.json()["rules"][0]["id"] == rule_id
+    assert updated.json()["rules"][0]["percent"] == -30
+
+    removed = client.delete(f"/v1/admin/price-adjustments/{rule_id}")
+    assert removed.status_code == 200
+    assert removed.json()["rules"] == []
+
+
+def test_price_adjustment_product_and_category_are_mutually_exclusive(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    response = client.put(
+        "/v1/admin/price-adjustments",
+        json={
+            "scope": "global",
+            "productId": "prd_alphonso",
+            "categoryId": "cat_market_fruits",
+            "percent": -10,
+            "active": True,
+        },
+    )
+    assert response.status_code == 422
+
+
+def test_price_adjustment_percent_bounds_are_enforced(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    assert (
+        client.put(
+            "/v1/admin/price-adjustments", json={"scope": "global", "percent": -91, "active": True}
+        ).status_code
+        == 422
+    )
+    assert (
+        client.put(
+            "/v1/admin/price-adjustments", json={"scope": "global", "percent": 501, "active": True}
+        ).status_code
+        == 422
+    )
+
+
+def test_price_adjustment_rejects_unknown_product_and_category(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    assert (
+        client.put(
+            "/v1/admin/price-adjustments",
+            json={"scope": "global", "productId": "prd_not_real", "percent": -10, "active": True},
+        ).status_code
+        == 404
+    )
+    assert (
+        client.put(
+            "/v1/admin/price-adjustments",
+            json={"scope": "global", "categoryId": "cat_not_real", "percent": -10, "active": True},
+        ).status_code
+        == 404
+    )
+
+
+def test_deleting_an_unknown_price_adjustment_is_404(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    assert client.delete("/v1/admin/price-adjustments/padj_not_real").status_code == 404
+
+
+def test_farm_owner_cannot_manage_price_adjustments(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    assert client.get("/v1/admin/price-adjustments").status_code == 403
+    assert (
+        client.put(
+            "/v1/admin/price-adjustments", json={"scope": "global", "percent": -10, "active": True}
+        ).status_code
+        == 403
+    )
+    assert client.delete("/v1/admin/price-adjustments/padj_x").status_code == 403
+
+
+# --- Price adjustments: public resolution ------------------------------------
+
+
+def test_price_adjustment_product_rule_beats_a_global_rule(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    client.put(
+        "/v1/admin/price-adjustments", json={"scope": "global", "percent": -10, "active": True}
+    )
+    client.put(
+        "/v1/admin/price-adjustments",
+        json={"scope": "global", "productId": "prd_alphonso", "percent": -50, "active": True},
+    )
+
+    mangoes = next(
+        p
+        for p in client.get("/v1/public/products").json()["items"]
+        if p["slug"] == "organic-alphonso-mangoes"
+    )
+    assert mangoes["adjustedMinor"] == round(mangoes["priceMinor"] * 0.5)
+
+    rajma = next(
+        p
+        for p in client.get("/v1/public/products").json()["items"]
+        if p["slug"] == "himalayan-red-rajma"
+    )
+    assert rajma["adjustedMinor"] == round(rajma["priceMinor"] * 0.9)
+
+
+def test_price_adjustment_country_scope_beats_global_for_its_visitors(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    client.put(
+        "/v1/admin/price-adjustments", json={"scope": "global", "percent": 20, "active": True}
+    )
+    client.put(
+        "/v1/admin/price-adjustments",
+        json={"scope": "in", "productId": "prd_alphonso", "percent": -25, "active": True},
+    )
+
+    india = client.get(
+        "/v1/public/products/organic-alphonso-mangoes", params={"country": "IN"}
+    ).json()
+    assert india["adjustedMinor"] == round(india["priceMinor"] * 0.75)
+
+    elsewhere = client.get(
+        "/v1/public/products/organic-alphonso-mangoes", params={"country": "FR"}
+    ).json()
+    assert elsewhere["adjustedMinor"] == round(elsewhere["priceMinor"] * 1.2)
+
+
+def test_price_adjustment_category_rule_applies_to_products_in_that_category(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    category_id = db._conn.execute(
+        "SELECT id FROM categories WHERE slug = 'fresh-fruits'"
+    ).fetchone()[0]
+    client.put(
+        "/v1/admin/price-adjustments",
+        json={"scope": "global", "categoryId": category_id, "percent": -15, "active": True},
+    )
+
+    mangoes = client.get("/v1/public/products/organic-alphonso-mangoes").json()
+    assert mangoes["adjustedMinor"] == round(mangoes["priceMinor"] * 0.85)
+
+    rajma = client.get("/v1/public/products/himalayan-red-rajma").json()
+    assert rajma["adjustedMinor"] is None
+
+
+def test_price_adjustment_product_rule_beats_a_category_rule(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    category_id = db._conn.execute(
+        "SELECT id FROM categories WHERE slug = 'fresh-fruits'"
+    ).fetchone()[0]
+    client.put(
+        "/v1/admin/price-adjustments",
+        json={"scope": "global", "categoryId": category_id, "percent": -15, "active": True},
+    )
+    client.put(
+        "/v1/admin/price-adjustments",
+        json={"scope": "global", "productId": "prd_alphonso", "percent": -60, "active": True},
+    )
+
+    mangoes = client.get("/v1/public/products/organic-alphonso-mangoes").json()
+    assert mangoes["adjustedMinor"] == round(mangoes["priceMinor"] * 0.4)
+
+
+def test_inactive_price_adjustment_does_not_apply(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    client.put(
+        "/v1/admin/price-adjustments",
+        json={"scope": "global", "productId": "prd_alphonso", "percent": -50, "active": False},
+    )
+    mangoes = client.get("/v1/public/products/organic-alphonso-mangoes").json()
+    assert mangoes["adjustedMinor"] is None
+
+
+# --- Appearance: colours and effects ----------------------------------------
+
+
+def test_owner_can_save_and_clear_theme_colours(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+
+    empty = client.get("/v1/admin/appearance")
+    assert empty.status_code == 200
+    body = empty.json()
+    assert body["theme"] == {"global": {}, "countries": {}, "pages": {}}
+    assert body["countryEffects"] == {}
+    assert body["scopes"] == [
+        {
+            "scope": "global",
+            "tokens": {},
+            "hasEffectsOverride": False,
+            "updatedAt": "2026-08-01T00:00:00Z",
+        }
+    ]
+    assert "brandPrimary" in body["tokenKeys"]
+    assert "snow" in body["ambientEffects"]
+    assert "ribbon" in body["cursorTrails"]
+
+    saved = client.put(
+        "/v1/admin/appearance/theme",
+        json={"scope": "global", "tokens": {"brandPrimary": "#112233", "textPrimary": ""}},
+    )
+    assert saved.status_code == 200
+    assert saved.json()["theme"]["global"] == {"brandPrimary": "#112233"}
+
+    # The public payload -- what the storefront actually renders from -- must
+    # agree with what the console just saved, or the preview would lie.
+    public = client.get("/v1/public/settings").json()
+    assert public["theme"]["global"] == {"brandPrimary": "#112233"}
+
+    cleared = client.put(
+        "/v1/admin/appearance/theme", json={"scope": "global", "tokens": {"brandPrimary": ""}}
+    )
+    assert cleared.status_code == 200
+    assert cleared.json()["theme"]["global"] == {}
+
+
+def test_owner_can_theme_a_single_page_without_touching_the_site_wide_palette(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    client.put(
+        "/v1/admin/appearance/theme",
+        json={"scope": "global", "tokens": {"brandPrimary": "#111111"}},
+    )
+    page = client.put(
+        "/v1/admin/appearance/theme",
+        json={"scope": "/shop/", "tokens": {"brandAccent": "#ff8800"}},
+    )
+    assert page.status_code == 200
+    # Trailing slash normalised away: "/shop/" and "/shop" are the same page.
+    assert page.json()["theme"]["pages"] == {"/shop": {"brandAccent": "#ff8800"}}
+    assert page.json()["theme"]["global"] == {"brandPrimary": "#111111"}
+
+    removed = client.delete("/v1/admin/appearance/theme/shop")
+    assert removed.status_code == 200
+    assert removed.json()["theme"]["pages"] == {}
+    # The site-wide colour survives deleting a page override.
+    assert removed.json()["theme"]["global"] == {"brandPrimary": "#111111"}
+
+
+def test_theme_rejects_unsafe_values_and_unknown_scopes(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    unsafe = client.put(
+        "/v1/admin/appearance/theme",
+        json={"scope": "global", "tokens": {"brandPrimary": "url(javascript:alert(1))"}},
+    )
+    assert unsafe.status_code == 422
+
+    unknown_token = client.put(
+        "/v1/admin/appearance/theme", json={"scope": "global", "tokens": {"notAToken": "#fff"}}
+    )
+    assert unknown_token.status_code == 422
+
+    bad_scope = client.put("/v1/admin/appearance/theme", json={"scope": "not-a-path", "tokens": {}})
+    assert bad_scope.status_code == 422
+
+    # The global palette is a clear-only surface -- it cannot be deleted, only
+    # emptied, so the console always has somewhere to load the site-wide form.
+    assert client.delete("/v1/admin/appearance/theme/global").status_code == 422
+
+
+def test_owner_can_save_ambient_effect_and_cursor_trail(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    saved = client.put(
+        "/v1/admin/appearance/effects",
+        json={
+            "ambient": {"effect": "snow", "color": "#ffffff", "intensity": 4},
+            "cursor": {"trail": "sparkle", "color": "#24483a", "hideNativeCursor": True},
+        },
+    )
+    assert saved.status_code == 200
+    effects = saved.json()["effects"]
+    assert effects["ambient"] == {"effect": "snow", "color": "#ffffff", "intensity": 4}
+    assert effects["cursor"] == {
+        "trail": "sparkle",
+        "color": "#24483a",
+        "hideNativeCursor": True,
+    }
+
+    public = client.get("/v1/public/settings").json()
+    assert public["effects"] == effects
+
+
+def test_effects_reject_unknown_keys_and_out_of_range_intensity(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    assert (
+        client.put(
+            "/v1/admin/appearance/effects",
+            json={"ambient": {"effect": "blizzard"}, "cursor": {}},
+        ).status_code
+        == 422
+    )
+    assert (
+        client.put(
+            "/v1/admin/appearance/effects",
+            json={"ambient": {"effect": "snow", "intensity": 9}, "cursor": {}},
+        ).status_code
+        == 422
+    )
+
+
+def test_public_settings_default_to_no_theme_and_no_effects(client: TestClient, db: SQLiteDatabase):
+    """A storefront nobody has ever customised must render the stock palette
+    and stay perfectly still -- decoration is opt-in, never a surprise."""
+    body = client.get("/v1/public/settings").json()
+    assert body["theme"] == {"global": {}, "pages": {}}
+    assert body["effects"]["ambient"]["effect"] == "none"
+    assert body["effects"]["cursor"]["trail"] == "none"
+
+
+def test_country_colours_override_global_but_lose_to_a_page(client: TestClient, db: SQLiteDatabase):
+    """Global < country < page, key by key -- see `load_public_appearance`."""
+    as_admin(client, db)
+    client.put(
+        "/v1/admin/appearance/theme",
+        json={"scope": "global", "tokens": {"brandPrimary": "#111111", "brandAccent": "#222222"}},
+    )
+    saved = client.put(
+        "/v1/admin/appearance/theme",
+        json={"scope": "country:IN", "tokens": {"brandPrimary": "#e64545"}},
+    )
+    assert saved.status_code == 200
+    assert saved.json()["theme"]["countries"] == {"country:IN": {"brandPrimary": "#e64545"}}
+
+    # A visitor from India: country overrides brandPrimary, global still
+    # supplies brandAccent (the country row never mentioned it).
+    india = client.get("/v1/public/settings?country=IN").json()
+    assert india["theme"]["global"] == {"brandPrimary": "#e64545", "brandAccent": "#222222"}
+
+    # A visitor from anywhere else sees the untouched global palette.
+    elsewhere = client.get("/v1/public/settings?country=FR").json()
+    assert elsewhere["theme"]["global"] == {"brandPrimary": "#111111", "brandAccent": "#222222"}
+    assert (
+        client.get("/v1/public/settings").json()["theme"]["global"] == elsewhere["theme"]["global"]
+    )
+
+    # A page override still wins over the country override for the same key.
+    client.put(
+        "/v1/admin/appearance/theme",
+        json={"scope": "/shop", "tokens": {"brandPrimary": "#0000ff"}},
+    )
+    india_shop = client.get("/v1/public/settings?country=IN").json()
+    # The public payload's `theme.pages` is unresolved by design -- the
+    # storefront itself picks the right page by pathname (`resolveThemeTokens`)
+    # from whatever is already the visitor's global layer.
+    assert india_shop["theme"]["pages"] == {"/shop": {"brandPrimary": "#0000ff"}}
+    assert india_shop["theme"]["global"] == {"brandPrimary": "#e64545", "brandAccent": "#222222"}
+
+
+def test_country_code_is_validated_and_normalised(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    lowercase = client.put(
+        "/v1/admin/appearance/theme",
+        json={"scope": "country:in", "tokens": {"brandPrimary": "#111"}},
+    )
+    assert lowercase.status_code == 200
+    assert lowercase.json()["theme"]["countries"] == {"country:IN": {"brandPrimary": "#111"}}
+
+    too_long = client.put("/v1/admin/appearance/theme", json={"scope": "country:IND", "tokens": {}})
+    assert too_long.status_code == 422
+
+    # Cloudflare's own sentinels for "unknown"/"Tor" are not real countries --
+    # a theme saved under one would never resolve for an actual visitor.
+    sentinel = client.put("/v1/admin/appearance/theme", json={"scope": "country:XX", "tokens": {}})
+    assert sentinel.status_code == 422
+
+
+def test_country_effects_override_replaces_rather_than_merges(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    client.put(
+        "/v1/admin/appearance/effects",
+        json={"ambient": {"effect": "none", "color": "#ffffff", "intensity": 3}, "cursor": {}},
+    )
+    saved = client.put(
+        "/v1/admin/appearance/effects",
+        json={
+            "ambient": {"effect": "snow", "color": "#ffffff", "intensity": 5},
+            "cursor": {"trail": "snow", "color": "#ffffff", "hideNativeCursor": False},
+            "scope": "country:CA",
+        },
+    )
+    assert saved.status_code == 200
+    assert saved.json()["countryEffects"]["country:CA"]["ambient"]["effect"] == "snow"
+    # The global default is untouched by a country-scoped save.
+    assert saved.json()["effects"]["ambient"]["effect"] == "none"
+
+    canada = client.get("/v1/public/settings?country=CA").json()
+    assert canada["effects"]["ambient"]["effect"] == "snow"
+    india = client.get("/v1/public/settings?country=IN").json()
+    assert india["effects"]["ambient"]["effect"] == "none"
+
+
+def test_clearing_a_country_effects_override_keeps_its_colours(
+    client: TestClient, db: SQLiteDatabase
+):
+    """Effects and colours are independently clearable on the same country row."""
+    as_admin(client, db)
+    client.put(
+        "/v1/admin/appearance/theme",
+        json={"scope": "country:DE", "tokens": {"brandPrimary": "#ffcc00"}},
+    )
+    client.put(
+        "/v1/admin/appearance/effects",
+        json={"ambient": {"effect": "leaves"}, "cursor": {}, "scope": "country:DE"},
+    )
+
+    cleared = client.delete("/v1/admin/appearance/effects/country:DE")
+    assert cleared.status_code == 200
+    assert "country:DE" not in cleared.json()["countryEffects"]
+    # The colours saved on the same scope survive clearing its effects.
+    assert cleared.json()["theme"]["countries"] == {"country:DE": {"brandPrimary": "#ffcc00"}}
+
+    germany = client.get("/v1/public/settings?country=DE").json()
+    assert germany["effects"]["ambient"]["effect"] == "none"
+    assert germany["theme"]["global"]["brandPrimary"] == "#ffcc00"
+
+    # Clearing again is a no-op, not an error: the country:DE row still exists
+    # (it holds colours), it simply has no effects override to remove.
+    again = client.delete("/v1/admin/appearance/effects/country:DE")
+    assert again.status_code == 200
+    assert again.json()["theme"]["countries"] == {"country:DE": {"brandPrimary": "#ffcc00"}}
+
+    # A country with no row at all -- no colours, no effects ever saved -- has
+    # truly nothing to clear, which is the genuine 404 case.
+    assert client.delete("/v1/admin/appearance/effects/country:JP").status_code == 404
+
+
+def test_effects_scope_rejects_a_page_path(client: TestClient, db: SQLiteDatabase):
+    """Effects are global-or-country only -- never page-scoped, unlike colours."""
+    as_admin(client, db)
+    response = client.put(
+        "/v1/admin/appearance/effects",
+        json={"ambient": {}, "cursor": {}, "scope": "/shop"},
+    )
+    assert response.status_code == 422
+
+
+def test_farm_owner_cannot_manage_appearance(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    assert client.get("/v1/admin/appearance").status_code == 403
+    assert (
+        client.put("/v1/admin/appearance/theme", json={"scope": "global", "tokens": {}}).status_code
+        == 403
+    )
+    assert (
+        client.put("/v1/admin/appearance/effects", json={"ambient": {}, "cursor": {}}).status_code
+        == 403
+    )
+
+
 def test_owner_can_manage_cms_page_seo_and_blocks(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
     pages = client.get("/v1/admin/pages")

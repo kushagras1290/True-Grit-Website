@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import re
 from typing import Annotated, Any
@@ -42,8 +43,11 @@ from truegrit_api.schemas.public import (
     RecipeListResponse,
     SearchResponse,
 )
+from truegrit_api.services.announcements import resolve_announcement
+from truegrit_api.services.appearance import load_public_appearance
 from truegrit_api.services.email import send_email
 from truegrit_api.services.feature_settings import load_public_settings
+from truegrit_api.services.homepage_geo import resolve_public_home
 from truegrit_api.services.site_documents import (
     SITE_DOCUMENT_TYPES,
     SITEMAP_GENERATORS,
@@ -108,17 +112,27 @@ _STANDARDS_FAQ = [
 
 
 @router.get("/bootstrap", response_model=PublicBootstrap)
-async def bootstrap(db: Annotated[Database, Depends(get_database)]) -> Any:
+async def bootstrap(
+    db: Annotated[Database, Depends(get_database)],
+    country: Annotated[str | None, Query(max_length=2)] = None,
+) -> Any:
     navigation = NavigationRepository(db)
+    # `country` (the same signal `resolveCountry()` resolves for currency,
+    # catalogue release, and the appearance overrides) picks up any
+    # country-specific announcement an owner has saved, falling back to the
+    # site-wide one -- see `resolve_announcement`.
     return {
         "navigation": await navigation.menu("header"),
         "footer_navigation": await navigation.menu("footer"),
-        "announcement": await navigation.active_announcement(),
+        "announcement": await resolve_announcement(db, country),
     }
 
 
 @router.get("/settings")
-async def storefront_settings(db: Annotated[Database, Depends(get_database)]) -> Any:
+async def storefront_settings(
+    db: Annotated[Database, Depends(get_database)],
+    country: Annotated[str | None, Query(max_length=2)] = None,
+) -> Any:
     """Which sign-in methods and commerce features the storefront should offer.
 
     The owner's switches (`app_settings`, migration 0040) ANDed with what this
@@ -126,8 +140,22 @@ async def storefront_settings(db: Annotated[Database, Depends(get_database)]) ->
     feature will work, never just that someone ticked a box. Public and
     unauthenticated: it carries no secrets, only what the account menu and
     checkout need in order to render the truth on first paint.
+
+    The owner's colours and ambient effects ride along on the same response
+    rather than a second request: the storefront needs them before the first
+    byte of HTML, and a separate fetch would repaint the page in front of the
+    visitor on every load. `country` (the same signal `resolveCountry()`
+    already resolves for currency and catalogue release) picks up any
+    per-country override an owner has saved — a Diwali palette for visitors in
+    India, snow only where it snows — and folds it into `theme.global` and
+    `effects` before either ever reaches the browser, so the storefront itself
+    stays completely unaware that "global" was resolved per visitor.
     """
-    return (await load_public_settings(db, get_settings())).to_camel_dict()
+    settings, appearance = await asyncio.gather(
+        load_public_settings(db, get_settings()),
+        load_public_appearance(db, country),
+    )
+    return {**settings.to_camel_dict(), **appearance}
 
 
 @router.get("/payment-methods")
@@ -163,8 +191,11 @@ async def payment_methods(db: Annotated[Database, Depends(get_database)]) -> Any
 
 
 @router.get("/home")
-async def home(db: Annotated[Database, Depends(get_database)]) -> Any:
-    page = await PageRepository(db).get_published_by_slug("home")
+async def home(
+    db: Annotated[Database, Depends(get_database)],
+    country: Annotated[str | None, Query(max_length=2)] = None,
+) -> Any:
+    page = await resolve_public_home(db, country)
     if page is None:
         raise NotFoundError("Homepage is not published.")
     return page

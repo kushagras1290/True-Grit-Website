@@ -116,10 +116,16 @@ async function paginatedFromApi<T>(
   return { items: body?.items ?? [], total: body?.total ?? 0 };
 }
 
-export async function loadBootstrap(runtime?: CatalogueRuntime): Promise<PublicBootstrap> {
+export async function loadBootstrap(
+  country: string | undefined,
+  runtime?: CatalogueRuntime,
+): Promise<PublicBootstrap> {
   if (apiUrl(runtime)) {
+    // `country` picks up a country-specific announcement over the site-wide
+    // one, resolved server-side (`resolve_announcement`) — see the identical
+    // pattern on `loadSiteSettings`.
     return (
-      (await fromApi<PublicBootstrap>("/v1/public/bootstrap", runtime)) ?? {
+      (await fromApi<PublicBootstrap>(withCountry("/v1/public/bootstrap", country), runtime)) ?? {
         navigation: [],
         footerNavigation: [],
         announcement: null,
@@ -138,15 +144,29 @@ export async function loadBootstrap(runtime?: CatalogueRuntime): Promise<PublicB
  * to "everything off": a settings fetch failing must not lock customers out of
  * a storefront that is otherwise working.
  */
-export async function loadSiteSettings(runtime?: CatalogueRuntime): Promise<SiteSettings> {
+export async function loadSiteSettings(
+  country: string | undefined,
+  runtime?: CatalogueRuntime,
+): Promise<SiteSettings> {
   if (!apiUrl(runtime)) return DEFAULT_SITE_SETTINGS;
-  return normalizeSiteSettings(await fromApi<unknown>("/v1/public/settings", runtime));
+  // `country` folds in any per-country colour or effect override the owner
+  // saved — a Diwali palette for visitors in India, snow only where it snows
+  // — resolved server-side so the storefront itself stays unaware that
+  // "global" was ever per-visitor.
+  return normalizeSiteSettings(
+    await fromApi<unknown>(withCountry("/v1/public/settings", country), runtime),
+  );
 }
 
-export async function loadHome(runtime?: CatalogueRuntime): Promise<PublicPage> {
+export async function loadHome(
+  country: string | undefined,
+  runtime?: CatalogueRuntime,
+): Promise<PublicPage> {
   if (apiUrl(runtime)) {
+    // `country` picks up this visitor's per-country section overrides
+    // (`homepage_country_overrides`) — the same pattern as bootstrap/settings.
     const page =
-      (await fromApi<PublicPage>("/v1/public/home", runtime)) ??
+      (await fromApi<PublicPage>(withCountry("/v1/public/home", country), runtime)) ??
       (await fromApi<PublicPage>("/v1/public/pages/home", runtime));
     if (!page) throw new Error("Homepage content is unavailable from the public API.");
     return page;

@@ -94,7 +94,7 @@ export default function Shop({ loaderData }: Route.ComponentProps) {
             The market
           </p>
           <div className="mt-2 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-2xl">
+            <div className="max-w-3xl">
               <h1 className="font-display text-3xl leading-tight text-ink md:text-4xl">
                 Shop the full organic catalogue
               </h1>

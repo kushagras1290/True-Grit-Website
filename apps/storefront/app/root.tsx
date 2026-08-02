@@ -14,6 +14,8 @@ import {
 import type { Route } from "./+types/root";
 import appCss from "./app.css?url";
 import { Footer, Header } from "./components/chrome";
+import { AmbientEffect, CursorTrail } from "./components/effects";
+import { LanguageSuggestionPrompt } from "./components/language-suggestion";
 import { catalogueRuntime, loadBootstrap, loadSiteSettings } from "./lib/catalogue.server";
 import { CartProvider } from "./lib/cart";
 import { CurrencyProvider } from "./lib/currency";
@@ -23,7 +25,8 @@ import { LocaleProvider, useLocaleContext } from "./lib/i18n/context";
 import { DEFAULT_LOCALE, localeDirection } from "./lib/i18n/locales";
 import { messagesFor } from "./lib/i18n/messages.server";
 import { resolveLocale } from "./lib/i18n/resolve.server";
-import { SiteSettingsProvider } from "./lib/site-settings";
+import { DEFAULT_SITE_SETTINGS, SiteSettingsProvider } from "./lib/site-settings";
+import { resolveThemeTokens, themeStyleSheet } from "./lib/theme";
 
 export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.png", type: "image/png" },
@@ -49,25 +52,34 @@ export async function loader({ request, context }: Route.LoaderArgs) {
       };
     }
   ).cloudflare?.env;
+  // Resolved once and reused for both currency/catalogue (further down) and
+  // the settings fetch below, so a visitor's country never has two answers
+  // within the same request.
+  const country = resolveCountry(request);
   // Both in one round trip: the header needs the sign-in switches on first
   // paint, or it flashes a button the API would refuse.
   const [bootstrap, siteSettings] = await Promise.all([
-    loadBootstrap(runtime),
-    loadSiteSettings(runtime),
+    loadBootstrap(country, runtime),
+    loadSiteSettings(country, runtime),
   ]);
   // Resolved here so the first byte of HTML is already in the visitor's
   // language: switching client-side would paint English, hydrate, then repaint,
   // and would leave crawlers — which never run the script — seeing only
   // English. Only the chosen locale's own entries travel; English is already in
   // the bundle as the fallback (see lib/i18n/messages.ts).
-  const locale = resolveLocale(request);
+  const resolved = resolveLocale(request);
   return {
     bootstrap,
     siteSettings,
-    country: resolveCountry(request),
-    locale: locale.code,
-    dir: locale.dir,
-    messages: messagesFor(locale.code),
+    country,
+    locale: resolved.locale.code,
+    dir: resolved.locale.dir,
+    // Only ever "geo" when it matters: whether this language was guessed from
+    // the visitor's country rather than something they told us (a cookie, a
+    // link, or their own browser). `LanguageSuggestionPrompt` reads this to
+    // decide whether to offer a way back to English.
+    localeSource: resolved.source,
+    messages: messagesFor(resolved.locale.code),
     publicEnv: {
       PUBLIC_API_URL: runtime.apiUrl || process.env.PUBLIC_API_URL || "",
       PUBLIC_FACEBOOK_APP_ID:
@@ -84,6 +96,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const rootData = useRouteLoaderData<typeof loader>("root");
   const locale = rootData?.locale ?? DEFAULT_LOCALE;
   const dir = rootData?.dir ?? localeDirection(locale);
+  const { pathname } = useLocation();
+  // Resolved per render, in `<head>`, and after `<Links>` so it outranks the
+  // stylesheet it is overriding. Server-rendered rather than applied on
+  // hydration: a theme that arrived with the JavaScript would repaint the page
+  // in front of the visitor on every first load.
+  const themeCss = themeStyleSheet(
+    resolveThemeTokens(rootData?.siteSettings.theme ?? DEFAULT_SITE_SETTINGS.theme, pathname),
+  );
 
   return (
     <html lang={locale} dir={dir}>
@@ -97,6 +117,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <link rel="alternate" hrefLang="x-default" href="/" />
         <Meta />
         <Links />
+        {/* Values are validated against a colour allow-list before they are
+            interpolated (`lib/theme.isValidThemeColor`), so this cannot carry a
+            stray `}` out of the declaration block. */}
+        {themeCss ? (
+          <style data-truegrit-theme dangerouslySetInnerHTML={{ __html: themeCss }} />
+        ) : null}
       </head>
       <body>
         {/* Marks the document as scripted before first paint, so controls with
@@ -117,7 +143,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { bootstrap, siteSettings, country, locale, messages, publicEnv } =
+  const { bootstrap, siteSettings, country, locale, localeSource, messages, publicEnv } =
     useLoaderData<typeof loader>();
   const location = useLocation();
   const isPaymentWindow = location.pathname === "/payment/razorpay";
@@ -148,6 +174,21 @@ export default function App() {
                       <Outlet />
                     </main>
                     <Footer bootstrap={bootstrap} />
+                    {/* Decoration only, and never on the payment window: a
+                        snowfall over a card form is a distraction at exactly
+                        the wrong moment. Both layers no-op for a visitor who
+                        asked for reduced motion. */}
+                    <AmbientEffect
+                      effect={siteSettings.effects.ambient.effect}
+                      color={siteSettings.effects.ambient.color}
+                      intensity={siteSettings.effects.ambient.intensity}
+                    />
+                    <CursorTrail
+                      trail={siteSettings.effects.cursor.trail}
+                      color={siteSettings.effects.cursor.color}
+                      hideNativeCursor={siteSettings.effects.cursor.hideNativeCursor}
+                    />
+                    <LanguageSuggestionPrompt locale={locale} active={localeSource === "geo"} />
                   </>
                 )}
               </CurrencyProvider>

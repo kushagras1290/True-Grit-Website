@@ -2,10 +2,21 @@
  * Full-bleed page banner, dimensionally identical to the homepage hero.
  *
  * The homepage hero (`HeroBlockView` in blocks.tsx) is a full-width band of
- * `min-h-[21rem]` growing to `md:min-h-[29rem]`, with the image cropped to fill
- * it. Keeping those exact numbers in `BANNER_FRAME` is what makes the blog and
+ * `h-[21rem]` growing to `md:h-[29rem]`, with the image cropped to fill it.
+ * Keeping those exact numbers in `BANNER_FRAME` is what makes the blog and
  * category banners read as the same element rather than "another image" —
  * change them here and every banner moves together.
+ *
+ * A *fixed* height, not a minimum: every image uploaded here is exported at
+ * exactly `1672 × 464 px` (see the image dimensions guide), and `object-cover`
+ * scales it to fill whatever box it is given. A `min-h` box grows the moment a
+ * long heading, description or CTA needs more room than the minimum — and the
+ * image, having no independent size, grows right along with it, upscaling and
+ * cropping further than the shipped asset was ever meant to. Fixing the height
+ * and letting `overflow-hidden` protect it keeps the image at its designed
+ * scale regardless of how much copy an editor puts inside. The text overlay is
+ * `absolute inset-0` for the same reason: it must never influence the frame's
+ * height by sitting in normal flow.
  *
  * The band is rendered even when no image is configured, so the space a banner
  * occupies never collapses and a page does not visibly reflow the moment an
@@ -19,7 +30,7 @@ import { Link } from "react-router";
 import { mediaUrl } from "../lib/media";
 
 /** Matches the homepage hero exactly — see the module comment. */
-export const BANNER_FRAME = "relative min-h-[21rem] w-full overflow-hidden md:min-h-[29rem]";
+export const BANNER_FRAME = "relative h-[21rem] w-full overflow-hidden md:h-[29rem]";
 
 export interface PageBannerProps {
   imageUrl?: string | null;
@@ -82,7 +93,11 @@ export function PageBanner({
         aria-hidden
         className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10"
       />
-      <div className="relative mx-auto flex min-h-[21rem] max-w-[80rem] flex-col px-4 py-8 sm:px-6 md:min-h-[29rem] md:py-10">
+      {/* `absolute inset-0`, not a normal-flow sibling: this box must never be
+          able to grow the frame past its fixed height (see BANNER_FRAME above).
+          Long copy scrolls into the padding it has rather than stretching the
+          image behind it. */}
+      <div className="absolute inset-0 mx-auto flex max-w-[80rem] flex-col overflow-y-auto px-4 py-8 sm:px-6 md:py-10">
         <BannerBrandLockup />
         <div className="mt-auto pt-12">
           {eyebrow ? (
@@ -104,7 +119,7 @@ export function PageBanner({
 
   if (href) {
     return (
-      <section className="bg-[#d8c8b4]">
+      <section className="bg-banner">
         <Link to={href} className={`group block ${BANNER_FRAME}`} aria-label={heading}>
           {content}
         </Link>
@@ -113,7 +128,7 @@ export function PageBanner({
   }
 
   return (
-    <section className="bg-[#d8c8b4]">
+    <section className="bg-banner">
       <div className={BANNER_FRAME}>{content}</div>
     </section>
   );

@@ -6,6 +6,7 @@
   --color-surface: var(--color-bg-surface);
   --color-subtle: var(--color-bg-subtle);
   --color-inverse: var(--color-bg-inverse);
+  --color-banner: var(--color-banner-backdrop);
   --color-ink: var(--color-text-primary);
   --color-ink-muted: var(--color-text-secondary);
   --color-ink-inverse: var(--color-text-inverse);
@@ -76,4 +77,26 @@ html.js-enabled .language-switcher-submit {
   border-right: 4px solid var(--color-accent);
   padding-left: 0;
   padding-right: 1.25rem;
+}
+
+/* Cursor trails that replace the pointer rather than follow it. Set only by
+   `CursorTrail` while a trail is mounted, and removed on cleanup, so switching
+   the trail off can never strand a visitor without a cursor. Interactive
+   elements keep a real pointer: a trail is decoration, and losing the hit
+   target on a link or a text field is not a trade worth making. Anyone who
+   asked for reduced motion never gets the class at all. */
+html.cursor-trail-only,
+html.cursor-trail-only body {
+  cursor: none;
+}
+
+html.cursor-trail-only a,
+html.cursor-trail-only button,
+html.cursor-trail-only input,
+html.cursor-trail-only select,
+html.cursor-trail-only textarea,
+html.cursor-trail-only summary,
+html.cursor-trail-only [role="button"],
+html.cursor-trail-only [contenteditable="true"] {
+  cursor: revert;
 }

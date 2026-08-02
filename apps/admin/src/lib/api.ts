@@ -30,15 +30,22 @@ import type {
   AdminSubmissionDetail,
   AdminSubmissionRow,
   AdminUserRow,
+  AmbientEffectKey,
   AuditLogRow,
   CommunitySettings,
   ContentBlock,
+  CursorTrailKey,
   PublicPageBlock,
   ReportDefinitionSummary,
   ReportRunResult,
+  StorefrontEffects,
   StorefrontSettings,
   StorefrontSettingsResponse,
+  StorefrontTheme,
+  ThemeTokenKey,
+  ThemeTokens,
 } from "@truegrit/contracts";
+import { AMBIENT_EFFECT_KEYS, CURSOR_TRAIL_KEYS, THEME_TOKEN_KEYS } from "@truegrit/contracts";
 import {
   adminCategories,
   adminInventory,
@@ -443,9 +450,6 @@ export interface AdminNotification {
 }
 
 export interface SiteControl {
-  announcementActive: boolean;
-  announcementMessage: string;
-  announcementPath: string;
   heroEyebrow: string;
   heroHeading: string;
   heroText: string;
@@ -481,6 +485,21 @@ export interface SiteDocuments {
   llmsTxt: string;
 }
 
+/** One announcement scope: `'global'` (the site-wide banner) or a two-letter
+ *  country code. A country row fully replaces the global banner for its
+ *  visitors when active — there is nothing to merge, unlike theme colours. */
+export interface AnnouncementScopeRow {
+  scope: string;
+  active: boolean;
+  message: string;
+  path: string;
+  updatedAt: string;
+}
+
+export interface AnnouncementsResponse {
+  scopes: AnnouncementScopeRow[];
+}
+
 /**
  * One block of the homepage, as Homepage Settings sees it.
  *
@@ -503,6 +522,84 @@ export interface HomepageSection {
 export interface HomepageSectionsResponse {
   sections: HomepageSection[];
   addableTypes: Array<{ type: string; label: string }>;
+}
+
+/** Per-country visibility overrides: `{ IN: { blk_123: true, blk_456: false } }`.
+ *  A country absent from this map has no overrides at all — every section
+ *  there falls back to its own tickbox in the section list above. A section
+ *  id absent from a present country's map falls back the same way; only ids
+ *  actually listed are forced on or off for that country. */
+export interface HomepageCountryOverridesResponse {
+  overrides: Record<string, Record<string, boolean>>;
+}
+
+/** A signed markup (positive) or genuine discount (negative), targeting one
+ *  product, one whole category, or every product — combined with `'global'`
+ *  or a country scope. `productId` and `categoryId` are mutually exclusive;
+ *  both null means "every product" for that scope. Resolution is
+ *  most-specific-wins, not a merge — see `services/price_adjustments.py`. */
+export interface PriceAdjustmentRule {
+  id: string;
+  scope: string;
+  productId: string | null;
+  productName: string | null;
+  productSlug: string | null;
+  categoryId: string | null;
+  categoryName: string | null;
+  categorySlug: string | null;
+  percent: number;
+  active: boolean;
+  updatedAt: string;
+}
+
+export interface PriceAdjustmentsResponse {
+  rules: PriceAdjustmentRule[];
+}
+
+/** One themed scope: the site-wide palette (`global`), a single page (`/shop`),
+ *  or a country (`country:IN`). `hasEffectsOverride` is only ever true for a
+ *  country scope — a page cannot carry its own ambient effect or cursor
+ *  trail, only its own colours. */
+export interface ThemeScopeRow {
+  scope: string;
+  tokens: ThemeTokens;
+  hasEffectsOverride: boolean;
+  updatedAt: string;
+}
+
+/**
+ * The admin console's *raw* view of the theme: every scope kept separate,
+ * never blended for a particular visitor. This is why it is its own type
+ * rather than the storefront-facing `StorefrontTheme` — the public API
+ * resolves `global` per visitor's country before it ever reaches the
+ * storefront, but the console has to see the country layer on its own to let
+ * an owner edit it.
+ */
+export interface AdminStorefrontTheme {
+  global: ThemeTokens;
+  countries: Record<string, ThemeTokens>;
+  pages: Record<string, ThemeTokens>;
+}
+
+/**
+ * Everything the Appearance page needs in one payload.
+ *
+ * `effects` is the site-wide default, in exactly the shape the storefront
+ * receives when no country override applies — so the console's default-effect
+ * preview renders against the same values the live site does. `countryEffects`
+ * is sparse: only countries an owner has actually given their own ambient
+ * effect and/or cursor trail appear in it. The `*Keys` lists come from the API
+ * too, so a token or effect added on the server appears in the console without
+ * a matching front-end release.
+ */
+export interface AppearanceResponse {
+  theme: AdminStorefrontTheme;
+  effects: StorefrontEffects;
+  countryEffects: Record<string, StorefrontEffects>;
+  scopes: ThemeScopeRow[];
+  tokenKeys: ThemeTokenKey[];
+  ambientEffects: AmbientEffectKey[];
+  cursorTrails: CursorTrailKey[];
 }
 
 export interface CmsPageRow {
@@ -836,6 +933,110 @@ function demoSectionIndex(sectionId: string): number {
     throw new ApiError("Homepage section not found.", 404, "not_found");
   }
   return index;
+}
+
+// Demo-mode appearance. Held in memory so the Appearance page's colour pickers,
+// per-page scopes and effect preview all behave without an API; resets on
+// reload, like the homepage sections above.
+let demoAppearance_: DemoAppearanceState | null = null;
+
+interface DemoAppearanceState {
+  theme: AdminStorefrontTheme;
+  effects: StorefrontEffects;
+  countryEffects: Record<string, StorefrontEffects>;
+}
+
+function demoAppearanceState(): DemoAppearanceState {
+  demoAppearance_ ??= {
+    theme: { global: {}, countries: {}, pages: {} },
+    effects: {
+      ambient: { effect: "none", color: "#ffffff", intensity: 3 },
+      cursor: { trail: "none", color: "#24483a", hideNativeCursor: false },
+    },
+    countryEffects: {},
+  };
+  return demoAppearance_;
+}
+
+/** Which bucket of `theme` a scope's tokens live in — mirrors the server's
+ *  own `is_country_scope()` split between a page path and a `country:XX` code. */
+function demoThemeBucket(scope: string): Record<string, ThemeTokens> {
+  return scope.startsWith("country:")
+    ? demoAppearanceState().theme.countries
+    : demoAppearanceState().theme.pages;
+}
+
+function demoAppearance(): AppearanceResponse {
+  const state = demoAppearanceState();
+  return {
+    theme: structuredClone(state.theme),
+    effects: structuredClone(state.effects),
+    countryEffects: structuredClone(state.countryEffects),
+    scopes: [
+      {
+        scope: "global",
+        tokens: state.theme.global,
+        hasEffectsOverride: false,
+        updatedAt: new Date().toISOString(),
+      },
+      ...Object.entries(state.theme.countries).map(([scope, tokens]) => ({
+        scope,
+        tokens,
+        hasEffectsOverride: scope in state.countryEffects,
+        updatedAt: new Date().toISOString(),
+      })),
+      ...Object.entries(state.theme.pages).map(([scope, tokens]) => ({
+        scope,
+        tokens,
+        hasEffectsOverride: false,
+        updatedAt: new Date().toISOString(),
+      })),
+    ],
+    tokenKeys: [...THEME_TOKEN_KEYS],
+    ambientEffects: [...AMBIENT_EFFECT_KEYS],
+    cursorTrails: [...CURSOR_TRAIL_KEYS],
+  };
+}
+
+// Demo-mode announcements. Mirrors the shipped seed: one active global row.
+let demoAnnouncementRows_: AnnouncementScopeRow[] | null = null;
+
+function demoAnnouncementRows(): AnnouncementScopeRow[] {
+  demoAnnouncementRows_ ??= [
+    {
+      scope: "global",
+      active: true,
+      message: "Alphonso season is here — orchard-fresh boxes ship every Tuesday.",
+      path: "/seasonal",
+      updatedAt: new Date().toISOString(),
+    },
+  ];
+  return demoAnnouncementRows_;
+}
+
+function demoAnnouncements(): AnnouncementsResponse {
+  return { scopes: structuredClone(demoAnnouncementRows()) };
+}
+
+// Demo-mode homepage country overrides. Empty by default — every country
+// inherits the section list's own tickboxes until one is added here.
+let demoHomepageOverrides_: Record<string, Record<string, boolean>> | null = null;
+
+function demoHomepageOverrides(): Record<string, Record<string, boolean>> {
+  demoHomepageOverrides_ ??= {};
+  return demoHomepageOverrides_;
+}
+
+// Demo-mode price adjustments. Empty by default, same as the real seed.
+let demoPriceAdjustments_: PriceAdjustmentRule[] | null = null;
+
+function demoPriceAdjustmentRows(): PriceAdjustmentRule[] {
+  demoPriceAdjustments_ ??= [];
+  return demoPriceAdjustments_;
+}
+
+function demoPriceAdjustments(): PriceAdjustmentsResponse {
+  return { rules: structuredClone(demoPriceAdjustmentRows()) };
 }
 
 function hasDemoSession(): boolean {
@@ -1503,9 +1704,6 @@ export const api = {
   siteControl: (): Promise<SiteControl> =>
     demoMode
       ? demo({
-          announcementActive: true,
-          announcementMessage: "Alphonso season is here - orchard-fresh boxes ship every Tuesday.",
-          announcementPath: "/seasonal",
           heroEyebrow: "Certified organic. Fully traceable.",
           heroHeading: "Food grown the way nature intended.",
           heroText: "Fresh organic produce, conscious pantry essentials and trusted local farms.",
@@ -1565,6 +1763,32 @@ export const api = {
   updateSiteControl: (input: Partial<SiteControl>): Promise<SiteControl> =>
     demoMode ? demo(input as SiteControl) : patch("/v1/admin/site-control", input),
 
+  announcements: (): Promise<AnnouncementsResponse> =>
+    demoMode ? demo(demoAnnouncements()) : get<AnnouncementsResponse>("/v1/admin/announcements"),
+
+  saveAnnouncement: (input: {
+    scope: string;
+    active: boolean;
+    message: string;
+    path: string;
+  }): Promise<AnnouncementsResponse> => {
+    if (!demoMode) return put("/v1/admin/announcements", input);
+    const rows = demoAnnouncementRows();
+    const index = rows.findIndex((row) => row.scope === input.scope);
+    const saved: AnnouncementScopeRow = { ...input, updatedAt: new Date().toISOString() };
+    if (index === -1) rows.push(saved);
+    else rows[index] = saved;
+    return demo(demoAnnouncements());
+  },
+
+  deleteAnnouncement: (scope: string): Promise<AnnouncementsResponse> => {
+    if (!demoMode) return del(`/v1/admin/announcements/${encodeURIComponent(scope)}`);
+    const rows = demoAnnouncementRows();
+    const index = rows.findIndex((row) => row.scope === scope);
+    if (index !== -1) rows.splice(index, 1);
+    return demo(demoAnnouncements());
+  },
+
   homepageSections: (): Promise<HomepageSectionsResponse> =>
     demoMode ? demo(demoSections()) : get<HomepageSectionsResponse>("/v1/admin/homepage/sections"),
 
@@ -1612,6 +1836,156 @@ export const api = {
     const reordered = ids.map((id) => blocks[demoSectionIndex(id)]!);
     blocks.splice(0, blocks.length, ...reordered);
     return demo(demoSections());
+  },
+
+  homepageCountryOverrides: (): Promise<HomepageCountryOverridesResponse> =>
+    demoMode
+      ? demo({ overrides: structuredClone(demoHomepageOverrides()) })
+      : get<HomepageCountryOverridesResponse>("/v1/admin/homepage/country-overrides"),
+
+  setHomepageCountryOverride: (
+    country: string,
+    sectionId: string,
+    enabled: boolean,
+  ): Promise<HomepageCountryOverridesResponse> => {
+    if (!demoMode) {
+      return put(
+        `/v1/admin/homepage/country-overrides/${encodeURIComponent(country)}/${encodeURIComponent(sectionId)}`,
+        { enabled },
+      );
+    }
+    demoSectionIndex(sectionId); // 404s for an unknown section, same as the API.
+    const overrides = demoHomepageOverrides();
+    overrides[country] ??= {};
+    overrides[country]![sectionId] = enabled;
+    return demo({ overrides: structuredClone(overrides) });
+  },
+
+  clearHomepageCountryOverride: (
+    country: string,
+    sectionId: string,
+  ): Promise<HomepageCountryOverridesResponse> => {
+    if (!demoMode) {
+      return del(
+        `/v1/admin/homepage/country-overrides/${encodeURIComponent(country)}/${encodeURIComponent(sectionId)}`,
+      );
+    }
+    const overrides = demoHomepageOverrides();
+    delete overrides[country]?.[sectionId];
+    if (overrides[country] && Object.keys(overrides[country]!).length === 0) {
+      delete overrides[country];
+    }
+    return demo({ overrides: structuredClone(overrides) });
+  },
+
+  priceAdjustments: (): Promise<PriceAdjustmentsResponse> =>
+    demoMode
+      ? demo(demoPriceAdjustments())
+      : get<PriceAdjustmentsResponse>("/v1/admin/price-adjustments"),
+
+  savePriceAdjustment: (input: {
+    scope: string;
+    productId?: string | null;
+    categoryId?: string | null;
+    percent: number;
+    active: boolean;
+  }): Promise<PriceAdjustmentsResponse> => {
+    if (!demoMode) return put("/v1/admin/price-adjustments", input);
+    const productId = input.productId ?? null;
+    const categoryId = input.categoryId ?? null;
+    if (productId && categoryId) {
+      throw new ApiError(
+        "A price adjustment can target one product or one category, not both.",
+        422,
+        "validation_error",
+      );
+    }
+    const product = productId ? adminProducts.find((entry) => entry.id === productId) : null;
+    if (productId && !product) {
+      throw new ApiError("That product could not be found.", 404, "not_found");
+    }
+    const category = categoryId ? adminCategories.find((entry) => entry.id === categoryId) : null;
+    if (categoryId && !category) {
+      throw new ApiError("That category could not be found.", 404, "not_found");
+    }
+
+    const rules = demoPriceAdjustmentRows();
+    const index = rules.findIndex(
+      (rule) =>
+        rule.scope === input.scope &&
+        rule.productId === productId &&
+        rule.categoryId === categoryId,
+    );
+    const saved: PriceAdjustmentRule = {
+      id: index === -1 ? `padj_demo_${Date.now().toString(36)}` : rules[index]!.id,
+      scope: input.scope,
+      productId,
+      productName: product?.name ?? null,
+      productSlug: product?.slug ?? null,
+      categoryId,
+      categoryName: category?.name ?? null,
+      categorySlug: category?.slug ?? null,
+      percent: input.percent,
+      active: input.active,
+      updatedAt: new Date().toISOString(),
+    };
+    if (index === -1) rules.push(saved);
+    else rules[index] = saved;
+    return demo(demoPriceAdjustments());
+  },
+
+  deletePriceAdjustment: (ruleId: string): Promise<PriceAdjustmentsResponse> => {
+    if (!demoMode) return del(`/v1/admin/price-adjustments/${encodeURIComponent(ruleId)}`);
+    const rules = demoPriceAdjustmentRows();
+    const index = rules.findIndex((rule) => rule.id === ruleId);
+    if (index === -1) {
+      throw new ApiError("That price adjustment rule could not be found.", 404, "not_found");
+    }
+    rules.splice(index, 1);
+    return demo(demoPriceAdjustments());
+  },
+
+  appearance: (): Promise<AppearanceResponse> =>
+    demoMode ? demo(demoAppearance()) : get<AppearanceResponse>("/v1/admin/appearance"),
+
+  saveThemeScope: (scope: string, tokens: ThemeTokens): Promise<AppearanceResponse> => {
+    if (!demoMode) return put("/v1/admin/appearance/theme", { scope, tokens });
+    const bucket = demoThemeBucket(scope);
+    if (scope === "global") demoAppearanceState().theme.global = { ...tokens };
+    else if (Object.keys(tokens).length === 0) delete bucket[scope];
+    else bucket[scope] = { ...tokens };
+    return demo(demoAppearance());
+  },
+
+  deleteThemeScope: (scope: string): Promise<AppearanceResponse> => {
+    if (!demoMode) {
+      // Leading slash stripped: a doubled slash in the URL is not something a
+      // caller should have to get right for a delete to work. A country scope
+      // ("country:IN") has no leading slash to strip and passes through as-is.
+      return del(`/v1/admin/appearance/theme/${scope.replace(/^\//, "")}`);
+    }
+    delete demoThemeBucket(scope)[scope];
+    delete demoAppearanceState().countryEffects[scope];
+    return demo(demoAppearance());
+  },
+
+  saveEffects: (
+    effects: StorefrontEffects,
+    scope: string = "global",
+  ): Promise<AppearanceResponse> => {
+    if (!demoMode) return put("/v1/admin/appearance/effects", { ...effects, scope });
+    const state = demoAppearanceState();
+    if (scope === "global") state.effects = structuredClone(effects);
+    else state.countryEffects[scope] = structuredClone(effects);
+    return demo(demoAppearance());
+  },
+
+  clearCountryEffects: (scope: string): Promise<AppearanceResponse> => {
+    if (!demoMode) {
+      return del(`/v1/admin/appearance/effects/${scope.replace(/^\//, "")}`);
+    }
+    delete demoAppearanceState().countryEffects[scope];
+    return demo(demoAppearance());
   },
 
   siteDocuments: (): Promise<SiteDocuments> =>

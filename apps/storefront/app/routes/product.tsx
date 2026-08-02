@@ -14,6 +14,7 @@ import { catalogueRuntime, loadProduct, loadProductsBySlugs } from "../lib/catal
 import { useCart } from "../lib/cart";
 import { usePriceFormatter } from "../lib/currency";
 import { resolveCountry } from "../lib/geo.server";
+import { productEffectivePrice, variantEffectivePrice } from "../lib/pricing";
 import { seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
@@ -37,7 +38,7 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const [added, setAdded] = useState(false);
 
   const variant = product.variants.find((entry) => entry.id === variantId) ?? product.variants[0];
-  const price = variant ? (variant.saleMinor ?? variant.listMinor) : product.priceMinor;
+  const effective = variant ? variantEffectivePrice(variant) : productEffectivePrice(product);
   // Two independent gates on purchasability: out of stock is a variant-level,
   // usually-temporary state; `acceptsOrders` is the per-product kill-switch an
   // admin sets deliberately (mirroring Site Control's site-wide one, scoped to
@@ -77,10 +78,10 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
           </p>
 
           <p className="mt-5 text-2xl font-semibold text-ink">
-            {formatPrice(price)}{" "}
-            {variant && variant.saleMinor !== null ? (
+            {formatPrice(effective.amountMinor)}{" "}
+            {effective.originalMinor !== null ? (
               <s className="text-base font-normal text-ink-muted">
-                {formatPrice(variant.listMinor)}
+                {formatPrice(effective.originalMinor)}
               </s>
             ) : null}
           </p>
@@ -153,7 +154,7 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
                     productName: product.name,
                     variantId: variant.id,
                     variantName: variant.name,
-                    unitMinor: variant.saleMinor ?? variant.listMinor,
+                    unitMinor: variantEffectivePrice(variant).amountMinor,
                   },
                   quantity,
                 );
