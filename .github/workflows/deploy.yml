@@ -46,9 +46,31 @@ jobs:
           npx --yes wrangler@4.110.0 d1 info truegrit-dev
       # Idempotent: already-applied migrations are skipped. Keeps the D1 schema
       # in sync when a push adds new migration files.
+      #
+      # Applied one file at a time rather than in one `wrangler d1 migrations
+      # apply` call: the remote D1 backend has been seen rejecting a batch of
+      # several pending migrations at once with "too many terms in compound
+      # SELECT" (SQLITE_ERROR 7500), even though every file applies cleanly
+      # on its own and against local SQLite (scripts/validate_migrations.py).
+      # This is a wrangler/D1 remote-batching quirk, not a defect in any one
+      # migration's SQL -- see https://github.com/cloudflare/workers-sdk/issues/6347
+      # for the same symptom (works --local, fails --remote). Hiding every
+      # migration file, then restoring and applying exactly one per
+      # invocation, guarantees a single-file batch regardless of wherever
+      # wrangler's own threshold actually sits. Still fully idempotent: a
+      # rerun after a partial failure only ever sees the files D1 has not
+      # already recorded as applied.
       - name: Apply D1 migrations
         working-directory: apps/api
-        run: npx --yes wrangler@4.110.0 d1 migrations apply truegrit-dev --remote
+        run: |
+          set -e
+          migrations_dir="../../database/migrations"
+          hold_dir="$(mktemp -d)"
+          mv "$migrations_dir"/*.sql "$hold_dir"/
+          for file in "$hold_dir"/*.sql; do
+            mv "$file" "$migrations_dir"/
+            npx --yes wrangler@4.110.0 d1 migrations apply truegrit-dev --remote
+          done
       # pywrangler bundles FastAPI/pydantic + the workers/asgi runtime SDK and
       # deploys the Python Worker. The Pyodide venv step only works on Linux,
       # which is why the API is deployed from CI rather than a dev machine.
