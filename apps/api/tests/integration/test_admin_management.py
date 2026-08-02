@@ -1120,9 +1120,7 @@ def test_homepage_country_override_can_force_a_disabled_section_on(
         block["type"] for block in client.get("/v1/public/home").json()["blocks"]
     ]
 
-    client.put(
-        f"/v1/admin/homepage/country-overrides/US/{snippets['id']}", json={"enabled": True}
-    )
+    client.put(f"/v1/admin/homepage/country-overrides/US/{snippets['id']}", json={"enabled": True})
     forced_on = client.get("/v1/public/home", params={"country": "US"}).json()
     assert "page_links" in [block["type"] for block in forced_on["blocks"]]
     # Every other visitor still gets the section's own (disabled) default.
@@ -1202,7 +1200,12 @@ def test_owner_can_add_and_remove_a_country_announcement(client: TestClient, db:
     as_admin(client, db)
     added = client.put(
         "/v1/admin/announcements",
-        json={"scope": "in", "active": True, "message": "Diwali boxes open now.", "path": "/diwali"},
+        json={
+            "scope": "in",
+            "active": True,
+            "message": "Diwali boxes open now.",
+            "path": "/diwali",
+        },
     )
     assert added.status_code == 200
     scopes = {row["scope"]: row for row in added.json()["scopes"]}
