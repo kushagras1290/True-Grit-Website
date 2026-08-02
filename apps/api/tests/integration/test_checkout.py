@@ -104,7 +104,13 @@ def test_checkout_requires_authentication(client: TestClient):
 
 def test_checkout_rejects_insufficient_stock(client: TestClient, db: SQLiteDatabase):
     as_customer(client, db)
-    # var_rajma_500g has only 8 on hand; 10 (<= per-line max) exceeds free stock.
+    # Pinned rather than trusting the seed's current quantity, which is free
+    # to change independently of what this test needs: fewer than 10 on hand.
+    db._conn.execute(
+        "UPDATE inventory_levels SET on_hand = 5, reserved = 0 WHERE variant_id = 'var_rajma_500g'"
+    )
+    db._conn.commit()
+
     response = client.post(
         "/v1/public/checkout",
         json={
@@ -121,6 +127,10 @@ def test_checkout_rejects_insufficient_stock_and_releases_earlier_lines(
     """A multi-line order where a later line fails must not leave the earlier,
     already-reserved lines holding stock for an order that never exists."""
     as_customer(client, db)
+    db._conn.execute(
+        "UPDATE inventory_levels SET on_hand = 5, reserved = 0 WHERE variant_id = 'var_rajma_500g'"
+    )
+    db._conn.commit()
     before = db._conn.execute(
         "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
     ).fetchone()[0]
@@ -130,7 +140,7 @@ def test_checkout_rejects_insufficient_stock_and_releases_earlier_lines(
         json={
             "items": [
                 {"variantId": "var_alphonso_1kg", "quantity": 1},
-                # var_rajma_500g has only 8 on hand; 10 exceeds free stock.
+                # Pinned above to 5 on hand; 10 exceeds free stock.
                 {"variantId": "var_rajma_500g", "quantity": 10},
             ],
             "deliveryAddress": ADDRESS,
@@ -235,6 +245,144 @@ def test_checkout_idempotency_key_is_scoped_per_customer(client: TestClient, db:
     kavya_order = client.post("/v1/public/checkout", json=payload)
     assert kavya_order.status_code == 200
     assert kavya_order.json()["reference"] != riya_order.json()["reference"]
+
+
+def _insert_pending_razorpay_order(
+    db: SQLiteDatabase, *, order_id: str, reference: str, razorpay_order_id: str, total_minor: int
+) -> None:
+    """A minimal pending_payment order with its own Razorpay payment row,
+    bypassing checkout (which would call the real gateway) since these tests
+    only need the order/payment shape `/payments/razorpay/verify` reads."""
+    db._conn.execute(
+        """
+        INSERT INTO orders (
+          id, public_reference, customer_user_id, customer_email, customer_phone_e164,
+          currency_code, subtotal_minor, discount_minor, delivery_minor, tax_minor, total_minor,
+          order_status, payment_status, fulfilment_status, delivery_status,
+          delivery_address_json, placed_at, created_at, updated_at
+        ) VALUES (?, ?, 'usr_cust_riya', 'riya@example.test', '+919999900010', 'INR',
+                  ?, 0, 0, 0, ?, 'pending_payment', 'pending', 'unfulfilled', 'not_ready',
+                  '{}', '2026-08-02T00:00:00Z', '2026-08-02T00:00:00Z', '2026-08-02T00:00:00Z')
+        """,
+        (order_id, reference, total_minor, total_minor),
+    )
+    db._conn.execute(
+        """
+        INSERT INTO payments
+          (id, order_id, provider, provider_intent_id, amount_minor, currency_code,
+           status, created_at, updated_at)
+        VALUES (?, ?, 'razorpay', ?, ?, 'INR', 'created',
+                '2026-08-02T00:00:00Z', '2026-08-02T00:00:00Z')
+        """,
+        (f"pay_{order_id}", order_id, razorpay_order_id, total_minor),
+    )
+    db._conn.commit()
+
+
+def test_razorpay_verify_rejects_a_payment_for_a_different_order(
+    client: TestClient, db: SQLiteDatabase
+):
+    """A signature is only proof that (razorpay_order_id, payment_id,
+    signature) are internally consistent -- it says nothing about which order
+    that Razorpay order was created for. Submitting a real payment's
+    razorpay_order_id against a *different*, more expensive pending order
+    must be rejected before signature verification is even attempted --
+    otherwise a customer could pay for a cheap order and replay that valid
+    signature to mark any number of their other pending orders as paid."""
+    as_customer(client, db)
+    _insert_pending_razorpay_order(
+        db,
+        order_id="ord_cheap",
+        reference="TG-CHEAP01",
+        razorpay_order_id="rzp_cheap",
+        total_minor=100,
+    )
+    _insert_pending_razorpay_order(
+        db,
+        order_id="ord_expensive",
+        reference="TG-EXPENSIVE01",
+        razorpay_order_id="rzp_expensive",
+        total_minor=999_900,
+    )
+
+    # A signature that is genuinely valid for the cheap order's Razorpay
+    # order id, replayed against the expensive order.
+    response = client.post(
+        "/v1/public/payments/razorpay/verify",
+        json={
+            "orderId": "ord_expensive",
+            "razorpayOrderId": "rzp_cheap",
+            "razorpayPaymentId": "pay_real",
+            "razorpaySignature": "sig_real",
+        },
+    )
+    assert response.status_code == 422
+    assert "does not belong" in response.json()["error"]["message"].lower()
+
+    expensive_status = db._conn.execute(
+        "SELECT payment_status, order_status FROM orders WHERE id = 'ord_expensive'"
+    ).fetchone()
+    assert expensive_status["payment_status"] != "paid"
+    assert expensive_status["order_status"] != "confirmed"
+
+
+def test_razorpay_verify_rejects_an_already_paid_order(client: TestClient, db: SQLiteDatabase):
+    """The order/payment status transition is a single atomic batch in normal
+    operation, so this state (payment already paid, order still showing
+    pending_payment) should not arise from ordinary use -- this is the
+    defensive belt-and-braces check for it anyway, exercised directly."""
+    as_customer(client, db)
+    _insert_pending_razorpay_order(
+        db,
+        order_id="ord_once",
+        reference="TG-ONCE01",
+        razorpay_order_id="rzp_once",
+        total_minor=5000,
+    )
+    db._conn.execute("UPDATE payments SET status = 'paid' WHERE order_id = 'ord_once'")
+    db._conn.commit()
+
+    response = client.post(
+        "/v1/public/payments/razorpay/verify",
+        json={
+            "orderId": "ord_once",
+            "razorpayOrderId": "rzp_once",
+            "razorpayPaymentId": "pay_x",
+            "razorpaySignature": "sig_x",
+        },
+    )
+    assert response.status_code == 409
+
+
+def test_razorpay_verify_with_matching_order_reaches_signature_check(
+    client: TestClient, db: SQLiteDatabase
+):
+    """A correctly-matched razorpay_order_id must clear the ownership check
+    and proceed to signature verification, not be rejected by the ownership
+    check itself -- proves the fix does not also reject legitimate payments."""
+    as_customer(client, db)
+    _insert_pending_razorpay_order(
+        db,
+        order_id="ord_legit",
+        reference="TG-LEGIT01",
+        razorpay_order_id="rzp_legit",
+        total_minor=5000,
+    )
+
+    response = client.post(
+        "/v1/public/payments/razorpay/verify",
+        json={
+            "orderId": "ord_legit",
+            "razorpayOrderId": "rzp_legit",
+            "razorpayPaymentId": "pay_x",
+            "razorpaySignature": "not-a-real-signature",
+        },
+    )
+    # No real Razorpay secret is configured in tests, so a made-up signature
+    # cannot verify -- but the failure must be "could not verify", not "does
+    # not belong to that order".
+    assert response.status_code == 422
+    assert "does not belong" not in response.json()["error"]["message"].lower()
 
 
 def test_checkout_requires_address_fields(client: TestClient, db: SQLiteDatabase):
