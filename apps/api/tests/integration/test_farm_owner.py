@@ -131,5 +131,10 @@ def test_super_admin_is_not_scoped(client: TestClient, db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
     me = client.get("/v1/admin/me").json()
     assert me["farmId"] is None
-    names = [row["name"] for row in client.get("/v1/admin/products").json()["items"]]
+    names = [
+        row["name"]
+        for row in client.get(
+            "/v1/admin/products", params={"search": "Himalayan Red Rajma"}
+        ).json()["items"]
+    ]
     assert "Himalayan Red Rajma" in names  # admin sees every farm

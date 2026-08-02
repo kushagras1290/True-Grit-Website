@@ -66,7 +66,9 @@ def test_product_create_edit_publish_archive(client: TestClient, db: SQLiteDatab
     product = client.get(f"/v1/admin/products/{product_id}").json()
     assert product["name"] == "Test Turmeric Powder"
     assert product["imageUrl"] == "https://images.example.test/turmeric.jpg"
-    list_items = client.get("/v1/admin/products").json()["items"]
+    list_items = client.get("/v1/admin/products", params={"search": "Test Turmeric Powder"}).json()[
+        "items"
+    ]
     list_product = next(item for item in list_items if item["id"] == product_id)
     assert list_product["imageUrl"] == "https://images.example.test/turmeric.jpg"
     assert list_product["imageAlt"] == "Fresh turmeric roots on a table"
@@ -1400,18 +1402,10 @@ def test_price_adjustment_product_rule_beats_a_global_rule(client: TestClient, d
         json={"scope": "global", "productId": "prd_alphonso", "percent": -50, "active": True},
     )
 
-    mangoes = next(
-        p
-        for p in client.get("/v1/public/products").json()["items"]
-        if p["slug"] == "organic-alphonso-mangoes"
-    )
+    mangoes = client.get("/v1/public/products/organic-alphonso-mangoes").json()
     assert mangoes["adjustedMinor"] == round(mangoes["priceMinor"] * 0.5)
 
-    rajma = next(
-        p
-        for p in client.get("/v1/public/products").json()["items"]
-        if p["slug"] == "himalayan-red-rajma"
-    )
+    rajma = client.get("/v1/public/products/himalayan-red-rajma").json()
     assert rajma["adjustedMinor"] == round(rajma["priceMinor"] * 0.9)
 
 

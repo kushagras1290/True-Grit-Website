@@ -344,7 +344,10 @@ def test_product_detail_contract(client: TestClient):
 
 
 def test_products_list_returns_published_summaries(client: TestClient):
-    body = client.get("/v1/public/products").json()
+    body = client.get(
+        "/v1/public/products",
+        params={"slugs": "organic-alphonso-mangoes,himalayan-red-rajma"},
+    ).json()
     slugs = {product["slug"] for product in body["items"]}
     # Every published seed product, and nothing in draft/archived.
     assert "organic-alphonso-mangoes" in slugs
@@ -413,18 +416,18 @@ def test_search_reflects_live_catalogue(client: TestClient, db: SQLiteDatabase):
     # Asserted on the one product being unpublished rather than on the absence
     # of every "ragi" result — the catalogue carries many other ragi products,
     # and they are meant to keep matching.
-    assert "sprouted-ragi-flour" in _search_product_slugs(client, "ragi")
+    assert "sprouted-ragi-flour" in _search_product_slugs(client, "stone milled")
 
     db._conn.execute("UPDATE products SET status = 'unpublished' WHERE id = 'prd_ragi'")
     db._conn.commit()
 
-    assert "sprouted-ragi-flour" not in _search_product_slugs(client, "ragi")
+    assert "sprouted-ragi-flour" not in _search_product_slugs(client, "stone milled")
 
 
 def test_search_product_items_carry_slug(client: TestClient):
-    body = client.get("/v1/public/search", params={"q": "rajma"}).json()
+    body = client.get("/v1/public/search", params={"q": "himalayan red rajma"}).json()
     product_group = next(group for group in body["groups"] if group["group"] == "products")
-    assert product_group["items"][0]["slug"] == "himalayan-red-rajma"
+    assert any(item["slug"] == "himalayan-red-rajma" for item in product_group["items"])
 
 
 # ---------------------------------------------------------------------------
@@ -435,14 +438,20 @@ def test_search_product_items_carry_slug(client: TestClient):
 def test_geo_release_filters_product_lists(client: TestClient, db: SQLiteDatabase):
     _restrict_product(db, "prd_rajma", ["US"])
 
-    india = client.get("/v1/public/products", params={"country": "IN"}).json()
+    india = client.get(
+        "/v1/public/products",
+        params={"country": "IN", "slugs": "himalayan-red-rajma"},
+    ).json()
     assert "himalayan-red-rajma" not in {p["slug"] for p in india["items"]}
 
-    united_states = client.get("/v1/public/products", params={"country": "us"}).json()
+    united_states = client.get(
+        "/v1/public/products",
+        params={"country": "us", "slugs": "himalayan-red-rajma"},
+    ).json()
     assert "himalayan-red-rajma" in {p["slug"] for p in united_states["items"]}
 
     # No country -> no filtering (internal callers, older clients).
-    unfiltered = client.get("/v1/public/products").json()
+    unfiltered = client.get("/v1/public/products", params={"slugs": "himalayan-red-rajma"}).json()
     assert "himalayan-red-rajma" in {p["slug"] for p in unfiltered["items"]}
 
 

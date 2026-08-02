@@ -201,9 +201,15 @@ def test_product_release_roundtrip(client: TestClient, db: SQLiteDatabase):
     assert detail["releaseCountries"] == ["AE", "US"]
 
     # The storefront in India no longer sees it; the UAE does.
-    india = client.get("/v1/public/products", params={"country": "IN"}).json()
+    india = client.get(
+        "/v1/public/products",
+        params={"country": "IN", "slugs": "himalayan-red-rajma"},
+    ).json()
     assert "himalayan-red-rajma" not in {p["slug"] for p in india["items"]}
-    uae = client.get("/v1/public/products", params={"country": "AE"}).json()
+    uae = client.get(
+        "/v1/public/products",
+        params={"country": "AE", "slugs": "himalayan-red-rajma"},
+    ).json()
     assert "himalayan-red-rajma" in {p["slug"] for p in uae["items"]}
 
     # Back to global: the country list is cleared.
