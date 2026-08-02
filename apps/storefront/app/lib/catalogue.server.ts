@@ -287,22 +287,6 @@ export async function loadProduct(
   return products.find((product) => product.slug === slug) ?? null;
 }
 
-/**
- * Full product details (variants included) for a handful of slugs — the recipe
- * "add every ingredient to cart" flow needs each variant, which the summary list
- * omits. Fetched in parallel; unknown slugs drop out. Reserve for the small,
- * bounded slug sets a single page references, not for grids.
- */
-export async function loadProductDetailsBySlugs(
-  slugs: string[],
-  country?: string,
-  runtime?: CatalogueRuntime,
-): Promise<ProductDetail[]> {
-  if (slugs.length === 0) return [];
-  const details = await Promise.all(slugs.map((slug) => loadProduct(slug, country, runtime)));
-  return details.filter((product): product is ProductDetail => product !== null);
-}
-
 export async function loadProductsBySlugs(
   slugs: string[],
   country?: string,

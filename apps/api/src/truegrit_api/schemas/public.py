@@ -70,6 +70,12 @@ class ProductSummary(PublicModel):
     # site-wide one on Site Control. False means the product is still shown
     # and browsable -- just not currently orderable.
     accepts_orders: bool = True
+    # The variant `price_minor`/`sale_minor`/`adjusted_minor`/`unit_label`
+    # above already describe, so a batched summary fetch (`?slugs=a,b,c`) is
+    # enough to add a single-variant product straight to the cart -- no
+    # separate per-slug detail request needed just to learn the variant id.
+    # Null only for a product with no active variant at all.
+    lead_variant_id: str | None = None
 
 
 class ProductListResponse(PublicModel):

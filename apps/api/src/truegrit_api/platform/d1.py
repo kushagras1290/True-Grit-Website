@@ -43,6 +43,11 @@ class D1Database:
         meta = _to_py(result.meta)
         return int(meta.get("changes", 0) or 0)
 
-    async def batch(self, statements: Sequence[tuple[str, Sequence[Any]]]) -> None:
+    async def batch(self, statements: Sequence[tuple[str, Sequence[Any]]]) -> list[int]:
         prepared = [self._db.prepare(sql).bind(*params) for sql, params in statements]
-        await self._db.batch(prepared)
+        results = _to_py(await self._db.batch(prepared))
+        changes: list[int] = []
+        for result in results:
+            meta = _to_py(result.meta)
+            changes.append(int(meta.get("changes", 0) or 0))
+        return changes

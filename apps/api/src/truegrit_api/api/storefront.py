@@ -74,6 +74,11 @@ class CheckoutRequest(_CamelModel):
     # "cod" | "razorpay" (| "paypal" later). Unknown/unavailable methods fall
     # back to cash-on-delivery so checkout never fails on a bad client value.
     payment_method: str = Field(default="cod", max_length=32)
+    # Client-generated once per checkout attempt-group (the storefront mints
+    # one when the checkout page first loads and reuses it across retries of
+    # the same submission). Optional so an older client without one still
+    # checks out normally, just without retry protection.
+    idempotency_key: str | None = Field(default=None, max_length=80)
 
 
 class PaypalCaptureRequest(_CamelModel):
@@ -121,6 +126,7 @@ async def checkout(
         ],
         delivery_address=payload.delivery_address.model_dump(exclude_none=True),
         payment_method=method,
+        idempotency_key=payload.idempotency_key,
     )
     now = utc_now_iso()
 

@@ -9,6 +9,7 @@ import { useCart } from "../lib/cart";
 import {
   commerceLive,
   getPaymentMethods,
+  newCheckoutIdempotencyKey,
   openPaypalPaymentWindow,
   openRazorpayPaymentWindow,
   payWithPaypalWindow,
@@ -49,6 +50,10 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
   const [pending, setPending] = useState(false);
   const [payment, setPayment] = useState<PaymentMethodsInfo | null>(null);
   const [method, setMethod] = useState<string>("razorpay");
+  // Stable for the life of this page: every retry of the same submission
+  // (a double-click, a timeout-and-resend) reuses it, so the server returns
+  // the order that attempt already placed instead of placing a second one.
+  const [idempotencyKey] = useState(newCheckoutIdempotencyKey);
 
   const delivery =
     subtotalMinor >= FREE_DELIVERY_THRESHOLD || subtotalMinor === 0 ? 0 : DELIVERY_FEE;
@@ -191,6 +196,7 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
         lines.map((line) => ({ variantId: line.variantId, quantity: line.quantity })),
         address,
         chosen,
+        idempotencyKey,
       );
       // Online orders open a gateway window; only clear the cart once the
       // payment is settled server-side. COD orders are already confirmed.

@@ -115,6 +115,128 @@ def test_checkout_rejects_insufficient_stock(client: TestClient, db: SQLiteDatab
     assert response.status_code == 409
 
 
+def test_checkout_rejects_insufficient_stock_and_releases_earlier_lines(
+    client: TestClient, db: SQLiteDatabase
+):
+    """A multi-line order where a later line fails must not leave the earlier,
+    already-reserved lines holding stock for an order that never exists."""
+    as_customer(client, db)
+    before = db._conn.execute(
+        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+    ).fetchone()[0]
+
+    response = client.post(
+        "/v1/public/checkout",
+        json={
+            "items": [
+                {"variantId": "var_alphonso_1kg", "quantity": 1},
+                # var_rajma_500g has only 8 on hand; 10 exceeds free stock.
+                {"variantId": "var_rajma_500g", "quantity": 10},
+            ],
+            "deliveryAddress": ADDRESS,
+        },
+    )
+    assert response.status_code == 409
+
+    after = db._conn.execute(
+        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+    ).fetchone()[0]
+    assert after == before, "the mango reservation must be released when rajma's line fails"
+
+
+def test_checkout_second_line_cannot_oversell_the_last_unit(client: TestClient, db: SQLiteDatabase):
+    """The reservation write is conditional on the row it changes, not a
+    separate read-then-write — two requests racing for the same last unit
+    cannot both succeed."""
+    as_customer(client, db)
+    db._conn.execute(
+        "UPDATE inventory_levels SET on_hand = 5, reserved = 4 WHERE variant_id = 'var_rajma_500g'"
+    )
+    db._conn.commit()
+
+    first = client.post(
+        "/v1/public/checkout",
+        json={
+            "items": [{"variantId": "var_rajma_500g", "quantity": 1}],
+            "deliveryAddress": ADDRESS,
+        },
+    )
+    assert first.status_code == 200
+
+    second = client.post(
+        "/v1/public/checkout",
+        json={
+            "items": [{"variantId": "var_rajma_500g", "quantity": 1}],
+            "deliveryAddress": ADDRESS,
+        },
+    )
+    assert second.status_code == 409
+
+    reserved = db._conn.execute(
+        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_rajma_500g'"
+    ).fetchone()[0]
+    assert reserved == 5  # the last unit is held by exactly one order, not oversold
+
+
+def test_checkout_idempotency_key_returns_the_original_order_on_retry(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_customer(client, db)
+    before = db._conn.execute(
+        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+    ).fetchone()[0]
+
+    payload = {
+        "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+        "deliveryAddress": ADDRESS,
+        "idempotencyKey": "retry-key-riya-1",
+    }
+    first = client.post("/v1/public/checkout", json=payload)
+    assert first.status_code == 200
+
+    retried = client.post("/v1/public/checkout", json=payload)
+    assert retried.status_code == 200
+    assert retried.json()["reference"] == first.json()["reference"]
+    assert retried.json()["id"] == first.json()["id"]
+
+    after = db._conn.execute(
+        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+    ).fetchone()[0]
+    assert after == before + 1, "a retried request must not reserve stock a second time"
+
+    orders = db._conn.execute(
+        "SELECT COUNT(*) FROM orders WHERE idempotency_key = 'retry-key-riya-1'"
+    ).fetchone()[0]
+    assert orders == 1
+
+
+def test_checkout_idempotency_key_is_scoped_per_customer(client: TestClient, db: SQLiteDatabase):
+    """The same key from two different customers must never collide."""
+    db._conn.execute(
+        "INSERT INTO users"
+        " (id, email, display_name, user_type, status, email_verified_at,"
+        "  phone_e164, phone_verified_at, created_at, updated_at)"
+        " VALUES ('usr_cust_kavya', 'kavya@example.test', 'Kavya Rao', 'customer', 'active',"
+        "  '2026-07-05T00:00:00Z', '+919999900099', '2026-07-05T00:00:00Z',"
+        "  '2026-07-05T00:00:00Z', '2026-07-05T00:00:00Z')"
+    )
+    db._conn.commit()
+
+    payload = {
+        "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+        "deliveryAddress": ADDRESS,
+        "idempotencyKey": "shared-key",
+    }
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_cust_riya"))
+    riya_order = client.post("/v1/public/checkout", json=payload)
+    assert riya_order.status_code == 200
+
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_cust_kavya"))
+    kavya_order = client.post("/v1/public/checkout", json=payload)
+    assert kavya_order.status_code == 200
+    assert kavya_order.json()["reference"] != riya_order.json()["reference"]
+
+
 def test_checkout_requires_address_fields(client: TestClient, db: SQLiteDatabase):
     as_customer(client, db)
     response = client.post(

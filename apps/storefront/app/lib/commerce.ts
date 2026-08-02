@@ -141,11 +141,21 @@ export function placeOrder(
   items: CheckoutItem[],
   deliveryAddress: DeliveryAddress,
   paymentMethod: string = "cod",
+  idempotencyKey?: string,
 ): Promise<PlacedOrder> {
   return request<PlacedOrder>("/v1/public/checkout", {
     method: "POST",
-    body: JSON.stringify({ items, deliveryAddress, paymentMethod }),
+    body: JSON.stringify({ items, deliveryAddress, paymentMethod, idempotencyKey }),
   });
+}
+
+/** One key per checkout attempt-group: minted when the checkout page loads
+ *  and reused across every retry of that same submission (a double-click, a
+ *  timeout-and-resend), so a retried request returns the order it already
+ *  placed instead of a second one. A fresh page load mints a new key, which
+ *  is correct — that is a new attempt, not a retry of the old one. */
+export function newCheckoutIdempotencyKey(): string {
+  return createPaymentWindowToken();
 }
 
 interface RazorpayResult {

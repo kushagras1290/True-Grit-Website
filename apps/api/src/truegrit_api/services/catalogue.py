@@ -151,6 +151,16 @@ async def update_product(
     )
     if current is None:
         raise NotFoundError("Product not found.")
+    # A farm-owner sub-admin's edit rights stop at their own farm's roster --
+    # reassigning `farm_id` would hand the product to (or detach it from) a
+    # farm they may not even see, which is a scope change, not a content edit.
+    # Unrestricted staff (actor.farm_id is None) are unaffected.
+    if (
+        actor.farm_id is not None
+        and "farm_id" in fields
+        and fields["farm_id"] != current["farm_id"]
+    ):
+        raise ValidationAppError("Only unrestricted staff may reassign a product's farm.")
 
     # The admin reader deliberately prefers primary_media_id over image_url.
     # Keep both representations in sync when an editor replaces the URL;

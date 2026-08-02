@@ -190,6 +190,7 @@ class CatalogueRepository:
             "image_url": row["image_url"],
             "image_alt": row["image_alt"] or row["name"],
             "accepts_orders": bool(row["accepts_orders"]),
+            "lead_variant_id": lead["id"] if lead else None,
             "_variants": variant_summaries,
             "_farm_slug": row["farm_slug"] or "",
             "_short_description": row["short_description"] or "",

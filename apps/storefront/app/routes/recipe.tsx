@@ -6,17 +6,11 @@ import { Breadcrumbs, Section } from "../components/catalogue";
 import { CmsBlock, type BlockData } from "../components/blocks";
 import { ContentComments } from "../components/content-comments";
 import { PageBanner } from "../components/page-banner";
-import {
-  catalogueRuntime,
-  loadFarms,
-  loadProductDetailsBySlugs,
-  loadProductsBySlugs,
-  loadRecipe,
-} from "../lib/catalogue.server";
+import { catalogueRuntime, loadFarms, loadProductsBySlugs, loadRecipe } from "../lib/catalogue.server";
 import { useCart } from "../lib/cart";
 import { resolveCountry } from "../lib/geo.server";
 import { mediaUrl } from "../lib/media";
-import { variantEffectivePrice } from "../lib/pricing";
+import { productEffectivePrice } from "../lib/pricing";
 import { recipeJsonLd, seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
@@ -29,7 +23,10 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
     block.type === "product_collection" ? block.props.productSlugs : [],
   );
   const [ingredientProducts, blockProducts, farms] = await Promise.all([
-    loadProductDetailsBySlugs(ingredientSlugs, country, runtime),
+    // A batched summary fetch, not one product-detail request per ingredient
+    // -- `leadVariantId` on the summary is enough to add a single-variant
+    // ingredient straight to the cart (see `lib/pricing.ts`).
+    loadProductsBySlugs(ingredientSlugs, country, runtime),
     loadProductsBySlugs(blockProductSlugs, country, runtime),
     loadFarms(runtime),
   ]);
@@ -65,7 +62,7 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
   };
 
   const availableProducts = ingredientProducts.filter(
-    (product) => product.availability !== "out_of_stock" && product.variants.length > 0,
+    (product) => product.availability !== "out_of_stock" && product.leadVariantId !== null,
   );
 
   return (
@@ -123,13 +120,12 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
                   type="button"
                   onClick={() => {
                     for (const product of availableProducts) {
-                      const variant = product.variants[0]!;
                       add({
                         productSlug: product.slug,
                         productName: product.name,
-                        variantId: variant.id,
-                        variantName: variant.name,
-                        unitMinor: variantEffectivePrice(variant).amountMinor,
+                        variantId: product.leadVariantId!,
+                        variantName: product.unitLabel,
+                        unitMinor: productEffectivePrice(product).amountMinor,
                       });
                     }
                     setAddedAll(true);

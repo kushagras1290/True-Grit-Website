@@ -11,7 +11,11 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic.alias_generators import to_camel
 
 from truegrit_api.auth.dependencies import get_current_staff, get_database, require_permission
-from truegrit_api.auth.passwords import password_hash_iterations, verify_password_async
+from truegrit_api.auth.passwords import (
+    hash_password,
+    password_hash_iterations,
+    verify_password_async,
+)
 from truegrit_api.auth.principal import Principal
 from truegrit_api.auth.rate_limit import (
     RateLimitRule,
@@ -257,6 +261,20 @@ async def _stored_password_hash(db: Database, user_id: str) -> str | None:
     return row["password_hash"] if row is not None else None
 
 
+# Mirrors the identical dummy-hash pattern in `api/customer_auth.py`: an
+# unknown email must still pay for a `verify_password_async` call, not return
+# on an early `if user is None`, or response latency alone tells an attacker
+# which staff emails exist.
+_dummy_staff_hash: str | None = None
+
+
+def _dummy_password_hash() -> str:
+    global _dummy_staff_hash
+    if _dummy_staff_hash is None:
+        _dummy_staff_hash = hash_password(new_id("nope"), iterations=1)
+    return _dummy_staff_hash
+
+
 @router.post("/auth/login")
 async def login(
     payload: LoginRequest,
@@ -291,9 +309,18 @@ async def login(
 
     # The account's own stored password is the only thing that authenticates.
     # This is how every staff user signs in, farm-owner sub-admins included.
-    stored_hash = await _stored_password_hash(db, user["id"]) if user is not None else None
-    credential_ok = stored_hash is not None and await verify_password_async(
-        payload.password, stored_hash, max_iterations=settings.pbkdf2_verify_max_iterations
+    # An unknown email still runs a real `verify_password_async` against a
+    # dummy hash rather than short-circuiting here — the two paths take
+    # comparable time, so response latency cannot be used to enumerate which
+    # staff emails exist (mirrors `api/customer_auth.py`'s login route).
+    stored_hash = (
+        await _stored_password_hash(db, user["id"]) if user is not None else None
+    ) or _dummy_password_hash()
+    credential_ok = (
+        await verify_password_async(
+            payload.password, stored_hash, max_iterations=settings.pbkdf2_verify_max_iterations
+        )
+        and user is not None
     )
 
     # The `.env` credential is a bootstrap, not a permanent key: it opens the
@@ -4026,6 +4053,7 @@ async def create_variant_endpoint(
 ) -> Any:
     from ..services.catalogue import create_variant
 
+    await _assert_product_scope(db, product_id, principal)
     variant_id = await create_variant(
         db,
         principal,
@@ -4050,6 +4078,7 @@ async def update_variant_endpoint(
 ) -> Any:
     from ..services.catalogue import update_variant
 
+    await _assert_product_scope(db, product_id, principal)
     return await update_variant(
         db,
         principal,

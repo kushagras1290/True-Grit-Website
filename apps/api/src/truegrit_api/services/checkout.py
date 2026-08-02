@@ -123,6 +123,47 @@ async def _resolve_line(db: Database, line: CheckoutLine, now: str) -> dict[str,
     }
 
 
+def _order_result(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "reference": row["public_reference"],
+        "currencyCode": row["currency_code"],
+        "subtotalMinor": row["subtotal_minor"],
+        "deliveryMinor": row["delivery_minor"],
+        "totalMinor": row["total_minor"],
+        "orderStatus": row["order_status"],
+        "paymentStatus": row["payment_status"],
+    }
+
+
+async def _find_by_idempotency_key(
+    db: Database, customer_user_id: str, idempotency_key: str
+) -> dict[str, Any] | None:
+    return await db.fetch_one(
+        """
+        SELECT id, public_reference, currency_code, subtotal_minor,
+               delivery_minor, total_minor, order_status, payment_status
+        FROM orders
+        WHERE customer_user_id = ? AND idempotency_key = ?
+        """,
+        (customer_user_id, idempotency_key),
+    )
+
+
+async def _release_reservation(
+    db: Database, variant_id: str, location_id: str, quantity: int
+) -> None:
+    """Best-effort compensation for a phase-1 reservation whose order never
+    landed (a later line failed, or the order batch itself failed). Not
+    itself conditional -- undoing a reservation we just proved we hold can
+    never take `reserved` negative, so there is nothing to guard here."""
+    await db.execute(
+        "UPDATE inventory_levels SET reserved = reserved - ?, updated_at = ?"
+        " WHERE variant_id = ? AND location_id = ?",
+        (quantity, utc_now_iso(), variant_id, location_id),
+    )
+
+
 async def place_order(
     db: Database,
     customer: Principal,
@@ -131,7 +172,18 @@ async def place_order(
     items: list[CheckoutLine],
     delivery_address: dict[str, Any],
     payment_method: str = "cod",
+    idempotency_key: str | None = None,
 ) -> dict[str, Any]:
+    # A retried submission (double-click, network timeout-and-resend, back
+    # button) returns the order that request already placed instead of a
+    # second one. Scoped to the customer so two different shoppers can never
+    # collide on the same client-generated key.
+    idempotency_key = (idempotency_key or "").strip() or None
+    if idempotency_key is not None:
+        existing = await _find_by_idempotency_key(db, customer.user_id, idempotency_key)
+        if existing is not None:
+            return _order_result(existing)
+
     if not items:
         raise ValidationAppError("Your basket is empty.")
     if len(items) > _MAX_LINES:
@@ -187,6 +239,41 @@ async def place_order(
                 "Please pay for this order online, or wait until the previous one is delivered."
             )
 
+    # Phase 1: reserve every line's stock with a conditional write, checked
+    # and changed in the same statement (`WHERE (on_hand - reserved) >= ?`)
+    # rather than trusting the read a few lines above -- that read is only
+    # ever a friendly early error message now; this is the actual guard. Two
+    # requests racing for the same last unit can no longer both succeed: only
+    # one UPDATE matches a row, the other affects zero and is rejected before
+    # any order exists. A line that fails here unwinds every reservation this
+    # order already made, so a partial checkout never holds stock nobody's
+    # order references.
+    reserved_so_far: list[dict[str, Any]] = []
+    try:
+        for item in resolved:
+            variant = item["variant"]
+            changed = await db.execute(
+                "UPDATE inventory_levels SET reserved = reserved + ?, updated_at = ?"
+                " WHERE variant_id = ? AND location_id = ? AND (on_hand - reserved) >= ?",
+                (
+                    item["quantity"],
+                    now,
+                    variant["variant_id"],
+                    item["location_id"],
+                    item["quantity"],
+                ),
+            )
+            if changed == 0:
+                raise ConflictError(f"Not enough stock for {variant['product_name']}.")
+            reserved_so_far.append(item)
+    except Exception:
+        for item in reserved_so_far:
+            variant = item["variant"]
+            await _release_reservation(
+                db, variant["variant_id"], item["location_id"], item["quantity"]
+            )
+        raise
+
     order_id = new_id("ord")
     reference = _reference()
     # Cash-on-delivery orders are confirmed immediately (paid on delivery). Online
@@ -201,9 +288,9 @@ async def place_order(
               currency_code,
               subtotal_minor, discount_minor, delivery_minor, tax_minor, total_minor,
               order_status, payment_status, fulfilment_status, delivery_status,
-              delivery_address_json, placed_at, created_at, updated_at
+              delivery_address_json, idempotency_key, placed_at, created_at, updated_at
             ) VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, 0, ?,
-                      ?, 'pending', 'unfulfilled', 'not_ready', ?, ?, ?, ?)
+                      ?, 'pending', 'unfulfilled', 'not_ready', ?, ?, ?, ?, ?)
             """,
             (
                 order_id,
@@ -221,6 +308,7 @@ async def place_order(
                 total,
                 order_status,
                 json.dumps(address),
+                idempotency_key,
                 now,
                 now,
                 now,
@@ -256,13 +344,6 @@ async def place_order(
         )
         statements.append(
             (
-                "UPDATE inventory_levels SET reserved = reserved + ?, updated_at = ?"
-                " WHERE variant_id = ? AND location_id = ?",
-                (item["quantity"], now, variant["variant_id"], item["location_id"]),
-            )
-        )
-        statements.append(
-            (
                 "INSERT INTO inventory_reservations"
                 " (id, variant_id, location_id, quantity, reference_type, reference_id,"
                 "  status, created_at, updated_at)"
@@ -291,7 +372,27 @@ async def place_order(
         )
     )
 
-    await db.batch(statements)
+    try:
+        await db.batch(statements)
+    except Exception:
+        # The order never landed, so the stock this attempt reserved for it
+        # must go back -- otherwise it is held forever against nothing.
+        for item in resolved:
+            variant = item["variant"]
+            await _release_reservation(
+                db, variant["variant_id"], item["location_id"], item["quantity"]
+            )
+        # A concurrent request with the same idempotency key may have won the
+        # race and already created the real order between our check above and
+        # this write -- that shows up here as an INSERT failing on the unique
+        # (customer, key) index. Treat that as the success it actually is
+        # rather than surfacing a raw database error to the customer.
+        if idempotency_key is not None:
+            existing = await _find_by_idempotency_key(db, customer.user_id, idempotency_key)
+            if existing is not None:
+                return _order_result(existing)
+        raise
+
     return {
         "id": order_id,
         "reference": reference,

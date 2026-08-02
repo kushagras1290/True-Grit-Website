@@ -1,7 +1,7 @@
 # Scalability, capacity, and production-readiness assessment
 
 - **Status:** Open engineering assessment
-- **Last reviewed:** 2026-08-01
+- **Last reviewed:** 2026-08-02
 - **Audience:** Engineering, operations, and product owners
 - **Scope:** Storefront, API, Cloudflare Workers, D1, R2, KV, Queues, checkout, and production operations
 
@@ -73,16 +73,14 @@ browsing, search, authentication, cart operations, checkout, payments, discussio
 | ID       | Priority | Status | Issue                                                                                                          | Primary risk                                                    |
 | -------- | -------- | ------ | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
 | SCAL-001 | P0       | Open   | API is configured for Workers Free                                                                             | CPU termination and daily request exhaustion                    |
-| SCAL-002 | P0       | Open   | Public storefront responses are not broadly edge-cached                                                        | Every visitor reaches Workers and D1                            |
-| SCAL-003 | P0       | Open   | Checkout stock validation and reservation are separate operations                                              | Overselling under concurrent checkout                           |
-| SCAL-004 | P0       | Open   | No repeatable load-test suite or capacity baseline                                                             | Capacity claims cannot be verified                              |
-| SCAL-005 | P0       | Open   | Production resources and production-specific configuration are not represented in the active API Wrangler file | Development resources can become a deployment dependency        |
-| SCAL-006 | P1       | Open   | One D1 primary handles public reads and transactional writes                                                   | Database saturation and overload errors                         |
-| SCAL-007 | P1       | Open   | Catalogue requests perform multiple sequential enrichment queries                                              | Query amplification and avoidable latency                       |
-| SCAL-008 | P1       | Open   | Queue producer exists without a configured consumer or dead-letter queue                                       | Non-durable work and lost/repeated side effects                 |
-| SCAL-009 | P1       | Open   | Global rate limiter is isolate-local                                                                           | Inconsistent protection during distributed traffic              |
-| SCAL-010 | P1       | Open   | Tracing is disabled and operational success metrics are incomplete                                             | Slow detection and diagnosis of production failures             |
-| SCAL-011 | P2       | Open   | Large-list APIs use counts and offset pagination                                                               | Increasing query cost as tables grow                            |
+| SCAL-002 | P0       | Open           | Public storefront responses are not broadly edge-cached                                                        | Every visitor reaches Workers and D1                            |
+| SCAL-004 | P0       | Open           | No repeatable load-test suite or capacity baseline                                                             | Capacity claims cannot be verified                              |
+| SCAL-005 | P0       | Open           | Production resources and production-specific configuration are not represented in the active API Wrangler file | Development resources can become a deployment dependency        |
+| SCAL-006 | P1       | Open           | One D1 primary handles public reads and transactional writes                                                   | Database saturation and overload errors                         |
+| SCAL-008 | P1       | Open           | Queue producer exists without a configured consumer or dead-letter queue                                       | Non-durable work and lost/repeated side effects                 |
+| SCAL-009 | P1       | Open           | Global rate limiter is isolate-local                                                                           | Inconsistent protection during distributed traffic              |
+| SCAL-010 | P1       | Open           | Tracing is disabled and operational success metrics are incomplete                                             | Slow detection and diagnosis of production failures             |
+| SCAL-011 | P2       | Not applicable | Large-list APIs use counts and offset pagination                                                               | Increasing query cost as tables grow                            |
 | SCAL-012 | P2       | Open   | No documented data partitioning or archival thresholds                                                         | Emergency migration after a storage or write ceiling is reached |
 | SCAL-013 | P2       | Open   | Python/Pyodide CPU cost has no production benchmark                                                            | Higher latency and compute cost than expected                   |
 
@@ -160,40 +158,6 @@ CPU and D1 queries. This converts an edge-cacheable workload into centralized da
 
 See [Workers caching configuration](https://developers.cloudflare.com/workers/cache/configuration/)
 and [Cache Rules](https://developers.cloudflare.com/cache/how-to/cache-rules/).
-
-### SCAL-003 — Make checkout and inventory reservation atomic
-
-**Evidence**
-
-The checkout service first reads an inventory row whose available quantity is sufficient, constructs
-the order, and later increments `reserved` with an unconditional update in
-[checkout.py](../../apps/api/src/truegrit_api/services/checkout.py). Two requests can both observe the
-same available quantity before either batch updates it. The outstanding-COD check uses the same
-read-then-write pattern.
-
-**Impact**
-
-Concurrent orders can reserve more units than are on hand. Retry behavior can also create duplicate
-effects unless the complete checkout operation is tied to an idempotency key.
-
-**Recommendation**
-
-- Change reservation to a conditional write that includes
-  `(on_hand - reserved) >= requested_quantity`.
-- Verify that exactly one row changed before treating the order as accepted.
-- Keep order creation, order lines, reservations, audit entries, and outbox events within one
-  all-or-nothing transaction boundary.
-- Add a unique, customer-scoped checkout idempotency key and return the original result on retries.
-- Add unique provider-event constraints and idempotent payment state transitions.
-- Enforce outstanding-COD limits through a write-safe invariant instead of a separate count check.
-- Consider per-inventory-key Durable Object coordination only if conditional D1 writes are proven
-  insufficient for extremely hot products.
-
-**Done when**
-
-- A concurrency test with more buyers than available stock produces zero oversold units.
-- Retrying the same checkout or payment webhook produces exactly one business effect.
-- Failure at any statement leaves no partial order or reservation.
 
 ### SCAL-004 — Build a capacity and regression test suite
 
@@ -287,33 +251,6 @@ describes horizontal partitioning across smaller databases as the intended scale
 [D1 limits](https://developers.cloudflare.com/d1/platform/limits/) and
 [D1 read replication](https://developers.cloudflare.com/d1/best-practices/read-replication/).
 
-### SCAL-007 — Reduce catalogue query amplification
-
-**Evidence**
-
-The catalogue repository loads base product rows and then sequentially loads variants,
-certifications, and tags in
-[catalogue.py](../../apps/api/src/truegrit_api/repositories/catalogue.py). List endpoints also perform
-a separate total-count query. A single storefront page may combine this work with bootstrap,
-settings, CMS, related-product, or farm requests.
-
-**Recommendation**
-
-- Measure query duration and rows read before rewriting SQL.
-- Cache complete public DTOs when invalidation can be expressed safely.
-- Combine or batch enrichment queries where it reduces total work.
-- Run independent read queries concurrently only after read replication is configured; concurrency
-  against one primary does not create database parallelism.
-- Avoid loading complete product details one slug at a time for article, recipe, farm, and related
-  product blocks.
-- Use `EXPLAIN QUERY PLAN` and production-shaped data to validate indexes.
-
-**Done when**
-
-- A catalogue cache miss has an explicit query budget.
-- Page-level query counts and rows read remain stable as the catalogue grows.
-- No N+1 product-detail pattern exists on public routes.
-
 ### SCAL-008 — Implement durable queue processing
 
 **Evidence**
@@ -397,6 +334,8 @@ Define alert ownership and link every alert to an operational procedure in the
 
 ### SCAL-011 — Replace large offsets and hot-path counts
 
+**Status: not applicable to the current storefront** (reviewed 2026-08-02).
+
 **Evidence**
 
 Catalogue, article, recipe, discussion, order, user, media, audit, and other list queries use
@@ -404,18 +343,27 @@ Catalogue, article, recipe, discussion, order, user, media, audit, and other lis
 work as data grows, and exact totals are rarely necessary for public infinite-scroll or next-page
 interfaces.
 
+Every public storefront list page (`/shop`, `/category/:slug`, `/blog`, `/recipes`,
+`/community`) uses explicit numbered `?page=` pagination, not infinite scroll — confirmed by
+reading each route's loader. This recommendation's own text carves that case out: "Preserve offset
+pagination only for bounded admin datasets **or explicit page-number requirements**." A numbered
+page control also genuinely needs the exact total (to render "Page 3 of 12" and a last-page
+control), which cursor/keyset pagination cannot provide without a separate count query of its own —
+so switching would not remove the count, only complicate the pagination.
+
 **Recommendation**
 
-- Use stable cursor/keyset pagination for growing tables.
-- Return `hasMore` rather than an exact total on hot public paths where product requirements allow.
-- Cache totals that do not require transaction-level freshness.
-- Preserve offset pagination only for bounded admin datasets or explicit page-number requirements.
+- Use stable cursor/keyset pagination for growing tables **if and when** a public list adopts
+  infinite scroll or a "load more" pattern instead of numbered pages. Re-open this item at that
+  point rather than converting a working, appropriate numbered-page UI for no benefit.
+- Cache totals that do not require transaction-level freshness (still applicable; see SCAL-002's
+  cache-tag approach).
+- Preserve offset pagination for bounded admin datasets and every current public page-number UI.
 
 **Done when**
 
-- Query work for page N is approximately constant rather than proportional to N.
-- Pagination ordering is deterministic and cannot skip or duplicate records during concurrent
-  inserts.
+- A public list page adopts infinite scroll or "load more" — at that point, apply cursor/keyset
+  pagination to that specific endpoint and revisit this item's status.
 
 ### SCAL-012 — Establish data-growth and migration thresholds
 

@@ -93,6 +93,12 @@ export interface ProductSummary {
    *  site-wide one on Site Control. False means the product is still shown
    *  and browsable -- just not currently orderable. */
   acceptsOrders: boolean;
+  /** The variant `priceMinor`/`saleMinor`/`adjustedMinor`/`unitLabel` above
+   *  already describe. Enough to add a single-variant product to the cart
+   *  straight from a batched summary fetch (`?slugs=a,b,c`) -- no separate
+   *  per-slug detail request needed just to learn the variant id. Null only
+   *  for a product with no active variant at all. */
+  leadVariantId: string | null;
 }
 
 export interface VariantSummary {

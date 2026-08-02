@@ -352,6 +352,11 @@ def test_products_list_returns_published_summaries(client: TestClient):
     sample = next(p for p in body["items"] if p["slug"] == "organic-alphonso-mangoes")
     assert sample["priceMinor"] == 89900
     assert sample["certification"] == "India Organic (NPOP)"
+    # A batched summary carries enough to add the lead variant to a cart --
+    # no separate per-slug detail request needed (see SCAL-007 in the
+    # scalability assessment: this is what lets recipe.tsx's shoppable
+    # ingredients batch through a single `?slugs=` request).
+    assert sample["leadVariantId"] == "var_alphonso_1kg"
 
 
 def test_products_list_by_slugs_preserves_order(client: TestClient):

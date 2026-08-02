@@ -23,6 +23,39 @@ import type {
   PublicPage,
   RecipeDetail,
 } from "./index";
+import generatedCatalogueJson from "./catalogue.generated.json";
+
+interface GeneratedProductRow {
+  id: string;
+  name: string;
+  slug: string;
+  priceMinor: number;
+  saleMinor: number | null;
+  unitLabel: string;
+  availability: ProductDetail["availability"];
+  tags: string[];
+  imageUrl: string | null;
+  imageAlt: string;
+  acceptsOrders: boolean;
+  leadVariantId: string | null;
+  leadSku: string;
+  shortDescription: string;
+  certification: string;
+  relatedSlugs: string[];
+  returnEligible: boolean;
+  seoTitle: string;
+  seoDescription: string;
+  indexing: ProductDetail["seo"]["indexing"];
+}
+
+interface GeneratedCatalogueSnapshot {
+  generatedFrom: string;
+  categories: CategorySummary[];
+  products: GeneratedProductRow[];
+  categoryProducts: Record<string, string[]>;
+}
+
+const generatedCatalogue = generatedCatalogueJson as unknown as GeneratedCatalogueSnapshot;
 
 export const bootstrap: PublicBootstrap = {
   navigation: [
@@ -128,6 +161,18 @@ export const categories: CategorySummary[] = [
   },
 ];
 
+// The hand-authored launch fixtures above retain their richer copy. The
+// generated snapshot fills in every other published seed category so demo mode
+// and an API-backed local environment expose the same breadth of catalogue.
+const handAuthoredCategoryIds = new Set(categories.map((category) => category.id));
+const handAuthoredCategorySlugs = new Set(categories.map((category) => category.slug));
+categories.push(
+  ...generatedCatalogue.categories.filter(
+    (category) =>
+      !handAuthoredCategoryIds.has(category.id) && !handAuthoredCategorySlugs.has(category.slug),
+  ),
+);
+
 export const products: ProductDetail[] = [
   {
     id: "prd_alphonso",
@@ -147,6 +192,7 @@ export const products: ProductDetail[] = [
     imageUrl: "/homepage-hero.png",
     imageAlt: "A crate of ripe Alphonso mangoes",
     acceptsOrders: true,
+    leadVariantId: "var_alphonso_1kg",
     shortDescription: "Ratnagiri Alphonso, tree-ripened and carbide-free, from Devika Organics.",
     overview:
       "Grown on three-generation orchards in Ratnagiri, these Alphonso mangoes ripen on the tree and are packed the same day. No carbide, no cold storage — just fruit at its honest best.",
@@ -211,6 +257,7 @@ export const products: ProductDetail[] = [
     imageUrl: "/homepage-hero-greens.png",
     imageAlt: "A fresh bunch of baby spinach leaves",
     acceptsOrders: true,
+    leadVariantId: "var_spinach_250g",
     shortDescription: "Tender baby spinach, harvested at dawn and chilled within the hour.",
     overview:
       "Cut young for tenderness, this spinach comes from rotating beds on regenerated soil. Harvested at dawn, washed in cold spring water and chilled within the hour.",
@@ -265,6 +312,7 @@ export const products: ProductDetail[] = [
     imageUrl: "/homepage-hero-roots.png",
     imageAlt: "Stone-milled ragi flour in a cloth bag",
     acceptsOrders: true,
+    leadVariantId: "var_ragi_500g",
     shortDescription:
       "Stone-milled finger millet, sprouted for easier digestion and deeper flavour.",
     overview:
@@ -329,6 +377,7 @@ export const products: ProductDetail[] = [
     imageUrl: "/homepage-hero-citrus.png",
     imageAlt: "A glass bottle of golden groundnut oil",
     acceptsOrders: true,
+    leadVariantId: "var_oil_500ml",
     shortDescription:
       "Single-origin groundnuts, wood-pressed at low RPM within a week of shelling.",
     overview:
@@ -390,6 +439,7 @@ export const products: ProductDetail[] = [
     imageUrl: "/homepage-hero-roots.png",
     imageAlt: "Deep red kidney beans from Himalayan terraces",
     acceptsOrders: true,
+    leadVariantId: "var_rajma_500g",
     shortDescription:
       "Small red kidney beans from high-altitude terraces, famous for their quick cooking.",
     overview:
@@ -429,6 +479,76 @@ export const products: ProductDetail[] = [
   },
 ];
 
+function generatedProductDetail(row: GeneratedProductRow): ProductDetail {
+  const variants = row.leadVariantId
+    ? [
+        {
+          id: row.leadVariantId,
+          name: row.unitLabel,
+          sku: row.leadSku,
+          listMinor: row.priceMinor,
+          saleMinor: row.saleMinor,
+          adjustedMinor: null,
+          availability: row.availability,
+        },
+      ]
+    : [];
+  return {
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    farmName: "True Grit Partner Network",
+    farmSlug: "",
+    region: "India",
+    certification: row.certification,
+    priceMinor: row.priceMinor,
+    saleMinor: row.saleMinor,
+    adjustedMinor: null,
+    currencyCode: "INR",
+    unitLabel: row.unitLabel,
+    availability: row.availability,
+    tags: row.tags,
+    imageUrl: row.imageUrl,
+    imageAlt: row.imageAlt,
+    acceptsOrders: row.acceptsOrders,
+    leadVariantId: row.leadVariantId,
+    shortDescription: row.shortDescription,
+    overview: row.shortDescription,
+    storageGuidance: "Follow the storage and best-before guidance printed on the current pack.",
+    harvestNote: "Lot and packing details are shown on every dispatched item.",
+    growingMethod: "Sourced through the True Grit verified producer network.",
+    variants,
+    traceability: [
+      { label: "Producer", detail: "True Grit Partner Network — India" },
+      { label: "Verification", detail: row.certification },
+      {
+        label: "Quality check",
+        detail: "Checked at the fulfilment centre before dispatch",
+      },
+      { label: "Delivery", detail: "Shipped with full lot traceability" },
+    ],
+    relatedSlugs: row.relatedSlugs,
+    returnEligible: row.returnEligible,
+    seo: {
+      title: row.seoTitle,
+      description: row.seoDescription,
+      canonicalPath: `/product/${row.slug}`,
+      indexing: row.indexing,
+    },
+  };
+}
+
+const handAuthoredProductIds = new Set(products.map((product) => product.id));
+const handAuthoredProductSlugs = new Set(products.map((product) => product.slug));
+products.push(
+  ...generatedCatalogue.products
+    .filter(
+      (product) =>
+        !handAuthoredProductIds.has(product.id) && !handAuthoredProductSlugs.has(product.slug),
+    )
+    .map(generatedProductDetail),
+);
+
 /** Products per category slug. Subcategory entries repeat their department's
  * products, mirroring live data where a product is assigned to both its section
  * and its owning department. */
@@ -440,6 +560,12 @@ const categoryProducts: Record<string, string[]> = {
   "grains-and-millets": ["sprouted-ragi-flour", "himalayan-red-rajma"],
   "cold-pressed-oils": ["wood-pressed-groundnut-oil"],
 };
+
+for (const [categorySlug, productSlugs] of Object.entries(generatedCatalogue.categoryProducts)) {
+  categoryProducts[categorySlug] = [
+    ...new Set([...(categoryProducts[categorySlug] ?? []), ...productSlugs]),
+  ];
+}
 
 /** Product slugs assigned to a category, for demo-mode filtered grids. */
 export function productSlugsForCategory(slug: string): string[] {
@@ -486,8 +612,13 @@ const categoryHeroes: Record<string, { eyebrow: string; title: string; descripti
 
 export function getCategoryPage(slug: string): PublicCategoryPage | null {
   const category = categories.find((entry) => entry.slug === slug);
-  const hero = categoryHeroes[slug];
-  if (!category || !hero) return null;
+  if (!category) return null;
+  const parent = categories.find((entry) => entry.id === category.parentId);
+  const hero = categoryHeroes[slug] ?? {
+    eyebrow: parent?.name ?? "True Grit organic market",
+    title: category.name,
+    description: category.shortDescription,
+  };
   const slugs = categoryProducts[slug] ?? [];
   return {
     id: category.id,

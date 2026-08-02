@@ -24,8 +24,15 @@ class Database(Protocol):
         """Run a write statement; returns the number of affected rows."""
         ...
 
-    async def batch(self, statements: Sequence[tuple[str, Sequence[Any]]]) -> None:
-        """Run related writes atomically — all succeed or all roll back."""
+    async def batch(self, statements: Sequence[tuple[str, Sequence[Any]]]) -> list[int]:
+        """Run related writes atomically — all succeed or all roll back.
+
+        Returns the affected-row count for each statement, in the same order,
+        so a caller can tell a conditional write (e.g. an inventory
+        reservation guarded by `WHERE (on_hand - reserved) >= ?`) that matched
+        zero rows apart from one that matched and simply had nothing to
+        change.
+        """
         ...
 
 
@@ -64,15 +71,17 @@ class SQLiteDatabase:
             self._conn.commit()
             return cursor.rowcount
 
-    async def batch(self, statements: Sequence[tuple[str, Sequence[Any]]]) -> None:
+    async def batch(self, statements: Sequence[tuple[str, Sequence[Any]]]) -> list[int]:
         with self._lock:
             try:
-                for sql, params in statements:
-                    self._conn.execute(sql, tuple(params))
+                changes = [
+                    self._conn.execute(sql, tuple(params)).rowcount for sql, params in statements
+                ]
             except sqlite3.Error:
                 self._conn.rollback()
                 raise
             self._conn.commit()
+            return changes
 
 
 def repo_root() -> Path:
