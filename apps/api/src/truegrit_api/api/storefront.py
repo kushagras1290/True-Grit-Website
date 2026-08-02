@@ -293,14 +293,27 @@ async def verify_razorpay_payment(
     # Razorpay's checkout returned before marking the order paid and confirmed.
     order = await db.fetch_one(
         """
-        SELECT id, public_reference, currency_code, total_minor
-        FROM orders
-        WHERE id = ? AND customer_user_id = ? AND order_status = 'pending_payment'
+        SELECT o.id, o.public_reference, o.currency_code, o.total_minor,
+               p.provider_intent_id, p.status AS payment_status
+        FROM orders o
+        JOIN payments p ON p.order_id = o.id AND p.provider = 'razorpay'
+        WHERE o.id = ? AND o.customer_user_id = ? AND o.order_status = 'pending_payment'
         """,
         (payload.order_id, customer.user_id),
     )
     if order is None:
         raise NotFoundError("Order not found or already processed.")
+    # Verify against the Razorpay order *we* created for this order, not the one
+    # the client handed us. A signature is only proof that a
+    # (razorpay_order_id, payment_id, signature) triple is internally
+    # consistent -- it says nothing about which of the merchant's Razorpay
+    # orders that triple belongs to. Trusting the client's razorpay_order_id
+    # would let a real payment for one (cheap) order verify a different
+    # (expensive) one. Mirrors the equivalent check in capture_paypal_payment.
+    if str(order["provider_intent_id"]) != payload.razorpay_order_id:
+        raise PaymentError("This payment does not belong to that order.")
+    if str(order["payment_status"]) == "paid":
+        raise ConflictError("This order has already been paid.")
 
     settings = get_settings()
     if not verify_razorpay_signature(
@@ -316,8 +329,8 @@ async def verify_razorpay_payment(
         [
             (
                 "UPDATE payments SET status = 'paid', provider_intent_id = ?, updated_at = ?"
-                " WHERE order_id = ? AND provider = 'razorpay'",
-                (payload.razorpay_order_id, now, payload.order_id),
+                " WHERE order_id = ? AND provider = 'razorpay' AND provider_intent_id = ?",
+                (payload.razorpay_order_id, now, payload.order_id, payload.razorpay_order_id),
             ),
             (
                 "UPDATE orders SET payment_status = 'paid', order_status = 'confirmed',"
