@@ -20,8 +20,10 @@ import { useToast } from "../components/toast";
 import { ApiError, api, type AdminPermission, type AdminRole } from "../lib/api";
 
 const GROUP_LABELS: Record<string, string> = {
+  analytics: "Analytics",
   articles: "Blog",
   audit: "Audit",
+  bundles: "Bundles",
   categories: "Categories",
   customers: "Customers",
   discussions: "Community",
@@ -30,11 +32,14 @@ const GROUP_LABELS: Record<string, string> = {
   orders: "Orders",
   pages: "CMS pages",
   products: "Products",
+  promotions: "Coupons & Promotions",
   recipes: "Recipes",
   reports: "Owner reports",
   returns: "Returns",
+  reviews: "Reviews",
   settings: "Settings",
   submissions: "Submissions",
+  subscriptions: "Subscriptions",
   users: "Users and roles",
 };
 

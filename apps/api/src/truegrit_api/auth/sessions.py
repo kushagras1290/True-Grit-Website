@@ -42,6 +42,20 @@ async def start_session(
     so a partial write can never leave a session without its sign-in stamp."""
     now = utc_now_iso()
     token = secrets.token_urlsafe(32)
+    # `csrf_secret_hash` is dormant: nothing issues this value to a client or
+    # verifies it back, so it currently does nothing. It is generated and
+    # stored anyway because the column is `NOT NULL` (migration 0001) and
+    # dropping it needs its own reviewed migration, not a silent side effect
+    # of an unrelated change. The CSRF defense actually in force today is the
+    # session cookie's `SameSite` policy (`Settings.session_cookie_samesite`,
+    # forced `Secure` whenever it is `none`) plus this API only accepting
+    # `application/json` bodies, which a plain cross-site form submission
+    # cannot produce. A double-submit token built on this column is a
+    # legitimate future defense-in-depth step -- it would need a readable
+    # (non-httponly) cookie carrying this secret and a verification
+    # dependency enforced on every unsafe-method authenticated route, which
+    # is a deliberate, separately-reviewed change given how easily an
+    # incomplete rollout could lock customers out of checkout instead.
     csrf_secret = secrets.token_urlsafe(32)
     expires_at = _session_expiry_iso(settings.session_lifetime_hours)
     await db.batch(

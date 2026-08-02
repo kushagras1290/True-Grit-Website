@@ -10,7 +10,12 @@ from fastapi import APIRouter, BackgroundTasks, Depends, Query, Request, Respons
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic.alias_generators import to_camel
 
-from truegrit_api.auth.dependencies import get_current_staff, get_database, require_permission
+from truegrit_api.auth.dependencies import (
+    get_current_staff,
+    get_database,
+    get_translator,
+    require_permission,
+)
 from truegrit_api.auth.passwords import (
     hash_password,
     password_hash_iterations,
@@ -39,7 +44,10 @@ from truegrit_api.errors import (
     ValidationAppError,
 )
 from truegrit_api.platform.database import Database
+from truegrit_api.platform.translation import Translator
 from truegrit_api.repositories.admin import AdminRepository
+from truegrit_api.repositories.bundles import BundleRepository
+from truegrit_api.repositories.catalogue import CatalogueRepository
 from truegrit_api.repositories.content import (
     ArticleRepository,
     AuditRepository,
@@ -49,16 +57,25 @@ from truegrit_api.repositories.content import (
     DiscussionRepository,
     RecipeRepository,
     ReturnRequestRepository,
+    ReviewRepository,
     RouteSeoRepository,
     SiteDocumentRepository,
 )
 from truegrit_api.repositories.partnerships import FarmPartnershipRequestRepository
+from truegrit_api.repositories.promotions import PromotionRepository
+from truegrit_api.repositories.subscriptions import SubscriptionRepository
+from truegrit_api.services import analytics as analytics_service
 from truegrit_api.services import articles as article_service
+from truegrit_api.services import bundles as bundle_service
 from truegrit_api.services import content_comments as content_comment_service
 from truegrit_api.services import discussions as discussion_service
 from truegrit_api.services import farm_partnerships as farm_partnership_service
+from truegrit_api.services import promotions as promotion_service
 from truegrit_api.services import recipes as recipe_service
+from truegrit_api.services import reviews as review_service
 from truegrit_api.services import submissions as submission_service
+from truegrit_api.services import subscriptions as subscription_service
+from truegrit_api.services import translation as translation_service
 from truegrit_api.services.access import (
     adopt_bootstrap_owner,
     change_own_password,
@@ -99,6 +116,7 @@ from truegrit_api.services.catalogue import (
     archive_product,
     create_category,
     create_product,
+    replace_product_images,
     set_category_release,
     set_highlighted_products,
     set_product_links,
@@ -116,10 +134,18 @@ from truegrit_api.services.email_templates import (
     render_submission_rejected,
 )
 from truegrit_api.services.feature_settings import (
+    CURATED_MAX_ITEMS_HARD_LIMIT,
+    SUBSCRIPTION_DISCOUNT_PERCENT_HARD_LIMIT,
+    load_curated_max_items,
+    load_delivery_settings,
     load_hero_max_slides,
     load_public_settings,
     load_storefront_settings,
+    load_subscription_discount_percent,
+    set_curated_max_items,
+    set_delivery_settings,
     set_hero_max_slides,
+    set_subscription_discount_percent,
     update_storefront_settings,
 )
 from truegrit_api.services.homepage_geo import (
@@ -611,8 +637,12 @@ class SiteControlUpdate(_CamelModel):
     seo_title: str | None = Field(default=None, max_length=160)
     seo_description: str | None = Field(default=None, max_length=320)
     seo_keywords: str | None = Field(default=None, max_length=500)
-    featured_categories: list[str] | None = Field(default=None, max_length=12)
-    fresh_favourites: list[str] | None = Field(default=None, max_length=12)
+    featured_categories: list[str] | None = Field(
+        default=None, max_length=CURATED_MAX_ITEMS_HARD_LIMIT
+    )
+    fresh_favourites: list[str] | None = Field(
+        default=None, max_length=CURATED_MAX_ITEMS_HARD_LIMIT
+    )
 
     @field_validator("hero_image_url")
     @classmethod
@@ -915,6 +945,25 @@ async def update_site_control(
         href = fields.get("secondary_action_href", current.get("href", "")) or ""
         props["secondaryAction"] = {"label": label, "href": href} if label and href else None
 
+    if "featured_categories" in fields or "fresh_favourites" in fields:
+        curated_max_items = await load_curated_max_items(db)
+        if (
+            payload.featured_categories is not None
+            and len(payload.featured_categories) > curated_max_items
+        ):
+            raise ValidationAppError(
+                f"Featured categories are limited to {curated_max_items} items."
+                " Raise the limit in Site Control to add more."
+            )
+        if (
+            payload.fresh_favourites is not None
+            and len(payload.fresh_favourites) > curated_max_items
+        ):
+            raise ValidationAppError(
+                f"Fresh favourites are limited to {curated_max_items} items."
+                " Raise the limit in Site Control to add more."
+            )
+
     if "featured_categories" in fields:
         category_block: dict[str, Any] | None = next(
             (block for block in blocks if block.get("type") == "category_collection"), None
@@ -1008,6 +1057,9 @@ HOMEPAGE_SECTION_LABELS: dict[str, str] = {
     "faq": "Questions and answers",
     "rich_text": "Text block",
     "newsletter": "Newsletter signup",
+    "reviews_showcase": "Customer reviews",
+    "promotion_banner": "Promotions banner",
+    "recommendations": "Recommended products",
 }
 
 # Sections an owner may add from Homepage Settings. Deliberately the
@@ -1020,6 +1072,9 @@ ADDABLE_HOMEPAGE_SECTION_TYPES: tuple[str, ...] = (
     "faq",
     "farmer_story",
     "newsletter",
+    "reviews_showcase",
+    "promotion_banner",
+    "recommendations",
 )
 
 # Starting content for a new section. Written so the block validates on save
@@ -1051,6 +1106,23 @@ _NEW_SECTION_PROPS: dict[str, dict[str, Any]] = {
     "newsletter": {
         "heading": "A slower, better way to eat.",
         "consentText": "One considered letter a month. No noise, unsubscribe anytime.",
+    },
+    "reviews_showcase": {
+        "heading": "What customers are saying",
+        "subheading": "",
+        "source": "rule",
+        "reviewIds": [],
+        "limit": 8,
+        "minRating": 4,
+    },
+    "promotion_banner": {
+        "source": "rule",
+        "promotionId": None,
+    },
+    "recommendations": {
+        "heading": "Customer favourites",
+        "subheading": "Picked by shoppers",
+        "limit": 8,
     },
 }
 
@@ -1103,6 +1175,21 @@ def _section_summary(block: dict[str, Any]) -> str:
         return str(props.get("attribution") or "No attribution")
     if block_type == "newsletter":
         return str(props.get("heading") or "Newsletter signup")
+    if block_type == "reviews_showcase":
+        if props.get("source") == "manual":
+            ids = props.get("reviewIds")
+            count = len(ids) if isinstance(ids, list) else 0
+            return f"{count} featured review{'' if count == 1 else 's'}"
+        return f"Top-rated reviews, {props.get('minRating', 4)}+ stars"
+    if block_type == "promotion_banner":
+        return (
+            "One specific promotion"
+            if props.get("source") == "manual"
+            else "Best active promotion, resolved automatically"
+        )
+    if block_type == "recommendations":
+        limit = props.get("limit", 8)
+        return f"Top {limit} best sellers, computed live from orders"
     return ""
 
 
@@ -1940,6 +2027,116 @@ async def update_cms_page(
     if page is None:
         raise NotFoundError("Page not found.")
     return page
+
+
+# ---------------------------------------------------------------------------
+# Per-locale page content (migration 0067) -- the homepage and static pages
+# both use `pages`/`page_versions`, so this one mechanism translates both.
+# `pages.edit` gates it, the same permission that gates the English content
+# these translations are alongside.
+# ---------------------------------------------------------------------------
+
+
+def _page_translation_payload(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "locale": row["locale"],
+        "content": json.loads(row["content_json"]),
+        "autoTranslated": bool(row["auto_translated"]),
+        "updatedAt": row["updated_at"],
+    }
+
+
+class PageTranslationSaveRequest(_CamelModel):
+    blocks: list[dict[str, Any]] = Field(default_factory=list, max_length=MAX_BLOCKS)
+
+
+@router.get("/pages/{page_id}/translations")
+async def list_page_translations_endpoint(
+    page_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("pages.view"))],
+) -> Any:
+    rows = await translation_service.list_page_translations(db, page_id)
+    return {
+        "items": [
+            {
+                "locale": row["locale"],
+                "autoTranslated": bool(row["auto_translated"]),
+                "updatedAt": row["updated_at"],
+            }
+            for row in rows
+        ]
+    }
+
+
+@router.get("/pages/{page_id}/translations/{locale}")
+async def get_page_translation_endpoint(
+    page_id: str,
+    locale: str,
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("pages.view"))],
+) -> Any:
+    row = await translation_service.get_page_translation(db, page_id, locale)
+    if row is None:
+        # No translation yet is not an error -- the editor's own empty state
+        # (and the storefront's English fallback) both expect this, not a 404.
+        page = await _page_detail(db, page_id)
+        if page is None:
+            raise NotFoundError("Page not found.")
+        return {
+            "locale": locale,
+            "content": {"blocks": page["blocks"]},
+            "autoTranslated": False,
+            "updatedAt": None,
+        }
+    return _page_translation_payload(row)
+
+
+@router.put("/pages/{page_id}/translations/{locale}")
+async def save_page_translation_endpoint(
+    page_id: str,
+    locale: str,
+    payload: PageTranslationSaveRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("pages.edit"))],
+) -> Any:
+    saved = await translation_service.save_page_translation(
+        db,
+        principal,
+        _request_id(request),
+        page_id,
+        locale,
+        {"blocks": payload.blocks},
+        auto_translated=False,
+    )
+    return _page_translation_payload(saved)
+
+
+@router.post("/pages/{page_id}/translations/{locale}/auto-translate")
+async def auto_translate_page_endpoint(
+    page_id: str,
+    locale: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    translator: Annotated[Translator, Depends(get_translator)],
+    principal: Annotated[Principal, Depends(require_permission("pages.edit"))],
+) -> Any:
+    saved = await translation_service.auto_translate_page(
+        db, principal, _request_id(request), translator, page_id, locale
+    )
+    return _page_translation_payload(saved)
+
+
+@router.delete("/pages/{page_id}/translations/{locale}")
+async def delete_page_translation_endpoint(
+    page_id: str,
+    locale: str,
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("pages.edit"))],
+) -> Any:
+    await translation_service.delete_page_translation(db, page_id, locale)
+    return {"pageId": page_id, "locale": locale, "deleted": True}
 
 
 # ---------------------------------------------------------------------------
@@ -2869,6 +3066,105 @@ async def delete_content_comment_endpoint(
 
 
 # ---------------------------------------------------------------------------
+# Product reviews and ratings (migration 0005, extended by 0057). Policed with
+# its own `reviews.*` pair rather than reusing `discussions.*` -- reviews are
+# commerce-adjacent (tied to orders and products), so Order Manager / Product
+# Manager territory, not the content-moderation roles.
+# ---------------------------------------------------------------------------
+
+
+class ReviewModerationRequest(_CamelModel):
+    action: str = Field(min_length=1, max_length=20)
+    reason: str | None = Field(default=None, max_length=500)
+
+
+class ReviewEditRequest(_CamelModel):
+    rating: int | None = Field(default=None, ge=1, le=5)
+    title: str | None = Field(default=None, max_length=120)
+    body: str | None = Field(default=None, min_length=10, max_length=4000)
+
+
+def _admin_review_payload(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "productName": row["product_name"],
+        "productSlug": row["product_slug"],
+        "rating": row["rating"],
+        "title": row["title"],
+        "body": row["body"],
+        "status": row["status"],
+        "authorName": row["author_name"],
+        "authorEmail": display_contact(row["author_email"], None),
+        "createdAt": row["created_at"],
+        "moderatedAt": row["moderated_at"],
+        "moderationReason": row["moderation_reason"],
+    }
+
+
+@router.get("/reviews")
+async def list_reviews_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("reviews.view"))],
+    status: Annotated[str | None, Query(max_length=20)] = None,
+    rating: Annotated[int | None, Query(ge=1, le=5)] = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    search: Annotated[str | None, Query(max_length=200)] = None,
+) -> Any:
+    repository = ReviewRepository(db)
+    rows = await repository.list_admin(
+        status=status, rating=rating, search=search, limit=limit, offset=offset
+    )
+    return {
+        "items": [_admin_review_payload(row) for row in rows],
+        "total": await repository.count_admin(status=status, rating=rating, search=search),
+        "pending": await repository.count_pending(),
+        "limit": limit,
+        "offset": offset,
+    }
+
+
+@router.patch("/reviews/{review_id}")
+async def edit_review_endpoint(
+    review_id: str,
+    payload: ReviewEditRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("reviews.moderate"))],
+) -> Any:
+    fields = payload.model_dump(exclude_unset=True)
+    return await review_service.edit_review(db, principal, _request_id(request), review_id, fields)
+
+
+@router.post("/reviews/{review_id}/moderate")
+async def moderate_review_endpoint(
+    review_id: str,
+    payload: ReviewModerationRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("reviews.moderate"))],
+) -> Any:
+    return await review_service.moderate_review(
+        db,
+        principal,
+        _request_id(request),
+        review_id,
+        action=payload.action,
+        reason=payload.reason,
+    )
+
+
+@router.delete("/reviews/{review_id}")
+async def delete_review_endpoint(
+    review_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("reviews.moderate"))],
+) -> Any:
+    return await review_service.delete_review(db, principal, _request_id(request), review_id)
+
+
+# ---------------------------------------------------------------------------
 # Community discussions — moderation. Discussions/comments are created from
 # the storefront (api.community); staff here can hide, restore, archive or
 # permanently delete any thread or comment, and set the minimum account age
@@ -2899,9 +3195,14 @@ class StorefrontSettingsUpdateRequest(_CamelModel):
     password_sign_in: bool | None = None
     registration: bool | None = None
     payments: bool | None = None
+    promotions: bool | None = None
+    recommendations: bool | None = None
+    subscriptions: bool | None = None
     payments_disabled_notice: str | None = Field(default=None, max_length=600)
     blog_banner_image_url: str | None = Field(default=None, max_length=1000)
     blog_banner_image_alt: str | None = Field(default=None, max_length=200)
+    farms_banner_image_url: str | None = Field(default=None, max_length=1000)
+    farms_banner_image_alt: str | None = Field(default=None, max_length=200)
 
 
 def _discussion_admin_summary(row: dict[str, Any]) -> dict[str, Any]:
@@ -3077,6 +3378,9 @@ def _storefront_settings_response(
             "passwordSignIn": effective.password_sign_in,
             "registration": effective.registration,
             "payments": effective.payments,
+            "promotions": effective.promotions,
+            "recommendations": effective.recommendations,
+            "subscriptions": effective.subscriptions,
             "anySignInAvailable": effective.any_sign_in_available,
         },
     }
@@ -3107,6 +3411,570 @@ async def update_storefront_settings_endpoint(
         updates=payload.model_dump(exclude_unset=True, exclude_none=True),
     )
     return _storefront_settings_response(stored, await load_public_settings(db, settings))
+
+
+# ---------------------------------------------------------------------------
+# Delivery charges. Stored settings (migration-free -- `app_settings` already
+# exists), not hardcoded constants, so a seasonal fee change or a raised
+# free-delivery bar is an admin edit, not a deploy.
+# ---------------------------------------------------------------------------
+
+
+class DeliverySettingsUpdateRequest(_CamelModel):
+    fee_minor: int = Field(ge=0)
+    free_threshold_minor: int = Field(ge=0)
+
+
+@router.get("/delivery-settings")
+async def get_delivery_settings_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("settings.view"))],
+) -> Any:
+    settings = await load_delivery_settings(db)
+    return {"feeMinor": settings.fee_minor, "freeThresholdMinor": settings.free_threshold_minor}
+
+
+@router.patch("/delivery-settings")
+async def update_delivery_settings_endpoint(
+    payload: DeliverySettingsUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    settings = await set_delivery_settings(
+        db,
+        principal,
+        _request_id(request),
+        fee_minor=payload.fee_minor,
+        free_threshold_minor=payload.free_threshold_minor,
+    )
+    return {"feeMinor": settings.fee_minor, "freeThresholdMinor": settings.free_threshold_minor}
+
+
+# ---------------------------------------------------------------------------
+# Curated list size -- the shared cap for Fresh Favourites, Featured
+# Categories (Homepage Settings) and Highlights (Site Control): one setting
+# rather than three, since all three are the same shape of feature (pick up
+# to N items, in order). Stored, not hardcoded, so raising it past the
+# shipped twelve is an admin edit.
+# ---------------------------------------------------------------------------
+
+
+class CuratedSettingsUpdateRequest(_CamelModel):
+    max_items: int = Field(ge=1, le=50)
+
+
+@router.get("/curated-settings")
+async def get_curated_settings_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("settings.view"))],
+) -> Any:
+    return {"maxItems": await load_curated_max_items(db)}
+
+
+@router.patch("/curated-settings")
+async def update_curated_settings_endpoint(
+    payload: CuratedSettingsUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    value = await set_curated_max_items(
+        db, principal, _request_id(request), value=payload.max_items
+    )
+    return {"maxItems": value}
+
+
+# ---------------------------------------------------------------------------
+# Coupons and promotions (migration 0005, extended by 0060). A promotion with
+# no coupons is automatic; one or more coupons make it code-gated. The
+# sitewide switch lives with the other storefront feature switches above
+# (`commerce.promotions.enabled`, in `StorefrontSettingsUpdateRequest`) --
+# these routes manage the campaigns and codes themselves.
+# ---------------------------------------------------------------------------
+
+
+class PromotionCreateRequest(_CamelModel):
+    name: str = Field(min_length=1, max_length=160)
+    headline: str | None = Field(default=None, max_length=160)
+    description: str | None = Field(default=None, max_length=400)
+    status: str = Field(default="draft", max_length=20)
+    priority: int = Field(default=0, ge=0, le=1000)
+    starts_at: str | None = None
+    ends_at: str | None = None
+    stacking_policy: str = Field(default="exclusive", max_length=20)
+    usage_limit_total: int | None = Field(default=None, ge=1)
+    usage_limit_per_customer: int | None = Field(default=None, ge=1)
+    min_subtotal_minor: int | None = Field(default=None, ge=0)
+    action_type: str = Field(max_length=30)
+    value_basis_points: int | None = Field(default=None, ge=0, le=10_000)
+    amount_minor: int | None = Field(default=None, ge=0)
+    maximum_discount_minor: int | None = Field(default=None, ge=0)
+
+
+class PromotionUpdateRequest(_CamelModel):
+    name: str | None = Field(default=None, min_length=1, max_length=160)
+    headline: str | None = Field(default=None, max_length=160)
+    description: str | None = Field(default=None, max_length=400)
+    status: str | None = Field(default=None, max_length=20)
+    priority: int | None = Field(default=None, ge=0, le=1000)
+    starts_at: str | None = None
+    ends_at: str | None = None
+    usage_limit_total: int | None = None
+    usage_limit_per_customer: int | None = None
+
+
+class CouponCreateRequest(_CamelModel):
+    code: str = Field(min_length=1, max_length=32)
+
+
+def _admin_promotion_payload(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "name": row["name"],
+        "status": row["status"],
+        "priority": row["priority"],
+        "startsAt": row["starts_at"],
+        "endsAt": row["ends_at"],
+        "stackingPolicy": row["stacking_policy"],
+        "usageLimitTotal": row["usage_limit_total"],
+        "usageLimitPerCustomer": row["usage_limit_per_customer"],
+        "headline": row["headline"],
+        "description": row["description"],
+        "couponCount": row["coupon_count"],
+        "redemptionCount": row["redemption_count"],
+        "createdAt": row["created_at"],
+        "updatedAt": row["updated_at"],
+    }
+
+
+@router.get("/promotions")
+async def list_promotions_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("promotions.view"))],
+    status: Annotated[str | None, Query(max_length=20)] = None,
+    search: Annotated[str | None, Query(max_length=200)] = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    repository = PromotionRepository(db)
+    rows = await repository.list_admin(status=status, search=search, limit=limit, offset=offset)
+    return {
+        "items": [_admin_promotion_payload(row) for row in rows],
+        "total": await repository.count_admin(status=status, search=search),
+    }
+
+
+@router.get("/promotions/{promotion_id}")
+async def get_promotion_endpoint(
+    promotion_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("promotions.view"))],
+) -> Any:
+    repository = PromotionRepository(db)
+    promotion = await repository.get_by_id(promotion_id)
+    if promotion is None:
+        raise NotFoundError("Promotion not found.")
+    rule = await repository.get_rule(promotion_id)
+    action = await repository.get_action(promotion_id)
+    coupons = await repository.list_coupons(promotion_id)
+    payload = _admin_promotion_payload(
+        {
+            **promotion,
+            "coupon_count": len(coupons),
+            "redemption_count": sum(coupon["redemption_count"] for coupon in coupons),
+        }
+    )
+    payload["rule"] = (
+        {"minSubtotalMinor": json.loads(rule["rule_json"]).get("minSubtotalMinor")}
+        if rule is not None
+        else None
+    )
+    payload["action"] = (
+        {
+            "actionType": action["action_type"],
+            "valueBasisPoints": action["value_basis_points"],
+            "amountMinor": action["amount_minor"],
+            "maximumDiscountMinor": action["maximum_discount_minor"],
+        }
+        if action is not None
+        else None
+    )
+    payload["coupons"] = [
+        {
+            "id": coupon["id"],
+            "code": coupon["code"],
+            "active": bool(coupon["active"]),
+            "redemptionCount": coupon["redemption_count"],
+            "createdAt": coupon["created_at"],
+        }
+        for coupon in coupons
+    ]
+    return payload
+
+
+@router.post("/promotions")
+async def create_promotion_endpoint(
+    payload: PromotionCreateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("promotions.manage"))],
+) -> Any:
+    return await promotion_service.create_promotion(
+        db,
+        principal,
+        _request_id(request),
+        name=payload.name,
+        headline=payload.headline,
+        description=payload.description,
+        status=payload.status,
+        priority=payload.priority,
+        starts_at=payload.starts_at,
+        ends_at=payload.ends_at,
+        stacking_policy=payload.stacking_policy,
+        usage_limit_total=payload.usage_limit_total,
+        usage_limit_per_customer=payload.usage_limit_per_customer,
+        min_subtotal_minor=payload.min_subtotal_minor,
+        action_type=payload.action_type,
+        value_basis_points=payload.value_basis_points,
+        amount_minor=payload.amount_minor,
+        maximum_discount_minor=payload.maximum_discount_minor,
+    )
+
+
+@router.patch("/promotions/{promotion_id}")
+async def update_promotion_endpoint(
+    promotion_id: str,
+    payload: PromotionUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("promotions.manage"))],
+) -> Any:
+    fields = payload.model_dump(exclude_unset=True)
+    return await promotion_service.update_promotion(
+        db, principal, _request_id(request), promotion_id, fields
+    )
+
+
+@router.delete("/promotions/{promotion_id}")
+async def delete_promotion_endpoint(
+    promotion_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("promotions.manage"))],
+) -> Any:
+    return await promotion_service.delete_promotion(
+        db, principal, _request_id(request), promotion_id
+    )
+
+
+@router.post("/promotions/{promotion_id}/coupons")
+async def create_coupon_endpoint(
+    promotion_id: str,
+    payload: CouponCreateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("promotions.manage"))],
+) -> Any:
+    return await promotion_service.create_coupon(
+        db, principal, _request_id(request), promotion_id, code=payload.code
+    )
+
+
+@router.delete("/coupons/{coupon_id}")
+async def delete_coupon_endpoint(
+    coupon_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("promotions.manage"))],
+) -> Any:
+    return await promotion_service.delete_coupon(db, principal, _request_id(request), coupon_id)
+
+
+# ---------------------------------------------------------------------------
+# Bundles (migration 0062): curated sets of specific variants sold together at
+# a flat advertised price. Discount enforcement lives in
+# `services.checkout`/`services.bundles`, not here — these routes only manage
+# the catalogue definition (which variants, what price).
+# ---------------------------------------------------------------------------
+
+
+class BundleCreateRequest(_CamelModel):
+    name: str = Field(min_length=1, max_length=140)
+    slug: str | None = Field(default=None, max_length=140)
+    description: str | None = Field(default=None, max_length=500)
+    status: str = Field(default="draft", max_length=20)
+    bundle_price_minor: int = Field(ge=0)
+    image_url: str | None = Field(default=None, max_length=1000)
+    image_alt: str | None = Field(default=None, max_length=200)
+
+
+class BundleUpdateRequest(_CamelModel):
+    name: str | None = Field(default=None, min_length=1, max_length=140)
+    slug: str | None = Field(default=None, max_length=140)
+    description: str | None = Field(default=None, max_length=500)
+    status: str | None = Field(default=None, max_length=20)
+    bundle_price_minor: int | None = Field(default=None, ge=0)
+    image_url: str | None = Field(default=None, max_length=1000)
+    image_alt: str | None = Field(default=None, max_length=200)
+
+
+class BundleItemInput(_CamelModel):
+    variant_id: str = Field(min_length=1, max_length=64)
+    quantity: int = Field(ge=1, le=99)
+
+
+class BundleItemsReplaceRequest(_CamelModel):
+    items: list[BundleItemInput] = Field(min_length=1, max_length=12)
+
+
+def _admin_bundle_payload(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "name": row["name"],
+        "slug": row["slug"],
+        "description": row["description"],
+        "status": row["status"],
+        "bundlePriceMinor": row["bundle_price_minor"],
+        "imageUrl": row["image_url"],
+        "imageAlt": row["image_alt"],
+        "itemCount": row.get("item_count", 0),
+        "createdAt": row.get("created_at"),
+        "updatedAt": row["updated_at"],
+    }
+
+
+def _admin_bundle_item_payload(row: dict[str, Any]) -> dict[str, Any]:
+    unit_price = row["unit_price_minor"] or 0
+    return {
+        "id": row["id"],
+        "variantId": row["variant_id"],
+        "quantity": row["quantity"],
+        "variantName": row["variant_name"],
+        "sku": row["sku"],
+        "productId": row["product_id"],
+        "productName": row["product_name"],
+        "productSlug": row["product_slug"],
+        "imageUrl": row["image_url"],
+        "unitPriceMinor": unit_price,
+        "lineTotalMinor": unit_price * row["quantity"],
+    }
+
+
+@router.get("/bundles")
+async def list_bundles_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("bundles.view"))],
+    status: Annotated[str | None, Query(max_length=20)] = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    repository = BundleRepository(db)
+    rows = await repository.list_admin(status=status, limit=limit, offset=offset)
+    return {
+        "items": [_admin_bundle_payload(row) for row in rows],
+        "total": await repository.count_admin(status=status),
+    }
+
+
+@router.get("/bundles/{bundle_id}")
+async def get_bundle_endpoint(
+    bundle_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("bundles.view"))],
+) -> Any:
+    repository = BundleRepository(db)
+    bundle = await repository.get_by_id(bundle_id)
+    if bundle is None:
+        raise NotFoundError("Bundle not found.")
+    items = await repository.list_items(bundle_id)
+    payload = _admin_bundle_payload({**bundle, "item_count": len(items)})
+    payload["items"] = [_admin_bundle_item_payload(row) for row in items]
+    return payload
+
+
+@router.post("/bundles")
+async def create_bundle_endpoint(
+    payload: BundleCreateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("bundles.manage"))],
+) -> Any:
+    return await bundle_service.create_bundle(
+        db,
+        principal,
+        _request_id(request),
+        name=payload.name,
+        slug=payload.slug,
+        description=payload.description,
+        status=payload.status,
+        bundle_price_minor=payload.bundle_price_minor,
+        image_url=payload.image_url,
+        image_alt=payload.image_alt,
+    )
+
+
+@router.patch("/bundles/{bundle_id}")
+async def update_bundle_endpoint(
+    bundle_id: str,
+    payload: BundleUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("bundles.manage"))],
+) -> Any:
+    return await bundle_service.update_bundle(
+        db,
+        principal,
+        _request_id(request),
+        bundle_id,
+        payload.model_dump(exclude_unset=True, by_alias=False),
+    )
+
+
+@router.delete("/bundles/{bundle_id}")
+async def delete_bundle_endpoint(
+    bundle_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("bundles.manage"))],
+) -> Any:
+    await bundle_service.delete_bundle(db, principal, _request_id(request), bundle_id)
+    return {"id": bundle_id, "deleted": True}
+
+
+@router.put("/bundles/{bundle_id}/items")
+async def replace_bundle_items_endpoint(
+    bundle_id: str,
+    payload: BundleItemsReplaceRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("bundles.manage"))],
+) -> Any:
+    await bundle_service.replace_bundle_items(
+        db,
+        principal,
+        _request_id(request),
+        bundle_id,
+        [item.model_dump(by_alias=False) for item in payload.items],
+    )
+    repository = BundleRepository(db)
+    items = await repository.list_items(bundle_id)
+    return {"items": [_admin_bundle_item_payload(row) for row in items]}
+
+
+# ---------------------------------------------------------------------------
+# Subscriptions (migration 0064): "Subscribe & Save" recurring COD deliveries.
+# Off by default (see the "subscriptions" switch on /storefront-settings) --
+# these routes exist for support (view/pause/cancel a customer's subscription)
+# and for the renewal job's admin-triggerable twin, not to create
+# subscriptions on a customer's behalf: that only ever happens from the
+# customer's own product-page action (see api/public.py).
+# ---------------------------------------------------------------------------
+
+
+class SubscriptionDiscountUpdateRequest(_CamelModel):
+    percent: int = Field(ge=0, le=SUBSCRIPTION_DISCOUNT_PERCENT_HARD_LIMIT)
+
+
+@router.get("/subscription-settings")
+async def get_subscription_settings_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("settings.view"))],
+) -> Any:
+    return {"discountPercent": await load_subscription_discount_percent(db)}
+
+
+@router.patch("/subscription-settings")
+async def update_subscription_settings_endpoint(
+    payload: SubscriptionDiscountUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("settings.edit"))],
+) -> Any:
+    value = await set_subscription_discount_percent(
+        db, principal, _request_id(request), value=payload.percent
+    )
+    return {"discountPercent": value}
+
+
+@router.get("/subscriptions")
+async def list_subscriptions_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("subscriptions.view"))],
+    status: Annotated[str | None, Query(max_length=20)] = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    items, total = await subscription_service.list_admin_subscriptions(
+        db, limit=limit, offset=offset, status=status
+    )
+    return {"items": items, "total": total}
+
+
+@router.get("/subscriptions/{subscription_id}")
+async def get_subscription_admin_endpoint(
+    subscription_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("subscriptions.view"))],
+) -> Any:
+    row = await SubscriptionRepository(db).get_by_id(subscription_id)
+    if row is None:
+        raise NotFoundError("Subscription not found.")
+    return subscription_service.serialize_subscription(row)
+
+
+@router.post("/subscriptions/{subscription_id}/pause")
+async def pause_subscription_admin_endpoint(
+    subscription_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("subscriptions.manage"))],
+) -> Any:
+    return await subscription_service.pause_subscription(
+        db, principal, _request_id(request), subscription_id
+    )
+
+
+@router.post("/subscriptions/{subscription_id}/resume")
+async def resume_subscription_admin_endpoint(
+    subscription_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("subscriptions.manage"))],
+) -> Any:
+    return await subscription_service.resume_subscription(
+        db, principal, _request_id(request), subscription_id
+    )
+
+
+@router.post("/subscriptions/{subscription_id}/cancel")
+async def cancel_subscription_admin_endpoint(
+    subscription_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("subscriptions.manage"))],
+) -> Any:
+    return await subscription_service.cancel_subscription(
+        db, principal, _request_id(request), subscription_id
+    )
+
+
+@router.post("/subscriptions/run-renewals")
+async def run_subscription_renewals_endpoint(
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("subscriptions.manage"))],
+) -> Any:
+    """Runs the identical renewal batch the Worker's `scheduled` cron trigger
+    runs (see worker.py) -- a manual lever for verifying the feature works
+    before relying on the cron, and a fallback while the Workers Free plan's
+    cron reliability is unproven. Safe to click twice: every renewal order is
+    idempotency-keyed per subscription per due-date (services/subscriptions.py),
+    so a subscription already renewed today is simply not due again.
+    """
+    return await subscription_service.run_due_renewals(
+        db, _request_id(request), triggered_by=principal.user_id
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -3149,6 +4017,25 @@ async def run_report_endpoint(
         ),
     )
     return result
+
+
+# ---------------------------------------------------------------------------
+# Analytics (migration 0065): a visual dashboard over a date range -- revenue,
+# orders, top products, order-status mix -- computed live, never a stored
+# rollup. Distinct from Owner Reports above: that is a data-export tool
+# gated to the owner; this is "how is the store doing", visible to Admin and
+# Manager too (see the WHY note in the migration).
+# ---------------------------------------------------------------------------
+
+
+@router.get("/analytics/overview")
+async def analytics_overview_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("analytics.view"))],
+    from_date: Annotated[str | None, Query(alias="from", max_length=10)] = None,
+    to_date: Annotated[str | None, Query(alias="to", max_length=10)] = None,
+) -> Any:
+    return await analytics_service.load_overview(db, from_date=from_date, to_date=to_date)
 
 
 @router.get("/archive")
@@ -3712,25 +4599,33 @@ async def list_inventory(
     offset: Annotated[int, Query(ge=0)] = 0,
     search: str | None = None,
 ) -> Any:
-    rows = await AdminRepository(db).list_inventory(
+    groups = await AdminRepository(db).list_inventory(
         limit=limit, offset=offset, farm_id=principal.farm_id, search=search
     )
     return {
         "items": [
             {
-                "variantId": row["variant_id"],
-                "productId": row["product_id"],
-                "productStatus": row["product_status"],
-                "productName": row["product_name"],
-                "variantName": row["variant_name"],
-                "sku": row["sku"],
-                "locationName": row["location_name"],
-                "onHand": row["on_hand"],
-                "reserved": row["reserved"],
-                "reorderThreshold": row["reorder_threshold"],
-                "updatedAt": row["updated_at"],
+                "productId": group["product_id"],
+                "productName": group["product_name"],
+                "productStatus": group["product_status"],
+                "variants": [
+                    {
+                        "variantId": variant["variant_id"],
+                        "productId": group["product_id"],
+                        "productStatus": group["product_status"],
+                        "productName": group["product_name"],
+                        "variantName": variant["variant_name"],
+                        "sku": variant["sku"],
+                        "locationName": variant["location_name"],
+                        "onHand": variant["on_hand"],
+                        "reserved": variant["reserved"],
+                        "reorderThreshold": variant["reorder_threshold"],
+                        "updatedAt": variant["updated_at"],
+                    }
+                    for variant in group["variants"]
+                ],
             }
-            for row in rows
+            for group in groups
         ],
         "limit": limit,
         "offset": offset,
@@ -3930,6 +4825,7 @@ async def get_product_endpoint(
     detail = await AdminRepository(db).get_product_detail(product_id)
     if detail is None:
         raise NotFoundError("Product not found.")
+    images = await CatalogueRepository(db).list_images(product_id)
     return {
         "id": detail["id"],
         "name": detail["name"],
@@ -3944,6 +4840,10 @@ async def get_product_endpoint(
         "seoDescription": detail["seo_description"] or "",
         "imageUrl": detail["image_url"] or "",
         "imageAlt": detail["image_alt"] or detail["name"],
+        "images": [
+            {"id": image["id"], "imageUrl": image["image_url"], "imageAlt": image["image_alt"]}
+            for image in images
+        ],
         "updatedAt": detail["updated_at"],
         "releaseScope": detail["release_scope"],
         "releaseCountries": detail["release_countries"],
@@ -4023,6 +4923,40 @@ async def update_product_endpoint(
         return result
     row = await db.fetch_one("SELECT status FROM products WHERE id = ?", (product_id,))
     return {"id": product_id, "status": row["status"] if row else "draft", "changed": changed}
+
+
+class ProductImageInput(_CamelModel):
+    image_url: str = Field(min_length=1, max_length=1000)
+    image_alt: str | None = Field(default=None, max_length=200)
+
+
+class ProductImagesReplaceRequest(_CamelModel):
+    images: list[ProductImageInput] = Field(default_factory=list, max_length=8)
+
+
+@router.put("/products/{product_id}/images")
+async def replace_product_images_endpoint(
+    product_id: str,
+    payload: ProductImagesReplaceRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("products.edit"))],
+) -> Any:
+    await _assert_product_scope(db, product_id, principal)
+    await replace_product_images(
+        db,
+        principal,
+        _request_id(request),
+        product_id,
+        [image.model_dump(by_alias=False) for image in payload.images],
+    )
+    images = await CatalogueRepository(db).list_images(product_id)
+    return {
+        "images": [
+            {"id": image["id"], "imageUrl": image["image_url"], "imageAlt": image["image_alt"]}
+            for image in images
+        ]
+    }
 
 
 class VariantCreateRequest(_CamelModel):
@@ -5009,6 +5943,8 @@ class FarmCreateRequest(_CamelModel):
     established_year: int | None = Field(default=None, ge=1800, le=2100)
     summary: str = Field(default="", max_length=500)
     status: str = Field(default="published", max_length=24)
+    hero_image_url: str | None = Field(default=None, max_length=1000)
+    hero_image_alt: str | None = Field(default=None, max_length=200)
 
 
 class FarmUpdateRequest(_CamelModel):
@@ -5020,6 +5956,8 @@ class FarmUpdateRequest(_CamelModel):
     established_year: int | None = Field(default=None, ge=1800, le=2100)
     summary: str | None = Field(default=None, max_length=500)
     status: str | None = Field(default=None, max_length=24)
+    hero_image_url: str | None = Field(default=None, max_length=1000)
+    hero_image_alt: str | None = Field(default=None, max_length=200)
 
 
 class StaffResetRequest(_CamelModel):
@@ -5046,6 +5984,8 @@ def _farm_response(row: Any) -> dict[str, Any]:
         "status": row["status"],
         "productCount": row["product_count"],
         "updatedAt": row["updated_at"],
+        "heroImageUrl": row["hero_image_url"] or None,
+        "heroImageAlt": row["hero_image_alt"] or None,
     }
 
 
@@ -5067,6 +6007,7 @@ async def list_farms_endpoint(
         f"""
         SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.country_code,
                f.story_json, f.established_year, f.status, f.updated_at,
+               f.hero_image_url, f.hero_image_alt,
                (SELECT COUNT(*) FROM products p
                  WHERE p.farm_id = f.id AND p.archived_at IS NULL) AS product_count
         FROM farms f
@@ -5109,9 +6050,10 @@ async def create_farm_endpoint(
                 INSERT INTO farms (
                   id, name, slug, farmer_name, region, country_code, established_year,
                   story_json, status, seo_title, seo_description,
+                  hero_image_url, hero_image_alt,
                   created_at, created_by, updated_at, updated_by
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     farm_id,
@@ -5125,6 +6067,8 @@ async def create_farm_endpoint(
                     status,
                     f"{name} - True Grit partner farm",
                     summary,
+                    (payload.hero_image_url or "").strip() or None,
+                    (payload.hero_image_alt or "").strip() or None,
                     now,
                     principal.user_id,
                     now,
@@ -5154,6 +6098,8 @@ async def create_farm_endpoint(
         "status": status,
         "productCount": 0,
         "updatedAt": now,
+        "heroImageUrl": (payload.hero_image_url or "").strip() or None,
+        "heroImageAlt": (payload.hero_image_alt or "").strip() or None,
     }
 
 
@@ -5211,6 +6157,14 @@ async def update_farm_endpoint(
         updates["status"] = (
             payload.status if payload.status in {"draft", "published", "unpublished"} else "draft"
         )
+    if "hero_image_url" in fields:
+        updates["hero_image_url"] = (
+            payload.hero_image_url.strip() if payload.hero_image_url else None
+        )
+    if "hero_image_alt" in fields:
+        updates["hero_image_alt"] = (
+            payload.hero_image_alt.strip() if payload.hero_image_alt else None
+        )
 
     changed = {key: value for key, value in updates.items() if value != current[key]}
     if changed:
@@ -5239,6 +6193,7 @@ async def update_farm_endpoint(
         """
         SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.country_code,
                f.story_json, f.established_year, f.status, f.updated_at,
+               f.hero_image_url, f.hero_image_alt,
                (SELECT COUNT(*) FROM products p
                  WHERE p.farm_id = f.id AND p.archived_at IS NULL) AS product_count
         FROM farms f

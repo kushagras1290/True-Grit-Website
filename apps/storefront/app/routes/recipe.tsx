@@ -64,6 +64,11 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
     productsBySlug: new Map(blockProducts.map((product) => [product.slug, product])),
     categoriesBySlug: new Map(),
     farmsBySlug: new Map(farms.map((farm) => [farm.slug, farm])),
+    // Recipe body content is limited to `ContentBlock` -- `reviews_showcase`,
+    // `promotion_banner` and `recommendations` never appear here.
+    reviewsByBlockId: new Map(),
+    promotionsByBlockId: new Map(),
+    recommendationsByBlockId: new Map(),
   };
 
   const availableProducts = ingredientProducts.filter(

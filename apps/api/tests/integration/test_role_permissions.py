@@ -42,6 +42,8 @@ REQUIRED_GRANTS: dict[str, set[str]] = {
         # so it sits with Manager and above and never with the content roles.
         "farm_requests.view",
         "farm_requests.review",
+        "reviews.view",
+        "reviews.moderate",
     },
     # Approving content it cannot list is not a job.
     "publisher": {
@@ -81,6 +83,8 @@ REQUIRED_GRANTS: dict[str, set[str]] = {
         "returns.manage",
         "products.view",
         "inventory.view",
+        "reviews.view",
+        "reviews.moderate",
     },
     # The "Payments & Refunds" console is gated on audit.view; without it the
     # role built for refunds could not reach the page it exists to use.

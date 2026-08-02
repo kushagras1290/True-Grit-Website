@@ -26,7 +26,7 @@ def audit_statement(
     action: str,
     entity_type: str,
     entity_id: str,
-    actor_id: str,
+    actor_id: str | None,
     request_id: str,
     created_at: str,
     source: str = "admin",

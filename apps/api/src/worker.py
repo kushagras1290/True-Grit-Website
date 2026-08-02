@@ -27,6 +27,7 @@ from truegrit_api.config import Settings
 from truegrit_api.main import create_app
 from truegrit_api.platform.d1 import D1Database
 from truegrit_api.platform.media_store import R2MediaStore
+from truegrit_api.platform.translation import WorkersAITranslator
 
 # Build the FastAPI application once per isolate. The D1 binding is resolved
 # from ``env`` on first request (it is not available at module-import time) and
@@ -289,6 +290,37 @@ async def _serve_media_direct(env: Any, request: Any, path: str) -> Any:
 
 
 class Default(WorkerEntrypoint):
+    async def scheduled(self, controller: Any) -> None:
+        """Cloudflare Cron Trigger entry point (see `triggers.crons` in
+        wrangler.jsonc) -- places one renewal order for every Subscribe & Save
+        subscription due today, via the identical code path the admin's
+        manual "run renewals now" button also calls
+        (`services.subscriptions.run_due_renewals`). A no-op whenever the
+        sitewide subscriptions switch is off, so this cron firing on a store
+        that has never turned the feature on costs one cheap settings read.
+
+        Deliberately does not build the FastAPI app or go through ASGI at
+        all -- a scheduled event is not an HTTP request, so this talks to D1
+        directly, the same way `_upload_media_direct`/`_serve_media_direct`
+        bypass ASGI for their own non-request-shaped work. Any failure is
+        logged and swallowed: a cron isolate has no browser waiting on a
+        response, and the batch itself already isolates and records each
+        subscription's own outcome (see run_due_renewals), so there is
+        nothing left here that a retry would fix that tomorrow's run will
+        not already retry on its own.
+        """
+        from truegrit_api.platform.d1 import D1Database
+        from truegrit_api.services.subscriptions import run_due_renewals
+        from truegrit_api.util.ids import new_request_id
+
+        try:
+            _bridge_worker_env(self.env)
+            db = D1Database(self.env.DB)
+            result = await run_due_renewals(db, new_request_id())
+            print(f"subscriptions.scheduled: {result['succeeded']}/{result['processed']} renewed")
+        except Exception as exc:
+            print(f"subscriptions.scheduled crashed: {type(exc).__name__}: {exc}")
+
     async def fetch(self, request: Any) -> Any:
         global _app
         path = urlparse(str(request.url)).path
@@ -300,9 +332,16 @@ class Default(WorkerEntrypoint):
                 return await _serve_media_direct(self.env, request, path)
             if _app is None:
                 _bridge_worker_env(self.env)
+                # `AI` is optional in wrangler.jsonc's binding list -- an
+                # older deploy that predates auto-translate (migration 0067)
+                # simply has no `env.AI`, and getattr(..., None) degrades to
+                # UnavailableTranslator (auth/dependencies.py) rather than
+                # crashing cold start.
+                ai_binding = getattr(self.env, "AI", None)
                 _app = create_app(
                     db=D1Database(self.env.DB),
                     media=R2MediaStore(self.env.MEDIA_BUCKET),
+                    translator=WorkersAITranslator(ai_binding) if ai_binding is not None else None,
                 )
             return await asgi.fetch(_app, request, self.env)
         except Exception as exc:

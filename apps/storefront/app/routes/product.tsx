@@ -5,12 +5,21 @@ import type { Route } from "./+types/product";
 import {
   AvailabilityNote,
   Breadcrumbs,
-  ProduceFrame,
   ProductGrid,
   Section,
 } from "../components/catalogue";
 import { ContactForm } from "../components/contact-form";
-import { catalogueRuntime, loadProduct, loadProductsBySlugs } from "../lib/catalogue.server";
+import { ProductGallery } from "../components/product-gallery";
+import { ProductReviews, RatingSummary } from "../components/reviews";
+import { RecommendedProducts } from "../components/recommendations";
+import { SubscribeAndSave } from "../components/subscribe-and-save";
+import {
+  catalogueRuntime,
+  loadAlsoBought,
+  loadProduct,
+  loadProductReviews,
+  loadProductsBySlugs,
+} from "../lib/catalogue.server";
 import { useCart } from "../lib/cart";
 import { usePriceFormatter } from "../lib/currency";
 import { resolveCountry } from "../lib/geo.server";
@@ -22,7 +31,12 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
   const product = await loadProduct(params.slug, country, runtime);
   if (!product) throw data("Product not found", { status: 404 });
-  return { product, related: await loadProductsBySlugs(product.relatedSlugs, country, runtime) };
+  const [related, reviews, alsoBought] = await Promise.all([
+    loadProductsBySlugs(product.relatedSlugs, country, runtime),
+    loadProductReviews(product.slug, runtime),
+    loadAlsoBought(product.slug, 6, country, runtime),
+  ]);
+  return { product, related, reviews, alsoBought };
 }
 
 export function meta({ data: loaderData }: Route.MetaArgs) {
@@ -30,7 +44,7 @@ export function meta({ data: loaderData }: Route.MetaArgs) {
 }
 
 export default function ProductPage({ loaderData }: Route.ComponentProps) {
-  const { product, related } = loaderData;
+  const { product, related, reviews, alsoBought } = loaderData;
   const { add } = useCart();
   const formatPrice = usePriceFormatter();
   const [variantId, setVariantId] = useState(product.variants[0]?.id ?? "");
@@ -58,10 +72,11 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
       />
 
       <div className="mx-auto grid max-w-[80rem] gap-10 px-4 py-8 sm:px-6 lg:grid-cols-2">
-        <ProduceFrame
+        <ProductGallery
           slug={product.slug}
-          alt={product.imageAlt}
-          imageUrl={product.imageUrl}
+          mainImageUrl={product.imageUrl}
+          mainImageAlt={product.imageAlt}
+          galleryImages={product.images ?? []}
           className="aspect-square rounded-md"
         />
 
@@ -73,9 +88,16 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
             · {product.region}
           </p>
           <h1 className="mt-1.5 font-display text-3xl leading-tight text-ink">{product.name}</h1>
-          <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-subtle px-3 py-1 text-xs font-medium text-brand">
-            <span aria-hidden>✓</span> {product.certification}
-          </p>
+          <div className="mt-2 flex flex-wrap items-center gap-2.5">
+            <p className="inline-flex items-center gap-1.5 rounded-full bg-subtle px-3 py-1 text-xs font-medium text-brand">
+              <span aria-hidden>✓</span> {product.certification}
+            </p>
+            {product.ratingCount > 0 ? (
+              <a href="#reviews" className="text-sm text-ink hover:underline">
+                <RatingSummary average={product.ratingAverage} count={product.ratingCount} />
+              </a>
+            ) : null}
+          </div>
 
           <p className="mt-5 text-2xl font-semibold text-ink">
             {formatPrice(effective.amountMinor)}{" "}
@@ -187,6 +209,10 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
             <AvailabilityNote availability={variant.availability} />
           ) : null}
 
+          {purchasable && variant ? (
+            <SubscribeAndSave variantId={variant.id} quantity={quantity} productName={product.name} />
+          ) : null}
+
           <div className="mt-8 space-y-4 border-t border-line pt-6 text-sm">
             <p className="text-ink">{product.overview}</p>
             {product.harvestNote ? (
@@ -248,11 +274,28 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
         </ol>
       </Section>
 
+      <div id="reviews">
+        <Section eyebrow="Customer reviews" heading={`Reviews for ${product.name}`} tone="subtle">
+          <ProductReviews
+            reviews={reviews}
+            average={product.ratingAverage}
+            count={product.ratingCount}
+          />
+        </Section>
+      </div>
+
       {related.length > 0 ? (
         <Section eyebrow="Goes well with" heading="From the same soil">
           <ProductGrid products={related} />
         </Section>
       ) : null}
+
+      <RecommendedProducts
+        eyebrow="Frequently bought together"
+        heading="Customers also bought"
+        products={alsoBought}
+        tone="subtle"
+      />
     </>
   );
 }

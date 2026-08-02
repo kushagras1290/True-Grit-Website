@@ -10,11 +10,16 @@ import type {
   ArticleDetail,
   CategorySummary,
   FarmDetail,
+  FeaturedPromotion,
+  FeaturedReview,
   ProductDetail,
+  ProductReview,
   ProductSummary,
   PublicBootstrap,
+  PublicBundle,
   PublicCategoryPage,
   PublicPage,
+  PublicPageBlock,
   RecipeDetail,
 } from "@truegrit/contracts";
 import {
@@ -25,8 +30,13 @@ import {
   getCategoryPage,
   homePage,
   productSlugsForCategory,
+  allApprovedReviews,
   products,
+  publicBundles,
   recipes,
+  resolveFeaturedPromotion,
+  resolveFeaturedReviews,
+  reviewsForProduct,
 } from "@truegrit/contracts/fixtures";
 
 import { DEFAULT_SITE_SETTINGS, normalizeSiteSettings, type SiteSettings } from "./site-settings";
@@ -78,6 +88,18 @@ function withCountry(path: string, country?: string): string {
   if (!country) return path;
   const separator = path.includes("?") ? "&" : "?";
   return `${path}${separator}country=${encodeURIComponent(country)}`;
+}
+
+/** Appends `?locale=` (or `&locale=` alongside an existing query string) --
+ *  the request-scoped locale root.tsx already resolves (cookie, then
+ *  Accept-Language, then the default), so a CMS page can serve its saved
+ *  translation (migration 0067) without the client picking a language a
+ *  second time. Omits English: it is what `content_json` already stores, so
+ *  there is nothing for the API to swap in. */
+function withLocale(path: string, locale?: string): string {
+  if (!locale || locale === "en") return path;
+  const separator = path.includes("?") ? "&" : "?";
+  return `${path}${separator}locale=${encodeURIComponent(locale)}`;
 }
 
 // List endpoints wrap their rows in `{ items }`. Fixture data is used only when
@@ -161,13 +183,17 @@ export async function loadSiteSettings(
 export async function loadHome(
   country: string | undefined,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<PublicPage> {
   if (apiUrl(runtime)) {
     // `country` picks up this visitor's per-country section overrides
-    // (`homepage_country_overrides`) — the same pattern as bootstrap/settings.
+    // (`homepage_country_overrides`); `locale` picks up a saved translation
+    // (migration 0067) if one exists for this page — the same "falls back
+    // to the default, never breaks" pattern as country overrides.
+    const path = withLocale(withCountry("/v1/public/home", country), locale);
     const page =
-      (await fromApi<PublicPage>(withCountry("/v1/public/home", country), runtime)) ??
-      (await fromApi<PublicPage>("/v1/public/pages/home", runtime));
+      (await fromApi<PublicPage>(path, runtime)) ??
+      (await fromApi<PublicPage>(withLocale("/v1/public/pages/home", locale), runtime));
     if (!page) throw new Error("Homepage content is unavailable from the public API.");
     return page;
   }
@@ -177,9 +203,13 @@ export async function loadHome(
 export async function loadPage(
   slug: string,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<PublicPage | null> {
   if (!apiUrl(runtime)) return slug === "home" ? homePage : null;
-  return fromApi<PublicPage>(`/v1/public/pages/${encodeURIComponent(slug)}`, runtime);
+  return fromApi<PublicPage>(
+    withLocale(`/v1/public/pages/${encodeURIComponent(slug)}`, locale),
+    runtime,
+  );
 }
 
 export interface RouteSeoOverride {
@@ -303,6 +333,178 @@ export async function loadProductsBySlugs(
   }
   const bySlug = new Map(products.map((product) => [product.slug, product]));
   return slugs.flatMap((slug) => bySlug.get(slug) ?? []);
+}
+
+/** Approved reviews for one product, newest first. */
+export async function loadProductReviews(
+  slug: string,
+  runtime?: CatalogueRuntime,
+): Promise<ProductReview[]> {
+  return listFromApi<ProductReview>(
+    `/v1/public/products/${encodeURIComponent(slug)}/reviews`,
+    reviewsForProduct(slug),
+    runtime,
+  );
+}
+
+/** Every approved review sitewide, newest first -- backs the dedicated
+ *  `/reviews` page. */
+export async function loadAllReviews(
+  page: number,
+  pageSize: number,
+  runtime?: CatalogueRuntime,
+): Promise<PaginatedContent<FeaturedReview>> {
+  return paginatedFromApi<FeaturedReview>(
+    "/v1/public/reviews",
+    allApprovedReviews,
+    pageSize,
+    (Math.max(page, 1) - 1) * pageSize,
+    runtime,
+  );
+}
+
+/**
+ * Backs the homepage `reviews_showcase` block. `source: "manual"` fetches
+ * exactly `reviewIds`, in order; `source: "rule"` fetches the current
+ * top-rated approved reviews sitewide. Demo mode resolves the same shape from
+ * the fixture reviews via `resolveFeaturedReviews`, so a block edited in
+ * Homepage Settings previews correctly with no API configured.
+ */
+export async function loadFeaturedReviews(
+  block: Extract<PublicPageBlock, { type: "reviews_showcase" }>,
+  runtime?: CatalogueRuntime,
+): Promise<FeaturedReview[]> {
+  const { source, reviewIds, minRating, limit } = block.props;
+  const manualIds = source === "manual" ? reviewIds : undefined;
+  const query =
+    manualIds && manualIds.length > 0
+      ? `ids=${manualIds.map((id) => encodeURIComponent(id)).join(",")}`
+      : `minRating=${minRating}&limit=${limit}`;
+  return listFromApi<FeaturedReview>(
+    `/v1/public/reviews/featured?${query}`,
+    resolveFeaturedReviews({ reviewIds: manualIds, minRating, limit }),
+    runtime,
+  );
+}
+
+/**
+ * Backs the homepage `promotion_banner` block and the checkout-page callout --
+ * the same call, so the two never show hand-maintained versions of the same
+ * offer. `source: "manual"` pins one specific promotion (re-validated
+ * active/in-window server-side on every call); `source: "rule"` resolves the
+ * current highest-priority automatic promotion. Returns `null` when the
+ * sitewide switch is off or nothing currently qualifies -- an ordinary state,
+ * rendered as nothing by the caller, the same as an empty reviews showcase.
+ *
+ * Demo mode has no `app_settings` row to consult, so it mirrors the API's own
+ * default (migration 0060: off) via `DEFAULT_SITE_SETTINGS.promotions`,
+ * rather than always showing the fixture promotion regardless of the switch.
+ */
+export async function loadFeaturedPromotion(
+  promotionBlockProps: { source: "manual" | "rule"; promotionId: string | null },
+  runtime?: CatalogueRuntime,
+): Promise<FeaturedPromotion | null> {
+  const { source, promotionId } = promotionBlockProps;
+  if (!apiUrl(runtime)) {
+    if (!DEFAULT_SITE_SETTINGS.promotions.enabled) return null;
+    return resolveFeaturedPromotion({ promotionId: source === "manual" ? promotionId : null });
+  }
+  const query =
+    source === "manual" && promotionId ? `?promotionId=${encodeURIComponent(promotionId)}` : "";
+  const body = await fromApi<{ promotion: FeaturedPromotion | null }>(
+    `/v1/public/promotions/featured${query}`,
+    runtime,
+  );
+  return body?.promotion ?? null;
+}
+
+/**
+ * Active, purchasable bundles for the shop. Each carries its own item list
+ * and `savingsMinor`, computed server-side against current variant prices --
+ * the same figure `resolve_bundle_discount` will actually grant at checkout,
+ * so the shop card can never advertise more than checkout honours.
+ */
+export async function loadBundles(
+  page: number,
+  pageSize: number,
+  runtime?: CatalogueRuntime,
+): Promise<PaginatedContent<PublicBundle>> {
+  return paginatedFromApi<PublicBundle>(
+    "/v1/public/bundles",
+    publicBundles,
+    pageSize,
+    (Math.max(page, 1) - 1) * pageSize,
+    runtime,
+  );
+}
+
+export async function loadBundle(
+  slug: string,
+  runtime?: CatalogueRuntime,
+): Promise<PublicBundle | null> {
+  if (apiUrl(runtime)) {
+    return fromApi<PublicBundle>(`/v1/public/bundles/${encodeURIComponent(slug)}`, runtime);
+  }
+  return publicBundles.find((bundle) => bundle.slug === slug) ?? null;
+}
+
+/**
+ * Real bestsellers -- ranked by quantity actually sold, never a curated
+ * list. Backs the `recommendations` homepage block and the "you might also
+ * like" rows woven into the basket, category, search and shop pages.
+ * `excludeSlugs` drops products already shown elsewhere on the same page
+ * (typically the basket's own line items).
+ *
+ * Demo mode has no order history to rank, so it resolves a deterministic
+ * slice of the fixture catalogue instead -- gated on the same sitewide
+ * switch (`DEFAULT_SITE_SETTINGS.recommendations`) the API itself checks, so
+ * turning the feature off behaves identically with or without a backend.
+ */
+export async function loadBestsellers(
+  {
+    limit = 8,
+    excludeSlugs,
+    categorySlug,
+  }: { limit?: number; excludeSlugs?: string[]; categorySlug?: string } = {},
+  country?: string,
+  runtime?: CatalogueRuntime,
+): Promise<ProductSummary[]> {
+  if (!apiUrl(runtime)) {
+    if (!DEFAULT_SITE_SETTINGS.recommendations.enabled) return [];
+    const excluded = new Set(excludeSlugs ?? []);
+    return products.filter((product) => !excluded.has(product.slug)).slice(0, limit);
+  }
+  const params = new URLSearchParams({ limit: String(limit) });
+  if (excludeSlugs && excludeSlugs.length > 0) params.set("exclude", excludeSlugs.join(","));
+  if (categorySlug) params.set("category", categorySlug);
+  return listFromApi<ProductSummary>(
+    withCountry(`/v1/public/recommendations/bestsellers?${params.toString()}`, country),
+    [],
+    runtime,
+  );
+}
+
+/**
+ * "Customers also bought" -- real co-purchase counts for one product, not a
+ * curated "goes well with" list (that is `relatedSlugs`, a separate,
+ * complementary signal). Empty for a product with no order history yet, or
+ * in demo mode, which has no real orders to draw the signal from at all.
+ */
+export async function loadAlsoBought(
+  slug: string,
+  limit: number,
+  country?: string,
+  runtime?: CatalogueRuntime,
+): Promise<ProductSummary[]> {
+  if (!apiUrl(runtime)) return [];
+  return listFromApi<ProductSummary>(
+    withCountry(
+      `/v1/public/products/${encodeURIComponent(slug)}/also-bought?limit=${limit}`,
+      country,
+    ),
+    [],
+    runtime,
+  );
 }
 
 /**

@@ -8,20 +8,33 @@
  */
 
 import type {
+  AdminBundleDetail,
+  AnalyticsOverview,
+  AdminBundleItem,
+  AdminBundleRow,
   AdminCategoryRow,
   AdminInventoryRow,
   AdminOrderRow,
   AdminProductRow,
+  AdminPromotionRow,
+  AdminReviewRow,
   AdminUserRow,
   ArticleDetail,
   AuditLogRow,
   CategorySummary,
+  CustomerAddress,
   FarmDetail,
+  FeaturedPromotion,
+  FeaturedReview,
   ProductDetail,
+  ProductReview,
   PublicBootstrap,
+  PublicBundle,
+  PublicBundleItem,
   PublicCategoryPage,
   PublicPage,
   RecipeDetail,
+  SubscriptionRow,
 } from "./index";
 import generatedCatalogueJson from "./catalogue.generated.json";
 
@@ -39,6 +52,7 @@ interface GeneratedProductRow {
   acceptsOrders: boolean;
   leadVariantId: string | null;
   leadSku: string;
+  variants: ProductDetail["variants"];
   shortDescription: string;
   certification: string;
   relatedSlugs: string[];
@@ -193,6 +207,8 @@ export const products: ProductDetail[] = [
     imageAlt: "A crate of ripe Alphonso mangoes",
     acceptsOrders: true,
     leadVariantId: "var_alphonso_1kg",
+    ratingAverage: 0,
+    ratingCount: 0,
     shortDescription: "Ratnagiri Alphonso, tree-ripened and carbide-free, from Devika Organics.",
     overview:
       "Grown on three-generation orchards in Ratnagiri, these Alphonso mangoes ripen on the tree and are packed the same day. No carbide, no cold storage — just fruit at its honest best.",
@@ -258,6 +274,8 @@ export const products: ProductDetail[] = [
     imageAlt: "A fresh bunch of baby spinach leaves",
     acceptsOrders: true,
     leadVariantId: "var_spinach_250g",
+    ratingAverage: 4.5,
+    ratingCount: 2,
     shortDescription: "Tender baby spinach, harvested at dawn and chilled within the hour.",
     overview:
       "Cut young for tenderness, this spinach comes from rotating beds on regenerated soil. Harvested at dawn, washed in cold spring water and chilled within the hour.",
@@ -313,6 +331,10 @@ export const products: ProductDetail[] = [
     imageAlt: "Stone-milled ragi flour in a cloth bag",
     acceptsOrders: true,
     leadVariantId: "var_ragi_500g",
+    // Its only demo review is still pending moderation — matches the backend
+    // rule that only approved reviews count toward the public rating.
+    ratingAverage: 0,
+    ratingCount: 0,
     shortDescription:
       "Stone-milled finger millet, sprouted for easier digestion and deeper flavour.",
     overview:
@@ -378,6 +400,8 @@ export const products: ProductDetail[] = [
     imageAlt: "A glass bottle of golden groundnut oil",
     acceptsOrders: true,
     leadVariantId: "var_oil_500ml",
+    ratingAverage: 3,
+    ratingCount: 1,
     shortDescription:
       "Single-origin groundnuts, wood-pressed at low RPM within a week of shelling.",
     overview:
@@ -440,6 +464,8 @@ export const products: ProductDetail[] = [
     imageAlt: "Deep red kidney beans from Himalayan terraces",
     acceptsOrders: true,
     leadVariantId: "var_rajma_500g",
+    ratingAverage: 4,
+    ratingCount: 1,
     shortDescription:
       "Small red kidney beans from high-altitude terraces, famous for their quick cooking.",
     overview:
@@ -480,19 +506,6 @@ export const products: ProductDetail[] = [
 ];
 
 function generatedProductDetail(row: GeneratedProductRow): ProductDetail {
-  const variants = row.leadVariantId
-    ? [
-        {
-          id: row.leadVariantId,
-          name: row.unitLabel,
-          sku: row.leadSku,
-          listMinor: row.priceMinor,
-          saleMinor: row.saleMinor,
-          adjustedMinor: null,
-          availability: row.availability,
-        },
-      ]
-    : [];
   return {
     id: row.id,
     name: row.name,
@@ -512,12 +525,16 @@ function generatedProductDetail(row: GeneratedProductRow): ProductDetail {
     imageAlt: row.imageAlt,
     acceptsOrders: row.acceptsOrders,
     leadVariantId: row.leadVariantId,
+    // The generated catalogue has no demo reviews of its own; the hand-authored
+    // products above carry the fixture review data.
+    ratingAverage: 0,
+    ratingCount: 0,
     shortDescription: row.shortDescription,
     overview: row.shortDescription,
     storageGuidance: "Follow the storage and best-before guidance printed on the current pack.",
     harvestNote: "Lot and packing details are shown on every dispatched item.",
     growingMethod: "Sourced through the True Grit verified producer network.",
-    variants,
+    variants: row.variants,
     traceability: [
       { label: "Producer", detail: "True Grit Partner Network — India" },
       { label: "Verification", detail: row.certification },
@@ -540,6 +557,19 @@ function generatedProductDetail(row: GeneratedProductRow): ProductDetail {
 
 const handAuthoredProductIds = new Set(products.map((product) => product.id));
 const handAuthoredProductSlugs = new Set(products.map((product) => product.slug));
+const generatedProductsById = new Map(
+  generatedCatalogue.products.map((product) => [product.id, product]),
+);
+for (const product of products) {
+  const generated = generatedProductsById.get(product.id);
+  if (!generated) continue;
+  product.variants = generated.variants;
+  product.leadVariantId = generated.leadVariantId;
+  product.priceMinor = generated.priceMinor;
+  product.saleMinor = generated.saleMinor;
+  product.unitLabel = generated.unitLabel;
+  product.availability = generated.availability;
+}
 products.push(
   ...generatedCatalogue.products
     .filter(
@@ -548,6 +578,316 @@ products.push(
     )
     .map(generatedProductDetail),
 );
+
+/**
+ * Demo reviews, keyed by product slug. Mirrors `database/seeds/development.sql`
+ * — same authors, same copy — so the two environments read as the same store.
+ * Only *approved* reviews appear here: `sprouted-ragi-flour`'s one demo review
+ * is still pending in the seed, so it is intentionally absent, matching how
+ * `ReviewRepository.list_public_for_product` filters on the backend.
+ */
+export const productReviews: Record<string, ProductReview[]> = {
+  "organic-baby-spinach": [
+    {
+      id: "rev_spinach_1",
+      rating: 4,
+      title: "Fresh and lasted well",
+      body: "Noticeably fresher than what I find at the local market, and it kept for four days in the fridge without wilting.",
+      authorName: "Riya Nair",
+      verifiedPurchase: true,
+      createdAt: "2026-07-17T10:00:00Z",
+    },
+    {
+      id: "rev_spinach_2",
+      rating: 5,
+      title: "The freshest greens I have had delivered",
+      body: "No wilting, no yellowing, straight from the field to the fridge. Genuinely better than anything from the local market.",
+      authorName: "Meher Chandra",
+      verifiedPurchase: true,
+      createdAt: "2026-07-19T10:00:00Z",
+    },
+  ],
+  "himalayan-red-rajma": [
+    {
+      id: "rev_rajma_1",
+      rating: 4,
+      title: "Cooks evenly, good flavour",
+      body: "Holds its shape well after soaking and cooks in the usual time. Tastes noticeably better than the polished rajma I used to buy.",
+      authorName: "Riya Nair",
+      verifiedPurchase: true,
+      createdAt: "2026-07-21T08:00:00Z",
+    },
+  ],
+  "wood-pressed-groundnut-oil": [
+    {
+      id: "rev_oil_1",
+      rating: 3,
+      title: "Good oil, strong smell at first",
+      body: "Flavour is good once it settles for a few days, but the bottle smells quite strong straight after opening.",
+      authorName: "Arjun Bhatia",
+      verifiedPurchase: true,
+      createdAt: "2026-07-22T08:00:00Z",
+    },
+  ],
+};
+
+export function reviewsForProduct(slug: string): ProductReview[] {
+  return productReviews[slug] ?? [];
+}
+
+const allReviewsById = new Map<string, FeaturedReview>();
+for (const [slug, list] of Object.entries(productReviews)) {
+  const product = products.find((entry) => entry.slug === slug);
+  for (const review of list) {
+    allReviewsById.set(review.id, {
+      ...review,
+      productName: product?.name ?? slug,
+      productSlug: slug,
+    });
+  }
+}
+
+/**
+ * Mirrors `ReviewRepository.list_featured`: `reviewIds` (manual mode) returns
+ * exactly those reviews in order; omitted (rule mode) returns the current
+ * top-rated reviews sitewide. Demo-mode equivalent of the
+ * `/v1/public/reviews/featured` endpoint, used by the homepage
+ * `reviews_showcase` block when no API is configured.
+ */
+export function resolveFeaturedReviews({
+  reviewIds,
+  minRating = 4,
+  limit = 8,
+}: {
+  reviewIds?: string[];
+  minRating?: number;
+  limit?: number;
+}): FeaturedReview[] {
+  if (reviewIds && reviewIds.length > 0) {
+    return reviewIds.flatMap((id) => allReviewsById.get(id) ?? []).slice(0, Math.max(limit, 1));
+  }
+  return [...allReviewsById.values()]
+    .filter((review) => review.rating >= minRating)
+    .sort((a, b) => b.rating - a.rating || b.createdAt.localeCompare(a.createdAt))
+    .slice(0, Math.max(limit, 1));
+}
+
+/** Every approved review sitewide, newest first -- backs the demo-mode
+ *  fallback for the dedicated `/reviews` page (`GET /v1/public/reviews`). */
+export const allApprovedReviews: FeaturedReview[] = [...allReviewsById.values()].sort(
+  (a, b) => b.createdAt.localeCompare(a.createdAt),
+);
+
+/**
+ * Demo coupon/promotion. Mirrors what an admin would configure via the
+ * Coupons & Promotions page: a code-gated, active, 15%-off campaign. Backs
+ * both the homepage `promotion_banner` block and the checkout-page callout
+ * in demo mode, the same single source of truth
+ * `GET /v1/public/promotions/featured` is for a live API.
+ */
+export const featuredPromotionFixture: FeaturedPromotion = {
+  id: "promo_demo_welcome15",
+  name: "Welcome offer",
+  headline: "15% off your first order",
+  description: "Use code WELCOME15 at checkout for 15% off orders over ₹500.",
+  code: "WELCOME15",
+};
+
+export function resolveFeaturedPromotion({
+  promotionId,
+}: {
+  promotionId?: string | null;
+} = {}): FeaturedPromotion | null {
+  if (promotionId && promotionId !== featuredPromotionFixture.id) return null;
+  return featuredPromotionFixture;
+}
+
+export const adminPromotions: AdminPromotionRow[] = [
+  {
+    id: featuredPromotionFixture.id,
+    name: featuredPromotionFixture.name,
+    status: "active",
+    priority: 10,
+    startsAt: null,
+    endsAt: null,
+    stackingPolicy: "exclusive",
+    usageLimitTotal: null,
+    usageLimitPerCustomer: 1,
+    headline: featuredPromotionFixture.headline,
+    description: featuredPromotionFixture.description,
+    couponCount: 1,
+    redemptionCount: 0,
+    createdAt: "2026-07-01T00:00:00Z",
+    updatedAt: "2026-07-01T00:00:00Z",
+  },
+];
+
+const bundleFixtureItems: AdminBundleItem[] = [
+  {
+    id: "bndi_demo_mango",
+    variantId: "var_alphonso_1kg",
+    quantity: 1,
+    variantName: "1 kg box (3-4 mangoes)",
+    sku: "TRG-MNG-1KG",
+    productId: "prd_alphonso",
+    productName: "Organic Alphonso Mangoes",
+    productSlug: "organic-alphonso-mangoes",
+    imageUrl: "/homepage-hero.png",
+    unitPriceMinor: 89900,
+    lineTotalMinor: 89900,
+  },
+  {
+    id: "bndi_demo_spinach",
+    variantId: "var_spinach_250g",
+    quantity: 2,
+    variantName: "250 g bunch",
+    sku: "TRG-SPN-250",
+    productId: "prd_spinach",
+    productName: "Organic Baby Spinach",
+    productSlug: "organic-baby-spinach",
+    imageUrl: "/homepage-hero-greens.png",
+    unitPriceMinor: 6900,
+    lineTotalMinor: 13800,
+  },
+];
+
+const bundleFixtureComponentSumMinor = bundleFixtureItems.reduce(
+  (sum, item) => sum + item.lineTotalMinor,
+  0,
+);
+const bundleFixtureBundlePriceMinor = 94900;
+
+export const adminBundles: AdminBundleRow[] = [
+  {
+    id: "bndl_demo_mango_greens",
+    name: "Mango & Greens Combo",
+    slug: "mango-greens-combo",
+    description: "A box of Alphonso mangoes with two bunches of baby spinach, at a set price.",
+    status: "active",
+    bundlePriceMinor: bundleFixtureBundlePriceMinor,
+    imageUrl: "/homepage-hero.png",
+    imageAlt: "Alphonso mangoes and baby spinach together",
+    itemCount: bundleFixtureItems.length,
+    createdAt: "2026-07-01T00:00:00Z",
+    updatedAt: "2026-07-01T00:00:00Z",
+  },
+];
+
+export const adminBundleDetails: Record<string, AdminBundleDetail> = {
+  bndl_demo_mango_greens: {
+    ...adminBundles[0]!,
+    items: bundleFixtureItems,
+  },
+};
+
+export const publicBundles: PublicBundle[] = [
+  {
+    id: "bndl_demo_mango_greens",
+    name: "Mango & Greens Combo",
+    slug: "mango-greens-combo",
+    description: "A box of Alphonso mangoes with two bunches of baby spinach, at a set price.",
+    bundlePriceMinor: bundleFixtureBundlePriceMinor,
+    componentSumMinor: bundleFixtureComponentSumMinor,
+    savingsMinor: Math.max(bundleFixtureComponentSumMinor - bundleFixtureBundlePriceMinor, 0),
+    imageUrl: "/homepage-hero.png",
+    imageAlt: "Alphonso mangoes and baby spinach together",
+    items: bundleFixtureItems.map(
+      ({ id: _id, ...item }): PublicBundleItem => item,
+    ),
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Subscriptions ("Subscribe & Save") -- off sitewide by default, so this is
+// demo data for the admin support view and the customer's own "My
+// Subscriptions" page, not something a fresh demo storefront advertises.
+// ---------------------------------------------------------------------------
+
+export const customerAddresses: CustomerAddress[] = [
+  {
+    id: "addr_demo_home",
+    label: "Home",
+    recipientName: "Asha Rao",
+    phoneE164: "+919999900001",
+    line1: "14 Lotus Enclave",
+    line2: "Near Community Park",
+    city: "Bengaluru",
+    state: "Karnataka",
+    postalCode: "560034",
+    countryCode: "IN",
+    isDefaultDelivery: true,
+    createdAt: "2026-06-01T00:00:00Z",
+  },
+];
+
+export const adminSubscriptions: SubscriptionRow[] = [
+  {
+    id: "sub_demo_mango_weekly",
+    customerUserId: "usr_demo_customer",
+    variantId: "var_demo_mango_1kg",
+    productId: "prd_demo_mango",
+    productName: "Alphonso Mango",
+    productSlug: "alphonso-mango",
+    variantName: "1 kg",
+    sku: "MANGO-ALP-1KG",
+    imageUrl: "/homepage-hero.png",
+    unitPriceMinor: 39900,
+    quantity: 2,
+    frequency: "weekly",
+    status: "active",
+    addressId: "addr_demo_home",
+    nextOrderDate: "2026-08-08",
+    lastOrderId: null,
+    createdAt: "2026-07-15T00:00:00Z",
+    updatedAt: "2026-07-15T00:00:00Z",
+    cancelledAt: null,
+    customerName: "Asha Rao",
+    customerEmail: "asha.rao@example.com",
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Analytics -- a static 14-day snapshot for the demo dashboard. A live
+// deployment computes every figure here from real orders; this is only ever
+// shown when no API is configured.
+// ---------------------------------------------------------------------------
+
+const analyticsDailyRevenueMinor = [
+  62_400, 71_200, 58_900, 84_300, 93_100, 76_800, 68_500, 88_900, 101_200, 79_400, 66_700, 94_600,
+  108_300, 91_500,
+];
+
+export const analyticsOverview: AnalyticsOverview = {
+  fromDate: "2026-07-20",
+  toDate: "2026-08-02",
+  revenueMinor: analyticsDailyRevenueMinor.reduce((sum, value) => sum + value, 0),
+  orderCount: 163,
+  averageOrderValueMinor: 6_984,
+  newCustomers: 27,
+  revenueByDay: analyticsDailyRevenueMinor.map((revenueMinor, index) => {
+    const day = new Date("2026-07-20T00:00:00Z");
+    day.setUTCDate(day.getUTCDate() + index);
+    return {
+      date: day.toISOString().slice(0, 10),
+      revenueMinor,
+      orderCount: Math.max(4, Math.round(revenueMinor / 6_984)),
+    };
+  }),
+  topProducts: [
+    { productId: "prd_demo_mango", productName: "Alphonso Mango", unitsSold: 412, revenueMinor: 164_400 },
+    { productId: "prd_demo_spinach", productName: "Baby Spinach", unitsSold: 356, revenueMinor: 24_600 },
+    { productId: "prd_demo_rice", productName: "Brown Basmati Rice", unitsSold: 201, revenueMinor: 60_300 },
+    { productId: "prd_demo_greens", productName: "Mixed Salad Greens", unitsSold: 178, revenueMinor: 21_400 },
+    { productId: "prd_demo_honey", productName: "Wild Forest Honey", unitsSold: 94, revenueMinor: 32_900 },
+  ],
+  statusBreakdown: [
+    { status: "completed", orderCount: 118 },
+    { status: "processing", orderCount: 19 },
+    { status: "confirmed", orderCount: 14 },
+    { status: "cancelled", orderCount: 8 },
+    { status: "pending_payment", orderCount: 4 },
+  ],
+};
 
 /** Products per category slug. Subcategory entries repeat their department's
  * products, mirroring live data where a product is assigned to both its section
@@ -679,6 +1019,8 @@ export const farms: FarmDetail[] = [
       "Hand grading and same-day packing",
     ],
     productSlugs: ["organic-alphonso-mangoes"],
+    heroImageUrl: null,
+    heroImageAlt: null,
     seo: {
       title: "Devika Organics — Ratnagiri Alphonso orchards",
       description:
@@ -701,6 +1043,8 @@ export const farms: FarmDetail[] = [
       "Anandvan began when forty families in Wardha pooled degraded farmland and committed to a ten-year soil regeneration plan. Today the collective grows rain-fed millets and oilseeds, runs its own stone mill and wooden ghani, and shares profits by contributed area.",
     methods: ["Rain-fed cultivation", "Collective stone milling", "Wood-pressed oils under 40°C"],
     productSlugs: ["organic-baby-spinach", "sprouted-ragi-flour", "wood-pressed-groundnut-oil"],
+    heroImageUrl: null,
+    heroImageAlt: null,
     seo: {
       title: "Anandvan Collective — regenerative millet farming",
       description: "A farmer collective in Wardha growing certified organic millets and pulses.",
@@ -725,6 +1069,8 @@ export const farms: FarmDetail[] = [
       "Single annual harvest, hand-sorted",
     ],
     productSlugs: ["himalayan-red-rajma"],
+    heroImageUrl: null,
+    heroImageAlt: null,
     seo: {
       title: "Himgiri Terraces — Himalayan hill farms",
       description:
@@ -914,6 +1260,16 @@ export const homePage: PublicPage = {
       },
     },
     {
+      id: "blk_promotion_banner",
+      type: "promotion_banner",
+      version: 1,
+      enabled: true,
+      props: {
+        source: "rule",
+        promotionId: null,
+      },
+    },
+    {
       id: "blk_categories",
       type: "category_collection",
       version: 1,
@@ -944,6 +1300,20 @@ export const homePage: PublicPage = {
           "himalayan-red-rajma",
         ],
         limit: 5,
+      },
+    },
+    {
+      id: "blk_reviews_showcase",
+      type: "reviews_showcase",
+      version: 1,
+      enabled: true,
+      props: {
+        heading: "What customers are saying",
+        subheading: "Real ratings from verified purchases.",
+        source: "rule",
+        reviewIds: [],
+        limit: 8,
+        minRating: 4,
       },
     },
     {
@@ -1062,6 +1432,17 @@ export const homePage: PublicPage = {
             enabled: true,
           },
         ],
+      },
+    },
+    {
+      id: "blk_recommendations",
+      type: "recommendations",
+      version: 1,
+      enabled: true,
+      props: {
+        heading: "Customers' favourites",
+        subheading: "Picked by shoppers",
+        limit: 8,
       },
     },
     {
@@ -1336,5 +1717,78 @@ export const auditLog: AuditLogRow[] = [
     entityId: "pag_home",
     requestId: "req_01demo4",
     createdAt: "2026-07-10T10:02:00Z",
+  },
+];
+
+export const adminReviews: AdminReviewRow[] = [
+  {
+    id: "rev_spinach_1",
+    productName: "Organic Baby Spinach",
+    productSlug: "organic-baby-spinach",
+    rating: 4,
+    title: "Fresh and lasted well",
+    body: "Noticeably fresher than what I find at the local market, and it kept for four days in the fridge without wilting.",
+    status: "approved",
+    authorName: "Riya Nair",
+    authorEmail: "riya@example.test",
+    createdAt: "2026-07-17T10:00:00Z",
+    moderatedAt: "2026-07-17T13:00:00Z",
+    moderationReason: null,
+  },
+  {
+    id: "rev_spinach_2",
+    productName: "Organic Baby Spinach",
+    productSlug: "organic-baby-spinach",
+    rating: 5,
+    title: "The freshest greens I have had delivered",
+    body: "No wilting, no yellowing, straight from the field to the fridge. Genuinely better than anything from the local market.",
+    status: "approved",
+    authorName: "Meher Chandra",
+    authorEmail: "meher@example.test",
+    createdAt: "2026-07-19T10:00:00Z",
+    moderatedAt: "2026-07-19T12:00:00Z",
+    moderationReason: null,
+  },
+  {
+    id: "rev_ragi_1",
+    productName: "Sprouted Ragi Flour",
+    productSlug: "sprouted-ragi-flour",
+    rating: 5,
+    title: "Great texture for dosas",
+    body: "Sprouted ragi makes a noticeably crisper dosa than the usual flour. Will reorder.",
+    status: "pending",
+    authorName: "Arjun Bhatia",
+    authorEmail: "arjun@example.test",
+    createdAt: "2026-07-18T09:30:00Z",
+    moderatedAt: null,
+    moderationReason: null,
+  },
+  {
+    id: "rev_rajma_1",
+    productName: "Himalayan Red Rajma",
+    productSlug: "himalayan-red-rajma",
+    rating: 4,
+    title: "Cooks evenly, good flavour",
+    body: "Holds its shape well after soaking and cooks in the usual time. Tastes noticeably better than the polished rajma I used to buy.",
+    status: "approved",
+    authorName: "Riya Nair",
+    authorEmail: "riya@example.test",
+    createdAt: "2026-07-21T08:00:00Z",
+    moderatedAt: "2026-07-21T11:00:00Z",
+    moderationReason: null,
+  },
+  {
+    id: "rev_oil_1",
+    productName: "Wood-Pressed Groundnut Oil",
+    productSlug: "wood-pressed-groundnut-oil",
+    rating: 3,
+    title: "Good oil, strong smell at first",
+    body: "Flavour is good once it settles for a few days, but the bottle smells quite strong straight after opening.",
+    status: "approved",
+    authorName: "Arjun Bhatia",
+    authorEmail: "arjun@example.test",
+    createdAt: "2026-07-22T08:00:00Z",
+    moderatedAt: "2026-07-22T10:30:00Z",
+    moderationReason: null,
   },
 ];

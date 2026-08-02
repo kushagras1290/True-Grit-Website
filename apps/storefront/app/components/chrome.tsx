@@ -550,7 +550,7 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
         </div>
       ) : null}
 
-      <header className="sticky top-0 z-40 border-b border-line bg-canvas/95 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-line bg-canvas/95 backdrop-blur print:hidden">
         <div className="flex w-full items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
             <button
@@ -669,7 +669,7 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
 export function Footer({ bootstrap }: { bootstrap: PublicBootstrap }) {
   const { t } = useLocaleContext();
   return (
-    <footer className="mt-20 bg-inverse text-ink-inverse">
+    <footer className="mt-20 bg-inverse text-ink-inverse print:hidden">
       <div className="mx-auto grid max-w-[80rem] gap-10 px-4 py-14 sm:px-6 md:grid-cols-[2fr_1fr_1fr]">
         <div>
           <p className="font-display text-2xl">TRUE GRIT</p>

@@ -6,6 +6,13 @@
  * surface a clear error and the checkout UI explains that a live API is needed.
  */
 
+import type {
+  CustomerAddress,
+  ProductSummary,
+  SubscriptionFrequency,
+  SubscriptionRow,
+} from "@truegrit/contracts";
+
 import { AuthError } from "./customer-auth";
 import { getPublicApiUrl, hasPublicApiUrl } from "./public-env";
 
@@ -24,6 +31,7 @@ export interface DeliveryAddress {
   city: string;
   state: string;
   postalCode: string;
+  countryCode?: string;
 }
 
 export interface OrderPayment {
@@ -43,10 +51,12 @@ export interface PlacedOrder {
   reference: string;
   currencyCode: string;
   subtotalMinor: number;
+  discountMinor: number;
   deliveryMinor: number;
   totalMinor: number;
   orderStatus: string;
   paymentStatus: string;
+  couponCode: string | null;
   payment?: OrderPayment;
 }
 
@@ -73,6 +83,12 @@ export interface OrderSummary {
 
 export interface OrderLine {
   id: string;
+  /** Null only when the product was later deleted -- there is nothing left to
+   *  review, so the storefront hides the "write a review" action for that
+   *  line rather than posting a review against a product id that no longer
+   *  exists. */
+  productId: string | null;
+  productSlug: string | null;
   productName: string;
   variantName: string;
   sku: string;
@@ -93,6 +109,7 @@ export interface OrderDetail {
   paymentStatus: string;
   fulfilmentStatus: string;
   placedAt: string;
+  deliveryAddress: DeliveryAddress | null;
   items: OrderLine[];
 }
 
@@ -137,15 +154,86 @@ export function getPaymentMethods(): Promise<PaymentMethodsInfo> {
   return request<PaymentMethodsInfo>("/v1/public/payment-methods");
 }
 
+export interface DeliverySettingsInfo {
+  feeMinor: number;
+  freeThresholdMinor: number;
+}
+
+export function getDeliverySettings(): Promise<DeliverySettingsInfo> {
+  return request<DeliverySettingsInfo>("/v1/public/delivery-settings");
+}
+
+export interface FeaturedPromotionInfo {
+  id: string;
+  name: string;
+  headline: string;
+  description: string | null;
+  code: string | null;
+}
+
+/** The current best active promotion, resolved the same way the homepage
+ *  banner's "rule" mode does -- checkout has no block config of its own to
+ *  read a manual pin from, so it always shows whichever promotion currently
+ *  has priority, same as the default homepage banner setup. Resolves to
+ *  `null` (not an error) when the sitewide switch is off or nothing
+ *  currently qualifies. */
+export function getFeaturedPromotion(): Promise<FeaturedPromotionInfo | null> {
+  return request<{ promotion: FeaturedPromotionInfo | null }>(
+    "/v1/public/promotions/featured",
+  ).then((body) => body.promotion);
+}
+
+/** Real bestsellers -- ranked by quantity actually sold, not a curated list.
+ *  Client-side (not the server loader `loadBestsellers` in
+ *  `catalogue.server.ts`) because the basket page needs to exclude whatever
+ *  is already in the basket, and the basket itself only exists client-side
+ *  (localStorage). Empty (not an error) while the sitewide switch is off. */
+export function getBestsellers(options: {
+  limit?: number;
+  excludeSlugs?: string[];
+}): Promise<ProductSummary[]> {
+  const params = new URLSearchParams({ limit: String(options.limit ?? 8) });
+  if (options.excludeSlugs && options.excludeSlugs.length > 0) {
+    params.set("exclude", options.excludeSlugs.join(","));
+  }
+  return request<{ items: ProductSummary[] }>(
+    `/v1/public/recommendations/bestsellers?${params.toString()}`,
+  ).then((body) => body.items);
+}
+
+export interface DiscountPreview {
+  code: string | null;
+  headline: string;
+  discountMinor: number;
+  freeDelivery: boolean;
+  deliveryMinor: number;
+}
+
+/** Validates a coupon code against the current basket and returns the real
+ *  discount it would apply -- no order is placed and no redemption is
+ *  recorded. Rejects (via `AuthError`) with the same message `placeOrder`
+ *  would show if the code were submitted as-is, so the compact checkout box
+ *  can surface it before the customer commits. */
+export function previewDiscount(
+  couponCode: string,
+  subtotalMinor: number,
+): Promise<DiscountPreview> {
+  return request<DiscountPreview>("/v1/public/checkout/preview-discount", {
+    method: "POST",
+    body: JSON.stringify({ couponCode, subtotalMinor }),
+  });
+}
+
 export function placeOrder(
   items: CheckoutItem[],
   deliveryAddress: DeliveryAddress,
   paymentMethod: string = "cod",
   idempotencyKey?: string,
+  couponCode?: string,
 ): Promise<PlacedOrder> {
   return request<PlacedOrder>("/v1/public/checkout", {
     method: "POST",
-    body: JSON.stringify({ items, deliveryAddress, paymentMethod, idempotencyKey }),
+    body: JSON.stringify({ items, deliveryAddress, paymentMethod, idempotencyKey, couponCode }),
   });
 }
 
@@ -677,6 +765,121 @@ export function createReturnRequest(
   return request<ReturnRequestSummary>(
     `/v1/public/orders/${encodeURIComponent(reference)}/return-requests`,
     { method: "POST", body: JSON.stringify(input) },
+  );
+}
+
+export type ReviewStatus = "pending" | "approved" | "rejected" | "removed";
+
+/** A review the calling customer wrote against one line of this order.
+ *  Carries `status` so the order page can say "pending moderation" rather
+ *  than implying the review is already live. */
+export interface MyReview {
+  id: string;
+  productId: string;
+  productName: string;
+  productSlug: string;
+  rating: number;
+  title: string | null;
+  body: string;
+  status: ReviewStatus;
+  createdAt: string;
+}
+
+export function listMyOrderReviews(reference: string): Promise<MyReview[]> {
+  return request<{ items: MyReview[] }>(
+    `/v1/public/orders/${encodeURIComponent(reference)}/reviews`,
+  ).then((body) => body.items);
+}
+
+export function createReview(
+  reference: string,
+  input: { productId: string; rating: number; title?: string; body: string },
+): Promise<{ id: string; status: string }> {
+  return request<{ id: string; status: string }>(
+    `/v1/public/orders/${encodeURIComponent(reference)}/reviews`,
+    { method: "POST", body: JSON.stringify(input) },
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Delivery addresses -- reusable, unlike the ad-hoc address ordinary
+// checkout takes on `DeliveryAddress` above. Only Subscribe & Save needs one
+// (a renewal has no request to take an address from); see
+// `services.addresses` on the API for why this table was dormant until now.
+// ---------------------------------------------------------------------------
+
+export function listMyAddresses(): Promise<CustomerAddress[]> {
+  return request<{ items: CustomerAddress[] }>("/v1/public/addresses").then(
+    (body) => body.items,
+  );
+}
+
+export function createAddress(input: {
+  label?: string;
+  recipientName: string;
+  phoneE164?: string;
+  line1: string;
+  line2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  countryCode?: string;
+}): Promise<CustomerAddress> {
+  return request<CustomerAddress>("/v1/public/addresses", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Subscriptions ("Subscribe & Save") -- recurring cash-on-delivery
+// deliveries of a single product variant. Off sitewide unless an owner has
+// switched it on (`useSiteSettings().subscriptions.enabled`); the API
+// itself also refuses creation while off, so this is UX, not enforcement.
+// ---------------------------------------------------------------------------
+
+export function getSubscriptionDiscountPercent(): Promise<number> {
+  return request<{ discountPercent: number }>("/v1/public/subscription-settings").then(
+    (body) => body.discountPercent,
+  );
+}
+
+export function listMySubscriptions(): Promise<SubscriptionRow[]> {
+  return request<{ items: SubscriptionRow[] }>("/v1/public/subscriptions").then(
+    (body) => body.items,
+  );
+}
+
+export function createSubscription(input: {
+  variantId: string;
+  quantity: number;
+  frequency: SubscriptionFrequency;
+  addressId: string;
+}): Promise<SubscriptionRow> {
+  return request<SubscriptionRow>("/v1/public/subscriptions", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export function pauseSubscription(subscriptionId: string): Promise<SubscriptionRow> {
+  return request<SubscriptionRow>(
+    `/v1/public/subscriptions/${encodeURIComponent(subscriptionId)}/pause`,
+    { method: "POST" },
+  );
+}
+
+export function resumeSubscription(subscriptionId: string): Promise<SubscriptionRow> {
+  return request<SubscriptionRow>(
+    `/v1/public/subscriptions/${encodeURIComponent(subscriptionId)}/resume`,
+    { method: "POST" },
+  );
+}
+
+export function cancelSubscription(subscriptionId: string): Promise<SubscriptionRow> {
+  return request<SubscriptionRow>(
+    `/v1/public/subscriptions/${encodeURIComponent(subscriptionId)}/cancel`,
+    { method: "POST" },
   );
 }
 

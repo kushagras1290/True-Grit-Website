@@ -20,11 +20,16 @@ from truegrit_api.middleware.request_id import RequestIdMiddleware
 from truegrit_api.middleware.security_headers import SecurityHeadersMiddleware
 from truegrit_api.platform.database import Database, build_local_database
 from truegrit_api.platform.media_store import LocalMediaStore, MediaStore
+from truegrit_api.platform.translation import Translator
 from truegrit_api.services.media import media_root
 
 
-def create_app(db: Database | None = None, media: MediaStore | None = None) -> FastAPI:
-    get_settings()  # fail fast if required env vars are missing
+def create_app(
+    db: Database | None = None,
+    media: MediaStore | None = None,
+    translator: Translator | None = None,
+) -> FastAPI:
+    settings = get_settings()  # fail fast if required env vars are missing
     app = FastAPI(
         title="True Grit API",
         version="1.0.0",
@@ -42,7 +47,15 @@ def create_app(db: Database | None = None, media: MediaStore | None = None) -> F
     app.add_middleware(RequestIdMiddleware)
     app.add_middleware(
         CORSMiddleware,
-        allow_origin_regex=".*",
+        # `allow_credentials=True` makes an unrestricted origin a real
+        # information-disclosure risk, not a theoretical one: any site could
+        # issue a credentialed request with a signed-in visitor's session
+        # cookie and read the JSON response (orders, account data, admin
+        # data) back through CORS. `allowed_origins` is exactly the
+        # storefront/admin origins this deployment actually serves
+        # (`PUBLIC_STOREFRONT_URL`/`PUBLIC_ADMIN_URL`, plus their
+        # localhost/127.0.0.1 sibling for local dev) -- never a wildcard.
+        allow_origins=settings.allowed_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -53,6 +66,11 @@ def create_app(db: Database | None = None, media: MediaStore | None = None) -> F
     # migrations + development seed (identical SQL semantics to D1).
     app.state.db = db if db is not None else build_local_database()
     app.state.media = media if media is not None else LocalMediaStore(media_root())
+    # None outside the Workers runtime; get_translator (auth/dependencies.py)
+    # falls back to UnavailableTranslator itself, the same "never None to a
+    # route" contract get_database's non-nullable app.state.db keeps by
+    # constructing a real local instance instead.
+    app.state.translator = translator
 
     @app.get("/media/{key:path}", include_in_schema=False)
     async def serve_media(key: str) -> Response:

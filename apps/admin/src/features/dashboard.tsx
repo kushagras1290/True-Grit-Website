@@ -135,9 +135,9 @@ export function DashboardPage() {
   const pendingFulfilment = (orders.data ?? []).filter(
     (order) => order.orderStatus === "confirmed" || order.orderStatus === "processing",
   ).length;
-  const lowStock = (inventory.data ?? []).filter(
-    (row) => row.onHand - row.reserved <= row.reorderThreshold,
-  );
+  const lowStock = (inventory.data ?? [])
+    .flatMap((group) => group.variants)
+    .filter((row) => row.onHand - row.reserved <= row.reorderThreshold);
   const publishedProducts = (products.data ?? []).filter(
     (product) => product.status === "published",
   );

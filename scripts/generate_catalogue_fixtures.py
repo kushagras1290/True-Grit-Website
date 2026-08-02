@@ -59,7 +59,8 @@ def category_rows(connection: sqlite3.Connection) -> list[dict[str, Any]]:
             "id": row["id"],
             "name": row["name"],
             "slug": row["slug"],
-            "shortDescription": row["short_description"] or f"Shop {row['name'].lower()}.",
+            "shortDescription": row["short_description"]
+            or f"Shop {row['name'].lower()}.",
             "themeKey": row["theme_key"] or "forest",
             "seasonLabel": row["season_label"],
             "imageUrl": row["hero_image_url"],
@@ -138,7 +139,9 @@ def product_rows(
                 "listMinor": row["list_amount_minor"],
                 "saleMinor": row["sale_amount_minor"],
                 "adjustedMinor": None,
-                "availability": availability(row["available"], row["reorder_threshold"]),
+                "availability": availability(
+                    row["available"], row["reorder_threshold"]
+                ),
             }
         )
 
@@ -191,7 +194,9 @@ def product_rows(
             if len(related) == 4:
                 break
 
-        description = row["short_description"] or f"{row['name']} selected for everyday use."
+        description = (
+            row["short_description"] or f"{row['name']} selected for everyday use."
+        )
         certification = certifications.get(row["id"], "Producer verified")
         products.append(
             {
@@ -208,6 +213,7 @@ def product_rows(
                 "acceptsOrders": bool(row["accepts_orders"]),
                 "leadVariantId": lead["id"] if lead else None,
                 "leadSku": lead["sku"] if lead else "",
+                "variants": product_variants,
                 "shortDescription": description,
                 "certification": certification,
                 "relatedSlugs": related,

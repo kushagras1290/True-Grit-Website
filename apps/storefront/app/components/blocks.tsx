@@ -3,6 +3,8 @@
 import type {
   CategorySummary,
   FarmDetail,
+  FeaturedPromotion,
+  FeaturedReview,
   ProductSummary,
   PublicPageBlock,
 } from "@truegrit/contracts";
@@ -12,12 +14,27 @@ import { Link } from "react-router";
 import { mediaUrl } from "../lib/media";
 import { CategoryTile, ProductCard, Section } from "./catalogue";
 import { BannerBrandLockup } from "./page-banner";
+import { PromotionBanner } from "./promotion-banner";
+import { RecommendedProducts } from "./recommendations";
+import { StarRating } from "./reviews";
 import { Slider } from "./slider";
 
 export interface BlockData {
   productsBySlug: Map<string, ProductSummary>;
   categoriesBySlug: Map<string, CategorySummary>;
   farmsBySlug: Map<string, FarmDetail>;
+  /** Keyed by block id, not product -- a `reviews_showcase` block's own props
+   *  (manual ids or a rating floor) decide its content, so each block resolves
+   *  its own review list independently of any other block on the page. */
+  reviewsByBlockId: Map<string, FeaturedReview[]>;
+  /** Keyed by block id, same reasoning as `reviewsByBlockId` -- `null` means
+   *  the sitewide switch is off or nothing currently qualifies, a legitimate
+   *  state the block renders as nothing. */
+  promotionsByBlockId: Map<string, FeaturedPromotion | null>;
+  /** Keyed by block id -- real bestsellers, resolved live per block the same
+   *  way `reviewsByBlockId` resolves reviews. Empty means nothing to show
+   *  (switch off, or no order history yet), rendered as nothing. */
+  recommendationsByBlockId: Map<string, ProductSummary[]>;
 }
 
 // Matches the API's inline link syntax exactly (domain/blocks.py
@@ -388,6 +405,80 @@ export function CmsBlock({ block, data }: { block: PublicPageBlock; data: BlockD
             })}
           </ul>
         </Section>
+      );
+    }
+
+    case "reviews_showcase": {
+      // Resolved by the loader from the block's own props (manual ids or a
+      // rating floor) -- an empty result is a legitimate state (no review
+      // meets the floor yet), rendered as nothing, the same as an empty
+      // product/category row.
+      const reviews = data.reviewsByBlockId.get(block.id) ?? [];
+      if (reviews.length === 0) return null;
+      return (
+        <Section eyebrow="From our customers" heading={block.props.heading} tone="subtle">
+          {block.props.subheading ? (
+            <p className="mx-auto -mt-4 mb-8 max-w-2xl text-center text-base text-ink-muted">
+              {block.props.subheading}
+            </p>
+          ) : null}
+          <Slider ariaLabel={block.props.heading}>
+            {reviews.map((review) => (
+              <div
+                key={review.id}
+                className="w-[calc(85%-0.5rem)] shrink-0 snap-start sm:w-[calc(50%-0.7rem)] lg:w-[calc(33.3%-0.75rem)]"
+              >
+                <figure className="flex h-full flex-col rounded-md border border-line bg-canvas p-5">
+                  <StarRating rating={review.rating} />
+                  {review.title ? (
+                    <p className="mt-2 font-medium text-ink">{review.title}</p>
+                  ) : null}
+                  <blockquote className="mt-1.5 line-clamp-4 flex-1 text-sm text-ink-muted">
+                    “{review.body}”
+                  </blockquote>
+                  <figcaption className="mt-4 text-sm">
+                    <span className="font-medium text-ink">{review.authorName}</span>
+                    {review.verifiedPurchase ? (
+                      <span className="ml-1.5 text-xs text-ink-muted">Verified purchase</span>
+                    ) : null}
+                    <Link
+                      to={`/product/${review.productSlug}`}
+                      className="mt-0.5 block text-brand hover:underline"
+                    >
+                      {review.productName}
+                    </Link>
+                  </figcaption>
+                </figure>
+              </div>
+            ))}
+          </Slider>
+          <p className="mt-6 text-center">
+            <Link to="/reviews" className="text-sm font-medium text-brand hover:underline">
+              Read all reviews →
+            </Link>
+          </p>
+        </Section>
+      );
+    }
+
+    case "promotion_banner": {
+      // Resolved by the loader from the block's own props (a manual pin or
+      // the best-active rule) -- `null` means the sitewide switch is off or
+      // nothing currently qualifies, rendered as nothing, the same as an
+      // empty reviews showcase.
+      const promotion = data.promotionsByBlockId.get(block.id) ?? null;
+      if (promotion === null) return null;
+      return <PromotionBanner promotion={promotion} variant="full" />;
+    }
+
+    case "recommendations": {
+      const recommended = data.recommendationsByBlockId.get(block.id) ?? [];
+      return (
+        <RecommendedProducts
+          heading={block.props.heading}
+          eyebrow={block.props.subheading || "Picked by shoppers"}
+          products={recommended}
+        />
       );
     }
 

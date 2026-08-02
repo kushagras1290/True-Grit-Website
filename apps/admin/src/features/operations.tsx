@@ -3,8 +3,12 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { AdminMediaAssetRow, AdminUserRow } from "@truegrit/contracts";
-import { useState } from "react";
+import type {
+  AdminInventoryProductGroup,
+  AdminMediaAssetRow,
+  AdminUserRow,
+} from "@truegrit/contracts";
+import { Fragment, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useParams } from "react-router";
 import { z } from "zod";
@@ -72,6 +76,8 @@ const farmSchema = z.object({
   establishedYear: z.coerce.number().int().min(1800).max(2100).optional().or(z.literal("")),
   summary: z.string().max(500),
   status: z.enum(["draft", "published", "unpublished"]),
+  heroImageUrl: z.string().max(1000).optional().or(z.literal("")),
+  heroImageAlt: z.string().max(200).optional().or(z.literal("")),
 });
 
 type FarmForm = z.infer<typeof farmSchema>;
@@ -89,6 +95,12 @@ export function InventoryPage() {
   });
   const [selectedVariantIds, setSelectedVariantIds] = useState<string[]>([]);
   const [confirmingClear, setConfirmingClear] = useState(false);
+  // One entry per product with its variants nested inside -- same shape and
+  // sort order (alphabetical by product name) as the Products page, so a
+  // product with several variants is never spread across several rows each
+  // repeating its name.
+  const groups: AdminInventoryProductGroup[] = data ?? [];
+  const flatRows = groups.flatMap((group) => group.variants);
 
   const form = useForm<AdjustmentForm>({
     resolver: zodResolver(adjustmentSchema),
@@ -123,8 +135,7 @@ export function InventoryPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not clear inventory rows."),
   });
 
-  const rows = data ?? [];
-  const allSelected = rows.length > 0 && selectedVariantIds.length === rows.length;
+  const allSelected = flatRows.length > 0 && selectedVariantIds.length === flatRows.length;
 
   function toggleInventoryRow(variantId: string) {
     setSelectedVariantIds((current) =>
@@ -135,7 +146,17 @@ export function InventoryPage() {
   }
 
   function toggleAllInventoryRows() {
-    setSelectedVariantIds(allSelected ? [] : rows.map((row) => row.variantId));
+    setSelectedVariantIds(allSelected ? [] : flatRows.map((row) => row.variantId));
+  }
+
+  function toggleProductGroup(group: AdminInventoryProductGroup) {
+    const groupVariantIds = group.variants.map((row) => row.variantId);
+    const allGroupSelected = groupVariantIds.every((id) => selectedVariantIds.includes(id));
+    setSelectedVariantIds((current) =>
+      allGroupSelected
+        ? current.filter((id) => !groupVariantIds.includes(id))
+        : [...new Set([...current, ...groupVariantIds])],
+    );
   }
 
   return (
@@ -184,94 +205,118 @@ export function InventoryPage() {
         />
       </div>
       <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
-        <DataTableShell>
-          <thead className="bg-canvas">
-            <tr>
-              <Th>
-                <input
-                  type="checkbox"
-                  aria-label="Select all inventory rows"
-                  checked={allSelected}
-                  onChange={toggleAllInventoryRows}
-                />
-              </Th>
-              <Th>Product</Th>
-              <Th>Variant</Th>
-              <Th>SKU</Th>
-              <Th>On hand</Th>
-              <Th>Reserved</Th>
-              <Th>Available</Th>
-              <Th>Stock Status</Th>
-              <Th>Product Status</Th>
-            </tr>
-          </thead>
-          {isLoading ? (
-            <LoadingRows columns={9} />
-          ) : (
-            <tbody>
-              {rows.map((row) => {
-                const available = row.onHand - row.reserved;
-                const status =
-                  available <= 0
-                    ? "out_of_stock"
-                    : available <= row.reorderThreshold
-                      ? "low_stock"
-                      : "in_stock";
-                return (
-                  <tr key={row.variantId} className="border-t border-line">
-                    <Td>
-                      <input
-                        type="checkbox"
-                        aria-label={`Select ${row.productName} ${row.variantName}`}
-                        checked={selectedVariantIds.includes(row.variantId)}
-                        onChange={() => toggleInventoryRow(row.variantId)}
-                      />
-                    </Td>
-                    <Td className="font-medium">{row.productName}</Td>
-                    <Td className="text-ink-muted">{row.variantName}</Td>
-                    <Td>{row.sku}</Td>
-                    <Td>{row.onHand}</Td>
-                    <Td>{row.reserved}</Td>
-                    <Td className="font-medium">{available}</Td>
-                    <Td>
-                      <StatusPill status={status} />
-                    </Td>
-                    <Td>
-                      <div className="flex items-center gap-2">
-                        <StatusPill status={row.productStatus} />
-                        <PermissionGate permission="products.publish">
-                          <Button
-                            variant="secondary"
-                            onClick={() => {
-                              const nextStatus =
-                                row.productStatus === "published" ? "unpublished" : "published";
-                              api
-                                .updateProductStatus(row.productId, nextStatus)
-                                .then(() => {
-                                  toast.success("Product status updated.");
-                                  queryClient.invalidateQueries({ queryKey: ["inventory"] });
-                                })
-                                .catch((error) => {
-                                  toast.error(
-                                    error instanceof ApiError
-                                      ? error.message
-                                      : "Failed to update product.",
-                                  );
-                                });
-                            }}
-                          >
-                            {row.productStatus === "published" ? "Disable" : "Enable"}
-                          </Button>
-                        </PermissionGate>
-                      </div>
-                    </Td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          )}
-        </DataTableShell>
-        <Pagination page={page} onPageChange={setPage} rowCount={rows.length} limit={limit} />
+        <div>
+          <DataTableShell>
+            <thead className="bg-canvas">
+              <tr>
+                <Th>
+                  <input
+                    type="checkbox"
+                    aria-label="Select all inventory rows"
+                    checked={allSelected}
+                    onChange={toggleAllInventoryRows}
+                  />
+                </Th>
+                <Th>Variant</Th>
+                <Th>SKU</Th>
+                <Th>On hand</Th>
+                <Th>Reserved</Th>
+                <Th>Available</Th>
+                <Th>Stock Status</Th>
+              </tr>
+            </thead>
+            {isLoading ? (
+              <LoadingRows columns={7} />
+            ) : (
+              <tbody>
+                {groups.map((group) => {
+                  const groupVariantIds = group.variants.map((row) => row.variantId);
+                  const groupSelected =
+                    groupVariantIds.length > 0 &&
+                    groupVariantIds.every((id) => selectedVariantIds.includes(id));
+                  return (
+                    <Fragment key={group.productId}>
+                      <tr className="border-t border-line bg-canvas/60">
+                        <Td>
+                          <input
+                            type="checkbox"
+                            aria-label={`Select all variants of ${group.productName}`}
+                            checked={groupSelected}
+                            onChange={() => toggleProductGroup(group)}
+                          />
+                        </Td>
+                        <Td colSpan={5} className="font-medium">
+                          <div className="flex items-center justify-between gap-3">
+                            <span>{group.productName}</span>
+                            <div className="flex items-center gap-2">
+                              <StatusPill status={group.productStatus} />
+                              <PermissionGate permission="products.publish">
+                                <Button
+                                  variant="secondary"
+                                  onClick={() => {
+                                    const nextStatus =
+                                      group.productStatus === "published"
+                                        ? "unpublished"
+                                        : "published";
+                                    api
+                                      .updateProductStatus(group.productId, nextStatus)
+                                      .then(() => {
+                                        toast.success("Product status updated.");
+                                        queryClient.invalidateQueries({ queryKey: ["inventory"] });
+                                      })
+                                      .catch((error) => {
+                                        toast.error(
+                                          error instanceof ApiError
+                                            ? error.message
+                                            : "Failed to update product.",
+                                        );
+                                      });
+                                  }}
+                                >
+                                  {group.productStatus === "published" ? "Disable" : "Enable"}
+                                </Button>
+                              </PermissionGate>
+                            </div>
+                          </div>
+                        </Td>
+                      </tr>
+                      {group.variants.map((row) => {
+                        const available = row.onHand - row.reserved;
+                        const status =
+                          available <= 0
+                            ? "out_of_stock"
+                            : available <= row.reorderThreshold
+                              ? "low_stock"
+                              : "in_stock";
+                        return (
+                          <tr key={row.variantId} className="border-t border-line/60">
+                            <Td>
+                              <input
+                                type="checkbox"
+                                aria-label={`Select ${row.productName} ${row.variantName}`}
+                                checked={selectedVariantIds.includes(row.variantId)}
+                                onChange={() => toggleInventoryRow(row.variantId)}
+                              />
+                            </Td>
+                            <Td className="pl-6 text-ink-muted">{row.variantName}</Td>
+                            <Td>{row.sku}</Td>
+                            <Td>{row.onHand}</Td>
+                            <Td>{row.reserved}</Td>
+                            <Td className="font-medium">{available}</Td>
+                            <Td>
+                              <StatusPill status={status} />
+                            </Td>
+                          </tr>
+                        );
+                      })}
+                    </Fragment>
+                  );
+                })}
+              </tbody>
+            )}
+          </DataTableShell>
+          <Pagination page={page} onPageChange={setPage} rowCount={groups.length} limit={limit} />
+        </div>
 
         <PermissionGate
           permission="inventory.adjust"
@@ -291,7 +336,7 @@ export function InventoryPage() {
             <Field label="Variant (SKU)" htmlFor="sku" error={form.formState.errors.sku?.message}>
               <Select id="sku" {...form.register("sku")}>
                 <option value="">Select a variant…</option>
-                {(data ?? []).map((row) => (
+                {flatRows.map((row) => (
                   <option key={row.variantId} value={row.sku}>
                     {row.sku} — {row.productName} ({row.variantName})
                   </option>
@@ -357,8 +402,12 @@ function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void
       establishedYear: farm?.establishedYear ?? "",
       summary: farm?.summary ?? "",
       status: (farm?.status as FarmForm["status"]) ?? "published",
+      heroImageUrl: farm?.heroImageUrl ?? "",
+      heroImageAlt: farm?.heroImageAlt ?? "",
     },
   });
+  const heroImageUrl = form.watch("heroImageUrl");
+  const heroImageAlt = form.watch("heroImageAlt");
 
   const mutation = useMutation({
     mutationFn: (values: FarmForm) =>
@@ -373,6 +422,8 @@ function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void
               typeof values.establishedYear === "number" ? values.establishedYear : null,
             summary: values.summary,
             status: values.status,
+            heroImageUrl: values.heroImageUrl || null,
+            heroImageAlt: values.heroImageAlt || null,
           })
         : api.createFarm({
             name: values.name,
@@ -384,6 +435,8 @@ function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void
               typeof values.establishedYear === "number" ? values.establishedYear : null,
             summary: values.summary,
             status: values.status,
+            heroImageUrl: values.heroImageUrl || null,
+            heroImageAlt: values.heroImageAlt || null,
           }),
     onSuccess: async () => {
       await Promise.all([
@@ -395,6 +448,13 @@ function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void
     },
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not save the farm."),
+  });
+
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => api.uploadImage(file),
+    onSuccess: (result) => form.setValue("heroImageUrl", result.url, { shouldDirty: true }),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not upload the image."),
   });
 
   return (
@@ -460,6 +520,48 @@ function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void
             {...form.register("summary")}
           />
         </Field>
+        <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_8rem]">
+          <div className="space-y-3">
+            <Field
+              label="Banner image URL"
+              htmlFor="farm-hero-url"
+              error={form.formState.errors.heroImageUrl?.message}
+            >
+              <Input
+                id="farm-hero-url"
+                placeholder="/homepage-hero.png"
+                {...form.register("heroImageUrl")}
+              />
+            </Field>
+            <Field
+              label="Banner alt text"
+              htmlFor="farm-hero-alt"
+              error={form.formState.errors.heroImageAlt?.message}
+            >
+              <Input id="farm-hero-alt" {...form.register("heroImageAlt")} />
+            </Field>
+            <label className="inline-flex min-h-9 cursor-pointer items-center rounded-sm border border-line px-3 text-sm text-ink hover:bg-canvas">
+              {uploadMutation.isPending ? "Uploading..." : "Upload image"}
+              <input
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                disabled={uploadMutation.isPending}
+                onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  event.target.value = "";
+                  if (file) uploadMutation.mutate(file);
+                }}
+              />
+            </label>
+          </div>
+          <ImagePreview
+            src={heroImageUrl || ""}
+            alt={heroImageAlt || ""}
+            label="Farm banner"
+            className="h-24 w-full"
+          />
+        </div>
         <div className="flex justify-end gap-2 pt-1">
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel

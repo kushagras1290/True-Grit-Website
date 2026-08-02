@@ -44,5 +44,11 @@ export function blockTitle(block: PublicPageBlock): string {
       return `Newsletter — ${block.props.heading}`;
     case "page_links":
       return `Page snippets — ${block.props.heading}`;
+    case "reviews_showcase":
+      return `Reviews — ${block.props.heading}`;
+    case "promotion_banner":
+      return "Promotions banner";
+    case "recommendations":
+      return `Recommended products — ${block.props.heading}`;
   }
 }

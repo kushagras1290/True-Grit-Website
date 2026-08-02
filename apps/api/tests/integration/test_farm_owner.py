@@ -122,7 +122,8 @@ def test_farm_owner_cannot_adjust_foreign_inventory(client: TestClient, db: SQLi
 
 def test_farm_owner_inventory_is_scoped(client: TestClient, db: SQLiteDatabase):
     as_farm_owner(client, db)
-    skus = {row["sku"] for row in client.get("/v1/admin/inventory").json()["items"]}
+    groups = client.get("/v1/admin/inventory").json()["items"]
+    skus = {variant["sku"] for group in groups for variant in group["variants"]}
     assert "TRG-MNG-1KG" in skus
     assert "TRG-RJM-500" not in skus
 

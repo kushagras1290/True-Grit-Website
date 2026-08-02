@@ -4,20 +4,24 @@ import type { Route } from "./+types/category";
 import { Breadcrumbs, CategoryChip, ProductGrid, Section } from "../components/catalogue";
 import { PageBanner } from "../components/page-banner";
 import { PageLinkPagination } from "../components/pagination";
-import { CATALOGUE_PAGE_SIZE, catalogueRuntime, loadCategoryPage } from "../lib/catalogue.server";
+import { RecommendedProducts } from "../components/recommendations";
+import {
+  CATALOGUE_PAGE_SIZE,
+  catalogueRuntime,
+  loadBestsellers,
+  loadCategoryPage,
+} from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const pageNumber = Math.max(1, Number(new URL(request.url).searchParams.get("page")) || 1);
-  const page = await loadCategoryPage(
-    params.slug,
-    resolveCountry(request),
-    catalogueRuntime(context),
-    pageNumber,
-  );
+  const country = resolveCountry(request);
+  const runtime = catalogueRuntime(context);
+  const page = await loadCategoryPage(params.slug, country, runtime, pageNumber);
   if (!page) throw data("Category not found", { status: 404 });
-  return { page, pageNumber, pageSize: CATALOGUE_PAGE_SIZE };
+  const popular = await loadBestsellers({ limit: 8, categorySlug: params.slug }, country, runtime);
+  return { page, pageNumber, pageSize: CATALOGUE_PAGE_SIZE, popular };
 }
 
 export function meta({ data: loaderData }: Route.MetaArgs) {
@@ -25,7 +29,7 @@ export function meta({ data: loaderData }: Route.MetaArgs) {
 }
 
 export default function CategoryPage({ loaderData }: Route.ComponentProps) {
-  const { page, pageNumber, pageSize } = loaderData;
+  const { page, pageNumber, pageSize, popular } = loaderData;
   return (
     <>
       <Breadcrumbs items={page.breadcrumbs} />
@@ -82,6 +86,12 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
           </dl>
         </Section>
       ) : null}
+
+      <RecommendedProducts
+        eyebrow="Popular right now"
+        heading={`Best sellers in ${page.name}`}
+        products={popular}
+      />
     </>
   );
 }

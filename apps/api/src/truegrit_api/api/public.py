@@ -17,6 +17,7 @@ from truegrit_api.domain.phone import MAX_PHONE_INPUT_LENGTH, normalize_phone
 from truegrit_api.domain.slugs import MAX_SLUG_LENGTH, validate_slug
 from truegrit_api.errors import NotFoundError, ValidationAppError
 from truegrit_api.platform.database import Database
+from truegrit_api.repositories.bundles import BundleRepository
 from truegrit_api.repositories.catalogue import CatalogueRepository
 from truegrit_api.repositories.content import (
     ArticleRepository,
@@ -25,10 +26,12 @@ from truegrit_api.repositories.content import (
     NavigationRepository,
     PageRepository,
     RecipeRepository,
+    ReviewRepository,
     RouteSeoRepository,
     SearchRepository,
     SiteDocumentRepository,
 )
+from truegrit_api.repositories.promotions import PromotionRepository
 from truegrit_api.schemas.public import (
     ArticleDetail,
     ArticleListResponse,
@@ -46,7 +49,14 @@ from truegrit_api.schemas.public import (
 from truegrit_api.services.announcements import resolve_announcement
 from truegrit_api.services.appearance import load_public_appearance
 from truegrit_api.services.email import send_email
-from truegrit_api.services.feature_settings import load_public_settings
+from truegrit_api.services.feature_settings import (
+    load_curated_max_items,
+    load_delivery_settings,
+    load_public_settings,
+    load_subscription_discount_percent,
+    promotions_enabled,
+    recommendations_enabled,
+)
 from truegrit_api.services.homepage_geo import resolve_public_home
 from truegrit_api.services.site_documents import (
     SITE_DOCUMENT_TYPES,
@@ -190,21 +200,45 @@ async def payment_methods(db: Annotated[Database, Depends(get_database)]) -> Any
     }
 
 
+@router.get("/delivery-settings")
+async def delivery_settings(db: Annotated[Database, Depends(get_database)]) -> Any:
+    """The delivery fee and free-delivery subtotal threshold checkout will
+    charge against. Admin-editable (`load_delivery_settings`), so the
+    storefront's order summary reads it here rather than hardcoding a figure
+    that would silently drift from what checkout actually applies."""
+    settings = await load_delivery_settings(db)
+    return {"feeMinor": settings.fee_minor, "freeThresholdMinor": settings.free_threshold_minor}
+
+
+@router.get("/subscription-settings")
+async def subscription_settings(db: Annotated[Database, Depends(get_database)]) -> Any:
+    """The percent-off Subscribe & Save advertises on a product page. Read
+    regardless of whether the feature is currently switched on -- gating that
+    is `storefrontSettings.subscriptions` (site-settings), read once at the
+    root loader; this only ever answers "how much", never "whether"."""
+    return {"discountPercent": await load_subscription_discount_percent(db)}
+
+
 @router.get("/home")
 async def home(
     db: Annotated[Database, Depends(get_database)],
     country: Annotated[str | None, Query(max_length=2)] = None,
+    locale: Annotated[str | None, Query(max_length=10)] = None,
 ) -> Any:
-    page = await resolve_public_home(db, country)
+    page = await resolve_public_home(db, country, locale)
     if page is None:
         raise NotFoundError("Homepage is not published.")
     return page
 
 
 @router.get("/pages/{slug}", response_model=PublicPage)
-async def public_page(slug: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+async def public_page(
+    slug: str,
+    db: Annotated[Database, Depends(get_database)],
+    locale: Annotated[str | None, Query(max_length=10)] = None,
+) -> Any:
     validate_slug(slug)
-    page = await PageRepository(db).get_published_by_slug(slug)
+    page = await PageRepository(db).get_published_by_slug(slug, locale=locale)
     if page is None:
         raise NotFoundError("Page is not published.")
     return page
@@ -528,7 +562,63 @@ async def highlighted_products(
     country: Annotated[str | None, Query(max_length=2)] = None,
 ) -> Any:
     """The owner-curated highlight slots (search page box), curated order."""
-    items = await CatalogueRepository(db).list_highlighted(country=_normalize_country(country))
+    limit = await load_curated_max_items(db)
+    items = await CatalogueRepository(db).list_highlighted(
+        country=_normalize_country(country), limit=limit
+    )
+    return {"items": items, "total": len(items)}
+
+
+@router.get("/recommendations/bestsellers", response_model=ProductListResponse)
+async def bestsellers(
+    db: Annotated[Database, Depends(get_database)],
+    limit: Annotated[int, Query(ge=1, le=24)] = 8,
+    exclude: Annotated[str | None, Query(max_length=2000)] = None,
+    category: Annotated[str | None, Query(max_length=140)] = None,
+    country: Annotated[str | None, Query(max_length=2)] = None,
+) -> Any:
+    """Real sellers, ranked by quantity actually sold on non-cancelled
+    orders -- not a curated list, so there is nothing here for an editor to
+    keep stocked. Backs the homepage `recommendations` block and, with
+    `exclude` (a comma-separated slug list), the basket page's "you might
+    also like" row -- dropping whatever is already in the basket. Empty while
+    the sitewide switch is off."""
+    if not await recommendations_enabled(db):
+        return {"items": [], "total": 0}
+    exclude_slugs = (
+        [entry.strip() for entry in exclude.split(",") if entry.strip()] if exclude else None
+    )
+    items = await CatalogueRepository(db).list_bestsellers(
+        limit=limit,
+        exclude_slugs=exclude_slugs,
+        category_slug=category,
+        country=_normalize_country(country),
+    )
+    return {"items": items, "total": len(items)}
+
+
+@router.get("/products/{slug}/also-bought", response_model=ProductListResponse)
+async def also_bought(
+    slug: str,
+    db: Annotated[Database, Depends(get_database)],
+    limit: Annotated[int, Query(ge=1, le=24)] = 6,
+    country: Annotated[str | None, Query(max_length=2)] = None,
+) -> Any:
+    """Products that show up in the same orders as this one, most frequent
+    first -- real co-purchase counts, not a curated "goes well with" list
+    (that is `product.relatedSlugs`, a separate signal). Empty for a product
+    with no order history yet, or while the sitewide switch is off."""
+    if not await recommendations_enabled(db):
+        return {"items": [], "total": 0}
+    validate_slug(slug)
+    visitor_country = _normalize_country(country)
+    repository = CatalogueRepository(db)
+    product = await repository.get_published_detail(slug, country=visitor_country)
+    if product is None:
+        raise NotFoundError("Product not found.")
+    items = await repository.list_also_bought(
+        product["id"], limit=limit, country=visitor_country
+    )
     return {"items": items, "total": len(items)}
 
 
@@ -545,6 +635,189 @@ async def product_detail(
     if detail is None:
         raise NotFoundError("Product not found.")
     return detail
+
+
+def _public_review_payload(row: dict[str, Any]) -> dict[str, Any]:
+    payload = {
+        "id": row["id"],
+        "rating": row["rating"],
+        "title": row["title"],
+        "body": row["body"],
+        "authorName": row["author_name"],
+        "verifiedPurchase": bool(row["verified_purchase"]),
+        "createdAt": row["created_at"],
+    }
+    # Only present on the sitewide featured-reviews feed, not the per-product
+    # list -- a product's own review list already has the product for context.
+    if "product_name" in row:
+        payload["productName"] = row["product_name"]
+        payload["productSlug"] = row["product_slug"]
+    return payload
+
+
+@router.get("/products/{slug}/reviews")
+async def product_reviews(
+    slug: str,
+    db: Annotated[Database, Depends(get_database)],
+    limit: Annotated[int, Query(ge=1, le=100)] = 20,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    """Approved reviews for one published product."""
+    validate_slug(slug)
+    product = await db.fetch_one(
+        "SELECT id FROM products WHERE slug = ? AND status = 'published'", (slug,)
+    )
+    if product is None:
+        raise NotFoundError("Product not found.")
+    repository = ReviewRepository(db)
+    rows = await repository.list_public_for_product(product["id"], limit=limit, offset=offset)
+    return {
+        "items": [_public_review_payload(row) for row in rows],
+        "total": await repository.count_public_for_product(product["id"]),
+    }
+
+
+@router.get("/reviews")
+async def all_reviews(
+    db: Annotated[Database, Depends(get_database)],
+    limit: Annotated[int, Query(ge=1, le=100)] = 20,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    """Every approved review sitewide, newest first -- backs the storefront's
+    dedicated `/reviews` page. `GET /products/{slug}/reviews` is the
+    per-product equivalent; `GET /reviews/featured` is the curated homepage
+    feed."""
+    repository = ReviewRepository(db)
+    rows = await repository.list_public_all(limit=limit, offset=offset)
+    return {
+        "items": [_public_review_payload(row) for row in rows],
+        "total": await repository.count_public_all(),
+    }
+
+
+@router.get("/reviews/featured")
+async def featured_reviews(
+    db: Annotated[Database, Depends(get_database)],
+    ids: Annotated[str | None, Query(max_length=2000)] = None,
+    min_rating: Annotated[int, Query(ge=1, le=5, alias="minRating")] = 4,
+    limit: Annotated[int, Query(ge=1, le=24)] = 8,
+) -> Any:
+    """Backs the homepage `reviews_showcase` block. `ids` (manual mode) is a
+    comma-separated review id list, in display order; omitted (rule mode)
+    returns the current top-rated approved reviews sitewide."""
+    review_ids = [entry.strip() for entry in ids.split(",") if entry.strip()][:24] if ids else None
+    rows = await ReviewRepository(db).list_featured(
+        review_ids=review_ids, min_rating=min_rating, limit=limit
+    )
+    return {"items": [_public_review_payload(row) for row in rows]}
+
+
+@router.get("/promotions/featured")
+async def featured_promotion(
+    db: Annotated[Database, Depends(get_database)],
+    promotion_id: Annotated[str | None, Query(max_length=64, alias="promotionId")] = None,
+) -> Any:
+    """The one promotion to advertise right now. The homepage banner and the
+    checkout box both call this, so they always show the same copy -- never
+    two hand-maintained versions of it. `promotionId` (manual mode) pins one
+    specific promotion, still re-checked for active/in-window on every call;
+    omitted (rule mode) resolves the current highest-priority automatic
+    promotion. Returns `{"promotion": null}` when the sitewide switch is off
+    or nothing currently qualifies -- never an error, since "nothing to
+    advertise" is an ordinary state, not a failure.
+    """
+    if not await promotions_enabled(db):
+        return {"promotion": None}
+    repository = PromotionRepository(db)
+    now = utc_now_iso()
+    if promotion_id:
+        row = await repository.get_by_id(promotion_id)
+        if (
+            row is None
+            or row["status"] != "active"
+            or (row["starts_at"] and row["starts_at"] > now)
+            or (row["ends_at"] and row["ends_at"] <= now)
+        ):
+            return {"promotion": None}
+    else:
+        automatic = await repository.list_active_automatic(now)
+        if not automatic:
+            return {"promotion": None}
+        row = automatic[0]
+    coupons = await repository.list_coupons(row["id"])
+    active_code = next((coupon["code"] for coupon in coupons if coupon["active"]), None)
+    return {
+        "promotion": {
+            "id": row["id"],
+            "name": row["name"],
+            "headline": row["headline"] or row["name"],
+            "description": row["description"],
+            "code": active_code,
+        }
+    }
+
+
+def _public_bundle_item_payload(row: dict[str, Any]) -> dict[str, Any]:
+    unit_price = row["unit_price_minor"] or 0
+    return {
+        "variantId": row["variant_id"],
+        "quantity": row["quantity"],
+        "variantName": row["variant_name"],
+        "sku": row["sku"],
+        "productId": row["product_id"],
+        "productName": row["product_name"],
+        "productSlug": row["product_slug"],
+        "imageUrl": row["image_url"],
+        "unitPriceMinor": unit_price,
+        "lineTotalMinor": unit_price * row["quantity"],
+    }
+
+
+def _public_bundle_payload(row: dict[str, Any], items: list[dict[str, Any]]) -> dict[str, Any]:
+    item_payloads = [_public_bundle_item_payload(item) for item in items]
+    component_sum_minor = sum(item["lineTotalMinor"] for item in item_payloads)
+    return {
+        "id": row["id"],
+        "name": row["name"],
+        "slug": row["slug"],
+        "description": row["description"],
+        "bundlePriceMinor": row["bundle_price_minor"],
+        "componentSumMinor": component_sum_minor,
+        "savingsMinor": max(component_sum_minor - row["bundle_price_minor"], 0),
+        "imageUrl": row["image_url"],
+        "imageAlt": row["image_alt"],
+        "items": item_payloads,
+    }
+
+
+@router.get("/bundles")
+async def list_bundles(
+    db: Annotated[Database, Depends(get_database)],
+    limit: Annotated[int, Query(ge=1, le=50)] = 20,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    """Active, purchasable bundles for the shop -- each carries its own item
+    list and the savings the checkout discount will actually apply, computed
+    against current variant prices, so the shop card never advertises a
+    number `resolve_bundle_discount` would not also grant."""
+    repository = BundleRepository(db)
+    rows = await repository.list_active(limit=limit, offset=offset)
+    payloads = []
+    for row in rows:
+        items = await repository.list_items(row["id"])
+        payloads.append(_public_bundle_payload(row, items))
+    return {"items": payloads}
+
+
+@router.get("/bundles/{slug}")
+async def bundle_detail(slug: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+    validate_slug(slug)
+    repository = BundleRepository(db)
+    row = await repository.get_by_slug(slug)
+    if row is None or row["status"] != "active":
+        raise NotFoundError("Bundle not found.")
+    items = await repository.list_items(row["id"])
+    return _public_bundle_payload(row, items)
 
 
 @router.get("/search", response_model=SearchResponse)

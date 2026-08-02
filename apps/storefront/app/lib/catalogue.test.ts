@@ -45,7 +45,7 @@ describe("demo catalogue", () => {
 
   it("resolves product detail with variants and traceability", async () => {
     const product = await loadProduct("sprouted-ragi-flour");
-    expect(product?.variants).toHaveLength(2);
+    expect(product?.variants).toHaveLength(3);
     expect(product?.traceability.length).toBeGreaterThanOrEqual(4);
   });
 
@@ -57,8 +57,8 @@ describe("demo catalogue", () => {
   });
 
   it("ships the complete seeded market in demo mode", () => {
-    expect(categories.length).toBeGreaterThanOrEqual(242);
-    expect(products.length).toBeGreaterThanOrEqual(1957);
+    expect(categories).toHaveLength(216);
+    expect(products).toHaveLength(1500);
     expect(categories.filter((category) => category.level === 0).length).toBeGreaterThanOrEqual(46);
     expect(categories.map((category) => category.slug)).toEqual(
       expect.arrayContaining([
@@ -96,7 +96,8 @@ describe("demo catalogue", () => {
       products.every(
         (product) =>
           product.leadVariantId !== null &&
-          product.variants.length > 0 &&
+          product.variants.length >= 2 &&
+          product.variants.length <= 5 &&
           product.priceMinor > 0 &&
           assignedSlugs.has(product.slug),
       ),

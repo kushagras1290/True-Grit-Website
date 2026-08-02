@@ -46,17 +46,17 @@ def main() -> int:
         print(f"integrity_check failed: {integrity}", file=sys.stderr)
         return 1
 
-    # Migration 0056 is deliberately customer-facing data, not development
-    # fixture content. Prove the products exist before development.sql runs.
+    # The preferred image-backed catalogue is production data now, not a
+    # fixture-only fallback. Prove the requested public count exists before
+    # development.sql runs so a deployment cannot silently ship an empty shop.
     migrated_customer_categories = conn.execute(
         "SELECT COUNT(*) FROM categories"
-        " WHERE id LIKE 'cat_complete_%' OR id LIKE 'cat_mass_%'"
+        " WHERE status = 'published' AND visibility = 'public'"
     ).fetchone()[0]
     migrated_customer_products = conn.execute(
-        "SELECT COUNT(*) FROM products"
-        " WHERE id LIKE 'prd_complete_%' OR id LIKE 'prd_mass_%'"
+        "SELECT COUNT(*) FROM products WHERE status = 'published'"
     ).fetchone()[0]
-    if migrated_customer_categories != 108 or migrated_customer_products != 1152:
+    if migrated_customer_categories != 216 or migrated_customer_products != 1500:
         print(
             "customer catalogue must be migration-backed before seed data runs: "
             f"found {migrated_customer_categories} categories and "
@@ -89,15 +89,15 @@ def main() -> int:
         published_products = conn.execute(
             "SELECT COUNT(*) FROM products WHERE status = 'published'"
         ).fetchone()[0]
-        if published_categories < 242:
+        if published_categories != 216:
             print(
-                f"expected at least 242 published categories, found {published_categories}",
+                f"expected 216 published categories, found {published_categories}",
                 file=sys.stderr,
             )
             return 1
-        if published_products < 1957:
+        if published_products != 1500:
             print(
-                f"expected at least 1957 published products, found {published_products}",
+                f"expected 1500 published products, found {published_products}",
                 file=sys.stderr,
             )
             return 1
@@ -131,6 +131,10 @@ def main() -> int:
                 " AND NOT EXISTS (SELECT 1 FROM search_products s"
                 " WHERE s.product_id = p.id)"
             ),
+            "customer image": (
+                "SELECT COUNT(*) FROM products p WHERE p.status = 'published'"
+                " AND NULLIF(TRIM(p.image_url), '') IS NULL"
+            ),
         }
         for requirement, query in catalogue_integrity_checks.items():
             missing = conn.execute(query).fetchone()[0]
@@ -149,8 +153,10 @@ def main() -> int:
             " FROM articles a JOIN article_versions v ON v.id = a.published_version_id"
             " WHERE a.status = 'published' ORDER BY a.id"
         ).fetchall()
-        if len(articles) != 201:
-            print(f"expected 201 useful articles, found {len(articles)}", file=sys.stderr)
+        if len(articles) != 351:
+            print(
+                f"expected 351 useful articles, found {len(articles)}", file=sys.stderr
+            )
             return 1
         if len({row[1] for row in articles}) != len(articles) or len(
             {row[2] for row in articles}
@@ -159,14 +165,26 @@ def main() -> int:
             return 1
         author_count = len({row[4] for row in articles if row[4]})
         if author_count < 5:
-            print(f"expected at least 5 article authors, found {author_count}", file=sys.stderr)
+            print(
+                f"expected at least 5 article authors, found {author_count}",
+                file=sys.stderr,
+            )
             return 1
 
-        for article_id, title, _slug, reading_minutes, _author_id, raw_content in articles:
+        for (
+            article_id,
+            title,
+            _slug,
+            reading_minutes,
+            _author_id,
+            raw_content,
+        ) in articles:
             if article_id == "art_millets" or article_id.startswith(
                 ("art_library_", "art_expansion_")
             ):
-                print(f"legacy generated article survived: {article_id}", file=sys.stderr)
+                print(
+                    f"legacy generated article survived: {article_id}", file=sys.stderr
+                )
                 return 1
             content = json.loads(raw_content)
             blocks = content.get("blocks", [])
@@ -189,8 +207,15 @@ def main() -> int:
                 quality_floor = (5, 180, 4)
             elif article_id.startswith("art_case_"):
                 quality_floor = (5, 180, 3)
+            elif article_id.startswith("art_practical_"):
+                quality_floor = (5, 190, 6)
+            elif article_id.startswith("art_fieldbook_"):
+                quality_floor = (5, 175, 5)
             else:
-                print(f"unexpected published article family: {article_id}", file=sys.stderr)
+                print(
+                    f"unexpected published article family: {article_id}",
+                    file=sys.stderr,
+                )
                 return 1
             min_faq, min_words, min_minutes = quality_floor
             if (
@@ -201,12 +226,52 @@ def main() -> int:
                 print(f"article is too thin to publish: {title}", file=sys.stderr)
                 return 1
 
+        recipes = conn.execute(
+            "SELECT r.id, r.title, r.slug, rv.content_json,"
+            " (SELECT COUNT(*) FROM recipe_ingredients ri WHERE ri.recipe_id = r.id)"
+            " FROM recipes r JOIN recipe_versions rv ON rv.id = r.published_version_id"
+            " WHERE r.status = 'published' ORDER BY r.id"
+        ).fetchall()
+        if len(recipes) != 551:
+            print(f"expected 551 useful recipes, found {len(recipes)}", file=sys.stderr)
+            return 1
+        if len({row[1] for row in recipes}) != len(recipes) or len(
+            {row[2] for row in recipes}
+        ) != len(recipes):
+            print("published recipe titles and slugs must be unique", file=sys.stderr)
+            return 1
+        practical_recipes = [
+            row for row in recipes if row[0].startswith("rcp_practical_")
+        ]
+        if len(practical_recipes) != 250:
+            print(
+                f"expected 250 new practical recipes, found {len(practical_recipes)}",
+                file=sys.stderr,
+            )
+            return 1
+        for recipe_id, title, _slug, raw_content, ingredient_count in practical_recipes:
+            content = json.loads(raw_content)
+            steps = content.get("steps", [])
+            if len(steps) != 6 or ingredient_count < 6:
+                print(
+                    f"recipe is not executable: {title} ({recipe_id})", file=sys.stderr
+                )
+                return 1
+            if any(len(str(step).split()) < 8 for step in steps):
+                print(
+                    f"recipe step is too vague: {title} ({recipe_id})", file=sys.stderr
+                )
+                return 1
+
         discussions = conn.execute(
             "SELECT id, title, body, author_user_id FROM discussions"
             " WHERE status = 'visible' ORDER BY id"
         ).fetchall()
-        if len(discussions) != 200:
-            print(f"expected 200 useful discussions, found {len(discussions)}", file=sys.stderr)
+        if len(discussions) != 400:
+            print(
+                f"expected 400 useful discussions, found {len(discussions)}",
+                file=sys.stderr,
+            )
             return 1
         if any(row[0].startswith("dsc_expansion_") for row in discussions):
             print("legacy generated discussion survived", file=sys.stderr)
@@ -223,16 +288,58 @@ def main() -> int:
         if any(len(row[2].split()) < 45 for row in editorial_discussions):
             print("editorial discussion prompt is too thin", file=sys.stderr)
             return 1
+        practical_discussions = [
+            row for row in discussions if row[0].startswith("dsc_practical_")
+        ]
+        if len(practical_discussions) != 200:
+            print(
+                f"expected 200 new practical discussions, found {len(practical_discussions)}",
+                file=sys.stderr,
+            )
+            return 1
+        if any(len(row[2].split()) < 55 for row in practical_discussions):
+            print("practical discussion prompt is too thin", file=sys.stderr)
+            return 1
         if len({row[3] for row in discussions}) < 8:
-            print("discussion library does not have enough distinct authors", file=sys.stderr)
+            print(
+                "discussion library does not have enough distinct authors",
+                file=sys.stderr,
+            )
+            return 1
+
+        expanded_product_variant_gaps = conn.execute(
+            "SELECT COUNT(*) FROM products p"
+            " WHERE p.status = 'published'"
+            " AND ("
+            "   (SELECT COUNT(*) FROM product_variants v"
+            "    WHERE v.product_id = p.id AND v.status = 'active') NOT BETWEEN 2 AND 5"
+            "   OR EXISTS (SELECT 1 FROM product_variants v"
+            "       WHERE v.product_id = p.id AND v.status = 'active'"
+            "       AND NOT EXISTS (SELECT 1 FROM variant_prices vp"
+            "         WHERE vp.variant_id = v.id AND vp.status = 'active'))"
+            "   OR EXISTS (SELECT 1 FROM product_variants v"
+            "       WHERE v.product_id = p.id AND v.status = 'active'"
+            "       AND NOT EXISTS (SELECT 1 FROM inventory_levels il"
+            "         WHERE il.variant_id = v.id))"
+            " )"
+        ).fetchone()[0]
+        if expanded_product_variant_gaps:
+            print(
+                f"{expanded_product_variant_gaps} customer products fall outside 2-5 buyable variants",
+                file=sys.stderr,
+            )
             return 1
 
         home_content = conn.execute(
             "SELECT content_json FROM page_versions WHERE id ="
             " (SELECT published_version_id FROM pages WHERE id = 'pag_home')"
         ).fetchone()
-        home_blocks = json.loads(home_content[0]).get("blocks", []) if home_content else []
-        hero = next((block for block in home_blocks if block.get("type") == "hero"), None)
+        home_blocks = (
+            json.loads(home_content[0]).get("blocks", []) if home_content else []
+        )
+        hero = next(
+            (block for block in home_blocks if block.get("type") == "hero"), None
+        )
         slides = hero.get("props", {}).get("slides", []) if hero else []
         if len(slides) != 12:
             print(f"expected 12 homepage banners, found {len(slides)}", file=sys.stderr)
@@ -248,12 +355,26 @@ def main() -> int:
             "SELECT COUNT(*) FROM categories"
             " WHERE status = 'published' AND hero_image_url LIKE '/banners/categories/%'"
         ).fetchone()[0]
-        if category_banner_count < 30:
+        if category_banner_count != published_categories:
             print(
-                f"expected category banner coverage, found {category_banner_count}",
+                "every public category must have a banner: "
+                f"found {category_banner_count} for {published_categories}",
                 file=sys.stderr,
             )
             return 1
+
+        visible_image_urls = conn.execute(
+            "SELECT DISTINCT image_url FROM products"
+            " WHERE status = 'published' AND NULLIF(TRIM(image_url), '') IS NOT NULL"
+            " UNION SELECT DISTINCT hero_image_url FROM categories"
+            " WHERE status = 'published' AND visibility = 'public'"
+            " AND NULLIF(TRIM(hero_image_url), '') IS NOT NULL"
+        ).fetchall()
+        for (image_url,) in visible_image_urls:
+            asset = ROOT / "apps" / "storefront" / "public" / image_url.lstrip("/")
+            if not image_url.startswith("/banners/categories/") or not asset.is_file():
+                print(f"missing catalogue image asset: {image_url}", file=sys.stderr)
+                return 1
 
         customer_catalogue_departments = (
             "farm-fresh-proteins",
@@ -270,16 +391,14 @@ def main() -> int:
             "meal-boxes-subscriptions",
         )
         for department_slug in customer_catalogue_departments:
-            expected_url = f"/banners/categories/{department_slug}.webp"
             category = conn.execute(
                 "SELECT hero_image_url FROM categories"
                 " WHERE slug = ? AND status = 'published'",
                 (department_slug,),
             ).fetchone()
-            asset = ROOT / "apps" / "storefront" / "public" / expected_url.lstrip("/")
-            if not category or category[0] != expected_url or not asset.is_file():
+            if not category:
                 print(
-                    f"missing customer catalogue banner: {expected_url}",
+                    f"missing customer catalogue department: {department_slug}",
                     file=sys.stderr,
                 )
                 return 1

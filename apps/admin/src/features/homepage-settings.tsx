@@ -39,6 +39,7 @@ import {
   type HomepageSection,
   type SiteControl,
 } from "../lib/api";
+import { usePermissions } from "../lib/permissions";
 
 /** Mirrors the identical helper in `site-control.tsx` / `appearance.tsx` — a
  *  scope here is always a two-letter country code, never `'global'`; the
@@ -47,7 +48,15 @@ function isRealCountryCode(code: string): boolean {
   return /^[A-Z]{2}$/.test(code);
 }
 
-const MAX_CURATED_SLOTS = 12;
+// The hard ceiling the block format itself enforces (mirrors the API's
+// `CURATED_MAX_ITEMS_HARD_LIMIT`) -- a generous static bound for client-side
+// validation. The *configured* limit an operator actually sees and is held
+// to in the UI is `curatedMaxItems`, fetched from `/v1/admin/curated-settings`
+// and editable on Site Control (one shared setting for Fresh Favourites,
+// Featured Categories and Highlights, since all three are the same shape of
+// feature).
+const CURATED_SLOTS_HARD_LIMIT = 50;
+const FALLBACK_CURATED_MAX_ITEMS = 12;
 
 /** Fallback for the banner-slide cap while `site-control` is still loading, or
  *  if an older API omits it. The real number is `heroMaxSlides`, stored in
@@ -125,8 +134,8 @@ const homepageSchema = z.object({
   seoTitle: z.string().min(3).max(160),
   seoDescription: z.string().max(320),
   seoKeywords: z.string().max(500),
-  featuredCategories: z.array(z.string()).max(MAX_CURATED_SLOTS),
-  freshFavourites: z.array(z.string()).max(MAX_CURATED_SLOTS),
+  featuredCategories: z.array(z.string()).max(CURATED_SLOTS_HARD_LIMIT),
+  freshFavourites: z.array(z.string()).max(CURATED_SLOTS_HARD_LIMIT),
 });
 
 type HomepageForm = z.infer<typeof homepageSchema>;
@@ -1040,7 +1049,16 @@ function HomepageCountryOverridesSection() {
 // editor, must open in this form rather than crash the page.
 // ---------------------------------------------------------------------------
 
-const SECTION_EDITORS = new Set(["page_links", "rich_text", "faq", "farmer_story", "newsletter"]);
+const SECTION_EDITORS = new Set([
+  "page_links",
+  "rich_text",
+  "faq",
+  "farmer_story",
+  "newsletter",
+  "reviews_showcase",
+  "promotion_banner",
+  "recommendations",
+]);
 
 type Props = Record<string, unknown>;
 
@@ -1059,6 +1077,11 @@ function readStrings(props: Props, key: string): string[] {
   const value = props[key];
   if (!Array.isArray(value)) return [];
   return value.filter((entry): entry is string => typeof entry === "string");
+}
+
+function readNumber(props: Props, key: string, fallback: number): number {
+  const value = props[key];
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
 
 function SectionContentEditor({
@@ -1081,6 +1104,12 @@ function SectionContentEditor({
       return <FarmerStoryEditor section={section} saving={saving} onSave={onSave} />;
     case "newsletter":
       return <NewsletterEditor section={section} saving={saving} onSave={onSave} />;
+    case "reviews_showcase":
+      return <ReviewsShowcaseEditor section={section} saving={saving} onSave={onSave} />;
+    case "promotion_banner":
+      return <PromotionBannerEditor section={section} saving={saving} onSave={onSave} />;
+    case "recommendations":
+      return <RecommendationsEditor section={section} saving={saving} onSave={onSave} />;
     default:
       return (
         <p className="text-sm text-ink-muted">
@@ -1548,6 +1577,390 @@ function NewsletterEditor({
   );
 }
 
+/**
+ * "What customers are saying". `rule` mode resolves live to the current
+ * top-rated approved reviews sitewide -- nothing to pick, just a floor and a
+ * count. `manual` mode picks specific testimonials from the approved queue, in
+ * the order picked; unpicking one just removes it from `reviewIds`, it does
+ * not touch the underlying review.
+ */
+function ReviewsShowcaseEditor({
+  section,
+  saving,
+  onSave,
+}: {
+  section: HomepageSection;
+  saving: boolean;
+  onSave: (props: Props) => void;
+}) {
+  const toast = useToast();
+  const [heading, setHeading] = useState(() => readString(section.props, "heading"));
+  const [subheading, setSubheading] = useState(() => readString(section.props, "subheading"));
+  const [source, setSource] = useState(() =>
+    readString(section.props, "source") === "manual" ? "manual" : "rule",
+  );
+  const [minRating, setMinRating] = useState(() => readNumber(section.props, "minRating", 4));
+  const [limit, setLimit] = useState(() => readNumber(section.props, "limit", 8));
+  const [reviewIds, setReviewIds] = useState<string[]>(() => readStrings(section.props, "reviewIds"));
+
+  const { data: approved, isLoading } = useQuery({
+    queryKey: ["admin-reviews", "homepage-picker"],
+    queryFn: () => api.reviews({ status: "approved", limit: 100 }),
+    enabled: source === "manual",
+  });
+  const candidates = approved?.items ?? [];
+
+  function toggle(id: string) {
+    setReviewIds((current) =>
+      current.includes(id) ? current.filter((entry) => entry !== id) : [...current, id],
+    );
+  }
+
+  function move(index: number, delta: number) {
+    const target = index + delta;
+    if (target < 0 || target >= reviewIds.length) return;
+    const next = [...reviewIds];
+    const moved = next[index]!;
+    next[index] = next[target]!;
+    next[target] = moved;
+    setReviewIds(next);
+  }
+
+  return (
+    <form
+      className="space-y-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (!heading.trim()) {
+          toast.error("The section needs a heading.");
+          return;
+        }
+        if (source === "manual" && reviewIds.length === 0) {
+          toast.error("Pick at least one review, or switch to top-rated reviews.");
+          return;
+        }
+        onSave({
+          heading: heading.trim(),
+          subheading: subheading.trim(),
+          source,
+          reviewIds: source === "manual" ? reviewIds : [],
+          limit: Math.min(Math.max(Math.round(limit), 1), 24),
+          minRating: Math.min(Math.max(Math.round(minRating), 1), 5),
+        });
+      }}
+    >
+      <div className="grid gap-4 md:grid-cols-2">
+        <Field label="Section heading" htmlFor={`reviews-heading-${section.id}`}>
+          <Input
+            id={`reviews-heading-${section.id}`}
+            value={heading}
+            maxLength={120}
+            onChange={(event) => setHeading(event.target.value)}
+          />
+        </Field>
+        <Field label="Subheading (optional)" htmlFor={`reviews-subheading-${section.id}`}>
+          <Input
+            id={`reviews-subheading-${section.id}`}
+            value={subheading}
+            maxLength={240}
+            onChange={(event) => setSubheading(event.target.value)}
+          />
+        </Field>
+      </div>
+
+      <Field label="Which reviews to show" htmlFor={`reviews-source-${section.id}`}>
+        <Select
+          id={`reviews-source-${section.id}`}
+          value={source}
+          onChange={(event) => setSource(event.target.value === "manual" ? "manual" : "rule")}
+        >
+          <option value="rule">Top-rated reviews (updates automatically)</option>
+          <option value="manual">Hand-picked testimonials</option>
+        </Select>
+      </Field>
+
+      {source === "rule" ? (
+        <div className="grid gap-4 md:grid-cols-2">
+          <Field label="Minimum rating" htmlFor={`reviews-min-rating-${section.id}`}>
+            <Select
+              id={`reviews-min-rating-${section.id}`}
+              value={String(minRating)}
+              onChange={(event) => setMinRating(Number(event.target.value))}
+            >
+              {[5, 4, 3, 2, 1].map((value) => (
+                <option key={value} value={value}>
+                  {value}+ stars
+                </option>
+              ))}
+            </Select>
+          </Field>
+          <Field label="How many to show" htmlFor={`reviews-limit-${section.id}`}>
+            <Input
+              id={`reviews-limit-${section.id}`}
+              type="number"
+              min={1}
+              max={24}
+              value={limit}
+              onChange={(event) => setLimit(Number(event.target.value) || 1)}
+            />
+          </Field>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {isLoading ? (
+            <p className="text-sm text-ink-muted">Loading approved reviews...</p>
+          ) : candidates.length === 0 ? (
+            <p className="max-w-xl rounded-md border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
+              No approved reviews yet. Approve some from the Reviews page, then come back here to
+              feature them.
+            </p>
+          ) : (
+            <ul className="divide-y divide-line rounded-md border border-line">
+              {candidates.map((review) => {
+                const picked = reviewIds.includes(review.id);
+                const pickedIndex = reviewIds.indexOf(review.id);
+                return (
+                  <li key={review.id} className="flex items-start gap-3 px-3 py-3">
+                    <input
+                      type="checkbox"
+                      className="mt-1"
+                      checked={picked}
+                      onChange={() => toggle(review.id)}
+                      aria-label={`Feature review: ${review.title || review.body.slice(0, 40)}`}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-ink">
+                        {review.rating}★ — {review.productName}
+                      </p>
+                      <p className="line-clamp-2 text-sm text-ink-muted">
+                        {review.title ? `${review.title} — ` : ""}
+                        {review.body}
+                      </p>
+                    </div>
+                    {picked ? (
+                      <div className="flex shrink-0 items-center gap-1.5">
+                        <button
+                          type="button"
+                          aria-label="Move up in the showcase"
+                          className="min-h-8 min-w-8 rounded-sm border border-line text-xs disabled:opacity-40"
+                          disabled={pickedIndex === 0}
+                          onClick={() => move(pickedIndex, -1)}
+                        >
+                          ↑
+                        </button>
+                        <button
+                          type="button"
+                          aria-label="Move down in the showcase"
+                          className="min-h-8 min-w-8 rounded-sm border border-line text-xs disabled:opacity-40"
+                          disabled={pickedIndex === reviewIds.length - 1}
+                          onClick={() => move(pickedIndex, 1)}
+                        >
+                          ↓
+                        </button>
+                      </div>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      )}
+
+      <SaveRow
+        saving={saving}
+        hint={
+          source === "rule"
+            ? "Resolves live on every homepage load -- nothing to keep up to date."
+            : `${reviewIds.length} of 24 reviews featured, in the order shown above.`
+        }
+      />
+    </form>
+  );
+}
+
+/**
+ * "What's on offer". `rule` mode resolves live to the current highest-
+ * priority active promotion -- nothing to pick. `manual` mode pins one
+ * specific promotion. No heading/subheading here: a promotion already
+ * carries its own headline and description (Coupons & Promotions page),
+ * which is also what the checkout-page callout reads, so the two surfaces
+ * never drift into two hand-maintained versions of the same offer. Requires
+ * `promotions.view` to load the manual-mode picker -- an editor without it
+ * can still switch to rule mode.
+ */
+function PromotionBannerEditor({
+  section,
+  saving,
+  onSave,
+}: {
+  section: HomepageSection;
+  saving: boolean;
+  onSave: (props: Props) => void;
+}) {
+  const toast = useToast();
+  const permissions = usePermissions();
+  const [source, setSource] = useState(() =>
+    readString(section.props, "source") === "manual" ? "manual" : "rule",
+  );
+  const [promotionId, setPromotionId] = useState(() => {
+    const value = section.props["promotionId"];
+    return typeof value === "string" ? value : "";
+  });
+
+  const canPickPromotion = permissions.has("promotions.view");
+  const { data: promotions, isLoading } = useQuery({
+    queryKey: ["admin-promotions", "homepage-picker"],
+    queryFn: () => api.promotions({ status: "active", limit: 100 }),
+    enabled: source === "manual" && canPickPromotion,
+  });
+  const candidates = promotions?.items ?? [];
+
+  return (
+    <form
+      className="space-y-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (source === "manual" && !promotionId) {
+          toast.error("Pick a promotion, or switch to the best-active-promotion mode.");
+          return;
+        }
+        onSave({ source, promotionId: source === "manual" ? promotionId : null });
+      }}
+    >
+      <Field label="Which promotion to show" htmlFor={`promo-source-${section.id}`}>
+        <Select
+          id={`promo-source-${section.id}`}
+          value={source}
+          onChange={(event) => setSource(event.target.value === "manual" ? "manual" : "rule")}
+        >
+          <option value="rule">Best active promotion (updates automatically)</option>
+          <option value="manual">One specific promotion</option>
+        </Select>
+      </Field>
+
+      {source === "manual" ? (
+        !canPickPromotion ? (
+          <p className="text-sm text-ink-muted">
+            You need the Coupons & Promotions permission to pick a specific promotion here.
+          </p>
+        ) : isLoading ? (
+          <p className="text-sm text-ink-muted">Loading active promotions...</p>
+        ) : candidates.length === 0 ? (
+          <p className="max-w-xl rounded-md border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
+            No active promotions yet. Create one from Coupons & Promotions, then come back here to
+            feature it.
+          </p>
+        ) : (
+          <div className="space-y-2 rounded-md border border-line p-3">
+            {candidates.map((promotion) => (
+              <label key={promotion.id} className="flex items-start gap-2.5 text-sm text-ink">
+                <input
+                  type="radio"
+                  name={`promo-pick-${section.id}`}
+                  className="mt-1"
+                  checked={promotionId === promotion.id}
+                  onChange={() => setPromotionId(promotion.id)}
+                />
+                <span>
+                  <span className="block font-medium">{promotion.name}</span>
+                  {promotion.headline ? (
+                    <span className="block text-xs text-ink-muted">{promotion.headline}</span>
+                  ) : null}
+                </span>
+              </label>
+            ))}
+          </div>
+        )
+      ) : null}
+
+      <SaveRow
+        saving={saving}
+        hint={
+          source === "rule"
+            ? "Resolves live on every homepage load -- nothing to keep up to date."
+            : "Shown even if a higher-priority automatic promotion is also active."
+        }
+      />
+    </form>
+  );
+}
+
+/**
+ * Best sellers, computed live from real order data -- there is no picker
+ * here, only merchandising copy and a count, because the ranking itself
+ * updates on its own as orders come in. The sitewide on/off switch for
+ * recommendations lives on Site Control, not here: this editor only shapes
+ * what shows when the feature is on.
+ */
+function RecommendationsEditor({
+  section,
+  saving,
+  onSave,
+}: {
+  section: HomepageSection;
+  saving: boolean;
+  onSave: (props: Props) => void;
+}) {
+  const toast = useToast();
+  const [heading, setHeading] = useState(() => readString(section.props, "heading"));
+  const [subheading, setSubheading] = useState(() => readString(section.props, "subheading"));
+  const [limit, setLimit] = useState(() => readNumber(section.props, "limit", 8));
+
+  return (
+    <form
+      className="space-y-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (!heading.trim()) {
+          toast.error("The section needs a heading.");
+          return;
+        }
+        onSave({
+          heading: heading.trim(),
+          subheading: subheading.trim(),
+          limit: Math.min(Math.max(Math.round(limit), 1), 24),
+        });
+      }}
+    >
+      <div className="grid gap-4 md:grid-cols-2">
+        <Field label="Section heading" htmlFor={`recs-heading-${section.id}`}>
+          <Input
+            id={`recs-heading-${section.id}`}
+            value={heading}
+            maxLength={120}
+            onChange={(event) => setHeading(event.target.value)}
+          />
+        </Field>
+        <Field label="Subheading (optional)" htmlFor={`recs-subheading-${section.id}`}>
+          <Input
+            id={`recs-subheading-${section.id}`}
+            value={subheading}
+            maxLength={240}
+            onChange={(event) => setSubheading(event.target.value)}
+          />
+        </Field>
+      </div>
+
+      <Field label="How many products to show" htmlFor={`recs-limit-${section.id}`}>
+        <Input
+          id={`recs-limit-${section.id}`}
+          type="number"
+          min={1}
+          max={24}
+          value={limit}
+          onChange={(event) => setLimit(Number(event.target.value) || 1)}
+        />
+      </Field>
+
+      <SaveRow
+        saving={saving}
+        hint="Best sellers, resolved live from orders on every homepage load -- nothing to keep stocked."
+      />
+    </form>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Curated catalogue rows. Both save with the "Save homepage" button, because
 // both are fields on the same site-control record as the banner above.
@@ -1564,6 +1977,11 @@ function FeaturedCategoriesSection({ form }: { form: ReturnType<typeof useForm<H
       return [...firstPage, ...secondPage];
     },
   });
+  const { data: curatedSettings } = useQuery({
+    queryKey: ["curated-settings"],
+    queryFn: api.curatedSettings,
+  });
+  const maxCuratedSlots = curatedSettings?.maxItems ?? FALLBACK_CURATED_MAX_ITEMS;
   const [pendingId, setPendingId] = useState("");
   const currentSlugs = form.watch("featuredCategories");
   const currentCategories = currentSlugs
@@ -1587,8 +2005,8 @@ function FeaturedCategoriesSection({ form }: { form: ReturnType<typeof useForm<H
       <div>
         <h2 className="font-display text-lg text-ink">Category row</h2>
         <p className="text-sm text-ink-muted">
-          Choose up to {MAX_CURATED_SLOTS} published categories for the homepage slider. Customers
-          see four at a time on desktop, in this order.
+          Choose up to {maxCuratedSlots} published categories for the homepage slider. Customers
+          see four at a time on desktop, in this order. Raise the limit on Site Control.
         </p>
       </div>
       {isLoading ? (
@@ -1657,7 +2075,7 @@ function FeaturedCategoriesSection({ form }: { form: ReturnType<typeof useForm<H
         <Button
           type="button"
           variant="secondary"
-          disabled={!pendingId || currentSlugs.length >= MAX_CURATED_SLOTS}
+          disabled={!pendingId || currentSlugs.length >= maxCuratedSlots}
           onClick={() => {
             const category = addable.find((entry) => entry.id === pendingId);
             if (!category) return;
@@ -1672,7 +2090,7 @@ function FeaturedCategoriesSection({ form }: { form: ReturnType<typeof useForm<H
         </Button>
       </div>
       <p className="text-xs text-ink-muted">
-        {currentSlugs.length} of {MAX_CURATED_SLOTS} slots used
+        {currentSlugs.length} of {maxCuratedSlots} slots used
       </p>
     </section>
   );
@@ -1683,6 +2101,11 @@ function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<Home
     queryKey: ["admin-products", "all"],
     queryFn: () => api.products({ limit: 100 }),
   });
+  const { data: curatedSettings } = useQuery({
+    queryKey: ["curated-settings"],
+    queryFn: api.curatedSettings,
+  });
+  const maxCuratedSlots = curatedSettings?.maxItems ?? FALLBACK_CURATED_MAX_ITEMS;
   const [pendingId, setPendingId] = useState("");
 
   const currentSlugs = form.watch("freshFavourites");
@@ -1780,7 +2203,7 @@ function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<Home
         <Button
           type="button"
           variant="secondary"
-          disabled={!pendingId || currentSlugs.length >= MAX_CURATED_SLOTS}
+          disabled={!pendingId || currentSlugs.length >= maxCuratedSlots}
           onClick={() => {
             const row = addable.find((entry) => entry.id === pendingId);
             if (!row) return;
@@ -1796,7 +2219,7 @@ function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<Home
         </Button>
       </div>
       <p className="text-xs text-ink-muted">
-        {currentSlugs.length} of {MAX_CURATED_SLOTS} slots used
+        {currentSlugs.length} of {maxCuratedSlots} slots used
       </p>
     </section>
   );
