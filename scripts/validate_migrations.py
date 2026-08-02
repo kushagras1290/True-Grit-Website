@@ -46,6 +46,25 @@ def main() -> int:
         print(f"integrity_check failed: {integrity}", file=sys.stderr)
         return 1
 
+    # Migration 0056 is deliberately customer-facing data, not development
+    # fixture content. Prove the products exist before development.sql runs.
+    migrated_customer_categories = conn.execute(
+        "SELECT COUNT(*) FROM categories"
+        " WHERE id LIKE 'cat_complete_%' OR id LIKE 'cat_mass_%'"
+    ).fetchone()[0]
+    migrated_customer_products = conn.execute(
+        "SELECT COUNT(*) FROM products"
+        " WHERE id LIKE 'prd_complete_%' OR id LIKE 'prd_mass_%'"
+    ).fetchone()[0]
+    if migrated_customer_categories != 108 or migrated_customer_products != 1152:
+        print(
+            "customer catalogue must be migration-backed before seed data runs: "
+            f"found {migrated_customer_categories} categories and "
+            f"{migrated_customer_products} products",
+            file=sys.stderr,
+        )
+        return 1
+
     if SEED.exists():
         try:
             conn.executescript(SEED.read_text(encoding="utf-8"))
@@ -58,6 +77,68 @@ def main() -> int:
         if violations:
             print(f"seed foreign_key_check violations: {violations}", file=sys.stderr)
             return 1
+
+        # Demo and review environments need a market broad enough to exercise
+        # category navigation, pagination, search, inventory and checkout. Keep
+        # the catalogue expansion complete rather than allowing rows that look
+        # published but cannot actually be found or purchased.
+        published_categories = conn.execute(
+            "SELECT COUNT(*) FROM categories"
+            " WHERE status = 'published' AND visibility = 'public'"
+        ).fetchone()[0]
+        published_products = conn.execute(
+            "SELECT COUNT(*) FROM products WHERE status = 'published'"
+        ).fetchone()[0]
+        if published_categories < 242:
+            print(
+                f"expected at least 242 published categories, found {published_categories}",
+                file=sys.stderr,
+            )
+            return 1
+        if published_products < 1957:
+            print(
+                f"expected at least 1957 published products, found {published_products}",
+                file=sys.stderr,
+            )
+            return 1
+
+        catalogue_integrity_checks = {
+            "category assignment": (
+                "SELECT COUNT(*) FROM products p WHERE p.status = 'published'"
+                " AND NOT EXISTS (SELECT 1 FROM product_categories pc"
+                " WHERE pc.product_id = p.id)"
+            ),
+            "active variant": (
+                "SELECT COUNT(*) FROM products p WHERE p.status = 'published'"
+                " AND NOT EXISTS (SELECT 1 FROM product_variants v"
+                " WHERE v.product_id = p.id AND v.status = 'active')"
+            ),
+            "active price": (
+                "SELECT COUNT(*) FROM products p WHERE p.status = 'published'"
+                " AND NOT EXISTS (SELECT 1 FROM product_variants v"
+                " JOIN variant_prices vp ON vp.variant_id = v.id"
+                " AND vp.status = 'active' WHERE v.product_id = p.id"
+                " AND v.status = 'active')"
+            ),
+            "inventory": (
+                "SELECT COUNT(*) FROM products p WHERE p.status = 'published'"
+                " AND NOT EXISTS (SELECT 1 FROM product_variants v"
+                " JOIN inventory_levels il ON il.variant_id = v.id"
+                " WHERE v.product_id = p.id AND v.status = 'active')"
+            ),
+            "search index": (
+                "SELECT COUNT(*) FROM products p WHERE p.status = 'published'"
+                " AND NOT EXISTS (SELECT 1 FROM search_products s"
+                " WHERE s.product_id = p.id)"
+            ),
+        }
+        for requirement, query in catalogue_integrity_checks.items():
+            missing = conn.execute(query).fetchone()[0]
+            if missing:
+                print(
+                    f"{missing} published products lack {requirement}", file=sys.stderr
+                )
+                return 1
 
         # The editorial library deliberately matches the original visible
         # volume, but every family now has a reader job and quality floor.
@@ -173,6 +254,35 @@ def main() -> int:
                 file=sys.stderr,
             )
             return 1
+
+        customer_catalogue_departments = (
+            "farm-fresh-proteins",
+            "pasta-noodles-couscous",
+            "soups-stocks-preserved",
+            "juices-water-functional",
+            "chocolate-confectionery",
+            "regional-indian-pantry",
+            "free-from-special-diet",
+            "baby-care-parenting",
+            "family-wellness-care",
+            "kitchen-dining-storage",
+            "bulk-refill-value",
+            "meal-boxes-subscriptions",
+        )
+        for department_slug in customer_catalogue_departments:
+            expected_url = f"/banners/categories/{department_slug}.webp"
+            category = conn.execute(
+                "SELECT hero_image_url FROM categories"
+                " WHERE slug = ? AND status = 'published'",
+                (department_slug,),
+            ).fetchone()
+            asset = ROOT / "apps" / "storefront" / "public" / expected_url.lstrip("/")
+            if not category or category[0] != expected_url or not asset.is_file():
+                print(
+                    f"missing customer catalogue banner: {expected_url}",
+                    file=sys.stderr,
+                )
+                return 1
 
     tables = conn.execute(
         "SELECT count(*) FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';"

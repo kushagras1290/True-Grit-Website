@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { bootstrap, categories, products } from "@truegrit/contracts/fixtures";
+import {
+  bootstrap,
+  categories,
+  products,
+  productSlugsForCategory,
+} from "@truegrit/contracts/fixtures";
 
 import {
   loadAllProducts,
@@ -49,6 +54,53 @@ describe("demo catalogue", () => {
   it("lists every fixture category and product when the API is off", async () => {
     expect(await loadCategories()).toEqual(categories);
     expect(await loadAllProducts()).toEqual(products);
+  });
+
+  it("ships the complete seeded market in demo mode", () => {
+    expect(categories.length).toBeGreaterThanOrEqual(242);
+    expect(products.length).toBeGreaterThanOrEqual(1957);
+    expect(categories.filter((category) => category.level === 0).length).toBeGreaterThanOrEqual(46);
+    expect(categories.map((category) => category.slug)).toEqual(
+      expect.arrayContaining([
+        "baby-kids",
+        "bulk-refill-value",
+        "chocolate-confectionery",
+        "farm-fresh-proteins",
+        "kitchen-dining-storage",
+        "organic-gardening",
+        "pasta-noodles-couscous",
+        "pet-care",
+        "regional-indian-pantry",
+        "wellness-supplements",
+      ]),
+    );
+    expect(products.map((product) => product.slug)).toEqual(
+      expect.arrayContaining([
+        "organic-a2-cow-milk",
+        "organic-ashwagandha-capsules",
+        "organic-frozen-green-peas",
+        "organic-steel-lunch-box",
+        "free-range-brown-eggs-farm-fresh-proteins",
+        "brown-rice-penne-pasta-noodles-couscous",
+        "70-percent-dark-chocolate-chocolate-confectionery",
+        "weekly-vegetable-box-meal-boxes-subscriptions",
+      ]),
+    );
+  });
+
+  it("keeps every generated product purchasable and reachable from a category", () => {
+    const assignedSlugs = new Set(
+      categories.flatMap((category) => productSlugsForCategory(category.slug)),
+    );
+    expect(
+      products.every(
+        (product) =>
+          product.leadVariantId !== null &&
+          product.variants.length > 0 &&
+          product.priceMinor > 0 &&
+          assignedSlugs.has(product.slug),
+      ),
+    ).toBe(true);
   });
 
   it("loads products by slug in the requested order", async () => {
