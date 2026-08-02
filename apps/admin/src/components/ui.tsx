@@ -251,6 +251,7 @@ const STATUS_STYLES: Record<string, string> = {
   pending: "bg-warning/10 text-warning",
   pending_payment: "bg-warning/10 text-warning",
   processing: "bg-warning/10 text-warning",
+  paused: "bg-warning/10 text-warning",
   low_stock: "bg-warning/10 text-warning",
   archived: "bg-canvas text-ink-muted border border-line",
   disabled: "bg-danger/10 text-danger",

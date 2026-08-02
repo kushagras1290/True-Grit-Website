@@ -85,7 +85,10 @@ def test_archive_lists_and_restores_products(client: TestClient, db: SQLiteDatab
     archived = client.post("/v1/admin/products/prd_alphonso/archive")
     assert archived.status_code == 200
 
-    archive = client.get("/v1/admin/archive")
+    # Scoped by search: the seed catalogue already carries hundreds of
+    # archived filler products (a bulk-generated library), so an unfiltered
+    # first page is not guaranteed to include the one this test just archived.
+    archive = client.get("/v1/admin/archive", params={"search": "Alphonso"})
     assert archive.status_code == 200
     rows = archive.json()["items"]
     product = next(row for row in rows if row["id"] == "prd_alphonso")
@@ -193,9 +196,11 @@ def test_inventory_adjustment_persists_and_audits(client: TestClient, db: SQLite
     assert response.json()["onHand"] == 130  # seeded 120 + 10
 
     # Searched, not read off page one: the inventory list is paginated and the
-    # catalogue is far larger than a single page.
+    # catalogue is far larger than a single page. One group per product, its
+    # variants nested inside.
     inventory = client.get("/v1/admin/inventory", params={"search": "TRG-MNG-1KG"}).json()["items"]
-    mango = next(row for row in inventory if row["sku"] == "TRG-MNG-1KG")
+    variants = [variant for group in inventory for variant in group["variants"]]
+    mango = next(row for row in variants if row["sku"] == "TRG-MNG-1KG")
     assert mango["onHand"] == 130
     assert "inventory.adjusted" in [
         row["action"] for row in client.get("/v1/admin/audit").json()["items"]
@@ -235,10 +240,14 @@ def test_enabled_product_without_stock_appears_and_accepts_first_adjustment(
         == 200
     )
 
+    # Searched, not read off page one: inventory is paginated by product and
+    # the catalogue is far larger than a single page.
+    groups = client.get("/v1/admin/inventory", params={"search": "INV-START-1"}).json()["items"]
     row = next(
-        item
-        for item in client.get("/v1/admin/inventory").json()["items"]
-        if item["sku"] == "INV-START-1"
+        variant
+        for group in groups
+        for variant in group["variants"]
+        if variant["sku"] == "INV-START-1"
     )
     assert row["onHand"] == 0
     assert row["locationName"] == "Not assigned"
@@ -866,17 +875,19 @@ def test_owner_can_manage_site_control(client: TestClient, db: SQLiteDatabase):
     assert public_home["blocks"][0]["props"]["imageUrl"] == "/homepage-hero.png"
     assert public_home["blocks"][0]["props"]["slides"][1]["href"] == "/category/organic-vegetables"
     assert public_home["blocks"][0]["props"]["slides"][1]["enabled"] is False
-    assert public_home["blocks"][1]["props"]["categorySlugs"] == [
+    # blocks[1] is the promotions banner (migration 0060, seeded directly under
+    # the hero) -- categories and products sit one slot further out than before.
+    assert public_home["blocks"][2]["props"]["categorySlugs"] == [
         "fruits",
         "vegetables",
         "staple-grains",
     ]
-    assert public_home["blocks"][2]["props"]["productSlugs"] == [
+    assert public_home["blocks"][3]["props"]["productSlugs"] == [
         "organic-kesar-mango",
         "organic-mature-spinach",
         "organic-brown-basmati-rice",
     ]
-    assert public_home["blocks"][2]["props"]["limit"] == 3
+    assert public_home["blocks"][3]["props"]["limit"] == 3
 
 
 def test_farm_owner_cannot_manage_site_control(client: TestClient, db: SQLiteDatabase):
@@ -951,6 +962,9 @@ def test_owner_can_manage_homepage_sections(client: TestClient, db: SQLiteDataba
         "faq",
         "farmer_story",
         "newsletter",
+        "reviews_showcase",
+        "promotion_banner",
+        "recommendations",
     }
 
     # The three sections Site Control's own editors bind to are undeletable but

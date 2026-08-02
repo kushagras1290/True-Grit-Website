@@ -13,7 +13,7 @@ import {
 } from "@tanstack/react-table";
 import type { AdminProductRow } from "@truegrit/contracts";
 import { ArrowUpDown } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router";
 import { z } from "zod";
@@ -38,7 +38,7 @@ import {
   Th,
 } from "../components/ui";
 import { useToast } from "../components/toast";
-import { ApiError, api, type AdminProductDetail } from "../lib/api";
+import { ApiError, api, type AdminProductDetail, type AdminProductImage } from "../lib/api";
 import { COUNTRIES } from "../lib/countries";
 import { formatDate, formatMoney } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
@@ -1209,7 +1209,139 @@ function GeneralTab({
       >
         {saving ? "Saving…" : "Save draft"}
       </Button>
+      <ProductGallerySection productId={product.id} images={product.images} />
     </form>
+  );
+}
+
+/** Additional photos beyond the one required "Customer image URL" above --
+ * the thumbnail strip on the storefront product page (see migration 0066).
+ * Saves immediately per add/remove/reorder, the same "manage as its own
+ * mutation" pattern bundles' item picker uses, rather than batching into the
+ * surrounding form's single "Save draft" submit. */
+function ProductGallerySection({
+  productId,
+  images,
+}: {
+  productId: string;
+  images: AdminProductImage[];
+}) {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const [gallery, setGallery] = useState<AdminProductImage[]>(images);
+
+  useEffect(() => {
+    setGallery(images);
+  }, [images]);
+
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => api.uploadImage(file),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not upload image."),
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: (next: AdminProductImage[]) =>
+      api.replaceProductImages(
+        productId,
+        next.map((entry) => ({ imageUrl: entry.imageUrl, imageAlt: entry.imageAlt ?? undefined })),
+      ),
+    onSuccess: async (result) => {
+      setGallery(result.images);
+      await queryClient.invalidateQueries({ queryKey: ["admin-product", productId] });
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not save the gallery."),
+  });
+
+  function move(index: number, delta: number) {
+    const target = index + delta;
+    if (target < 0 || target >= gallery.length) return;
+    const next = [...gallery];
+    [next[index], next[target]] = [next[target]!, next[index]!];
+    saveMutation.mutate(next);
+  }
+
+  function remove(index: number) {
+    saveMutation.mutate(gallery.filter((_, position) => position !== index));
+  }
+
+  const busy = uploadMutation.isPending || saveMutation.isPending;
+
+  return (
+    <div className="border-t border-line pt-5">
+      <p className="text-sm font-medium text-ink">Gallery images</p>
+      <p className="mt-1 text-xs text-ink-muted">
+        Extra photos shown as a thumbnail strip on the product page, the way most shops show
+        different angles of the same item. Up to 8. Saved immediately, no separate "Save draft"
+        needed.
+      </p>
+
+      {gallery.length > 0 ? (
+        <ul className="mt-3 flex flex-wrap gap-3">
+          {gallery.map((image, index) => (
+            <li key={image.id} className="w-24">
+              <ImagePreview
+                src={image.imageUrl}
+                alt={image.imageAlt ?? ""}
+                label={`Gallery image ${index + 1}`}
+                className="h-24 w-24"
+              />
+              <div className="mt-1 flex items-center justify-center gap-1">
+                <button
+                  type="button"
+                  aria-label="Move earlier"
+                  disabled={busy || index === 0}
+                  onClick={() => move(index, -1)}
+                  className="min-h-7 min-w-7 rounded-sm border border-line text-xs disabled:opacity-40"
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  aria-label="Remove"
+                  disabled={busy}
+                  onClick={() => remove(index)}
+                  className="min-h-7 rounded-sm border border-line px-1.5 text-xs text-danger disabled:opacity-40"
+                >
+                  Remove
+                </button>
+                <button
+                  type="button"
+                  aria-label="Move later"
+                  disabled={busy || index === gallery.length - 1}
+                  onClick={() => move(index, 1)}
+                  className="min-h-7 min-w-7 rounded-sm border border-line text-xs disabled:opacity-40"
+                >
+                  →
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
+      {gallery.length < 8 ? (
+        <Input
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          className="mt-3"
+          disabled={busy}
+          onChange={(event) => {
+            const file = event.currentTarget.files?.[0];
+            event.currentTarget.value = "";
+            if (!file) return;
+            uploadMutation.mutate(file, {
+              onSuccess: (result) => {
+                saveMutation.mutate([...gallery, { id: "", imageUrl: result.url, imageAlt: "" }]);
+              },
+            });
+          }}
+        />
+      ) : (
+        <p className="mt-3 text-xs text-ink-muted">A product can hold at most 8 gallery images.</p>
+      )}
+    </div>
   );
 }
 

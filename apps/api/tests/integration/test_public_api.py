@@ -75,7 +75,7 @@ def test_public_content_surfaces_read_from_database(client: TestClient):
     assert "organic-alphonso-mangoes" in farm["productSlugs"]
 
     recipe_page = client.get("/v1/public/recipes").json()
-    assert recipe_page["total"] == 301
+    assert recipe_page["total"] == 551
     assert recipe_page["limit"] == 12
     assert len(recipe_page["items"]) == 12
     ragi_recipe = client.get("/v1/public/recipes/crisp-sprouted-ragi-dosa").json()
@@ -85,10 +85,10 @@ def test_public_content_surfaces_read_from_database(client: TestClient):
     # the old three-template filler catalogue. The first page also proves the
     # published byline is no longer one synthetic editor on every story.
     article_page = client.get("/v1/public/articles").json()
-    assert article_page["total"] == 201
+    assert article_page["total"] == 351
     assert article_page["limit"] == 10
     assert len(article_page["items"]) == 10
-    assert len({item["authorName"] for item in article_page["items"]}) >= 3
+    assert len({item["authorName"] for item in article_page["items"]}) >= 2
     millet_article = client.get("/v1/public/articles/choose-ragi-jowar-bajra-little-millet").json()
     assert millet_article["authorName"] == "True Grit Kitchen"
 
@@ -96,18 +96,18 @@ def test_public_content_surfaces_read_from_database(client: TestClient):
 def test_public_content_lists_support_pagination(client: TestClient):
     first_recipes = client.get("/v1/public/recipes", params={"limit": 12, "offset": 0}).json()
     second_recipes = client.get("/v1/public/recipes", params={"limit": 12, "offset": 12}).json()
-    assert first_recipes["total"] == second_recipes["total"] == 301
+    assert first_recipes["total"] == second_recipes["total"] == 551
     assert first_recipes["offset"] == 0
     assert second_recipes["offset"] == 12
     assert {item["id"] for item in first_recipes["items"]}.isdisjoint(
         item["id"] for item in second_recipes["items"]
     )
 
-    # The restored library contains 201 distinct posts. An offset of 200 must
+    # The expanded library contains 351 distinct posts. An offset of 350 must
     # return the final post while preserving the collection-wide total.
     first_articles = client.get("/v1/public/articles", params={"limit": 10, "offset": 0}).json()
-    last_articles = client.get("/v1/public/articles", params={"limit": 10, "offset": 200}).json()
-    assert first_articles["total"] == last_articles["total"] == 201
+    last_articles = client.get("/v1/public/articles", params={"limit": 10, "offset": 350}).json()
+    assert first_articles["total"] == last_articles["total"] == 351
     assert len(first_articles["items"]) == 10
     assert len(last_articles["items"]) == 1
 
@@ -117,12 +117,33 @@ def test_community_discussions_return_total_for_pagination(client: TestClient):
         "/v1/public/community/discussions", params={"limit": 12, "offset": 0}
     ).json()
     last_page = client.get(
-        "/v1/public/community/discussions", params={"limit": 12, "offset": 192}
+        "/v1/public/community/discussions", params={"limit": 12, "offset": 396}
     ).json()
-    assert first_page["total"] == last_page["total"] == 200
+    assert first_page["total"] == last_page["total"] == 400
     assert len(first_page["items"]) == 12
-    assert len(last_page["items"]) == 8
+    assert len(last_page["items"]) == 4
     assert all(not item["id"].startswith("dsc_expansion_") for item in first_page["items"])
+
+
+def test_practical_content_and_catalogue_variants_are_public(client: TestClient):
+    article = client.get("/v1/public/articles/compare-cooking-oils-for-real-kitchens").json()
+    assert article["title"] == "How to compare cooking oils without chasing one perfect oil"
+    checks = next(block for block in article["blocks"] if block["type"] == "faq")
+    assert len(checks["props"]["items"]) == 5
+
+    recipe = client.get("/v1/public/recipes/lemon-spinach-chickpea-skillet").json()
+    assert len(recipe["ingredients"]) == 6
+    assert len(recipe["steps"]) == 6
+
+    discussion = client.get("/v1/public/community/discussions/dsc_practical_001").json()
+    assert len(discussion["body"].split()) >= 55
+
+    product = client.get("/v1/public/products/organic-kesar-mango").json()
+    assert [variant["name"] for variant in product["variants"]] == [
+        "Fresh pack",
+        "250 g small pack",
+        "1000 g family pack",
+    ]
 
 
 def test_public_pages_and_site_documents_have_generated_defaults(client: TestClient):
@@ -169,11 +190,11 @@ def test_category_page_resolves_dynamic_rule(client: TestClient):
     assert product["certification"] == "India Organic (NPOP)"
 
 
-def test_category_page_grains_includes_low_stock_rajma(client: TestClient):
+def test_category_page_grains_includes_buyable_rajma(client: TestClient):
     body = client.get("/v1/public/categories/grains-and-millets").json()
     by_slug = {product["slug"]: product for product in body["products"]}
     assert set(by_slug) == {"sprouted-ragi-flour", "himalayan-red-rajma"}
-    assert by_slug["himalayan-red-rajma"]["availability"] == "low_stock"
+    assert by_slug["himalayan-red-rajma"]["availability"] == "in_stock"
 
 
 def test_unknown_and_invalid_category_slugs(client: TestClient):
@@ -336,7 +357,11 @@ def test_slugs_take_precedence_over_category_filter(client: TestClient):
 def test_product_detail_contract(client: TestClient):
     body = client.get("/v1/public/products/organic-alphonso-mangoes").json()
     assert body["name"] == "Organic Alphonso Mangoes"
-    assert [variant["sku"] for variant in body["variants"]] == ["TRG-MNG-1KG", "TRG-MNG-2KG"]
+    assert [variant["sku"] for variant in body["variants"]] == [
+        "TRG-MNG-1KG",
+        "TRG-MNG-2KG",
+        "TRG-MNG-5KG",
+    ]
     assert body["variants"][1]["saleMinor"] == 149900
     assert body["traceability"][0]["label"] == "Farm"
     assert body["seo"]["canonicalPath"] == "/product/organic-alphonso-mangoes"

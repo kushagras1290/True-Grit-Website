@@ -31,9 +31,20 @@ export interface SiteSettings {
     enabled: boolean;
     disabledNotice: string;
   };
+  promotions: {
+    enabled: boolean;
+  };
+  recommendations: {
+    enabled: boolean;
+  };
+  subscriptions: {
+    enabled: boolean;
+  };
   banners: {
     blogImageUrl: string;
     blogImageAlt: string;
+    farmsImageUrl: string;
+    farmsImageAlt: string;
   };
   /** Owner-chosen colours: the site-wide set plus any per-path overrides.
    *  Carried on this response rather than fetched separately so the first byte
@@ -48,7 +59,16 @@ export const DEFAULT_PAYMENTS_DISABLED_NOTICE =
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   auth: { google: true, facebook: true, phoneOtp: true, password: true, registration: true },
   payments: { enabled: true, disabledNotice: DEFAULT_PAYMENTS_DISABLED_NOTICE },
-  banners: { blogImageUrl: "", blogImageAlt: "" },
+  // Off by default (matches migration 0060) -- a marketing feature switched on
+  // deliberately once a promotion is configured, not a permissive fallback.
+  promotions: { enabled: false },
+  // On by default -- recommendations need no setup, they are computed live
+  // from real order data, so shipping them on is the permissive value here.
+  recommendations: { enabled: true },
+  // Off by default (matches migration 0064) -- not needed at launch, an
+  // owner switches it on deliberately, the same reasoning as `promotions`.
+  subscriptions: { enabled: false },
+  banners: { blogImageUrl: "", blogImageAlt: "", farmsImageUrl: "", farmsImageAlt: "" },
   theme: DEFAULT_THEME,
   effects: DEFAULT_EFFECTS,
 };
@@ -62,12 +82,18 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
   const source = (input ?? {}) as Partial<{
     auth: Partial<SiteSettings["auth"]>;
     payments: Partial<SiteSettings["payments"]>;
+    promotions: Partial<SiteSettings["promotions"]>;
+    recommendations: Partial<SiteSettings["recommendations"]>;
+    subscriptions: Partial<SiteSettings["subscriptions"]>;
     banners: Partial<SiteSettings["banners"]>;
     theme: unknown;
     effects: unknown;
   }>;
   const auth = source.auth ?? {};
   const payments = source.payments ?? {};
+  const promotions = source.promotions ?? {};
+  const recommendations = source.recommendations ?? {};
+  const subscriptions = source.subscriptions ?? {};
   const banners = source.banners ?? {};
 
   const bool = (value: unknown, fallback: boolean): boolean =>
@@ -87,9 +113,20 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
       enabled: bool(payments.enabled, DEFAULT_SITE_SETTINGS.payments.enabled),
       disabledNotice: text(payments.disabledNotice, DEFAULT_PAYMENTS_DISABLED_NOTICE),
     },
+    promotions: {
+      enabled: bool(promotions.enabled, DEFAULT_SITE_SETTINGS.promotions.enabled),
+    },
+    recommendations: {
+      enabled: bool(recommendations.enabled, DEFAULT_SITE_SETTINGS.recommendations.enabled),
+    },
+    subscriptions: {
+      enabled: bool(subscriptions.enabled, DEFAULT_SITE_SETTINGS.subscriptions.enabled),
+    },
     banners: {
       blogImageUrl: text(banners.blogImageUrl, ""),
       blogImageAlt: text(banners.blogImageAlt, ""),
+      farmsImageUrl: text(banners.farmsImageUrl, ""),
+      farmsImageAlt: text(banners.farmsImageAlt, ""),
     },
     theme: normalizeTheme(source.theme),
     effects: normalizeEffects(source.effects),

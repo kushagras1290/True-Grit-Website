@@ -1,12 +1,25 @@
-import { formatMoney } from "@truegrit/contracts";
+import { formatMoney, type SubscriptionRow } from "@truegrit/contracts";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import type { Route } from "./+types/account";
 import { Section } from "../components/catalogue";
-import { listMyOrders, type OrderSummary } from "../lib/commerce";
+import {
+  cancelSubscription,
+  listMyOrders,
+  listMySubscriptions,
+  pauseSubscription,
+  resumeSubscription,
+  type OrderSummary,
+} from "../lib/commerce";
 import { useCustomer } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
+
+const FREQUENCY_LABELS: Record<string, string> = {
+  weekly: "Every week",
+  biweekly: "Every 2 weeks",
+  monthly: "Every month",
+};
 
 export function meta(_args: Route.MetaArgs) {
   return seoMeta({
@@ -83,6 +96,105 @@ function OrderHistory() {
   );
 }
 
+function MySubscriptions() {
+  const [subscriptions, setSubscriptions] = useState<SubscriptionRow[] | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    listMySubscriptions()
+      .then((items) => active && setSubscriptions(items))
+      .catch(() => active && setSubscriptions([]));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function act(id: string, action: "pause" | "resume" | "cancel") {
+    setBusyId(id);
+    try {
+      const updated = await (action === "pause"
+        ? pauseSubscription(id)
+        : action === "resume"
+          ? resumeSubscription(id)
+          : cancelSubscription(id));
+      setSubscriptions((current) =>
+        (current ?? []).map((entry) => (entry.id === id ? updated : entry)),
+      );
+    } catch {
+      // The list still reflects the last known state; a failed action simply
+      // leaves it unchanged rather than showing a stale optimistic update.
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  if (subscriptions === null) {
+    return <p className="text-sm text-ink-muted">Loading your subscriptions…</p>;
+  }
+  if (subscriptions.length === 0) {
+    return (
+      <p className="text-sm text-ink-muted">
+        No subscriptions yet. Look for "Subscribe & Save" on a product page to set up recurring
+        delivery.
+      </p>
+    );
+  }
+
+  return (
+    <ul className="divide-y divide-line rounded-md border border-line bg-surface">
+      {subscriptions.map((entry) => (
+        <li key={entry.id} className="flex items-center justify-between gap-3 px-5 py-4">
+          <div className="min-w-0">
+            <p className="font-medium text-ink">
+              {entry.quantity} × {entry.productName} — {entry.variantName}
+            </p>
+            <p className="mt-0.5 text-xs text-ink-muted">
+              {FREQUENCY_LABELS[entry.frequency] ?? entry.frequency} ·{" "}
+              <span className="capitalize">{entry.status}</span>
+              {entry.status !== "cancelled"
+                ? ` · next delivery ${new Date(entry.nextOrderDate).toLocaleDateString()}`
+                : ""}
+            </p>
+          </div>
+          <div className="flex shrink-0 gap-2">
+            {entry.status === "active" ? (
+              <button
+                type="button"
+                disabled={busyId === entry.id}
+                onClick={() => act(entry.id, "pause")}
+                className="min-h-9 rounded-sm border border-line-strong px-3 text-xs font-medium text-ink hover:bg-canvas disabled:opacity-50"
+              >
+                Pause
+              </button>
+            ) : null}
+            {entry.status === "paused" ? (
+              <button
+                type="button"
+                disabled={busyId === entry.id}
+                onClick={() => act(entry.id, "resume")}
+                className="min-h-9 rounded-sm border border-line-strong px-3 text-xs font-medium text-ink hover:bg-canvas disabled:opacity-50"
+              >
+                Resume
+              </button>
+            ) : null}
+            {entry.status !== "cancelled" ? (
+              <button
+                type="button"
+                disabled={busyId === entry.id}
+                onClick={() => act(entry.id, "cancel")}
+                className="min-h-9 rounded-sm border border-danger/40 px-3 text-xs font-medium text-danger hover:bg-danger/5 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+            ) : null}
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function AccountPage(_props: Route.ComponentProps) {
   const { customer, status, logout } = useCustomer();
   const navigate = useNavigate();
@@ -148,6 +260,11 @@ export default function AccountPage(_props: Route.ComponentProps) {
           <div>
             <h2 className="mb-2 font-display text-lg text-ink">Order history</h2>
             <OrderHistory />
+          </div>
+
+          <div>
+            <h2 className="mb-2 font-display text-lg text-ink">Subscriptions</h2>
+            <MySubscriptions />
           </div>
         </div>
 

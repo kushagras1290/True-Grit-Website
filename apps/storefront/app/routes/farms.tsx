@@ -2,9 +2,11 @@ import { Link } from "react-router";
 
 import type { Route } from "./+types/farms";
 import { Section } from "../components/catalogue";
+import { PageBanner } from "../components/page-banner";
 import { catalogueRuntime, loadFarms } from "../lib/catalogue.server";
 import { useLocaleContext } from "../lib/i18n/context";
 import { seoMeta } from "../lib/seo";
+import { useSiteSettings } from "../lib/site-settings";
 
 export async function loader({ context }: Route.LoaderArgs) {
   return { farms: await loadFarms(catalogueRuntime(context)) };
@@ -21,9 +23,21 @@ export function meta(_args: Route.MetaArgs) {
 
 export default function FarmsPage({ loaderData }: Route.ComponentProps) {
   const { t } = useLocaleContext();
+  const { banners } = useSiteSettings();
   return (
     <>
-      <Section eyebrow={t("farms.eyebrow")} heading={t("farms.heading")}>
+      {/* Same banner frame as the homepage hero and the blog — see
+          `PageBanner`. Left blank in Site Control, it renders as the plain
+          gradient backdrop rather than an unrelated stock photo. */}
+      <PageBanner
+        imageUrl={banners.farmsImageUrl || null}
+        imageAlt={banners.farmsImageAlt}
+        eyebrow={t("farms.eyebrow")}
+        heading={t("farms.heading")}
+        description="The verified farms and collectives that grow the True Grit market."
+      />
+
+      <Section>
         <div className="grid gap-6 md:grid-cols-3">
           {loaderData.farms.map((farm) => (
             <Link

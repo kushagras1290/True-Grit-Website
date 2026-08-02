@@ -76,6 +76,11 @@ class ProductSummary(PublicModel):
     # separate per-slug detail request needed just to learn the variant id.
     # Null only for a product with no active variant at all.
     lead_variant_id: str | None = None
+    # Average of *approved* reviews only (migration 0057); 0.0/0 for a product
+    # with none yet, not null -- the storefront treats "no ratings" as its own
+    # display state rather than a missing-data case.
+    rating_average: float = 0.0
+    rating_count: int = 0
 
 
 class ProductListResponse(PublicModel):
@@ -98,6 +103,12 @@ class TraceabilityStep(PublicModel):
     detail: str
 
 
+class ProductImage(PublicModel):
+    id: str
+    image_url: str
+    image_alt: str | None = None
+
+
 class ProductDetail(ProductSummary):
     short_description: str
     overview: str
@@ -110,6 +121,10 @@ class ProductDetail(ProductSummary):
     related_slugs: list[str]
     return_eligible: bool
     seo: SeoDocument
+    # Additional photos beyond the required `imageUrl` above -- a gallery for
+    # the product detail page, never used for a thumbnail (see migration
+    # 0066). Empty for a product with none, not absent.
+    images: list[ProductImage] = []
 
 
 class CategorySummary(PublicModel):
@@ -177,6 +192,8 @@ class FarmDetail(PublicModel):
     methods: list[str]
     product_slugs: list[str]
     seo: SeoDocument
+    hero_image_url: str | None = None
+    hero_image_alt: str | None = None
 
 
 class FarmListResponse(PublicModel):

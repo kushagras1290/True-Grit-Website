@@ -1,0 +1,90 @@
+i18n: translating the homepage and static pages
+================================================
+
+WHAT THIS COVERS
+-----------------
+The homepage and static CMS pages (both stored in `pages`/`page_versions`)
+can now carry a separate translated copy of their content per locale
+(migration 0067, `page_content_translations`). A locale with no saved
+translation falls back to English automatically -- nothing breaks by
+leaving a language untouched.
+
+NOT covered yet (a separate, future pass): categories, farms, articles,
+recipes, the generated product catalogue, and site navigation labels. Static
+UI chrome (buttons, labels, nav strings around the page) is a different,
+already-existing system -- see apps/storefront/app/lib/i18n/catalog/*.ts.
+
+HOW TO TRANSLATE A PAGE FROM THE ADMIN UI
+-------------------------------------------
+1. Sign in to the admin panel with `pages.edit`.
+2. Go to Site Settings -> "CMS pages & SEO".
+3. Pick the page in the left list (the homepage is listed first).
+4. Scroll to "Translations" below the English editor.
+5. Pick a locale from the dropdown.
+6. Click "Auto-translate" to machine-translate the current English content
+   via Cloudflare Workers AI (@cf/meta/m2m100-1.2b) -- free, runs on the
+   Worker's own AI binding, no API key to configure. This only fills the
+   text box below; it does not save on its own, and it flags the result
+   "machine-translated, not yet reviewed" until someone edits and saves it.
+7. Review/edit the JSON in the box (it's the same block-JSON shape as the
+   English editor -- only text fields like heading/text/label/description
+   change meaning per language; ids, types, hrefs and slugs stay the same).
+8. Click "Save translation".
+9. "Remove translation" deletes the locale's saved copy and reverts that
+   locale to the English fallback.
+
+Auto-translate needs a deployed Worker with the `AI` binding configured
+(wrangler.jsonc). It always returns "not available in local development"
+when run against `pnpm dev` / pytest -- that is expected, not a bug; edit
+the locale by hand locally instead, or test against a deployed environment.
+
+m2m100 is a real but imperfect, research-grade translator, and does not
+cover every locale this storefront lists (52+ languages, several of them
+very low-resource: Santali, Bodo, Dogri, Maithili, Manipuri, Sanskrit,
+Kashmiri...). If auto-translate returns an error for a given locale, that
+language is not supported by the model -- write that translation by hand.
+
+HOW TO POPULATE MANY LOCALES AT ONCE (a command you can hand to an AI
+assistant, or run yourself against the API)
+-----------------------------------------------------------------------
+For each page you want translated, and each target locale:
+
+  POST /v1/admin/pages/{pageId}/translations/{locale}/auto-translate
+  (staff session cookie, `pages.edit` permission)
+
+then review the result at:
+
+  GET /v1/admin/pages/{pageId}/translations/{locale}
+
+and, once satisfied (or after hand-editing), confirm it's saved via:
+
+  PUT /v1/admin/pages/{pageId}/translations/{locale}
+  body: {"blocks": [...]}
+
+A prompt you can give an AI coding assistant to drive this in bulk, once
+signed in to the admin panel in the same browser/session it can act
+through (e.g. via the admin UI, or scripted against the API above):
+
+  "Auto-translate the homepage (pag_home) into every locale listed in
+  apps/admin/src/features/site-control.tsx's TRANSLATION_LOCALES constant.
+  For each locale: call POST .../auto-translate, then read back
+  GET .../translations/{locale} and sanity-check that no field still reads
+  in English (a sign the model silently passed it through) before leaving it
+  saved. Skip and report any locale that returns an error -- that language
+  is not supported by the built-in translator and needs a human translator
+  instead. Do the same for each static page returned by GET /v1/admin/pages."
+
+GETTING THE PAGE ID
+---------------------
+GET /v1/admin/pages lists every page (id, slug, title) -- the homepage's
+slug is "home". The admin UI's page list (Site Settings -> CMS pages & SEO)
+shows the same list without needing to call the API directly.
+
+WHY THIS DESIGN
+-----------------
+See the WHY comments in database/migrations/0067_i18n_page_translations.sql
+and apps/api/src/truegrit_api/services/translation.py for the reasoning
+(parallel content_json per locale rather than per-field rows; why
+auto-translate flags its own output as unreviewed; the CPU-budget cap on
+one auto-translate call, given the Workers Free plan's tight per-request
+limit).

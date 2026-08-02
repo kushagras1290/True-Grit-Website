@@ -5,9 +5,12 @@ import { Link, useNavigate } from "react-router";
 import type { Route } from "./+types/checkout";
 import { Section } from "../components/catalogue";
 import { ContactForm } from "../components/contact-form";
+import { PromotionBanner } from "../components/promotion-banner";
 import { useCart } from "../lib/cart";
 import {
   commerceLive,
+  getDeliverySettings,
+  getFeaturedPromotion,
   getPaymentMethods,
   newCheckoutIdempotencyKey,
   openPaypalPaymentWindow,
@@ -15,7 +18,11 @@ import {
   payWithPaypalWindow,
   payWithRazorpayWindow,
   placeOrder,
+  previewDiscount,
   type DeliveryAddress,
+  type DeliverySettingsInfo,
+  type DiscountPreview,
+  type FeaturedPromotionInfo,
   type PaymentMethodsInfo,
 } from "../lib/commerce";
 import { usePriceFormatter, useDisplayCurrency } from "../lib/currency";
@@ -32,8 +39,15 @@ export function meta(_args: Route.MetaArgs) {
   });
 }
 
-const FREE_DELIVERY_THRESHOLD = 150000;
-const DELIVERY_FEE = 4900;
+// Shown until `getDeliverySettings` resolves -- matches the API's own shipped
+// default (`DEFAULT_DELIVERY_FEE_MINOR` / `DEFAULT_FREE_DELIVERY_THRESHOLD_MINOR`
+// in `feature_settings.py`), so an owner who has not changed it never sees a
+// flash of the wrong figure, and one who has still gets the true value the
+// moment the fetch lands.
+const DEFAULT_DELIVERY_SETTINGS: DeliverySettingsInfo = {
+  feeMinor: 4900,
+  freeThresholdMinor: 150000,
+};
 
 const FIELD =
   "min-h-11 w-full rounded-sm border border-line bg-canvas px-3 text-sm text-ink" +
@@ -41,7 +55,7 @@ const FIELD =
 
 export default function CheckoutPage(_props: Route.ComponentProps) {
   const { customer, status } = useCustomer();
-  const { payments } = useSiteSettings();
+  const { payments, promotions } = useSiteSettings();
   const { lines, subtotalMinor, clear } = useCart();
   const formatPrice = usePriceFormatter();
   const displayCurrency = useDisplayCurrency();
@@ -50,14 +64,29 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
   const [pending, setPending] = useState(false);
   const [payment, setPayment] = useState<PaymentMethodsInfo | null>(null);
   const [method, setMethod] = useState<string>("razorpay");
+  const [deliverySettings, setDeliverySettings] = useState(DEFAULT_DELIVERY_SETTINGS);
+  const [featuredPromotion, setFeaturedPromotion] = useState<FeaturedPromotionInfo | null>(null);
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedDiscount, setAppliedDiscount] = useState<DiscountPreview | null>(null);
+  const [couponChecking, setCouponChecking] = useState(false);
+  const [couponError, setCouponError] = useState<string | null>(null);
   // Stable for the life of this page: every retry of the same submission
   // (a double-click, a timeout-and-resend) reuses it, so the server returns
   // the order that attempt already placed instead of placing a second one.
   const [idempotencyKey] = useState(newCheckoutIdempotencyKey);
 
-  const delivery =
-    subtotalMinor >= FREE_DELIVERY_THRESHOLD || subtotalMinor === 0 ? 0 : DELIVERY_FEE;
-  const total = subtotalMinor + delivery;
+  const baseDelivery =
+    subtotalMinor >= deliverySettings.freeThresholdMinor || subtotalMinor === 0
+      ? 0
+      : deliverySettings.feeMinor;
+  // A confirmed preview from `previewDiscount`, not merely a typed code — the
+  // total shown here must never promise a discount the server has not itself
+  // verified. Submitting still sends whatever code is in the box either way
+  // (see `handleSubmit`); the API is the final authority regardless of
+  // whether this preview ran.
+  const discount = appliedDiscount?.discountMinor ?? 0;
+  const delivery = appliedDiscount?.freeDelivery ? 0 : baseDelivery;
+  const total = Math.max(subtotalMinor + delivery - discount, 0);
 
   const codAllowed =
     payment !== null && payment.methods.includes("cod") && total <= payment.codMaxMinor;
@@ -79,10 +108,60 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
     };
   }, [payments.enabled]);
 
+  useEffect(() => {
+    if (!commerceLive || !payments.enabled) return;
+    let active = true;
+    getDeliverySettings()
+      .then((info) => {
+        if (active) setDeliverySettings(info);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, [payments.enabled]);
+
+  useEffect(() => {
+    if (!commerceLive || !payments.enabled || !promotions.enabled) return;
+    let active = true;
+    getFeaturedPromotion()
+      .then((info) => {
+        if (active) setFeaturedPromotion(info);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, [payments.enabled, promotions.enabled]);
+
+  // A discount preview is only true for the basket it was computed against —
+  // a quantity change afterwards invalidates it rather than silently keeping
+  // a stale figure on screen.
+  useEffect(() => {
+    setAppliedDiscount(null);
+    setCouponError(null);
+  }, [subtotalMinor]);
+
   // Cart total past the COD ceiling => force online payment.
   useEffect(() => {
     if (method === "cod" && !codAllowed && razorpayAllowed) setMethod("razorpay");
   }, [method, codAllowed, razorpayAllowed]);
+
+  async function handleApplyCoupon() {
+    const code = couponInput.trim();
+    if (!code) return;
+    setCouponChecking(true);
+    setCouponError(null);
+    try {
+      const result = await previewDiscount(code, subtotalMinor);
+      setAppliedDiscount(result);
+    } catch (caught) {
+      setAppliedDiscount(null);
+      setCouponError(caught instanceof AuthError ? caught.message : "Could not apply this code.");
+    } finally {
+      setCouponChecking(false);
+    }
+  }
 
   // Ordering switched off in the admin console. This is checked before the
   // session and the basket: whether they are signed in or how full the basket
@@ -197,6 +276,7 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
         address,
         chosen,
         idempotencyKey,
+        couponInput.trim() || undefined,
       );
       // Online orders open a gateway window; only clear the cart once the
       // payment is settled server-side. COD orders are already confirmed.
@@ -296,11 +376,58 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
               </li>
             ))}
           </ul>
+
+          {promotions.enabled && commerceLive ? (
+            <div className="mt-3">
+              {featuredPromotion ? (
+                <PromotionBanner promotion={featuredPromotion} variant="compact" />
+              ) : null}
+              <div className="mt-3">
+                <label htmlFor="couponCode" className="text-xs font-medium text-ink-muted">
+                  Coupon code
+                </label>
+                <div className="mt-1 flex gap-2">
+                  <input
+                    id="couponCode"
+                    className={`${FIELD} min-h-9`}
+                    placeholder="e.g. WELCOME15"
+                    value={couponInput}
+                    onChange={(event) => {
+                      setCouponInput(event.target.value);
+                      setAppliedDiscount(null);
+                      setCouponError(null);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    disabled={!couponInput.trim() || couponChecking}
+                    onClick={() => void handleApplyCoupon()}
+                    className="min-h-9 shrink-0 rounded-sm border border-line px-3 text-sm font-medium text-ink hover:bg-canvas disabled:opacity-60"
+                  >
+                    {couponChecking ? "Checking…" : "Apply"}
+                  </button>
+                </div>
+                {couponError ? <p className="mt-1 text-xs text-danger">{couponError}</p> : null}
+                {appliedDiscount ? (
+                  <p className="mt-1 text-xs text-success">
+                    "{appliedDiscount.code}" applied — {appliedDiscount.headline}
+                  </p>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
+
           <dl className="mt-3 space-y-1.5 border-t border-line pt-3 text-sm">
             <div className="flex justify-between">
               <dt className="text-ink-muted">Subtotal</dt>
               <dd className="text-ink">{formatPrice(subtotalMinor)}</dd>
             </div>
+            {discount > 0 ? (
+              <div className="flex justify-between">
+                <dt className="text-ink-muted">Discount</dt>
+                <dd className="text-success">−{formatPrice(discount)}</dd>
+              </div>
+            ) : null}
             <div className="flex justify-between">
               <dt className="text-ink-muted">Delivery</dt>
               <dd className="text-ink">{delivery === 0 ? "Free" : formatPrice(delivery)}</dd>

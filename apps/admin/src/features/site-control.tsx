@@ -70,8 +70,86 @@ export function SiteControlPage() {
       <CmsPagesSection />
       <RouteSeoSection />
       <SiteDocumentsSection />
+      <CuratedListSizeSection />
       <HighlightsSection />
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Curated list size: the shared cap for Fresh Favourites, Featured
+// Categories (Homepage Settings) and Highlighted products (below) -- one
+// setting rather than three, since all three are the same shape of feature
+// (pick up to N items, in order).
+// ---------------------------------------------------------------------------
+
+const FALLBACK_CURATED_MAX_ITEMS = 12;
+
+function CuratedListSizeSection() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const { data, isLoading } = useQuery({
+    queryKey: ["curated-settings"],
+    queryFn: api.curatedSettings,
+  });
+  const [draft, setDraft] = useState<string | null>(null);
+
+  useEffect(() => {
+    setDraft(null);
+  }, [data]);
+
+  const mutation = useMutation({
+    mutationFn: (maxItems: number) => api.updateCuratedSettings({ maxItems }),
+    onSuccess: async (result) => {
+      queryClient.setQueryData(["curated-settings"], result);
+      setDraft(null);
+      toast.success("Curated list size saved.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not save the setting."),
+  });
+
+  const value = draft ?? String(data?.maxItems ?? FALLBACK_CURATED_MAX_ITEMS);
+  const parsed = Number(value);
+  const isValid = Number.isInteger(parsed) && parsed >= 1 && parsed <= 50;
+
+  return (
+    <section className="mt-10 space-y-3 border-t border-line pt-5">
+      <div>
+        <h2 className="font-display text-lg text-ink">Curated list size</h2>
+        <p className="max-w-2xl text-sm text-ink-muted">
+          How many products or categories an operator may pick into Fresh Favourites, Featured
+          Categories (Homepage Settings) and Highlighted products (below). Raising it saves
+          immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.
+        </p>
+      </div>
+      {isLoading ? (
+        <p className="text-sm text-ink-muted">Loading...</p>
+      ) : (
+        <div className="flex items-end gap-2">
+          <Field label="Maximum items" htmlFor="curatedMaxItems">
+            <Input
+              id="curatedMaxItems"
+              type="number"
+              min={1}
+              max={50}
+              step={1}
+              className="w-28"
+              value={value}
+              onChange={(event) => setDraft(event.target.value)}
+            />
+          </Field>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={mutation.isPending || !isValid || parsed === data?.maxItems}
+            onClick={() => mutation.mutate(parsed)}
+          >
+            {mutation.isPending ? "Saving..." : "Save"}
+          </Button>
+        </div>
+      )}
+    </section>
   );
 }
 
@@ -409,13 +487,69 @@ function StorefrontSwitchesSection() {
   const [notice, setNotice] = useState<string | null>(null);
   const [bannerUrl, setBannerUrl] = useState<string | null>(null);
   const [bannerAlt, setBannerAlt] = useState<string | null>(null);
+  const [farmsBannerUrl, setFarmsBannerUrl] = useState<string | null>(null);
+  const [farmsBannerAlt, setFarmsBannerAlt] = useState<string | null>(null);
 
   useEffect(() => {
     if (!data) return;
     setNotice(null);
     setBannerUrl(null);
     setBannerAlt(null);
+    setFarmsBannerUrl(null);
+    setFarmsBannerAlt(null);
   }, [data]);
+
+  // Delivery charges: a separate stored setting, not a boolean switch, so it
+  // gets its own query/mutation pair rather than folding into `settings`.
+  const { data: delivery } = useQuery({
+    queryKey: ["delivery-settings"],
+    queryFn: api.deliverySettings,
+  });
+  const [deliveryFee, setDeliveryFee] = useState<string | null>(null);
+  const [freeThreshold, setFreeThreshold] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!delivery) return;
+    setDeliveryFee(null);
+    setFreeThreshold(null);
+  }, [delivery]);
+
+  const deliveryMutation = useMutation({
+    mutationFn: (input: { feeMinor: number; freeThresholdMinor: number }) =>
+      api.updateDeliverySettings(input),
+    onSuccess: async (result) => {
+      queryClient.setQueryData(["delivery-settings"], result);
+      toast.success("Delivery charges saved.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not save delivery charges."),
+  });
+
+  // Subscribe & Save's own incentive -- a separate stored percent, not a
+  // boolean switch, the same reasoning delivery charges get their own
+  // query/mutation pair above.
+  const { data: subscriptionSettings } = useQuery({
+    queryKey: ["subscription-settings"],
+    queryFn: api.subscriptionSettings,
+  });
+  const [subscriptionDiscount, setSubscriptionDiscount] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!subscriptionSettings) return;
+    setSubscriptionDiscount(null);
+  }, [subscriptionSettings]);
+
+  const subscriptionDiscountMutation = useMutation({
+    mutationFn: (percent: number) => api.updateSubscriptionSettings({ percent }),
+    onSuccess: async (result) => {
+      queryClient.setQueryData(["subscription-settings"], result);
+      toast.success("Subscription discount saved.");
+    },
+    onError: (error) =>
+      toast.error(
+        error instanceof ApiError ? error.message : "Could not save the subscription discount.",
+      ),
+  });
 
   const mutation = useMutation({
     mutationFn: (input: Partial<StorefrontSettings>) => api.updateStorefrontSettings(input),
@@ -433,6 +567,16 @@ function StorefrontSwitchesSection() {
     onSuccess: (result) => {
       setBannerUrl(result.url);
       mutation.mutate({ blogBannerImageUrl: result.url });
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not upload the banner."),
+  });
+
+  const farmsUploadMutation = useMutation({
+    mutationFn: (file: File) => api.uploadImage(file),
+    onSuccess: (result) => {
+      setFarmsBannerUrl(result.url);
+      mutation.mutate({ farmsBannerImageUrl: result.url });
     },
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not upload the banner."),
@@ -460,6 +604,8 @@ function StorefrontSwitchesSection() {
   const noticeValue = notice ?? settings.paymentsDisabledNotice;
   const bannerUrlValue = bannerUrl ?? settings.blogBannerImageUrl;
   const bannerAltValue = bannerAlt ?? settings.blogBannerImageAlt;
+  const farmsBannerUrlValue = farmsBannerUrl ?? settings.farmsBannerImageUrl;
+  const farmsBannerAltValue = farmsBannerAlt ?? settings.farmsBannerImageAlt;
 
   return (
     <section className="mt-10 space-y-8 border-t border-line pt-5">
@@ -543,6 +689,107 @@ function StorefrontSwitchesSection() {
 
       <div>
         <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
+          Coupons &amp; promotions
+        </h3>
+        <ul className="mt-3 max-w-3xl">
+          <SwitchRow
+            label="Enable coupons and promotions"
+            description="Off hides the promotions banner on the homepage and checkout, and any coupon code is refused at checkout. Existing promotions and coupons are kept, just not applied."
+            checked={settings.promotions}
+            effective={effective.promotions}
+            unavailableHint=""
+            disabled={mutation.isPending}
+            onChange={(next) => mutation.mutate({ promotions: next })}
+          />
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
+          Recommendations
+        </h3>
+        <ul className="mt-3 max-w-3xl">
+          <SwitchRow
+            label="Show product recommendations"
+            description="Real bestsellers and “customers also bought” rows, computed live from actual orders — on the homepage, product pages, basket, category pages, search and the shop. Off removes every one of them; nothing is curated, so there is nothing to lose by switching it back on."
+            checked={settings.recommendations}
+            effective={effective.recommendations}
+            unavailableHint=""
+            disabled={mutation.isPending}
+            onChange={(next) => mutation.mutate({ recommendations: next })}
+          />
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
+          Subscribe &amp; Save
+        </h3>
+        <ul className="mt-3 max-w-3xl">
+          <SwitchRow
+            label="Enable Subscribe & Save"
+            description="Lets customers set up recurring cash-on-delivery deliveries of a product from its product page. Off by default and not needed at launch — existing subscriptions are kept and viewable in Subscriptions, just not renewed, while this is off."
+            checked={settings.subscriptions}
+            effective={effective.subscriptions}
+            unavailableHint=""
+            disabled={mutation.isPending}
+            onChange={(next) => mutation.mutate({ subscriptions: next })}
+          />
+        </ul>
+        <div className="mt-4 flex items-end gap-2">
+          <Field label="Discount on each renewal, %" htmlFor="subscriptionDiscountPercent">
+            <Input
+              id="subscriptionDiscountPercent"
+              type="number"
+              min={0}
+              max={50}
+              step={1}
+              className="w-28"
+              value={subscriptionDiscount ?? String(subscriptionSettings?.discountPercent ?? 5)}
+              onChange={(event) => setSubscriptionDiscount(event.target.value)}
+            />
+          </Field>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={
+              subscriptionDiscountMutation.isPending ||
+              subscriptionDiscount === null ||
+              !Number.isInteger(Number(subscriptionDiscount)) ||
+              Number(subscriptionDiscount) < 0 ||
+              Number(subscriptionDiscount) > 50
+            }
+            onClick={() => subscriptionDiscountMutation.mutate(Number(subscriptionDiscount))}
+          >
+            {subscriptionDiscountMutation.isPending ? "Saving..." : "Save"}
+          </Button>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
+          Delivery charges
+        </h3>
+        <p className="mt-1 max-w-2xl text-sm text-ink-muted">
+          Applied at checkout before any coupon or promotion discount. Orders at or above the
+          free-delivery threshold pay no delivery fee.
+        </p>
+        <DeliveryChargesForm
+          feeMinor={delivery?.feeMinor}
+          freeThresholdMinor={delivery?.freeThresholdMinor}
+          feeDraft={deliveryFee}
+          freeThresholdDraft={freeThreshold}
+          onFeeDraftChange={setDeliveryFee}
+          onFreeThresholdDraftChange={setFreeThreshold}
+          onSave={(feeMinor, freeThresholdMinor) =>
+            deliveryMutation.mutate({ feeMinor, freeThresholdMinor })
+          }
+          saving={deliveryMutation.isPending}
+        />
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
           Blog banner
         </h3>
         <p className="mt-1 max-w-2xl text-sm text-ink-muted">
@@ -612,7 +859,160 @@ function StorefrontSwitchesSection() {
           />
         </div>
       </div>
+
+      <div>
+        <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
+          Farms banner
+        </h3>
+        <p className="mt-1 max-w-2xl text-sm text-ink-muted">
+          The banner across the top of <code>/farms</code>, rendered at the same size as the
+          homepage hero. Left blank, the shipped hero image is used so the space is never empty.
+          Each individual farm page has its own banner image, set on that farm's edit page.
+        </p>
+        <div className="mt-4 grid max-w-3xl gap-4 md:grid-cols-[minmax(0,1fr)_16rem] md:items-start">
+          <div className="space-y-4">
+            <Field label="Banner image URL" htmlFor="farmsBannerImageUrl">
+              <Input
+                id="farmsBannerImageUrl"
+                placeholder="/homepage-hero.png"
+                value={farmsBannerUrlValue}
+                onChange={(event) => setFarmsBannerUrl(event.target.value)}
+              />
+            </Field>
+            <Field label="Banner alt text" htmlFor="farmsBannerImageAlt">
+              <Input
+                id="farmsBannerImageAlt"
+                value={farmsBannerAltValue}
+                onChange={(event) => setFarmsBannerAlt(event.target.value)}
+              />
+            </Field>
+            <p className="-mt-2 text-xs text-ink-muted">
+              Describe the image for screen readers. Leave blank if it is purely decorative — the
+              banner heading already carries the meaning.
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={
+                  mutation.isPending ||
+                  (farmsBannerUrlValue === settings.farmsBannerImageUrl &&
+                    farmsBannerAltValue === settings.farmsBannerImageAlt)
+                }
+                onClick={() =>
+                  mutation.mutate({
+                    farmsBannerImageUrl: farmsBannerUrlValue,
+                    farmsBannerImageAlt: farmsBannerAltValue,
+                  })
+                }
+              >
+                {mutation.isPending ? "Saving..." : "Save banner"}
+              </Button>
+              <label className="inline-flex min-h-9 cursor-pointer items-center rounded-sm border border-line px-3 text-sm text-ink hover:bg-canvas">
+                {farmsUploadMutation.isPending ? "Uploading..." : "Upload image"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  disabled={farmsUploadMutation.isPending}
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    event.target.value = "";
+                    if (file) farmsUploadMutation.mutate(file);
+                  }}
+                />
+              </label>
+            </div>
+          </div>
+          <ImagePreview
+            src={farmsBannerUrlValue}
+            alt={farmsBannerAltValue}
+            label="Farms banner"
+            className="h-32 w-full"
+          />
+        </div>
+      </div>
     </section>
+  );
+}
+
+function minorToRupeeString(minor: number): string {
+  return (minor / 100).toString();
+}
+
+function rupeeStringToMinor(value: string): number | null {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0) return null;
+  return Math.round(parsed * 100);
+}
+
+function DeliveryChargesForm({
+  feeMinor,
+  freeThresholdMinor,
+  feeDraft,
+  freeThresholdDraft,
+  onFeeDraftChange,
+  onFreeThresholdDraftChange,
+  onSave,
+  saving,
+}: {
+  feeMinor: number | undefined;
+  freeThresholdMinor: number | undefined;
+  feeDraft: string | null;
+  freeThresholdDraft: string | null;
+  onFeeDraftChange: (value: string) => void;
+  onFreeThresholdDraftChange: (value: string) => void;
+  onSave: (feeMinor: number, freeThresholdMinor: number) => void;
+  saving: boolean;
+}) {
+  if (feeMinor === undefined || freeThresholdMinor === undefined) {
+    return <p className="mt-3 text-sm text-ink-muted">Loading delivery charges...</p>;
+  }
+
+  const feeValue = feeDraft ?? minorToRupeeString(feeMinor);
+  const freeThresholdValue = freeThresholdDraft ?? minorToRupeeString(freeThresholdMinor);
+  const parsedFee = rupeeStringToMinor(feeValue);
+  const parsedFreeThreshold = rupeeStringToMinor(freeThresholdValue);
+  const isValid = parsedFee !== null && parsedFreeThreshold !== null;
+  const isUnchanged = parsedFee === feeMinor && parsedFreeThreshold === freeThresholdMinor;
+
+  return (
+    <div className="mt-4 grid max-w-3xl gap-4 sm:grid-cols-2">
+      <Field label="Delivery fee (₹)" htmlFor="deliveryFeeMinor">
+        <Input
+          id="deliveryFeeMinor"
+          type="number"
+          min="0"
+          step="0.01"
+          value={feeValue}
+          onChange={(event) => onFeeDraftChange(event.target.value)}
+        />
+      </Field>
+      <Field label="Free delivery above (₹)" htmlFor="freeDeliveryThresholdMinor">
+        <Input
+          id="freeDeliveryThresholdMinor"
+          type="number"
+          min="0"
+          step="0.01"
+          value={freeThresholdValue}
+          onChange={(event) => onFreeThresholdDraftChange(event.target.value)}
+        />
+      </Field>
+      <div className="sm:col-span-2">
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={!isValid || isUnchanged || saving}
+          onClick={() => {
+            if (parsedFee !== null && parsedFreeThreshold !== null) {
+              onSave(parsedFee, parsedFreeThreshold);
+            }
+          }}
+        >
+          {saving ? "Saving..." : "Save delivery charges"}
+        </Button>
+      </div>
+    </div>
   );
 }
 
@@ -741,6 +1141,7 @@ function CmsPagesSection() {
               hint="The selected CMS page could not be loaded."
             />
           ) : selected.data ? (
+            <div className="space-y-8">
             <form
               className="space-y-5"
               onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
@@ -814,10 +1215,230 @@ function CmsPagesSection() {
                 </Button>
               </div>
             </form>
+            <PageTranslationsPanel pageId={selectedId} />
+            </div>
           ) : null}
         </div>
       )}
     </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Per-locale page content (migration 0067). The homepage and static pages
+// both use `pages`/`page_versions`, so this one editor translates both --
+// see PageTranslationsPanel below, rendered alongside CmsPagesSection's own
+// English-content form for whichever page is selected there.
+//
+// The locale list mirrors `apps/storefront/app/lib/i18n/locales.ts` (kept
+// as a small local copy rather than a shared import: that module lives in
+// the storefront package, and a plain list of BCP-47 codes and names is
+// static reference data, not logic worth a cross-package dependency for).
+// ---------------------------------------------------------------------------
+
+const TRANSLATION_LOCALES: { code: string; label: string }[] = [
+  { code: "hi", label: "Hindi (हिन्दी)" },
+  { code: "bn", label: "Bengali (বাংলা)" },
+  { code: "mr", label: "Marathi (मराठी)" },
+  { code: "te", label: "Telugu (తెలుగు)" },
+  { code: "ta", label: "Tamil (தமிழ்)" },
+  { code: "gu", label: "Gujarati (ગુજરાતી)" },
+  { code: "ur", label: "Urdu (اردو)" },
+  { code: "kn", label: "Kannada (ಕನ್ನಡ)" },
+  { code: "or", label: "Odia (ଓଡ଼ିଆ)" },
+  { code: "ml", label: "Malayalam (മലയാളം)" },
+  { code: "pa", label: "Punjabi (ਪੰਜਾਬੀ)" },
+  { code: "as", label: "Assamese (অসমীয়া)" },
+  { code: "mai", label: "Maithili (मैथिली)" },
+  { code: "sat", label: "Santali (ᱥᱟᱱᱛᱟᱲᱤ)" },
+  { code: "ks", label: "Kashmiri (کٲشُر)" },
+  { code: "ne", label: "Nepali (नेपाली)" },
+  { code: "sd", label: "Sindhi (سنڌي)" },
+  { code: "kok", label: "Konkani (कोंकणी)" },
+  { code: "doi", label: "Dogri (डोगरी)" },
+  { code: "mni", label: "Manipuri (ꯃꯤꯇꯩꯂꯣꯟ)" },
+  { code: "brx", label: "Bodo (बर’)" },
+  { code: "sa", label: "Sanskrit (संस्कृतम्)" },
+  { code: "zh-Hans", label: "Chinese, Simplified (简体中文)" },
+  { code: "es", label: "Spanish (Español)" },
+  { code: "ar", label: "Arabic (العربية)" },
+  { code: "pt", label: "Portuguese (Português)" },
+  { code: "fr", label: "French (Français)" },
+  { code: "ru", label: "Russian (Русский)" },
+  { code: "id", label: "Indonesian (Bahasa Indonesia)" },
+  { code: "de", label: "German (Deutsch)" },
+  { code: "ja", label: "Japanese (日本語)" },
+  { code: "tr", label: "Turkish (Türkçe)" },
+  { code: "vi", label: "Vietnamese (Tiếng Việt)" },
+  { code: "ko", label: "Korean (한국어)" },
+  { code: "it", label: "Italian (Italiano)" },
+  { code: "fa", label: "Persian (فارسی)" },
+  { code: "zh-Hant", label: "Chinese, Traditional (繁體中文)" },
+  { code: "th", label: "Thai (ไทย)" },
+  { code: "pl", label: "Polish (Polski)" },
+  { code: "uk", label: "Ukrainian (Українська)" },
+  { code: "nl", label: "Dutch (Nederlands)" },
+  { code: "fil", label: "Filipino" },
+  { code: "sw", label: "Swahili (Kiswahili)" },
+  { code: "he", label: "Hebrew (עברית)" },
+  { code: "sv", label: "Swedish (Svenska)" },
+  { code: "nb", label: "Norwegian (Norsk bokmål)" },
+  { code: "da", label: "Danish (Dansk)" },
+  { code: "fi", label: "Finnish (Suomi)" },
+  { code: "el", label: "Greek (Ελληνικά)" },
+  { code: "cs", label: "Czech (Čeština)" },
+  { code: "hu", label: "Hungarian (Magyar)" },
+  { code: "ro", label: "Romanian (Română)" },
+  { code: "sk", label: "Slovak (Slovenčina)" },
+  { code: "bg", label: "Bulgarian (Български)" },
+];
+
+function PageTranslationsPanel({ pageId }: { pageId: string }) {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const [locale, setLocale] = useState(TRANSLATION_LOCALES[0]!.code);
+  const [blocksJson, setBlocksJson] = useState("");
+
+  const translation = useQuery({
+    queryKey: ["page-translation", pageId, locale],
+    queryFn: () => api.pageTranslation(pageId, locale),
+  });
+  const translatedLocales = useQuery({
+    queryKey: ["page-translations", pageId],
+    queryFn: () => api.pageTranslations(pageId),
+  });
+
+  useEffect(() => {
+    if (translation.data) setBlocksJson(JSON.stringify(translation.data.content.blocks, null, 2));
+  }, [translation.data]);
+
+  function invalidate() {
+    return Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["page-translation", pageId, locale] }),
+      queryClient.invalidateQueries({ queryKey: ["page-translations", pageId] }),
+    ]);
+  }
+
+  const saveMutation = useMutation({
+    mutationFn: () => {
+      let blocks: unknown;
+      try {
+        blocks = JSON.parse(blocksJson);
+      } catch {
+        throw new ApiError("Translated blocks JSON is not valid.", 422, "validation_error");
+      }
+      if (!Array.isArray(blocks)) {
+        throw new ApiError("Translated blocks JSON must be an array.", 422, "validation_error");
+      }
+      return api.savePageTranslation(pageId, locale, blocks as CmsPageDetail["blocks"]);
+    },
+    onSuccess: async () => {
+      await invalidate();
+      toast.success("Translation saved.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not save the translation."),
+  });
+
+  const autoTranslateMutation = useMutation({
+    mutationFn: () => api.autoTranslatePage(pageId, locale),
+    onSuccess: async () => {
+      await invalidate();
+      toast.success("Auto-translated — review the result before it goes live.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not auto-translate."),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => api.deletePageTranslation(pageId, locale),
+    onSuccess: async () => {
+      await invalidate();
+      toast.success("Translation removed — this locale now falls back to English.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not remove the translation."),
+  });
+
+  const translatedLocaleCodes = new Set((translatedLocales.data ?? []).map((entry) => entry.locale));
+  const busy =
+    saveMutation.isPending || autoTranslateMutation.isPending || deleteMutation.isPending;
+
+  return (
+    <div className="border-t border-line pt-5">
+      <h3 className="font-display text-lg text-ink">Translations</h3>
+      <p className="mt-1 text-sm text-ink-muted">
+        A parallel copy of this page's blocks for one language at a time. A locale with no saved
+        translation falls back to English on the storefront — nothing breaks by leaving one blank.
+        "Auto-translate" runs a real machine-translation model on the Worker's own AI binding
+        (free, but not perfect) and fills the box below for review, it does not save on its own.
+      </p>
+
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <Select
+          value={locale}
+          onChange={(event) => setLocale(event.target.value)}
+          aria-label="Locale to translate"
+          className="max-w-xs"
+        >
+          {TRANSLATION_LOCALES.map((entry) => (
+            <option key={entry.code} value={entry.code}>
+              {translatedLocaleCodes.has(entry.code) ? "✓ " : ""}
+              {entry.label}
+            </option>
+          ))}
+        </Select>
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={busy}
+          onClick={() => autoTranslateMutation.mutate()}
+        >
+          {autoTranslateMutation.isPending ? "Translating..." : "Auto-translate"}
+        </Button>
+      </div>
+
+      {translation.data?.autoTranslated ? (
+        <p className="mt-3 rounded-md border border-warning/40 bg-warning/5 px-4 py-2 text-sm text-warning">
+          Machine-translated, not yet reviewed by a person.
+        </p>
+      ) : null}
+
+      <Textarea
+        className="mt-3 font-mono text-xs"
+        rows={16}
+        value={blocksJson}
+        onChange={(event) => setBlocksJson(event.target.value)}
+      />
+
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-ink-muted">
+          {translation.data?.updatedAt
+            ? `Last saved ${formatDateTime(translation.data.updatedAt)}`
+            : "No saved translation for this locale yet — showing English as a starting point."}
+        </p>
+        <div className="flex gap-2">
+          {translation.data?.updatedAt ? (
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={busy}
+              onClick={() => deleteMutation.mutate()}
+            >
+              Remove translation
+            </Button>
+          ) : null}
+          <Button
+            type="button"
+            variant="primary"
+            disabled={busy}
+            onClick={() => saveMutation.mutate()}
+          >
+            {saveMutation.isPending ? "Saving..." : "Save translation"}
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -1059,6 +1680,11 @@ function HighlightsSection() {
     queryKey: ["admin-products", "all"],
     queryFn: () => api.products({ limit: 100 }),
   });
+  const { data: curatedSettings } = useQuery({
+    queryKey: ["curated-settings"],
+    queryFn: api.curatedSettings,
+  });
+  const maxHighlights = curatedSettings?.maxItems ?? FALLBACK_CURATED_MAX_ITEMS;
   const [items, setItems] = useState<AdminLinkedProduct[] | null>(null);
   const [pendingId, setPendingId] = useState("");
 
@@ -1163,7 +1789,7 @@ function HighlightsSection() {
         <Button
           type="button"
           variant="secondary"
-          disabled={!pendingId || current.length >= 12}
+          disabled={!pendingId || current.length >= maxHighlights}
           onClick={() => {
             const row = addable.find((entry) => entry.id === pendingId);
             if (!row) return;

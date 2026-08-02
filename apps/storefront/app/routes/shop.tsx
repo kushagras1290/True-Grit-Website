@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { Link } from "react-router";
 
 import type { Route } from "./+types/shop";
 import { ProductGrid } from "../components/catalogue";
 import { PageLinkPagination } from "../components/pagination";
+import { RecommendedProducts } from "../components/recommendations";
 import {
   CategoryDrawer,
   CategorySidebar,
@@ -15,6 +17,7 @@ import {
 import {
   CATALOGUE_PAGE_SIZE,
   catalogueRuntime,
+  loadBestsellers,
   loadCategories,
   loadProductPage,
 } from "../lib/catalogue.server";
@@ -31,9 +34,13 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const pageNumber = Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   const categorySlug = url.searchParams.get("category")?.trim() || null;
 
-  const [categories, productPage] = await Promise.all([
+  const [categories, productPage, trending] = await Promise.all([
     loadCategories(country, runtime),
     loadProductPage(pageNumber, country, runtime, categorySlug),
+    // Only worth showing on the unfiltered "All products" view -- a specific
+    // department already has its own browsing grid, and a sitewide trending
+    // row there would just compete with it.
+    categorySlug ? Promise.resolve([]) : loadBestsellers({ limit: 8 }, country, runtime),
   ]);
 
   // Grouped server-side so the tree is serialized once rather than rebuilt by
@@ -53,6 +60,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     activeDepartment: branch.department,
     activeSubcategory: branch.subcategory,
     unknownFilter: categorySlug !== null && !branch.department && !branch.subcategory,
+    trending,
   };
 }
 
@@ -76,6 +84,7 @@ export default function Shop({ loaderData }: Route.ComponentProps) {
     activeDepartment,
     activeSubcategory,
     unknownFilter,
+    trending,
   } = loaderData;
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -107,6 +116,12 @@ export default function Shop({ loaderData }: Route.ComponentProps) {
               {productPage.total === 1 ? "" : "s"}
             </p>
           </div>
+          <Link
+            to="/bundles"
+            className="mt-4 inline-flex min-h-9 items-center gap-1.5 rounded-full bg-subtle px-3.5 text-sm font-medium text-brand hover:opacity-90"
+          >
+            Buy in a set and save — see Bundles →
+          </Link>
         </div>
       </header>
 
@@ -119,6 +134,14 @@ export default function Shop({ loaderData }: Route.ComponentProps) {
             <DepartmentRail tree={tree} />
           </div>
         </section>
+      ) : null}
+
+      {showRail ? (
+        <RecommendedProducts
+          eyebrow="Right now"
+          heading="Trending in the market"
+          products={trending}
+        />
       ) : null}
 
       <ShopSectionBar

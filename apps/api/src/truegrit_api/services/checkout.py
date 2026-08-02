@@ -20,16 +20,18 @@ from typing import Any
 
 from truegrit_api.auth.principal import Principal
 from truegrit_api.config import get_settings
+from truegrit_api.domain.money import basis_points_discount
 from truegrit_api.errors import ConflictError, PhoneRequiredError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
+from truegrit_api.services.bundles import resolve_bundle_discount
+from truegrit_api.services.feature_settings import load_delivery_settings, promotions_enabled
+from truegrit_api.services.promotions import resolve_checkout_discount
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
 
 _MAX_QUANTITY_PER_LINE = 12
 _MAX_LINES = 40
-_FREE_DELIVERY_THRESHOLD_MINOR = 150_000  # ₹1,500
-_DELIVERY_FEE_MINOR = 4_900  # ₹49
 _ADDRESS_REQUIRED = ("recipient_name", "line1", "city", "state", "postal_code")
 
 
@@ -129,6 +131,7 @@ def _order_result(row: dict[str, Any]) -> dict[str, Any]:
         "reference": row["public_reference"],
         "currencyCode": row["currency_code"],
         "subtotalMinor": row["subtotal_minor"],
+        "discountMinor": row["discount_minor"],
         "deliveryMinor": row["delivery_minor"],
         "totalMinor": row["total_minor"],
         "orderStatus": row["order_status"],
@@ -141,7 +144,7 @@ async def _find_by_idempotency_key(
 ) -> dict[str, Any] | None:
     return await db.fetch_one(
         """
-        SELECT id, public_reference, currency_code, subtotal_minor,
+        SELECT id, public_reference, currency_code, subtotal_minor, discount_minor,
                delivery_minor, total_minor, order_status, payment_status
         FROM orders
         WHERE customer_user_id = ? AND idempotency_key = ?
@@ -173,6 +176,9 @@ async def place_order(
     delivery_address: dict[str, Any],
     payment_method: str = "cod",
     idempotency_key: str | None = None,
+    coupon_code: str | None = None,
+    subscription_id: str | None = None,
+    subscription_discount_percent: int | None = None,
 ) -> dict[str, Any]:
     # A retried submission (double-click, network timeout-and-resend, back
     # button) returns the order that request already placed instead of a
@@ -212,8 +218,69 @@ async def place_order(
 
     currency = resolved[0]["currency_code"]
     subtotal = sum(item["line_total_minor"] for item in resolved)
-    delivery = 0 if subtotal >= _FREE_DELIVERY_THRESHOLD_MINOR else _DELIVERY_FEE_MINOR
-    total = subtotal + delivery
+    delivery_settings = await load_delivery_settings(db)
+    delivery = (
+        0 if subtotal >= delivery_settings.free_threshold_minor else delivery_settings.fee_minor
+    )
+
+    # A coupon code is only ever honoured while the sitewide switch is on; an
+    # automatic (no-code) promotion is resolved the same gated way, so this
+    # is the one place that decides whether checkout is even allowed to look
+    # -- `resolve_checkout_discount` alone decides what, if anything, applies.
+    clean_coupon_code = (coupon_code or "").strip() or None
+    enabled = await promotions_enabled(db)
+    if clean_coupon_code and not enabled:
+        raise ValidationAppError("Coupons are not available right now.")
+    applied_promotion = (
+        await resolve_checkout_discount(
+            db,
+            subtotal_minor=subtotal,
+            delivery_minor=delivery,
+            coupon_code=clean_coupon_code,
+            customer_user_id=customer.user_id,
+        )
+        if enabled
+        else None
+    )
+    # `discount` is strictly the reduction to `subtotal` -- it must stay 0 for
+    # a free-delivery promotion, whose benefit is already fully expressed by
+    # zeroing `delivery` below. Folding the waived fee into `discount` too
+    # would double-count it (`total = subtotal + 0 - fee` instead of
+    # `subtotal`) and break `total == subtotal - discount + delivery`, an
+    # invariant order history and revenue reporting both rely on holding.
+    # `granted_value` is the separate, honest record of what the promotion
+    # was actually worth, whichever mechanism delivered it -- that is what
+    # gets written to `order_adjustments` and the order's promotion snapshot.
+    discount = 0
+    granted_value = 0
+    if applied_promotion is not None:
+        granted_value = applied_promotion["discount_minor"]
+        if applied_promotion["free_delivery"]:
+            delivery = 0
+        else:
+            discount = granted_value
+
+    # A bundle discount is independent of, and stacks additively with, any
+    # coupon/promotion discount above -- see the module docstring in
+    # `services.bundles`. Priced against `unit_effective_minor` (already
+    # resolved per line, sale price included), so bundle savings are always
+    # measured against what the customer is actually being charged.
+    applied_bundle = await resolve_bundle_discount(db, resolved)
+    bundle_discount = applied_bundle["discount_minor"] if applied_bundle is not None else 0
+
+    # A subscription renewal's own incentive -- independent of, and stacking
+    # with, both discounts above, the same reasoning bundle_discount's own
+    # comment documents. `subscription_discount_percent` only ever arrives
+    # non-None from `services.subscriptions`, never from the ordinary
+    # cart-checkout route, so an ordinary order is never affected by it.
+    subscription_discount = (
+        basis_points_discount(subtotal, subscription_discount_percent * 100)
+        if subscription_discount_percent
+        else 0
+    )
+
+    total_discount = discount + bundle_discount + subscription_discount
+    total = max(subtotal + delivery - total_discount, 0)
 
     if payment_method == "cod":
         if total > settings.payment_cod_max_minor:
@@ -280,6 +347,23 @@ async def place_order(
     # payments open as pending_payment and are confirmed once the gateway result
     # is verified, so unpaid orders never enter fulfilment.
     order_status = "confirmed" if payment_method == "cod" else "pending_payment"
+    # Frozen at order time, the same reasoning `order_items.product_snapshot_json`
+    # already uses for catalogue data: a promotion edited or archived after this
+    # order shipped must never retroactively change what this order's history says.
+    promotion_snapshot = (
+        json.dumps(
+            {
+                "promotionId": applied_promotion["promotion_id"],
+                "couponId": applied_promotion["coupon_id"],
+                "code": applied_promotion["code"],
+                "headline": applied_promotion["headline"],
+                "discountMinor": granted_value,
+                "freeDelivery": applied_promotion["free_delivery"],
+            }
+        )
+        if applied_promotion is not None
+        else None
+    )
     statements: list[tuple[str, Any]] = [
         (
             """
@@ -288,9 +372,10 @@ async def place_order(
               currency_code,
               subtotal_minor, discount_minor, delivery_minor, tax_minor, total_minor,
               order_status, payment_status, fulfilment_status, delivery_status,
-              delivery_address_json, idempotency_key, placed_at, created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, 0, ?,
-                      ?, 'pending', 'unfulfilled', 'not_ready', ?, ?, ?, ?, ?)
+              delivery_address_json, promotion_snapshot_json,
+              idempotency_key, subscription_id, placed_at, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?,
+                      ?, 'pending', 'unfulfilled', 'not_ready', ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 order_id,
@@ -304,11 +389,14 @@ async def place_order(
                 customer.phone_e164 or address.get("phone_e164"),
                 currency,
                 subtotal,
+                total_discount,
                 delivery,
                 total,
                 order_status,
                 json.dumps(address),
+                promotion_snapshot,
                 idempotency_key,
+                subscription_id,
                 now,
                 now,
                 now,
@@ -360,6 +448,82 @@ async def place_order(
             )
         )
 
+    if applied_promotion is not None:
+        # One ledger row for the discount actually granted -- 'coupon' when a
+        # code drove it, 'promotion' for the automatic case -- and, only when
+        # a coupon was used, the redemption row its own usage-limit checks
+        # depend on. Both land in this same batch as the order: a discount
+        # can never be computed without being recorded, or recorded without
+        # an order behind it.
+        statements.append(
+            (
+                "INSERT INTO order_adjustments"
+                " (id, order_id, adjustment_type, label, amount_minor, created_at)"
+                " VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    new_id("adj"),
+                    order_id,
+                    "coupon" if applied_promotion["coupon_id"] else "promotion",
+                    applied_promotion["headline"],
+                    -granted_value,
+                    now,
+                ),
+            )
+        )
+        if applied_promotion["coupon_id"] is not None:
+            statements.append(
+                (
+                    "INSERT INTO coupon_redemptions"
+                    " (id, coupon_id, order_id, customer_user_id, redeemed_at)"
+                    " VALUES (?, ?, ?, ?, ?)",
+                    (
+                        new_id("crdm"),
+                        applied_promotion["coupon_id"],
+                        order_id,
+                        customer.user_id,
+                        now,
+                    ),
+                )
+            )
+
+    if applied_bundle is not None:
+        # Reuses the 'promotion' adjustment type -- see the WHY note in
+        # migration 0062 for why this doesn't get its own enum value.
+        statements.append(
+            (
+                "INSERT INTO order_adjustments"
+                " (id, order_id, adjustment_type, label, amount_minor, created_at)"
+                " VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    new_id("adj"),
+                    order_id,
+                    "promotion",
+                    f"Bundle savings — {applied_bundle['name']}",
+                    -bundle_discount,
+                    now,
+                ),
+            )
+        )
+
+    if subscription_discount > 0:
+        # Same 'promotion' reuse, same reasoning -- see the WHY note in
+        # migration 0064.
+        statements.append(
+            (
+                "INSERT INTO order_adjustments"
+                " (id, order_id, adjustment_type, label, amount_minor, created_at)"
+                " VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    new_id("adj"),
+                    order_id,
+                    "promotion",
+                    f"Subscribe & Save — {subscription_discount_percent}% off",
+                    -subscription_discount,
+                    now,
+                ),
+            )
+        )
+
     statements.append(
         audit_statement(
             action="order.placed",
@@ -368,7 +532,18 @@ async def place_order(
             actor_id=customer.user_id,
             request_id=request_id,
             created_at=now,
-            after={"reference": reference, "total_minor": total, "lines": len(resolved)},
+            after={
+                "reference": reference,
+                "total_minor": total,
+                "lines": len(resolved),
+                "discount_minor": total_discount,
+                "granted_value_minor": granted_value,
+                "bundle_discount_minor": bundle_discount,
+                "bundle_id": applied_bundle["bundle_id"] if applied_bundle else None,
+                "coupon_code": applied_promotion["code"] if applied_promotion else None,
+                "subscription_id": subscription_id,
+                "subscription_discount_minor": subscription_discount,
+            },
         )
     )
 
@@ -398,8 +573,10 @@ async def place_order(
         "reference": reference,
         "currencyCode": currency,
         "subtotalMinor": subtotal,
+        "discountMinor": total_discount,
         "deliveryMinor": delivery,
         "totalMinor": total,
         "orderStatus": order_status,
         "paymentStatus": "pending",
+        "couponCode": applied_promotion["code"] if applied_promotion else None,
     }

@@ -127,7 +127,9 @@ async def set_country_override(
     await db.batch(statements)
 
 
-async def resolve_public_home(db: Database, country: str | None) -> dict[str, Any] | None:
+async def resolve_public_home(
+    db: Database, country: str | None, locale: str | None = None
+) -> dict[str, Any] | None:
     """The homepage, with this visitor's country overrides already applied.
 
     Reads the *unfiltered* block list (including sections switched off by
@@ -137,6 +139,12 @@ async def resolve_public_home(db: Database, country: str | None) -> dict[str, An
     This mirrors `PageRepository.get_published_by_slug`'s shape exactly; it is
     a separate query rather than a shared one because that method's filtering
     happens before any override could ever see the blocks it discarded.
+
+    `locale` swaps in a translated `content_json` (migration 0067) when one
+    has been saved for this page -- block `id`s and `enabled` flags are
+    unchanged by translation, so the country-override logic below applies
+    identically either way. English (or any locale with no saved
+    translation) simply uses the page's own stored content, unchanged.
     """
     page = await db.fetch_one(
         """
@@ -150,7 +158,16 @@ async def resolve_public_home(db: Database, country: str | None) -> dict[str, An
     if page is None:
         return None
 
-    content = json.loads(page["content_json"])
+    content_json = page["content_json"]
+    if locale and locale != "en":
+        translation = await db.fetch_one(
+            "SELECT content_json FROM page_content_translations WHERE page_id = ? AND locale = ?",
+            (page["id"], locale),
+        )
+        if translation is not None:
+            content_json = translation["content_json"]
+
+    content = json.loads(content_json)
     blocks = content.get("blocks", [])
     if not isinstance(blocks, list):
         blocks = []

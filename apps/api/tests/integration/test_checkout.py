@@ -89,6 +89,11 @@ def test_checkout_creates_order_and_reserves_stock(client: TestClient, db: SQLit
     detail = client.get(f"/v1/public/orders/{body['reference']}")
     assert detail.status_code == 200
     assert detail.json()["items"][0]["sku"] == "TRG-MNG-1KG"
+    # The e-receipt needs the delivery address -- stored as the snake_case
+    # keys CheckoutAddress posts, translated to camelCase on the way out like
+    # every other response shape.
+    assert detail.json()["deliveryAddress"]["recipientName"] == ADDRESS["recipientName"]
+    assert detail.json()["deliveryAddress"]["postalCode"] == ADDRESS["postalCode"]
 
 
 def test_checkout_requires_authentication(client: TestClient):

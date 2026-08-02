@@ -148,7 +148,9 @@ class PageRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
+    async def get_published_by_slug(
+        self, slug: str, *, locale: str | None = None
+    ) -> dict[str, Any] | None:
         page = await self._db.fetch_one(
             """
             SELECT p.id, p.slug, p.title, p.seo_title, p.seo_description, p.seo_keywords,
@@ -161,7 +163,19 @@ class PageRepository:
         )
         if page is None:
             return None
-        content = json.loads(page["content_json"])
+        content_json = page["content_json"]
+        # A translated page (migration 0067) swaps in here -- block ids and
+        # `enabled` flags are unchanged by translation, so the same filtering
+        # below applies identically to either language.
+        if locale and locale != "en":
+            translation = await self._db.fetch_one(
+                "SELECT content_json FROM page_content_translations"
+                " WHERE page_id = ? AND locale = ?",
+                (page["id"], locale),
+            )
+            if translation is not None:
+                content_json = translation["content_json"]
+        content = json.loads(content_json)
         return {
             "id": page["id"],
             "slug": page["slug"],
@@ -200,6 +214,7 @@ class FarmRepository:
             """
             SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.story_json,
                    f.established_year, f.seo_title, f.seo_description,
+                   f.hero_image_url, f.hero_image_alt,
                    (
                      SELECT c.name
                      FROM farm_certifications fc
@@ -231,6 +246,7 @@ class FarmRepository:
             """
             SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.story_json,
                    f.established_year, f.seo_title, f.seo_description,
+                   f.hero_image_url, f.hero_image_alt,
                    (
                      SELECT c.name
                      FROM farm_certifications fc
@@ -271,6 +287,8 @@ class FarmRepository:
             "story": body,
             "methods": [str(method) for method in methods] if isinstance(methods, list) else [],
             "product_slugs": [entry["slug"] for entry in product_rows],
+            "hero_image_url": row["hero_image_url"] or None,
+            "hero_image_alt": row["hero_image_alt"] or None,
             "seo": {
                 "title": row["seo_title"] or row["name"],
                 "description": row["seo_description"] or summary,
@@ -1242,6 +1260,176 @@ class ContentCommentRepository:
         hidden comment is already handled."""
         row = await self._db.fetch_one(
             "SELECT COUNT(*) AS total FROM content_comments WHERE status = 'visible'"
+        )
+        return int(row["total"]) if row else 0
+
+
+_REVIEW_PUBLIC_COLUMNS = """
+  r.id, r.rating, r.title, r.body, r.created_at,
+  u.display_name AS author_name,
+  (r.order_id IS NOT NULL) AS verified_purchase
+"""
+
+
+class ReviewRepository:
+    """Public reads and admin-side reads over `reviews` (migration 0005,
+    extended by 0057). Writes are in `services.reviews`."""
+
+    def __init__(self, db: Database):
+        self._db = db
+
+    async def list_public_for_product(
+        self, product_id: str, *, limit: int = 20, offset: int = 0
+    ) -> list[dict[str, Any]]:
+        """Approved reviews for one product, newest first."""
+        return await self._db.fetch_all(
+            f"""
+            SELECT {_REVIEW_PUBLIC_COLUMNS}
+            FROM reviews r
+            JOIN users u ON u.id = r.customer_user_id
+            WHERE r.product_id = ? AND r.status = 'approved'
+            ORDER BY r.created_at DESC
+            LIMIT ? OFFSET ?
+            """,
+            (product_id, min(max(limit, 1), 100), max(offset, 0)),
+        )
+
+    async def count_public_for_product(self, product_id: str) -> int:
+        row = await self._db.fetch_one(
+            "SELECT COUNT(*) AS total FROM reviews WHERE product_id = ? AND status = 'approved'",
+            (product_id,),
+        )
+        return int(row["total"]) if row else 0
+
+    async def list_public_all(self, *, limit: int = 20, offset: int = 0) -> list[dict[str, Any]]:
+        """Every approved review sitewide, newest first -- backs the dedicated
+        `/reviews` page, as distinct from `list_featured`'s curated homepage
+        feed."""
+        return await self._db.fetch_all(
+            f"""
+            SELECT {_REVIEW_PUBLIC_COLUMNS}, p.name AS product_name, p.slug AS product_slug
+            FROM reviews r
+            JOIN users u ON u.id = r.customer_user_id
+            JOIN products p ON p.id = r.product_id
+            WHERE r.status = 'approved' AND p.status = 'published'
+            ORDER BY r.created_at DESC
+            LIMIT ? OFFSET ?
+            """,
+            (min(max(limit, 1), 100), max(offset, 0)),
+        )
+
+    async def count_public_all(self) -> int:
+        row = await self._db.fetch_one(
+            """
+            SELECT COUNT(*) AS total
+            FROM reviews r
+            JOIN products p ON p.id = r.product_id
+            WHERE r.status = 'approved' AND p.status = 'published'
+            """
+        )
+        return int(row["total"]) if row else 0
+
+    async def list_featured(
+        self, *, review_ids: list[str] | None, min_rating: int, limit: int
+    ) -> list[dict[str, Any]]:
+        """Reviews for the homepage `reviews_showcase` block.
+
+        `review_ids` (manual mode) returns exactly those reviews, in the given
+        order, silently dropping any id that is not approved -- an editor who
+        featured a review that was later rejected sees the showcase shrink, not
+        error. `None` (rule mode) returns the current top-rated approved
+        reviews sitewide, live on every call.
+        """
+        safe_limit = min(max(limit, 1), 24)
+        if review_ids:
+            placeholders = ", ".join("?" for _ in review_ids)
+            rows = await self._db.fetch_all(
+                f"""
+                SELECT {_REVIEW_PUBLIC_COLUMNS}, p.name AS product_name, p.slug AS product_slug
+                FROM reviews r
+                JOIN users u ON u.id = r.customer_user_id
+                JOIN products p ON p.id = r.product_id
+                WHERE r.id IN ({placeholders}) AND r.status = 'approved'
+                """,
+                review_ids,
+            )
+            by_id = {row["id"]: row for row in rows}
+            return [by_id[review_id] for review_id in review_ids if review_id in by_id][:safe_limit]
+        return await self._db.fetch_all(
+            f"""
+            SELECT {_REVIEW_PUBLIC_COLUMNS}, p.name AS product_name, p.slug AS product_slug
+            FROM reviews r
+            JOIN users u ON u.id = r.customer_user_id
+            JOIN products p ON p.id = r.product_id
+            WHERE r.status = 'approved' AND r.rating >= ? AND p.status = 'published'
+            ORDER BY r.rating DESC, r.created_at DESC
+            LIMIT ?
+            """,
+            (min(max(min_rating, 1), 5), safe_limit),
+        )
+
+    async def list_admin(
+        self,
+        *,
+        status: str | None = None,
+        rating: int | None = None,
+        search: str | None = None,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> list[dict[str, Any]]:
+        """Every review, newest first, with the product and author attached so
+        a moderator never needs a second round trip to decide."""
+        search_clause = ""
+        params: list[Any] = [status, status, rating, rating]
+        if search:
+            search_clause = "AND (r.title LIKE ? OR r.body LIKE ? OR u.display_name LIKE ?)"
+            pattern = f"%{search}%"
+            params.extend([pattern, pattern, pattern])
+        params.extend([min(max(limit, 1), 100), max(offset, 0)])
+        return await self._db.fetch_all(
+            f"""
+            SELECT r.id, r.rating, r.title, r.body, r.status, r.created_at,
+                   r.moderated_at, r.moderation_reason,
+                   u.display_name AS author_name, u.email AS author_email,
+                   p.name AS product_name, p.slug AS product_slug
+            FROM reviews r
+            JOIN users u ON u.id = r.customer_user_id
+            JOIN products p ON p.id = r.product_id
+            WHERE (? IS NULL OR r.status = ?)
+              AND (? IS NULL OR r.rating = ?)
+            {search_clause}
+            ORDER BY r.created_at DESC
+            LIMIT ? OFFSET ?
+            """,
+            tuple(params),
+        )
+
+    async def count_admin(
+        self, *, status: str | None = None, rating: int | None = None, search: str | None = None
+    ) -> int:
+        search_clause = ""
+        params: list[Any] = [status, status, rating, rating]
+        if search:
+            search_clause = "AND (r.title LIKE ? OR r.body LIKE ? OR u.display_name LIKE ?)"
+            pattern = f"%{search}%"
+            params.extend([pattern, pattern, pattern])
+        row = await self._db.fetch_one(
+            f"""
+            SELECT COUNT(*) AS total
+            FROM reviews r
+            JOIN users u ON u.id = r.customer_user_id
+            WHERE (? IS NULL OR r.status = ?)
+              AND (? IS NULL OR r.rating = ?)
+            {search_clause}
+            """,
+            tuple(params),
+        )
+        return int(row["total"]) if row else 0
+
+    async def count_pending(self) -> int:
+        """Feeds the admin nav badge."""
+        row = await self._db.fetch_one(
+            "SELECT COUNT(*) AS total FROM reviews WHERE status = 'pending'"
         )
         return int(row["total"]) if row else 0
 

@@ -8,6 +8,7 @@ import {
   BarChart3,
   Bell,
   BookOpen,
+  Boxes,
   ClipboardList,
   Database,
   FolderTree,
@@ -18,6 +19,7 @@ import {
   Inbox,
   KeyRound,
   LayoutDashboard,
+  LineChart,
   LogOut,
   Mail,
   Menu,
@@ -28,13 +30,16 @@ import {
   PanelLeftOpen,
   Percent,
   Receipt,
+  Repeat,
   RotateCcw,
   ScrollText,
   Settings,
   ShieldCheck,
   ShoppingCart,
   Sprout,
+  Star,
   Terminal,
+  Ticket,
   UtensilsCrossed,
   Users,
   Wallet,
@@ -75,6 +80,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
     heading: "Overview",
     entries: [
       { to: "/", label: "Dashboard", icon: <LayoutDashboard size={16} />, permission: null },
+      {
+        to: "/analytics",
+        label: "Analytics",
+        icon: <LineChart size={16} />,
+        permission: "analytics.view",
+      },
     ],
   },
   {
@@ -97,6 +108,24 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         label: "Sale & Discounts",
         icon: <Percent size={16} />,
         permission: "settings.view",
+      },
+      {
+        to: "/promotions",
+        label: "Coupons & Promotions",
+        icon: <Ticket size={16} />,
+        permission: "promotions.view",
+      },
+      {
+        to: "/bundles",
+        label: "Bundles",
+        icon: <Boxes size={16} />,
+        permission: "bundles.view",
+      },
+      {
+        to: "/subscriptions",
+        label: "Subscriptions",
+        icon: <Repeat size={16} />,
+        permission: "subscriptions.view",
       },
       {
         to: "/inventory",
@@ -128,6 +157,13 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         label: "Returns",
         icon: <RotateCcw size={16} />,
         permission: "returns.view",
+      },
+      {
+        to: "/reviews",
+        label: "Reviews",
+        icon: <Star size={16} />,
+        permission: "reviews.view",
+        badgeKey: "reviewsPending",
       },
       {
         to: "/refunds",
@@ -452,9 +488,16 @@ export function Shell() {
     enabled: permissions.has("farm_requests.view"),
     refetchInterval: 60_000,
   });
+  const { data: pendingReviews } = useQuery({
+    queryKey: ["reviews-pending-count"],
+    queryFn: api.reviewsPendingCount,
+    enabled: permissions.has("reviews.view"),
+    refetchInterval: 60_000,
+  });
   const badges = {
     submissionsPending: pendingSubmissions ?? 0,
     farmRequestsOpen: openFarmRequests ?? 0,
+    reviewsPending: pendingReviews ?? 0,
   };
   const { data: notifications } = useQuery({
     queryKey: ["admin-notifications"],

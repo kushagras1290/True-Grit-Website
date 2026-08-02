@@ -99,6 +99,11 @@ export interface ProductSummary {
    *  per-slug detail request needed just to learn the variant id. Null only
    *  for a product with no active variant at all. */
   leadVariantId: string | null;
+  /** Average of *approved* reviews only (migration 0057); 0 for a product with
+   *  none yet, not undefined -- "no ratings" is its own display state, not a
+   *  missing-data case. */
+  ratingAverage: number;
+  ratingCount: number;
 }
 
 export interface VariantSummary {
@@ -116,6 +121,15 @@ export interface TraceabilityStep {
   detail: string;
 }
 
+/** A gallery photo beyond `ProductSummary.imageUrl` -- the one required
+ *  thumbnail every listing uses. Never used for a thumbnail itself, only the
+ *  product detail page's own image viewer (see migration 0066). */
+export interface ProductImage {
+  id: string;
+  imageUrl: string;
+  imageAlt: string | null;
+}
+
 export interface ProductDetail extends ProductSummary {
   shortDescription: string;
   overview: string;
@@ -128,6 +142,11 @@ export interface ProductDetail extends ProductSummary {
   relatedSlugs: string[];
   returnEligible: boolean;
   seo: SeoDocument;
+  /** Gallery photos beyond `imageUrl` above. Optional (rather than always an
+   *  array) so hand-written fixtures and any older cached response need not
+   *  carry an empty array just to satisfy the type -- absent reads exactly
+   *  like empty everywhere this is consumed. */
+  images?: ProductImage[];
 }
 
 export interface CategorySummary {
@@ -204,6 +223,11 @@ export interface FarmSummary {
   summary: string;
   certification: string;
   establishedYear: number;
+  /** The individual farm page's own banner (distinct from the sitewide
+   *  `/farms` listing banner in `StorefrontSettings.banners`). `null` renders
+   *  `PageBanner`'s plain gradient backdrop, not a missing-image error. */
+  heroImageUrl: string | null;
+  heroImageAlt: string | null;
 }
 
 export interface FarmDetail extends FarmSummary {
@@ -348,6 +372,57 @@ export interface PageLinksBlock extends BlockBase {
   props: { heading: string; intro: string; items: PageLinkItem[] };
 }
 
+/**
+ * "What customers are saying". `source: "rule"` resolves live to the current
+ * top-rated approved reviews sitewide (`minRating` and up); `source: "manual"`
+ * shows exactly the reviews in `reviewIds`, in that order. Ships enabled by
+ * default (migration 0057) in rule mode, so it renders nothing until real
+ * reviews exist rather than needing an editor to remember to turn it on.
+ */
+export interface ReviewsShowcaseBlock extends BlockBase {
+  type: "reviews_showcase";
+  props: {
+    heading: string;
+    subheading: string;
+    source: "manual" | "rule";
+    reviewIds: string[];
+    limit: number;
+    minRating: number;
+  };
+}
+
+/**
+ * "What's on offer" -- the same live-resolved two-mode split as
+ * `reviews_showcase`. `source: "manual"` pins one specific `promotionId`;
+ * `source: "rule"` resolves the current highest-priority automatic
+ * promotion. No heading/subheading here: a promotion already carries its own
+ * `headline`/`description` (migration 0060), which is also what the
+ * checkout-page callout reads, so the homepage and checkout never show two
+ * hand-maintained versions of the same offer.
+ */
+export interface PromotionBannerBlock extends BlockBase {
+  type: "promotion_banner";
+  props: {
+    source: "manual" | "rule";
+    promotionId: string | null;
+  };
+}
+
+/**
+ * Real bestsellers -- ranked by quantity actually sold, resolved live on
+ * every render (like `product_collection`'s rule mode), never a curated
+ * list. Renders nothing when there is no order history yet, the same
+ * empty-is-legitimate contract every rule-driven block already follows.
+ */
+export interface RecommendationsBlock extends BlockBase {
+  type: "recommendations";
+  props: {
+    heading: string;
+    subheading: string;
+    limit: number;
+  };
+}
+
 export type PublicPageBlock =
   | HeroBlock
   | CategoryCollectionBlock
@@ -356,7 +431,10 @@ export type PublicPageBlock =
   | FaqBlock
   | RichTextBlock
   | NewsletterBlock
-  | PageLinksBlock;
+  | PageLinksBlock
+  | ReviewsShowcaseBlock
+  | PromotionBannerBlock
+  | RecommendationsBlock;
 
 export type PublicBlockType = PublicPageBlock["type"];
 
@@ -441,6 +519,17 @@ export interface AdminInventoryRow {
   reserved: number;
   reorderThreshold: number;
   updatedAt: string;
+}
+
+/** One product with all of its variants' stock levels together -- the
+ *  inventory page's unit of pagination and display, matching the Products
+ *  page (one row per product, alphabetical) rather than repeating the
+ *  product name on a separate row per variant. */
+export interface AdminInventoryProductGroup {
+  productId: string;
+  productName: string;
+  productStatus: "draft" | "published" | "unpublished" | "archived";
+  variants: AdminInventoryRow[];
 }
 
 export interface AdminOrderRow {
@@ -618,6 +707,292 @@ export interface AdminReturnRequestDetail {
 }
 
 // ---------------------------------------------------------------------------
+// Product reviews and ratings (migration 0005, extended by 0057)
+// ---------------------------------------------------------------------------
+
+export type ReviewStatus = "pending" | "approved" | "rejected" | "removed";
+
+/** One approved review as shown on a product page. */
+export interface ProductReview {
+  id: string;
+  rating: number;
+  title: string | null;
+  body: string;
+  authorName: string;
+  /** True when the review is tied to a real order (every review is, in
+   *  practice -- `services.reviews.create_review` requires one -- but the
+   *  field stays boolean rather than assumed so the storefront never has to
+   *  guess at a row it did not create). */
+  verifiedPurchase: boolean;
+  createdAt: string;
+}
+
+/** A review on the homepage's `reviews_showcase` feed, which spans every
+ *  product -- so unlike `ProductReview` it carries the product it is about. */
+export interface FeaturedReview extends ProductReview {
+  productName: string;
+  productSlug: string;
+}
+
+/** A review the calling customer wrote, as shown on their own order page --
+ *  carries `status` so "pending moderation" reads differently from
+ *  "published". */
+export interface MyReview {
+  id: string;
+  productId: string;
+  productName: string;
+  productSlug: string;
+  rating: number;
+  title: string | null;
+  body: string;
+  status: ReviewStatus;
+  createdAt: string;
+}
+
+export interface AdminReviewRow {
+  id: string;
+  productName: string;
+  productSlug: string;
+  rating: number;
+  title: string | null;
+  body: string;
+  status: ReviewStatus;
+  authorName: string;
+  authorEmail: string | null;
+  createdAt: string;
+  moderatedAt: string | null;
+  moderationReason: string | null;
+}
+
+// ---------------------------------------------------------------------------
+// Coupons and promotions (migration 0005, extended by 0060). A promotion with
+// no coupons is automatic -- it applies to every eligible cart with no code.
+// One or more coupons make it code-gated.
+// ---------------------------------------------------------------------------
+
+export type PromotionStatus =
+  "draft" | "scheduled" | "active" | "paused" | "ended" | "archived";
+
+export type PromotionStackingPolicy = "exclusive" | "stackable";
+
+export type PromotionActionType = "percentage_discount" | "fixed_discount" | "free_delivery";
+
+/** The one promotion to advertise right now -- the same shape the homepage
+ *  banner and the checkout box both read, so they always show identical
+ *  copy. `code` is only present when the promotion is code-gated (has at
+ *  least one active coupon); an automatic promotion has none to show. */
+export interface FeaturedPromotion {
+  id: string;
+  name: string;
+  headline: string;
+  description: string | null;
+  code: string | null;
+}
+
+export interface AdminPromotionRow {
+  id: string;
+  name: string;
+  status: PromotionStatus;
+  priority: number;
+  startsAt: string | null;
+  endsAt: string | null;
+  stackingPolicy: PromotionStackingPolicy;
+  usageLimitTotal: number | null;
+  usageLimitPerCustomer: number | null;
+  headline: string | null;
+  description: string | null;
+  couponCount: number;
+  redemptionCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminCouponRow {
+  id: string;
+  code: string;
+  active: boolean;
+  redemptionCount: number;
+  createdAt: string;
+}
+
+export interface AdminPromotionAction {
+  actionType: PromotionActionType;
+  valueBasisPoints: number | null;
+  amountMinor: number | null;
+  maximumDiscountMinor: number | null;
+}
+
+export interface AdminPromotionDetail extends AdminPromotionRow {
+  rule: { minSubtotalMinor: number | null } | null;
+  action: AdminPromotionAction | null;
+  coupons: AdminCouponRow[];
+}
+
+// ---------------------------------------------------------------------------
+// Bundles -- curated sets of specific variants sold together at a flat price
+// ---------------------------------------------------------------------------
+
+export type BundleStatus = "draft" | "active" | "ended" | "archived";
+
+export interface AdminBundleRow {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  status: BundleStatus;
+  bundlePriceMinor: number;
+  imageUrl: string | null;
+  imageAlt: string | null;
+  itemCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminBundleItem {
+  id: string;
+  variantId: string;
+  quantity: number;
+  variantName: string;
+  sku: string;
+  productId: string;
+  productName: string;
+  productSlug: string;
+  imageUrl: string | null;
+  unitPriceMinor: number;
+  lineTotalMinor: number;
+}
+
+export interface AdminBundleDetail extends AdminBundleRow {
+  items: AdminBundleItem[];
+}
+
+/** A bundle item as the storefront reads it -- same shape as
+ *  `AdminBundleItem` minus the admin row id (the public API has no reason to
+ *  expose `bundle_items.id`). */
+export interface PublicBundleItem {
+  variantId: string;
+  quantity: number;
+  variantName: string;
+  sku: string;
+  productId: string;
+  productName: string;
+  productSlug: string;
+  imageUrl: string | null;
+  unitPriceMinor: number;
+  lineTotalMinor: number;
+}
+
+/** An active, purchasable bundle -- `savingsMinor` is computed server-side
+ *  against current variant prices, the same math `resolve_bundle_discount`
+ *  applies at checkout, so the shop card can never advertise a number
+ *  checkout would not also grant. */
+export interface PublicBundle {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  bundlePriceMinor: number;
+  componentSumMinor: number;
+  savingsMinor: number;
+  imageUrl: string | null;
+  imageAlt: string | null;
+  items: PublicBundleItem[];
+}
+
+// ---------------------------------------------------------------------------
+// Delivery addresses -- reusable, unlike the ad-hoc address ordinary
+// checkout takes on the request itself. Subscriptions are the only feature
+// that needs one (a renewal has no request to take an address from).
+// ---------------------------------------------------------------------------
+
+export interface CustomerAddress {
+  id: string;
+  label: string | null;
+  recipientName: string;
+  phoneE164: string | null;
+  line1: string;
+  line2: string | null;
+  city: string;
+  state: string;
+  postalCode: string;
+  countryCode: string;
+  isDefaultDelivery: boolean;
+  createdAt: string;
+}
+
+// ---------------------------------------------------------------------------
+// Subscriptions -- "Subscribe & Save" recurring cash-on-delivery deliveries
+// of a single product variant. Off sitewide by default; see
+// `StorefrontSettings.subscriptions` / `StorefrontSettingsEffective.subscriptions`.
+// ---------------------------------------------------------------------------
+
+export type SubscriptionFrequency = "weekly" | "biweekly" | "monthly";
+export type SubscriptionStatus = "active" | "paused" | "cancelled";
+
+/** The shape both the customer's own "My Subscriptions" list and the admin
+ *  support view read -- the admin view additionally gets `customerName`/
+ *  `customerEmail` populated (null for a customer reading their own). */
+export interface SubscriptionRow {
+  id: string;
+  customerUserId: string;
+  variantId: string;
+  productId: string;
+  productName: string;
+  productSlug: string;
+  variantName: string;
+  sku: string;
+  imageUrl: string | null;
+  unitPriceMinor: number | null;
+  quantity: number;
+  frequency: SubscriptionFrequency;
+  status: SubscriptionStatus;
+  addressId: string;
+  nextOrderDate: string;
+  lastOrderId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  cancelledAt: string | null;
+  customerName: string | null;
+  customerEmail: string | null;
+}
+
+// ---------------------------------------------------------------------------
+// Analytics -- a visual dashboard over a date range, computed live from
+// orders/order_items. Distinct from the Owner Reports library (curated
+// named queries, no charts): this is "how is the store doing".
+// ---------------------------------------------------------------------------
+
+export interface AnalyticsRevenuePoint {
+  date: string;
+  revenueMinor: number;
+  orderCount: number;
+}
+
+export interface AnalyticsTopProduct {
+  productId: string;
+  productName: string;
+  unitsSold: number;
+  revenueMinor: number;
+}
+
+export interface AnalyticsStatusCount {
+  status: string;
+  orderCount: number;
+}
+
+export interface AnalyticsOverview {
+  fromDate: string;
+  toDate: string;
+  revenueMinor: number;
+  orderCount: number;
+  averageOrderValueMinor: number;
+  newCustomers: number;
+  revenueByDay: AnalyticsRevenuePoint[];
+  topProducts: AnalyticsTopProduct[];
+  statusBreakdown: AnalyticsStatusCount[];
+}
+
+// ---------------------------------------------------------------------------
 // Community blog/recipe submissions
 // ---------------------------------------------------------------------------
 
@@ -786,8 +1161,13 @@ export interface StorefrontSettings {
   registration: boolean;
   payments: boolean;
   paymentsDisabledNotice: string;
+  promotions: boolean;
+  recommendations: boolean;
+  subscriptions: boolean;
   blogBannerImageUrl: string;
   blogBannerImageAlt: string;
+  farmsBannerImageUrl: string;
+  farmsBannerImageAlt: string;
 }
 
 export interface StorefrontSettingsEffective {
@@ -797,6 +1177,9 @@ export interface StorefrontSettingsEffective {
   passwordSignIn: boolean;
   registration: boolean;
   payments: boolean;
+  promotions: boolean;
+  recommendations: boolean;
+  subscriptions: boolean;
   anySignInAvailable: boolean;
 }
 

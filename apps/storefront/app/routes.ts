@@ -17,6 +17,9 @@ export default [
   route("category/:slug", "routes/category.tsx"),
   route("product/:slug", "routes/product.tsx"),
   route("search", "routes/search.tsx"),
+  route("reviews", "routes/reviews.tsx"),
+  route("bundles", "routes/bundles.tsx"),
+  route("bundles/:slug", "routes/bundle.tsx"),
   route("farms", "routes/farms.tsx"),
   // Before `farms/:slug`, or "partner" is read as a farm slug and 404s.
   route("farms/partner", "routes/farm-partner.tsx"),
@@ -44,6 +47,7 @@ export default [
   route("payment/paypal", "routes/paypal-payment.tsx"),
   route("account", "routes/account.tsx"),
   route("account/orders/:reference", "routes/order.tsx"),
+  route("account/orders/:reference/receipt", "routes/receipt.tsx"),
   route("account/submissions", "routes/my-submissions.tsx"),
   route("account/submissions/:id/edit", "routes/edit-submission.tsx"),
   route("reset-password", "routes/reset-password.tsx"),

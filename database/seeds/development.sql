@@ -129,7 +129,8 @@ SELECT 'rol_order_manager', id FROM permissions
 WHERE key IN (
   'orders.view', 'orders.cancel', 'customers.view',
   'products.view', 'inventory.view',
-  'returns.view', 'returns.manage'
+  'returns.view', 'returns.manage',
+  'reviews.view', 'reviews.moderate'
 );
 
 -- Manager: runs the shop day to day — catalogue, content, stock, orders, and
@@ -156,7 +157,10 @@ WHERE key IN (
   'customers.view', 'users.view', 'audit.view',
   'submissions.view', 'submissions.review',
   'discussions.view', 'discussions.moderate',
-  'farm_requests.view', 'farm_requests.review'
+  'farm_requests.view', 'farm_requests.review',
+  'reviews.view', 'reviews.moderate',
+  'promotions.view', 'promotions.manage',
+  'bundles.view', 'bundles.manage'
 );
 
 -- Inventory: read-mostly monitoring sibling of Inventory Manager.
@@ -244,7 +248,7 @@ INSERT INTO certifications (id, name, issuing_body, slug, created_at, updated_at
   ('cert_pgs_india', 'PGS-India Green', 'Ministry of Agriculture', 'pgs-india', '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
 
 -- Farms
-INSERT INTO farms (id, name, slug, farmer_name, region, country_code, established_year, story_json, hero_media_id, status, seo_title, seo_description, created_at, created_by, updated_at, updated_by) VALUES
+INSERT OR IGNORE INTO farms (id, name, slug, farmer_name, region, country_code, established_year, story_json, hero_media_id, status, seo_title, seo_description, created_at, created_by, updated_at, updated_by) VALUES
   ('farm_devika', 'Devika Organics', 'devika-organics', 'Devika Kulkarni', 'Ratnagiri, Maharashtra', 'IN', 1998,
    '{"summary":"Three generations of Alphonso orchards farmed without synthetic inputs since 1998."}',
    'med_farm_devika', 'published', 'Devika Organics — Ratnagiri Alphonso orchards',
@@ -267,7 +271,7 @@ INSERT INTO farm_certifications (id, farm_id, certification_id, certificate_refe
   ('fc_himgiri_npop', 'farm_himgiri', 'cert_india_organic', 'NPOP/UK/2025/0261', '2025-01-01', '2027-12-31', 'verified', '2026-07-01T00:00:00Z', 'usr_admin', '2026-07-01T00:00:00Z');
 
 -- Categories
-INSERT INTO categories (id, internal_name, name, slug, parent_id, path, level, sort_order, status, visibility, short_description, hero_eyebrow, hero_title, hero_description, theme_key, season_label, product_assignment_mode, product_rule_json, created_at, created_by, updated_at, updated_by) VALUES
+INSERT OR IGNORE INTO categories (id, internal_name, name, slug, parent_id, path, level, sort_order, status, visibility, short_description, hero_eyebrow, hero_title, hero_description, theme_key, season_label, product_assignment_mode, product_rule_json, created_at, created_by, updated_at, updated_by) VALUES
   ('cat_fresh_fruits', 'Fresh Fruits', 'Fresh Fruits', 'fresh-fruits', NULL, '/fresh-fruits', 0, 1, 'published', 'public',
    'Seasonal organic fruit, picked at peak ripeness and traced to the orchard.',
    'In season now', 'Fruit, at its honest best', 'Every fruit here is grown without synthetic inputs and travels from a verified farm within days of harvest.',
@@ -318,7 +322,7 @@ INSERT OR IGNORE INTO tags (id, key, label, tag_group, created_at) VALUES
   ('tag_traditional', 'traditional-indian', 'Traditional Indian', 'intention', '2026-07-01T00:00:00Z');
 
 -- Products
-INSERT INTO products (id, internal_name, name, slug, product_type, farm_id, status, short_description, primary_media_id, seo_title, seo_description, created_at, created_by, updated_at, updated_by) VALUES
+INSERT OR IGNORE INTO products (id, internal_name, name, slug, product_type, farm_id, status, short_description, primary_media_id, seo_title, seo_description, created_at, created_by, updated_at, updated_by) VALUES
   ('prd_alphonso', 'Alphonso Mangoes 2026', 'Organic Alphonso Mangoes', 'organic-alphonso-mangoes', 'fresh_fruit', 'farm_devika', 'published',
    'Ratnagiri Alphonso, tree-ripened and carbide-free, from Devika Organics.',
    'med_prod_mango', 'Organic Alphonso Mangoes — Ratnagiri, carbide-free',
@@ -364,21 +368,21 @@ SET image_url = CASE id
     END
 WHERE id IN ('prd_alphonso', 'prd_spinach', 'prd_ragi', 'prd_groundnut_oil', 'prd_rajma');
 
-INSERT INTO product_categories (product_id, category_id, is_primary, sort_order, assigned_at, assigned_by) VALUES
+INSERT OR IGNORE INTO product_categories (product_id, category_id, is_primary, sort_order, assigned_at, assigned_by) VALUES
   ('prd_alphonso', 'cat_fresh_fruits', 1, 1, '2026-07-01T00:00:00Z', 'usr_pm'),
   ('prd_spinach', 'cat_vegetables', 1, 1, '2026-07-01T00:00:00Z', 'usr_pm'),
   ('prd_ragi', 'cat_grains', 1, 1, '2026-07-01T00:00:00Z', 'usr_pm'),
   ('prd_rajma', 'cat_grains', 1, 2, '2026-07-01T00:00:00Z', 'usr_pm'),
   ('prd_groundnut_oil', 'cat_oils', 1, 1, '2026-07-01T00:00:00Z', 'usr_pm');
 
-INSERT INTO product_tags (product_id, tag_id) VALUES
+INSERT OR IGNORE INTO product_tags (product_id, tag_id) VALUES
   ('prd_spinach', 'tag_plant_based'),
   ('prd_ragi', 'tag_gluten_free'),
   ('prd_ragi', 'tag_traditional'),
   ('prd_rajma', 'tag_high_protein'),
   ('prd_rajma', 'tag_plant_based');
 
-INSERT INTO product_certifications (product_id, certification_id, claim_review_state) VALUES
+INSERT OR IGNORE INTO product_certifications (product_id, certification_id, claim_review_state) VALUES
   ('prd_alphonso', 'cert_india_organic', 'approved'),
   ('prd_spinach', 'cert_pgs_india', 'approved'),
   ('prd_ragi', 'cert_pgs_india', 'approved'),
@@ -386,7 +390,7 @@ INSERT INTO product_certifications (product_id, certification_id, claim_review_s
   ('prd_rajma', 'cert_india_organic', 'approved');
 
 -- Variants
-INSERT INTO product_variants (id, product_id, sku, name, weight_value, weight_unit, status, sort_order, created_at, updated_at) VALUES
+INSERT OR IGNORE INTO product_variants (id, product_id, sku, name, weight_value, weight_unit, status, sort_order, created_at, updated_at) VALUES
   ('var_alphonso_1kg', 'prd_alphonso', 'TRG-MNG-1KG', '1 kg box (3-4 mangoes)', 1, 'kg', 'active', 1, '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z'),
   ('var_alphonso_2kg', 'prd_alphonso', 'TRG-MNG-2KG', '2 kg box (7-8 mangoes)', 2, 'kg', 'active', 2, '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z'),
   ('var_spinach_250g', 'prd_spinach', 'TRG-SPN-250', '250 g bunch', 250, 'g', 'active', 1, '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z'),
@@ -397,7 +401,7 @@ INSERT INTO product_variants (id, product_id, sku, name, weight_value, weight_un
   ('var_rajma_500g', 'prd_rajma', 'TRG-RJM-500', '500 g pack', 500, 'g', 'active', 1, '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
 
 -- Prices (INR paise)
-INSERT INTO variant_prices (id, variant_id, market_code, currency_code, list_amount_minor, sale_amount_minor, status, created_at, created_by) VALUES
+INSERT OR IGNORE INTO variant_prices (id, variant_id, market_code, currency_code, list_amount_minor, sale_amount_minor, status, created_at, created_by) VALUES
   ('prc_alphonso_1kg', 'var_alphonso_1kg', 'IN', 'INR', 89900, NULL, 'active', '2026-07-01T00:00:00Z', 'usr_pm'),
   ('prc_alphonso_2kg', 'var_alphonso_2kg', 'IN', 'INR', 169900, 149900, 'active', '2026-07-01T00:00:00Z', 'usr_pm'),
   ('prc_spinach_250g', 'var_spinach_250g', 'IN', 'INR', 6900, NULL, 'active', '2026-07-01T00:00:00Z', 'usr_pm'),
@@ -411,7 +415,7 @@ INSERT INTO variant_prices (id, variant_id, market_code, currency_code, list_amo
 INSERT OR IGNORE INTO inventory_locations (id, code, name, location_type, timezone, active, created_at, updated_at) VALUES
   ('loc_mumbai', 'MUM-01', 'Mumbai Fulfilment Centre', 'warehouse', 'Asia/Kolkata', 1, '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
 
-INSERT INTO inventory_levels (variant_id, location_id, on_hand, reserved, reorder_threshold, version, updated_at) VALUES
+INSERT OR IGNORE INTO inventory_levels (variant_id, location_id, on_hand, reserved, reorder_threshold, version, updated_at) VALUES
   ('var_alphonso_1kg', 'loc_mumbai', 120, 4, 20, 1, '2026-07-01T00:00:00Z'),
   ('var_alphonso_2kg', 'loc_mumbai', 60, 2, 10, 1, '2026-07-01T00:00:00Z'),
   ('var_spinach_250g', 'loc_mumbai', 200, 0, 40, 1, '2026-07-01T00:00:00Z'),
@@ -528,6 +532,8 @@ INSERT INTO search_synonyms (id, term, synonym, created_at) VALUES
   ('syn_3', 'groundnut', 'peanut', '2026-07-01T00:00:00Z');
 
 -- FTS index rows for seeded products
+DELETE FROM search_products
+WHERE product_id IN ('prd_alphonso', 'prd_spinach', 'prd_ragi', 'prd_groundnut_oil', 'prd_rajma');
 INSERT INTO search_products (product_id, name, slug, brand_name, farm_name, category_names, keywords, short_description) VALUES
   ('prd_alphonso', 'Organic Alphonso Mangoes', 'organic-alphonso-mangoes', '', 'Devika Organics', 'Fresh Fruits', 'mango hapus alphonso fruit', 'Ratnagiri Alphonso, tree-ripened and carbide-free.'),
   ('prd_spinach', 'Organic Baby Spinach', 'organic-baby-spinach', '', 'Anandvan Collective', 'Organic Vegetables', 'spinach palak greens', 'Tender baby spinach, harvested at dawn.'),
@@ -556,6 +562,48 @@ INSERT INTO orders (id, public_reference, customer_user_id, customer_email, curr
 INSERT INTO order_items (id, order_id, product_id, variant_id, product_name, variant_name, sku, quantity, unit_list_amount_minor, unit_effective_amount_minor, discount_minor, tax_minor, line_total_minor) VALUES
   ('oit_1001', 'ord_1001', 'prd_alphonso', 'var_alphonso_1kg', 'Organic Alphonso Mangoes', '1 kg box (3-4 mangoes)', 'TRG-MNG-1KG', 1, 89900, 89900, 0, 0, 89900),
   ('oit_1002', 'ord_1002', 'prd_alphonso', 'var_alphonso_2kg', 'Organic Alphonso Mangoes', '2 kg box (7-8 mangoes)', 'TRG-MNG-2KG', 1, 149900, 149900, 0, 0, 149900);
+
+-- Two more customers, purely so reviews below have more than one voice.
+INSERT INTO users (id, email, display_name, user_type, status, email_verified_at, phone_e164, phone_verified_at, created_at, updated_at) VALUES
+  ('usr_cust_arjun', 'arjun@example.test', 'Arjun Bhatia', 'customer', 'active', '2026-07-06T00:00:00Z', '+919999900011', '2026-07-06T00:00:00Z', '2026-07-06T00:00:00Z', '2026-07-06T00:00:00Z'),
+  ('usr_cust_meher', 'meher@example.test', 'Meher Chandra', 'customer', 'active', '2026-07-07T00:00:00Z', '+919999900012', '2026-07-07T00:00:00Z', '2026-07-07T00:00:00Z', '2026-07-07T00:00:00Z');
+
+INSERT INTO customer_profiles (user_id, phone_e164, marketing_email_consent, created_at, updated_at) VALUES
+  ('usr_cust_arjun', '+919999900011', 1, '2026-07-06T00:00:00Z', '2026-07-06T00:00:00Z'),
+  ('usr_cust_meher', '+919999900012', 0, '2026-07-07T00:00:00Z', '2026-07-07T00:00:00Z');
+
+-- Completed orders backing the demo reviews below. `services.reviews.create_review`
+-- only accepts a review against a completed order that actually contains the
+-- product, so every review row here points at one of these rather than at
+-- ord_1001/ord_1002 above (confirmed / pending_payment — not yet reviewable).
+--
+-- Deliberately never prd_alphonso: test_revenue.py hardcodes farm_devika as
+-- having exactly one paid order (ord_1001, ₹899) across the whole seed, and a
+-- second paid alphonso order here would double its computed revenue and break
+-- that module. Every product below belongs to a different farm instead.
+INSERT INTO orders (id, public_reference, customer_user_id, customer_email, currency_code, subtotal_minor, discount_minor, delivery_minor, tax_minor, total_minor, order_status, payment_status, fulfilment_status, delivery_status, placed_at, created_at, updated_at) VALUES
+  ('ord_1003', 'TG-1003', 'usr_cust_riya', 'riya@example.test', 'INR', 13800, 0, 4900, 0, 18700, 'completed', 'paid', 'fulfilled', 'delivered', '2026-07-14T09:00:00Z', '2026-07-14T09:00:00Z', '2026-07-16T09:00:00Z'),
+  ('ord_1004', 'TG-1004', 'usr_cust_arjun', 'arjun@example.test', 'INR', 14500, 0, 4900, 0, 19400, 'completed', 'paid', 'fulfilled', 'delivered', '2026-07-15T09:00:00Z', '2026-07-15T09:00:00Z', '2026-07-17T09:00:00Z'),
+  ('ord_1005', 'TG-1005', 'usr_cust_meher', 'meher@example.test', 'INR', 6900, 0, 4900, 0, 11800, 'completed', 'paid', 'fulfilled', 'delivered', '2026-07-16T09:00:00Z', '2026-07-16T09:00:00Z', '2026-07-18T09:00:00Z'),
+  ('ord_1006', 'TG-1006', 'usr_cust_riya', 'riya@example.test', 'INR', 12900, 0, 4900, 0, 17800, 'completed', 'paid', 'fulfilled', 'delivered', '2026-07-18T09:00:00Z', '2026-07-18T09:00:00Z', '2026-07-20T09:00:00Z'),
+  ('ord_1007', 'TG-1007', 'usr_cust_arjun', 'arjun@example.test', 'INR', 32900, 0, 4900, 0, 37800, 'completed', 'paid', 'fulfilled', 'delivered', '2026-07-19T09:00:00Z', '2026-07-19T09:00:00Z', '2026-07-21T09:00:00Z');
+
+INSERT INTO order_items (id, order_id, product_id, variant_id, product_name, variant_name, sku, quantity, unit_list_amount_minor, unit_effective_amount_minor, discount_minor, tax_minor, line_total_minor) VALUES
+  ('oit_1003', 'ord_1003', 'prd_spinach', 'var_spinach_250g', 'Organic Baby Spinach', '250 g bunch', 'TRG-SPN-250', 2, 6900, 6900, 0, 0, 13800),
+  ('oit_1004', 'ord_1004', 'prd_ragi', 'var_ragi_500g', 'Sprouted Ragi Flour', '500 g pack', 'TRG-RGI-500', 1, 14500, 14500, 0, 0, 14500),
+  ('oit_1005', 'ord_1005', 'prd_spinach', 'var_spinach_250g', 'Organic Baby Spinach', '250 g bunch', 'TRG-SPN-250', 1, 6900, 6900, 0, 0, 6900),
+  ('oit_1006', 'ord_1006', 'prd_rajma', 'var_rajma_500g', 'Himalayan Rajma', '500 g pack', 'TRG-RJM-500', 1, 12900, 12900, 0, 0, 12900),
+  ('oit_1007', 'ord_1007', 'prd_groundnut_oil', 'var_oil_1l', 'Wood-Pressed Groundnut Oil', '1 L glass bottle', 'TRG-GNO-1L', 1, 32900, 32900, 0, 0, 32900);
+
+-- Product reviews (migration 0057). Four approved so the product pages and the
+-- rule-based homepage showcase (minRating 4) have real content to render; one
+-- left pending so the admin Reviews queue is not empty on a fresh checkout.
+INSERT INTO reviews (id, product_id, customer_user_id, order_id, rating, title, body, status, created_at, updated_at, moderated_at, moderated_by) VALUES
+  ('rev_spinach_1', 'prd_spinach', 'usr_cust_riya', 'ord_1003', 4, 'Fresh and lasted well', 'Noticeably fresher than what I find at the local market, and it kept for four days in the fridge without wilting.', 'approved', '2026-07-17T10:00:00Z', '2026-07-17T13:00:00Z', '2026-07-17T13:00:00Z', 'usr_admin'),
+  ('rev_spinach_2', 'prd_spinach', 'usr_cust_meher', 'ord_1005', 5, 'The freshest greens I have had delivered', 'No wilting, no yellowing, straight from the field to the fridge. Genuinely better than anything from the local market.', 'approved', '2026-07-19T10:00:00Z', '2026-07-19T12:00:00Z', '2026-07-19T12:00:00Z', 'usr_admin'),
+  ('rev_ragi_1', 'prd_ragi', 'usr_cust_arjun', 'ord_1004', 5, 'Great texture for dosas', 'Sprouted ragi makes a noticeably crisper dosa than the usual flour. Will reorder.', 'pending', '2026-07-18T09:30:00Z', '2026-07-18T09:30:00Z', NULL, NULL),
+  ('rev_rajma_1', 'prd_rajma', 'usr_cust_riya', 'ord_1006', 4, 'Cooks evenly, good flavour', 'Holds its shape well after soaking and cooks in the usual time. Tastes noticeably better than the polished rajma I used to buy.', 'approved', '2026-07-21T08:00:00Z', '2026-07-21T11:00:00Z', '2026-07-21T11:00:00Z', 'usr_admin'),
+  ('rev_oil_1', 'prd_groundnut_oil', 'usr_cust_arjun', 'ord_1007', 3, 'Good oil, strong smell at first', 'Flavour is good once it settles for a few days, but the bottle smells quite strong straight after opening.', 'approved', '2026-07-22T08:00:00Z', '2026-07-22T10:30:00Z', '2026-07-22T10:30:00Z', 'usr_admin');
 
 -- Farm membership (farms exist by now): the Devika owner is scoped to farm_devika,
 -- whose catalogue includes prd_alphonso.
@@ -1541,7 +1589,12 @@ WHERE id LIKE 'dsc_library_%' OR id LIKE 'dsc_expansion_%';
 
 DROP TABLE expansion_blog_topics;
 
--- Comprehensive organic-market catalogue expansion. Twenty departments and
+-- Comprehensive organic-market catalogue expansion
+-- Keep migrated fixture search rows singular during development seeding.
+DELETE FROM search_products
+WHERE product_id LIKE 'prd_market_%' OR product_id LIKE 'prd_extra_%';
+
+-- Twenty departments and
 -- eighty focused subcategories cover food, pantry, wellbeing, home and garden.
 -- Each subcategory carries eight real catalogue products with variants, prices,
 -- stock, search data and editable published versions.
@@ -1638,7 +1691,7 @@ INSERT INTO market_catalogue_sections VALUES
   (79,20,'Organic Gardening','organic-gardening',3,'Plant Nutrition and Protection','plant-nutrition-protection','["Seaweed Plant Tonic","Panchagavya Concentrate","Jeevamrit Concentrate","Neem Oil Garden Spray","Trichoderma Bio Fungicide","Sticky Pest Traps","Diatomaceous Earth","Micronutrient Plant Mix"]'),
   (80,20,'Organic Gardening','organic-gardening',4,'Garden Tools and Supplies','garden-tools-supplies','["Hand Trowel","Hand Cultivator","Pruning Shears","Coconut Coir Pots","Bamboo Plant Labels","Natural Jute Twine","Seedling Tray","Watering Can"]');
 
-INSERT INTO categories (
+INSERT OR IGNORE INTO categories (
   id, internal_name, name, slug, parent_id, path, level, sort_order, status,
   visibility, short_description, hero_eyebrow, hero_title, hero_description,
   theme_key, product_assignment_mode, product_rule_json, published_version_id,
@@ -1675,7 +1728,7 @@ SELECT
 FROM market_catalogue_sections
 GROUP BY department_order, department_name, department_slug;
 
-INSERT INTO categories (
+INSERT OR IGNORE INTO categories (
   id, internal_name, name, slug, parent_id, path, level, sort_order, status,
   visibility, short_description, hero_eyebrow, hero_title, hero_description,
   theme_key, product_assignment_mode, product_rule_json, published_version_id,
@@ -1711,7 +1764,7 @@ SELECT
   'usr_editor'
 FROM market_catalogue_sections;
 
-INSERT INTO category_versions (
+INSERT OR IGNORE INTO category_versions (
   id, category_id, version_number, content_json, change_summary, workflow_state,
   created_at, created_by, approved_at, approved_by, published_at
 )
@@ -1759,7 +1812,7 @@ SELECT
     AS product_slug
 FROM market_catalogue_sections sections, json_each(sections.products_json) products;
 
-INSERT INTO products (
+INSERT OR IGNORE INTO products (
   id, internal_name, name, slug, product_type, farm_id, status,
   short_description, published_version_id, seo_title, seo_description,
   created_at, created_by, updated_at, updated_by
@@ -1788,7 +1841,7 @@ SELECT
   'usr_pm'
 FROM market_catalogue_products;
 
-INSERT INTO product_versions (
+INSERT OR IGNORE INTO product_versions (
   id, product_id, version_number, content_json, change_summary, workflow_state,
   created_at, created_by, approved_at, approved_by, published_at
 )
@@ -1819,7 +1872,7 @@ SELECT
   datetime('2025-07-01T09:00:00Z', printf('+%d days', (product_number * 17) % 365))
 FROM market_catalogue_products;
 
-INSERT INTO product_categories (
+INSERT OR IGNORE INTO product_categories (
   product_id, category_id, is_primary, sort_order, assigned_at, assigned_by
 )
 SELECT
@@ -1840,7 +1893,7 @@ SELECT
   'usr_pm'
 FROM market_catalogue_products;
 
-INSERT INTO product_variants (
+INSERT OR IGNORE INTO product_variants (
   id, product_id, sku, name, option_values_json, weight_value, weight_unit,
   package_description, status, sort_order, created_at, updated_at
 )
@@ -1877,7 +1930,7 @@ SELECT
   '2026-07-30T08:00:00Z'
 FROM market_catalogue_products;
 
-INSERT INTO variant_prices (
+INSERT OR IGNORE INTO variant_prices (
   id, variant_id, market_code, currency_code, list_amount_minor,
   sale_amount_minor, tax_inclusive, status, created_at, created_by
 )
@@ -1898,7 +1951,7 @@ SELECT
   'usr_pm'
 FROM market_catalogue_products;
 
-INSERT INTO inventory_levels (
+INSERT OR IGNORE INTO inventory_levels (
   variant_id, location_id, on_hand, reserved, reorder_threshold, version, updated_at
 )
 SELECT
@@ -1911,7 +1964,7 @@ SELECT
   '2026-07-30T08:00:00Z'
 FROM market_catalogue_products;
 
-INSERT INTO product_certifications (
+INSERT OR IGNORE INTO product_certifications (
   product_id, certification_id, claim_review_state
 )
 SELECT
@@ -1925,7 +1978,7 @@ SELECT
 FROM market_catalogue_products
 WHERE department_order <= 17;
 
-INSERT INTO product_tags (product_id, tag_id)
+INSERT OR IGNORE INTO product_tags (product_id, tag_id)
 SELECT printf('prd_market_%04d', product_number), 'tag_plant_based'
 FROM market_catalogue_products
 WHERE department_order NOT IN (15)
@@ -1961,7 +2014,7 @@ DROP TABLE market_catalogue_sections;
 -- image until an owner uploads a product-specific photograph in the admin.
 UPDATE categories
 SET
-  hero_image_url = '/media/catalogue/generated/' || (
+  hero_image_url = '/banners/categories/' || (
     SELECT COALESCE(parent.slug, categories.slug)
     FROM categories AS current
     LEFT JOIN categories AS parent ON parent.id = current.parent_id
@@ -2030,7 +2083,7 @@ INSERT INTO extra_catalogue_sections VALUES
   (19,10,'Organic Gift Hampers','gift-hampers',1,'Wellness Gift Hampers','wellness-gift-hampers','["Tea and Honey Hamper","Natural Self Care Hamper","Superfood Starter Hamper","Coffee Lovers Hamper","Healthy Snacking Hamper","Herbal Wellness Hamper","New Parent Care Hamper","Sustainable Home Hamper"]'),
   (20,10,'Organic Gift Hampers','gift-hampers',2,'Festival Gift Hampers','festival-gift-hampers','["Diwali Organic Hamper","Holi Natural Colours Hamper","Raksha Bandhan Hamper","Eid Dry Fruit Hamper","Christmas Pantry Hamper","Harvest Festival Hamper","Wedding Favour Hamper","Corporate Organic Hamper"]');
 
-INSERT INTO categories (
+INSERT OR IGNORE INTO categories (
   id, internal_name, name, slug, parent_id, path, level, sort_order, status,
   visibility, short_description, hero_eyebrow, hero_title, hero_description,
   theme_key, product_assignment_mode, published_version_id, seo_title,
@@ -2048,13 +2101,13 @@ SELECT
   'manual', 'ctv_extra_' || department_slug || '_1',
   department_name || ' | True Grit Organic Market',
   'Shop ' || lower(department_name) || ' with transparent product information.',
-  '/media/catalogue/generated/' || department_slug || '.webp',
+  '/banners/categories/' || department_slug || '.webp',
   department_name || ' collection',
   '2026-01-15T08:00:00Z', 'usr_editor', '2026-07-30T10:00:00Z', 'usr_editor'
 FROM extra_catalogue_sections
 GROUP BY department_order, department_name, department_slug;
 
-INSERT INTO categories (
+INSERT OR IGNORE INTO categories (
   id, internal_name, name, slug, parent_id, path, level, sort_order, status,
   visibility, short_description, hero_eyebrow, hero_title, hero_description,
   theme_key, product_assignment_mode, published_version_id, seo_title,
@@ -2073,12 +2126,12 @@ SELECT
   'manual', 'ctv_extra_' || section_slug || '_1',
   section_name || ' | True Grit Organic Market',
   'Shop ' || lower(section_name) || ' online from True Grit.',
-  '/media/catalogue/generated/' || department_slug || '.webp',
+  '/banners/categories/' || department_slug || '.webp',
   section_name || ' collection',
   '2026-01-15T08:00:00Z', 'usr_editor', '2026-07-30T10:00:00Z', 'usr_editor'
 FROM extra_catalogue_sections;
 
-INSERT INTO category_versions (
+INSERT OR IGNORE INTO category_versions (
   id, category_id, version_number, content_json, change_summary, workflow_state,
   created_at, created_by, approved_at, approved_by, published_at
 )
@@ -2106,7 +2159,7 @@ SELECT
   'organic-' || lower(replace(replace(replace(CAST(items.value AS TEXT), ' ', '-'), '&', 'and'), '/', '-')) AS product_slug
 FROM extra_catalogue_sections AS sections, json_each(sections.products_json) AS items;
 
-INSERT INTO products (
+INSERT OR IGNORE INTO products (
   id, internal_name, name, slug, product_type, status, short_description,
   published_version_id, seo_title, seo_description, image_url, image_alt,
   created_at, created_by, updated_at, updated_by
@@ -2119,7 +2172,7 @@ SELECT
   printf('pvr_extra_%04d_1', product_number),
   'Organic ' || product_name || ' | Buy Online',
   'Shop organic ' || lower(product_name) || ' with current stock and clear product details.',
-  '/media/catalogue/generated/' || department_slug || '.webp',
+  '/banners/categories/' || department_slug || '.webp',
   'Organic ' || product_name,
   datetime('2026-01-15T08:00:00Z', printf('+%d days', (product_number * 13) % 190)),
   'usr_pm',
@@ -2127,7 +2180,7 @@ SELECT
   'usr_pm'
 FROM extra_catalogue_products;
 
-INSERT INTO product_versions (
+INSERT OR IGNORE INTO product_versions (
   id, product_id, version_number, content_json, change_summary, workflow_state,
   created_at, created_by, approved_at, approved_by, published_at
 )
@@ -2147,7 +2200,7 @@ SELECT
   'usr_admin', '2026-07-30T10:00:00Z'
 FROM extra_catalogue_products;
 
-INSERT INTO product_categories (
+INSERT OR IGNORE INTO product_categories (
   product_id, category_id, is_primary, sort_order, assigned_at, assigned_by
 )
 SELECT printf('prd_extra_%04d', product_number), 'cat_extra_' || section_slug,
@@ -2158,7 +2211,7 @@ SELECT printf('prd_extra_%04d', product_number), 'cat_extra_' || department_slug
        0, product_number, '2026-07-30T10:00:00Z', 'usr_pm'
 FROM extra_catalogue_products;
 
-INSERT INTO product_variants (
+INSERT OR IGNORE INTO product_variants (
   id, product_id, sku, name, option_values_json, weight_value, weight_unit,
   package_description, status, sort_order, created_at, updated_at
 )
@@ -2174,7 +2227,7 @@ SELECT
   'active', 1, '2026-07-30T10:00:00Z', '2026-07-30T10:00:00Z'
 FROM extra_catalogue_products;
 
-INSERT INTO variant_prices (
+INSERT OR IGNORE INTO variant_prices (
   id, variant_id, market_code, currency_code, list_amount_minor,
   sale_amount_minor, tax_inclusive, status, created_at, created_by
 )
@@ -2188,7 +2241,7 @@ SELECT
   1, 'active', '2026-07-30T10:00:00Z', 'usr_pm'
 FROM extra_catalogue_products;
 
-INSERT INTO inventory_levels (
+INSERT OR IGNORE INTO inventory_levels (
   variant_id, location_id, on_hand, reserved, reorder_threshold, version, updated_at
 )
 SELECT printf('var_extra_%04d', product_number), 'loc_mumbai',
@@ -2236,10 +2289,10 @@ WHERE status = 'published'
 -- photography instead of the generic homepage hero placeholders.
 UPDATE categories
 SET hero_image_url = CASE id
-      WHEN 'cat_fresh_fruits' THEN '/media/catalogue/generated/fruits.webp'
-      WHEN 'cat_vegetables' THEN '/media/catalogue/generated/vegetables.webp'
-      WHEN 'cat_grains' THEN '/media/catalogue/generated/staple-grains.webp'
-      WHEN 'cat_oils' THEN '/media/catalogue/generated/oils-cooking-fats.webp'
+      WHEN 'cat_fresh_fruits' THEN '/banners/categories/fruits.webp'
+      WHEN 'cat_vegetables' THEN '/banners/categories/vegetables.webp'
+      WHEN 'cat_grains' THEN '/banners/categories/staple-grains.webp'
+      WHEN 'cat_oils' THEN '/banners/categories/oils-cooking-fats.webp'
     END,
     hero_image_alt = CASE id
       WHEN 'cat_fresh_fruits' THEN 'Fresh organic fruit market selection'
@@ -2252,11 +2305,11 @@ WHERE id IN ('cat_fresh_fruits', 'cat_vegetables', 'cat_grains', 'cat_oils');
 
 UPDATE products
 SET image_url = CASE id
-      WHEN 'prd_alphonso' THEN '/media/catalogue/generated/fruits.webp'
-      WHEN 'prd_spinach' THEN '/media/catalogue/generated/vegetables.webp'
-      WHEN 'prd_ragi' THEN '/media/catalogue/generated/staple-grains.webp'
-      WHEN 'prd_groundnut_oil' THEN '/media/catalogue/generated/oils-cooking-fats.webp'
-      WHEN 'prd_rajma' THEN '/media/catalogue/generated/pulses-legumes.webp'
+      WHEN 'prd_alphonso' THEN '/banners/categories/fruits.webp'
+      WHEN 'prd_spinach' THEN '/banners/categories/vegetables.webp'
+      WHEN 'prd_ragi' THEN '/banners/categories/staple-grains.webp'
+      WHEN 'prd_groundnut_oil' THEN '/banners/categories/oils-cooking-fats.webp'
+      WHEN 'prd_rajma' THEN '/banners/categories/pulses-legumes.webp'
     END,
     image_alt = CASE id
       WHEN 'prd_alphonso' THEN 'Organic Alphonso mangoes'
@@ -3169,6 +3222,91 @@ WHERE page_id = 'pag_home'
     SELECT 1
     FROM json_each(page_versions.content_json, '$.blocks') AS block
     WHERE json_extract(block.value, '$.type') = 'page_links'
+  );
+
+-- Promotions banner (migration 0060), directly under the hero. Repeated here
+-- for the same reason as blk_page_links above: migrations run against an
+-- empty database before this seed inserts the homepage row.
+-- Uses json_group_array (not json_insert) to splice into an already-occupied
+-- index -- see the matching comment in 0060_coupons_and_promotions.sql.
+UPDATE page_versions
+SET content_json = json_set(
+  content_json,
+  '$.blocks',
+  (
+    SELECT json_group_array(json(item))
+    FROM (
+      SELECT block.value AS item, block.key * 2 AS ord
+      FROM json_each(page_versions.content_json, '$.blocks') AS block
+      WHERE block.key = 0
+      UNION ALL
+      SELECT '{"id":"blk_promotion_banner","type":"promotion_banner","version":1,"enabled":true,"props":{"source":"rule"}}' AS item, 1 AS ord
+      UNION ALL
+      SELECT block.value AS item, block.key * 2 + 2 AS ord
+      FROM json_each(page_versions.content_json, '$.blocks') AS block
+      WHERE block.key >= 1
+      ORDER BY ord
+    )
+  )
+)
+WHERE page_id = 'pag_home'
+  AND NOT EXISTS (
+    SELECT 1
+    FROM json_each(page_versions.content_json, '$.blocks') AS block
+    WHERE json_extract(block.value, '$.type') = 'promotion_banner'
+  );
+
+-- "What customers are saying" (migration 0057). Repeated here for the same
+-- reason as blk_page_links above.
+UPDATE page_versions
+SET content_json = json_insert(
+  content_json,
+  '$.blocks[#]',
+  json('{
+    "id": "blk_reviews_showcase",
+    "type": "reviews_showcase",
+    "version": 1,
+    "enabled": true,
+    "props": {
+      "heading": "What customers are saying",
+      "subheading": "Real ratings from verified purchases.",
+      "source": "rule",
+      "reviewIds": [],
+      "limit": 8,
+      "minRating": 4
+    }
+  }')
+)
+WHERE page_id = 'pag_home'
+  AND NOT EXISTS (
+    SELECT 1
+    FROM json_each(page_versions.content_json, '$.blocks') AS block
+    WHERE json_extract(block.value, '$.type') = 'reviews_showcase'
+  );
+
+-- Real bestsellers, computed live from order_items (migration 0063). Repeated
+-- here for the same reason as blk_page_links above.
+UPDATE page_versions
+SET content_json = json_insert(
+  content_json,
+  '$.blocks[#]',
+  json('{
+    "id": "blk_recommendations",
+    "type": "recommendations",
+    "version": 1,
+    "enabled": true,
+    "props": {
+      "heading": "Customer favourites",
+      "subheading": "Picked by shoppers",
+      "limit": 8
+    }
+  }')
+)
+WHERE page_id = 'pag_home'
+  AND NOT EXISTS (
+    SELECT 1
+    FROM json_each(page_versions.content_json, '$.blocks') AS block
+    WHERE json_extract(block.value, '$.type') = 'recommendations'
   );
 
 -- Complete-market catalogue expansion. The original catalogue covers the

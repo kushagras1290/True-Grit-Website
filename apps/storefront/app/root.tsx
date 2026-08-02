@@ -16,6 +16,7 @@ import appCss from "./app.css?url";
 import { Footer, Header } from "./components/chrome";
 import { AmbientEffect, CursorTrail } from "./components/effects";
 import { LanguageSuggestionPrompt } from "./components/language-suggestion";
+import { NavigationProgress } from "./components/navigation-progress";
 import { catalogueRuntime, loadBootstrap, loadSiteSettings } from "./lib/catalogue.server";
 import { CartProvider } from "./lib/cart";
 import { CurrencyProvider } from "./lib/currency";
@@ -157,6 +158,7 @@ export default function App() {
           )};`,
         }}
       />
+      <NavigationProgress />
       <LocaleProvider locale={locale} messages={messages}>
         <SiteSettingsProvider settings={siteSettings}>
           <CustomerProvider>

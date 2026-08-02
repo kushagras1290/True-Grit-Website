@@ -10,6 +10,9 @@
 import type {
   AdminArticleDetail,
   AdminArticleRow,
+  AdminBundleDetail,
+  AdminBundleItem,
+  AdminBundleRow,
   AdminCategoryRow,
   AdminContentCommentRow,
   AdminDbBrowserTableData,
@@ -17,20 +20,25 @@ import type {
   AdminDiscussionRow,
   AdminFarmRequestDetail,
   AdminFarmRequestRow,
+  AdminInventoryProductGroup,
   AdminInventoryRow,
   AdminMediaAssetRow,
   AdminOrderRow,
   AdminProductRow,
+  AdminPromotionDetail,
+  AdminPromotionRow,
   AdminRecipeDetail,
   AdminRecipeRow,
   AdminReturnRequestDetail,
   AdminReturnRequestRow,
+  AdminReviewRow,
   AdminRouteSeo,
   AdminServerLogRow,
   AdminSubmissionDetail,
   AdminSubmissionRow,
   AdminUserRow,
   AmbientEffectKey,
+  AnalyticsOverview,
   AuditLogRow,
   CommunitySettings,
   ContentBlock,
@@ -42,18 +50,26 @@ import type {
   StorefrontSettings,
   StorefrontSettingsResponse,
   StorefrontTheme,
+  SubscriptionRow,
   ThemeTokenKey,
   ThemeTokens,
 } from "@truegrit/contracts";
 import { AMBIENT_EFFECT_KEYS, CURSOR_TRAIL_KEYS, THEME_TOKEN_KEYS } from "@truegrit/contracts";
 import {
+  adminBundleDetails,
+  adminBundles,
+  analyticsOverview,
   adminCategories,
   adminInventory,
   adminOrders,
   adminProducts,
+  adminPromotions,
+  adminReviews,
+  adminSubscriptions,
   adminUsers,
   articles as demoArticles,
   auditLog,
+  featuredPromotionFixture,
   homePage,
   products,
   recipes as demoRecipes,
@@ -89,8 +105,19 @@ const DEMO_STOREFRONT_SETTINGS: StorefrontSettingsResponse = {
     payments: true,
     paymentsDisabledNotice:
       "We are not taking orders at the moment. Leave your details and we will get in touch as soon as ordering reopens.",
+    // Off by default (migration 0060) -- an operator switches this on once a
+    // promotion is actually configured, matching the real shipped default.
+    promotions: false,
+    // On by default (matches the API's shipped default) -- recommendations
+    // need no setup, they are computed live from real order data.
+    recommendations: true,
+    // Off by default (migration 0064) -- not needed at launch, matching the
+    // real shipped default.
+    subscriptions: false,
     blogBannerImageUrl: "",
     blogBannerImageAlt: "",
+    farmsBannerImageUrl: "",
+    farmsBannerImageAlt: "",
   },
   effective: {
     googleSignIn: true,
@@ -99,6 +126,9 @@ const DEMO_STOREFRONT_SETTINGS: StorefrontSettingsResponse = {
     passwordSignIn: true,
     registration: true,
     payments: true,
+    promotions: false,
+    recommendations: true,
+    subscriptions: false,
     anySignInAvailable: true,
   },
 };
@@ -231,6 +261,12 @@ export interface AdminLinkedProduct {
   status: string;
 }
 
+export interface AdminProductImage {
+  id: string;
+  imageUrl: string;
+  imageAlt: string | null;
+}
+
 export interface AdminProductDetail {
   id: string;
   name: string;
@@ -245,6 +281,9 @@ export interface AdminProductDetail {
   seoDescription: string;
   imageUrl: string;
   imageAlt: string;
+  /** Gallery photos beyond the main image above -- shown only on the
+   *  storefront product page's image viewer (migration 0066). */
+  images: AdminProductImage[];
   updatedAt: string;
   releaseScope: "global" | "selected";
   releaseCountries: string[];
@@ -316,6 +355,8 @@ export interface AdminFarmRow {
   status: string;
   productCount: number;
   updatedAt: string;
+  heroImageUrl: string | null;
+  heroImageAlt: string | null;
 }
 
 export interface AdminContactMessageRow {
@@ -621,6 +662,19 @@ export interface CmsPageDetail extends CmsPageRow {
   blocks: PublicPageBlock[];
 }
 
+export interface PageTranslationSummary {
+  locale: string;
+  autoTranslated: boolean;
+  updatedAt: string;
+}
+
+export interface PageTranslation {
+  locale: string;
+  content: { blocks: PublicPageBlock[] };
+  autoTranslated: boolean;
+  updatedAt: string | null;
+}
+
 /** One farm's revenue line on the Revenue page.
  *
  * Every amount is integer minor units (ADR-006) — paise for INR. `commissionBps`
@@ -746,6 +800,31 @@ const DEMO_REVENUE: FarmRevenueSummary = {
   },
 };
 
+/** Mirrors the API's own grouping (`repositories/admin.py` `list_inventory`):
+ *  one entry per product, alphabetical, each carrying its variants together
+ *  rather than repeating the product name on a separate row per variant. */
+function groupInventoryByProduct(rows: AdminInventoryRow[]): AdminInventoryProductGroup[] {
+  const order: string[] = [];
+  const byProduct = new Map<string, AdminInventoryProductGroup>();
+  for (const row of rows) {
+    let group = byProduct.get(row.productId);
+    if (!group) {
+      group = {
+        productId: row.productId,
+        productName: row.productName,
+        productStatus: row.productStatus,
+        variants: [],
+      };
+      byProduct.set(row.productId, group);
+      order.push(row.productId);
+    }
+    group.variants.push(row);
+  }
+  return order
+    .map((productId) => byProduct.get(productId)!)
+    .sort((a, b) => a.productName.localeCompare(b.productName));
+}
+
 function demoFarmRevenueDetail(farmId: string): FarmRevenueDetail {
   return {
     summary: {
@@ -837,9 +916,21 @@ const DEMO_SECTION_LABELS: Record<string, string> = {
   faq: "Questions and answers",
   rich_text: "Text block",
   newsletter: "Newsletter signup",
+  reviews_showcase: "Customer reviews",
+  promotion_banner: "Promotions banner",
+  recommendations: "Recommended products",
 };
 
-const DEMO_ADDABLE_TYPES = ["page_links", "rich_text", "faq", "farmer_story", "newsletter"];
+const DEMO_ADDABLE_TYPES = [
+  "page_links",
+  "rich_text",
+  "faq",
+  "farmer_story",
+  "newsletter",
+  "reviews_showcase",
+  "promotion_banner",
+  "recommendations",
+];
 
 const DEMO_NEW_SECTION_PROPS: Record<string, Record<string, unknown>> = {
   page_links: {
@@ -867,6 +958,23 @@ const DEMO_NEW_SECTION_PROPS: Record<string, Record<string, unknown>> = {
   newsletter: {
     heading: "A slower, better way to eat.",
     consentText: "One considered letter a month. No noise, unsubscribe anytime.",
+  },
+  reviews_showcase: {
+    heading: "What customers are saying",
+    subheading: "",
+    source: "rule",
+    reviewIds: [],
+    limit: 8,
+    minRating: 4,
+  },
+  promotion_banner: {
+    source: "rule",
+    promotionId: null,
+  },
+  recommendations: {
+    heading: "Customer favourites",
+    subheading: "Picked by shoppers",
+    limit: 8,
   },
 };
 
@@ -899,6 +1007,14 @@ function demoSectionSummary(block: PublicPageBlock): string {
       return block.props.attribution || "No attribution";
     case "newsletter":
       return block.props.heading || "Newsletter signup";
+    case "reviews_showcase":
+      return block.props.source === "manual"
+        ? plural(block.props.reviewIds.length, "featured review", "featured reviews")
+        : `Top-rated reviews, ${block.props.minRating}+ stars`;
+    case "promotion_banner":
+      return block.props.source === "manual" ? "One specific promotion" : "Best active promotion";
+    case "recommendations":
+      return `Top ${block.props.limit} best sellers, computed live from orders`;
   }
 }
 
@@ -1166,6 +1282,7 @@ export const api = {
       seoDescription: product.seo.description,
       imageUrl: product.imageUrl ?? "",
       imageAlt: product.imageAlt,
+      images: [],
       updatedAt: new Date().toISOString(),
       releaseScope: "global",
       releaseCountries: [],
@@ -1357,10 +1474,14 @@ export const api = {
     limit = 100,
     offset = 0,
     search,
-  }: { limit?: number; offset?: number; search?: string } = {}): Promise<AdminInventoryRow[]> =>
+  }: {
+    limit?: number;
+    offset?: number;
+    search?: string;
+  } = {}): Promise<AdminInventoryProductGroup[]> =>
     demoMode
-      ? demo(adminInventory)
-      : get<{ items: AdminInventoryRow[] }>(
+      ? demo(groupInventoryByProduct(adminInventory))
+      : get<{ items: AdminInventoryProductGroup[] }>(
           `/v1/admin/inventory?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
         ).then((body) => body.items),
 
@@ -1599,6 +1720,8 @@ export const api = {
             status: "published",
             productCount: 1,
             updatedAt: "2026-07-01T00:00:00Z",
+            heroImageUrl: null,
+            heroImageAlt: null,
           },
         ])
       : get<{ items: AdminFarmRow[] }>(
@@ -1614,6 +1737,8 @@ export const api = {
     establishedYear: number | null;
     summary: string;
     status: string;
+    heroImageUrl?: string | null;
+    heroImageAlt?: string | null;
   }): Promise<AdminFarmRow> =>
     demoMode
       ? demo({
@@ -1621,6 +1746,8 @@ export const api = {
           slug: input.slug || input.name.toLowerCase().replaceAll(" ", "-"),
           productCount: 0,
           updatedAt: new Date().toISOString(),
+          heroImageUrl: null,
+          heroImageAlt: null,
           ...input,
         })
       : post("/v1/admin/farms", input),
@@ -1636,6 +1763,8 @@ export const api = {
       establishedYear: number | null;
       summary: string;
       status: string;
+      heroImageUrl?: string | null;
+      heroImageAlt?: string | null;
     },
   ): Promise<AdminFarmRow> =>
     demoMode
@@ -1643,6 +1772,8 @@ export const api = {
           id,
           productCount: 0,
           updatedAt: new Date().toISOString(),
+          heroImageUrl: null,
+          heroImageAlt: null,
           ...input,
           slug: input.slug || input.name.toLowerCase().replaceAll(" ", "-"),
         })
@@ -2048,6 +2179,63 @@ export const api = {
   ): Promise<CmsPageDetail> =>
     demoMode ? demo({ ...(input as CmsPageDetail), id }) : patch(`/v1/admin/pages/${id}`, input),
 
+  // --- Per-locale page content (migration 0067) -------------------------
+  //
+  // The homepage and static pages both use `pages`/`page_versions`, so this
+  // one mechanism translates both. Demo mode has no per-locale storage to
+  // read, so it echoes the English content back untranslated rather than
+  // pretending a translation exists.
+
+  pageTranslations: (pageId: string): Promise<PageTranslationSummary[]> =>
+    demoMode
+      ? demo([])
+      : get<{ items: PageTranslationSummary[] }>(`/v1/admin/pages/${pageId}/translations`).then(
+          (body) => body.items,
+        ),
+
+  pageTranslation: (pageId: string, locale: string): Promise<PageTranslation> =>
+    demoMode
+      ? demo({
+          locale,
+          content: { blocks: homePage.blocks },
+          autoTranslated: false,
+          updatedAt: null,
+        })
+      : get<PageTranslation>(`/v1/admin/pages/${pageId}/translations/${locale}`),
+
+  savePageTranslation: (
+    pageId: string,
+    locale: string,
+    blocks: PublicPageBlock[],
+  ): Promise<PageTranslation> =>
+    demoMode
+      ? demo({
+          locale,
+          content: { blocks },
+          autoTranslated: false,
+          updatedAt: new Date().toISOString(),
+        })
+      : put<PageTranslation>(`/v1/admin/pages/${pageId}/translations/${locale}`, { blocks }),
+
+  autoTranslatePage: (pageId: string, locale: string): Promise<PageTranslation> =>
+    demoMode
+      ? Promise.reject(
+          new ApiError(
+            "Auto-translate needs the live API and a deployed Worker.",
+            503,
+            "demo_mode",
+          ),
+        )
+      : post<PageTranslation>(`/v1/admin/pages/${pageId}/translations/${locale}/auto-translate`, {}),
+
+  deletePageTranslation: (
+    pageId: string,
+    locale: string,
+  ): Promise<{ pageId: string; locale: string; deleted: boolean }> =>
+    demoMode
+      ? demo({ pageId, locale, deleted: true })
+      : del(`/v1/admin/pages/${pageId}/translations/${locale}`),
+
   highlights: (): Promise<AdminLinkedProduct[]> =>
     demoMode
       ? demo(
@@ -2411,6 +2599,330 @@ export const api = {
       ? demo({ id: commentId, deleted: true })
       : del(`/v1/admin/content-comments/${commentId}`),
 
+  // --- Product reviews and ratings ---------------------------------------
+  //
+  // Policed with their own `reviews.*` pair (migration 0057), not the
+  // `discussions.*` grant content_comments reuses -- reviews are
+  // commerce-adjacent, not editorial-adjacent.
+
+  reviews: ({
+    status,
+    rating,
+    limit = 50,
+    offset = 0,
+    search,
+  }: {
+    status?: string;
+    rating?: number;
+    limit?: number;
+    offset?: number;
+    search?: string;
+  } = {}): Promise<{ items: AdminReviewRow[]; total: number; pending: number }> =>
+    demoMode
+      ? demo({
+          items: adminReviews,
+          total: adminReviews.length,
+          pending: adminReviews.filter((row) => row.status === "pending").length,
+        })
+      : get<{ items: AdminReviewRow[]; total: number; pending: number }>(
+          `/v1/admin/reviews?limit=${limit}&offset=${offset}${status ? `&status=${encodeURIComponent(status)}` : ""}${rating ? `&rating=${rating}` : ""}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ),
+
+  reviewsPendingCount: (): Promise<number> =>
+    demoMode
+      ? demo(adminReviews.filter((row) => row.status === "pending").length)
+      : get<{ items: AdminReviewRow[]; total: number; pending: number }>(
+          `/v1/admin/reviews?status=pending&limit=1`,
+        ).then((body) => body.pending),
+
+  moderateReview: (
+    reviewId: string,
+    action: string,
+    reason?: string,
+  ): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id: reviewId, status: action })
+      : post(`/v1/admin/reviews/${reviewId}/moderate`, { action, reason }),
+
+  editReview: (
+    reviewId: string,
+    input: { rating?: number; title?: string | null; body?: string },
+  ): Promise<{ id: string; rating: number; title: string | null; body: string }> =>
+    demoMode
+      ? demo({ id: reviewId, rating: input.rating ?? 5, title: input.title ?? null, body: input.body ?? "" })
+      : patch(`/v1/admin/reviews/${reviewId}`, input),
+
+  deleteReview: (reviewId: string): Promise<{ id: string; deleted: boolean }> =>
+    demoMode ? demo({ id: reviewId, deleted: true }) : del(`/v1/admin/reviews/${reviewId}`),
+
+  // --- Coupons and promotions ---------------------------------------------
+  //
+  // A promotion with no coupons is automatic; one or more coupons make it
+  // code-gated. The sitewide on/off switch lives with the other storefront
+  // switches (`storefrontSettings`/`updateStorefrontSettings` above).
+
+  promotions: ({
+    status,
+    search,
+    limit = 50,
+    offset = 0,
+  }: {
+    status?: string;
+    search?: string;
+    limit?: number;
+    offset?: number;
+  } = {}): Promise<{ items: AdminPromotionRow[]; total: number }> =>
+    demoMode
+      ? demo({ items: adminPromotions, total: adminPromotions.length })
+      : get<{ items: AdminPromotionRow[]; total: number }>(
+          `/v1/admin/promotions?limit=${limit}&offset=${offset}${status ? `&status=${encodeURIComponent(status)}` : ""}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ),
+
+  getPromotion: (promotionId: string): Promise<AdminPromotionDetail> => {
+    if (!demoMode) return get<AdminPromotionDetail>(`/v1/admin/promotions/${promotionId}`);
+    const promotion = adminPromotions.find((entry) => entry.id === promotionId);
+    if (!promotion) throw new ApiError("Promotion not found.", 404, "not_found");
+    return demo<AdminPromotionDetail>({
+      ...promotion,
+      rule: null,
+      action: { actionType: "percentage_discount", valueBasisPoints: 1500, amountMinor: null, maximumDiscountMinor: null },
+      coupons: [
+        {
+          id: "cpn_demo_welcome15",
+          code: featuredPromotionFixture.code ?? "WELCOME15",
+          active: true,
+          redemptionCount: 0,
+          createdAt: promotion.createdAt,
+        },
+      ],
+    });
+  },
+
+  createPromotion: (input: {
+    name: string;
+    headline?: string | null;
+    description?: string | null;
+    status: string;
+    priority: number;
+    startsAt?: string | null;
+    endsAt?: string | null;
+    stackingPolicy: string;
+    usageLimitTotal?: number | null;
+    usageLimitPerCustomer?: number | null;
+    minSubtotalMinor?: number | null;
+    actionType: string;
+    valueBasisPoints?: number | null;
+    amountMinor?: number | null;
+    maximumDiscountMinor?: number | null;
+  }): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id: `promo_demo_${Date.now().toString(36)}`, status: input.status })
+      : post(`/v1/admin/promotions`, input),
+
+  updatePromotion: (
+    promotionId: string,
+    input: Partial<{
+      name: string;
+      headline: string | null;
+      description: string | null;
+      status: string;
+      priority: number;
+      startsAt: string | null;
+      endsAt: string | null;
+      usageLimitTotal: number | null;
+      usageLimitPerCustomer: number | null;
+    }>,
+  ): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id: promotionId, status: input.status ?? "active" })
+      : patch(`/v1/admin/promotions/${promotionId}`, input),
+
+  deletePromotion: (
+    promotionId: string,
+  ): Promise<{ id: string; status: string; deleted: boolean }> =>
+    demoMode
+      ? demo({ id: promotionId, status: "deleted", deleted: true })
+      : del(`/v1/admin/promotions/${promotionId}`),
+
+  createCoupon: (promotionId: string, code: string): Promise<{ id: string; code: string }> =>
+    demoMode
+      ? demo({ id: `cpn_demo_${Date.now().toString(36)}`, code: code.toUpperCase() })
+      : post(`/v1/admin/promotions/${promotionId}/coupons`, { code }),
+
+  deleteCoupon: (couponId: string): Promise<{ id: string; deleted: boolean }> =>
+    demoMode ? demo({ id: couponId, deleted: true }) : del(`/v1/admin/coupons/${couponId}`),
+
+  // --- Bundles ---------------------------------------------------------
+  //
+  // Curated sets of specific variants sold together at a flat price. The
+  // discount is enforced server-side at checkout, not just displayed here --
+  // see `services.bundles.resolve_bundle_discount`.
+
+  bundles: ({
+    status,
+    limit = 50,
+    offset = 0,
+  }: {
+    status?: string;
+    limit?: number;
+    offset?: number;
+  } = {}): Promise<{ items: AdminBundleRow[]; total: number }> =>
+    demoMode
+      ? demo({ items: adminBundles, total: adminBundles.length })
+      : get<{ items: AdminBundleRow[]; total: number }>(
+          `/v1/admin/bundles?limit=${limit}&offset=${offset}${status ? `&status=${encodeURIComponent(status)}` : ""}`,
+        ),
+
+  getBundle: (bundleId: string): Promise<AdminBundleDetail> => {
+    if (!demoMode) return get<AdminBundleDetail>(`/v1/admin/bundles/${bundleId}`);
+    const bundle = adminBundleDetails[bundleId];
+    if (!bundle) throw new ApiError("Bundle not found.", 404, "not_found");
+    return demo<AdminBundleDetail>(bundle);
+  },
+
+  createBundle: (input: {
+    name: string;
+    slug?: string;
+    description?: string | null;
+    status: string;
+    bundlePriceMinor: number;
+    imageUrl?: string | null;
+    imageAlt?: string | null;
+  }): Promise<{ id: string; slug: string; status: string }> =>
+    demoMode
+      ? demo({
+          id: `bndl_demo_${Date.now().toString(36)}`,
+          slug: input.slug || input.name.toLowerCase().replaceAll(" ", "-"),
+          status: input.status,
+        })
+      : post(`/v1/admin/bundles`, input),
+
+  updateBundle: (
+    bundleId: string,
+    input: Partial<{
+      name: string;
+      slug: string;
+      description: string | null;
+      status: string;
+      bundlePriceMinor: number;
+      imageUrl: string | null;
+      imageAlt: string | null;
+    }>,
+  ): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id: bundleId, status: input.status ?? "active" })
+      : patch(`/v1/admin/bundles/${bundleId}`, input),
+
+  deleteBundle: (bundleId: string): Promise<{ id: string; deleted: boolean }> =>
+    demoMode ? demo({ id: bundleId, deleted: true }) : del(`/v1/admin/bundles/${bundleId}`),
+
+  replaceProductImages: (
+    productId: string,
+    images: { imageUrl: string; imageAlt?: string }[],
+  ): Promise<{ images: AdminProductImage[] }> =>
+    demoMode
+      ? demo({
+          images: images.map((image, index) => ({
+            id: `pimg_demo_${index}`,
+            imageUrl: image.imageUrl,
+            imageAlt: image.imageAlt ?? null,
+          })),
+        })
+      : put(`/v1/admin/products/${productId}/images`, { images }),
+
+  replaceBundleItems: (
+    bundleId: string,
+    items: { variantId: string; quantity: number }[],
+  ): Promise<{ items: AdminBundleItem[] }> =>
+    demoMode
+      ? demo({ items: adminBundleDetails[bundleId]?.items ?? [] })
+      : put(`/v1/admin/bundles/${bundleId}/items`, { items }),
+
+  // --- Delivery charges ----------------------------------------------------
+  //
+  // Stored settings, not hardcoded constants -- a seasonal fee change or a
+  // raised free-delivery bar is an admin edit, not a deploy.
+
+  deliverySettings: (): Promise<{ feeMinor: number; freeThresholdMinor: number }> =>
+    demoMode
+      ? demo({ feeMinor: 4_900, freeThresholdMinor: 150_000 })
+      : get(`/v1/admin/delivery-settings`),
+
+  updateDeliverySettings: (input: {
+    feeMinor: number;
+    freeThresholdMinor: number;
+  }): Promise<{ feeMinor: number; freeThresholdMinor: number }> =>
+    demoMode ? demo(input) : patch(`/v1/admin/delivery-settings`, input),
+
+  // --- Curated list size -----------------------------------------------
+  //
+  // The shared cap for Fresh Favourites, Featured Categories (Homepage
+  // Settings) and Highlights (Site Control) -- one setting rather than
+  // three, since all three are the same shape of feature.
+
+  curatedSettings: (): Promise<{ maxItems: number }> =>
+    demoMode ? demo({ maxItems: 12 }) : get(`/v1/admin/curated-settings`),
+
+  updateCuratedSettings: (input: { maxItems: number }): Promise<{ maxItems: number }> =>
+    demoMode ? demo(input) : patch(`/v1/admin/curated-settings`, input),
+
+  // --- Subscriptions -----------------------------------------------------
+  //
+  // "Subscribe & Save" (migration 0064): off sitewide by default. These
+  // routes are support/oversight -- pause, resume, cancel a customer's
+  // subscription, and the renewal job's manual twin -- not creation:
+  // subscriptions only ever start from the customer's own product-page
+  // action.
+
+  subscriptionSettings: (): Promise<{ discountPercent: number }> =>
+    demoMode ? demo({ discountPercent: 5 }) : get(`/v1/admin/subscription-settings`),
+
+  updateSubscriptionSettings: (input: {
+    percent: number;
+  }): Promise<{ discountPercent: number }> =>
+    demoMode
+      ? demo({ discountPercent: input.percent })
+      : patch(`/v1/admin/subscription-settings`, input),
+
+  subscriptions: ({
+    status,
+    limit = 50,
+    offset = 0,
+  }: {
+    status?: string;
+    limit?: number;
+    offset?: number;
+  } = {}): Promise<{ items: SubscriptionRow[]; total: number }> =>
+    demoMode
+      ? demo({ items: adminSubscriptions, total: adminSubscriptions.length })
+      : get<{ items: SubscriptionRow[]; total: number }>(
+          `/v1/admin/subscriptions?limit=${limit}&offset=${offset}${status ? `&status=${encodeURIComponent(status)}` : ""}`,
+        ),
+
+  pauseSubscription: (subscriptionId: string): Promise<SubscriptionRow> =>
+    demoMode
+      ? demo({ ...adminSubscriptions[0]!, id: subscriptionId, status: "paused" as const })
+      : post(`/v1/admin/subscriptions/${subscriptionId}/pause`, {}),
+
+  resumeSubscription: (subscriptionId: string): Promise<SubscriptionRow> =>
+    demoMode
+      ? demo({ ...adminSubscriptions[0]!, id: subscriptionId, status: "active" as const })
+      : post(`/v1/admin/subscriptions/${subscriptionId}/resume`, {}),
+
+  cancelSubscription: (subscriptionId: string): Promise<SubscriptionRow> =>
+    demoMode
+      ? demo({ ...adminSubscriptions[0]!, id: subscriptionId, status: "cancelled" as const })
+      : post(`/v1/admin/subscriptions/${subscriptionId}/cancel`, {}),
+
+  runSubscriptionRenewals: (): Promise<{
+    processed: number;
+    succeeded: number;
+    outcomes: { subscriptionId: string; orderId: string | null; skippedReason: string | null }[];
+  }> =>
+    demoMode
+      ? demo({ processed: 0, succeeded: 0, outcomes: [] })
+      : post(`/v1/admin/subscriptions/run-renewals`, {}),
+
   // --- Farm partnership applications -------------------------------------
   //
   // Growers apply from the storefront with no account required; staff with
@@ -2565,6 +3077,23 @@ export const api = {
     demoMode
       ? demo({ id, label: id, columns: [], rows: [] })
       : post(`/v1/admin/reports/${id}/run`, { filters }),
+
+  // --- Analytics -----------------------------------------------------------
+  //
+  // A visual dashboard over a date range -- revenue, orders, top products,
+  // order-status mix -- computed live from orders/order_items, never a
+  // stored rollup.
+
+  analyticsOverview: (input: { from?: string; to?: string } = {}): Promise<AnalyticsOverview> =>
+    demoMode
+      ? demo(analyticsOverview)
+      : get<AnalyticsOverview>(
+          `/v1/admin/analytics/overview${
+            input.from && input.to
+              ? `?from=${encodeURIComponent(input.from)}&to=${encodeURIComponent(input.to)}`
+              : ""
+          }`,
+        ),
 
   // --- Farm revenue & payouts --------------------------------------------
 

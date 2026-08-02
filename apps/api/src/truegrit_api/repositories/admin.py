@@ -89,7 +89,7 @@ class AdminRepository:
                   WHERE pv.product_id = p.id AND pv.sku LIKE ?
                 )
               )
-            ORDER BY p.updated_at DESC, p.name
+            ORDER BY p.name
             LIMIT ? OFFSET ?
             """,
             (farm_id, farm_id, like, like, like, like, limit, max(offset, 0)),
@@ -125,34 +125,72 @@ class AdminRepository:
         farm_id: str | None = None,
         search: str | None = None,
     ) -> list[dict[str, Any]]:
+        """One entry per product, each carrying every one of its variants'
+        stock levels -- paginated and ordered the same way `list_products` is
+        (alphabetical by product name), so a product with several variants
+        never has its name repeated across several separate rows.
+        """
         limit = min(max(limit, 1), 200)
         search_clause = ""
         params: list[Any] = [farm_id, farm_id]
         if search:
-            search_clause = "AND (p.name LIKE ? OR v.sku LIKE ?)"
+            search_clause = (
+                "AND (p.name LIKE ? OR EXISTS ("
+                "  SELECT 1 FROM product_variants sv"
+                "  WHERE sv.product_id = p.id AND sv.sku LIKE ?"
+                "))"
+            )
             params.extend([f"%{search}%", f"%{search}%"])
         params.extend([limit, max(offset, 0)])
-        return await self._db.fetch_all(
+        product_rows = await self._db.fetch_all(
             f"""
-            SELECT
-              v.id AS variant_id, p.id AS product_id, p.status AS product_status,
-              p.name AS product_name, v.name AS variant_name, v.sku,
-              COALESCE(loc.name, 'Not assigned') AS location_name,
-              COALESCE(il.on_hand, 0) AS on_hand, COALESCE(il.reserved, 0) AS reserved,
-              COALESCE(il.reorder_threshold, 0) AS reorder_threshold,
-              COALESCE(il.updated_at, p.updated_at) AS updated_at
-            FROM product_variants v
-            JOIN products p ON p.id = v.product_id
+            SELECT DISTINCT p.id AS product_id, p.name AS product_name,
+                   p.status AS product_status
+            FROM products p
+            JOIN product_variants v ON v.product_id = p.id
             LEFT JOIN inventory_levels il ON il.variant_id = v.id
-            LEFT JOIN inventory_locations loc ON loc.id = il.location_id
             WHERE (? IS NULL OR p.farm_id = ?) AND p.archived_at IS NULL
               AND (p.status = 'published' OR il.variant_id IS NOT NULL)
             {search_clause}
-            ORDER BY (il.on_hand - il.reserved - il.reorder_threshold) ASC, p.name
+            ORDER BY p.name
             LIMIT ? OFFSET ?
             """,
             tuple(params),
         )
+        if not product_rows:
+            return []
+
+        product_ids = [row["product_id"] for row in product_rows]
+        placeholders = ", ".join("?" for _ in product_ids)
+        variant_rows = await self._db.fetch_all(
+            f"""
+            SELECT
+              v.id AS variant_id, v.product_id, v.name AS variant_name, v.sku,
+              COALESCE(loc.name, 'Not assigned') AS location_name,
+              COALESCE(il.on_hand, 0) AS on_hand, COALESCE(il.reserved, 0) AS reserved,
+              COALESCE(il.reorder_threshold, 0) AS reorder_threshold,
+              COALESCE(il.updated_at, v.updated_at) AS updated_at
+            FROM product_variants v
+            LEFT JOIN inventory_levels il ON il.variant_id = v.id
+            LEFT JOIN inventory_locations loc ON loc.id = il.location_id
+            WHERE v.product_id IN ({placeholders})
+            ORDER BY v.sort_order, v.name
+            """,
+            tuple(product_ids),
+        )
+        variants_by_product: dict[str, list[dict[str, Any]]] = {}
+        for row in variant_rows:
+            variants_by_product.setdefault(row["product_id"], []).append(row)
+
+        return [
+            {
+                "product_id": row["product_id"],
+                "product_name": row["product_name"],
+                "product_status": row["product_status"],
+                "variants": variants_by_product.get(row["product_id"], []),
+            }
+            for row in product_rows
+        ]
 
     async def get_product_detail(self, product_id: str) -> dict[str, Any] | None:
         product = await self._db.fetch_one(

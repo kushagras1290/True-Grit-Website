@@ -2,6 +2,7 @@ import { data } from "react-router";
 
 import type { Route } from "./+types/farm";
 import { Breadcrumbs, ProductGrid, Section } from "../components/catalogue";
+import { PageBanner } from "../components/page-banner";
 import { catalogueRuntime, loadFarm, loadProductsBySlugs } from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
 import { seoMeta } from "../lib/seo";
@@ -31,20 +32,22 @@ export default function FarmPage({ loaderData }: Route.ComponentProps) {
           { label: farm.name, path: `/farms/${farm.slug}` },
         ]}
       />
-      <header className="mx-auto max-w-[80rem] px-4 pt-6 sm:px-6">
-        <div className="max-w-2xl">
-          <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-            {farm.region} · since {farm.establishedYear}
-          </p>
-          <h1 className="mt-2 font-display text-3xl leading-tight text-ink md:text-4xl">
-            {farm.name}
-          </h1>
-          <p className="mt-2 text-base text-ink-muted">Farmed by {farm.farmerName}</p>
-          <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-subtle px-3 py-1 text-xs font-medium text-brand">
-            <span aria-hidden>✓</span> {farm.certification}
-          </p>
-        </div>
-      </header>
+      {/* Same banner frame as the homepage hero and the blog/farms-listing
+          banners. Per-farm, unlike the sitewide farms-listing one -- set on
+          this farm's own edit page in the admin, not Site Control. */}
+      <PageBanner
+        imageUrl={farm.heroImageUrl}
+        imageAlt={farm.heroImageAlt || farm.name}
+        eyebrow={`${farm.region} · since ${farm.establishedYear}`}
+        heading={farm.name}
+        description={`Farmed by ${farm.farmerName}`}
+      />
+
+      <div className="mx-auto max-w-[80rem] px-4 pt-6 sm:px-6">
+        <p className="inline-flex items-center gap-1.5 rounded-full bg-subtle px-3 py-1 text-xs font-medium text-brand">
+          <span aria-hidden>✓</span> {farm.certification}
+        </p>
+      </div>
 
       <Section>
         <div className="grid gap-10 md:grid-cols-[2fr_1fr]">

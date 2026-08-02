@@ -121,6 +121,23 @@ class CatalogueRepository:
             certifications.setdefault(row["product_id"], row["name"])
         return certifications
 
+    async def _ratings_for(self, product_ids: list[str]) -> dict[str, dict[str, Any]]:
+        """Average and count over *approved* reviews only, per product --
+        pending/rejected/removed reviews never influence the public rating."""
+        if not product_ids:
+            return {}
+        placeholders = ", ".join("?" for _ in product_ids)
+        rows = await self._db.fetch_all(
+            f"""
+            SELECT product_id, COUNT(*) AS count, AVG(rating) AS average
+            FROM reviews
+            WHERE product_id IN ({placeholders}) AND status = 'approved'
+            GROUP BY product_id
+            """,
+            product_ids,
+        )
+        return {row["product_id"]: row for row in rows}
+
     async def _tags_for(self, product_ids: list[str]) -> dict[str, list[str]]:
         if not product_ids:
             return {}
@@ -163,6 +180,7 @@ class CatalogueRepository:
         certification: str,
         tags: list[str],
         percent: int,
+        rating: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         variant_summaries = [self._variant_summary(entry, percent) for entry in variants]
         lead = variant_summaries[0] if variant_summaries else None
@@ -191,6 +209,8 @@ class CatalogueRepository:
             "image_alt": row["image_alt"] or row["name"],
             "accepts_orders": bool(row["accepts_orders"]),
             "lead_variant_id": lead["id"] if lead else None,
+            "rating_average": round(float(rating["average"]), 1) if rating else 0.0,
+            "rating_count": int(rating["count"]) if rating else 0,
             "_variants": variant_summaries,
             "_farm_slug": row["farm_slug"] or "",
             "_short_description": row["short_description"] or "",
@@ -204,6 +224,7 @@ class CatalogueRepository:
         certifications = await self._certifications_for(ids)
         tags = await self._tags_for(ids)
         adjustments = await resolve_adjustments(self._db, ids, country)
+        ratings = await self._ratings_for(ids)
         return [
             self._summarize(
                 row,
@@ -211,6 +232,7 @@ class CatalogueRepository:
                 certifications.get(row["id"], ""),
                 tags.get(row["id"], []),
                 adjustments.get(row["id"], 0),
+                ratings.get(row["id"]),
             )
             for row in rows
         ]
@@ -347,9 +369,110 @@ class CatalogueRepository:
         order = {slug: index for index, slug in enumerate(slugs)}
         return sorted(summaries, key=lambda item: order.get(item["slug"], len(order)))
 
-    async def list_highlighted(self, country: str | None = None) -> list[dict[str, Any]]:
+    async def list_bestsellers(
+        self,
+        *,
+        limit: int = 8,
+        exclude_slugs: list[str] | None = None,
+        category_slug: str | None = None,
+        country: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """Real sellers, ranked by total quantity sold on non-cancelled
+        orders -- nothing here is curated, so there is no list for an editor
+        to keep stocked or let go stale. `exclude_slugs` lets a caller
+        already showing a product (a basket's line items, a product detail
+        page) drop it from its own "you might also like" row."""
+        exclusions = exclude_slugs or []
+        exclude_sql = ""
+        params: list[Any] = []
+        if exclusions:
+            placeholders = ", ".join("?" for _ in exclusions)
+            exclude_sql = (
+                " AND NOT EXISTS (SELECT 1 FROM products ep"
+                f" WHERE ep.id = oi.product_id AND ep.slug IN ({placeholders}))"
+            )
+            params.extend(exclusions)
+        category_sql = ""
+        if category_slug:
+            category_sql = (
+                " AND EXISTS (SELECT 1 FROM product_categories pc"
+                " JOIN categories c ON c.id = pc.category_id"
+                " WHERE pc.product_id = oi.product_id AND c.slug = ?)"
+            )
+            params.append(category_slug)
+        params.append(max(limit, 1))
+        ranked = await self._db.fetch_all(
+            f"""
+            SELECT oi.product_id, SUM(oi.quantity) AS total_qty
+            FROM order_items oi
+            JOIN orders o ON o.id = oi.order_id
+            WHERE o.order_status != 'cancelled' AND oi.product_id IS NOT NULL
+            {exclude_sql}{category_sql}
+            GROUP BY oi.product_id
+            ORDER BY total_qty DESC
+            LIMIT ?
+            """,
+            tuple(params),
+        )
+        return await self._resolve_ranked(
+            [row["product_id"] for row in ranked], country=country
+        )
+
+    async def list_also_bought(
+        self, product_id: str, *, limit: int = 6, country: str | None = None
+    ) -> list[dict[str, Any]]:
+        """Products that show up in the same orders as `product_id`, most
+        frequent first -- real co-purchase counts (market-basket analysis),
+        not a curated "goes well with" list. Empty for a product with no
+        order history yet; the caller renders nothing rather than a section
+        with an empty story to tell."""
+        ranked = await self._db.fetch_all(
+            """
+            SELECT oi2.product_id, COUNT(DISTINCT oi1.order_id) AS co_count
+            FROM order_items oi1
+            JOIN order_items oi2
+              ON oi2.order_id = oi1.order_id AND oi2.product_id != oi1.product_id
+            JOIN orders o ON o.id = oi1.order_id
+            WHERE oi1.product_id = ? AND o.order_status != 'cancelled'
+              AND oi2.product_id IS NOT NULL
+            GROUP BY oi2.product_id
+            ORDER BY co_count DESC
+            LIMIT ?
+            """,
+            (product_id, max(limit, 1)),
+        )
+        return await self._resolve_ranked(
+            [row["product_id"] for row in ranked], country=country
+        )
+
+    async def _resolve_ranked(
+        self, product_ids: list[str], *, country: str | None = None
+    ) -> list[dict[str, Any]]:
+        """Turn a ranked list of product ids into full, published,
+        geo-visible `ProductSummary` rows, preserving rank order -- the same
+        "resolve then reorder" shape `list_published_by_slugs` uses, since a
+        plain `IN (...)` gives no ordering guarantee of its own."""
+        if not product_ids:
+            return []
+        placeholders = ", ".join("?" for _ in product_ids)
+        geo_sql, geo_params = geo_release_clause(country)
+        rows = await self._db.fetch_all(
+            f"{_PRODUCT_BASE_SQL} WHERE p.status = 'published'"
+            f" AND p.id IN ({placeholders}){geo_sql}",
+            (*product_ids, *geo_params),
+        )
+        summaries = await self._assemble(rows, country)
+        order = {product_id: index for index, product_id in enumerate(product_ids)}
+        return sorted(summaries, key=lambda item: order.get(item["id"], len(order)))
+
+    async def list_highlighted(
+        self, country: str | None = None, *, limit: int = 12
+    ) -> list[dict[str, Any]]:
         """The owner-curated highlight slots, in curated order. Published and
-        geo-visible products only, so a swap in the admin is all it takes."""
+        geo-visible products only, so a swap in the admin is all it takes.
+        `limit` is the admin-adjustable curated-list cap
+        (`load_curated_max_items`), not a hardcoded row count -- the caller
+        resolves it."""
         geo_sql, geo_params = geo_release_clause(country)
         rows = await self._db.fetch_all(
             f"""
@@ -357,9 +480,9 @@ class CatalogueRepository:
             JOIN highlighted_products hp ON hp.product_id = p.id
             WHERE p.status = 'published'{geo_sql}
             ORDER BY hp.sort_order, p.name
-            LIMIT 12
+            LIMIT ?
             """,
-            geo_params,
+            (*geo_params, max(limit, 1)),
         )
         return await self._assemble(rows, country)
 
@@ -441,4 +564,12 @@ class CatalogueRepository:
         )
         for key in ("_variants", "_farm_slug", "_short_description"):
             detail.pop(key, None)
+        detail["images"] = await self.list_images(row["id"])
         return detail
+
+    async def list_images(self, product_id: str) -> list[dict[str, Any]]:
+        return await self._db.fetch_all(
+            "SELECT id, image_url, image_alt, sort_order FROM product_images"
+            " WHERE product_id = ? ORDER BY sort_order, id",
+            (product_id,),
+        )

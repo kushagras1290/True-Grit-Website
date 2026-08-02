@@ -41,9 +41,18 @@ KEY_PASSWORD: Final = "auth.password.enabled"
 KEY_REGISTRATION: Final = "auth.registration.enabled"
 KEY_PAYMENTS: Final = "commerce.payments.enabled"
 KEY_PAYMENTS_NOTICE: Final = "commerce.payments_disabled_notice"
+KEY_PROMOTIONS: Final = "commerce.promotions.enabled"
+KEY_RECOMMENDATIONS: Final = "commerce.recommendations.enabled"
+KEY_SUBSCRIPTIONS: Final = "commerce.subscriptions.enabled"
+KEY_SUBSCRIPTION_DISCOUNT_PERCENT: Final = "commerce.subscriptions.discount_percent"
+KEY_DELIVERY_FEE_MINOR: Final = "commerce.delivery_fee_minor"
+KEY_FREE_DELIVERY_THRESHOLD_MINOR: Final = "commerce.free_delivery_threshold_minor"
 KEY_BLOG_BANNER_URL: Final = "banner.blog.image_url"
 KEY_BLOG_BANNER_ALT: Final = "banner.blog.image_alt"
+KEY_FARMS_BANNER_URL: Final = "banner.farms.image_url"
+KEY_FARMS_BANNER_ALT: Final = "banner.farms.image_alt"
 KEY_HERO_MAX_SLIDES: Final = "homepage.hero.max_slides"
+KEY_CURATED_MAX_ITEMS: Final = "homepage.curated.max_items"
 
 # Defaults must match migration 0040. They are what a missing or unparseable row
 # resolves to, which is why every one of them is the permissive value: a
@@ -56,7 +65,28 @@ _BOOLEAN_DEFAULTS: Final[dict[str, bool]] = {
     KEY_PASSWORD: True,
     KEY_REGISTRATION: True,
     KEY_PAYMENTS: True,
+    # Off by default (migration 0060) -- unlike the switches above, this one
+    # does not gate core functionality nobody could use without it. It is a
+    # marketing feature an operator turns on deliberately once a promotion is
+    # actually configured, not a permissive fallback for a corrupted row.
+    KEY_PROMOTIONS: False,
+    # On by default, unlike promotions -- recommendations need no setup (they
+    # are computed live from real order data, never a list an operator must
+    # first stock), so shipping them on is what "looks like the site is
+    # promoting its products" out of the box, not a feature waiting to be
+    # switched on.
+    KEY_RECOMMENDATIONS: True,
+    # Off by default, same reasoning as KEY_PROMOTIONS -- not needed at
+    # launch (user's explicit call), but built for real and switchable the
+    # moment it is wanted, rather than a stub.
+    KEY_SUBSCRIPTIONS: False,
 }
+
+DEFAULT_SUBSCRIPTION_DISCOUNT_PERCENT: Final = 5
+# A sanity ceiling, the same role CURATED_MAX_ITEMS_HARD_LIMIT plays for
+# curated rows -- guards against a fat-fingered entry turning the incentive
+# into a giveaway.
+SUBSCRIPTION_DISCOUNT_PERCENT_HARD_LIMIT: Final = 50
 
 _DEFAULT_PAYMENTS_NOTICE: Final = (
     "We are not taking orders at the moment. Leave your details and we will get"
@@ -87,8 +117,13 @@ class StorefrontSettings:
     registration: bool
     payments: bool
     payments_disabled_notice: str
+    promotions: bool
+    recommendations: bool
+    subscriptions: bool
     blog_banner_image_url: str
     blog_banner_image_alt: str
+    farms_banner_image_url: str
+    farms_banner_image_alt: str
 
     def to_camel_dict(self) -> dict[str, Any]:
         return {
@@ -99,8 +134,13 @@ class StorefrontSettings:
             "registration": self.registration,
             "payments": self.payments,
             "paymentsDisabledNotice": self.payments_disabled_notice,
+            "promotions": self.promotions,
+            "recommendations": self.recommendations,
+            "subscriptions": self.subscriptions,
             "blogBannerImageUrl": self.blog_banner_image_url,
             "blogBannerImageAlt": self.blog_banner_image_alt,
+            "farmsBannerImageUrl": self.farms_banner_image_url,
+            "farmsBannerImageAlt": self.farms_banner_image_alt,
         }
 
 
@@ -215,6 +255,138 @@ async def set_hero_max_slides(
     return value
 
 
+DEFAULT_CURATED_MAX_ITEMS: Final = 12
+# A sanity ceiling, not a realistic value -- the same role HERO_SLIDES_HARD_LIMIT
+# plays for the carousel, guarding against a fat-fingered entry turning a
+# curated row into an unmanageable wall of products.
+CURATED_MAX_ITEMS_HARD_LIMIT: Final = 50
+
+
+async def load_curated_max_items(db: Database) -> int:
+    """How many products an owner may curate into a fixed-pick homepage row
+    (Fresh Favourites, Featured Categories) or the search-page Highlights box.
+
+    One shared cap for all three: they are the same shape of feature (pick up
+    to N items, in order), so a single adjustable ceiling is a smaller admin
+    surface than three near-identical settings. Stored rather than hardcoded,
+    the same reasoning as `load_hero_max_slides` -- growing past the shipped
+    twelve is an admin change, not a deploy. Read defensively: a missing,
+    non-numeric or out-of-range row resolves to the shipped default.
+    """
+    values = await _read_values(db)
+    return clamp_curated_max_items(values.get(KEY_CURATED_MAX_ITEMS))
+
+
+def clamp_curated_max_items(raw: str | int | None) -> int:
+    try:
+        parsed = int(str(raw).strip())
+    except (TypeError, ValueError):
+        return DEFAULT_CURATED_MAX_ITEMS
+    if parsed < 1:
+        return 1
+    return min(parsed, CURATED_MAX_ITEMS_HARD_LIMIT)
+
+
+async def set_curated_max_items(
+    db: Database, actor: Principal, request_id: str, *, value: int
+) -> int:
+    if value < 1 or value > CURATED_MAX_ITEMS_HARD_LIMIT:
+        raise ValidationAppError(
+            f"The curated list limit must be between 1 and {CURATED_MAX_ITEMS_HARD_LIMIT} items."
+        )
+    await _write_setting(
+        db,
+        actor,
+        request_id,
+        key=KEY_CURATED_MAX_ITEMS,
+        value=str(value),
+        action="settings.homepage_updated",
+        changed={"curated_max_items": value},
+    )
+    return value
+
+
+DEFAULT_DELIVERY_FEE_MINOR: Final = 4_900  # ₹49
+DEFAULT_FREE_DELIVERY_THRESHOLD_MINOR: Final = 150_000  # ₹1,500
+# A sanity ceiling, not a realistic value -- guards against a fat-fingered
+# entry (an extra zero) turning every checkout into a four- or five-figure
+# delivery charge, the same role `HERO_SLIDES_HARD_LIMIT` plays for the
+# carousel.
+_MAX_DELIVERY_CHARGE_MINOR: Final = 100_000_00  # ₹1,00,000
+
+
+@dataclass(frozen=True)
+class DeliverySettings:
+    fee_minor: int
+    free_threshold_minor: int
+
+
+def _parse_delivery_amount(raw: str | None, *, default: int) -> int:
+    try:
+        value = int(str(raw).strip())
+    except (TypeError, ValueError):
+        return default
+    return value if 0 <= value <= _MAX_DELIVERY_CHARGE_MINOR else default
+
+
+async def load_delivery_settings(db: Database) -> DeliverySettings:
+    """The delivery fee and the free-delivery subtotal threshold checkout
+    charges against. Stored rather than hardcoded, the same reasoning as
+    `load_hero_max_slides`: a seasonal delivery-fee change or a raised
+    free-delivery bar becomes an admin edit, not a deploy. Read defensively --
+    a missing, non-numeric or out-of-range row resolves to the shipped
+    default, the same degrade-safe behaviour every setting here has.
+    """
+    values = await _read_values(db)
+    return DeliverySettings(
+        fee_minor=_parse_delivery_amount(
+            values.get(KEY_DELIVERY_FEE_MINOR), default=DEFAULT_DELIVERY_FEE_MINOR
+        ),
+        free_threshold_minor=_parse_delivery_amount(
+            values.get(KEY_FREE_DELIVERY_THRESHOLD_MINOR),
+            default=DEFAULT_FREE_DELIVERY_THRESHOLD_MINOR,
+        ),
+    )
+
+
+async def set_delivery_settings(
+    db: Database, actor: Principal, request_id: str, *, fee_minor: int, free_threshold_minor: int
+) -> DeliverySettings:
+    if not 0 <= fee_minor <= _MAX_DELIVERY_CHARGE_MINOR:
+        raise ValidationAppError("Delivery fee must be a realistic non-negative amount.")
+    if not 0 <= free_threshold_minor <= _MAX_DELIVERY_CHARGE_MINOR:
+        raise ValidationAppError(
+            "The free-delivery threshold must be a realistic non-negative amount."
+        )
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                "INSERT INTO app_settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, ?)"
+                " ON CONFLICT(key) DO UPDATE SET value = excluded.value,"
+                "  updated_at = excluded.updated_at, updated_by = excluded.updated_by",
+                (KEY_DELIVERY_FEE_MINOR, str(fee_minor), now, actor.user_id),
+            ),
+            (
+                "INSERT INTO app_settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, ?)"
+                " ON CONFLICT(key) DO UPDATE SET value = excluded.value,"
+                "  updated_at = excluded.updated_at, updated_by = excluded.updated_by",
+                (KEY_FREE_DELIVERY_THRESHOLD_MINOR, str(free_threshold_minor), now, actor.user_id),
+            ),
+            audit_statement(
+                action="settings.delivery_updated",
+                entity_type="app_setting",
+                entity_id="delivery",
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"feeMinor": fee_minor, "freeThresholdMinor": free_threshold_minor},
+            ),
+        ]
+    )
+    return DeliverySettings(fee_minor=fee_minor, free_threshold_minor=free_threshold_minor)
+
+
 async def load_storefront_settings(db: Database) -> StorefrontSettings:
     """The stored switches. One query — these are read on hot paths."""
     values = await _read_values(db)
@@ -235,8 +407,19 @@ async def load_storefront_settings(db: Database) -> StorefrontSettings:
         ),
         payments=_parse_bool(values.get(KEY_PAYMENTS), default=_BOOLEAN_DEFAULTS[KEY_PAYMENTS]),
         payments_disabled_notice=notice[:_MAX_NOTICE_LENGTH],
+        promotions=_parse_bool(
+            values.get(KEY_PROMOTIONS), default=_BOOLEAN_DEFAULTS[KEY_PROMOTIONS]
+        ),
+        recommendations=_parse_bool(
+            values.get(KEY_RECOMMENDATIONS), default=_BOOLEAN_DEFAULTS[KEY_RECOMMENDATIONS]
+        ),
+        subscriptions=_parse_bool(
+            values.get(KEY_SUBSCRIPTIONS), default=_BOOLEAN_DEFAULTS[KEY_SUBSCRIPTIONS]
+        ),
         blog_banner_image_url=(values.get(KEY_BLOG_BANNER_URL) or "").strip(),
         blog_banner_image_alt=(values.get(KEY_BLOG_BANNER_ALT) or "").strip(),
+        farms_banner_image_url=(values.get(KEY_FARMS_BANNER_URL) or "").strip(),
+        farms_banner_image_alt=(values.get(KEY_FARMS_BANNER_ALT) or "").strip(),
     )
 
 
@@ -256,8 +439,13 @@ class PublicStorefrontSettings:
     registration: bool
     payments: bool
     payments_disabled_notice: str
+    promotions: bool
+    recommendations: bool
+    subscriptions: bool
     blog_banner_image_url: str
     blog_banner_image_alt: str
+    farms_banner_image_url: str
+    farms_banner_image_alt: str
 
     @property
     def any_sign_in_available(self) -> bool:
@@ -281,9 +469,20 @@ class PublicStorefrontSettings:
                 "enabled": self.payments,
                 "disabledNotice": self.payments_disabled_notice,
             },
+            "promotions": {
+                "enabled": self.promotions,
+            },
+            "recommendations": {
+                "enabled": self.recommendations,
+            },
+            "subscriptions": {
+                "enabled": self.subscriptions,
+            },
             "banners": {
                 "blogImageUrl": self.blog_banner_image_url,
                 "blogImageAlt": self.blog_banner_image_alt,
+                "farmsImageUrl": self.farms_banner_image_url,
+                "farmsImageAlt": self.farms_banner_image_alt,
             },
         }
 
@@ -309,8 +508,19 @@ def resolve_public_settings(
         registration=registration,
         payments=stored.payments and bool(settings.enabled_payment_methods),
         payments_disabled_notice=stored.payments_disabled_notice,
+        # No server configuration gates this the way a payment gateway key
+        # does -- the stored switch is the whole answer.
+        promotions=stored.promotions,
+        # Also just the stored switch, same reasoning as promotions -- nothing
+        # here depends on server configuration either.
+        recommendations=stored.recommendations,
+        # Same reasoning again: no server configuration gates COD (it is
+        # always available), so the stored switch is the whole answer.
+        subscriptions=stored.subscriptions,
         blog_banner_image_url=stored.blog_banner_image_url,
         blog_banner_image_alt=stored.blog_banner_image_alt,
+        farms_banner_image_url=stored.farms_banner_image_url,
+        farms_banner_image_alt=stored.farms_banner_image_alt,
     )
 
 
@@ -346,6 +556,75 @@ async def assert_payments_enabled(db: Database) -> None:
         raise PermissionDeniedError("We are not taking orders at the moment.")
 
 
+async def promotions_enabled(db: Database) -> bool:
+    """Whether the sitewide coupons/promotions feature is switched on --
+    checked before honouring a coupon code at checkout and before the public
+    featured-promotion endpoint (homepage banner, checkout box) returns
+    anything. Unlike `assert_payments_enabled`, absence is not fatal: a
+    disabled feature simply has nothing to show, it does not block checkout."""
+    return (await load_storefront_settings(db)).promotions
+
+
+async def recommendations_enabled(db: Database) -> bool:
+    """Whether the sitewide product-recommendations feature is switched on --
+    checked before the bestsellers/also-bought public endpoints return
+    anything, and before the storefront renders any of the strips woven into
+    the homepage, product, cart, category, search and shop pages. Absence is
+    not fatal, the same reasoning as `promotions_enabled`: a disabled feature
+    just has nothing to show."""
+    return (await load_storefront_settings(db)).recommendations
+
+
+async def subscriptions_enabled(db: Database) -> bool:
+    """Whether the sitewide "Subscribe & Save" feature is switched on --
+    checked before a customer can create a subscription and before the
+    renewal job (services/subscriptions.py `run_due_renewals`) processes
+    anything. Off by default (launch decision, not a technical limit): a
+    disabled feature simply lets no one subscribe and renews nothing, it
+    never blocks ordinary checkout."""
+    return (await load_storefront_settings(db)).subscriptions
+
+
+async def load_subscription_discount_percent(db: Database) -> int:
+    """The percent-off applied to every subscription renewal order -- the
+    incentive that makes "Subscribe & Save" a saving, not just a schedule.
+    Stored rather than hardcoded, the same reasoning `load_hero_max_slides`
+    documents. Read defensively: a missing, non-numeric or out-of-range row
+    resolves to the shipped default."""
+    values = await _read_values(db)
+    return clamp_subscription_discount_percent(values.get(KEY_SUBSCRIPTION_DISCOUNT_PERCENT))
+
+
+def clamp_subscription_discount_percent(raw: str | int | None) -> int:
+    try:
+        parsed = int(str(raw).strip())
+    except (TypeError, ValueError):
+        return DEFAULT_SUBSCRIPTION_DISCOUNT_PERCENT
+    if parsed < 0:
+        return 0
+    return min(parsed, SUBSCRIPTION_DISCOUNT_PERCENT_HARD_LIMIT)
+
+
+async def set_subscription_discount_percent(
+    db: Database, actor: Principal, request_id: str, *, value: int
+) -> int:
+    if value < 0 or value > SUBSCRIPTION_DISCOUNT_PERCENT_HARD_LIMIT:
+        raise ValidationAppError(
+            f"The subscription discount must be between 0 and"
+            f" {SUBSCRIPTION_DISCOUNT_PERCENT_HARD_LIMIT} percent."
+        )
+    await _write_setting(
+        db,
+        actor,
+        request_id,
+        key=KEY_SUBSCRIPTION_DISCOUNT_PERCENT,
+        value=str(value),
+        action="settings.storefront_updated",
+        changed={"subscription_discount_percent": value},
+    )
+    return value
+
+
 async def update_storefront_settings(
     db: Database,
     actor: Principal,
@@ -366,6 +645,9 @@ async def update_storefront_settings(
         "password_sign_in": KEY_PASSWORD,
         "registration": KEY_REGISTRATION,
         "payments": KEY_PAYMENTS,
+        "promotions": KEY_PROMOTIONS,
+        "recommendations": KEY_RECOMMENDATIONS,
+        "subscriptions": KEY_SUBSCRIPTIONS,
     }
 
     now = utc_now_iso()
@@ -399,6 +681,16 @@ async def update_storefront_settings(
         alt = str(updates["blog_banner_image_alt"]).strip()[:_MAX_IMAGE_ALT_LENGTH]
         pending.append((KEY_BLOG_BANNER_ALT, alt))
         changed["blog_banner_image_alt"] = alt
+
+    if "farms_banner_image_url" in updates:
+        url = _validate_image_url(str(updates["farms_banner_image_url"]), "Farms banner image")
+        pending.append((KEY_FARMS_BANNER_URL, url))
+        changed["farms_banner_image_url"] = url
+
+    if "farms_banner_image_alt" in updates:
+        alt = str(updates["farms_banner_image_alt"]).strip()[:_MAX_IMAGE_ALT_LENGTH]
+        pending.append((KEY_FARMS_BANNER_ALT, alt))
+        changed["farms_banner_image_alt"] = alt
 
     if not pending:
         return await load_storefront_settings(db)

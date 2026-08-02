@@ -13,6 +13,7 @@ import { usePriceFormatter } from "../lib/currency";
 import { mediaUrl } from "../lib/media";
 import { productEffectivePrice } from "../lib/pricing";
 import { getPublicApiUrl } from "../lib/public-env";
+import { StarRating } from "./reviews";
 
 const PRODUCE_GLYPHS: Record<string, string> = {
   "organic-alphonso-mangoes": "M",
@@ -123,6 +124,12 @@ export function ProductCard({ product }: { product: ProductSummary }) {
           <h3 className="mt-0.5 text-base font-medium text-ink group-hover:text-brand">
             {product.name}
           </h3>
+          {product.ratingCount > 0 ? (
+            <p className="mt-1 flex items-center gap-1.5 text-xs">
+              <StarRating rating={Math.round(product.ratingAverage)} />
+              <span className="text-ink-muted">({product.ratingCount})</span>
+            </p>
+          ) : null}
           <p className="mt-1 text-sm text-ink">
             {effective.originalMinor !== null ? (
               <>

@@ -15,6 +15,7 @@ from truegrit_api.auth.sessions import resolve_session
 from truegrit_api.config import get_settings
 from truegrit_api.errors import AuthenticationError, PermissionDeniedError
 from truegrit_api.platform.database import Database
+from truegrit_api.platform.translation import Translator, UnavailableTranslator
 
 
 async def get_database(request: Request) -> Database:
@@ -26,6 +27,14 @@ async def get_database(request: Request) -> Database:
     if db is None:
         raise RuntimeError("Application database is not configured.")
     return db
+
+
+async def get_translator(request: Request) -> Translator:
+    # Same reasoning as get_database. Falls back to UnavailableTranslator
+    # (never None) so a call outside the Workers runtime fails with a clear
+    # "not available locally" error instead of an AttributeError.
+    translator: Translator | None = getattr(request.app.state, "translator", None)
+    return translator if translator is not None else UnavailableTranslator()
 
 
 async def get_current_staff(

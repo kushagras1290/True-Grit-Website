@@ -233,6 +233,64 @@ class PageLinksBlock(_BlockBase):
     props: PageLinksProps
 
 
+class ReviewsShowcaseProps(BaseModel):
+    """Either a hand-picked set of testimonials (`manual`, via `reviewIds`) or
+    the current top-rated approved reviews sitewide (`rule`). `rule` resolves
+    live on every render -- like `product_collection`'s own rule mode -- so it
+    never goes stale and degrades to nothing rendered when no review yet meets
+    `minRating`, rather than needing an editor to notice and disable it."""
+
+    heading: str = Field(min_length=1, max_length=120)
+    subheading: str = Field(default="", max_length=240)
+    source: Literal["manual", "rule"]
+    review_ids: list[str] = Field(alias="reviewIds", default_factory=list, max_length=24)
+    limit: int = Field(ge=1, le=24, default=8)
+    min_rating: int = Field(alias="minRating", ge=1, le=5, default=4)
+
+    model_config = {"populate_by_name": True}
+
+
+class ReviewsShowcaseBlock(_BlockBase):
+    type: Literal["reviews_showcase"]
+    props: ReviewsShowcaseProps
+
+
+class PromotionBannerProps(BaseModel):
+    """`manual` pins one specific promotion by id; `rule` resolves the
+    current highest-priority active promotion live on every render, the same
+    two-mode split as `reviews_showcase`. There is no heading/subheading
+    override here -- unlike reviews, a promotion already carries its own
+    `headline`/`description` (migration 0060), which is also what the
+    checkout-page callout reads, so the homepage and checkout always show the
+    same copy rather than two hand-maintained versions of it."""
+
+    source: Literal["manual", "rule"]
+    promotion_id: str | None = Field(alias="promotionId", default=None, max_length=64)
+
+    model_config = {"populate_by_name": True}
+
+
+class PromotionBannerBlock(_BlockBase):
+    type: Literal["promotion_banner"]
+    props: PromotionBannerProps
+
+
+class RecommendationsProps(BaseModel):
+    """Best-sellers, computed live from real `order_items` -- not a curated
+    list, so there is nothing for an editor to keep stocked or let go stale.
+    Reads as ordinary merchandising copy (heading/subheading), not a labelled
+    "recommendations" widget."""
+
+    heading: str = Field(min_length=1, max_length=120)
+    subheading: str = Field(default="", max_length=240)
+    limit: int = Field(ge=1, le=24, default=8)
+
+
+class RecommendationsBlock(_BlockBase):
+    type: Literal["recommendations"]
+    props: RecommendationsProps
+
+
 PageBlock = Annotated[
     HeroBlock
     | CategoryCollectionBlock
@@ -241,7 +299,10 @@ PageBlock = Annotated[
     | FaqBlock
     | RichTextBlock
     | NewsletterBlock
-    | PageLinksBlock,
+    | PageLinksBlock
+    | ReviewsShowcaseBlock
+    | PromotionBannerBlock
+    | RecommendationsBlock,
     Field(discriminator="type"),
 ]
 

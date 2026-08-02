@@ -11,7 +11,9 @@ import { AccountPage } from "./features/account";
 import { AppearancePage } from "./features/appearance";
 import { ArchivePage } from "./features/archive";
 import { ArticleEditorPage, ArticleListPage } from "./features/articles";
+import { AnalyticsPage } from "./features/analytics";
 import { AdminLoginPage, AdminResetPasswordPage, RequireAdminAuth } from "./features/auth";
+import { BundlesListPage } from "./features/bundles";
 import { CategoryEditorPage, CategoryListPage } from "./features/categories";
 import { DiscussionDetailPage, DiscussionsListPage } from "./features/community";
 import { ContentCommentsPage } from "./features/content-comments";
@@ -32,15 +34,18 @@ import {
 } from "./features/operations";
 import { PriceAdjustmentsPage } from "./features/price-adjustments";
 import { ProductEditorPage, ProductListPage } from "./features/products";
+import { PromotionsListPage } from "./features/promotions";
 import { RecipeEditorPage, RecipeListPage } from "./features/recipes";
 import { ReportsPage } from "./features/reports";
 import { RefundsOversightPage } from "./features/refunds";
 import { FarmRevenueDetailPage, RevenuePage } from "./features/revenue";
 import { ReturnDetailPage, ReturnsListPage } from "./features/returns";
+import { ReviewsListPage } from "./features/reviews";
 import { ScopeManagementPage } from "./features/scopes";
 import { AdminLogsPage } from "./features/server-logs";
 import { SiteControlPage } from "./features/site-control";
 import { SubmissionDetailPage, SubmissionsListPage } from "./features/submissions";
+import { SubscriptionsListPage } from "./features/subscriptions";
 import { RequireSuperAdmin } from "./lib/permissions";
 
 const queryClient = new QueryClient({
@@ -65,11 +70,15 @@ createRoot(document.getElementById("root")!).render(
               }
             >
               <Route index element={<DashboardPage />} />
+              <Route path="analytics" element={<AnalyticsPage />} />
               <Route path="products" element={<ProductListPage />} />
               <Route path="products/:id" element={<ProductEditorPage />} />
               <Route path="categories" element={<CategoryListPage />} />
               <Route path="categories/:id" element={<CategoryEditorPage />} />
               <Route path="price-adjustments" element={<PriceAdjustmentsPage />} />
+              <Route path="promotions" element={<PromotionsListPage />} />
+              <Route path="bundles" element={<BundlesListPage />} />
+              <Route path="subscriptions" element={<SubscriptionsListPage />} />
               <Route path="inventory" element={<InventoryPage />} />
               <Route path="farms" element={<FarmsPage />} />
               <Route path="farm-requests" element={<FarmRequestsListPage />} />
@@ -102,6 +111,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="community" element={<DiscussionsListPage />} />
               <Route path="community/:id" element={<DiscussionDetailPage />} />
               <Route path="content-comments" element={<ContentCommentsPage />} />
+              <Route path="reviews" element={<ReviewsListPage />} />
               <Route path="contact-attempts" element={<ContactAttemptsPage />} />
               <Route path="users" element={<UsersPage />} />
               <Route path="scopes" element={<ScopeManagementPage />} />

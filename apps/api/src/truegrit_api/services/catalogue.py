@@ -18,6 +18,7 @@ from truegrit_api.domain.slugs import slugify, validate_slug
 from truegrit_api.errors import ConflictError, NotFoundError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
+from truegrit_api.services.feature_settings import load_curated_max_items
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
 
@@ -227,6 +228,71 @@ async def update_product(
     return {"id": product_id, "status": current["status"], "changed": True}
 
 
+_MAX_PRODUCT_IMAGES = 8
+
+
+async def replace_product_images(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    product_id: str,
+    images: list[dict[str, Any]],
+) -> None:
+    """Full replace, not incremental add/remove -- a product's gallery is
+    edited as an ordered set (pick the photos, put them in order, save), the
+    same 'delete then reinsert' pattern `replace_bundle_items` already uses.
+    Never touches `products.image_url`/`primary_media_id`: the main image
+    stays a wholly separate field (see migration 0066's WHY note)."""
+    product = await db.fetch_one(
+        "SELECT id FROM products WHERE id = ? AND archived_at IS NULL", (product_id,)
+    )
+    if product is None:
+        raise NotFoundError("Product not found.")
+    if len(images) > _MAX_PRODUCT_IMAGES:
+        raise ValidationAppError(f"A product can hold at most {_MAX_PRODUCT_IMAGES} gallery images.")
+
+    cleaned: list[dict[str, Any]] = []
+    for index, image in enumerate(images):
+        url = str(image.get("image_url") or "").strip()
+        if not url:
+            raise ValidationAppError("Each gallery image needs a URL.")
+        alt = str(image.get("image_alt") or "").strip()[:200] or None
+        cleaned.append({"image_url": url, "image_alt": alt, "sort_order": index})
+
+    now = utc_now_iso()
+    statements: list[tuple[str, Any]] = [
+        ("DELETE FROM product_images WHERE product_id = ?", (product_id,)),
+    ]
+    for image in cleaned:
+        statements.append(
+            (
+                "INSERT INTO product_images"
+                " (id, product_id, image_url, image_alt, sort_order, created_at)"
+                " VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    new_id("pimg"),
+                    product_id,
+                    image["image_url"],
+                    image["image_alt"],
+                    image["sort_order"],
+                    now,
+                ),
+            )
+        )
+    statements.append(
+        audit_statement(
+            action="product.images_replaced",
+            entity_type="product",
+            entity_id=product_id,
+            actor_id=actor.user_id,
+            request_id=request_id,
+            created_at=now,
+            after={"imageCount": len(cleaned)},
+        )
+    )
+    await db.batch(statements)
+
+
 async def set_product_status(
     db: Database,
     actor: Principal,
@@ -433,7 +499,6 @@ async def update_variant(
 _COUNTRY_CODE = re.compile(r"^[A-Za-z]{2}$")
 _MAX_RELEASE_COUNTRIES = 100
 _MAX_PRODUCT_LINKS = 12
-_MAX_HIGHLIGHTS = 12
 
 
 def _normalize_country_codes(countries: list[str]) -> list[str]:
@@ -634,8 +699,9 @@ async def set_highlighted_products(
     for product_id in product_ids:
         if product_id not in ordered:
             ordered.append(product_id)
-    if len(ordered) > _MAX_HIGHLIGHTS:
-        raise ValidationAppError(f"At most {_MAX_HIGHLIGHTS} highlighted products are supported.")
+    max_items = await load_curated_max_items(db)
+    if len(ordered) > max_items:
+        raise ValidationAppError(f"At most {max_items} highlighted products are supported.")
     if ordered:
         placeholders = ", ".join("?" for _ in ordered)
         rows = await db.fetch_all(

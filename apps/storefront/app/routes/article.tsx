@@ -50,6 +50,12 @@ export default function ArticlePage({ loaderData }: Route.ComponentProps) {
     productsBySlug: new Map(products.map((product) => [product.slug, product])),
     categoriesBySlug: new Map(),
     farmsBySlug: new Map(farms.map((farm) => [farm.slug, farm])),
+    // Article body content is limited to `ContentBlock` (rich text, product
+    // collection, farmer story, FAQ) -- `reviews_showcase`,
+    // `promotion_banner` and `recommendations` never appear here.
+    reviewsByBlockId: new Map(),
+    promotionsByBlockId: new Map(),
+    recommendationsByBlockId: new Map(),
   };
 
   return (

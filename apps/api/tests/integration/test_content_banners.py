@@ -38,6 +38,25 @@ def _admin_id_by_slug(client: TestClient, resource: str, slug: str) -> str:
     return next(item["id"] for item in items if item["slug"] == slug)
 
 
+def _find_in_public_listing(client: TestClient, resource: str, slug: str) -> dict:
+    # The public listing has no search param and caps at 100 rows per page
+    # (unlike the admin one above); the curated library is larger than that,
+    # so finding a specific pinned slug means walking pages rather than
+    # trusting it to land on page one.
+    offset = 0
+    page_size = 100
+    while True:
+        page = client.get(f"/v1/public/{resource}", params={"limit": page_size, "offset": offset})
+        body = page.json()
+        items = body["items"]
+        found = next((item for item in items if item["slug"] == slug), None)
+        if found is not None:
+            return found
+        if len(items) < page_size or offset >= body["total"]:
+            raise AssertionError(f"{slug!r} not found in /v1/public/{resource} listing")
+        offset += page_size
+
+
 # --- Article banners ---------------------------------------------------------
 
 
@@ -59,8 +78,7 @@ def test_article_banner_roundtrip(client: TestClient, db: SQLiteDatabase):
     assert detail["heroImageUrl"] == BANNER_URL
     assert detail["heroImageAlt"] == BANNER_ALT
 
-    listing = client.get("/v1/public/articles", params={"limit": 100}).json()["items"]
-    listed = next(item for item in listing if item["slug"] == ARTICLE_SLUG)
+    listed = _find_in_public_listing(client, "articles", ARTICLE_SLUG)
     assert listed["heroImageUrl"] == BANNER_URL
 
 
@@ -100,8 +118,7 @@ def test_recipe_banner_roundtrip(client: TestClient, db: SQLiteDatabase):
     assert detail["heroImageUrl"] == BANNER_URL
     assert detail["heroImageAlt"] == BANNER_ALT
 
-    listing = client.get("/v1/public/recipes", params={"limit": 100}).json()["items"]
-    listed = next(item for item in listing if item["slug"] == RECIPE_SLUG)
+    listed = _find_in_public_listing(client, "recipes", RECIPE_SLUG)
     assert listed["heroImageUrl"] == BANNER_URL
 
 

@@ -46,8 +46,24 @@
     { "binding": "EXPORTS_BUCKET", "bucket_name": "truegrit-exports-dev" }
   ],
   "kv_namespaces": [{ "binding": "CACHE", "id": "c90a4639e7a748c89a9f81db6b19e75f" }],
+  // Auto-translate for admin-authored page content (migration 0067,
+  // platform/translation.py) -- runs @cf/meta/m2m100-1.2b on the Workers AI
+  // free daily neuron allowance. Only invoked from an admin's own
+  // "Auto-translate" action (never per-visitor), so the free tier easily
+  // covers it. No separate API key or account: bindings authenticate via
+  // the Worker's own execution context.
+  "ai": {
+    "binding": "AI"
+  },
   "queues": {
     "producers": [{ "binding": "JOBS_QUEUE", "queue": "truegrit-jobs-dev" }]
+  },
+  "triggers": {
+    // Daily at 03:00 UTC (08:30 IST) -- before typical same-day dispatch
+    // hours. Drives Subscribe & Save renewals (Default.scheduled in
+    // worker.py); a no-op cost of one settings read on stores that have
+    // never turned the feature on. See services/subscriptions.py.
+    "crons": ["0 3 * * *"]
   },
   "vars": {
     "APP_ENV": "development",

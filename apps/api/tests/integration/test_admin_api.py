@@ -82,8 +82,8 @@ def test_product_list_shape(client: TestClient, db: SQLiteDatabase):
     assert alphonso["sku"] == "TRG-MNG-1KG"
     assert "imageUrl" in alphonso
     assert "imageAlt" in alphonso
-    assert alphonso["priceRange"] == "899-1699"
-    assert alphonso["availableStock"] == 174  # (120-4) + (60-2)
+    assert alphonso["priceRange"] == "899-3999"
+    assert alphonso["availableStock"] == 198  # (120-4) + (60-2) + (24-0)
 
 
 def test_product_list_pages_rather_than_returning_everything(
@@ -290,7 +290,11 @@ def test_highlights_require_settings_permission(client: TestClient, db: SQLiteDa
 def test_inventory_view_permission(client: TestClient, db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_ops"))
     items = client.get("/v1/admin/inventory").json()["items"]
-    assert items[0]["sku"] == "TRG-RJM-500"  # closest to reorder threshold sorts first
+    # One entry per product (variants nested inside), alphabetical by product
+    # name -- the same grouping and order as the admin Products list.
+    names = [group["productName"] for group in items]
+    assert names == sorted(names)
+    assert all(len(group["variants"]) > 0 for group in items)
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
     assert client.get("/v1/admin/inventory").status_code == 403
 
