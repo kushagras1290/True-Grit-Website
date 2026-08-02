@@ -6,7 +6,12 @@ import { Breadcrumbs, Section } from "../components/catalogue";
 import { CmsBlock, type BlockData } from "../components/blocks";
 import { ContentComments } from "../components/content-comments";
 import { PageBanner } from "../components/page-banner";
-import { catalogueRuntime, loadFarms, loadProductsBySlugs, loadRecipe } from "../lib/catalogue.server";
+import {
+  catalogueRuntime,
+  loadFarms,
+  loadProductsBySlugs,
+  loadRecipe,
+} from "../lib/catalogue.server";
 import { useCart } from "../lib/cart";
 import { resolveCountry } from "../lib/geo.server";
 import { mediaUrl } from "../lib/media";

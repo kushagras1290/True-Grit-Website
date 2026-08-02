@@ -70,9 +70,9 @@ browsing, search, authentication, cart operations, checkout, payments, discussio
 
 ## Issue register
 
-| ID       | Priority | Status | Issue                                                                                                          | Primary risk                                                    |
-| -------- | -------- | ------ | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| SCAL-001 | P0       | Open   | API is configured for Workers Free                                                                             | CPU termination and daily request exhaustion                    |
+| ID       | Priority | Status         | Issue                                                                                                          | Primary risk                                                    |
+| -------- | -------- | -------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| SCAL-001 | P0       | Open           | API is configured for Workers Free                                                                             | CPU termination and daily request exhaustion                    |
 | SCAL-002 | P0       | Open           | Public storefront responses are not broadly edge-cached                                                        | Every visitor reaches Workers and D1                            |
 | SCAL-004 | P0       | Open           | No repeatable load-test suite or capacity baseline                                                             | Capacity claims cannot be verified                              |
 | SCAL-005 | P0       | Open           | Production resources and production-specific configuration are not represented in the active API Wrangler file | Development resources can become a deployment dependency        |
@@ -81,8 +81,8 @@ browsing, search, authentication, cart operations, checkout, payments, discussio
 | SCAL-009 | P1       | Open           | Global rate limiter is isolate-local                                                                           | Inconsistent protection during distributed traffic              |
 | SCAL-010 | P1       | Open           | Tracing is disabled and operational success metrics are incomplete                                             | Slow detection and diagnosis of production failures             |
 | SCAL-011 | P2       | Not applicable | Large-list APIs use counts and offset pagination                                                               | Increasing query cost as tables grow                            |
-| SCAL-012 | P2       | Open   | No documented data partitioning or archival thresholds                                                         | Emergency migration after a storage or write ceiling is reached |
-| SCAL-013 | P2       | Open   | Python/Pyodide CPU cost has no production benchmark                                                            | Higher latency and compute cost than expected                   |
+| SCAL-012 | P2       | Open           | No documented data partitioning or archival thresholds                                                         | Emergency migration after a storage or write ceiling is reached |
+| SCAL-013 | P2       | Open           | Python/Pyodide CPU cost has no production benchmark                                                            | Higher latency and compute cost than expected                   |
 
 ## Detailed findings and recommendations
 
