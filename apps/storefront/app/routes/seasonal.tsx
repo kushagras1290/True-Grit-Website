@@ -7,18 +7,22 @@ import { StaticHero } from "../components/static-page";
 import { catalogueRuntime, loadCategories, loadCategoryPage } from "../lib/catalogue.server";
 import { loadCmsRoute, type CmsRouteData } from "../lib/cms-route.server";
 import { resolveCountry } from "../lib/geo.server";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
   const country = resolveCountry(request);
+  const { locale } = resolveLocale(request);
   const [cms, categories] = await Promise.all([
     loadCmsRoute("seasonal", request, context),
-    loadCategories(country, runtime),
+    loadCategories(country, runtime, locale.code),
   ]);
   const seasonalCategories = categories.filter((category) => category.seasonLabel);
   const seasonalPages = await Promise.all(
-    seasonalCategories.map((category) => loadCategoryPage(category.slug, country, runtime)),
+    seasonalCategories.map((category) =>
+      loadCategoryPage(category.slug, country, runtime, 1, locale.code),
+    ),
   );
   const seasonalProducts = Array.from(
     new Map(

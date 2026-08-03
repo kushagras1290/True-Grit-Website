@@ -9,6 +9,7 @@ from typing import Any
 from truegrit_api.domain.sitemap import SITEMAP_MAX_URLS
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.catalogue import geo_release_clause
+from truegrit_api.repositories.entity_translations import EntityTranslationRepository
 
 
 class CategoryRepository:
@@ -16,14 +17,14 @@ class CategoryRepository:
         self._db = db
 
     async def get_published_by_slug(
-        self, slug: str, country: str | None = None
+        self, slug: str, country: str | None = None, *, locale: str | None = None
     ) -> dict[str, Any] | None:
         # Alias must match the FROM clause below: the self-join for the parent
         # department means the table can no longer be referenced by its own name.
         geo_sql, geo_params = geo_release_clause(
             country, alias="c", table="category_release_countries", id_column="category_id"
         )
-        return await self._db.fetch_one(
+        row = await self._db.fetch_one(
             f"""
             SELECT c.id, c.name, c.slug, c.short_description, c.hero_eyebrow, c.hero_title,
                    c.hero_description, c.theme_key, c.season_label, c.product_assignment_mode,
@@ -38,8 +39,54 @@ class CategoryRepository:
             """,
             (slug, *geo_params),
         )
+        if row is None or not locale or locale == "en":
+            return row
+        translation = await EntityTranslationRepository(self._db).get("category", row["id"], locale)
+        if translation is None:
+            return row
+        fields = translation["fields"]
+        return {
+            **row,
+            "name": fields.get("name") or row["name"],
+            "short_description": fields.get("short_description") or row["short_description"],
+            "hero_eyebrow": fields.get("hero_eyebrow") or row["hero_eyebrow"],
+            "hero_title": fields.get("hero_title") or row["hero_title"],
+            "hero_description": fields.get("hero_description") or row["hero_description"],
+        }
 
-    async def list_published(self, country: str | None = None) -> list[dict[str, Any]]:
+    async def _translate_rows(
+        self, rows: list[dict[str, Any]], locale: str | None
+    ) -> list[dict[str, Any]]:
+        """Swap in translated `name`/`short_description` (migration 0068) for
+        every row that has one saved in `locale`, in one batched lookup rather
+        than one query per category -- the same reasoning `NavigationRepository
+        .menu` follows for nav labels."""
+        if not locale or locale == "en" or not rows:
+            return rows
+        fields_by_id = await EntityTranslationRepository(self._db).get_fields_map(
+            "category", [row["id"] for row in rows], locale
+        )
+        if not fields_by_id:
+            return rows
+        translated = []
+        for row in rows:
+            fields = fields_by_id.get(row["id"])
+            if not fields:
+                translated.append(row)
+                continue
+            translated.append(
+                {
+                    **row,
+                    "name": fields.get("name") or row["name"],
+                    "short_description": fields.get("short_description")
+                    or row["short_description"],
+                }
+            )
+        return translated
+
+    async def list_published(
+        self, country: str | None = None, *, locale: str | None = None
+    ) -> list[dict[str, Any]]:
         """Every published category, in tree order: each department immediately
         followed by its own subcategories.
 
@@ -55,7 +102,7 @@ class CategoryRepository:
         geo_sql, geo_params = geo_release_clause(
             country, alias="c", table="category_release_countries", id_column="category_id"
         )
-        return await self._db.fetch_all(
+        rows = await self._db.fetch_all(
             f"""
             SELECT c.id, c.name, c.slug, c.short_description, c.theme_key, c.season_label,
                    c.hero_image_url, c.parent_id, c.level,
@@ -73,6 +120,7 @@ class CategoryRepository:
             """,
             tuple(geo_params),
         )
+        return await self._translate_rows(rows, locale)
 
     async def list_slugs_for_sitemap(
         self, *, limit: int = SITEMAP_MAX_URLS
@@ -89,7 +137,7 @@ class CategoryRepository:
         )
 
     async def list_published_children(
-        self, parent_id: str, country: str | None = None
+        self, parent_id: str, country: str | None = None, *, locale: str | None = None
     ) -> list[dict[str, Any]]:
         """Published subcategories of one department, in editor-defined order.
         Backs the drill-down on a department page, which would otherwise dead-end
@@ -97,7 +145,7 @@ class CategoryRepository:
         geo_sql, geo_params = geo_release_clause(
             country, alias="c", table="category_release_countries", id_column="category_id"
         )
-        return await self._db.fetch_all(
+        rows = await self._db.fetch_all(
             f"""
             SELECT c.id, c.name, c.slug, c.short_description, c.theme_key, c.season_label,
                    c.hero_image_url, c.parent_id, c.level,
@@ -111,6 +159,7 @@ class CategoryRepository:
             """,
             (parent_id, *geo_params),
         )
+        return await self._translate_rows(rows, locale)
 
     async def get_published_id_by_slug(self, slug: str, country: str | None = None) -> str | None:
         """Resolve a category slug to its id for filtering product queries.
@@ -309,7 +358,9 @@ class RecipeRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def list_published(self, *, limit: int = 12, offset: int = 0) -> list[dict[str, Any]]:
+    async def list_published(
+        self, *, limit: int = 12, offset: int = 0, locale: str | None = None
+    ) -> list[dict[str, Any]]:
         rows = await self._db.fetch_all(
             f"""
             SELECT {_RECIPE_PUBLIC_COLUMNS}
@@ -320,7 +371,17 @@ class RecipeRepository:
             """,
             (min(max(limit, 1), 5000), max(offset, 0)),
         )
-        return [await self._detail_from_row(row) for row in rows]
+        # One batched lookup for the whole page (migration 0068) rather than
+        # one per recipe -- the same reasoning `CategoryRepository
+        # ._translate_rows` follows.
+        fields_by_id: dict[str, dict[str, Any]] = {}
+        if locale and locale != "en" and rows:
+            fields_by_id = await EntityTranslationRepository(self._db).get_fields_map(
+                "recipe", [row["id"] for row in rows], locale
+            )
+        return [
+            await self._detail_from_row(row, fields_by_id.get(row["id"])) for row in rows
+        ]
 
     async def count_published(self) -> int:
         row = await self._db.fetch_one(
@@ -346,7 +407,9 @@ class RecipeRepository:
             (limit,),
         )
 
-    async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
+    async def get_published_by_slug(
+        self, slug: str, *, locale: str | None = None
+    ) -> dict[str, Any] | None:
         row = await self._db.fetch_one(
             f"""
             SELECT {_RECIPE_PUBLIC_COLUMNS}
@@ -357,9 +420,18 @@ class RecipeRepository:
         )
         if row is None:
             return None
-        return await self._detail_from_row(row)
+        translation = None
+        if locale and locale != "en":
+            translation = await EntityTranslationRepository(self._db).get(
+                "recipe", row["id"], locale
+            )
+        return await self._detail_from_row(
+            row, translation["fields"] if translation else None
+        )
 
-    async def _detail_from_row(self, row: dict[str, Any]) -> dict[str, Any]:
+    async def _detail_from_row(
+        self, row: dict[str, Any], translated_fields: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         version = None
         if row["published_version_id"]:
             version = await self._db.fetch_one(
@@ -380,11 +452,14 @@ class RecipeRepository:
         tags = json.loads(row["dietary_tags_json"] or "[]")
         steps = content.get("steps") if isinstance(content, dict) else []
         blocks = content.get("blocks") if isinstance(content, dict) else []
+        translated_fields = translated_fields or {}
+        title = translated_fields.get("title") or row["title"]
+        excerpt = translated_fields.get("excerpt") or row["excerpt"] or ""
         return {
             "id": row["id"],
-            "title": row["title"],
+            "title": title,
             "slug": row["slug"],
-            "excerpt": row["excerpt"] or "",
+            "excerpt": excerpt,
             "prep_minutes": int(row["prep_minutes"] or 0),
             "cook_minutes": int(row["cook_minutes"] or 0),
             "servings": int(row["servings"] or 0),
@@ -404,8 +479,8 @@ class RecipeRepository:
             else [],
             "steps": [str(step) for step in steps] if isinstance(steps, list) else [],
             "seo": {
-                "title": row["seo_title"] or row["title"],
-                "description": row["seo_description"] or row["excerpt"] or "",
+                "title": row["seo_title"] or title,
+                "description": row["seo_description"] or excerpt,
                 "keywords": row["seo_keywords"],
                 "canonical_path": row["canonical_url"] or f"/recipes/{row['slug']}",
                 "indexing": row["indexing_policy"],
@@ -544,7 +619,9 @@ class ArticleRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def list_published(self, *, limit: int = 10, offset: int = 0) -> list[dict[str, Any]]:
+    async def list_published(
+        self, *, limit: int = 10, offset: int = 0, locale: str | None = None
+    ) -> list[dict[str, Any]]:
         rows = await self._db.fetch_all(
             f"""
             SELECT {_ARTICLE_PUBLIC_COLUMNS}
@@ -556,7 +633,17 @@ class ArticleRepository:
             """,
             (min(max(limit, 1), 5000), max(offset, 0)),
         )
-        return [await self._detail_from_row(row) for row in rows]
+        # One batched lookup for the whole page (migration 0068) rather than
+        # one per article -- the same reasoning `CategoryRepository
+        # ._translate_rows` follows.
+        fields_by_id: dict[str, dict[str, Any]] = {}
+        if locale and locale != "en" and rows:
+            fields_by_id = await EntityTranslationRepository(self._db).get_fields_map(
+                "article", [row["id"] for row in rows], locale
+            )
+        return [
+            await self._detail_from_row(row, fields_by_id.get(row["id"])) for row in rows
+        ]
 
     async def count_published(self) -> int:
         row = await self._db.fetch_one(
@@ -577,7 +664,9 @@ class ArticleRepository:
             (limit,),
         )
 
-    async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
+    async def get_published_by_slug(
+        self, slug: str, *, locale: str | None = None
+    ) -> dict[str, Any] | None:
         row = await self._db.fetch_one(
             f"""
             SELECT {_ARTICLE_PUBLIC_COLUMNS}
@@ -589,9 +678,18 @@ class ArticleRepository:
         )
         if row is None:
             return None
-        return await self._detail_from_row(row)
+        translation = None
+        if locale and locale != "en":
+            translation = await EntityTranslationRepository(self._db).get(
+                "article", row["id"], locale
+            )
+        return await self._detail_from_row(
+            row, translation["fields"] if translation else None
+        )
 
-    async def _detail_from_row(self, row: dict[str, Any]) -> dict[str, Any]:
+    async def _detail_from_row(
+        self, row: dict[str, Any], translated_fields: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         version = None
         if row["published_version_id"]:
             version = await self._db.fetch_one(
@@ -600,11 +698,14 @@ class ArticleRepository:
             )
         content = json.loads(version["content_json"]) if version else {}
         blocks = content.get("blocks") if isinstance(content, dict) else []
+        translated_fields = translated_fields or {}
+        title = translated_fields.get("title") or row["title"]
+        excerpt = translated_fields.get("excerpt") or row["excerpt"] or ""
         return {
             "id": row["id"],
-            "title": row["title"],
+            "title": title,
             "slug": row["slug"],
-            "excerpt": row["excerpt"] or "",
+            "excerpt": excerpt,
             "author_name": row["author_name"],
             "published_at": row["published_at"] or "",
             "reading_minutes": int(row["reading_minutes"] or 1),
@@ -615,8 +716,8 @@ class ArticleRepository:
             else [],
             "pull_quote": content.get("pullQuote") if isinstance(content, dict) else None,
             "seo": {
-                "title": row["seo_title"] or row["title"],
-                "description": row["seo_description"] or row["excerpt"] or "",
+                "title": row["seo_title"] or title,
+                "description": row["seo_description"] or excerpt,
                 "keywords": row["seo_keywords"],
                 "canonical_path": row["canonical_url"] or f"/blog/{row['slug']}",
                 "indexing": row["indexing_policy"],
@@ -758,10 +859,10 @@ class NavigationRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def menu(self, key: str) -> list[dict[str, str]]:
+    async def menu(self, key: str, *, locale: str | None = None) -> list[dict[str, str]]:
         rows = await self._db.fetch_all(
             """
-            SELECT ni.label, ni.destination_type, ni.destination_reference
+            SELECT ni.id, ni.label, ni.destination_type, ni.destination_reference
             FROM navigation_items ni
             JOIN navigation_menus nm ON nm.id = ni.menu_id
             WHERE nm.key = ? AND ni.visible = 1 AND ni.parent_id IS NULL
@@ -769,6 +870,14 @@ class NavigationRepository:
             """,
             (key,),
         )
+        # A translated label (migration 0068) swaps in here -- destinations
+        # and visibility are unchanged by translation, so the filtering below
+        # applies identically to either language.
+        translated_fields: dict[str, dict[str, Any]] = {}
+        if locale and locale != "en":
+            translated_fields = await EntityTranslationRepository(self._db).get_fields_map(
+                "navigation_item", [row["id"] for row in rows], locale
+            )
         items: list[dict[str, str]] = []
         for row in rows:
             if row["destination_type"] == "category":
@@ -779,7 +888,8 @@ class NavigationRepository:
                 path = row["destination_reference"]
             if not path.startswith("/"):
                 continue  # external destinations are not rendered in primary navigation
-            items.append({"label": row["label"], "path": path})
+            label = translated_fields.get(row["id"], {}).get("label") or row["label"]
+            items.append({"label": label, "path": path})
         return items
 
     async def active_announcement(self) -> dict[str, Any] | None:

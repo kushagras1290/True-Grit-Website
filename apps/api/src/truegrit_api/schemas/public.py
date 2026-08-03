@@ -70,6 +70,13 @@ class ProductSummary(PublicModel):
     # site-wide one on Site Control. False means the product is still shown
     # and browsable -- just not currently orderable.
     accepts_orders: bool = True
+    # Overrides the site-wide payments switch for this one product, in either
+    # direction (migration 0069): "inherit" follows it, "force_enabled" takes
+    # orders even while payments are off site-wide, "force_disabled" blocks
+    # orders even while payments are on. The storefront combines this with the
+    # site-wide `payments.enabled` flag it already has (`useSiteSettings`) to
+    # decide whether "Add to basket" renders.
+    payments_override: str = "inherit"
     # The variant `price_minor`/`sale_minor`/`adjusted_minor`/`unit_label`
     # above already describe, so a batched summary fetch (`?slugs=a,b,c`) is
     # enough to add a single-variant product straight to the cart -- no

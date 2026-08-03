@@ -23,18 +23,21 @@ import {
 import { useCart } from "../lib/cart";
 import { usePriceFormatter } from "../lib/currency";
 import { resolveCountry } from "../lib/geo.server";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 import { productEffectivePrice, variantEffectivePrice } from "../lib/pricing";
 import { seoMeta } from "../lib/seo";
+import { useSiteSettings } from "../lib/site-settings";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const country = resolveCountry(request);
+  const { locale } = resolveLocale(request);
   const runtime = catalogueRuntime(context);
-  const product = await loadProduct(params.slug, country, runtime);
+  const product = await loadProduct(params.slug, country, runtime, locale.code);
   if (!product) throw data("Product not found", { status: 404 });
   const [related, reviews, alsoBought] = await Promise.all([
-    loadProductsBySlugs(product.relatedSlugs, country, runtime),
+    loadProductsBySlugs(product.relatedSlugs, country, runtime, locale.code),
     loadProductReviews(product.slug, runtime),
-    loadAlsoBought(product.slug, 6, country, runtime),
+    loadAlsoBought(product.slug, 6, country, runtime, locale.code),
   ]);
   return { product, related, reviews, alsoBought };
 }
@@ -47,19 +50,30 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const { product, related, reviews, alsoBought } = loaderData;
   const { add } = useCart();
   const formatPrice = usePriceFormatter();
+  const { payments } = useSiteSettings();
   const [variantId, setVariantId] = useState(product.variants[0]?.id ?? "");
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
   const variant = product.variants.find((entry) => entry.id === variantId) ?? product.variants[0];
   const effective = variant ? variantEffectivePrice(variant) : productEffectivePrice(product);
-  // Two independent gates on purchasability: out of stock is a variant-level,
-  // usually-temporary state; `acceptsOrders` is the per-product kill-switch an
-  // admin sets deliberately (mirroring Site Control's site-wide one, scoped to
-  // just this item — see migration 0048). Both are re-checked server-side at
-  // checkout, so this is UX, not the enforcement.
+  // Three independent gates on purchasability, all re-checked server-side at
+  // checkout (this is UX, not the enforcement):
+  // - out of stock: a variant-level, usually-temporary state.
+  // - `acceptsOrders`: the per-product stock/quality kill-switch (migration
+  //   0048), always narrowing regardless of the site-wide payments switch.
+  // - `paymentsOverride`: this product's own divergence from the site-wide
+  //   payments switch (migration 0069) -- "inherit" follows `payments.enabled`,
+  //   "force_enabled" buys even while it is off, "force_disabled" blocks even
+  //   while it is on.
+  const paymentsAllowed =
+    product.paymentsOverride === "inherit"
+      ? payments.enabled
+      : product.paymentsOverride === "force_enabled";
   const purchasable =
-    product.acceptsOrders && (variant ? variant.availability !== "out_of_stock" : false);
+    product.acceptsOrders &&
+    paymentsAllowed &&
+    (variant ? variant.availability !== "out_of_stock" : false);
 
   return (
     <>
@@ -185,22 +199,24 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
               }}
               className="min-h-11 flex-1 rounded-sm bg-brand px-6 text-sm font-medium text-ink-inverse hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {!product.acceptsOrders
-                ? "Not available to order"
-                : purchasable
-                  ? "Add to basket"
-                  : "Out of stock"}
+              {purchasable
+                ? "Add to basket"
+                : product.acceptsOrders && paymentsAllowed
+                  ? "Out of stock"
+                  : "Not available to order"}
             </button>
           </div>
           <p role="status" className="mt-2 min-h-5 text-sm text-success">
             {added ? "Added to your basket." : ""}
           </p>
-          {/* The per-product switch takes priority over ordinary stock status in
-              the wording: an admin turned ordering off deliberately, which reads
-              differently from "we sold out and will restock" — but both leave
-              the customer with nothing to click, so both get the same interest
-              form below rather than a dead end. */}
-          {!product.acceptsOrders ? (
+          {/* Either admin switch (acceptsOrders, or paymentsOverride diverging
+              from the site-wide payments switch) takes priority over ordinary
+              stock status in the wording: an admin turned ordering off
+              deliberately, which reads differently from "we sold out and will
+              restock" — but all three leave the customer with nothing to
+              click, so all three get the same interest form below rather than
+              a dead end. */}
+          {!product.acceptsOrders || !paymentsAllowed ? (
             <p className="mt-2 text-sm text-ink-muted">
               We are not taking orders for this product right now. Leave your details below and we
               will let you know when it is back.
@@ -238,8 +254,9 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
           {/* Same fallback the checkout page shows when ordering is off
               site-wide (components/contact-form.tsx) — here it is scoped to
               this one product rather than the whole basket, and it covers
-              both reasons "Add to basket" is unavailable: the admin switch
-              (acceptsOrders) and ordinary out-of-stock. Either way the
+              every reason "Add to basket" is unavailable: the admin switch
+              (acceptsOrders), this product's payments override diverging from
+              the site-wide switch, and ordinary out-of-stock. Either way the
               customer is left with nothing to click, so either way they get a
               way to leave their details instead of a dead end. */}
           {!purchasable ? (

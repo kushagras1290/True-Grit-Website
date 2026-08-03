@@ -14,13 +14,15 @@ import {
 } from "../lib/catalogue.server";
 import { useCart } from "../lib/cart";
 import { resolveCountry } from "../lib/geo.server";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 import { mediaUrl } from "../lib/media";
 import { productEffectivePrice } from "../lib/pricing";
 import { recipeJsonLd, seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
-  const recipe = await loadRecipe(params.slug, runtime);
+  const { locale } = resolveLocale(request);
+  const recipe = await loadRecipe(params.slug, runtime, locale.code);
   if (!recipe) throw data("Recipe not found", { status: 404 });
   const country = resolveCountry(request);
   const ingredientSlugs = recipe.ingredients.flatMap((entry) => entry.productSlug ?? []);
@@ -31,8 +33,8 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
     // A batched summary fetch, not one product-detail request per ingredient
     // -- `leadVariantId` on the summary is enough to add a single-variant
     // ingredient straight to the cart (see `lib/pricing.ts`).
-    loadProductsBySlugs(ingredientSlugs, country, runtime),
-    loadProductsBySlugs(blockProductSlugs, country, runtime),
+    loadProductsBySlugs(ingredientSlugs, country, runtime, locale.code),
+    loadProductsBySlugs(blockProductSlugs, country, runtime, locale.code),
     loadFarms(runtime),
   ]);
   return { recipe, ingredientProducts, blockProducts, farms };

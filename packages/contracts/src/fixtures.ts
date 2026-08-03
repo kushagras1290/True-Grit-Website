@@ -206,6 +206,7 @@ export const products: ProductDetail[] = [
     imageUrl: "/homepage-hero.png",
     imageAlt: "A crate of ripe Alphonso mangoes",
     acceptsOrders: true,
+    paymentsOverride: "inherit",
     leadVariantId: "var_alphonso_1kg",
     ratingAverage: 0,
     ratingCount: 0,
@@ -273,6 +274,7 @@ export const products: ProductDetail[] = [
     imageUrl: "/homepage-hero-greens.png",
     imageAlt: "A fresh bunch of baby spinach leaves",
     acceptsOrders: true,
+    paymentsOverride: "inherit",
     leadVariantId: "var_spinach_250g",
     ratingAverage: 4.5,
     ratingCount: 2,
@@ -330,6 +332,7 @@ export const products: ProductDetail[] = [
     imageUrl: "/homepage-hero-roots.png",
     imageAlt: "Stone-milled ragi flour in a cloth bag",
     acceptsOrders: true,
+    paymentsOverride: "inherit",
     leadVariantId: "var_ragi_500g",
     // Its only demo review is still pending moderation — matches the backend
     // rule that only approved reviews count toward the public rating.
@@ -399,6 +402,7 @@ export const products: ProductDetail[] = [
     imageUrl: "/homepage-hero-citrus.png",
     imageAlt: "A glass bottle of golden groundnut oil",
     acceptsOrders: true,
+    paymentsOverride: "inherit",
     leadVariantId: "var_oil_500ml",
     ratingAverage: 3,
     ratingCount: 1,
@@ -463,6 +467,7 @@ export const products: ProductDetail[] = [
     imageUrl: "/homepage-hero-roots.png",
     imageAlt: "Deep red kidney beans from Himalayan terraces",
     acceptsOrders: true,
+    paymentsOverride: "inherit",
     leadVariantId: "var_rajma_500g",
     ratingAverage: 4,
     ratingCount: 1,
@@ -524,6 +529,9 @@ function generatedProductDetail(row: GeneratedProductRow): ProductDetail {
     imageUrl: row.imageUrl,
     imageAlt: row.imageAlt,
     acceptsOrders: row.acceptsOrders,
+    // The generated catalogue's demo products all follow the site-wide
+    // payments switch -- no fixture row needs a per-product override.
+    paymentsOverride: "inherit",
     leadVariantId: row.leadVariantId,
     // The generated catalogue has no demo reviews of its own; the hand-authored
     // products above carry the fixture review data.

@@ -12,18 +12,20 @@ import {
   loadProductsBySlugs,
 } from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 import { mediaUrl } from "../lib/media";
 import { articleJsonLd, seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
-  const article = await loadArticle(params.slug, runtime);
+  const { locale } = resolveLocale(request);
+  const article = await loadArticle(params.slug, runtime, locale.code);
   if (!article) throw data("Article not found", { status: 404 });
   const productSlugs = article.blocks.flatMap((block) =>
     block.type === "product_collection" ? block.props.productSlugs : [],
   );
   const [products, farms] = await Promise.all([
-    loadProductsBySlugs(productSlugs, resolveCountry(request), runtime),
+    loadProductsBySlugs(productSlugs, resolveCountry(request), runtime, locale.code),
     loadFarms(runtime),
   ]);
   return { article, products, farms };

@@ -7,8 +7,8 @@
  * crawlers, which do not run JavaScript, seeing only English.
  */
 
-import { resolveCountry } from "../geo.server";
-import { matchCountryLocale } from "./geo-locale";
+import { resolveCountry, resolveRegion } from "../geo.server";
+import { matchCountryLocale, matchIndiaRegionLocale } from "./geo-locale";
 import {
   DEFAULT_LOCALE,
   LOCALE_COOKIE_MAX_AGE_SECONDS,
@@ -59,9 +59,14 @@ export interface ResolvedLocale {
  *   1. `?lang=` — an explicit link, and the switcher's no-JavaScript path.
  *   2. The cookie — what this visitor chose last time.
  *   3. `Accept-Language`, when it names a real language — q-values honoured.
- *   4. The visitor's country (Cloudflare's edge geo), when `Accept-Language`
+ *   4. The visitor's Indian state (Cloudflare's edge geo region, when the
+ *      account tier and the request both carry it) for a visitor in India —
+ *      a Punjab visitor and a Tamil Nadu visitor get different guesses even
+ *      though both are country "IN", where step 5 alone could not tell them
+ *      apart. Falls through silently when region data is unavailable.
+ *   5. The visitor's country (Cloudflare's edge geo), when `Accept-Language`
  *      resolved to nothing better than English.
- *   5. English.
+ *   6. English.
  *
  * The browser is consulted *before* geo whenever it names something other than
  * English: an explicit non-English preference has to survive a country guess
@@ -86,7 +91,16 @@ export function resolveLocale(request: Request): ResolvedLocale {
     return { locale: fromHeader, source: "header" };
   }
 
-  const fromGeo = matchCountryLocale(resolveCountry(request));
+  const country = resolveCountry(request);
+  if (country === "IN") {
+    const { region, regionCode } = resolveRegion(request);
+    const fromRegion = matchIndiaRegionLocale(region, regionCode);
+    if (fromRegion && fromRegion.code !== DEFAULT_LOCALE) {
+      return { locale: fromRegion, source: "geo" };
+    }
+  }
+
+  const fromGeo = matchCountryLocale(country);
   if (fromGeo && fromGeo.code !== DEFAULT_LOCALE) {
     return { locale: fromGeo, source: "geo" };
   }

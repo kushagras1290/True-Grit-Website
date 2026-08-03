@@ -42,6 +42,7 @@ import { ApiError, api, type AdminProductDetail, type AdminProductImage } from "
 import { COUNTRIES } from "../lib/countries";
 import { formatDate, formatMoney } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
+import { EntityTranslationsPanel } from "./entity-translations";
 
 const columnHelper = createColumnHelper<AdminProductRow>();
 
@@ -186,6 +187,29 @@ export function ProductListPage() {
   const toggleProductStatus = statusMutation.mutate;
   const togglePending = statusMutation.isPending;
 
+  // Mass enable/disable: the same one-click switch above, fanned out over
+  // every selected row. Reuses the single-item endpoint per id rather than a
+  // dedicated bulk route -- `set_product_status` is already idempotent (a
+  // product already in the target state reports `changed: false` rather than
+  // erroring), so a mixed selection of published and unpublished products
+  // converges on the same outcome without special-casing either starting
+  // state.
+  const bulkStatusMutation = useMutation({
+    mutationFn: (status: "published" | "unpublished") =>
+      Promise.all(selectedProductIds.map((id) => api.updateProductStatus(id, status))),
+    onSuccess: async (_result, status) => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      toast.success(
+        `${selectedProductIds.length} product${selectedProductIds.length === 1 ? "" : "s"} ${
+          status === "published" ? "enabled" : "disabled"
+        }.`,
+      );
+      setSelectedProductIds([]);
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not update the products."),
+  });
+
   const columns = useMemo(
     () => [
       columnHelper.accessor("name", {
@@ -282,6 +306,26 @@ export function ProductListPage() {
         description="Catalogue with live price and stock summaries."
         actions={
           <div className="flex gap-2">
+            <PermissionGate permission="products.publish">
+              {selectedProductIds.length > 0 ? (
+                <>
+                  <Button
+                    variant="secondary"
+                    onClick={() => bulkStatusMutation.mutate("published")}
+                    disabled={bulkStatusMutation.isPending}
+                  >
+                    Enable selected ({selectedProductIds.length})
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => bulkStatusMutation.mutate("unpublished")}
+                    disabled={bulkStatusMutation.isPending}
+                  >
+                    Disable selected ({selectedProductIds.length})
+                  </Button>
+                </>
+              ) : null}
+            </PermissionGate>
             <PermissionGate permission="products.edit">
               {selectedProductIds.length > 0 ? (
                 <Button
@@ -421,7 +465,7 @@ const seoSchema = z.object({
 
 type SeoForm = z.infer<typeof seoSchema>;
 
-const EDITOR_TABS = ["General", "Variants", "Availability & Links", "SEO"] as const;
+const EDITOR_TABS = ["General", "Variants", "Availability & Links", "SEO", "Translations"] as const;
 
 const variantSchema = z.object({
   name: z.string().min(1, "Name is required").max(140),
@@ -797,6 +841,17 @@ export function ProductEditorPage() {
           saving={saveMutation.isPending}
         />
       ) : null}
+
+      {tab === "Translations" ? (
+        <EntityTranslationsPanel
+          entityType="product"
+          entityId={product.id}
+          fields={[
+            { key: "name", label: "Name" },
+            { key: "shortDescription", label: "Short description", multiline: true },
+          ]}
+        />
+      ) : null}
     </div>
   );
 }
@@ -817,6 +872,7 @@ function AvailabilityTab({
   const [countries, setCountries] = useState<string[]>(product.releaseCountries);
   const [returnEligible, setReturnEligible] = useState(product.returnEligible);
   const [acceptsOrders, setAcceptsOrders] = useState(product.acceptsOrders);
+  const [paymentsOverride, setPaymentsOverride] = useState(product.paymentsOverride);
   const [links, setLinks] = useState(product.linkedProducts);
   const [pendingLinkId, setPendingLinkId] = useState("");
   const { data: allProducts } = useQuery({
@@ -829,6 +885,7 @@ function AvailabilityTab({
     countries.join(",") !== product.releaseCountries.join(",") ||
     returnEligible !== product.returnEligible ||
     acceptsOrders !== product.acceptsOrders ||
+    paymentsOverride !== product.paymentsOverride ||
     links.map((entry) => entry.id).join(",") !==
       product.linkedProducts.map((entry) => entry.id).join(",");
 
@@ -919,6 +976,53 @@ function AvailabilityTab({
           />
           Accept orders and payments for this product
         </label>
+      </section>
+
+      <section className="space-y-3">
+        <div>
+          <h2 className="font-display text-lg text-ink">Payments override</h2>
+          <p className="text-sm text-ink-muted">
+            Site Control's "Accept orders and payments" switch is site-wide, but this product can
+            diverge from it in either direction: keep taking orders for this one item while payments
+            are off everywhere else, or block just this item while payments are on everywhere else.
+            Most products should stay on "Follow the site-wide switch."
+          </p>
+        </div>
+        <div className="space-y-2">
+          {(
+            [
+              {
+                value: "inherit" as const,
+                label: "Follow the site-wide switch",
+                hint: "Default. Orderable exactly when Site Control's payments switch is on.",
+              },
+              {
+                value: "force_enabled" as const,
+                label: "Always accept payments for this product",
+                hint: "Orderable even while the site-wide switch is off.",
+              },
+              {
+                value: "force_disabled" as const,
+                label: "Never accept payments for this product",
+                hint: "Not orderable even while the site-wide switch is on.",
+              },
+            ] as const
+          ).map((option) => (
+            <label key={option.value} className="flex items-start gap-2 text-sm text-ink">
+              <input
+                type="radio"
+                name="paymentsOverride"
+                className="mt-1"
+                checked={paymentsOverride === option.value}
+                onChange={() => setPaymentsOverride(option.value)}
+              />
+              <span>
+                <span className="block">{option.label}</span>
+                <span className="block text-xs text-ink-muted">{option.hint}</span>
+              </span>
+            </label>
+          ))}
+        </div>
       </section>
 
       <section className="space-y-3">
@@ -1034,6 +1138,7 @@ function AvailabilityTab({
             releaseCountries: globalRelease ? [] : countries,
             returnEligible,
             acceptsOrders,
+            paymentsOverride,
             linkedProductIds: links.map((entry) => entry.id),
           })
         }

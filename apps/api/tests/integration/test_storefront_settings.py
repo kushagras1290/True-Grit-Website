@@ -8,6 +8,7 @@ request.
 
 from __future__ import annotations
 
+import httpx
 import pytest
 from fastapi.testclient import TestClient
 
@@ -161,26 +162,25 @@ def test_payments_switch_empties_payment_methods(client: TestClient, db: SQLiteD
     assert body["razorpayKeyId"] == ""
 
 
-def test_payments_switch_refuses_checkout(client: TestClient, db: SQLiteDatabase, sms_outbox: list):
-    """The switch has to bite before `place_order` runs, or a customer who
-    cannot pay still has stock reserved against their name."""
+def _register_and_verify(client: TestClient, sms_outbox: list, *, email: str, name: str) -> None:
     token = verify_phone_token(client, sms_outbox)
     registered = client.post(
         "/v1/public/auth/register",
         json={
-            "name": "Meera Iyer",
-            "email": "meera@example.test",
+            "name": name,
+            "email": email,
             "password": "a-long-password",
             "phoneVerificationToken": token,
         },
     )
     assert registered.status_code == 200, registered.text
 
-    set_switch(db, "commerce.payments.enabled", "0")
-    response = client.post(
+
+def _checkout(client: TestClient, *, variant_id: str = "var_alphonso_1kg") -> httpx.Response:
+    return client.post(
         "/v1/public/checkout",
         json={
-            "items": [{"variantId": "var_mango_1kg", "quantity": 1}],
+            "items": [{"variantId": variant_id, "quantity": 1}],
             "deliveryAddress": {
                 "recipientName": "Meera Iyer",
                 "line1": "12 Hill Road",
@@ -191,8 +191,57 @@ def test_payments_switch_refuses_checkout(client: TestClient, db: SQLiteDatabase
             "paymentMethod": "cod",
         },
     )
-    assert response.status_code == 403
-    assert response.json()["error"]["code"] == "permission_denied"
+
+
+def test_payments_switch_refuses_checkout(client: TestClient, db: SQLiteDatabase, sms_outbox: list):
+    """The switch is enforced per line inside `place_order`
+    (`services.checkout._resolve_line`), not by a blanket pre-check -- see
+    migration 0069, which lets a product override it. A product left on
+    'inherit' (the default, and every seeded product) still follows the
+    site-wide switch exactly as before."""
+    _register_and_verify(client, sms_outbox, email="meera@example.test", name="Meera Iyer")
+
+    set_switch(db, "commerce.payments.enabled", "0")
+    response = _checkout(client)
+    assert response.status_code == 409
+    assert response.json()["error"]["code"] == "conflict"
+
+
+def test_payments_override_widens_for_one_product(
+    client: TestClient, db: SQLiteDatabase, sms_outbox: list
+):
+    """A product explicitly force-enabled (migration 0069) can still be
+    ordered even while the site-wide switch is off -- the whole reason the
+    override exists, not just a narrower `accepts_orders`."""
+    _register_and_verify(client, sms_outbox, email="widen@example.test", name="Priya Nair")
+
+    set_switch(db, "commerce.payments.enabled", "0")
+    db._conn.execute(  # test-only direct access, mirrors `set_switch` above
+        "UPDATE products SET payments_override = 'force_enabled' WHERE id = 'prd_alphonso'"
+    )
+    db._conn.commit()
+
+    response = _checkout(client)
+    assert response.status_code == 200, response.text
+
+
+def test_payments_override_narrows_for_one_product(
+    client: TestClient, db: SQLiteDatabase, sms_outbox: list
+):
+    """A product explicitly force-disabled (migration 0069) stays blocked
+    even while the site-wide switch is on -- the same direction
+    `accepts_orders` already covered, now expressible without touching that
+    separate stock/quality switch."""
+    _register_and_verify(client, sms_outbox, email="narrow@example.test", name="Arjun Rao")
+
+    db._conn.execute(
+        "UPDATE products SET payments_override = 'force_disabled' WHERE id = 'prd_alphonso'"
+    )
+    db._conn.commit()
+
+    response = _checkout(client)
+    assert response.status_code == 409
+    assert response.json()["error"]["code"] == "conflict"
 
 
 # --- Admin endpoint ---------------------------------------------------------

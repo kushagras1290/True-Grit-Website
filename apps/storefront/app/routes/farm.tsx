@@ -5,15 +5,22 @@ import { Breadcrumbs, ProductGrid, Section } from "../components/catalogue";
 import { PageBanner } from "../components/page-banner";
 import { catalogueRuntime, loadFarm, loadProductsBySlugs } from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
+  const { locale } = resolveLocale(request);
   const farm = await loadFarm(params.slug, runtime);
   if (!farm) throw data("Farm not found", { status: 404 });
   return {
     farm,
-    products: await loadProductsBySlugs(farm.productSlugs, resolveCountry(request), runtime),
+    products: await loadProductsBySlugs(
+      farm.productSlugs,
+      resolveCountry(request),
+      runtime,
+      locale.code,
+    ),
   };
 }
 

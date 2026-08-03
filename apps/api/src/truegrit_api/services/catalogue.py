@@ -32,9 +32,13 @@ _PRODUCT_EDITABLE = (
     "image_alt",
     "return_eligible",
     "accepts_orders",
+    "payments_override",
     "farm_id",
     "primary_media_id",
 )
+# Mirrors the CHECK constraint on `products.payments_override` (migration
+# 0069) -- validated here too so a bad value 400s before it ever reaches SQL.
+_PAYMENTS_OVERRIDE_VALUES = frozenset({"inherit", "force_enabled", "force_disabled"})
 _CATEGORY_EDITABLE = (
     "name",
     "slug",
@@ -145,8 +149,8 @@ async def update_product(
 ) -> dict[str, Any]:
     current = await db.fetch_one(
         "SELECT id, name, slug, short_description, seo_title, seo_description,"
-        " image_url, image_alt, status, return_eligible, accepts_orders, farm_id,"
-        " primary_media_id"
+        " image_url, image_alt, status, return_eligible, accepts_orders,"
+        " payments_override, farm_id, primary_media_id"
         " FROM products WHERE id = ? AND archived_at IS NULL",
         (product_id,),
     )
@@ -184,6 +188,12 @@ async def update_product(
         updates["return_eligible"] = 1 if updates["return_eligible"] else 0
     if "accepts_orders" in updates:
         updates["accepts_orders"] = 1 if updates["accepts_orders"] else 0
+    if "payments_override" in updates and updates["payments_override"] not in (
+        _PAYMENTS_OVERRIDE_VALUES
+    ):
+        raise ValidationAppError(
+            "payments_override must be one of: " + ", ".join(sorted(_PAYMENTS_OVERRIDE_VALUES))
+        )
     if "name" in updates:
         updates["name"] = _clean_name(updates["name"])
     if "slug" in updates:

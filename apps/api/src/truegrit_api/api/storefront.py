@@ -31,7 +31,6 @@ from truegrit_api.services.email_templates import (
     render_order_confirmation,
 )
 from truegrit_api.services.feature_settings import (
-    assert_payments_enabled,
     load_delivery_settings,
     promotions_enabled,
 )
@@ -183,11 +182,12 @@ async def checkout(
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
     settings = get_settings()
-    # The owner's kill-switch, checked before anything is written: with payments
-    # off the storefront shows a contact form instead of checkout, and this is
-    # what makes that more than a UI choice. Reserving stock for an order nobody
-    # can pay for is the exact failure the switch exists to prevent.
-    await assert_payments_enabled(db)
+    # The owner's kill-switch is enforced inside `place_order` -> `_resolve_line`
+    # now, not here: a blanket pre-check here could never widen for a product
+    # an owner has explicitly force-enabled (migration 0069), so the switch is
+    # evaluated per line, against each product's own override, at the one spot
+    # that already re-validates price and stock rather than trusting the
+    # browser cart.
     method = (
         payload.payment_method
         if payload.payment_method in settings.enabled_payment_methods

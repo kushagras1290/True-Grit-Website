@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -68,6 +68,7 @@ export function SiteControlPage() {
       <AnnouncementSection />
       <StorefrontSwitchesSection />
       <CmsPagesSection />
+      <NavigationLabelsSection />
       <RouteSeoSection />
       <SiteDocumentsSection />
       <CuratedListSizeSection />
@@ -1236,7 +1237,7 @@ function CmsPagesSection() {
 // static reference data, not logic worth a cross-package dependency for).
 // ---------------------------------------------------------------------------
 
-const TRANSLATION_LOCALES: { code: string; label: string }[] = [
+export const TRANSLATION_LOCALES: { code: string; label: string }[] = [
   { code: "hi", label: "Hindi (हिन्दी)" },
   { code: "bn", label: "Bengali (বাংলা)" },
   { code: "mr", label: "Marathi (मराठी)" },
@@ -1439,6 +1440,179 @@ function PageTranslationsPanel({ pageId }: { pageId: string }) {
         </div>
       </div>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Navigation labels (migration 0068). No admin CRUD exists for navigation
+// items themselves (they are seed/migration-managed only), so this list is
+// the current real set from `database/seeds/development.sql` plus the one
+// item migration 0034 adds afterward (`nav_community_header`) -- the same
+// header/footer links every deployment actually ships. Adding a genuinely
+// new nav item still requires a migration; this panel only translates the
+// ones that already exist.
+// ---------------------------------------------------------------------------
+
+const NAVIGATION_ITEMS: { id: string; englishLabel: string; menu: "Header" | "Footer" }[] = [
+  { id: "nit_shop", englishLabel: "Shop", menu: "Header" },
+  { id: "nit_seasonal", englishLabel: "Seasonal", menu: "Header" },
+  { id: "nit_farmers", englishLabel: "Farmers", menu: "Header" },
+  { id: "nit_recipes", englishLabel: "Recipes", menu: "Header" },
+  { id: "nit_journal", englishLabel: "Blog", menu: "Header" },
+  { id: "nav_community_header", englishLabel: "Community", menu: "Header" },
+  { id: "nit_standards", englishLabel: "Our Standards", menu: "Header" },
+  { id: "nit_footer_about", englishLabel: "About", menu: "Footer" },
+  { id: "nit_footer_delivery", englishLabel: "Delivery", menu: "Footer" },
+  { id: "nit_footer_returns", englishLabel: "Returns", menu: "Footer" },
+  { id: "nit_footer_contact", englishLabel: "Contact", menu: "Footer" },
+  { id: "nit_footer_privacy", englishLabel: "Privacy", menu: "Footer" },
+  { id: "nit_footer_terms", englishLabel: "Terms", menu: "Footer" },
+  { id: "nit_footer_help", englishLabel: "Help", menu: "Footer" },
+];
+
+function NavigationLabelsSection() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const [locale, setLocale] = useState(TRANSLATION_LOCALES[0]!.code);
+  const [values, setValues] = useState<Record<string, string>>({});
+
+  const translations = useQueries({
+    queries: NAVIGATION_ITEMS.map((item) => ({
+      queryKey: ["entity-translation", "navigation_item", item.id, locale],
+      queryFn: () => api.entityTranslation("navigation_item", item.id, locale),
+    })),
+  });
+
+  useEffect(() => {
+    const next: Record<string, string> = {};
+    translations.forEach((query, index) => {
+      const item = NAVIGATION_ITEMS[index]!;
+      next[item.id] = query.data?.fields.label ?? item.englishLabel;
+    });
+    setValues(next);
+    // Keyed on locale plus each query's own freshness timestamp: re-derives
+    // when the locale changes (a fresh fetch for every item) or the
+    // underlying data actually arrives, not on every render, which would
+    // stomp on an in-progress edit with whatever last resolved.
+  }, [locale, translations.map((query) => query.dataUpdatedAt).join(",")]);
+
+  function invalidateAll() {
+    return Promise.all(
+      NAVIGATION_ITEMS.map((item) =>
+        queryClient.invalidateQueries({
+          queryKey: ["entity-translation", "navigation_item", item.id, locale],
+        }),
+      ),
+    );
+  }
+
+  const saveAllMutation = useMutation({
+    mutationFn: () =>
+      Promise.all(
+        NAVIGATION_ITEMS.map((item) =>
+          api.saveEntityTranslation("navigation_item", item.id, locale, {
+            label: values[item.id] ?? "",
+          }),
+        ),
+      ),
+    onSuccess: async () => {
+      await invalidateAll();
+      toast.success("Navigation labels saved.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not save the labels."),
+  });
+
+  const autoTranslateAllMutation = useMutation({
+    mutationFn: () =>
+      Promise.all(
+        NAVIGATION_ITEMS.map((item) =>
+          api.autoTranslateEntity("navigation_item", item.id, locale),
+        ),
+      ),
+    onSuccess: async () => {
+      await invalidateAll();
+      toast.success("Auto-translated — review the labels below before saving.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not auto-translate."),
+  });
+
+  const loading = translations.some((query) => query.isLoading);
+  const busy = saveAllMutation.isPending || autoTranslateAllMutation.isPending;
+
+  return (
+    <section className="mt-10 space-y-3 border-t border-line pt-5">
+      <div>
+        <h2 className="font-display text-lg text-ink">Navigation labels</h2>
+        <p className="max-w-2xl text-sm text-ink-muted">
+          The header and footer link labels every page shows, translated per language (migration
+          0068). A locale left blank falls back to English on the storefront. This is the same
+          control that fixes a header showing "Shop" / "Seasonal" in English while everything
+          around it has switched language — those labels come from here, not from the page content
+          translations above.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <Select
+          value={locale}
+          onChange={(event) => setLocale(event.target.value)}
+          aria-label="Locale to translate"
+          className="max-w-xs"
+        >
+          {TRANSLATION_LOCALES.map((entry) => (
+            <option key={entry.code} value={entry.code}>
+              {entry.label}
+            </option>
+          ))}
+        </Select>
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={busy || loading}
+          onClick={() => autoTranslateAllMutation.mutate()}
+        >
+          {autoTranslateAllMutation.isPending ? "Translating..." : "Auto-translate all"}
+        </Button>
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-ink-muted">Loading...</p>
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {(["Header", "Footer"] as const).map((menu) => (
+            <div key={menu} className="space-y-2">
+              <h3 className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
+                {menu}
+              </h3>
+              {NAVIGATION_ITEMS.filter((item) => item.menu === menu).map((item) => (
+                <label key={item.id} className="block text-sm">
+                  <span className="mb-1 block text-xs text-ink-muted">{item.englishLabel}</span>
+                  <Input
+                    value={values[item.id] ?? ""}
+                    onChange={(event) =>
+                      setValues((current) => ({ ...current, [item.id]: event.target.value }))
+                    }
+                  />
+                </label>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="flex justify-end">
+        <Button
+          type="button"
+          variant="primary"
+          disabled={busy || loading}
+          onClick={() => saveAllMutation.mutate()}
+        >
+          {saveAllMutation.isPending ? "Saving..." : "Save labels"}
+        </Button>
+      </div>
+    </section>
   );
 }
 

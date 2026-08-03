@@ -43,14 +43,14 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   );
   const [categories, farms, products, reviewLists, promotions, recommendationLists] =
     await Promise.all([
-      loadCategories(country, runtime),
+      loadCategories(country, runtime, locale.code),
       loadFarms(runtime),
-      loadProductsBySlugs(productSlugs, country, runtime),
+      loadProductsBySlugs(productSlugs, country, runtime, locale.code),
       Promise.all(reviewBlocks.map((block) => loadFeaturedReviews(block, runtime))),
       Promise.all(promotionBlocks.map((block) => loadFeaturedPromotion(block.props, runtime))),
       Promise.all(
         recommendationBlocks.map((block) =>
-          loadBestsellers({ limit: block.props.limit }, country, runtime),
+          loadBestsellers({ limit: block.props.limit }, country, runtime, locale.code),
         ),
       ),
     ]);

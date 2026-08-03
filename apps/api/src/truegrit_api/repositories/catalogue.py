@@ -14,6 +14,7 @@ from truegrit_api.domain.rules import MAX_LIMIT as RULE_MAX_LIMIT
 from truegrit_api.domain.rules import compile_rule
 from truegrit_api.domain.sitemap import SITEMAP_MAX_URLS
 from truegrit_api.platform.database import Database
+from truegrit_api.repositories.entity_translations import EntityTranslationRepository
 from truegrit_api.services.price_adjustments import apply_percent, resolve_adjustments
 
 # Static category assignment has no owner-configured rule ceiling, so it
@@ -25,6 +26,7 @@ _PRODUCT_BASE_SQL = """
 SELECT
   p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
   p.seo_title, p.seo_description, p.return_eligible, p.accepts_orders,
+  p.payments_override,
   COALESCE(
     '/media/' || m.object_key,
     NULLIF(p.image_url, ''),
@@ -208,6 +210,7 @@ class CatalogueRepository:
             "image_url": row["image_url"],
             "image_alt": row["image_alt"] or row["name"],
             "accepts_orders": bool(row["accepts_orders"]),
+            "payments_override": row["payments_override"],
             "lead_variant_id": lead["id"] if lead else None,
             "rating_average": round(float(rating["average"]), 1) if rating else 0.0,
             "rating_count": int(rating["count"]) if rating else 0,
@@ -217,7 +220,11 @@ class CatalogueRepository:
         }
 
     async def _assemble(
-        self, rows: list[dict[str, Any]], country: str | None = None
+        self,
+        rows: list[dict[str, Any]],
+        country: str | None = None,
+        *,
+        locale: str | None = None,
     ) -> list[dict[str, Any]]:
         ids = [row["id"] for row in rows]
         variants = await self._variants_for(ids)
@@ -225,7 +232,7 @@ class CatalogueRepository:
         tags = await self._tags_for(ids)
         adjustments = await resolve_adjustments(self._db, ids, country)
         ratings = await self._ratings_for(ids)
-        return [
+        summaries = [
             self._summarize(
                 row,
                 variants.get(row["id"], []),
@@ -236,6 +243,36 @@ class CatalogueRepository:
             )
             for row in rows
         ]
+        return await self._translate_summaries(summaries, locale)
+
+    async def _translate_summaries(
+        self, summaries: list[dict[str, Any]], locale: str | None
+    ) -> list[dict[str, Any]]:
+        """Swap in a translated `name`/`short_description` (migration 0068)
+        over each summary's English values, in one batched lookup -- the same
+        reasoning `CategoryRepository._translate_rows` follows."""
+        if not locale or locale == "en" or not summaries:
+            return summaries
+        fields_by_id = await EntityTranslationRepository(self._db).get_fields_map(
+            "product", [summary["id"] for summary in summaries], locale
+        )
+        if not fields_by_id:
+            return summaries
+        translated = []
+        for summary in summaries:
+            fields = fields_by_id.get(summary["id"])
+            if not fields:
+                translated.append(summary)
+                continue
+            translated.append(
+                {
+                    **summary,
+                    "name": fields.get("name") or summary["name"],
+                    "_short_description": fields.get("short_description")
+                    or summary["_short_description"],
+                }
+            )
+        return translated
 
     async def list_published_by_rule(
         self,
@@ -244,6 +281,7 @@ class CatalogueRepository:
         country: str | None = None,
         limit: int = 24,
         offset: int = 0,
+        locale: str | None = None,
     ) -> tuple[list[dict[str, Any]], int]:
         """Products matching a category's rule, one page at a time.
 
@@ -272,10 +310,15 @@ class CatalogueRepository:
             f"{geo_sql} ORDER BY {compiled.order_sql} LIMIT ? OFFSET ?",
             [*compiled.params, *geo_params, page_limit, safe_offset],
         )
-        return await self._assemble(rows, country), total
+        return await self._assemble(rows, country, locale=locale), total
 
     async def list_all_published(
-        self, *, limit: int = 200, offset: int = 0, country: str | None = None
+        self,
+        *,
+        limit: int = 200,
+        offset: int = 0,
+        country: str | None = None,
+        locale: str | None = None,
     ) -> tuple[list[dict[str, Any]], int]:
         """Every published product, newest first, one page at a time. Backs
         the storefront's shop grid, so it reflects admin publishes without any
@@ -291,7 +334,7 @@ class CatalogueRepository:
             " ORDER BY p.updated_at DESC, p.name LIMIT ? OFFSET ?",
             (*geo_params, max(limit, 1), max(offset, 0)),
         )
-        return await self._assemble(rows, country), total
+        return await self._assemble(rows, country, locale=locale), total
 
     async def list_slugs_for_sitemap(
         self, *, limit: int = SITEMAP_MAX_URLS
@@ -321,6 +364,7 @@ class CatalogueRepository:
         country: str | None = None,
         limit: int = 24,
         offset: int = 0,
+        locale: str | None = None,
     ) -> tuple[list[dict[str, Any]], int]:
         """Products statically assigned to a category, one page at a time.
         Returns `(page_of_products, total_eligible)`, `total_eligible` clamped
@@ -351,10 +395,10 @@ class CatalogueRepository:
             """,
             (category_id, *geo_params, page_limit, safe_offset),
         )
-        return await self._assemble(rows, country), total
+        return await self._assemble(rows, country, locale=locale), total
 
     async def list_published_by_slugs(
-        self, slugs: list[str], country: str | None = None
+        self, slugs: list[str], country: str | None = None, *, locale: str | None = None
     ) -> list[dict[str, Any]]:
         if not slugs:
             return []
@@ -365,7 +409,7 @@ class CatalogueRepository:
             f" AND p.slug IN ({placeholders}){geo_sql}",
             (*slugs, *geo_params),
         )
-        summaries = await self._assemble(rows, country)
+        summaries = await self._assemble(rows, country, locale=locale)
         order = {slug: index for index, slug in enumerate(slugs)}
         return sorted(summaries, key=lambda item: order.get(item["slug"], len(order)))
 
@@ -376,6 +420,7 @@ class CatalogueRepository:
         exclude_slugs: list[str] | None = None,
         category_slug: str | None = None,
         country: str | None = None,
+        locale: str | None = None,
     ) -> list[dict[str, Any]]:
         """Real sellers, ranked by total quantity sold on non-cancelled
         orders -- nothing here is curated, so there is no list for an editor
@@ -415,11 +460,16 @@ class CatalogueRepository:
             tuple(params),
         )
         return await self._resolve_ranked(
-            [row["product_id"] for row in ranked], country=country
+            [row["product_id"] for row in ranked], country=country, locale=locale
         )
 
     async def list_also_bought(
-        self, product_id: str, *, limit: int = 6, country: str | None = None
+        self,
+        product_id: str,
+        *,
+        limit: int = 6,
+        country: str | None = None,
+        locale: str | None = None,
     ) -> list[dict[str, Any]]:
         """Products that show up in the same orders as `product_id`, most
         frequent first -- real co-purchase counts (market-basket analysis),
@@ -442,11 +492,15 @@ class CatalogueRepository:
             (product_id, max(limit, 1)),
         )
         return await self._resolve_ranked(
-            [row["product_id"] for row in ranked], country=country
+            [row["product_id"] for row in ranked], country=country, locale=locale
         )
 
     async def _resolve_ranked(
-        self, product_ids: list[str], *, country: str | None = None
+        self,
+        product_ids: list[str],
+        *,
+        country: str | None = None,
+        locale: str | None = None,
     ) -> list[dict[str, Any]]:
         """Turn a ranked list of product ids into full, published,
         geo-visible `ProductSummary` rows, preserving rank order -- the same
@@ -461,12 +515,12 @@ class CatalogueRepository:
             f" AND p.id IN ({placeholders}){geo_sql}",
             (*product_ids, *geo_params),
         )
-        summaries = await self._assemble(rows, country)
+        summaries = await self._assemble(rows, country, locale=locale)
         order = {product_id: index for index, product_id in enumerate(product_ids)}
         return sorted(summaries, key=lambda item: order.get(item["id"], len(order)))
 
     async def list_highlighted(
-        self, country: str | None = None, *, limit: int = 12
+        self, country: str | None = None, *, limit: int = 12, locale: str | None = None
     ) -> list[dict[str, Any]]:
         """The owner-curated highlight slots, in curated order. Published and
         geo-visible products only, so a swap in the admin is all it takes.
@@ -484,10 +538,10 @@ class CatalogueRepository:
             """,
             (*geo_params, max(limit, 1)),
         )
-        return await self._assemble(rows, country)
+        return await self._assemble(rows, country, locale=locale)
 
     async def get_published_detail(
-        self, slug: str, country: str | None = None
+        self, slug: str, country: str | None = None, *, locale: str | None = None
     ) -> dict[str, Any] | None:
         geo_sql, geo_params = geo_release_clause(country)
         rows = await self._db.fetch_all(
@@ -496,7 +550,7 @@ class CatalogueRepository:
         )
         if not rows:
             return None
-        summary = (await self._assemble(rows, country))[0]
+        summary = (await self._assemble(rows, country, locale=locale))[0]
         row = rows[0]
 
         # Owner-curated links fill the "goes well with" slots first; only when

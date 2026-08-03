@@ -65,6 +65,10 @@ export interface PublicBootstrap {
 
 export type ProductAvailability = "in_stock" | "low_stock" | "out_of_stock";
 
+/** Whether a product's orderability follows the site-wide payments switch,
+ *  or overrides it (migration 0069) in either direction. */
+export type PaymentsOverride = "inherit" | "force_enabled" | "force_disabled";
+
 export type CategoryTheme = "forest" | "sage" | "terracotta" | "charcoal" | "gold";
 
 export interface ProductSummary {
@@ -93,6 +97,13 @@ export interface ProductSummary {
    *  site-wide one on Site Control. False means the product is still shown
    *  and browsable -- just not currently orderable. */
   acceptsOrders: boolean;
+  /** Overrides the site-wide payments switch for this one product, in either
+   *  direction (migration 0069) -- see `PaymentsOverride`. Combine with the
+   *  site-wide `payments.enabled` flag (`useSiteSettings`) to decide whether
+   *  "Add to basket" renders: enabled when `paymentsOverride === "inherit"`
+   *  follows the site-wide flag, `"force_enabled"` always allows it,
+   *  `"force_disabled"` never does. */
+  paymentsOverride: PaymentsOverride;
   /** The variant `priceMinor`/`saleMinor`/`adjustedMinor`/`unitLabel` above
    *  already describe. Enough to add a single-variant product to the cart
    *  straight from a batched summary fetch (`?slugs=a,b,c`) -- no separate
@@ -1261,6 +1272,41 @@ export const AMBIENT_EFFECT_KEYS = [
   "sparkles",
   "fog",
   "meteors",
+  "stardust",
+  "galaxySwirl",
+  "nebulaClouds",
+  "supernovaFlashes",
+  "lightningFlashes",
+  "hailstorm",
+  "mistDrift",
+  "windyLeaves",
+  "thunderRain",
+  "fairyDust",
+  "enchantedGlow",
+  "champagneBubbles",
+  "floatingWisps",
+  "glowingRunes",
+  "driftingPollen",
+  "autumnLeaves",
+  "sakuraBloom",
+  "dandelionSeeds",
+  "mossSporeGlow",
+  "confettiParty",
+  "neonGlowSticks",
+  "discoLights",
+  "floatingBalloons",
+  "partyStreamers",
+  "auroraWaves",
+  "frostSparkle",
+  "cometTrail",
+  "shootingStars",
+  "cherryBlossom",
+  "mapleLeavesFall",
+  "goldenEmbers",
+  "iceCrystals",
+  "magicSparks",
+  "oceanBubbles",
+  "cosmicDust",
 ] as const;
 
 export type AmbientEffectKey = (typeof AMBIENT_EFFECT_KEYS)[number];
@@ -1283,6 +1329,41 @@ export const CURSOR_TRAIL_KEYS = [
   "leaves",
   "petals",
   "embers",
+  "confetti",
+  "meteor",
+  "seeds",
+  "rain",
+  "fireworks",
+  "smoke",
+  "dust",
+  "aurora",
+  "frost",
+  "blossom",
+  "stardust",
+  "cometShower",
+  "galaxy",
+  "nebula",
+  "supernova",
+  "lightning",
+  "hail",
+  "mist",
+  "windyLeaves",
+  "thunderstorm",
+  "fairyDust",
+  "enchanted",
+  "potionBubbles",
+  "wisps",
+  "runes",
+  "pollen",
+  "mapleLeaves",
+  "sakura",
+  "dandelion",
+  "mossSpores",
+  "partyConfetti",
+  "glowSticks",
+  "disco",
+  "balloons",
+  "streamers",
 ] as const;
 
 export type CursorTrailKey = (typeof CURSOR_TRAIL_KEYS)[number];

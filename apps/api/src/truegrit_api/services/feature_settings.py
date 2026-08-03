@@ -551,17 +551,13 @@ async def assert_sign_in_method_enabled(db: Database, method: str) -> None:
         raise PermissionDeniedError("This sign-in method is currently unavailable.")
 
 
-async def assert_payments_enabled(db: Database) -> None:
-    if not (await load_storefront_settings(db)).payments:
-        raise PermissionDeniedError("We are not taking orders at the moment.")
-
-
 async def promotions_enabled(db: Database) -> bool:
     """Whether the sitewide coupons/promotions feature is switched on --
     checked before honouring a coupon code at checkout and before the public
     featured-promotion endpoint (homepage banner, checkout box) returns
-    anything. Unlike `assert_payments_enabled`, absence is not fatal: a
-    disabled feature simply has nothing to show, it does not block checkout."""
+    anything. Unlike the payments switch (`services.checkout._resolve_line`),
+    absence is not fatal: a disabled feature simply has nothing to show, it
+    does not block checkout."""
     return (await load_storefront_settings(db)).promotions
 
 

@@ -125,6 +125,7 @@ _STANDARDS_FAQ = [
 async def bootstrap(
     db: Annotated[Database, Depends(get_database)],
     country: Annotated[str | None, Query(max_length=2)] = None,
+    locale: Annotated[str | None, Query(max_length=10)] = None,
 ) -> Any:
     navigation = NavigationRepository(db)
     # `country` (the same signal `resolveCountry()` resolves for currency,
@@ -132,8 +133,8 @@ async def bootstrap(
     # country-specific announcement an owner has saved, falling back to the
     # site-wide one -- see `resolve_announcement`.
     return {
-        "navigation": await navigation.menu("header"),
-        "footer_navigation": await navigation.menu("footer"),
+        "navigation": await navigation.menu("header", locale=locale),
+        "footer_navigation": await navigation.menu("footer", locale=locale),
         "announcement": await resolve_announcement(db, country),
     }
 
@@ -344,12 +345,15 @@ async def category_page(
     slug: str,
     db: Annotated[Database, Depends(get_database)],
     country: Annotated[str | None, Query(max_length=2)] = None,
+    locale: Annotated[str | None, Query(max_length=10)] = None,
     limit: Annotated[int, Query(ge=1, le=MAX_PAGE_SIZE)] = DEFAULT_PAGE_SIZE,
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> Any:
     validate_slug(slug)
     visitor_country = _normalize_country(country)
-    category = await CategoryRepository(db).get_published_by_slug(slug, country=visitor_country)
+    category = await CategoryRepository(db).get_published_by_slug(
+        slug, country=visitor_country, locale=locale
+    )
     if category is None:
         raise NotFoundError("Category not found.")
 
@@ -364,7 +368,7 @@ async def category_page(
             category["id"], country=visitor_country, limit=limit, offset=offset
         )
     subcategories = await CategoryRepository(db).list_published_children(
-        category["id"], country=visitor_country
+        category["id"], country=visitor_country, locale=locale
     )
 
     return {
@@ -433,11 +437,14 @@ def _category_summary(row: dict[str, Any]) -> dict[str, Any]:
 async def categories(
     db: Annotated[Database, Depends(get_database)],
     country: Annotated[str | None, Query(max_length=2)] = None,
+    locale: Annotated[str | None, Query(max_length=10)] = None,
 ) -> Any:
     """Every published category in tree order — departments each followed by
     their own subcategories. Returned flat rather than nested so a single
     response serves both the shop sidebar and the department rail."""
-    rows = await CategoryRepository(db).list_published(country=_normalize_country(country))
+    rows = await CategoryRepository(db).list_published(
+        country=_normalize_country(country), locale=locale
+    )
     return {"items": [_category_summary(row) for row in rows]}
 
 
@@ -460,10 +467,11 @@ async def recipes_list(
     db: Annotated[Database, Depends(get_database)],
     limit: Annotated[int, Query(ge=1, le=100)] = 12,
     offset: Annotated[int, Query(ge=0)] = 0,
+    locale: Annotated[str | None, Query(max_length=10)] = None,
 ) -> Any:
     repository = RecipeRepository(db)
     return {
-        "items": await repository.list_published(limit=limit, offset=offset),
+        "items": await repository.list_published(limit=limit, offset=offset, locale=locale),
         "total": await repository.count_published(),
         "limit": limit,
         "offset": offset,
@@ -471,9 +479,13 @@ async def recipes_list(
 
 
 @router.get("/recipes/{slug}", response_model=RecipeDetail)
-async def recipe_detail(slug: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+async def recipe_detail(
+    slug: str,
+    db: Annotated[Database, Depends(get_database)],
+    locale: Annotated[str | None, Query(max_length=10)] = None,
+) -> Any:
     validate_slug(slug)
-    recipe = await RecipeRepository(db).get_published_by_slug(slug)
+    recipe = await RecipeRepository(db).get_published_by_slug(slug, locale=locale)
     if recipe is None:
         raise NotFoundError("Recipe not found.")
     return recipe
@@ -484,10 +496,11 @@ async def articles_list(
     db: Annotated[Database, Depends(get_database)],
     limit: Annotated[int, Query(ge=1, le=100)] = 10,
     offset: Annotated[int, Query(ge=0)] = 0,
+    locale: Annotated[str | None, Query(max_length=10)] = None,
 ) -> Any:
     repository = ArticleRepository(db)
     return {
-        "items": await repository.list_published(limit=limit, offset=offset),
+        "items": await repository.list_published(limit=limit, offset=offset, locale=locale),
         "total": await repository.count_published(),
         "limit": limit,
         "offset": offset,
@@ -495,9 +508,13 @@ async def articles_list(
 
 
 @router.get("/articles/{slug}", response_model=ArticleDetail)
-async def article_detail(slug: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+async def article_detail(
+    slug: str,
+    db: Annotated[Database, Depends(get_database)],
+    locale: Annotated[str | None, Query(max_length=10)] = None,
+) -> Any:
     validate_slug(slug)
-    article = await ArticleRepository(db).get_published_by_slug(slug)
+    article = await ArticleRepository(db).get_published_by_slug(slug, locale=locale)
     if article is None:
         raise NotFoundError("Article not found.")
     return article
@@ -509,6 +526,7 @@ async def products_list(
     slugs: Annotated[str | None, Query(max_length=4000)] = None,
     category: Annotated[str | None, Query(max_length=MAX_SLUG_LENGTH)] = None,
     country: Annotated[str | None, Query(max_length=2)] = None,
+    locale: Annotated[str | None, Query(max_length=10)] = None,
     limit: Annotated[int, Query(ge=1, le=MAX_PAGE_SIZE)] = DEFAULT_PAGE_SIZE,
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> Any:
@@ -534,7 +552,7 @@ async def products_list(
     if slugs is not None:
         wanted = [slug.strip() for slug in slugs.split(",") if slug.strip()][:200]
         items = (
-            await catalogue.list_published_by_slugs(wanted, country=visitor_country)
+            await catalogue.list_published_by_slugs(wanted, country=visitor_country, locale=locale)
             if wanted
             else []
         )
@@ -547,11 +565,11 @@ async def products_list(
         if category_id is None:
             return {"items": [], "total": 0}
         items, total = await catalogue.list_published_by_category(
-            category_id, country=visitor_country, limit=limit, offset=offset
+            category_id, country=visitor_country, limit=limit, offset=offset, locale=locale
         )
     else:
         items, total = await catalogue.list_all_published(
-            limit=limit, offset=offset, country=visitor_country
+            limit=limit, offset=offset, country=visitor_country, locale=locale
         )
     return {"items": items, "total": total}
 
@@ -560,11 +578,12 @@ async def products_list(
 async def highlighted_products(
     db: Annotated[Database, Depends(get_database)],
     country: Annotated[str | None, Query(max_length=2)] = None,
+    locale: Annotated[str | None, Query(max_length=10)] = None,
 ) -> Any:
     """The owner-curated highlight slots (search page box), curated order."""
     limit = await load_curated_max_items(db)
     items = await CatalogueRepository(db).list_highlighted(
-        country=_normalize_country(country), limit=limit
+        country=_normalize_country(country), limit=limit, locale=locale
     )
     return {"items": items, "total": len(items)}
 
@@ -576,6 +595,7 @@ async def bestsellers(
     exclude: Annotated[str | None, Query(max_length=2000)] = None,
     category: Annotated[str | None, Query(max_length=140)] = None,
     country: Annotated[str | None, Query(max_length=2)] = None,
+    locale: Annotated[str | None, Query(max_length=10)] = None,
 ) -> Any:
     """Real sellers, ranked by quantity actually sold on non-cancelled
     orders -- not a curated list, so there is nothing here for an editor to
@@ -593,6 +613,7 @@ async def bestsellers(
         exclude_slugs=exclude_slugs,
         category_slug=category,
         country=_normalize_country(country),
+        locale=locale,
     )
     return {"items": items, "total": len(items)}
 
@@ -603,6 +624,7 @@ async def also_bought(
     db: Annotated[Database, Depends(get_database)],
     limit: Annotated[int, Query(ge=1, le=24)] = 6,
     country: Annotated[str | None, Query(max_length=2)] = None,
+    locale: Annotated[str | None, Query(max_length=10)] = None,
 ) -> Any:
     """Products that show up in the same orders as this one, most frequent
     first -- real co-purchase counts, not a curated "goes well with" list
@@ -617,7 +639,7 @@ async def also_bought(
     if product is None:
         raise NotFoundError("Product not found.")
     items = await repository.list_also_bought(
-        product["id"], limit=limit, country=visitor_country
+        product["id"], limit=limit, country=visitor_country, locale=locale
     )
     return {"items": items, "total": len(items)}
 
@@ -627,10 +649,11 @@ async def product_detail(
     slug: str,
     db: Annotated[Database, Depends(get_database)],
     country: Annotated[str | None, Query(max_length=2)] = None,
+    locale: Annotated[str | None, Query(max_length=10)] = None,
 ) -> Any:
     validate_slug(slug)
     detail = await CatalogueRepository(db).get_published_detail(
-        slug, country=_normalize_country(country)
+        slug, country=_normalize_country(country), locale=locale
     )
     if detail is None:
         raise NotFoundError("Product not found.")

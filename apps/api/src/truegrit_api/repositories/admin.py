@@ -214,6 +214,7 @@ class AdminRepository:
                    p.release_scope,
                    p.return_eligible,
                    p.accepts_orders,
+                   p.payments_override,
                    COALESCE(f.name, b.name, '') AS farm_name
             FROM products p
             LEFT JOIN farms f ON f.id = p.farm_id

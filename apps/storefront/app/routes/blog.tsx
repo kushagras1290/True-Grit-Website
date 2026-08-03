@@ -5,6 +5,7 @@ import { Section } from "../components/catalogue";
 import { PageBanner } from "../components/page-banner";
 import { PageLinkPagination } from "../components/pagination";
 import { catalogueRuntime, loadArticles } from "../lib/catalogue.server";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
@@ -19,10 +20,11 @@ const FALLBACK_BANNER_IMAGE = "/banners/content/blog-editorial-guides.webp";
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   const page = Math.max(1, Number(new URL(request.url).searchParams.get("page")) || 1);
+  const { locale } = resolveLocale(request);
   return {
     page,
     pageSize: BLOG_PAGE_SIZE,
-    articles: await loadArticles(page, BLOG_PAGE_SIZE, catalogueRuntime(context)),
+    articles: await loadArticles(page, BLOG_PAGE_SIZE, catalogueRuntime(context), locale.code),
   };
 }
 

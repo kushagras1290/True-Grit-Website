@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveCountry } from "./geo.server";
+import { resolveCountry, resolveRegion } from "./geo.server";
 
-function request(headers: Record<string, string> = {}): Request {
-  return new Request("https://truegrit.example/shop", { headers });
+function request(headers: Record<string, string> = {}, cf?: Record<string, unknown>): Request {
+  const req = new Request("https://truegrit.example/shop", { headers });
+  if (cf) Object.assign(req, { cf });
+  return req;
 }
 
 describe("resolveCountry", () => {
@@ -25,5 +27,25 @@ describe("resolveCountry", () => {
 
   it("falls back to India when nothing is known", () => {
     expect(resolveCountry(request())).toBe("IN");
+  });
+});
+
+describe("resolveRegion", () => {
+  it("reads region/regionCode from the Workers-runtime cf property", () => {
+    expect(
+      resolveRegion(request({}, { region: "Punjab", regionCode: "IN-PB" })),
+    ).toEqual({ region: "Punjab", regionCode: "IN-PB" });
+  });
+
+  it("returns nulls when cf is absent, matching a lower-tier account or local dev", () => {
+    expect(resolveRegion(request())).toEqual({ region: null, regionCode: null });
+  });
+
+  it("lets the tg_region cookie override cf for local testing", () => {
+    expect(
+      resolveRegion(
+        request({ cookie: "tg_region=Karnataka" }, { region: "Punjab", regionCode: "IN-PB" }),
+      ),
+    ).toEqual({ region: "Karnataka", regionCode: "Karnataka" });
   });
 });

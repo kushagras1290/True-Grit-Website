@@ -50,6 +50,37 @@ export default function ContactPage(_props: Route.ComponentProps) {
           </aside>
         </div>
       </Section>
+
+      {/* A second, separate submission rather than a "Suggestion" option
+          folded into the form above: a suggestion is not a problem to solve
+          (no order reference, no product to look up), and keeping it as its
+          own section says that plainly rather than making a suggestion
+          compete with support requests in one inbox-sorting field. Reuses
+          `ContactForm` end to end -- same `/v1/public/contact` submission,
+          same email delivery -- only `defaultSubject` differs, the same
+          pattern already used for the payments-off checkout fallback and the
+          product interest form (product.tsx). The heading/intro below are
+          plain English on purpose, like `LanguageSuggestionPrompt`: they are
+          new copy with no translated catalogue entry yet, and shipping them
+          untranslated in every language beats blocking this section on a
+          fifty-language translation pass. The form's own fields (name,
+          email, subject, message...) are unaffected -- those already come
+          from the translated `contact.*` catalogue via `ContactForm`. */}
+      <Section tone="subtle" eyebrow="Suggestions" heading="Have a suggestion?">
+        <div className="max-w-2xl">
+          <p className="-mt-4 mb-6 text-sm text-ink-muted">
+            A product you would like us to carry, a feature you wish the site had, or anything else
+            that would make True Grit better — we read every one of these ourselves.
+          </p>
+          <ContactForm
+            compact
+            defaultSubject="Suggestion"
+            messagePlaceholder="What would you like to see?"
+            successMessage="Thanks — your suggestion has been sent."
+            submitLabel="Send suggestion"
+          />
+        </div>
+      </Section>
     </>
   );
 }

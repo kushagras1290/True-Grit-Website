@@ -23,11 +23,13 @@ import {
 } from "../lib/catalogue.server";
 import { buildCategoryTree, findCategoryBranch } from "../lib/category-tree";
 import { resolveCountry } from "../lib/geo.server";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
   const country = resolveCountry(request);
+  const { locale } = resolveLocale(request);
   const url = new URL(request.url);
 
   const requestedPage = Number(url.searchParams.get("page") ?? "1");
@@ -35,12 +37,12 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const categorySlug = url.searchParams.get("category")?.trim() || null;
 
   const [categories, productPage, trending] = await Promise.all([
-    loadCategories(country, runtime),
-    loadProductPage(pageNumber, country, runtime, categorySlug),
+    loadCategories(country, runtime, locale.code),
+    loadProductPage(pageNumber, country, runtime, categorySlug, locale.code),
     // Only worth showing on the unfiltered "All products" view -- a specific
     // department already has its own browsing grid, and a sitewide trending
     // row there would just compete with it.
-    categorySlug ? Promise.resolve([]) : loadBestsellers({ limit: 8 }, country, runtime),
+    categorySlug ? Promise.resolve([]) : loadBestsellers({ limit: 8 }, country, runtime, locale.code),
   ]);
 
   // Grouped server-side so the tree is serialized once rather than rebuilt by

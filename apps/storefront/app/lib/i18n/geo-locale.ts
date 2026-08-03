@@ -89,3 +89,115 @@ export function matchCountryLocale(country: string | null | undefined): LocaleDe
   const code = COUNTRY_TO_LOCALE[country.trim().toUpperCase()];
   return code ? matchLocale(code) : null;
 }
+
+/**
+ * Indian state/UT → locale, the refinement `COUNTRY_TO_LOCALE` above
+ * explicitly declines to make at the country level (see this file's header
+ * comment: India has no single dominant language, so guessing wrong would be
+ * common). State is a real signal a country never was — a Punjab visitor and
+ * a Tamil Nadu visitor should not get the same guess just because both are
+ * "IN". Keyed by full state name (what Cloudflare's `cf.region` typically
+ * carries) in `INDIA_STATE_TO_LOCALE`, and by ISO-3166-2 subdivision code
+ * (`cf.regionCode`, e.g. "IN-PB") in `INDIA_REGION_CODE_TO_LOCALE` — whichever
+ * the edge actually populates, see `resolveRegion` (geo.server.ts).
+ *
+ * A state left out on purpose (Nagaland, Mizoram, Meghalaya) has no clearly
+ * dominant language among the 22 this storefront ships — the same "leave it
+ * out rather than guess wrong" rule `COUNTRY_TO_LOCALE` already applies to
+ * India as a whole. Those visitors still get the country-level fallback (or
+ * `Accept-Language`), never a forced wrong guess.
+ */
+const INDIA_STATE_TO_LOCALE: Readonly<Record<string, string>> = {
+  "ANDHRA PRADESH": "te",
+  ASSAM: "as",
+  BIHAR: "hi",
+  CHHATTISGARH: "hi",
+  GOA: "kok",
+  GUJARAT: "gu",
+  HARYANA: "hi",
+  "HIMACHAL PRADESH": "hi",
+  JHARKHAND: "hi",
+  "JAMMU AND KASHMIR": "ks",
+  KARNATAKA: "kn",
+  KERALA: "ml",
+  "MADHYA PRADESH": "hi",
+  MAHARASHTRA: "mr",
+  MANIPUR: "mni",
+  ODISHA: "or",
+  ORISSA: "or",
+  PUNJAB: "pa",
+  RAJASTHAN: "hi",
+  SIKKIM: "ne",
+  "TAMIL NADU": "ta",
+  TELANGANA: "te",
+  TRIPURA: "bn",
+  "UTTAR PRADESH": "hi",
+  UTTARAKHAND: "hi",
+  "WEST BENGAL": "bn",
+  // Union territories.
+  "ANDAMAN AND NICOBAR ISLANDS": "hi",
+  CHANDIGARH: "hi",
+  "DADRA AND NAGAR HAVELI AND DAMAN AND DIU": "gu",
+  DELHI: "hi",
+  "NCT OF DELHI": "hi",
+  LADAKH: "hi",
+  LAKSHADWEEP: "ml",
+  PUDUCHERRY: "ta",
+} as const;
+
+const INDIA_REGION_CODE_TO_LOCALE: Readonly<Record<string, string>> = {
+  AP: "te",
+  AS: "as",
+  BR: "hi",
+  CT: "hi",
+  GA: "kok",
+  GJ: "gu",
+  HR: "hi",
+  HP: "hi",
+  JH: "hi",
+  JK: "ks",
+  KA: "kn",
+  KL: "ml",
+  MP: "hi",
+  MH: "mr",
+  MN: "mni",
+  OR: "or",
+  PB: "pa",
+  RJ: "hi",
+  SK: "ne",
+  TN: "ta",
+  TG: "te",
+  TR: "bn",
+  UP: "hi",
+  UK: "hi",
+  UT: "hi",
+  WB: "bn",
+  AN: "hi",
+  CH: "hi",
+  DH: "gu",
+  DD: "gu",
+  DL: "hi",
+  LA: "hi",
+  LD: "ml",
+  PY: "ta",
+} as const;
+
+/**
+ * The locale an Indian state/UT most plausibly reads, from whichever of
+ * `region` (full name) or `regionCode` (ISO-3166-2, with or without the
+ * "IN-" prefix) Cloudflare populated. `null` when neither is present or
+ * neither matches a mapped state — the caller falls back to
+ * `matchCountryLocale`/`Accept-Language` exactly as it would have without
+ * this refinement.
+ */
+export function matchIndiaRegionLocale(
+  region: string | null | undefined,
+  regionCode: string | null | undefined,
+): LocaleDefinition | null {
+  const byName = region ? INDIA_STATE_TO_LOCALE[region.trim().toUpperCase()] : undefined;
+  if (byName) return matchLocale(byName);
+
+  const normalizedCode = regionCode?.trim().toUpperCase().replace(/^IN-/, "");
+  const byCode = normalizedCode ? INDIA_REGION_CODE_TO_LOCALE[normalizedCode] : undefined;
+  return byCode ? matchLocale(byCode) : null;
+}

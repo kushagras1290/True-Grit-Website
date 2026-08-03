@@ -292,6 +292,11 @@ export interface AdminProductDetail {
    *  site-wide one on Site Control. False keeps the product page live and
    *  browsable while pulling only "Add to basket". */
   acceptsOrders: boolean;
+  /** Overrides the site-wide payments switch for this product in either
+   *  direction (migration 0069): "inherit" follows it, "force_enabled" takes
+   *  orders even while payments are off site-wide, "force_disabled" blocks
+   *  orders even while payments are on. */
+  paymentsOverride: "inherit" | "force_enabled" | "force_disabled";
   linkedProducts: AdminLinkedProduct[];
   variants: Array<{
     id: string;
@@ -671,6 +676,26 @@ export interface PageTranslationSummary {
 export interface PageTranslation {
   locale: string;
   content: { blocks: PublicPageBlock[] };
+  autoTranslated: boolean;
+  updatedAt: string | null;
+}
+
+/** Per-locale field overrides for database-sourced content (migration 0068)
+ *  -- navigation labels, category/product names and descriptions, article/
+ *  recipe titles and excerpts. One shape for every entity type; which keys
+ *  `fields` actually carries is entity-type-specific (mirrors
+ *  `services.entity_translation.TRANSLATABLE_FIELDS` on the API). */
+export type EntityTranslationType = "navigation_item" | "category" | "product" | "article" | "recipe";
+
+export interface EntityTranslationSummary {
+  locale: string;
+  autoTranslated: boolean;
+  updatedAt: string;
+}
+
+export interface EntityTranslation {
+  locale: string;
+  fields: Record<string, string>;
   autoTranslated: boolean;
   updatedAt: string | null;
 }
@@ -1288,6 +1313,7 @@ export const api = {
       releaseCountries: [],
       returnEligible: true,
       acceptsOrders: true,
+      paymentsOverride: "inherit",
       linkedProducts: [],
       variants: product.variants.map((variant) => ({
         id: variant.id,
@@ -2235,6 +2261,71 @@ export const api = {
     demoMode
       ? demo({ pageId, locale, deleted: true })
       : del(`/v1/admin/pages/${pageId}/translations/${locale}`),
+
+  // --- Per-locale field overrides for other content types (migration 0068) -
+  //
+  // Same shape as the page translations above, generalized to flat fields
+  // instead of a block tree: navigation labels, category/product names and
+  // descriptions, article/recipe titles and excerpts. Demo mode echoes
+  // English fields back untranslated, matching `pageTranslation` above.
+
+  entityTranslations: (
+    entityType: EntityTranslationType,
+    entityId: string,
+  ): Promise<EntityTranslationSummary[]> =>
+    demoMode
+      ? demo([])
+      : get<{ items: EntityTranslationSummary[] }>(
+          `/v1/admin/translations/${entityType}/${entityId}`,
+        ).then((body) => body.items),
+
+  entityTranslation: (
+    entityType: EntityTranslationType,
+    entityId: string,
+    locale: string,
+  ): Promise<EntityTranslation> =>
+    demoMode
+      ? demo({ locale, fields: {}, autoTranslated: false, updatedAt: null })
+      : get<EntityTranslation>(`/v1/admin/translations/${entityType}/${entityId}/${locale}`),
+
+  saveEntityTranslation: (
+    entityType: EntityTranslationType,
+    entityId: string,
+    locale: string,
+    fields: Record<string, string>,
+  ): Promise<EntityTranslation> =>
+    demoMode
+      ? demo({ locale, fields, autoTranslated: false, updatedAt: new Date().toISOString() })
+      : put<EntityTranslation>(`/v1/admin/translations/${entityType}/${entityId}/${locale}`, {
+          fields,
+        }),
+
+  autoTranslateEntity: (
+    entityType: EntityTranslationType,
+    entityId: string,
+    locale: string,
+  ): Promise<EntityTranslation> =>
+    demoMode
+      ? Promise.reject(
+          new ApiError(
+            "Auto-translate needs the live API and a deployed Worker.",
+            503,
+            "demo_mode",
+          ),
+        )
+      : post<EntityTranslation>(
+          `/v1/admin/translations/${entityType}/${entityId}/${locale}/auto-translate`,
+          {},
+        ),
+
+  deleteEntityTranslation: (
+    entityType: EntityTranslationType,
+    entityId: string,
+    locale: string,
+  ): Promise<{ entityType: string; entityId: string; locale: string; deleted: boolean }> =>
+    demoMode
+      ? demo({ entityType, entityId, locale, deleted: true })
+      : del(`/v1/admin/translations/${entityType}/${entityId}/${locale}`),
 
   highlights: (): Promise<AdminLinkedProduct[]> =>
     demoMode

@@ -12,15 +12,22 @@ import {
   loadCategoryPage,
 } from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const pageNumber = Math.max(1, Number(new URL(request.url).searchParams.get("page")) || 1);
   const country = resolveCountry(request);
+  const { locale } = resolveLocale(request);
   const runtime = catalogueRuntime(context);
-  const page = await loadCategoryPage(params.slug, country, runtime, pageNumber);
+  const page = await loadCategoryPage(params.slug, country, runtime, pageNumber, locale.code);
   if (!page) throw data("Category not found", { status: 404 });
-  const popular = await loadBestsellers({ limit: 8, categorySlug: params.slug }, country, runtime);
+  const popular = await loadBestsellers(
+    { limit: 8, categorySlug: params.slug },
+    country,
+    runtime,
+    locale.code,
+  );
   return { page, pageNumber, pageSize: CATALOGUE_PAGE_SIZE, popular };
 }
 

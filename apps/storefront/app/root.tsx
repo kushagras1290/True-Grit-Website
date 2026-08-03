@@ -57,10 +57,16 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   // the settings fetch below, so a visitor's country never has two answers
   // within the same request.
   const country = resolveCountry(request);
+  // Resolved before the bootstrap fetch (not after, as previously) so the
+  // header/footer navigation labels can be requested in the visitor's
+  // language on the very first round trip -- the same reasoning `loadPage`
+  // and `loadHome` already follow for CMS content (migration 0067), now
+  // extended to database-sourced nav labels (migration 0068).
+  const resolved = resolveLocale(request);
   // Both in one round trip: the header needs the sign-in switches on first
   // paint, or it flashes a button the API would refuse.
   const [bootstrap, siteSettings] = await Promise.all([
-    loadBootstrap(country, runtime),
+    loadBootstrap(country, runtime, resolved.locale.code),
     loadSiteSettings(country, runtime),
   ]);
   // Resolved here so the first byte of HTML is already in the visitor's
@@ -68,7 +74,6 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   // and would leave crawlers — which never run the script — seeing only
   // English. Only the chosen locale's own entries travel; English is already in
   // the bundle as the fallback (see lib/i18n/messages.ts).
-  const resolved = resolveLocale(request);
   return {
     bootstrap,
     siteSettings,

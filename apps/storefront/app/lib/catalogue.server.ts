@@ -141,13 +141,18 @@ async function paginatedFromApi<T>(
 export async function loadBootstrap(
   country: string | undefined,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<PublicBootstrap> {
   if (apiUrl(runtime)) {
     // `country` picks up a country-specific announcement over the site-wide
     // one, resolved server-side (`resolve_announcement`) — see the identical
-    // pattern on `loadSiteSettings`.
+    // pattern on `loadSiteSettings`. `locale` swaps in translated nav labels
+    // (migration 0068) the same way `withLocale` already does for pages.
     return (
-      (await fromApi<PublicBootstrap>(withCountry("/v1/public/bootstrap", country), runtime)) ?? {
+      (await fromApi<PublicBootstrap>(
+        withLocale(withCountry("/v1/public/bootstrap", country), locale),
+        runtime,
+      )) ?? {
         navigation: [],
         footerNavigation: [],
         announcement: null,
@@ -243,12 +248,16 @@ export async function loadCategoryPage(
   country?: string,
   runtime?: CatalogueRuntime,
   page = 1,
+  locale?: string,
 ): Promise<PublicCategoryPage | null> {
   const offset = (Math.max(page, 1) - 1) * CATALOGUE_PAGE_SIZE;
   if (apiUrl(runtime)) {
-    const path = withCountry(
-      `/v1/public/categories/${slug}?limit=${CATALOGUE_PAGE_SIZE}&offset=${offset}`,
-      country,
+    const path = withLocale(
+      withCountry(
+        `/v1/public/categories/${slug}?limit=${CATALOGUE_PAGE_SIZE}&offset=${offset}`,
+        country,
+      ),
+      locale,
     );
     return fromApi<PublicCategoryPage>(path, runtime);
   }
@@ -258,9 +267,10 @@ export async function loadCategoryPage(
 export async function loadCategories(
   country?: string,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<CategorySummary[]> {
   return listFromApi<CategorySummary>(
-    withCountry("/v1/public/categories", country),
+    withLocale(withCountry("/v1/public/categories", country), locale),
     categories,
     runtime,
   );
@@ -290,6 +300,7 @@ export async function loadProductPage(
   country?: string,
   runtime?: CatalogueRuntime,
   categorySlug?: string | null,
+  locale?: string,
 ): Promise<PaginatedContent<ProductSummary>> {
   const path = categorySlug
     ? `/v1/public/products?category=${encodeURIComponent(categorySlug)}`
@@ -298,7 +309,7 @@ export async function loadProductPage(
     ? products.filter((product) => productSlugsForCategory(categorySlug).includes(product.slug))
     : products;
   return paginatedFromApi<ProductSummary>(
-    withCountry(path, country),
+    withLocale(withCountry(path, country), locale),
     fallback,
     CATALOGUE_PAGE_SIZE,
     (Math.max(page, 1) - 1) * CATALOGUE_PAGE_SIZE,
@@ -310,9 +321,13 @@ export async function loadProduct(
   slug: string,
   country?: string,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<ProductDetail | null> {
   if (apiUrl(runtime)) {
-    return fromApi<ProductDetail>(withCountry(`/v1/public/products/${slug}`, country), runtime);
+    return fromApi<ProductDetail>(
+      withLocale(withCountry(`/v1/public/products/${slug}`, country), locale),
+      runtime,
+    );
   }
   return products.find((product) => product.slug === slug) ?? null;
 }
@@ -321,12 +336,13 @@ export async function loadProductsBySlugs(
   slugs: string[],
   country?: string,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<ProductSummary[]> {
   if (slugs.length === 0) return [];
   if (apiUrl(runtime)) {
     const query = slugs.map((slug) => encodeURIComponent(slug)).join(",");
     return listFromApi<ProductSummary>(
-      withCountry(`/v1/public/products?slugs=${query}`, country),
+      withLocale(withCountry(`/v1/public/products?slugs=${query}`, country), locale),
       [],
       runtime,
     );
@@ -468,6 +484,7 @@ export async function loadBestsellers(
   }: { limit?: number; excludeSlugs?: string[]; categorySlug?: string } = {},
   country?: string,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<ProductSummary[]> {
   if (!apiUrl(runtime)) {
     if (!DEFAULT_SITE_SETTINGS.recommendations.enabled) return [];
@@ -478,7 +495,10 @@ export async function loadBestsellers(
   if (excludeSlugs && excludeSlugs.length > 0) params.set("exclude", excludeSlugs.join(","));
   if (categorySlug) params.set("category", categorySlug);
   return listFromApi<ProductSummary>(
-    withCountry(`/v1/public/recommendations/bestsellers?${params.toString()}`, country),
+    withLocale(
+      withCountry(`/v1/public/recommendations/bestsellers?${params.toString()}`, country),
+      locale,
+    ),
     [],
     runtime,
   );
@@ -495,12 +515,16 @@ export async function loadAlsoBought(
   limit: number,
   country?: string,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<ProductSummary[]> {
   if (!apiUrl(runtime)) return [];
   return listFromApi<ProductSummary>(
-    withCountry(
-      `/v1/public/products/${encodeURIComponent(slug)}/also-bought?limit=${limit}`,
-      country,
+    withLocale(
+      withCountry(
+        `/v1/public/products/${encodeURIComponent(slug)}/also-bought?limit=${limit}`,
+        country,
+      ),
+      locale,
     ),
     [],
     runtime,
@@ -515,9 +539,10 @@ export async function loadAlsoBought(
 export async function loadHighlightedProducts(
   country?: string,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<ProductSummary[]> {
   return listFromApi<ProductSummary>(
-    withCountry("/v1/public/highlights", country),
+    withLocale(withCountry("/v1/public/highlights", country), locale),
     products.slice(0, 4),
     runtime,
   );
@@ -541,9 +566,10 @@ export async function loadRecipes(
   page: number,
   pageSize: number,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<PaginatedContent<RecipeDetail>> {
   return paginatedFromApi<RecipeDetail>(
-    "/v1/public/recipes",
+    withLocale("/v1/public/recipes", locale),
     recipes,
     pageSize,
     (page - 1) * pageSize,
@@ -554,9 +580,13 @@ export async function loadRecipes(
 export async function loadRecipe(
   slug: string,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<RecipeDetail | null> {
   if (apiUrl(runtime)) {
-    return fromApi<RecipeDetail>(`/v1/public/recipes/${encodeURIComponent(slug)}`, runtime);
+    return fromApi<RecipeDetail>(
+      withLocale(`/v1/public/recipes/${encodeURIComponent(slug)}`, locale),
+      runtime,
+    );
   }
   return recipes.find((recipe) => recipe.slug === slug) ?? null;
 }
@@ -565,9 +595,10 @@ export async function loadArticles(
   page: number,
   pageSize: number,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<PaginatedContent<ArticleDetail>> {
   return paginatedFromApi<ArticleDetail>(
-    "/v1/public/articles",
+    withLocale("/v1/public/articles", locale),
     articles,
     pageSize,
     (page - 1) * pageSize,
@@ -578,9 +609,13 @@ export async function loadArticles(
 export async function loadArticle(
   slug: string,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<ArticleDetail | null> {
   if (apiUrl(runtime)) {
-    return fromApi<ArticleDetail>(`/v1/public/articles/${encodeURIComponent(slug)}`, runtime);
+    return fromApi<ArticleDetail>(
+      withLocale(`/v1/public/articles/${encodeURIComponent(slug)}`, locale),
+      runtime,
+    );
   }
   return articles.find((article) => article.slug === slug) ?? null;
 }

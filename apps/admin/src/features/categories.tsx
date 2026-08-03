@@ -51,6 +51,7 @@ import { COUNTRIES } from "../lib/countries";
 import { formatDate } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
 import { blockTitle, reorderBlocks, toggleBlock, type BuilderState } from "./builder";
+import { EntityTranslationsPanel } from "./entity-translations";
 
 const createSchema = z.object({
   name: z.string().min(3, "At least 3 characters").max(140),
@@ -158,6 +159,26 @@ export function CategoryListPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not update the category."),
   });
 
+  // Mass enable/disable, the same one-click switch above fanned out over
+  // every selected row — mirrors `bulkStatusMutation` in products.tsx.
+  // `set_category_status` is already idempotent, so a mixed selection of
+  // published and unpublished categories converges on the same outcome.
+  const bulkStatusMutation = useMutation({
+    mutationFn: (status: "published" | "unpublished") =>
+      Promise.all(selectedCategoryIds.map((id) => api.updateCategoryStatus(id, status))),
+    onSuccess: async (_result, status) => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-categories"] });
+      toast.success(
+        `${selectedCategoryIds.length} categor${selectedCategoryIds.length === 1 ? "y" : "ies"} ${
+          status === "published" ? "enabled" : "disabled"
+        }.`,
+      );
+      setSelectedCategoryIds([]);
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not update the categories."),
+  });
+
   function toggleCategory(categoryId: string) {
     setSelectedCategoryIds((current) =>
       current.includes(categoryId)
@@ -177,6 +198,26 @@ export function CategoryListPage() {
         description="One composition engine renders every category — no code per category."
         actions={
           <div className="flex gap-2">
+            <PermissionGate permission="categories.publish">
+              {selectedCategoryIds.length > 0 ? (
+                <>
+                  <Button
+                    variant="secondary"
+                    onClick={() => bulkStatusMutation.mutate("published")}
+                    disabled={bulkStatusMutation.isPending}
+                  >
+                    Enable selected ({selectedCategoryIds.length})
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => bulkStatusMutation.mutate("unpublished")}
+                    disabled={bulkStatusMutation.isPending}
+                  >
+                    Disable selected ({selectedCategoryIds.length})
+                  </Button>
+                </>
+              ) : null}
+            </PermissionGate>
             <PermissionGate permission="categories.edit">
               {selectedCategoryIds.length > 0 ? (
                 <Button
@@ -682,7 +723,7 @@ function CategoryAvailabilityTab({
   );
 }
 
-const EDITOR_TABS = ["Settings", "Availability", "Layout"] as const;
+const EDITOR_TABS = ["Settings", "Availability", "Layout", "Translations"] as const;
 
 export function CategoryEditorPage() {
   const { id = "" } = useParams();
@@ -849,6 +890,18 @@ export function CategoryEditorPage() {
           category={category}
           onSave={(values) => saveMutation.mutate(values)}
           saving={saveMutation.isPending}
+        />
+      ) : tab === "Translations" ? (
+        <EntityTranslationsPanel
+          entityType="category"
+          entityId={id}
+          fields={[
+            { key: "name", label: "Name" },
+            { key: "shortDescription", label: "Short description", multiline: true },
+            { key: "heroEyebrow", label: "Hero eyebrow" },
+            { key: "heroTitle", label: "Hero title" },
+            { key: "heroDescription", label: "Hero description", multiline: true },
+          ]}
         />
       ) : (
         <div className="grid gap-6 lg:grid-cols-[280px_1fr]">

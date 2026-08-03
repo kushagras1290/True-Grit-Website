@@ -5,6 +5,7 @@ import { Section } from "../components/catalogue";
 import { PageBanner } from "../components/page-banner";
 import { PageLinkPagination } from "../components/pagination";
 import { catalogueRuntime, loadRecipes } from "../lib/catalogue.server";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
 
@@ -12,10 +13,11 @@ const RECIPE_PAGE_SIZE = 12;
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   const page = Math.max(1, Number(new URL(request.url).searchParams.get("page")) || 1);
+  const { locale } = resolveLocale(request);
   return {
     page,
     pageSize: RECIPE_PAGE_SIZE,
-    recipes: await loadRecipes(page, RECIPE_PAGE_SIZE, catalogueRuntime(context)),
+    recipes: await loadRecipes(page, RECIPE_PAGE_SIZE, catalogueRuntime(context), locale.code),
   };
 }
 

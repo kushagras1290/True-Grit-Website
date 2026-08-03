@@ -25,7 +25,11 @@ from truegrit_api.errors import ConflictError, PhoneRequiredError, ValidationApp
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
 from truegrit_api.services.bundles import resolve_bundle_discount
-from truegrit_api.services.feature_settings import load_delivery_settings, promotions_enabled
+from truegrit_api.services.feature_settings import (
+    load_delivery_settings,
+    load_storefront_settings,
+    promotions_enabled,
+)
 from truegrit_api.services.promotions import resolve_checkout_discount
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
@@ -60,14 +64,16 @@ def _validate_address(address: dict[str, Any]) -> dict[str, Any]:
     return cleaned
 
 
-async def _resolve_line(db: Database, line: CheckoutLine, now: str) -> dict[str, Any]:
+async def _resolve_line(
+    db: Database, line: CheckoutLine, now: str, *, payments_enabled: bool
+) -> dict[str, Any]:
     if line.quantity < 1 or line.quantity > _MAX_QUANTITY_PER_LINE:
         raise ValidationAppError(f"Quantity for each item must be 1-{_MAX_QUANTITY_PER_LINE}.")
     variant = await db.fetch_one(
         """
         SELECT v.id AS variant_id, v.sku, v.name AS variant_name,
                p.id AS product_id, p.name AS product_name, p.status,
-               p.accepts_orders
+               p.accepts_orders, p.payments_override
         FROM product_variants v
         JOIN products p ON p.id = v.product_id
         WHERE v.id = ? AND v.status = 'active'
@@ -76,14 +82,25 @@ async def _resolve_line(db: Database, line: CheckoutLine, now: str) -> dict[str,
     )
     if variant is None or variant["status"] != "published":
         raise ConflictError("An item in your basket is no longer available.")
-    # Per-product switch (migration 0048), independent of the site-wide one
-    # already checked by the route before `place_order` is ever called: a
-    # product can be pulled from sale on its own without touching every other
-    # order in flight. Re-checked here rather than trusted from the browser
-    # cart for the same reason price and stock are -- the cart is only ever an
-    # estimate.
+    # Per-product switch (migration 0048): a stock/quality kill-switch, always
+    # narrowing regardless of the site-wide payments switch below. Re-checked
+    # here rather than trusted from the browser cart for the same reason price
+    # and stock are -- the cart is only ever an estimate.
     if not variant["accepts_orders"]:
         raise ConflictError(f"{variant['product_name']} is not currently available to order.")
+    # Site-wide payments switch (migration 0040), overridable per product in
+    # EITHER direction (migration 0069): 'inherit' follows `payments_enabled`,
+    # 'force_enabled' takes an order even while payments are off site-wide,
+    # 'force_disabled' blocks one product even while payments are on. This is
+    # the one place that decides it -- `place_order` no longer trusts a
+    # blanket pre-check, since that cannot express a per-product override.
+    override = variant["payments_override"]
+    payments_allowed = payments_enabled if override == "inherit" else override == "force_enabled"
+    if not payments_allowed:
+        raise ConflictError(
+            f"{variant['product_name']} is not available for order right now"
+            " — we are not taking payments for it at the moment."
+        )
 
     price = await db.fetch_one(
         """
@@ -214,7 +231,13 @@ async def place_order(
         )
 
     now = utc_now_iso()
-    resolved = [await _resolve_line(db, line, now) for line in lines]
+    # Resolved once per order, not once per line: every line in the same
+    # checkout sees the same site-wide switch state, and `_resolve_line`
+    # layers each product's own override (migration 0069) on top of it.
+    payments_enabled = (await load_storefront_settings(db)).payments
+    resolved = [
+        await _resolve_line(db, line, now, payments_enabled=payments_enabled) for line in lines
+    ]
 
     currency = resolved[0]["currency_code"]
     subtotal = sum(item["line_total_minor"] for item in resolved)

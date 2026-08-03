@@ -35,3 +35,4 @@ uv.lock.tmp
 # Playwright CLI's own snapshot/screenshot artifacts from manual verification
 # sessions — debugging output, never referenced by the app or its tests.
 .playwright-cli/
+.playwright-mcp/

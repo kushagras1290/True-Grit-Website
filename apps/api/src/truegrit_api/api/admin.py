@@ -69,6 +69,7 @@ from truegrit_api.services import articles as article_service
 from truegrit_api.services import bundles as bundle_service
 from truegrit_api.services import content_comments as content_comment_service
 from truegrit_api.services import discussions as discussion_service
+from truegrit_api.services import entity_translation as entity_translation_service
 from truegrit_api.services import farm_partnerships as farm_partnership_service
 from truegrit_api.services import promotions as promotion_service
 from truegrit_api.services import recipes as recipe_service
@@ -2137,6 +2138,163 @@ async def delete_page_translation_endpoint(
 ) -> Any:
     await translation_service.delete_page_translation(db, page_id, locale)
     return {"pageId": page_id, "locale": locale, "deleted": True}
+
+
+# ---------------------------------------------------------------------------
+# Per-locale field overrides for database-sourced content (migration 0068) --
+# navigation labels, category names/descriptions, product names/descriptions,
+# and article/recipe titles/excerpts. One generic set of routes for every
+# entity type `services.entity_translation.TRANSLATABLE_FIELDS` knows about,
+# mirroring the service itself -- five near-identical route groups would just
+# be this same logic copied five times. The permission required varies by
+# entity type (a category editor should not need `pages.edit` to translate a
+# category), so it is resolved from `_ENTITY_TRANSLATION_PERMISSIONS` and
+# checked at request time rather than via a route-fixed `require_permission`.
+# ---------------------------------------------------------------------------
+
+_ENTITY_TRANSLATION_PERMISSIONS: dict[str, tuple[str, str]] = {
+    # No dedicated navigation permission exists (migration/seed-managed only,
+    # no admin CRUD) -- gated on `pages.*` since the nav translations panel
+    # lives alongside the page translations panel in Site Control.
+    "navigation_item": ("pages.view", "pages.edit"),
+    "category": ("categories.view", "categories.edit"),
+    "product": ("products.view", "products.edit"),
+    "article": ("articles.view", "articles.edit"),
+    "recipe": ("recipes.view", "recipes.edit"),
+}
+
+
+def _require_entity_translation_permission(
+    entity_type: str, principal: Principal, *, edit: bool
+) -> None:
+    permissions = _ENTITY_TRANSLATION_PERMISSIONS.get(entity_type)
+    if permissions is None:
+        raise NotFoundError(f"'{entity_type}' does not support translations yet.")
+    required = permissions[1] if edit else permissions[0]
+    if not principal.has(required):
+        raise PermissionDeniedError()
+
+
+def _camel_fields(fields: dict[str, str]) -> dict[str, str]:
+    """`fields` is a free-form map, not a Pydantic model, so `_CamelModel`'s
+    alias generator never touches its keys -- converted explicitly here (and
+    the reverse in `services.entity_translation.save_entity_translation`) so
+    the admin UI reads and writes `shortDescription` like every other field
+    in this API, never the Python-internal `short_description`."""
+    return {to_camel(key): value for key, value in fields.items()}
+
+
+def _entity_translation_payload(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "locale": row["locale"],
+        "fields": _camel_fields(row["fields"]),
+        "autoTranslated": bool(row["auto_translated"]),
+        "updatedAt": row["updated_at"],
+    }
+
+
+class EntityTranslationSaveRequest(_CamelModel):
+    fields: dict[str, str] = Field(default_factory=dict)
+
+
+@router.get("/translations/{entity_type}/{entity_id}")
+async def list_entity_translations_endpoint(
+    entity_type: str,
+    entity_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(get_current_staff)],
+) -> Any:
+    _require_entity_translation_permission(entity_type, principal, edit=False)
+    rows = await entity_translation_service.list_entity_translations(db, entity_type, entity_id)
+    return {
+        "items": [
+            {
+                "locale": row["locale"],
+                "autoTranslated": bool(row["auto_translated"]),
+                "updatedAt": row["updated_at"],
+            }
+            for row in rows
+        ]
+    }
+
+
+@router.get("/translations/{entity_type}/{entity_id}/{locale}")
+async def get_entity_translation_endpoint(
+    entity_type: str,
+    entity_id: str,
+    locale: str,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(get_current_staff)],
+) -> Any:
+    _require_entity_translation_permission(entity_type, principal, edit=False)
+    row = await entity_translation_service.get_entity_translation(
+        db, entity_type, entity_id, locale
+    )
+    if row is None:
+        # No translation yet is not an error -- the editor's own empty state
+        # (and the storefront's English fallback) both expect this, not a 404.
+        fields = await entity_translation_service.get_source_fields(db, entity_type, entity_id)
+        return {
+            "locale": locale,
+            "fields": _camel_fields(fields),
+            "autoTranslated": False,
+            "updatedAt": None,
+        }
+    return _entity_translation_payload(row)
+
+
+@router.put("/translations/{entity_type}/{entity_id}/{locale}")
+async def save_entity_translation_endpoint(
+    entity_type: str,
+    entity_id: str,
+    locale: str,
+    payload: EntityTranslationSaveRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(get_current_staff)],
+) -> Any:
+    _require_entity_translation_permission(entity_type, principal, edit=True)
+    saved = await entity_translation_service.save_entity_translation(
+        db,
+        principal,
+        _request_id(request),
+        entity_type,
+        entity_id,
+        locale,
+        payload.fields,
+        auto_translated=False,
+    )
+    return _entity_translation_payload(saved)
+
+
+@router.post("/translations/{entity_type}/{entity_id}/{locale}/auto-translate")
+async def auto_translate_entity_endpoint(
+    entity_type: str,
+    entity_id: str,
+    locale: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    translator: Annotated[Translator, Depends(get_translator)],
+    principal: Annotated[Principal, Depends(get_current_staff)],
+) -> Any:
+    _require_entity_translation_permission(entity_type, principal, edit=True)
+    saved = await entity_translation_service.auto_translate_entity(
+        db, principal, _request_id(request), translator, entity_type, entity_id, locale
+    )
+    return _entity_translation_payload(saved)
+
+
+@router.delete("/translations/{entity_type}/{entity_id}/{locale}")
+async def delete_entity_translation_endpoint(
+    entity_type: str,
+    entity_id: str,
+    locale: str,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(get_current_staff)],
+) -> Any:
+    _require_entity_translation_permission(entity_type, principal, edit=True)
+    await entity_translation_service.delete_entity_translation(db, entity_type, entity_id, locale)
+    return {"entityType": entity_type, "entityId": entity_id, "locale": locale, "deleted": True}
 
 
 # ---------------------------------------------------------------------------
@@ -4784,6 +4942,10 @@ class ProductUpdateRequest(_CamelModel):
     # site-wide one on Site Control. False keeps the product page live and
     # browsable while pulling only "Add to basket" -- see the migration.
     accepts_orders: bool | None = Field(default=None)
+    # Overrides the site-wide payments switch in either direction (migration
+    # 0069) -- "inherit" | "force_enabled" | "force_disabled", validated
+    # against `services.catalogue._PAYMENTS_OVERRIDE_VALUES`.
+    payments_override: str | None = Field(default=None, max_length=20)
     farm_id: str | None = Field(default=None)
     category_ids: list[str] | None = Field(default=None)
 
@@ -4849,6 +5011,7 @@ async def get_product_endpoint(
         "releaseCountries": detail["release_countries"],
         "returnEligible": bool(detail["return_eligible"]),
         "acceptsOrders": bool(detail["accepts_orders"]),
+        "paymentsOverride": detail["payments_override"],
         "linkedProducts": [
             {
                 "id": linked["id"],

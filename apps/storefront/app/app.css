@@ -95,6 +95,31 @@ html.js-enabled .language-switcher-submit {
   }
 }
 
+/* LanguageSuggestionPrompt's entrance (components/language-suggestion.tsx):
+   a short settle-in rather than an abrupt appearance, so the popover reads as
+   having arrived FROM the header's language button rather than simply
+   materializing. Skipped entirely under reduced motion below. */
+@keyframes language-prompt-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-language-prompt-in {
+  animation: language-prompt-in 220ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-language-prompt-in {
+    animation: none;
+  }
+}
+
 /* Cursor trails that replace the pointer rather than follow it. Set only by
    `CursorTrail` while a trail is mounted, and removed on cleanup, so switching
    the trail off can never strand a visitor without a cursor. Interactive

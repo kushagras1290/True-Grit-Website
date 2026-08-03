@@ -11,11 +11,13 @@ import {
   type SearchGroups,
 } from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const country = resolveCountry(request);
+  const { locale } = resolveLocale(request);
   const runtime = catalogueRuntime(context);
   const query = (url.searchParams.get("q") ?? "").slice(0, 120);
   const [results, highlights] = await Promise.all([
@@ -26,15 +28,18 @@ export async function loader({ request, context }: Route.LoaderArgs) {
           total: 0,
           groups: [],
         }),
-    loadHighlightedProducts(country, runtime),
+    loadHighlightedProducts(country, runtime, locale.code),
   ]);
 
   // Product hits become full price cards; slugs come from the search payload
-  // (with a path fallback for older API responses).
+  // (with a path fallback for older API responses). The search match itself
+  // runs against English content (the FTS index is not translated), but the
+  // cards rendered from those slugs pick up saved translations same as any
+  // other product grid.
   const productSlugs = (results.groups.find((group) => group.group === "products")?.items ?? [])
     .map((item) => item.slug ?? item.path.replace("/product/", ""))
     .filter(Boolean);
-  const productResults = await loadProductsBySlugs(productSlugs, country, runtime);
+  const productResults = await loadProductsBySlugs(productSlugs, country, runtime, locale.code);
 
   return { results, productResults, highlights };
 }
