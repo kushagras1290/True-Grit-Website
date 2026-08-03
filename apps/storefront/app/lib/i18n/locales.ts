@@ -118,6 +118,69 @@ export const LOCALES: readonly LocaleDefinition[] = [
   { code: "ro", nativeName: "Română", englishName: "Romanian", dir: "ltr", group: "world" },
   { code: "sk", nativeName: "Slovenčina", englishName: "Slovak", dir: "ltr", group: "world" },
   { code: "bg", nativeName: "Български", englishName: "Bulgarian", dir: "ltr", group: "world" },
+  { code: "af", nativeName: "Afrikaans", englishName: "Afrikaans", dir: "ltr", group: "world" },
+  { code: "sq", nativeName: "Shqip", englishName: "Albanian", dir: "ltr", group: "world" },
+  { code: "am", nativeName: "አማርኛ", englishName: "Amharic", dir: "ltr", group: "world" },
+  { code: "hy", nativeName: "Հայերեն", englishName: "Armenian", dir: "ltr", group: "world" },
+  {
+    code: "az",
+    nativeName: "Azərbaycanca",
+    englishName: "Azerbaijani",
+    dir: "ltr",
+    group: "world",
+  },
+  { code: "eu", nativeName: "Euskara", englishName: "Basque", dir: "ltr", group: "world" },
+  { code: "be", nativeName: "Беларуская", englishName: "Belarusian", dir: "ltr", group: "world" },
+  { code: "bs", nativeName: "Bosanski", englishName: "Bosnian", dir: "ltr", group: "world" },
+  { code: "ca", nativeName: "Català", englishName: "Catalan", dir: "ltr", group: "world" },
+  { code: "hr", nativeName: "Hrvatski", englishName: "Croatian", dir: "ltr", group: "world" },
+  { code: "et", nativeName: "Eesti", englishName: "Estonian", dir: "ltr", group: "world" },
+  { code: "gl", nativeName: "Galego", englishName: "Galician", dir: "ltr", group: "world" },
+  { code: "ka", nativeName: "ქართული", englishName: "Georgian", dir: "ltr", group: "world" },
+  { code: "ha", nativeName: "Hausa", englishName: "Hausa", dir: "ltr", group: "world" },
+  { code: "is", nativeName: "Íslenska", englishName: "Icelandic", dir: "ltr", group: "world" },
+  { code: "ga", nativeName: "Gaeilge", englishName: "Irish", dir: "ltr", group: "world" },
+  { code: "jv", nativeName: "Basa Jawa", englishName: "Javanese", dir: "ltr", group: "world" },
+  { code: "kk", nativeName: "Қазақша", englishName: "Kazakh", dir: "ltr", group: "world" },
+  { code: "km", nativeName: "ខ្មែរ", englishName: "Khmer", dir: "ltr", group: "world" },
+  { code: "lo", nativeName: "ລາວ", englishName: "Lao", dir: "ltr", group: "world" },
+  { code: "lv", nativeName: "Latviešu", englishName: "Latvian", dir: "ltr", group: "world" },
+  { code: "lt", nativeName: "Lietuvių", englishName: "Lithuanian", dir: "ltr", group: "world" },
+  { code: "mk", nativeName: "Македонски", englishName: "Macedonian", dir: "ltr", group: "world" },
+  { code: "ms", nativeName: "Bahasa Melayu", englishName: "Malay", dir: "ltr", group: "world" },
+  { code: "mn", nativeName: "Монгол", englishName: "Mongolian", dir: "ltr", group: "world" },
+  { code: "my", nativeName: "မြန်မာ", englishName: "Burmese", dir: "ltr", group: "world" },
+  { code: "ps", nativeName: "پښتو", englishName: "Pashto", dir: "rtl", group: "world" },
+  { code: "sr", nativeName: "Српски", englishName: "Serbian", dir: "ltr", group: "world" },
+  { code: "sl", nativeName: "Slovenščina", englishName: "Slovenian", dir: "ltr", group: "world" },
+  { code: "so", nativeName: "Soomaali", englishName: "Somali", dir: "ltr", group: "world" },
+  { code: "zu", nativeName: "isiZulu", englishName: "Zulu", dir: "ltr", group: "world" },
+  { code: "xh", nativeName: "isiXhosa", englishName: "Xhosa", dir: "ltr", group: "world" },
+  { code: "yo", nativeName: "Yorùbá", englishName: "Yoruba", dir: "ltr", group: "world" },
+  { code: "ig", nativeName: "Igbo", englishName: "Igbo", dir: "ltr", group: "world" },
+  { code: "uz", nativeName: "Oʻzbekcha", englishName: "Uzbek", dir: "ltr", group: "world" },
+  { code: "tk", nativeName: "Türkmençe", englishName: "Turkmen", dir: "ltr", group: "world" },
+  { code: "ky", nativeName: "Кыргызча", englishName: "Kyrgyz", dir: "ltr", group: "world" },
+  { code: "tg", nativeName: "Тоҷикӣ", englishName: "Tajik", dir: "ltr", group: "world" },
+  { code: "ceb", nativeName: "Cebuano", englishName: "Cebuano", dir: "ltr", group: "world" },
+  { code: "cy", nativeName: "Cymraeg", englishName: "Welsh", dir: "ltr", group: "world" },
+  { code: "mt", nativeName: "Malti", englishName: "Maltese", dir: "ltr", group: "world" },
+  {
+    code: "lb",
+    nativeName: "Lëtzebuergesch",
+    englishName: "Luxembourgish",
+    dir: "ltr",
+    group: "world",
+  },
+  {
+    code: "rw",
+    nativeName: "Ikinyarwanda",
+    englishName: "Kinyarwanda",
+    dir: "ltr",
+    group: "world",
+  },
+  { code: "ny", nativeName: "Chichewa", englishName: "Chichewa", dir: "ltr", group: "world" },
+  { code: "ug", nativeName: "ئۇيغۇرچە", englishName: "Uyghur", dir: "rtl", group: "world" },
 ] as const;
 
 const BY_CODE: ReadonlyMap<string, LocaleDefinition> = new Map(
@@ -156,6 +219,15 @@ export function matchLocale(code: string | null | undefined): LocaleDefinition |
   const exact = BY_CODE.get(normalized);
   if (exact) return exact;
   const base = normalized.split("-")[0]!;
+  if (base === "zh") {
+    // Browsers normally send regional Chinese tags rather than explicit
+    // script tags. Region must be resolved before the generic base-language
+    // fallback or zh-TW/zh-HK would incorrectly receive Simplified Chinese.
+    const subtags = new Set(normalized.split("-").slice(1));
+    const traditional =
+      subtags.has("hant") || subtags.has("tw") || subtags.has("hk") || subtags.has("mo");
+    return BY_CODE.get(traditional ? "zh-hant" : "zh-hans") ?? null;
+  }
   return BY_BASE_LANGUAGE.get(base) ?? null;
 }
 

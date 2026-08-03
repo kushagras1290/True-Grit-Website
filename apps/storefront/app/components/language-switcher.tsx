@@ -2,7 +2,7 @@
  * The language picker.
  *
  * A `<form>` around a `<select>` and a submit button, posting to `/language`.
- * Deliberately not a fetch-and-reload: with fifty-five options the control has
+ * Deliberately not a fetch-and-reload: with one hundred options the control has
  * to work before hydration, and the visitor most in need of it is by definition
  * the one who cannot read the page they are stuck on.
  *

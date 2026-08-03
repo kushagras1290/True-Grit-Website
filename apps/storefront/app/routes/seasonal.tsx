@@ -9,6 +9,7 @@ import { loadCmsRoute, type CmsRouteData } from "../lib/cms-route.server";
 import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
@@ -66,9 +67,13 @@ export default function SeasonalPage({ loaderData }: Route.ComponentProps) {
           <ProductGrid products={loaderData.seasonalProducts} />
         ) : (
           <div className="rounded-md border border-dashed border-line-strong px-6 py-14 text-center">
-            <p className="font-display text-lg text-ink">Between harvests</p>
+            <p className="font-display text-lg text-ink">
+              <LocalizedText>Between harvests</LocalizedText>
+            </p>
             <p className="mt-1 text-sm text-ink-muted">
-              The next seasonal drop will appear here when farms confirm availability.
+              <LocalizedText>
+                The next seasonal drop will appear here when farms confirm availability.
+              </LocalizedText>
             </p>
           </div>
         )}
@@ -86,27 +91,33 @@ export default function SeasonalPage({ loaderData }: Route.ComponentProps) {
         <div className="grid gap-8 md:grid-cols-[1fr_1fr] md:items-center">
           <div>
             <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-              How seasonal works
+              <LocalizedText>How seasonal works</LocalizedText>
             </p>
             <h2 className="mt-2 font-display text-3xl text-ink">
-              We publish only what farms can stand behind.
+              <LocalizedText>We publish only what farms can stand behind.</LocalizedText>
             </h2>
             <p className="mt-3 text-base text-ink-muted">
-              Some harvests open for a short weekly window, some pantry lots stay available longer,
-              and some products disappear until the next crop is ready.
+              <LocalizedText>
+                Some harvests open for a short weekly window, some pantry lots stay available
+                longer, and some products disappear until the next crop is ready.
+              </LocalizedText>
             </p>
           </div>
           <div className="rounded-md border border-line bg-surface p-6">
-            <p className="font-medium text-ink">Seasonal updates</p>
+            <p className="font-medium text-ink">
+              <LocalizedText>Seasonal updates</LocalizedText>
+            </p>
             <p className="mt-2 text-sm text-ink-muted">
-              Browse the blog for field notes, harvest timing and ingredient ideas tied to the
-              current market.
+              <LocalizedText>
+                Browse the blog for field notes, harvest timing and ingredient ideas tied to the
+                current market.
+              </LocalizedText>
             </p>
             <Link
               to="/blog"
               className="mt-5 inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90"
             >
-              Read the blog
+              <LocalizedText>Read the blog</LocalizedText>
             </Link>
           </div>
         </div>

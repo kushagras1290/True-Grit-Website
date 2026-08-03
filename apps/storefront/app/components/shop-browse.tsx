@@ -23,6 +23,7 @@ import { Link, useSearchParams } from "react-router";
 
 import { CategoryChip, CategoryTile } from "./catalogue";
 import { Slider } from "./slider";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 export const DEPARTMENTS_ANCHOR = "departments";
 export const PRODUCTS_ANCHOR = "products";
@@ -96,6 +97,7 @@ export function ShopSectionBar({
   onOpenIndex: () => void;
   showDepartments: boolean;
 }) {
+  const localize = useLocalizeText();
   const [activeAnchor, setActiveAnchor] = useState<string>(
     showDepartments ? DEPARTMENTS_ANCHOR : PRODUCTS_ANCHOR,
   );
@@ -131,21 +133,22 @@ export function ShopSectionBar({
   return (
     <div className="sticky top-[var(--header-height)] z-30 border-y border-line bg-surface/95 backdrop-blur">
       <div className="mx-auto flex max-w-[80rem] items-center justify-between gap-3 px-4 py-2.5 sm:px-6">
-        <nav aria-label="Shop sections" className="flex items-center gap-1">
+        <nav aria-label={localize("Shop sections")} className="flex items-center gap-1">
           {showDepartments ? (
             <a href={`#${DEPARTMENTS_ANCHOR}`} className={segmentClass(DEPARTMENTS_ANCHOR)}>
-              Departments
+              <LocalizedText>Departments</LocalizedText>
             </a>
           ) : null}
           <a href={`#${PRODUCTS_ANCHOR}`} className={segmentClass(PRODUCTS_ANCHOR)}>
-            Products
+            <LocalizedText>Products</LocalizedText>
           </a>
         </nav>
 
         <div className="flex items-center gap-3">
           <p className="hidden text-sm text-ink-muted sm:block" role="status">
             {activeFilter ? `${activeFilter.name} · ` : ""}
-            {productTotal} product{productTotal === 1 ? "" : "s"}
+            {productTotal} <LocalizedText>product</LocalizedText>
+            {productTotal === 1 ? "" : "s"}
           </p>
           <button
             type="button"
@@ -180,6 +183,7 @@ function IndexLink({
   onNavigate?: () => void;
   indented?: boolean;
 }) {
+  const localize = useLocalizeText();
   return (
     <Link
       to={href}
@@ -193,7 +197,7 @@ function IndexLink({
           : "text-ink hover:bg-canvas hover:text-brand")
       }
     >
-      <span>{label}</span>
+      <span>{localize(label)}</span>
       <span className="shrink-0 text-xs text-ink-muted">{count}</span>
     </Link>
   );
@@ -218,9 +222,10 @@ function CategoryIndexNav({
   activeDepartmentId: string | null;
   onNavigate?: () => void;
 }) {
+  const localize = useLocalizeText();
   const [searchParams] = useSearchParams();
   return (
-    <nav aria-label="Categories">
+    <nav aria-label={localize("Categories")}>
       <IndexLink
         label="All products"
         count={tree.reduce((sum, node) => sum + node.totalProductCount, 0)}
@@ -306,7 +311,7 @@ export function CategorySidebar({
     <aside className="hidden lg:block">
       <div className="sticky top-[calc(var(--header-height)+4rem)] max-h-[calc(100vh-var(--header-height)-6rem)] overflow-y-auto pr-2">
         <p className="mb-2 px-2 text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-          Browse
+          <LocalizedText>Browse</LocalizedText>
         </p>
         <CategoryIndexNav
           tree={tree}
@@ -336,6 +341,7 @@ export function CategoryDrawer({
   open: boolean;
   onClose: () => void;
 }) {
+  const localize = useLocalizeText();
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
 
@@ -360,7 +366,7 @@ export function CategoryDrawer({
     <div className="fixed inset-0 z-50 lg:hidden">
       <button
         type="button"
-        aria-label="Close categories"
+        aria-label={localize("Close categories")}
         onClick={onClose}
         className="absolute inset-0 h-full w-full cursor-default bg-ink/40"
       />
@@ -374,13 +380,13 @@ export function CategoryDrawer({
       >
         <div className="flex items-center justify-between border-b border-line px-4 py-3">
           <p id={titleId} className="font-display text-lg text-ink">
-            Categories
+            <LocalizedText>Categories</LocalizedText>
           </p>
           <button
             type="button"
             onClick={onClose}
             className="flex min-h-11 min-w-11 items-center justify-center text-ink hover:text-brand"
-            aria-label="Close categories"
+            aria-label={localize("Close categories")}
           >
             <X size={19} aria-hidden />
           </button>

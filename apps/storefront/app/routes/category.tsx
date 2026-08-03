@@ -14,6 +14,7 @@ import {
 import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const pageNumber = Math.max(1, Number(new URL(request.url).searchParams.get("page")) || 1);
@@ -58,7 +59,7 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
         {page.subcategories.length > 0 ? (
           <div className="mb-7">
             <h2 className="mb-3 text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-              Sections in {page.name}
+              <LocalizedText>Sections in</LocalizedText> {page.name}
             </h2>
             <ul className="flex flex-wrap gap-2">
               {page.subcategories.map((subcategory) => (
@@ -75,7 +76,8 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
         ) : null}
 
         <p className="mb-5 text-sm text-ink-muted" role="status">
-          {page.productsTotal} product{page.productsTotal === 1 ? "" : "s"}
+          {page.productsTotal} <LocalizedText>product</LocalizedText>
+          {page.productsTotal === 1 ? "" : "s"}
         </p>
         <ProductGrid products={page.products} />
         <PageLinkPagination page={pageNumber} pageSize={pageSize} total={page.productsTotal} />

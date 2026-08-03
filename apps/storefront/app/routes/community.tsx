@@ -10,6 +10,7 @@ import { listDiscussions, type DiscussionSummary } from "../lib/community";
 import { useCustomer } from "../lib/customer-auth";
 import { mediaUrl } from "../lib/media";
 import { mergeRouteSeo, seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 const DISCUSSIONS_PAGE_SIZE = 12;
 const fallbackSeo = {
@@ -63,30 +64,41 @@ export default function CommunityPage(_props: Route.ComponentProps) {
       <Section eyebrow="Community" heading="Open discussions">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
           <p className="max-w-lg text-sm text-ink-muted">
-            Ask questions, swap tips, and talk to other members of the True Grit community.
+            <LocalizedText>
+              Ask questions, swap tips, and talk to other members of the True Grit community.
+            </LocalizedText>
           </p>
           {status === "authenticated" ? (
             <Link
               to="/community/new"
               className="inline-flex min-h-11 shrink-0 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90"
             >
-              Start a discussion
+              <LocalizedText>Start a discussion</LocalizedText>
             </Link>
           ) : (
-            <p className="text-xs text-ink-muted">Sign in to start a discussion or comment.</p>
+            <p className="text-xs text-ink-muted">
+              <LocalizedText>Sign in to start a discussion or comment.</LocalizedText>
+            </p>
           )}
         </div>
 
         {failed ? (
-          <p className="text-sm text-ink-muted">Discussions are unavailable right now.</p>
+          <p className="text-sm text-ink-muted">
+            <LocalizedText>Discussions are unavailable right now.</LocalizedText>
+          </p>
         ) : discussions === null ? (
-          <p className="text-sm text-ink-muted">Loading discussions…</p>
+          <p className="text-sm text-ink-muted">
+            <LocalizedText>Loading discussions…</LocalizedText>
+          </p>
         ) : discussions.length === 0 ? (
-          <p className="text-sm text-ink-muted">No discussions yet. Be the first to start one.</p>
+          <p className="text-sm text-ink-muted">
+            <LocalizedText>No discussions yet. Be the first to start one.</LocalizedText>
+          </p>
         ) : (
           <div>
             <p className="mb-4 text-sm text-ink-muted" role="status">
-              {total} discussion{total === 1 ? "" : "s"}
+              {total} <LocalizedText>discussion</LocalizedText>
+              {total === 1 ? "" : "s"}
             </p>
             {/* Three across at a normal desktop width, and the count follows the
               space actually available: `auto-fill` recomputes on resize *and*
@@ -104,7 +116,7 @@ export default function CommunityPage(_props: Route.ComponentProps) {
                       <img
                         src={mediaUrl(entry.imageUrl)}
                         alt={entry.imageAlt || ""}
-                        className="aspect-[16/9] w-full object-cover"
+                        className="aspect-[16/9] w-full bg-subtle object-contain"
                         loading="lazy"
                       />
                     ) : null}
@@ -116,7 +128,8 @@ export default function CommunityPage(_props: Route.ComponentProps) {
                       {/* Pushed to the bottom so the meta line sits flush across a
                         row of cards whose titles differ in length. */}
                       <span className="mt-auto pt-3 text-xs text-ink-muted">
-                        {entry.authorName} · {entry.commentCount} comment
+                        {entry.authorName} · {entry.commentCount}{" "}
+                        <LocalizedText>comment</LocalizedText>
                         {entry.commentCount === 1 ? "" : "s"} ·{" "}
                         {new Date(entry.lastActivityAt).toLocaleDateString()}
                       </span>

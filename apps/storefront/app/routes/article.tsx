@@ -74,7 +74,7 @@ export default function ArticlePage({ loaderData }: Route.ComponentProps) {
           thumbnail rather than a banner. The title lives in the banner, so the
           article body below starts at the byline. */}
       <PageBanner
-        imageUrl={article.heroImageUrl}
+        imageUrl={article.heroImageUrl || "/content/default-blog.webp"}
         imageAlt={article.heroImageAlt}
         eyebrow={`${article.authorName} · ${article.readingMinutes} min read`}
         heading={article.title}

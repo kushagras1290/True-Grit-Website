@@ -30,7 +30,7 @@ export default function FarmsPage({ loaderData }: Route.ComponentProps) {
           `PageBanner`. Left blank in Site Control, it renders as the plain
           gradient backdrop rather than an unrelated stock photo. */}
       <PageBanner
-        imageUrl={banners.farmsImageUrl || null}
+        imageUrl={banners.farmsImageUrl || "/banners/content/default-market-banner.png"}
         imageAlt={banners.farmsImageAlt}
         eyebrow={t("farms.eyebrow")}
         heading={t("farms.heading")}

@@ -28,9 +28,11 @@ import type { ReactNode } from "react";
 import { Link } from "react-router";
 
 import { mediaUrl } from "../lib/media";
+import { useLocalizeText } from "../lib/i18n/localized-text";
 
 /** Matches the homepage hero exactly — see the module comment. */
 export const BANNER_FRAME = "relative h-[21rem] w-full overflow-hidden md:h-[29rem]";
+export const DEFAULT_PAGE_BANNER_IMAGE = "/banners/content/default-market-banner.png";
 
 export interface PageBannerProps {
   imageUrl?: string | null;
@@ -71,22 +73,30 @@ export function PageBanner({
   children,
   loading = "eager",
 }: PageBannerProps) {
-  const resolved = imageUrl ? mediaUrl(imageUrl) : null;
+  const localize = useLocalizeText();
+  // A banner is never a blank gradient. CMS media remains authoritative, but
+  // null/empty records get a real project-owned photograph while an editor is
+  // still preparing route-specific art.
+  const resolved = mediaUrl(imageUrl || DEFAULT_PAGE_BANNER_IMAGE);
 
   const content = (
     <>
-      {resolved ? (
-        <img
-          src={resolved}
-          // Decorative: the heading below carries the meaning, so an empty alt
-          // avoids a screen reader announcing the same words twice. A caller
-          // that supplies real alt text gets it used.
-          alt={imageAlt || ""}
-          className="absolute inset-0 h-full w-full object-cover"
-          fetchPriority={loading === "eager" ? "high" : "auto"}
-          loading={loading}
-        />
-      ) : null}
+      <img
+        src={resolved}
+        alt=""
+        aria-hidden
+        className="absolute inset-0 h-full w-full scale-105 object-cover opacity-45 blur-md"
+      />
+      <img
+        src={resolved}
+        // Decorative: the heading below carries the meaning, so an empty alt
+        // avoids a screen reader announcing the same words twice. A caller
+        // that supplies real alt text gets it used.
+        alt={imageAlt || ""}
+        className="absolute inset-0 h-full w-full object-contain"
+        fetchPriority={loading === "eager" ? "high" : "auto"}
+        loading={loading}
+      />
       {/* The scrim is what keeps the heading legible over an arbitrary photo,
           and it doubles as the banner's background when there is no image. */}
       <span
@@ -102,14 +112,14 @@ export function PageBanner({
         <div className="mt-auto pt-12">
           {eyebrow ? (
             <p className="text-xs font-semibold tracking-[0.14em] text-white/80 uppercase">
-              {eyebrow}
+              {localize(eyebrow)}
             </p>
           ) : null}
           <h1 className="mt-2 max-w-3xl font-display text-3xl leading-tight text-white md:text-5xl">
-            {heading}
+            {localize(heading)}
           </h1>
           {description ? (
-            <p className="mt-3 max-w-2xl text-base text-white/85">{description}</p>
+            <p className="mt-3 max-w-2xl text-base text-white/85">{localize(description)}</p>
           ) : null}
           {children ? <div className="mt-5">{children}</div> : null}
         </div>
@@ -120,7 +130,7 @@ export function PageBanner({
   if (href) {
     return (
       <section className="bg-banner">
-        <Link to={href} className={`group block ${BANNER_FRAME}`} aria-label={heading}>
+        <Link to={href} className={`group block ${BANNER_FRAME}`} aria-label={localize(heading)}>
           {content}
         </Link>
       </section>

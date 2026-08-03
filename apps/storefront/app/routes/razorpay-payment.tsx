@@ -6,6 +6,7 @@ import type { Route } from "./+types/razorpay-payment";
 import { payWithRazorpay, readRazorpayWindowPayload, type PlacedOrder } from "../lib/commerce";
 import { AuthError } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 type PaymentState = "preparing" | "processing" | "paid" | "failed";
 
@@ -108,7 +109,7 @@ export default function RazorpayPaymentPage(_props: Route.ComponentProps) {
           </Link>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1 text-xs font-medium text-ink-muted">
             <LockKeyhole className="h-3.5 w-3.5" aria-hidden />
-            Razorpay
+            <LocalizedText>Razorpay</LocalizedText>
           </span>
         </header>
 
@@ -126,7 +127,7 @@ export default function RazorpayPaymentPage(_props: Route.ComponentProps) {
               <Icon className={`h-6 w-6 ${isBusy ? "animate-spin" : ""}`} aria-hidden />
             </div>
             <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-              Secure payment
+              <LocalizedText>Secure payment</LocalizedText>
             </p>
             <h1 className="mt-2 font-display text-3xl leading-tight text-ink">
               {state === "paid"
@@ -138,7 +139,8 @@ export default function RazorpayPaymentPage(_props: Route.ComponentProps) {
             <p className="mt-3 text-sm leading-6 text-ink-muted">{message}</p>
             {reference ? (
               <p className="mt-5 rounded-sm border border-line bg-canvas px-3 py-2 text-sm text-ink">
-                Order <span className="font-medium">{reference}</span>
+                <LocalizedText>Order</LocalizedText>{" "}
+                <span className="font-medium">{reference}</span>
               </p>
             ) : null}
             {state === "failed" ? (
@@ -147,14 +149,16 @@ export default function RazorpayPaymentPage(_props: Route.ComponentProps) {
                 onClick={() => window.close()}
                 className="mt-6 min-h-11 w-full rounded-sm border border-line-strong px-4 text-sm font-medium text-ink hover:bg-canvas"
               >
-                Close window
+                <LocalizedText>Close window</LocalizedText>
               </button>
             ) : null}
           </section>
         </main>
 
         <footer className="border-t border-line pt-4 text-center text-xs text-ink-muted">
-          Payments are processed by Razorpay. True Grit never stores card details.
+          <LocalizedText>
+            Payments are processed by Razorpay. True Grit never stores card details.
+          </LocalizedText>
         </footer>
       </div>
     </div>

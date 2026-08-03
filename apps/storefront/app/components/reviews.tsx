@@ -3,6 +3,7 @@
  * public API in the first place, so there is nothing to filter here. */
 
 import type { ProductReview } from "@truegrit/contracts";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 export function StarRating({ rating }: { rating: number }) {
   return (
@@ -20,7 +21,8 @@ export function RatingSummary({ average, count }: { average: number; count: numb
     <span className="inline-flex items-center gap-1.5">
       <StarRating rating={Math.round(average)} />
       <span>
-        {average.toFixed(1)} ({count} review{count === 1 ? "" : "s"})
+        {average.toFixed(1)} ({count} <LocalizedText>review</LocalizedText>
+        {count === 1 ? "" : "s"})
       </span>
     </span>
   );
@@ -38,7 +40,9 @@ export function ProductReviews({
   if (reviews.length === 0) {
     return (
       <p className="text-center text-sm text-ink-muted">
-        No reviews yet. Reviews appear here once a verified purchaser writes one from their order.
+        <LocalizedText>
+          No reviews yet. Reviews appear here once a verified purchaser writes one from their order.
+        </LocalizedText>
       </p>
     );
   }

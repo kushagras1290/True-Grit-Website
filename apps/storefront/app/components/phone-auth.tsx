@@ -24,6 +24,7 @@ import {
   type PhoneVerification,
 } from "../lib/customer-auth";
 import { useSiteSettings } from "../lib/site-settings";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 const FIELD_CLASS =
   "min-h-11 w-full rounded-sm border border-line bg-canvas px-3 text-sm text-ink" +
@@ -68,6 +69,7 @@ export function PhoneVerifier({
   heading?: string;
   hint?: string;
 }) {
+  const localize = useLocalizeText();
   const [challenge, setChallenge] = useState<PhoneChallenge | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -138,10 +140,12 @@ export function PhoneVerifier({
   if (challenge === null) {
     return (
       <form className="space-y-3" onSubmit={handlePhoneSubmit}>
-        {heading ? <p className="text-sm font-medium text-ink">{heading}</p> : null}
+        {heading ? <p className="text-sm font-medium text-ink">{localize(heading)}</p> : null}
         {hint ? <p className="text-xs text-ink-muted">{hint}</p> : null}
         <label className="block space-y-1">
-          <span className="text-xs font-medium text-ink-muted">Mobile number</span>
+          <span className="text-xs font-medium text-ink-muted">
+            <LocalizedText>Mobile number</LocalizedText>
+          </span>
           <input
             name="phone"
             type="tel"
@@ -154,7 +158,7 @@ export function PhoneVerifier({
           />
         </label>
         <p id="phone-help" className="text-xs text-ink-muted">
-          Indian mobile numbers. We'll text you a 6-digit code.
+          <LocalizedText>Indian mobile numbers. We'll text you a 6-digit code.</LocalizedText>
         </p>
 
         {error ? (
@@ -172,7 +176,7 @@ export function PhoneVerifier({
             onClick={onCancel}
             className="min-h-9 w-full text-xs text-ink-muted underline-offset-4 hover:underline"
           >
-            Cancel
+            <LocalizedText>Cancel</LocalizedText>
           </button>
         ) : null}
       </form>
@@ -182,14 +186,19 @@ export function PhoneVerifier({
   return (
     <form className="space-y-3" onSubmit={handleCodeSubmit}>
       <div>
-        <p className="text-sm font-medium text-ink">Enter the code</p>
+        <p className="text-sm font-medium text-ink">
+          <LocalizedText>Enter the code</LocalizedText>
+        </p>
         <p className="text-xs text-ink-muted">
-          Sent to <span className="font-medium text-ink">{challenge.phoneMasked}</span>
+          <LocalizedText>Sent to</LocalizedText>{" "}
+          <span className="font-medium text-ink">{challenge.phoneMasked}</span>
         </p>
       </div>
 
       <label className="block space-y-1">
-        <span className="text-xs font-medium text-ink-muted">6-digit code</span>
+        <span className="text-xs font-medium text-ink-muted">
+          <LocalizedText>6-digit code</LocalizedText>
+        </span>
         <input
           ref={codeInputRef}
           name="code"
@@ -208,7 +217,8 @@ export function PhoneVerifier({
 
       {authDemoMode ? (
         <p className="rounded-sm border border-dashed border-line px-3 py-2 text-xs text-ink-muted">
-          Demo mode — no SMS is sent. Use code <span className="font-mono">{DEMO_OTP_CODE}</span>.
+          <LocalizedText>Demo mode — no SMS is sent. Use code</LocalizedText>{" "}
+          <span className="font-mono">{DEMO_OTP_CODE}</span>.
         </p>
       ) : null}
 
@@ -231,7 +241,7 @@ export function PhoneVerifier({
           }}
           className="text-ink-muted underline-offset-4 hover:underline"
         >
-          Change number
+          <LocalizedText>Change number</LocalizedText>
         </button>
         <button
           type="button"
@@ -258,6 +268,7 @@ export function PhoneVerifier({
  * exists, which is exactly what `start` refuses to disclose.
  */
 export function PhoneAuthPanel({ onDone }: { onDone: () => void }) {
+  const localize = useLocalizeText();
   const [verification, setVerification] = useState<PhoneVerification | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -301,13 +312,17 @@ export function PhoneAuthPanel({ onDone }: { onDone: () => void }) {
     return (
       <form className="space-y-3" onSubmit={handleNameSubmit}>
         <div>
-          <p className="text-sm font-medium text-ink">Almost there</p>
+          <p className="text-sm font-medium text-ink">
+            <LocalizedText>Almost there</LocalizedText>
+          </p>
           <p className="text-xs text-ink-muted">
-            Your number is verified. What should we call you?
+            <LocalizedText>Your number is verified. What should we call you?</LocalizedText>
           </p>
         </div>
         <label className="block space-y-1">
-          <span className="text-xs font-medium text-ink-muted">Name</span>
+          <span className="text-xs font-medium text-ink-muted">
+            <LocalizedText>Name</LocalizedText>
+          </span>
           <input
             name="name"
             type="text"
@@ -315,7 +330,7 @@ export function PhoneAuthPanel({ onDone }: { onDone: () => void }) {
             required
             autoFocus
             className={FIELD_CLASS}
-            placeholder="Priya Sharma"
+            placeholder={localize("Priya Sharma")}
           />
         </label>
         {error ? (
@@ -381,9 +396,13 @@ export function AddPhonePrompt({ onDone }: { onDone?: () => void }) {
   if (!started) {
     return (
       <div className="space-y-2 rounded-sm border border-line bg-canvas px-3 py-3">
-        <p className="text-sm font-medium text-ink">Add your mobile number</p>
+        <p className="text-sm font-medium text-ink">
+          <LocalizedText>Add your mobile number</LocalizedText>
+        </p>
         <p className="text-xs text-ink-muted">
-          We use it for delivery updates. You'll need a verified number to check out.
+          <LocalizedText>
+            We use it for delivery updates. You'll need a verified number to check out.
+          </LocalizedText>
         </p>
         <div className="flex gap-2">
           <button
@@ -391,7 +410,7 @@ export function AddPhonePrompt({ onDone }: { onDone?: () => void }) {
             onClick={() => setStarted(true)}
             className="min-h-9 flex-1 rounded-sm bg-brand px-3 text-xs font-medium text-ink-inverse hover:opacity-95"
           >
-            Add number
+            <LocalizedText>Add number</LocalizedText>
           </button>
           <button
             type="button"
@@ -401,7 +420,7 @@ export function AddPhonePrompt({ onDone }: { onDone?: () => void }) {
             }}
             className="min-h-9 rounded-sm border border-line px-3 text-xs text-ink-muted hover:bg-surface"
           >
-            Not now
+            <LocalizedText>Not now</LocalizedText>
           </button>
         </div>
       </div>

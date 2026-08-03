@@ -23,6 +23,7 @@ import {
 } from "react";
 
 import { getPublicApiUrl, getPublicFacebookAppId, hasPublicApiUrl } from "./public-env";
+import { LocalizedText } from "./i18n/localized-text";
 
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
 export const authDemoMode = !hasPublicApiUrl();
@@ -564,14 +565,14 @@ export function GoogleSignInButton({
         onClick={() => onCredential("demo")}
       >
         <span className="font-semibold text-brand">G</span>
-        Continue with Google
+        <LocalizedText>Continue with Google</LocalizedText>
       </button>
     );
   }
 
   return (
     <p className="rounded-sm border border-dashed border-line px-3 py-2 text-center text-xs text-ink-muted">
-      Google sign-in is not configured.
+      <LocalizedText>Google sign-in is not configured.</LocalizedText>
     </p>
   );
 }
@@ -663,7 +664,7 @@ export function FacebookSignInButton({
   if (!appId && !authDemoMode) {
     return (
       <p className="rounded-sm border border-dashed border-line px-3 py-2 text-center text-xs text-ink-muted">
-        Facebook sign-in is not configured.
+        <LocalizedText>Facebook sign-in is not configured.</LocalizedText>
       </p>
     );
   }

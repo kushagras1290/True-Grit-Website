@@ -2,6 +2,7 @@ import type { Route } from "./+types/contact";
 import { Section } from "../components/catalogue";
 import { ContactForm } from "../components/contact-form";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 export function meta(_args: Route.MetaArgs) {
   return seoMeta({
@@ -17,9 +18,11 @@ export default function ContactPage(_props: Route.ComponentProps) {
     <>
       <header className="bg-brand text-ink-inverse">
         <div className="mx-auto max-w-[80rem] px-4 py-16 sm:px-6">
-          <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-80">Contact us</p>
+          <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-80">
+            <LocalizedText>Contact us</LocalizedText>
+          </p>
           <h1 className="mt-3 max-w-2xl font-display text-4xl leading-tight">
-            Questions about an order, farm, product or partnership?
+            <LocalizedText>Questions about an order, farm, product or partnership?</LocalizedText>
           </h1>
         </div>
       </header>
@@ -32,19 +35,25 @@ export default function ContactPage(_props: Route.ComponentProps) {
           </div>
           <aside className="space-y-5">
             <div>
-              <h2 className="font-display text-xl text-ink">Email</h2>
+              <h2 className="font-display text-xl text-ink">
+                <LocalizedText>Email</LocalizedText>
+              </h2>
               <a
                 href="mailto:support@truegrit.test"
                 className="mt-2 block text-sm text-brand underline-offset-4 hover:underline"
               >
-                support@truegrit.test
+                <LocalizedText>support@truegrit.test</LocalizedText>
               </a>
             </div>
             <div>
-              <h2 className="font-display text-xl text-ink">What to include</h2>
+              <h2 className="font-display text-xl text-ink">
+                <LocalizedText>What to include</LocalizedText>
+              </h2>
               <p className="mt-2 text-sm text-ink-muted">
-                For order help, include your order reference. For farm or product questions, include
-                the product name and city.
+                <LocalizedText>
+                  For order help, include your order reference. For farm or product questions,
+                  include the product name and city.
+                </LocalizedText>
               </p>
             </div>
           </aside>
@@ -69,8 +78,10 @@ export default function ContactPage(_props: Route.ComponentProps) {
       <Section tone="subtle" eyebrow="Suggestions" heading="Have a suggestion?">
         <div className="max-w-2xl">
           <p className="-mt-4 mb-6 text-sm text-ink-muted">
-            A product you would like us to carry, a feature you wish the site had, or anything else
-            that would make True Grit better — we read every one of these ourselves.
+            <LocalizedText>
+              A product you would like us to carry, a feature you wish the site had, or anything
+              else that would make True Grit better — we read every one of these ourselves.
+            </LocalizedText>
           </p>
           <ContactForm
             compact

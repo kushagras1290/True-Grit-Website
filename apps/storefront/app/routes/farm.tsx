@@ -7,6 +7,7 @@ import { catalogueRuntime, loadFarm, loadProductsBySlugs } from "../lib/catalogu
 import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
@@ -43,7 +44,7 @@ export default function FarmPage({ loaderData }: Route.ComponentProps) {
           banners. Per-farm, unlike the sitewide farms-listing one -- set on
           this farm's own edit page in the admin, not Site Control. */}
       <PageBanner
-        imageUrl={farm.heroImageUrl}
+        imageUrl={farm.heroImageUrl || "/banners/content/default-market-banner.png"}
         imageAlt={farm.heroImageAlt || farm.name}
         eyebrow={`${farm.region} · since ${farm.establishedYear}`}
         heading={farm.name}
@@ -61,7 +62,7 @@ export default function FarmPage({ loaderData }: Route.ComponentProps) {
           <p className="max-w-2xl text-lg leading-relaxed text-ink">{farm.story}</p>
           <div>
             <h2 className="text-xs font-semibold tracking-[0.14em] text-ink-muted uppercase">
-              How they grow
+              <LocalizedText>How they grow</LocalizedText>
             </h2>
             <ul className="mt-3 space-y-2">
               {farm.methods.map((method) => (

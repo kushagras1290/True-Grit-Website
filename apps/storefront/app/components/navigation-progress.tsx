@@ -12,11 +12,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useNavigation } from "react-router";
+import { useLocalizeText } from "../lib/i18n/localized-text";
 
 const SHOW_DELAY_MS = 150;
 const MIN_VISIBLE_MS = 300;
 
 export function NavigationProgress() {
+  const localize = useLocalizeText();
   const navigation = useNavigation();
   const [visible, setVisible] = useState(false);
   const shownAtRef = useRef<number | null>(null);
@@ -50,7 +52,7 @@ export function NavigationProgress() {
   return (
     <div
       role="status"
-      aria-label="Loading"
+      aria-label={localize("Loading")}
       className="fixed inset-x-0 top-0 z-50 h-0.5 overflow-hidden bg-transparent print:hidden motion-reduce:hidden"
     >
       <div className="h-full w-full origin-left animate-[navigation-progress_1.1s_ease-in-out_infinite] bg-brand" />

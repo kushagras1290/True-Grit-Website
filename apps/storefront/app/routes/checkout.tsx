@@ -29,6 +29,7 @@ import { usePriceFormatter, useDisplayCurrency } from "../lib/currency";
 import { AuthError, useCustomer } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 export function meta(_args: Route.MetaArgs) {
   return seoMeta({
@@ -54,6 +55,7 @@ const FIELD =
   " placeholder:text-ink-muted focus:border-brand focus:outline-none";
 
 export default function CheckoutPage(_props: Route.ComponentProps) {
+  const localize = useLocalizeText();
   const { customer, status } = useCustomer();
   const { payments, promotions } = useSiteSettings();
   const { lines, subtotalMinor, clear } = useCart();
@@ -182,25 +184,31 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
           </div>
           <aside className="space-y-5">
             <div>
-              <h2 className="font-display text-lg text-ink">Your basket is safe</h2>
+              <h2 className="font-display text-lg text-ink">
+                <LocalizedText>Your basket is safe</LocalizedText>
+              </h2>
               <p className="mt-2 text-sm text-ink-muted">
-                Nothing has been cleared. When ordering reopens, everything you picked will still be
-                here.
+                <LocalizedText>
+                  Nothing has been cleared. When ordering reopens, everything you picked will still
+                  be here.
+                </LocalizedText>
               </p>
               <Link
                 to="/cart"
                 className="mt-4 inline-flex min-h-11 items-center rounded-sm border border-line px-5 text-sm font-medium text-ink hover:bg-canvas"
               >
-                Back to basket
+                <LocalizedText>Back to basket</LocalizedText>
               </Link>
             </div>
             <div>
-              <h2 className="font-display text-lg text-ink">Prefer email?</h2>
+              <h2 className="font-display text-lg text-ink">
+                <LocalizedText>Prefer email?</LocalizedText>
+              </h2>
               <a
                 href="mailto:support@truegrit.test"
                 className="mt-2 block text-sm text-brand underline-offset-4 hover:underline"
               >
-                support@truegrit.test
+                <LocalizedText>support@truegrit.test</LocalizedText>
               </a>
             </div>
           </aside>
@@ -212,7 +220,9 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
   if (status === "loading") {
     return (
       <Section eyebrow="Checkout" heading="One moment…">
-        <p className="text-sm text-ink-muted">Checking your session.</p>
+        <p className="text-sm text-ink-muted">
+          <LocalizedText>Checking your session.</LocalizedText>
+        </p>
       </Section>
     );
   }
@@ -221,14 +231,16 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
     return (
       <Section eyebrow="Checkout" heading="Sign in to check out">
         <p className="max-w-md text-sm text-ink-muted">
-          Use the account menu in the header to sign in with Google or your email, then return here
-          to place your order. Your basket is saved.
+          <LocalizedText>
+            Use the account menu in the header to sign in with Google or your email, then return
+            here to place your order. Your basket is saved.
+          </LocalizedText>
         </p>
         <Link
           to="/cart"
           className="mt-5 inline-flex min-h-11 items-center rounded-sm border border-line px-5 text-sm font-medium text-ink hover:bg-canvas"
         >
-          Back to basket
+          <LocalizedText>Back to basket</LocalizedText>
         </Link>
       </Section>
     );
@@ -241,7 +253,7 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
           to="/shop"
           className="mt-2 inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90"
         >
-          Explore the market
+          <LocalizedText>Explore the market</LocalizedText>
         </Link>
       </Section>
     );
@@ -310,14 +322,19 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
     <Section eyebrow="Checkout" heading="Delivery & payment">
       {!commerceLive ? (
         <p className="mb-5 rounded-sm border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
-          Demo mode — set <code>VITE_API_URL</code> to place real orders.
+          <LocalizedText>Demo mode — set</LocalizedText> <code>VITE_API_URL</code>{" "}
+          <LocalizedText>to place real orders.</LocalizedText>
         </p>
       ) : null}
       <form className="grid gap-10 lg:grid-cols-[1.4fr_1fr]" onSubmit={handleSubmit}>
         <div className="space-y-4">
-          <h2 className="font-display text-lg text-ink">Delivery address</h2>
+          <h2 className="font-display text-lg text-ink">
+            <LocalizedText>Delivery address</LocalizedText>
+          </h2>
           <label className="block space-y-1">
-            <span className="text-xs font-medium text-ink-muted">Full name</span>
+            <span className="text-xs font-medium text-ink-muted">
+              <LocalizedText>Full name</LocalizedText>
+            </span>
             <input
               name="recipientName"
               required
@@ -326,28 +343,45 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
             />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs font-medium text-ink-muted">Phone (optional)</span>
+            <span className="text-xs font-medium text-ink-muted">
+              <LocalizedText>Phone (optional)</LocalizedText>
+            </span>
             <input name="phone" className={FIELD} placeholder="+91…" />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs font-medium text-ink-muted">Address line 1</span>
-            <input name="line1" required className={FIELD} placeholder="House / street" />
+            <span className="text-xs font-medium text-ink-muted">
+              <LocalizedText>Address line 1</LocalizedText>
+            </span>
+            <input
+              name="line1"
+              required
+              className={FIELD}
+              placeholder={localize("House / street")}
+            />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs font-medium text-ink-muted">Address line 2 (optional)</span>
-            <input name="line2" className={FIELD} placeholder="Area / landmark" />
+            <span className="text-xs font-medium text-ink-muted">
+              <LocalizedText>Address line 2 (optional)</LocalizedText>
+            </span>
+            <input name="line2" className={FIELD} placeholder={localize("Area / landmark")} />
           </label>
           <div className="grid gap-4 sm:grid-cols-3">
             <label className="block space-y-1">
-              <span className="text-xs font-medium text-ink-muted">City</span>
+              <span className="text-xs font-medium text-ink-muted">
+                <LocalizedText>City</LocalizedText>
+              </span>
               <input name="city" required className={FIELD} />
             </label>
             <label className="block space-y-1">
-              <span className="text-xs font-medium text-ink-muted">State</span>
+              <span className="text-xs font-medium text-ink-muted">
+                <LocalizedText>State</LocalizedText>
+              </span>
               <input name="state" required className={FIELD} />
             </label>
             <label className="block space-y-1">
-              <span className="text-xs font-medium text-ink-muted">PIN code</span>
+              <span className="text-xs font-medium text-ink-muted">
+                <LocalizedText>PIN code</LocalizedText>
+              </span>
               <input name="postalCode" required className={FIELD} />
             </label>
           </div>
@@ -360,7 +394,9 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
         </div>
 
         <aside className="h-fit rounded-md border border-line bg-surface p-5 shadow-card">
-          <h2 className="font-display text-lg text-ink">Order summary</h2>
+          <h2 className="font-display text-lg text-ink">
+            <LocalizedText>Order summary</LocalizedText>
+          </h2>
           <ul className="mt-3 divide-y divide-line text-sm">
             {lines.map((line) => (
               <li key={line.variantId} className="flex justify-between gap-3 py-2">
@@ -384,13 +420,13 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
               ) : null}
               <div className="mt-3">
                 <label htmlFor="couponCode" className="text-xs font-medium text-ink-muted">
-                  Coupon code
+                  <LocalizedText>Coupon code</LocalizedText>
                 </label>
                 <div className="mt-1 flex gap-2">
                   <input
                     id="couponCode"
                     className={`${FIELD} min-h-9`}
-                    placeholder="e.g. WELCOME15"
+                    placeholder={localize("e.g. WELCOME15")}
                     value={couponInput}
                     onChange={(event) => {
                       setCouponInput(event.target.value);
@@ -410,7 +446,8 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                 {couponError ? <p className="mt-1 text-xs text-danger">{couponError}</p> : null}
                 {appliedDiscount ? (
                   <p className="mt-1 text-xs text-success">
-                    "{appliedDiscount.code}" applied — {appliedDiscount.headline}
+                    "{appliedDiscount.code}
+                    <LocalizedText>" applied —</LocalizedText> {appliedDiscount.headline}
                   </p>
                 ) : null}
               </div>
@@ -419,32 +456,43 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
 
           <dl className="mt-3 space-y-1.5 border-t border-line pt-3 text-sm">
             <div className="flex justify-between">
-              <dt className="text-ink-muted">Subtotal</dt>
+              <dt className="text-ink-muted">
+                <LocalizedText>Subtotal</LocalizedText>
+              </dt>
               <dd className="text-ink">{formatPrice(subtotalMinor)}</dd>
             </div>
             {discount > 0 ? (
               <div className="flex justify-between">
-                <dt className="text-ink-muted">Discount</dt>
+                <dt className="text-ink-muted">
+                  <LocalizedText>Discount</LocalizedText>
+                </dt>
                 <dd className="text-success">−{formatPrice(discount)}</dd>
               </div>
             ) : null}
             <div className="flex justify-between">
-              <dt className="text-ink-muted">Delivery</dt>
+              <dt className="text-ink-muted">
+                <LocalizedText>Delivery</LocalizedText>
+              </dt>
               <dd className="text-ink">{delivery === 0 ? "Free" : formatPrice(delivery)}</dd>
             </div>
             <div className="flex justify-between border-t border-line pt-1.5 font-medium">
-              <dt>Total</dt>
+              <dt>
+                <LocalizedText>Total</LocalizedText>
+              </dt>
               <dd>{formatPrice(total)}</dd>
             </div>
           </dl>
           {displayCurrency.code !== "INR" ? (
             <p className="mt-2 text-xs text-ink-muted">
-              Prices shown in {displayCurrency.code} are approximate. Your payment is charged as{" "}
+              <LocalizedText>Prices shown in</LocalizedText> {displayCurrency.code}{" "}
+              <LocalizedText>are approximate. Your payment is charged as</LocalizedText>{" "}
               {formatMoney(total)}.
             </p>
           ) : null}
           <fieldset className="mt-4 space-y-2">
-            <legend className="text-xs font-medium text-ink-muted">Payment method</legend>
+            <legend className="text-xs font-medium text-ink-muted">
+              <LocalizedText>Payment method</LocalizedText>
+            </legend>
             {razorpayAllowed ? (
               <label className="flex cursor-pointer items-start gap-2 rounded-sm border border-line px-3 py-2 text-sm">
                 <input
@@ -454,7 +502,9 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                   checked={method === "razorpay"}
                   onChange={() => setMethod("razorpay")}
                 />
-                <span className="text-ink">Pay online — UPI, cards, netbanking &amp; wallets</span>
+                <span className="text-ink">
+                  <LocalizedText>Pay online — UPI, cards, netbanking &amp; wallets</LocalizedText>
+                </span>
               </label>
             ) : null}
             {paypalAllowed ? (
@@ -467,14 +517,15 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                   onChange={() => setMethod("paypal")}
                 />
                 <span className="text-ink">
-                  PayPal — for international cards
+                  <LocalizedText>PayPal — for international cards</LocalizedText>
                   {/* PayPal cannot settle INR to an Indian merchant, so this is
                       the overseas lane only. Say who it is for, so domestic
                       customers do not pick it and hit a conversion they did not
                       want. */}
                   <span className="mt-0.5 block text-xs text-ink-muted">
-                    Paying from outside India? Charged in {payment?.paypalCurrency || "USD"} at
-                    today's rate.
+                    <LocalizedText>Paying from outside India? Charged in</LocalizedText>{" "}
+                    {payment?.paypalCurrency || "USD"}{" "}
+                    <LocalizedText>at today's rate.</LocalizedText>
                   </span>
                 </span>
               </label>
@@ -493,18 +544,21 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                 onChange={() => setMethod("cod")}
               />
               <span className="text-ink">
-                Cash on delivery
+                <LocalizedText>Cash on delivery</LocalizedText>
                 {payment && !codAllowed ? (
                   <span className="mt-0.5 block text-xs text-ink-muted">
-                    Available only up to {formatMoney(payment.codMaxMinor)} and when you have no
-                    other unpaid COD order.
+                    <LocalizedText>Available only up to</LocalizedText>{" "}
+                    {formatMoney(payment.codMaxMinor)}{" "}
+                    <LocalizedText>and when you have no other unpaid COD order.</LocalizedText>
                   </span>
                 ) : null}
               </span>
             </label>
           </fieldset>
           <p className="mt-2 text-xs text-ink-muted">
-            Prices are re-validated server-side before your order is confirmed.
+            <LocalizedText>
+              Prices are re-validated server-side before your order is confirmed.
+            </LocalizedText>
           </p>
           <button
             type="submit"

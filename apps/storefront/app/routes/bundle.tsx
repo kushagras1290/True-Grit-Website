@@ -9,6 +9,7 @@ import { catalogueRuntime, loadBundle } from "../lib/catalogue.server";
 import { useCart } from "../lib/cart";
 import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 export async function loader({ params, context }: Route.LoaderArgs) {
   const bundle = await loadBundle(params.slug, catalogueRuntime(context));
@@ -34,7 +35,7 @@ export default function BundlePage({ loaderData }: Route.ComponentProps) {
   return (
     <>
       <PageBanner
-        imageUrl={bundle.imageUrl}
+        imageUrl={bundle.imageUrl || "/banners/home/09-build-a-better-breakfast.webp"}
         imageAlt={bundle.imageAlt || bundle.name}
         eyebrow="Buy together and save"
         heading={bundle.name}
@@ -45,7 +46,7 @@ export default function BundlePage({ loaderData }: Route.ComponentProps) {
         <div className="grid gap-10 md:grid-cols-[1fr_20rem]">
           <div>
             <h2 className="text-xs font-semibold tracking-[0.14em] text-ink-muted uppercase">
-              What&apos;s in this bundle
+              <LocalizedText>What&apos;s in this bundle</LocalizedText>
             </h2>
             <ul className="mt-3 divide-y divide-line rounded-md border border-line bg-surface">
               {bundle.items.map((item) => (
@@ -54,7 +55,7 @@ export default function BundlePage({ loaderData }: Route.ComponentProps) {
                     <img
                       src={mediaUrl(item.imageUrl)}
                       alt=""
-                      className="h-14 w-14 shrink-0 rounded-sm object-cover"
+                      className="h-14 w-14 shrink-0 rounded-sm bg-subtle object-contain p-1"
                     />
                   ) : (
                     <span aria-hidden className="h-14 w-14 shrink-0 rounded-sm bg-subtle" />
@@ -79,18 +80,22 @@ export default function BundlePage({ loaderData }: Route.ComponentProps) {
           <aside className="h-fit rounded-md border border-line bg-surface p-5 shadow-card">
             <dl className="space-y-1.5 text-sm">
               <div className="flex justify-between">
-                <dt className="text-ink-muted">Priced separately</dt>
+                <dt className="text-ink-muted">
+                  <LocalizedText>Priced separately</LocalizedText>
+                </dt>
                 <dd className="text-ink-muted line-through">
                   {formatMoney(bundle.componentSumMinor)}
                 </dd>
               </div>
               <div className="flex justify-between border-t border-line pt-1.5 font-medium">
-                <dt>Bundle price</dt>
+                <dt>
+                  <LocalizedText>Bundle price</LocalizedText>
+                </dt>
                 <dd>{formatMoney(bundle.bundlePriceMinor)}</dd>
               </div>
               {bundle.savingsMinor > 0 ? (
                 <p className="!mt-2 text-xs font-medium text-success">
-                  You save {formatMoney(bundle.savingsMinor)}
+                  <LocalizedText>You save</LocalizedText> {formatMoney(bundle.savingsMinor)}
                 </p>
               ) : null}
             </dl>
@@ -116,15 +121,17 @@ export default function BundlePage({ loaderData }: Route.ComponentProps) {
               {added ? "Added to basket" : "Add bundle to basket"}
             </button>
             <p className="mt-2 text-xs text-ink-muted">
-              Every item goes into your basket at its own price; the bundle saving is applied at
-              checkout once your basket holds the full set.
+              <LocalizedText>
+                Every item goes into your basket at its own price; the bundle saving is applied at
+                checkout once your basket holds the full set.
+              </LocalizedText>
             </p>
             {added ? (
               <Link
                 to="/cart"
                 className="mt-3 block text-center text-sm font-medium text-brand hover:underline"
               >
-                View basket
+                <LocalizedText>View basket</LocalizedText>
               </Link>
             ) : null}
           </aside>

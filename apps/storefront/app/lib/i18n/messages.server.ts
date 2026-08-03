@@ -13,8 +13,9 @@
  * path, which costs them latency.
  */
 
-import { DEFAULT_LOCALE } from "./locales";
+import { DEFAULT_LOCALE, LOCALES } from "./locales";
 import type { LocaleMessages } from "./messages";
+import { GENERATED_CORE_CATALOGUES, GENERATED_LITERAL_CATALOGUES } from "./generated-catalogues";
 
 import as from "./catalog/as";
 import ar from "./catalog/ar";
@@ -78,7 +79,7 @@ import bg from "./catalog/bg";
  * shipped to the client, and an entry here would send every English visitor a
  * duplicate copy of a catalogue they have.
  */
-export const CATALOGUES: Readonly<Record<string, LocaleMessages>> = {
+const HAND_AUTHORED_CORE_CATALOGUES: Readonly<Record<string, LocaleMessages>> = {
   hi,
   bn,
   mr,
@@ -134,6 +135,24 @@ export const CATALOGUES: Readonly<Record<string, LocaleMessages>> = {
   sk,
   bg,
 };
+
+/**
+ * Every advertised locale receives a complete catalogue. Established core
+ * translations remain hand-authored; generated core entries are used only for
+ * newly introduced languages. The generated literal layer then adds the
+ * storefront-wide JSX/static copy discovered by the source audit.
+ */
+export const CATALOGUES: Readonly<Record<string, LocaleMessages>> = Object.fromEntries(
+  LOCALES.filter((locale) => locale.code !== DEFAULT_LOCALE).map((locale) => [
+    locale.code,
+    {
+      ...(HAND_AUTHORED_CORE_CATALOGUES[locale.code] ??
+        GENERATED_CORE_CATALOGUES[locale.code] ??
+        {}),
+      ...(GENERATED_LITERAL_CATALOGUES[locale.code] ?? {}),
+    },
+  ]),
+);
 
 /**
  * The entries to send the browser for `locale`.

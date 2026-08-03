@@ -153,15 +153,7 @@ def product_rows(
                f.region, COALESCE(NULLIF(p.image_alt, ''), m.alt_text, p.name) AS image_alt,
                COALESCE(
                  CASE WHEN m.object_key IS NOT NULL THEN '/media/' || m.object_key END,
-                 NULLIF(p.image_url, ''),
-                 (
-                   SELECT c.hero_image_url
-                   FROM product_categories pc
-                   JOIN categories c ON c.id = pc.category_id
-                   WHERE pc.product_id = p.id AND NULLIF(c.hero_image_url, '') IS NOT NULL
-                   ORDER BY pc.is_primary DESC, pc.sort_order, c.sort_order
-                   LIMIT 1
-                 )
+                 NULLIF(p.image_url, '')
                ) AS image_url
         FROM products p
         LEFT JOIN farms f ON f.id = p.farm_id

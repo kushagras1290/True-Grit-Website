@@ -8,8 +8,10 @@
  */
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useLocalizeText } from "../lib/i18n/localized-text";
 
 export function Slider({ ariaLabel, children }: { ariaLabel: string; children: ReactNode }) {
+  const localize = useLocalizeText();
   const trackRef = useRef<HTMLDivElement>(null);
   const [canScrollBack, setCanScrollBack] = useState(false);
   const [canScrollForward, setCanScrollForward] = useState(false);
@@ -47,7 +49,7 @@ export function Slider({ ariaLabel, children }: { ariaLabel: string; children: R
       <div
         ref={trackRef}
         role="region"
-        aria-label={ariaLabel}
+        aria-label={localize(ariaLabel)}
         onScroll={updateScrollState}
         className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
@@ -56,7 +58,7 @@ export function Slider({ ariaLabel, children }: { ariaLabel: string; children: R
       {canScrollBack ? (
         <button
           type="button"
-          aria-label="Scroll back"
+          aria-label={localize("Scroll back")}
           className={`${arrowClass} left-0 -translate-x-1/3`}
           onClick={() => scrollByPage(-1)}
         >
@@ -66,7 +68,7 @@ export function Slider({ ariaLabel, children }: { ariaLabel: string; children: R
       {canScrollForward ? (
         <button
           type="button"
-          aria-label="Scroll forward"
+          aria-label={localize("Scroll forward")}
           className={`${arrowClass} right-0 translate-x-1/3`}
           onClick={() => scrollByPage(1)}
         >

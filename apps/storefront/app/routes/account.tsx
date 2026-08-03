@@ -14,6 +14,7 @@ import {
 } from "../lib/commerce";
 import { useCustomer } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 const FREQUENCY_LABELS: Record<string, string> = {
   weekly: "Every week",
@@ -45,17 +46,25 @@ function OrderHistory() {
   }, []);
 
   if (failed) {
-    return <p className="text-sm text-ink-muted">Order history is unavailable right now.</p>;
+    return (
+      <p className="text-sm text-ink-muted">
+        <LocalizedText>Order history is unavailable right now.</LocalizedText>
+      </p>
+    );
   }
   if (orders === null) {
-    return <p className="text-sm text-ink-muted">Loading your orders…</p>;
+    return (
+      <p className="text-sm text-ink-muted">
+        <LocalizedText>Loading your orders…</LocalizedText>
+      </p>
+    );
   }
   if (orders.length === 0) {
     return (
       <p className="text-sm text-ink-muted">
-        No orders yet.{" "}
+        <LocalizedText>No orders yet.</LocalizedText>{" "}
         <Link to="/shop" className="text-brand underline-offset-4 hover:underline">
-          Start shopping
+          <LocalizedText>Start shopping</LocalizedText>
         </Link>
         .
       </p>
@@ -74,16 +83,18 @@ function OrderHistory() {
               {order.reference}
             </Link>
             <p className="mt-0.5 text-xs text-ink-muted">
-              {new Date(order.placedAt).toLocaleDateString()} · {order.itemCount} item
+              {new Date(order.placedAt).toLocaleDateString()} · {order.itemCount}{" "}
+              <LocalizedText>item</LocalizedText>
               {order.itemCount === 1 ? "" : "s"} ·{" "}
               <span className="capitalize">{order.orderStatus.replaceAll("_", " ")}</span>
             </p>
             <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-ink-muted">
               <span className="inline-flex items-center rounded-sm bg-canvas px-1.5 py-0.5 capitalize">
-                Payment: {order.paymentStatus.replaceAll("_", " ")}
+                <LocalizedText>Payment:</LocalizedText> {order.paymentStatus.replaceAll("_", " ")}
               </span>
               <span className="inline-flex items-center rounded-sm bg-canvas px-1.5 py-0.5 capitalize">
-                Fulfilment: {order.fulfilmentStatus.replaceAll("_", " ")}
+                <LocalizedText>Fulfilment:</LocalizedText>{" "}
+                {order.fulfilmentStatus.replaceAll("_", " ")}
               </span>
             </div>
           </div>
@@ -130,13 +141,19 @@ function MySubscriptions() {
   }
 
   if (subscriptions === null) {
-    return <p className="text-sm text-ink-muted">Loading your subscriptions…</p>;
+    return (
+      <p className="text-sm text-ink-muted">
+        <LocalizedText>Loading your subscriptions…</LocalizedText>
+      </p>
+    );
   }
   if (subscriptions.length === 0) {
     return (
       <p className="text-sm text-ink-muted">
-        No subscriptions yet. Look for "Subscribe & Save" on a product page to set up recurring
-        delivery.
+        <LocalizedText>
+          No subscriptions yet. Look for "Subscribe & Save" on a product page to set up recurring
+          delivery.
+        </LocalizedText>
       </p>
     );
   }
@@ -165,7 +182,7 @@ function MySubscriptions() {
                 onClick={() => act(entry.id, "pause")}
                 className="min-h-9 rounded-sm border border-line-strong px-3 text-xs font-medium text-ink hover:bg-canvas disabled:opacity-50"
               >
-                Pause
+                <LocalizedText>Pause</LocalizedText>
               </button>
             ) : null}
             {entry.status === "paused" ? (
@@ -175,7 +192,7 @@ function MySubscriptions() {
                 onClick={() => act(entry.id, "resume")}
                 className="min-h-9 rounded-sm border border-line-strong px-3 text-xs font-medium text-ink hover:bg-canvas disabled:opacity-50"
               >
-                Resume
+                <LocalizedText>Resume</LocalizedText>
               </button>
             ) : null}
             {entry.status !== "cancelled" ? (
@@ -185,7 +202,7 @@ function MySubscriptions() {
                 onClick={() => act(entry.id, "cancel")}
                 className="min-h-9 rounded-sm border border-danger/40 px-3 text-xs font-medium text-danger hover:bg-danger/5 disabled:opacity-50"
               >
-                Cancel
+                <LocalizedText>Cancel</LocalizedText>
               </button>
             ) : null}
           </div>
@@ -203,7 +220,9 @@ export default function AccountPage(_props: Route.ComponentProps) {
   if (status === "loading") {
     return (
       <Section eyebrow="Account" heading="Loading your account">
-        <p className="text-sm text-ink-muted">One moment…</p>
+        <p className="text-sm text-ink-muted">
+          <LocalizedText>One moment…</LocalizedText>
+        </p>
       </Section>
     );
   }
@@ -212,14 +231,16 @@ export default function AccountPage(_props: Route.ComponentProps) {
     return (
       <Section eyebrow="Account" heading="You're signed out">
         <p className="max-w-md text-sm text-ink-muted">
-          Open the account menu in the header to sign in with Google or your email and password.
-          Your basket is saved on this device in the meantime.
+          <LocalizedText>
+            Open the account menu in the header to sign in with Google or your email and password.
+            Your basket is saved on this device in the meantime.
+          </LocalizedText>
         </p>
         <Link
           to="/shop"
           className="mt-5 inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90"
         >
-          Continue shopping
+          <LocalizedText>Continue shopping</LocalizedText>
         </Link>
       </Section>
     );
@@ -238,32 +259,46 @@ export default function AccountPage(_props: Route.ComponentProps) {
         <div className="space-y-6">
           <dl className="divide-y divide-line rounded-md border border-line bg-surface">
             <div className="flex items-center justify-between px-5 py-4">
-              <dt className="text-sm text-ink-muted">Name</dt>
+              <dt className="text-sm text-ink-muted">
+                <LocalizedText>Name</LocalizedText>
+              </dt>
               <dd className="text-sm font-medium text-ink">{customer.displayName}</dd>
             </div>
             {/* Phone-only accounts have no address at all, so render the row
                 only when there is something real to put in it. */}
             {customer.email ? (
               <div className="flex items-center justify-between px-5 py-4">
-                <dt className="text-sm text-ink-muted">Email</dt>
+                <dt className="text-sm text-ink-muted">
+                  <LocalizedText>Email</LocalizedText>
+                </dt>
                 <dd className="text-sm font-medium text-ink">{customer.email}</dd>
               </div>
             ) : null}
             <div className="flex items-center justify-between px-5 py-4">
-              <dt className="text-sm text-ink-muted">Mobile</dt>
+              <dt className="text-sm text-ink-muted">
+                <LocalizedText>Mobile</LocalizedText>
+              </dt>
               <dd className="text-sm font-medium text-ink">
-                {customer.phone ?? <span className="text-ink-muted">Not added</span>}
+                {customer.phone ?? (
+                  <span className="text-ink-muted">
+                    <LocalizedText>Not added</LocalizedText>
+                  </span>
+                )}
               </dd>
             </div>
           </dl>
 
           <div>
-            <h2 className="mb-2 font-display text-lg text-ink">Order history</h2>
+            <h2 className="mb-2 font-display text-lg text-ink">
+              <LocalizedText>Order history</LocalizedText>
+            </h2>
             <OrderHistory />
           </div>
 
           <div>
-            <h2 className="mb-2 font-display text-lg text-ink">Subscriptions</h2>
+            <h2 className="mb-2 font-display text-lg text-ink">
+              <LocalizedText>Subscriptions</LocalizedText>
+            </h2>
             <MySubscriptions />
           </div>
         </div>
@@ -273,19 +308,19 @@ export default function AccountPage(_props: Route.ComponentProps) {
             to="/cart"
             className="inline-flex min-h-11 w-full items-center justify-center rounded-sm border border-line px-4 text-sm font-medium text-ink hover:bg-canvas"
           >
-            View basket
+            <LocalizedText>View basket</LocalizedText>
           </Link>
           <Link
             to="/account/submissions"
             className="inline-flex min-h-11 w-full items-center justify-center rounded-sm border border-line px-4 text-sm font-medium text-ink hover:bg-canvas"
           >
-            Your submissions
+            <LocalizedText>Your submissions</LocalizedText>
           </Link>
           <Link
             to="/community"
             className="inline-flex min-h-11 w-full items-center justify-center rounded-sm border border-line px-4 text-sm font-medium text-ink hover:bg-canvas"
           >
-            Community
+            <LocalizedText>Community</LocalizedText>
           </Link>
           <button
             type="button"

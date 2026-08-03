@@ -8,6 +8,7 @@ import { PageLinkPagination } from "../components/pagination";
 import { catalogueRuntime, loadBundles } from "../lib/catalogue.server";
 import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 const BUNDLE_PAGE_SIZE = 12;
 
@@ -34,7 +35,7 @@ export default function BundlesPage({ loaderData }: Route.ComponentProps) {
   return (
     <>
       <PageBanner
-        imageUrl={bundles.items[0]?.imageUrl ?? null}
+        imageUrl={bundles.items[0]?.imageUrl || "/banners/home/09-build-a-better-breakfast.webp"}
         imageAlt="A curated set of True Grit products"
         eyebrow="Buy together and save"
         heading="Bundles"
@@ -42,11 +43,14 @@ export default function BundlesPage({ loaderData }: Route.ComponentProps) {
       />
       <Section eyebrow="Browse bundles" heading="Set combinations, set prices">
         {bundles.items.length === 0 ? (
-          <p className="text-sm text-ink-muted">No bundles are live right now — check back soon.</p>
+          <p className="text-sm text-ink-muted">
+            <LocalizedText>No bundles are live right now — check back soon.</LocalizedText>
+          </p>
         ) : (
           <>
             <p className="mb-5 text-sm text-ink-muted" role="status">
-              {bundles.total} bundle{bundles.total === 1 ? "" : "s"}
+              {bundles.total} <LocalizedText>bundle</LocalizedText>
+              {bundles.total === 1 ? "" : "s"}
             </p>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {bundles.items.map((bundle) => (
@@ -60,7 +64,7 @@ export default function BundlesPage({ loaderData }: Route.ComponentProps) {
                       src={mediaUrl(bundle.imageUrl)}
                       alt={bundle.imageAlt || ""}
                       loading="lazy"
-                      className="-mx-6 -mt-6 mb-5 aspect-[16/9] w-[calc(100%+3rem)] max-w-none object-cover"
+                      className="-mx-6 -mt-6 mb-5 aspect-[16/9] w-[calc(100%+3rem)] max-w-none bg-subtle object-contain"
                     />
                   ) : null}
                   <h2 className="font-display text-xl text-ink group-hover:text-brand">
@@ -70,7 +74,8 @@ export default function BundlesPage({ loaderData }: Route.ComponentProps) {
                     <p className="mt-2 text-sm text-ink-muted">{bundle.description}</p>
                   ) : null}
                   <p className="mt-3 text-xs text-ink-muted">
-                    {bundle.items.length} item{bundle.items.length === 1 ? "" : "s"}
+                    {bundle.items.length} <LocalizedText>item</LocalizedText>
+                    {bundle.items.length === 1 ? "" : "s"}
                   </p>
                   <p className="mt-3 flex items-baseline gap-2">
                     <span className="font-display text-lg text-ink">
@@ -78,7 +83,7 @@ export default function BundlesPage({ loaderData }: Route.ComponentProps) {
                     </span>
                     {bundle.savingsMinor > 0 ? (
                       <span className="text-xs font-medium text-success">
-                        Save {formatMoney(bundle.savingsMinor)}
+                        <LocalizedText>Save</LocalizedText> {formatMoney(bundle.savingsMinor)}
                       </span>
                     ) : null}
                   </p>

@@ -6,6 +6,7 @@ import { Section } from "../components/catalogue";
 import { useCustomer } from "../lib/customer-auth";
 import { listMySubmissions, type SubmissionDetail } from "../lib/submissions";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 export function meta(_args: Route.MetaArgs) {
   return seoMeta({
@@ -39,21 +40,29 @@ function SubmissionsList() {
   }, []);
 
   if (failed) {
-    return <p className="text-sm text-ink-muted">Your submissions are unavailable right now.</p>;
+    return (
+      <p className="text-sm text-ink-muted">
+        <LocalizedText>Your submissions are unavailable right now.</LocalizedText>
+      </p>
+    );
   }
   if (submissions === null) {
-    return <p className="text-sm text-ink-muted">Loading your submissions…</p>;
+    return (
+      <p className="text-sm text-ink-muted">
+        <LocalizedText>Loading your submissions…</LocalizedText>
+      </p>
+    );
   }
   if (submissions.length === 0) {
     return (
       <p className="text-sm text-ink-muted">
-        No submissions yet.{" "}
+        <LocalizedText>No submissions yet.</LocalizedText>{" "}
         <Link to="/blog/submit" className="text-brand underline-offset-4 hover:underline">
-          Pitch a blog post
+          <LocalizedText>Pitch a blog post</LocalizedText>
         </Link>{" "}
-        or{" "}
+        <LocalizedText>or</LocalizedText>{" "}
         <Link to="/recipes/submit" className="text-brand underline-offset-4 hover:underline">
-          share a recipe
+          <LocalizedText>share a recipe</LocalizedText>
         </Link>
         .
       </p>
@@ -71,7 +80,9 @@ function SubmissionsList() {
               {new Date(entry.createdAt).toLocaleDateString()}
             </p>
             {entry.reviewerNotes ? (
-              <p className="mt-1 text-xs text-ink-muted">Note: {entry.reviewerNotes}</p>
+              <p className="mt-1 text-xs text-ink-muted">
+                <LocalizedText>Note:</LocalizedText> {entry.reviewerNotes}
+              </p>
             ) : null}
           </div>
           <div className="flex items-center gap-3">
@@ -83,17 +94,17 @@ function SubmissionsList() {
                 to={`/account/submissions/${entry.id}/edit`}
                 className="text-xs font-medium text-brand hover:underline"
               >
-                Edit &amp; resubmit
+                <LocalizedText>Edit &amp; resubmit</LocalizedText>
               </Link>
             ) : null}
             {entry.status === "approved" && entry.publishedArticleId ? (
               <Link to="/blog" className="text-xs font-medium text-brand hover:underline">
-                View live
+                <LocalizedText>View live</LocalizedText>
               </Link>
             ) : null}
             {entry.status === "approved" && entry.publishedRecipeId ? (
               <Link to="/recipes" className="text-xs font-medium text-brand hover:underline">
-                View live
+                <LocalizedText>View live</LocalizedText>
               </Link>
             ) : null}
           </div>
@@ -109,7 +120,9 @@ export default function MySubmissionsPage(_props: Route.ComponentProps) {
   if (status === "loading") {
     return (
       <Section eyebrow="Your submissions" heading="Loading...">
-        <p className="text-sm text-ink-muted">One moment…</p>
+        <p className="text-sm text-ink-muted">
+          <LocalizedText>One moment…</LocalizedText>
+        </p>
       </Section>
     );
   }
@@ -118,7 +131,9 @@ export default function MySubmissionsPage(_props: Route.ComponentProps) {
     return (
       <Section eyebrow="Your submissions" heading="You're signed out">
         <p className="max-w-md text-sm text-ink-muted">
-          Sign in to see the blog posts and recipes you have submitted.
+          <LocalizedText>
+            Sign in to see the blog posts and recipes you have submitted.
+          </LocalizedText>
         </p>
       </Section>
     );

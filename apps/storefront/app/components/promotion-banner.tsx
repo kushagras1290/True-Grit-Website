@@ -1,4 +1,4 @@
-/**
+import { LocalizedText } from "../lib/i18n/localized-text"; /**
  * Renders a `FeaturedPromotion` (or the checkout's own `FeaturedPromotionInfo`,
  * an identical shape) in one of two registers:
  *
@@ -35,11 +35,11 @@ export function PromotionBanner({
         ) : null}
         {promotion.code ? (
           <p className="mt-2 text-xs text-ink-muted">
-            Use code{" "}
+            <LocalizedText>Use code</LocalizedText>{" "}
             <span className="rounded-sm bg-brand px-1.5 py-0.5 font-mono font-semibold text-ink-inverse">
               {promotion.code}
             </span>{" "}
-            at checkout.
+            <LocalizedText>at checkout.</LocalizedText>
           </p>
         ) : null}
       </div>

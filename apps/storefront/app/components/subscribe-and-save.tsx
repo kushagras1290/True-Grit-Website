@@ -21,6 +21,7 @@ import {
 import { useCustomer } from "../lib/customer-auth";
 import { useSiteSettings } from "../lib/site-settings";
 import type { CustomerAddress, SubscriptionFrequency } from "@truegrit/contracts";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 const FREQUENCY_OPTIONS: { value: SubscriptionFrequency; label: string }[] = [
   { value: "weekly", label: "Every week" },
@@ -57,6 +58,7 @@ export function SubscribeAndSave({
   quantity: number;
   productName: string;
 }) {
+  const localize = useLocalizeText();
   const siteSettings = useSiteSettings();
   const { customer, status } = useCustomer();
   const [discountPercent, setDiscountPercent] = useState<number | null>(null);
@@ -105,8 +107,13 @@ export function SubscribeAndSave({
   if (!signedIn) {
     return (
       <div className="mt-4 rounded-md border border-dashed border-line bg-canvas px-4 py-3 text-sm text-ink-muted">
-        <span className="font-medium text-ink">Subscribe &amp; Save</span> — sign in from the
-        account menu to set up recurring delivery of {productName}.
+        <span className="font-medium text-ink">
+          <LocalizedText>Subscribe &amp; Save</LocalizedText>
+        </span>{" "}
+        <LocalizedText>
+          — sign in from the account menu to set up recurring delivery of
+        </LocalizedText>{" "}
+        {productName}.
       </div>
     );
   }
@@ -165,10 +172,12 @@ export function SubscribeAndSave({
   if (subscribed) {
     return (
       <div className="mt-4 rounded-md border border-success/40 bg-success/5 px-4 py-3 text-sm text-success">
-        Subscribed. Your first delivery is scheduled based on your chosen frequency — manage it
-        anytime from{" "}
+        <LocalizedText>
+          Subscribed. Your first delivery is scheduled based on your chosen frequency — manage it
+          anytime from
+        </LocalizedText>{" "}
         <Link to="/account" className="underline underline-offset-4">
-          your account
+          <LocalizedText>your account</LocalizedText>
         </Link>
         .
       </div>
@@ -178,18 +187,21 @@ export function SubscribeAndSave({
   return (
     <div className="mt-4 rounded-md border border-line bg-canvas px-4 py-4">
       <p className="text-sm font-medium text-ink">
-        Subscribe &amp; Save
+        <LocalizedText>Subscribe &amp; Save</LocalizedText>
         {discountPercent !== null && discountPercent > 0 ? ` ${discountPercent}%` : ""}
       </p>
       <p className="mt-1 text-xs text-ink-muted">
-        Recurring cash-on-delivery orders of {quantity} × {productName} at your chosen frequency.
-        Pause or cancel anytime from your account.
+        <LocalizedText>Recurring cash-on-delivery orders of</LocalizedText> {quantity} ×{" "}
+        {productName}{" "}
+        <LocalizedText>
+          at your chosen frequency. Pause or cancel anytime from your account.
+        </LocalizedText>
       </p>
 
       <div className="mt-3 flex flex-wrap items-end gap-3">
         <div>
           <label htmlFor="sub-frequency" className="block text-xs font-medium text-ink-muted">
-            Deliver
+            <LocalizedText>Deliver</LocalizedText>
           </label>
           <select
             id="sub-frequency"
@@ -208,7 +220,7 @@ export function SubscribeAndSave({
         {addresses && addresses.length > 0 && !addingAddress ? (
           <div>
             <label htmlFor="sub-address" className="block text-xs font-medium text-ink-muted">
-              Deliver to
+              <LocalizedText>Deliver to</LocalizedText>
             </label>
             <select
               id="sub-address"
@@ -228,7 +240,7 @@ export function SubscribeAndSave({
               className="mt-1 block text-xs text-brand hover:underline"
               onClick={() => setAddingAddress(true)}
             >
-              Use a different address
+              <LocalizedText>Use a different address</LocalizedText>
             </button>
           </div>
         ) : null}
@@ -241,7 +253,7 @@ export function SubscribeAndSave({
             onChange={(event) =>
               setAddressDraft((current) => ({ ...current, recipientName: event.target.value }))
             }
-            placeholder="Recipient name"
+            placeholder={localize("Recipient name")}
             className="min-h-9 rounded-sm border border-line-strong bg-surface px-2 text-sm text-ink sm:col-span-2"
           />
           <input
@@ -249,7 +261,7 @@ export function SubscribeAndSave({
             onChange={(event) =>
               setAddressDraft((current) => ({ ...current, line1: event.target.value }))
             }
-            placeholder="Address line 1"
+            placeholder={localize("Address line 1")}
             className="min-h-9 rounded-sm border border-line-strong bg-surface px-2 text-sm text-ink sm:col-span-2"
           />
           <input
@@ -257,7 +269,7 @@ export function SubscribeAndSave({
             onChange={(event) =>
               setAddressDraft((current) => ({ ...current, line2: event.target.value }))
             }
-            placeholder="Address line 2 (optional)"
+            placeholder={localize("Address line 2 (optional)")}
             className="min-h-9 rounded-sm border border-line-strong bg-surface px-2 text-sm text-ink sm:col-span-2"
           />
           <input
@@ -265,7 +277,7 @@ export function SubscribeAndSave({
             onChange={(event) =>
               setAddressDraft((current) => ({ ...current, city: event.target.value }))
             }
-            placeholder="City"
+            placeholder={localize("City")}
             className="min-h-9 rounded-sm border border-line-strong bg-surface px-2 text-sm text-ink"
           />
           <input
@@ -273,7 +285,7 @@ export function SubscribeAndSave({
             onChange={(event) =>
               setAddressDraft((current) => ({ ...current, state: event.target.value }))
             }
-            placeholder="State"
+            placeholder={localize("State")}
             className="min-h-9 rounded-sm border border-line-strong bg-surface px-2 text-sm text-ink"
           />
           <input
@@ -281,7 +293,7 @@ export function SubscribeAndSave({
             onChange={(event) =>
               setAddressDraft((current) => ({ ...current, postalCode: event.target.value }))
             }
-            placeholder="Postal code"
+            placeholder={localize("Postal code")}
             className="min-h-9 rounded-sm border border-line-strong bg-surface px-2 text-sm text-ink"
           />
           <input
@@ -289,7 +301,7 @@ export function SubscribeAndSave({
             onChange={(event) =>
               setAddressDraft((current) => ({ ...current, phoneE164: event.target.value }))
             }
-            placeholder="Phone (optional)"
+            placeholder={localize("Phone (optional)")}
             className="min-h-9 rounded-sm border border-line-strong bg-surface px-2 text-sm text-ink"
           />
           <div className="flex gap-2 sm:col-span-2">
@@ -307,7 +319,7 @@ export function SubscribeAndSave({
                 onClick={() => setAddingAddress(false)}
                 className="min-h-9 rounded-sm px-3 text-xs text-ink-muted hover:underline"
               >
-                Cancel
+                <LocalizedText>Cancel</LocalizedText>
               </button>
             ) : null}
           </div>

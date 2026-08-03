@@ -7,6 +7,7 @@ import { SubmissionForm } from "../components/submission-form";
 import { catalogueRuntime, loadRouteSeo } from "../lib/catalogue.server";
 import { useCustomer } from "../lib/customer-auth";
 import { mergeRouteSeo, seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 const fallbackSeo = {
   title: "Post a blog",
@@ -30,7 +31,9 @@ export default function SubmitBlogPage(_props: Route.ComponentProps) {
   if (status === "loading") {
     return (
       <Section eyebrow="Post a blog" heading="Loading...">
-        <p className="text-sm text-ink-muted">One moment…</p>
+        <p className="text-sm text-ink-muted">
+          <LocalizedText>One moment…</LocalizedText>
+        </p>
       </Section>
     );
   }
@@ -39,14 +42,16 @@ export default function SubmitBlogPage(_props: Route.ComponentProps) {
     return (
       <Section eyebrow="Post a blog" heading="Sign in to pitch a post">
         <p className="max-w-md text-sm text-ink-muted">
-          Open the account menu to sign in or create an account, then come back here to submit your
-          post.
+          <LocalizedText>
+            Open the account menu to sign in or create an account, then come back here to submit
+            your post.
+          </LocalizedText>
         </p>
         <Link
           to="/blog"
           className="mt-5 inline-flex min-h-11 items-center rounded-sm border border-line px-5 text-sm font-medium text-ink hover:bg-canvas"
         >
-          Back to the blog
+          <LocalizedText>Back to the blog</LocalizedText>
         </Link>
       </Section>
     );
@@ -56,21 +61,23 @@ export default function SubmitBlogPage(_props: Route.ComponentProps) {
     return (
       <Section eyebrow="Post a blog" heading="Thanks for the pitch!">
         <p className="max-w-md text-sm text-ink-muted">
-          Your post is with our editors. We will email you at your contact address once it is
-          approved, or if we need changes first.
+          <LocalizedText>
+            Your post is with our editors. We will email you at your contact address once it is
+            approved, or if we need changes first.
+          </LocalizedText>
         </p>
         <div className="mt-5 flex gap-3">
           <Link
             to="/account/submissions"
             className="inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90"
           >
-            View my submissions
+            <LocalizedText>View my submissions</LocalizedText>
           </Link>
           <Link
             to="/blog"
             className="inline-flex min-h-11 items-center rounded-sm border border-line px-5 text-sm font-medium text-ink hover:bg-canvas"
           >
-            Back to the blog
+            <LocalizedText>Back to the blog</LocalizedText>
           </Link>
         </div>
       </Section>
@@ -80,8 +87,10 @@ export default function SubmitBlogPage(_props: Route.ComponentProps) {
   return (
     <Section eyebrow="Post a blog" heading="Pitch a post to the community">
       <p className="mb-6 max-w-2xl text-sm text-ink-muted">
-        Share a story, technique, or something you have learned about eating well. Our editors
-        review every submission before it goes live.
+        <LocalizedText>
+          Share a story, technique, or something you have learned about eating well. Our editors
+          review every submission before it goes live.
+        </LocalizedText>
       </p>
       <SubmissionForm
         contentType="article"

@@ -22,6 +22,7 @@ import { resolveLocale } from "../lib/i18n/resolve.server";
 import { productEffectivePrice, variantEffectivePrice } from "../lib/pricing";
 import { seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const country = resolveCountry(request);
@@ -42,6 +43,7 @@ export function meta({ data: loaderData }: Route.MetaArgs) {
 }
 
 export default function ProductPage({ loaderData }: Route.ComponentProps) {
+  const localize = useLocalizeText();
   const { product, related, reviews, alsoBought } = loaderData;
   const { add } = useCart();
   const formatPrice = usePriceFormatter();
@@ -118,7 +120,9 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
           </p>
 
           <fieldset className="mt-5">
-            <legend className="text-sm font-medium text-ink">Size</legend>
+            <legend className="text-sm font-medium text-ink">
+              <LocalizedText>Size</LocalizedText>
+            </legend>
             <div className="mt-2 flex flex-wrap gap-2">
               {product.variants.map((entry) => (
                 <label
@@ -146,12 +150,12 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
           <div className="mt-5 flex items-end gap-3">
             <div>
               <label htmlFor="quantity" className="block text-sm font-medium text-ink">
-                Quantity
+                <LocalizedText>Quantity</LocalizedText>
               </label>
               <div className="mt-2 flex items-center rounded-sm border border-line-strong">
                 <button
                   type="button"
-                  aria-label="Decrease quantity"
+                  aria-label={localize("Decrease quantity")}
                   className="min-h-11 min-w-11 text-lg"
                   onClick={() => setQuantity((current) => Math.max(1, current - 1))}
                 >
@@ -166,7 +170,7 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
                 />
                 <button
                   type="button"
-                  aria-label="Increase quantity"
+                  aria-label={localize("Increase quantity")}
                   className="min-h-11 min-w-11 text-lg"
                   onClick={() => setQuantity((current) => Math.min(12, current + 1))}
                 >
@@ -213,8 +217,10 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
               a dead end. */}
           {!product.acceptsOrders || !paymentsAllowed ? (
             <p className="mt-2 text-sm text-ink-muted">
-              We are not taking orders for this product right now. Leave your details below and we
-              will let you know when it is back.
+              <LocalizedText>
+                We are not taking orders for this product right now. Leave your details below and we
+                will let you know when it is back.
+              </LocalizedText>
             </p>
           ) : variant ? (
             <AvailabilityNote availability={variant.availability} />
@@ -232,18 +238,24 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
             <p className="text-ink">{product.overview}</p>
             {product.harvestNote ? (
               <p className="text-ink-muted">
-                <span className="font-medium text-ink">Harvest: </span>
+                <span className="font-medium text-ink">
+                  <LocalizedText>Harvest:</LocalizedText>{" "}
+                </span>
                 {product.harvestNote}
               </p>
             ) : null}
             {product.storageGuidance ? (
               <p className="text-ink-muted">
-                <span className="font-medium text-ink">Storage: </span>
+                <span className="font-medium text-ink">
+                  <LocalizedText>Storage:</LocalizedText>{" "}
+                </span>
                 {product.storageGuidance}
               </p>
             ) : null}
             <p className="text-ink-muted">
-              <span className="font-medium text-ink">Returns: </span>
+              <span className="font-medium text-ink">
+                <LocalizedText>Returns:</LocalizedText>{" "}
+              </span>
               {product.returnEligible
                 ? "Eligible for return — see our returns policy."
                 : "Not eligible for return due to the nature of this product."}
@@ -260,9 +272,12 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
               way to leave their details instead of a dead end. */}
           {!purchasable ? (
             <div className="mt-8 border-t border-line pt-6">
-              <h2 className="font-display text-lg text-ink">Interested in this product?</h2>
+              <h2 className="font-display text-lg text-ink">
+                <LocalizedText>Interested in this product?</LocalizedText>
+              </h2>
               <p className="mt-1 text-sm text-ink-muted">
-                We will get in touch as soon as {product.name} is available to order again.
+                <LocalizedText>We will get in touch as soon as</LocalizedText> {product.name}{" "}
+                <LocalizedText>is available to order again.</LocalizedText>
               </p>
               <div className="mt-4">
                 <ContactForm

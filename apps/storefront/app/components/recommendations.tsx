@@ -15,6 +15,7 @@ import type { ProductSummary } from "@truegrit/contracts";
 
 import { ProductCard, Section } from "./catalogue";
 import { Slider } from "./slider";
+import { useLocalizeText } from "../lib/i18n/localized-text";
 
 export function RecommendedProducts({
   heading,
@@ -27,10 +28,11 @@ export function RecommendedProducts({
   products: ProductSummary[];
   tone?: "canvas" | "surface" | "subtle" | "inverse";
 }) {
+  const localize = useLocalizeText();
   if (products.length === 0) return null;
   return (
-    <Section eyebrow={eyebrow} heading={heading} tone={tone}>
-      <Slider ariaLabel={heading}>
+    <Section eyebrow={localize(eyebrow)} heading={localize(heading)} tone={tone}>
+      <Slider ariaLabel={localize(heading)}>
         {products.map((product) => (
           <div
             key={product.id}

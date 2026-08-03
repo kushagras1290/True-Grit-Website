@@ -15,6 +15,7 @@ import {
   type SubmissionDetail,
   type SubmissionIngredientInput,
 } from "../lib/submissions";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 const FIELD =
   "min-h-11 w-full rounded-sm border border-line bg-canvas px-3 text-sm text-ink" +
@@ -42,6 +43,7 @@ export function SubmissionForm({
   onSuccess: (result: { id: string; status: string }) => void;
 }) {
   const { t } = useLocaleContext();
+  const localize = useLocalizeText();
   const [ingredients, setIngredients] = useState<SubmissionIngredientInput[]>(
     initial?.ingredients?.length ? initial.ingredients : [{ label: "", quantityText: "" }],
   );
@@ -95,7 +97,9 @@ export function SubmissionForm({
       {error ? <p className="text-sm text-danger">{error}</p> : null}
 
       <label className="block space-y-1">
-        <Label>Your name</Label>
+        <Label>
+          <LocalizedText>Your name</LocalizedText>
+        </Label>
         <input
           name="contactName"
           required
@@ -107,7 +111,9 @@ export function SubmissionForm({
       </label>
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block space-y-1">
-          <Label>Email</Label>
+          <Label>
+            <LocalizedText>Email</LocalizedText>
+          </Label>
           <input
             name="contactEmail"
             type="email"
@@ -146,7 +152,9 @@ export function SubmissionForm({
         />
       </label>
       <label className="block space-y-1">
-        <Label>Short excerpt (optional)</Label>
+        <Label>
+          <LocalizedText>Short excerpt (optional)</LocalizedText>
+        </Label>
         <input
           name="excerpt"
           maxLength={400}
@@ -159,7 +167,9 @@ export function SubmissionForm({
         <>
           <div className="grid gap-4 sm:grid-cols-3">
             <label className="block space-y-1">
-              <Label>Prep time (min)</Label>
+              <Label>
+                <LocalizedText>Prep time (min)</LocalizedText>
+              </Label>
               <input
                 name="prepMinutes"
                 type="number"
@@ -169,7 +179,9 @@ export function SubmissionForm({
               />
             </label>
             <label className="block space-y-1">
-              <Label>Cook time (min)</Label>
+              <Label>
+                <LocalizedText>Cook time (min)</LocalizedText>
+              </Label>
               <input
                 name="cookMinutes"
                 type="number"
@@ -179,7 +191,9 @@ export function SubmissionForm({
               />
             </label>
             <label className="block space-y-1">
-              <Label>Servings</Label>
+              <Label>
+                <LocalizedText>Servings</LocalizedText>
+              </Label>
               <input
                 name="servings"
                 type="number"
@@ -190,17 +204,21 @@ export function SubmissionForm({
             </label>
           </div>
           <label className="block space-y-1">
-            <Label>Dietary tags (comma separated, optional)</Label>
+            <Label>
+              <LocalizedText>Dietary tags (comma separated, optional)</LocalizedText>
+            </Label>
             <input
               value={dietaryTags}
               onChange={(event) => setDietaryTags(event.target.value)}
-              placeholder="vegan, gluten-free"
+              placeholder={localize("vegan, gluten-free")}
               className={FIELD}
             />
           </label>
 
           <div className="space-y-2">
-            <Label>Ingredients</Label>
+            <Label>
+              <LocalizedText>Ingredients</LocalizedText>
+            </Label>
             {ingredients.map((entry, index) => (
               <div key={index} className="flex gap-2">
                 <input
@@ -213,7 +231,7 @@ export function SubmissionForm({
                       ),
                     );
                   }}
-                  placeholder="Ingredient"
+                  placeholder={localize("Ingredient")}
                   className={FIELD}
                 />
                 <input
@@ -226,7 +244,7 @@ export function SubmissionForm({
                       ),
                     );
                   }}
-                  placeholder="Quantity"
+                  placeholder={localize("Quantity")}
                   className={`${FIELD} max-w-[9rem]`}
                 />
                 <button
@@ -235,7 +253,7 @@ export function SubmissionForm({
                   className="text-xs text-ink-muted hover:text-danger"
                   aria-label={`Remove ingredient ${index + 1}`}
                 >
-                  Remove
+                  <LocalizedText>Remove</LocalizedText>
                 </button>
               </div>
             ))}
@@ -244,12 +262,14 @@ export function SubmissionForm({
               onClick={() => setIngredients([...ingredients, { label: "", quantityText: "" }])}
               className="text-xs font-medium text-brand hover:underline"
             >
-              + Add ingredient
+              <LocalizedText>+ Add ingredient</LocalizedText>
             </button>
           </div>
 
           <div className="space-y-2">
-            <Label>Steps</Label>
+            <Label>
+              <LocalizedText>Steps</LocalizedText>
+            </Label>
             {steps.map((step, index) => (
               <div key={index} className="flex gap-2">
                 <span className="mt-2 text-xs text-ink-muted">{index + 1}.</span>
@@ -269,7 +289,7 @@ export function SubmissionForm({
                   className="text-xs text-ink-muted hover:text-danger"
                   aria-label={`Remove step ${index + 1}`}
                 >
-                  Remove
+                  <LocalizedText>Remove</LocalizedText>
                 </button>
               </div>
             ))}
@@ -278,7 +298,7 @@ export function SubmissionForm({
               onClick={() => setSteps([...steps, ""])}
               className="text-xs font-medium text-brand hover:underline"
             >
-              + Add step
+              <LocalizedText>+ Add step</LocalizedText>
             </button>
           </div>
         </>
@@ -292,7 +312,7 @@ export function SubmissionForm({
           minLength={20}
           rows={10}
           defaultValue={initial?.body}
-          placeholder="Write in paragraphs — leave a blank line between paragraphs."
+          placeholder={localize("Write in paragraphs — leave a blank line between paragraphs.")}
           className={`${FIELD} py-3`}
         />
       </label>

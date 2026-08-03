@@ -87,9 +87,7 @@ export function resolveLocale(request: Request): ResolvedLocale {
   if (fromCookie) return { locale: fromCookie, source: "cookie" };
 
   const fromHeader = matchAcceptLanguage(request.headers.get("accept-language"));
-  if (fromHeader && fromHeader.code !== DEFAULT_LOCALE) {
-    return { locale: fromHeader, source: "header" };
-  }
+  if (fromHeader) return { locale: fromHeader, source: "header" };
 
   const country = resolveCountry(request);
   if (country === "IN") {
@@ -105,7 +103,6 @@ export function resolveLocale(request: Request): ResolvedLocale {
     return { locale: fromGeo, source: "geo" };
   }
 
-  if (fromHeader) return { locale: fromHeader, source: "header" };
   // Non-null: DEFAULT_LOCALE is always a registered locale.
   return { locale: getLocale(DEFAULT_LOCALE)!, source: "default" };
 }

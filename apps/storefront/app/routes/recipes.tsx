@@ -8,6 +8,7 @@ import { catalogueRuntime, loadRecipes } from "../lib/catalogue.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 const RECIPE_PAGE_SIZE = 12;
 
@@ -43,17 +44,20 @@ export default function RecipesPage({ loaderData }: Route.ComponentProps) {
       <Section eyebrow="Browse recipes" heading="Cook with the season">
         <div className="mb-8 flex items-center justify-between gap-3">
           <p className="max-w-lg text-sm text-ink-muted">
-            Got a recipe worth sharing? Pitch it to the community and our editors will review it.
+            <LocalizedText>
+              Got a recipe worth sharing? Pitch it to the community and our editors will review it.
+            </LocalizedText>
           </p>
           <Link
             to="/recipes/submit"
             className="inline-flex min-h-11 shrink-0 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90"
           >
-            Post a recipe
+            <LocalizedText>Post a recipe</LocalizedText>
           </Link>
         </div>
         <p className="mb-5 text-sm text-ink-muted" role="status">
-          {loaderData.recipes.total} recipe{loaderData.recipes.total === 1 ? "" : "s"}
+          {loaderData.recipes.total} <LocalizedText>recipe</LocalizedText>
+          {loaderData.recipes.total === 1 ? "" : "s"}
         </p>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {loaderData.recipes.items.map((recipe) => (
@@ -67,11 +71,12 @@ export default function RecipesPage({ loaderData }: Route.ComponentProps) {
                   src={mediaUrl(recipe.heroImageUrl)}
                   alt={recipe.heroImageAlt || ""}
                   loading="lazy"
-                  className="-mx-6 -mt-6 mb-5 aspect-[16/9] w-[calc(100%+3rem)] max-w-none object-cover"
+                  className="-mx-6 -mt-6 mb-5 aspect-[16/9] w-[calc(100%+3rem)] max-w-none bg-subtle object-contain"
                 />
               ) : null}
               <p className="text-xs text-ink-muted">
-                {recipe.prepMinutes + recipe.cookMinutes} min · serves {recipe.servings}
+                {recipe.prepMinutes + recipe.cookMinutes}{" "}
+                <LocalizedText>min · serves</LocalizedText> {recipe.servings}
               </p>
               <h2 className="mt-2 font-display text-xl text-ink group-hover:text-brand">
                 {recipe.title}

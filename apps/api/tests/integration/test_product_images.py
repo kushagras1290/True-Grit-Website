@@ -1,4 +1,4 @@
-"""Product gallery images (migration 0066): additive to the required main
+"""Product gallery images (migration 0066): additive to the optional main
 image, never touching `products.image_url`/`primary_media_id`.
 """
 
@@ -13,6 +13,7 @@ def as_admin(client, db) -> None:
 
 def test_admin_can_replace_a_products_gallery_images(client, db):
     as_admin(client, db)
+    original_main_image = client.get("/v1/admin/products/prd_alphonso").json()["imageUrl"]
     response = client.put(
         "/v1/admin/products/prd_alphonso/images",
         json={
@@ -33,7 +34,7 @@ def test_admin_can_replace_a_products_gallery_images(client, db):
     assert detail.status_code == 200
     assert len(detail.json()["images"]) == 2
     # The main image field is untouched by a gallery save.
-    assert detail.json()["imageUrl"]
+    assert detail.json()["imageUrl"] == original_main_image
 
 
 def test_gallery_images_are_capped_at_eight(client, db):

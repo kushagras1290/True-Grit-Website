@@ -1,4 +1,5 @@
 import { Link, useSearchParams } from "react-router";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 /** Real navigation (updates `?page=`), not client-only state, so listing
  * pages stay bookmarkable, shareable and back-button-friendly under SSR. */
@@ -11,6 +12,7 @@ export function PageLinkPagination({
   pageSize: number;
   total: number;
 }) {
+  const localize = useLocalizeText();
   const [searchParams] = useSearchParams();
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   if (totalPages <= 1) return null;
@@ -25,7 +27,7 @@ export function PageLinkPagination({
 
   return (
     <nav
-      aria-label="Pagination"
+      aria-label={localize("Pagination")}
       className="mt-10 flex items-center justify-between border-t border-line pt-6"
     >
       {page > 1 ? (
@@ -33,26 +35,26 @@ export function PageLinkPagination({
           to={hrefFor(page - 1)}
           className="rounded-full border border-line-strong px-4 py-2 text-sm font-medium text-ink hover:bg-canvas"
         >
-          Previous
+          <LocalizedText>Previous</LocalizedText>
         </Link>
       ) : (
         <span className="rounded-full border border-line px-4 py-2 text-sm text-ink-muted opacity-50">
-          Previous
+          <LocalizedText>Previous</LocalizedText>
         </span>
       )}
       <p className="text-sm text-ink-muted">
-        Page {page} of {totalPages}
+        <LocalizedText>Page</LocalizedText> {page} <LocalizedText>of</LocalizedText> {totalPages}
       </p>
       {page < totalPages ? (
         <Link
           to={hrefFor(page + 1)}
           className="rounded-full border border-line-strong px-4 py-2 text-sm font-medium text-ink hover:bg-canvas"
         >
-          Next
+          <LocalizedText>Next</LocalizedText>
         </Link>
       ) : (
         <span className="rounded-full border border-line px-4 py-2 text-sm text-ink-muted opacity-50">
-          Next
+          <LocalizedText>Next</LocalizedText>
         </span>
       )}
     </nav>

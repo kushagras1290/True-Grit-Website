@@ -25,6 +25,7 @@ import {
 import { useCustomer } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 const REASON_OPTIONS: Array<{ value: ReturnReasonCode; label: string }> = [
   { value: "damaged", label: "Arrived damaged" },
@@ -38,6 +39,7 @@ const REASON_OPTIONS: Array<{ value: ReturnReasonCode; label: string }> = [
 const RETURN_ELIGIBLE_ORDER_STATUSES = new Set(["confirmed", "processing", "completed"]);
 
 function ReturnRequestSection({ order, reference }: { order: OrderDetail; reference: string }) {
+  const localize = useLocalizeText();
   const [requests, setRequests] = useState<ReturnRequestSummary[] | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [reasonCode, setReasonCode] = useState<ReturnReasonCode>("damaged");
@@ -83,21 +85,28 @@ function ReturnRequestSection({ order, reference }: { order: OrderDetail; refere
 
   return (
     <div className="rounded-md border border-line bg-surface p-5">
-      <h2 className="font-display text-lg text-ink">Returns</h2>
+      <h2 className="font-display text-lg text-ink">
+        <LocalizedText>Returns</LocalizedText>
+      </h2>
       {openRequest ? (
         <div className="mt-2 text-sm text-ink-muted">
           <p>
-            Return request status:{" "}
+            <LocalizedText>Return request status:</LocalizedText>{" "}
             <span className="font-medium text-ink capitalize">
               {openRequest.status.replaceAll("_", " ")}
             </span>
           </p>
-          <p className="mt-1">Requested {new Date(openRequest.requestedAt).toLocaleDateString()}</p>
+          <p className="mt-1">
+            <LocalizedText>Requested</LocalizedText>{" "}
+            {new Date(openRequest.requestedAt).toLocaleDateString()}
+          </p>
         </div>
       ) : showForm ? (
         <div className="mt-3 space-y-3">
           <label className="block text-sm">
-            <span className="mb-1 block font-medium text-ink">Reason</span>
+            <span className="mb-1 block font-medium text-ink">
+              <LocalizedText>Reason</LocalizedText>
+            </span>
             <select
               className="min-h-9 w-full rounded-sm border border-line-strong bg-surface px-3 text-sm text-ink"
               value={reasonCode}
@@ -111,12 +120,14 @@ function ReturnRequestSection({ order, reference }: { order: OrderDetail; refere
             </select>
           </label>
           <label className="block text-sm">
-            <span className="mb-1 block font-medium text-ink">What happened?</span>
+            <span className="mb-1 block font-medium text-ink">
+              <LocalizedText>What happened?</LocalizedText>
+            </span>
             <textarea
               className="min-h-20 w-full rounded-sm border border-line-strong bg-surface px-3 py-2 text-sm text-ink"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              placeholder="Include what's wrong and any details that will help support."
+              placeholder={localize("Include what's wrong and any details that will help support.")}
             />
           </label>
           {error ? <p className="text-sm text-danger">{error}</p> : null}
@@ -134,7 +145,7 @@ function ReturnRequestSection({ order, reference }: { order: OrderDetail; refere
               onClick={() => setShowForm(false)}
               className="min-h-9 rounded-sm border border-line-strong px-4 text-sm text-ink hover:bg-subtle/50"
             >
-              Cancel
+              <LocalizedText>Cancel</LocalizedText>
             </button>
           </div>
         </div>
@@ -144,7 +155,7 @@ function ReturnRequestSection({ order, reference }: { order: OrderDetail; refere
           onClick={() => setShowForm(true)}
           className="mt-3 min-h-9 rounded-sm border border-line-strong px-4 text-sm text-ink hover:bg-subtle/50"
         >
-          Request a return
+          <LocalizedText>Request a return</LocalizedText>
         </button>
       )}
     </div>
@@ -164,6 +175,7 @@ function ReviewLineForm({
   onCancel: () => void;
   onSubmitted: () => Promise<void>;
 }) {
+  const localize = useLocalizeText();
   const [rating, setRating] = useState(5);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -194,7 +206,9 @@ function ReviewLineForm({
   return (
     <div className="mt-3 space-y-3">
       <label className="block text-sm">
-        <span className="mb-1 block font-medium text-ink">Rating</span>
+        <span className="mb-1 block font-medium text-ink">
+          <LocalizedText>Rating</LocalizedText>
+        </span>
         <select
           className="min-h-9 rounded-sm border border-line-strong bg-surface px-3 text-sm text-ink"
           value={rating}
@@ -202,13 +216,16 @@ function ReviewLineForm({
         >
           {RATING_OPTIONS.map((value) => (
             <option key={value} value={value}>
-              {value} star{value === 1 ? "" : "s"}
+              {value} <LocalizedText>star</LocalizedText>
+              {value === 1 ? "" : "s"}
             </option>
           ))}
         </select>
       </label>
       <label className="block text-sm">
-        <span className="mb-1 block font-medium text-ink">Title (optional)</span>
+        <span className="mb-1 block font-medium text-ink">
+          <LocalizedText>Title (optional)</LocalizedText>
+        </span>
         <input
           className="min-h-9 w-full rounded-sm border border-line-strong bg-surface px-3 text-sm text-ink"
           value={title}
@@ -217,12 +234,14 @@ function ReviewLineForm({
         />
       </label>
       <label className="block text-sm">
-        <span className="mb-1 block font-medium text-ink">Your review</span>
+        <span className="mb-1 block font-medium text-ink">
+          <LocalizedText>Your review</LocalizedText>
+        </span>
         <textarea
           className="min-h-20 w-full rounded-sm border border-line-strong bg-surface px-3 py-2 text-sm text-ink"
           value={body}
           onChange={(event) => setBody(event.target.value)}
-          placeholder="What did you think of this product?"
+          placeholder={localize("What did you think of this product?")}
         />
       </label>
       {error ? <p className="text-sm text-danger">{error}</p> : null}
@@ -241,7 +260,7 @@ function ReviewLineForm({
           disabled={submitting}
           className="min-h-9 rounded-sm border border-line-strong px-4 text-sm text-ink hover:bg-subtle/50"
         >
-          Cancel
+          <LocalizedText>Cancel</LocalizedText>
         </button>
       </div>
     </div>
@@ -283,7 +302,9 @@ function ReviewSection({ order, reference }: { order: OrderDetail; reference: st
 
   return (
     <div className="rounded-md border border-line bg-surface p-5">
-      <h2 className="font-display text-lg text-ink">Reviews</h2>
+      <h2 className="font-display text-lg text-ink">
+        <LocalizedText>Reviews</LocalizedText>
+      </h2>
       <ul>
         {reviewableLines.map((item) => {
           const existing = reviews.find((entry) => entry.productId === item.productId);
@@ -320,7 +341,7 @@ function ReviewSection({ order, reference }: { order: OrderDetail; reference: st
                   onClick={() => setOpenProductId(item.productId)}
                   className="mt-1.5 min-h-8 rounded-sm border border-line-strong px-3 text-sm text-ink hover:bg-subtle/50"
                 >
-                  Write a review
+                  <LocalizedText>Write a review</LocalizedText>
                 </button>
               )}
             </li>
@@ -370,7 +391,9 @@ function TrackingTimeline({ order }: { order: OrderDetail }) {
     return (
       <div className="flex items-center gap-2 rounded-md border border-danger/30 bg-danger/5 px-4 py-3 text-sm text-ink">
         <Ban size={18} className="text-danger" aria-hidden />
-        <span>This order was cancelled.</span>
+        <span>
+          <LocalizedText>This order was cancelled.</LocalizedText>
+        </span>
       </div>
     );
   }
@@ -404,7 +427,7 @@ function TrackingTimeline({ order }: { order: OrderDetail }) {
                 {item.label}
                 {current ? (
                   <span className="ml-2 rounded-full bg-subtle px-2 py-0.5 text-[11px] text-brand">
-                    In progress
+                    <LocalizedText>In progress</LocalizedText>
                   </span>
                 ) : null}
               </p>
@@ -464,7 +487,7 @@ export default function OrderPage(_props: Route.ComponentProps) {
     return (
       <Section eyebrow="Order" heading="Sign in to view this order">
         <Link to="/" className="text-sm text-brand underline-offset-4 hover:underline">
-          Back home
+          <LocalizedText>Back home</LocalizedText>
         </Link>
       </Section>
     );
@@ -473,7 +496,9 @@ export default function OrderPage(_props: Route.ComponentProps) {
   if (state.kind === "loading") {
     return (
       <Section eyebrow="Order" heading="Loading your order…">
-        <p className="text-sm text-ink-muted">One moment.</p>
+        <p className="text-sm text-ink-muted">
+          <LocalizedText>One moment.</LocalizedText>
+        </p>
       </Section>
     );
   }
@@ -486,7 +511,7 @@ export default function OrderPage(_props: Route.ComponentProps) {
           to="/account"
           className="mt-4 inline-flex text-sm text-brand underline-offset-4 hover:underline"
         >
-          Your account
+          <LocalizedText>Your account</LocalizedText>
         </Link>
       </Section>
     );
@@ -500,16 +525,21 @@ export default function OrderPage(_props: Route.ComponentProps) {
       <Section eyebrow="Track your order" heading={order.reference}>
         <div className="mb-6 flex flex-wrap items-center gap-2 rounded-sm border border-brand/30 bg-subtle/40 px-4 py-3 text-sm text-ink">
           <CheckCircle2 size={18} className="text-brand" aria-hidden />
-          <span className="capitalize">Status: {order.orderStatus.replaceAll("_", " ")}</span>
+          <span className="capitalize">
+            <LocalizedText>Status:</LocalizedText> {order.orderStatus.replaceAll("_", " ")}
+          </span>
           <span className="text-ink-muted">·</span>
-          <span>Payment: {paid ? "Paid" : order.paymentStatus.replaceAll("_", " ")}</span>
+          <span>
+            <LocalizedText>Payment:</LocalizedText>{" "}
+            {paid ? "Paid" : order.paymentStatus.replaceAll("_", " ")}
+          </span>
         </div>
 
         <Link
           to={`/account/orders/${reference}/receipt`}
           className="mb-6 inline-flex min-h-9 items-center rounded-sm border border-line-strong px-3.5 text-sm font-medium text-ink hover:bg-canvas"
         >
-          View e-receipt
+          <LocalizedText>View e-receipt</LocalizedText>
         </Link>
 
         <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
@@ -524,9 +554,15 @@ export default function OrderPage(_props: Route.ComponentProps) {
               <table className="w-full min-w-[420px] text-left text-sm">
                 <thead className="bg-canvas text-xs text-ink-muted uppercase">
                   <tr>
-                    <th className="px-4 py-2.5">Item</th>
-                    <th className="px-4 py-2.5">Qty</th>
-                    <th className="px-4 py-2.5">Total</th>
+                    <th className="px-4 py-2.5">
+                      <LocalizedText>Item</LocalizedText>
+                    </th>
+                    <th className="px-4 py-2.5">
+                      <LocalizedText>Qty</LocalizedText>
+                    </th>
+                    <th className="px-4 py-2.5">
+                      <LocalizedText>Total</LocalizedText>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -548,14 +584,20 @@ export default function OrderPage(_props: Route.ComponentProps) {
           </div>
 
           <aside className="h-fit rounded-md border border-line bg-surface p-5 shadow-card">
-            <h2 className="font-display text-lg text-ink">Summary</h2>
+            <h2 className="font-display text-lg text-ink">
+              <LocalizedText>Summary</LocalizedText>
+            </h2>
             <dl className="mt-3 space-y-1.5 text-sm">
               <div className="flex justify-between">
-                <dt className="text-ink-muted">Subtotal</dt>
+                <dt className="text-ink-muted">
+                  <LocalizedText>Subtotal</LocalizedText>
+                </dt>
                 <dd>{formatMoney(order.subtotalMinor, order.currencyCode)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-ink-muted">Delivery</dt>
+                <dt className="text-ink-muted">
+                  <LocalizedText>Delivery</LocalizedText>
+                </dt>
                 <dd>
                   {order.deliveryMinor === 0
                     ? "Free"
@@ -563,7 +605,9 @@ export default function OrderPage(_props: Route.ComponentProps) {
                 </dd>
               </div>
               <div className="flex justify-between border-t border-line pt-1.5 font-medium">
-                <dt>Total</dt>
+                <dt>
+                  <LocalizedText>Total</LocalizedText>
+                </dt>
                 <dd>{formatMoney(order.totalMinor, order.currencyCode)}</dd>
               </div>
             </dl>
@@ -571,7 +615,7 @@ export default function OrderPage(_props: Route.ComponentProps) {
               to="/account"
               className="mt-5 inline-flex text-sm text-brand underline-offset-4 hover:underline"
             >
-              All your orders
+              <LocalizedText>All your orders</LocalizedText>
             </Link>
           </aside>
         </div>

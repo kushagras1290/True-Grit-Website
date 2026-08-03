@@ -6,6 +6,7 @@ import { StarRating } from "../components/reviews";
 import { PageLinkPagination } from "../components/pagination";
 import { catalogueRuntime, loadAllReviews } from "../lib/catalogue.server";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 const REVIEWS_PAGE_SIZE = 12;
 
@@ -33,12 +34,16 @@ export default function ReviewsPage({ loaderData }: Route.ComponentProps) {
   return (
     <Section eyebrow="From our customers" heading="Customer reviews">
       <p className="mb-8 text-center text-sm text-ink-muted" role="status">
-        {reviews.total} review{reviews.total === 1 ? "" : "s"} from verified purchases
+        {reviews.total} <LocalizedText>review</LocalizedText>
+        {reviews.total === 1 ? "" : "s"} <LocalizedText>from verified purchases</LocalizedText>
       </p>
 
       {reviews.items.length === 0 ? (
         <p className="text-center text-sm text-ink-muted">
-          No reviews yet. Reviews appear here once a verified purchaser writes one from their order.
+          <LocalizedText>
+            No reviews yet. Reviews appear here once a verified purchaser writes one from their
+            order.
+          </LocalizedText>
         </p>
       ) : (
         <ul className="mx-auto grid max-w-4xl gap-6 sm:grid-cols-2">

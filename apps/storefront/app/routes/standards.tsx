@@ -3,6 +3,7 @@ import { CmsPage } from "../components/cms-page";
 import { Section } from "../components/catalogue";
 import { loadCmsRoute } from "../lib/cms-route.server";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 const fallbackSeo = {
   title: "Our standards",
@@ -45,10 +46,10 @@ export default function StandardsPage({ loaderData }: Route.ComponentProps) {
       <header className="bg-brand text-ink-inverse">
         <div className="mx-auto max-w-[80rem] px-4 py-16 sm:px-6">
           <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-80">
-            Our standards
+            <LocalizedText>Our standards</LocalizedText>
           </p>
           <h1 className="mt-3 max-w-2xl font-display text-4xl leading-tight">
-            Trust is not a marketing word here. It is a checklist.
+            <LocalizedText>Trust is not a marketing word here. It is a checklist.</LocalizedText>
           </h1>
         </div>
       </header>

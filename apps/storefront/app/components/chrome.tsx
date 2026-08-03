@@ -18,6 +18,7 @@ import { useLocaleContext } from "../lib/i18n/context";
 import { useSiteSettings, type SiteSettings } from "../lib/site-settings";
 import { HeaderLanguageSwitcher, LanguageSwitcher } from "./language-switcher";
 import { AddPhonePrompt, PhoneAuthPanel, PhoneVerifier } from "./phone-auth";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 type AuthMode = "phone" | "signin" | "register";
 
@@ -28,6 +29,7 @@ const AUTH_MODE_LABELS: Record<AuthMode, string> = {
 };
 
 function ForgotPassword() {
+  const localize = useLocalizeText();
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState(false);
   const [pending, setPending] = useState(false);
@@ -35,7 +37,7 @@ function ForgotPassword() {
   if (done) {
     return (
       <p className="text-xs text-ink-muted">
-        If that email has an account, a reset link is on its way.
+        <LocalizedText>If that email has an account, a reset link is on its way.</LocalizedText>
       </p>
     );
   }
@@ -46,7 +48,7 @@ function ForgotPassword() {
         className="text-xs text-brand underline-offset-4 hover:underline"
         onClick={() => setOpen(true)}
       >
-        Forgot password?
+        <LocalizedText>Forgot password?</LocalizedText>
       </button>
     );
   }
@@ -69,7 +71,7 @@ function ForgotPassword() {
         name="email"
         type="email"
         required
-        placeholder="you@example.com"
+        placeholder={localize("you@example.com")}
         className="min-h-9 flex-1 rounded-sm border border-line bg-canvas px-2 text-sm text-ink"
       />
       <button
@@ -158,6 +160,7 @@ function AccountSummary({
 }
 
 function CustomerPortal() {
+  const localize = useLocalizeText();
   const { customer, status, login, register, loginWithGoogle, loginWithFacebook, logout } =
     useCustomer();
   // Which sign-in methods the owner has switched on, already ANDed with what
@@ -317,7 +320,7 @@ function CustomerPortal() {
       {open ? (
         <div
           role="dialog"
-          aria-label="Customer account"
+          aria-label={localize("Customer account")}
           className="absolute top-full right-0 z-50 mt-2 w-[min(23rem,calc(100vw-2rem))] rounded-md border border-line bg-surface shadow-overlay"
         >
           <div className="flex items-center justify-between border-b border-line px-4 py-3">
@@ -332,7 +335,7 @@ function CustomerPortal() {
             <button
               type="button"
               className="flex h-8 w-8 items-center justify-center text-ink-muted hover:text-ink"
-              aria-label="Close account panel"
+              aria-label={localize("Close account panel")}
               onClick={() => setOpen(false)}
             >
               <X size={17} />
@@ -356,9 +359,11 @@ function CustomerPortal() {
             <div className="space-y-4 px-4 py-4">
               {noSignInAvailable ? (
                 <p className="rounded-sm border border-dashed border-line px-3 py-4 text-center text-sm text-ink-muted">
-                  Signing in is temporarily unavailable. Please check back shortly or{" "}
+                  <LocalizedText>
+                    Signing in is temporarily unavailable. Please check back shortly or
+                  </LocalizedText>{" "}
                   <Link to="/contact" className="text-brand hover:underline">
-                    contact us
+                    <LocalizedText>contact us</LocalizedText>
                   </Link>
                   .
                 </p>
@@ -380,7 +385,7 @@ function CustomerPortal() {
               {showFederated && availableModes.length > 0 ? (
                 <div className="flex items-center gap-3 text-xs text-ink-muted">
                   <span className="h-px flex-1 bg-line" />
-                  or
+                  <LocalizedText>or</LocalizedText>
                   <span className="h-px flex-1 bg-line" />
                 </div>
               ) : null}
@@ -427,42 +432,48 @@ function CustomerPortal() {
                 <form className="space-y-3" onSubmit={handleSubmit}>
                   {mode === "register" && registerPhone !== null ? (
                     <p className="rounded-sm border border-line bg-canvas px-3 py-2 text-xs text-ink-muted">
-                      Mobile verified ✓{" "}
+                      <LocalizedText>Mobile verified ✓</LocalizedText>{" "}
                       <button
                         type="button"
                         className="text-brand underline-offset-4 hover:underline"
                         onClick={() => setRegisterPhone(null)}
                       >
-                        Change
+                        <LocalizedText>Change</LocalizedText>
                       </button>
                     </p>
                   ) : null}
                   {mode === "register" ? (
                     <label className="block space-y-1">
-                      <span className="text-xs font-medium text-ink-muted">Name</span>
+                      <span className="text-xs font-medium text-ink-muted">
+                        <LocalizedText>Name</LocalizedText>
+                      </span>
                       <input
                         name="name"
                         type="text"
                         autoComplete="name"
                         required
                         className={FIELD_CLASS}
-                        placeholder="Priya Sharma"
+                        placeholder={localize("Priya Sharma")}
                       />
                     </label>
                   ) : null}
                   <label className="block space-y-1">
-                    <span className="text-xs font-medium text-ink-muted">Email</span>
+                    <span className="text-xs font-medium text-ink-muted">
+                      <LocalizedText>Email</LocalizedText>
+                    </span>
                     <input
                       name="email"
                       type="email"
                       autoComplete="email"
                       required
                       className={FIELD_CLASS}
-                      placeholder="you@example.com"
+                      placeholder={localize("you@example.com")}
                     />
                   </label>
                   <label className="block space-y-1">
-                    <span className="text-xs font-medium text-ink-muted">Password</span>
+                    <span className="text-xs font-medium text-ink-muted">
+                      <LocalizedText>Password</LocalizedText>
+                    </span>
                     <input
                       name="password"
                       type="password"
@@ -534,6 +545,7 @@ function GlobalSearch() {
 export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
   const { count } = useCart();
   const { t } = useLocaleContext();
+  const localize = useLocalizeText();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -571,7 +583,7 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
             </button>
             <Link
               to="/"
-              aria-label="True Grit home"
+              aria-label={localize("True Grit home")}
               className="inline-flex items-center gap-2 font-display text-xl font-semibold tracking-tight text-brand"
             >
               <img
@@ -585,7 +597,7 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
             </Link>
           </div>
 
-          <nav aria-label="Primary" className="hidden md:block">
+          <nav aria-label={localize("Primary")} className="hidden md:block">
             <ul className="flex items-center gap-6">
               {bootstrap.navigation.map((item) => (
                 <li key={item.path}>
@@ -637,7 +649,7 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
         {menuOpen ? (
           <nav
             id="mobile-nav"
-            aria-label="Mobile"
+            aria-label={localize("Mobile")}
             className="border-t border-line bg-canvas md:hidden"
           >
             <ul className="px-4 py-3">

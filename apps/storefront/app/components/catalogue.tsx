@@ -14,6 +14,7 @@ import { mediaUrl } from "../lib/media";
 import { productEffectivePrice } from "../lib/pricing";
 import { getPublicApiUrl } from "../lib/public-env";
 import { StarRating } from "./reviews";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 const PRODUCE_GLYPHS: Record<string, string> = {
   "organic-alphonso-mangoes": "M",
@@ -73,7 +74,7 @@ export function ProduceFrame({
         <img
           src={mediaUrl(resolvedImageUrl)}
           alt=""
-          className="h-full w-full object-cover"
+          className="h-full w-full object-contain p-2"
           loading="lazy"
         />
       ) : (
@@ -152,15 +153,19 @@ export function ProductGrid({ products }: { products: ProductSummary[] }) {
   if (products.length === 0) {
     return (
       <div className="rounded-md border border-dashed border-line-strong px-6 py-14 text-center">
-        <p className="font-display text-lg text-ink">Nothing here right now</p>
+        <p className="font-display text-lg text-ink">
+          <LocalizedText>Nothing here right now</LocalizedText>
+        </p>
         <p className="mt-1 text-sm text-ink-muted">
-          This harvest is between seasons. Browse the rest of the market meanwhile.
+          <LocalizedText>
+            This harvest is between seasons. Browse the rest of the market meanwhile.
+          </LocalizedText>
         </p>
         <Link
           to="/shop"
           className="mt-4 inline-block text-sm font-medium text-brand hover:underline"
         >
-          Browse all products
+          <LocalizedText>Browse all products</LocalizedText>
         </Link>
       </div>
     );
@@ -224,7 +229,7 @@ export function CategoryTile({
             src={imageUrl}
             alt=""
             loading="lazy"
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+            className="absolute inset-0 h-full w-full object-contain"
           />
           <span aria-hidden className="absolute inset-0 bg-black/35" />
         </>
@@ -246,7 +251,8 @@ export function CategoryTile({
         ) : null}
         <span className="block font-display text-xl leading-tight">{category.name}</span>
         <span className="mt-1 block text-sm opacity-80">
-          {productCount} product{productCount === 1 ? "" : "s"}
+          {productCount} <LocalizedText>product</LocalizedText>
+          {productCount === 1 ? "" : "s"}
         </span>
       </span>
     </Link>
@@ -300,6 +306,7 @@ export function Section({
   children: React.ReactNode;
   tone?: "canvas" | "surface" | "subtle" | "inverse";
 }) {
+  const localize = useLocalizeText();
   const tones = {
     canvas: "",
     surface: "bg-surface",
@@ -310,11 +317,13 @@ export function Section({
     <section className={tones[tone]}>
       <div className="mx-auto max-w-[80rem] px-4 py-14 sm:px-6 md:py-20">
         {eyebrow ? (
-          <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">{eyebrow}</p>
+          <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
+            {localize(eyebrow)}
+          </p>
         ) : null}
         {heading ? (
           <h2 className="mt-2 mb-8 max-w-2xl font-display text-2xl leading-tight md:text-3xl">
-            {heading}
+            {localize(heading)}
           </h2>
         ) : null}
         {children}
@@ -324,8 +333,9 @@ export function Section({
 }
 
 export function Breadcrumbs({ items }: { items: Array<{ label: string; path: string }> }) {
+  const localize = useLocalizeText();
   return (
-    <nav aria-label="Breadcrumb" className="mx-auto max-w-[80rem] px-4 pt-6 sm:px-6">
+    <nav aria-label={localize("Breadcrumb")} className="mx-auto max-w-[80rem] px-4 pt-6 sm:px-6">
       <ol className="flex flex-wrap items-center gap-1.5 text-sm text-ink-muted">
         {items.map((item, index) => (
           <li key={item.path} className="flex items-center gap-1.5">

@@ -7,6 +7,7 @@ import { SubmissionForm } from "../components/submission-form";
 import { useCustomer } from "../lib/customer-auth";
 import { getMySubmission, type SubmissionDetail } from "../lib/submissions";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 export function meta(_args: Route.MetaArgs) {
   return seoMeta({
@@ -38,7 +39,9 @@ export default function EditSubmissionPage(_props: Route.ComponentProps) {
   if (status === "loading") {
     return (
       <Section eyebrow="Edit submission" heading="Loading...">
-        <p className="text-sm text-ink-muted">One moment…</p>
+        <p className="text-sm text-ink-muted">
+          <LocalizedText>One moment…</LocalizedText>
+        </p>
       </Section>
     );
   }
@@ -46,7 +49,9 @@ export default function EditSubmissionPage(_props: Route.ComponentProps) {
   if (status === "anonymous" || customer === null) {
     return (
       <Section eyebrow="Edit submission" heading="You're signed out">
-        <p className="max-w-md text-sm text-ink-muted">Sign in to edit your submission.</p>
+        <p className="max-w-md text-sm text-ink-muted">
+          <LocalizedText>Sign in to edit your submission.</LocalizedText>
+        </p>
       </Section>
     );
   }
@@ -55,13 +60,13 @@ export default function EditSubmissionPage(_props: Route.ComponentProps) {
     return (
       <Section eyebrow="Edit submission" heading="Sent back for another look">
         <p className="max-w-md text-sm text-ink-muted">
-          Thanks — your revised submission is back with our editors.
+          <LocalizedText>Thanks — your revised submission is back with our editors.</LocalizedText>
         </p>
         <Link
           to="/account/submissions"
           className="mt-5 inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90"
         >
-          View my submissions
+          <LocalizedText>View my submissions</LocalizedText>
         </Link>
       </Section>
     );
@@ -74,7 +79,7 @@ export default function EditSubmissionPage(_props: Route.ComponentProps) {
           to="/account/submissions"
           className="inline-flex min-h-11 items-center rounded-sm border border-line px-5 text-sm font-medium text-ink hover:bg-canvas"
         >
-          Back to my submissions
+          <LocalizedText>Back to my submissions</LocalizedText>
         </Link>
       </Section>
     );
@@ -83,7 +88,9 @@ export default function EditSubmissionPage(_props: Route.ComponentProps) {
   if (submission === null) {
     return (
       <Section eyebrow="Edit submission" heading="Loading...">
-        <p className="text-sm text-ink-muted">One moment…</p>
+        <p className="text-sm text-ink-muted">
+          <LocalizedText>One moment…</LocalizedText>
+        </p>
       </Section>
     );
   }
@@ -92,13 +99,15 @@ export default function EditSubmissionPage(_props: Route.ComponentProps) {
     return (
       <Section eyebrow="Edit submission" heading="Nothing to edit right now">
         <p className="max-w-md text-sm text-ink-muted">
-          This submission can only be edited while it has requested changes.
+          <LocalizedText>
+            This submission can only be edited while it has requested changes.
+          </LocalizedText>
         </p>
         <Link
           to="/account/submissions"
           className="mt-5 inline-flex min-h-11 items-center rounded-sm border border-line px-5 text-sm font-medium text-ink hover:bg-canvas"
         >
-          Back to my submissions
+          <LocalizedText>Back to my submissions</LocalizedText>
         </Link>
       </Section>
     );
@@ -111,7 +120,9 @@ export default function EditSubmissionPage(_props: Route.ComponentProps) {
     >
       {submission.reviewerNotes ? (
         <div className="mb-6 max-w-2xl rounded-sm border border-line bg-canvas px-4 py-3 text-sm text-ink">
-          <p className="font-medium">Editor's note</p>
+          <p className="font-medium">
+            <LocalizedText>Editor's note</LocalizedText>
+          </p>
           <p className="mt-1 text-ink-muted">{submission.reviewerNotes}</p>
         </div>
       ) : null}

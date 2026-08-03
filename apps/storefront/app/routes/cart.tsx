@@ -10,6 +10,7 @@ import { commerceLive, getBestsellers } from "../lib/commerce";
 import { usePriceFormatter } from "../lib/currency";
 import { seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 export function meta(_args: Route.MetaArgs) {
   return seoMeta({
@@ -50,14 +51,16 @@ export default function CartPage(_props: Route.ComponentProps) {
       <>
         <Section eyebrow="Your basket" heading="Nothing in the basket yet">
           <p className="max-w-md text-sm text-ink-muted">
-            The market is open. Seasonal fruit, honest staples and slow-pressed oils are a click
-            away.
+            <LocalizedText>
+              The market is open. Seasonal fruit, honest staples and slow-pressed oils are a click
+              away.
+            </LocalizedText>
           </p>
           <Link
             to="/shop"
             className="mt-5 inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90"
           >
-            Explore the market
+            <LocalizedText>Explore the market</LocalizedText>
           </Link>
         </Section>
         <RecommendedProducts
@@ -117,22 +120,30 @@ export default function CartPage(_props: Route.ComponentProps) {
                   onClick={() => remove(line.variantId)}
                   className="text-sm text-ink-muted underline-offset-4 hover:text-danger hover:underline"
                 >
-                  Remove
+                  <LocalizedText>Remove</LocalizedText>
                 </button>
               </li>
             ))}
           </ul>
 
           <aside className="h-fit rounded-md border border-line bg-surface p-5 shadow-card">
-            <h2 className="font-display text-lg text-ink">Order summary</h2>
+            <h2 className="font-display text-lg text-ink">
+              <LocalizedText>Order summary</LocalizedText>
+            </h2>
             <dl className="mt-4 space-y-2 text-sm">
               <div className="flex justify-between">
-                <dt className="text-ink-muted">Subtotal (estimate)</dt>
+                <dt className="text-ink-muted">
+                  <LocalizedText>Subtotal (estimate)</LocalizedText>
+                </dt>
                 <dd className="font-medium text-ink">{formatPrice(subtotalMinor)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-ink-muted">Delivery</dt>
-                <dd className="text-ink-muted">Calculated at checkout</dd>
+                <dt className="text-ink-muted">
+                  <LocalizedText>Delivery</LocalizedText>
+                </dt>
+                <dd className="text-ink-muted">
+                  <LocalizedText>Calculated at checkout</LocalizedText>
+                </dd>
               </div>
             </dl>
             {/* Ordering switched off in the admin console: the checkout route
@@ -145,11 +156,13 @@ export default function CartPage(_props: Route.ComponentProps) {
                   to="/checkout"
                   className="mt-5 flex min-h-11 w-full items-center justify-center rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90"
                 >
-                  Proceed to checkout
+                  <LocalizedText>Proceed to checkout</LocalizedText>
                 </Link>
                 <p className="mt-2 text-xs text-ink-muted">
-                  Prices are re-validated server-side at checkout; your basket total here is an
-                  estimate.
+                  <LocalizedText>
+                    Prices are re-validated server-side at checkout; your basket total here is an
+                    estimate.
+                  </LocalizedText>
                 </p>
               </>
             ) : (
@@ -161,7 +174,7 @@ export default function CartPage(_props: Route.ComponentProps) {
                   to="/checkout"
                   className="mt-3 flex min-h-11 w-full items-center justify-center rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90"
                 >
-                  Register your interest
+                  <LocalizedText>Register your interest</LocalizedText>
                 </Link>
               </>
             )}

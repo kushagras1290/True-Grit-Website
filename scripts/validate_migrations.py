@@ -131,10 +131,6 @@ def main() -> int:
                 " AND NOT EXISTS (SELECT 1 FROM search_products s"
                 " WHERE s.product_id = p.id)"
             ),
-            "customer image": (
-                "SELECT COUNT(*) FROM products p WHERE p.status = 'published'"
-                " AND NULLIF(TRIM(p.image_url), '') IS NULL"
-            ),
         }
         for requirement, query in catalogue_integrity_checks.items():
             missing = conn.execute(query).fetchone()[0]
@@ -143,6 +139,17 @@ def main() -> int:
                     f"{missing} published products lack {requirement}", file=sys.stderr
                 )
                 return 1
+
+        misleading_product_images = conn.execute(
+            "SELECT COUNT(*) FROM products WHERE status = 'published'"
+            " AND image_url LIKE '/banners/categories/%'"
+        ).fetchone()[0]
+        if misleading_product_images:
+            print(
+                f"{misleading_product_images} products use category artwork as a product image",
+                file=sys.stderr,
+            )
+            return 1
 
         # The editorial library deliberately matches the original visible
         # volume, but every family now has a reader job and quality floor.
@@ -364,15 +371,18 @@ def main() -> int:
             return 1
 
         visible_image_urls = conn.execute(
-            "SELECT DISTINCT image_url FROM products"
+            "SELECT DISTINCT image_url, 'product' AS image_kind FROM products"
             " WHERE status = 'published' AND NULLIF(TRIM(image_url), '') IS NOT NULL"
-            " UNION SELECT DISTINCT hero_image_url FROM categories"
+            " UNION SELECT DISTINCT hero_image_url, 'category' AS image_kind FROM categories"
             " WHERE status = 'published' AND visibility = 'public'"
             " AND NULLIF(TRIM(hero_image_url), '') IS NOT NULL"
         ).fetchall()
-        for (image_url,) in visible_image_urls:
+        for image_url, image_kind in visible_image_urls:
             asset = ROOT / "apps" / "storefront" / "public" / image_url.lstrip("/")
-            if not image_url.startswith("/banners/categories/") or not asset.is_file():
+            expected_prefix = (
+                "/products/" if image_kind == "product" else "/banners/categories/"
+            )
+            if not image_url.startswith(expected_prefix) or not asset.is_file():
                 print(f"missing catalogue image asset: {image_url}", file=sys.stderr)
                 return 1
 

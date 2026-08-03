@@ -17,6 +17,12 @@ import { LOCALES } from "./locales";
 const ENGLISH_KEYS = Object.keys(EN_MESSAGES) as MessageKey[];
 
 describe("i18n catalogues", () => {
+  it("offers exactly 100 unique BCP 47 locales", () => {
+    const codes = LOCALES.map((locale) => locale.code.toLowerCase());
+    expect(LOCALES).toHaveLength(100);
+    expect(new Set(codes).size).toBe(100);
+  });
+
   it("registers a locale entry for every non-English locale in the registry", () => {
     const nonEnglish = LOCALES.filter((locale) => locale.code !== "en").map((l) => l.code);
     const registered = Object.keys(CATALOGUES);

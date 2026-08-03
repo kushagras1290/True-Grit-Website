@@ -18,6 +18,7 @@ import { resolveLocale } from "../lib/i18n/resolve.server";
 import { mediaUrl } from "../lib/media";
 import { productEffectivePrice } from "../lib/pricing";
 import { recipeJsonLd, seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
@@ -102,7 +103,7 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
         <div className="grid gap-10 md:grid-cols-[1fr_2fr]">
           <aside>
             <h2 className="text-xs font-semibold tracking-[0.14em] text-ink-muted uppercase">
-              Ingredients
+              <LocalizedText>Ingredients</LocalizedText>
             </h2>
             <ul className="mt-3 space-y-2.5">
               {recipe.ingredients.map((ingredient) => (
@@ -145,7 +146,7 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
                   }}
                   className="mt-5 min-h-11 w-full rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90"
                 >
-                  Add available ingredients to basket
+                  <LocalizedText>Add available ingredients to basket</LocalizedText>
                 </button>
                 <p role="status" className="mt-2 min-h-5 text-sm text-success">
                   {addedAll ? `${availableProducts.length} ingredients added.` : ""}
@@ -156,7 +157,7 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
 
           <div>
             <h2 className="text-xs font-semibold tracking-[0.14em] text-ink-muted uppercase">
-              Method
+              <LocalizedText>Method</LocalizedText>
             </h2>
             <ol className="mt-3 space-y-5">
               {recipe.steps.map((step, index) => (

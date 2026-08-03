@@ -9,7 +9,7 @@ allowance comfortably covers "translate a page once, store the result"
 (this is never called per-visitor-per-request; see services.translation).
 
 m2m100 is a real but imperfect translator, and (being a research model) does
-not cover every one of the storefront's fifty-plus locales -- an
+not cover every one of the storefront's one hundred locales -- an
 unsupported target language surfaces as `TranslationUnavailableError` rather
 than a raw provider error, so the admin editor can say plainly "not
 available for this language yet, edit it by hand" instead of showing a

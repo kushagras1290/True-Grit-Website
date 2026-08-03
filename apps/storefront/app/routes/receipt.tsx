@@ -16,6 +16,7 @@ import type { Route } from "./+types/receipt";
 import { getMyOrder, type OrderDetail } from "../lib/commerce";
 import { useCustomer } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 export function meta(_args: Route.MetaArgs) {
   return seoMeta({
@@ -50,13 +51,17 @@ export default function ReceiptPage(_props: Route.ComponentProps) {
   if (status === "anonymous") {
     return (
       <div className="mx-auto max-w-2xl px-4 py-14 text-sm text-ink-muted">
-        Sign in to view this receipt.
+        <LocalizedText>Sign in to view this receipt.</LocalizedText>
       </div>
     );
   }
 
   if (state.kind === "loading") {
-    return <div className="mx-auto max-w-2xl px-4 py-14 text-sm text-ink-muted">One moment…</div>;
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-14 text-sm text-ink-muted">
+        <LocalizedText>One moment…</LocalizedText>
+      </div>
+    );
   }
 
   if (state.kind === "error") {
@@ -64,7 +69,7 @@ export default function ReceiptPage(_props: Route.ComponentProps) {
       <div className="mx-auto max-w-2xl px-4 py-14">
         <p className="text-sm text-ink-muted">{state.message}</p>
         <Link to="/account" className="mt-4 inline-flex text-sm text-brand hover:underline">
-          Your account
+          <LocalizedText>Your account</LocalizedText>
         </Link>
       </div>
     );
@@ -79,14 +84,14 @@ export default function ReceiptPage(_props: Route.ComponentProps) {
           to={`/account/orders/${reference}`}
           className="inline-flex min-h-10 items-center rounded-sm border border-line-strong px-4 text-sm font-medium text-ink hover:bg-canvas"
         >
-          Back to order
+          <LocalizedText>Back to order</LocalizedText>
         </Link>
         <button
           type="button"
           onClick={() => window.print()}
           className="inline-flex min-h-10 items-center rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90"
         >
-          Print / Save as PDF
+          <LocalizedText>Print / Save as PDF</LocalizedText>
         </button>
       </div>
 
@@ -102,7 +107,9 @@ export default function ReceiptPage(_props: Route.ComponentProps) {
             />
             <div>
               <p className="font-display text-xl font-semibold text-ink">TRUE GRIT</p>
-              <p className="text-xs text-ink-muted">Order receipt</p>
+              <p className="text-xs text-ink-muted">
+                <LocalizedText>Order receipt</LocalizedText>
+              </p>
             </div>
           </div>
           <div className="text-right text-sm">
@@ -114,7 +121,7 @@ export default function ReceiptPage(_props: Route.ComponentProps) {
         <div className="mt-6 grid gap-6 sm:grid-cols-2">
           <div>
             <p className="text-xs font-semibold tracking-[0.08em] text-ink-muted uppercase">
-              Delivered to
+              <LocalizedText>Delivered to</LocalizedText>
             </p>
             {order.deliveryAddress ? (
               <address className="mt-1.5 text-sm not-italic text-ink">
@@ -128,18 +135,20 @@ export default function ReceiptPage(_props: Route.ComponentProps) {
                 {order.deliveryAddress.phoneE164 ? <p>{order.deliveryAddress.phoneE164}</p> : null}
               </address>
             ) : (
-              <p className="mt-1.5 text-sm text-ink-muted">Not available.</p>
+              <p className="mt-1.5 text-sm text-ink-muted">
+                <LocalizedText>Not available.</LocalizedText>
+              </p>
             )}
           </div>
           <div className="sm:text-right">
             <p className="text-xs font-semibold tracking-[0.08em] text-ink-muted uppercase">
-              Status
+              <LocalizedText>Status</LocalizedText>
             </p>
             <p className="mt-1.5 text-sm text-ink capitalize">
               {order.orderStatus.replaceAll("_", " ")}
             </p>
             <p className="text-sm text-ink-muted capitalize">
-              Payment: {order.paymentStatus.replaceAll("_", " ")}
+              <LocalizedText>Payment:</LocalizedText> {order.paymentStatus.replaceAll("_", " ")}
             </p>
           </div>
         </div>
@@ -147,10 +156,18 @@ export default function ReceiptPage(_props: Route.ComponentProps) {
         <table className="mt-8 w-full text-left text-sm">
           <thead>
             <tr className="border-b border-line text-xs text-ink-muted uppercase">
-              <th className="py-2 font-medium">Item</th>
-              <th className="py-2 text-right font-medium">Qty</th>
-              <th className="py-2 text-right font-medium">Unit</th>
-              <th className="py-2 text-right font-medium">Total</th>
+              <th className="py-2 font-medium">
+                <LocalizedText>Item</LocalizedText>
+              </th>
+              <th className="py-2 text-right font-medium">
+                <LocalizedText>Qty</LocalizedText>
+              </th>
+              <th className="py-2 text-right font-medium">
+                <LocalizedText>Unit</LocalizedText>
+              </th>
+              <th className="py-2 text-right font-medium">
+                <LocalizedText>Total</LocalizedText>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -175,19 +192,25 @@ export default function ReceiptPage(_props: Route.ComponentProps) {
         <div className="mt-4 flex justify-end">
           <dl className="w-full max-w-xs space-y-1.5 text-sm">
             <div className="flex justify-between">
-              <dt className="text-ink-muted">Subtotal</dt>
+              <dt className="text-ink-muted">
+                <LocalizedText>Subtotal</LocalizedText>
+              </dt>
               <dd className="text-ink">{formatMoney(order.subtotalMinor, order.currencyCode)}</dd>
             </div>
             {order.discountMinor > 0 ? (
               <div className="flex justify-between">
-                <dt className="text-ink-muted">Discount</dt>
+                <dt className="text-ink-muted">
+                  <LocalizedText>Discount</LocalizedText>
+                </dt>
                 <dd className="text-success">
                   −{formatMoney(order.discountMinor, order.currencyCode)}
                 </dd>
               </div>
             ) : null}
             <div className="flex justify-between">
-              <dt className="text-ink-muted">Delivery</dt>
+              <dt className="text-ink-muted">
+                <LocalizedText>Delivery</LocalizedText>
+              </dt>
               <dd className="text-ink">
                 {order.deliveryMinor > 0
                   ? formatMoney(order.deliveryMinor, order.currencyCode)
@@ -196,19 +219,23 @@ export default function ReceiptPage(_props: Route.ComponentProps) {
             </div>
             {order.taxMinor > 0 ? (
               <div className="flex justify-between">
-                <dt className="text-ink-muted">Tax</dt>
+                <dt className="text-ink-muted">
+                  <LocalizedText>Tax</LocalizedText>
+                </dt>
                 <dd className="text-ink">{formatMoney(order.taxMinor, order.currencyCode)}</dd>
               </div>
             ) : null}
             <div className="flex justify-between border-t border-line pt-1.5 text-base font-semibold">
-              <dt className="text-ink">Total</dt>
+              <dt className="text-ink">
+                <LocalizedText>Total</LocalizedText>
+              </dt>
               <dd className="text-ink">{formatMoney(order.totalMinor, order.currencyCode)}</dd>
             </div>
           </dl>
         </div>
 
         <p className="mt-8 border-t border-line pt-4 text-center text-xs text-ink-muted">
-          Thank you for shopping with True Grit.
+          <LocalizedText>Thank you for shopping with True Grit.</LocalizedText>
         </p>
       </div>
     </div>

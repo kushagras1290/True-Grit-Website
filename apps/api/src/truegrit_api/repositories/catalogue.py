@@ -29,15 +29,7 @@ SELECT
   p.payments_override,
   COALESCE(
     '/media/' || m.object_key,
-    NULLIF(p.image_url, ''),
-    (
-      SELECT c.hero_image_url
-      FROM product_categories pc
-      JOIN categories c ON c.id = pc.category_id
-      WHERE pc.product_id = p.id AND NULLIF(c.hero_image_url, '') IS NOT NULL
-      ORDER BY pc.is_primary DESC, pc.sort_order, c.sort_order
-      LIMIT 1
-    )
+    NULLIF(p.image_url, '')
   ) AS image_url,
   f.name AS farm_name, f.slug AS farm_slug, f.region AS farm_region,
   COALESCE(NULLIF(p.image_alt, ''), m.alt_text) AS image_alt

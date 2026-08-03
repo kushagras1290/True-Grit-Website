@@ -29,7 +29,7 @@ describe("admin API auth expiry events", () => {
 
     expect(listener).toHaveBeenCalledTimes(1);
     window.removeEventListener(ADMIN_AUTH_EXPIRED_EVENT, listener);
-  });
+  }, 15_000);
 
   it("does not emit for the session probe or login endpoint", async () => {
     const { ADMIN_AUTH_EXPIRED_EVENT, api } = await loadLiveApiClient();

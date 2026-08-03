@@ -25,6 +25,7 @@ import { buildCategoryTree, findCategoryBranch } from "../lib/category-tree";
 import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
@@ -104,19 +105,24 @@ export default function Shop({ loaderData }: Route.ComponentProps) {
       <header className="bg-canvas">
         <div className="mx-auto max-w-[80rem] px-4 pt-10 pb-8 sm:px-6 md:pt-14">
           <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-            The market
+            <LocalizedText>The market</LocalizedText>
           </p>
           <div className="mt-2 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div className="max-w-3xl">
               <h1 className="font-display text-3xl leading-tight text-ink md:text-4xl">
-                Shop the full organic catalogue
+                <LocalizedText>Shop the full organic catalogue</LocalizedText>
               </h1>
               <p className="mt-3 text-base text-ink-muted">
-                Browse certified produce, pantry staples and seasonal harvests from verified farms.
+                <LocalizedText>
+                  Browse certified produce, pantry staples and seasonal harvests from verified
+                  farms.
+                </LocalizedText>
               </p>
             </div>
             <p className="text-sm text-ink-muted">
-              {tree.length} department{tree.length === 1 ? "" : "s"} · {productPage.total} product
+              {tree.length} <LocalizedText>department</LocalizedText>
+              {tree.length === 1 ? "" : "s"} · {productPage.total}{" "}
+              <LocalizedText>product</LocalizedText>
               {productPage.total === 1 ? "" : "s"}
             </p>
           </div>
@@ -124,7 +130,7 @@ export default function Shop({ loaderData }: Route.ComponentProps) {
             to="/bundles"
             className="mt-4 inline-flex min-h-9 items-center gap-1.5 rounded-full bg-subtle px-3.5 text-sm font-medium text-brand hover:opacity-90"
           >
-            Buy in a set and save — see Bundles →
+            <LocalizedText>Buy in a set and save — see Bundles →</LocalizedText>
           </Link>
         </div>
       </header>
@@ -133,7 +139,7 @@ export default function Shop({ loaderData }: Route.ComponentProps) {
         <section id={DEPARTMENTS_ANCHOR} className="bg-canvas scroll-mt-32">
           <div className="mx-auto max-w-[80rem] px-4 pb-10 sm:px-6">
             <h2 className="mb-4 font-display text-2xl leading-tight text-ink">
-              Shop by department
+              <LocalizedText>Shop by department</LocalizedText>
             </h2>
             <DepartmentRail tree={tree} />
           </div>
@@ -178,15 +184,19 @@ export default function Shop({ loaderData }: Route.ComponentProps) {
 
             {unknownFilter ? (
               <div className="rounded-md border border-dashed border-line-strong px-6 py-14 text-center">
-                <p className="font-display text-lg text-ink">That category is not available</p>
+                <p className="font-display text-lg text-ink">
+                  <LocalizedText>That category is not available</LocalizedText>
+                </p>
                 <p className="mt-1 text-sm text-ink-muted">
-                  It may have been renamed, unpublished, or is not sold in your country.
+                  <LocalizedText>
+                    It may have been renamed, unpublished, or is not sold in your country.
+                  </LocalizedText>
                 </p>
                 <a
                   href="/shop"
                   className="mt-4 inline-block text-sm font-medium text-brand hover:underline"
                 >
-                  Browse the full market
+                  <LocalizedText>Browse the full market</LocalizedText>
                 </a>
               </div>
             ) : (

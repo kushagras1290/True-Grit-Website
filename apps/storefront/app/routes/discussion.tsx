@@ -7,6 +7,7 @@ import { PageBanner } from "../components/page-banner";
 import { AuthError, useCustomer } from "../lib/customer-auth";
 import { createComment, getDiscussion, type DiscussionDetail } from "../lib/community";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 export function meta(_args: Route.MetaArgs) {
   return seoMeta({
@@ -68,7 +69,7 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
           to="/community"
           className="inline-flex min-h-11 items-center rounded-sm border border-line px-5 text-sm font-medium text-ink hover:bg-canvas"
         >
-          Back to community
+          <LocalizedText>Back to community</LocalizedText>
         </Link>
       </Section>
     );
@@ -77,7 +78,9 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
   if (discussion === null) {
     return (
       <Section eyebrow="Community" heading="Loading...">
-        <p className="text-sm text-ink-muted">One moment…</p>
+        <p className="text-sm text-ink-muted">
+          <LocalizedText>One moment…</LocalizedText>
+        </p>
       </Section>
     );
   }
@@ -97,10 +100,13 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
 
           <div>
             <h2 className="mb-3 font-display text-lg text-ink">
-              {discussion.comments.length} comment{discussion.comments.length === 1 ? "" : "s"}
+              {discussion.comments.length} <LocalizedText>comment</LocalizedText>
+              {discussion.comments.length === 1 ? "" : "s"}
             </h2>
             {discussion.comments.length === 0 ? (
-              <p className="text-sm text-ink-muted">No comments yet.</p>
+              <p className="text-sm text-ink-muted">
+                <LocalizedText>No comments yet.</LocalizedText>
+              </p>
             ) : (
               <ul className="space-y-4">
                 {discussion.comments.map((comment) => (
@@ -119,7 +125,9 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
             <form className="space-y-3 border-t border-line pt-6" onSubmit={handleComment}>
               {error ? <p className="text-sm text-danger">{error}</p> : null}
               <label className="block space-y-1">
-                <span className="text-xs font-medium text-ink-muted">Add a comment</span>
+                <span className="text-xs font-medium text-ink-muted">
+                  <LocalizedText>Add a comment</LocalizedText>
+                </span>
                 <textarea
                   required
                   minLength={2}
@@ -139,7 +147,7 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
             </form>
           ) : (
             <p className="border-t border-line pt-6 text-sm text-ink-muted">
-              Sign in to join the discussion.
+              <LocalizedText>Sign in to join the discussion.</LocalizedText>
             </p>
           )}
         </div>

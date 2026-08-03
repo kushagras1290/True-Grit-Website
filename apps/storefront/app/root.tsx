@@ -28,6 +28,7 @@ import { messagesFor } from "./lib/i18n/messages.server";
 import { resolveLocale } from "./lib/i18n/resolve.server";
 import { DEFAULT_SITE_SETTINGS, SiteSettingsProvider } from "./lib/site-settings";
 import { resolveThemeTokens, themeStyleSheet } from "./lib/theme";
+import { LocalizedText } from "./lib/i18n/localized-text";
 
 export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.png", type: "image/png" },
@@ -112,7 +113,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <html lang={locale} dir={dir}>
+    <html lang={locale} dir={dir} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -241,7 +242,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
         to="/"
         className="mt-6 inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse"
       >
-        Back to the market
+        <LocalizedText>Back to the market</LocalizedText>
       </Link>
     </div>
   );

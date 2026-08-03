@@ -7,6 +7,7 @@ import { SubmissionForm } from "../components/submission-form";
 import { catalogueRuntime, loadRouteSeo } from "../lib/catalogue.server";
 import { useCustomer } from "../lib/customer-auth";
 import { mergeRouteSeo, seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 const fallbackSeo = {
   title: "Post a recipe",
@@ -30,7 +31,9 @@ export default function SubmitRecipePage(_props: Route.ComponentProps) {
   if (status === "loading") {
     return (
       <Section eyebrow="Post a recipe" heading="Loading...">
-        <p className="text-sm text-ink-muted">One moment…</p>
+        <p className="text-sm text-ink-muted">
+          <LocalizedText>One moment…</LocalizedText>
+        </p>
       </Section>
     );
   }
@@ -39,14 +42,16 @@ export default function SubmitRecipePage(_props: Route.ComponentProps) {
     return (
       <Section eyebrow="Post a recipe" heading="Sign in to share a recipe">
         <p className="max-w-md text-sm text-ink-muted">
-          Open the account menu to sign in or create an account, then come back here to submit your
-          recipe.
+          <LocalizedText>
+            Open the account menu to sign in or create an account, then come back here to submit
+            your recipe.
+          </LocalizedText>
         </p>
         <Link
           to="/recipes"
           className="mt-5 inline-flex min-h-11 items-center rounded-sm border border-line px-5 text-sm font-medium text-ink hover:bg-canvas"
         >
-          Back to recipes
+          <LocalizedText>Back to recipes</LocalizedText>
         </Link>
       </Section>
     );
@@ -56,21 +61,23 @@ export default function SubmitRecipePage(_props: Route.ComponentProps) {
     return (
       <Section eyebrow="Post a recipe" heading="Thanks for sharing!">
         <p className="max-w-md text-sm text-ink-muted">
-          Your recipe is with our editors. We will email you at your contact address once it is
-          approved, or if we need changes first.
+          <LocalizedText>
+            Your recipe is with our editors. We will email you at your contact address once it is
+            approved, or if we need changes first.
+          </LocalizedText>
         </p>
         <div className="mt-5 flex gap-3">
           <Link
             to="/account/submissions"
             className="inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90"
           >
-            View my submissions
+            <LocalizedText>View my submissions</LocalizedText>
           </Link>
           <Link
             to="/recipes"
             className="inline-flex min-h-11 items-center rounded-sm border border-line px-5 text-sm font-medium text-ink hover:bg-canvas"
           >
-            Back to recipes
+            <LocalizedText>Back to recipes</LocalizedText>
           </Link>
         </div>
       </Section>
@@ -80,8 +87,10 @@ export default function SubmitRecipePage(_props: Route.ComponentProps) {
   return (
     <Section eyebrow="Post a recipe" heading="Share a recipe with the community">
       <p className="mb-6 max-w-2xl text-sm text-ink-muted">
-        Ingredients, steps, prep and cook time — our editors review every recipe before it goes
-        live.
+        <LocalizedText>
+          Ingredients, steps, prep and cook time — our editors review every recipe before it goes
+          live.
+        </LocalizedText>
       </p>
       <SubmissionForm
         contentType="recipe"

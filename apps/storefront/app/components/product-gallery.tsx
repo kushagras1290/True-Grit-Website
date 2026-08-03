@@ -16,6 +16,7 @@ import { useState } from "react";
 
 import { ProduceFrame } from "./catalogue";
 import { mediaUrl } from "../lib/media";
+import { useLocalizeText } from "../lib/i18n/localized-text";
 
 export function ProductGallery({
   slug,
@@ -30,6 +31,7 @@ export function ProductGallery({
   galleryImages: ProductImage[];
   className?: string;
 }) {
+  const localize = useLocalizeText();
   const [selected, setSelected] = useState(0);
   const hasGallery = galleryImages.length > 0;
 
@@ -48,7 +50,7 @@ export function ProductGallery({
             <img
               src={mediaUrl(galleryImages[selected - 1]!.imageUrl)}
               alt={galleryImages[selected - 1]!.imageAlt ?? mainImageAlt}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain p-2"
               loading="lazy"
             />
           </div>
@@ -59,7 +61,7 @@ export function ProductGallery({
         <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
           <button
             type="button"
-            aria-label="Show main product photo"
+            aria-label={localize("Show main product photo")}
             aria-current={selected === 0}
             onClick={() => setSelected(0)}
             className={`h-16 w-16 shrink-0 overflow-hidden rounded-sm border-2 ${
@@ -89,7 +91,7 @@ export function ProductGallery({
               <img
                 src={mediaUrl(image.imageUrl)}
                 alt=""
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain p-1"
                 loading="lazy"
               />
             </button>

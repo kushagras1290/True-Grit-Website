@@ -14,10 +14,12 @@ import { Link } from "react-router";
 import { mediaUrl } from "../lib/media";
 import { CategoryTile, ProductCard, Section } from "./catalogue";
 import { BannerBrandLockup } from "./page-banner";
+import { DEFAULT_PAGE_BANNER_IMAGE } from "./page-banner";
 import { PromotionBanner } from "./promotion-banner";
 import { RecommendedProducts } from "./recommendations";
 import { StarRating } from "./reviews";
 import { Slider } from "./slider";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 export interface BlockData {
   productsBySlug: Map<string, ProductSummary>;
@@ -135,8 +137,14 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
           >
             <img
               src={mediaUrl(activeSlide.imageUrl)}
+              alt=""
+              aria-hidden
+              className="absolute inset-0 h-full w-full scale-105 object-cover opacity-45 blur-md"
+            />
+            <img
+              src={mediaUrl(activeSlide.imageUrl)}
               alt={activeSlide.imageAlt || activeSlide.label}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.01]"
+              className="absolute inset-0 h-full w-full object-contain"
               fetchPriority="high"
               loading="eager"
             />
@@ -172,8 +180,25 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
   }
 
   return (
-    <section className="bg-brand text-ink-inverse">
-      <div className="mx-auto grid max-w-[80rem] gap-10 px-4 py-16 sm:px-6 md:grid-cols-[3fr_2fr] md:py-24">
+    <section className="relative h-[21rem] overflow-hidden bg-brand text-ink-inverse md:h-[29rem]">
+      <img
+        src={DEFAULT_PAGE_BANNER_IMAGE}
+        alt=""
+        aria-hidden
+        className="absolute inset-0 h-full w-full scale-105 object-cover opacity-45 blur-md"
+      />
+      <img
+        src={DEFAULT_PAGE_BANNER_IMAGE}
+        alt=""
+        aria-hidden
+        className="absolute inset-0 h-full w-full object-contain"
+        fetchPriority="high"
+      />
+      <span
+        aria-hidden
+        className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/15"
+      />
+      <div className="relative mx-auto grid h-full max-w-[80rem] items-center gap-10 px-4 py-10 sm:px-6 md:grid-cols-[3fr_2fr]">
         <div className="max-w-xl">
           <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-80">
             {block.props.eyebrow}
@@ -215,6 +240,7 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
 }
 
 export function CmsBlock({ block, data }: { block: PublicPageBlock; data: BlockData }) {
+  const localize = useLocalizeText();
   if (!block.enabled) return null;
 
   switch (block.type) {
@@ -282,7 +308,7 @@ export function CmsBlock({ block, data }: { block: PublicPageBlock; data: BlockD
                 <>
                   {" — "}
                   <Link to={`/farms/${farm.slug}`} className="text-brand hover:underline">
-                    visit the farm
+                    <LocalizedText>visit the farm</LocalizedText>
                   </Link>
                 </>
               ) : null}
@@ -328,20 +354,20 @@ export function CmsBlock({ block, data }: { block: PublicPageBlock; data: BlockD
               onSubmit={(event) => event.preventDefault()}
             >
               <label htmlFor="newsletter-email" className="sr-only">
-                Email address
+                <LocalizedText>Email address</LocalizedText>
               </label>
               <input
                 id="newsletter-email"
                 type="email"
                 required
-                placeholder="you@example.com"
+                placeholder={localize("you@example.com")}
                 className="min-h-11 flex-1 rounded-sm border border-white/30 bg-white/10 px-4 text-sm text-ink-inverse placeholder:text-white/50"
               />
               <button
                 type="submit"
                 className="min-h-11 rounded-sm bg-canvas px-5 text-sm font-medium text-brand hover:opacity-90"
               >
-                Subscribe
+                <LocalizedText>Subscribe</LocalizedText>
               </button>
             </form>
           </div>
@@ -439,7 +465,9 @@ export function CmsBlock({ block, data }: { block: PublicPageBlock; data: BlockD
                   <figcaption className="mt-4 text-sm">
                     <span className="font-medium text-ink">{review.authorName}</span>
                     {review.verifiedPurchase ? (
-                      <span className="ml-1.5 text-xs text-ink-muted">Verified purchase</span>
+                      <span className="ml-1.5 text-xs text-ink-muted">
+                        <LocalizedText>Verified purchase</LocalizedText>
+                      </span>
                     ) : null}
                     <Link
                       to={`/product/${review.productSlug}`}
@@ -454,7 +482,7 @@ export function CmsBlock({ block, data }: { block: PublicPageBlock; data: BlockD
           </Slider>
           <p className="mt-6 text-center">
             <Link to="/reviews" className="text-sm font-medium text-brand hover:underline">
-              Read all reviews →
+              <LocalizedText>Read all reviews →</LocalizedText>
             </Link>
           </p>
         </Section>

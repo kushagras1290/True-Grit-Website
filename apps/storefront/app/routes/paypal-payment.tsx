@@ -6,6 +6,7 @@ import type { Route } from "./+types/paypal-payment";
 import { payWithPaypal, readPaypalWindowPayload, type PlacedOrder } from "../lib/commerce";
 import { AuthError } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 type PaymentState = "preparing" | "processing" | "paid" | "failed";
 
@@ -41,6 +42,7 @@ function formatCharge(minor: number, currency: string): string {
 }
 
 export default function PaypalPaymentPage(_props: Route.ComponentProps) {
+  const localize = useLocalizeText();
   const [params] = useSearchParams();
   const token = params.get("token");
   const status = params.get("status");
@@ -123,7 +125,7 @@ export default function PaypalPaymentPage(_props: Route.ComponentProps) {
           </Link>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1 text-xs font-medium text-ink-muted">
             <LockKeyhole className="h-3.5 w-3.5" aria-hidden />
-            PayPal
+            <LocalizedText>PayPal</LocalizedText>
           </span>
         </header>
 
@@ -141,7 +143,7 @@ export default function PaypalPaymentPage(_props: Route.ComponentProps) {
               <Icon className={`h-6 w-6 ${isBusy ? "animate-spin" : ""}`} aria-hidden />
             </div>
             <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-              Secure international payment
+              <LocalizedText>Secure international payment</LocalizedText>
             </p>
             <h1 className="mt-2 font-display text-3xl leading-tight text-ink">
               {state === "paid"
@@ -155,12 +157,16 @@ export default function PaypalPaymentPage(_props: Route.ComponentProps) {
             {order ? (
               <div className="mt-5 space-y-2 rounded-sm border border-line bg-canvas px-3 py-3 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-ink-muted">Order</span>
+                  <span className="text-ink-muted">
+                    <LocalizedText>Order</LocalizedText>
+                  </span>
                   <span className="font-medium text-ink">{order.reference}</span>
                 </div>
                 {charge ? (
                   <div className="flex items-center justify-between">
-                    <span className="text-ink-muted">You'll be charged</span>
+                    <span className="text-ink-muted">
+                      <LocalizedText>You'll be charged</LocalizedText>
+                    </span>
                     <span className="font-medium text-ink">{charge}</span>
                   </div>
                 ) : null}
@@ -173,8 +179,11 @@ export default function PaypalPaymentPage(_props: Route.ComponentProps) {
                 {/* PayPal cannot settle INR to an Indian merchant, so the buyer
                     is charged a converted amount. Say so before they pay rather
                     than surprise them on their statement. */}
-                PayPal is for international cards. Your order is priced in rupees and converted for
-                this payment, so your statement will show {charge}.
+                <LocalizedText>
+                  PayPal is for international cards. Your order is priced in rupees and converted
+                  for this payment, so your statement will show
+                </LocalizedText>{" "}
+                {charge}.
               </p>
             ) : null}
 
@@ -183,7 +192,7 @@ export default function PaypalPaymentPage(_props: Route.ComponentProps) {
             <div
               ref={buttonsRef}
               className={`mt-5 ${state === "processing" ? "" : "hidden"}`}
-              aria-label="PayPal payment options"
+              aria-label={localize("PayPal payment options")}
             />
 
             {state === "failed" ? (
@@ -192,14 +201,16 @@ export default function PaypalPaymentPage(_props: Route.ComponentProps) {
                 onClick={() => window.close()}
                 className="mt-6 min-h-11 w-full rounded-sm border border-line-strong px-4 text-sm font-medium text-ink hover:bg-canvas"
               >
-                Close window
+                <LocalizedText>Close window</LocalizedText>
               </button>
             ) : null}
           </section>
         </main>
 
         <footer className="border-t border-line pt-4 text-center text-xs text-ink-muted">
-          Payments are processed by PayPal. True Grit never stores card details.
+          <LocalizedText>
+            Payments are processed by PayPal. True Grit never stores card details.
+          </LocalizedText>
         </footer>
       </div>
     </div>

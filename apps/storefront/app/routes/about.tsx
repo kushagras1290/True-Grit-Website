@@ -6,6 +6,7 @@ import { Section } from "../components/catalogue";
 import { CopyBlock, InfoGrid, StaticHero } from "../components/static-page";
 import { loadCmsRoute } from "../lib/cms-route.server";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 const fallbackSeo = {
   title: "About True Grit",
@@ -38,28 +39,35 @@ export default function AboutPage({ loaderData }: Route.ComponentProps) {
           <div className="space-y-8">
             <CopyBlock title="Why we exist">
               <p>
-                Organic food should not depend on vague claims. Every product in the market is tied
-                to a verified farm, certification record, harvest or processing date, and a clear
-                route to the customer.
+                <LocalizedText>
+                  Organic food should not depend on vague claims. Every product in the market is
+                  tied to a verified farm, certification record, harvest or processing date, and a
+                  clear route to the customer.
+                </LocalizedText>
               </p>
               <p>
-                We keep the catalogue intentionally small so the team can stay close to growers,
-                inspect paperwork, manage freshness, and publish the context customers need before
-                buying.
+                <LocalizedText>
+                  We keep the catalogue intentionally small so the team can stay close to growers,
+                  inspect paperwork, manage freshness, and publish the context customers need before
+                  buying.
+                </LocalizedText>
               </p>
             </CopyBlock>
             <CopyBlock title="How we choose partners">
               <p>
-                Farms must hold a current NPOP or PGS-India certificate, agree to lot-level
-                traceability, and work with seasonal availability rather than anonymous bulk supply.
-                Pantry partners must press, mill or pack in small batches with dates shown plainly.
+                <LocalizedText>
+                  Farms must hold a current NPOP or PGS-India certificate, agree to lot-level
+                  traceability, and work with seasonal availability rather than anonymous bulk
+                  supply. Pantry partners must press, mill or pack in small batches with dates shown
+                  plainly.
+                </LocalizedText>
               </p>
             </CopyBlock>
           </div>
 
           <aside className="rounded-md border border-line bg-surface p-6">
             <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-              Built around
+              <LocalizedText>Built around</LocalizedText>
             </p>
             <dl className="mt-4 space-y-4">
               {[
@@ -77,7 +85,7 @@ export default function AboutPage({ loaderData }: Route.ComponentProps) {
               to="/farms"
               className="mt-6 inline-flex min-h-11 items-center rounded-sm border border-line px-4 text-sm font-medium text-ink hover:bg-canvas"
             >
-              Meet the farmers
+              <LocalizedText>Meet the farmers</LocalizedText>
             </Link>
           </aside>
         </div>

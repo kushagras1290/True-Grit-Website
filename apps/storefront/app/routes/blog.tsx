@@ -9,6 +9,7 @@ import { resolveLocale } from "../lib/i18n/resolve.server";
 import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 // 12 divides evenly into the 1/2/3-column breakpoints below, so the last row of
 // a full page is never a lone card.
@@ -53,18 +54,21 @@ export default function BlogPage({ loaderData }: Route.ComponentProps) {
       <Section>
         <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
           <p className="max-w-lg text-sm text-ink-muted">
-            Have a story to tell? Pitch a post and our editors will review it.
+            <LocalizedText>
+              Have a story to tell? Pitch a post and our editors will review it.
+            </LocalizedText>
           </p>
           <Link
             to="/blog/submit"
             className="inline-flex min-h-11 shrink-0 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90"
           >
-            Post a blog
+            <LocalizedText>Post a blog</LocalizedText>
           </Link>
         </div>
 
         <p className="mb-5 text-sm text-ink-muted" role="status">
-          {loaderData.articles.total} stor{loaderData.articles.total === 1 ? "y" : "ies"}
+          {loaderData.articles.total} <LocalizedText>stor</LocalizedText>
+          {loaderData.articles.total === 1 ? "y" : "ies"}
         </p>
 
         {/* Two across at a normal desktop width, and the count follows the space
@@ -79,13 +83,14 @@ export default function BlogPage({ loaderData }: Route.ComponentProps) {
                     src={mediaUrl(article.heroImageUrl)}
                     alt={article.heroImageAlt || ""}
                     loading="lazy"
-                    className="aspect-[16/9] w-full rounded-md object-cover"
+                    className="aspect-[16/9] w-full rounded-md bg-subtle object-contain"
                   />
                 ) : (
                   <span aria-hidden className="aspect-[16/9] w-full rounded-md bg-subtle" />
                 )}
                 <p className="mt-4 text-xs text-ink-muted">
-                  {article.authorName} · {article.readingMinutes} min read
+                  {article.authorName} · {article.readingMinutes}{" "}
+                  <LocalizedText>min read</LocalizedText>
                 </p>
                 <h2 className="mt-1.5 font-display text-2xl leading-snug text-ink group-hover:text-brand">
                   {article.title}

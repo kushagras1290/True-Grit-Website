@@ -13,6 +13,7 @@ import {
 import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const url = new URL(request.url);
@@ -61,6 +62,7 @@ const GROUP_LABELS: Record<string, string> = {
 };
 
 export default function SearchPage({ loaderData }: Route.ComponentProps) {
+  const localize = useLocalizeText();
   const { results, productResults, highlights } = loaderData;
   const contentGroups = results.groups.filter((group) => group.group !== "products");
 
@@ -69,7 +71,7 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
       <Section eyebrow="Search" heading="What are you looking for?">
         <Form method="get" role="search" className="flex max-w-xl gap-2">
           <label htmlFor="q" className="sr-only">
-            Search products, farms, recipes and stories
+            <LocalizedText>Search products, farms, recipes and stories</LocalizedText>
           </label>
           <input
             id="q"
@@ -77,29 +79,34 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
             type="search"
             defaultValue={results.query}
             autoFocus
-            placeholder="Try “ragi”, “kidney beans” or “Devika”…"
+            placeholder={localize("Try “ragi”, “kidney beans” or “Devika”…")}
             className="min-h-11 flex-1 rounded-sm border border-line-strong bg-surface px-4 text-base"
           />
           <button
             type="submit"
             className="min-h-11 rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90"
           >
-            Search
+            <LocalizedText>Search</LocalizedText>
           </button>
         </Form>
 
         {results.query && results.total === 0 ? (
           <div className="mt-10 max-w-xl rounded-md border border-dashed border-line-strong px-6 py-10 text-center">
-            <p className="font-display text-lg text-ink">No results for “{results.query}”</p>
+            <p className="font-display text-lg text-ink">
+              <LocalizedText>No results for “</LocalizedText>
+              {results.query}”
+            </p>
             <p className="mt-1 text-sm text-ink-muted">
-              Try a simpler word — we also understand common names like “finger millet” for ragi.
+              <LocalizedText>
+                Try a simpler word — we also understand common names like “finger millet” for ragi.
+              </LocalizedText>
             </p>
             <div className="mt-4 flex justify-center gap-4 text-sm">
               <Link to="/shop" className="font-medium text-brand hover:underline">
-                Browse all products
+                <LocalizedText>Browse all products</LocalizedText>
               </Link>
               <Link to="/category/fresh-fruits" className="font-medium text-brand hover:underline">
-                See what is in season
+                <LocalizedText>See what is in season</LocalizedText>
               </Link>
             </div>
           </div>
@@ -108,7 +115,7 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
         {productResults.length > 0 ? (
           <div className="mt-10">
             <h2 className="mb-4 text-xs font-semibold tracking-[0.14em] text-ink-muted uppercase">
-              Products
+              <LocalizedText>Products</LocalizedText>
             </h2>
             <ProductGrid products={productResults} />
           </div>
@@ -165,19 +172,25 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
           </div>
           <aside className="space-y-5">
             <div>
-              <h3 className="font-display text-lg text-ink">Prefer email?</h3>
+              <h3 className="font-display text-lg text-ink">
+                <LocalizedText>Prefer email?</LocalizedText>
+              </h3>
               <a
                 href="mailto:support@truegrit.test"
                 className="mt-2 block text-sm text-brand underline-offset-4 hover:underline"
               >
-                support@truegrit.test
+                <LocalizedText>support@truegrit.test</LocalizedText>
               </a>
             </div>
             <div>
-              <h3 className="font-display text-lg text-ink">What helps us</h3>
+              <h3 className="font-display text-lg text-ink">
+                <LocalizedText>What helps us</LocalizedText>
+              </h3>
               <p className="mt-2 text-sm text-ink-muted">
-                The variety or brand you have in mind, roughly how much you need, and your delivery
-                city.
+                <LocalizedText>
+                  The variety or brand you have in mind, roughly how much you need, and your
+                  delivery city.
+                </LocalizedText>
               </p>
             </div>
           </aside>

@@ -6,6 +6,7 @@ import { Section } from "../components/catalogue";
 import { CopyBlock, InfoGrid, StaticHero } from "../components/static-page";
 import { loadCmsRoute } from "../lib/cms-route.server";
 import { seoMeta } from "../lib/seo";
+import { LocalizedText } from "../lib/i18n/localized-text";
 
 const fallbackSeo = {
   title: "Help",
@@ -73,20 +74,26 @@ export default function HelpPage({ loaderData }: Route.ComponentProps) {
         <div className="mx-auto max-w-3xl space-y-8">
           <CopyBlock title="Can I change an order after placing it?">
             <p>
-              Contact support as soon as possible. Changes are usually possible before picking,
-              packing or harvest allocation starts.
+              <LocalizedText>
+                Contact support as soon as possible. Changes are usually possible before picking,
+                packing or harvest allocation starts.
+              </LocalizedText>
             </p>
           </CopyBlock>
           <CopyBlock title="Why is some produce unavailable in my city?">
             <p>
-              Some fresh products only ship where the route can preserve quality within the promised
-              delivery window.
+              <LocalizedText>
+                Some fresh products only ship where the route can preserve quality within the
+                promised delivery window.
+              </LocalizedText>
             </p>
           </CopyBlock>
           <CopyBlock title="Where do I see farm details?">
             <p>
-              Product pages include farm, certification, harvest and packing information. The
-              Farmers page lists every current partner farm.
+              <LocalizedText>
+                Product pages include farm, certification, harvest and packing information. The
+                Farmers page lists every current partner farm.
+              </LocalizedText>
             </p>
           </CopyBlock>
         </div>

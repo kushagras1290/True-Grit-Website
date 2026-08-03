@@ -1,3 +1,5 @@
+import RAW_EN_MESSAGES from "./raw-messages";
+
 /**
  * The English source catalogue, and the types every translation is checked
  * against.
@@ -21,6 +23,7 @@
  */
 
 export const EN_MESSAGES = {
+  ...RAW_EN_MESSAGES,
   // -- Chrome and shared actions --------------------------------------------
   "common.skipToContent": "Skip to content",
   "common.search": "Search",
