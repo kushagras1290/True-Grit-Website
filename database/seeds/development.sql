@@ -3861,3 +3861,26 @@ WHERE id IN (
   'prd_market_0161', 'prd_market_0193', 'prd_market_0233', 'prd_market_0265',
   'prd_market_0289', 'prd_market_0321', 'prd_market_0385', 'prd_market_0417'
 );
+
+-- Additional reviewed product photographs. Keep this aligned with migration
+-- 0071 so a fresh seed and an upgraded database expose the same catalogue.
+UPDATE products
+SET image_url = '/products/' || slug || '.jpg',
+    image_alt = CASE id
+      WHEN 'prd_mass_0001' THEN 'Assorted hen eggs in a metal bowl'
+      WHEN 'prd_mass_0002' THEN 'Assorted farm eggs in a woven basket'
+      WHEN 'prd_mass_0003' THEN 'Brown country hen eggs on a white background'
+      WHEN 'prd_mass_0004' THEN 'Speckled quail eggs'
+      WHEN 'prd_mass_0005' THEN 'Brown hen eggs on a white background'
+      WHEN 'prd_mass_0006' THEN 'Assorted farm eggs in a woven basket'
+      WHEN 'prd_mass_0007' THEN 'Assorted farm eggs in a woven basket'
+      WHEN 'prd_mass_0008' THEN 'Speckled quail eggs'
+      WHEN 'prd_complete_0129' THEN 'Dark chocolate pieces with almonds and sea salt'
+      WHEN 'prd_complete_0130' THEN 'Dark chocolate pieces with almonds and sea salt'
+      ELSE image_alt
+    END
+WHERE id IN (
+  'prd_mass_0001', 'prd_mass_0002', 'prd_mass_0003', 'prd_mass_0004',
+  'prd_mass_0005', 'prd_mass_0006', 'prd_mass_0007', 'prd_mass_0008',
+  'prd_complete_0129', 'prd_complete_0130'
+);

@@ -9,5 +9,5 @@
 - [x] Add a universal fallback image for empty page-banner sections.
 - [x] Fit banners, product cards, galleries, and editorial images without unwanted cropping.
 - [x] Remove category/banner artwork as a product-image fallback.
-- [x] Add and connect 17 product-specific packshots.
+- [x] Add and connect 27 product-specific photographs and packshots.
 - [x] Validate translations, migrations, image records, responsive layout, tests, types, and builds.
