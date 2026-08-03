@@ -259,7 +259,9 @@ async def replace_product_images(
     if product is None:
         raise NotFoundError("Product not found.")
     if len(images) > _MAX_PRODUCT_IMAGES:
-        raise ValidationAppError(f"A product can hold at most {_MAX_PRODUCT_IMAGES} gallery images.")
+        raise ValidationAppError(
+            f"A product can hold at most {_MAX_PRODUCT_IMAGES} gallery images."
+        )
 
     cleaned: list[dict[str, Any]] = []
     for index, image in enumerate(images):

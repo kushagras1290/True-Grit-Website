@@ -809,9 +809,7 @@ export function createReview(
 // ---------------------------------------------------------------------------
 
 export function listMyAddresses(): Promise<CustomerAddress[]> {
-  return request<{ items: CustomerAddress[] }>("/v1/public/addresses").then(
-    (body) => body.items,
-  );
+  return request<{ items: CustomerAddress[] }>("/v1/public/addresses").then((body) => body.items);
 }
 
 export function createAddress(input: {

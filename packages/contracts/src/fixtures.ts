@@ -682,8 +682,8 @@ export function resolveFeaturedReviews({
 
 /** Every approved review sitewide, newest first -- backs the demo-mode
  *  fallback for the dedicated `/reviews` page (`GET /v1/public/reviews`). */
-export const allApprovedReviews: FeaturedReview[] = [...allReviewsById.values()].sort(
-  (a, b) => b.createdAt.localeCompare(a.createdAt),
+export const allApprovedReviews: FeaturedReview[] = [...allReviewsById.values()].sort((a, b) =>
+  b.createdAt.localeCompare(a.createdAt),
 );
 
 /**
@@ -799,9 +799,7 @@ export const publicBundles: PublicBundle[] = [
     savingsMinor: Math.max(bundleFixtureComponentSumMinor - bundleFixtureBundlePriceMinor, 0),
     imageUrl: "/homepage-hero.png",
     imageAlt: "Alphonso mangoes and baby spinach together",
-    items: bundleFixtureItems.map(
-      ({ id: _id, ...item }): PublicBundleItem => item,
-    ),
+    items: bundleFixtureItems.map(({ id: _id, ...item }): PublicBundleItem => item),
   },
 ];
 
@@ -882,11 +880,36 @@ export const analyticsOverview: AnalyticsOverview = {
     };
   }),
   topProducts: [
-    { productId: "prd_demo_mango", productName: "Alphonso Mango", unitsSold: 412, revenueMinor: 164_400 },
-    { productId: "prd_demo_spinach", productName: "Baby Spinach", unitsSold: 356, revenueMinor: 24_600 },
-    { productId: "prd_demo_rice", productName: "Brown Basmati Rice", unitsSold: 201, revenueMinor: 60_300 },
-    { productId: "prd_demo_greens", productName: "Mixed Salad Greens", unitsSold: 178, revenueMinor: 21_400 },
-    { productId: "prd_demo_honey", productName: "Wild Forest Honey", unitsSold: 94, revenueMinor: 32_900 },
+    {
+      productId: "prd_demo_mango",
+      productName: "Alphonso Mango",
+      unitsSold: 412,
+      revenueMinor: 164_400,
+    },
+    {
+      productId: "prd_demo_spinach",
+      productName: "Baby Spinach",
+      unitsSold: 356,
+      revenueMinor: 24_600,
+    },
+    {
+      productId: "prd_demo_rice",
+      productName: "Brown Basmati Rice",
+      unitsSold: 201,
+      revenueMinor: 60_300,
+    },
+    {
+      productId: "prd_demo_greens",
+      productName: "Mixed Salad Greens",
+      unitsSold: 178,
+      revenueMinor: 21_400,
+    },
+    {
+      productId: "prd_demo_honey",
+      productName: "Wild Forest Honey",
+      unitsSold: 94,
+      revenueMinor: 32_900,
+    },
   ],
   statusBreakdown: [
     { status: "completed", orderCount: 118 },

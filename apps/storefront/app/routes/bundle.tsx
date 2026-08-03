@@ -67,8 +67,7 @@ export default function BundlePage({ loaderData }: Route.ComponentProps) {
                       {item.productName}
                     </Link>
                     <p className="text-xs text-ink-muted">
-                      {item.variantName} · {item.quantity} ×{" "}
-                      {formatMoney(item.unitPriceMinor)}
+                      {item.variantName} · {item.quantity} × {formatMoney(item.unitPriceMinor)}
                     </p>
                   </div>
                   <p className="shrink-0 text-sm text-ink">{formatMoney(item.lineTotalMinor)}</p>

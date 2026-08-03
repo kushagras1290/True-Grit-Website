@@ -15,9 +15,7 @@ class EntityTranslationRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def get(
-        self, entity_type: str, entity_id: str, locale: str
-    ) -> dict[str, Any] | None:
+    async def get(self, entity_type: str, entity_id: str, locale: str) -> dict[str, Any] | None:
         row = await self._db.fetch_one(
             "SELECT entity_type, entity_id, locale, fields_json, auto_translated,"
             " updated_at, updated_by"

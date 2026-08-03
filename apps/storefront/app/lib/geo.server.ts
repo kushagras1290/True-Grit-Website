@@ -53,7 +53,10 @@ const REGION_COOKIE_PATTERN = /(?:^|;\s*)tg_region=([^;]+)/;
  * above -- lets state-level routing be exercised in local dev and QA without
  * depending on the account tier or the tester's real location.
  */
-export function resolveRegion(request: Request): { region: string | null; regionCode: string | null } {
+export function resolveRegion(request: Request): {
+  region: string | null;
+  regionCode: string | null;
+} {
   const cookieHeader = request.headers.get("cookie") ?? "";
   const cookieRegion = REGION_COOKIE_PATTERN.exec(cookieHeader)?.[1];
   if (cookieRegion) {

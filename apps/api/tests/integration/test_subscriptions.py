@@ -124,7 +124,9 @@ def test_customer_can_pause_resume_and_cancel_their_subscription(client, db):
 
     # A cancelled subscription cannot be paused, resumed, or edited again.
     assert client.post(f"/v1/public/subscriptions/{sub_id}/pause").status_code == 409
-    assert client.patch(f"/v1/public/subscriptions/{sub_id}", json={"quantity": 2}).status_code == 422
+    assert (
+        client.patch(f"/v1/public/subscriptions/{sub_id}", json={"quantity": 2}).status_code == 422
+    )
 
 
 def test_admin_without_manage_permission_cannot_pause_a_subscription(client, db):

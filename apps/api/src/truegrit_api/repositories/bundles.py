@@ -136,6 +136,4 @@ class BundleRepository:
         items_by_bundle: dict[str, list[dict[str, Any]]] = {}
         for row in item_rows:
             items_by_bundle.setdefault(row["bundle_id"], []).append(row)
-        return [
-            {**row, "items": items_by_bundle.get(row["id"], [])} for row in bundle_rows
-        ]
+        return [{**row, "items": items_by_bundle.get(row["id"], [])} for row in bundle_rows]

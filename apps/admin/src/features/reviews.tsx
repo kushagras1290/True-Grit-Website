@@ -200,9 +200,7 @@ export function ReviewsListPage() {
           <p className="text-sm text-ink-muted">
             Customer ratings and reviews from verified purchases.
             {data && data.pending > 0 ? (
-              <span className="ml-1 text-ink">
-                {data.pending} awaiting moderation.
-              </span>
+              <span className="ml-1 text-ink">{data.pending} awaiting moderation.</span>
             ) : null}
           </p>
         </div>

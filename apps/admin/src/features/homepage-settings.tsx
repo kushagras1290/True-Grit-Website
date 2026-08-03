@@ -1601,7 +1601,9 @@ function ReviewsShowcaseEditor({
   );
   const [minRating, setMinRating] = useState(() => readNumber(section.props, "minRating", 4));
   const [limit, setLimit] = useState(() => readNumber(section.props, "limit", 8));
-  const [reviewIds, setReviewIds] = useState<string[]>(() => readStrings(section.props, "reviewIds"));
+  const [reviewIds, setReviewIds] = useState<string[]>(() =>
+    readStrings(section.props, "reviewIds"),
+  );
 
   const { data: approved, isLoading } = useQuery({
     queryKey: ["admin-reviews", "homepage-picker"],
@@ -2005,8 +2007,8 @@ function FeaturedCategoriesSection({ form }: { form: ReturnType<typeof useForm<H
       <div>
         <h2 className="font-display text-lg text-ink">Category row</h2>
         <p className="text-sm text-ink-muted">
-          Choose up to {maxCuratedSlots} published categories for the homepage slider. Customers
-          see four at a time on desktop, in this order. Raise the limit on Site Control.
+          Choose up to {maxCuratedSlots} published categories for the homepage slider. Customers see
+          four at a time on desktop, in this order. Raise the limit on Site Control.
         </p>
       </div>
       {isLoading ? (

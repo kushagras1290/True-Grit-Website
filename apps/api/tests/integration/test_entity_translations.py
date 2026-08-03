@@ -60,9 +60,10 @@ def test_admin_can_save_and_read_back_a_manual_nav_translation(client, db):
     assert saved.json()["fields"]["label"] == "दुकान"
 
     listed = client.get("/v1/admin/translations/navigation_item/nit_shop").json()["items"]
-    assert {
-        k: v for k, v in listed[0].items() if k in {"locale", "autoTranslated"}
-    } == {"locale": "hi", "autoTranslated": False}
+    assert {k: v for k, v in listed[0].items() if k in {"locale", "autoTranslated"}} == {
+        "locale": "hi",
+        "autoTranslated": False,
+    }
 
     deleted = client.delete("/v1/admin/translations/navigation_item/nit_shop/hi")
     assert deleted.status_code == 200

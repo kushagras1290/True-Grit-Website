@@ -32,9 +32,10 @@ describe("resolveCountry", () => {
 
 describe("resolveRegion", () => {
   it("reads region/regionCode from the Workers-runtime cf property", () => {
-    expect(
-      resolveRegion(request({}, { region: "Punjab", regionCode: "IN-PB" })),
-    ).toEqual({ region: "Punjab", regionCode: "IN-PB" });
+    expect(resolveRegion(request({}, { region: "Punjab", regionCode: "IN-PB" }))).toEqual({
+      region: "Punjab",
+      regionCode: "IN-PB",
+    });
   });
 
   it("returns nulls when cf is absent, matching a lower-tier account or local dev", () => {

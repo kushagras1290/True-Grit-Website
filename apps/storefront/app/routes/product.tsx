@@ -2,12 +2,7 @@ import { useState } from "react";
 import { data, Link } from "react-router";
 
 import type { Route } from "./+types/product";
-import {
-  AvailabilityNote,
-  Breadcrumbs,
-  ProductGrid,
-  Section,
-} from "../components/catalogue";
+import { AvailabilityNote, Breadcrumbs, ProductGrid, Section } from "../components/catalogue";
 import { ContactForm } from "../components/contact-form";
 import { ProductGallery } from "../components/product-gallery";
 import { ProductReviews, RatingSummary } from "../components/reviews";
@@ -226,7 +221,11 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
           ) : null}
 
           {purchasable && variant ? (
-            <SubscribeAndSave variantId={variant.id} quantity={quantity} productName={product.name} />
+            <SubscribeAndSave
+              variantId={variant.id}
+              quantity={quantity}
+              productName={product.name}
+            />
           ) : null}
 
           <div className="mt-8 space-y-4 border-t border-line pt-6 text-sm">

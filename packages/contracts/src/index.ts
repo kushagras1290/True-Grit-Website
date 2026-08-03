@@ -781,8 +781,7 @@ export interface AdminReviewRow {
 // One or more coupons make it code-gated.
 // ---------------------------------------------------------------------------
 
-export type PromotionStatus =
-  "draft" | "scheduled" | "active" | "paused" | "ended" | "archived";
+export type PromotionStatus = "draft" | "scheduled" | "active" | "paused" | "ended" | "archived";
 
 export type PromotionStackingPolicy = "exclusive" | "stackable";
 

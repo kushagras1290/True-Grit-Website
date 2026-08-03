@@ -32,9 +32,7 @@ def as_admin(client: TestClient, db: SQLiteDatabase) -> None:
 
 
 def checkout(client: TestClient, items: list[dict[str, Any]]) -> Any:
-    return client.post(
-        "/v1/public/checkout", json={"items": items, "deliveryAddress": ADDRESS}
-    )
+    return client.post("/v1/public/checkout", json={"items": items, "deliveryAddress": ADDRESS})
 
 
 def create_active_bundle(

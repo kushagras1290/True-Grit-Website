@@ -80,9 +80,7 @@ export function SubscriptionsListPage() {
       toast.success("Subscription cancelled.");
     },
     onError: (error) =>
-      toast.error(
-        error instanceof ApiError ? error.message : "Could not cancel the subscription.",
-      ),
+      toast.error(error instanceof ApiError ? error.message : "Could not cancel the subscription."),
   });
 
   const runRenewalsMutation = useMutation({
@@ -99,8 +97,7 @@ export function SubscriptionsListPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not run renewals."),
   });
 
-  const busy =
-    pauseMutation.isPending || resumeMutation.isPending || cancelMutation.isPending;
+  const busy = pauseMutation.isPending || resumeMutation.isPending || cancelMutation.isPending;
 
   return (
     <div>

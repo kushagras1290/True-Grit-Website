@@ -66,7 +66,12 @@ export function ProductGallery({
               selected === 0 ? "border-brand" : "border-transparent hover:border-line-strong"
             }`}
           >
-            <ProduceFrame slug={slug} alt={mainImageAlt} imageUrl={mainImageUrl} className="h-full w-full" />
+            <ProduceFrame
+              slug={slug}
+              alt={mainImageAlt}
+              imageUrl={mainImageUrl}
+              className="h-full w-full"
+            />
           </button>
           {galleryImages.map((image, index) => (
             <button
@@ -76,7 +81,9 @@ export function ProductGallery({
               aria-current={selected === index + 1}
               onClick={() => setSelected(index + 1)}
               className={`h-16 w-16 shrink-0 overflow-hidden rounded-sm border-2 bg-subtle ${
-                selected === index + 1 ? "border-brand" : "border-transparent hover:border-line-strong"
+                selected === index + 1
+                  ? "border-brand"
+                  : "border-transparent hover:border-line-strong"
               }`}
             >
               <img

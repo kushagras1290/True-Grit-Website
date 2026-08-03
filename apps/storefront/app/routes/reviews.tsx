@@ -38,8 +38,7 @@ export default function ReviewsPage({ loaderData }: Route.ComponentProps) {
 
       {reviews.items.length === 0 ? (
         <p className="text-center text-sm text-ink-muted">
-          No reviews yet. Reviews appear here once a verified purchaser writes one from their
-          order.
+          No reviews yet. Reviews appear here once a verified purchaser writes one from their order.
         </p>
       ) : (
         <ul className="mx-auto grid max-w-4xl gap-6 sm:grid-cols-2">

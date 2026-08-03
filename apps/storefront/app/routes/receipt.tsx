@@ -27,9 +27,7 @@ export function meta(_args: Route.MetaArgs) {
 }
 
 type State =
-  | { kind: "loading" }
-  | { kind: "loaded"; order: OrderDetail }
-  | { kind: "error"; message: string };
+  { kind: "loading" } | { kind: "loaded"; order: OrderDetail } | { kind: "error"; message: string };
 
 export default function ReceiptPage(_props: Route.ComponentProps) {
   const { reference = "" } = useParams();
@@ -58,9 +56,7 @@ export default function ReceiptPage(_props: Route.ComponentProps) {
   }
 
   if (state.kind === "loading") {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-14 text-sm text-ink-muted">One moment…</div>
-    );
+    return <div className="mx-auto max-w-2xl px-4 py-14 text-sm text-ink-muted">One moment…</div>;
   }
 
   if (state.kind === "error") {

@@ -42,7 +42,9 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     // Only worth showing on the unfiltered "All products" view -- a specific
     // department already has its own browsing grid, and a sitewide trending
     // row there would just compete with it.
-    categorySlug ? Promise.resolve([]) : loadBestsellers({ limit: 8 }, country, runtime, locale.code),
+    categorySlug
+      ? Promise.resolve([])
+      : loadBestsellers({ limit: 8 }, country, runtime, locale.code),
   ]);
 
   // Grouped server-side so the tree is serialized once rather than rebuilt by

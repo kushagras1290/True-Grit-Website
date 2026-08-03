@@ -1143,80 +1143,88 @@ function CmsPagesSection() {
             />
           ) : selected.data ? (
             <div className="space-y-8">
-            <form
-              className="space-y-5"
-              onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
-            >
-              <div className="grid gap-4 md:grid-cols-2">
-                <Field
-                  label="Title"
-                  htmlFor="cms-title"
-                  error={form.formState.errors.title?.message}
-                >
-                  <Input id="cms-title" {...form.register("title")} />
-                </Field>
-                <Field label="Slug" htmlFor="cms-slug" error={form.formState.errors.slug?.message}>
-                  <Input id="cms-slug" {...form.register("slug")} />
-                </Field>
-                <Field label="Status" htmlFor="cms-status">
-                  <Select id="cms-status" {...form.register("status")}>
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
-                    <option value="unpublished">Unpublished</option>
-                    <option value="archived">Archived</option>
-                  </Select>
-                </Field>
-                <Field label="Search indexing" htmlFor="cms-indexing">
-                  <Select id="cms-indexing" {...form.register("indexingPolicy")}>
-                    <option value="index">Index</option>
-                    <option value="noindex">No index</option>
-                  </Select>
-                </Field>
-              </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                <Field
-                  label="SEO title"
-                  htmlFor="cms-seo-title"
-                  error={form.formState.errors.seoTitle?.message}
-                >
-                  <Input id="cms-seo-title" {...form.register("seoTitle")} />
-                </Field>
-                <Field label="SEO keywords" htmlFor="cms-seo-keywords">
-                  <Input id="cms-seo-keywords" {...form.register("seoKeywords")} />
-                </Field>
-              </div>
-              <Field label="SEO description" htmlFor="cms-seo-description">
-                <Textarea id="cms-seo-description" rows={3} {...form.register("seoDescription")} />
-              </Field>
-              <Field
-                label="Page blocks JSON"
-                htmlFor="cms-blocks"
-                error={form.formState.errors.blocksJson?.message}
+              <form
+                className="space-y-5"
+                onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
               >
-                <Textarea
-                  id="cms-blocks"
-                  rows={18}
-                  className="font-mono text-xs"
-                  {...form.register("blocksJson")}
-                />
-              </Field>
-              <Field label="Change summary" htmlFor="cms-change-summary">
-                <Input
-                  id="cms-change-summary"
-                  placeholder="What changed?"
-                  {...form.register("changeSummary")}
-                />
-              </Field>
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-xs text-ink-muted">
-                  Last updated {formatDateTime(selected.data.updatedAt)}
-                </p>
-                <Button type="submit" variant="primary" disabled={mutation.isPending}>
-                  {mutation.isPending ? "Saving..." : "Save CMS page"}
-                </Button>
-              </div>
-            </form>
-            <PageTranslationsPanel pageId={selectedId} />
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Field
+                    label="Title"
+                    htmlFor="cms-title"
+                    error={form.formState.errors.title?.message}
+                  >
+                    <Input id="cms-title" {...form.register("title")} />
+                  </Field>
+                  <Field
+                    label="Slug"
+                    htmlFor="cms-slug"
+                    error={form.formState.errors.slug?.message}
+                  >
+                    <Input id="cms-slug" {...form.register("slug")} />
+                  </Field>
+                  <Field label="Status" htmlFor="cms-status">
+                    <Select id="cms-status" {...form.register("status")}>
+                      <option value="draft">Draft</option>
+                      <option value="published">Published</option>
+                      <option value="unpublished">Unpublished</option>
+                      <option value="archived">Archived</option>
+                    </Select>
+                  </Field>
+                  <Field label="Search indexing" htmlFor="cms-indexing">
+                    <Select id="cms-indexing" {...form.register("indexingPolicy")}>
+                      <option value="index">Index</option>
+                      <option value="noindex">No index</option>
+                    </Select>
+                  </Field>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Field
+                    label="SEO title"
+                    htmlFor="cms-seo-title"
+                    error={form.formState.errors.seoTitle?.message}
+                  >
+                    <Input id="cms-seo-title" {...form.register("seoTitle")} />
+                  </Field>
+                  <Field label="SEO keywords" htmlFor="cms-seo-keywords">
+                    <Input id="cms-seo-keywords" {...form.register("seoKeywords")} />
+                  </Field>
+                </div>
+                <Field label="SEO description" htmlFor="cms-seo-description">
+                  <Textarea
+                    id="cms-seo-description"
+                    rows={3}
+                    {...form.register("seoDescription")}
+                  />
+                </Field>
+                <Field
+                  label="Page blocks JSON"
+                  htmlFor="cms-blocks"
+                  error={form.formState.errors.blocksJson?.message}
+                >
+                  <Textarea
+                    id="cms-blocks"
+                    rows={18}
+                    className="font-mono text-xs"
+                    {...form.register("blocksJson")}
+                  />
+                </Field>
+                <Field label="Change summary" htmlFor="cms-change-summary">
+                  <Input
+                    id="cms-change-summary"
+                    placeholder="What changed?"
+                    {...form.register("changeSummary")}
+                  />
+                </Field>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <p className="text-xs text-ink-muted">
+                    Last updated {formatDateTime(selected.data.updatedAt)}
+                  </p>
+                  <Button type="submit" variant="primary" disabled={mutation.isPending}>
+                    {mutation.isPending ? "Saving..." : "Save CMS page"}
+                  </Button>
+                </div>
+              </form>
+              <PageTranslationsPanel pageId={selectedId} />
             </div>
           ) : null}
         </div>
@@ -1361,7 +1369,9 @@ function PageTranslationsPanel({ pageId }: { pageId: string }) {
       toast.error(error instanceof ApiError ? error.message : "Could not remove the translation."),
   });
 
-  const translatedLocaleCodes = new Set((translatedLocales.data ?? []).map((entry) => entry.locale));
+  const translatedLocaleCodes = new Set(
+    (translatedLocales.data ?? []).map((entry) => entry.locale),
+  );
   const busy =
     saveMutation.isPending || autoTranslateMutation.isPending || deleteMutation.isPending;
 
@@ -1371,8 +1381,8 @@ function PageTranslationsPanel({ pageId }: { pageId: string }) {
       <p className="mt-1 text-sm text-ink-muted">
         A parallel copy of this page's blocks for one language at a time. A locale with no saved
         translation falls back to English on the storefront — nothing breaks by leaving one blank.
-        "Auto-translate" runs a real machine-translation model on the Worker's own AI binding
-        (free, but not perfect) and fills the box below for review, it does not save on its own.
+        "Auto-translate" runs a real machine-translation model on the Worker's own AI binding (free,
+        but not perfect) and fills the box below for review, it does not save on its own.
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -1526,9 +1536,7 @@ function NavigationLabelsSection() {
   const autoTranslateAllMutation = useMutation({
     mutationFn: () =>
       Promise.all(
-        NAVIGATION_ITEMS.map((item) =>
-          api.autoTranslateEntity("navigation_item", item.id, locale),
-        ),
+        NAVIGATION_ITEMS.map((item) => api.autoTranslateEntity("navigation_item", item.id, locale)),
       ),
     onSuccess: async () => {
       await invalidateAll();
@@ -1548,8 +1556,8 @@ function NavigationLabelsSection() {
         <p className="max-w-2xl text-sm text-ink-muted">
           The header and footer link labels every page shows, translated per language (migration
           0068). A locale left blank falls back to English on the storefront. This is the same
-          control that fixes a header showing "Shop" / "Seasonal" in English while everything
-          around it has switched language — those labels come from here, not from the page content
+          control that fixes a header showing "Shop" / "Seasonal" in English while everything around
+          it has switched language — those labels come from here, not from the page content
           translations above.
         </p>
       </div>

@@ -105,9 +105,7 @@ export function LanguageSuggestionPrompt({
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-2">
-              <p className="text-sm font-medium text-ink">
-                We set your language to {languageName}
-              </p>
+              <p className="text-sm font-medium text-ink">We set your language to {languageName}</p>
               <button
                 type="button"
                 aria-label="Dismiss"

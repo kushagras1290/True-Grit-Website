@@ -379,9 +379,7 @@ class RecipeRepository:
             fields_by_id = await EntityTranslationRepository(self._db).get_fields_map(
                 "recipe", [row["id"] for row in rows], locale
             )
-        return [
-            await self._detail_from_row(row, fields_by_id.get(row["id"])) for row in rows
-        ]
+        return [await self._detail_from_row(row, fields_by_id.get(row["id"])) for row in rows]
 
     async def count_published(self) -> int:
         row = await self._db.fetch_one(
@@ -425,9 +423,7 @@ class RecipeRepository:
             translation = await EntityTranslationRepository(self._db).get(
                 "recipe", row["id"], locale
             )
-        return await self._detail_from_row(
-            row, translation["fields"] if translation else None
-        )
+        return await self._detail_from_row(row, translation["fields"] if translation else None)
 
     async def _detail_from_row(
         self, row: dict[str, Any], translated_fields: dict[str, Any] | None = None
@@ -641,9 +637,7 @@ class ArticleRepository:
             fields_by_id = await EntityTranslationRepository(self._db).get_fields_map(
                 "article", [row["id"] for row in rows], locale
             )
-        return [
-            await self._detail_from_row(row, fields_by_id.get(row["id"])) for row in rows
-        ]
+        return [await self._detail_from_row(row, fields_by_id.get(row["id"])) for row in rows]
 
     async def count_published(self) -> int:
         row = await self._db.fetch_one(
@@ -683,9 +677,7 @@ class ArticleRepository:
             translation = await EntityTranslationRepository(self._db).get(
                 "article", row["id"], locale
             )
-        return await self._detail_from_row(
-            row, translation["fields"] if translation else None
-        )
+        return await self._detail_from_row(row, translation["fields"] if translation else None)
 
     async def _detail_from_row(
         self, row: dict[str, Any], translated_fields: dict[str, Any] | None = None

@@ -114,10 +114,7 @@ function StatusBreakdown({ rows }: { rows: { status: string; orderCount: number 
 
 export function AnalyticsPage() {
   const [preset, setPreset] = useState<RangePreset>(30);
-  const range = useMemo(
-    () => ({ from: isoDaysAgo(preset - 1), to: todayIso() }),
-    [preset],
-  );
+  const range = useMemo(() => ({ from: isoDaysAgo(preset - 1), to: todayIso() }), [preset]);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["admin-analytics-overview", range.from, range.to],
@@ -152,10 +149,7 @@ export function AnalyticsPage() {
       {isLoading ? (
         <p className="text-sm text-ink-muted">Loading analytics...</p>
       ) : isError || !data ? (
-        <EmptyState
-          title="Analytics unavailable"
-          hint="Requires the analytics.view permission."
-        />
+        <EmptyState title="Analytics unavailable" hint="Requires the analytics.view permission." />
       ) : (
         <div className="space-y-8">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

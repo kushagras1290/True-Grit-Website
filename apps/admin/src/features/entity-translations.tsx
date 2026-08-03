@@ -107,10 +107,10 @@ export function EntityTranslationsPanel({
     <div className="border-t border-line pt-5">
       <h3 className="font-display text-lg text-ink">Translations</h3>
       <p className="mt-1 text-sm text-ink-muted">
-        A locale with no saved translation falls back to English on the storefront — nothing
-        breaks by leaving one blank. "Auto-translate" runs a real machine-translation model on the
-        Worker's own AI binding (free, but not perfect) and fills the fields below for review, it
-        does not save on its own.
+        A locale with no saved translation falls back to English on the storefront — nothing breaks
+        by leaving one blank. "Auto-translate" runs a real machine-translation model on the Worker's
+        own AI binding (free, but not perfect) and fills the fields below for review, it does not
+        save on its own.
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -185,7 +185,12 @@ export function EntityTranslationsPanel({
               Remove translation
             </Button>
           ) : null}
-          <Button type="button" variant="primary" disabled={busy} onClick={() => saveMutation.mutate()}>
+          <Button
+            type="button"
+            variant="primary"
+            disabled={busy}
+            onClick={() => saveMutation.mutate()}
+          >
             {saveMutation.isPending ? "Saving..." : "Save translation"}
           </Button>
         </div>

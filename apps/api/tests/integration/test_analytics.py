@@ -77,9 +77,7 @@ def test_a_fresh_order_counts_toward_todays_revenue(client, db):
 
     as_admin(client, db)
     today = today_iso()
-    response = client.get(
-        "/v1/admin/analytics/overview", params={"from": today, "to": today}
-    )
+    response = client.get("/v1/admin/analytics/overview", params={"from": today, "to": today})
     assert response.status_code == 200, response.text
     body = response.json()
     assert body["orderCount"] == 1
@@ -109,9 +107,7 @@ def test_a_cancelled_order_does_not_count_as_revenue(client, db):
 
     as_admin(client, db)
     today = today_iso()
-    response = client.get(
-        "/v1/admin/analytics/overview", params={"from": today, "to": today}
-    )
+    response = client.get("/v1/admin/analytics/overview", params={"from": today, "to": today})
     body = response.json()
     assert body["orderCount"] == 0
     assert body["revenueMinor"] == 0

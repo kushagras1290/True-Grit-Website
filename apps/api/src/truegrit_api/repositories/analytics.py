@@ -42,7 +42,8 @@ class AnalyticsRepository:
             """
             SELECT COUNT(*) AS new_customers
             FROM (
-              SELECT customer_user_id, MIN(DATE(COALESCE(placed_at, created_at))) AS first_order_date
+              SELECT customer_user_id,
+                     MIN(DATE(COALESCE(placed_at, created_at))) AS first_order_date
               FROM orders
               WHERE customer_user_id IS NOT NULL
               GROUP BY customer_user_id

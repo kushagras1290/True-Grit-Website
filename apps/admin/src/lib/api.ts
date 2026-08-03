@@ -685,7 +685,8 @@ export interface PageTranslation {
  *  recipe titles and excerpts. One shape for every entity type; which keys
  *  `fields` actually carries is entity-type-specific (mirrors
  *  `services.entity_translation.TRANSLATABLE_FIELDS` on the API). */
-export type EntityTranslationType = "navigation_item" | "category" | "product" | "article" | "recipe";
+export type EntityTranslationType =
+  "navigation_item" | "category" | "product" | "article" | "recipe";
 
 export interface EntityTranslationSummary {
   locale: string;
@@ -2252,7 +2253,10 @@ export const api = {
             "demo_mode",
           ),
         )
-      : post<PageTranslation>(`/v1/admin/pages/${pageId}/translations/${locale}/auto-translate`, {}),
+      : post<PageTranslation>(
+          `/v1/admin/pages/${pageId}/translations/${locale}/auto-translate`,
+          {},
+        ),
 
   deletePageTranslation: (
     pageId: string,
@@ -2740,7 +2744,12 @@ export const api = {
     input: { rating?: number; title?: string | null; body?: string },
   ): Promise<{ id: string; rating: number; title: string | null; body: string }> =>
     demoMode
-      ? demo({ id: reviewId, rating: input.rating ?? 5, title: input.title ?? null, body: input.body ?? "" })
+      ? demo({
+          id: reviewId,
+          rating: input.rating ?? 5,
+          title: input.title ?? null,
+          body: input.body ?? "",
+        })
       : patch(`/v1/admin/reviews/${reviewId}`, input),
 
   deleteReview: (reviewId: string): Promise<{ id: string; deleted: boolean }> =>
@@ -2776,7 +2785,12 @@ export const api = {
     return demo<AdminPromotionDetail>({
       ...promotion,
       rule: null,
-      action: { actionType: "percentage_discount", valueBasisPoints: 1500, amountMinor: null, maximumDiscountMinor: null },
+      action: {
+        actionType: "percentage_discount",
+        valueBasisPoints: 1500,
+        amountMinor: null,
+        maximumDiscountMinor: null,
+      },
       coupons: [
         {
           id: "cpn_demo_welcome15",
@@ -2968,9 +2982,7 @@ export const api = {
   subscriptionSettings: (): Promise<{ discountPercent: number }> =>
     demoMode ? demo({ discountPercent: 5 }) : get(`/v1/admin/subscription-settings`),
 
-  updateSubscriptionSettings: (input: {
-    percent: number;
-  }): Promise<{ discountPercent: number }> =>
+  updateSubscriptionSettings: (input: { percent: number }): Promise<{ discountPercent: number }> =>
     demoMode
       ? demo({ discountPercent: input.percent })
       : patch(`/v1/admin/subscription-settings`, input),

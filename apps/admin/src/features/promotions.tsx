@@ -379,7 +379,9 @@ function ManagePromotionModal({
               <p className="text-sm text-ink-muted">{promotion.headline}</p>
             ) : null}
             <p className="mt-1 text-xs text-ink-muted">
-              {promotion.action ? ACTION_LABELS[promotion.action.actionType] : "No action configured"}
+              {promotion.action
+                ? ACTION_LABELS[promotion.action.actionType]
+                : "No action configured"}
               {promotion.action?.actionType === "percentage_discount"
                 ? ` — ${((promotion.action.valueBasisPoints ?? 0) / 100).toFixed(2)}%`
                 : null}
@@ -493,7 +495,9 @@ export function PromotionsListPage() {
     onSuccess: async (result) => {
       await invalidate();
       setConfirmDelete(null);
-      toast.success(result.deleted ? "Promotion deleted." : "Promotion archived (it has been used).");
+      toast.success(
+        result.deleted ? "Promotion deleted." : "Promotion archived (it has been used).",
+      );
     },
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not remove the promotion."),

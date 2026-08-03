@@ -334,7 +334,9 @@ function ManageBundleModal({
       onChanged();
     },
     onError: (error) =>
-      toast.error(error instanceof ApiError ? error.message : "Could not update the bundle's items."),
+      toast.error(
+        error instanceof ApiError ? error.message : "Could not update the bundle's items.",
+      ),
   });
 
   const componentSumMinor = (bundle?.items ?? []).reduce(
@@ -354,7 +356,9 @@ function ManageBundleModal({
             <p className="text-xs text-ink-muted">
               {formatMoney(bundle.bundlePriceMinor, "INR")} bundle price · items priced at{" "}
               {formatMoney(componentSumMinor, "INR")} separately
-              {savingsMinor > 0 ? ` · saves ${formatMoney(savingsMinor, "INR")}` : " · no savings yet"}
+              {savingsMinor > 0
+                ? ` · saves ${formatMoney(savingsMinor, "INR")}`
+                : " · no savings yet"}
             </p>
           </div>
 

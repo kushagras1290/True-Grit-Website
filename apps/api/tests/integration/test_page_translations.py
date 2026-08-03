@@ -12,7 +12,6 @@ from fastapi.testclient import TestClient
 from tests.integration.conftest import SESSION_COOKIE, create_session
 from truegrit_api.main import create_app
 from truegrit_api.platform.database import SQLiteDatabase
-from truegrit_api.platform.translation import Translator
 
 
 def as_admin(client: TestClient, db: SQLiteDatabase) -> None:
@@ -76,13 +75,16 @@ def test_admin_can_save_and_read_back_a_manual_translation(client, db):
 
     fetched = client.get(f"/v1/admin/pages/{page_id}/translations/hi")
     assert fetched.status_code == 200
-    assert fetched.json()["content"]["blocks"][0]["props"]["heading"] == "प्रकृति के अनुसार उगाया गया भोजन।"
+    assert (
+        fetched.json()["content"]["blocks"][0]["props"]["heading"]
+        == "प्रकृति के अनुसार उगाया गया भोजन।"
+    )
 
     listed = client.get(f"/v1/admin/pages/{page_id}/translations")
     assert listed.status_code == 200
-    assert {"locale": "hi", "autoTranslated": False} == {
+    assert {
         k: v for k, v in listed.json()["items"][0].items() if k in {"locale", "autoTranslated"}
-    }
+    } == {"locale": "hi", "autoTranslated": False}
 
     deleted = client.delete(f"/v1/admin/pages/{page_id}/translations/hi")
     assert deleted.status_code == 200
@@ -103,9 +105,7 @@ def test_saving_a_translation_rejects_an_unknown_block_type(client, db):
 def test_translations_are_permission_gated(client, db):
     page_id = home_page_id(db)
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
-    response = client.put(
-        f"/v1/admin/pages/{page_id}/translations/hi", json={"blocks": []}
-    )
+    response = client.put(f"/v1/admin/pages/{page_id}/translations/hi", json={"blocks": []})
     assert response.status_code == 403
 
 
