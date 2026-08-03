@@ -462,6 +462,12 @@ SELECT
   'usr_author_buying', datetime('2026-08-02T09:00:00Z', printf('+%d minutes', recipe_number))
 FROM practical_recipes_0058;
 
+-- Split into two 3-way compounds rather than one 6-way one: the remote D1
+-- backend enforces a much lower SQLITE_LIMIT_COMPOUND_SELECT than local
+-- SQLite's default of 500 (confirmed empirically: a bare 6-branch
+-- `UNION ALL` of literals fails with "too many terms in compound SELECT"
+-- [SQLITE_ERROR 7500] on remote D1, while 5 branches succeeds). Same six
+-- ingredient rows per recipe either way.
 INSERT OR IGNORE INTO recipe_ingredients (
   id, recipe_id, label, quantity_text, product_id, sort_order
 )
@@ -469,8 +475,11 @@ SELECT printf('ing_practical_%03d_1', recipe_number), printf('rcp_practical_%03d
 UNION ALL
 SELECT printf('ing_practical_%03d_2', recipe_number), printf('rcp_practical_%03d', recipe_number), vegetable, NULL, NULL, 2 FROM practical_recipes_0058
 UNION ALL
-SELECT printf('ing_practical_%03d_3', recipe_number), printf('rcp_practical_%03d', recipe_number), aromatic, NULL, NULL, 3 FROM practical_recipes_0058
-UNION ALL
+SELECT printf('ing_practical_%03d_3', recipe_number), printf('rcp_practical_%03d', recipe_number), aromatic, NULL, NULL, 3 FROM practical_recipes_0058;
+
+INSERT OR IGNORE INTO recipe_ingredients (
+  id, recipe_id, label, quantity_text, product_id, sort_order
+)
 SELECT printf('ing_practical_%03d_4', recipe_number), printf('rcp_practical_%03d', recipe_number), seasoning, NULL, NULL, 4 FROM practical_recipes_0058
 UNION ALL
 SELECT printf('ing_practical_%03d_5', recipe_number), printf('rcp_practical_%03d', recipe_number),
