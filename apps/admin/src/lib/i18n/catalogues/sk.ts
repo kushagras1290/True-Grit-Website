@@ -574,6 +574,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO domovskej stránky",
   "Homepage Settings": "Nastavenia domovskej stránky",
   "Homepage settings unavailable": "Nastavenia domovskej stránky nie sú k dispozícii",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Koľko znakov na stránke pravidiel môže robot výkladu prečítať, kým odpovie. Dlhšie uchováva viac podrobností, na ktoré sa zákazník pýtal.",
   "How many entries from the list below are given to the assistant as reference.":
     "Koľko záznamov z nižšie uvedeného zoznamu dostane asistent ako referenciu.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -947,6 +949,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Názov stránky",
   "Page unavailable": "Stránka nie je k dispozícii",
   Pages: "Stránky",
+  "Pages the storefront bot may quote": "Stránky, ktoré môže bot vo výklade citovať",
   Paid: "Zaplatené",
   "Paid out": "Vyplatené",
   "paid via": "zaplatené prostredníctvom",
@@ -984,6 +987,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Umiestnený",
   "Platform cut": "Zmenšenie platformy",
   "Platform earns": "Zarábanie platformy",
+  "Policy page slugs": "Slugy stránky zásad",
+  "Policy text quoted per answer": "Text pravidiel uvádzaný v odpovedi",
   "Polish (Polski)": "Poľština (Poľština)",
   "Portuguese (Português)": "Portugalčina (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1029,6 +1034,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Zverejnené ako",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "zverejnené kategórie pre posúvač domovskej stránky. Zákazníci vidia na pracovnej ploche štyri naraz v tomto poradí. Zvýšte limit kontroly stránok.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Zverejnené medzery na stránkach oddelené medzerami. Robot si tieto slová prečíta slovo za slovom, keď sa zákazník spýta na pravidlá, takže jeho odpovede sa zhodujú s tým, čo ste skutočne zverejnili.",
   "Published products": "Publikované produkty",
   "Publishing…": "Zverejňuje sa…",
   "Pull quote": "Vytiahnite citát",
@@ -1127,6 +1134,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Skúsiť znova",
   "Return request not found": "Žiadosť o vrátenie sa nenašla",
   Returns: "Vrátenie tovaru",
+  "returns delivery help terms privacy": "vracia doručenie, podmienky pomoci súkromie",
   Revenue: "Výnosy",
   "Revenue (paid)": "Výnosy (zaplatené)",
   "Revenue by day": "Výnosy podľa dňa",

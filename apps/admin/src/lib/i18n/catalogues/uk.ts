@@ -580,6 +580,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO домашньої сторінки",
   "Homepage Settings": "Налаштування домашньої сторінки",
   "Homepage settings unavailable": "Налаштування домашньої сторінки недоступні",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Скільки символів на сторінці політики бот магазину може прочитати, перш ніж відповісти. Довше зберігає більше деталей, про які запитував клієнт.",
   "How many entries from the list below are given to the assistant as reference.":
     "Скільки записів із наведеного нижче списку надається помічнику як посилання.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -966,6 +968,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Назва сторінки",
   "Page unavailable": "Сторінка недоступна",
   Pages: "Сторінки",
+  "Pages the storefront bot may quote": "Сторінки, які може цитувати бот магазину",
   Paid: "Оплачено",
   "Paid out": "Оплачено",
   "paid via": "Оплачено через",
@@ -1004,6 +1007,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Розміщено",
   "Platform cut": "Платформа cut",
   "Platform earns": "Платформа заробляє",
+  "Policy page slugs": "Слаги сторінки політики",
+  "Policy text quoted per answer": "Текст політики, цитований за відповідь",
   "Polish (Polski)": "польською (Polski)",
   "Portuguese (Português)": "португальською (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1049,6 +1054,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Опубліковано як",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "опубліковані категорії для повзунка домашньої сторінки. Клієнти бачать чотири одночасно на робочому столі в такому порядку. Підвищте ліміт на Site Control.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Слаги опублікованої сторінки, розділені пробілами. Бот читає ці слово в слово, коли клієнт запитує про політику, тому його відповіді збігаються з тим, що ви насправді опублікували.",
   "Published products": "Опубліковані продукти",
   "Publishing…": "Публікація…",
   "Pull quote": "Витягнути цитату",
@@ -1149,6 +1156,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Повторити",
   "Return request not found": "Запит на повернення не знайдено",
   Returns: "Повернення",
+  "returns delivery help terms privacy": "повернення доставки довідка умови конфіденційність",
   Revenue: "Дохід",
   "Revenue (paid)": "Дохід (оплачений)",
   "Revenue by day": "Дохід за днями",

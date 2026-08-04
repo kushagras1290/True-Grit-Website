@@ -585,6 +585,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Etusivun hakukoneoptimointi",
   "Homepage Settings": "Etusivun asetukset",
   "Homepage settings unavailable": "Etusivun asetukset eivät ole käytettävissä",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Kuinka monta merkkiä käytäntösivusta myymäläbotti voi lukea ennen vastaamista. Longer säilyttää enemmän yksityiskohtia, joista asiakas kysyi.",
   "How many entries from the list below are given to the assistant as reference.":
     "Kuinka monta merkintää alla olevasta luettelosta annetaan avustajalle viitteenä.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -959,6 +961,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Sivun otsikko",
   "Page unavailable": "Sivu ei saatavilla",
   Pages: "Sivut",
+  "Pages the storefront bot may quote": "Sivut, joita myymäläbotti saattaa lainata",
   Paid: "Maksettu",
   "Paid out": "Maksettu",
   "paid via": "maksutapa",
@@ -996,6 +999,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Sijoittu",
   "Platform cut": "Alusta leikattu",
   "Platform earns": "Alusta ansaitsee",
+  "Policy page slugs": "Käytäntösivujen slugs",
+  "Policy text quoted per answer": "Sääntöteksti lainauskohtaisesti",
   "Polish (Polski)": "puola (Polski)",
   "Portuguese (Português)": "portugali (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1041,6 +1046,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Julkaistu",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "julkaistuina luokat etusivun liukusäätimelle. Asiakkaat näkevät neljä kerrallaan työpöydällä tässä järjestyksessä. Nosta Site Controlin rajaa.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Julkaistu välilyönnillä, erillinen sivu . Botti lukee nämä sanasta sanaan, kun asiakas kysyy käytännöistä, joten sen vastaukset vastaavat todellisuudessa julkaisemaasi.",
   "Published products": "Julkaistut tuotteet",
   "Publishing…": "Julkaistaan…",
   "Pull quote": "Vedä lainaus",
@@ -1140,6 +1147,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Yritä uudelleen",
   "Return request not found": "Palautuspyyntöä ei löydy",
   Returns: "Palautukset",
+  "returns delivery help terms privacy": "palauttaa toimitusapuehdot tietosuoja",
   Revenue: "Tuotto",
   "Revenue (paid)": "Tuotto (maksettu)",
   "Revenue by day": "Tulot päiväkohtaisesti",

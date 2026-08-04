@@ -564,6 +564,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage sections unavailable": "Adrannau tudalen gartref ddim ar gael",
   "Homepage Settings": "Gosodiadau Hafan",
   "Homepage settings unavailable": "Gosodiadau tudalen gartref ddim ar gael",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Sawl nod tudalen bolisi y gall y bot blaen siop eu darllen cyn ateb. Mae hirach yn cadw mwy o'r manylion y gofynnodd cwsmer yn eu cylch.",
   "How many entries from the list below are given to the assistant as reference.":
     "Sawl cofnod o'r rhestr isod a roddir i'r cynorthwyydd fel cyfeirnod.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -923,6 +925,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Teitl y dudalen",
   "Page unavailable": "Tudalen ddim ar gael",
   Pages: "Tudalennau",
+  "Pages the storefront bot may quote": "Tudalennau y gall bot blaen y siop ddyfynnu",
   Paid: "Talwyd",
   "Paid out": "Talwyd allan",
   "paid via": "talwyd drwy",
@@ -960,6 +963,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Wedi'i osod",
   "Platform cut": "Torri platfform",
   "Platform earns": "Platfform yn ennill",
+  "Policy page slugs": "Gwlithod tudalennau polisi",
+  "Policy text quoted per answer": "Testun polisi wedi'i ddyfynnu fesul ateb",
   "Polish (Polski)": "Pwyleg (Polski)",
   "Portuguese (Português)": "Portiwgaleg (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1005,6 +1010,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Cyhoeddwyd fel",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "categorïau cyhoeddedig ar gyfer llithrydd y dudalen hafan. Mae cwsmeriaid yn gweld pedwar ar y tro ar y bwrdd gwaith, yn y drefn hon. Codi'r cyfyngiad ar Reoli Gwefan.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Gwlithod tudalennau cyhoeddedig, wedi'u gwahanu gan fylchau. Mae'r bot yn darllen y gair am air hyn pan fydd cwsmer yn gofyn am bolisi, felly mae ei atebion yn cyfateb i'r hyn a gyhoeddwyd gennych mewn gwirionedd.",
   "Published products": "Cynnyrch cyhoeddedig",
   "Publishing…": "Cyhoeddi…",
   "Pull quote": "Tynnu dyfynbris",
@@ -1103,6 +1110,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Ceisiwch eto",
   "Return request not found": "Ni chanfuwyd y cais dychwelyd",
   Returns: "Yn dychwelyd",
+  "returns delivery help terms privacy": "yn dychwelyd telerau cymorth dosbarthu preifatrwydd",
   Revenue: "Refeniw",
   "Revenue (paid)": "Refeniw (wedi'i dalu)",
   "Revenue by day": "Refeniw yn ystod y dydd",

@@ -577,6 +577,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Ana Sayfa SEO'su",
   "Homepage Settings": "Ana Sayfa Ayarları",
   "Homepage settings unavailable": "Ana sayfa ayarları kullanılamıyor",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Vitrin botunun yanıt vermeden önce bir politika sayfasının kaç karakterini okuyabileceği. Daha uzun süre, müşterinin sorduğu ayrıntıların daha fazlasını korur.",
   "How many entries from the list below are given to the assistant as reference.":
     "Aşağıdaki listeden kaç girişin referans olarak asistana verildiği.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -951,6 +953,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Sayfa başlığı",
   "Page unavailable": "Sayfa kullanılamıyor",
   Pages: "Sayfalar",
+  "Pages the storefront bot may quote": "Vitrin botunun alıntı yapabileceği sayfalar",
   Paid: "Ücretli",
   "Paid out": "Ödendi",
   "paid via": "ücretli via",
@@ -988,6 +991,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Yerleştirildi",
   "Platform cut": "Platform kesimi",
   "Platform earns": "Platform kazanç sağlar",
+  "Policy page slugs": "Politika sayfası bilgileri",
+  "Policy text quoted per answer": "Yanıt başına alıntılanan politika metni",
   "Polish (Polski)": "Lehçe (Polski)",
   "Portuguese (Português)": "Portekizce (Portekizce)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1033,6 +1038,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Ana sayfa kaydırıcısı için",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "yayınlanan kategoriler olarak yayınlandı. Müşteriler masaüstünde bu sırayla dört tanesini aynı anda görür. Site Kontrolündeki sınırı artırın.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Boşluklarla ayrılmış, yayınlanan sayfa bilgileri. Bir müşteri politika hakkında soru sorduğunda bot bu kelimeleri kelime kelime okur, böylece verdiği yanıtlar gerçekte yayınladığınız yanıtlarla eşleşir.",
   "Published products": "Yayınlanan ürünler",
   "Publishing…": "Yayınlanıyor…",
   "Pull quote": "Alıntıyı al",
@@ -1134,6 +1141,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Yeniden dene",
   "Return request not found": "İade isteği bulunamadı",
   Returns: "İadeler",
+  "returns delivery help terms privacy": "teslimat yardımı koşullarının gizliliğini döndürür",
   Revenue: "Gelir",
   "Revenue (paid)": "Gelir (ücretli)",
   "Revenue by day": "Gün bazında gelir",

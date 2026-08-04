@@ -585,6 +585,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO αρχικής σελίδας",
   "Homepage Settings": "Ρυθμίσεις αρχικής σελίδας",
   "Homepage settings unavailable": "Δεν είναι διαθέσιμες οι ρυθμίσεις αρχικής σελίδας",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Πόσους χαρακτήρες μιας σελίδας πολιτικής μπορεί να διαβάσει το bot της βιτρίνας πριν απαντήσει. Για περισσότερη ώρα κρατά περισσότερες λεπτομέρειες για τις οποίες ρώτησε ένας πελάτης.",
   "How many entries from the list below are given to the assistant as reference.":
     "Πόσες καταχωρίσεις από την παρακάτω λίστα δίνονται στον βοηθό",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -968,6 +970,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Τίτλος σελίδας",
   "Page unavailable": "Η σελίδα δεν είναι διαθέσιμη",
   Pages: "Σελίδες",
+  "Pages the storefront bot may quote": "Σελίδες που μπορεί να αναφέρει το ρομπότ της βιτρίνας",
   Paid: "Πληρωμή",
   "Paid out": "Πληρωμή",
   "paid via": "με πληρωμή μέσω",
@@ -1007,6 +1010,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Τοποθετήθηκε",
   "Platform cut": "Αποκοπή πλατφόρμας",
   "Platform earns": "Κερδίζει η πλατφόρμα",
+  "Policy page slugs": "Σελίδες πολιτικής",
+  "Policy text quoted per answer": "Κείμενο πολιτικής που αναφέρεται ανά απάντηση",
   "Polish (Polski)": "Πολωνικά (Πολωνικά)",
   "Portuguese (Português)": "Πορτογαλικά (Πορτογαλικά)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1052,6 +1057,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Δημοσιεύτηκε ως",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "δημοσιευμένες κατηγορίες για το ρυθμιστικό της αρχικής σελίδας. Οι πελάτες βλέπουν τέσσερις κάθε φορά στην επιφάνεια εργασίας, με αυτή τη σειρά. Αυξήστε το όριο στον Έλεγχο ιστότοπου.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Δημοσιευμένα slugs σελίδας, διαχωρισμένα με κενά. Το ρομπότ διαβάζει αυτά λέξη προς λέξη όταν ένας πελάτης ρωτά για την πολιτική, επομένως οι απαντήσεις του ταιριάζουν με αυτό που πραγματικά δημοσιεύσατε.",
   "Published products": "Δημοσιευμένα προϊόντα",
   "Publishing…": "Δημοσίευση…",
   "Pull quote": "Προσθήκη έλξης",
@@ -1154,6 +1161,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Επανάληψη",
   "Return request not found": "Δεν βρέθηκε το αίτημα επιστροφής",
   Returns: "Επιστροφές",
+  "returns delivery help terms privacy": "όροι βοήθειας παράδοσης επιστροφών privacy",
   Revenue: "Έσοδα",
   "Revenue (paid)": "Έσοδα (επί πληρωμή)",
   "Revenue by day": "Έσοδα ανά ημέρα",

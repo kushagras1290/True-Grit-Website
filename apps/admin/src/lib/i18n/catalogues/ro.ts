@@ -567,6 +567,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO pentru pagina de pornire",
   "Homepage Settings": "Setări paginii de pornire",
   "Homepage settings unavailable": "Setările paginii de pornire indisponibile",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Câte caractere dintr-o pagină de politică poate citi botul vitrinei înainte de a răspunde. Mai mult timp păstrează mai multe detalii despre care a întrebat un client.",
   "How many entries from the list below are given to the assistant as reference.":
     "Câte intrări din lista de mai jos sunt date asistentului ca referință.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -938,6 +940,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Titlul paginii",
   "Page unavailable": "Pagina indisponibilă",
   Pages: "Pagini",
+  "Pages the storefront bot may quote": "Pagini pe care botul vitrinei le poate cita",
   Paid: "Plătit",
   "Paid out": "Plătit",
   "paid via": "plătit prin",
@@ -974,6 +977,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "PIN code": "Cod PIN",
   Placed: "Plasat",
   "Platform earns": "Câștiguri pe platformă",
+  "Policy page slugs": "Slug-uri ale paginii de politică",
+  "Policy text quoted per answer": "Textul politicii citat pe răspuns",
   "Polish (Polski)": "Poloneze (Polski)",
   "Portuguese (Português)": "Portugheză (Portugheză)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1018,6 +1023,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Publicat ca",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "categorii publicate pentru glisorul paginii de pornire. Clienții văd câte patru pe desktop, în această ordine. Ridicați limita pentru Controlul site-ului.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Pagină publicată, separată de spații. Botul le citește cuvânt cu cuvânt atunci când un client întreabă despre politică, astfel încât răspunsurile sale se potrivesc cu ceea ce ați publicat de fapt.",
   "Published products": "Produse publicate",
   "Publishing…": "Publicare...",
   "Pull quote": "Trage citat",
@@ -1116,6 +1123,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Reîncercați",
   "Return request not found": "Solicitarea de returnare nu a fost găsită",
   Returns: "Returnări",
+  "returns delivery help terms privacy":
+    "termeni de ajutor pentru livrarea returnărilor confidențialitate",
   Revenue: "Returnări",
   "Revenue (paid)": "Venit (plătit)",
   "Revenue by day": "Venit pe zi",

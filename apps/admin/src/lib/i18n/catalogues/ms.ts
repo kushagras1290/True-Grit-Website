@@ -580,6 +580,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO Halaman Utama",
   "Homepage Settings": "Tetapan Halaman Utama",
   "Homepage settings unavailable": "Tetapan halaman utama tidak tersedia",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Berapa banyak aksara halaman dasar yang boleh dibaca oleh bot etalase sebelum menjawab. Lebih lama menyimpan lebih banyak butiran yang ditanya oleh pelanggan.",
   "How many entries from the list below are given to the assistant as reference.":
     "Berapa banyak entri daripada senarai di bawah diberikan kepada pembantu sebagai rujukan.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -951,6 +953,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Tajuk halaman",
   "Page unavailable": "Halaman tidak tersedia",
   Pages: "Halaman",
+  "Pages the storefront bot may quote": "Halaman yang boleh dipetik oleh bot etalase",
   Paid: "Dibayar",
   "Paid out": "Dibayar",
   "paid via": "dibayar melalui",
@@ -987,6 +990,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Diletakkan",
   "Platform cut": "Potongan platform",
   "Platform earns": "Platform memperoleh pendapatan",
+  "Policy page slugs": "Slug halaman dasar",
+  "Policy text quoted per answer": "Teks dasar dipetik setiap jawapan",
   "Polish (Polski)": "Poland (Polski)",
   "Portuguese (Português)": "Bahasa Portugis (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1031,6 +1036,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Diterbitkan sebagai",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "kategori yang diterbitkan untuk peluncur halaman utama. Pelanggan melihat empat pada satu masa pada desktop, dalam susunan ini. Naikkan had pada Kawalan Tapak.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Siput halaman yang diterbitkan, dipisahkan oleh ruang. Bot membaca perkataan demi perkataan ini apabila pelanggan bertanya tentang dasar, jadi jawapannya sepadan dengan apa yang anda terbitkan sebenarnya.",
   "Published products": "Produk yang diterbitkan",
   "Publishing…": "Menerbitkan…",
   "Pull quote": "Tarik petikan",
@@ -1131,6 +1138,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Cuba semula",
   "Return request not found": "Permintaan pemulangan tidak ditemui",
   Returns: "Pemulangan",
+  "returns delivery help terms privacy": "mengembalikan privasi syarat bantuan penghantaran",
   Revenue: "Hasil",
   "Revenue (paid)": "Hasil (dibayar)",
   "Revenue by day": "Hasil mengikut hari",

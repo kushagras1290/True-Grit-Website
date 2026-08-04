@@ -593,6 +593,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "मुखपृष्ठ SEO",
   "Homepage Settings": "मुखपृष्ठसेटिंग्स्",
   "Homepage settings unavailable": "मुखपृष्ठसेटिंग्स् अनुपलब्धा",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "उत्तरं दातुं पूर्वं storefront bot इत्यनेन नीतिपृष्ठस्य कति वर्णाः पठितुं शक्यन्ते । दीर्घकालं यावत् ग्राहकेन पृष्टस्य विवरणस्य अधिकं रक्षति।",
   "How many entries from the list below are given to the assistant as reference.":
     "अधः सूचीतः कति प्रविष्टयः सहायकाय सन्दर्भरूपेण दत्ताः सन्ति ।",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -975,6 +977,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "पृष्ठ शीर्षक",
   "Page unavailable": "पृष्ठ अनुपलब्ध",
   Pages: "पृष्ठ",
+  "Pages the storefront bot may quote": "पृष्ठानि भण्डारमुखस्य बॉट् उद्धृतुं शक्नोति",
   Paid: "भुगत",
   "Paid out": "भुगतान",
   "paid via": "भुगतान via",
@@ -1012,6 +1015,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "प्लेस",
   "Platform cut": "मञ्च कट",
   "Platform earns": "मञ्चः अर्जयति",
+  "Policy page slugs": "नीतिपृष्ठस्लग्स्",
+  "Policy text quoted per answer": "प्रति उत्तरं उद्धृतं नीतिपाठ",
   "Polish (Polski)": "पोलिश (पोल्स्की)",
   "Portuguese (Português)": "पुर्तगाली (पुर्तगाली)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1057,6 +1062,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "प्रकाशित",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "प्रकाशितवर्गरूपेण मुखपृष्ठस्लाइडरस्य कृते। ग्राहकाः डेस्कटॉप् इत्यत्र एकैकं चत्वारि पश्यन्ति, अस्मिन् क्रमे । साइट् नियन्त्रणस्य सीमां वर्धयन्तु ।",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "प्रकाशितपृष्ठस्लग्, रिक्तस्थानैः पृथक्। यदा ग्राहकः नीतेः विषये पृच्छति तदा बोट् एतानि शब्दशः पठति, अतः तस्य उत्तराणि भवता यथार्थतया प्रकाशितेन सह मेलम् कुर्वन्ति ।",
   "Published products": "प्रकाशितानि उत्पादानि",
   "Publishing…": "प्रकाशन...",
   "Pull quote": "उद्धरणं खींच",
@@ -1158,6 +1165,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "पुनः प्रयासः",
   "Return request not found": "पुनरागमनानुरोधः न लब्ध",
   Returns: "प्रत्यावर्तयति",
+  "returns delivery help terms privacy": "वितरणसहायताशर्ताः गोपनीयतां प्रत्यागच्छति",
   Revenue: "राजस्व",
   "Revenue (paid)": "राजस्वः (भुक्तः)",
   "Revenue by day": "दिनेन राजस्वः",

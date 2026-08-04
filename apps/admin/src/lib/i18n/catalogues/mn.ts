@@ -581,6 +581,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Нүүр хуудасны SEO",
   "Homepage Settings": "Нүүр хуудасны тохиргоо",
   "Homepage settings unavailable": "Нүүр хуудасны тохиргоог хийх боломжгүй",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Дэлгүүрийн нүүрэн талын бот хариулахаасаа өмнө бодлогын хуудасны хэдэн тэмдэгтийг уншиж чадах вэ. Үйлчлүүлэгчийн асуусан дэлгэрэнгүй мэдээллийг илүү удаан хадгалдаг.",
   "How many entries from the list below are given to the assistant as reference.":
     "Доорх жагсаалтаас хэдэн оруулгыг туслахад лавлагаа болгон өгсөн бэ.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -963,6 +965,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Хуудасны гарчиг",
   "Page unavailable": "Хуудас ашиглах боломжгүй",
   Pages: "Хуудас",
+  "Pages the storefront bot may quote":
+    "хуудсууд тусдаа. Үйлчлүүлэгч бодлогын талаар асуухад робот нь эдгээр үг бүрийг уншдаг тул хариулт нь таны нийтэлсэнтэй таарч байна.",
   Paid: "Төлсөн",
   "Paid out": "Төлсөн",
   "paid via": "төлбөр",
@@ -1002,6 +1006,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "PIN код",
   "Platform cut": "Платформ тайрах",
   "Platform earns": "Платформ олдог",
+  "Policy page slugs": "Бодлогын хуудасны slugs",
+  "Policy text quoted per answer": "Хариулт бүрээс иш татсан бодлогын текст",
   "Polish (Polski)": "Польш (Польски)",
   "Portuguese (Português)": "Португали (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1047,6 +1053,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Нүүр хуудасны гулсагчийн",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "нийтлэгдсэн ангиллаар нийтлэгдсэн. Үйлчлүүлэгчид ширээний компьютер дээр энэ дарааллаар дөрвийг нэг дор хардаг. Сайтын хяналтын хязгаарыг нэмэгдүүлэх.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Нийтэлсэн хуудасны slugs, зайгаар тусгаарлагдсан. Үйлчлүүлэгч бодлогын талаар асуухад робот эдгээр үгийг үг болгон уншдаг тул хариулт нь таны нийтэлсэн зүйлтэй таарч байна.",
   "Published products": "Хэвлэгдсэн бүтээгдэхүүнүүд",
   "Publishing…": "Нийтэлж байна...",
   "Pull quote": "Ишлэл татах",
@@ -1149,6 +1157,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Дахин оролдох",
   "Return request not found": "Буцаах хүсэлт олдсонгүй",
   Returns: "Буцаах",
+  "returns delivery help terms privacy": "хүргэлтийн тусламжийн нөхцөлийг нууцлах",
   Revenue: "Орлого",
   "Revenue (paid)": "Орлого (төлбөртэй)",
   "Revenue by day": "Өдрийн орлого",

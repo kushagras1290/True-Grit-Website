@@ -574,6 +574,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO homepage",
   "Homepage Settings": "Setelan Homepage",
   "Homepage settings unavailable": "Setelan homepage ora kasedhiya",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Pinten karakter kaca kabijakan sing bisa diwaca bot ing storefront sadurunge mangsuli. Luwih dawa nyimpen rincian liyane sing ditakoni pelanggan.",
   "How many entries from the list below are given to the assistant as reference.":
     "Pinten entri saka dhaptar ing ngisor iki sing diwenehake marang asisten> minangka referensi.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -938,6 +940,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Judul kaca",
   "Page unavailable": "Kaca ora kasedhiya",
   Pages: "Kaca",
+  "Pages the storefront bot may quote": "Kaca sing bisa diutip saka bot storefront",
   Paid: "Mbayar",
   "Paid out": "Mbayar metu",
   "paid via": "mbayar liwat",
@@ -974,6 +977,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Diselehake",
   "Platform cut": "Potongan platform",
   "Platform earns": "Platform entuk",
+  "Policy page slugs": "Slug kaca kabijakan",
+  "Policy text quoted per answer": "Tèks kabijakan sing dikutip saben jawaban",
   "Polish (Polski)": "Polandia (Polski)",
   "Portuguese (Português)": "Basa Portugis (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1016,6 +1021,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Diterbitake minangka",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "kategori sing diterbitake kanggo slider homepage. Pelanggan ndeleng papat sekaligus ing desktop, ing urutan iki. Tambah watesan ing Kontrol Situs.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Slug kaca sing diterbitake, dipisahake dening spasi. Bot maca tembung kasebut kanthi tembung nalika pelanggan takon babagan kabijakan, mula jawabane cocog karo apa sing diterbitake.",
   "Published products": "Produk sing diterbitake",
   "Put essential subjects inside the dashed centre. Responsive crops may remove the edges.":
     "Lebokna subyek sing penting. Potongan responsif bisa ngilangi pinggiran.",
@@ -1108,6 +1115,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Coba maneh",
   "Return request not found": "Panjaluk bali ora ditemokake",
   Returns: "Bale",
+  "returns delivery help terms privacy": "mbalikke privasi syarat bantuan pangiriman",
   Revenue: "Penghasilan",
   "Revenue (paid)": "Penghasilan (dibayar)",
   "Revenue by day": "Penghasilan saben dina",

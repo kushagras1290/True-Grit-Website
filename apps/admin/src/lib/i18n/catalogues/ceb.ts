@@ -506,6 +506,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage sections unavailable": "Dili magamit ang mga seksyon sa homepage",
   "Homepage Settings": "Mga Setting sa Homepage",
   "Homepage settings unavailable": "Dili magamit ang mga setting sa homepage",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Pila ka mga karakter sa usa ka panid sa polisiya ang mahimong mabasa sa bot sa storefront sa dili pa motubag. Ang mas dugay nagtipig sa dugang nga detalye nga gipangutana sa usa ka kustomer.",
   "How many entries from the list below are given to the assistant as reference.":
     "Pila ka mga entry gikan sa listahan sa ubos ang gihatag ngadto sa assistant.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -841,6 +843,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Ulohan sa panid",
   "Page unavailable": "Dili magamit ang panid",
   Pages: "Mga panid",
+  "Pages the storefront bot may quote": "Mga panid nga mahimong kutlo sa bot sa storefront",
   Paid: "Gibayran",
   "Paid out": "Gibayran",
   "paid via": "Gibayran pinaagi sa",
@@ -875,6 +878,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pagpili ug usa gikan sa lista aron magsugod sa pagbasa.",
   Placed: "Gibutang",
   "Platform earns": "Platform nga kita",
+  "Policy page slugs": "Mga slug sa panid sa palisiya",
+  "Policy text quoted per answer": "Mga teksto sa palisiya nga gikutlo matag tubag",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Positibo mopataas sa presyo (usa ka markup, gipakita nga bag-o lang nga presyo). Gipaubos kini sa negatibo (usa ka diskwento, gipakita sa tinuud nga presyo nga naigo). Tali sa −90% ug 500%. Ang pagtipig og lagda para sa samang target ug scope mopuli niini kaysa magdugang og duplicate.",
   "Post a blog (submission form)": "Pag-post og blog (submission form)",
@@ -912,6 +917,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Gipatik isip",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "gimantala nga mga kategorya para sa homepage slider. Ang mga kustomer makakita upat sa usa ka higayon sa desktop, sa kini nga han-ay. Ipataas ang limitasyon sa Site Control.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Gipatik nga mga slug sa panid, gibulag sa mga espasyo. Gibasa sa bot kini nga pulong sa pulong kung ang usa ka kustomer mangutana bahin sa palisiya, mao nga ang mga tubag niini mohaum sa imong gimantala.",
   "Published products": "Gi-publish nga mga produkto",
   "Put essential subjects inside the dashed centre. Responsive crops may remove the edges.":
     "Ibutang ang dug-ol nga importanteng mga hilisgutan. Ang mga mosanong nga tanom mahimong magtangtang sa mga kilid.",
@@ -1005,6 +1012,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Sulayi pag-usab",
   "Return request not found": "Wala makita ang hangyo sa pagbalik",
   Returns: "Mga Pagbalik",
+  "returns delivery help terms privacy":
+    "nagbalik sa mga termino sa pagtabang sa pagpadala sa privacy",
   Revenue: "Kita",
   "Revenue (paid)": "Kita (gibayran)",
   "Revenue by day": "Kita sa adlaw",

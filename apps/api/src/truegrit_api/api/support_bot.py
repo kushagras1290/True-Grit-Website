@@ -72,10 +72,16 @@ class BotWidgetColorRequest(_CamelModel):
 
 
 class BotTuningRequest(_CamelModel):
-    # Bounds mirror services.support_bot_settings' own clamps -- rejecting an
-    # out-of-range value outright is clearer to an operator than silently
-    # storing something different from what they typed.
-    value: int = Field(ge=0, le=40)
+    # Widest of the per-key ranges in services.support_bot_settings; that
+    # module clamps to the specific key's own bounds. Anything past this is
+    # rejected outright rather than silently stored as something else.
+    value: int = Field(ge=0, le=12000)
+
+
+class BotPolicyPagesRequest(_CamelModel):
+    """Space- or comma-separated page slugs the storefront bot may quote."""
+
+    policy_pages: str = Field(min_length=1, max_length=500)
 
 
 def _request_id(request: Request) -> str:
@@ -194,6 +200,18 @@ async def set_support_bot_tuning(
     body: BotTuningRequest,
 ) -> dict[str, Any]:
     return await support_bot_settings.set_tuning(db, actor, _request_id(request), key, body.value)
+
+
+@router.patch("/support-bot/policy-pages")
+async def set_support_bot_policy_pages(
+    db: Annotated[Database, Depends(get_database)],
+    actor: _ManageActor,
+    request: Request,
+    body: BotPolicyPagesRequest,
+) -> dict[str, Any]:
+    return await support_bot_settings.set_policy_pages(
+        db, actor, _request_id(request), body.policy_pages
+    )
 
 
 @router.patch("/support-bot/widget-color")

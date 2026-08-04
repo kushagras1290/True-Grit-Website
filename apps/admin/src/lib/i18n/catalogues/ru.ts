@@ -587,6 +587,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO домашней страницы",
   "Homepage Settings": "Настройки главной страницы",
   "Homepage settings unavailable": "Настройки главной страницы недоступны",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Сколько символов на странице политики бот витрины может прочитать, прежде чем ответить. Longer сохраняет больше подробностей, о которых спрашивал клиент.",
   "How many entries from the list below are given to the assistant as reference.":
     "Сколько записей из списка ниже передается помощнику в качестве справки.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -969,6 +971,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Заголовок страницы",
   "Page unavailable": "Страница недоступна",
   Pages: "Страницы",
+  "Pages the storefront bot may quote": "Страницы, которые может цитировать бот витрины",
   Paid: "Платные",
   "Paid out": "Платные выход",
   "paid via": "оплата через",
@@ -1007,6 +1010,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Размещен",
   "Platform cut": "Платформа сокращена",
   "Platform earns": "Заработок на платформе",
+  "Policy page slugs": "Флаги страниц правил",
+  "Policy text quoted per answer": "Текст правил, цитируемый для каждого ответа",
   "Polish (Polski)": "Польский (Polski)",
   "Portuguese (Português)": "Португальский (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1052,6 +1057,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Опубликовано как",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "опубликованные категории для слайдера на главной странице. Клиенты видят четыре одновременно на рабочем столе в этом порядке. Поднимите лимит на управление сайтом.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Флаги опубликованных страниц, разделенные пробелами. Бот читает их слово в слово, когда клиент спрашивает о политике, поэтому его ответы соответствуют тому, что вы на самом деле опубликовали.",
   "Published products": "Опубликованные продукты",
   "Publishing…": "Публикация…",
   "Pull quote": "Извлечь цитату",
@@ -1151,6 +1158,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Повторить",
   "Return request not found": "Запрос на возврат не найден",
   Returns: "Возврат",
+  "returns delivery help terms privacy": "справка по возврату доставки, условия конфиденциальности",
   Revenue: "Доход",
   "Revenue (paid)": "Доход (оплаченный)",
   "Revenue by day": "Доход по дням",

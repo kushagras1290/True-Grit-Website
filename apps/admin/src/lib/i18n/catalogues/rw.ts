@@ -586,6 +586,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Urupapuro rwa SEO",
   "Homepage Settings": "Igenamiterere ry'urugo",
   "Homepage settings unavailable": "Igenamiterere ry'urugo ntirishobora kuboneka",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Nangahe inyuguti zurupapuro rwa politiki ububiko bwibubiko bushobora gusoma mbere yo gusubiza. Umwanya muremure ubika byinshi birambuye umukiriya yabajije.",
   "How many entries from the list below are given to the assistant as reference.":
     "Ni bangahe byanditse kurutonde rukurikira bihabwa umufasha nkibisobanuro.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -950,6 +952,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Urupapuro",
   "Page unavailable": "Urupapuro ntiruboneka",
   Pages: "Urupapuro",
+  "Pages the storefront bot may quote": "Urupapuro ububiko bwibubiko bushobora gusubiramo",
   Paid: "Yishyuwe",
   "Paid out": "Yishyuwe",
   "paid via": "yishyuwe binyuze",
@@ -985,6 +988,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Bishyizwe",
   "Platform cut": "Gukata urubuga",
   "Platform earns": "Ihuriro ryinjiza",
+  "Policy page slugs": "Urupapuro rwa politiki",
+  "Policy text quoted per answer": "Inyandiko ya politiki yavuzwe kuri buri gisubizo",
   "Polish (Polski)": "Igipolonye (Polski)",
   "Portuguese (Português)": "Igiporutugali (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1030,6 +1035,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Byatangajwe nka",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "ibyiciro byatangajwe kuri home page page. Abakiriya babona bane icyarimwe kuri desktop, murutonde. Kuzamura imipaka ku kugenzura Urubuga.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Urupapuro rwasohotse, rutandukanijwe numwanya. Bot isoma iri jambo kumagambo mugihe umukiriya abajije ibya politiki, ibisubizo byayo rero bihuye nibyo wasohoye mubyukuri.",
   "Published products": "Ibicuruzwa byatangajwe",
   "Publishing…": "Gutangaza…",
   "Pull quote": "Kuramo amagambo",
@@ -1128,6 +1135,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Ongera ugerageze",
   "Return request not found": "Gusaba gusaba ntibyabonetse",
   Returns: "Garuka",
+  "returns delivery help terms privacy": "garuka gutanga ubufasha bufasha ijambo ryibanga",
   Revenue: "Amafaranga yinjira",
   "Revenue (paid)": "Amafaranga yinjira (yishyuwe)",
   "Revenue by day": "Amafaranga yinjira kumunsi",

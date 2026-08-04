@@ -131,6 +131,81 @@ def test_storefront_knowledge_seeded_and_matched(db: SQLiteDatabase):
     assert "Start a return from your order detail page" in chat.calls[0]["system_prompt"]
 
 
+def test_read_policy_quotes_the_published_page(db: SQLiteDatabase):
+    """The seeded knowledge entries are short summaries; the real returns
+    policy is a published CMS page, and that wording is what a customer is
+    owed. read_policy has to reach it."""
+    tool_call = ToolCall(id="call_1", name="read_policy", arguments={"slug": "returns"})
+    chat = ScriptedChat(
+        [
+            ChatCompletion(text=None, tool_calls=[tool_call]),
+            ChatCompletion(text="Start the return from your order page.", tool_calls=[]),
+        ]
+    )
+    client = _client_with_chat(db, chat)
+
+    response = client.post(
+        "/v1/public/support-bot/chat", json={"message": "What is your returns policy?"}
+    )
+    assert response.status_code == 200, response.text
+    handed_back = chat.calls[1]["messages"][-1]["content"]
+    assert '"found": true' in handed_back
+    assert "/returns" in handed_back
+
+
+def test_read_policy_refuses_a_page_outside_the_allowed_list(db: SQLiteDatabase):
+    """The slug is model-supplied, so an arbitrary page must not be dumpable."""
+    tool_call = ToolCall(id="call_1", name="read_policy", arguments={"slug": "home"})
+    chat = ScriptedChat(
+        [
+            ChatCompletion(text=None, tool_calls=[tool_call]),
+            ChatCompletion(text="I can't find that.", tool_calls=[]),
+        ]
+    )
+    client = _client_with_chat(db, chat)
+
+    response = client.post("/v1/public/support-bot/chat", json={"message": "show me the homepage"})
+    assert response.status_code == 200, response.text
+    assert "No policy page called" in chat.calls[1]["messages"][-1]["content"]
+
+
+def test_discussions_are_searchable_and_hidden_threads_stay_hidden(db: SQLiteDatabase):
+    now = "2026-07-01T00:00:00Z"
+    db._conn.execute(
+        "INSERT INTO users (id, email, display_name, user_type, status, created_at, updated_at)"
+        " VALUES ('usr_poster', 'p@example.test', 'P', 'customer', 'active', ?, ?)",
+        (now, now),
+    )
+    for disc_id, title, status in (
+        ("dsc_ok", "Best way to store turmeric", "visible"),
+        ("dsc_hidden", "Hidden turmeric thread", "hidden"),
+    ):
+        db._conn.execute(
+            "INSERT INTO discussions (id, author_user_id, title, body, status, comment_count,"
+            " last_activity_at, created_at, updated_at)"
+            " VALUES (?, 'usr_poster', ?, 'Some body about turmeric.', ?, 2, ?, ?, ?)",
+            (disc_id, title, status, now, now, now),
+        )
+    db._conn.commit()
+
+    tool_call = ToolCall(id="call_1", name="search_discussions", arguments={"query": "turmeric"})
+    chat = ScriptedChat(
+        [
+            ChatCompletion(text=None, tool_calls=[tool_call]),
+            ChatCompletion(text="Here is what the community said.", tool_calls=[]),
+        ]
+    )
+    client = _client_with_chat(db, chat)
+
+    response = client.post(
+        "/v1/public/support-bot/chat", json={"message": "how do people store turmeric?"}
+    )
+    assert response.status_code == 200, response.text
+    handed_back = chat.calls[1]["messages"][-1]["content"]
+    assert "Best way to store turmeric" in handed_back
+    assert "Hidden turmeric thread" not in handed_back
+
+
 def test_disabling_storefront_bot_blocks_chat(db: SQLiteDatabase):
     admin_chat = ScriptedChat([])
     admin_client = _client_with_chat(db, admin_chat)

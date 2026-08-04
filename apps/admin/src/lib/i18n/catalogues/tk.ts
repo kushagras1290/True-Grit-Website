@@ -587,6 +587,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Baş sahypa SEO",
   "Homepage Settings": "Baş sahypa sazlamalary",
   "Homepage settings unavailable": "Baş sahypa sazlamalary elýeterli däl",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Jogap bermezden ozal dükan botynyň syýasat sahypasynyň näçe simwolyny okap biler. Müşderiniň soraýan jikme-jikliklerini has uzyn saklaýar.",
   "How many entries from the list below are given to the assistant as reference.":
     "Aşakdaky sanawdan näçe ýazgy kömekçä berilýär.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -962,6 +964,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Sahypanyň ady",
   "Page unavailable": "Sahypa elýeterli däl",
   Pages: "Sahypalar",
+  "Pages the storefront bot may quote": "Dükanyň öňündäki bot sitata berip biler",
   Paid: "Tölegli",
   "Paid out": "Tölegli",
   "paid via": "üsti bilen tölenýär",
@@ -999,6 +1002,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Acederleşdirildi",
   "Platform cut": "Platforma kesildi",
   "Platform earns": "Platforma gazanýar",
+  "Policy page slugs": "Syýasat sahypasy",
+  "Policy text quoted per answer": "Her jogap üçin getirilen syýasat teksti",
   "Polish (Polski)": "Polýak (Polski)",
   "Portuguese (Português)": "Portugaliýa (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1044,6 +1049,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Çap edildi",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "baş sahypa slaýderi üçin neşir edilen kategoriýalar. Müşderiler iş tertibinde bir gezekde dört gezek görýärler. Saýt gözegçiliginiň çägini ýokarlandyryň.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Boşluklar bilen bölünen sahypa ýazgylary. Bot, müşderi syýasaty barada soranda, bu sözi sözme-söz okaýar, şonuň üçin onuň jogaplary hakykatdanam çap edeniňize laýyk gelýär.",
   "Published products": "Çap edilen önümler",
   "Publishing…": "Neşir etmek…",
   "Pull quote": "Sitata çekiň",
@@ -1144,6 +1151,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Gaýtadan synanyşyň",
   "Return request not found": "Yzyna haýyş tapylmady",
   Returns: "Yzyna",
+  "returns delivery help terms privacy": "gowşuryş kömek şertleriniň gizlinligi",
   Revenue: "Girdeji",
   "Revenue (paid)": "Girdeji (tölenen)",
   "Revenue by day": "Gündelik girdeji",

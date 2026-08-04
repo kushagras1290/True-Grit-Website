@@ -582,6 +582,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Башкы беттин SEO",
   "Homepage Settings": "Башкы беттин жөндөөлөрү",
   "Homepage settings unavailable": "Башкы барактын жөндөөлөрү жеткиликсиз",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Дүкөндүн маңдайкы боту жооп бергенге чейин саясат барагынын канча символун окуй алат. Кардар сураган чоо-жайын көбүрөөк сактайт.",
   "How many entries from the list below are given to the assistant as reference.":
     "Төмөнкү тизмедеги канча жазуу жардамчыга маалымдама катары берилген.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -966,6 +968,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Беттин аталышы",
   "Page unavailable": "Барак жеткиликсиз",
   Pages: "Барактар",
+  "Pages the storefront bot may quote": "Дүкөндүн маңдайкы бот цитата кыла турган беттер",
   Paid: "Төлөндү",
   "Paid out": "Төлөндү",
   "paid via": "төөлөдү",
@@ -1001,6 +1004,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: 'P004 id="t0005">Платформаны кесип',
   "Platform cut": "Платформаны кесип",
   "Platform earns": "Платформа табат",
+  "Policy page slugs": "Саясат бетиндеги шлагбаумдар",
+  "Policy text quoted per answer": "Ар бир жоопко цитата келтирилген саясаттын тексти",
   "Polish (Polski)": "Польша (Польски)",
   "Portuguese (Português)": "Португалия (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1046,6 +1051,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Башкы беттин сыдыргычы үчүн",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "жарыяланган категориялар катары жарыяланды. Кардарлар ушул тартипте иш тактасында бир убакта төртөөнү көрүшөт. Сайтты көзөмөлдөө боюнча чектөөнү көтөрүңүз.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Боштуктар менен бөлүнгөн барактардын слогдору. Кардар саясат жөнүндө сураганда, бот бул сөздөрдү сөзмө-сөз окуйт, андыктан анын жооптору сиз жарыялаган маалыматка дал келет.",
   "Published products": "Жарыяланган өнүмдөр",
   "Publishing…": "Жарыяланууда...",
   "Pull quote": "Цитачаны тартыңыз",
@@ -1147,6 +1154,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Кайра аракет",
   "Return request not found": "Кайтаруу өтүнүчү табылган жок",
   Returns: "Кайтаруулар",
+  "returns delivery help terms privacy": "жеткирүү жардамынын шарттарын купуялык",
   Revenue: "Киреше",
   "Revenue (paid)": "Киреше (төленген)",
   "Revenue by day": "Күн боюнча киреше",

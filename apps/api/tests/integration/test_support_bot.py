@@ -201,7 +201,9 @@ def test_bot_enabled_by_default(db: SQLiteDatabase):
         "historyTurns": 10,
         "knowledgeSnippets": 6,
         "searchResults": 5,
+        "policyChars": 4000,
         "widgetColor": "",  # blank = inherit the site brand colour
+        "policyPages": "returns delivery help terms privacy standards about",
     }
 
 
@@ -274,15 +276,19 @@ def test_tuning_clamps_out_of_range_values(db: SQLiteDatabase):
     client = _client_with_chat(db, chat)
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
 
-    # Above the field's own bound: rejected outright rather than silently stored.
-    assert (
-        client.patch("/v1/admin/support-bot/tuning/searchResults", json={"value": 999}).status_code
-        == 422
-    )
-    # Within the field bound but above this key's maximum: clamped.
-    clamped = client.patch("/v1/admin/support-bot/tuning/searchResults", json={"value": 40})
+    # Past the field's own outer bound: rejected outright rather than stored.
+    rejected = client.patch("/v1/admin/support-bot/tuning/searchResults", json={"value": 99999})
+    assert rejected.status_code == 422
+
+    # Within the field bound but above this key's own maximum: clamped down.
+    clamped = client.patch("/v1/admin/support-bot/tuning/searchResults", json={"value": 999})
     assert clamped.status_code == 200
     assert clamped.json() == {"key": "searchResults", "value": 20}
+
+    # Each key keeps its own range, not a shared one.
+    chars = client.patch("/v1/admin/support-bot/tuning/policyChars", json={"value": 99})
+    assert chars.status_code == 200
+    assert chars.json() == {"key": "policyChars", "value": 500}  # clamped up to the minimum
 
 
 def test_widget_color_round_trips_and_reaches_the_storefront(db: SQLiteDatabase):

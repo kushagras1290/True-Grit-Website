@@ -587,6 +587,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO صفحه اصلی",
   "Homepage Settings": "تنظیمات صفحه اصلی",
   "Homepage settings unavailable": "تنظیمات صفحه اصلی در دسترس نیست",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "روبات ویترین فروشگاه ممکن است چند کاراکتر از یک صفحه خط مشی را قبل از پاسخ خواندن بخواند. طولانی‌تر جزئیات بیشتری را که مشتری درباره آنها پرسیده است نگه می‌دارد.",
   "How many entries from the list below are given to the assistant as reference.":
     "چند ورودی از لیست زیر به عنوان مرجع به دستیار داده می‌شود",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -963,6 +965,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "عنوان صفحه",
   "Page unavailable": "صفحه در دسترس نیست",
   Pages: "صفحات",
+  "Pages the storefront bot may quote": "صفحه‌هایی که ربات ویترین ممکن است نقل قول کند",
   Paid: "پرداخت",
   "Paid out": "پرداخت",
   "paid via": "پرداخت از طریق",
@@ -1001,6 +1004,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "قرار داده شده",
   "Platform cut": "برش پلتفرم",
   "Platform earns": "پلتفرم درآمد دارد",
+  "Policy page slugs": "مشکل‌های صفحه خط‌مشی",
+  "Policy text quoted per answer": "متن خط‌مشی نقل‌شده در هر پاسخ",
   "Polish (Polski)": "لهستانی (لهستانی)",
   "Portuguese (Português)": "پرتغالی (پرتغالی)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1046,6 +1051,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "منتشر شده به عنوان",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "دسته‌های منتشرشده برای نوار لغزنده صفحه اصلی. مشتریان به این ترتیب چهار عدد را در یک زمان روی دسکتاپ می بینند. محدودیت کنترل سایت را افزایش دهید.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "صفحه‌های منتشر شده، با فاصله از هم جدا شده‌اند. وقتی مشتری در مورد خط‌مشی سؤال می‌کند، ربات این موارد را کلمه به کلمه می‌خواند، بنابراین پاسخ‌هایش با آنچه که واقعاً منتشر کرده‌اید مطابقت دارد.",
   "Published products": "محصولات منتشر شده",
   "Publishing…": "انتشار…",
   "Pull quote": "نقل قول",
@@ -1144,6 +1151,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "تلاش مجدد",
   "Return request not found": "درخواست بازگشت یافت نشد",
   Returns: "بازده",
+  "returns delivery help terms privacy": "شرایط راهنما برای تحویل کالا، حریم خصوصی",
   Revenue: "درآمد",
   "Revenue (paid)": "درآمد (پرداخت شده)",
   "Revenue by day": "درآمد در روز",

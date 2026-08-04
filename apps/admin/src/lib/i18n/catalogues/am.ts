@@ -588,6 +588,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "የመነሻ ገጽ SEO",
   "Homepage Settings": "የመነሻ ገጽ ቅንብሮች",
   "Homepage settings unavailable": "የመነሻ ገጽ ቅንጅቶች የሉም",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "የመደብር ፊት ቦት መልስ ከመስጠቱ በፊት ስንት የመመሪያ ገፅ ቁምፊዎች ማንበብ ይችላል። አንድ ደንበኛ ስለጠየቀው ዝርዝር መረጃ የበለጠ ያቆየዋል።",
   "How many entries from the list below are given to the assistant as reference.":
     "ከታች ካለው ዝርዝር ውስጥ ስንት ግቤቶች ለረዳቱ እንደ ማጣቀሻ ተሰጥተዋል።",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -961,6 +963,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "የገጽ ርዕስ",
   "Page unavailable": "ገጽ አይገኝም",
   Pages: "ገጾች",
+  "Pages the storefront bot may quote": "የመደብር ፊት ቦት ገጾች",
   Paid: "የተከፈለ",
   "Paid out": "የተከፈለ",
   "paid via": "በ",
@@ -996,6 +999,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "የተቀመጠ",
   "Platform cut": "የፕላትፎርም መቁረጥ",
   "Platform earns": "የመድረክ ገቢ",
+  "Policy page slugs": "የመመሪያ ገጽ ስሉግስ",
+  "Policy text quoted per answer": "በአንድ መልስ የተጠቀሰ የመመሪያ ጽሑፍ",
   "Polish (Polski)": "ፖላንድኛ (ፖልስኪ)",
   "Portuguese (Português)": "ፖርቱጋልኛ (ፖርቱጋል)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1040,6 +1045,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "እንደ",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "የታተሙ ምድቦች ለሆምፔጅ ተንሸራታች። ደንበኞች በዚህ ቅደም ተከተል አራት በአንድ ጊዜ በዴስክቶፕ ላይ ያያሉ። በጣቢያ ቁጥጥር ላይ ገደቡን ያሳድጉ።",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "የታተሙ የገጽ slugs፣ በቦታ ተለያይተዋል። ቦቱ ደንበኛው ስለመመሪያ ሲጠይቅ እነዚህን ቃላት በቃላት ያነባል፣ስለዚህ ምላሾቹ እርስዎ ካተሙት ጋር ይዛመዳሉ።",
   "Published products": "የታተሙ ምርቶች",
   "Publishing…": "በማተም ላይ…",
   "Pull quote": "ጥቅስ ይጎትቱ",
@@ -1138,6 +1145,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "እንደገና ይሞክሩ",
   "Return request not found": "የመመለሻ ጥያቄ አልተገኘም",
   Returns: "ተመላሾች",
+  "returns delivery help terms privacy": "የመላኪያ እገዛ ውሎችን ግላዊነት ይመልሳል",
   Revenue: "ገቢ",
   "Revenue (paid)": "ገቢ (የሚከፈልበት)",
   "Revenue by day": "ገቢ በቀን",

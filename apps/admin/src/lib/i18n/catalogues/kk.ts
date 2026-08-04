@@ -561,6 +561,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Басты бет SEO",
   "Homepage Settings": "Негізгі бет параметрлері",
   "Homepage settings unavailable": "Негізгі бет параметрлері қолжетімді емес",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Жауап бермес бұрын дүкен сөресі боты саясат бетінің қанша таңбасын оқи алады. Тұтынушы сұраған мәліметтерді ұзағырақ сақтайды.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Оператор Жаңа таңдаулылар, Таңдаулы санаттар (Басты бет параметрлері) және Бөлектелген өнімдер (төменде) ішінен қанша өнім немесе санат таңдай алады. Оны көтеру бірден үнемдейді, орналастыру қажет емес; 50-ге дейін, блок пішімінің өзі орындайтын төбе.",
   "How many products to show": "Қанша өнімді көрсету керек",
@@ -941,6 +943,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": 'Paid id="t0012">төленеді',
   "Page unavailable": "Бет қолжетімсіз",
   Pages: "Беттер",
+  "Pages the storefront bot may quote":
+    "pages separateds. Тұтынушы саясат туралы сұрағанда, бот осы сөздерді сөзбе-сөз оқиды, сондықтан оның жауаптары сіз жариялаған ақпаратқа сәйкес келеді.",
   "Paid out": "10",
   "paid via": "арқылы төленді",
   Paragraphs: "Абзацтар",
@@ -975,6 +979,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: 'P004 id="t0005">Платформаны кесу',
   "Platform cut": "Платформаны кесу",
   "Platform earns": "Платформа табысы",
+  "Policy page slugs": "Саясат бетіндегі слогтар",
+  "Policy text quoted per answer": "Жауап үшін келтірілген саясат мәтіні",
   "Polish (Polski)": "Польша (Польски)",
   "Portuguese (Português)": "Португалия (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1019,6 +1025,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Бастапқы бет сырғытпасы үшін",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "жарияланған санаттар ретінде жарияланды. Тұтынушылар жұмыс үстелінде осы ретпен төртеуін көреді. Сайтты басқару шегін арттырыңыз.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Жарияланған бет слогтары, бос орындармен бөлінген. Тұтынушы саясат туралы сұрағанда, бот осы сөздерді сөзбе-сөз оқиды, сондықтан оның жауаптары сіз жариялаған нәрсеге сәйкес келеді.",
   "Published products": "Жарияланған өнімдер",
   "Publishing…": "Жариялануда...",
   "Pull quote": "Дәйексөзді алу",
@@ -1123,6 +1131,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Қайталау",
   "Return request not found": "Қайтару сұрауы табылмады",
   Returns: "Қайтару",
+  "returns delivery help terms privacy": "жеткізу анықтамасының құпиялылық шарттарын қайтарады",
   Revenue: "Табыс",
   "Revenue (paid)": "Табыс (төленген)",
   "Revenue by day": "Күн бойынша табыс",

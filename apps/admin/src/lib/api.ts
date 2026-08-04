@@ -542,7 +542,8 @@ export interface SupportBotKnowledgeEntry {
   updatedAt: string;
 }
 
-export type SupportBotTuningKey = "historyTurns" | "knowledgeSnippets" | "searchResults";
+export type SupportBotTuningKey =
+  "historyTurns" | "knowledgeSnippets" | "searchResults" | "policyChars";
 
 export interface SupportBotSettings {
   admin: boolean;
@@ -553,8 +554,12 @@ export interface SupportBotSettings {
   knowledgeSnippets: number;
   /** How many hits the storefront bot's search tools return per call. */
   searchResults: number;
+  /** How much of a policy page's text the bot may quote. */
+  policyChars: number;
   /** Hex colour for both chat widgets; blank means inherit the site brand. */
   widgetColor: string;
+  /** Space-separated page slugs the storefront bot may quote verbatim. */
+  policyPages: string;
 }
 
 export interface SiteControl {
@@ -748,11 +753,7 @@ export interface PageTranslation {
  *  `fields` actually carries is entity-type-specific (mirrors
  *  `services.entity_translation.TRANSLATABLE_FIELDS` on the API). */
 export type EntityTranslationType =
-  | "navigation_item"
-  | "category"
-  | "product"
-  | "article"
-  | "recipe";
+  "navigation_item" | "category" | "product" | "article" | "recipe";
 
 export interface EntityTranslationSummary {
   locale: string;
@@ -3475,7 +3476,9 @@ export const api = {
           historyTurns: 10,
           knowledgeSnippets: 6,
           searchResults: 5,
+          policyChars: 4000,
           widgetColor: "",
+          policyPages: "returns delivery help terms privacy standards about",
         })
       : get("/v1/admin/support-bot/settings"),
 
@@ -3494,6 +3497,10 @@ export const api = {
     value: number,
   ): Promise<{ key: SupportBotTuningKey; value: number }> =>
     demoMode ? demo({ key, value }) : patch(`/v1/admin/support-bot/tuning/${key}`, { value }),
+
+  /** Space- or comma-separated slugs; the API normalises and returns them. */
+  setSupportBotPolicyPages: (policyPages: string): Promise<{ policyPages: string }> =>
+    demoMode ? demo({ policyPages }) : patch("/v1/admin/support-bot/policy-pages", { policyPages }),
 
   /** Blank clears the override and returns both widgets to the brand colour. */
   setSupportBotWidgetColor: (widgetColor: string): Promise<{ widgetColor: string }> =>

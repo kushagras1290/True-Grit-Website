@@ -539,6 +539,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Ibe SEO",
   "Homepage Settings": "Ntọala ibe",
   "Homepage settings unavailable": "Mwube ibe obibi adịghị",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Ole mkpụrụedemede ole nke ibe amụma bot n'ihu ụlọ ahịa nwere ike ịgụ tupu ọ zaa. Ogologo oge na-edobe nkọwa ndị ahịa jụrụ gbasara ya.",
   "How many entries from the list below are given to the assistant as reference.":
     "Ole ndenye sitere na listi dị n'okpuru ka enyere onye inyeaka dịka ntụaka.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -882,6 +884,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Aha ibe",
   "Page unavailable": "Ibe adịghị",
   Pages: "Ibe",
+  "Pages the storefront bot may quote": "Ibe nke bot n'ihu ụlọ ahịa nwere ike ịhota",
   Paid: "Akwụ ụgwọ",
   "Paid out": "Akwụgoro",
   "paid via": "akwụ ụgwọ site na",
@@ -917,6 +920,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Edebere",
   "Platform cut": "Igbutu ikpo okwu",
   "Platform earns": "Erite uru n'ọsọ",
+  "Policy page slugs": "Ibe iwu slugs",
+  "Policy text quoted per answer": "ederede amụma e hotara na azịza",
   "Polish (Polski)": "Polski (Polski)",
   "Portuguese (Português)": "Português (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -961,6 +966,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Ebipụtara ya ka",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "Ụdị ebipụtara maka ihe mmịfe ibe mbụ. Ndị ahịa na-ahụ anọ n'otu oge na desktọpụ, n'usoro a. Welite oke na njikwa saịtị.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Publigs. Bot ahụ na-agụ mkpụrụokwu ndị a ka ọ bụrụ okwu mgbe onye ahịa jụrụ gbasara amụma, yabụ azịza ya dabara n'ihe ị bipụtara n'ezie.",
   "Published products": "ngwaahịa ebipụtara",
   "Publishing…": "Na-ebipụta…",
   "Pull quote": "Wepụ okwu",
@@ -1056,6 +1063,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Nwagharia",
   "Return request not found": "Achọtaghị arịrịọ nloghachi",
   Returns: "Nlaghachi",
+  "returns delivery help terms privacy": "weghachite usoro enyemaka nnyefe nzuzo",
   Revenue: "Mbanye",
   "Revenue (paid)": "Enye ego (akwụ ụgwọ)",
   "Revenue by day": "Enye ego kwa ụbọchị",

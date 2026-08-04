@@ -578,6 +578,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Əsas səhifə SEO",
   "Homepage Settings": "Əsas səhifə Parametrləri",
   "Homepage settings unavailable": "Əsas səhifə parametrləri əlçatan deyil",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Cavab verməzdən əvvəl vitrin botu siyasət səhifəsinin neçə simvolunu oxuya bilər. Müştərinin soruşduğu daha çox təfərrüatı daha uzun müddət saxlayır.",
   "How many entries from the list below are given to the assistant as reference.":
     "Aşağıdakı siyahıdan neçə giriş köməkçiyə istinad olaraq verilir.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -954,6 +956,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": 'Paid id="t0012">',
   "Page unavailable": "Səhifə əlçatan deyil",
   Pages: "Səhifələr",
+  "Pages the storefront bot may quote":
+    "boşluqlar ayrı-ayrı səhifələrdir. Müştəri siyasət haqqında soruşduqda bot bu sözləri sözbəsöz oxuyur, ona görə də onun cavabları əslində dərc etdiyinizə uyğun gəlir.",
   "Paid out": "Ödənildi",
   "paid via": "vasitəsilə ödənildi",
   Paragraphs: "Paraqraflar",
@@ -989,6 +993,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: 'P004 id="t0005">Platforma kəsildi',
   "Platform cut": "Platformanın kəsilməsi",
   "Platform earns": "Platforma qazanır",
+  "Policy page slugs": "Siyasət səhifəsi slugs",
+  "Policy text quoted per answer": "Cavab üçün sitat gətirilən siyasət mətni",
   "Polish (Polski)": "Polşa (Polski)",
   "Portuguese (Português)": "Portuqal (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1034,6 +1040,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Əsas səhifə slayderi üçün nəşr olunan kateqoriyalar",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "kimi dərc edilib. Müştərilər iş masasında bu ardıcıllıqla dörd dəfə görürlər. Sayta Nəzarət limitini artırın.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Boşluqlarla ayrılmış dərc edilmiş səhifə şlakları. Müştəri siyasət haqqında soruşduqda bot bu sözləri sözbəsöz oxuyur, ona görə də onun cavabları əslində dərc etdiyinizə uyğun gəlir.",
   "Published products": "Yayımlanmış məhsullar",
   "Publishing…": "Nəşr edilir...",
   "Pull quote": "Sitat çıxarın",
@@ -1131,6 +1139,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Yenidən cəhd et",
   "Return request not found": "Geri qaytarma sorğusu tapılmadı",
   Returns: "Qaydalar",
+  "returns delivery help terms privacy": "çatdırılma yardım şərtlərinin məxfiliyini qaytarır",
   Revenue: "Gəlir",
   "Revenue (paid)": "Gəlir (ödənilmiş)",
   "Revenue by day": "Günə görə gəlir",

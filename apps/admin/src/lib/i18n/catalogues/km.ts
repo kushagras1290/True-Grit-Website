@@ -578,6 +578,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ទំព័រដើម SEO",
   "Homepage Settings": "ការកំណត់ទំព័រដើម",
   "Homepage settings unavailable": "ការកំណត់ទំព័រដើមមិនអាចប្រើបានទេ",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "ចំនួនតួអក្សរនៃទំព័រគោលការណ៍ដែល bot មុខហាងអាចអានមុនពេលឆ្លើយ។ រក្សាព័ត៌មានលម្អិតបន្ថែមទៀតដែលអតិថិជនបានសួរអំពី។",
   "How many entries from the list below are given to the assistant as reference.":
     "ចំនួនធាតុពីបញ្ជីខាងក្រោមត្រូវបានផ្តល់ទៅឱ្យជំនួយការជាឯកសារយោង។",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -949,6 +951,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "ចំណងជើងទំព័រ",
   "Page unavailable": "ទំព័រមិនអាចប្រើបាន",
   Pages: "ទំព័រ",
+  "Pages the storefront bot may quote": "ទំព័រដែល bot មុខហាងអាចដកស្រង់",
   Paid: "បានបង់ប្រាក់",
   "Paid out": "បានបង់ប្រាក់ចេញ",
   "paid via": "បានបង់ប្រាក់តាមរយៈ",
@@ -986,6 +989,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "បានដាក់",
   "Platform cut": "ការកាត់វេទិកា",
   "Platform earns": "វេទិការកប្រាក់ចំណូល",
+  "Policy page slugs": "ទំព័រគោលនយោបាយ",
+  "Policy text quoted per answer": "អត្ថបទគោលការណ៍ដែលបានដកស្រង់ក្នុងមួយចម្លើយ",
   "Polish (Polski)": "ប៉ូឡូញ (ប៉ូឡូញ)",
   "Portuguese (Português)": "ព័រទុយហ្គាល់ (ព័រទុយហ្គាល់)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1031,6 +1036,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "បានបោះផ្សាយជា",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "ប្រភេទដែលបានបោះពុម្ពផ្សាយសម្រាប់គ្រាប់រំកិលទំព័រដើម។ អតិថិជនឃើញបួនក្នុងពេលតែមួយនៅលើកុំព្យូទ័រក្នុងលំដាប់នេះ។ បង្កើនដែនកំណត់លើការគ្រប់គ្រងគេហទំព័រ។",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "ទំព័រដែលបានបោះពុម្ពផ្សាយដោយដកឃ្លា bot អានពាក្យទាំងនេះជាពាក្យនៅពេលអតិថិជនសួរអំពីគោលការណ៍ ដូច្នេះចម្លើយរបស់វាត្រូវគ្នានឹងអ្វីដែលអ្នកបានបោះពុម្ពពិតប្រាកដ។",
   "Published products": "ផលិតផលដែលបានបោះពុម្ពផ្សាយ",
   "Publishing…": "កំពុង​បោះផ្សាយ…",
   "Pull quote": "ទាញ​សម្រង់",
@@ -1128,6 +1135,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "ព្យាយាមម្តងទៀត",
   "Return request not found": "រកមិនឃើញសំណើត្រឡប់មកវិញ",
   Returns: "ការត្រឡប់មកវិញ",
+  "returns delivery help terms privacy": "ត្រឡប់លក្ខខណ្ឌជំនួយការចែកចាយ",
   Revenue: "ចំណូល",
   "Revenue (paid)": "ចំណូល (បង់)",
   "Revenue by day": "ចំណូល​តាម​ថ្ងៃ",

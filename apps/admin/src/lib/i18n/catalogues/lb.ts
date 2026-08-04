@@ -556,6 +556,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage sections by country": "Homepage Sektiounen no Land",
   "Homepage sections unavailable": "Homepage Sektiounen net verfügbar",
   "Homepage settings unavailable": "Homepage-Astellunge sinn net verfügbar",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Wéi vill Zeeche vun enger Politiksäit kann de Buttekfront-Bot liesen ier en äntwert. Méi laang hält méi Detailer iwwer e Client gefrot.",
   "How many entries from the list below are given to the assistant as reference.":
     "Wéi vill Entréen aus der Lëscht hei drënner ginn dem Assistent als Referenz ginn.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -916,6 +918,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Säittitel",
   "Page unavailable": "Säit net verfügbar",
   Pages: "Säiten",
+  "Pages the storefront bot may quote": "Säiten déi de Storefront Bot kann zitéieren",
   Paid: "Bezuelt",
   "Paid out": "Bezuelt",
   "paid via": "bezuelt iwwer",
@@ -953,6 +956,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Placéiert",
   "Platform cut": "Plattformschnëtt",
   "Platform earns": "Plattform verdéngt",
+  "Policy page slugs": "Politik Säit Slugs",
+  "Policy text quoted per answer": "Politiktext zitéiert pro Äntwert",
   "Polish (Polski)": "Polnesch (Polski)",
   "Portuguese (Português)": "Portugisesch (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -995,6 +1000,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Verëffentlecht als",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "publizéiert Kategorien fir den Haaptsäit Schieber. Clienten gesinn véier gläichzäiteg op Desktop, an dëser Reiefolleg. Erhéije d'Limite op Site Kontroll.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Published, separate pages. De Bot liest dës Wuert fir Wuert wann e Client iwwer d'Politik freet, sou datt seng Äntwerten entspriechen wat Dir tatsächlech publizéiert hutt.",
   "Published products": "Verëffentlecht Produkter",
   "Publishing…": "Verëffentlechung...",
   "Pull quote": "Zit Zitat zéien",
@@ -1094,6 +1101,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Widderhuelen",
   "Return request not found": "Retour Ufro net fonnt",
   Returns: "Retour",
+  "returns delivery help terms privacy": "retour Liwwerung Hëllef Bedéngungen Privatsphär",
   Revenue: "Recetten",
   "Revenue (paid)": "Recetten (bezuelt)",
   "Revenue by day": "Recetten no Dag",

@@ -573,6 +573,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO ya Ukurasa wa Kwanza",
   "Homepage Settings": "Mipangilio ya Ukurasa wa Mwanzo",
   "Homepage settings unavailable": "Mipangilio ya ukurasa wa nyumbani haipatikani",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Ni vibambo ngapi vya ukurasa wa sera kijibu cha duka kinaweza kusoma kabla ya kujibu. Huhifadhi zaidi maelezo ambayo mteja aliuliza kuhusu.",
   "How many entries from the list below are given to the assistant as reference.":
     "Ni maingizo mangapi kutoka kwenye orodha iliyo hapa chini yanapewa mratibu kama marejeleo.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -941,6 +943,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Kichwa cha ukurasa",
   "Page unavailable": "Ukurasa haupatikani",
   Pages: "Kurasa",
+  "Pages the storefront bot may quote": "Kurasa ambazo kijibu cha mbele ya duka kinaweza kunukuu",
   Paid: "Imelipiwa",
   "Paid out": "Imelipiwa",
   "paid via": "imelipiwa kupitia",
@@ -977,6 +980,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Imewekwa",
   "Platform cut": "Mkato wa jukwaa",
   "Platform earns": "Jukwaa linapata mapato",
+  "Policy page slugs": "Maandishi ya ukurasa wa sera",
+  "Policy text quoted per answer": "Maandishi ya sera yaliyonukuliwa kwa kila jibu",
   "Polish (Polski)": "Kipolishi (Polski)",
   "Portuguese (Português)": "Kireno (Kireno)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1022,6 +1027,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Imechapishwa kama",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "kategoria zilizochapishwa za kitelezi cha ukurasa wa nyumbani. Wateja wanaona nne kwa wakati kwenye eneo-kazi, kwa mpangilio huu. Ongeza kikomo cha Udhibiti wa Tovuti.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Ukurasa uliochapishwa na nafasi. Kijibu husoma neno kwa neno mteja anapouliza kuhusu sera, kwa hivyo majibu yake yanalingana na ulichochapisha.",
   "Published products": "Bidhaa zilizochapishwa",
   "Publishing…": "Inachapisha…",
   "Pull quote": "Vuta nukuu",
@@ -1122,6 +1129,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Jaribu Tena",
   "Return request not found": "Ombi la kurejesha halijapatikana",
   Returns: "Hurejesha",
+  "returns delivery help terms privacy": "hurejesha masharti ya usaidizi wa uwasilishaji faragha",
   Revenue: "Mapato",
   "Revenue (paid)": "Mapato (yaliyolipwa)",
   "Revenue by day": "Mapato kwa siku",

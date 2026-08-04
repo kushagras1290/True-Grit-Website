@@ -596,6 +596,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "முகப்புப்பக்கம் SEO",
   "Homepage Settings": "முகப்புப் பக்க அமைப்புகள்",
   "Homepage settings unavailable": "முகப்புப் பக்க அமைப்புகள் கிடைக்கவில்லை",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "பதிலளிப்பதற்கு முன் ஸ்டோர் ஃபிரண்ட் போட் ஒரு கொள்கைப் பக்கத்தின் எத்தனை எழுத்துக்களைப் படிக்கலாம். வாடிக்கையாளரால் கேட்கப்படும் கூடுதல் விவரங்களை நீண்ட நேரம் வைத்திருக்கும்.",
   "How many entries from the list below are given to the assistant as reference.":
     "கீழே உள்ள பட்டியலில் இருந்து எத்தனை உள்ளீடுகள் உதவியாளருக்குக் குறிப்புகளாக வழங்கப்படுகின்றன.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -982,6 +984,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "பக்க தலைப்பு",
   "Page unavailable": "பக்கம் கிடைக்கவில்லை",
   Pages: "பக்கங்கள்",
+  "Pages the storefront bot may quote": "ஸ்டோர்ஃப்ரன்ட் போட் மேற்கோள் காட்டக்கூடிய பக்கங்கள்",
   Paid: "பணம் செலுத்தப்பட்டது",
   "Paid out": "பணம் செலுத்தப்பட்டது",
   "paid via": "வழியாக செலுத்தப்பட்டது",
@@ -1021,6 +1024,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "வைக்கப்பட்டது",
   "Platform cut": "பிளாட்ஃபார்ம் கட்",
   "Platform earns": "பிளாட்ஃபார்ம் சம்பாதிக்கிறது",
+  "Policy page slugs": "கொள்கைப் பக்க ஸ்லக்குகள்",
+  "Policy text quoted per answer": "ஒரு பதிலுக்கு மேற்கோள் காட்டப்பட்ட கொள்கை உரை",
   "Polish (Polski)": "போலந்து (போல்ஸ்கி)",
   "Portuguese (Português)": "போர்த்துகீசியம் (போர்த்துகீசியம்)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1065,6 +1070,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "இவ்வாறு வெளியிடப்பட்டது",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "வெளியீடு இந்த வரிசையில் வாடிக்கையாளர்கள் டெஸ்க்டாப்பில் நான்கு முறை பார்க்கிறார்கள். தளக் கட்டுப்பாட்டின் வரம்பை உயர்த்தவும்.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "வெளியிடப்பட்ட பக்க ஸ்லக்குகள், இடைவெளிகளால் பிரிக்கப்பட்டது. ஒரு வாடிக்கையாளர் கொள்கையைப் பற்றி கேட்கும் போது, ​​பாட் இதை வார்த்தைக்கு வார்த்தை படிக்கிறது, எனவே அதன் பதில்கள் நீங்கள் உண்மையில் வெளியிட்டவற்றுடன் பொருந்துகின்றன.",
   "Published products": "வெளியிடப்பட்ட தயாரிப்புகள்",
   "Publishing…": "வெளியிடுகிறது...",
   "Pull quote": "மேற்கோளை இழுக்கவும்",
@@ -1167,6 +1174,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "மீண்டும் முயலவும்",
   "Return request not found": "திரும்பல் கோரிக்கை கிடைக்கவில்லை",
   Returns: "வருவாய்",
+  "returns delivery help terms privacy": "டெலிவரி உதவி விதிமுறைகளின் தனியுரிமையை வழங்குகிறது",
   Revenue: "வருவாய்",
   "Revenue (paid)": "வருவாய் (செலுத்தப்பட்டது)",
   "Revenue by day": "நாள் வருவாய்",

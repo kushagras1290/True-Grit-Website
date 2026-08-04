@@ -593,6 +593,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "მთავარი გვერდის SEO",
   "Homepage Settings": "მთავარი გვერდის პარამეტრები",
   "Homepage settings unavailable": "მთავარი გვერდის პარამეტრები მიუწვდომელია",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "პოლიტიკის გვერდის რამდენი სიმბოლო შეიძლება წაიკითხოს ვიტრინის ბოტმა პასუხის გაცემამდე. უფრო დიდხანს ინახავს უფრო მეტ დეტალს, რომლის შესახებაც მომხმარებელმა სთხოვა.",
   "How many entries from the list below are given to the assistant as reference.":
     "ქვემოთ ჩამოთვლილი სიიდან რამდენი ჩანაწერი მიეცემა ასისტენტს მითითების სახით.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -974,6 +976,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "გვერდის სათაური",
   "Page unavailable": "გვერდი მიუწვდომელია",
   Pages: "გვერდები",
+  "Pages the storefront bot may quote":
+    "გვერდები, რომლებიც მაღაზიის ვიტრინის ბოტმა შეიძლება ციტირებს",
   Paid: "გადახდილი",
   "Paid out": "გადახდილი",
   "paid via": "გადახდილი",
@@ -1012,6 +1016,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "მოთავსებულია",
   "Platform cut": "პლატფორმის მოჭრა",
   "Platform earns": "პლატფორმა გამოიმუშავებს",
+  "Policy page slugs": "პოლიტიკის გვერდის სლაგები",
+  "Policy text quoted per answer": "პოლიტიკის ტექსტი ციტირებულია თითო პასუხზე",
   "Polish (Polski)": "პოლონური (პოლსკი)",
   "Portuguese (Português)": "პორტუგალიური (პორტუგალიური)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1057,6 +1063,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "გამოქვეყნებულია როგორც",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "გამოქვეყნებული კატეგორიები საწყისი გვერდის სლაიდერისთვის. მომხმარებლები ხედავენ ოთხს დესკტოპზე, ამ თანმიმდევრობით. გაზარდეთ საიტის კონტროლის ლიმიტი.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "გამოქვეყნებული გვერდის შლაკები, გამოყოფილი ინტერვალით. ბოტი სიტყვა-სიტყვით კითხულობს ამ სიტყვებს, როდესაც კლიენტი ეკითხება პოლიტიკას, ამიტომ მისი პასუხები ემთხვევა იმას, რაც თქვენ რეალურად გამოაქვეყნეთ.",
   "Published products": "გამოქვეყნებული პროდუქტები",
   "Publishing…": "გამოქვეყნება...",
   "Pull quote": "გაყვანის ციტატა",
@@ -1158,6 +1166,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "ხელახლა სცადეთ",
   "Return request not found": "დაბრუნების მოთხოვნა ვერ მოიძებნა",
   Returns: 'id="t0005">შემოსავალი',
+  "returns delivery help terms privacy":
+    "დაბრუნების მიწოდების დახმარების პირობები კონფიდენციალურობა",
   Revenue: "შემოსავლები",
   "Revenue (paid)": "შემოსავლები (გადახდილი)",
   "Revenue by day": "შემოსავლები დღის განმავლობაში",

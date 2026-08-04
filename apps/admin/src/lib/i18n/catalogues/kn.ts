@@ -590,6 +590,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ಮುಖಪುಟ SEO",
   "Homepage Settings": "ಮುಖಪುಟ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
   "Homepage settings unavailable": "ಮುಖಪುಟ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "ಉತ್ತರಿಸುವ ಮೊದಲು ಅಂಗಡಿಯ ಮುಂಭಾಗದ ಬೋಟ್ ಎಷ್ಟು ಅಕ್ಷರಗಳನ್ನು ಪಾಲಿಸಿ ಪುಟವನ್ನು ಓದಬಹುದು. ಗ್ರಾಹಕರು ಕೇಳಿದ ಹೆಚ್ಚಿನ ವಿವರಗಳನ್ನು ಮುಂದೆ ಇಡುತ್ತದೆ.",
   "How many entries from the list below are given to the assistant as reference.":
     "ಕೆಳಗಿನ ಪಟ್ಟಿಯಿಂದ ಎಷ್ಟು ನಮೂದುಗಳು",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -974,6 +976,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "ಪುಟ ಶೀರ್ಷಿಕೆ",
   "Page unavailable": "ಪುಟ ಲಭ್ಯವಿಲ್ಲ",
   Pages: "ಪುಟಗಳು",
+  "Pages the storefront bot may quote": "ಅಂಗಡಿ ಮುಂಭಾಗದ ಬೋಟ್ ಉಲ್ಲೇಖಿಸಬಹುದಾದ ಪುಟಗಳು",
   Paid: "ಪಾವತಿಸಲಾಗಿದೆ",
   "Paid out": "ಪಾವತಿಸಲಾಗಿದೆ",
   "paid via": "ಮೂಲಕ ಪಾವತಿಸಲಾಗಿದೆ",
@@ -1011,6 +1014,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "ಇಡಲಾಗಿದೆ",
   "Platform cut": "ಪ್ಲಾಟ್‌ಫಾರ್ಮ್ ಕಟ್",
   "Platform earns": "ಪ್ಲಾಟ್‌ಫಾರ್ಮ್ ಗಳಿಸುತ್ತದೆ",
+  "Policy page slugs": "ನೀತಿ ಪುಟ ಸ್ಲಗ್‌ಗಳು",
+  "Policy text quoted per answer": "ಪ್ರತಿ ಉತ್ತರಕ್ಕೆ ನೀತಿ ಪಠ್ಯವನ್ನು ಉಲ್ಲೇಖಿಸಲಾಗಿದೆ",
   "Polish (Polski)": "ಪೋಲಿಷ್ (ಪೋಲ್ಸ್ಕಿ)",
   "Portuguese (Português)": "ಪೋರ್ಚುಗೀಸ್ (ಪೋರ್ಚುಗೀಸ್)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1055,6 +1060,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "ಪ್ರಕಟಿಸಲಾಗಿದೆ",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "ಪ್ರಕಟಿತ ವರ್ಗಗಳು. ಗ್ರಾಹಕರು ಡೆಸ್ಕ್‌ಟಾಪ್‌ನಲ್ಲಿ ಈ ಕ್ರಮದಲ್ಲಿ ನಾಲ್ಕು ಬಾರಿ ನೋಡುತ್ತಾರೆ. ಸೈಟ್ ನಿಯಂತ್ರಣದಲ್ಲಿ ಮಿತಿಯನ್ನು ಹೆಚ್ಚಿಸಿ.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "ಪ್ರಕಟಿಸಿದ ಪುಟ ಸ್ಲಗ್‌ಗಳು, ಸ್ಪೇಸ್‌ಗಳಿಂದ ಬೇರ್ಪಡಿಸಲಾಗಿದೆ. ಗ್ರಾಹಕರು ನೀತಿಯ ಕುರಿತು ಕೇಳಿದಾಗ ಬೋಟ್ ಪದದಿಂದ ಪದವನ್ನು ಓದುತ್ತದೆ, ಆದ್ದರಿಂದ ಅದರ ಉತ್ತರಗಳು ನೀವು ನಿಜವಾಗಿ ಪ್ರಕಟಿಸಿದ್ದಕ್ಕೆ ಹೊಂದಿಕೆಯಾಗುತ್ತವೆ.",
   "Published products": "ಪ್ರಕಟಿತ ಉತ್ಪನ್ನಗಳು",
   "Publishing…": "ಪ್ರಕಟಿಸಲಾಗುತ್ತಿದೆ...",
   "Pull quote": "ಉಲ್ಲೇಖವನ್ನು ಎಳೆಯಿರಿ",
@@ -1155,6 +1162,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "ಮರುಪ್ರಯತ್ನಿಸಿ",
   "Return request not found": "ರಿಟರ್ನ್ ವಿನಂತಿ ಕಂಡುಬಂದಿಲ್ಲ",
   Returns: "ರಿಟರ್ನ್ಸ್",
+  "returns delivery help terms privacy": "ವಿತರಣಾ ಸಹಾಯ ನಿಯಮಗಳನ್ನು ಗೌಪ್ಯತೆಯನ್ನು ಹಿಂದಿರುಗಿಸುತ್ತದೆ",
   Revenue: "ಆದಾಯ",
   "Revenue (paid)": "ಆದಾಯ (ಪಾವತಿಸಿದ)",
   "Revenue by day": "ದಿನವಾರು ಆದಾಯ",

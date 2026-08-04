@@ -597,6 +597,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ഹോംപേജ് SEO",
   "Homepage Settings": "ഹോംപേജ് ക്രമീകരണങ്ങൾ",
   "Homepage settings unavailable": "ഹോംപേജ് ക്രമീകരണങ്ങൾ ലഭ്യമല്ല",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "ഒരു പോളിസി പേജിൻ്റെ എത്ര പ്രതീകങ്ങൾ സ്റ്റോറിൻ്റെ മുൻഭാഗത്തെ ബോട്ട് ഉത്തരം നൽകുന്നതിന് മുമ്പ് വായിച്ചേക്കാം. ഒരു ഉപഭോക്താവ് ചോദിച്ച കൂടുതൽ വിശദാംശങ്ങൾ ദീർഘനേരം സൂക്ഷിക്കുന്നു.",
   "How many entries from the list below are given to the assistant as reference.":
     "ചുവടെയുള്ള ലിസ്റ്റിൽ നിന്ന് എത്ര എൻട്രികൾ അസിസ്റ്റൻ്റിന് റഫറൻസായി നൽകിയിട്ടുണ്ട്.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -982,6 +984,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "പേജ് ശീർഷകം",
   "Page unavailable": "പേജ് ലഭ്യമല്ല",
   Pages: "പേജുകൾ",
+  "Pages the storefront bot may quote":
+    "ഇടങ്ങളാൽ വേർതിരിച്ചിരിക്കുന്നു. ഒരു ഉപഭോക്താവ് നയത്തെക്കുറിച്ച് ചോദിക്കുമ്പോൾ ബോട്ട് ഓരോ വാക്കും വായിക്കുന്നു, അതിനാൽ അതിൻ്റെ ഉത്തരങ്ങൾ നിങ്ങൾ യഥാർത്ഥത്തിൽ പ്രസിദ്ധീകരിച്ചതുമായി പൊരുത്തപ്പെടുന്നു.",
   Paid: "പണമടച്ചു",
   "Paid out": "പണമടച്ചു",
   "paid via": "പണമടച്ചത്",
@@ -1021,6 +1025,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "സ്ഥാപിച്ചു",
   "Platform cut": "പ്ലാറ്റ്ഫോം കട്ട്",
   "Platform earns": "പ്ലാറ്റ്ഫോം സമ്പാദിക്കുന്നു",
+  "Policy page slugs": "നയ പേജ് സ്ലഗുകൾ",
+  "Policy text quoted per answer":
+    "നയ വാചകം, ഓരോ പേജിനും ഉദ്ധരിച്ചിട്ടുള്ള പോളിസി ടെക്‌സ്‌റ്റ്, tub><span 0 പേജ്",
   "Polish (Polski)": "പോളീഷ് (പോൾസ്കി)",
   "Portuguese (Português)": "പോർച്ചുഗീസ് (പോർച്ചുഗീസ്)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1066,6 +1073,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "ഹോംപേജ് സ്ലൈഡറിനായി പ്രസിദ്ധീകരിച്ച വിഭാഗങ്ങളായി",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "പ്രസിദ്ധീകരിച്ചു. ഈ ക്രമത്തിൽ ഉപഭോക്താക്കൾ ഡെസ്‌ക്‌ടോപ്പിൽ ഒരു സമയം നാലെണ്ണം കാണുന്നു. സൈറ്റ് നിയന്ത്രണത്തിൻ്റെ പരിധി ഉയർത്തുക.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "പ്രസിദ്ധീകരിച്ച പേജ് സ്ലഗുകൾ, സ്‌പെയ്‌സുകളാൽ വേർതിരിച്ചിരിക്കുന്നു. ഒരു ഉപഭോക്താവ് നയത്തെക്കുറിച്ച് ചോദിക്കുമ്പോൾ ബോട്ട് ഇത് ഓരോ വാക്കും വായിക്കുന്നു, അതിനാൽ അതിൻ്റെ ഉത്തരങ്ങൾ നിങ്ങൾ യഥാർത്ഥത്തിൽ പ്രസിദ്ധീകരിച്ചവയുമായി പൊരുത്തപ്പെടുന്നു.",
   "Published products": "പ്രസിദ്ധീകരിച്ച ഉൽപ്പന്നങ്ങൾ",
   "Publishing…": "പ്രസിദ്ധീകരിക്കുന്നു...",
   "Pull quote": "ഉദ്ധരണം വലിക്കുക",
@@ -1168,6 +1177,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "വീണ്ടും ശ്രമിക്കുക",
   "Return request not found": "റിട്ടേൺ അഭ്യർത്ഥന കണ്ടെത്തിയില്ല",
   Returns: "റിട്ടേണുകൾ",
+  "returns delivery help terms privacy": "ഡെലിവറി സഹായ നിബന്ധനകളുടെ സ്വകാര്യത നൽകുന്നു",
   Revenue: "വരുമാനം",
   "Revenue (paid)": "വരുമാനം (പണമടച്ചത്)",
   "Revenue by day": "ദിവസത്തെ വരുമാനം",

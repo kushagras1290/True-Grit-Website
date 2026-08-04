@@ -586,6 +586,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ਹੋਮਪੇਜ ਐਸਈਓ",
   "Homepage Settings": "ਹੋਮਪੇਜ ਸੈਟਿੰਗਾਂ",
   "Homepage settings unavailable": "ਹੋਮਪੇਜ ਸੈਟਿੰਗਜ਼ ਅਣਉਪਲਬਧ",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "ਜਵਾਬ ਦੇਣ ਤੋਂ ਪਹਿਲਾਂ ਸਟੋਰਫਰੰਟ ਬੋਟ ਨੀਤੀ ਪੰਨੇ ਦੇ ਕਿੰਨੇ ਅੱਖਰ ਪੜ੍ਹ ਸਕਦਾ ਹੈ। ਗਾਹਕ ਦੁਆਰਾ ਪੁੱਛੇ ਜਾਣ ਵਾਲੇ ਵੇਰਵਿਆਂ ਨੂੰ ਜ਼ਿਆਦਾ ਦੇਰ ਤੱਕ ਰੱਖਦਾ ਹੈ।",
   "How many entries from the list below are given to the assistant as reference.":
     "ਹੇਠਾਂ ਦਿੱਤੀ ਸੂਚੀ ਵਿੱਚੋਂ ਕਿੰਨੀਆਂ ਐਂਟਰੀਆਂ ਸਹਾਇਕ ਨੂੰ ਹਵਾਲੇ ਵਜੋਂ ਦਿੱਤੀਆਂ ਗਈਆਂ ਹਨ।",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -934,6 +936,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "ਪੰਨਾ ਸਿਰਲੇਖ",
   "Page unavailable": "ਪੰਨਾ ਅਣਉਪਲਬਧ",
   Pages: "ਪੰਨੇ",
+  "Pages the storefront bot may quote": "ਪੰਨੇ ਸਟੋਰਫਰੰਟ ਬੋਟ ਹਵਾਲਾ ਦੇ ਸਕਦਾ ਹੈ",
   Paid: "ਭੁਗਤਾਨ ਕੀਤਾ",
   "Paid out": "ਭੁਗਤਾਨ ਕੀਤਾ",
   "paid via": "ਦੁਆਰਾ ਭੁਗਤਾਨ ਕੀਤਾ",
@@ -971,6 +974,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "ਰੱਖਿਆ",
   "Platform cut": "ਪਲੇਟਫਾਰਮ ਕੱਟ",
   "Platform earns": "ਪਲੇਟਫਾਰਮ ਦੀ ਕਮਾਈ",
+  "Policy page slugs": "ਨੀਤੀ ਪੰਨਾ ਸਲੱਗਜ਼",
+  "Policy text quoted per answer": "ਪ੍ਰਤੀ ਜਵਾਬ ਦਾ ਹਵਾਲਾ ਦਿੱਤਾ ਗਿਆ ਨੀਤੀ ਟੈਕਸਟ",
   "Polish (Polski)": "ਪੋਲਿਸ਼ (ਪੋਲਸਕੀ)",
   "Portuguese (Português)": "ਪੁਰਤਗਾਲੀ (ਪੁਰਤਗਾਲੀ)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1016,6 +1021,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "ਇਸ ਵਜੋਂ ਪ੍ਰਕਾਸ਼ਿਤ",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "ਹੋਮਪੇਜ ਸਲਾਈਡਰ ਲਈ ਪ੍ਰਕਾਸ਼ਿਤ ਸ਼੍ਰੇਣੀਆਂ। ਗਾਹਕ ਇਸ ਕ੍ਰਮ ਵਿੱਚ, ਡੈਸਕਟੌਪ 'ਤੇ ਇੱਕ ਸਮੇਂ ਵਿੱਚ ਚਾਰ ਦੇਖਦੇ ਹਨ। ਸਾਈਟ ਕੰਟਰੋਲ 'ਤੇ ਸੀਮਾ ਵਧਾਓ।",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "ਪਬਲਿਸ਼ਡ ਪੇਜ ਸਲੱਗਸ, ਸਪੇਸ ਦੁਆਰਾ ਵੱਖ ਕੀਤੇ ਗਏ। ਜਦੋਂ ਕੋਈ ਗਾਹਕ ਨੀਤੀ ਬਾਰੇ ਪੁੱਛਦਾ ਹੈ ਤਾਂ ਬੋਟ ਇਹਨਾਂ ਸ਼ਬਦਾਂ ਨੂੰ ਪੜ੍ਹਦਾ ਹੈ, ਇਸਲਈ ਇਸਦੇ ਜਵਾਬ ਤੁਹਾਡੇ ਦੁਆਰਾ ਪ੍ਰਕਾਸ਼ਿਤ ਕੀਤੇ ਗਏ ਸ਼ਬਦਾਂ ਨਾਲ ਮੇਲ ਖਾਂਦੇ ਹਨ।",
   "Published products": "ਪ੍ਰਕਾਸ਼ਿਤ ਉਤਪਾਦ",
   "Publishing…": "ਪਬਲਿਸ਼ਿੰਗ…",
   "Pull quote": "ਪੁੱਲ ਕੋਟ",
@@ -1113,6 +1120,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Resume: "Revenues (ਭੁਗਤਾਨ)",
   Retry: "ਮੁੜ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
   "Return request not found": "ਵਾਪਸੀ ਦੀ ਬੇਨਤੀ ਨਹੀਂ ਮਿਲੀ",
+  "returns delivery help terms privacy": "ਡਿਲੀਵਰੀ ਮਦਦ ਸ਼ਰਤਾਂ ਪਰਦੇਦਾਰੀ ਵਾਪਸ ਕਰਦਾ ਹੈ",
   Revenue: "ਮਾਲੀਆ",
   "Revenue (paid)": "ਮਾਲੀਆ (ਭੁਗਤਾਨ)",
   "Revenue by day": "ਦਿਨ ਦੇ ਹਿਸਾਬ ਨਾਲ ਮਾਲੀਆ",

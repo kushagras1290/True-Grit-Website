@@ -584,6 +584,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Pagrindinio puslapio SEO",
   "Homepage Settings": "Pagrindinio puslapio nustatymai",
   "Homepage settings unavailable": "Pagrindinio puslapio nustatymai nepasiekiami",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Kiek politikos puslapio simbolių parduotuvės filialo robotas gali perskaityti prieš atsakydamas. Ilgiau saugoma daugiau informacijos, apie kurią klientas klausė.",
   "How many entries from the list below are given to the assistant as reference.":
     "Kiek įrašų iš toliau pateikto sąrašo pateikiama asistentui kaip nuoroda.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -958,6 +960,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Puslapio pavadinimas",
   "Page unavailable": "Puslapis nepasiekiamas",
   Pages: "Puslapiai",
+  "Pages the storefront bot may quote":
+    "Puslapiai, kuriuos gali cituoti parduotuvės filialo robotas",
   Paid: "Mokami",
   "Paid out": "Išmokėta",
   "paid via": "išmokėta per",
@@ -997,6 +1001,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Padėtas",
   "Platform cut": "Platforma iškirpta",
   "Platform earns": "Platforma uždirba",
+  "Policy page slugs": "Politikos puslapio šliužai",
+  "Policy text quoted per answer": "Atsakyme cituojamas politikos tekstas",
   "Polish (Polski)": "lenkų (lenkų)",
   "Portuguese (Português)": "portugalų (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1042,6 +1048,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Paskelbta kaip",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "Paskelbta pagrindinio puslapio slankiklio kategorijos. Klientai mato keturis vienu metu darbalaukyje tokia tvarka. Padidinkite svetainės valdymo apribojimą.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Paskelbti atskiri puslapiai tarpais. Robotas skaito šiuos žodžius, kai klientas klausia apie politiką, todėl jo atsakymai atitinka tai, ką iš tikrųjų paskelbėte.",
   "Published products": "Paskelbti produktai",
   "Publishing…": "Skelbiama...",
   "Pull quote": "Ištraukite citatą",
@@ -1142,6 +1150,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Bandyti dar kartą",
   "Return request not found": "Grąžinimo užklausa nerasta",
   Returns: "Grąžinimai",
+  "returns delivery help terms privacy": "pateikia pristatymo pagalbos sąlygų privatumą",
   Revenue: "Pajamos",
   "Revenue (paid)": "Pajamos (sumokėtos)",
   "Revenue by day": "Pajamos pagal dieną",

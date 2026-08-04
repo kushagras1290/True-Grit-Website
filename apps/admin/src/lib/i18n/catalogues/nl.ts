@@ -583,6 +583,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Startpagina-SEO",
   "Homepage Settings": "Startpagina-instellingen",
   "Homepage settings unavailable": "Startpagina-instellingen niet beschikbaar",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Hoeveel tekens van een beleidspagina de storefront-bot mag lezen voordat hij antwoordt. Longer bewaart meer details waar een klant naar heeft gevraagd.",
   "How many entries from the list below are given to the assistant as reference.":
     "Hoeveel vermeldingen uit de onderstaande lijst worden aan de assistent ter referentie gegeven.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -950,6 +952,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Paginatitel",
   "Page unavailable": "Pagina niet beschikbaar",
   Pages: "Pagina's",
+  "Pages the storefront bot may quote": "Pagina's die de storefront-bot kan citeren",
   Paid: "Betaald",
   "Paid out": "Uitbetaald",
   "paid via": "betaald via",
@@ -987,6 +990,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Geplaatst",
   "Platform cut": "Platform verwijderd",
   "Platform earns": "Platformopbrengsten",
+  "Policy page slugs": "Beleidspagina's",
+  "Policy text quoted per answer": "Beleidstekst geciteerd per antwoord",
   "Polish (Polski)": "Pools (Polski)",
   "Portuguese (Português)": "Portugees (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1031,6 +1036,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Gepubliceerd als",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "gepubliceerde categorieën voor de startpaginaschuifregelaar. Klanten zien er vier tegelijk op de desktop, in deze volgorde. Verhoog de limiet voor sitebeheer.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Gepubliceerde pagina's, gescheiden door spaties. De bot leest deze woord voor woord wanneer een klant naar het beleid vraagt, zodat de antwoorden overeenkomen met wat u daadwerkelijk heeft gepubliceerd.",
   "Published products": "Gepubliceerde producten",
   "Publishing…": "Publiceren…",
   "Pull quote": "Trek citaat",
@@ -1130,6 +1137,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Opnieuw proberen",
   "Return request not found": "Retourverzoek niet gevonden",
   Returns: "Retourzendingen",
+  "returns delivery help terms privacy": "retourzending hulp voorwaarden privacy",
   Revenue: "Opbrengst",
   "Revenue (paid)": "Inkomsten (betaald)",
   "Revenue by day": "Inkomsten per dag",

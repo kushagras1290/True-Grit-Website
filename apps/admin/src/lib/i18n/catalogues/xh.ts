@@ -524,6 +524,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO yephepha lasekhaya",
   "Homepage Settings": "Imimiselo yephepha lasekhaya",
   "Homepage settings unavailable": "Iisetingi zephepha lasekhaya azifumaneki",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Bangaphi abalinganiswa benkqubo yephepha enokuthi ifundwe ngasemva kwevenkile phambi kokuba uphendule. Ixesha elide ligcina iinkcukacha ezininzi umthengi abuzwe ngazo.",
   "How many entries from the list below are given to the assistant as reference.":
     "Mangaphi amangeno asuka kuluhlu olungezantsi anikwe umncedisi njengereferensi.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -867,6 +869,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Isihloko sephepha",
   "Page unavailable": "Iphepha alifumaneki",
   Pages: "Amaphepha",
+  "Pages the storefront bot may quote": "Amaphepha ibhoti engaphambili yevenkile inokucaphula",
   Paid: "Ahlawulwa",
   "Paid out": "Ihlawulwe",
   "paid via": "ihlawulwe nge",
@@ -902,6 +905,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Pick one from the list to start reading.": "Chonga ibe nye kuluhlu uqalise ukufunda.",
   Placed: "Ibekwe",
   "Platform earns": "Iingeniso zeqonga",
+  "Policy page slugs": "Iphepha lomgaqo-nkqubo i-slugs",
+  "Policy text quoted per answer": "Umgaqo-nkqubo ucatshulwe ngempendulo nganye",
   "Portuguese (Português)": "Português (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Positive iphakamisa ixabiso (uphawu, oluboniswa njengexabiso elitsha lodwa). I-Negative iyayithoba (isaphulelo, esiboniswe ngexabiso lokwenyani elibethiweyo). Phakathi −90% kunye 500%. Ukugcina umthetho kwithagethi efanayo kunye nomthamo endaweni yawo kunokongeza impinda.",
@@ -944,6 +949,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Ipapashiwe njenge",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "ipapashe iindidi zesilayidi sephepha lasekhaya. Abathengi babona ezine ngexesha kwi-desktop, ngolu hlobo. Nyusa umda kuLawulo lweSiza.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Ipapasho lamaphepha apapashiweyo ngesithuba. I-bot ifunda eli gama negama xa umthengi ebuza ngepolisi, ngoko ke iimpendulo zayo zihambelana noko ukupapashiweyo.",
   "Published products": "Imveliso ezipapashiweyo",
   "Publishing…": "Iyapapasha…",
   "Pull quote": "Tsala ikhowuti",
@@ -1039,6 +1046,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Phinda uzame",
   "Return request not found": "Isicelo sokubuyisela asifunyenwanga",
   Returns: "Imbuyekezo",
+  "returns delivery help terms privacy": "ibuyisela unikezelo loncedo imigaqo yabucala",
   Revenue: "Ingeniso",
   "Revenue (paid)": "Ingeniso (ihlawulwe)",
   "Revenue by day": "Ingeniso ngemini",

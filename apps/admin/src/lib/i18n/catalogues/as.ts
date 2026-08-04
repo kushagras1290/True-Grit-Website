@@ -597,6 +597,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "হোমপেজ SEO",
   "Homepage Settings": "হোমপেজ ছেটিংছ",
   "Homepage settings unavailable": "হোমপেজ ছেটিংছ উপলব্ধ",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "ষ্ট'ৰফ্ৰন্ট বটে উত্তৰ দিয়াৰ আগতে এটা নীতি পৃষ্ঠাৰ কিমান আখৰ পঢ়িব পাৰে। দীঘলীয়াই এজন গ্ৰাহকে সোধা বিৱৰণৰ অধিক ৰাখে।",
   "How many entries from the list below are given to the assistant as reference.":
     "তলৰ তালিকাৰ পৰা কিমানটা প্ৰৱেশ ৰেফাৰেন্স হিচাপে সহায়কক দিয়া হৈছে।",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -978,6 +980,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "পৃষ্ঠাৰ শিৰোনাম",
   "Page unavailable": "পৃষ্ঠা উপলব্ধ",
   Pages: "পৃষ্ঠাসমূহ",
+  "Pages the storefront bot may quote": "ষ্ট'ৰফ্ৰন্ট বটে উদ্ধৃতি দিব পৰা পৃষ্ঠাসমূহ",
   Paid: "পেইড",
   "Paid out": "পেইড আউট",
   "paid via": "পেইড via",
@@ -1016,6 +1019,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "প্লেচ কৰা",
   "Platform cut": "প্লেটফৰ্ম কাটি",
   "Platform earns": "প্লেটফৰ্মে উপাৰ্জন কৰে",
+  "Policy page slugs": "নীতি পৃষ্ঠা স্লাগসমূহ",
+  "Policy text quoted per answer": "প্ৰতি উত্তৰত উদ্ধৃত নীতি লিখনী",
   "Polish (Polski)": "পোলিছ (পলস্কি)",
   "Portuguese (Português)": "পৰ্তুগীজ (পৰ্তুগুৱেছ)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1061,6 +1066,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "প্ৰকাশ কৰা হৈছে",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "হোমপেজ স্লাইডাৰৰ বাবে প্ৰকাশ কৰা শ্ৰেণীসমূহ। গ্ৰাহকে ডেস্কটপত এটা সময়ত চাৰিটা দেখে, এই ক্ৰমত। চাইট নিয়ন্ত্ৰণৰ সীমা বৃদ্ধি কৰক।",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "প্ৰকাশিত পৃষ্ঠা স্লাগসমূহ, স্থানৰ দ্বাৰা পৃথক কৰা। বটে এইবোৰ শব্দৰ পিছত শব্দ পঢ়ে যেতিয়া কোনো গ্ৰাহকে নীতিৰ বিষয়ে সুধিব, গতিকে ইয়াৰ উত্তৰসমূহ আপুনি প্ৰকৃততে প্ৰকাশ কৰা সৈতে মিলে।",
   "Published products": "প্ৰকাশিত সামগ্ৰী",
   "Publishing…": "প্ৰকাশন...",
   "Pull quote": "উদ্ধৃতি টানিব",
@@ -1162,6 +1169,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "পুনৰ চেষ্টা কৰক",
   "Return request not found": "উভতাই অনাৰ অনুৰোধ পোৱা নগ’ল",
   Returns: "ৰিটাৰ্ণ",
+  "returns delivery help terms privacy": "ডেলিভাৰী সহায়ৰ চৰ্তসমূহৰ গোপনীয়তা ঘূৰাই দিয়ে",
   Revenue: "ৰাজহ",
   "Revenue (paid)": "ৰাজহ (পেইড)",
   "Revenue by day": "দিন অনুসৰি ৰাজহ",

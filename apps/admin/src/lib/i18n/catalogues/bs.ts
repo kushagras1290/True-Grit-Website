@@ -582,6 +582,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO početne stranice",
   "Homepage Settings": "Postavke početne stranice",
   "Homepage settings unavailable": "Postavke početne stranice nedostupne",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Koliko znakova stranice s pravilima bot izloga može pročitati prije nego što odgovori. Dulje zadržava više detalja o kojima je kupac pitao.",
   "How many entries from the list below are given to the assistant as reference.":
     "Koliko unosa sa donje liste se daje pomoćniku kao referenca.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -951,6 +953,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Naslov stranice",
   "Page unavailable": "Stranica nedostupna",
   Pages: "Stranice",
+  "Pages the storefront bot may quote": "Stranice koje bot izloga može citirati",
   Paid: "Paid 1",
   "Paid out": "preko",
   "paid via": "plaćeno putem",
@@ -987,6 +990,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Pick one from the list to start reading.": "Odaberite jednu sa liste da počnete čitati.",
   "PIN code": "PIN kod",
   "Platform earns": "Platforma zarađuje",
+  "Policy page slugs": "Slogs stranice s pravilima",
+  "Policy text quoted per answer": "Tekst politike citiran prema odgovoru",
   "Polish (Polski)": "poljski (Polski)",
   "Portuguese (Português)": "portugalski (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1032,6 +1037,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Objavljeno kao",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "objavljene kategorije za klizač početne stranice. Korisnici vide četiri po četiri na desktopu, ovim redoslijedom. Povećajte ograničenje za kontrolu lokacije.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Published pages slugs. Bot čita ove riječi od riječi do riječi kada kupac pita o politici, tako da se njegovi odgovori podudaraju sa onim što ste zapravo objavili.",
   "Published products": "Objavljeni proizvodi",
   "Publishing…": "Objavljivanje…",
   "Pull quote": "Izvlačenje citata",
@@ -1133,6 +1140,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Pokušaj ponovo",
   "Return request not found": "Zahtjev za povrat nije pronađen",
   Returns: "Povrati",
+  "returns delivery help terms privacy": "vraćanje pomoći za isporuku uvjeti privatnosti",
   Revenue: "Prihodi",
   "Revenue (paid)": "Prihod (plaćen)",
   "Revenue by day": "Prihod po danu",

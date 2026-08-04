@@ -568,6 +568,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Startside-SEO",
   "Homepage Settings": "Startsideindstillinger",
   "Homepage settings unavailable": "Hjemmesideindstillinger er ikke tilgængelige",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Hvor mange tegn af en politikside, butiksfront-botten kan læse, før den svarer. Længere bevarer flere af de detaljer, som en kunde spurgte om.",
   "How many entries from the list below are given to the assistant as reference.":
     "Hvor mange poster fra listen nedenfor gives til assistenten som reference.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -932,6 +934,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Sidetitel",
   "Page unavailable": "Siden er ikke tilgængelig",
   Pages: "Sider",
+  "Pages the storefront bot may quote": "Sider, som butiksfacade-bot kan citere",
   Paid: "Betalt",
   "Paid out": "Udbetalt",
   "paid via": "betalt via",
@@ -965,6 +968,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "PIN code": "PIN-kode",
   Placed: "Placeret",
   "Platform earns": "Platform tjener",
+  "Policy page slugs": "Politikside-slugs",
+  "Policy text quoted per answer": "Politiktekst citeret pr. svar",
   "Polish (Polski)": "Polsk (Polski)",
   "Portuguese (Português)": "Portugisisk (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -998,6 +1003,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Products: "Produkter",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "published categories for the homepage slider. Kunder ser fire ad gangen på skrivebordet i denne rækkefølge. Hæv grænsen for webstedskontrol.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Udgivne sideslugs, adskilt af mellemrum. Bot'en ​​læser disse ord for ord, når en kunde spørger om politik, så dens svar stemmer overens med det, du faktisk har offentliggjort.",
   "Published products": "Udgivne produkter",
   "Publishing…": "Udgivelse...",
   "Pull quote": "Træk citat",
@@ -1094,6 +1101,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Prøv igen",
   "Return request not found": "Returneringsanmodning blev ikke fundet",
   Returns: "Returnering",
+  "returns delivery help terms privacy": "returnerer leveringshjælpevilkår privatliv",
   Revenue: "Omsætning",
   "Revenue (paid)": "Omsætning (betalt)",
   "Revenue by day": "Omsætning pr. dag",

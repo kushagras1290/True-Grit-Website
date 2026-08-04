@@ -595,6 +595,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "హోమ్‌పేజీ SEO",
   "Homepage Settings": "హోమ్‌పేజీ సెట్టింగ్‌లు",
   "Homepage settings unavailable": "హోమ్‌పేజీ సెట్టింగ్‌లు అందుబాటులో లేవు",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "సమాధానం చెప్పే ముందు స్టోర్ ముందరి బాట్ విధాన పేజీలోని ఎన్ని అక్షరాలను చదవవచ్చు. కస్టమర్ అడిగే మరిన్ని వివరాలను ఎక్కువసేపు ఉంచుతుంది.",
   "How many entries from the list below are given to the assistant as reference.":
     "దిగువ జాబితా నుండి ఎన్ని ఎంట్రీలు రిఫరెన్స్‌గా అసిస్టెంట్‌కి ఇవ్వబడ్డాయి.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -979,6 +981,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "పేజీ శీర్షిక",
   "Page unavailable": "పేజీ అందుబాటులో లేదు",
   Pages: "పేజీలు",
+  "Pages the storefront bot may quote": "span><span 0 సమాధానానికి",
   Paid: "చెల్లించబడింది",
   "Paid out": "చెల్లించబడింది",
   "paid via": "ద్వారా చెల్లించబడింది",
@@ -1018,6 +1021,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "ఉంచబడింది",
   "Platform cut": "ప్లాట్‌ఫారమ్ కట్",
   "Platform earns": "ప్లాట్‌ఫారమ్ సంపాదిస్తుంది",
+  "Policy page slugs": "పాలసీ పేజీ స్లగ్‌లు",
+  "Policy text quoted per answer": "విధాన వచనం, ప్రతి పేజీకి కోట్ చేయబడినవి",
   "Polish (Polski)": "పోలిష్ (పోల్స్కి)",
   "Portuguese (Português)": "పోర్చుగీస్ (పోర్చుగీస్)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1062,6 +1067,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "హోమ్‌పేజీ స్లయిడర్ కోసం ప్రచురించబడిన వర్గాలు",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "గా ప్రచురించబడింది. ఈ క్రమంలో డెస్క్‌టాప్‌లో కస్టమర్‌లు ఒకేసారి నలుగురిని చూస్తారు. సైట్ నియంత్రణపై పరిమితిని పెంచండి.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "ప్రచురించబడిన పేజీ స్లగ్‌లు, ఖాళీలతో వేరు చేయబడ్డాయి. కస్టమర్ పాలసీ గురించి అడిగినప్పుడు బోట్ ఈ పదాన్ని పదం పదం చదువుతుంది, కాబట్టి దాని సమాధానాలు మీరు ప్రచురించిన దానికి సరిపోతాయి.",
   "Published products": "ప్రచురితమైన ఉత్పత్తులు",
   "Publishing…": "ప్రచురిస్తోంది...",
   "Pull quote": "కోట్‌ని లాగండి",
@@ -1161,6 +1168,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "మళ్లీ ప్రయత్నించండి",
   "Return request not found": "తిరిగి వెళ్లండి అభ్యర్థన కనుగొనబడలేదు",
   Returns: 'తిరిగి పంపండి id="t0005">ఆదాయం',
+  "returns delivery help terms privacy": "బట్వాడా సహాయ నిబంధనల గోప్యతను తిరిగి ఇస్తుంది",
   Revenue: "రాబడి",
   "Revenue (paid)": "రాబడి (చెల్లింపు)",
   "Revenue by day": "రోజువారీ ఆదాయం",

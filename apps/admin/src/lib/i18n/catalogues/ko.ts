@@ -583,6 +583,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "홈페이지 SEO",
   "Homepage Settings": "홈페이지 설정",
   "Homepage settings unavailable": "홈페이지 설정을 사용할 수 없음",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "스토어프론트 로봇이 응답하기 전에 읽을 수 있는 정책 페이지의 문자 수입니다. Longer는 고객이 문의한 세부정보를 더 많이 유지합니다.",
   "How many entries from the list below are given to the assistant as reference.":
     "아래 목록에서 참조용으로 어시스턴트에 제공되는 항목 수.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -958,6 +960,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "페이지 제목",
   "Page unavailable": "페이지를 사용할 수 없음",
   Pages: "페이지",
+  "Pages the storefront bot may quote": "스토어프론트 봇이 인용할 수 있는 페이지",
   Paid: "유료",
   "Paid out": "유료",
   "paid via": "유료",
@@ -996,6 +999,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "배치",
   "Platform cut": "플랫폼 잘라내기",
   "Platform earns": "플랫폼 수입",
+  "Policy page slugs": "정책 페이지 슬러그",
+  "Policy text quoted per answer": "답변별로 인용된 정책 텍스트",
   "Polish (Polski)": "폴란드어(Polski)",
   "Portuguese (Português)": "포르투갈어(Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1041,6 +1046,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "게시",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "홈페이지 슬라이더의 게시 카테고리입니다. 고객은 데스크톱에서 한 번에 4개를 이 순서대로 봅니다. 사이트 제어에 대한 제한을 높입니다.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "게시된 페이지 슬러그는 공백으로 구분됩니다. 고객이 정책에 대해 문의하면 봇이 이러한 단어를 한 단어씩 읽으므로 답변이 실제로 게시된 내용과 일치합니다.",
   "Published products": "게시된 제품",
   "Publishing…": "게시 중…",
   "Pull quote": "인용문 가져오기",
@@ -1141,6 +1148,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "재시도",
   "Return request not found": "반품 요청을 찾을 수 없음",
   Returns: "반품",
+  "returns delivery help terms privacy": "반품 배송 도움말 약관 개인정보 보호",
   Revenue: "수익",
   "Revenue (paid)": "수익(유료)",
   "Revenue by day": "일별 수익",

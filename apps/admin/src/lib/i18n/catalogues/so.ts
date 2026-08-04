@@ -558,6 +558,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Homebog SEO",
   "Homepage Settings": "Dejinta boggaga",
   "Homepage settings unavailable": "Dejinta boggaga lama heli karo",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Immisa xaraf oo ka mid ah bogga siyaasadda ee dukaanka bot ayaa laga yaabaa inuu akhriyo ka hor inta uusan jawaabin. Waxay sii dheeraysaa faahfaahin dheeraad ah oo macmiilku wax ka waydiiyo.",
   "How many entries from the list below are given to the assistant as reference.":
     "Immisa ka mid ah liiska hoose ayaa la siiyay kaaliyaha tixraac ahaan.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -914,6 +916,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "ciwaanka bogga",
   "Page unavailable": "bog lama heli karo",
   Pages: "bogag",
+  "Pages the storefront bot may quote": "bogagga dukaanka hortiisa bot laga yaabo inuu soo xigtay",
   Paid: "Lagu bixiyay",
   "Paid out": "La bixiyay",
   "paid via": "lagu bixiyay",
@@ -947,6 +950,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "lagu dhejiyay",
   "Platform cut": "madal gooyn",
   "Platform earns": "Madal waxa kasbada",
+  "Policy page slugs": "bogga siyaasadda ee slugs",
+  "Policy text quoted per answer": "Qoraalka siyaasadda ee laga soo xigtay jawaabtiiba",
   "Polish (Polski)": "Polski (Polski)",
   "Portuguese (Português)": "Bortigu (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -991,6 +996,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Waxaa loo daabacay sida",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "Qaybaha la daabacay ee slider-page-ka. Macaamiisha waxay arkaan afar mar miiska miiska, siday u kala horreeyaan. Kor u qaad xadka Kontoroolka Goobta.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "slugs bogga la daabacay, oo ay u kala qaybsan yihiin meelo bannaan. Botku waxa uu u akhriyaa kelmadan kelmad marka macmiilku ku weydiiyo siyaasadda, markaa jawaabaheedu waxa ay la mid yihiin waxa aad dhab ahaantii daabacday.",
   "Published products": "Alaabada la daabacay",
   "Publishing…": "Daabacaada…",
   "Pull quote": "Jiid xigasho",
@@ -1090,6 +1097,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Dib u tijaabi",
   "Return request not found": "Codsiga soo celinta lama helin",
   Returns: "Soo celinta",
+  "returns delivery help terms privacy": "soo celisa shuruudaha caawinta gaarsiinta sirta",
   Revenue: "dakhliga",
   "Revenue (paid)": "Dakhliga (la bixiyo)",
   "Revenue by day": "Dakhliga maalintii",

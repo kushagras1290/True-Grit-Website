@@ -27,7 +27,7 @@ from truegrit_api.services.audit import audit_statement
 from truegrit_api.util.timeutil import utc_now_iso
 
 BotScope = Literal["admin", "storefront"]
-TuningKey = Literal["historyTurns", "knowledgeSnippets", "searchResults"]
+TuningKey = Literal["historyTurns", "knowledgeSnippets", "searchResults", "policyChars"]
 
 _SETTING_KEYS: dict[BotScope, str] = {
     "admin": "support_bot.admin_enabled",
@@ -46,7 +46,68 @@ _TUNING: dict[TuningKey, tuple[str, int, int, int]] = {
     # per call. More gives the model more to ground an answer in; too many and
     # the results crowd out the rest of the prompt.
     "searchResults": ("support_bot.search_results", 5, 1, 20),
+    # How much of a policy page's text `read_policy` hands to the model. Long
+    # enough to carry the specifics a customer asked about, short enough that
+    # one page cannot swallow the whole prompt.
+    "policyChars": ("support_bot.policy_chars", 4000, 500, 12000),
 }
+
+_POLICY_PAGES_KEY = "support_bot.policy_pages"
+_DEFAULT_POLICY_PAGES = ("returns", "delivery", "help", "terms", "privacy", "standards", "about")
+_MAX_POLICY_PAGES = 20
+# Slugs only. These are looked up as published CMS pages and offered to the
+# model as an enum, so anything that is not slug-shaped is dropped rather than
+# trusted.
+_SLUG_PATTERN = re.compile(r"^[a-z0-9-]{1,80}$")
+
+
+async def get_policy_pages(db: Database) -> tuple[str, ...]:
+    """Which published pages `read_policy` may quote, in operator-chosen order."""
+    row = await db.fetch_one("SELECT value FROM app_settings WHERE key = ?", (_POLICY_PAGES_KEY,))
+    if row is None:
+        return _DEFAULT_POLICY_PAGES
+    slugs = _clean_policy_pages(str(row["value"] or ""))
+    return slugs or _DEFAULT_POLICY_PAGES
+
+
+def _clean_policy_pages(raw: str) -> tuple[str, ...]:
+    candidates = [part.strip().lower() for part in raw.replace(",", " ").split()]
+    kept = [slug for slug in dict.fromkeys(candidates) if _SLUG_PATTERN.match(slug)]
+    return tuple(kept[:_MAX_POLICY_PAGES])
+
+
+async def set_policy_pages(
+    db: Database, actor: Principal, request_id: str, raw: str
+) -> dict[str, Any]:
+    slugs = _clean_policy_pages(raw)
+    if not slugs:
+        raise ValidationAppError(
+            "List at least one page slug, e.g. 'returns delivery help'. Slugs use lowercase"
+            " letters, numbers and hyphens."
+        )
+    now = utc_now_iso()
+    value = " ".join(slugs)
+    await db.batch(
+        [
+            (
+                "INSERT INTO app_settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, ?)"
+                " ON CONFLICT(key) DO UPDATE SET"
+                "  value = excluded.value, updated_at = excluded.updated_at,"
+                " updated_by = excluded.updated_by",
+                (_POLICY_PAGES_KEY, value, now, actor.user_id),
+            ),
+            audit_statement(
+                action="support_bot.policy_pages_changed",
+                entity_type="app_setting",
+                entity_id=_POLICY_PAGES_KEY,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"pages": value},
+            ),
+        ]
+    )
+    return {"policyPages": value}
 
 
 async def get_tuning(db: Database, key: TuningKey) -> int:
@@ -182,4 +243,5 @@ async def get_all(db: Database) -> dict[str, Any]:
     for key in _TUNING:
         settings[key] = await get_tuning(db, key)
     settings["widgetColor"] = await get_widget_color(db)
+    settings["policyPages"] = " ".join(await get_policy_pages(db))
     return settings

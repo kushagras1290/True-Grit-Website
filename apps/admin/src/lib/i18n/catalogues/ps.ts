@@ -564,6 +564,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "د کور پاڼې SEO",
   "Homepage Settings": "د کور پاڼې ترتیبات",
   "Homepage settings unavailable": "د کور پاڼې ترتیبات شتون نلري",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "د سټور فرنټ بوټ ممکن د ځواب ورکولو دمخه د پالیسۍ پاڼې څومره حروف لوستل شي. د ډیر وخت لپاره د پیرودونکي ډیر توضیحات ساتي.",
   "How many entries from the list below are given to the assistant as reference.":
     "له لاندې لیست څخه څو ننوتل د حوالې په توګه معاون ته ورکړل شوي.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -937,6 +939,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "د پاڼې سرلیک",
   "Page unavailable": "پاڼه شتون نلري",
   Pages: "پاڼې",
+  "Pages the storefront bot may quote": "پاڼې چې د سټورفرنټ بوټ ممکن حواله کړي",
   Paid: "تادیه شوي",
   "Paid out": "تادیه شوي",
   "paid via": "تادیه شوي",
@@ -972,6 +975,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "کیښودل شو",
   "Platform cut": "د پلیټ فارم کټ",
   "Platform earns": "پلیټ فارم عایدات",
+  "Policy page slugs": "د پالیسي پاڼې سلګونه",
+  "Policy text quoted per answer": "د پالیسي متن په هر ځواب کې حواله شوی",
   "Polish (Polski)": "پولنډي (پولسکي)",
   "Portuguese (Português)": "پرتګالي (پرتګالي)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1014,6 +1019,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "په توګه خپور شوی",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "د کورپاڼې سلائیڈر لپاره د کټګورۍ خپرول. پیرودونکي په دې ترتیب کې په ډیسټاپ کې په یو وخت کې څلور ګوري. د سایټ کنټرول محدودیت لوړ کړئ.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "د پاڼې سلیګونه خپاره شوي، د ځایونو په واسطه جلا شوي. بوټ دا کلمې د کلمې لپاره لوستل کوي کله چې یو پیرودونکی د پالیسۍ په اړه پوښتنه کوي، نو د هغې ځوابونه د هغه څه سره سمون لري چې تاسو واقعیا خپاره کړي.",
   "Published products": "خپاره شوي محصولات",
   "Publishing…": "خپرول…",
   "Punjabi (ਪੰਜਾਬੀ)": "Punjabi (Punjabi)",
@@ -1111,6 +1118,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "بیا هڅه کول",
   "Return request not found": "د بیرته ستنیدو غوښتنه ونه موندل شوه",
   Returns: "راګرځیدل",
+  "returns delivery help terms privacy": "د تحویلي مرستې شرایط د محرمیت بیرته راګرځي",
   Revenue: "عايد",
   "Revenue (paid)": "عايد (تادي شوي)",
   "Revenue by day": "د ورځې په اساس عايد",

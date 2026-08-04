@@ -581,6 +581,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO e faqes kryesore",
   "Homepage Settings": "Cilësimet e faqes kryesore",
   "Homepage settings unavailable": "Cilësimet e faqes kryesore të padisponueshme",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Sa karaktere të një faqe politikash mund të lexojë roboti i vitrinës përpara se të përgjigjet. Më gjatë ruan më shumë nga detajet për të cilat ka pyetur klienti.",
   "How many entries from the list below are given to the assistant as reference.":
     "Sa hyrje nga lista më poshtë i jepen asistentit",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -957,6 +959,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Titulli i faqes",
   "Page unavailable": "Faqja nuk disponohet",
   Pages: "Faqet",
+  "Pages the storefront bot may quote": "Faqet që mund të citojë roboti i dyqaneve",
   Paid: "Paguar",
   "Paid out": "Paguar",
   "paid via": "paguar nëpërmjet",
@@ -993,6 +996,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Vendosur",
   "Platform cut": "Pritja e platformës",
   "Platform earns": "Platforma fiton",
+  "Policy page slugs": "Politikat e faqeve",
+  "Policy text quoted per answer": "Teksti i politikës i cituar për përgjigje",
   "Polish (Polski)": "Polonisht (polski)",
   "Portuguese (Português)": "portugeze (portugeze)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1037,6 +1042,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Publikuar si",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "kategoritë e publikuara për rrëshqitësin e faqes kryesore. Klientët shohin katër në një kohë në desktop, në këtë renditje. Ngritni kufirin në Kontrollin e Sitit.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Publikime të faqeve të publikuara, të ndara me hapësira. Roboti i lexon këto fjalë për fjalë kur një klient pyet për politikën, kështu që përgjigjet e tij përputhen me atë që keni publikuar në të vërtetë.",
   "Published products": "Produktet e publikuara",
   "Publishing…": "Po publikon…",
   "Pull quote": "Thotë të tërhequr",
@@ -1137,6 +1144,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Riprovo",
   "Return request not found": "Kërkesa për kthim nuk u gjet",
   Returns: "Kthimet",
+  "returns delivery help terms privacy": "kushtet e ndihmës për dërgimin e kthimit, privatësia",
   Revenue: "Të ardhurat",
   "Revenue (paid)": "Të ardhurat (të paguara)",
   "Revenue by day": "Të ardhurat në ditë",

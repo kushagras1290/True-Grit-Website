@@ -584,6 +584,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "تحسين محركات البحث للصفحة الرئيسية",
   "Homepage Settings": "إعدادات الصفحة الرئيسية",
   "Homepage settings unavailable": "إعدادات الصفحة الرئيسية غير متاحة",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "كم عدد أحرف صفحة السياسة التي قد يقرأها روبوت واجهة المتجر قبل الرد. يحتفظ لفترة أطول بمزيد من التفاصيل التي يسأل عنها العميل.",
   "How many entries from the list below are given to the assistant as reference.":
     "عدد الإدخالات من القائمة أدناه التي يتم تقديمها إلى المساعد كمرجع.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -965,6 +967,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "عنوان الصفحة",
   "Page unavailable": "الصفحة غير متاحة",
   Pages: "الصفحات",
+  "Pages the storefront bot may quote": "الصفحات التي قد يقتبسها روبوت واجهة المتجر",
   Paid: "مدفوعة",
   "Paid out": "مدفوعة",
   "paid via": "مدفوعة عبر",
@@ -1002,6 +1005,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "تم وضعه",
   "Platform cut": "مقطع للنظام الأساسي",
   "Platform earns": "أرباح المنصة",
+  "Policy page slugs": "الارتباطات الثابتة لصفحة السياسة",
+  "Policy text quoted per answer": "نص السياسة المقتبس لكل إجابة",
   "Polish (Polski)": "البولندية (Polski)",
   "Portuguese (Português)": "البرتغالية (البرتغالية)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1046,6 +1051,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "تم النشر كـ",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "الفئات المنشورة لشريط تمرير الصفحة الرئيسية. يرى العملاء أربعة في المرة الواحدة على سطح المكتب، بهذا الترتيب. رفع الحد الأقصى للتحكم في الموقع.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "الارتباطات الثابتة للصفحة المنشورة، مفصولة بمسافات. يقرأ الروبوت هذه الكلمات كلمة بكلمة عندما يسأل العميل عن السياسة، وبالتالي تتطابق إجاباته مع ما نشرته بالفعل.",
   "Published products": "المنتجات المنشورة",
   "Publishing…": "النشر…",
   "Pull quote": "سحب الاقتباس",
@@ -1146,6 +1153,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "إعادة المحاولة",
   "Return request not found": "لم يتم العثور على طلب الإرجاع",
   Returns: "المرتجعات",
+  "returns delivery help terms privacy": "يعرض خصوصية شروط المساعدة في تسليم المرتجعات",
   Revenue: "الإيرادات",
   "Revenue (paid)": "الإيرادات (المدفوعة)",
   "Revenue by day": "الإيرادات حسب اليوم",

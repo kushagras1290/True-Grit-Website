@@ -588,6 +588,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Саҳифаи SEO-и асосӣ",
   "Homepage Settings": "Танзимоти саҳифаи асосӣ",
   "Homepage settings unavailable": "Танзимоти саҳифаи асосӣ дастрас нест",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Чанд аломати саҳифаи сиёсатро бот пеш аз посух додан метавонад хонад. Тафсилоти бештареро, ки муштарӣ дар бораи он пурсидааст, дарозтар нигоҳ медорад.",
   "How many entries from the list below are given to the assistant as reference.":
     "Чанд адад аз рӯйхати дар поён овардашуда ба ёрдамчӣ ҳамчун истинод дода мешавад.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -970,6 +972,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Унвони саҳифа",
   "Page unavailable": "Саҳифа дастрас нест",
   Pages: "Саҳифаҳо",
+  "Pages the storefront bot may quote": "Саҳифаҳое, ки боти рӯи дӯкон метавонанд иқтибос кунанд",
   Paid: "Пардохт",
   "Paid out": "Пардохт",
   "paid via": "тавассути",
@@ -1008,6 +1011,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Ҷойгир карда шуд",
   "Platform cut": "буридани платформа",
   "Platform earns": "Платформа ба даст меорад",
+  "Policy page slugs": "Слагҳои саҳифаи сиёсат",
+  "Policy text quoted per answer": "Матни сиёсат дар як ҷавоб иқтибос оварда шудааст",
   "Polish (Polski)": "Лаҳистон (Полски)",
   "Portuguese (Português)": "Португалӣ (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1054,6 +1059,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Ҳамчун",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "категорияҳои нашршуда барои слайдери саҳифаи асосӣ. Мизоҷон дар як вақт дар мизи корӣ чаҳор нафарро бо ин тартиб мебинанд. Лимити назорати сайтро зиёд кунед.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Слагҳои саҳифаи нашршуда, ки бо фосила ҷудо карда шудаанд. Вақте ки муштарӣ дар бораи сиёсат мепурсад, бот ин калима ба калимаро мехонад, бинобар ин ҷавобҳои он ба он чизе ки шумо воқеан интишор кардаед, мувофиқат мекунанд.",
   "Published products": "Маҳсулоти нашршуда",
   "Publishing…": "Нашр...",
   "Pull quote": "Иқтибосро кашед",
@@ -1156,6 +1163,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Бозгашт кардан",
   "Return request not found": "Дархости баргардонидан ёфт нашуд",
   Returns: "Бозгашт",
+  "returns delivery help terms privacy": "бармегардонад шартҳои расонидани кӯмак ба махфият",
   Revenue: "Даромад",
   "Revenue (paid)": "Даромад (пардохт)",
   "Revenue by day": "Даромад аз рӯи рӯз",

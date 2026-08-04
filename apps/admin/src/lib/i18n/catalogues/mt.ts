@@ -566,6 +566,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage sections unavailable": "Sezzjonijiet tal-homepage mhux disponibbli",
   "Homepage Settings": "Settings tal-Homepage",
   "Homepage settings unavailable": "Settings tal-Homepage mhux disponibbli",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Kemm karattri ta' paġna ta' politika jista' jaqra l-bot tal-maħżen qabel ma jwieġeb. Itwal iżżomm aktar tad-dettall li klijent staqsa dwaru.",
   "How many entries from the list below are given to the assistant as reference.":
     "Kemm entrati mil-lista hawn taħt jingħataw lill-assistent bħala referenza.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -940,6 +942,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Titolu tal-paġna",
   "Page unavailable": "Paġna mhux disponibbli",
   Pages: "Paġni",
+  "Pages the storefront bot may quote": "Paġni li l-bot tal-maħżen jista’ jikkwota",
   Paid: "Mħallsa",
   "Paid out": "Paġni mħallsa",
   "paid via": "imħallsa permezz",
@@ -978,6 +981,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Imqiegħed",
   "Platform cut": "Pjattaforma maqtugħa",
   "Platform earns": "Pjattaforma taqla",
+  "Policy page slugs": "Paġni tal-politika slugs",
+  "Policy text quoted per answer": "Test tal-politika kkwotat għal kull tweġiba",
   "Polish (Polski)": "Pollakk (Polski)",
   "Portuguese (Português)": "Portugiż (Portugiż)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1021,6 +1026,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Ippubblika bħala",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "kategoriji ppubblikati għas-slider tal-homepage. Il-klijenti jaraw erbgħa kull darba fuq id-desktop, f'din l-ordni. Għolli l-limitu fuq il-Kontroll tas-Sit.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Ippubblikat, paġna separata bi spazju. Il-bot jaqra dawn kelma b'kelma meta klijent jistaqsi dwar il-politika, u għalhekk it-tweġibiet tiegħu jaqblu ma' dak li fil-fatt ippublikajt.",
   "Published products": "Prodotti ppubblikati",
   "Publishing…": "Pubblikazzjoni...",
   "Pull quote": "Iġbed kwotazzjoni",
@@ -1119,6 +1126,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Ipprova mill-ġdid",
   "Return request not found": "Talba għar-ritorn ma nstabitx",
   Returns: "Ritorni",
+  "returns delivery help terms privacy":
+    "it-termini tal-għajnuna tal-konsenja tad-ritorni privatezza",
   Revenue: "Ritorn",
   "Revenue (paid)": "Dħul (mħallas)",
   "Revenue by day": "Dħul kuljum",

@@ -567,6 +567,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "باش بەت SEO",
   "Homepage Settings": "باش بەت تەڭشىكى",
   "Homepage settings unavailable": "باش بەت تەڭشىكىنى ئىشلەتكىلى بولمايدۇ",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "دۇكان بېتىنىڭ سىياسەت بېتىنىڭ قانچە ھەرپلىرى جاۋاب بېرىشتىن بۇرۇن ئوقۇيالايدۇ. ئۇزۇنراق خېرىدار سورىغان تەپسىلاتلارنى تېخىمۇ ئۇزۇن ساقلايدۇ.",
   "How many entries from the list below are given to the assistant as reference.":
     "ياردەمچىگە تۆۋەندىكى تىزىملىكتىن قانچە ئەسەر بېرىلگەن.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -925,6 +927,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "بەت ماۋزۇسى",
   "Page unavailable": "بەتنى ئىشلەتكىلى بولمايدۇ",
   Pages: "بەتلەر",
+  "Pages the storefront bot may quote": "دۇكان ئالدىدىكى بەتلەر نەقىل كەلتۈرۈشى مۇمكىن",
   Paid: "ھەقلىق",
   "Paid out": "چىقىم قىلىندى",
   "paid via": "ئارقىلىق پۇل تۆلىدى",
@@ -960,6 +963,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "ئورۇنلاشتۇرۇلغان",
   "Platform cut": "سۇپا كېسىلگەن",
   "Platform earns": "سۇپا تاپالايدۇ",
+  "Policy page slugs": "سىياسەت بېتى",
+  "Policy text quoted per answer": "ھەر بىر جاۋابقا نەقىل ئېلىنغان سىياسەت تېكىستى",
   "Polish (Polski)": "پولشا (Polski)",
   "Portuguese (Português)": "پورتۇگال تىلى (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1004,6 +1009,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "نەشىر قىلىنغان",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "باش بەت سىيرىلغۇچنىڭ سەھىپىلىرى ئېلان قىلىندى. خېرىدارلار ئۈستەل يۈزىدە بىر قېتىمدا تۆت قېتىم كۆرىدۇ. بېكەت كونتروللۇقىدىكى چەكنى ئۆستۈرۈڭ.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "بوشلۇق بىلەن ئايرىلغان بەت تاختىلىرى ئېلان قىلىندى. بوت خېرىدار بۇ سىياسەتنى سورىغاندا بۇ سۆزنى سۆز بىلەن ئوقۇيدۇ ، شۇڭا ئۇنىڭ جاۋابى سىز ئەمەلىيەتتە ئېلان قىلغان بىلەن ماس كېلىدۇ.",
   "Published products": "ئېلان قىلىنغان مەھسۇلاتلار",
   "Pull quote": "نەقىل كەلتۈرۈڭ",
   "Put essential subjects inside the dashed centre. Responsive crops may remove the edges.":
@@ -1100,6 +1107,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "قايتا سىناڭ",
   "Return request not found": "قايتۇرۇش تەلىپى تېپىلمىدى",
   Returns: "قايتىدۇ",
+  "returns delivery help terms privacy": "مال يەتكۈزۈش شەرتلىرىنىڭ مەخپىيەتلىكىنى قايتۇرىدۇ",
   Revenue: "كىرىم",
   "Revenue (paid)": "كىرىم (ھەقلىق)",
   "Revenue by day": "كۈندىلىك كىرىم",

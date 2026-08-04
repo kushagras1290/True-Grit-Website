@@ -582,6 +582,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Bosh sahifa SEO",
   "Homepage Settings": "Bosh sahifa sozlamalari",
   "Homepage settings unavailable": "Bosh sahifa sozlamalari mavjud emas",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Javob berishdan oldin vitrina boti siyosat sahifasining nechta belgisini o‘qishi mumkin. Mijoz soʻragan tafsilotlarni uzoqroq saqlaydi.",
   "How many entries from the list below are given to the assistant as reference.":
     "Quyidagi roʻyxatdagi nechta yozuv yordamchiga havola sifatida berilgan.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -952,6 +954,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Sahifa nomi",
   "Page unavailable": "Sahifa mavjud emas",
   Pages: "Sahifalar",
+  "Pages the storefront bot may quote": "Dikon boti keltirishi mumkin boʻlgan sahifalar",
   Paid: "To'langan",
   "Paid out": "To'langan",
   "paid via": "to'langan",
@@ -991,6 +994,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Joylashtirilgan",
   "Platform cut": "Platformani kesish",
   "Platform earns": "Platforma daromadi",
+  "Policy page slugs": "Siyosat sahifalari",
+  "Policy text quoted per answer": "Har bir javob uchun iqtibos keltiriladigan siyosat matni",
   "Polish (Polski)": "Polsha (Polski)",
   "Portuguese (Português)": "Portugal (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1036,6 +1041,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Bosh sahifa slayderi uchun",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "nashr qilingan toifalar sifatida chop etilgan. Mijozlar ish stolida bir vaqtning o'zida to'rttasini shu tartibda ko'rishadi. Sayt nazorati chegarasini oshiring.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Bo‘sh joylar bilan ajratilgan nashr qilingan sahifa slugs. Mijoz siyosat haqida soʻraganda, bot bu soʻzma-soʻz oʻqiydi, shuning uchun uning javoblari siz eʼlon qilgan narsaga mos keladi.",
   "Published products": "Nashr qilingan mahsulotlar",
   "Publishing…": "Nashr qilinmoqda...",
   "Pull quote": "Iqtibos keltiring",
@@ -1138,6 +1145,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Qayta urinish",
   "Return request not found": "Qaytish so'rovi topilmadi",
   Returns: "Qaytish",
+  "returns delivery help terms privacy": "Yatuv berish boʻyicha yordam shartlari maxfiylik",
   Revenue: "Daromad",
   "Revenue (paid)": "Daromad (to‘langan)",
   "Revenue by day": "Kun bo‘yicha daromad",

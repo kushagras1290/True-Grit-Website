@@ -577,6 +577,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage sections unavailable": "Níl fáil ar na hailt leathanach baile",
   "Homepage Settings": "Socruithe Leathanach Baile",
   "Homepage settings unavailable": "Socruithe leathanach baile ar fáil",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Cé mhéad carachtar de leathanach polasaí is féidir leis an róba aghaidh an tsiopa a léamh sula bhfreagraíonn sé. Coimeádann sé níos faide de na sonraí a d'iarr custaiméir faoi.",
   "How many entries from the list below are given to the assistant as reference.":
     "Cé mhéad iontráil ón liosta thíos a thugtar don chúntóir mar thagairt.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -946,6 +948,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Teideal an leathanaigh",
   "Page unavailable": "Leathanach ar fáil",
   Pages: "Leathanaigh",
+  "Pages the storefront bot may quote": "Leathanaigh féadfaidh an bot aghaidh an tsiopa a lua",
   Paid: "Íoctha",
   "Paid out": "Íoctha",
   "paid via": "íoctha trí",
@@ -984,6 +987,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Cuireadh",
   "Platform cut": "Ardán gearrtha",
   "Platform earns": "Tuilleann Ardán",
+  "Policy page slugs": "Slugaí leathanaigh beartais",
+  "Policy text quoted per answer": "Téacs polasaí luaite in aghaidh an fhreagra",
   "Polish (Polski)": "Polainnis (Polski)",
   "Portuguese (Português)": "Portaingéilis (Portaingéilis)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1028,6 +1033,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Foilsithe mar",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "catagóirí foilsithe don sleamhnán leathanach baile. Feiceann custaiméirí ceithre cinn ag an am ar an deasc, san ord seo. Ardaigh an teorainn ar Rialú Suímh.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Drúchtíní leathanaigh foilsithe, scartha le spásanna. Léann an bot na focail seo focal ar fhocal nuair a chuireann custaiméir ceist faoi bheartas, mar sin tagann a fhreagraí leis an méid a d'fhoilsigh tú.",
   "Published products": "Táirgí foilsithe",
   "Publishing…": "Foilsitheoireacht…",
   "Pull quote": "Tarraing an luachan",
@@ -1125,6 +1132,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Atriail",
   "Return request not found": "Níor aimsíodh an t-iarratas fillte",
   Returns: "Tuairisceáin",
+  "returns delivery help terms privacy": "téarmaí cabhrach seachadta príobháideachais",
   Revenue: "na Coimisinéirí Ioncaim",
   "Revenue (paid)": "Na Coimisinéirí Ioncaim (íoctha)",
   "Revenue by day": "Na Coimisinéirí Ioncaim in aghaidh an lae",

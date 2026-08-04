@@ -573,6 +573,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO trang chủ",
   "Homepage Settings": "Cài đặt trang chủ",
   "Homepage settings unavailable": "Cài đặt trang chủ không khả dụng",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Số lượng ký tự của trang chính sách mà bot mặt tiền cửa hàng có thể đọc trước khi trả lời. Longer lưu giữ nhiều chi tiết hơn mà khách hàng hỏi.",
   "How many entries from the list below are given to the assistant as reference.":
     "Có bao nhiêu mục trong danh sách bên dưới được cung cấp cho trợ lý để tham khảo.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -942,6 +944,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Trang title",
   "Page unavailable": "Trang không có sẵn",
   Pages: "Các trang",
+  "Pages the storefront bot may quote": "Các trang mà bot mặt tiền cửa hàng có thể trích dẫn",
   Paid: "Đã trả phí",
   "Paid out": "Đã thanh toán",
   "paid via": "được thanh toán qua",
@@ -980,6 +983,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Đã đặt",
   "Platform cut": "Cắt nền tảng",
   "Platform earns": "Nền tảng kiếm được",
+  "Policy page slugs": "Sên trang chính sách",
+  "Policy text quoted per answer": "Văn bản chính sách được trích dẫn trên mỗi câu trả lời",
   "Polish (Polski)": "Tiếng Ba Lan (Polski)",
   "Portuguese (Português)": "Tiếng Bồ Đào Nha (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1025,6 +1030,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Đã xuất bản dưới dạng",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "đã xuất bản các danh mục cho thanh trượt trang chủ. Khách hàng nhìn thấy bốn cái cùng một lúc trên máy tính để bàn, theo thứ tự này. Tăng giới hạn Kiểm soát trang web.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Các sên trang đã xuất bản, phân tách bằng dấu cách. Bot đọc từng chữ này khi khách hàng hỏi về chính sách nên câu trả lời của nó khớp với những gì bạn thực sự đã xuất bản.",
   "Published products": "Sản phẩm đã xuất bản",
   "Publishing…": "Đang xuất bản…",
   "Pull quote": "Kéo trích dẫn",
@@ -1125,6 +1132,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Thử lại",
   "Return request not found": "Không tìm thấy yêu cầu trả lại",
   Returns: "Trả lại",
+  "returns delivery help terms privacy": "trả lại điều khoản trợ giúp phân phối quyền riêng tư",
   Revenue: "Doanh thu",
   "Revenue (paid)": "Doanh thu (đã trả)",
   "Revenue by day": "Doanh thu theo ngày",

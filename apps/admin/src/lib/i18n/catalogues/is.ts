@@ -580,6 +580,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage sections unavailable": "Hlutar heimasíðna ekki tiltækir",
   "Homepage Settings": "Heimsíðastillingar",
   "Homepage settings unavailable": "Heimsíðastillingar ekki tiltækar",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Hversu marga stafi af stefnusíðu verslunargluggi getur lesið áður en hann svarar. Lengri geymir meira af smáatriðum sem viðskiptavinur spurði um.",
   "How many entries from the list below are given to the assistant as reference.":
     "Hversu margar færslur af listanum hér að neðan eru veittar aðstoðarmanninum til viðmiðunar.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -946,6 +948,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Titill síðu",
   "Page unavailable": "Síða ekki tiltæk",
   Pages: "Síður",
+  "Pages the storefront bot may quote": "Síður sem verslunargluggi getur vitnað í",
   Paid: "Greitt",
   "Paid out": "Greitt út",
   "paid via": "greitt með",
@@ -983,6 +986,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Settur",
   "Platform cut": "Pallurinn skorinn",
   "Platform earns": "Pallurinn fær",
+  "Policy page slugs": "Sniglar á stefnusíðu",
+  "Policy text quoted per answer": "Stefna texti vitnað í hvert svar",
   "Polish (Polski)": "pólska (pólska)",
   "Portuguese (Português)": "portúgalska (portúgalska)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1028,6 +1033,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Birt sem",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "birtir flokkar fyrir sleðann á heimasíðunni. Viðskiptavinir sjá fjóra í einu á skjáborðinu, í þessari röð. Hækka mörkin á vefstýringu.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Birt síðasniglar, aðskilin með bilum. Vélin les þetta orð fyrir orð þegar viðskiptavinur spyr um stefnu, þannig að svör hans passa við það sem þú birtir í raun og veru.",
   "Published products": "Útgefnar vörur",
   "Pull quote": "Tilvitnun",
   "Punjabi (ਪੰਜਾਬੀ)": "Púnjabí (ਪੰਜਾਬੀ)",
@@ -1126,6 +1133,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Reyndu aftur",
   "Return request not found": "Afturbeiðni fannst ekki",
   Returns: "Ávöxtun",
+  "returns delivery help terms privacy":
+    "skilar skilmála fyrir skilmála fyrir skilmála friðhelgi einkalífs",
   Revenue: "Tekjur",
   "Revenue (paid)": "Tekjur (greiddar)",
   "Revenue by day": "Tekjur eftir degi",

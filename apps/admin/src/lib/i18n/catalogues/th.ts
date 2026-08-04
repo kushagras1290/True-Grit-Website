@@ -569,6 +569,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO หน้าแรก",
   "Homepage Settings": "การตั้งค่าหน้าแรก",
   "Homepage settings unavailable": "การตั้งค่าหน้าแรกไม่พร้อมใช้งาน",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "หน้านโยบายที่บอทหน้าร้านอาจอ่านได้กี่ตัวก่อนที่จะตอบ เก็บรายละเอียดที่ลูกค้าถามไว้นานขึ้น",
   "How many entries from the list below are given to the assistant as reference.":
     "มีกี่รายการจากรายการด้านล่างที่มอบให้กับผู้ช่วยเพื่อใช้อ้างอิง",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -941,6 +943,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "ชื่อหน้า",
   "Page unavailable": "หน้าไม่พร้อมใช้งาน",
   Pages: "หน้า",
+  "Pages the storefront bot may quote": "หน้าที่บอทหน้าร้านอาจอ้างอิงถึง",
   Paid: "ชำระเงิน",
   "Paid out": "จ่ายออก",
   "paid via": "จ่ายผ่าน",
@@ -975,6 +978,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "วาง",
   "Platform cut": "การตัดแพลตฟอร์ม",
   "Platform earns": "แพลตฟอร์มสร้างรายได้",
+  "Policy page slugs": "ตัวบ่งหน้านโยบาย",
+  "Policy text quoted per answer": "ข้อความนโยบายที่ยกมาต่อคำตอบ",
   "Polish (Polski)": "โปแลนด์ (โปแลนด์)",
   "Portuguese (Português)": "โปรตุเกส (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1020,6 +1025,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "เผยแพร่เป็น",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "หมวดหมู่ที่เผยแพร่สำหรับแถบเลื่อนหน้าแรก ลูกค้าจะเห็นครั้งละสี่รายการบนเดสก์ท็อปตามลำดับนี้ เพิ่มขีดจำกัดในการควบคุมไซต์",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "ทากหน้าเผยแพร่โดยคั่นด้วยช่องว่าง บอทจะอ่านคำเหล่านี้เมื่อลูกค้าถามเกี่ยวกับนโยบาย ดังนั้นคำตอบจึงตรงกับที่คุณเผยแพร่จริง",
   "Published products": "ผลิตภัณฑ์ที่เผยแพร่",
   "Publishing…": "กำลังเผยแพร่...",
   "Pull quote": "ดึงใบเสนอราคา",
@@ -1120,6 +1127,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "ลองอีกครั้ง",
   "Return request not found": "ไม่พบคำขอส่งคืน",
   Returns: "ส่งคืน",
+  "returns delivery help terms privacy": "ความเป็นส่วนตัวของเงื่อนไขความช่วยเหลือในการส่งคืน",
   Revenue: "รายได้",
   "Revenue (paid)": "รายได้ (จ่ายแล้ว)",
   "Revenue by day": "รายได้ตามวัน",

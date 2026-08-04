@@ -583,6 +583,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Kodulehe SEO",
   "Homepage Settings": "Kodulehe seaded",
   "Homepage settings unavailable": "Kodulehe seaded pole saadaval",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Mitu tähemärki eeskirjade lehel võib poe bot enne vastamist lugeda. Longer säilitab rohkem üksikasju, mille kohta klient küsis.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Kui palju tooteid või kategooriaid saab operaator valida värskete lemmikute, esiletõstetud kategooriate (kodulehe seaded) ja esiletõstetud toodete jaoks (allpool). Selle tõstmine salvestab kohe, kasutuselevõttu pole vaja; kuni 50, ülemmäär, mida plokivorming ise jõustab.",
   "How many products to show": "Kui palju tooteid näidata",
@@ -955,6 +957,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Lehe pealkiri",
   "Page unavailable": "Leht pole saadaval",
   Pages: "Lehed",
+  "Pages the storefront bot may quote": "Lehed, mida poe-robot võib tsiteerida",
   Paid: "Tasutud",
   "Paid out": "Väljamakstud",
   "paid via": "makse kaudu",
@@ -992,6 +995,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Paigutatud",
   "Platform cut": "Platvorm lõigatud",
   "Platform earns": "Platvorm teenib",
+  "Policy page slugs": "Eeskirjade lehtede näpunäited",
+  "Policy text quoted per answer": "Eeskirjatekst tsiteeritud vastuse kohta",
   "Polish (Polski)": "Poola (Polski)",
   "Portuguese (Português)": "Portugali keel (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1037,6 +1042,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Avaldatud",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "avaldatud kategooriatena avalehe liuguri jaoks. Kliendid näevad töölaual korraga nelja, selles järjekorras. Suurendage saidi juhtimise limiiti.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Avaldatud lehekülgede kaupa. Robot loeb neid sõna-sõnalt, kui klient küsib eeskirjade kohta, nii et selle vastused vastavad teie tegelikult avaldatule.",
   "Published products": "Avaldatud tooted",
   "Publishing…": "Avaldamine…",
   "Pull quote": "Tsitaat tõmbamine",
@@ -1136,6 +1143,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Proovi uuesti",
   "Return request not found": "Tagastustaotlust ei leitud",
   Returns: "Tagastus",
+  "returns delivery help terms privacy": "tagastab kohaletoimetamise abitingimuste privaatsus",
   Revenue: "Tulu",
   "Revenue (paid)": "Tulu (makstud)",
   "Revenue by day": "Tulu päevade lõikes",

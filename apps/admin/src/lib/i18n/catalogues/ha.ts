@@ -548,6 +548,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Shafin Gida SEO",
   "Homepage Settings": "Saitunan Gidan Gida",
   "Homepage settings unavailable": "Ba a samun saitunan shafin gida",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Haruffa nawa ne na shafin manufofin bot na gaban kantin zai iya karantawa kafin amsawa. Ya daɗe yana adana ƙarin cikakkun bayanai da abokin ciniki ya tambaya game da su.",
   "How many entries from the list below are given to the assistant as reference.":
     "Shigo nawa ne daga lissafin da ke ƙasa aka bai wa mataimaki a matsayin tunani.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -899,6 +901,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Taken shafi",
   "Page unavailable": "Babu ​​Shafi",
   Pages: "Shafuka",
+  "Pages the storefront bot may quote": "Shafukan da ke gaban kantin sayar da bot na iya nakalto",
   Paid: "An biya",
   "Paid out": "An biya",
   "paid via": "an biya ta",
@@ -931,6 +934,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "An sanya",
   "Platform cut": "Yanke dandali",
   "Platform earns": "Sakamakon dandali",
+  "Policy page slugs": "Slugs shafi na doka",
+  "Policy text quoted per answer": "Rubutun manufofin da aka nakalto kowace amsa",
   "Polish (Polski)": "Polski (Polski)",
   "Portuguese (Português)": "Português (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -976,6 +981,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "An buga shi azaman",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "an buga rukunoni don mahallin shafin farko. Abokan ciniki suna ganin hudu a lokaci ɗaya akan tebur, a cikin wannan tsari. Ƙara iyaka akan Sarrafa Yanar Gizo.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Buga slugs na shafi, ware ta sarari. Bot yana karanta waɗannan kalmomi zuwa kalma lokacin da abokin ciniki ya yi tambaya game da manufofi, don haka amsoshinsa sun dace da abin da kuka buga a zahiri.",
   "Published products": "Kayayyakin da aka buga",
   "Publishing…": "Bugawa…",
   "Pull quote": "A cire zance",
@@ -1070,6 +1077,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Sake gwadawa",
   "Return request not found": "Ba a sami buƙatun dawowa ba",
   Returns: "Komawa",
+  "returns delivery help terms privacy": "yana mayar da sharuɗɗan taimakon isarwa sirrin",
   Revenue: "Kudirin shiga",
   "Revenue (paid)": "Kudaden shiga (an biya)",
   "Revenue by day": "Harkokin shiga da rana",

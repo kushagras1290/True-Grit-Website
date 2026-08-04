@@ -597,6 +597,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Գլխավոր էջի SEO",
   "Homepage Settings": "Գլխավոր էջի կարգավորումներ",
   "Homepage settings unavailable": "Գլխավոր էջի կարգավորումներն անհասանելի են",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Քաղաքական էջի քանի նիշ կարող է կարդալ խանութի ցուցափեղկի բոտը նախքան պատասխանելը: Ավելի երկար պահում է հաճախորդի կողմից հարցվող մանրամասները:",
   "How many entries from the list below are given to the assistant as reference.":
     "Ստորև նշված ցանկից քանի գրառում է տրված օգնականին",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -981,6 +983,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Էջի վերնագիր",
   "Page unavailable": "Էջն անհասանելի է",
   Pages: "Էջեր",
+  "Pages the storefront bot may quote": "Էջեր, որոնք խանութի բոտը կարող է մեջբերել",
   Paid: "Վճարված",
   "Paid out": "Վճարված",
   "paid via": "վճարված",
@@ -1019,6 +1022,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Տեղադրված է",
   "Platform cut": "Հարթակի կրճատում",
   "Platform earns": "Հարթակը վաստակում է",
+  "Policy page slugs": "Քաղաքականության էջի slugs",
+  "Policy text quoted per answer":
+    "Քաղաքականության տեքստը մեջբերված է յուրաքանչյուր պատասխանի համար",
   "Polish (Polski)": "լեհերեն (լեհերեն)",
   "Portuguese (Português)": "պորտուգալերեն (պորտուգալերեն)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1064,6 +1070,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Հրապարակվել է որպես",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "հրապարակված կատեգորիաներ գլխավոր էջի սլայդերի համար: Հաճախորդները աշխատասեղանի վրա միաժամանակ տեսնում են չորսը՝ այս հերթականությամբ: Բարձրացրեք կայքի վերահսկման սահմանաչափը:",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Հրապարակված էջի սլագներ` բաժանված բացատներով: Բոտը բառ առ բառ կարդում է դրանք, երբ հաճախորդը հարցնում է քաղաքականության մասին, ուստի նրա պատասխանները համապատասխանում են իրականում հրապարակածին:",
   "Published products": "Հրապարակված ապրանքներ",
   "Publishing…": "Հրատարակվում է…",
   "Pull quote": "Ձգվող մեջբերում",
@@ -1167,6 +1175,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Նորից փորձել",
   "Return request not found": "Վերադարձի հարցումը չի գտնվել",
   Returns: "Վերադարձներ",
+  "returns delivery help terms privacy":
+    "վերադարձնում է առաքման օգնության պայմանները գաղտնիություն",
   Revenue: "Եկամուտ",
   "Revenue (paid)": "Եկամուտ (վճարովի)",
   "Revenue by day": "Եկամուտներ օրական",

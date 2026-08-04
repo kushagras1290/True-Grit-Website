@@ -536,6 +536,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO yatsamba Loyamba",
   "Homepage Settings": "Zokonda Tsamba Lofikira",
   "Homepage settings unavailable": "Zokonda patsamba lofikira sizikupezeka",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Ndi zilembo zingati zamakalata omwe bot yakutsogolo ingawerenge isanayankhe. Imasunga zambiri zomwe kasitomala amafunsa.",
   "How many entries from the list below are given to the assistant as reference.":
     "Ndi zolemba zingati zochokera pamndandanda womwe uli pansipa womwe waperekedwa kwa wothandizira.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -885,6 +887,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Mutu watsamba",
   "Page unavailable": "Tsamba silikupezeka",
   Pages: "Masamba",
+  "Pages the storefront bot may quote": "Masamba omwe boti yaku sitolo ingatchule",
   Paid: "Olipidwa",
   "Paid out": "Kulipira",
   "paid via": "kulipidwa kudzera",
@@ -922,6 +925,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Yayikidwa",
   "Platform cut": "Pulatform cut",
   "Platform earns": "Pulatifomu imapindula",
+  "Policy page slugs": "Zolemba zatsamba lalamulo",
+  "Policy text quoted per answer": "Zolemba zalamulo zotchulidwa payankho lililonse",
   "Portuguese (Português)": "Chipwitikizi (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Positive imakweza mtengo (mndandanda, wowonetsedwa ngati mtengo watsopano wokha). Zoyipa zimatsitsa (kuchotsera, kowonetsedwa ndi mtengo weniweni womwe wagulidwa). Pakati pa -90% ndi 500%. Kusunga lamulo la chandamale chofanana ndi kuchuluka kwake kumalowetsa m'malo mwake m'malo mowonjezera chobwereza.",
@@ -965,6 +970,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Lofalitsidwa monga",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "magawo osindikizidwa a tsamba lofikira. Makasitomala amawona anayi panthawi pa desktop, motere. Kwezani malire pa Kuwongolera Kwatsamba.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Masamba osindikizidwa, osindikizidwa ndi space. Boti imawerenga mawu awa ndi liwu pomwe kasitomala afunsa za malamulo, kuti mayankho ake afanane ndi zomwe mudasindikiza.",
   "Published products": "Zinthu zosindikizidwa",
   "Publishing…": "Ikusindikiza…",
   "Pull quote": "Kokani mawu",
@@ -1062,6 +1069,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Yeseraninso",
   "Return request not found": "Pempho lobwezera silinapezeke",
   Returns: "Kubweza",
+  "returns delivery help terms privacy": "imabwezera zinsinsi zachinsinsi",
   Revenue: "Zopeza",
   "Revenue (paid)": "Zopeza (zolipira)",
   "Revenue by day": "Zopeza patsiku",

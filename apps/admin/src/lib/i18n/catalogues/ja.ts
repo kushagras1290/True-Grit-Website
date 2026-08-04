@@ -586,6 +586,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ホームページ SEO",
   "Homepage Settings": "ホームページ設定",
   "Homepage settings unavailable": "ホームページ設定を利用できません",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "ストアフロント ボットが応答する前にポリシー ページを何文字読むことができるか。顧客が尋ねた詳細がより長く保持されます。",
   "How many entries from the list below are given to the assistant as reference.":
     "以下のリストから、参照としてアシスタントに与えられるエントリの数。",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -965,6 +967,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "ページタイトル",
   "Page unavailable": "ページが利用不可",
   Pages: "ページ数",
+  "Pages the storefront bot may quote": "店頭ボットが引用する可能性のあるページ",
   Paid: "支払い済み",
   "Paid out": "支払い済み",
   "paid via": "支払い方法",
@@ -1003,6 +1006,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "配置",
   "Platform cut": "プラットフォームカット",
   "Platform earns": "プラットフォームの収益",
+  "Policy page slugs": "ポリシー ページのスラッグ",
+  "Policy text quoted per answer": "回答ごとに引用されるポリシー テキスト",
   "Polish (Polski)": "ポーランド語 (Polski)",
   "Portuguese (Português)": "ポルトガル語 (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1047,6 +1052,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "公開",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "ホームページ スライダーのカテゴリとして公開します。デスクトップ上では、この順序で一度に 4 つが表示されます。サイトコントロールの制限を引き上げます。",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "スペースで区切られた公開されたページのスラッグ。顧客がポリシーについて質問すると、ボットはこれらを一字一句読み上げるため、その回答は実際に公開した内容と一致します。",
   "Published products": "公開された製品",
   "Publishing…": "出版…",
   "Pull quote": "引用を引用",
@@ -1147,6 +1154,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "再試行",
   "Return request not found": "返品リクエストが見つかりません",
   Returns: "返品",
+  "returns delivery help terms privacy": "配送に関するヘルプ条件のプライバシーを返します",
   Revenue: "収益",
   "Revenue (paid)": "収益（有料）",
   "Revenue by day": "日別収益",

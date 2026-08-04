@@ -553,6 +553,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO oju-iwe ile",
   "Homepage Settings": "Eto oju-iwe ile",
   "Homepage settings unavailable": "Eto oju-iwe akọọkan ko si",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Melo ni awọn ohun kikọ oju-iwe eto imulo ti bot iwaju ile itaja le ka ṣaaju idahun. Gigun tọju alaye diẹ sii ti alabara kan beere nipa.",
   "How many entries from the list below are given to the assistant as reference.":
     "Melo awọn titẹ sii lati inu atokọ ni isalẹ ni a fi fun oluranlọwọ gẹgẹbi itọkasi.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -908,6 +910,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Akọle oju-iwe",
   "Page unavailable": "Ko si oju-iwe",
   Pages: "Awọn oju-iwe",
+  "Pages the storefront bot may quote": "Awọn oju-iwe bot iwaju ile itaja le sọ",
   Paid: "San",
   "Paid out": "Ti san jade",
   "paid via": "sanwo nipasẹ",
@@ -943,6 +946,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Gbe",
   "Platform cut": "Platform ge",
   "Platform earns": "owo ere",
+  "Policy page slugs": "Awọn oju-iwe eto imulo slugs",
+  "Policy text quoted per answer": "Ọrọ ilana ti a fa jade fun idahun",
   "Polish (Polski)": "Polski (Polski)",
   "Portuguese (Português)": "Português (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -987,6 +992,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Ti a tẹjade bi",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "awọn ẹka ti a tẹjade fun esun oju-ile. Awọn alabara rii mẹrin ni akoko kan lori tabili tabili, ni aṣẹ yii. Gbe opin soke lori Iṣakoso Aye.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Awọn slugs oju-iwe ti a tẹjade, ti a yapa nipasẹ awọn alafo. Bot naa ka ọrọ wọnyi fun ọrọ nigbati alabara kan beere nipa eto imulo, nitorinaa awọn idahun rẹ baamu ohun ti o ṣe atẹjade.",
   "Published products": "Awọn ọja ti a tẹjade",
   "Publishing…": "Itẹjade…",
   "Pull quote": "Fa agbasọ",
@@ -1086,6 +1093,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Tungbiyanju",
   "Return request not found": "A ko ri ibeere ipadabọ",
   Returns: "Awọn ipadabọ",
+  "returns delivery help terms privacy": "dapada awọn ofin iranlọwọ ifijiṣẹ pada asiri",
   Revenue: "Wiwọle",
   "Revenue (paid)": "Wiwọle (sanwo)",
   "Revenue by day": "Wiwọle nipasẹ ọjọ",

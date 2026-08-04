@@ -562,6 +562,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ໜ້າຫຼັກ SEO",
   "Homepage Settings": "ການຕັ້ງຄ່າໜ້າຫຼັກ",
   "Homepage settings unavailable": "ການຕັ້ງຄ່າໜ້າຫຼັກບໍ່ສາມາດໃຊ້ໄດ້",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "ຈຳນວນຕົວອັກສອນຂອງໜ້ານະໂຍບາຍທີ່ bot ໜ້າຮ້ານອາດຈະອ່ານກ່ອນຕອບ. ເກັບຮັກສາລາຍລະອຽດເພີ່ມເຕີມທີ່ລູກຄ້າຖາມມາໄດ້ດົນຂຶ້ນ.",
   "How many entries from the list below are given to the assistant as reference.":
     "ຈໍານວນລາຍການຈາກລາຍການຂ້າງລຸ່ມນີ້ແມ່ນມອບໃຫ້ຜູ້ຊ່ວຍເປັນການອ້າງອີງ.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -930,6 +932,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "ຊື່ໜ້າ",
   "Page unavailable": "ໜ້າບໍ່ສາມາດໃຊ້ໄດ້",
   Pages: "ໜ້າ",
+  "Pages the storefront bot may quote": "ໜ້າຮ້ານໜ້າຮ້ານອາດຈະອ້າງເຖິງ",
   Paid: "ຈ່າຍແລ້ວ",
   "Paid out": "ຈ່າຍເງິນແລ້ວ",
   "paid via": "ຈ່າຍຜ່ານ",
@@ -965,6 +968,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "ວາງໄວ້",
   "Platform cut": "ການຕັດເວທີ",
   "Platform earns": "ເວທີສ້າງລາຍໄດ້",
+  "Policy page slugs": "ໜ້ານະໂຍບາຍ slugs",
+  "Policy text quoted per answer": "ຂໍ້ຄວາມນະໂຍບາຍທີ່ຍົກມາຕໍ່ຄຳຕອບ",
   "Polish (Polski)": "ໂປໂລຍ (ໂປໂລຍ)",
   "Portuguese (Português)": "ປອກຕຸຍການ (ປໍຕູກີສ)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1009,6 +1014,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "ເຜີຍແຜ່ເປັນ",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "ໝວດໝູ່ທີ່ເຜີຍແຜ່ແລ້ວສຳລັບຕົວເລື່ອນໜ້າຫຼັກ. ລູກຄ້າເບິ່ງສີ່ຄັ້ງໃນ desktop, ໃນຄໍາສັ່ງນີ້. ເພີ່ມຂີດຈຳກັດໃນການຄວບຄຸມເວັບໄຊ.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "ໜ້າທີ່ຖືກເຜີຍແຜ່, spaced byslugs ບັອດອ່ານຄຳສັບເຫຼົ່ານີ້ເປັນຄຳສັບເມື່ອລູກຄ້າຖາມກ່ຽວກັບນະໂຍບາຍ, ດັ່ງນັ້ນຄຳຕອບຂອງມັນຈຶ່ງກົງກັບສິ່ງທີ່ທ່ານໄດ້ເຜີຍແຜ່ຕົວຈິງ.",
   "Published products": "ຜະລິດຕະພັນທີ່ເຜີຍແຜ່ແລ້ວ",
   "Publishing…": "ກຳລັງເຜີຍແຜ່…",
   "Pull quote": "ດຶງຄຳເວົ້າ",
@@ -1106,6 +1113,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "ລອງໃໝ່",
   "Return request not found": "ບໍ່ພົບຄຳຮ້ອງຂໍຄືນ",
   Returns: "ການສົ່ງຄືນ",
+  "returns delivery help terms privacy": "ສົ່ງຄືນເງື່ອນໄຂຄວາມເປັນສ່ວນຕົວຂອງການຊ່ວຍເຫຼືອ",
   Revenue: "ລາຍໄດ້",
   "Revenue (paid)": "ລາຍໄດ້ (ຈ່າຍ)",
   "Revenue by day": "ລາຍໄດ້ຕໍ່ມື້",

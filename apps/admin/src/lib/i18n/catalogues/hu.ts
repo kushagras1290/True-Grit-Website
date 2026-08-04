@@ -581,6 +581,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "A kezdőlap keresőoptimalizálása",
   "Homepage Settings": "A kezdőlap beállításai",
   "Homepage settings unavailable": "A kezdőlap beállításai nem érhetők el",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Hány karaktert olvashat el egy irányelvoldalon a kirakati robot, mielőtt válaszolna. A Longer több olyan részletet tárol, amelyről az ügyfél kérdezett.",
   "How many entries from the list below are given to the assistant as reference.":
     "Az alábbi listából hány bejegyzést adunk referenciaként az asszisztensnek.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -956,6 +958,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Az oldal címe",
   "Page unavailable": "Az oldal nem elérhető",
   Pages: "Oldalok",
+  "Pages the storefront bot may quote": "Azok az oldalak, amelyeket a kirakatrobot idézhet",
   Paid: "Fizetett",
   "Paid out": "Kifizetve",
   "paid via": "kifizetés:",
@@ -994,6 +997,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Elhelyezve",
   "Platform cut": "Platform vágás",
   "Platform earns": "Platform bevétel",
+  "Policy page slugs": "Irányelv-oldalak hibái",
+  "Policy text quoted per answer": "A válaszonként idézett irányelvszöveg",
   "Polish (Polski)": "lengyel (polski)",
   "Portuguese (Português)": "portugál (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1039,6 +1044,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Közzétéve",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "Közzétéve a kezdőlap csúszkája kategóriái. Az ügyfelek egyszerre négyet látnak asztali számítógépen, ebben a sorrendben. Növelje a Webhelyvezérlés korlátját.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "közzétett, különálló oldalak. A bot szóról szóra olvassa ezeket, amikor az ügyfél az irányelvekkel kapcsolatban kérdez, így a válaszai megegyeznek azzal, amit Ön ténylegesen közzétett.",
   "Published products": "Közzétett termékek",
   "Publishing…": "Közzététel…",
   "Pull quote": "Idézet lehúzása",
@@ -1138,6 +1145,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Újra",
   "Return request not found": "Visszaküldési kérelem nem található",
   Returns: "Visszaküldések",
+  "returns delivery help terms privacy": "visszaküldi a kézbesítési súgó feltételeit, adatvédelem",
   Revenue: "Bevétel",
   "Revenue (paid)": "Bevétel (fizetett)",
   "Revenue by day": "Bevétel napi bontásban",

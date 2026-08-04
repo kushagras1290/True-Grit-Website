@@ -583,6 +583,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Hasierako orriaren SEO",
   "Homepage Settings": "Hasierako orriaren ezarpenak",
   "Homepage settings unavailable": "Hasierako orriaren ezarpenak ez daude erabilgarri",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Erantzun aurretik dendako bot-ak gidalerro-orri bateko zenbat karaktere irakur ditzakeen. Luzaroago mantentzen da bezero bati galdetutako xehetasun gehiago.",
   "How many entries from the list below are given to the assistant as reference.":
     "Beheko zerrendako zenbat sarrera ematen zaizkio erreferentzia gisa laguntzaileari.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -959,6 +961,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Orriaren izenburua",
   "Page unavailable": "Orria ez dago erabilgarri",
   Pages: "Orriak",
+  "Pages the storefront bot may quote": "Denda-esparruko bot-ak aipa ditzakeen orrialdeak",
   Paid: "Ordaindua",
   "Paid out": "Ordaindua",
   "paid via": "Ordainketa",
@@ -996,6 +999,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Jarrita",
   "Platform cut": "Plataforma moztu",
   "Platform earns": "Plataformaren irabaziak",
+  "Policy page slugs": "Politikoen orriaren bareak",
+  "Policy text quoted per answer": "Erantzun bakoitzeko aipatzen den politika-testua",
   "Polish (Polski)": "Poloniera (Polskia)",
   "Portuguese (Português)": "Portugesa (Portugalera)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1041,6 +1046,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Argitaratutako",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "hasierako orriaren graduatzailerako argitaratutako kategoria. Bezeroek lau ikusten dituzte mahaigainean, ordena honetan. Handitu gunearen kontrolaren muga.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Argitaratutako orrialdea, zuriunez banatuta. Bot-ak hitzez hitz irakurtzen ditu bezero batek gidalerroei buruz galdetzen dionean, eta, beraz, bere erantzunak benetan argitaratutakoarekin bat datoz.",
   "Published products": "Argitaratutako produktuak",
   "Publishing…": "Argitaratzen...",
   "Pull quote": "Erabaki aipamena",
@@ -1142,6 +1149,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Berriro saiatu",
   "Return request not found": "Ez da itzultzeko eskaera aurkitu",
   Returns: "Itzulketak",
+  "returns delivery help terms privacy": "itzultzen entregatzeko laguntza-baldintzak pribatutasuna",
   Revenue: "Diru-sarrerak",
   "Revenue (paid)": "Diru-sarrerak (ordainduta)",
   "Revenue by day": "Eguneko diru-sarrerak",

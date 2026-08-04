@@ -602,6 +602,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ମୂଳପୃଷ୍ଠା SEO |",
   "Homepage Settings": "ମୂଳପୃଷ୍ଠା ସେଟିଂସମୂହ",
   "Homepage settings unavailable": "ମୂଳପୃଷ୍ଠା ସେଟିଂସମୂହ ଉପଲବ୍ଧ ନାହିଁ |",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "ଉତ୍ତର ଦେବା ପୂର୍ବରୁ ଷ୍ଟୋରଫ୍ରଣ୍ଟ ବଟ୍ କେତେ ପଲିସି ପୃଷ୍ଠାର ଅକ୍ଷର ପ read ିପାରେ | ଜଣେ ଗ୍ରାହକ ପଚାରିଥିବା ସବିଶେଷ ବିବରଣୀ ଅଧିକ ସମୟ ରଖନ୍ତି |",
   "How many entries from the list below are given to the assistant as reference.":
     "ନିମ୍ନ ତାଲିକାରୁ କେତେ ଏଣ୍ଟ୍ରି ସହାୟକଙ୍କୁ ରେଫରେନ୍ସ ଭାବରେ ଦିଆଯାଏ |",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -986,6 +988,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "ପୃଷ୍ଠା ଆଖ୍ୟା |",
   "Page unavailable": "ପୃଷ୍ଠା ଉପଲବ୍ଧ ନାହିଁ |",
   Pages: "ପୃଷ୍ଠାଗୁଡ଼ିକ |",
+  "Pages the storefront bot may quote": "ପୃଷ୍ଠାଗୁଡ଼ିକ ଷ୍ଟୋରଫ୍ରଣ୍ଟ ବଟ୍ ଉଦ୍ଧୃତ ହୋଇପାରେ |",
   Paid: "ଦେୟ",
   "Paid out": "ଦେୟ ପ୍ରଦାନ",
   "paid via": "ମାଧ୍ୟମରେ ଦେୟ",
@@ -1025,6 +1028,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "ସ୍ଥାନିତ |",
   "Platform cut": "ପ୍ଲାଟଫର୍ମ କଟ୍ |",
   "Platform earns": "ପ୍ଲାଟଫର୍ମ ରୋଜଗାର କରେ |",
+  "Policy page slugs": "ନୀତି ପୃଷ୍ଠା ସ୍ଲଗ୍ |",
+  "Policy text quoted per answer": "ଉତ୍ତର ପ୍ରତି ଉଦ୍ଧୃତ ନୀତି ପାଠ୍ୟ |",
   "Polish (Polski)": "ପୋଲାଣ୍ଡ (ପୋଲସ୍କି)",
   "Portuguese (Português)": "ପର୍ତ୍ତୁଗୀଜ୍ (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1069,6 +1074,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "ଭାବରେ ପ୍ରକାଶିତ |",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "ମୂଳପୃଷ୍ଠା ସ୍ଲାଇଡର୍ ପାଇଁ ବର୍ଗଗୁଡିକ ପ୍ରକାଶିତ | ଏହି କ୍ରମରେ ଗ୍ରାହକମାନେ ଡେସ୍କଟପରେ ଏକ ସମୟରେ ଚାରିଟି ଦେଖନ୍ତି | ସାଇଟ୍ ନିୟନ୍ତ୍ରଣ ଉପରେ ସୀମା ବ .ାନ୍ତୁ |",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "ସ୍ପେସ୍ ଦ୍ୱାରା ପୃଥକ ପୃଷ୍ଠା ସ୍ଲଗ୍ ପ୍ରକାଶିତ | ଯେତେବେଳେ ଗ୍ରାହକ ନୀତି ବିଷୟରେ ପଚାରନ୍ତି, ବଟ୍ ଶବ୍ଦ ପାଇଁ ଏହି ଶବ୍ଦ ପ read ିଥାଏ, ତେଣୁ ଏହାର ଉତ୍ତରଗୁଡ଼ିକ ତୁମେ ପ୍ରକୃତରେ ପ୍ରକାଶ କରିଥିବା ସହିତ ମେଳ ଖାଏ |",
   "Published products": "ପ୍ରକାଶିତ ଉତ୍ପାଦଗୁଡିକ |",
   "Publishing…": "ପ୍ରକାଶନ…",
   "Pull quote": "କୋଟ୍ ଟାଣନ୍ତୁ |",
@@ -1170,6 +1177,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "ପୁନ ry ଚେଷ୍ଟା କରନ୍ତୁ |",
   "Return request not found": "ଫେରସ୍ତ ଅନୁରୋଧ ମିଳିଲା ନାହିଁ |",
   Returns: "ଫେରସ୍ତ",
+  "returns delivery help terms privacy": "ବିତରଣ ସହାୟତା ସର୍ତ୍ତାବଳୀ ଗୋପନୀୟତା ଫେରସ୍ତ କରେ |",
   Revenue: "ରାଜସ୍ୱ",
   "Revenue (paid)": "ରାଜସ୍ୱ (ଦେୟ)",
   "Revenue by day": "ଦିନ ଅନୁସାରେ ରାଜସ୍ୱ |",

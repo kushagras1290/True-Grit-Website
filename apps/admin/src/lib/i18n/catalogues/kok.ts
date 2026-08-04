@@ -595,6 +595,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "मुखपान एसईओ",
   "Homepage Settings": "मुखपान मांडावळी",
   "Homepage settings unavailable": "मुखपान मांडावळी उपलब्ध ना",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "स्टोरफ्रंट बॉट जाप दिवचे पयलीं धोरण पानाचे कितले अक्षर वाचूंक शकता. गिरायकान विचारिल्लो तपशील चड लांब दवरता.",
   "How many entries from the list below are given to the assistant as reference.":
     "खाला दिल्ल्या वळेरेंतल्यान कितले नोंदी संदर्भ म्हणून सहाय्याक दिल्यात.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -976,6 +978,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "पानाचे शीर्षक",
   "Page unavailable": "पान उपलब्ध ना",
   Pages: "पान",
+  "Pages the storefront bot may quote": "स्टोरफ्रंट बॉट उद्धृत करूंक शकता पान",
   Paid: "फेड",
   "Paid out": "फेड आउट",
   "paid via": "फेड via",
@@ -1014,6 +1017,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "प्लेस केल्लो",
   "Platform cut": "प्लॅटफॉर्म कापलो",
   "Platform earns": "प्लॅटफॉर्म कमायता",
+  "Policy page slugs": "धोरण पान स्लग",
+  "Policy text quoted per answer": "दर जाप उद्धृत केल्लो धोरण मजकूर",
   "Polish (Polski)": "पोलिश (पोल्स्की)",
   "Portuguese (Português)": "पोर्तुगेज (पोर्तुगेज)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1058,6 +1063,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "प्रकाशित",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "प्रकाशित श्रेणीं प्रमाण. गिरायकांक डेस्कटॉपाचेर एका वेळार चार दिसतात, ह्या क्रमांकान. साइट नियंत्रणाचेर मर्यादा वाडोवची.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "प्रकाशित पान स्लग, रिक्तस्थानांनी वेगळे. गिरायक धोरणा विशीं विचारता तेन्ना बॉट हीं उतरां उतरां वाचता, देखून ताच्यो जापो तुमी प्रत्यक्षांत प्रकाशीत केल्ल्या कडेन जुळटात.",
   "Published products": "प्रकाशित उत्पाद",
   "Publishing…": "प्रकाशन...",
   "Pull quote": "उद्धरण ओडचें",
@@ -1159,6 +1166,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "पुनर्प्रयत्न",
   "Return request not found": "परत दिवपाची विनंती मेळूंक ना",
   Returns: "परतावो",
+  "returns delivery help terms privacy": "वितरण मदत अटी गुप्तताय",
   Revenue: "मसूल",
   "Revenue (paid)": "महसूल (फारीक केल्ली)",
   "Revenue by day": "दिसा प्रमाण महसूल",

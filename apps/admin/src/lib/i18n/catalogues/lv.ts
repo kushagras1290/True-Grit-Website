@@ -585,6 +585,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Mājas lapas SEO",
   "Homepage Settings": "Mājas lapas iestatījumi",
   "Homepage settings unavailable": "Mājaslapas iestatījumi nav pieejami",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Cik rakstzīmes politikas lapā veikala mājaslapas robots var izlasīt pirms atbildes sniegšanas. Ilgāk saglabā vairāk informācijas, par ko klients jautāja.",
   "How many entries from the list below are given to the assistant as reference.":
     "Cik ierakstu no tālāk esošā saraksta ir norādīts palīgam kā atsauce.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -963,6 +965,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Lapas nosaukums",
   "Page unavailable": "Lapa nav pieejama",
   Pages: "Lapas",
+  "Pages the storefront bot may quote": "Lapas, kuras var citēt veikala mājaslapas robots",
   Paid: "Apmaksāts",
   "Paid out": "Izmaksāts",
   "paid via": "apmaksāts, izmantojot",
@@ -1000,6 +1003,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "Ievietots",
   "Platform cut": "Platforma samazināta",
   "Platform earns": "Platforma nopelna",
+  "Policy page slugs": "Politikas lappuses",
+  "Policy text quoted per answer": "Politikas teksts citēts katrā atbildē",
   "Polish (Polski)": "poļu (polski)",
   "Portuguese (Português)": "portugāļu (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1045,6 +1050,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Publicēts kā",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "publicētas kategorijas sākumlapas slīdnim. Klienti darbvirsmā vienlaikus redz četrus šādā secībā. Palieliniet vietnes kontroles ierobežojumu.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Publicēts pa atstarpēm, atsevišķa lapa . Robots nolasa šos vārdus pa vārdam, kad klients jautā par politiku, tāpēc tā atbildes atbilst jūsu faktiski publicētajai informācijai.",
   "Published products": "Publicētie produkti",
   "Publishing…": "Notiek publicēšana...",
   "Pull quote": "Izvilkt citātu",
@@ -1145,6 +1152,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Mēģināt vēlreiz",
   "Return request not found": "Atgriešanas pieprasījums nav atrasts",
   Returns: "Atgriešana",
+  "returns delivery help terms privacy": "atgriež piegādes palīdzības nosacījumu konfidencialitāti",
   Revenue: "Ieņēmumi",
   "Revenue (paid)": "Ieņēmumi (apmaksāti)",
   "Revenue by day": "Ieņēmumi pa dienām",

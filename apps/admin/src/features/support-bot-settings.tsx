@@ -135,6 +135,36 @@ function TuningRow({
   );
 }
 
+function PolicyPagesRow({
+  value,
+  disabled,
+  onCommit,
+}: {
+  value: string;
+  disabled: boolean;
+  onCommit: (next: string) => void;
+}) {
+  const [draft, setDraft] = useState(value);
+  useEffect(() => setDraft(value), [value]);
+
+  return (
+    <div className="mt-3">
+      <Input
+        value={draft}
+        placeholder="returns delivery help terms privacy"
+        maxLength={500}
+        disabled={disabled}
+        aria-label="Policy page slugs"
+        onChange={(event) => setDraft(event.target.value)}
+        onBlur={() => draft.trim() !== value && onCommit(draft)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") event.currentTarget.blur();
+        }}
+      />
+    </div>
+  );
+}
+
 /** `<input type="color">` cannot express "no override", so the swatch is paired
  *  with a Clear button rather than trying to encode blank as a colour. */
 function WidgetColorRow({
@@ -318,6 +348,12 @@ export function SupportBotSettingsPage() {
     onError: (error) => toast.error(errorMessage(error, "Could not update that setting.")),
   });
 
+  const setPolicyPages = useMutation({
+    mutationFn: (policyPages: string) => api.setSupportBotPolicyPages(policyPages),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["support-bot-settings"] }),
+    onError: (error) => toast.error(errorMessage(error, "Could not update the page list.")),
+  });
+
   const setColor = useMutation({
     mutationFn: (widgetColor: string) => api.setSupportBotWidgetColor(widgetColor),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["support-bot-settings"] }),
@@ -428,7 +464,33 @@ export function SupportBotSettingsPage() {
             disabled={tuneBot.isPending}
             onCommit={(value) => tuneBot.mutate({ key: "searchResults", value })}
           />
+          <TuningRow
+            label="Policy text quoted per answer"
+            description="How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about."
+            value={settings?.policyChars ?? 4000}
+            min={500}
+            max={12000}
+            disabled={tuneBot.isPending}
+            onCommit={(value) => tuneBot.mutate({ key: "policyChars", value })}
+          />
         </ul>
+      </section>
+
+      <section className="mb-6 rounded-md border border-line bg-surface p-4">
+        <h2 className="font-display text-base text-ink">
+          <T>Pages the storefront bot may quote</T>
+        </h2>
+        <p className="mt-1 text-sm text-ink-muted">
+          <T>
+            Published page slugs, separated by spaces. The bot reads these word for word when a
+            customer asks about policy, so its answers match what you actually published.
+          </T>
+        </p>
+        <PolicyPagesRow
+          value={settings?.policyPages ?? ""}
+          disabled={setPolicyPages.isPending}
+          onCommit={(value) => setPolicyPages.mutate(value)}
+        />
       </section>
 
       <section className="mb-6 rounded-md border border-line bg-surface p-4">

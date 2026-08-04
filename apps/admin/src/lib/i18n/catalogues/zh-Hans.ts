@@ -578,6 +578,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "主页SEO",
   "Homepage Settings": "主页设置",
   "Homepage settings unavailable": "主页设置不可用",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "店面机器人在回答之前可以读取政策页面的多少个字符。保留客户询问的更多详细信息的时间更长。",
   "How many entries from the list below are given to the assistant as reference.":
     "下面列表中的多少条目将提供给助理作为参考。",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -942,6 +944,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "页面标题",
   "Page unavailable": "页面不可用",
   Pages: "页面",
+  "Pages the storefront bot may quote": "店面机器人可能引用的页面",
   Paid: "已付费",
   "Paid out": "已付费",
   "paid via": "支付方式",
@@ -977,6 +980,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "已放置",
   "Platform cut": "平台削减",
   "Platform earns": "平台收入",
+  "Policy page slugs": "政策页面标题",
+  "Policy text quoted per answer": "每个答案引用的政策文本",
   "Polish (Polski)": "波兰语（Polski）",
   "Portuguese (Português)": "葡萄牙语（Português）",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1021,6 +1026,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "发布为",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "主页滑块的已发布类别。客户按此顺序在桌面上一次看到四个。提高网站控制限制。",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "已发布的页面标题，以空格分隔。当客户询问政策时，机器人会逐字读取这些内容，因此其答案与您实际发布的内容相符。",
   "Published products": "已发布的产品",
   "Publishing…": "发布…",
   "Pull quote": "重要引文",
@@ -1118,6 +1125,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "重试",
   "Return request not found": "找不到退货请求",
   Returns: "退货",
+  "returns delivery help terms privacy": "退货递送帮助条款隐私",
   Revenue: "收入",
   "Revenue (paid)": "收入（付费）",
   "Revenue by day": "每日收入",

@@ -497,6 +497,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage sections unavailable": "Hindi available ang mga seksyon ng homepage",
   "Homepage Settings": "Mga Setting ng Homepage",
   "Homepage settings unavailable": "Hindi available ang mga setting ng homepage",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "Ilang character ng page ng patakaran ang maaaring basahin ng storefront bot bago sumagot. Ang mas matagal ay nagpapanatili ng higit pa sa detalyeng itinanong ng isang customer.",
   "How many entries from the list below are given to the assistant as reference.":
     "Gaano karaming mga entry mula sa listahan sa ibaba ang ibinibigay sa assistant bilang reference.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -835,6 +837,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Pamagat ng page",
   "Page unavailable": "Hindi available ang page",
   Pages: "Mga page",
+  "Pages the storefront bot may quote": "Mga page na maaaring i-quote ng storefront bot",
   Paid: "Bayad",
   "Paid out": "Bayad",
   "paid via": "binayaran sa pamamagitan ng",
@@ -869,6 +872,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pumili ng isa mula sa listahan upang simulan ang pagbabasa.",
   Placed: "Inilagay",
   "Platform earns": "Kumita ang platform",
+  "Policy page slugs": "Mga slug ng page ng patakaran",
+  "Policy text quoted per answer": "Text ng patakaran na sinipi bawat sagot",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Pinataas ng positibo ang presyo (isang markup, ipinapakita bilang ang bagong presyo lamang). Ibinababa ito ng negatibo (isang diskwento, na ipinapakita kasama ang tunay na presyong tinamaan). Sa pagitan ng −90% at 500%. Ang pag-save ng panuntunan para sa parehong target at saklaw ay papalitan ito sa halip na magdagdag ng duplicate.",
   "Post a blog (submission form)": "Mag-post ng blog (submission form)",
@@ -909,6 +914,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Na-publish bilang",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "na-publish na mga kategorya para sa slider ng homepage. Nakikita ng mga customer ang apat sa isang pagkakataon sa desktop, sa ganitong pagkakasunud-sunod. Taasan ang limitasyon sa Site Control.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "Mga na-publish na page slug, na pinaghihiwalay ng mga puwang. Binabasa ng bot ang salita para sa salita kapag nagtanong ang isang customer tungkol sa patakaran, kaya tumutugma ang mga sagot nito sa aktwal mong na-publish.",
   "Published products": "Mga na-publish na produkto",
   "Put essential subjects inside the dashed centre. Responsive crops may remove the edges.":
     "Maglagay ng mga putol-putol na paksa. Maaaring alisin ng mga tumutugon na pananim ang mga gilid.",
@@ -1001,6 +1008,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "Subukang muli",
   "Return request not found": "Hindi nakita ang kahilingan sa pagbabalik",
   Returns: "Mga Pagbabalik",
+  "returns delivery help terms privacy":
+    "ibinabalik ang privacy ng mga tuntunin ng tulong sa paghahatid",
   Revenue: "Kita",
   "Revenue (paid)": "Kita (binayaran)",
   "Revenue by day": "Kita ayon sa araw",

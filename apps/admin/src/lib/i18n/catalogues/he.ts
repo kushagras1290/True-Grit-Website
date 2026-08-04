@@ -549,6 +549,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO של דף הבית",
   "Homepage Settings": "הגדרות דף הבית",
   "Homepage settings unavailable": "הגדרות דף הבית אינן זמינות",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "כמה תווים של דף מדיניות עשוי הבוט של חזית החנות לקרוא לפני שהוא עונה. זמן רב יותר שומר יותר מהפרטים שלקוח שאל עליהם.",
   "How many entries from the list below are given to the assistant as reference.":
     "כמה ערכים מהרשימה למטה ניתנות לעוזר כעיון.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -912,6 +914,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "כותרת עמוד",
   "Page unavailable": "דף לא זמין",
   Pages: "דפים",
+  "Pages the storefront bot may quote": "דפים שהבוט של חזית החנות עשוי לצטט",
   Paid: "בתשלום",
   "Paid out": "בתשלום",
   "paid via": "בתשלום באמצעות",
@@ -943,6 +946,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "מוצב",
   "Platform cut": "קיצוץ פלטפורמה",
   "Platform earns": "פלטפורמה מרוויחה",
+  "Policy page slugs": "שבלולים של דפי מדיניות",
+  "Policy text quoted per answer": "טקסט מדיניות מצוטט לכל תשובה",
   "Polish (Polski)": "פולנית (פולסקי)",
   "Portuguese (Português)": "פורטוגזית (פורטוגזית)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -986,6 +991,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "פורסם כ",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "קטגוריות שפורסמו עבור המחוון של דף הבית. לקוחות רואים ארבעה בו-זמנית על שולחן העבודה, בסדר הזה. הגדל את המגבלה על בקרת אתר.",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "שבלולי דפים שפורסמו, מופרדים ברווחים. הבוט קורא את אלה מילה במילה כאשר לקוח שואל על מדיניות, כך שהתשובות שלו תואמות למה שפרסמת בפועל.",
   "Published products": "מוצרים שפורסמו",
   "Publishing…": "פרסום...",
   "Pull quote": "משוך ציטוט",
@@ -1082,6 +1089,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "נסה שוב",
   "Return request not found": "בקשת החזרה לא נמצאה",
   Returns: "החזרות",
+  "returns delivery help terms privacy": "מחזיר תנאי עזרה לתנאי משלוח פרטיות",
   Revenue: "הכנסה",
   "Revenue (paid)": "הכנסה (בתשלום)",
   "Revenue by day": "הכנסה לפי יום",

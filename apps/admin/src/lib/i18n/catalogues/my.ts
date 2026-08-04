@@ -583,6 +583,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ပင်မစာမျက်နှာ SEO",
   "Homepage Settings": "ပင်မစာမျက်နှာ ဆက်တင်များ",
   "Homepage settings unavailable": "ပင်မစာမျက်နှာဆက်တင်များကို မရရှိနိုင်ပါ",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "မူဝါဒစာမျက်နှာတစ်ခု၏ စာလုံးမည်မျှကို စတိုးမျက်နှာစာ ဘော့တ်မှ မဖြေဆိုမီ ဖတ်နိုင်မည်ဖြစ်သည်။ ဖောက်သည်တစ်ဦးမေးသော အသေးစိတ်အချက်အလက်များကို ပိုကြာကြာသိမ်းဆည်းထားသည်။",
   "How many entries from the list below are given to the assistant as reference.":
     "အောက်ပါစာရင်းမှ ဝင်ရောက်မှု အရေအတွက်မည်မျှကို assistant အား ကိုးကားရန်အတွက် ပေးထားပါသည်။",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -960,6 +962,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "စာမျက်နှာ ခေါင်းစဉ်",
   "Page unavailable": "စာမျက်နှာ မရရှိနိုင်ပါ",
   Pages: "စာမျက်နှာများ",
+  "Pages the storefront bot may quote": "ဆိုင်မျက်နှာစာ ဘော့တ်မှ ကိုးကားနိုင်သော စာမျက်နှာများ",
   Paid: "ပေးချေပြီး",
   "Paid out": "ပေးချေပြီး",
   "paid via": "မှတစ်ဆင့် ပေးချေပြီး",
@@ -997,6 +1000,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "နေရာ",
   "Platform cut": "ပလပ်ဖောင်းဖြတ်တောက်ခြင်း",
   "Platform earns": "ပလပ်ဖောင်းဝင်ငွေများ",
+  "Policy page slugs": "မူဝါဒစာမျက်နှာ ပက်ကျိများ",
+  "Policy text quoted per answer": "အဖြေတစ်ခုလျှင် ကိုးကားဖော်ပြထားသော မူဝါဒစာသား",
   "Polish (Polski)": "ပိုလန် (Polski)",
   "Portuguese (Português)": "ပေါ်တူဂီ (Português)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1042,6 +1047,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "ထုတ်ဝေပြီး",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "ပင်မစာမျက်နှာ ဆလိုက်ဒါအတွက် ထုတ်ဝေထားသော အမျိုးအစားများ။ ဝယ်ယူသူများသည် ဤအမှာစာဖြင့် ဒက်စ်တော့ပေါ်တွင် တစ်ကြိမ်လျှင် လေးခုတွေ့သည်။ Site Control တွင် ကန့်သတ်ချက်ကို မြှင့်တင်ပါ။",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "စာမျက်နှာများကို သီးခြားထုတ်ဝေထားသော နေရာလွတ်များ ဖောက်သည်တစ်ဦးမှ မူဝါဒအကြောင်းမေးသောအခါ ဘော့တ်သည် ဤစကားလုံးများကို ဖတ်ပြသည်၊ ထို့ကြောင့် ၎င်း၏အဖြေများသည် သင်အမှန်တကယ်ထုတ်ဝေသည့်အရာနှင့် ကိုက်ညီပါသည်။",
   "Published products": "ထုတ်ဝေထားသော ထုတ်ကုန်များ",
   "Publishing…": "ထုတ်ဝေနေသည်…",
   "Pull quote": "ကိုးကားချက်ကို ဆွဲထုတ်ပါ",
@@ -1143,6 +1150,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "ထပ်စမ်းကြည့်ပါ",
   "Return request not found": "ပြန်ပို့ရန် တောင်းဆိုချက်ကို ရှာမတွေ့ပါ",
   Returns: "ပြန်ပို့မှုများ",
+  "returns delivery help terms privacy": "ပေးပို့မှုအကူအညီဆိုင်ရာ စည်းမျဉ်းများ privacy",
   Revenue: "ဝင်ငွေ",
   "Revenue (paid)": "ဝင်ငွေ (ပေးချေသည်)",
   "Revenue by day": "နေ့အလိုက် ဝင်ငွေ",

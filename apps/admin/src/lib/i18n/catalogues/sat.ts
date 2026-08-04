@@ -601,6 +601,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ᱚᱲᱟᱜ ᱥᱟᱦᱴᱟ ᱮᱥᱤᱭᱳ",
   "Homepage Settings": "ᱚᱲᱟᱜ ᱥᱟᱦᱴᱟ ᱥᱮᱴᱤᱝ",
   "Homepage settings unavailable": "ᱚᱲᱟᱜ ᱥᱟᱦᱴᱟ ᱥᱮᱴᱤᱝ ᱵᱟᱝ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ",
+  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
+    "ᱥᱴᱚᱨᱯᱷᱨᱚᱱᱴ ᱵᱚᱴ ᱛᱮᱞᱟ ᱮᱢ ᱞᱟᱦᱟᱨᱮ ᱯᱚᱞᱤᱥᱤ ᱥᱟᱦᱴᱟ ᱨᱮᱭᱟᱜ ᱛᱤᱱᱟᱹᱜ ᱜᱟᱱ ᱪᱤᱠᱤ ᱯᱟᱲᱦᱟᱣ ᱫᱟᱲᱮᱭᱟᱜᱼᱟᱭ᱾ ᱜᱚᱨᱟᱦᱟᱠ ᱵᱟᱵᱚᱛ ᱠᱩᱞᱤ ᱟᱠᱟᱱ ᱵᱤᱵᱨᱚᱬ ᱡᱟᱹᱥᱛᱤ ᱜᱷᱟᱹᱲᱤᱡ ᱫᱚᱦᱚᱭᱟᱭ ᱾",
   "How many entries from the list below are given to the assistant as reference.":
     "ᱞᱟᱛᱟᱨ ᱨᱮ ᱮᱢ ᱟᱠᱟᱱ ᱛᱟᱞᱠᱟ ᱠᱷᱚᱱ ᱛᱤᱱᱟᱹᱜ ᱵᱚᱞᱚᱱ ᱜᱚᱲᱚᱭᱤᱡ ᱥᱟᱠᱟᱢ ᱞᱮᱠᱟᱛᱮ ᱮᱢ ᱟᱠᱟᱱᱟ ᱾",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
@@ -988,6 +990,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "ᱥᱟᱦᱴᱟ ᱢᱩᱴᱷᱟᱹᱱ",
   "Page unavailable": "ᱥᱟᱦᱴᱟ ᱵᱟᱝ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ",
   Pages: "ᱥᱟᱦᱴᱟ",
+  "Pages the storefront bot may quote": "ᱥᱟᱦᱴᱟ ᱫᱚ ᱥᱴᱚᱨᱯᱷᱨᱚᱱᱴ ᱵᱚᱴ ᱠᱳᱴ ᱫᱟᱲᱮᱭᱟᱜᱼᱟᱭ",
   Paid: "ᱯᱮᱭᱰ",
   "Paid out": "ᱯᱮᱭᱰ ᱟᱩᱴ",
   "paid via": "ᱯᱮᱭᱰ ᱦᱚᱛᱮᱛᱮ",
@@ -1026,6 +1029,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Placed: "ᱫᱚᱦᱚ ᱟᱠᱟᱱᱟ",
   "Platform cut": "ᱯᱞᱮᱴᱯᱷᱚᱨᱢ ᱠᱟᱴ",
   "Platform earns": "ᱯᱞᱮᱴᱯᱷᱚᱨᱢ ᱟᱨᱡᱟᱣ",
+  "Policy page slugs": "ᱯᱚᱞᱤᱥᱤ ᱥᱟᱦᱴᱟ ᱥᱞᱟᱜᱽ",
+  "Policy text quoted per answer": "ᱛᱮᱞᱟ ᱞᱮᱠᱟᱛᱮ ᱯᱚᱞᱤᱥᱤ ᱚᱱᱚᱞ ᱫᱚᱦᱚ ᱟᱠᱟᱱᱟ",
   "Polish (Polski)": "ᱯᱚᱞᱤᱥ (ᱯᱚᱞᱥᱠᱤ)",
   "Portuguese (Português)": "ᱯᱩᱨᱴᱩᱜᱤᱡᱽ (ᱯᱳᱨᱴᱩᱜᱤᱥ)",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1071,6 +1076,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "ᱡᱮᱞᱠᱟ ᱪᱷᱟᱯᱟ ᱟᱠᱟᱱᱟ",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "ᱦᱚᱢᱯᱮᱡᱽ ᱥᱞᱟᱭᱰᱟᱨ ᱞᱟᱹᱜᱤᱫ ᱪᱷᱟᱯᱟ ᱜᱟᱛᱟᱠ ᱠᱚ ᱾ ᱜᱚᱨᱦᱟᱠ ᱠᱚ ᱰᱮᱥᱠᱴᱚᱯ ᱨᱮ ᱢᱤᱫ ᱚᱠᱛᱚ ᱨᱮ ᱯᱩᱱ ᱜᱚᱴᱟᱝ ᱠᱚ ᱧᱮᱞᱟ, ᱱᱚᱣᱟ ᱞᱮᱠᱟᱛᱮ ᱾ ᱥᱟᱭᱤᱴ ᱠᱚᱱᱴᱨᱚᱞ ᱨᱮ ᱥᱤᱢᱟᱹ ᱰᱷᱮᱨ ᱢᱮ ᱾",
+  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
+    "ᱪᱷᱟᱯᱟ ᱟᱠᱟᱱ ᱥᱟᱦᱴᱟ ᱥᱞᱚᱜᱽ, ᱥᱯᱮᱥ ᱛᱮ ᱵᱷᱮᱜᱟᱨ ᱟᱠᱟᱱ᱾ ᱵᱚᱴ ᱫᱚ ᱱᱚᱶᱟ ᱠᱚ ᱟᱹᱲᱟᱹ ᱛᱮ ᱟᱹᱲᱟᱹ ᱯᱟᱲᱦᱟᱣᱟᱭ ᱡᱚᱠᱷᱚᱱ ᱜᱚᱨᱟᱦᱟᱠ ᱯᱚᱞᱤᱥᱤ ᱵᱟᱵᱚᱛ ᱠᱚ ᱠᱩᱞᱤᱭᱟ, ᱚᱱᱟᱛᱮ ᱩᱱᱤᱭᱟᱜ ᱛᱮᱞᱟ ᱫᱚ ᱟᱢ ᱥᱟᱹᱨᱤ ᱛᱮ ᱪᱷᱟᱯᱟ ᱟᱠᱟᱫ ᱥᱟᱶ ᱢᱤᱞᱟᱹᱣ ᱜᱮᱭᱟ᱾",
   "Published products": "ᱪᱷᱟᱯᱟ ᱟᱠᱟᱱ ᱡᱤᱱᱤᱥ ᱠᱚ",
   "Publishing…": "ᱯᱟᱨᱥᱟᱞᱚᱜ ᱠᱟᱱᱟ...",
   "Pull quote": "ᱯᱩᱞ ᱠᱳᱴ",
@@ -1172,6 +1179,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Retry: "ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩ",
   "Return request not found": "ᱨᱩᱣᱟᱹ ᱟᱨᱫᱟᱥ ᱵᱟᱝ ᱧᱟᱢ ᱞᱮᱱᱟ",
   Returns: "ᱨᱩᱣᱟᱹ",
+  "returns delivery help terms privacy": "ᱨᱩᱣᱟᱹᱨ ᱰᱮᱞᱤᱵᱷᱟᱨᱤ ᱜᱚᱲᱚ ᱥᱟᱨᱛ ᱯᱨᱟᱭᱣᱮᱥᱤ",
   Revenue: "ᱨᱮᱵᱷᱮᱱᱭᱩ",
   "Revenue (paid)": "ᱠᱷᱟᱡᱽᱱᱟ (ᱵᱷᱩᱠᱛᱤ)",
   "Revenue by day": "ᱠᱷᱟᱡᱽᱱᱟ ᱫᱤᱱ ᱞᱮᱠᱟᱛᱮ",
