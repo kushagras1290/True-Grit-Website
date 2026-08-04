@@ -86,12 +86,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Cuir catagóir leis",
   "Add code": "Cuir cód leis",
   "Add country": "Cuir tír leis",
+  "Add entry": "Cuir iontráil leis",
   "Add farm owner": "Cuir úinéir feirme leis",
   "Add ingredient": "Cuir comhábhar leis",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Cuir míreanna leis (cé na leaganacha, cé mhéad díobh) tar éis duit an beart a chruthú, ó Manage.",
+  "Add knowledge entry": "Cuir iontráil eolais leis",
   "Add one above to get started.": "Cuir ceann thuas leis chun tús a chur leis.",
   "Add one below to get started.": "Cuir ceann thíos leis chun tús a chur leis.",
+  "Add one so the bot has something to reference for this scope.":
+    "Cuir ceann leis ionas go mbeidh rud éigin ag an bot don raon feidhme seo.",
   "Add page": "Cuir leathanach leis",
   "Add participants": "Cuir rannpháirtithe leis",
   "Add role": "Cuir ról leis",
@@ -109,9 +113,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Coigeartaigh an cuardach nó cruthaigh táirge.",
   "Adjustment %": "Coigeartú %",
   "Adjustments restricted": "Coigeartuithe srianta",
+  Admin: "Riarachán",
   "Admin API is unavailable": "Níl an API Riaracháin ar fáil",
   "Admin Logs": "Logaí Riaracháin",
   "Admin navigation": "Seoladh riaracháin",
+  "Admin panel bot": "Bot an phainéil admin",
   Afrikaans: "Afracach",
   "After refunds, all farms": "Tar éis aisíocaíochtaí, gach feirm",
   Albanian: "Albanach",
@@ -170,12 +176,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Beidh míreanna cartlainne le feiceáil anseo.",
   Armenian: "Airméinis",
   "Article not found": "Ní bhfuarthas an t-alt",
+  "Ask a question…": "Cuir ceist…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Fiafraigh conas rud éigin a dhéanamh sa phainéal riaracháin, nó fiafraigh faoi orduithe ar feitheamh, earraí ar stoc íseal, nó stádas ordaithe.",
   "Assamese (অসমীয়া)": "Asaimis (অসমীয়া)",
   "Assigned roles": "Róil sannta",
   "Audit Log": "Loga Iniúchta",
   Author: "Údar",
   "Auto-translate": "Aistrigh go hUathoibríoch",
   "Auto-translate all": "Aistrigh gach ceann díobh go huathoibríoch",
+  Availability: "Infhaighteacht",
   Available: "Ar fáil",
   "available · reorder at": "ar fáil · athordú ag",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -217,6 +227,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Comhlacht téacs",
   Bosnian: "Boisnis",
   Brand: "Branda",
+  "Built-in": "Tógtha-i",
   "Bulgarian (Български)": "Bulgáiris (Български)",
   Bundle: "Babhta",
   "bundle price · items priced at": "praghas beart · earraí ar phraghas",
@@ -268,6 +279,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Ag imréiteach...",
   "Click link": "Cliceáil nasc",
   Close: "Dún",
+  "Close help assistant": "Dún cúntóir cabhrach",
   "Close navigation": "Dún an loingseoireacht",
   "CMS pages": "leathanaigh CMS",
   "CMS pages & SEO": "leathanaigh CMS & Sinsearach",
@@ -300,6 +312,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Lean ar aghaidh le Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Rialaigh cad is féidir le gach ról a fheiceáil, a chruthú, a chur in eagar, a fhoilsiú nó a bhainistiú.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Rialaigh cibé an bhfuil gach bot ar fáil, agus cuir a bhfuil ar eolas aige in eagar.",
   "Cook minutes": "Cook nóiméad",
   "Copy inside dark bands.": "Cóipeáil taobh istigh de na bandaí dorcha.",
   Correction: "Ceartú",
@@ -367,9 +381,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Scrios",
   "Delete (spam)": "Scrios (turscar)",
   "Delete category": "Scrios an chatagóir",
+  "Delete entry": "Scrios iontráil",
   "Delete farm": "Scrios feirm",
   "Delete image": "Scrios an íomhá",
   "Delete inventory row": "Scrios ró fhardail",
+  "Delete knowledge entry?": "Scrios iontráil eolais?",
   "Delete permanently": "Scrios go buan",
   "Delete product": "Scrios an táirge",
   "Delete role": "Scrios ról",
@@ -417,7 +433,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Cuir meiteashonraí leathanaigh CMS, innéacsú agus bloic amha leathanaigh in eagar. Tá taifead an leathanaigh baile liostaithe anseo freisin, ach is é Socruithe an Leathanaigh Baile an bealach is sábháilte chun é a athrú - glacann an t-eagarthóir seo JSON amh.",
   "Edit content": "Cuir an t-inneachar in eagar",
+  "Edit entry": "Cuir iontráil in eagar",
   "Edit farm": "Cuir feirm in eagar",
+  "Edit knowledge entry": "Cuir iontráil eolais in eagar",
   "Edit review": "Cuir an léirmheas in eagar",
   "Edit role": "Cuir an ról in eagar",
   "Edit Variant": "Cuir Athróg in eagar",
@@ -533,6 +551,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Ceannteidil agus cóip.",
   Headline: "Ceannlíne",
   "Hebrew (עברית)": "Eabhrais (עברית)",
+  "Help assistant": "Cúntóir cabhrach",
+  "Help Assistant": "Cúntóir Cabhrach",
   "Hero description": "Cur síos ar an laoch",
   "Hero eyebrow": "Súil laoch",
   "Hero image alt text": "íomhá Laoch alt téacs",
@@ -604,6 +624,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Kashmiri (کٲشُر)": "Caismíris (کٲشُر)",
   "Keep artwork clean": "Coinnigh an saothar ealaíne glan",
   "Keep typing to search…": "Coinnigh ag clóscríobh chun cuardach a dhéanamh…",
+  Keywords: "Eochairfhocail",
   Khmer: "Ciméiris",
   "Korean (한국어)": "Cóiréis (한국어)",
   Kyrgyz: "An Chirgeastáin",
@@ -792,6 +813,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Níl aon innéacs",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Níl aon mhír ann fós - cuir ceann amháin ar a laghad leis thíos. Ní bhaineann an tSeiceáil amach ach lascaine an bheartáin seo nuair a bhíonn gach mír anseo sa chiseán, sna méideanna seo ar a laghad.",
+  "No knowledge entries": "Gan iontrálacha eolais",
   "No line items recorded.": "Níor taifeadadh aon mhíreanna líne.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ní athraíonn an logáil isteach a thuilleadh - mar sin tagann pasfhocal a shocraigh tú anseo in áit an tseancheann.",
@@ -876,6 +898,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Ní féidir ach leis an úinéir scóip róil a bhainistiú.",
   "Only the owner can review payments and refunds.":
     "Ní féidir ach leis an úinéir íocaíochtaí agus aisíocaíochtaí a athbhreithniú.",
+  "Open help assistant": "Cúntóir cabhrach oscailte",
   "Open navigation": "Oscail nascleanúint",
   Optional: "Roghnach",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1150,6 +1173,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Sábháil…",
   "Say how often you will write and that unsubscribing is easy.":
     "Abair cé chomh minic a scríobhfaidh tú agus go bhfuil sé éasca díliostáil.",
+  Scope: "Scóip",
   "Scopes unavailable": "Scóipeanna ar fáil",
   "Search archive": "Cartlann cuardaigh",
   "Search blog posts": "Cuardaigh postálacha blag",
@@ -1216,6 +1240,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Glanfar na sraitheanna roghnaithe chuig an stoc in áirithe, ag cur an stoic ar fáil náid agus áirithintí, stair gluaiseachta agus logaí iniúchta á gcaomhnú.",
   "Selected users will be removed from the users list and signed out.":
     "Bainfear úsáideoirí roghnaithe de liosta na n-úsáideoirí agus síneofar amach iad.",
+  Send: "Seol",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Seol nasc slán athshocraithe pasfhocail chuig an úsáideoir seo. Socróidh siad a bpasfhocal nua ón leathanach athshocraithe riarthóra.",
   "Send back to draft": "Seol ar ais chuig an dréacht",
@@ -1287,6 +1312,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Blúire",
   "Sold out": "Díolta amach",
   Somali: "Somáilis",
+  "space separated, e.g. product publish visibility":
+    "spás scartha, e.g. infheictheacht foilsithe an táirge",
   "Spanish (Español)": "Spáinnis (An Spáinn)",
   "Sprouted ragi flour": "Plúr ragi sprouted",
   "SQL Tables": "Táblaí SQL",
@@ -1299,6 +1326,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Céimeanna (ceann in aghaidh an líne)",
   "Stock Status": "Stádas Stoc",
   "Store credit": "Creidmheas siopa",
+  "Storefront bot": "Bot Storefront",
   "Storefront switches": "Lasca aghaidh an tsiopa",
   "Storefront switches unavailable": "Níl fáil ar lasca aghaidh an tsiopa",
   "Strong border": "Teorainn láidir",
@@ -1335,9 +1363,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Sábhálann an bhratach thar barr",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Sábhálann an bhratach, an tsraith chatagóir, an tsraith táirgí agus na réimsí Sinsearach le chéile. Sábhálann boscaí tic na rannóige, ordú agus cóip saincheaptha na rannóige ina n-aonar, de réir mar a athraíonn tú iad.",
+  "The chat widget customers and visitors see on the storefront.":
+    "An ghiuirléid chomhrá a fheiceann custaiméirí agus cuairteoirí ar aghaidh an tsiopa.",
   "The classic credential pair, including the password-reset flow.":
     "An péire clasaiceach creidiúnaithe, lena n-áirítear an sreabhadh athshocraithe pasfhocail.",
   "the farm owner": "úinéir na feirme",
+  "The floating Help Assistant staff see on every admin page.":
+    "Feiceann foireann an Chúntóra Cabhrach Snámh ar gach leathanach riaracháin.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Léiríonn an nasc ceanntásca agus buntásc gach leathanach, 00 teanga aistrithe (imirce). Titeann locale fágtha bán ar ais go Béarla ar aghaidh an tsiopa. Is é seo an rialú céanna a shocraíonn ceanntásc a thaispeánann "Siopa" / "Séasúrach" i mBéarla agus gach rud timpeall air athraigh teanga - is as seo a thagann na lipéid sin, ní ó na haistriúcháin ábhar leathanaigh thuas.',
   "The homepage has no sections": "Níl aon rannóg ar an leathanach baile",
@@ -1369,6 +1401,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Baineann na dathanna seo leis na leathanaigh thíos freisin",
   "These roles define the permission sets available when inviting or editing users.":
     "Sainmhíníonn na róil seo na tacair cheadanna atá ar fáil agus cuireadh á thabhairt d’úsáideoirí nó nuair a bhíonn eagarthóireacht á déanamh orthu.",
+  "Thinking…": "Ag smaoineamh…",
   "This application is": "Tá an feidhmchlár seo",
   "This order is in a final state.": "Tá an t-ordú seo i riocht deiridh.",
   "This page contains sensitive application diagnostics.":
@@ -1489,6 +1522,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Cén fáth a bhfuil gá le hathruithe, nó cén fáth ar diúltaíodh é seo?",
   "Why is stock changing?": "Cén fáth a bhfuil stoc ag athrú?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Focail a mheaitseálann an bot le ceist chun an cinneadh a dhéanamh an bhfuil an iontráil seo ábhartha.",
   "Working...": "Ag obair...",
   "World languages": "Teangacha an Domhain",
   "Write a message…": "Scríobh teachtaireacht…",

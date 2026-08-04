@@ -24,6 +24,7 @@ import { FarmRequestDetailPage, FarmRequestsListPage } from "./features/farm-req
 import { HomepageSettingsPage } from "./features/homepage-settings";
 import { ImageGuidePage } from "./features/image-guide";
 import { MessagesPage } from "./features/messages";
+import { SupportBotSettingsPage } from "./features/support-bot-settings";
 import {
   AuditPage,
   ContactAttemptsPage,
@@ -121,6 +122,7 @@ createRoot(document.getElementById("root")!).render(
                 <Route path="scopes" element={<ScopeManagementPage />} />
                 <Route path="audit" element={<AuditPage />} />
                 <Route path="reports" element={<ReportsPage />} />
+                <Route path="help-assistant" element={<SupportBotSettingsPage />} />
                 <Route
                   path="admin-logs"
                   element={

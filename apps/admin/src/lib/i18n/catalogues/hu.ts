@@ -83,12 +83,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Kategória hozzáadása",
   "Add code": "Kód hozzáadása",
   "Add country": "Ország hozzáadása",
+  "Add entry": "Bejegyzés hozzáadása",
   "Add farm owner": "Hirdetés a farm tulajdonosához",
   "Add ingredient": "Hozzávaló hozzáadása",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Adjon hozzá elemeket (melyik változatot, mindegyikből hányat) a csomag létrehozása után a Kezelés menüből.",
+  "Add knowledge entry": "Tudásbejegyzés hozzáadása",
   "Add one above to get started.": "A kezdéshez adjon hozzá egyet a fentiekhez.",
   "Add one below to get started.": "A kezdéshez vegyen fel egyet alább.",
+  "Add one so the bot has something to reference for this scope.":
+    "Adjon hozzá egyet, hogy a botnak legyen mire hivatkoznia ehhez a hatókörhöz.",
   "Add page": "Oldal hozzáadása",
   "Add participants": "Résztvevők hozzáadása",
   "Add role": "Szerepkör hozzáadása",
@@ -106,9 +110,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Módosítsa a keresést vagy hozzon létre egy terméket.",
   "Adjustment %": "Korrekció %",
   "Adjustments restricted": "Korlátozott módosítások",
+  Admin: "Rendszergazda",
   "Admin API is unavailable": "Az Admin API nem érhető el",
   "Admin Logs": "Rendszergazdai naplók",
   "Admin navigation": "Rendszergazdai navigáció",
+  "Admin panel bot": "Rendszergazdai panel robotja",
   Afrikaans: "afrikaans",
   "After refunds, all farms": "A visszatérítések után minden gazdaság",
   Albanian: "albán",
@@ -167,6 +173,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Az archivált elemek itt jelennek meg.",
   Armenian: "örmény",
   "Article not found": "A cikk nem található",
+  "Ask a question…": "Kérdés feladása…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Kérdezzen meg valamit az adminisztrációs panelen, vagy kérdezzen a függőben lévő rendelésekről, alacsony készletről vagy a megrendelés állapotáról.",
   "Assamese (অসমীয়া)": "asszámi (অসমীয়া)",
   "Assigned roles": "Hozzárendelt szerepkörök",
   Attribution: "Hozzárendelés",
@@ -174,6 +183,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Szerző",
   "Auto-translate": "Automatikus fordítás",
   "Auto-translate all": "Az összes automatikus fordítása",
+  Availability: "Elérhetőség",
   Available: "Elérhető",
   "available · reorder at": "rendelhető · újrarendelés itt:",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -216,6 +226,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "törzsszöveg",
   Bosnian: "bosnyák",
   Brand: '8Brand</007"> (Български)',
+  "Built-in": "Beépített",
   "Bulgarian (Български)": "bolgár (Български)",
   Bundle: "Csomag",
   "bundle price · items priced at": "csomag ára · tételek ára",
@@ -268,6 +279,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Törlés...",
   "Click link": "Kattintson a linkre",
   Close: "Bezárás",
+  "Close help assistant": "Súgó asszisztens bezárása",
   "Close navigation": "Navigáció bezárása",
   "CMS pages": "CMS-oldalak",
   "CMS pages & SEO": "CMS-oldalak és keresőoptimalizálás",
@@ -301,6 +313,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Folytatás a Facebookkal",
   "Control what each role can view, create, edit, publish or manage.":
     "Szabályozhatja, hogy az egyes szerepkörök mit tekinthetnek meg, hozhatnak létre, szerkeszthetnek, publikálhatnak vagy kezelhetnek.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Szabályozhatja, hogy az egyes robotok elérhetők-e, és szerkessze, hogy mit tud.",
   Cook: "Főzés",
   "Cook minutes": "Főzési percek",
   "Copy inside dark bands.": "Másolás a sötét sávok belsejébe.",
@@ -370,9 +384,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Törlés",
   "Delete (spam)": "Törlés (spam)",
   "Delete category": "Kategória törlése",
+  "Delete entry": "Bejegyzés törlése",
   "Delete farm": "Fanya törlése",
   "Delete image": "Kép törlése",
   "Delete inventory row": "Készletsor törlése",
+  "Delete knowledge entry?": "Törli a tudásbejegyzést?",
   "Delete permanently": "Végleges törlés",
   "Delete product": "Termék törlése",
   "Delete role": "Szerepkör törlése",
@@ -423,7 +439,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS-oldal metaadatok, indexelés és nyers oldalblokkok szerkesztése. A kezdőlap rekordja itt is megjelenik, de a kezdőlap beállításai a biztonságosabb módja annak megváltoztatásának – ez a szerkesztő nyers JSON-t használ.",
   "Edit content": "Tartalom szerkesztése",
+  "Edit entry": "Bejegyzés szerkesztése",
   "Edit farm": "Tanya szerkesztése",
+  "Edit knowledge entry": "Tudásbejegyzés szerkesztése",
   "Edit media": "Média szerkesztése",
   "Edit review": "Vélemény szerkesztése",
   "Edit role": "Szerep szerkesztése",
@@ -536,6 +554,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Címsorok és másolás.",
   Headline: "Címsor",
   "Hebrew (עברית)": "héber (עברית)",
+  "Help assistant": "Súgó",
+  "Help Assistant": 'Help Assistant id="t0006">Kulcsszavak',
   "Hero description": "Hősleírás",
   "Hero eyebrow": "Hősszemöldök",
   "Hero image alt text": "Hőskép alternatív szövege",
@@ -611,6 +631,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "kazah",
   "Keep artwork clean": "Tartsa tisztán az alkotásokat",
   "Keep typing to search…": "A kereséshez folyamatosan gépeljen…",
+  Keywords: "Kulcsszavak",
   Khmer: "khmer",
   Kinyarwanda: "Kinyaruanda",
   "Konkani (कोंकणी)": "konkani (कोंकणी)",
@@ -802,6 +823,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Nincs index",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Még nincs elem – adjon hozzá legalább egyet alább. A Checkout csak akkor alkalmazza a csomag kedvezményét, ha a kosárban minden elem megtalálható, legalább ilyen mennyiségben.",
+  "No knowledge entries": "Nincsenek tudásbejegyzések",
   "No line items recorded.": "Nincsenek sorok rögzítve.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "már nem módosítja a bejelentkezési adatokat – így az itt beállított jelszó valóban lecseréli a régit.",
@@ -886,6 +908,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Csak a tulajdonos kezelheti a szerepkör hatókörét.",
   "Only the owner can review payments and refunds.":
     "Csak a tulajdonos tekintheti át a kifizetéseket és a visszatérítéseket.",
+  "Open help assistant": "Súgó megnyitása",
   "Open navigation": "Navigáció megnyitása",
   Optional: "Opcionális",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1163,6 +1186,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Mentés...",
   "Say how often you will write and that unsubscribing is easy.":
     "Mondd, milyen gyakran fogsz írni.",
+  Scope: "Hatókör",
   "Scope Management": "Hatókör-kezelés",
   "Scopes unavailable": "Nem elérhető hatókör",
   "Search archive": "Keresés az archívumban",
@@ -1230,6 +1254,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "A rendszer készletezés közben kijelöli, elérhetővé teszi a készletet. a foglalások, a mozgási előzmények és az ellenőrzési naplók megőrzése.",
   "Selected users will be removed from the users list and signed out.":
     "A kiválasztott felhasználók törlődnek a felhasználók listájáról, és kijelentkeznek.",
+  Send: "Küldés",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Küldjön biztonságos jelszó-visszaállítási linket ennek a felhasználónak. Új jelszavukat az adminisztrátori visszaállítási oldalon állítják be.",
   "Send back to draft": "Visszaküldés piszkozatba",
@@ -1300,6 +1325,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Részlet",
   "Sold out": "Elfogyott",
   Somali: "Szomáli",
+  "space separated, e.g. product publish visibility":
+    "szóközzel elválasztva, pl. termék közzétételi láthatósága",
   "Spanish (Español)": "spanyol (español)",
   "Sprouted ragi flour": "Csírázott ragi liszt",
   "SQL Tables": "SQL-táblák",
@@ -1312,6 +1339,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Lépések (soronként egy)",
   "Stock Status": "Raktári állapot",
   "Store credit": "Üzleti jóváírás",
+  Storefront: "Üzlet",
+  "Storefront bot": "Üzletoldali robot",
   "Storefront switches": "Kirületi kapcsolók",
   "Storefront switches unavailable": "A kirakatkapcsolók nem érhetők el",
   "Strong border": "Erős szegély",
@@ -1348,9 +1377,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Az oldal tetején lévő szalaghirdetés",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "A szalaghirdetés, a kategóriasor, a terméksor és a SEO mezők együtt menthetők. A szakaszok jelölőnégyzetei, a sorrend és az egyéni szakaszmásolat önmagukban mentésre kerülnek, amikor módosítja őket.",
+  "The chat widget customers and visitors see on the storefront.":
+    "A csevegőmodul, amelyet az ügyfelek és a látogatók a kirakaton látnak.",
   "The classic credential pair, including the password-reset flow.":
     "A klasszikus hitelesítő adatpár, beleértve a jelszó-visszaállítási folyamatot.",
   "the farm owner": "a gazdaság tulajdonosa",
+  "The floating Help Assistant staff see on every admin page.":
+    "A lebegő Súgó Asszisztens oldalt látják az összes hirdetésben.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "A fejléc és lábléc linkjei 0 nyelvenként 0 nyelven jelennek meg (6 fordítás, 8 fordítás). Az üresen hagyott nyelvi beállítás angolra esik vissza a kirakatban. Ez ugyanaz a vezérlő, amely kijavítja a „Shop” / „Seasonal” feliratú fejlécet angolul, miközben minden körülötte nyelvet váltott – ezek a címkék innen származnak, nem pedig a fenti oldaltartalom fordításaiból.",
   "The homepage has no sections": "A kezdőlapnak nincsenek szakaszai.",
@@ -1379,6 +1412,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Ezek a színek a",
   "These roles define the permission sets available when inviting or editing users.":
     "a szerepkör szerkesztése vagy definiálása alatti oldalakra is vonatkoznak. felhasználók.",
+  "Thinking…": "Gondolkodni…",
   "This application is": "Ez az alkalmazás",
   "This order is in a final state.": "Ez a megrendelés végleges állapotban van.",
   "This page contains sensitive application diagnostics.":
@@ -1500,6 +1534,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Miért van szükség változtatásokra, vagy miért utasították el ezt?",
   "Why is stock changing?": "Miért változik a készlet?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "A bot szavakat egyeztet egy kérdéssel, így eldönti, hogy ez a bejegyzés releváns-e.",
   "Working...": "Működik...",
   "World languages": "Világnyelvek",
   "Write a message…": "Írjon üzenetet…",

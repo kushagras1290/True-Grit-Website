@@ -78,12 +78,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "新增類別",
   "Add code": "新增代碼",
   "Add country": "新增國家",
+  "Add entry": "新增條目",
   "Add farm owner": "新增農場所有者",
   "Add ingredient": "添加成分",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "創建捆綁包後，透過「管理」添加商品（哪些變體，每種商品數量）。",
+  "Add knowledge entry": "新增知識條目",
   "Add one above to get started.": "上方新增一項即可開始。",
   "Add one below to get started.": "在下方新增一項即可開始。",
+  "Add one so the bot has something to reference for this scope.":
+    "新增一個條目，以便機器人在此範圍內有一些參考內容。",
   "Add page": "新增頁面",
   "Add participants": "新增參與者",
   "Add role": "新增角色",
@@ -101,9 +105,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "調整搜尋或創建產品。",
   "Adjustment %": "調整%",
   "Adjustments restricted": "調整受限",
+  Admin: "管理員",
   "Admin API is unavailable": "管理 API 不可用",
   "Admin Logs": "管理日誌",
   "Admin navigation": "管理員導航",
+  "Admin panel bot": "管理面板機器人",
   Afrikaans: "南非荷蘭語",
   "After refunds, all farms": "退款後，所有農場",
   Albanian: "阿爾巴尼亞語",
@@ -164,6 +170,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "已存檔。",
   Armenian: "亞美尼亞語",
   "Article not found": "找不到文章",
+  "Ask a question…": "提出問題...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "詢問如何在管理面板中執行某些操作，或詢問待處理訂單、庫存不足的商品狀態不足。",
   "Assamese (অসমীয়া)": "阿薩姆語 (অসমীয়া)",
   "Assigned roles": "分配的角色",
   Attribution: "歸因",
@@ -171,6 +180,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "作者",
   "Auto-translate": "自動翻譯",
   "Auto-translate all": "自動翻譯全部",
+  Availability: "可用性",
   Available: "可用",
   "available · reorder at": "可用·重新訂購",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -213,6 +223,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "正文",
   Bosnian: '波斯尼亞文</s0005 id="t0008">保加利亞語（Български）',
   Brand: "品牌",
+  "Built-in": "內建",
   "Bulgarian (Български)": "保加利亞 (Български)",
   Bundle: "捆綁",
   "bundle price · items priced at": "捆綁價格 · 商品售價為",
@@ -264,6 +275,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "正在清除...",
   "Click link": "點擊連結",
   Close: "關閉",
+  "Close help assistant": "關閉幫助助手",
   "Close navigation": "關閉導航",
   "CMS pages": "CMS頁面",
   "CMS pages & SEO": "CMS 頁面和 SEO",
@@ -296,6 +308,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "繼續使用 Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "控制每個角色可以檢視、建立、編輯、發佈或管理的內容。",
+  "Control whether each bot is available, and edit what it knows.":
+    "控制每個機器人是否可用，並編輯它所知道的內容。",
   Cook: "烹飪",
   "Cook minutes": "烹飪分鐘",
   "Copy inside dark bands.": "在暗帶內複製。",
@@ -364,9 +378,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "刪除",
   "Delete (spam)": "刪除（垃圾郵件）",
   "Delete category": "刪除類別",
+  "Delete entry": "刪除條目",
   "Delete farm": "刪除農場",
   "Delete image": "刪除圖片",
   "Delete inventory row": "刪除庫存行",
+  "Delete knowledge entry?": "刪除知識條目？",
   "Delete permanently": "永久刪除",
   "Delete product": "刪除產品",
   "Delete role": "刪除角色",
@@ -417,7 +433,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "編輯 CMS 頁元資料、索引和原始頁區塊。這裡也列出了主頁記錄，但主頁設定是更安全的更改方式 - 此編輯器採用原始 JSON。",
   "Edit content": "編輯內容",
+  "Edit entry": "編輯條目",
   "Edit farm": "編輯農場",
+  "Edit knowledge entry": "編輯知識條目",
   "Edit media": "編輯媒體",
   "Edit review": "編輯評論",
   "Edit role": "編輯角色",
@@ -531,6 +549,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "標題和標題。",
   Headline: "標題",
   "Hebrew (עברית)": "希伯來文 (עברйת)",
+  "Help assistant": "幫助助手",
+  "Help Assistant": "幫助助手",
   "Hero description": "英雄描述",
   "Hero eyebrow": "英雄眉毛",
   "Hero image alt text": "英雄圖片替代文字",
@@ -606,6 +626,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "哈薩克語",
   "Keep artwork clean": "保持圖稿乾淨",
   "Keep typing to search…": "繼續輸入搜尋內容...",
+  Keywords: "關鍵字",
   Khmer: "高棉文",
   Kinyarwanda: "盧安達語",
   "Konkani (कोंकणी)": "康卡尼語 (कोंकणी)",
@@ -795,6 +816,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "沒有索引",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "尚無項目 - 在下方至少新增一個。只有當購物籃中的所有商品都包含在此處且至少達到以下數量時，結帳才會套用此捆綁包的折扣。",
+  "No knowledge entries": "沒有知識條目",
   "No line items recorded.": "未記錄任何訂單項目。",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "不再更改登入名稱 - 因此您在此設定的密碼確實會取代舊密碼。",
@@ -871,6 +893,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "只有所有者帳戶可以編輯 sitemap.xml、robots.txt 和 llms.txt。",
   "Only the owner can manage role scopes.": "只有擁有者可以管理角色範圍。",
   "Only the owner can review payments and refunds.": "只有業主可以查看付款和退款。",
+  "Open help assistant": "開啟幫助助手",
   "Open navigation": "開放式導航",
   Optional: "可選",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1141,6 +1164,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "正在儲存...",
   "Say how often you will write and that unsubscribing is easy.":
     "說明您寫作的頻率以及取消訂閱的方式。",
+  Scope: "範圍",
   "Scope Management": "範圍管理",
   "Scopes unavailable": "範圍不可用",
   "Search archive": "搜尋檔案",
@@ -1204,6 +1228,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "所選行將被清除為預留庫存，使可用庫存為零，同時保留預訂，移動歷史記錄和審核日誌。",
   "Selected users will be removed from the users list and signed out.":
     "選定的使用者將從使用者清單中刪除並退出。",
+  Send: "發送",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "傳送安全密碼重設連結給該使用者。他們將從管理員重置頁面設定新密碼。",
   "Send back to draft": "寄回草稿",
@@ -1271,6 +1296,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "摘要",
   "Sold out": "已售完",
   Somali: "索馬利語",
+  "space separated, e.g. product publish visibility": "空格分隔，例如產品發布可見性",
   "Spanish (Español)": "西班牙文（Español）",
   "Sprouted ragi flour": "發芽拉吉麵粉",
   "SQL Tables": "SQL 表",
@@ -1283,6 +1309,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "步驟（每行一）",
   "Stock Status": "庫存狀態",
   "Store credit": "商店積分",
+  Storefront: "店面",
+  "Storefront bot": "店面機器人",
   "Storefront switches": "店面開關",
   "Storefront switches unavailable": "店面開關不可用",
   "Strong border": "強邊框",
@@ -1320,9 +1348,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "位於頂部的橫幅",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "橫幅、類別行、產品行和 SEO 欄位保存在一起。部分複選框、排序和自訂部分副本會在您變更時自行儲存。",
+  "The chat widget customers and visitors see on the storefront.":
+    "客戶和訪客在店面看到的聊天小部件。",
   "The classic credential pair, including the password-reset flow.":
     "經典憑證對，包括密碼重設流程。",
   "the farm owner": "農場所有者",
+  "The floating Help Assistant staff see on every admin page.":
+    "浮動幫助助理工作人員在每個管理頁面上看到。",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "每個頁面顯示的頁眉和頁腳連結標籤，按語言翻譯（遷移 0068）。店面中留空的區域設定會恢復為英文。此控制項修復了以英文顯示“商店”/“季節性”的標題，而周圍的所有內容都已切換語言 - 這些標籤來自此處，而不是來自上面的頁面內容翻譯。",
   "The homepage has no sections": "主頁沒有任何部分",
@@ -1349,6 +1381,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "這些顏色也適用於下面的頁",
   "These roles define the permission sets available when inviting or editing users.":
     "這些角色定義邀請或編輯使用者時可用的權限集。",
+  "Thinking…": "思考...",
   "This application is": "此應用程式",
   "This order is in a final state.": "此訂單處於最終狀態。",
   "This page contains sensitive application diagnostics.": "此頁麵包含敏感的應用程式診斷資訊。",
@@ -1466,6 +1499,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Whole site (default)": "整個網站（預設）",
   "Why are changes needed, or why was this declined?": "為什麼需要拒絕？",
   "Why is stock changing?": "為什麼庫存變動？",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "機器人根據問題匹配單字來決定此條目相關。",
   "Working...": "工作...",
   "World languages": "世界語言",
   "Write a message…": "寫一則訊息...",

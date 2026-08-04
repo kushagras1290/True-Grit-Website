@@ -81,12 +81,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Afegeix una categoria",
   "Add code": "Afegeix un codi",
   "Add country": "Afegeix un país",
+  "Add entry": "Afegeix una entrada",
   "Add farm owner": "Propietari de l'anunci",
   "Add ingredient": "Afegeix un ingredient",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Afegiu elements (quines variants, quantes de cadascun) després de crear el paquet, des de Gestiona.",
+  "Add knowledge entry": "Afegeix una entrada de coneixement",
   "Add one above to get started.": "Afegiu-ne un a dalt per començar.",
   "Add one below to get started.": "Afegiu-ne un a continuació per començar.",
+  "Add one so the bot has something to reference for this scope.":
+    "Afegeix-ne una perquè el bot tingui alguna cosa a què fer referència per a aquest àmbit.",
   "Add page": "Afegeix una pàgina",
   "Add participants": "Afegeix participants",
   "Add role": "Afegeix una funció",
@@ -104,9 +108,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Ajusta la cerca o crea un producte.",
   "Adjustment %": "% d'ajust",
   "Adjustments restricted": "Ajusts restringits",
+  Admin: "Administrador",
   "Admin API is unavailable": "L'API d'administració no està disponible",
   "Admin Logs": "Registres d'administració",
   "Admin navigation": "Navegació de l'administrador",
+  "Admin panel bot": "Bot del tauler d'administració",
   "After refunds, all farms": "Després de les devolucions, totes les granges",
   Albanian: "Albaneses",
   All: "Totes",
@@ -166,6 +172,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "Armeni",
   "Article not found": "No s'ha trobat l'article",
   "Asha Rao": "Role",
+  "Ask a question…": "Fes una pregunta...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Pregunteu com fer alguna cosa al tauler d'administració o pregunteu sobre comandes pendents, articles amb estoc baix o l'estat d'una comanda.",
   "Assamese (অসমীয়া)": 'Assamés id="t0010">Reconeixement',
   "Assigned roles": "Rols assignats",
   Attribution: "Atribució",
@@ -173,6 +182,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Autor",
   "Auto-translate": "Traducció automàtica",
   "Auto-translate all": "Traducció automàtica de tot",
+  Availability: "Disponibilitat",
   Available: "Disponible a",
   "available · reorder at": "disponible · reordenar a",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -216,6 +226,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Text corporal",
   Bosnian: "Bosnià",
   Brand: "Marca",
+  "Built-in": "Incorporat",
   "Bulgarian (Български)": "Búlgar (Български)",
   Bundle: "Paquet",
   "bundle price · items priced at": "preu del paquet · articles amb un preu de",
@@ -265,6 +276,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Esborrant...",
   "Click link": "Feu clic a l'enllaç",
   Close: "Tancar",
+  "Close help assistant": "Tanca l'Assistent d'ajuda",
   "Close navigation": "Tancar la navegació",
   "CMS pages": "Pàgines CMS",
   "CMS pages & SEO": "Pàgines CMS i SEO",
@@ -298,6 +310,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Delivery",
   "Control what each role can view, create, edit, publish or manage.":
     "Controleu què pot veure, crear, editar, publicar o gestionar cada rol.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Controla si cada bot està disponible i edita el que sap.",
   Cook: "Cuina",
   "Cook minutes": "Minuts de cuina",
   "Copy inside dark bands.": "Copia dins de bandes fosques.",
@@ -367,9 +381,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Suprimeix",
   "Delete (spam)": "Suprimeix (spam)",
   "Delete category": "Suprimeix la categoria",
+  "Delete entry": "Suprimeix l'entrada",
   "Delete farm": "Suprimeix la granja",
   "Delete image": "<span image",
   "Delete inventory row": "Suprimeix la fila de l'inventari",
+  "Delete knowledge entry?": "Vols suprimir l'entrada de coneixement?",
   "Delete permanently": "Suprimeix permanentment",
   "Delete product": "Suprimeix el producte",
   "Delete role": "Suprimeix la funció",
@@ -417,7 +433,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Edita les metadades de la pàgina CMS, la indexació i els blocs de pàgines en brut. El registre de la pàgina d'inici també es mostra aquí, però la configuració de la pàgina d'inici és la manera més segura de canviar-lo: aquest editor pren JSON en brut.",
   "Edit content": "Edita el contingut",
+  "Edit entry": "Edita l'entrada",
   "Edit farm": "Edita la granja",
+  "Edit knowledge entry": "Edita l'entrada de coneixement",
   "Edit media": "Edita el suport",
   "Edit review": "Edita la revisió",
   "Edit role": "Edita la funció",
@@ -530,6 +548,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Títols i còpia.",
   Headline: "Títol",
   "Hebrew (עברית)": "Hebreu (עברית)",
+  "Help assistant": "Assistent d'ajuda",
+  "Help Assistant": "Assistent d'ajuda",
   "Hero description": "Descripció de l'heroi",
   "Hero eyebrow": "Cella d'heroi",
   "Hero image alt text": "Text alternatiu de la imatge de l'heroi",
@@ -601,6 +621,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Kashmiri (کٲشُر)": "Caixmir (کٲشُر)",
   "Keep artwork clean": "Mantenir netes les obres d'art",
   "Keep typing to search…": "Continua escrivint per cercar...",
+  Keywords: "Paraules clau",
   "Korean (한국어)": "Coreà (한국어)",
   Kyrgyz: "Kirguis",
   Label: "Etiqueta",
@@ -793,6 +814,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Sense índex",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Encara no hi ha elements: afegiu almenys un a continuació. Checkout només aplica el descompte d'aquest paquet quan la cistella té tots els articles aquí, almenys en aquestes quantitats.",
+  "No knowledge entries": "No hi ha entrades de coneixement",
   "No line items recorded.": "No s'han registrat línies de comanda.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ja no canvia l'inici de sessió, de manera que una contrasenya que definiu aquí realment substitueix l'antiga.",
@@ -876,6 +898,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Només el propietari pot gestionar els àmbits de funció.",
   "Only the owner can review payments and refunds.":
     "Només el propietari pot revisar els pagaments i les reembossaments.",
+  "Open help assistant": "Obre l'Assistent d'ajuda",
   "Open navigation": "Obre la navegació",
   Optional: "Opcional",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1154,6 +1177,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "S'està desant...",
   "Say how often you will write and that unsubscribing is easy.":
     "Digues amb quina freqüència escriuràs.",
+  Scope: "Àmbit",
   "Scope Management": "Gestió de l'àmbit",
   "Scopes unavailable": "Ambits no disponibles",
   "Search archive": "Cerca a l'arxiu",
@@ -1222,6 +1246,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Les files seleccionades s'esborraran a l'estoc reservat, de manera que es mantindran les reserves, l'historial de moviments i els registres d'auditoria.",
   "Selected users will be removed from the users list and signed out.":
     "Els usuaris seleccionats s'eliminaran de la llista d'usuaris i es tancaran la sessió.",
+  Send: "Envia",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Envieu un enllaç segur de restabliment de la contrasenya a aquest usuari. Establiran la seva nova contrasenya des de la pàgina de restabliment de l'administrador.",
   "Send back to draft": "Torna a l'esborrany",
@@ -1291,6 +1316,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Fragment",
   "Sold out": "Esgotat",
   Somali: "Somalí",
+  "space separated, e.g. product publish visibility":
+    "espai separat, p. ex. Visibilitat de publicació del producte",
   "Spanish (Español)": "Espanyol (Español)",
   "Sprouted ragi flour": "Farina de ragi germinada",
   "SQL Tables": "Taules SQL",
@@ -1303,6 +1330,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Pasos (un per línia)",
   "Stock Status": "Estat de l'estoc",
   "Store credit": "Crèdit de la botiga",
+  "Storefront bot": "Bot de la botiga",
   "Storefront switches": "Commutadors d'aparador",
   "Storefront switches unavailable": "Commutadors d'aparador no disponibles",
   "Strong border": "Vorreja forta",
@@ -1337,9 +1365,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "El bàner a la part superior de",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "El bàner, la fila de la categoria, la fila del producte i els camps de SEO es guarden junts. Les caselles de selecció, les comandes i les còpies personalitzades de la secció es desen per si soles, a mesura que les canvieu.",
+  "The chat widget customers and visitors see on the storefront.":
+    "El widget de xat que els clients i els visitants veuen a l'aparador.",
   "The classic credential pair, including the password-reset flow.":
     "El parell de credencials clàssic, inclòs el flux de restabliment de la contrasenya.",
   "the farm owner": "el propietari de la granja",
+  "The floating Help Assistant staff see on every admin page.":
+    "El personal flotant de l'Assistent d'Ajuda veu a cada pàgina d'administració.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "L'enllaç de la capçalera i el peu de pàgina s'etiqueta a cada idioma de la pàgina (migració, traducció). Una configuració regional deixada en blanc torna a l'anglès a l'aparador. Aquest és el mateix control que corregeix una capçalera que mostra \"Botiga\" / \"Temporada\" en anglès, mentre que tot el que l'envolta ha canviat d'idioma: aquestes etiquetes provenen d'aquí, no de les traduccions del contingut de la pàgina anteriors.",
   "The homepage has no sections": "La pàgina d'inici no té seccions",
@@ -1371,6 +1403,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Aquests colors també s'apliquen a les pàgines de sota",
   "These roles define the permission sets available when inviting or editing users.":
     "Aquests rols defineixen els conjunts de permisos disponibles per convidar o editar usuaris.",
+  "Thinking…": "Pensant...",
   "This application is": "Aquesta aplicació està",
   "This order is in a final state.": "Aquesta comanda es troba en un estat final.",
   "This page contains sensitive application diagnostics.":
@@ -1487,6 +1520,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Per què cal fer canvis o per què s'ha rebutjat?",
   "Why is stock changing?": "Per què canvien les existències?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Paraules que el bot coincideix amb una pregunta per decidir que aquesta entrada és rellevant.",
   "Working...": "Funcionant...",
   "World languages": "Idiomes del món",
   "Write a message…": "Escriu un missatge...",

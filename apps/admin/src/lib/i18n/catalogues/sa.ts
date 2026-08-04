@@ -82,12 +82,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "वर्गं योजयतु",
   "Add code": "सङ्केतं योजयतु",
   "Add country": "देशं योजयतु",
+  "Add entry": "प्रविष्टिः योजयतु",
   "Add farm owner": "कृषकस्वामिनं योजयतु",
   "Add ingredient": "घटकं योजयतु",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "बण्डल् निर्माय, प्रबन्धकात्, वस्तूनि (यत् प्रकाराणि, प्रत्येकस्य कति) योजयतु।",
+  "Add knowledge entry": "ज्ञानप्रविष्टिः योजयतु",
   "Add one above to get started.": "प्रारम्भार्थं उपरि एकं योजयतु।",
   "Add one below to get started.": "प्रारम्भार्थं अधः एकं योजयतु।",
+  "Add one so the bot has something to reference for this scope.":
+    "एकं योजयतु येन अस्य व्याप्तेः कृते बोट् इत्यस्य सन्दर्भार्थं किमपि भवति ।",
   "Add page": "पृष्ठं योजयतु",
   "Add participants": "प्रतिभागिनः योजयन्तु",
   "Add role": "भूमिका योजयतु",
@@ -105,9 +109,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "अन्वेषणं समायोजयतु अथवा उत्पादं रचयतु।",
   "Adjustment %": "समायोजनम् %",
   "Adjustments restricted": "समायोजनानि प्रतिबन्धितानि",
+  Admin: "प्रशासक",
   "Admin API is unavailable": "प्रशासक एपिआइ अनुपलब्ध",
   "Admin Logs": "प्रशासकवृत्तानि",
   "Admin navigation": "प्रशासकसञ्चार",
+  "Admin panel bot": "प्रशासकपरिषद् बोट्",
   ADMIN_LOGIN_EMAIL: "प्रशासक_LOGIN_EMAIL",
   Afrikaans: "आफ्रिकावासी",
   "After refunds, all farms": "प्रतिदानस्य अनन्तरं सर्वे कृषिक्षेत्राणि",
@@ -171,6 +177,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "आर्मेनिया",
   "Article not found": "लेखः न लब्धः",
   "Asha Rao": "आशा राव",
+  "Ask a question…": "प्रश्नं पृच्छतु...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "प्रशासकपटले किमपि कथं कर्तव्यमिति पृच्छतु, अथवा लम्बित-आदेशानां, न्यून-स्टॉक-वस्तूनाम्, अथवा आदेशस्य स्थितिविषये पृच्छतु।",
   "Assamese (অসমীয়া)": "असमी (অসমীয়া)",
   "Assigned roles": "नियुक्ताः भूमिकाः",
   Attribution: "निदान",
@@ -178,6 +187,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "लेखक",
   "Auto-translate": "स्वयम्-अनुवाद",
   "Auto-translate all": "स्वतः अनुवादं कुर्वन्तु",
+  Availability: "उपलब्धता",
   Available: "उपलब्ध",
   "available · reorder at": "उपलब्ध ·पुनर्क्रमण",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -222,6 +232,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "शरीरपाठ",
   Bosnian: "बोस्निया",
   Brand: "ब्राण्ड्",
+  "Built-in": "निर्मित-अन्तर्गत",
   "Bulgarian (Български)": "बल्गेरियाई (Български)",
   Bundle: "बण्डल",
   "bundle price · items priced at": "बण्डलमूल्यं · मूल्यं",
@@ -274,6 +285,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "समाप्तिम्...",
   "Click link": "पर्यन्तं चिनोतु लिङ्क",
   Close: "बन्द",
+  "Close help assistant": "सहायकसहायकं बन्दं कुरुत",
   "Close navigation": "समीपं नेविगेशन",
   "CMS pages": "सीएमएस पृष्ठानि",
   "CMS pages & SEO": "सीएमएस पृष्ठानि & एसईओ",
@@ -307,6 +319,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "सहितं निरन्तरं कुर्वन्तु फेसबुक",
   "Control what each role can view, create, edit, publish or manage.":
     "प्रत्येकं भूमिका किं द्रष्टुं, निर्मातुं, सम्पादयितुं, प्रकाशयितुं वा प्रबन्धयितुं वा शक्नोति इति नियन्त्रयन्तु ।",
+  "Control whether each bot is available, and edit what it knows.":
+    "प्रत्येकं बोट् उपलब्धं वा इति नियन्त्रयन्तु, तथा च यत् जानाति तत् सम्पादयन्तु।",
   Cook: "पाक",
   "Cook minutes": "पाचयतु निमेषाः",
   "Copy inside dark bands.": "अन्धकारपट्टिकानां अन्तः प्रतिलिपिं कुर्वन्तु ।",
@@ -376,9 +390,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "विलोपनं",
   "Delete (spam)": "विलोपनं (स्पैम्)",
   "Delete category": "वर्गं विलोपयतु",
+  "Delete entry": "प्रविष्टिं विलोपयन्तु",
   "Delete farm": "कृषिक्षेत्रं विलोपयतु",
   "Delete image": "चित्रं विलोपयतु",
   "Delete inventory row": "सूचीपङ्क्तिं विलोपयतु",
+  "Delete knowledge entry?": "ज्ञानप्रविष्टिं विलोपयन्तु?",
   "Delete permanently": "स्थायिरूपेण विलोपयतु",
   "Delete product": "उत्पादं विलोपयतु",
   "Delete role": "भूमिका विलोपयतु",
@@ -431,7 +447,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS पृष्ठमेटाडाटा, अनुक्रमणिका तथा कच्चा पृष्ठखण्ड सम्पादयतु। मुखपृष्ठस्य अभिलेखः अत्र अपि सूचीकृतः अस्ति, परन्तु मुखपृष्ठस्य सेटिंग्स् तत् परिवर्तयितुं सुरक्षितः उपायः अस्ति — अयं सम्पादकः कच्चा JSON गृह्णाति ।",
   "Edit content": "सामग्री सम्पादयतु",
+  "Edit entry": "प्रविष्टिं सम्पादयन्तु",
   "Edit farm": "फार्म सम्पादयतु",
+  "Edit knowledge entry": "ज्ञानप्रविष्टिः सम्पादय",
   "Edit media": "माध्यम सम्पादयतु",
   "Edit review": "समीक्षां सम्पादयतु",
   "Edit role": "संपादन भूमिका",
@@ -548,6 +566,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "शीर्षकाणि प्रतिलिपिः च।",
   Headline: "शीर्षक",
   "Hebrew (עברית)": "हिब्रू (עברית)",
+  "Help assistant": "सहायतासहायकः",
+  "Help Assistant": "सहायतासहायकः",
   "Hero description": "नायकवर्णनम्",
   "Hero eyebrow": "हीरो भ्रू",
   "Hero image alt text": "हीरो इमेज alt text",
@@ -623,6 +643,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "कजाख",
   "Keep artwork clean": "कलाकृतिः स्वच्छा",
   "Keep typing to search…": "अन्वेषणार्थं टङ्कनं कुर्वन्तु...",
+  Keywords: "मुख्यशब्द",
   Khmer: "ख्मेर",
   Kinyarwanda: "किन्यरवाण्डा",
   "Konkani (कोंकणी)": "कोंकणी (कोंकणी)",
@@ -819,6 +840,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "सूचकाङ्कः नास्ति",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "अद्यापि द्रव्यं नास्ति — अधः न्यूनातिन्यूनम् एकं योजयन्तु । चेकआउट् केवलं तदा एव अस्य बण्डल् इत्यस्य छूटं प्रयोजयति यदा टोपले अत्र प्रत्येकं द्रव्यं भवति, न्यूनातिन्यूनम् एतेषु परिमाणेषु ।",
+  "No knowledge entries": "ज्ञानप्रविष्टिः नास्ति",
   "No line items recorded.": "कोऽपि पङ्क्तिवस्तु अभिलेखितः नास्ति ।",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "प्रवेशं न परिवर्तयति — अतः भवता अत्र सेट् कृतः गुप्तशब्दः वास्तवतः पुरातनस्य स्थाने भवति ।",
@@ -904,6 +926,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "केवलं स्वामिना एव भूमिकाव्याप्तिः प्रबन्धयितुं शक्नोति ।",
   "Only the owner can review payments and refunds.":
     "केवलं स्वामिना एव भुक्तिं धनवापसीं च समीक्षितुं शक्यते।",
+  "Open help assistant": "सहायतासहायकः उद्घाटय",
   "Open navigation": "सञ्चारं उद्घाटय",
   Optional: "वैकल्पिक",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1184,6 +1207,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "रचयतु...",
   "Say how often you will write and that unsubscribing is easy.":
     "कियत्वारं लिखिष्यसि तथा च अनसबस्क्रिबिंग् इति कथयतु सुलभम् ।",
+  Scope: "व्याप्ति",
   "Scope Management": "व्याप्तिप्रबन्धन",
   "Scopes unavailable": "व्याप्तिः अनुपलब्धा",
   "Search archive": "अन्वेषणसंग्रह",
@@ -1249,6 +1273,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "चयनितपङ्क्तयः आरक्षित-स्टॉक-मध्ये स्वच्छाः भविष्यन्ति, येन आरक्षणं, गति-इतिहासः, लेखापरीक्षा-वृत्तलेखाः च संरक्षिताः सन्तः स्टॉकः शून्यः भविष्यति ।",
   "Selected users will be removed from the users list and signed out.":
     "चयनितप्रयोक्तारः उपयोक्तृसूचिकातः निष्कासिताः भविष्यन्ति, निर्गताः च भविष्यन्ति ।",
+  Send: "प्रेष",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "अस्य उपयोक्तुः कृते सुरक्षितं गुप्तशब्दपुनर्स्थापनलिङ्कं प्रेषयन्तु । ते व्यवस्थापक-पुनर्स्थापन-पृष्ठात् स्वस्य नूतनं गुप्तशब्दं सेट् करिष्यन्ति ।",
   "Send back to draft": "मसौदे पुनः प्रेषयतु",
@@ -1319,6 +1344,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "स्निपेट्",
   "Sold out": "विक्रीतम्",
   Somali: "सोमाली",
+  "space separated, e.g. product publish visibility":
+    "अन्तरिक्षं पृथक्कृतम्, यथा- product publish visibility",
   "Spanish (Español)": "स्पेनिश (Español)",
   "Sprouted ragi flour": "अङ्कुरितः रागीपिष्टः",
   "SQL Tables": "SQL सारणीः",
@@ -1368,9 +1395,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "बैनरस्य उपरिभागे स्थितं बैनरं",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "बैनर, श्रेणीपङ्क्तिः, उत्पादपङ्क्तिः, SEO क्षेत्राणि च एकत्र रक्षन्ति । खण्डस्य टिकबॉक्साः, आदेशः, कस्टम् खण्डप्रतिलिपिः च स्वयमेव रक्षन्ति, यथा भवन्तः तान् परिवर्तयन्ति।",
+  "The chat widget customers and visitors see on the storefront.":
+    "ग्राहकाः आगन्तुकाः च storefront इत्यत्र पश्यन्ति इति गपशपविजेट्।",
   "The classic credential pair, including the password-reset flow.":
     "गुप्तशब्द-पुनर्स्थापनप्रवाहः सहितः क्लासिक-प्रमाणपत्रयुग्मम् ।",
   "the farm owner": "खेतस्वामिना",
+  "The floating Help Assistant staff see on every admin page.":
+    "प्लवमानः सहायतासहायकः कर्मचारी प्रत्येकं व्यवस्थापकपृष्ठे पश्यति।",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'शीर्षकं पादलिङ्कं च प्रत्येकं पृष्ठं दर्शयति लेबलं करोति, प्रतिभाषायां अनुवादितं (प्रवासः 0068) रिक्तं त्यक्तं लोकेलं भण्डारस्य अग्रभागे पुनः आङ्ग्लभाषायां पतति । इदं तदेव नियन्त्रणं यत् आङ्ग्लभाषायां "Shop" / "Seasonal" इति दर्शयति शीर्षकं निश्चयति यदा तस्य परितः सर्वं भाषा परिवर्तयति — तानि लेबलानि इतः आगच्छन्ति, न तु उपरि पृष्ठसामग्रीअनुवादात् ।',
   "The homepage has no sections": "मुखपृष्ठे कोऽपि विभागः नास्ति",
@@ -1400,6 +1431,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "एते वर्णाः अधः पृष्ठेषु अपि प्रवर्तन्ते",
   "These roles define the permission sets available when inviting or editing users.":
     "एताः भूमिकाः उपयोक्तृणां आमन्त्रणकाले सम्पादनकाले वा उपलब्धानि अनुमतिसमूहानि परिभाषयन्ति ।",
+  "Thinking…": "चिन्तनम्...",
   "This application is": "एषः अनुप्रयोगः",
   "This order is in a final state.": "एषः क्रमः अन्तिमस्थितौ अस्ति ।",
   "This page contains sensitive application diagnostics.":
@@ -1519,6 +1551,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "किमर्थं परिवर्तनस्य आवश्यकता अस्ति, अथवा एतत् किमर्थं अङ्गीकृतम्?",
   "Why is stock changing?": "किमर्थं स्टॉकः परिवर्तते?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "शब्दाः बोट् प्रश्नस्य विरुद्धं मेलयति यत् एषा प्रविष्टिः प्रासंगिका इति निर्णयं करोति।",
   "Working...": "कार्यं कुर्वन्...",
   "World languages": "विश्वभाषा",
   "Write a message…": "सन्देशं लिखन्तु...",

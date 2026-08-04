@@ -82,12 +82,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Bæta við flokki",
   "Add code": "Bæta við kóða",
   "Add country": "Bæta við landi",
+  "Add entry": "Bæta við færslu",
   "Add farm owner": "Bæta við býliseiganda",
   "Add ingredient": "Bæta við innihaldsefni",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Bættu við atriðum (hvaða afbrigðum, hversu mörg af hverju) eftir að búnturinn er búinn til, úr Manage.",
+  "Add knowledge entry": "Bæta við þekkingarfærslu",
   "Add one above to get started.": "Bættu við einu hér að ofan til að byrja.",
   "Add one below to get started.": "Bættu við einum hér að neðan til að byrja.",
+  "Add one so the bot has something to reference for this scope.":
+    "Bæta við einni svo botninn hafi eitthvað til að vísa til fyrir þetta umfang.",
   "Add page": "Bæta við síðu",
   "Add participants": "Bæta við þátttakendum",
   "Add role": "Bæta við hlutverki",
@@ -105,9 +109,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Breyttu leitinni eða búðu til vöru.",
   "Adjustment %": "Aðlögun %",
   "Adjustments restricted": "Leiðréttingar takmarkaðar",
+  Admin: "Stjórnandi",
   "Admin API is unavailable": "Stjórnendaforritaskil er ekki tiltækt",
   "Admin Logs": "Stjórnendaskrár",
   "Admin navigation": "Stjórnendaleiðsögn",
+  "Admin panel bot": "Stjórnendaborði",
   Afrikaans: "afríkanska",
   "After refunds, all farms": "Eftir endurgreiðslur, allir bæir",
   Albanian: "albanska",
@@ -167,6 +173,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Hlutir í geymslu munu birtast hér.",
   Armenian: "armenska",
   "Article not found": "Grein fannst ekki",
+  "Ask a question…": "Spyrðu spurningu...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Spyrðu hvernig eigi að gera eitthvað á stjórnborðinu, eða spyrðu um pantanir í bið, vörur á litlum lager eða stöðu pöntunar.",
   "Assamese (অসমীয়া)": "assamska (অসমীয়া)",
   "Assigned roles": "Úthlutað hlutverk",
   Attribution: "Aðkenning",
@@ -174,6 +183,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Höfundur",
   "Auto-translate": "Sjálfvirkt þýða",
   "Auto-translate all": "Þýða allt sjálfkrafa",
+  Availability: "Aðgengi",
   Available: "Fáanlegt",
   "available · reorder at": "í boði · endurraðað á",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -217,6 +227,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Meðaltexti",
   Bosnian: "Bosníska",
   Brand: "Vörumerki",
+  "Built-in": "Innbyggt",
   "Bulgarian (Български)": "búlgarska (Български)",
   Bundle: "búnt",
   "bundle price · items priced at": "búntsverð · hlutir verðlagðar á",
@@ -269,6 +280,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Hreinsar...",
   "Click link": "Smelltu á tengil",
   Close: "Loka",
+  "Close help assistant": "Loka hjálparaðstoðarmaður",
   "Close navigation": "Loka leiðsögn",
   "CMS pages": "CMS síðum",
   "CMS pages & SEO": "CMS síður og SEO",
@@ -301,6 +313,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Halda áfram með Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Stjórna því hvað hvert hlutverk getur skoðað, búið til, breytt, birt eða stjórnað.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Stjórnaðu því hvort sérhver botni sé tiltækur og breyttu því sem hann veit.",
   Cook: "Elda",
   "Cook minutes": "Matar mínútur",
   "Copy inside dark bands.": "Afrita innan dökkra teyma.",
@@ -369,9 +383,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Eyða",
   "Delete (spam)": "Eyða (spam)",
   "Delete category": "Eyða flokki",
+  "Delete entry": "Eyða færslu",
   "Delete farm": "Eyða bæ",
   "Delete image": "Eyða mynd",
   "Delete inventory row": "Eyða birgðalínu",
+  "Delete knowledge entry?": "Eyða þekkingarfærslu?",
   "Delete permanently": "Eyða varanlega",
   "Delete product": "Eyða vöru",
   "Delete role": "Eyða hlutverki",
@@ -421,7 +437,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Breyta lýsigögnum CMS síðu, flokkun og hráum síðublokkum. Heimasíðuskráin er einnig skráð hér, en heimasíðustillingar eru öruggari leiðin til að breyta henni - þessi ritstjóri tekur hráan JSON.",
   "Edit content": "Breyta efni",
+  "Edit entry": "Breyta færslu",
   "Edit farm": "Breyta bæ",
+  "Edit knowledge entry": "Breyta þekkingarfærslu",
   "Edit media": "Breyta miðli",
   "Edit review": "Breyta umsögn",
   "Edit role": "Breyta hlutverki",
@@ -536,6 +554,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Fyrirsagnir og afrit.",
   Headline: "Fyrirsögn",
   "Hebrew (עברית)": "Hebreska (עברית)",
+  "Help assistant": "Aðstoðarmaður",
+  "Help Assistant": "Hjálparaðstoðar",
   "Hero description": "Hetjulýsing",
   "Hero eyebrow": "Hetjuaugabrún",
   "Hero image alt text": "Hetjumynd alt texti",
@@ -608,6 +628,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "Kasakska",
   "Keep artwork clean": "Haltu listaverkinu hreinu",
   "Keep typing to search…": "Haltu áfram að slá inn til að leita...",
+  Keywords: "Lykilorð",
   Kinyarwanda: "Kínjarvanda",
   "Korean (한국어)": "kóreska (한국어)",
   Kyrgyz: "Kirgisa",
@@ -791,6 +812,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Engin skráning",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Engin atriði enn — bættu við að minnsta kosti einum hér að neðan. Checkout tekur aðeins til afsláttar af þessum búnti þegar allar vörur eru í körfunni hér, að minnsta kosti í þessu magni.",
+  "No knowledge entries": "Engar þekkingarfærslur",
   "No line items recorded.": "Engar línuvörur skráðar.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "breytir ekki lengur innskráningunni — þannig að lykilorð sem þú setur hér kemur í raun í stað þess gamla.",
@@ -875,6 +897,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Aðeins eigandinn getur stjórnað hlutverkasviði.",
   "Only the owner can review payments and refunds.":
     "Aðeins eigandinn getur skoðað greiðslur og endurgreiðslur.",
+  "Open help assistant": "Opinn hjálparaðstoðarmaður",
   "Open navigation": "Opna flakk",
   Optional: "Valfrjálst",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1151,6 +1174,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Vistar...",
   "Say how often you will write and that unsubscribing is easy.":
     "Segðu hversu oft þú munt skrifa og að auðvelt sé að segja upp áskrift.",
+  Scope: "Umfang",
   "Scope Management": "Omfangsstjórnun",
   "Scopes unavailable": "Umfang ekki tiltækt",
   "Search archive": "Leita í skjalasafni",
@@ -1214,6 +1238,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Valdar línur verða hreinsaðar yfir í frátekið lager, sem gerir tiltækt lager núll á meðan fráteknum, hreyfisögu og endurskoðunarskrám eru varðveitt.",
   "Selected users will be removed from the users list and signed out.":
     "Valdir notendur verða fjarlægðir af notendalistanum og skráðir út.",
+  Send: "Senda",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Sendu öruggan hlekk til að endurstilla lykilorð til þessa notanda. Þeir munu setja nýja lykilorðið sitt af endurstillingarsíðu stjórnanda.",
   "Send back to draft": "Senda aftur í uppkast",
@@ -1284,6 +1309,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Snippa",
   "Sold out": "Uppseld",
   Somali: "sómalska",
+  "space separated, e.g. product publish visibility": "bil aðskilið, t.d. sýnileiki vöruútgáfu",
   "Spanish (Español)": "Spænska (Español)",
   "Sprouted ragi flour": "Spírað ragimjöl",
   "SQL Tables": "SQL töflur",
@@ -1331,9 +1357,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Borðinn efst á",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Borðinn, flokkaröðin, vörulínan og SEO reitirnir vistast saman. Hlutamerkjareitir, röðun og sérsniðin afrit af hluta vistast sjálfstætt, eftir því sem þú breytir þeim.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Spjallgræjan sem viðskiptavinir og gestir sjá á verslunarglugganum.",
   "The classic credential pair, including the password-reset flow.":
     "Hið klassíska skilríkispar, þar á meðal flæði til að endurstilla lykilorð.",
   "the farm owner": "búeigandinn",
+  "The floating Help Assistant staff see on every admin page.":
+    "Fljótandi starfsmenn hjálparaðstoðar sjá á hverri stjórnandasíðu.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "Höfuð- og fóttenglar merktir hverja síðu sem sýnir hverja 0000 síðu. Auð svæði fellur aftur yfir í ensku á verslunarglugganum. Þetta er sama stýring og lagar haus sem sýnir „Versla“ / „Árstíðabundið“ á ensku á meðan allt í kringum hana hefur skipt um tungumál — þessir merkimiðar koma héðan, ekki frá þýðingum síðuinnihalds hér að ofan.",
   "The homepage has no sections": "Heimasíðan hefur enga hluta",
@@ -1363,6 +1393,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Þessir litir eiga einnig við um síður fyrir neðan",
   "These roles define the permission sets available when inviting or editing users.":
     "Þessar hlutverkastillingar eru tiltækar notendur.",
+  "Thinking…": "Hugsandi...",
   "This application is": "Þetta forrit er",
   "This order is in a final state.": "Þessi pöntun er í endanlegu ástandi.",
   "This page contains sensitive application diagnostics.":
@@ -1481,6 +1512,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Hvers vegna er þörf á breytingum eða hvers vegna var þessu hafnað?",
   "Why is stock changing?": "Af hverju breytist hlutabréf?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Orð sem vélmenni passar við spurningu til að ákveða að þessi færsla eigi við.",
   "Working...": "Vinnur...",
   "World languages": "Tungumál heimsins",
   "Write a message…": "Skrifaðu skilaboð...",

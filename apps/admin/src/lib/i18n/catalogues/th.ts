@@ -75,12 +75,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "เพิ่มหมวดหมู่",
   "Add code": "เพิ่มรหัส",
   "Add country": "เพิ่มประเทศ",
+  "Add entry": "เพิ่มรายการ",
   "Add farm owner": "เพิ่มเจ้าของฟาร์ม",
   "Add ingredient": "เพิ่มส่วนผสม",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "เพิ่มรายการ (ตัวแปรใด จำนวนเท่าใด ของแต่ละรายการ) หลังจากสร้างบันเดิลจากการจัดการ",
+  "Add knowledge entry": "เพิ่มรายการความรู้",
   "Add one above to get started.": "เพิ่มหนึ่งรายการด้านบนเพื่อเริ่มต้น",
   "Add one below to get started.": "เพิ่มหนึ่งรายการด้านล่างเพื่อเริ่มต้น",
+  "Add one so the bot has something to reference for this scope.":
+    "เพิ่มรายการเพื่อให้บอทมีข้อมูลอ้างอิงสำหรับขอบเขตนี้",
   "Add page": "เพิ่มหน้า",
   "Add participants": "เพิ่มผู้เข้าร่วม",
   "Add role": "เพิ่มบทบาท",
@@ -98,9 +102,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "ปรับการค้นหาหรือสร้างผลิตภัณฑ์",
   "Adjustment %": "การปรับ %",
   "Adjustments restricted": "การปรับเปลี่ยนถูกจำกัด",
+  Admin: "ผู้ดูแลระบบ",
   "Admin API is unavailable": "Admin API ไม่พร้อมใช้งาน",
   "Admin Logs": "บันทึกของผู้ดูแลระบบ",
   "Admin navigation": "การนำทางของผู้ดูแลระบบ",
+  "Admin panel bot": "บอทแผงผู้ดูแลระบบ",
   Afrikaans: "แอฟริกาใต้",
   "After refunds, all farms": "หลังการคืนเงินแล้ว ฟาร์มทั้งหมด",
   Albanian: "แอลเบเนีย",
@@ -160,6 +166,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "รายการที่เก็บถาวรจะปรากฏที่นี่",
   Armenian: "อาร์เมเนีย",
   "Article not found": "ไม่พบบทความ",
+  "Ask a question…": "ถามคำถาม...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "ถามวิธีดำเนินการบางอย่างในแผงผู้ดูแลระบบ หรือถามเกี่ยวกับคำสั่งซื้อที่รอดำเนินการ สินค้าในสต็อกต่ำ หรือสถานะของคำสั่งซื้อ",
   "Assamese (অসমীয়া)": "อัสสัม (অসমীয়া)",
   "Assigned roles": "บทบาทที่ได้รับมอบหมาย",
   Attribution: "การระบุแหล่งที่มา",
@@ -167,6 +176,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "ผู้เขียน",
   "Auto-translate": "แปลอัตโนมัติ",
   "Auto-translate all": "แปลอัตโนมัติทั้งหมด",
+  Availability: "ความพร้อมใช้งาน",
   Available: "พร้อมใช้งาน",
   "available · reorder at": "พร้อมใช้งาน · สั่งซื้อใหม่ที่",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -210,6 +220,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "ข้อความเนื้อหา",
   Bosnian: "บอสเนีย",
   Brand: "แบรนด์",
+  "Built-in": "ในตัว",
   "Bulgarian (Български)": "บัลแกเรีย (Български)",
   Bundle: "บันเดิล",
   "bundle price · items priced at": "ราคามัดรวม · สินค้าที่มีราคาอยู่ที่",
@@ -259,6 +270,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "กำลังล้าง...",
   "Click link": "คลิกลิงก์",
   Close: "ปิด",
+  "Close help assistant": "ปิดตัวช่วยช่วยเหลือ",
   "Close navigation": "ปิดการนำทาง",
   "CMS pages": "หน้า CMS",
   "CMS pages & SEO": "หน้า CMS และ SEO",
@@ -291,6 +303,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "ดำเนินการต่อด้วย Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "ควบคุมสิ่งที่แต่ละบทบาทสามารถดู สร้าง แก้ไข เผยแพร่ หรือจัดการได้",
+  "Control whether each bot is available, and edit what it knows.":
+    "ควบคุมว่าบอทแต่ละตัวจะพร้อมใช้งานหรือไม่ และแก้ไขบอท รู้",
   Cook: "ปรุง",
   "Cook minutes": "นาทีปรุง",
   "Copy inside dark bands.": "คัดลอกภายในแถบสีเข้ม",
@@ -360,9 +374,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "ลบ",
   "Delete (spam)": "ลบ (สแปม)",
   "Delete category": "ลบหมวดหมู่",
+  "Delete entry": "ลบรายการความรู้",
   "Delete farm": "ลบฟาร์ม",
   "Delete image": "ลบภาพ",
   "Delete inventory row": "ลบสินค้าคงคลัง row",
+  "Delete knowledge entry?": "ลบรายการความรู้หรือไม่",
   "Delete permanently": "ลบอย่างถาวร",
   "Delete product": "ลบผลิตภัณฑ์",
   "Delete role": "ลบบทบาท",
@@ -412,7 +428,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "แก้ไขข้อมูลเมตาของหน้า CMS การจัดทำดัชนี และการบล็อกหน้าดิบ บันทึกหน้าแรกก็แสดงอยู่ที่นี่เช่นกัน แต่การตั้งค่าหน้าแรกเป็นวิธีที่ปลอดภัยกว่าในการเปลี่ยนแปลง - ตัวแก้ไขนี้ใช้ JSON แบบดิบ",
   "Edit content": "แก้ไขเนื้อหา",
+  "Edit entry": "แก้ไขรายการ",
   "Edit farm": "แก้ไขฟาร์ม",
+  "Edit knowledge entry": "แก้ไขรายการความรู้",
   "Edit media": "แก้ไขสื่อ",
   "Edit review": "แก้ไขบทวิจารณ์",
   "Edit role": "แก้ไขบทบาท",
@@ -524,6 +542,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "ส่วนหัวและการคัดลอก",
   Headline: "พาดหัว",
   "Hebrew (עברית)": "ฮีบรู (עברית)",
+  "Help assistant": "ผู้ช่วยช่วยเหลือ",
+  "Help Assistant": "ผู้ช่วยช่วยเหลือ",
   "Hero description": "คำอธิบายฮีโร่",
   "Hero eyebrow": "คิ้วฮีโร่",
   "Hero image alt text": "รูปภาพฮีโร่ alt text",
@@ -599,6 +619,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "คาซัค",
   "Keep artwork clean": "รักษางานศิลปะให้สะอาดตา",
   "Keep typing to search…": "พิมพ์ต่อไปเพื่อ ค้นหา…",
+  Keywords: "คำหลัก",
   Khmer: "เขมร",
   "Korean (한국어)": "เกาหลี (เกาหลี)",
   Kyrgyz: "คีร์กีซ",
@@ -787,6 +808,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "ไม่มีดัชนี",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "ยังไม่มีรายการ — เพิ่มอย่างน้อยหนึ่งรายการด้านล่าง การชำระเงินจะใช้ส่วนลดของชุดนี้เมื่อตะกร้ามีทุกรายการที่นี่อย่างน้อยในปริมาณเหล่านี้",
+  "No knowledge entries": "ไม่มีรายการความรู้",
   "No line items recorded.": "ไม่มีการบันทึกรายการสินค้า",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ไม่เปลี่ยนแปลงข้อมูลเข้าสู่ระบบอีกต่อไป ดังนั้นรหัสผ่านที่คุณตั้งไว้ที่นี่จะแทนที่รหัสผ่านเก่าจริงๆ",
@@ -870,6 +892,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "เฉพาะเจ้าของเท่านั้นที่สามารถจัดการขอบเขตบทบาทได้",
   "Only the owner can review payments and refunds.":
     "เจ้าของเท่านั้นที่สามารถตรวจสอบการชำระเงินและการคืนเงินได้",
+  "Open help assistant": "เปิดผู้ช่วยช่วยเหลือ",
   "Open navigation": "เปิดการนำทาง",
   Optional: "ตัวเลือก",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1145,6 +1168,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "กำลังบันทึก...",
   "Say how often you will write and that unsubscribing is easy.":
     "บอกว่าคุณจะเขียนบ่อยแค่ไหนและการยกเลิกการสมัครนั้นเป็นเรื่องง่าย",
+  Scope: "ขอบเขต",
   "Scope Management": "การจัดการขอบเขต",
   "Scopes unavailable": "ขอบเขตไม่พร้อมใช้งาน",
   "Search archive": "ค้นหาที่เก็บถาวร",
@@ -1208,6 +1232,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "แถวที่เลือกจะถูกล้างไปยังสต็อกที่จองไว้ ทำให้สต็อกที่มีอยู่เป็นศูนย์ในขณะที่รักษาการจอง ประวัติการเคลื่อนไหว และบันทึกการตรวจสอบ",
   "Selected users will be removed from the users list and signed out.":
     "ผู้ใช้ที่เลือกจะถูกลบออกจากรายการผู้ใช้และออกจากระบบ",
+  Send: "ส่ง",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "ส่งลิงก์รีเซ็ตรหัสผ่านที่ปลอดภัยให้กับผู้ใช้รายนี้ พวกเขาจะตั้งรหัสผ่านใหม่จากหน้ารีเซ็ตผู้ดูแลระบบ",
   "Send back to draft": "ส่งกลับไปยังฉบับร่าง",
@@ -1274,6 +1299,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ภาพรวม ณ เวลาซื้อ — การแก้ไขแคตตาล็อกจะไม่เขียนคำสั่งซื้อซ้ำ",
   "Sold out": "ขายหมดแล้ว",
   Somali: "โซมาลี",
+  "space separated, e.g. product publish visibility":
+    "คั่นด้วยช่องว่าง เช่น การมองเห็นการเผยแพร่ผลิตภัณฑ์",
   "Spanish (Español)": "สเปน (สเปน)",
   "Sprouted ragi flour": "แตกหน่อ ragi Flour",
   "Staff sign in": "พนักงานลงชื่อเข้าใช้",
@@ -1285,6 +1312,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "ขั้นตอน (หนึ่งรายการต่อบรรทัด)",
   "Stock Status": "สถานะสต็อค",
   "Store credit": "เครดิตร้านค้า",
+  Storefront: "หน้าร้าน",
+  "Storefront bot": "บอตหน้าร้าน",
   "Storefront switches": "สวิตช์หน้าร้าน",
   "Storefront switches unavailable": "สวิตช์หน้าร้านไม่พร้อมใช้งาน",
   "Strong border": "เส้นขอบที่แข็งแกร่ง",
@@ -1321,9 +1350,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "แบนเนอร์ที่อยู่ด้านบนของ",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "แบนเนอร์ แถวหมวดหมู่ แถวผลิตภัณฑ์ และช่อง SEO จะบันทึกเข้าด้วยกัน กล่องกาเครื่องหมายส่วน ลำดับ และสำเนาส่วนแบบกำหนดเองจะบันทึกเองเมื่อคุณทำการเปลี่ยนแปลง",
+  "The chat widget customers and visitors see on the storefront.":
+    "วิดเจ็ตแชทที่ลูกค้าและผู้เยี่ยมชมเห็นบนหน้าร้าน",
   "The classic credential pair, including the password-reset flow.":
     "คู่ข้อมูลรับรองแบบคลาสสิก รวมถึงขั้นตอนการรีเซ็ตรหัสผ่าน",
   "the farm owner": "เจ้าของฟาร์ม",
+  "The floating Help Assistant staff see on every admin page.":
+    "เจ้าหน้าที่ผู้ช่วยช่วยเหลือแบบลอยตัวจะเห็นในทุกหน้าผู้ดูแลระบบ",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'ป้ายกำกับลิงก์ส่วนหัวและส่วนท้ายทุกหน้าจะแสดง แปลตามภาษา (การย้าย 0068) สถานที่เว้นว่างไว้จะกลับไปเป็นภาษาอังกฤษที่หน้าร้าน นี่เป็นการควบคุมแบบเดียวกับที่แก้ไขส่วนหัวที่แสดง "ร้านค้า" / "ตามฤดูกาล" เป็นภาษาอังกฤษในขณะที่ทุกสิ่งรอบตัวมีการเปลี่ยนภาษา — ป้ายกำกับเหล่านั้นมาจากที่นี่ ไม่ใช่จากการแปลเนื้อหาของหน้าด้านบน',
   "The homepage has no sections": "หน้าแรกไม่มีส่วนใด",
@@ -1352,6 +1385,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "สีเหล่านี้ยังใช้กับเพจด้านล่าง",
   "These roles define the permission sets available when inviting or editing users.":
     "บทบาทเหล่านี้กำหนดชุดสิทธิ์ที่พร้อมใช้งานเมื่อเชิญหรือแก้ไขผู้ใช้",
+  "Thinking…": "การคิด...",
   "This application is": "แอปพลิเคชันนี้ คือ",
   "This order is in a final state.": "คำสั่งซื้อนี้อยู่ในสถานะสุดท้าย",
   "This page contains sensitive application diagnostics.":
@@ -1471,6 +1505,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "เหตุใดจึงต้องมีการเปลี่ยนแปลง หรือเหตุใดจึงถูกปฏิเสธ",
   "Why is stock changing?": "เหตุใดหุ้นจึงเปลี่ยนแปลง",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "คำที่บอทจับคู่กับคำถามเพื่อตัดสินว่ารายการนี้มีความเกี่ยวข้อง",
   "Working...": "กำลังทำงาน...",
   "World languages": "ภาษาทั่วโลก",
   "Write a message…": "เขียนข้อความ…",

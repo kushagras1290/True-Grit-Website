@@ -80,12 +80,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "వర్గాన్ని జోడించు",
   "Add code": "కోడ్‌ను జోడించండి",
   "Add country": "దేశాన్ని జోడించండి",
+  "Add entry": "నమోదుని జోడించు",
   "Add farm owner": "వ్యవసాయ యజమానిని జోడించండి",
   "Add ingredient": "పదార్థాన్ని జోడించండి",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "ప్రారంభించబడింది.",
+  "Add knowledge entry": "నాలెడ్జ్ ఎంట్రీని జోడించండి",
   "Add one above to get started.": "ప్రారంభించడానికి ఎగువన ఒకదాన్ని జోడించండి.",
   "Add one below to get started.": "ప్రారంభించడానికి దిగువన ఒకరిని జోడించండి.",
+  "Add one so the bot has something to reference for this scope.":
+    "ఒకటి జోడించండి, తద్వారా బోట్ ఈ స్కోప్‌ను సూచించడానికి ఏదైనా ఉంటుంది.",
   "Add page": "కు స్లయిడ్ జోడించు",
   "Add participants": "పాల్గొనేవారిని జోడించండి",
   "Add role": "పాత్రను జోడించు",
@@ -103,9 +107,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "శోధనను సర్దుబాటు చేయండి లేదా ఉత్పత్తిని సృష్టించండి.",
   "Adjustment %": "సర్దుబాటు %",
   "Adjustments restricted": "నావిగేషన్",
+  Admin: "అడ్మిన్",
   "Admin API is unavailable": "అడ్మిన్ API అందుబాటులో లేదు",
   "Admin Logs": 'span><span id="t0008">span><span id="t0008">span><span id="t0008">',
   "Admin navigation": "అడ్మిన్ నావిగేషన్",
+  "Admin panel bot": "అడ్మిన్ ప్యానెల్ బాట్",
   Afrikaans: "ఆఫ్రికాన్‌లు",
   "After refunds, all farms": "వాపసు చేసిన తర్వాత, అన్ని పొలాలు",
   Albanian: "అల్బేనియన్",
@@ -166,6 +172,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "అర్మేనియన్",
   "Article not found": "కథనం కనుగొనబడలేదు",
   "Asha Rao": "ఆశా రావు",
+  "Ask a question…": "ప్రశ్న అడగండి...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "అడ్మిన్ ప్యానెల్‌లో ఏదైనా ఎలా చేయాలో అడగండి లేదా పెండింగ్‌లో ఉన్న ఆర్డర్‌లు, తక్కువ-స్టాక్ ఐటెమ్‌లు లేదా ఆర్డర్ స్థితి గురించి అడగండి.",
   "Assamese (অসমীয়া)": "అస్సామీ (అసమయ)",
   "Assigned roles": 'Aspan><spaned id="t0004">అట్రిబ్యూషన్',
   Attribution: "అట్రిబ్యూషన్",
@@ -173,6 +182,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "రచయిత",
   "Auto-translate": "స్వీయ అనువాదం",
   "Auto-translate all": "అన్నింటినీ స్వయంచాలకంగా అనువదించండి",
+  Availability: "అందుబాటు",
   Available: "అందుబాటులో ఉంది",
   "available · reorder at": "అందుబాటులో ఉంది · ఇక్కడ మళ్లీ ఆర్డర్ చేయండి",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -218,6 +228,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "బాడీ టెక్స్ట్",
   Bosnian: "బోస్నియన్",
   Brand: "బ్రాండ్",
+  "Built-in": "అంతర్నిర్మిత",
   "Bulgarian (Български)": "ధర",
   Bundle: "బండిల్",
   "bundle price · items priced at": "బండిల్ ధర · వస్తువులు ధర",
@@ -273,6 +284,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "క్లియర్ అవుతోంది...",
   "Click link": "లింక్‌ని క్లిక్ చేయండి",
   Close: "మూసివేయి",
+  "Close help assistant": "సహాయ సహాయకాన్ని మూసివేయండి",
   "Close navigation": "నావిగేషన్‌ను మూసివేయి",
   "CMS pages": "CMS పేజీలు",
   "CMS pages & SEO": "CMS పేజీలు & SEO",
@@ -306,6 +318,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Facebookతో కొనసాగించండి",
   "Control what each role can view, create, edit, publish or manage.":
     "ప్రతి పాత్ర వీక్షించగల, సృష్టించగల, సవరించగల, ప్రచురించగల లేదా నిర్వహించగల వాటిని నియంత్రించండి.",
+  "Control whether each bot is available, and edit what it knows.":
+    "ప్రతి బాట్ అందుబాటులో ఉందో లేదో నియంత్రించండి మరియు దానికి తెలిసిన వాటిని సవరించండి.",
   Cook: "వంట",
   "Cook minutes": "నిమిషాలు ఉడికించాలి",
   "Copy inside dark bands.": "డార్క్ బ్యాండ్‌ల లోపల కాపీ చేయండి.",
@@ -375,9 +389,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "తొలగించు",
   "Delete (spam)": "తొలగించు (స్పామ్)",
   "Delete category": "వర్గాన్ని తొలగించు",
+  "Delete entry": "ఎంట్రీని తొలగించాలా",
   "Delete farm": "వ్యవధిని తొలగించు",
   "Delete image": "చిత్రాన్ని తొలగించు",
   "Delete inventory row": "ఇన్వెంటరీ అడ్డు వరుసను తొలగించాలా",
+  "Delete knowledge entry?": "నాలెడ్జ్ ఎంట్రీని తొలగించాలా?",
   "Delete permanently": 'ను తొలగించండి <0 id="t0012">వినియోగదారుని తొలగించు',
   "Delete product": "ఉత్పత్తిని తొలగించండి",
   "Delete role": "పాత్రను తొలగించండి",
@@ -431,7 +447,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS పేజీ మెటాడేటా, ఇండెక్సింగ్ మరియు ముడి పేజీ బ్లాక్‌లను సవరించండి. హోమ్‌పేజీ రికార్డ్ ఇక్కడ కూడా జాబితా చేయబడింది, కానీ దాన్ని మార్చడానికి హోమ్‌పేజీ సెట్టింగ్‌లు సురక్షితమైన మార్గం — ఈ ఎడిటర్ ముడి JSONని తీసుకుంటుంది.",
   "Edit content": "కంటెంట్‌ని సవరించు",
+  "Edit entry": "ఎంట్రీని సవరించాలా",
   "Edit farm": "ఫారమ్‌ని సవరించండి",
+  "Edit knowledge entry": "నాలెడ్జ్ ఎంట్రీని సవరించండి",
   "Edit media": "మీడియాను సవరించండి",
   "Edit review": "సమీక్షను సవరించండి",
   "Edit role": "పాత్రను సవరించు",
@@ -550,6 +568,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "శీర్షికలు మరియు కాపీ.",
   Headline: "హెడ్‌లైన్",
   "Hebrew (עברית)": "హీబ్రూ (עברית)",
+  "Help assistant": "సహాయ సహాయకం",
+  "Help Assistant": "సహాయ సహాయకం",
   "Hero description": "హీరో వివరణ",
   "Hero eyebrow": "హీరో ఐబ్రో",
   "Hero image alt text": "హీరో ఇమేజ్ ఆల్ట్ టెక్స్ట్",
@@ -626,6 +646,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "కజఖ్",
   "Keep artwork clean": "కళాకృతిని శుభ్రంగా ఉంచండి",
   "Keep typing to search…": "శోధించడానికి టైప్ చేస్తూ ఉండండి...",
+  Keywords: "కీవర్డ్‌లు",
   Khmer: "ఖ్మేర్",
   Kinyarwanda: "కిన్యార్వాండా",
   "Konkani (कोंकणी)": "కొంకణి (కొంకణి)",
@@ -823,6 +844,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "సూచిక లేదు",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "ఇంకా అంశాలు లేవు — దిగువన కనీసం ఒకదానిని జోడించండి. ఇక్కడ కనీసం ఈ పరిమాణంలో ప్రతి వస్తువును బాస్కెట్‌లో కలిగి ఉన్నప్పుడు మాత్రమే చెక్అవుట్ ఈ బండిల్ తగ్గింపును వర్తిస్తుంది.",
+  "No knowledge entries": "నాలెడ్జ్ ఎంట్రీలు లేవు",
   "No line items recorded.": "లైన్ అంశాలు ఏవీ రికార్డ్ చేయబడలేదు.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ఇకపై లాగిన్‌ను మార్చదు — కాబట్టి మీరు ఇక్కడ సెట్ చేసిన పాస్‌వర్డ్ నిజంగా పాతదానిని భర్తీ చేస్తుంది.",
@@ -908,6 +930,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "ఓనర్ మాత్రమే స్కోప్‌ను నిర్వహించగలరు.",
   "Only the owner can review payments and refunds.":
     "ఓనర్ మాత్రమే చెల్లింపులు మరియు వాపసులను సమీక్షించగలరు.",
+  "Open help assistant": "సహాయ సహాయకాన్ని తెరవండి",
   "Open navigation": "నావిగేషన్‌ను తెరవండి",
   Optional: "ఐచ్ఛికం",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1187,6 +1210,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "సేవ్ చేస్తోంది...",
   "Say how often you will write and that unsubscribing is easy.":
     "మీరు ఎంత తరచుగా వ్రాస్తారో మరియు చందాను తీసివేయడం సులభం అని చెప్పండి.",
+  Scope: "పరిధి",
   "Scope Management": "స్కోప్ మేనేజ్‌మెంట్",
   "Scopes unavailable": "స్కోప్‌లు అందుబాటులో లేవు",
   "Search archive": "శోధన ఆర్కైవ్",
@@ -1252,6 +1276,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ఎంచుకున్న అడ్డు వరుసలు రిజర్వ్ చేయబడిన స్టాక్‌కి క్లియర్ చేయబడతాయి, రిజర్వేషన్‌లు, మూవ్‌మెంట్ హిస్టరీ మరియు ఆడిట్ లాగ్‌లను సంరక్షించేటప్పుడు అందుబాటులో ఉన్న స్టాక్ జీరో అవుతుంది.",
   "Selected users will be removed from the users list and signed out.":
     "ఎంచుకున్న వినియోగదారులు వినియోగదారుల జాబితా నుండి తీసివేయబడతారు మరియు సైన్ అవుట్ చేయబడతారు.",
+  Send: "పంపు",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "ఈ వినియోగదారుకు సురక్షిత పాస్‌వర్డ్ రీసెట్ లింక్‌ను పంపండి. వారు తమ కొత్త పాస్‌వర్డ్‌ను అడ్మిన్ రీసెట్ పేజీ నుండి సెట్ చేస్తారు.",
   "Send back to draft": "డ్రాఫ్ట్‌కి తిరిగి పంపండి",
@@ -1321,6 +1346,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "స్నిప్పెట్",
   "Sold out": "అమ్ముడుపోయింది",
   Somali: "సోమాలి",
+  "space separated, e.g. product publish visibility":
+    "స్పేస్ వేరు చేయబడింది, ఉదా. ఉత్పత్తి పబ్లిష్ విజిబిలిటీ",
   "Spanish (Español)": "స్పానిష్ (Español)",
   "Sprouted ragi flour": "మొలకెత్తిన రాగుల పిండి",
   "SQL Tables": "SQL టేబుల్‌లు",
@@ -1334,6 +1361,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "ttoref స్విచ్‌లు అందుబాటులో లేదు",
   "Stock Status": "స్టాక్ స్థితి",
   "Store credit": "స్టోర్ క్రెడిట్",
+  Storefront: 'Adsistant ప్రతి" సహాయం> t000 ప్రకటనలో చూడండి పేజీ.',
+  "Storefront bot": "స్టోర్ ఫ్రంట్ బాట్",
   "Storefront switches": "స్టోర్ ఫ్రంట్ స్విచ్‌లు",
   "Storefront switches unavailable": "స్టోర్ ఫ్రంట్ స్విచ్‌లు అందుబాటులో లేవు",
   "Strong border": "బలమైన అంచు",
@@ -1371,9 +1400,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "పైభాగంలో ఉన్న బ్యానర్",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "బ్యానర్, వర్గం అడ్డు వరుస, ఉత్పత్తి వరుస మరియు SEO ఫీల్డ్‌లు కలిసి సేవ్ చేయబడతాయి. విభాగం టిక్‌బాక్స్‌లు, ఆర్డర్ చేయడం మరియు అనుకూల విభాగం కాపీ మీరు వాటిని మార్చినప్పుడు వాటి స్వంతంగా సేవ్ అవుతాయి.",
+  "The chat widget customers and visitors see on the storefront.":
+    "చాట్ విడ్జెట్ కస్టమర్‌లు మరియు సందర్శకులు స్టోర్ ముందరిలో చూస్తారు.",
   "The classic credential pair, including the password-reset flow.":
     "పాస్‌వర్డ్-రీసెట్ ఫ్లోతో సహా క్లాసిక్ క్రెడెన్షియల్ పెయిర్.",
   "the farm owner": "వ్యవసాయ యజమాని",
+  "The floating Help Assistant staff see on every admin page.":
+    "ఫ్లోటింగ్ హెల్ప్ అసిస్టెంట్ సిబ్బంది ప్రతి అడ్మిన్ పేజీలో చూస్తారు.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'అనువదించబడిన ప్రతి భాషలోని శీర్షిక మరియు పాదాల పేజీ లింక్‌ని చూపుతుంది. 0068). లొకేల్‌ని ఖాళీగా ఉంచి, దుకాణం ముందరి భాగంలో ఆంగ్లంలోకి తిరిగి వస్తుంది. ఇంగ్లీషులో "షాప్" / "సీజనల్" అని చూపుతున్న హెడర్‌ను పరిష్కరిస్తుంది, దాని చుట్టూ ఉన్న ప్రతిదీ భాష మారినప్పుడు ఇదే నియంత్రణ — ఆ లేబుల్‌లు ఇక్కడి నుండి వచ్చాయి, పై పేజీ కంటెంట్ అనువాదాల నుండి కాదు.',
   "The homepage has no sections": "హోమ్‌పేజీకి విభాగాలు లేవు",
@@ -1401,6 +1434,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "ఈ రంగులు కింద ఉన్న పేజీలకు కూడా వర్తిస్తాయి",
   "These roles define the permission sets available when inviting or editing users.":
     "ఈ పాత్రలు వినియోగదారులను ఆహ్వానించేటప్పుడు లేదా సవరించేటప్పుడు అందుబాటులో ఉండే అనుమతి సెట్‌లను నిర్వచిస్తాయి.",
+  "Thinking…": "ఆలోచించడం...",
   "This application is": "ఈ అప్లికేషన్",
   "This order is in a final state.": "ఈ ఆర్డర్ తుది స్థితిలో ఉంది.",
   "This page contains sensitive application diagnostics.":
@@ -1522,6 +1556,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "మార్పులు ఎందుకు అవసరం, లేదా ఇది ఎందుకు తిరస్కరించబడింది?",
   "Why is stock changing?": "స్టాక్ ఎందుకు మారుతోంది?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "ఈ ఎంట్రీ సంబంధితమైనదని నిర్ణయించడానికి బోట్ పదాలు ప్రశ్నతో సరిపోలుతున్నాయి.",
   "Working...": "పని చేస్తోంది...",
   "World languages": "ప్రపంచ భాషలు",
   "Write a message…": "సందేశాన్ని వ్రాయండి...",

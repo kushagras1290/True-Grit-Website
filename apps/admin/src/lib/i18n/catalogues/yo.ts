@@ -83,12 +83,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Fi ẹka",
   "Add code": "Fi koodu kun",
   "Add country": "Ṣafikun orilẹ-ede",
+  "Add entry": "Ṣafikun titẹ sii",
   "Add farm owner": "Ṣafikun oniwun oko",
   "Add ingredient": "Fi eroja kun",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Fi awọn nkan kun (awọn iyatọ, melo ninu ọkọọkan) lẹhin ṣiṣẹda idii naa, lati Ṣakoso.",
+  "Add knowledge entry": "Ṣafikun titẹ imọ",
   "Add one above to get started.": "Fi ọkan si oke lati bẹrẹ.",
   "Add one below to get started.": "oju-iwe",
+  "Add one so the bot has something to reference for this scope.":
+    "Fi ọkan kun ki bot naa ni nkan lati tọka si aaye yii.",
   "Add page": "Fi oju-iwe kun",
   "Add participants": "Fi awọn olukopa kun",
   "Add role": "Fi ipa kun",
@@ -106,9 +110,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Ṣatunse wiwa tabi ṣẹda ọja kan.",
   "Adjustment %": "Atunṣe %",
   "Adjustments restricted": "Awọn atunṣe ni ihamọ",
+  Admin: "Abojuto",
   "Admin API is unavailable": "Abojuto API ko si",
   "Admin Logs": "Awọn iforukọsilẹ alabojuto",
   "Admin navigation": "Abojuto lilọ kiri",
+  "Admin panel bot": "Admin panel ibeere…",
   Afrikaans: "Afirika",
   "After refunds, all farms": "Lẹhin awọn agbapada, gbogbo awọn oko",
   Albanian: "Albaniani",
@@ -165,12 +171,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Archived: "Ipamọ",
   "Archived items will appear here.": "Awọn ohun ti o wa ni ipamọ yoo han nibi.",
   "Article not found": "A ko ri nkan na",
+  "Ask a question…": "Beere ibeere kan…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Beere bi o ṣe le ṣe nkan ninu igbimọ alabojuto, tabi beere nipa awọn aṣẹ ti o wa ni isunmọ, awọn nkan kekere, tabi ipo aṣẹ.",
   "Assigned roles": "Awọn ipa ti a yàn",
   Attribution: "Idaṣe",
   "Audit Log": "Akọọlẹ Iṣayẹwo",
   Author: "Onkọwe",
   "Auto-translate": "Ladaaṣe-tumọ",
   "Auto-translate all": "Adaaṣe-translate gbogbo",
+  Availability: "Wiwa",
   Available: "Wa",
   "available · reorder at": "Awa · atunṣeto nigbagbogbo ni",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -209,6 +219,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Akosile ara",
   Bosnian: "Bosnia",
   Brand: 'Brand="t0007" ( Български)',
+  "Built-in": "Itumọ ti inu",
   Bundle: "Idipo",
   "bundle price · items priced at": "iye owo lapapo · awọn ohun kan ti a ṣe idiyele ni",
   "Bundle price, ₹": "Iye owo lapapo, ₹",
@@ -256,6 +267,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Ipaṣẹ...",
   "Click link": "Tẹ ọna asopọ",
   Close: "Pade",
+  "Close help assistant": "Close bot kọọkan wa, ki o ṣatunkọ ohun ti o mọ.",
   "Close navigation": "Pa lilọ kiri",
   "CMS pages": "Awọn oju-iwe CMS",
   "CMS pages & SEO": "Awọn oju-iwe CMS & SEO",
@@ -289,6 +301,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Tẹsiwaju pẹlu Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Ṣakoso ohun ti ipa kọọkan le wo, ṣẹda, ṣatunkọ, ṣe atẹjade tabi ṣakoso.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Ṣakoso boya bot kọọkan wa, ati ṣatunkọ ohun ti o mọ.",
   "Cook minutes": "Awọn iṣẹju sise",
   "Copy inside dark bands.": "Daakọ inu awọn ẹgbẹ dudu.",
   Correction: "Atunse",
@@ -352,9 +366,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Paarẹ",
   "Delete (spam)": "Paarẹ (spam)",
   "Delete category": "Paarẹ ẹka",
+  "Delete entry": "Paarẹ titẹ sii",
   "Delete farm": 'De oko id="t0006">Pa ori ila ọja rẹ kuro',
   "Delete image": "Pa aworan rẹ",
   "Delete inventory row": "Pa ori ila akojo-ipamọ rẹ",
+  "Delete knowledge entry?": "Pa titẹsi imọ rẹ bi?",
   "Delete permanently": "Parẹ patapata",
   "Delete product": "Pa ọja rẹ",
   "Delete role": "Pa ipa",
@@ -403,7 +419,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Ṣatunkọ metadata oju-iwe CMS, titọka ati awọn bulọọki oju-iwe aise. Igbasilẹ oju-iwe akọkọ ti wa ni atokọ nibi paapaa, ṣugbọn Awọn Eto Oju-iwe akọkọ jẹ ọna ti o ni aabo julọ lati yi pada — olootu yii gba JSON aise.",
   "Edit content": "Ṣatunkọ akoonu",
+  "Edit entry": "Ṣatunkọ titẹsi",
   "Edit farm": "Ṣatunkọ oko",
+  "Edit knowledge entry": "Ṣatunkọ titẹsi imọ",
   "Edit media": "Ṣatunkọ media",
   "Edit review": "Ṣatunkọ awotẹlẹ",
   "Edit role": "Ṣatunkọ ipa",
@@ -509,6 +527,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Awọn akọle ati ẹda.",
   Headline: "Akọni",
   "Hebrew (עברית)": "Heberu (עברית)",
+  "Help assistant": "Iranlọwọ iranlọwọ",
+  "Help Assistant": "Iranlọwọ Iranlọwọ",
   "Hero description": "Apejuwe akoni",
   "Hero eyebrow": "oju oju akoni",
   "Hero image alt text": "Akọni aworan alt text",
@@ -578,6 +598,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Kannada (ಕನ್ನಡ)": "Kanada (ಕನ್ನಡ)",
   "Keep artwork clean": "Jeki iṣẹ-ọnà di mimọ",
   "Keep typing to search…": "Tẹsiwaju titẹ lati wa…",
+  Keywords: "Awọn koko-ọrọ",
   "Korean (한국어)": "Korea (한국어)",
   Label: "Aami",
   "Land under cultivation": "Ilẹ ti o wa labẹ ogbin",
@@ -757,6 +778,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Ko si atọka",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Ko si awọn ohun kan sibẹsibẹ - ṣafikun o kere ju ọkan lọ si isalẹ. Ṣiṣayẹwo nikan lo ẹdinwo laini yii nigbati agbọn ba ni gbogbo nkan nibi, ni o kere ju awọn iwọn wọnyi.",
+  "No knowledge entries": "Ko si awọn titẹ sii imọ",
   "No line items recorded.": "Ko si awọn ohun laini ti o gbasilẹ.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ko yi iwọle pada mọ — nitori naa ọrọ igbaniwọle ti o ṣeto nibi yoo rọpo ti atijọ.",
@@ -839,6 +861,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Onini nikan ni o le ṣakoso awọn aaye ipa.",
   "Only the owner can review payments and refunds.":
     "Oluwa nikan ni o le ṣe ayẹwo awọn sisanwo ati awọn agbapada.",
+  "Open help assistant": "Iranlọwọ iranlọwọ ṣiṣi",
   "Open navigation": "Ṣi lilọ kiri",
   Optional: "Aṣayan",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1110,6 +1133,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Nfipamọ…",
   "Say how often you will write and that unsubscribing is easy.":
     "Sọ iye igba ti o yoo kọ ati pe yiyọkuro jẹ rọrun.",
+  Scope: "Opin",
   "Scope Management": "Opin Iṣakoso",
   "Scopes unavailable": "Opin ko si",
   "Search archive": "Iwadi iwe ipamọ",
@@ -1175,6 +1199,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Awọn ori ila ti a ti yan yoo jẹ imukuro si iṣura ti a fi pamọ, ti yoo jẹ ki ọja iṣura ti o wa lakoko titọju awọn ifiṣura, itan-iṣipopada ati awọn akọọlẹ iṣayẹwo.",
   "Selected users will be removed from the users list and signed out.":
     "Awọn olumulo ti o yan yoo yọkuro kuro ninu atokọ olumulo ati jade.",
+  Send: "Firanṣẹ",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Fi ọna asopọ atunto ọrọ igbaniwọle to ni aabo ranṣẹ si olumulo yii. Wọn yoo ṣeto ọrọ igbaniwọle tuntun wọn lati oju-iwe atunto alabojuto.",
   "Send back to draft": "Firanṣẹ pada si iwe",
@@ -1238,6 +1263,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Snapshots at purchase time — catalogue edits never rewrite an order.":
     "Snapshots ni akoko rira — catalog edits kò tun ibere.",
   "Sold out": "Ti ta jade",
+  "space separated, e.g. product publish visibility": "aaye niya, fun apẹẹrẹ. ọja ṣe atẹjade hihan",
   "Spanish (Español)": 'Spanish id="t0005"> iyẹfun ragi hù',
   "Sprouted ragi flour": "Iyẹfun ragi ti hù",
   "SQL Tables": "SQL Tabili",
@@ -1250,6 +1276,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Igbese (ọkan fun laini)",
   "Stock Status": "Ipo Iṣura",
   "Store credit": "Kirẹditi itaja",
+  Storefront: "Iwaju ile itaja",
+  "Storefront bot": "botiwaju itaja",
   "Storefront switches": "Awọn iyipada iwaju itaja",
   "Storefront switches unavailable": "Awọn iyipada iwaju ile itaja ko si",
   "Strong border": "Aala to lagbara",
@@ -1278,9 +1306,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Asia ti o wa ni oke ti",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Asia, ila ẹka, ila ọja ati awọn aaye SEO pamọ papọ. Awọn apoti ami apakan, pipaṣẹ ati ẹda ẹda apakan ti ara wọn, bi o ṣe yipada wọn.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Awọn onibara ẹrọ ailorukọ iwiregbe ati awọn alejo rii ni iwaju ile itaja.",
   "The classic credential pair, including the password-reset flow.":
     "Míwọ̀n ìjẹ́wọ́ ẹ̀rí, pẹ̀lú ìṣàn ìṣàtúntò ọ̀rọ̀ìpamọ́.",
   "the farm owner": "oniwun oko",
+  "The floating Help Assistant staff see on every admin page.":
+    "Oṣiṣẹ Iranlọwọ Iranlọwọ lilefoofo wo lori gbogbo oju-iwe abojuto.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Akọsori onitumọ ati ọna asopọ ede fun gbogbo oju-iwe fihan (migration). Agbegbe osi ofifo ṣubu pada si Gẹẹsi ni iwaju ile itaja. Eyi jẹ iṣakoso kanna ti o ṣe atunṣe akọsori ti o nfihan "Ijaja" / "Akoko" ni ede Gẹẹsi nigba ti ohun gbogbo ti o wa ni ayika rẹ ti yipada ede — awọn aami wọnyẹn wa lati ibi, kii ṣe lati awọn itumọ akoonu oju-iwe loke.',
   "The homepage has no sections": "Oju-iwe akọọkan ko ni awọn abala",
@@ -1308,6 +1340,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Awọn awọ wọnyi tun kan si awọn oju-iwe labẹ",
   "These roles define the permission sets available when inviting or editing users.":
     "Awọn ipa wọnyi ṣalaye awọn eto igbanilaaye ti o wa nigba pipe tabi ṣiṣatunṣe awọn olumulo.",
+  "Thinking…": "Ironu…",
   "This application is": "Ohun elo yii jẹ",
   "This order is in a final state.": "Aṣẹ yii wa ni ipo ipari.",
   "This page contains sensitive application diagnostics.":
@@ -1423,6 +1456,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Kilode ti awọn iyipada ṣe nilo, tabi kilode ti eyi fi kọ?",
   "Why is stock changing?": "Kilode ti ọja fi n yipada?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Awọn ọrọ bot baramu lodi si ibeere kan lati pinnu titẹ sii wulo.",
   "Working...": "Ṣiṣẹ...",
   "World languages": "Awọn ede agbaye",
   "Write a message…": "Kọ ifiranṣẹ…",

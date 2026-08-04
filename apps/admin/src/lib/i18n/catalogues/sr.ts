@@ -90,12 +90,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Додај категорију",
   "Add code": "Додајте код",
   "Add country": "Додајте земљу",
+  "Add entry": "Додајте унос",
   "Add farm owner": "Додајте власника фарме",
   "Add ingredient": "Додајте састојак",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Додајте ставке (које варијанте, колико сваке) ​​након креирања пакета, из Управљај.",
+  "Add knowledge entry": "Додајте унос знања",
   "Add one above to get started.": "Додајте један изнад да бисте започели.",
   "Add one below to get started.": "Додајте један испод да бисте започели.",
+  "Add one so the bot has something to reference for this scope.":
+    "Додајте један тако да бот има нешто да референцира за овај опсег.",
   "Add page": "Додај страницу",
   "Add participants": "Додајте учеснике",
   "Add role": "Додајте улогу",
@@ -113,9 +117,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Прилагодите претрагу или креирајте производ.",
   "Adjustment %": "% прилагођавања",
   "Adjustments restricted": "Подешавања су ограничена",
+  Admin: "Админ",
   "Admin API is unavailable": "Администраторски АПИ је недоступан",
   "Admin Logs": "Админ Логс",
   "Admin navigation": "Администраторска навигација",
+  "Admin panel bot": "Админ панел бот",
   ADMIN_LOGIN_EMAIL: "АДМИН_ЛОГИН_ЕМАИЛ",
   ADMIN_LOGIN_PASSWORD: "АДМИН_ЛОГИН_ПАССВОРД",
   Afrikaans: "Африкаанс",
@@ -180,6 +186,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "Јерменски",
   "Article not found": "Чланак није пронађен",
   "Asha Rao": "Асха Рао",
+  "Ask a question…": "Поставите питање…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Питајте како да урадите нешто у административном панелу или питајте о поруџбинама на чекању, артиклима на малом залихама или статусу поруџбине.",
   "Assamese (অসমীয়া)": "асамски (অসমীযা)",
   "Assigned roles": "Додељене улоге",
   Attribution: "Приписивање",
@@ -187,6 +196,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Аутор",
   "Auto-translate": "Ауто-транслате",
   "Auto-translate all": "Аутоматски преведи све",
+  Availability: "Доступност",
   Available: "Доступан",
   "available · reorder at": "доступно · поново наручити на",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -232,6 +242,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Основни текст",
   Bosnian: "босански",
   Brand: "Бранд",
+  "Built-in": "Уграђени",
   "Bulgarian (Български)": "бугарски (български)",
   Bundle: "Бундле",
   "bundle price · items priced at": "цена у пакету · артикли по цени",
@@ -286,6 +297,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Брисање...",
   "Click link": "Кликните на везу",
   Close: "Затвори",
+  "Close help assistant": "Затвори помоћник",
   "Close navigation": "Затвори навигацију",
   "CMS pages": "ЦМС странице",
   "CMS pages & SEO": "ЦМС странице и СЕО",
@@ -319,6 +331,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Наставите са Фејсбуком",
   "Control what each role can view, create, edit, publish or manage.":
     "Контролишите шта свака улога може да види, креира, мења, објави или управља.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Контролишите да ли је сваки бот доступан и уредите оно што зна.",
   Cook: "Цоок",
   "Cook minutes": "Кувајте минуте",
   "Copy inside dark bands.": "Копирајте унутар тамних трака.",
@@ -388,9 +402,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Избриши",
   "Delete (spam)": "Избриши (непожељна пошта)",
   "Delete category": "Избриши категорију",
+  "Delete entry": "Обриши унос",
   "Delete farm": "Избриши фарму",
   "Delete image": "Обриши слику",
   "Delete inventory row": "Избришите ред инвентара",
+  "Delete knowledge entry?": "Избрисати унос знања?",
   "Delete permanently": "Избриши трајно",
   "Delete product": "Избришите производ",
   "Delete role": "Избриши улогу",
@@ -442,7 +458,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Уредите метаподатке ЦМС странице, индексирање и блокове необрађених страница. Запис почетне странице је такође наведен овде, али Подешавања почетне странице су сигурнији начин да га промените — овај уређивач узима сирови ЈСОН.",
   "Edit content": "Уредите садржај",
+  "Edit entry": "Уреди унос",
   "Edit farm": "Уреди фарму",
+  "Edit knowledge entry": "Уредите унос знања",
   "Edit media": "Уредите медије",
   "Edit review": "Уреди рецензију",
   "Edit role": "Уреди улогу",
@@ -559,6 +577,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Наслови и копија.",
   Headline: "Наслов",
   "Hebrew (עברית)": "хебрејски (עברית)",
+  "Help assistant": "Помоћник за помоћ",
+  "Help Assistant": "Помоћник за помоћ",
   "Hero description": "Опис хероја",
   "Hero eyebrow": "Херојска обрва",
   "Hero image alt text": "Алтернативни текст слике хероја",
@@ -636,6 +656,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "казахстански",
   "Keep artwork clean": "Одржавајте уметничка дела чистима",
   "Keep typing to search…": "Наставите да куцате за претрагу…",
+  Keywords: "Кључне речи",
   Khmer: "кмерски",
   Kinyarwanda: "Киниарванда",
   "Konkani (कोंकणी)": "конкани (कोकणी)",
@@ -834,6 +855,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Нема индекса",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Још нема ставки — додајте бар једну испод. Плаћање примењује попуст на овај пакет само када се у корпи налазе сви артикли, барем у овим количинама.",
+  "No knowledge entries": "Нема уноса знања",
   "No line items recorded.": "Није забележена ниједна ставка.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "више не мења пријаву — тако да лозинка коју сте овде поставили заиста замењује стару.",
@@ -918,6 +940,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Само власник може да управља опсегом улога.",
   "Only the owner can review payments and refunds.":
     "Само власник може да прегледа уплате и повраћаје средстава.",
+  "Open help assistant": "Отворите помоћник за помоћ",
   "Open navigation": "Отворите навигацију",
   Optional: "Опционо",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1198,6 +1221,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Чување…",
   "Say how often you will write and that unsubscribing is easy.":
     "Реците колико често ћете писати и да је одјава лако.",
+  Scope: "Обим",
   "Scope Management": "Управљање обимом",
   "Scopes unavailable": "Опсези недоступни",
   "Search archive": "Претражи архиву",
@@ -1263,6 +1287,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Изабрани редови ће бити обрисани на резервисане залихе, чинећи доступним залихе нула уз очување резервација, историје кретања и евиденције ревизије.",
   "Selected users will be removed from the users list and signed out.":
     "Изабрани корисници ће бити уклоњени са листе корисника и одјављени.",
+  Send: "Пошаљи",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Пошаљите безбедну везу за ресетовање лозинке овом кориснику. Они ће поставити своју нову лозинку са странице за ресетовање администратора.",
   "Send back to draft": "Вратите на нацрт",
@@ -1337,6 +1362,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Сниппет",
   "Sold out": "Распродано",
   Somali: "сомалијски",
+  "space separated, e.g. product publish visibility":
+    "раздвојен простор, нпр. видљивост објављивања производа",
   "Spanish (Español)": "шпански (Еспанол)",
   "Sprouted ragi flour": "Проклијало раги брашно",
   "SQL Tables": "СКЛ Таблес",
@@ -1349,6 +1376,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Кораци (један по реду)",
   "Stock Status": "Стоцк Статус",
   "Store credit": "Кредит у продавници",
+  Storefront: "Сторефронт",
+  "Storefront bot": "Сторефронт бот",
   "Storefront switches": "Прекидачи за излог",
   "Storefront switches unavailable": "Прекидачи за излог нису доступни",
   "Strong border": "Јака граница",
@@ -1386,9 +1415,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Банер преко врха",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Банер, ред категорије, ред производа и СЕО поља чувају заједно. Ознаке за одељке, наручивање и прилагођене копије одељака чувају се сами, како их мењате.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Виџет за ћаскање који купци и посетиоци виде на излогу.",
   "The classic credential pair, including the password-reset flow.":
     "Класични пар акредитива, укључујући ток ресетовања лозинке.",
   "the farm owner": "власник фарме",
+  "The floating Help Assistant staff see on every admin page.":
+    "Плутајућу помоћно особље види на свакој администраторској страници.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "Веза заглавља и подножја означава сваку страницу коју приказује, преведено по језику (миграција 0068). Локал који је остављен празан враћа се на енглески на излогу продавнице. Ово је иста контрола која поправља заглавље које приказује „Продавница“ / „Сезонско“ на енглеском док је све око њега променило језик — те ознаке долазе одавде, а не из превода садржаја странице изнад.",
   "The homepage has no sections": "Почетна страница нема секције",
@@ -1417,6 +1450,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Ове боје се односе и на странице испод",
   "These roles define the permission sets available when inviting or editing users.":
     "Ове улоге дефинишу скупове дозвола доступних приликом позивања или уређивања корисника.",
+  "Thinking…": "Размишљајући…",
   "This application is": "Ова апликација је",
   "This order is in a final state.": "Ова наредба је у коначном стању.",
   "This page contains sensitive application diagnostics.":
@@ -1540,6 +1574,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Зашто су потребне промене или зашто је ово одбијено?",
   "Why is stock changing?": "Зашто се акције мењају?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Речи које бот подудара са питањем да би одлучио да је овај унос релевантан.",
   "Working...": "ради...",
   "World languages": "Светски језици",
   "Write a message…": "Напишите поруку…",

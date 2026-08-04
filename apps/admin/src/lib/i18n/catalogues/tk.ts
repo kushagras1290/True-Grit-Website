@@ -86,12 +86,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Kategoriýa goşuň",
   "Add code": "Kod goşuň",
   "Add country": "Countryurt goşuň",
+  "Add entry": "Giriş goş",
   "Add farm owner": "Fermer eýesini goşuň",
   "Add ingredient": "Goşundy goşuň",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Dolandyryşdan soň, bukjany döredeniňizden soň (haýsy görnüşleri, hersiniň näçesi) goşuň.",
+  "Add knowledge entry": "Bilim ýazgysyny goşuň",
   "Add one above to get started.": "Başlamak üçin ýokarda birini goşuň.",
   "Add one below to get started.": "Başlamak üçin aşakda birini goşuň.",
+  "Add one so the bot has something to reference for this scope.":
+    "Botyň bu çäk üçin salgylanjak bir zady bar ýaly birini goşuň.",
   "Add page": "Sahypa goş",
   "Add participants": "Gatnaşanlary goşuň",
   "Add role": "Rol goşuň",
@@ -112,6 +116,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Admin API is unavailable": "Admin API elýeterli däl",
   "Admin Logs": "Admin surnallary",
   "Admin navigation": "Admin nawigasiýa",
+  "Admin panel bot": "Dolandyryş paneli bot",
   Afrikaans: "Afrika",
   "After refunds, all farms": "Yzyna gaýtarylandan soň, ähli fermalar",
   Albanian: "Alban",
@@ -173,6 +178,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "Ermeni",
   "Article not found": "Makala tapylmady",
   "Asha Rao": "Aşa Rao",
+  "Ask a question…": "Sorag beriň ...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Dolandyryş panelinde nädip bir zat etmelidigini soraň ýa-da garaşylýan sargytlar, az mukdarda zatlar ýa-da sargyt ýagdaýy barada soraň.",
   "Assamese (অসমীয়া)": "Assam (অসমীয়া)",
   "Assigned roles": "Bellenen rollar",
   Attribution: "Aýratynlyk",
@@ -180,6 +188,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Awtor",
   "Auto-translate": "Awto-terjime",
   "Auto-translate all": "Hemmesini awtomatiki terjime et",
+  Availability: "Elýeterlilik",
   Available: "Elýeterli",
   "available · reorder at": "elýeterli · tertipleşdir",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -222,6 +231,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Bedeniň teksti",
   Bosnian: "Bosniýa",
   Brand: "Marka",
+  "Built-in": "Gurlan",
   "Bulgarian (Български)": "Bolgar (Български)",
   Bundle: "Bukja",
   "bundle price · items priced at": "bukjanyň bahasy · bahasy",
@@ -276,6 +286,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Arassalamak ...",
   "Click link": "Salgy basyň",
   Close: ".Akyn",
+  "Close help assistant": "Kömekçi kömekçi",
   "Close navigation": "Nawigasiýa ýapyň",
   "CMS pages": "CMS sahypalary",
   "CMS pages & SEO": "CMS sahypalary we SEO",
@@ -308,6 +319,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "“Facebook” bilen dowam ediň",
   "Control what each role can view, create, edit, publish or manage.":
     "Her bir roluň görüp, döredip, redaktirläp, neşir edip ýa-da dolandyryp biljekdigine gözegçilik ediň.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Her botyň elýeterlidigine gözegçilik ediň we bilýänlerini redaktirläň.",
   Cook: "Bişiriň",
   "Cook minutes": "Birnäçe minut bişiriň",
   "Copy inside dark bands.": "Garaňky zolaklaryň içinde göçüriň.",
@@ -377,9 +390,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Öçür",
   "Delete (spam)": "Öçürmek (spam)",
   "Delete category": "Kategoriýany poz",
+  "Delete entry": "Girişi poz",
   "Delete farm": "Fermany pozuň",
   "Delete image": "Suraty pozuň",
   "Delete inventory row": "Öwreniş hataryny pozuň",
+  "Delete knowledge entry?": "Bilim ýazgyny pozuň?",
   "Delete permanently": "Hemişelik pozuň",
   "Delete product": "Önümi poz",
   "Delete role": "Roly pozuň",
@@ -429,7 +444,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS sahypasynyň meta-maglumatyny, indeksirleme we çig sahypa bloklaryny redaktirläň. Baş sahypa ýazgysy hem şu ýerde sanalandyr, ýöne Baş sahypa Sazlamalary ony üýtgetmegiň iň ygtybarly usulydyr - bu redaktor çig JSON alýar.",
   "Edit content": "Mazmuny redaktirläň",
+  "Edit entry": "Girişi redaktirläň",
   "Edit farm": "Fermany redaktirläň",
+  "Edit knowledge entry": "Bilim ýazgysyny redaktirläň",
   "Edit media": "Mediýa redaktirläň",
   "Edit review": "Syn gözden geçiriň",
   "Edit role": "Roly redaktirläň",
@@ -543,6 +560,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Sözbaşylar we göçürme.",
   Headline: "Sözbaşy",
   "Hebrew (עברית)": "Hebrewewreýçe (עברית)",
+  "Help assistant": "Kömekçi kömekçi",
+  "Help Assistant": "Kömekçi kömekçi",
   "Hero description": "Gahryman beýany",
   "Hero eyebrow": "Gahryman gaşy",
   "Hero image alt text": "Gahryman surat alt teksti",
@@ -616,6 +635,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "Gazak",
   "Keep artwork clean": "Çeper eserleri arassa saklaň",
   "Keep typing to search…": "Gözlemek üçin ýazmagy dowam ediň ...",
+  Keywords: "Açar sözler",
   "Korean (한국어)": "Koreýçe (한국어)",
   Kyrgyz: "Gyrgyzystan",
   Label: "Bellik",
@@ -806,6 +826,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Indeks ýok",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Entek hiç zat ýok - iň bolmanda aşakda birini goşuň. Çykyş, sebetde bu ýerde iň bolmanda şu mukdarda ähli zatlar bar bolsa, bu bukjanyň arzanladyşyny ulanýar.",
+  "No knowledge entries": "Bilim ýazgylary ýok",
   "No line items recorded.": "Hiç hili setir ýazgysy ýok.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "indi girişi üýtgetmeýär - şonuň üçin bu ýerde goýan parolyňyz hakykatdanam köne parolyň ýerini alýar.",
@@ -891,6 +912,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Diňe eýesi rol çäklerini dolandyryp biler.",
   "Only the owner can review payments and refunds.":
     "Diňe eýesi tölegleri we tölegleri gözden geçirip biler.",
+  "Open help assistant": "Kömekçi kömekçi",
   "Open navigation": "Açyk nawigasiýa",
   Optional: "Meýletin",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1169,6 +1191,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Tygşytlamak…",
   "Say how often you will write and that unsubscribing is easy.":
     "Näçe gezek ýazjakdygyňyzy we abunalykdan çykmagyň aňsatdygyny aýdyň.",
+  Scope: "Ulanyş gerimi",
   "Scope Management": "Giňişleýin dolandyryş",
   "Scopes unavailable": "Ulanyş çäkleri",
   "Search archive": "Arhiw gözläň",
@@ -1235,6 +1258,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Saýlanan hatarlar, ätiýaçlyklary, hereket taryhyny we audit ýazgylaryny gorap saklamak bilen ätiýaçlyk nola elýeterli bolar.",
   "Selected users will be removed from the users list and signed out.":
     "Saýlanan ulanyjylar ulanyjylaryň sanawyndan aýrylar we hasabyndan çykarlar.",
+  Send: "Iber",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Bu ulanyja ygtybarly paroly täzeden düzmek baglanyşygyny iberiň. Täze parolyny administratoryň täzeden düzmek sahypasyndan düzerler.",
   "Send back to draft": "Garalama iberiň",
@@ -1304,6 +1328,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Satyn alnan pursatlar - katalog redaktirlemeleri hiç haçan buýrugy täzeden ýazmaýar.",
   Snippet: "Parça",
   "Sold out": "Satyldy",
+  "space separated, e.g. product publish visibility":
+    "boş ýer, meselem önüm görmek mümkinçiligini çap edýär",
   "Spanish (Español)": "Ispança (Español)",
   "Sprouted ragi flour": "Ösümlikli ragi uny",
   "SQL Tables": "SQL tablisalary",
@@ -1316,6 +1342,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Dimler (her setirde bir)",
   "Stock Status": "Bir Stockanyň ýagdaýy",
   "Store credit": "Karzy saklaň",
+  Storefront: "Dükanyň öň tarapy",
+  "Storefront bot": "Dükanyň boty",
   "Storefront switches": "Dükanyň öňündäki wyklýuçateller",
   "Storefront switches unavailable": "Dükanyň öňündäki wyklýuçateller elýeterli däl",
   "Strong border": "Güýçli serhet",
@@ -1350,9 +1378,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Banneriň ýokarsy",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Banner, kategoriýa hatary, önüm hatary we SEO meýdanlary bilelikde tygşytlaýar. Bölüm bellikleri, sargyt we ýörite bölümiň göçürmesi, olary üýtgedeniňizde özbaşdak saklaň.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Söhbet widjetiniň müşderileri we myhmanlar dükanyň öň tarapynda görýärler.",
   "The classic credential pair, including the password-reset flow.":
     "Klassiki şahsyýet jübüti, şol sanda paroly täzeden düzmek akymy.",
   "the farm owner": "fermanyň eýesi",
+  "The floating Help Assistant staff see on every admin page.":
+    "Floüzýän Kömek Kömekçi işgärleri her administrator sahypasynda görýär.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Her sahypada görkezilen sözbaşy we aşaky sözbaşy, her dile terjime edilýär (göçürme 0068). Boş bir boş ýer dükanyň öňündäki iňlis diline gaýdyp gelýär. Bu, iňlis dilinde "Dükan" / "Möwsümleýin" görkezýän sözbaşy düzedýän şol bir dolandyryş, daş-töweregindäki zatlaryň hemmesi dil üýtgedi - şol ýazgylar ýokardaky sahypa mazmuny terjimelerinden däl-de, şu ýerden gelýär.',
   "The homepage has no sections": "Baş sahypada bölüm ýok",
@@ -1381,6 +1413,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Bu reňkler aşakdaky sahypalara-da degişlidir",
   "These roles define the permission sets available when inviting or editing users.":
     "Bu rollar ulanyjylary çagyranda ýa-da redaktirlän mahaly bar bolan rugsat toplumlaryny kesgitleýär.",
+  "Thinking…": "Oýlanmak…",
   "This application is": "Bu programma",
   "This order is in a final state.": "Bu sargyt soňky ýagdaýda.",
   "This page contains sensitive application diagnostics.":
@@ -1500,6 +1533,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Näme üçin üýtgeşmeler gerek ýa-da bu näme üçin ret edildi?",
   "Why is stock changing?": "Näme üçin aksiýa üýtgeýär?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Bot, bu ýazgyny çözmek üçin bir soraga gabat gelýän sözler.",
   "Working...": "Işleýän ...",
   "World languages": "Dünýä dilleri",
   "Write a message…": "Habar ýazyň ...",

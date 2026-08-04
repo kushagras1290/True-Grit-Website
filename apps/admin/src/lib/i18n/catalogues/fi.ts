@@ -83,11 +83,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Lisää luokka",
   "Add code": "Lisää koodi",
   "Add country": "Lisää maa",
+  "Add entry": "Lisää merkintä",
   "Add ingredient": "Lisää ainesosa",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Lisää kohteita (mitkä muunnelmat, kuinka monta kutakin) nipun luomisen jälkeen Hallinnoi-kohdasta.",
+  "Add knowledge entry": "Lisää tietomerkintä",
   "Add one above to get started.": "Aloita lisäämällä yksi yllä olevaan kohtaan.",
   "Add one below to get started.": "Aloita lisäämällä yksi alle.",
+  "Add one so the bot has something to reference for this scope.":
+    "Lisää yksi, jotta botilla on jotain, johon viitata tätä laajuutta varten.",
   "Add page": "Lisää sivu",
   "Add participants": "Lisää osallistujia",
   "Add role": "Lisää rooli",
@@ -105,9 +109,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Muokkaa hakua tai luo tuote.",
   "Adjustment %": "Oikaisu %",
   "Adjustments restricted": "Oikaisuja rajoitettu",
+  Admin: "Järjestelmänvalvoja",
   "Admin API is unavailable": "Järjestelmänvalvojan sovellusliittymä ei ole käytettävissä",
   "Admin Logs": "Järjestelmänvalvojan lokit",
   "Admin navigation": "Järjestelmänvalvojan navigointi",
+  "Admin panel bot": "Hallintapaneelin botti",
   Afrikaans: "afrikaans",
   "After refunds, all farms": "hyvitysten jälkeen kaikki maatilat",
   Albanian: "albania",
@@ -167,6 +173,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Arkistoidut kohteet näkyvät täällä.",
   Armenian: "armenia",
   "Article not found": "Artikkelia ei löydy",
+  "Ask a question…": "Esitä kysymys…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Kysy hallintapaneelissa, miten voit tehdä jotain, tai kysy odottavista tilauksista, vähissä varastossa olevista tuotteista tai tilauksen tilasta.",
   "Assamese (অসমীয়া)": "asami (অসমীয়া)",
   "Assigned roles": "Määritetyt roolit",
   Attribution: "Attribuutio",
@@ -175,6 +184,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Auto-translate":
     'Aina derivoituna -0 hand is5">Avail0 hand is5">Avail on id="t00 hand is5">Ava. Jokainen muutos on liike.',
   "Auto-translate all": "Käännä kaikki automaattisesti",
+  Availability: "Saatavuus",
   Available: "Saatavilla",
   "available · reorder at": "saatavilla · tilaa uudelleen osoitteessa",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -218,6 +228,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Bosnia",
   Bosnian: "bosnia",
   Brand: '8Bt</007"> (Български)',
+  "Built-in": "Sisäänrakennettu",
   "Bulgarian (Български)": "bulgaria (Български)",
   Bundle: "Paketti",
   "bundle price · items priced at": "pakettihinta · tuotteet, joiden hinta on",
@@ -269,6 +280,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Tyhjennetään...",
   "Click link": "Napsauta linkkiä",
   Close: "Sulje",
+  "Close help assistant": "Sulje ohjeavustaja",
   "Close navigation": "Sulje navigointi",
   "CMS pages": "CMS-sivut",
   "CMS pages & SEO": "CMS-sivut ja hakukoneoptimointi",
@@ -302,6 +314,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Jatka Facebookin kanssa",
   "Control what each role can view, create, edit, publish or manage.":
     "Hallitse, mitä kukin rooli voi tarkastella, luoda, muokata, julkaista tai hallita.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Hallitse, onko jokainen botti saatavilla, ja muokkaa sen tietoja.",
   Cook: "Kokista",
   "Cook minutes": "Paista minuuttia",
   "Copy inside dark bands.": "Kopioi tummien juovien sisään.",
@@ -371,9 +385,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Poista",
   "Delete (spam)": "Poista (roskaposti)",
   "Delete category": "Poista luokka",
+  "Delete entry": "Poista merkintä",
   "Delete farm": "Poista maatila",
   "Delete image": "Poista kuva",
   "Delete inventory row": "Poista varastorivi",
+  "Delete knowledge entry?": "Poistetaanko tietomerkintä?",
   "Delete permanently": "Poista pysyvästi",
   "Delete product": "Poista tuote",
   "Delete role": "Poista rooli",
@@ -424,7 +440,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Muokkaa CMS-sivun metatietoja, indeksointia ja raakasivulohkoja. Myös kotisivutietue on lueteltu tässä, mutta etusivun asetukset ovat turvallisempi tapa muuttaa sitä – tämä editori käyttää raaka-JSON-muotoa.",
   "Edit content": "Muokkaa sisältöä",
+  "Edit entry": "Muokkaa merkintää",
   "Edit farm": "Muokkaa maatilaa",
+  "Edit knowledge entry": "Muokkaa tietomerkintää",
   "Edit media": "Muokkaa mediaa",
   "Edit review": "Muokkaa arvostelua",
   "Edit role": "Muokkaa roolia",
@@ -540,6 +558,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Otsikot ja kopioi.",
   Headline: "Otsikko",
   "Hebrew (עברית)": "Heprea (עברית)",
+  "Help assistant": "Apu-avustaja",
+  "Help Assistant": 'Help Assistant id="t0006">Avainsanat',
   "Hero description": "Sankarin kuvaus",
   "Hero eyebrow": "Sankarin kulmakarva",
   "Hero image alt text": "Sankarikuvan vaihtoehtoinen teksti",
@@ -616,6 +636,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "kazakki",
   "Keep artwork clean": "Pidä kuvitus puhtaana",
   "Keep typing to search…": "Jatka kirjoittamista hakeaksesi…",
+  Keywords: "Avainsanat",
   Khmer: "khmerit",
   "Konkani (कोंकणी)": "konkani (कोंकणी)",
   "Korean (한국어)": "korea (한국어)",
@@ -803,6 +824,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Ei hakemistoa",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Ei vielä kohteita – lisää vähintään yksi alle. Checkout soveltaa tämän paketin alennusta vain, jos korissa on kaikki tuotteet, ainakin nämä määrät.",
+  "No knowledge entries": "Ei tietomerkintöjä",
   "No line items recorded.": "Rivikohtia ei ole tallennettu.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ei enää muuta kirjautumistunnusta – joten tässä määrittämäsi salasana todella korvaa vanhan.",
@@ -887,6 +909,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Vain omistaja voi hallita roolien laajuuksia.",
   "Only the owner can review payments and refunds.":
     "Vain omistaja voi tarkastella maksuja ja hyvityksiä.",
+  "Open help assistant": "Avaa ohjeavustaja",
   "Open navigation": "Avaa navigointi",
   Optional: "Valinnainen",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1165,6 +1188,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Tallenna...",
   "Say how often you will write and that unsubscribing is easy.":
     "Kerro, kuinka usein kirjoitat helposti.",
+  Scope: "Laajuus",
   "Scopes unavailable": "Laajuudet eivät ole käytettävissä",
   "Search archive": "Hae arkistosta",
   "Search blog posts": "Hae blogikirjoituksia",
@@ -1229,6 +1253,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Valitut rivit tyhjennetään varattuun varastoon, jolloin varastosta tulee nolla, mutta varaukset, liikehistoria ja tarkastuslokit säilytetään.",
   "Selected users will be removed from the users list and signed out.":
     "Valitut käyttäjät poistetaan käyttäjäluettelosta ja kirjataan ulos.",
+  Send: "Lähetä",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Lähetä suojattu salasanan palautuslinkki tälle käyttäjälle. He asettavat uuden salasanansa järjestelmänvalvojan nollaussivulla.",
   "Send back to draft": "Lähetä takaisin luonnokseen",
@@ -1298,6 +1323,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Katkelma",
   "Sold out": "Loppuunmyyty",
   Somali: "somalialainen",
+  "space separated, e.g. product publish visibility":
+    "välilyönnillä erotettu, esim. tuotteen julkaisun näkyvyys",
   "Spanish (Español)": "espanja (español)",
   "Sprouted ragi flour": "itänyt ragi-jauho",
   "SQL Tables": "SQL-taulukot",
@@ -1310,6 +1337,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Vaiheet (yksi riviä kohden)",
   "Stock Status": "Varastuksen tila",
   "Store credit": "Kauppasaldo",
+  Storefront: "Kaupan julkisivu",
+  "Storefront bot": "myymäläbotti",
   "Storefront switches": "Liikemyymälän kytkimet",
   "Storefront switches unavailable": "Liikemyymälän kytkimet eivät ole saatavilla",
   "Strong border": "Vahva reunus",
@@ -1346,9 +1375,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Yläosassa oleva banneri",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Banneri-, luokkarivi-, tuoterivi- ja SEO-kentät tallentuvat yhdessä. Osioiden valintaruudut, järjestys ja mukautettu osion kopio tallentuvat itsestään, kun muutat niitä.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Chat-widget, jonka asiakkaat ja vierailijat näkevät julkisivussa.",
   "The classic credential pair, including the password-reset flow.":
     "Perinteinen tunnistepari, mukaan lukien salasanan palautusprosessi.",
   "the farm owner": "tilan omistaja",
+  "The floating Help Assistant staff see on every admin page.":
+    "Kelluva Help Assistant -henkilöstö näkee jokaisella järjestelmänvalvojasivulla.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Ylä- ja alatunnisteen linkkitunnisteet jokaisella sivulla näytetään 0 kielellä (6 m, käännös 8). Tyhjäksi jätetty kieliasetus palaa englannin kieleen myymälässä. Tämä on sama ohjausobjekti, joka korjaa otsikon, jossa näkyy "Shop" / "Seasonal" englanniksi, kun taas kaikki sen ympärillä on vaihtanut kieltä – nuo ​​tunnisteet tulevat täältä, eivät yllä olevista sivun sisällön käännöksistä.',
   "The homepage has no sections": "Etusivulla ei ole osioita.",
@@ -1377,6 +1410,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Nämä värit koskevat myös sivuja, jotka ovat alla",
   "These roles define the permission sets available when inviting or editing users.":
     "nämä roolit ovat käytettävissä, kun nämä tehtävät ovat käytettävissä. käyttäjiä.",
+  "Thinking…": "Ajattelee…",
   "This application is": "Tämä sovellus on",
   "This order is in a final state.": "Tämä tilaus on lopullisessa tilassa.",
   "This page contains sensitive application diagnostics.":
@@ -1495,6 +1529,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Miksi muutoksia tarvitaan tai miksi tämä hylättiin?",
   "Why is stock changing?": "Miksi osakkeet muuttuvat?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Sanat, jotka robotti vastaa kysymystä, päättää, onko tämä merkintä olennainen.",
   "Working...": "Toimii...",
   "World languages": "Maailman kielet",
   "Write a message…": "Kirjoita viesti…",

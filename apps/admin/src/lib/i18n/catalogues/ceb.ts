@@ -82,12 +82,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Pagdugang og kategorya",
   "Add code": "Pagdugang og code",
   "Add country": "<span tag-iya sa umahan",
+  "Add entry": "Idugang ang entry",
   "Add farm owner": "Idugang ang tag-iya sa umahan",
   "Add ingredient": "Idugang ang ingredient",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Idugang ang mga aytem (unsa ang mga variant, pila sa matag usa) human sa paghimo sa bundle, gikan sa Manage.",
+  "Add knowledge entry": "Idugang ang entry sa kahibalo",
   "Add one above to get started.": "Idugang ang usa sa ibabaw aron makasugod.",
   "Add one below to get started.": "Idugang ang usa sa ubos aron makasugod.",
+  "Add one so the bot has something to reference for this scope.":
+    "Idugang ang usa aron ang bot adunay usa ka butang nga i-refer para niini nga sakup.",
   "Add page": "Idugang ang panid",
   "Add participants": "Idugang ang mga partisipante",
   "Add role": "Idugang ang tahas",
@@ -163,6 +167,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Archived: "Gi-archive",
   "Archived items will appear here.": "Gi-archive nga mga butang ang makita dinhi.",
   "Article not found": "Artikulo wala makita",
+  "Ask a question…": "Pagpangutana…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Pangutan-a unsaon pagbuhat sa usa ka butang sa admin panel, o pangutana mahitungod sa mga pending nga order, ubos nga stock nga mga butang, o status sa usa ka order.",
   "Assigned roles": "Gi-assign nga mga tahas",
   Author: "Awtor",
   "Auto-translate": "Awtomatikong paghubad",
@@ -267,6 +274,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Padayon sa Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Kontrola kung unsa ang matan-aw, mabuhat, ma-edit, ma-publish o madumala sa matag tahas.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Kontrola kon ang matag bot anaa, ug i-edit ang nahibal-an niini.",
   Cook: "Magluto",
   "Cook minutes": "Mga minuto sa pagluto",
   "Copy inside dark bands.": "Kopya sulod sa itom nga mga banda.",
@@ -327,9 +336,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Default commission": "Default nga komisyon",
   "Default. Orderable exactly when Site Control's payments switch is on.":
     "Default. Ma-order sa eksakto kung ang switch sa pagbayad sa Site Control naka-on.",
+  "Delete entry": "I-delete ang entry",
   "Delete farm": 'Delete id="t0004">Delete id="t0004">Delete farm hulagway',
   "Delete image": "Papason ang hulagway",
   "Delete inventory row": "Papason ang linya sa imbentaryo",
+  "Delete knowledge entry?": "I-delete ang entry sa kahibalo?",
   "Delete permanently": "Papason nga permanente",
   "Delete product": "Papason ang produkto",
   "Delete role": "Papason ang papel",
@@ -374,7 +385,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "I-edit ang metadata sa panid sa CMS, pag-indeks ug hilaw nga mga bloke sa panid. Ang rekord sa homepage gilista usab dinhi, apan ang Mga Setting sa Homepage mao ang mas luwas nga paagi sa pag-usab niini — kini nga editor nagkuha ug hilaw nga JSON.",
   "Edit content": "I-edit ang sulod",
+  "Edit entry": "I-edit ang entry",
   "Edit farm": "I-edit ang uma",
+  "Edit knowledge entry": "I-edit ang entry sa kahibalo",
   "Edit media": "I-edit ang media",
   "Edit review": "I-edit ang review",
   "Edit role": "I-edit ang papel",
@@ -471,6 +484,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Mga ulohan ug kopya.",
   Headline: "Ulohan",
   "Hebrew (עברית)": "Hebreo (עברית)",
+  "Help assistant": "Tabang katabang",
+  "Help Assistant": "Tabang Katabang",
   "Hero description": "Paghulagway sa bayani",
   "Hero eyebrow": "Bayani nga kilay",
   "Hero image alt text": "Bayani nga hulagway alt teksto",
@@ -531,6 +546,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "items visible on storefront": "mga butang nga makita sa storefront",
   "Keep artwork clean": "Hupti nga limpyo ang artwork",
   "Keep typing to search…": "Ipadayon ang pag-type aron pangitaon…",
+  Keywords: "Mga Keyword",
   "Land under cultivation": "Yuta nga gitikad",
   Language: "Pinulongan",
   "Last activity": "Katapusang kalihokan",
@@ -700,6 +716,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Walay index",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Wala pa'y mga butang — idugang bisan usa sa ubos. Ang pag-checkout magamit lang ang diskwento sa kini nga bundle kung ang basket adunay tanan nga aytem dinhi, sa labing menos kini nga gidaghanon.",
+  "No knowledge entries": "Walay mga entry sa kahibalo",
   "No line items recorded.": "Walay natala nga mga linya sa linya.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "dili na usbon ang login — busa ang password nga imong gibutang dinhi mopuli gayod sa daan.",
@@ -780,6 +797,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Ang tag-iya ra ang makadumala sa mga sakop sa papel.",
   "Only the owner can review payments and refunds.":
     "Ang tag-iya ra ang maka-review sa mga bayad ug refund.",
+  "Open help assistant": "Buksi ang tabang nga katabang",
   "Open navigation": "Buksi ang nabigasyon",
   Optional: "Opsyonal",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1032,6 +1050,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Pagtipig…",
   "Say how often you will write and that unsubscribing is easy.":
     "Isulti kung unsa ka subsob ang imong pagsulat ug dali ra ang pag-unsubscribe.",
+  Scope: "Sakop",
   "Scope Management": "Pagdumala sa Sakop",
   "Scopes unavailable": "Dili magamit ang mga sakop",
   "Search archive": "Arkibo sa pagpangita",
@@ -1100,6 +1119,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ang pinili nga mga laray matangtang ngadto sa gireserba nga stock, nga himoong available nga stock zero samtang nagpreserbar sa mga reserbasyon, kasaysayan sa paglihok ug audit logs.",
   "Selected users will be removed from the users list and signed out.":
     "Ang pinili nga mga tiggamit pagatangtangon gikan sa lista sa mga tiggamit ug pag-sign out.",
+  Send: "Ipadala",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Pagpadala ug usa ka luwas nga password reset link ngadto niini nga user. Ilang itakda ang ilang bag-ong password gikan sa admin reset page.",
   "Send back to draft": "Ipadala balik sa draft",
@@ -1162,6 +1182,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Snapshots at purchase time — catalogue edits never rewrite an order.":
     "Mga snapshot sa panahon sa pagpalit — ang mga pag-edit sa catalog dili na magsulat pag-usab sa usa ka order.",
   "Sold out": "Nabaligya na",
+  "space separated, e.g. product publish visibility":
+    "gibulag ang wanang, pananglitan. product publish visibility",
   "Spanish (Español)": "Espanyol (Español)",
   "Sprouted ragi flour": "Sprouted ragi nga harina",
   "Starts (optional)": "Pagsugod (opsyonal)",
@@ -1198,9 +1220,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Ang bandera sa ibabaw sa",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Ang bandera, linya sa kategorya, linya sa produkto ug mga natad sa SEO mag-save. Ang mga tickbox sa seksyon, pag-order ug custom nga kopya sa seksyon gitipigan sa ilang kaugalingon, samtang imong gibag-o kini.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Ang chat widget nga makita sa mga kustomer ug bisita sa storefront.",
   "The classic credential pair, including the password-reset flow.":
     "Ang klasiko nga parisan sa kredensyal, lakip ang dagan sa pag-reset sa password.",
   "the farm owner": "ang tag-iya sa umahan",
+  "The floating Help Assistant staff see on every admin page.":
+    "Ang naglutaw nga Help Assistant staff nga makita sa matag admin page.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Ang header ug footer nga mga label sa matag panid 08 (gipakita sa matag lengguwahe ug footer 08). Ang usa ka lugar nga gibiyaan nga blangko mobalik sa English sa atubangan sa tindahan. Kini mao ang sama nga kontrol nga nag-ayo sa usa ka header nga nagpakita sa "Shop" / "Seasonal" sa English samtang ang tanan sa palibot niini nag-ilis sa pinulongan — kanang mga label gikan dinhi, dili gikan sa mga hubad sa sulod sa panid sa ibabaw.',
   "The homepage has no sections": "Walay mga seksyon ang homepage",
@@ -1231,6 +1257,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kini nga mga kolor magamit usab sa mga panid sa ubos",
   "These roles define the permission sets available when inviting or editing users.":
     "Kini nga mga tahas naghubit sa mga set sa pagtugot nga magamit kung nag-imbita o nag-edit sa mga tiggamit.",
+  "Thinking…": "Naghunahuna…",
   "This application is": "Kini nga aplikasyon mao ang",
   "This order is in a final state.": "Kini nga order naa sa katapusan nga kahimtang.",
   "This page contains sensitive application diagnostics.":
@@ -1339,6 +1366,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Nganong gikinahanglan ang mga kausaban, o nganong gibalibaran kini?",
   "Why is stock changing?": "Nganong nagbag-o ang stock?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Ang mga pulong nga gipares sa bot sa usa ka pangutana aron makadesisyon nga kini nga entry may kalabotan.",
   "Working...": "Nagtrabaho...",
   "World languages": "Mga pinulongan sa kalibutan",
   "Write a message…": "Pagsulat og mensahe...",

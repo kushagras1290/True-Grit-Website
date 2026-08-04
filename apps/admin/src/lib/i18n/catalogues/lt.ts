@@ -84,12 +84,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Pridėti kategoriją",
   "Add code": "Pridėti kodą",
   "Add country": "Pridėti šalį",
+  "Add entry": "Pridėti įrašą",
   "Add farm owner": "Skelbimas ūkio savininkas",
   "Add ingredient": "Pridėti ingredientą",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Pridėkite elementų (kurių variantų, kiek kiekvieno) sukūrę rinkinį iš Tvarkyti.",
+  "Add knowledge entry": "Pridėti žinių įrašą",
   "Add one above to get started.": "Pridėkite vieną aukščiau, kad pradėtumėte.",
   "Add one below to get started.": "Pridėkite vieną žemiau ir pradėkite.",
+  "Add one so the bot has something to reference for this scope.":
+    "Pridėkite jį, kad robotas turėtų ką nurodyti šioje srityje.",
   "Add page": "Pridėti puslapį",
   "Add participants": "Pridėti dalyvius",
   "Add role": "Pridėti vaidmenį",
@@ -107,9 +111,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Koreguokite paiešką arba sukurkite produktą.",
   "Adjustment %": "Koregavimas %",
   "Adjustments restricted": "Apriboti koregavimai",
+  Admin: "Administratorius",
   "Admin API is unavailable": "Administratoriaus API nepasiekiama",
   "Admin Logs": "Administratoriaus žurnalai",
   "Admin navigation": "Administratoriaus naršymas",
+  "Admin panel bot": "Administratoriaus skydelio robotas",
   "After refunds, all farms": "Grąžinus lėšas, visi ūkiai",
   Albanian: "albanų",
   All: "Visi",
@@ -168,6 +174,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Čia bus rodomi archyvuoti elementai.",
   Armenian: "Armėnų k.",
   "Article not found": "Straipsnis nerastas",
+  "Ask a question…": "Užduokite klausimą...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Paklauskite, kaip ką nors padaryti administratoriaus skydelyje, arba teiraukitės apie laukiančius užsakymus, mažai atsargų prekes arba užsakymo būseną.",
   "Assamese (অসমীয়া)": "asamiečių (অসমীয়া)",
   "Assigned roles": "Priskirti vaidmenys",
   Attribution: "Priskyrimas",
@@ -175,6 +184,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Autorius",
   "Auto-translate": "Kiekvienas pakeitimas yra judėjimas.",
   "Auto-translate all": "Automatiškai išversti viską",
+  Availability: "Pasiekiamumas",
   Available: "Pasiekiamas",
   "available · reorder at": "galimas · iš naujo užsakyti adresu",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -219,6 +229,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Turinys",
   Bosnian: "Bosnių k.",
   Brand: '8Brand="t0007"> (Български)',
+  "Built-in": "Įtaisyta",
   "Bulgarian (Български)": "Bulgarų (Български)",
   Bundle: "Rinkinio",
   "bundle price · items priced at": "rinkinio kaina · prekių kaina",
@@ -270,6 +281,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Išvaloma...",
   "Click link": "Spustelėkite nuorodą",
   Close: "Uždaryti",
+  "Close help assistant": "Uždaryti pagalbos padėjėją",
   "Close navigation": "Uždaryti naršymą",
   "CMS pages": "TVS puslapius",
   "CMS pages & SEO": "TVS puslapiai ir PVO",
@@ -303,6 +315,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Tęsti naudojant „Facebook“",
   "Control what each role can view, create, edit, publish or manage.":
     "Valdykite, ką kiekvienas vaidmuo gali peržiūrėti, kurti, redaguoti, skelbti ar tvarkyti.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Valdykite, ar kiekvienas robotas pasiekiamas, ir redaguokite, ką jis žino.",
   Cook: "Maisto gaminimas",
   "Cook minutes": "Kepkite minutes",
   "Copy inside dark bands.": "Kopijuoti tamsių juostų viduje.",
@@ -372,9 +386,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Ištrinti",
   "Delete (spam)": "Ištrinti (šlamštą)",
   "Delete category": "Ištrinti kategoriją",
+  "Delete entry": "Ištrinti įrašą",
   "Delete farm": "Ištrinti ūkį",
   "Delete image": "Ištrinti vaizdą",
   "Delete inventory row": "Ištrinti atsargų eilutę",
+  "Delete knowledge entry?": "Ištrinti žinių įrašą?",
   "Delete permanently": "Ištrinti visam laikui",
   "Delete product": "Ištrinti produktą",
   "Delete role": "Ištrinti vaidmenį",
@@ -423,7 +439,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Redaguoti TVS puslapio metaduomenis, indeksavimą ir neapdorotus puslapių blokus. Čia taip pat pateikiamas pagrindinio puslapio įrašas, tačiau pagrindinio puslapio nustatymai yra saugesnis būdas jį pakeisti – ši redagavimo priemonė naudoja neapdorotą JSON.",
   "Edit content": "Redaguoti turinį",
+  "Edit entry": "Redaguoti įrašą",
   "Edit farm": "Redaguoti ūkį",
+  "Edit knowledge entry": "Redaguoti žinių įrašą",
   "Edit media": "Redaguoti mediją",
   "Edit review": "Redaguoti apžvalgą",
   "Edit role": "Redaguoti vaidmenį",
@@ -539,6 +557,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Antraštės ir kopija.",
   Headline: "Antraštė",
   "Hebrew (עברית)": "Hebrajų (עברית)",
+  "Help assistant": "Pagalbos asistentas",
+  "Help Assistant": 'Pagalba id="t0006">Raktiniai žodžiai',
   "Hero description": "Hero aprašymas",
   "Hero eyebrow": "Hero antakis",
   "Hero image alt text": "Hero vaizdo alternatyvus tekstas",
@@ -614,6 +634,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "kazachų",
   "Keep artwork clean": "Išlaikykite meno kūrinius švarius",
   "Keep typing to search…": "Nuolat veskite ir ieškokite...",
+  Keywords: "Raktažodžiai",
   Khmer: "khmerų",
   Kinyarwanda: "Kinjaruanda",
   "Korean (한국어)": "korėjiečių (한국어)",
@@ -804,6 +825,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Nėra indekso",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Dar nėra elementų – pridėkite bent vieną žemiau. „Checkout“ taiko šio paketo nuolaidą tik tada, kai krepšelyje yra visos prekės, bent jau tokiais kiekiais.",
+  "No knowledge entries": "Nėra žinių įrašų",
   "No line items recorded.": "Jokių eilučių elementų neįrašyta.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "nebekeičiamas prisijungimo vardas, todėl čia nustatytas slaptažodis tikrai pakeičia senąjį.",
@@ -887,6 +909,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Tik savininkas gali tvarkyti vaidmenų apimtis.",
   "Only the owner can review payments and refunds.":
     "Tik savininkas gali peržiūrėti mokėjimus ir grąžinimus.",
+  "Open help assistant": "Atidaryti pagalbos asistentą",
   "Open navigation": "Atidaryti naršymą",
   Optional: "Pasirenkama",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1167,6 +1190,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Išsaugoma...",
   "Say how often you will write and that unsubscribing is easy.":
     "Pasakykite, kaip dažnai rašysite.",
+  Scope: "Apimtis",
   "Scope Management": "Apimties valdymas",
   "Scopes unavailable": "Apimtys nepasiekiamos",
   "Search archive": "Paieškos archyve",
@@ -1236,6 +1260,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "bus išvalytos atsargos, o atsargos bus pasirinktos rezervacijų, judėjimo istorijos ir audito žurnalų išsaugojimas.",
   "Selected users will be removed from the users list and signed out.":
     "Pasirinkti naudotojai bus pašalinti iš naudotojų sąrašo ir atjungti.",
+  Send: "Siųsti",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Siųsti šiam naudotojui saugią slaptažodžio nustatymo iš naujo nuorodą. Jie nustatys naują slaptažodį administratoriaus nustatymo iš naujo puslapyje.",
   "Send back to draft": "Siųsti atgal į juodraštį",
@@ -1307,6 +1332,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Fragmentas",
   "Sold out": "Išparduotas",
   Somali: "Somalio",
+  "space separated, e.g. product publish visibility":
+    "tarpu atskirtas, pvz. produkto paskelbimo matomumas",
   "Spanish (Español)": "ispanų (Ispanijos)",
   "Sprouted ragi flour": "Daiginti ragi miltai",
   "SQL Tables": "SQL lentelės",
@@ -1319,6 +1346,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Veiksmai (po vieną eilutėje)",
   "Stock Status": "Akcijų būsena",
   "Store credit": "Parduotuvės kreditas",
+  Storefront: "Parduotuvė",
+  "Storefront bot": "Parduotuvės botas",
   "Storefront switches": "Parduotuvės jungikliai",
   "Storefront switches unavailable": "Parduotuvės jungikliai nepasiekiami",
   "Strong border": "Tvirta kraštinė",
@@ -1355,9 +1384,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Reklamjuostė viršuje",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Reklamjuostė, kategorijos eilutė, produkto eilutė ir SEO laukai išsaugomi kartu. Skilčių žymės langeliai, tvarka ir tinkintos skilties kopija išsaugoma atskirai, kai juos keičiate.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Pokalbių valdiklis, kurį klientai ir lankytojai mato parduotuvės vitrinoje.",
   "The classic credential pair, including the password-reset flow.":
     "Klasikinė kredencialų pora, įskaitant slaptažodžio nustatymo iš naujo eigą.",
   "the farm owner": "Ūkio savininkas",
+  "The floating Help Assistant staff see on every admin page.":
+    "Plaukiojantis Pagalbos padėjėjo personalas matomas kiekviename administratoriaus puslapyje.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "Antraštės ir poraštės nuorodų etiketės kiekvienai kalbai rodomos 0 (6, vertimas 8). Lokalė, palikta tuščia, parduotuvės vitrinoje grįžta į anglų kalbą. Tai yra tas pats valdiklis, kuris pataiso antraštę, kurioje anglų kalba rodoma „Shop“ / „Seasonal“, o viskas aplink ją keičia kalbą – šios etiketės kilusios iš čia, o ne iš anksčiau pateiktų puslapio turinio vertimų.",
   "The homepage has no sections": "Pagrindiniame puslapyje nėra skilčių",
@@ -1387,6 +1420,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Šios spalvos taip pat taikomos puslapiams, esantiems žemiau",
   "These roles define the permission sets available when inviting or editing users.":
     "redaguojant šiuos vaidmenis arba nustatant šias funkcijas. naudotojai.",
+  "Thinking…": "Galvoju...",
   "This application is": "Ši programa yra",
   "This order is in a final state.": "Šis užsakymas yra galutinės būsenos.",
   "This page contains sensitive application diagnostics.":
@@ -1511,6 +1545,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Kodėl reikalingi pakeitimai arba kodėl tai buvo atmesta?",
   "Why is stock changing?": "Kodėl keičiasi akcijos?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Žodžius, kad robotas sutampa su klausimu, kad nuspręstų, ar šis įrašas yra tinkamas.",
   "Working...": "Veikia...",
   "World languages": "Pasaulio kalbos",
   "Write a message…": "Parašykite pranešimą...",

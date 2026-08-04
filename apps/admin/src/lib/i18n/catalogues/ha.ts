@@ -82,12 +82,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Ƙara nau'i",
   "Add code": "Ƙara lambar",
   "Add country": "Ƙara ƙasa",
+  "Add entry": "Ƙara shigarwa",
   "Add farm owner": "Ƙara mai gona",
   "Add ingredient": "Ƙara sashi",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Ƙara abubuwa (waɗanda bambance-bambancen, nawa kowannensu) bayan ƙirƙirar dam, daga Sarrafa.",
+  "Add knowledge entry": "Ƙara shigarwar ilimi",
   "Add one above to get started.": "Ƙara ɗaya a sama don farawa.",
   "Add one below to get started.": "Ƙara ɗaya don farawa. shafi",
+  "Add one so the bot has something to reference for this scope.":
+    "Ƙara ɗaya don bot ɗin ya sami abin da za a yi la'akari da wannan iyakar.",
   "Add page": "Ƙara shafi",
   "Add participants": "Ƙara mahalarta",
   "Add role": "Ƙara rawa",
@@ -108,6 +112,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Admin API is unavailable": "Ai admin ba ya samuwa",
   "Admin Logs": "Logs Admin",
   "Admin navigation": "Admin kewayawa",
+  "Admin panel bot": "Admin panel tambaya…",
   ADMIN_LOGIN_EMAIL: 'id="t0005">ADMIN_LOGIN_PASSWORD',
   Afrikaans: "Afirka",
   "After refunds, all farms": "Bayan an dawo da kudade, duk gonaki",
@@ -166,11 +171,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Archived: "Ajiye",
   "Archived items will appear here.": "Abubuwan da aka adana za su bayyana a nan.",
   "Article not found": "Ba a sami labarin ba",
+  "Ask a question…": "Yi tambaya…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Tambayi yadda ake yin wani abu a cikin kwamitin gudanarwa, ko tambaya game da oda masu jiran aiki, ƙananan kayayyaki, ko matsayin oda.",
   "Assigned roles": "ayyukan da aka ba wa",
   Attribution: "Sakamako",
   "Audit Log": "Log tantancewa",
   Author: "Marubuci",
   "Auto-translate": "Fassara kai tsaye",
+  Availability: "samuwa",
   Available: "Akwai",
   "available · reorder at": "ana samunsa · sake yin oda a",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -207,6 +216,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Rubutun jiki",
   Bosnian: "Bosniya",
   Brand: 'Brand="t0007" ( Български)',
+  "Built-in": "An gina shi",
   "bundle price · items priced at": "Farashin dam · abubuwan da aka saka farashi a",
   "Bundle price, ₹": "Farashin dam, ₹",
   Bundles: "Daure",
@@ -254,6 +264,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Ana Share...",
   "Click link": "Latsa hanyar haɗi",
   Close: "Rufe",
+  "Close help assistant": "Rufe mataimakiyar taimako",
   "Close navigation": "Rufe kewayawa",
   "CMS pages": "shafukan CMS",
   "CMS pages & SEO": "Shafukan CMS & SEO",
@@ -286,6 +297,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Ci gaba da Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Sarrafa abin da kowace rawa za ta iya gani, ƙirƙira, gyara, bugawa ko sarrafa.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Sarrafa ko akwai kowane bot, sannan a gyara abin da ya sani.",
   Cook: "Ku dafa",
   "Cook minutes": "Dafa mintuna",
   "Copy inside dark bands.": "Kwafi cikin duhun makada.",
@@ -348,9 +361,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Share",
   "Delete (spam)": "Share (spam)",
   "Delete category": "Goge nau'in",
+  "Delete entry": "Share shigarwa",
   "Delete farm": "Share gona",
   "Delete image": "Share hoto",
   "Delete inventory row": "Goge jeri na kaya",
+  "Delete knowledge entry?": "Share shigarwar ilimi?",
   "Delete permanently": "Share har abada",
   "Delete product": "Share samfur",
   "Delete role": "Share rawar",
@@ -398,7 +413,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Shirya metadata na shafin CMS, firikwensin da danyen tubalan shafi. An jera rikodin gidan yanar gizon anan kuma, amma Saitunan Gidan Gida shine mafi aminci don canza shi - wannan editan yana ɗaukar ɗanyen JSON.",
   "Edit content": "Shirya abun ciki",
+  "Edit entry": "Shirya shigarwa",
   "Edit farm": "A gyara gona",
+  "Edit knowledge entry": "Shirya shigar ilimi",
   "Edit media": "A gyara kafofin watsa labarai",
   "Edit review": "A gyara bita",
   "Edit role": "A gyara rawar",
@@ -506,6 +523,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Heading: "Kasa",
   "Headings and copy.": "Babban labarai da kwafi.",
   "Hebrew (עברית)": "Ibrananci (עברית)",
+  "Help assistant": "Mataimakin Taimako",
+  "Help Assistant": "Mataimakin Taimako",
   "Hero description": "Bayyanawar jaruma",
   "Hero eyebrow": "Jarumin gira",
   "Hero image alt text": "Jarumi Hoton alt rubutu",
@@ -574,6 +593,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Kannada (ಕನ್ನಡ)": "Kanada (ಕನ್ನಡ)",
   "Keep artwork clean": "Kiyaye aikin zane mai tsabta",
   "Keep typing to search…": "Ci gaba da bugawa don bincika…",
+  Keywords: "Mahimman kalmomi",
   "Land under cultivation": "Kasar dake karkashin noma",
   Language: "Harshe",
   "Last activity": "aikin karshe",
@@ -749,6 +769,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Babu ​​fihirisa",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Babu ​​abubuwa tukuna - ƙara aƙalla ɗaya a ƙasa. Dubawa yana aiwatar da rangwamen wannan bundle ne kawai lokacin da kwandon yana da kowane abu a nan, aƙalla waɗannan adadi.",
+  "No knowledge entries": "Babu ​​shigarwar ilimi",
   "No line items recorded.": "Babu ​​wani layi da aka yi rikodin.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ba ya canza shiga - don haka kalmar sirri da kuka saita a nan tana maye gurbin tsohon.",
@@ -831,6 +852,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Mai shi ne kawai zai iya sarrafa iyakoki.",
   "Only the owner can review payments and refunds.":
     "Mai shi ne kawai zai iya duba biyan kuɗi da mayarwa.",
+  "Open help assistant": "Bude mataimakin mataimakin",
   "Open navigation": "Buɗe kewayawa",
   Optional: "Na zaɓi",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1160,6 +1182,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Za a share layuka da aka zaɓa zuwa hannun jari, suna samar da sifilin hannun jari yayin adana wuraren ajiya, tarihin motsi da rajistan ayyukan dubawa.",
   "Selected users will be removed from the users list and signed out.":
     "Za a cire masu amfani da aka zaɓa daga jerin masu amfani kuma a fita.",
+  Send: "Aika",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Aika amintaccen hanyar sake saitin kalmar sirri zuwa wannan mai amfani. Za su saita sabon kalmar sirrinsu daga shafin sake saitin mai gudanarwa.",
   "Send back to draft": "Aika baya zuwa daftarin aiki",
@@ -1224,6 +1247,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Snapshots a lokacin siya - gyare-gyaren kasida ba zai sake rubuta oda ba.",
   "Sold out": "An sayar da shi",
   Somali: "Somaliya",
+  "space separated, e.g. product publish visibility":
+    "sarari ya rabu, misali. samfurin buga ganuwa",
   "Sprouted ragi flour": "Garin ragi da aka tsiro",
   "Staff sign in": "Ma'aikata sun shiga",
   "Starts (optional)": "An fara (na zaɓi)",
@@ -1234,6 +1259,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Mataki (daya akan layi)",
   "Stock Status": "Halin jari",
   "Store credit": "Kiredit Store",
+  Storefront: "front Store",
+  "Storefront bot": "Gogon kantunan bot",
   "Storefront switches": "Maɓallai na gaban kantuna",
   "Storefront switches unavailable": "Ba a samun maɓalli na gaban kantin",
   "Strong border": "Ƙarfin iyaka",
@@ -1263,9 +1290,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Banner a saman saman",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Banner, layin rukuni, layin samfur da filayen SEO suna adana tare. Akwatunan tickboxes na sashe, oda da kwafin sashe na al'ada suna ajiyewa da kansu, yayin da kuke canza su.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Abokan ciniki na widget din taɗi da baƙi suna gani a gaban kantin.",
   "The classic credential pair, including the password-reset flow.":
     "Tsarin takaddun shaida guda biyu, gami da tsarin sake saitin kalmar sirri.",
   "the farm owner": "mai gona",
+  "The floating Help Assistant staff see on every admin page.":
+    "Ma'aikatan Taimakon Taimako na iyo suna gani akan kowane shafi na gudanarwa.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Maganin fassarar harshe da alamar safa 00 a kowane shafi yana nunawa. Wani wurin da aka bari mara komai ya koma Turanci akan kantuna. Wannan shi ne iko iri ɗaya wanda ke gyara taken da ke nuna "Shop" / "Seasonal" a cikin Turanci yayin da duk abin da ke kewaye da shi ya canza harshe - waɗancan alamun suna fitowa daga nan, ba daga fassarorin abun ciki na shafin da ke sama ba.',
   "The homepage has no sections": "Shafin farko ba shi da sashe",
@@ -1296,6 +1327,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Waɗannan launuka kuma suna shafi shafukan da ke ƙarƙashin",
   "These roles define the permission sets available when inviting or editing users.":
     "Waɗannan matsayi suna bayyana tsarin izinin da ake samu lokacin gayyata ko gyara masu amfani.",
+  "Thinking…": "Tunani…",
   "This application is": "Wannan aikace-aikacen",
   "This order is in a final state.": "Wannan oda yana cikin yanayi na ƙarshe.",
   "This page contains sensitive application diagnostics.":
@@ -1408,6 +1440,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Me yasa ake buƙatar canje-canje, ko me yasa aka ƙi wannan?",
   "Why is stock changing?": "Me yasa hannun jari ke canzawa?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Kalmomin bot sun yi daidai da tambaya don yanke shawarar wannan shigarwar ta dace.",
   "Working...": "Aiki...",
   "World languages": "harsunan duniya",
   "Write a message…": "Rubuta sako...",

@@ -525,6 +525,28 @@ export interface ConversationHistory {
   limit: number;
 }
 
+export interface SupportBotChatTurn {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export type SupportBotScope = "admin" | "storefront";
+
+export interface SupportBotKnowledgeEntry {
+  id: string;
+  scope: SupportBotScope;
+  title: string;
+  keywords: string;
+  content: string;
+  isBuiltin: boolean;
+  updatedAt: string;
+}
+
+export interface SupportBotSettings {
+  admin: boolean;
+  storefront: boolean;
+}
+
 export interface SiteControl {
   heroEyebrow: string;
   heroHeading: string;
@@ -3381,6 +3403,66 @@ export const api = {
     demoMode
       ? Promise.reject(new ApiError("Messaging needs the live API.", 501, "not_supported_in_demo"))
       : del(`/v1/admin/messages/conversations/${conversationId}/participants/${userId}`),
+
+  // --- Admin support bot ---------------------------------------------------
+  // Open to any signed-in staff member (no permission gate) -- every
+  // live-data tool it can call re-checks the caller's own permissions
+  // independently server-side. Knowledge/settings management below is
+  // `support_bot.manage`-gated.
+
+  supportBotChat: (message: string, history: SupportBotChatTurn[]): Promise<{ reply: string }> =>
+    demoMode
+      ? demo({
+          reply: "The support bot needs the live API to answer -- connect VITE_API_URL to try it.",
+        })
+      : post("/v1/admin/support-bot/chat", { message, history }),
+
+  supportBotKnowledge: (scope?: SupportBotScope): Promise<SupportBotKnowledgeEntry[]> =>
+    demoMode
+      ? demo([])
+      : get<SupportBotKnowledgeEntry[]>(
+          `/v1/admin/support-bot/knowledge${scope ? `?scope=${scope}` : ""}`,
+        ),
+
+  createSupportBotKnowledge: (input: {
+    scope: SupportBotScope;
+    title: string;
+    keywords: string;
+    content: string;
+  }): Promise<SupportBotKnowledgeEntry> =>
+    demoMode
+      ? Promise.reject(
+          new ApiError("Knowledge base needs the live API.", 501, "not_supported_in_demo"),
+        )
+      : post("/v1/admin/support-bot/knowledge", input),
+
+  updateSupportBotKnowledge: (
+    entryId: string,
+    input: { title: string; keywords: string; content: string },
+  ): Promise<SupportBotKnowledgeEntry> =>
+    demoMode
+      ? Promise.reject(
+          new ApiError("Knowledge base needs the live API.", 501, "not_supported_in_demo"),
+        )
+      : patch(`/v1/admin/support-bot/knowledge/${entryId}`, input),
+
+  deleteSupportBotKnowledge: (entryId: string): Promise<{ id: string }> =>
+    demoMode
+      ? Promise.reject(
+          new ApiError("Knowledge base needs the live API.", 501, "not_supported_in_demo"),
+        )
+      : del(`/v1/admin/support-bot/knowledge/${entryId}`),
+
+  supportBotSettings: (): Promise<SupportBotSettings> =>
+    demoMode ? demo({ admin: true, storefront: true }) : get("/v1/admin/support-bot/settings"),
+
+  setSupportBotEnabled: (
+    scope: SupportBotScope,
+    enabled: boolean,
+  ): Promise<{ scope: SupportBotScope; enabled: boolean }> =>
+    demoMode
+      ? demo({ scope, enabled })
+      : patch(`/v1/admin/support-bot/settings/${scope}`, { enabled }),
 };
 
 /** `wss://…/v1/admin/messages/realtime/{conversationId}` — the session cookie

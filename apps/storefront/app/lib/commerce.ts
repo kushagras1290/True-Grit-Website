@@ -154,6 +154,31 @@ export function getPaymentMethods(): Promise<PaymentMethodsInfo> {
   return request<PaymentMethodsInfo>("/v1/public/payment-methods");
 }
 
+// --- Support bot -------------------------------------------------------
+
+export interface SupportBotChatTurn {
+  role: "user" | "assistant";
+  content: string;
+}
+
+/** `country`/`locale` let the bot's `search_site` tool apply the same
+ *  geo-release filtering a normal browse/search request would (see
+ *  `api/support_bot_public.py`). Anonymous visitors get this too --
+ *  `request()`'s `credentials: "include"` still carries a signed-in
+ *  customer's session cookie when one exists, which is what determines
+ *  whether the API offers the order-lookup tools, not anything sent here. */
+export function supportBotChat(input: {
+  message: string;
+  history: SupportBotChatTurn[];
+  country?: string | null;
+  locale?: string | null;
+}): Promise<{ reply: string }> {
+  return request<{ reply: string }>("/v1/public/support-bot/chat", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
 export interface DeliverySettingsInfo {
   feeMinor: number;
   freeThresholdMinor: number;

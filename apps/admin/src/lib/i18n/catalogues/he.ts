@@ -73,12 +73,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "הוסף קטגוריה",
   "Add code": "הוסף קוד",
   "Add country": "הוסף מדינה",
+  "Add entry": "הוסף ערך",
   "Add farm owner": "הוסף בעל חווה",
   "Add ingredient": "הוסף מרכיב",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "הוסף פריטים (אילו גרסאות, כמה מכל אחד) לאחר יצירת החבילה, מ-Manage.",
+  "Add knowledge entry": "הוסף ערך ידע",
   "Add one above to get started.": "הוסף אחד למעלה כדי להתחיל.",
   "Add one below to get started.": "הוסף אחד למטה כדי להתחיל.",
+  "Add one so the bot has something to reference for this scope.":
+    "הוסף אחד כך שלבוט יהיה משהו להתייחס להיקף זה.",
   "Add page": "הוסף דף",
   "Add participants": "הוסף משתתפים",
   "Add role": "הוסף תפקיד",
@@ -96,9 +100,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "שנה את החיפוש או צור מוצר.",
   "Adjustment %": "התאמה %",
   "Adjustments restricted": "התאמות מוגבלות",
+  Admin: "מנהל מערכת",
   "Admin API is unavailable": "Admin API אינו זמין",
   "Admin Logs": "יומני ניהול",
   "Admin navigation": "ניהול ניווט",
+  "Admin panel bot": "בוט פאנל ניהול",
   Afrikaans: "אפריקנית",
   "After refunds, all farms": "לאחר החזרים, כל החוות",
   Albanian: "אלבני",
@@ -152,6 +158,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "ארמנית",
   "Article not found": "מאמר לא נמצא",
   "Asha Rao": "אשה ראו",
+  "Ask a question…": "שאל שאלה...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "שאל כיצד לעשות משהו בפאנל הניהול, או שאל לגבי הזמנות בהמתנה, פריטים במלאי נמוך או סטטוס של הזמנה.",
   "Assamese (অসমীয়া)": "אסאמי (অসমীয়া)",
   "Assigned roles": "תפקידים שהוקצו",
   Attribution: "ייחוס",
@@ -159,6 +168,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "מחבר",
   "Auto-translate": "תרגום אוטומטי",
   "Auto-translate all": "תרגם הכל באופן אוטומטי",
+  Availability: "זמינות",
   Available: "זמין",
   "available · reorder at": "זמין · סדר מחדש ב",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -199,6 +209,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "גוף הטקסט",
   Bosnian: "בוסנית",
   Brand: "מותג",
+  "Built-in": "מובנית",
   "Bulgarian (Български)": "בולגרית (Български)",
   Bundle: "חבילה",
   "bundle price · items priced at": "מחיר חבילה · פריטים במחיר של",
@@ -250,6 +261,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "מנקה...",
   "Click link": "לחץ על קישור",
   Close: "סגור",
+  "Close help assistant": "סגור העזרה",
   "Close navigation": "סגור ניווט",
   "CMS pages": "דפי CMS",
   "CMS pages & SEO": "דפי CMS & SEO",
@@ -282,6 +294,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "המשך עם פייסבוק",
   "Control what each role can view, create, edit, publish or manage.":
     "שלוט במה שכל תפקיד יכול להציג, ליצור, לערוך, לפרסם או לנהל.",
+  "Control whether each bot is available, and edit what it knows.":
+    "שלוט אם כל בוט זמין, וערוך את מה שהוא יודע.",
   "Copy inside dark bands.": "העתק בתוך פסים כהים.",
   Correction: "תיקון",
   "Could not load archived records.": "לא ניתן לטעון רשומות בארכיון.",
@@ -346,9 +360,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "מחק",
   "Delete (spam)": "מחק (ספאם)",
   "Delete category": "מחק קטגוריה",
+  "Delete entry": "מחק רשומה",
   "Delete farm": "מחק חווה",
   "Delete image": "מחק תמונה",
   "Delete inventory row": "מחיקת שורת מלאי",
+  "Delete knowledge entry?": "מחק ערך ידע?",
   "Delete permanently": "מחק לצמיתות",
   "Delete product": "מחיקת מוצר",
   "Delete role": "מחק תפקיד",
@@ -393,7 +409,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "ערוך מטא נתונים של דפי CMS, אינדקס ובלוקים של דפים גולמיים. רשומת דף הבית רשומה גם כאן, אבל הגדרות דף הבית הן הדרך הבטוחה יותר לשנות אותה - עורך זה דורש JSON גולמי.",
   "Edit content": "עריכת תוכן",
+  "Edit entry": "ערוך ערך",
   "Edit farm": "עריכת חוות",
+  "Edit knowledge entry": "ערוך ערך ידע",
   "Edit media": "עריכת מדיה",
   "Edit review": "עריכת סקירה",
   "Edit role": "עריכת תפקיד",
@@ -504,6 +522,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "כותרות והעתקה.",
   Headline: "כותרת",
   "Hebrew (עברית)": "עברית (עברית)",
+  "Help assistant": "עוזר העזרה",
+  "Help Assistant": "עוזר העזרה",
   "Hero description": "תיאור גיבור",
   "Hero eyebrow": "גבת גיבור",
   "Hero image alt text": "טקסט חלופי של תמונת גיבור",
@@ -576,6 +596,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Japanese (日本語)": "יפנית (日本語)",
   Javanese: "יוואנית",
   "Keep typing to search…": "Keep typing to חפש...",
+  Keywords: "מילות מפתח",
   Khmer: "חמר",
   Kinyarwanda: "קיניארואנדה",
   "Konkani (कोंकणी)": "קונקני (कोंकणी)",
@@ -762,6 +783,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "ללא אינדקס",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "אין עדיין פריטים - הוסף לפחות אחד למטה. Checkout מחיל את ההנחה של החבילה הזו רק כאשר בסל יש כל פריט כאן, לפחות בכמויות אלו.",
+  "No knowledge entries": "ללא ערכי ידע",
   "No line items recorded.": "לא נרשמו פריטים.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "לא משנה יותר את הכניסה - כך שסיסמה שתגדיר כאן באמת מחליפה את הישנה.",
@@ -842,6 +864,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "רק חשבון הבעלים יכול לערוך את sitemap.xml, robots.txt ו-llms.txt.",
   "Only the owner can manage role scopes.": "רק הבעלים יכול לנהל היקף תפקידים.",
   "Only the owner can review payments and refunds.": "רק הבעלים יכול לבדוק תשלומים והחזרים.",
+  "Open help assistant": "Open Help Assistant",
   "Open navigation": "פתח ניווט",
   Optional: "אופציונלי",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1168,6 +1191,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "שורות שנבחרו ינוקו למלאי שמור, מה שהופך את המלאי הזמין לאפס תוך שמירה על הזמנות, היסטוריית תנועה ויומני ביקורת.",
   "Selected users will be removed from the users list and signed out.":
     "משתמשים שנבחרו יוסרו מרשימת המשתמשים ויצאו.",
+  Send: "שלח",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "שלח קישור לאיפוס סיסמה מאובטח למשתמש זה. הם יגדירו את הסיסמה החדשה שלהם מדף איפוס המנהל.",
   "Send back to draft": "שלח חזרה לטיוטה",
@@ -1236,6 +1260,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "קטע",
   "Sold out": "אזל",
   Somali: "סומלית",
+  "space separated, e.g. product publish visibility": "רווח מופרד, למשל. חשיפה לפרסום מוצר",
   "Spanish (Español)": "ספרדית (Español)",
   "Sprouted ragi flour": "קמח ראגי מונבט",
   "Staff sign in": "כניסת צוות",
@@ -1284,9 +1309,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "הבאנר בחלק העליון של",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "שדות הבאנר, שורת הקטגוריה, שורת המוצר ושדות SEO שומרות יחד. תיבות סימון מדור, הזמנה והעתקת מדור מותאמת אישית נשמרים בעצמם, כפי שתשנה אותם.",
+  "The chat widget customers and visitors see on the storefront.":
+    "יישומון הצ'אט שלקוחות ומבקרים רואים בחזית החנות.",
   "The classic credential pair, including the password-reset flow.":
     "צמד האישורים הקלאסי, כולל זרימת איפוס הסיסמה.",
   "the farm owner": "בעל החווה",
+  "The floating Help Assistant staff see on every admin page.": "צוות העזרה הצף רואה בכל דף ניהול.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'הכותרת העליונה והתחתונה מתויגת בכל דף 000 עמודים (6 מ\'). מקום שנותר ריק חוזר לאנגלית בחזית החנות. זהו אותו פקד שמתקן כותרת שמציגה "חנות" / "עונתית" באנגלית בזמן שכל מה שמסביבו החליף שפה - התוויות הללו מגיעות מכאן, לא מתרגומי תוכן הדף למעלה.',
   "The homepage has no sections": "בדף הבית אין קטעים",
@@ -1315,6 +1343,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "צבעים אלה חלים גם על דפים מתחת ל",
   "These roles define the permission sets available when inviting or editing users.":
     "התפקידים האלה זמינים או בהגדרות אלה. משתמשים.",
+  "Thinking…": "חושב...",
   "This application is": "אפליקציה זו",
   "This order is in a final state.": "הזמנה זו נמצאת במצב סופי.",
   "This page contains sensitive application diagnostics.": "דף זה מכיל אבחון אפליקציות רגיש.",
@@ -1427,6 +1456,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Whole site (default)": "כל האתר (ברירת מחדל)",
   "Why are changes needed, or why was this declined?": "מדוע נדרשים שינויים, או מדוע זה נדחה?",
   "Why is stock changing?": "למה משתנה המניה?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "מילים שהבוט מתאים לשאלה כדי להחליט שהערך הזה רלוונטי.",
   "Working...": "עובד...",
   "World languages": "שפות העולם",
   "Write a message…": "כתוב הודעה...",

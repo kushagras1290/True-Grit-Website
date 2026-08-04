@@ -84,12 +84,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Tambah kategori",
   "Add code": "Tambah kode",
   "Add country": "<span juragan tani",
+  "Add entry": "Tambahake entri",
   "Add farm owner": "Tambah pemilik tani",
   "Add ingredient": "Tambah bahan",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Tambah item (varian endi, pira saben) sawise nggawe bundel, saka Atur.",
+  "Add knowledge entry": "Tambahake entri kawruh",
   "Add one above to get started.": "Tambahake siji ing ndhuwur kanggo miwiti.",
   "Add one below to get started.": "Tambah siji ing ngisor iki kanggo miwiti.",
+  "Add one so the bot has something to reference for this scope.": "Admin",
   "Add page": "Tambah kaca",
   "Add participants": "Tambah peserta",
   "Add role": "Tambah peran",
@@ -107,6 +110,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Setel telusuran utawa gawe produk.",
   "Adjustment %": "Isuai %",
   "Adjustments restricted": "Panyesuaian diwatesi",
+  Admin: 'Admin id="t0005">Atur pitakon...',
   "Admin API is unavailable": "Admin API ora kasedhiya",
   "Admin Logs": "Log Admin",
   "Admin navigation": "Pandhu arah Admin",
@@ -170,6 +174,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Item sing diarsip bakal katon ing kene.",
   Armenian: "Armenia",
   "Article not found": "Artikel ora ditemokake",
+  "Ask a question…": "Takon pitakon…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Takon kepiye carane nindakake ing panel admin, utawa takon babagan pesenan sing ditundha, barang stok sithik, utawa status pesenan.",
   "Assamese (অসমীয়া)": "Assam (অসমীয়া)",
   "Assigned roles": "Peran sing ditugasake",
   Attribution: "Atribusi",
@@ -177,6 +184,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Panulis",
   "Auto-translate": "Terjemahake otomatis",
   "Auto-translate all": "Terjemahake otomatis kabeh",
+  Availability: "Kasedhiya",
   Available: "Kasedhiya",
   "available · reorder at": "kasedhiya · pesen maneh ing",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -216,6 +224,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Teks awak",
   Bosnian: "Bosnia",
   Brand: "Merek",
+  "Built-in": "Terpasang",
   "Bulgarian (Български)": "Bulgaria (Български)",
   Bundle: "Paket",
   "bundle price · items priced at": "rega paket · regane barang",
@@ -269,6 +278,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Mbusak...",
   "Click link": "Klik link",
   Close: "Tutup",
+  "Close help assistant": "Tutup asisten bantuan",
   "Close navigation": "Tutup pandhu arah",
   "CMS pages": "Kaca CMS",
   "CMS pages & SEO": "Kaca CMS & SEO",
@@ -302,6 +312,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Terus nganggo Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Kontrol apa sing bisa dideleng, digawe, diowahi, diterbitake, utawa dikelola saben peran.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Kontrol apa saben bot kasedhiya, lan sunting apa sing dingerteni.",
   Cook: "Masak",
   "Cook minutes": "Menit masak",
   "Copy inside dark bands.": "Salin ing jero pita peteng.",
@@ -371,9 +383,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Busak",
   "Delete (spam)": "Busak (spam)",
   "Delete category": "Busak kategori",
+  "Delete entry": "Busak entri",
   "Delete farm": "Busak id gambar",
   "Delete image": "Busak gambar",
   "Delete inventory row": "Busak baris inventaris",
+  "Delete knowledge entry?": "Busak entri kawruh?",
   "Delete permanently": "Busak permanen",
   "Delete product": "Busak produk",
   "Delete role": "Busak peran",
@@ -423,7 +437,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Sunting metadata kaca CMS, indeksasi lan pamblokiran kaca mentah. Rekaman homepage uga ana ing kene, nanging Setelan Homepage minangka cara sing luwih aman kanggo ngganti - editor iki njupuk JSON mentah.",
   "Edit content": "Sunting isi",
+  "Edit entry": "Sunting entri",
   "Edit farm": "Sunting kebon",
+  "Edit knowledge entry": "Sunting entri kawruh",
   "Edit media": "Sunting media",
   "Edit review": "Sunting review",
   "Edit role": "Sunting peran",
@@ -534,6 +550,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Judul lan salinan.",
   Headline: "Judul",
   "Hebrew (עברית)": "Ibrani (עברית)",
+  "Help assistant": "Asisten Bantuan",
+  "Help Assistant": "Asisten Bantuan",
   "Hero description": "Deskripsi pahlawan",
   "Hero eyebrow": "Alis pahlawan",
   "Hero image URL": "URL gambar pahlawan",
@@ -603,6 +621,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Kashmiri (کٲشُر)": "Kashmir (کٲشُر)",
   "Keep artwork clean": "Tansah resik karya seni",
   "Keep typing to search…": "Terus ngetik kanggo nggoleki…",
+  Keywords: "Tembung kunci",
   "Korean (한국어)": "Korea (한국어)",
   "Land under cultivation": "Tanah sing ditanduri",
   Language: "Basa",
@@ -783,6 +802,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Ora ana indeks",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Durung ana item — tambahake paling ora siji ing ngisor iki. Checkout mung ditrapake diskon bundel iki yen kranjang duwe kabeh item ing kene, paling ora jumlah kasebut.",
+  "No knowledge entries": "Ora ana entri kawruh",
   "No line items recorded.": "Ora ana item baris sing dicathet.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ora ngganti login maneh — dadi tembung sandhi sing sampeyan setel ing kene pancen ngganti sing lawas.",
@@ -868,6 +888,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Mung pemilik sing bisa ngatur lingkup peran.",
   "Only the owner can review payments and refunds.":
     "Mung sing nduweni sing bisa mriksa pembayaran lan mbalekaken.",
+  "Open help assistant": "Asisten bantuan mbukak",
   "Open navigation": "Bukak navigasi",
   Optional: "Opsional",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1134,6 +1155,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Simpen...",
   "Say how often you will write and that unsubscribing is easy.":
     "Kandhani sepira kerepe sampeyan nulis lan unsubscribe iku gampang.",
+  Scope: "Cakupan",
   "Scope Management": "Manajemen Cakupan",
   "Scopes unavailable": "Cakupan ora kasedhiya",
   "Search archive": "Arsip telusuran",
@@ -1201,6 +1223,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Baris sing dipilih bakal dibuwang menyang stok sing dicadhangake, nggawe stok nol nalika njaga reservasi, riwayat gerakan lan log audit.",
   "Selected users will be removed from the users list and signed out.":
     "Panganggo sing dipilih bakal dibusak saka dhaptar pangguna lan mlebu metu.",
+  Send: "Kirim",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Kirim link reset tembung sandhi sing aman menyang pangguna iki. Dheweke bakal nyetel tembung sandhi anyar saka kaca reset admin.",
   "Send back to draft": "Kirim maneh menyang draf",
@@ -1264,6 +1287,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Slug (optional)": "Slug (opsional)",
   "Snapshots at purchase time — catalogue edits never rewrite an order.":
     "Snapshots nalika tuku — suntingan katalog ora tau nulis maneh pesenan.",
+  "space separated, e.g. product publish visibility":
+    "kapisah spasi, contone. visibilitas nerbitake produk",
   "Spanish (Español)": "Spanyol (Español)",
   "Sprouted ragi flour": "Glepung ragi sprouted",
   "SQL Tables": "Tabel SQL",
@@ -1275,6 +1300,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Langkah (siji saben baris)",
   "Stock Status": "Status Saham",
   "Store credit": "Kredit toko",
+  Storefront: "Etalase",
+  "Storefront bot": "Bot etalase",
   "Storefront switches": "Switch storefront",
   "Storefront switches unavailable": "Switch storefront ora kasedhiya",
   "Strong border": "Watesan sing kuwat",
@@ -1306,9 +1333,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Spanduk ing sisih ndhuwur",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Spanduk, baris kategori, baris produk lan kolom SEO disimpen bebarengan. Kothak centhang bagean, pesenan lan salinan bagean khusus disimpen dhewe, nalika sampeyan ngganti.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Widget chatting sing dideleng pelanggan lan pengunjung ing etalase.",
   "The classic credential pair, including the password-reset flow.":
     "Pasangan kredensial klasik, kalebu alur reset sandhi.",
   "the farm owner": "pemilik tani",
+  "The floating Help Assistant staff see on every admin page.":
+    "Staf Asisten Pitulung ngambang katon ing saben kaca admin.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'header lan footer label saben kaca (g0004). A lokal kiwa kosong tiba bali menyang Inggris ing storefront. Iki minangka kontrol sing padha sing ndandani header sing nuduhake "Toko" / "Musim" ing basa Inggris nalika kabeh sing ana ing sekitare wis ganti basa — label kasebut asale saka kene, dudu saka terjemahan isi kaca ing ndhuwur.',
   "The homepage has no sections": "Homepage ora ana bagean",
@@ -1336,6 +1367,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Werna iki uga ditrapake kanggo kaca ing ngisor",
   "These roles define the permission sets available when inviting or editing users.":
     "Peran iki nemtokake set ijin sing kasedhiya nalika ngundang utawa nyunting pangguna.",
+  "Thinking…": "Mikir…",
   "This application is": "Aplikasi iki",
   "This order is in a final state.": "Tatanan iki ana ing kahanan pungkasan.",
   "This page contains sensitive application diagnostics.":
@@ -1449,6 +1481,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Napa perlu owah-owahan, utawa kenapa iki ditolak?",
   "Why is stock changing?": "Napa saham ganti?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Tembung bot kasebut cocog karo pitakonan kanggo mutusake entri iki cocog.",
   "Working...": "Makarya...",
   "World languages": "Basa donya",
   "Write a message…": "Tulis pesen...",

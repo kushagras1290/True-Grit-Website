@@ -77,12 +77,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "ເພີ່ມໝວດໝູ່",
   "Add code": "ເພີ່ມລະຫັດ",
   "Add country": "ເພີ່ມປະເທດ",
+  "Add entry": "ເພີ່ມການປ້ອນຂໍ້ມູນ",
   "Add farm owner": "ເພີ່ມເຈົ້າຂອງຟາມ",
   "Add ingredient": "ເພີ່ມສ່ວນປະກອບ",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "ເພີ່ມລາຍການ (ອັນໃດອັນໜຶ່ງ, ຈຳນວນຂອງແຕ່ລະອັນ) ຫຼັງຈາກສ້າງຊຸດແລ້ວ, ຈາກການຈັດການ.",
+  "Add knowledge entry": "ເພີ່ມຂໍ້ມູນຄວາມຮູ້",
   "Add one above to get started.": "ເພີ່ມອັນໜຶ່ງຂ້າງເທິງເພື່ອເລີ່ມຕົ້ນ.",
   "Add one below to get started.": "ເພີ່ມອັນໜຶ່ງຂ້າງລຸ່ມເພື່ອເລີ່ມຕົ້ນ.",
+  "Add one so the bot has something to reference for this scope.":
+    "ເພີ່ມອັນໜຶ່ງເພື່ອໃຫ້ບັອດມີບາງອັນເພື່ອອ້າງອີງສຳລັບຂອບເຂດນີ້.",
   "Add page": "ເພີ່ມໜ້າ",
   "Add participants": "ເພີ່ມຜູ້ເຂົ້າຮ່ວມ",
   "Add role": "ເພີ່ມບົດບາດ",
@@ -100,9 +104,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "ປັບການຄົ້ນຫາ ຫຼືສ້າງຜະລິດຕະພັນ.",
   "Adjustment %": "ການປັບຕົວ %",
   "Adjustments restricted": "ຈຳກັດການປັບຕົວ",
+  Admin: "ຜູ້ເບິ່ງແຍງລະບົບ",
   "Admin API is unavailable": "Admin API ບໍ່ສາມາດໃຊ້ໄດ້",
   "Admin Logs": "ບັນທຶກຜູ້ເບິ່ງແຍງລະບົບ",
   "Admin navigation": "ການນຳທາງຜູ້ເບິ່ງແຍງລະບົບ",
+  "Admin panel bot": "ບັອດແຜງຄວບຄຸມ",
   Afrikaans: "ອາຟຣິກາ",
   "After refunds, all farms": "ຫຼັງຈາກການສົ່ງເງິນຄືນ, ຟາມທັງໝົດ",
   Albanian: "ອາລບາເນຍ",
@@ -162,12 +168,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "ລາຍການທີ່ເກັບໄວ້ຈະປາກົດຢູ່ບ່ອນນີ້.",
   Armenian: "ອາເມເນຍ",
   "Article not found": "ບໍ່ພົບບົດຄວາມ",
+  "Ask a question…": "ຖາມຄຳຖາມ...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "ຖາມວິທີເຮັດອັນໃດອັນໜຶ່ງໃນແຜງຜູ້ເບິ່ງແຍງ ຫຼືຖາມກ່ຽວກັບຄຳສັ່ງຊື້ທີ່ຍັງຄ້າງຢູ່, ລາຍການທີ່ມີສະຕັອກໜ້ອຍ, ຫຼືສະຖານະຂອງຄຳສັ່ງຊື້.",
   "Assigned roles": "ບົດບາດທີ່ໄດ້ຮັບມອບໝາຍ",
   Attribution: "ທີ່ມາ",
   "Audit Log": "ບັນທຶກການກວດສອບ",
   Author: "ຜູ້ຂຽນ",
   "Auto-translate": "ແປອັດຕະໂນມັດ",
   "Auto-translate all": "ແປອັດຕະໂນມັດທັງໝົດ",
+  Availability: "ການມີໃຫ້",
   Available: "ມີຢູ່",
   "available · reorder at": "ມີໃຫ້ · ສັ່ງຄືນໄດ້ທີ່",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -210,6 +220,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Body: "ເນື້ອໃນ",
   "Body text": "ຂໍ້ຄວາມເນື້ອໃນ",
   Brand: "ຍີ່ຫໍ້",
+  "Built-in": "ໃນຕົວ",
   "Bulgarian (Български)": "ບຸນກາຣີ (Български)",
   Bundle: "ຊຸດ",
   "bundle price · items priced at": "ລາຄາຊຸດ · ລາຍການລາຄາທີ່",
@@ -258,6 +269,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "ກຳລັງລຶບລ້າງ...",
   "Click link": "ຄລິກລິ້ງ",
   Close: "ປິດ",
+  "Close help assistant": "ປິດຕົວຊ່ວຍ",
   "Close navigation": "ປິດການນຳທາງ",
   "CMS pages": "ໜ້າ CMS",
   "CMS pages & SEO": "ໜ້າ CMS & SEO",
@@ -291,6 +303,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "ສືບຕໍ່ກັບ Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "ຄວບຄຸມສິ່ງທີ່ແຕ່ລະບົດບາດສາມາດເບິ່ງ, ສ້າງ, ແກ້ໄຂ, ເຜີຍແຜ່ ຫຼືຈັດການ.",
+  "Control whether each bot is available, and edit what it knows.":
+    "ຄວບຄຸມວ່າແຕ່ລະ bot ມີໃຫ້ຫຼືບໍ່, ແລະແກ້ໄຂສິ່ງທີ່ມັນຮູ້.",
   Cook: "ແຕ່ງກິນ",
   "Cook minutes": "ນາທີປຸງອາຫານ",
   "Copy inside dark bands.": "ສຳເນົາຢູ່ໃນແຖບສີມືດ.",
@@ -358,9 +372,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "ລຶບ",
   "Delete (spam)": "ລຶບ (spam)",
   "Delete category": "ລຶບໝວດໝູ່",
+  "Delete entry": "ລຶບການປ້ອນຂໍ້ມູນ",
   "Delete farm": "ລຶບຟາມ",
   "Delete image": "ລຶບຮູບ",
   "Delete inventory row": "ລຶບແຖວສິນຄ້າຄົງຄັງ",
+  "Delete knowledge entry?": "ລຶບຂໍ້ມູນຄວາມຮູ້ອອກບໍ?",
   "Delete permanently": "ລຶບອອກຖາວອນ",
   "Delete product": "ລຶບຜະລິດຕະພັນ",
   "Delete role": "ລຶບບົດບາດ",
@@ -409,7 +425,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "ແກ້ໄຂເມຕາເດຕາຂອງໜ້າ CMS, ການສ້າງດັດສະນີ ແລະບລັອກໜ້າດິບ. ບັນທຶກໜ້າຫຼັກມີລາຍຊື່ຢູ່ບ່ອນນີ້ຄືກັນ, ແຕ່ການຕັ້ງຄ່າໜ້າຫຼັກແມ່ນວິທີທີ່ປອດໄພກວ່າທີ່ຈະປ່ຽນມັນ — ບັນນາທິການນີ້ໃຊ້ JSON ດິບ.",
   "Edit content": "ແກ້ໄຂເນື້ອຫາ",
+  "Edit entry": "ແກ້ໄຂການປ້ອນຂໍ້ມູນ",
   "Edit farm": "ແກ້ໄຂຟາມ",
+  "Edit knowledge entry": "ແກ້ໄຂຂໍ້ມູນຄວາມຮູ້",
   "Edit media": "ແກ້ໄຂສື່",
   "Edit review": "ແກ້ໄຂການທົບທວນຄືນ",
   "Edit role": "ແກ້ໄຂບົດບາດ",
@@ -520,6 +538,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "ຫົວເລື່ອງ ແລະສຳເນົາ.",
   Headline: "ຫົວຂໍ້ຂ່າວ",
   "Hebrew (עברית)": "Hebrew (Hebrew)",
+  "Help assistant": "ຜູ້ຊ່ວຍ",
+  "Help Assistant": "ຜູ້ຊ່ວຍຜູ້ຊ່ວຍ",
   "Hero description": "ຄຳອະທິບາຍຮີໂຣ",
   "Hero image URL": "URL ຂອງຮູບຮີໂຣ",
   "Hero title": "ຊື່ຮີໂຣ",
@@ -591,6 +611,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "ຄາຊັກ",
   "Keep artwork clean": "ຮັກສາຄວາມສະອາດຂອງງານສິລະປະ",
   "Keep typing to search…": "ສືບຕໍ່ພິມເພື່ອຊອກຫາ...",
+  Keywords: "ຄີເວີດ",
   Khmer: "ພາສາຂະແມ",
   "Korean (한국어)": "ເກົາຫຼີ (한국어)",
   Kyrgyz: "ພາສາກີສ",
@@ -777,6 +798,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "ບໍ່ມີດັດສະນີ",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "ຍັງ​ບໍ່​ມີ​ລາຍ​ການ — ເພີ່ມ​ຢ່າງ​ຫນ້ອຍ​ຫນຶ່ງ​ຂ້າງ​ລຸ່ມ​ນີ້. Checkout ນຳໃຊ້ສ່ວນຫຼຸດຂອງຊຸດນີ້ເທົ່ານັ້ນເມື່ອກະຕ່າມີສິນຄ້າທຸກອັນຢູ່ນີ້, ຢ່າງໜ້ອຍໃນປະລິມານເຫຼົ່ານີ້.",
+  "No knowledge entries": "ບໍ່ມີຂໍ້ມູນຄວາມຮູ້",
   "No line items recorded.": "ບໍ່ມີລາຍການລາຍການທີ່ບັນທຶກໄວ້.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ບໍ່​ມີ​ການ​ປ່ຽນ​ແປງ​ການ​ເຂົ້າ​ສູ່​ລະ​ບົບ​ອີກ​ຕໍ່​ໄປ — ສະ​ນັ້ນ​ລະ​ຫັດ​ຜ່ານ​ທີ່​ທ່ານ​ຕັ້ງ​ຢູ່​ທີ່​ນີ້​ແມ່ນ​ແທ້​ຈິງ​ແທນ​ທີ່​ຈະ​ເປັນ​ອັນ​ເກົ່າ.",
@@ -860,6 +882,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "ມີພຽງເຈົ້າຂອງທີ່ສາມາດຈັດການຂອບເຂດບົດບາດໄດ້.",
   "Only the owner can review payments and refunds.":
     "ມີພຽງເຈົ້າຂອງເທົ່ານັ້ນທີ່ສາມາດກວດສອບການຈ່າຍເງິນ ແລະ ການຄືນເງິນໄດ້.",
+  "Open help assistant": "ເປີດຜູ້ຊ່ວຍ",
   "Open navigation": "ເປີດການນຳທາງ",
   Optional: "ທາງເລືອກ",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1130,6 +1153,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving...": "ກຳລັງບັນທຶກ...",
   "Saving…": "ກຳລັງບັນທຶກ…",
   "Say how often you will write and that unsubscribing is easy.": "ເວົ້າວ່າ",
+  Scope: "ຂອບເຂດ",
   "Scope Management": "ການຈັດການຂອບເຂດ",
   "Scopes unavailable": "ຂອບເຂດບໍ່ສາມາດໃຊ້ໄດ້",
   "Search archive": "ການຈັດເກັບການຄົ້ນຫາ",
@@ -1193,6 +1217,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ແຖວທີ່ເລືອກຈະຖືກລຶບລ້າງໄວ້ໃນຫຼັກຊັບທີ່ຈອງໄວ້, ເຮັດໃຫ້ຫຼັກຊັບມີສູນໃນຂະນະທີ່ຮັກສາການຈອງ, ປະຫວັດການເຄື່ອນໄຫວ ແລະບັນທຶກການກວດສອບ.",
   "Selected users will be removed from the users list and signed out.":
     "ຜູ້ໃຊ້ທີ່ເລືອກຈະຖືກລຶບອອກຈາກລາຍຊື່ຜູ້ໃຊ້ ແລະອອກຈາກລະບົບ.",
+  Send: "ສົ່ງ",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "ສົ່ງລິ້ງຣີເຊັດລະຫັດຜ່ານທີ່ປອດໄພໄປຫາຜູ້ໃຊ້ນີ້. ພວກເຂົາຈະຕັ້ງລະຫັດຜ່ານໃໝ່ຂອງເຂົາເຈົ້າຈາກໜ້າຣີເຊັດຜູ້ເບິ່ງແຍງລະບົບ.",
   "Send back to draft": "ສົ່ງກັບໄປສະບັບຮ່າງ",
@@ -1259,6 +1284,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ຮູບ​ພາບ​ໃນ​ເວ​ລາ​ຊື້ — ການ​ແກ້​ໄຂ​ລາຍ​ການ​ບໍ່​ເຄີຍ​ຂຽນ​ຄໍາ​ສັ່ງ​ໃຫມ່.",
   "Sold out": "ຂາຍ​ຫມົດ",
   Somali: "ໂຊມາລີ",
+  "space separated, e.g. product publish visibility":
+    "ຍະຫວ່າງແຍກອອກ, ເຊັ່ນ: ການສະແດງຜົນການເຜີຍແຜ່ຜະລິດຕະພັນ",
   "Spanish (Español)": "ສະເປນ (Español)",
   "Sprouted ragi flour": "ແປ້ງ ragi ງອກ",
   "SQL Tables": "ຕາຕະລາງ SQL",
@@ -1271,6 +1298,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "ຂັ້ນຕອນ (ໜຶ່ງຕໍ່ແຖວ)",
   "Stock Status": "ສະຖານະຫຼັກຊັບ",
   "Store credit": "ເຄຣດິດຂອງຮ້ານ",
+  Storefront: "ໜ້າຮ້ານ",
+  "Storefront bot": "ບັອດໜ້າຮ້ານ",
   "Storefront switches": "ສະວິດໜ້າຮ້ານ",
   "Storefront switches unavailable": "ສະວິດໜ້າຮ້ານບໍ່ສາມາດໃຊ້ໄດ້",
   "Strong border": "ຂອບແຂງ",
@@ -1306,9 +1335,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "ປ້າຍໂຄສະນາຢູ່ເທິງສຸດຂອງ",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "ປ້າຍໂຄສະນາ, ແຖວໝວດໝູ່, ແຖວຜະລິດຕະພັນ ແລະຊ່ອງຂໍ້ມູນ SEO ຮວມກັນ. ສ່ວນ tickboxes, ການສັ່ງຊື້ ແລະ ພາກສ່ວນທີ່ກຳນົດເອງຈະສຳເນົາບັນທຶກດ້ວຍຕົວມັນເອງ, ໃນຂະນະທີ່ທ່ານປ່ຽນພວກມັນ.",
+  "The chat widget customers and visitors see on the storefront.":
+    "ວິດເຈັດການສົນທະນາທີ່ລູກຄ້າ ແລະຜູ້ເຂົ້າຊົມເຫັນຢູ່ໜ້າຮ້ານ.",
   "The classic credential pair, including the password-reset flow.":
     "ຄູ່ຂໍ້ມູນປະຈຳຕົວແບບເກົ່າ, ລວມທັງຂັ້ນຕອນການຣີເຊັດລະຫັດຜ່ານ.",
   "the farm owner": "ເຈົ້າຂອງຟາມ",
+  "The floating Help Assistant staff see on every admin page.":
+    "ພະນັກງານຜູ້ຊ່ວຍທີ່ເລື່ອນລອຍຈະເຫັນຢູ່ໃນທຸກໆໜ້າຂອງຜູ້ເບິ່ງແຍງລະບົບ.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'ປ້າຍກຳກັບລິ້ງສ່ວນຫົວ ແລະສ່ວນທ້າຍຈະສະແດງທຸກໜ້າ 6). ການແປຕໍ່ 0 ພາສາ. ພື້ນທີ່ຫວ່າງເປົ່າກັບໄປເປັນພາສາອັງກິດຢູ່ໜ້າຮ້ານ. ນີ້ແມ່ນການຄວບຄຸມດຽວກັນທີ່ແກ້ໄຂສ່ວນຫົວທີ່ສະແດງ "Shop" / "Seasonal" ໃນພາສາອັງກິດ ໃນຂະນະທີ່ທຸກສິ່ງທຸກຢ່າງທີ່ຢູ່ອ້ອມຂ້າງມັນໄດ້ປ່ຽນພາສາ — ປ້າຍກຳກັບເຫຼົ່ານັ້ນມາຈາກບ່ອນນີ້, ບໍ່ແມ່ນມາຈາກການແປເນື້ອໃນຂອງໜ້າຂ້າງເທິງ.',
   "The homepage has no sections": "ໜ້າຫຼັກບໍ່ມີພາກສ່ວນ",
@@ -1336,6 +1369,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "ສີເຫຼົ່ານີ້ຍັງໃຊ້ກັບໜ້າທີ່ຢູ່ດ້ານລຸ່ມ",
   "These roles define the permission sets available when inviting or editing users.":
     "ໜ້າ​ທີ່​ເຫຼົ່າ​ນີ້​ກຳ​ນົດ​ຊຸດ​ການ​ອະ​ນຸ​ຍາດ​ທີ່​ມີ​ຢູ່​ໃນ​ເວ​ລາ​ທີ່​ການ​ເຊື້ອ​ເຊີນ ຫຼື​ແກ້​ໄຂ​ຜູ້​ໃຊ້.",
+  "Thinking…": "ກຳລັງຄິດ…",
   "This application is": "ແອັບພລິເຄຊັນ​ນີ້​ແມ່ນ",
   "This order is in a final state.": "ການ​ສັ່ງ​ນີ້​ຢູ່​ໃນ​ສະ​ຖາ​ນະ​ສຸດ​ທ້າຍ.",
   "This page contains sensitive application diagnostics.":
@@ -1448,6 +1482,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Whole site (default)": "ເວັບໄຊທ໌ທັງໝົດ (ຄ່າເລີ່ມຕົ້ນ)",
   "Why are changes needed, or why was this declined?": "ເປັນຫຍັງຕ້ອງມີການປ່ຽນແປງ, ຫຼືເປັນຫຍັງ",
   "Why is stock changing?": "ເປັນຫຍັງຫຼັກຊັບຈຶ່ງມີການປ່ຽນແປງ?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "ຄຳສັບທີ່ບັອດກົງກັບຄຳຖາມເພື່ອຕັດສິນໃຈວ່າລາຍການນີ້ມີຄວາມກ່ຽວຂ້ອງ.",
   "Working...": "ກຳລັງເຮັດວຽກ...",
   "World languages": "ພາສາໂລກ",
   "Write a message…": "ຂຽນຂໍ້ຄວາມ...",

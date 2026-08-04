@@ -80,12 +80,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Dodaj kategoriju",
   "Add code": "Dodaj kod",
   "Add country": "Dodaj državu",
+  "Add entry": "Dodaj unos",
   "Add farm owner": "Dodaj vlasnika farme",
   "Add ingredient": "Dodaj sastojak",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Dodaj stavke (koje varijante, koliko svake) nakon stvaranja paketa, iz Upravljanja.",
+  "Add knowledge entry": "Dodaj unos znanja",
   "Add one above to get started.": "Dodaj jednu iznad da bi započeli.",
   "Add one below to get started.": "Dodaj jednu u nastavku da bi započeli.",
+  "Add one so the bot has something to reference for this scope.":
+    "Dodaj jedan tako da bot ima nešto za referencu za ovaj opseg.",
   "Add page": "Dodaj stranica",
   "Add participants": "Dodaj sudionike",
   "Add role": "Dodaj ulogu",
@@ -103,9 +107,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Prilagodite pretraživanje ili izradite proizvod.",
   "Adjustment %": "Prilagodba %",
   "Adjustments restricted": "Prilagodbe su ograničene",
+  Admin: "Administrator",
   "Admin API is unavailable": "Admin API nije dostupan",
   "Admin Logs": "Admin dnevnici",
   "Admin navigation": "Administratorska navigacija",
+  "Admin panel bot": "Bot administratorske ploče",
   "After refunds, all farms": "Nakon povrata, sve farme",
   Albanian: "Albanski",
   All: "Sve",
@@ -165,6 +171,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Ovdje će se pojaviti arhivirane stavke.",
   Armenian: "Armenski",
   "Article not found": "Članak nije pronađen",
+  "Ask a question…": "Pitajte pitanje…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Pitajte kako učiniti nešto na administrativnoj ploči ili pitajte o narudžbama na čekanju, artiklima s malo zaliha ili statusu narudžbe.",
   "Assamese (অসমীয়া)": "Asamski (অসমীয়া)",
   "Assigned roles": "Dodijeljene uloge",
   Attribution: "Atribucija",
@@ -172,6 +181,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Autor",
   "Auto-translate": "Automatski prijevod",
   "Auto-translate all": "Automatski prijevod svih",
+  Availability: "Dostupnost",
   Available: "Dostupno",
   "available · reorder at": "dostupno · ponovno naručiti kod",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -214,6 +224,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Tijelo teksta",
   Bosnian: "Bosanski",
   Brand: "Brend",
+  "Built-in": "Ugrađeno",
   "Bulgarian (Български)": "bugarski (bʺlgarski)",
   Bundle: "Paket",
   "bundle price · items priced at": "cijena paketa · stavke po cijeni od",
@@ -265,6 +276,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Brisanje...",
   "Click link": "Klikni vezu",
   Close: "Zatvori",
+  "Close help assistant": "Zatvori pomoćnika",
   "Close navigation": "Zatvori navigaciju",
   "CMS pages": "CMS stranice",
   "CMS pages & SEO": "CMS stranice i SEO",
@@ -298,6 +310,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Nastavite s Facebookom",
   "Control what each role can view, create, edit, publish or manage.":
     "Kontrolirajte što svaka uloga može pregledavati, stvarati, uređivati, objavljivati ili upravljati.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Kontrolirajte je li svaki bot dostupan i uredite ono što zna.",
   Cook: "Kuhanje",
   "Cook minutes": "Minute kuhanja",
   "Copy inside dark bands.": "Kopiraj unutar tamnih traka.",
@@ -367,9 +381,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Izbriši",
   "Delete (spam)": "Izbriši (spam)",
   "Delete category": "Izbriši kategoriju",
+  "Delete entry": "Izbriši unos",
   "Delete farm": "Izbriši farmu",
   "Delete image": "Izbriši sliku",
   "Delete inventory row": "Brisanje retka zaliha",
+  "Delete knowledge entry?": "Izbrisati unos znanja?",
   "Delete permanently": "Trajno brisanje",
   "Delete product": "Brisanje proizvoda",
   "Delete role": "Brisanje uloge",
@@ -418,7 +434,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Uredite metapodatke CMS stranice, indeksiranje i neobrađene blokove stranica. Zapis početne stranice također je naveden ovdje, ali Postavke početne stranice sigurniji su način da ga promijenite — ovaj uređivač uzima neobrađeni JSON.",
   "Edit content": "Uređivanje sadržaja",
+  "Edit entry": "Uredi unos",
   "Edit farm": "Uređivanje farme",
+  "Edit knowledge entry": "Uredi unos znanja",
   "Edit media": "Uređivanje medija",
   "Edit review": "Uređivanje recenzije",
   "Edit role": "Uređivanje uloge",
@@ -531,6 +549,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Naslovi i kopija.",
   Headline: "Naslov",
   "Hebrew (עברית)": "Hebrejski (עברית)",
+  "Help assistant": "Pomoć pomoćnika",
+  "Help Assistant": "Pomoćnik za pomoć",
   "Hero description": "Opis heroja",
   "Hero eyebrow": "Hero obrva",
   "Hero image alt text": "Alt tekst glavne slike",
@@ -606,6 +626,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "kazaški",
   "Keep artwork clean": "Neka umjetnina bude čista",
   "Keep typing to search…": "Nastavite tipkati za pretraživanje…",
+  Keywords: "Ključne riječi",
   "Korean (한국어)": "Korejski (한국어)",
   Kyrgyz: "Kirgiški",
   Label: "Oznaka",
@@ -793,6 +814,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Nema indeksa",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Još nema stavki — dodajte barem jednu ispod. Plaćanje primjenjuje popust za ovaj paket samo kada košarica ima sve artikle ovdje, u barem ovim količinama.",
+  "No knowledge entries": "Nema unosa znanja",
   "No line items recorded.": "Nema zabilježenih stavki.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "više ne mijenja prijavu — tako da lozinka koju ovdje postavite zaista zamjenjuje staru.",
@@ -876,6 +898,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Samo vlasnik može upravljati opsegom uloga.",
   "Only the owner can review payments and refunds.":
     "Samo vlasnik može pregledati uplate i povrate.",
+  "Open help assistant": "Otvori pomoćnika za pomoć",
   "Open navigation": "Otvori navigaciju",
   Optional: "Izborno",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1154,6 +1177,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Spremanje...",
   "Say how often you will write and that unsubscribing is easy.":
     "Recite koliko često ćete pisati i da je otkazivanje pretplate jednostavno.",
+  Scope: "Opseg",
   "Scope Management": "Upravljanje opsegom",
   "Scopes unavailable": "Opsezi nedostupni",
   "Search archive": "Pretraži arhivu",
@@ -1219,6 +1243,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Odabrani retci bit će izbrisani u rezerviranu zalihu, čineći dostupnim nultu zalihu uz očuvanje rezervacija, povijesti kretanja i revizijskih zapisa.",
   "Selected users will be removed from the users list and signed out.":
     "Odabrani korisnici bit će uklonjen s popisa korisnika i odjavljen.",
+  Send: "Pošalji",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Pošalji sigurnu vezu za ponovno postavljanje lozinke ovom korisniku. Postavit će svoju novu zaporku na stranici za poništavanje administratora.",
   "Send back to draft": "Pošalji natrag na skicu",
@@ -1288,6 +1313,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Snimke u vrijeme kupnje — uređivanja kataloga nikada ne mijenjaju narudžbu.",
   Snippet: "Isječak",
   "Sold out": "Rasprodano",
+  "space separated, e.g. product publish visibility":
+    "odvojen razmakom, npr. vidljivost objave proizvoda",
   "Spanish (Español)": "španjolski (Español)",
   "Sprouted ragi flour": "Proklijalo ragi brašno",
   "SQL Tables": "SQL tablice",
@@ -1299,6 +1326,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Koraci (jedan po retku)",
   "Stock Status": "Status zaliha",
   "Store credit": "Kredit za trgovinu",
+  Storefront: "Izlog",
+  "Storefront bot": "Bot izloga",
   "Storefront switches": "Prekidači za izlog",
   "Storefront switches unavailable": "Prekidači izloga nisu dostupni",
   "Strong border": "Jaka granica",
@@ -1336,9 +1365,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Baner na vrhu",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "bannera, retka kategorije, retka proizvoda i polja SEO spremaju zajedno. Okviri za označavanje odjeljaka, redoslijed i prilagođena kopija odjeljaka spremaju se sami, kako ih mijenjate.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Widget za chat koji korisnici i posjetitelji vide na izlogu.",
   "The classic credential pair, including the password-reset flow.":
     "Klasični par vjerodajnica, uključujući tijek poništavanja lozinke.",
   "the farm owner": "vlasnik farme",
+  "The floating Help Assistant staff see on every admin page.":
+    "Osoblje pomoćnika za pomoć vidi na svakoj stranici administratora.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Oznake veze zaglavlja i podnožja koje prikazuje svaka stranica, prevedene po jeziku (migracija 0068). Lokalizacija ostavljena praznom vraća se na engleski na izlogu. Ovo je ista kontrola koja popravlja zaglavlje koje prikazuje "Trgovina" / "Sezonsko" na engleskom dok je sve oko njega promijenilo jezik - te oznake dolaze odavde, a ne iz gornjih prijevoda sadržaja stranice.',
   "The homepage has no sections": "Početna stranica nema odjeljaka",
@@ -1366,6 +1399,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Ove se boje također primjenjuju na stranice ispod",
   "These roles define the permission sets available when inviting or editing users.":
     "Ove uloge definiraju skupove dozvola dostupnih prilikom pozivanja ili uređivanja korisnika.",
+  "Thinking…": "Razmišljam...",
   "This application is": "Ova je aplikacija",
   "This order is in a final state.": "Ova narudžba je u konačnom stanju.",
   "This page contains sensitive application diagnostics.":
@@ -1483,6 +1517,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Zašto su potrebne promjene ili zašto je ovo odbijeno?",
   "Why is stock changing?": "Zašto se dionice mijenjaju?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Riječi koje bot povezuje s pitanjem kako bi odlučio da je ovaj unos relevantan.",
   "Working...": "Radi...",
   "World languages": "Svjetski jezici",
   "Write a message…": "Napišite poruku...",

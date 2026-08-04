@@ -82,12 +82,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "အမျိုးအစားထည့်ပါ",
   "Add code": "ကုဒ်ထည့်ပါ",
   "Add country": "နိုင်ငံကို ထည့်ပါ",
+  "Add entry": "ထည့်သွင်းမှုထည့်ပါ",
   "Add farm owner": "လယ်ယာပိုင်ရှင်ကို ထည့်ပါ",
   "Add ingredient": "ပါဝင်ပစ္စည်းထည့်ပါ",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "အစုအဝေးကိုဖန်တီးပြီးနောက် စီမံကွပ်ကဲမှုမှ (မည်သည့်ပုံစံကွဲများ၊ တစ်ခုစီ၏ အရေအတွက်) ကိုထည့်ပါ။",
+  "Add knowledge entry": "အသိပညာထည့်သွင်းမှုထည့်ပါ",
   "Add one above to get started.": "စတင်ရန် အထက်တွင်တစ်ခုကိုထည့်ပါ။",
   "Add one below to get started.": "စတင်ရန် အောက်တွင် တစ်ခုထည့်ပါ။",
+  "Add one so the bot has something to reference for this scope.":
+    "တစ်ခုထည့်ပါ သို့မှသာ bot သည် ဤနယ်ပယ်အတွက် ကိုးကားစရာတစ်ခုရှိပါသည်။",
   "Add page": "စာမျက်နှာကို ထည့်ပါ",
   "Add participants": "ပါဝင်သူများကို ထည့်ပါ",
   "Add role": "အခန်းကဏ္ဍကို ထည့်ပါ",
@@ -107,9 +111,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ရှာဖွေမှုကို ချိန်ညှိပါ သို့မဟုတ် ထုတ်ကုန်တစ်ခု ဖန်တီးပါ။",
   "Adjustment %": "ချိန်ညှိမှု %",
   "Adjustments restricted": "ကန့်သတ်ချက်များ",
+  Admin: "စီမံခန့်ခွဲသူ",
   "Admin API is unavailable": "Admin API မရနိုင်ပါ",
   "Admin Logs": "စီမံခန့်ခွဲသူမှတ်တမ်းများ",
   "Admin navigation": "စီမံခန့်ခွဲသူလမ်းညွှန်ချက်",
+  "Admin panel bot": "စီမံခန့်ခွဲသူအကန့် ဘော့တ်",
   Afrikaans: "အာဖရိကန်များ",
   "After refunds, all farms": "ပြန်အမ်းပြီးနောက်၊ လယ်ယာအားလုံး",
   Albanian: "အယ်လ်ဘေးနီးယား",
@@ -169,12 +175,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "သိမ်းဆည်းထားသည့်အရာများကို ဤနေရာတွင် ပေါ်လာပါမည်။",
   Armenian: "အာမေးနီးယန်း",
   "Article not found": "ဆောင်းပါးကို ရှာမတွေ့ပါ",
+  "Ask a question…": "မေးခွန်းတစ်ခုမေးပါ…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "စီမံခန့်ခွဲသူအကန့်တွင် တစ်စုံတစ်ခုပြုလုပ်နည်းကိုမေးပါ သို့မဟုတ် ဆိုင်းငံ့ထားသောအမှာစာများ၊ စတော့နည်းသောပစ္စည်းများ သို့မဟုတ် မှာယူမှုအခြေအနေအကြောင်းမေးပါ။",
   "Assigned roles": "တာဝန်ပေးထားသော အခန်းကဏ္ဍများ",
   Attribution: "ထည့်သွင်းဖော်ပြချက်",
   "Audit Log": "စာရင်းစစ်မှတ်တမ်း",
   Author: "ရေးသားသူ",
   "Auto-translate": "အလိုအလျောက် ဘာသာပြန်ဆိုခြင်း",
   "Auto-translate all": "အားလုံးကို အလိုအလျောက် ဘာသာပြန်ဆိုခြင်း",
+  Availability: "ရရှိနိုင်မှု",
   Available: "ရနိုင်သည်",
   "available · reorder at": "ရနိုင်သည် · တွင်",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -218,6 +228,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "ကိုယ်ထည် စာသား",
   Bosnian: "ဘော့စနီးယား",
   Brand: "အမှတ်တံဆိပ်",
+  "Built-in": "ပါ၀င်ပြီး",
   "Bulgarian (Български)": "ဘူဂေးရီးယား (Български)",
   Bundle: "အတွဲ",
   "bundle price · items priced at": "အတွဲလိုက်စျေးနှုန်း ·",
@@ -268,6 +279,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "ရှင်းလင်းနေသည်...",
   "Click link": "လင့်ခ်ကိုနှိပ်ပါ",
   Close: "ပိတ်",
+  "Close help assistant": "အကူအညီကို ပိတ်ရန် လက်ထောက်",
   "Close navigation": "လမ်းညွှန်မှုကို ပိတ်ပါ",
   "CMS pages": "CMS စာမျက်နှာများ",
   "CMS pages & SEO": "CMS စာမျက်နှာများနှင့် SEO",
@@ -301,6 +313,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Facebook ဖြင့် ဆက်လက်လုပ်ဆောင်ပါ",
   "Control what each role can view, create, edit, publish or manage.":
     "အခန်းကဏ္ဍတစ်ခုစီသည် ကြည့်ရှုနိုင်သည်၊ ဖန်တီးနိုင်သည်၊ တည်းဖြတ်နိုင်သည်၊ ထုတ်ဝေနိုင်သည် သို့မဟုတ် စီမံခန့်ခွဲနိုင်သည်များကို ထိန်းချုပ်ပါ။",
+  "Control whether each bot is available, and edit what it knows.":
+    "ဘော့တ်တစ်ခုစီကို ရနိုင်မရှိကို ထိန်းချုပ်ပြီး ၎င်းသိသောအရာကို တည်းဖြတ်ပါ။",
   Cook: "ကွတ်",
   "Cook minutes": "ချက်ပြုတ်မိနစ်",
   "Copy inside dark bands.": "အမှောင်ဘောင်အတွင်းမှ ကော်ပီကူးပါ။",
@@ -370,9 +384,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "ဖျက်ပါ",
   "Delete (spam)": "ဖျက်ပါ (စပမ်း)",
   "Delete category": "အမျိုးအစားကို ဖျက်ပါ",
+  "Delete entry": "ထည့်သွင်းမှုကို ဖျက်ပါ",
   "Delete farm": "စိုက်ခင်းကို ဖျက်ပါ",
   "Delete image": "ပုံဖျက်ရန်",
   "Delete inventory row": "စာရင်းဇယားအတန်းကိုဖျက်ပါ",
+  "Delete knowledge entry?": "အသိပညာ ဝင်ခွင့်ကို ဖျက်မလား။",
   "Delete permanently": "အပြီးအပိုင်ဖျက်ပါ",
   "Delete product": "ထုတ်ကုန်ကိုဖျက်ပါ",
   "Delete role": "အခန်းကဏ္ဍကိုဖျက်ပါ",
@@ -422,7 +438,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS စာမျက်နှာ မက်တာဒေတာ၊ ညွှန်းကိန်းနှင့် စာမျက်နှာကြမ်းများကို တည်းဖြတ်ပါ။ ပင်မစာမျက်နှာမှတ်တမ်းကို ဤနေရာတွင်လည်း စာရင်းသွင်းထားသော်လည်း ပင်မစာမျက်နှာဆက်တင်များသည် ၎င်းကိုပြောင်းလဲရန် ပိုမိုလုံခြုံသောနည်းလမ်းဖြစ်သည် — ဤတည်းဖြတ်သူသည် JSON အကြမ်းကို ယူသည်။",
   "Edit content": "အကြောင်းအရာကို တည်းဖြတ်ရန်",
+  "Edit entry": "ထည့်သွင်းမှုကို တည်းဖြတ်ပါ",
   "Edit farm": "လယ်ယာကို တည်းဖြတ်ပါ",
+  "Edit knowledge entry": "အသိပညာထည့်သွင်းမှုကို တည်းဖြတ်ပါ",
   "Edit media": "မီဒီယာကို တည်းဖြတ်ပါ",
   "Edit review": "ပြန်လည်သုံးသပ်ခြင်းကို တည်းဖြတ်ပါ",
   "Edit role": "အခန်းကဏ္ဍကို တည်းဖြတ်ပါ",
@@ -538,6 +556,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "ခေါင်းစီးနှင့် မိတ္တူ။",
   Headline: "ခေါင်းကြီး",
   "Hebrew (עברית)": "ဟီးရိုး (ဟီးရိုး)",
+  "Help assistant": "အကူအညီလက်ထောက်",
+  "Help Assistant": "အကူအညီလက်ထောက်",
   "Hero description": "ဟီးရိုးဖော်ပြချက်",
   "Hero eyebrow": "ဟီးရိုးမျက်ခုံးမွေး",
   "Hero image alt text": "ဟီးရိုးပုံ အစားထိုးစာသား",
@@ -611,6 +631,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "ကာဇတ်",
   "Keep artwork clean": "အနုပညာလက်ရာကို သန့်ရှင်းအောင်ထားပါ",
   "Keep typing to search…": "ရှာဖွေရန် စာရိုက်ဆက်ထားပါ…",
+  Keywords: "သော့ချက်စာလုံးများ",
   Khmer: "ခမာ",
   "Korean (한국어)": "ကိုရီးယား (한국어)",
   Kyrgyz: "ခရူဂျစ်",
@@ -804,6 +825,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "အညွှန်းမရှိပါ",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "အရာများ မရှိသေးပါ — အောက်တွင် အနည်းဆုံးတစ်ခု ထည့်ပါ။ ခြင်းတောင်းတွင် ဤနေရာတွင် ပစ္စည်းတိုင်းရှိသည်၊ အနည်းဆုံး ဤပမာဏရှိသည့်အခါ ငွေရှင်းခြင်းသည် ဤအစုအဝေး၏လျှော့စျေးကို သက်ရောက်ပါသည်။",
+  "No knowledge entries": "အသိပညာ ထည့်သွင်းမှုများ မရှိ",
   "No line items recorded.": "လိုင်းအကြောင်းအရာများကို မှတ်တမ်းတင်ထားခြင်းမရှိပါ။",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "အကောင့်ဝင်ခြင်းကို မပြောင်းတော့ပါ — ထို့ကြောင့် ဤနေရာတွင် သင်သတ်မှတ်ထားသော စကားဝှက်သည် အဟောင်းကို အမှန်တကယ်အစားထိုးပါသည်။",
@@ -888,6 +910,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ပိုင်ရှင်မှသာလျှင် အခန်းကဏ္ဍများကို စီမံခန့်ခွဲနိုင်ပါသည်။",
   "Only the owner can review payments and refunds.":
     "ပိုင်ရှင်ကသာ ငွေပေးချေမှုများနှင့် ပြန်အမ်းငွေများကို ပြန်လည်သုံးသပ်နိုင်သည်။",
+  "Open help assistant": "အကူအညီကိုဖွင့်ရန် လက်ထောက်",
   "Open navigation": "လမ်းကြောင်းဖွင့်ခြင်း",
   Optional: "ချန်လှပ်ထားနိုင်သည်",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1168,6 +1191,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "သိမ်းဆည်းနေသည်...",
   "Say how often you will write and that unsubscribing is easy.":
     "သင် မည်မျှရေးမည်ကို မကြာခဏပြောပါ၊ စာရင်းသွင်းမှုဖြုတ်ရန်မှာ လွယ်ကူသည်။",
+  Scope: "နယ်ပယ်",
   "Scope Management": "နယ်ပယ်စီမံခန့်ခွဲမှု",
   "Scopes unavailable": "နယ်ပယ်များ မရရှိနိုင်ပါ",
   "Search archive": "ရှာဖွေမှုမှတ်တမ်း",
@@ -1238,6 +1262,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ရွေးချယ်ထားသောအတန်းများကို သီးသန့်စတော့တွင် ရှင်းလင်းမည်ဖြစ်ပြီး ကြိုတင်မှာယူမှုများ၊ လှုပ်ရှားမှုမှတ်တမ်းများနှင့် စာရင်းစစ်မှတ်တမ်းများကို ထိန်းသိမ်းထားစဉ်တွင် စတော့ရှယ်ယာ သုညဖြစ်စေပါမည်။",
   "Selected users will be removed from the users list and signed out.":
     "ရွေးချယ်ထားသော အသုံးပြုသူများကို အသုံးပြုသူများစာရင်းမှ ဖယ်ရှားပြီး အကောင့်ထွက်ပါမည်။",
+  Send: "ပေးပို့ရန်",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "ဤအသုံးပြုသူထံသို့ လုံခြုံသော စကားဝှက်ပြန်လည်သတ်မှတ်သည့်လင့်ခ်ကို ပေးပို့ပါ။ စီမံခန့်ခွဲသူ ပြန်လည်သတ်မှတ်ခြင်း စာမျက်နှာမှ ၎င်းတို့၏ စကားဝှက်အသစ်ကို သတ်မှတ်ပေးပါမည်။",
   "Send back to draft": "မူကြမ်းသို့ ပြန်ပို့ပါ",
@@ -1308,6 +1333,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "အတိုအထွာများ",
   "Sold out": "ရောင်းကုန်ပြီ",
   Somali: "ဆိုမာလီ",
+  "space separated, e.g. product publish visibility":
+    "အာကာသကို ခွဲထားသည်၊ ဥပမာ။ ထုတ်ကုန်ထုတ်ဝေမှု မြင်နိုင်စွမ်း",
   "Spanish (Español)": "စပိန် (Español)",
   "Sprouted ragi flour": "အညှောက်ပေါက်ထားသော ရာဂီမုန့်ညက်",
   "Staff sign in": "ဝန်ထမ်းများ အကောင့်ဝင်ပါ",
@@ -1319,6 +1346,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "အဆင့်များ (တစ်ကြောင်းလျှင် တစ်ခု)",
   "Stock Status": "စတော့ရှယ်ယာအခြေအနေ",
   "Store credit": "စတိုးဆိုင်ခရက်ဒစ်",
+  Storefront: "စတိုးမျက်နှာစာ",
+  "Storefront bot": "စတိုးမျက်နှာစာ ဘော့တ်",
   "Storefront switches": "ဆိုင်မျက်နှာစာခလုတ်များ",
   "Storefront switches unavailable": "ဆိုင်မျက်နှာစာခလုတ်များ မရရှိနိုင်ပါ",
   "Strong border": "ခိုင်မာသောဘောင်",
@@ -1354,9 +1383,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Thai (ไทย)": "ထိုင်း (ไทย)",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "နဖူးစည်း၊ အမျိုးအစားအတန်း၊ ထုတ်ကုန်အတန်းနှင့် SEO အကွက်များ ထိပ်ပိုင်းရှိ နဖူးစည်းကို အတူတကွ သိမ်းဆည်းပါသည်။ အပိုင်း လက်မှတ်ပုံးများ၊ မှာယူခြင်းနှင့် စိတ်ကြိုက်အပိုင်း မိတ္တူကို သင်ပြောင်းလိုက်သည်နှင့် ၎င်းတို့ကို ၎င်းတို့ကိုယ်တိုင် သိမ်းဆည်းပါ။",
+  "The chat widget customers and visitors see on the storefront.":
+    "ချတ်ဝစ်ဂျက်ကို ဝယ်ယူသူများနှင့် ဧည့်သည်များက စတိုးဆိုင်မျက်နှာစာတွင် တွေ့ရပါသည်။",
   "The classic credential pair, including the password-reset flow.":
     "စကားဝှက် ပြန်လည်သတ်မှတ်ခြင်း အပါအဝင် ဂန္တဝင်အထောက်အထား အတွဲများ။",
   "the farm owner": "မွေးမြူရေးခြံပိုင်ရှင်",
+  "The floating Help Assistant staff see on every admin page.":
+    "ရေပေါ်အကူအညီ လက်ထောက်ဝန်ထမ်းများသည် စီမံခန့်ခွဲသူ စာမျက်နှာတိုင်းတွင် မြင်နေရပါသည်။",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'ခေါင်းစီးနှင့် အောက်ခြေလင့်ခ် အညွှန်းများသည် စာမျက်နှာတိုင်းတွင် 6m ပြပါသည်။ ဘာသာစကားအလိုက် ဘာသာပြန်ထားသော 0 ဘာသာစကား (0) ကွက်လပ်ချန်ထားသော နေရာသည် စတိုးဆိုင်မျက်နှာစာတွင် အင်္ဂလိပ်ဘာသာသို့ ပြန်ရောက်သွားပါသည်။ ၎င်းသည် အင်္ဂလိပ်လို "Shop" / "Seasonal" ကိုပြသည့် ခေါင်းစီးကို ပြုပြင်ပေးသည့် တူညီသော ထိန်းချုပ်မှုဖြစ်ပါသည် — ၎င်းသည် ဘာသာစကားပြောင်းသွားသည် — အဆိုပါ အညွှန်းများသည် အထက်ဖော်ပြပါ စာမျက်နှာ အကြောင်းအရာ ဘာသာပြန်များမှမဟုတ်ဘဲ ဤနေရာမှ လာပါသည်။',
   "The homepage has no sections": "ပင်မစာမျက်နှာတွင် အပိုင်းများ မပါရှိပါ",
@@ -1386,6 +1419,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ဤအရောင်များသည် အောက်ဖော်ပြပါစာမျက်နှာများတွင်လည်း သက်ရောက်သည်",
   "These roles define the permission sets available when inviting or editing users.":
     "အသုံးပြုသူများကို ဖိတ်ကြားခြင်း သို့မဟုတ် တည်းဖြတ်သည့်အခါ ရရှိနိုင်သောခွင့်ပြုချက်အစုံများကို ဤအခန်းကဏ္ဍများက သတ်မှတ်ပါသည်။",
+  "Thinking…": "စဉ်းစားနေသည်…",
   "This application is": "ဤအပလီကေးရှင်းသည်",
   "This order is in a final state.": "ဤမှာယူမှုသည် နောက်ဆုံးအခြေအနေတွင်ဖြစ်သည်။",
   "This page contains sensitive application diagnostics.":
@@ -1506,6 +1540,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "ဘာကြောင့် အပြောင်းအလဲများ လိုအပ်သနည်း၊ သို့မဟုတ် အဘယ်ကြောင့် ငြင်းပယ်ခံခဲ့ရသနည်း။",
   "Why is stock changing?": "စတော့ရှယ်ယာ ဘာကြောင့်ပြောင်းနေရတာလဲ။",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "ဤထည့်သွင်းမှုသည် သက်ဆိုင်ရာမေးခွန်းနှင့် ကိုက်ညီသော ဘော့တ်စကားလုံးများနှင့် တိုက်ဆိုင်ပါသည်။",
   "Working...": "အလုပ်လုပ်နေသည်...",
   "World languages": "ကမ္ဘာ့ဘာသာစကားများ",
   "Write a message…": "မက်ဆေ့ချ်တစ်ခုရေးပါ…",

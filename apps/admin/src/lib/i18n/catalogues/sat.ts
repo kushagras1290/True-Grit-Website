@@ -91,12 +91,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "ᱜᱟᱛᱟᱠ ᱥᱮᱞᱮᱫ ᱢᱮ",
   "Add code": "ᱠᱳᱰ ᱥᱮᱞᱮᱫ ᱢᱮ",
   "Add country": "ᱫᱤᱥᱚᱢ ᱥᱮᱞᱮᱫ ᱢᱮ",
+  "Add entry": "ᱵᱚᱞᱚᱱ ᱥᱮᱞᱮᱫ ᱢᱮ",
   "Add farm owner": "ᱵᱟᱹᱫᱽ ᱨᱮᱱ ᱢᱟᱞᱤᱠ ᱥᱮᱞᱮᱫ ᱢᱮ",
   "Add ingredient": "ᱡᱤᱱᱤᱥ ᱥᱮᱞᱮᱫ ᱢᱮ",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "ᱵᱟᱱᱰᱮᱞ ᱵᱮᱱᱟᱣ ᱛᱟᱭᱚᱢ ᱡᱤᱱᱤᱥ ᱥᱮᱞᱮᱫ ᱢᱮ (ᱚᱠᱟ ᱵᱷᱮᱨᱤᱭᱮᱱᱴ, ᱢᱤᱢᱤᱫ ᱨᱮ ᱛᱤᱱᱟᱹᱜ) ᱢᱮᱱᱮᱡᱽ ᱠᱷᱚᱱ᱾",
+  "Add knowledge entry": "ᱜᱮᱭᱟᱱ ᱵᱚᱞᱚᱱ ᱥᱮᱞᱮᱫ ᱢᱮ",
   "Add one above to get started.": "ᱮᱛᱚᱦᱚᱵ ᱞᱟᱹᱜᱤᱫ ᱪᱮᱛᱟᱱ ᱨᱮ ᱢᱤᱫ ᱥᱮᱞᱮᱫ ᱢᱮ᱾",
   "Add one below to get started.": "ᱮᱛᱚᱦᱚᱵ ᱞᱟᱹᱜᱤᱫ ᱞᱟᱛᱟᱨ ᱨᱮ ᱢᱤᱫᱴᱟᱹᱝ ᱥᱮᱞᱮᱫ ᱢᱮ ᱾",
+  "Add one so the bot has something to reference for this scope.":
+    "ᱢᱤᱫ ᱥᱮᱞᱮᱫ ᱢᱮ ᱡᱮ ᱵᱚᱴ ᱴᱷᱮᱱ ᱱᱚᱣᱟ ᱥᱠᱚᱯ ᱞᱟᱹᱜᱤᱫ ᱥᱟᱠᱟᱢ ᱞᱟᱹᱜᱤᱫ ᱡᱟᱦᱟᱱᱟᱜ ᱛᱟᱦᱮᱱ ᱢᱟ᱾",
   "Add page": "ᱥᱟᱦᱴᱟ ᱥᱮᱞᱮᱫ ᱢᱮ",
   "Add participants": "ᱥᱟᱶ ᱥᱮᱞᱮᱫ ᱠᱚ",
   "Add role": "ᱵᱷᱩᱢᱤᱠᱟ ᱥᱮᱞᱮᱫ ᱢᱮ",
@@ -114,9 +118,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "ᱥᱮᱸᱫᱽᱨᱟ ᱵᱮᱵᱷᱟᱨ ᱢᱮ ᱟᱨᱵᱟᱝ ᱢᱤᱫ ᱡᱤᱱᱤᱥ ᱛᱮᱭᱟᱨ ᱢᱮ ᱾",
   "Adjustment %": "ᱵᱮᱵᱷᱟᱨ %",
   "Adjustments restricted": "ᱵᱮᱵᱷᱟᱨ ᱵᱟᱱᱫᱷᱟᱣ ᱟᱠᱟᱱᱟ",
+  Admin: "ᱮᱰᱢᱤᱱ",
   "Admin API is unavailable": "ᱮᱰᱢᱤᱱ ᱮᱯᱤᱟᱭᱤ ᱵᱟᱝ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ",
   "Admin Logs": "ᱮᱰᱢᱤᱱ ᱞᱚᱜᱽᱥ",
   "Admin navigation": "ᱮᱰᱢᱤᱱ ᱱᱮᱵᱷᱤᱜᱮᱥᱚᱱ",
+  "Admin panel bot": "ᱮᱰᱢᱤᱱ ᱯᱮᱱᱮᱞ ᱵᱚᱴ",
   ADMIN_LOGIN_EMAIL: "ᱮᱰᱢᱤᱱ_ᱞᱚᱜᱤᱱ_ᱤᱢᱮᱞ",
   ADMIN_LOGIN_PASSWORD: "ᱮᱰᱢᱤᱱ_ᱞᱚᱜᱤᱱ_ᱯᱟᱥᱣᱟᱨᱰ",
   Afrikaans: "ᱟᱯᱷᱨᱤᱠᱟᱱ",
@@ -180,6 +186,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "ᱟᱨᱢᱮᱱᱤᱭᱟᱱ",
   "Article not found": "ᱚᱱᱚᱞ ᱵᱟᱝ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ",
   "Asha Rao": "ᱟᱥᱟ ᱨᱟᱣ",
+  "Ask a question…": "ᱢᱤᱫ ᱠᱩᱠᱞᱤ ᱠᱩᱞᱤ ᱢᱮ...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "ᱮᱰᱢᱤᱱ ᱯᱮᱱᱮᱞ ᱨᱮ ᱪᱮᱫ ᱞᱮᱠᱟ ᱠᱟᱹᱢᱤ ᱦᱩᱭᱩᱜ-ᱟ ᱠᱩᱞᱤᱠᱚᱢ, ᱟᱨᱵᱟᱝ ᱛᱟᱺᱜᱤ ᱟᱠᱟᱱ ᱚᱰᱚᱨ, ᱠᱚᱢ ᱥᱴᱚᱠ ᱡᱤᱱᱤᱥ, ᱟᱨᱵᱟᱝ ᱚᱰᱚᱨ ᱨᱮᱭᱟᱜ ᱥᱛᱤᱛᱤ ᱵᱟᱵᱚᱛ ᱠᱩᱞᱤᱠᱚᱢ᱾",
   "Assamese (অসমীয়া)": "ᱟᱥᱚᱢᱤᱭᱟ (অসমীয়া)",
   "Assigned roles": "ᱩᱫᱩᱜ ᱠᱟᱱ ᱵᱷᱩᱢᱤᱠᱟ",
   Attribution: "ᱮᱴᱨᱤᱵᱷᱭᱩᱥᱚᱱ",
@@ -187,6 +196,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "ᱚᱱᱚᱞᱤᱭᱟᱹ",
   "Auto-translate": "ᱟᱡ ᱛᱮ ᱛᱟᱨᱡᱟᱣ",
   "Auto-translate all": "ᱟᱡ ᱛᱮ ᱛᱟᱨᱡᱟᱣ ᱥᱟᱱᱟᱢ",
+  Availability: "ᱧᱮᱞᱚᱜ",
   Available: "ᱧᱮᱞᱚᱜ ᱠᱟᱱᱟ",
   "available · reorder at": "ᱧᱮᱞᱚᱜ ᱠᱟᱱᱟ · ᱫᱚᱦᱲᱟ ᱚᱨᱰᱟᱨ ᱢᱮ",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -231,6 +241,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "ᱦᱚᱲᱢᱚ ᱚᱱᱚᱞ",
   Bosnian: "ᱵᱚᱥᱱᱤᱭᱟᱱ",
   Brand: "ᱵᱨᱟᱱᱰ",
+  "Built-in": "ᱵᱤᱞᱴ-ᱤᱱ",
   "Bulgarian (Български)": "ᱵᱩᱞᱜᱟᱨᱤᱭᱟᱱ (ᱵᱞᱜᱟᱨᱥᱠᱤ)",
   Bundle: "ᱵᱟᱱᱰᱮᱞ",
   "bundle price · items priced at": "ᱵᱟᱱᱰᱮᱞ ᱜᱚᱱᱚᱝ · ᱡᱤᱱᱤᱥ ᱠᱚ ᱨᱮᱭᱟᱜ ᱫᱟᱢ ᱫᱚ",
@@ -284,6 +295,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "ᱥᱟᱯᱷᱟᱭᱮᱫ...",
   "Click link": "ᱞᱤᱝᱠ ᱨᱮ ᱚᱛᱟᱭ ᱢᱮ",
   Close: "ᱵᱚᱱᱫᱚ ᱢᱮ",
+  "Close help assistant": "ᱜᱚᱲᱚ ᱜᱚᱲᱚᱭᱤᱡ ᱵᱚᱱᱫᱚ",
   "Close navigation": "ᱱᱮᱵᱷᱤᱜᱮᱥᱚᱱ ᱵᱚᱱᱫᱚᱭ ᱢᱮ",
   "CMS pages": "ᱥᱤ ᱮᱢ ᱮᱥ ᱥᱟᱦᱴᱟ",
   "CMS pages & SEO": "ᱥᱤ ᱮᱢ ᱮᱥ ᱥᱟᱦᱴᱟ ᱟᱨ ᱮᱥᱤᱭᱳ",
@@ -316,6 +328,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "ᱯᱷᱮᱥᱵᱩᱠ ᱥᱟᱶᱛᱮ ᱞᱟᱦᱟᱜ ᱢᱮ",
   "Control what each role can view, create, edit, publish or manage.":
     "ᱡᱚᱛᱚ ᱵᱷᱩᱢᱤᱠᱟ ᱧᱮᱞ, ᱛᱮᱭᱟᱨ, ᱥᱟᱥᱟᱯᱲᱟᱣ, ᱪᱷᱟᱯᱟᱣ ᱟᱨ ᱵᱟᱝ ᱪᱟᱞᱟᱣ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱚᱱᱟ ᱠᱚᱵᱚᱡᱽ ᱢᱮ᱾",
+  "Control whether each bot is available, and edit what it knows.":
+    "ᱡᱚᱛᱚ ᱵᱚᱴ ᱢᱮᱱᱟᱜᱼᱟ ᱥᱮ ᱵᱟᱝᱟ ᱚᱱᱟ ᱠᱚᱱᱴᱨᱚᱞ ᱢᱮ, ᱟᱨ ᱚᱱᱟ ᱪᱮᱫ ᱵᱟᱲᱟᱭᱟᱭ ᱚᱱᱟ ᱥᱟᱥᱟᱯᱲᱟᱣ ᱢᱮ ᱾",
   Cook: "ᱤᱥᱤᱱ",
   "Cook minutes": "ᱢᱤᱱᱤᱴ ᱤᱥᱤᱱ",
   "Copy inside dark bands.": "ᱧᱩᱛ ᱵᱮᱱᱰ ᱵᱷᱤᱛᱨᱭ ᱨᱮ ᱱᱚᱠᱚᱞ ᱢᱮ ᱾",
@@ -384,9 +398,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "ᱢᱩᱪᱟᱣ",
   "Delete (spam)": "ᱰᱤᱞᱤᱴ (ᱥᱯᱟᱢ)",
   "Delete category": "ᱜᱟᱛᱟᱠ ᱢᱮᱴᱟᱣ ᱢᱮ",
+  "Delete entry": "ᱵᱚᱞᱚᱱ ᱢᱮᱴᱟᱣ ᱢᱮ",
   "Delete farm": "ᱯᱷᱟᱨᱢ ᱢᱮᱴᱟᱣ ᱢᱮ",
   "Delete image": "ᱪᱤᱛᱟᱹᱨ ᱢᱮᱴᱟᱣ ᱢᱮ",
   "Delete inventory row": "ᱤᱱᱣᱮᱱᱴᱚᱨᱤ ᱛᱷᱟᱨ ᱢᱮᱴᱟᱣ ᱢᱮ",
+  "Delete knowledge entry?": "ᱜᱭᱟᱱ ᱵᱚᱞᱚᱱ ᱢᱮᱴᱟᱣ ᱢᱮ?",
   "Delete permanently": "ᱥᱢᱟᱱ ᱞᱟᱹᱜᱤᱫ ᱢᱮᱴᱟᱣ ᱢᱮ",
   "Delete product": "ᱯᱨᱚᱰᱟᱠᱴ ᱢᱮᱴᱟᱣ ᱢᱮ",
   "Delete role": "ᱵᱷᱩᱢᱤᱠᱟ ᱢᱮᱴᱟᱣ ᱢᱮ",
@@ -439,7 +455,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "ᱥᱤ ᱮᱢ ᱮᱥ ᱥᱟᱦᱴᱟ ᱢᱮᱴᱟᱰᱟᱴᱟ ᱥᱟᱥᱟᱯᱲᱟᱣ ᱢᱮ, ᱤᱱᱰᱮᱠᱥᱤᱝ ᱟᱨ ᱵᱮᱨᱮᱫ ᱥᱟᱦᱴᱟ ᱵᱞᱚᱠ ᱠᱚ ᱾ ᱚᱲᱟᱜ ᱥᱟᱦᱴᱟ ᱨᱮᱠᱚᱨᱰ ᱱᱚᱸᱰᱮ ᱦᱚᱸ ᱥᱩᱪᱤ ᱟᱠᱟᱱᱟ, ᱢᱮᱱᱠᱷᱟᱱ ᱚᱲᱟᱜ ᱥᱟᱦᱴᱟ ᱥᱮᱴᱤᱝ ᱫᱚ ᱱᱚᱶᱟ ᱵᱚᱫᱚᱞ ᱨᱮᱭᱟᱜ ᱨᱚᱯᱟ ᱰᱟᱦᱟᱨ ᱠᱟᱱᱟ — ᱱᱚᱶᱟ ᱥᱟᱥᱟᱯᱲᱟᱣᱤᱡ ᱫᱚ ᱨᱚ JSON ᱮ ᱦᱟᱛᱟᱣᱟ᱾",
   "Edit content": "ᱥᱟᱥᱟᱯᱲᱟᱣ ᱡᱤᱱᱤᱥ",
+  "Edit entry": "ᱵᱚᱞᱚᱱ ᱥᱟᱥᱟᱯᱲᱟᱣ ᱢᱮ",
   "Edit farm": "ᱯᱷᱟᱨᱢ ᱥᱟᱯᱲᱟᱣ ᱢᱮ",
+  "Edit knowledge entry": "ᱜᱭᱟᱱ ᱵᱚᱞᱚᱱ ᱥᱟᱥᱟᱯᱲᱟᱣ ᱢᱮ",
   "Edit media": "ᱢᱤᱰᱤᱭᱟ ᱥᱟᱯᱲᱟᱣ ᱢᱮ",
   "Edit review": "ᱫᱚᱦᱲᱟ ᱥᱟᱯᱲᱟᱣ ᱢᱮ",
   "Edit role": "ᱥᱟᱯᱲᱟᱣ ᱵᱷᱩᱢᱤᱠᱟ",
@@ -556,6 +574,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "ᱵᱚᱦᱚᱜ ᱠᱚ ᱟᱨ ᱱᱚᱠᱚᱞ᱾",
   Headline: "ᱦᱮᱰᱞᱟᱭᱤᱱ",
   "Hebrew (עברית)": "ᱦᱤᱵᱽᱨᱩ (עברית)",
+  "Help assistant": "ᱜᱚᱲᱚ ᱜᱚᱲᱚᱭᱤᱡ",
+  "Help Assistant": "ᱜᱚᱲᱚ ᱜᱚᱲᱚᱭᱤᱡ",
   "Hero description": "ᱦᱤᱨᱚ ᱵᱤᱵᱚᱨᱚᱱ",
   "Hero eyebrow": "ᱦᱤᱨᱚ ᱟᱭᱤᱵᱨᱚ",
   "Hero image alt text": "ᱦᱤᱨᱚ ᱪᱤᱛᱟᱹᱨ ᱚᱞᱴ ᱚᱱᱚᱞ",
@@ -633,6 +653,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "ᱠᱟᱡᱟᱠ",
   "Keep artwork clean": "ᱟᱨᱴᱣᱟᱨᱠ ᱥᱟᱯᱷᱟ ᱫᱚᱦᱚᱭ ᱢᱮ",
   "Keep typing to search…": "ᱥᱮᱸᱫᱽᱨᱟ ᱞᱟᱹᱜᱤᱫ ᱴᱟᱭᱤᱯ ᱫᱚᱦᱚᱭ ᱢᱮ...",
+  Keywords: "ᱢᱩᱬ ᱥᱟᱵᱟᱫᱽ",
   Khmer: "ᱠᱷᱢᱮᱨ",
   Kinyarwanda: "ᱠᱤᱱᱭᱟᱨᱣᱟᱱᱰᱟ",
   "Konkani (कोंकणी)": "ᱠᱚᱱᱠᱟᱱᱤ (ᱠᱚᱱᱠᱟᱱᱤ)",
@@ -831,6 +852,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "ᱵᱟᱝ ᱤᱱᱰᱮᱠᱥ",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "ᱱᱤᱛ ᱦᱚᱸ ᱡᱟᱦᱟᱱ ᱡᱤᱱᱤᱥ ᱵᱟᱹᱱᱩᱜᱼᱟ — ᱞᱟᱛᱟᱨ ᱨᱮ ᱠᱚᱢ ᱥᱮ ᱠᱚᱢ ᱢᱤᱫᱴᱟᱹᱝ ᱥᱮᱞᱮᱫ ᱢᱮ᱾ ᱪᱮᱠᱟᱣᱩᱴ ᱫᱚ ᱮᱠᱮᱱ ᱱᱚᱣᱟ ᱵᱟᱱᱰᱮᱞ ᱨᱮᱭᱟᱜ ᱪᱷᱩᱴ ᱞᱟᱹᱜᱩᱜᱼᱟ ᱛᱤᱱ ᱨᱮ ᱵᱟᱥᱠᱮᱴ ᱨᱮ ᱱᱚᱸᱰᱮ ᱡᱚᱛᱚ ᱡᱤᱱᱤᱥ ᱛᱟᱦᱮᱱᱟ, ᱠᱚᱢ ᱠᱷᱚᱱ ᱠᱚᱢ ᱱᱚᱣᱟ ᱯᱚᱨᱤᱥᱟᱛ ᱨᱮ᱾",
+  "No knowledge entries": "ᱪᱮᱫ ᱜᱮᱭᱟᱱ ᱵᱚᱞᱚᱱ ᱵᱟᱝ",
   "No line items recorded.": "ᱪᱮᱫ ᱞᱟᱭᱤᱱ ᱡᱤᱱᱤᱥ ᱵᱟᱝ ᱨᱮᱠᱚᱨᱰ ᱟᱠᱟᱱᱟ᱾",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ᱱᱤᱛᱚᱜ ᱫᱚ ᱞᱚᱜᱤᱱ ᱵᱟᱭ ᱵᱚᱫᱚᱞᱟ — ᱚᱱᱟᱛᱮ ᱟᱢ ᱱᱚᱸᱰᱮ ᱥᱮᱴ ᱟᱠᱟᱱ ᱯᱟᱥᱣᱟᱨᱰ ᱥᱟᱹᱨᱤ ᱜᱮ ᱢᱟᱨᱮ ᱨᱮᱭᱟᱜ ᱵᱚᱫᱚᱞᱚᱜᱼᱟ᱾",
@@ -917,6 +939,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "ᱠᱷᱟᱹᱞᱤ ᱢᱟᱞᱤᱠ ᱜᱮ ᱵᱷᱩᱢᱤᱠᱟ ᱥᱠᱚᱯ ᱪᱟᱞᱟᱣ ᱫᱟᱲᱮᱭᱟᱜᱼᱟᱭ᱾",
   "Only the owner can review payments and refunds.":
     "ᱮᱠᱮᱱ ᱢᱟᱞᱤᱠ ᱜᱮ ᱯᱮᱭᱢᱮᱱᱴ ᱟᱨ ᱯᱩᱭᱥᱟᱹ ᱨᱩᱣᱟᱹᱲ ᱧᱮᱞ ᱫᱟᱲᱮᱭᱟᱜᱼᱟᱭ᱾",
+  "Open help assistant": "ᱜᱚᱲᱚ ᱜᱚᱲᱚᱭᱤᱡ ᱡᱷᱤᱡᱽ ᱢᱮ",
   "Open navigation": "ᱱᱮᱵᱷᱤᱜᱮᱥᱚᱱ ᱡᱷᱤᱡᱽ ᱢᱮ",
   Optional: "ᱚᱯᱥᱚᱱᱟᱞ ᱯᱚᱥᱴ",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1194,6 +1217,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "ᱥᱟᱧᱪᱟᱣ...",
   "Say how often you will write and that unsubscribing is easy.":
     "ᱢᱮᱱ ᱢᱮ ᱟᱢ ᱛᱤᱱᱟᱹᱜ ᱡᱷᱚᱜ ᱮᱢ ᱚᱞᱟ ᱟᱨ ᱚᱱᱟ ᱵᱟᱝ ᱥᱟᱵᱽᱥᱠᱨᱟᱭᱤᱵᱷ ᱫᱚ ᱟᱞᱜᱟ ᱜᱮᱭᱟ᱾",
+  Scope: "ᱡᱟᱭᱜᱟ",
   "Scope Management": "ᱥᱠᱚᱯ ᱢᱮᱱᱮᱡᱽᱢᱮᱱᱴ",
   "Scopes unavailable": "ᱥᱠᱚᱯ ᱵᱟᱝ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ",
   "Search archive": "ᱥᱮᱸᱫᱽᱨᱟ ᱟᱨᱠᱟᱭᱤᱵᱷ",
@@ -1260,6 +1284,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ᱵᱟᱪᱷᱟᱣ ᱛᱷᱟᱨ ᱠᱚ ᱫᱚ ᱨᱟᱠᱷᱟ ᱥᱴᱚᱠ ᱨᱮ ᱯᱷᱟᱨᱪᱟᱜᱼᱟ, ᱨᱟᱠᱷᱟ, ᱞᱟᱲᱦᱟᱭ ᱱᱟᱜᱟᱢ ᱟᱨ ᱚᱰᱤᱴ ᱞᱚᱜᱽ ᱨᱟᱠᱷᱟ ᱛᱩᱞᱩᱡ ᱥᱴᱚᱠ ᱥᱩᱱ ᱧᱟᱢᱚᱜᱼᱟ᱾",
   "Selected users will be removed from the users list and signed out.":
     "ᱵᱟᱪᱷᱟᱣ ᱵᱮᱵᱷᱟᱨᱤᱭᱟᱹ ᱠᱚ ᱵᱮᱵᱷᱟᱨᱤᱭᱟᱹ ᱠᱚᱣᱟᱜ ᱛᱟᱞᱠᱟ ᱠᱷᱚᱱ ᱚᱪᱚᱜ ᱠᱚᱜᱼᱟ ᱟᱨ ᱥᱟᱭᱤᱱ ᱟᱣᱩᱴ ᱠᱚ ᱦᱩᱭᱩᱜᱼᱟ.",
+  Send: "ᱠᱩᱞ",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "ᱱᱩᱭ ᱵᱮᱵᱷᱟᱨᱤᱭᱟᱹ ᱴᱷᱮᱱ ᱢᱤᱫ ᱨᱟᱠᱷᱟ ᱯᱟᱥᱣᱟᱨᱰ ᱨᱤᱥᱮᱴ ᱞᱤᱝᱠ ᱵᱷᱮᱡᱟᱭ ᱢᱮ ᱾ ᱩᱱᱠᱩ ᱮᱰᱢᱤᱱ ᱨᱤᱥᱮᱴ ᱥᱟᱦᱴᱟ ᱠᱷᱚᱱ ᱟᱠᱚᱣᱟᱜ ᱱᱟᱶᱟ ᱯᱟᱥᱣᱟᱨᱰ ᱠᱚ ᱥᱮᱴ ᱟ ᱾",
   "Send back to draft": "ᱰᱨᱟᱯᱷᱴ ᱨᱮ ᱨᱩᱣᱟᱹᱲ ᱵᱷᱮᱡᱟᱭ ᱢᱮ",
@@ -1332,6 +1357,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "ᱥᱱᱤᱯᱮᱴ",
   "Sold out": "ᱟᱠᱷᱨᱤᱱ ᱪᱟᱵᱟᱹ",
   Somali: "ᱥᱳᱢᱟᱞᱤ",
+  "space separated, e.g. product publish visibility": "ᱥᱯᱮᱥ ᱵᱷᱮᱜᱟᱨ, ᱮ.ᱥ. ᱯᱨᱚᱰᱟᱠᱴ ᱯᱟᱹᱨᱥᱟᱞ ᱧᱮᱞᱚᱜ",
   "Spanish (Español)": "ᱥᱯᱮᱱᱤᱥ (ᱮᱥᱯᱟᱱᱚᱞ)",
   "Sprouted ragi flour": "ᱵᱷᱩᱜᱟᱹᱜ ᱨᱟᱜᱤ ᱟᱴᱟ",
   "SQL Tables": "SQL ᱴᱮᱵᱩᱞ ᱠᱚ",
@@ -1344,6 +1370,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "ᱫᱟᱲᱮ (ᱢᱤᱫ ᱞᱟᱭᱤᱱ)",
   "Stock Status": "ᱥᱴᱚᱠ ᱥᱴᱟᱴᱟᱥ",
   "Store credit": "ᱥᱴᱚᱨ ᱠᱨᱮᱰᱤᱴ",
+  Storefront: "ᱥᱴᱚᱨᱯᱷᱨᱚᱱᱴ",
+  "Storefront bot": "ᱥᱴᱚᱨᱯᱷᱨᱚᱱᱴ ᱵᱚᱴ",
   "Storefront switches": "ᱥᱴᱚᱨᱯᱷᱨᱚᱱᱴ ᱥᱣᱤᱪ",
   "Storefront switches unavailable": "ᱥᱴᱚᱨᱯᱷᱨᱚᱱᱴ ᱥᱣᱤᱪ ᱵᱟᱝ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ",
   "Strong border": "ᱠᱮᱴᱮᱡ ᱥᱤᱢᱟᱹ",
@@ -1381,9 +1409,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "ᱪᱮᱛᱟᱱ ᱨᱮ ᱵᱮᱱᱟᱨ",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "ᱵᱮᱱᱟᱨ, ᱛᱷᱚᱠ ᱛᱷᱟᱨ, ᱯᱨᱚᱰᱟᱠᱴ ᱛᱷᱟᱨ ᱟᱨ ᱮᱥᱤᱭᱳ ᱯᱷᱤᱞᱰ ᱢᱤᱫ ᱥᱟᱶᱛᱮ ᱥᱟᱧᱪᱟᱣ ᱢᱮ᱾ ᱛᱷᱚᱠ ᱴᱤᱠᱵᱚᱠᱥ, ᱚᱨᱰᱟᱨᱤᱝ ᱟᱨ ᱠᱟᱥᱴᱚᱢ ᱛᱷᱚᱠ ᱠᱚᱯᱤ ᱟᱠᱚ ᱛᱮ ᱥᱟᱧᱪᱟᱣ ᱛᱟᱦᱮᱱᱟ, ᱡᱮᱞᱠᱟ ᱟᱢ ᱚᱱᱟ ᱠᱚᱢ ᱵᱚᱫᱚᱞᱟ᱾",
+  "The chat widget customers and visitors see on the storefront.":
+    "ᱪᱟᱴ ᱣᱤᱡᱮᱴ ᱜᱚᱨᱦᱟᱠ ᱟᱨ ᱦᱤᱡᱩᱜ ᱠᱚ ᱥᱴᱚᱨᱯᱷᱨᱚᱱᱴ ᱨᱮᱠᱚ ᱧᱮᱞᱟ᱾",
   "The classic credential pair, including the password-reset flow.":
     "ᱠᱞᱟᱥᱤᱠ ᱠᱨᱮᱰᱮᱱᱥᱤᱭᱟᱞ ᱡᱚᱲ, ᱯᱟᱥᱣᱟᱨᱰ-ᱨᱤᱥᱮᱴ ᱯᱷᱞᱳ ᱥᱟᱶᱛᱮ᱾",
   "the farm owner": "ᱵᱟᱹᱫᱽ ᱢᱟᱞᱤᱠ",
+  "The floating Help Assistant staff see on every admin page.":
+    "ᱞᱟᱹᱣᱠᱟᱹ ᱜᱚᱲᱚ ᱜᱚᱲᱚᱭᱤᱡ ᱠᱟᱹᱢᱤᱭᱟᱹ ᱥᱟᱱᱟᱢ ᱮᱰᱢᱤᱱ ᱥᱟᱦᱴᱟ ᱨᱮᱠᱚ ᱧᱮᱞᱟ᱾",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'ᱵᱚᱦᱚᱜ ᱟᱨ ᱯᱷᱩᱴᱟᱨ ᱞᱤᱝᱠ ᱞᱮᱵᱮᱞ ᱥᱟᱱᱟᱢ ᱥᱟᱦᱴᱟ ᱨᱮ ᱩᱫᱩᱜᱚᱜ ᱠᱟᱱᱟ, ᱯᱟᱹᱨᱥᱤ ᱞᱮᱠᱟᱛᱮ ᱛᱚᱨᱡᱚᱢᱟ (ᱢᱟᱭᱜᱽᱨᱮᱥᱚᱱ ᱐᱐᱖᱘)᱾ ᱢᱤᱫ ᱞᱚᱠᱮᱞ ᱠᱷᱟᱹᱞᱤ ᱵᱟᱹᱜᱤ ᱠᱟᱛᱮ ᱫᱚᱠᱟᱱ ᱥᱟᱢᱟᱝ ᱨᱮ ᱤᱝᱞᱤᱥ ᱛᱮ ᱨᱩᱣᱟᱹᱲᱚᱜ ᱠᱟᱱᱟ ᱾ ᱱᱚᱶᱟ ᱫᱚ ᱚᱱᱟ ᱠᱚᱱᱴᱨᱚᱞ ᱠᱟᱱᱟ ᱡᱟᱦᱟᱸ ᱫᱚ ᱤᱝᱞᱤᱥ ᱨᱮ "Shop" / "Seasonal" ᱩᱫᱩᱜ ᱢᱤᱫ ᱦᱮᱰᱟᱨ ᱴᱷᱤᱠ ᱮᱫᱟ ᱡᱚᱠᱷᱚᱱ ᱚᱱᱟ ᱟᱲᱮ ᱟᱲᱮ ᱨᱮ ᱡᱚᱛᱚ ᱜᱮ ᱯᱟᱹᱨᱥᱤ ᱵᱚᱫᱚᱞ ᱟᱠᱟᱱᱟ — ᱚᱱᱟ ᱞᱮᱵᱮᱞ ᱫᱚ ᱱᱚᱸᱰᱮ ᱠᱷᱚᱱ ᱦᱤᱡᱩᱜ ᱠᱟᱱᱟ, ᱪᱮᱛᱟᱱ ᱨᱮ ᱥᱟᱦᱴᱟ ᱡᱤᱱᱤᱥ ᱛᱟᱨᱡᱟᱣ ᱠᱷᱚᱱ ᱫᱚ ᱵᱟᱝ᱾',
   "The homepage has no sections": "ᱚᱲᱟᱜ ᱥᱟᱦᱴᱟ ᱨᱮ ᱪᱮᱫ ᱦᱚᱸ ᱛᱷᱚᱠ ᱵᱟᱹᱱᱩᱜᱼᱟ",
@@ -1412,6 +1444,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "ᱱᱚᱶᱟ ᱨᱚᱝ ᱠᱚ ᱫᱚ ᱞᱟᱛᱟᱨ ᱨᱮ ᱢᱮᱱᱟᱜ ᱥᱟᱦᱴᱟ ᱨᱮᱦᱚᱸ ᱞᱟᱹᱜᱩᱜᱼᱟ",
   "These roles define the permission sets available when inviting or editing users.":
     "ᱱᱚᱶᱟ ᱵᱷᱩᱢᱤᱠᱟ ᱠᱚ ᱫᱚ ᱵᱮᱵᱚᱦᱟᱨᱤᱭᱟᱹ ᱠᱚ ᱱᱮᱣᱛᱟ ᱟᱨ ᱥᱟᱥᱟᱯᱲᱟᱣ ᱚᱠᱛᱚ ᱨᱮ ᱢᱮᱱᱟᱜ ᱟᱹᱭᱫᱟᱹᱨ ᱥᱮᱴ ᱠᱚ ᱩᱯᱨᱩᱢ ᱟ ᱾",
+  "Thinking…": "ᱩᱭᱦᱟᱹᱨ...",
   "This application is": "ᱱᱚᱣᱟ ᱮᱯᱞᱤᱠᱮᱥᱚᱱ ᱫᱚ",
   "This order is in a final state.": "ᱱᱚᱣᱟ ᱚᱰᱟᱨ ᱫᱚ ᱢᱩᱪᱟᱹᱫ ᱚᱵᱚᱥᱛᱟ ᱨᱮ ᱢᱮᱱᱟᱜᱼᱟ ᱾",
   "This page contains sensitive application diagnostics.":
@@ -1533,6 +1566,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "ᱵᱚᱫᱚᱞ ᱪᱮᱫᱟᱜ ᱞᱟᱹᱠᱛᱤᱜ ᱠᱟᱱᱟ, ᱟᱨ ᱵᱟᱝ ᱱᱚᱣᱟ ᱪᱮᱫᱟᱜ ᱵᱟᱝ ᱦᱩᱭ ᱞᱮᱱᱟ?",
   "Why is stock changing?": "ᱥᱴᱚᱠ ᱪᱮᱫᱟᱜ ᱵᱚᱫᱚᱞᱚᱜ ᱠᱟᱱᱟ?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "ᱟᱹᱲᱟᱹ ᱠᱚ ᱵᱚᱴ ᱢᱤᱫ ᱠᱩᱠᱞᱤ ᱥᱟᱶ ᱢᱤᱞᱟᱹᱣ ᱠᱟᱛᱮ ᱴᱷᱟᱹᱣᱠᱟᱹ ᱞᱟᱹᱜᱤᱫ ᱱᱚᱣᱟ ᱵᱚᱞᱚᱱ ᱫᱚ ᱡᱚᱲᱟᱱᱟᱜ ᱜᱮᱭᱟ᱾",
   "Working...": "ᱠᱟᱹᱢᱤ ᱠᱟᱱᱟ…",
   "World languages": "ᱫᱷᱟᱹᱨᱛᱤ ᱨᱮᱭᱟᱜ ᱯᱟᱹᱨᱥᱤ ᱠᱚ",
   "Write a message…": "ᱢᱤᱫ ᱠᱷᱚᱵᱚᱨ ᱚᱞ ᱢᱮ…",

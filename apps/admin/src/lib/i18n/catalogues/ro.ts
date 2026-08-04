@@ -78,12 +78,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Adăugați o categorie",
   "Add code": "Adăugați codul",
   "Add country": "Adăugați țara",
+  "Add entry": "Adăugați o intrare",
   "Add farm owner": "Adăugați proprietarul fermei",
   "Add ingredient": "Adăugați ingredient",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Adăugați articole (care variante, câte din fiecare) după crearea pachetului, din Gestionare.",
+  "Add knowledge entry": "Adăugați o intrare de cunoștințe",
   "Add one above to get started.": "Adăugați unul mai sus pentru a începe.",
   "Add one below to get started.": "Adăugați unul mai jos pentru a începe.",
+  "Add one so the bot has something to reference for this scope.":
+    "Adăugați una, astfel încât botul să aibă ceva de referință pentru acest domeniu.",
   "Add page": "Adăugați o pagină",
   "Add participants": "Adăugați participanți",
   "Add role": "Adăugați un rol",
@@ -102,9 +106,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     'Ajustați un produs. id="t0006">Ajustări restricționate',
   "Adjustment %": "% de ajustare",
   "Adjustments restricted": "Ajustări restricționate",
+  Admin: "Administrator",
   "Admin API is unavailable": "API-ul de administrare este indisponibil",
   "Admin Logs": "Jurnale de administrare",
   "Admin navigation": "Navigarea de administrator",
+  "Admin panel bot": "Bot panou de administrare",
   "After refunds, all farms": "După rambursări, toate fermele",
   Albanian: 'All status="t0017">18" tipuri',
   All: "Toate",
@@ -164,6 +170,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Elementele arhivate vor apărea aici.",
   "Article not found": "Articol nu a fost găsit",
   "Asha Rao": "Role",
+  "Ask a question…": "Pune o întrebare...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Întrebați cum să faceți ceva în panoul de administrare sau întrebați despre comenzile în așteptare, despre articolele cu stoc redus sau despre starea unei comenzi.",
   "Assamese (অসমীয়া)": "Assameză (অসমীয়া)",
   "Assigned roles": 'Assameză id="t0010">Atribuire',
   Attribution: "Atribuire",
@@ -171,6 +180,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Autor",
   "Auto-translate": "Traducere automată",
   "Auto-translate all": "Rezervată la",
+  Availability: "Disponibilitate",
   Available: "Disponibil",
   "available · reorder at": "disponibil · reordonați la",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -212,6 +222,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Textul corporal",
   Bosnian: "Bosniacă",
   Brand: "Marcă",
+  "Built-in": "Încorporată",
   "Bulgarian (Български)": "Bulgară (Български)",
   Bundle: "Pachet",
   "bundle price · items priced at": "prețul pachetului · articole la prețul de",
@@ -261,6 +272,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Se șterge...",
   "Click link": "Faceți clic pe link",
   Close: "Închideți",
+  "Close help assistant": "Închideți asistentul de ajutor",
   "Close navigation": "Închideți navigarea",
   "CMS pages": "Pagini CMS",
   "CMS pages & SEO": "Pagini CMS și SEO",
@@ -294,6 +306,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Continuați cu Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Controlați ce poate vizualiza, crea, edita, publica sau gestiona fiecare rol.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Controlați dacă fiecare bot este disponibil și editați ceea ce știe.",
   "Cook minutes": "Cook minute",
   "Copy inside dark bands.": "Copiați în benzi întunecate.",
   Correction: "Corectare",
@@ -362,9 +376,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Șterge",
   "Delete (spam)": "Șterge (spam)",
   "Delete category": "Ștergeți categoria",
+  "Delete entry": "Ștergeți intrarea",
   "Delete farm": "Ștergeți ferma",
   "Delete image": "Ștergeți imaginea",
   "Delete inventory row": "Ștergeți rândul de inventar",
+  "Delete knowledge entry?": "Ștergeți intrarea de cunoștințe?",
   "Delete permanently": "Ștergeți definitiv",
   "Delete product": "Ștergeți produsul",
   "Delete role": "Ștergeți rolul",
@@ -412,7 +428,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Editați metadatele paginii CMS, indexarea și blocurile de pagini brute. Înregistrarea paginii de pornire este listată și aici, dar Setările paginii de pornire sunt modalitatea mai sigură de a o modifica — acest editor preia JSON brut.",
   "Edit content": "Editați conținut",
+  "Edit entry": "Editați intrarea",
   "Edit farm": "Editați ferma",
+  "Edit knowledge entry": "Editați intrarea de cunoștințe",
   "Edit media": "Editați media",
   "Edit review": "Editați recenzia",
   "Edit role": "Editați rolul",
@@ -523,6 +541,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Titturi și copiere.",
   Headline: "Titlu",
   "Hebrew (עברית)": "Ebraică (עברית)",
+  "Help assistant": "Asistentul de ajutor",
+  "Help Assistant": "Asistentul de ajutor",
   "Hero description": "Descrierea eroului",
   "Hero eyebrow": "Sprânceana erou",
   "Hero image alt text": "Textul alternativ al imaginii eroului",
@@ -595,6 +615,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "Kazah",
   "Keep artwork clean": "Păstrați opera de artă curată",
   "Keep typing to search…": "Continuați să tastați pentru a căuta...",
+  Keywords: "Cuvinte cheie",
   "Korean (한국어)": "coreeană (한국어)",
   Kyrgyz: "Kârgâză",
   Label: "Etichetă",
@@ -783,6 +804,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Fără index",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Niciun articol încă - adăugați cel puțin unul mai jos. Checkout aplică reducerea acestui pachet numai atunci când coșul conține fiecare articol aici, în cel puțin aceste cantități.",
+  "No knowledge entries": "Fără intrări de cunoștințe",
   "No line items recorded.": "Nu s-a înregistrat niciun element rând.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "nu mai modifică datele de conectare, așa că o parolă pe care o setați aici chiar o înlocuiește pe cea veche.",
@@ -866,6 +888,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Numai proprietarul poate gestiona domeniile rolului.",
   "Only the owner can review payments and refunds.":
     "Numai proprietarul poate revizui plățile și rambursările.",
+  "Open help assistant": "Deschideți asistentul de ajutor",
   "Open navigation": "Deschideți navigarea",
   Optional: "Opțional",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1141,6 +1164,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Se salvează...",
   "Say how often you will write and that unsubscribing is easy.":
     "Spuneți cât de des vă dezabonați este ușor să scrieți.",
+  Scope: "Domeniul de aplicare",
   "Scope Management": "Gestionarea domeniului de aplicare",
   "Scopes unavailable": "Scoperii de aplicare indisponibile",
   "Search archive": "Arhiva de căutare",
@@ -1209,6 +1233,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Rândurile selectate vor fi șterse din stocul rezervat, făcând disponibil stocul zero, păstrând în același timp rezervările, istoricul mișcărilor și jurnalele de audit.",
   "Selected users will be removed from the users list and signed out.":
     "Utilizatorii selectați vor fi eliminați din lista de utilizatori și deconectați.",
+  Send: "Trimiteți",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Trimiteți un link sigur de resetare a parolei acestui utilizator. Își vor seta noua parolă din pagina de resetare a administratorului.",
   "Send back to draft": "Trimite înapoi la schiță",
@@ -1279,6 +1304,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Fragment",
   "Sold out": "Epuizat",
   Somali: "Somalez",
+  "space separated, e.g. product publish visibility":
+    "spațiu separat, de ex. Vizibilitatea publicării produsului",
   "Spanish (Español)": "Spaniolă (Español)",
   "Sprouted ragi flour": "Făină de ragi încolțit",
   "SQL Tables": "Tabelele SQL",
@@ -1324,9 +1351,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Banerul din partea de sus a",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Bannerul, rândul de categorie, rândul de produse și câmpurile SEO se salvează împreună. Casetele de bifare a secțiunilor, comanda și copierea secțiunilor personalizate se salvează singure, pe măsură ce le modificați.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Widgetul de chat pe care clienții și vizitatorii îl văd în vitrină.",
   "The classic credential pair, including the password-reset flow.":
     "Perechea clasică de acreditări, inclusiv fluxul de resetare a parolei.",
   "the farm owner": "proprietarul fermei",
+  "The floating Help Assistant staff see on every admin page.":
+    "Personalul Asistentului de Ajutor plutitor vede pe fiecare pagină de administrare.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "Linkul antet și subsol etichetează fiecare pagină pe limbă6 (translație 006). O locație lăsată necompletată revine la engleză pe vitrina magazinului. Acesta este același control care remediază un antet care afișează „Magazin” / „Sezonar” în engleză, în timp ce tot ce este în jurul lui a schimbat limba — acele etichete provin de aici, nu din traducerile conținutului paginii de mai sus.",
   "The homepage has no sections": "Pagina de pornire nu are secțiuni",
@@ -1356,6 +1387,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Aceste culori se aplică și paginilor de dedesubt",
   "These roles define the permission sets available when inviting or editing users.":
     "Aceste roluri definesc seturile de permisiuni disponibile la invitarea sau editarea utilizatorilor.",
+  "Thinking…": "Gândire...",
   "This application is": "Această aplicație este",
   "This order is in a final state.": "Această comandă este într-o stare finală.",
   "This page contains sensitive application diagnostics.":
@@ -1473,6 +1505,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "De ce sunt necesare modificări sau de ce a fost refuzat?",
   "Why is stock changing?": "De ce se modifică stocul?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Cuvintele pe care botul le potrivește cu o întrebare pentru a decide că această intrare este relevantă.",
   "Working...": "Funcționează...",
   "World languages": "Limbi ale lumii",
   "Write a message…": "Scrieți un mesaj...",

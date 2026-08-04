@@ -85,16 +85,6 @@ class ChatRoomDO(DurableObject):
         return Response(None, status=101, web_socket=client)
 
     async def webSocketMessage(self, ws: Any, message: Any) -> None:  # noqa: N802 -- runtime hook name
-        try:
-            await self._handle_message(ws, message)
-        except Exception:  # TEMPORARY: remove once verified live
-            import traceback
-
-            detail = traceback.format_exc()
-            print(f"chat webSocketMessage crashed: {detail}")
-            ws.send(json.dumps({"type": "error", "detail": detail}))
-
-    async def _handle_message(self, ws: Any, message: Any) -> None:
         user_id = ws.deserializeAttachment()
         conversation_id = await self.ctx.storage.get(_CONVERSATION_ID_KEY)
         if not user_id or not conversation_id:

@@ -22,7 +22,7 @@ const RAW_EN_MESSAGES = {
   "literal.87df31bb89b3": "— sign in from the account menu to set up recurring delivery of",
   "literal.f8d63a1ae7e2": "· next delivery {date}",
   "literal.5008d289f2f0": "· Verified purchase",
-  "literal.1d0f611c682b": '" applied —',
+  "literal.1d0f611c682b": "\" applied —",
   "literal.190522f61cbe": "{author} · {minutes} min read",
   "literal.c7ec4c2f1a11": "{count} ingredients added.",
   "literal.961d5eb108a8": "{count} item",
@@ -38,8 +38,7 @@ const RAW_EN_MESSAGES = {
   "literal.55a2c6067edc": "A curated set of True Grit products",
   "literal.0f9d1e311da2": "A discussion in the True Grit community.",
   "literal.cb526015f76e": "A market for food with a known origin.",
-  "literal.a2b8fa3d5027":
-    "A product you would like us to carry, a feature you wish the site had, or anything else that would make True Grit better — we read every one of these ourselves.",
+  "literal.a2b8fa3d5027": "A product you would like us to carry, a feature you wish the site had, or anything else that would make True Grit better — we read every one of these ourselves.",
   "literal.6b21fb791ac0": "About",
   "literal.36abf3a18e2c": "About True Grit",
   "literal.85dfa32c97d8": "Account",
@@ -66,11 +65,13 @@ const RAW_EN_MESSAGES = {
   "literal.d929c5d549ee": "are approximate. Your payment is charged as",
   "literal.61d813d7f23b": "Area / landmark",
   "literal.d385ae7ac87e": "Arrived damaged",
+  "literal.05665c93f216": "Ask a question…",
   "literal.1951c104f9fa": "Ask about a product",
-  "literal.faf6955e7661":
-    "Ask questions, swap tips, and talk to other members of the True Grit community.",
-  "literal.942dae9adda3":
-    "Ask specific questions, compare what worked and leave enough detail for the next person to act on.",
+  "literal.1aded95423be": "Ask about products, shipping, returns, or how True Grit works.",
+  "literal.2fdc0288d97d": "Ask about products, shipping, returns, or the status of your order.",
+  "literal.faf6955e7661": "Ask questions, swap tips, and talk to other members of the True Grit community.",
+  "literal.942dae9adda3": "Ask specific questions, compare what worked and leave enough detail for the next person to act on.",
+  "literal.2cfaa6da9c4f": "Ask us anything",
   "literal.a80bbcd66945": "at checkout.",
   "literal.41addac0f1cd": "At least 10 characters",
   "literal.78784b383501": "at today's rate.",
@@ -78,8 +79,7 @@ const RAW_EN_MESSAGES = {
   "literal.60f722ded223": "AUD",
   "literal.9ae844e7e6c7": "Authorised",
   "literal.d38f9ea315d0": "Available only up to",
-  "literal.6a20cb692dbf":
-    "Available when a product arrives damaged, missing, incorrect or visibly below the published quality standard.",
+  "literal.6a20cb692dbf": "Available when a product arrives damaged, missing, incorrect or visibly below the published quality standard.",
   "literal.b4257ded32e4": "Awaiting moderation",
   "literal.5c53da3e9181": "Back home",
   "literal.95e4af0df042": "Back to basket",
@@ -89,8 +89,7 @@ const RAW_EN_MESSAGES = {
   "literal.fc8db27ef10c": "Back to recipes",
   "literal.ac4930ee56df": "Back to the blog",
   "literal.9a3c96a431dd": "Back to the market",
-  "literal.bb84d58b6942":
-    "Based on your region — you can change it any time from the language button above.",
+  "literal.bb84d58b6942": "Based on your region — you can change it any time from the language button above.",
   "literal.65fcf2c8e04f": "BDT",
   "literal.038a6d4e5ba3": "Being picked and packed at the farm hub.",
   "literal.eff3b3bea7e6": "Best sellers in {category}",
@@ -105,11 +104,9 @@ const RAW_EN_MESSAGES = {
   "literal.5fb5e1bbc09c": "Browse all products",
   "literal.58660badde48": "Browse bundles",
   "literal.90b4dc4a0d43": "Browse by harvest type",
-  "literal.b6160c52a6cb":
-    "Browse certified produce, pantry staples and seasonal harvests from verified farms.",
+  "literal.b6160c52a6cb": "Browse certified produce, pantry staples and seasonal harvests from verified farms.",
   "literal.da4c14eb8153": "Browse recipes",
-  "literal.f80a1c473f5a":
-    "Browse the blog for field notes, harvest timing and ingredient ideas tied to the current market.",
+  "literal.f80a1c473f5a": "Browse the blog for field notes, harvest timing and ingredient ideas tied to the current market.",
   "literal.3ea341b44add": "Browse the full market",
   "literal.3678876fd486": "Built around",
   "literal.43917a256c11": "Bundle price",
@@ -137,8 +134,8 @@ const RAW_EN_MESSAGES = {
   "literal.3ac8e9e58c5a": "Checkout",
   "literal.94c8d71db50f": "CHF",
   "literal.4271627f4f0b": "City",
-  "literal.20010c3fde52":
-    "Clear methods, realistic timings and flexible ways to cook what is in season.",
+  "literal.20010c3fde52": "Clear methods, realistic timings and flexible ways to cook what is in season.",
+  "literal.bbfa773e5a63": "Close",
   "literal.56b189be7ddd": "Close account panel",
   "literal.940323c22878": "Close categories",
   "literal.e3896a930398": "Close window",
@@ -146,8 +143,7 @@ const RAW_EN_MESSAGES = {
   "literal.380b7207a341": "Common help paths",
   "literal.bfd58ee3a270": "Community",
   "literal.ee084583c92d": "Community discussion",
-  "literal.66a58a3f17f4":
-    "Community members exchanging seeds and practical food notes around a table",
+  "literal.66a58a3f17f4": "Community members exchanging seeds and practical food notes around a table",
   "literal.54840b9b41e2": "Complete your order",
   "literal.ed3e47b903ac": "Complete your True Grit payment.",
   "literal.1798b3ba42ee": "Completed",
@@ -155,10 +151,8 @@ const RAW_EN_MESSAGES = {
   "literal.8cc7acb8f360": "Confirmed",
   "literal.b98e3f99c2ae": "Connecting...",
   "literal.2b658ffd9420": "Contact support",
-  "literal.f10db00bf203":
-    "Contact support as soon as possible. Changes are usually possible before picking, packing or harvest allocation starts.",
-  "literal.e9dfe5e249e6":
-    "Contact True Grit support by email for orders, farms, products and partnerships.",
+  "literal.f10db00bf203": "Contact support as soon as possible. Changes are usually possible before picking, packing or harvest allocation starts.",
+  "literal.e9dfe5e249e6": "Contact True Grit support by email for orders, farms, products and partnerships.",
   "literal.6cf272340942": "contact us",
   "literal.4832e45812a2": "Contact us",
   "literal.9a9cd1f1fe13": "Content and claims",
@@ -172,8 +166,7 @@ const RAW_EN_MESSAGES = {
   "literal.b227f5879bde": "Coupon code",
   "literal.aaf374479756": "Create account",
   "literal.baab5b8cbbc2": "Creating account…",
-  "literal.d62a58df78aa":
-    "Curated sets of market favourites at a set price — added to your basket together, in one click.",
+  "literal.d62a58df78aa": "Curated sets of market favourites at a set price — added to your basket together, in one click.",
   "literal.68ce4efceb7e": "Curated sets of market favourites, bought together at a set price.",
   "literal.349c135f2f55": "Current harvests",
   "literal.2ce2c48f1d19": "Customer account",
@@ -204,8 +197,7 @@ const RAW_EN_MESSAGES = {
   "literal.ff07201ae2e7": "Dispatched",
   "literal.41a45154c211": "DKK",
   "literal.5aa2a6954d76": "e.g. WELCOME15",
-  "literal.cd5df7101684":
-    "Each lot is tagged at the farm with its harvest or milling date. That tag follows the food through quality checks, packing and dispatch — so the box on your counter can tell you exactly where it began.",
+  "literal.cd5df7101684": "Each lot is tagged at the farm with its harvest or milling date. That tag follows the food through quality checks, packing and dispatch — so the box on your counter can tell you exactly where it began.",
   "literal.4c61a44f896d": "Edit & resubmit",
   "literal.9a5b8cc4be68": "Edit submission",
   "literal.0ad8581593c6": "Edit your submission",
@@ -218,58 +210,42 @@ const RAW_EN_MESSAGES = {
   "literal.705d8e0e5c4a": "Enter the code",
   "literal.f847e052ea78": "Every 2 weeks",
   "literal.1e7a3d8552bf": "Every account needs a verified number for delivery updates.",
-  "literal.c98273d9aa04":
-    "Every item goes into your basket at its own price; the bundle saving is applied at checkout once your basket holds the full set.",
+  "literal.c98273d9aa04": "Every item goes into your basket at its own price; the bundle saving is applied at checkout once your basket holds the full set.",
   "literal.7f3932f9cb96": "Every month",
-  "literal.e44ee1c0c8c5":
-    "Every partner farm holds a current NPOP or PGS-India certificate. We check the paperwork at onboarding, verify it with the issuing body, and re-check annually. Certificates and their validity windows are recorded against every product claim.",
-  "literal.a2913e2a5b63":
-    "Every product in the True Grit market — certified organic, traced to a verified farm.",
+  "literal.e44ee1c0c8c5": "Every partner farm holds a current NPOP or PGS-India certificate. We check the paperwork at onboarding, verify it with the issuing body, and re-check annually. Certificates and their validity windows are recorded against every product claim.",
+  "literal.a2913e2a5b63": "Every product in the True Grit market — certified organic, traced to a verified farm.",
   "literal.e305a839e38a": "Every published product in the market, newest first.",
   "literal.043058e2050c": "Every week",
-  "literal.d8142a1f5554":
-    "Evidence-led guidance on labels, storage, seasonal cooking and getting better value from every order.",
+  "literal.d8142a1f5554": "Evidence-led guidance on labels, storage, seasonal cooking and getting better value from every order.",
   "literal.1554628ad103": "Explore the market",
   "literal.9f194d76fe9c": "Explore the site",
   "literal.a4adec7fe60c": "Facebook sign-in is not configured.",
   "literal.09fef5d8d9a3": "Failed",
   "literal.95a347b954ff": "Fair partnerships",
   "literal.c3215b790917": "Farm",
-  "literal.78797843e6e3":
-    "Farm stories, certification references and traceability details are published for customer transparency. Do not copy site content or brand assets without permission.",
+  "literal.78797843e6e3": "Farm stories, certification references and traceability details are published for customer transparency. Do not copy site content or brand assets without permission.",
   "literal.6edd4302dfdc": "Farmed by {farmer}",
   "literal.ca9cc88e7cb6": "Farmers",
   "literal.3cd5fc466d9d": "Farms",
-  "literal.bda1c4b43d3a":
-    "Farms must hold a current NPOP or PGS-India certificate, agree to lot-level traceability, and work with seasonal availability rather than anonymous bulk supply. Pantry partners must press, mill or pack in small batches with dates shown plainly.",
-  "literal.c62c2967f9ec":
-    "Farms set their prices with us seasonally, before the harvest, and are paid on dispatch — not on our sell-through. Collectives like Anandvan share profits by contributed area.",
+  "literal.bda1c4b43d3a": "Farms must hold a current NPOP or PGS-India certificate, agree to lot-level traceability, and work with seasonal availability rather than anonymous bulk supply. Pantry partners must press, mill or pack in small batches with dates shown plainly.",
+  "literal.c62c2967f9ec": "Farms set their prices with us seasonally, before the harvest, and are paid on dispatch — not on our sell-through. Collectives like Anandvan share profits by contributed area.",
   "literal.32b1045d5cfa": "Fast answers for orders, delivery and product questions.",
   "literal.5234f11bdf7e": "First, verify your mobile",
   "literal.7384e7db2d84": "Fix an order issue",
-  "literal.1416b313e069":
-    "Flours, pulses and oils ship from current lots with milling, pressing or harvest dates visible on the pack.",
-  "literal.b0a81f22c61c":
-    "For delivery help, include your order reference, phone number and delivery city.",
-  "literal.2e2b05c73fd0":
-    "For order help, include your order reference. For farm or product questions, include the product name and city.",
-  "literal.e18a41e41b88":
-    "For return help, include the order reference, product name, delivery date and photos.",
+  "literal.1416b313e069": "Flours, pulses and oils ship from current lots with milling, pressing or harvest dates visible on the pack.",
+  "literal.b0a81f22c61c": "For delivery help, include your order reference, phone number and delivery city.",
+  "literal.2e2b05c73fd0": "For order help, include your order reference. For farm or product questions, include the product name and city.",
+  "literal.e18a41e41b88": "For return help, include the order reference, product name, delivery date and photos.",
   "literal.4c29f7f03358": "Forgot password?",
   "literal.75f527181b57": "Free",
   "literal.f313d52bc92a": "Frequently added",
   "literal.37d4fef3bbe1": "Frequently bought together",
-  "literal.64724410034b":
-    "Fresh and small-batch products can sell out or change with harvest conditions. If a confirmed order cannot be fulfilled, support will offer a replacement, refund or credit.",
-  "literal.024e0bbc2808":
-    "Fresh food is time-sensitive, so returns are handled through photos, batch details and a quick support review instead of asking you to ship produce back.",
+  "literal.64724410034b": "Fresh and small-batch products can sell out or change with harvest conditions. If a confirmed order cannot be fulfilled, support will offer a replacement, refund or credit.",
+  "literal.024e0bbc2808": "Fresh food is time-sensitive, so returns are handled through photos, batch details and a quick support review instead of asking you to ship produce back.",
   "literal.ae43d74ec066": "Fresh fruit",
-  "literal.10d88756fdeb":
-    "Fresh organic harvests and limited seasonal drops from True Grit's verified farm network.",
-  "literal.45de21d770ad":
-    "Fresh produce follows harvest calendars and ships in planned weekly cycles.",
-  "literal.85c8d2606382":
-    "Fresh produce ships on fixed dispatch days. Pantry goods usually leave the fulfilment centre within two working days, with cold-chain handling where needed.",
+  "literal.10d88756fdeb": "Fresh organic harvests and limited seasonal drops from True Grit's verified farm network.",
+  "literal.45de21d770ad": "Fresh produce follows harvest calendars and ships in planned weekly cycles.",
+  "literal.85c8d2606382": "Fresh produce ships on fixed dispatch days. Pantry goods usually leave the fulfilment centre within two working days, with cold-chain handling where needed.",
   "literal.38a4da7af005": "Fresh produce window",
   "literal.e1a5fa6fd5b5": "From our customers",
   "literal.e4b5620fa978": "From the farm to your door",
@@ -283,10 +259,8 @@ const RAW_EN_MESSAGES = {
   "literal.a09066301ab8": "Goes well with",
   "literal.79fc372dc790": "Good to know",
   "literal.e4628ceb88eb": "Google sign-in is not configured.",
-  "literal.71a6cee5d894":
-    "Got a recipe worth sharing? Pitch it to the community and our editors will review it.",
-  "literal.ddfbcf5040f4":
-    "Greens are cut early, chilled quickly and prioritised for short-route delivery slots.",
+  "literal.71a6cee5d894": "Got a recipe worth sharing? Pitch it to the community and our editors will review it.",
+  "literal.ddfbcf5040f4": "Greens are cut early, chilled quickly and prioritised for short-route delivery slots.",
   "literal.20f41fd9573c": "Handpicked",
   "literal.c192c2e5957c": "Harvest-led delivery, planned around freshness.",
   "literal.fd25edf497e5": "Harvest:",
@@ -301,15 +275,12 @@ const RAW_EN_MESSAGES = {
   "literal.f8551a6a36f3": "How orders move",
   "literal.96bd106a4007": "How seasonal works",
   "literal.0a584669f425": "How they grow",
-  "literal.1f4827ffb9f1":
-    "How True Grit collects, uses and protects customer account and order data.",
-  "literal.5359aab7479f":
-    "How True Grit packs, dispatches and delivers seasonal organic food orders.",
+  "literal.1f4827ffb9f1": "How True Grit collects, uses and protects customer account and order data.",
+  "literal.5359aab7479f": "How True Grit packs, dispatches and delivers seasonal organic food orders.",
   "literal.082ab95e8698": "How we choose partners",
   "literal.7f886aa82f1a": "How we use it",
   "literal.6d4d5c4453dc": "IDR",
-  "literal.b45cfbed2cde":
-    "If a delivery cannot be completed, support will contact you with the next available attempt or a practical resolution based on the product condition.",
+  "literal.b45cfbed2cde": "If a delivery cannot be completed, support will contact you with the next available attempt or a practical resolution based on the product condition.",
   "literal.3eca579e7087": "If that email has an account, a reset link is on its way.",
   "literal.e902b7895b9c": "If the food arrives wrong, damaged or below standard, we make it right.",
   "literal.b3bc8ac7a9ed": "ILS",
@@ -323,14 +294,12 @@ const RAW_EN_MESSAGES = {
   "literal.ca195d50ca27": "Information we collect",
   "literal.7ddfd264324f": "Ingredient",
   "literal.f9e84ee2ac46": "Ingredients",
-  "literal.67031441599f":
-    "Ingredients, steps, prep and cook time — our editors review every recipe before it goes live.",
+  "literal.67031441599f": "Ingredients, steps, prep and cook time — our editors review every recipe before it goes live.",
   "literal.47815d8df6c2": "INR",
   "literal.358b4da23894": "Interest: {product}",
   "literal.44f0ca4fdc20": "Interested in this product?",
   "literal.5e90598e3465": "is available to order again.",
-  "literal.e17f17fcd187":
-    "Issued to the original payment method when replacement is not practical or the product is unavailable.",
+  "literal.e17f17fcd187": "Issued to the original payment method when replacement is not practical or the product is unavailable.",
   "literal.b9f76d2edf21": "It may have been renamed, unpublished, or is not sold in your country.",
   "literal.ecdda59aea5e": "Item",
   "literal.ad548e15d400": "JPY",
@@ -339,8 +308,7 @@ const RAW_EN_MESSAGES = {
   "literal.3fd24a9ebefa": "KRW",
   "literal.12fabc913ae6": "KWD",
   "literal.38b4423360da": "Leafy produce",
-  "literal.9a9d8951bf2e":
-    "Let us know how much {product} you would like and where it would be delivered.",
+  "literal.9a9d8951bf2e": "Let us know how much {product} you would like and where it would be delivered.",
   "literal.9bfa006e90f8": "LKR",
   "literal.8f26c6520d61": "Loading",
   "literal.861a52ad3ebe": "Loading discussions…",
@@ -375,11 +343,9 @@ const RAW_EN_MESSAGES = {
   "literal.196c552a13b0": "No password needed — we'll text you a code.",
   "literal.8d9185d6f499": "No resends left",
   "literal.2a5f91d1c5f1": "No results for “",
-  "literal.09ac60a30137":
-    "No reviews yet. Reviews appear here once a verified purchaser writes one from their order.",
+  "literal.09ac60a30137": "No reviews yet. Reviews appear here once a verified purchaser writes one from their order.",
   "literal.2e10e6dedc2f": "No submissions yet.",
-  "literal.a3db991383c6":
-    'No subscriptions yet. Look for "Subscribe & Save" on a product page to set up recurring delivery.',
+  "literal.a3db991383c6": "No subscriptions yet. Look for \"Subscribe & Save\" on a product page to set up recurring delivery.",
   "literal.e881c357a62a": "NOK",
   "literal.a56516589a39": "Not added",
   "literal.71cf7967bc26": "Not as described",
@@ -391,16 +357,14 @@ const RAW_EN_MESSAGES = {
   "literal.4008163b8c0d": "Not published",
   "literal.45240f7ab769": "Not required",
   "literal.83423c198b60": "Note:",
-  "literal.9296f0d03200":
-    "Nothing has been cleared. When ordering reopens, everything you picked will still be here.",
+  "literal.9296f0d03200": "Nothing has been cleared. When ordering reopens, everything you picked will still be here.",
   "literal.66e6e116b6e4": "Nothing here right now",
   "literal.5ccf1ea182bf": "Nothing in the basket yet",
   "literal.64ad1a74b381": "Nothing to edit right now",
   "literal.e09e1a1c17cd": "NPR",
   "literal.2f760d1357f5": "NZD",
   "literal.08a914cde050": "O",
-  "literal.cf742a19e4bb":
-    "Offered when you prefer to apply the resolution to the next seasonal drop.",
+  "literal.cf742a19e4bb": "Offered when you prefer to apply the resolution to the next seasonal drop.",
   "literal.afb75a62048a": "OMR",
   "literal.0c67598543c7": "On its way to your address.",
   "literal.b0fb11827cde": "One moment.",
@@ -408,18 +372,13 @@ const RAW_EN_MESSAGES = {
   "literal.db17a329d4f5": "Open account",
   "literal.96168457f8af": "Open discussions",
   "literal.7a1824733927": "Open discussions with the True Grit community.",
-  "literal.b7010e8f0d32":
-    "Open the account menu in the header to sign in with Google or your email and password. Your basket is saved on this device in the meantime.",
-  "literal.dc4ffe9a8206":
-    "Open the account menu to sign in or create an account, then come back here to submit your post.",
-  "literal.10eb82c761a3":
-    "Open the account menu to sign in or create an account, then come back here to submit your recipe.",
-  "literal.1c1cb7dbe1a5":
-    "Open the account menu to sign in, then come back here to start a discussion.",
+  "literal.b7010e8f0d32": "Open the account menu in the header to sign in with Google or your email and password. Your basket is saved on this device in the meantime.",
+  "literal.dc4ffe9a8206": "Open the account menu to sign in or create an account, then come back here to submit your post.",
+  "literal.10eb82c761a3": "Open the account menu to sign in or create an account, then come back here to submit your recipe.",
+  "literal.1c1cb7dbe1a5": "Open the account menu to sign in, then come back here to start a discussion.",
   "literal.960dc0f6b8ea": "Opening Razorpay",
   "literal.1d75774c0f96": "Order",
-  "literal.90bfc5f95d6c":
-    "Order and audit records are kept for operational, tax and safety reasons. Contact messages and inactive account data are reviewed periodically.",
+  "literal.90bfc5f95d6c": "Order and audit records are kept for operational, tax and safety reasons. Contact messages and inactive account data are reviewed periodically.",
   "literal.707a5aed7daf": "Order details and delivery progress.",
   "literal.a0b57f55fd95": "Order enquiry",
   "literal.efe1ba782677": "Order history",
@@ -428,15 +387,11 @@ const RAW_EN_MESSAGES = {
   "literal.bb5d68da368f": "Order placed",
   "literal.728e48af0680": "Order receipt",
   "literal.db14f4987e96": "Order summary",
-  "literal.586db888240f":
-    "Order, delivery and product questions are handled through a traceable support flow.",
+  "literal.586db888240f": "Order, delivery and product questions are handled through a traceable support flow.",
   "literal.a3ad919aa1bf": "Ordering is paused",
-  "literal.ec02acf0f5a1":
-    "Orders are packed by product type: ventilated crates for fruit, chilled handling for delicate greens, and protective sleeves for glass bottles.",
-  "literal.6fedc7deb7a3":
-    "Organic food should not depend on vague claims. Every product in the market is tied to a verified farm, certification record, harvest or processing date, and a clear route to the customer.",
-  "literal.78bc7c07c773":
-    "Organic growers and farming collectives: apply to supply the True Grit marketplace.",
+  "literal.ec02acf0f5a1": "Orders are packed by product type: ventilated crates for fruit, chilled handling for delicate greens, and protective sleeves for glass bottles.",
+  "literal.6fedc7deb7a3": "Organic food should not depend on vague claims. Every product in the market is tied to a verified farm, certification record, harvest or processing date, and a clear route to the customer.",
+  "literal.78bc7c07c773": "Organic growers and farming collectives: apply to supply the True Grit marketplace.",
   "literal.e03d7f8858fa": "Our operating rules",
   "literal.4eea25e7eb3a": "Our standards",
   "literal.111fb9979890": "Out for delivery",
@@ -460,20 +415,17 @@ const RAW_EN_MESSAGES = {
   "literal.58293560f293": "Pay with PayPal",
   "literal.66cb9be8c307": "Paying from outside India? Charged in",
   "literal.bbfbb106b679": "Payment complete",
-  "literal.e1d834dc00bd":
-    "Payment details are handled by the configured payment provider. True Grit stores payment status and references, not full card numbers.",
+  "literal.e1d834dc00bd": "Payment details are handled by the configured payment provider. True Grit stores payment status and references, not full card numbers.",
   "literal.0e55fb3b04e2": "Payment method",
   "literal.a03812d9d12d": "Payment needs attention",
   "literal.e755c83b34c1": "Payment settled and order accepted.",
   "literal.23b05ae099a5": "Payment:",
   "literal.44357ae55a21": "Payments",
   "literal.0f51ba88d982": "Payments are processed by PayPal. True Grit never stores card details.",
-  "literal.669512a4c64d":
-    "Payments are processed by Razorpay. True Grit never stores card details.",
+  "literal.669512a4c64d": "Payments are processed by Razorpay. True Grit never stores card details.",
   "literal.559ef5544c82": "PayPal",
   "literal.f1cee082deef": "PayPal — for international cards",
-  "literal.704cbc982214":
-    "PayPal is for international cards. Your order is priced in rupees and converted for this payment, so your statement will show",
+  "literal.704cbc982214": "PayPal is for international cards. Your order is priced in rupees and converted for this payment, so your statement will show",
   "literal.803187ab5cd4": "PayPal payment",
   "literal.cf62b4819c87": "PayPal payment options",
   "literal.96f608c16cef": "Pending",
@@ -488,8 +440,7 @@ const RAW_EN_MESSAGES = {
   "literal.8dbb6170403d": "Pitch a blog post to the True Grit community.",
   "literal.16975062a8e1": "Pitch a post to the community",
   "literal.a89000b7f42e": "Place order",
-  "literal.a9c1f34bb29f":
-    "Please try again in a moment. If it persists, the request id in our logs will find it.",
+  "literal.a9c1f34bb29f": "Please try again in a moment. If it persists, the request id in our logs will find it.",
   "literal.5afeca73bef6": "Please wait…",
   "literal.962599197cf0": "Popular right now",
   "literal.c0b5556d773c": "Popular this week",
@@ -500,19 +451,16 @@ const RAW_EN_MESSAGES = {
   "literal.d7432cda8e62": "Postal code",
   "literal.987e82e939c0": "Posting...",
   "literal.e6038288c7df": "Practical food guides",
-  "literal.4c4993d61c7c":
-    "Practical guides for buying, storing and cooking traceable organic food well.",
+  "literal.4c4993d61c7c": "Practical guides for buying, storing and cooking traceable organic food well.",
   "literal.70771ddd7dc6": "Prefer email?",
   "literal.b2f0823a2b9c": "Prep {prep} min - cook {cook} min - serves {servings}",
   "literal.1e08814104bd": "Prep time (min)",
   "literal.50f94286ba30": "Previous",
   "literal.93ba97d19f91": "Priced separately",
   "literal.bf631b74c3f4": "Prices and taxes",
-  "literal.7db3bf0febb5":
-    "Prices are re-validated server-side at checkout; your basket total here is an estimate.",
+  "literal.7db3bf0febb5": "Prices are re-validated server-side at checkout; your basket total here is an estimate.",
   "literal.91ef909d6aba": "Prices are re-validated server-side before your order is confirmed.",
-  "literal.3538b2f8ee7c":
-    "Prices are shown in Indian rupees unless stated otherwise. Final taxes, delivery charges and discounts are confirmed during checkout.",
+  "literal.3538b2f8ee7c": "Prices are shown in Indian rupees unless stated otherwise. Final taxes, delivery charges and discounts are confirmed during checkout.",
   "literal.acc6e565014a": "Prices shown in",
   "literal.a9a96ec01949": "Primary",
   "literal.e39c15d30393": "Print / Save as PDF",
@@ -525,8 +473,7 @@ const RAW_EN_MESSAGES = {
   "literal.e63451d3cf90": "Processing",
   "literal.93d175570231": "Processing…",
   "literal.9ea4925ada6b": "Product availability",
-  "literal.e735e2016327":
-    "Product pages include farm, certification, harvest and packing information. The Farmers page lists every current partner farm.",
+  "literal.e735e2016327": "Product pages include farm, certification, harvest and packing information. The Farmers page lists every current partner farm.",
   "literal.cf61068ea877": "Product request",
   "literal.2b87cdcff811": "Product request: {query}",
   "literal.fe0a091fdbfb": "Products",
@@ -540,8 +487,7 @@ const RAW_EN_MESSAGES = {
   "literal.ccc881e97fc5": "Questions about an order or policy are handled through support.",
   "literal.4d86ec50f067": "Questions about an order, farm, product or partnership?",
   "literal.d0530bf237b3": "Questions, answered honestly",
-  "literal.e7e976834f93":
-    "Quick help for True Grit orders, delivery, returns, accounts and product questions.",
+  "literal.e7e976834f93": "Quick help for True Grit orders, delivery, returns, accounts and product questions.",
   "literal.06576556d1ad": "R",
   "literal.6437b7bf6558": "Rating",
   "literal.a3ccb3302793": "Razorpay",
@@ -565,10 +511,8 @@ const RAW_EN_MESSAGES = {
   "literal.04f239131ebc": "Remove step {number}",
   "literal.05033aaac5d0": "Replaced",
   "literal.c385e347b2af": "Replacement",
-  "literal.a8cbbd988c63":
-    "Report fresh produce issues within 24 hours of delivery with clear photos of the product, label and outer packaging.",
-  "literal.4a1c662122d4":
-    "Report sealed pantry goods issues within 7 days of delivery. Keep the product and packaging until support confirms the resolution.",
+  "literal.a8cbbd988c63": "Report fresh produce issues within 24 hours of delivery with clear photos of the product, label and outer packaging.",
+  "literal.4a1c662122d4": "Report sealed pantry goods issues within 7 days of delivery. Keep the product and packaging until support confirms the resolution.",
   "literal.429fa4aeee87": "Request a return",
   "literal.c26bf60fed37": "Requested",
   "literal.1d3cb8a962a6": "Resend code",
@@ -605,14 +549,11 @@ const RAW_EN_MESSAGES = {
   "literal.8925f0bef817": "Seasonal",
   "literal.5ab7e2eea7d3": "Seasonal by default",
   "literal.c4459d96f5dc": "Seasonal categories",
-  "literal.ebbbdf765c37":
-    "Seasonal drops follow harvest windows, weekly packing rhythms and routes that protect freshness from farm to doorstep.",
-  "literal.65da453d388f":
-    "Seasonal fruit is harvested against confirmed orders and packed for Tuesday dispatch where the route supports it.",
+  "literal.ebbbdf765c37": "Seasonal drops follow harvest windows, weekly packing rhythms and routes that protect freshness from farm to doorstep.",
+  "literal.65da453d388f": "Seasonal fruit is harvested against confirmed orders and packed for Tuesday dispatch where the route supports it.",
   "literal.a1567b70f856": "Seasonal ingredients arranged in cooking order beside a ragi dosa",
   "literal.4a5a13aad2f3": "Seasonal market",
-  "literal.86237fae3e6c":
-    "Seasonal recipes built around the market — add the ingredients in one step.",
+  "literal.86237fae3e6c": "Seasonal recipes built around the market — add the ingredients in one step.",
   "literal.2edc43ac70fe": "Seasonal updates",
   "literal.7c357d046db6": "Sections in",
   "literal.698098ee5157": "Secure international payment",
@@ -624,13 +565,11 @@ const RAW_EN_MESSAGES = {
   "literal.4fba49b06fc9": "Send enquiry",
   "literal.a89d64179469": "Send request",
   "literal.698bddfd15ca": "Send suggestion",
-  "literal.ae50590c4165":
-    "Send the product name and city so support can check freshness, lot and serviceability details.",
+  "literal.ae50590c4165": "Send the product name and city so support can check freshness, lot and serviceability details.",
   "literal.407970874f3a": "Sending code…",
   "literal.c6868ed1a02b": "Sent back for another look",
   "literal.319bb810cae9": "Sent to",
-  "literal.ea7545719c2c":
-    "Serviceability is checked during checkout. Some fresh products are limited to routes that can preserve quality within the promised delivery window.",
+  "literal.ea7545719c2c": "Serviceability is checked during checkout. Some fresh products are limited to routes that can preserve quality within the promised delivery window.",
   "literal.772a7248d271": "Servings",
   "literal.1e83ae49d162": "Set a new password",
   "literal.116eade6271e": "Set a new password for your account.",
@@ -640,8 +579,7 @@ const RAW_EN_MESSAGES = {
   "literal.2f70dd6e7fc7": "share a recipe",
   "literal.22b578303389": "Share a recipe with the community",
   "literal.f3cf2d8434ab": "Share a recipe with the True Grit community.",
-  "literal.9626f79b20c6":
-    "Share a story, technique, or something you have learned about eating well. Our editors review every submission before it goes live.",
+  "literal.9626f79b20c6": "Share a story, technique, or something you have learned about eating well. Our editors review every submission before it goes live.",
   "literal.2d07a8e745d1": "Shipped with full lot traceability",
   "literal.55de88709232": "Shop",
   "literal.39863f2dac6e": "Shop by department",
@@ -669,20 +607,18 @@ const RAW_EN_MESSAGES = {
   "literal.c82b9007580f": "Signing in is temporarily unavailable. Please check back shortly or",
   "literal.3ca85ca6b24b": "Signing out…",
   "literal.b7152342a267": "Size",
-  "literal.d1b3eb707638":
-    "Some fresh products only ship where the route can preserve quality within the promised delivery window.",
-  "literal.cdefd4ee79e6":
-    "Some harvests open for a short weekly window, some pantry lots stay available longer, and some products disappear until the next crop is ready.",
+  "literal.d1b3eb707638": "Some fresh products only ship where the route can preserve quality within the promised delivery window.",
+  "literal.cdefd4ee79e6": "Some harvests open for a short weekly window, some pantry lots stay available longer, and some products disappear until the next crop is ready.",
   "literal.48f88ac322a0": "Something else",
   "literal.8d886c0ba6f2": "Something went wrong",
+  "literal.4244e822a06c": "Something went wrong. Try again.",
   "literal.f2fbc19d46d4": "Start a discussion",
   "literal.0c05165264b3": "Start a new discussion with the True Grit community.",
   "literal.0b63a41933f6": "Start discussion",
   "literal.54acc2806d4d": "Start here",
   "literal.9ba3c084b54f": "Start shopping",
   "literal.e5393825cd88": "Start subscription",
-  "literal.a1bb43a70d28":
-    "Start with the common paths below. If your issue is tied to an order, include the order reference when contacting support.",
+  "literal.a1bb43a70d28": "Start with the common paths below. If your issue is tied to an order, include the order reference when contacting support.",
   "literal.0b7f4f96ddb1": "Starting...",
   "literal.a72502067518": "State",
   "literal.bae7d5be7082": "Status",
@@ -700,8 +636,7 @@ const RAW_EN_MESSAGES = {
   "literal.25bdf9860e96": "Submitting…",
   "literal.d6981f74767d": "Subscribe",
   "literal.f956f2f2740d": "Subscribe & Save",
-  "literal.9b8d54804fe1":
-    "Subscribed. Your first delivery is scheduled based on your chosen frequency — manage it anytime from",
+  "literal.9b8d54804fe1": "Subscribed. Your first delivery is scheduled based on your chosen frequency — manage it anytime from",
   "literal.5697fd85adbd": "Subscriptions",
   "literal.97f7359ed801": "Subtotal",
   "literal.ca7130c6719f": "Subtotal (estimate)",
@@ -716,12 +651,9 @@ const RAW_EN_MESSAGES = {
   "literal.30a58c4e8813": "Terms for using the True Grit organic food market and placing orders.",
   "literal.a6a1d25b018c": "Terms of service",
   "literal.511784cc70f9": "Thank you for shopping with True Grit.",
-  "literal.11b00d8e409b":
-    "Thanks — we have your details and will be in touch as soon as ordering reopens.",
-  "literal.58ac66e88caf":
-    "Thanks — we have your details and will be in touch as soon as this is back.",
-  "literal.5f42f5684cb7":
-    "Thanks — your request is with our sourcing team. We will reply by email.",
+  "literal.11b00d8e409b": "Thanks — we have your details and will be in touch as soon as ordering reopens.",
+  "literal.58ac66e88caf": "Thanks — we have your details and will be in touch as soon as this is back.",
+  "literal.5f42f5684cb7": "Thanks — your request is with our sourcing team. We will reply by email.",
   "literal.611396c0691c": "Thanks — your revised submission is back with our editors.",
   "literal.d28c22bf348d": "Thanks — your suggestion has been sent.",
   "literal.2f6a5f6cb6fa": "Thanks for sharing!",
@@ -732,27 +664,21 @@ const RAW_EN_MESSAGES = {
   "literal.6e6c47a4ab9a": "The basic rules for buying from True Grit.",
   "literal.1de68cab23d3": "The farmers",
   "literal.3582cd49106b": "The market",
-  "literal.ade7c1333868":
-    "The market is open. Seasonal fruit, honest staples and slow-pressed oils are a click away.",
-  "literal.e1aca43e8c7b":
-    "The next seasonal drop will appear here when farms confirm availability.",
+  "literal.ade7c1333868": "The market is open. Seasonal fruit, honest staples and slow-pressed oils are a click away.",
+  "literal.e1aca43e8c7b": "The next seasonal drop will appear here when farms confirm availability.",
   "literal.4581981e33c2": "The page you are looking for may have moved with the season.",
   "literal.7f0e0cc74487": "The payment session expired before PayPal could open.",
   "literal.58c08a78f682": "The payment session expired before Razorpay could open.",
   "literal.0cebb8275a45": "The reset link is missing its token.",
-  "literal.3963d68652b4":
-    "The variety or brand you have in mind, roughly how much you need, and your delivery city.",
+  "literal.3963d68652b4": "The variety or brand you have in mind, roughly how much you need, and your delivery city.",
   "literal.f5bfeeedbe33": "The verified farms and collectives that grow the True Grit market.",
-  "literal.3fc9df505cf9":
-    "These terms cover orders, availability, delivery, support and responsible use of the market.",
-  "literal.0ee7c8240232":
-    "These terms may change as services, payment flows or delivery coverage evolve. The current page applies when you use the site or place an order.",
-  "literal.e105a8a2b29f":
-    "This harvest is between seasons. Browse the rest of the market meanwhile.",
+  "literal.3fc9df505cf9": "These terms cover orders, availability, delivery, support and responsible use of the market.",
+  "literal.0ee7c8240232": "These terms may change as services, payment flows or delivery coverage evolve. The current page applies when you use the site or place an order.",
+  "literal.a60d9c9c5390": "Thinking…",
+  "literal.e105a8a2b29f": "This harvest is between seasons. Browse the rest of the market meanwhile.",
   "literal.017eadcea637": "This link is invalid",
   "literal.bf785acd87ed": "This order was cancelled.",
-  "literal.08ea86c7d7ee":
-    "This page explains the practical data we collect for orders, accounts, delivery and support.",
+  "literal.08ea86c7d7ee": "This page explains the practical data we collect for orders, accounts, delivery and support.",
   "literal.b8a5f55715ce": "This patch is empty.",
   "literal.59b9be9343bd": "This submission can only be edited while it has requested changes.",
   "literal.768e0c1c6957": "Title",
@@ -767,18 +693,14 @@ const RAW_EN_MESSAGES = {
   "literal.654aec82f8c3": "Transparent support",
   "literal.a2550376c3a8": "Trending in the market",
   "literal.b8578758a1b9": "True Grit community",
-  "literal.f157fa11f74f":
-    "True Grit connects households with certified organic farms, small-batch processors and seasonal harvests that can be traced from source to delivery.",
+  "literal.f157fa11f74f": "True Grit connects households with certified organic farms, small-batch processors and seasonal harvests that can be traced from source to delivery.",
   "literal.e3d711daf84f": "True Grit home",
-  "literal.04b9fb437bb4":
-    "True Grit is a traceable organic market built around verified farms, seasonal harvests and honest food.",
-  "literal.cc30acec73e2":
-    "True Grit returns, replacement and refund policy for fresh and pantry orders.",
+  "literal.04b9fb437bb4": "True Grit is a traceable organic market built around verified farms, seasonal harvests and honest food.",
+  "literal.cc30acec73e2": "True Grit returns, replacement and refund policy for fresh and pantry orders.",
   "literal.4d697a97a18a": "Trust is not a marketing word here. It is a checklist.",
   "literal.51baf72a383a": "TRY",
   "literal.2437394cdf1e": "Try “ragi”, “kidney beans” or “Devika”…",
-  "literal.0a268c60409d":
-    "Try a simpler word — we also understand common names like “finger millet” for ragi.",
+  "literal.0a268c60409d": "Try a simpler word — we also understand common names like “finger millet” for ragi.",
   "literal.57cbd9d1e918": "Tuesday orchard dispatch",
   "literal.0f470d23d902": "Two working days",
   "literal.7e3e171a15d4": "Under review",
@@ -787,12 +709,9 @@ const RAW_EN_MESSAGES = {
   "literal.57814cfbae5c": "USD",
   "literal.39f9b40b018a": "Use a different address",
   "literal.f2b97b7897fc": "Use code",
-  "literal.16f5da7600d5":
-    "Use the account menu in the header to sign in with Google or your email, then return here to place your order. Your basket is saved.",
-  "literal.2e3af47e19ca":
-    "Use the contact form and include the email address tied to your account or order.",
-  "literal.127a9193bea6":
-    "Use the returns page for damaged, missing, incorrect or below-standard products.",
+  "literal.16f5da7600d5": "Use the account menu in the header to sign in with Google or your email, then return here to place your order. Your basket is saved.",
+  "literal.2e3af47e19ca": "Use the contact form and include the email address tied to your account or order.",
+  "literal.127a9193bea6": "Use the returns page for damaged, missing, incorrect or below-standard products.",
   "literal.f1b90a3141d6": "Useful answers for the food you actually buy",
   "literal.e4323561b400": "Useful conversations, grounded in experience",
   "literal.32d3b861dd99": "Using the market",
@@ -809,16 +728,11 @@ const RAW_EN_MESSAGES = {
   "literal.266d15fdd227": "View my submissions",
   "literal.fe2abc9b4aab": "visit the farm",
   "literal.4c88009f633b": "VND",
-  "literal.3b53e9c54288":
-    "We are not taking orders for this product right now. Leave your details below and we will let you know when it is back.",
-  "literal.e4c7d62c4963":
-    "We are responsible for packing and dispatching orders to the published standard. After delivery, storage and handling become the customer's responsibility.",
-  "literal.08cf499a0b75":
-    "We buy against confirmed orders wherever the crop allows it, so fresh produce is harvested for you, not for a warehouse. Pantry goods are milled and pressed in small batches with their dates printed plainly.",
-  "literal.39ef41a92869":
-    "We cannot replace products damaged after delivery, products stored against guidance, or fresh produce reported after the quality window.",
-  "literal.a0b3b55afa4f":
-    "We collect account details, delivery details, order history, payment status, contact messages and basic site diagnostics needed to run the market.",
+  "literal.3b53e9c54288": "We are not taking orders for this product right now. Leave your details below and we will let you know when it is back.",
+  "literal.e4c7d62c4963": "We are responsible for packing and dispatching orders to the published standard. After delivery, storage and handling become the customer's responsibility.",
+  "literal.08cf499a0b75": "We buy against confirmed orders wherever the crop allows it, so fresh produce is harvested for you, not for a warehouse. Pantry goods are milled and pressed in small batches with their dates printed plainly.",
+  "literal.39ef41a92869": "We cannot replace products damaged after delivery, products stored against guidance, or fresh produce reported after the quality window.",
+  "literal.a0b3b55afa4f": "We collect account details, delivery details, order history, payment status, contact messages and basic site diagnostics needed to run the market.",
   "literal.b0d77411ad2b": "We couldn't add that number.",
   "literal.84a4da0394a0": "We couldn't create your account. Please try again.",
   "literal.f968dc68b376": "We couldn't find that order.",
@@ -826,24 +740,18 @@ const RAW_EN_MESSAGES = {
   "literal.f09d72832b83": "We couldn't send that code. Please try again.",
   "literal.efe875d594d4": "We couldn't sign you in. Please try again.",
   "literal.b50c9118720f": "We hit a snag.",
-  "literal.f9fa94c8242a":
-    "We keep the catalogue intentionally small so the team can stay close to growers, inspect paperwork, manage freshness, and publish the context customers need before buying.",
+  "literal.f9fa94c8242a": "We keep the catalogue intentionally small so the team can stay close to growers, inspect paperwork, manage freshness, and publish the context customers need before buying.",
   "literal.8621af21930e": "We publish only what farms can stand behind.",
   "literal.2f7cc1a2880c": "We set your language to {language}",
-  "literal.758fc8f80490":
-    "We use essential cookies for account sessions, cart continuity and security. Optional analytics should only be enabled where the deployment has consent controls.",
-  "literal.e983d0048b6d":
-    "We use it for delivery updates. You'll need a verified number to check out.",
-  "literal.b3e10bfc06fc":
-    "We use this information to process orders, support customers, prevent misuse, improve catalogue availability and communicate service updates.",
-  "literal.e5a7d974fbf5":
-    "We verify certification before a farm or product is published in the market.",
+  "literal.758fc8f80490": "We use essential cookies for account sessions, cart continuity and security. Optional analytics should only be enabled where the deployment has consent controls.",
+  "literal.e983d0048b6d": "We use it for delivery updates. You'll need a verified number to check out.",
+  "literal.b3e10bfc06fc": "We use this information to process orders, support customers, prevent misuse, improve catalogue availability and communicate service updates.",
+  "literal.e5a7d974fbf5": "We verify certification before a farm or product is published in the market.",
   "literal.64124051fd6f": "We will get in touch as soon as",
   "literal.7f3b7121aa0b": "We've received your order.",
   "literal.ca4f9dcf204e": "Welcome",
   "literal.ffca59bc5b7d": "What are you looking for?",
-  "literal.0e02b6e919fd":
-    "What certified, traceable, responsibly sourced and fairly traded actually mean at True Grit.",
+  "literal.0e02b6e919fd": "What certified, traceable, responsibly sourced and fairly traded actually mean at True Grit.",
   "literal.95efdfef4b4c": "What customers can expect",
   "literal.95a391757916": "What did you think of this product?",
   "literal.2ef875b9bf67": "What do you need?",
@@ -863,12 +771,9 @@ const RAW_EN_MESSAGES = {
   "literal.d2684e624867": "Write a review",
   "literal.22a32d7e685f": "Write in paragraphs — leave a blank line between paragraphs.",
   "literal.4acb91e221ef": "Wrong item",
-  "literal.afd6f1c3e872":
-    "You agree to provide accurate account, delivery and contact information, and to use the site only for lawful personal or business purchases.",
-  "literal.198e7c99248d":
-    "You can ask support for access, correction or deletion of personal data where the request does not conflict with legal or fraud-prevention obligations.",
-  "literal.e63c25592ad3":
-    "You can now sign in with your new password from the account menu in the header.",
+  "literal.afd6f1c3e872": "You agree to provide accurate account, delivery and contact information, and to use the site only for lawful personal or business purchases.",
+  "literal.198e7c99248d": "You can ask support for access, correction or deletion of personal data where the request does not conflict with legal or fraud-prevention obligations.",
+  "literal.e63c25592ad3": "You can now sign in with your new password from the account menu in the header.",
   "literal.30c4ab0d16d1": "You might also like",
   "literal.f0f17437ddbe": "You save",
   "literal.497a183dca2f": "You'll be charged",
@@ -884,10 +789,8 @@ const RAW_EN_MESSAGES = {
   "literal.7f479c2cda77": "Your number is verified. What should we call you?",
   "literal.26d745d486c1": "Your password",
   "literal.ed14777743d2": "Your post",
-  "literal.e2a22efa1d98":
-    "Your post is with our editors. We will email you at your contact address once it is approved, or if we need changes first.",
-  "literal.2c6685398ead":
-    "Your recipe is with our editors. We will email you at your contact address once it is approved, or if we need changes first.",
+  "literal.e2a22efa1d98": "Your post is with our editors. We will email you at your contact address once it is approved, or if we need changes first.",
+  "literal.2c6685398ead": "Your recipe is with our editors. We will email you at your contact address once it is approved, or if we need changes first.",
   "literal.501c17289aa6": "Your review",
   "literal.e58b579c95e8": "Your submissions",
   "literal.e50274703559": "Your submissions are unavailable right now.",

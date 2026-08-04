@@ -79,12 +79,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Kategorie hinzufügen",
   "Add code": "Code hinzufügen",
   "Add country": "Land hinzufügen",
+  "Add entry": "Eintrag hinzufügen",
   "Add farm owner": "Farmbesitzer hinzufügen",
   "Add ingredient": "Hinzufügen Zutat",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Fügen Sie Artikel hinzu (welche Varianten, wie viele davon), nachdem Sie das Paket erstellt haben, unter Verwalten.",
+  "Add knowledge entry": "Wissenseintrag hinzufügen",
   "Add one above to get started.": "Fügen Sie oben einen hinzu, um zu beginnen.",
   "Add one below to get started.": "Fügen Sie unten einen hinzu, um zu beginnen.",
+  "Add one so the bot has something to reference for this scope.":
+    "Fügen Sie einen hinzu, damit der Bot etwas hat, auf das er für diesen Bereich verweisen kann.",
   "Add page": "Seite hinzufügen",
   "Add participants": "Teilnehmer hinzufügen",
   "Add role": "Rolle hinzufügen",
@@ -105,6 +109,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Admin API is unavailable": "Admin-API ist nicht verfügbar",
   "Admin Logs": "Admin-Protokolle",
   "Admin navigation": "Admin-Navigation",
+  "Admin panel bot": "Admin-Panel-Bot",
   "After refunds, all farms": "Nach Rückerstattungen, alle Farmen",
   Albanian: "Albanisch",
   All: "Alle",
@@ -163,6 +168,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Archivierte Elemente werden hier angezeigt.",
   Armenian: "Armenisch",
   "Article not found": "Artikel nicht gefunden",
+  "Ask a question…": "Stellen Sie eine Frage…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Fragen Sie, wie Sie im Admin-Bereich etwas tun können, oder fragen Sie nach ausstehenden Bestellungen, Artikeln mit geringem Lagerbestand oder dem Status einer Bestellung.",
   "Assamese (অসমীয়া)": "Assamesisch (অসমীয়া)",
   "Assigned roles": "Zugewiesene Rollen",
   Attribution: "Namensnennung",
@@ -170,6 +178,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Autor",
   "Auto-translate": "Automatisch übersetzen",
   "Auto-translate all": "Alle automatisch übersetzen",
+  Availability: "Verfügbarkeit",
   Available: "Verfügbar",
   "available · reorder at": "verfügbar · Nachbestellen unter",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -213,6 +222,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Texttext",
   Bosnian: "Bosnisch",
   Brand: "Marke",
+  "Built-in": "Eingebaut",
   "Bulgarian (Български)": "Bulgarisch (Български)",
   Bundle: "Paket",
   "bundle price · items priced at": "Paketpreis · Artikel zum",
@@ -264,6 +274,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "City / town": "Stadt/Gemeinde",
   "Click link": "Link anklicken",
   Close: "Schließen",
+  "Close help assistant": "Hilfe-Assistent schließen",
   "Close navigation": "Navigation schließen",
   "CMS pages": "CMS-Seiten",
   "CMS pages & SEO": "CMS-Seiten und SEO",
@@ -294,6 +305,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Mit Facebook fortfahren",
   "Control what each role can view, create, edit, publish or manage.":
     "Kontrollieren Sie, was jede Rolle sehen kann, erstellen, bearbeiten, veröffentlichen oder verwalten.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Kontrollieren Sie, ob jeder Bot verfügbar ist, und bearbeiten, was es weiß.",
   Cook: "Kochen",
   "Cook minutes": "Kochenminuten",
   "Copy inside dark bands.": "Innerhalb dunkler Bänder kopieren.",
@@ -362,9 +375,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Löschen",
   "Delete (spam)": "Löschen (Spam)",
   "Delete category": "Kategorie löschen",
+  "Delete entry": "Eintrag löschen",
   "Delete farm": "Farm löschen",
   "Delete image": "Bild löschen",
   "Delete inventory row": "Inventarzeile löschen",
+  "Delete knowledge entry?": "Wissenseintrag löschen?",
   "Delete permanently": "Endgültig löschen",
   "Delete product": "Produkt löschen",
   "Delete role": "Rolle löschen",
@@ -414,7 +429,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Bearbeiten Sie CMS-Seitenmetadaten, Indexierung und Rohseitenblöcke. Der Homepage-Datensatz wird hier ebenfalls aufgeführt, aber mit den Homepage-Einstellungen können Sie ihn sicherer ändern – dieser Editor verwendet rohes JSON.",
   "Edit content": "Inhalt bearbeiten",
+  "Edit entry": "Eintrag bearbeiten",
   "Edit farm": "Farm bearbeiten",
+  "Edit knowledge entry": "Wissenseintrag bearbeiten",
   "Edit media": "Medien bearbeiten",
   "Edit review": "Bewertung bearbeiten",
   "Edit role": "Rolle bearbeiten",
@@ -528,6 +545,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Überschriften und Text.",
   Headline: "Überschrift",
   "Hebrew (עברית)": "Hebräisch (עברית)",
+  "Help assistant": "Hilfeassistent",
+  "Help Assistant": "Hilfeassistent",
   "Hero description": "Heldenbeschreibung",
   "Hero eyebrow": "Heldenaugenbraue",
   "Hero image alt text": "Alternativtext für Heldenbild",
@@ -599,6 +618,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "Kasachisch",
   "Keep artwork clean": "Bildmaterial sauber halten",
   "Keep typing to search…": "Geben Sie weiter, um zu suchen...",
+  Keywords: "Schlüsselwörter",
   "Korean (한국어)": "Koreanisch (한국어)",
   Kyrgyz: "Kirgisisch",
   "Land under cultivation": "Angebautes Land",
@@ -782,6 +802,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Kein Index",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Noch keine Elemente – fügen Sie unten mindestens eine hinzu. Beim Bezahlen wird der Rabatt dieses Pakets nur angewendet, wenn der Warenkorb alle Artikel enthält, und zwar in mindestens dieser Menge.",
+  "No knowledge entries": "Keine Wissenseinträge",
   "No line items recorded.": "Keine Einzelposten erfasst.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "Das Login wird nicht mehr geändert – ein hier festgelegtes Passwort ersetzt also wirklich das alte.",
@@ -867,6 +888,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Nur der Eigentümer kann Rollenbereiche verwalten.",
   "Only the owner can review payments and refunds.":
     "Nur der Eigentümer kann Zahlungen und Rückerstattungen überprüfen.",
+  "Open help assistant": "Hilfeassistenten öffnen",
   "Open navigation": "Navigation öffnen",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
     "Optionaler Inhalt, der über den Zutaten angezeigt wird – unterstützt die gleichen Blöcke wie Blogbeiträge, einschließlich",
@@ -1143,6 +1165,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Speichern...",
   "Say how often you will write and that unsubscribing is easy.":
     "Sagen Sie, wie oft Sie schreiben werden und dass das Abbestellen einfach ist.",
+  Scope: "Umfang",
   "Scope Management": "Umfang Verwaltung",
   "Scopes unavailable": "Bereiche nicht verfügbar",
   "Search archive": "Archiv durchsuchen",
@@ -1208,6 +1231,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ausgewählte Zeilen werden in den reservierten Bestand gelöscht, sodass der verfügbare Bestand auf Null steht, während Reservierungen, Bewegungsverlauf und Prüfprotokolle erhalten bleiben.",
   "Selected users will be removed from the users list and signed out.":
     "Ausgewählte Benutzer werden aus der Benutzerliste entfernt und abgemeldet.",
+  Send: "Senden",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Senden Sie diesem Benutzer einen sicheren Link zum Zurücksetzen des Passworts. Sie legen ihr neues Passwort auf der Seite zum Zurücksetzen des Administrators fest.",
   "Send back to draft": "Zurück an den Entwurf senden",
@@ -1274,6 +1298,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Snapshots at purchase time — catalogue edits never rewrite an order.":
     "Schnappschüsse zum Zeitpunkt des Kaufs – Katalogänderungen schreiben nie eine Bestellung neu.",
   "Sold out": "Ausverkauft",
+  "space separated, e.g. product publish visibility":
+    "durch Leerzeichen getrennt, z. B. Produktveröffentlichungssichtbarkeit",
   "Spanish (Español)": "Spanisch (Español)",
   "Sprouted ragi flour": "Gekeimtes Ragi-Mehl",
   "SQL Tables": "SQL-Tabellen",
@@ -1285,6 +1311,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Schritte (einer pro Zeile)",
   "Stock Status": "Bestandsstatus",
   "Store credit": "Store-Guthaben",
+  "Storefront bot": "Storefront-Bot",
   "Storefront switches": "Storefront-Schalter",
   "Storefront switches unavailable": "Storefront-Schalter nicht verfügbar",
   "Strong border": "Starker Rand",
@@ -1317,9 +1344,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Das Banner oben",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Das Banner, die Kategoriezeile, die Produktzeile und die SEO-Felder werden zusammen gespeichert. Abschnitts-Kontrollkästchen, Reihenfolge und benutzerdefinierte Abschnittskopien werden automatisch gespeichert, wenn Sie sie ändern.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Das Chat-Widget, das Kunden und Besucher auf der Storefront sehen.",
   "The classic credential pair, including the password-reset flow.":
     "Das klassische Anmeldeinformationspaar, einschließlich des Ablaufs zum Zurücksetzen des Passworts.",
   "the farm owner": "der Farmbesitzer",
+  "The floating Help Assistant staff see on every admin page.":
+    "Das schwebende Help Assistant-Personal wird auf jeder Admin-Seite angezeigt.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "Die Kopf- und Fußzeilen-Linkbeschriftungen werden auf jeder Seite angezeigt, übersetzt nach Sprache (Migration 0068). Wenn das Gebietsschema leer bleibt, wird auf der Storefront auf Englisch zurückgegriffen. Dies ist das gleiche Steuerelement, das eine Kopfzeile korrigiert, die „Shop“/„Saisonal“ auf Englisch anzeigt, während alles drumherum die Sprache geändert hat – diese Bezeichnungen stammen von hier und nicht von den Übersetzungen des Seiteninhalts oben.",
   "The homepage has no sections": "Die Homepage hat keine Abschnitte",
@@ -1350,6 +1381,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Diese Farben gelten auch für die Seiten darunter",
   "These roles define the permission sets available when inviting or editing users.":
     "Diese Rollen definieren die Berechtigungssätze, die beim Einladen oder Bearbeiten von Benutzern verfügbar sind.",
+  "Thinking…": "Nachdenken…",
   "This application is": "Diese Anwendung ist",
   "This order is in a final state.": "Diese Bestellung befindet sich in einem endgültigen Zustand.",
   "This page contains sensitive application diagnostics.":
@@ -1468,6 +1500,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Warum sind Änderungen erforderlich oder warum wurde dies abgelehnt?",
   "Why is stock changing?": "Warum ändert sich der Lagerbestand?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Wörter, die der Bot mit einer Frage abgleicht, um zu entscheiden, dass dieser Eintrag relevant ist.",
   "Working...": "Arbeitet...",
   "World languages": "Weltsprachen",
   "Write a message…": "Schreiben Sie eine Nachricht…",

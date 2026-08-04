@@ -73,12 +73,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Přidat kategorii",
   "Add code": "Přidat kód",
   "Add country": "Přidat zemi",
+  "Add entry": "Přidat záznam",
   "Add farm owner": "Přidat vlastníka farmy",
   "Add ingredient": "Přidat přísadu",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Přidejte položky (které varianty, kolik z nich) po vytvoření balíčku ze Spravovat.",
+  "Add knowledge entry": "Přidat záznam znalostí",
   "Add one above to get started.": "Začněte přidáním výše.",
   "Add one below to get started.": "Začněte přidáním jedné níže.",
+  "Add one so the bot has something to reference for this scope.":
+    "Přidat jeden, aby měl robot pro tento rozsah na co odkazovat.",
   "Add page": "Přidat stránku",
   "Add participants": "Přidat účastníky",
   "Add role": "Přidat roli",
@@ -96,9 +100,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Upravte vyhledávání nebo vytvořte produkt.",
   "Adjustment %": "Úprava %",
   "Adjustments restricted": "Omezení úprav",
+  Admin: "Správce",
   "Admin API is unavailable": "Administrátorské rozhraní API není k dispozici",
   "Admin Logs": "Protokoly administrátora",
   "Admin navigation": "Navigace pro správce",
+  "Admin panel bot": "bot v panelu administrátora",
   Afrikaans: "Afričané",
   "After refunds, all farms": "Po vrácení peněz všechny farmy",
   Albanian: "Albán",
@@ -158,12 +164,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Zde se zobrazí archivované položky.",
   Armenian: "Arménština",
   "Article not found": "Článek nenalezen",
+  "Ask a question…": "Zeptejte se…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Zeptejte se, jak něco udělat na panelu administrátora, nebo se zeptejte na nevyřízené objednávky, málo skladové položky nebo stav objednávky.",
   "Assigned roles": "Přidělené role",
   Attribution: "Atribuce",
   "Audit Log": "Protokol auditu",
   Author: "Autor",
   "Auto-translate": "Automaticky přeložit",
   "Auto-translate all": "Automaticky přeložit vše",
+  Availability: "Dostupnost",
   Available: "K dispozici",
   "available · reorder at": "k dispozici · doobjednat na",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -206,6 +216,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Text hlavní části",
   Bosnian: "bosenština",
   Brand: "značka",
+  "Built-in": "Vestavěné",
   "Bulgarian (Български)": "bulharština (Български)",
   Bundle: "Balík",
   "bundle price · items priced at": "Cena za balíček · ceny za položky",
@@ -258,6 +269,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Mazání...",
   "Click link": "Klikněte na odkaz",
   Close: "Zavřít",
+  "Close help assistant": "Zavřít asistenta nápovědy",
   "Close navigation": "Zavřít navigaci",
   "CMS pages": "Stránky CMS",
   "CMS pages & SEO": "Stránky CMS a SEO",
@@ -291,6 +303,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Pokračovat na Facebooku",
   "Control what each role can view, create, edit, publish or manage.":
     "Ovládejte, co může každá role prohlížet, vytvářet, upravovat, publikovat nebo spravovat.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Ovládejte dostupnost každého robota a upravujte, co ví.",
   Cook: "Vaření",
   "Cook minutes": "Minuty vaření",
   "Copy inside dark bands.": "Kopírování uvnitř tmavých pruhů.",
@@ -360,9 +374,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Smazat",
   "Delete (spam)": "Smazat (spam)",
   "Delete category": "Smazat kategorii",
+  "Delete entry": "Smazat záznam",
   "Delete farm": "Smazat farmu",
   "Delete image": "Smazat obrázek",
   "Delete inventory row": "Smazat řádek inventáře",
+  "Delete knowledge entry?": "Smazat záznam znalostí?",
   "Delete permanently": "Trvale smazat",
   "Delete product": "Smazat produkt",
   "Delete role": "Smazat roli",
@@ -410,7 +426,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Edit: "Upravit",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Upravit metadata stránky CMS, indexování a nezpracované bloky stránek. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.",
+  "Edit entry": "Upravit záznam",
   "Edit farm": "Upravit farmu",
+  "Edit knowledge entry": "Upravit záznam znalostí",
   "Edit media": "Upravit média",
   "Edit review": "Upravit recenzi",
   "Edit role": "Upravit roli",
@@ -522,6 +540,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Nadpisy a kopie.",
   Headline: "Nadpis",
   "Hebrew (עברית)": "Hebrejština (עברית)",
+  "Help assistant": "Asistent nápovědy",
+  "Help Assistant": "Asistent nápovědy",
   "Hero description": "Popis hrdiny",
   "Hero eyebrow": "Obočí hrdiny",
   "Hero image alt text": "Další text hrdinského obrázku",
@@ -596,6 +616,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "kazašština",
   "Keep artwork clean": "Udržujte umělecká díla v čistotě",
   "Keep typing to search…": "Pokračujte v psaní a vyhledávejte…",
+  Keywords: "Klíčová slova",
   Khmer: "Khmerština",
   "Korean (한국어)": "korejština (한국어)",
   Label: "Štítek",
@@ -784,6 +805,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Žádný index",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Zatím žádné položky – přidejte alespoň jednu níže. Pokladna uplatní slevu tohoto balíčku pouze v případě, že košík obsahuje všechny položky, alespoň v těchto množstvích.",
+  "No knowledge entries": "Žádné znalosti",
   "No line items recorded.": "Žádné řádkové položky nejsou zaznamenány.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "přihlašovací jméno se již nemění – takže heslo, které zde nastavíte, skutečně nahradí to staré.",
@@ -867,6 +889,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Rozsahy rolí může spravovat pouze vlastník.",
   "Only the owner can review payments and refunds.":
     "Pouze vlastník může kontrolovat platby a refundace.",
+  "Open help assistant": "Otevřít pomocníka nápovědy",
   "Open navigation": "Otevřít navigaci",
   Optional: "Volitelný",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1136,6 +1159,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Ukládání...",
   "Say how often you will write and that unsubscribing is easy.":
     "Řekněte, jak často budete psát a že odhlášení z odběru je snadné.",
+  Scope: "Rozsah",
   "Scope Management": "Správa rozsahu",
   "Scopes unavailable": "Rozsahy nejsou k dispozici",
   "Search archive": "Prohledat archiv",
@@ -1196,6 +1220,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Selected rows will be cleared to reserved stock, making available stock zero while preserving reservations, movement history and audit protokoly.",
   "Selected users will be removed from the users list and signed out.":
     "Vybraní uživatelé budou odebráni ze seznamu uživatelů a odhlášeni.",
+  Send: "Odeslat",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Pošlete tomuto uživateli bezpečný odkaz pro resetování hesla. Své nové heslo si nastaví na stránce pro resetování administrátora.",
   "Send back to draft": "Odeslat zpět konceptu",
@@ -1265,6 +1290,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Úryvek",
   "Sold out": "Vyprodáno",
   Somali: "Somálština",
+  "space separated, e.g. product publish visibility":
+    "oddělené mezerou, např. viditelnost publikování produktu",
   "Spanish (Español)": "Španělština (Español)",
   "Sprouted ragi flour": "Mouka z naklíčeného ragi",
   "SQL Tables": "Tabulky SQL",
@@ -1314,9 +1341,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Banner v horní části",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Banner, řádek kategorie, řádek produktu a pole SEO se uloží společně. Zaškrtávací políčka sekcí, objednávání a vlastní kopírování sekcí se ukládají samy, když je změníte.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Wadget chatu, který zákazníci a návštěvníci vidí ve výkladu.",
   "The classic credential pair, including the password-reset flow.":
     "Klasický pár přihlašovacích údajů, včetně postupu pro resetování hesla.",
   "the farm owner": "majitel farmy",
+  "The floating Help Assistant staff see on every admin page.":
+    "Plovoucí pomocník asistenta nápovědy vidí na každé stránce administrátora.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "Odkazy v záhlaví a zápatí označují každou zobrazenou stránku, přeloženo 0068 na jazyk (migrace). Nevyplněné národní prostředí se ve výkladu vrátí zpět do angličtiny. Jedná se o stejný ovládací prvek, který opravuje záhlaví zobrazující „Obchod“ / „Sezónní“ v angličtině, zatímco vše kolem něj změnilo jazyk – tyto štítky pocházejí odtud, nikoli z překladů obsahu stránky výše.",
   "The homepage has no sections": "Domovská stránka nemá žádné sekce",
@@ -1343,6 +1374,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Tyto barvy platí také pro stránky pod",
   "These roles define the permission sets available when inviting or editing users.":
     "Tyto dostupné role definují sady oprávnění pro uživatele nebo je upravují.",
+  "Thinking…": "Přemýšlím…",
   "This application is": "Tato aplikace je",
   "This order is in a final state.": "Tato objednávka je v konečném stavu.",
   "This page contains sensitive application diagnostics.":
@@ -1459,6 +1491,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Whole site (default)": "Celý web (výchozí)",
   "Why are changes needed, or why was this declined?": "Proč jsou nutné změny?",
   "Why is stock changing?": "Proč se zásoby mění?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Slova, která se robot shoduje s otázkou, aby rozhodli, že je tento záznam relevantní.",
   "Working...": "Pracuji...",
   "World languages": "Světové jazyky",
   "Write a message…": "Napište zprávu…",

@@ -77,12 +77,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "カテゴリを追加",
   "Add code": "コードを追加",
   "Add country": "国を追加",
+  "Add entry": "エントリの追加",
   "Add farm owner": "ファーム所有者を追加",
   "Add ingredient": "追加成分",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "バンドルを作成した後、[管理] からアイテム (バリエーション、それぞれの数) を追加します。",
+  "Add knowledge entry": "ナレッジ エントリの追加",
   "Add one above to get started.": "上に 1 つ追加して開始します。",
   "Add one below to get started.": "開始するには下に 1 つ追加します。",
+  "Add one so the bot has something to reference for this scope.":
+    "ボットがこのスコープに対して参照できるように、エントリを追加します。",
   "Add page": "ページを追加",
   "Add participants": "参加者を追加",
   "Add role": "追加役割",
@@ -100,9 +104,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "検索を調整するか、商品を作成します。",
   "Adjustment %": "調整%",
   "Adjustments restricted": "調整は制限されています",
+  Admin: "管理者",
   "Admin API is unavailable": "管理 API は利用できません",
   "Admin Logs": "管理ログ",
   "Admin navigation": "管理ナビゲーション",
+  "Admin panel bot": "管理パネル ボット",
   Afrikaans: "アフリカーンス語",
   "After refunds, all farms": "返金後、すべての農場",
   Albanian: "アルバニア語",
@@ -163,6 +169,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "アルメニア語",
   "Article not found": "記事が見つかりません",
   "Asha Rao": "アシャ・ラオ",
+  "Ask a question…": "質問する質問…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "管理パネルでの操作方法を尋ねたり、保留中の注文、在庫が少ない商品、または注文のステータスについて尋ねたりします。",
   "Assamese (অসমীয়া)": "アッサム語（অসমীয়া）",
   "Assigned roles": "割り当てられた役割",
   Attribution: "帰属",
@@ -170,6 +179,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "作成者",
   "Auto-translate": "自動翻訳",
   "Auto-translate all": "すべて自動翻訳",
+  Availability: "在庫状況",
   Available: "利用可能",
   "available · reorder at": "利用可能 · で再注文",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -215,6 +225,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "本文",
   Bosnian: "ボスニア語",
   Brand: "ブランド",
+  "Built-in": "内蔵",
   "Bulgarian (Български)": "ブルガリア語 (Български)",
   Bundle: "バンドル",
   "bundle price · items priced at": "バンドル価格 · アイテムの価格は",
@@ -268,6 +279,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "クリアリング...",
   "Click link": "リンクをクリックします",
   Close: "閉じる",
+  "Close help assistant": "ヘルプアシスタントを閉じる",
   "Close navigation": "ナビゲーションを閉じる",
   "CMS pages": "CMS ページ",
   "CMS pages & SEO": "CMS ページと SEO",
@@ -301,6 +313,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Facebook を続行します",
   "Control what each role can view, create, edit, publish or manage.":
     "各ロールが表示、作成、編集、公開、管理できる内容を制御します。",
+  "Control whether each bot is available, and edit what it knows.":
+    "各ボットが利用可能かどうかを制御し、ボットが認識している内容を編集します。",
   Cook: "クック",
   "Cook minutes": "分をクック",
   "Copy inside dark bands.": "暗い帯の内側にコピーします。",
@@ -370,9 +384,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "削除",
   "Delete (spam)": "削除（スパム）",
   "Delete category": "カテゴリを削除",
+  "Delete entry": "エントリを削除します",
   "Delete farm": "ファームを削除",
   "Delete image": "画像を削除",
   "Delete inventory row": "在庫を削除行",
+  "Delete knowledge entry?": "ナレッジ エントリを削除しますか?",
   "Delete permanently": "完全に削除",
   "Delete product": "商品を削除",
   "Delete role": "役割を削除",
@@ -424,7 +440,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS ページのメタデータ、インデックス作成、生のページ ブロックを編集します。ホームページ レコードもここにリストされますが、ホームページ設定を変更する方が安全です。このエディタは生の JSON を受け取ります。",
   "Edit content": "コンテンツを編集",
+  "Edit entry": "エントリを編集",
   "Edit farm": "ファームを編集",
+  "Edit knowledge entry": "ナレッジ エントリを編集",
   "Edit media": "メディアを編集",
   "Edit review": "レビューを編集",
   "Edit role": "編集役割",
@@ -541,6 +559,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "見出しとコピー。",
   Headline: "見出し",
   "Hebrew (עברית)": "ヘブライ語 (עברית)",
+  "Help assistant": "ヘルプ アシスタント",
+  "Help Assistant": "ヘルプ アシスタント",
   "Hero description": "英雄の説明",
   "Hero eyebrow": "ヒーローの眉毛",
   "Hero image alt text": "ヒーロー画像の代替テキスト",
@@ -616,6 +636,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "カザフ語",
   "Keep artwork clean": "アートワークをきれいに保ちます",
   "Keep typing to search…": "検索するには入力を続けてください…",
+  Keywords: "キーワード",
   Khmer: "クメール語",
   Kinyarwanda: "ルワンダ",
   "Konkani (कोंकणी)": "コンカニ語（कोंकणी）",
@@ -812,6 +833,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "インデックスがありません",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "項目がまだありません。下に少なくとも 1 つ追加してください。チェックアウトでは、バスケットにすべてのアイテムが少なくともこの数量で入っている場合にのみ、このバンドルの割引が適用されます。",
+  "No knowledge entries": "ナレッジ エントリなし",
   "No line items recorded.": "品目は記録されません。",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ログイン情報は変更されなくなりました。したがって、ここで設定したパスワードが実際に古いパスワードを置き換えます。",
@@ -894,6 +916,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "所有者のみこのアカウントは、sitemap.xml、robots.txt、llms.txt を編集できます。",
   "Only the owner can manage role scopes.": "ロール スコープを管理できるのは所有者のみです。",
   "Only the owner can review payments and refunds.": "所有者のみが支払いと返金を確認できます。",
+  "Open help assistant": "ヘルプ アシスタントを開く",
   "Open navigation": "ナビゲーションを開く",
   Optional: "オプション",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1173,6 +1196,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "保存中...",
   "Say how often you will write and that unsubscribing is easy.":
     "どのくらいの頻度で書くか、購読を解除することを伝えます。",
+  Scope: "範囲",
   "Scope Management": "スコープ管理",
   "Scopes unavailable": "スコープが使用不可",
   "Search archive": "アーカイブの検索",
@@ -1237,6 +1261,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "選択した行は予約在庫にクリアされ、予約、移動履歴、監査ログを保持しながら利用可能な在庫がゼロになります。",
   "Selected users will be removed from the users list and signed out.":
     "選択したユーザーはユーザー リストから削除され、サインアウトされます。",
+  Send: "送信",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "安全なパスワード リセット リンクをこのユーザーに送信します。管理者リセット ページから新しいパスワードを設定します。",
   "Send back to draft": "下書きに戻す",
@@ -1306,6 +1331,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "抜粋",
   "Sold out": "売り切れ",
   Somali: "ソマリ語",
+  "space separated, e.g. product publish visibility": "スペース区切り、例:製品公開の可視性",
   "Spanish (Español)": "スペイン語（Español）",
   "Sprouted ragi flour": "発芽ラギ粉",
   "SQL Tables": "SQL テーブル",
@@ -1318,6 +1344,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "ステップ（1 行に 1 つ）",
   "Stock Status": "在庫ステータス",
   "Store credit": "ストアクレジット",
+  Storefront: "ストアフロント",
+  "Storefront bot": "ストアフロントボット",
   "Storefront switches": "店頭スイッチ",
   "Storefront switches unavailable": "店頭スイッチは使用できません",
   "Strong border": "強い境界線",
@@ -1355,9 +1383,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "上部のバナー",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "バナー、カテゴリ行、製品行、SEO フィールドは一緒に保存されます。セクションのチェックボックス、順序付け、およびカスタム セクションのコピーは、変更すると自動的に保存されます。",
+  "The chat widget customers and visitors see on the storefront.":
+    "顧客と訪問者がストアフロントに表示されるチャット ウィジェット。",
   "The classic credential pair, including the password-reset flow.":
     "パスワード リセット フローを含む、従来の認証情報のペア。",
   "the farm owner": "ファーム所有者",
+  "The floating Help Assistant staff see on every admin page.":
+    "フローティング ヘルプ アシスタント スタッフがすべての管理ページに表示されます。",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "各ページに表示されるヘッダーとフッターのリンク ラベルは、言語ごとに翻訳されます (移行 0068)。ロケールを空白のままにすると、店頭では英語に戻ります。これは、「ショップ」/「季節」を英語で表示するヘッダーを修正するのと同じコントロールですが、周囲のすべての言語が切り替わります。これらのラベルは、上記のページ コンテンツの翻訳からではなく、ここから取得されます。",
   "The homepage has no sections": "ホームページにはセクションがありません。",
@@ -1388,6 +1420,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "これらの色は、その下のページにも適用されます。",
   "These roles define the permission sets available when inviting or editing users.":
     "これらの役割は、ユーザーを招待または編集するときに使用できる権限セットを定義します。",
+  "Thinking…": "考え中…",
   "This application is": "このアプリケーションは",
   "This order is in a final state.": "この注文は最終状態にあります。",
   "This page contains sensitive application diagnostics.":
@@ -1509,6 +1542,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "変更が必要な理由、または変更が拒否された理由",
   "Why is stock changing?": "株価はなぜ変動するのですか？",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "ボットが質問と照合して、このエントリが関連しているかどうかを判断する単語。",
   "Working...": "作業中...",
   "World languages": "世界の言語",
   "Write a message…": "書くメッセージ…",

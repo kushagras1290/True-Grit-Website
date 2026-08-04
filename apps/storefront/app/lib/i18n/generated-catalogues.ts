@@ -6185,6 +6185,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "हमने एक समस्या का सामना किया है।",
     "literal.ca4f9dcf204e": "आपका स्वागत है",
     "literal.ed14777743d2": "आपकी पोस्ट",
+    "literal.05665c93f216": "प्रश्न पूछें…",
+    "literal.1aded95423be":
+      "उत्पादों, शिपिंग, रिटर्न या True Grit कैसे काम करता है, इसके बारे में पूछें।",
+    "literal.2fdc0288d97d": "उत्पादों, शिपिंग, रिटर्न या अपने ऑर्डर की स्थिति के बारे में पूछें।",
+    "literal.2cfaa6da9c4f": "हमसे कुछ भी पूछें",
+    "literal.bbfa773e5a63": "बंद करना",
+    "literal.4244e822a06c": "कुछ गलत हो गया। पुनः प्रयास करें।",
+    "literal.a60d9c9c5390": "सोच…",
   },
   bn: {
     "literal.87df31bb89b3": "— পুনরাবৃত্ত ডেলিভারি সেট আপ করতে অ্যাকাউন্ট মেনু থেকে সাইন ইন করুন",
@@ -7082,6 +7090,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.93d175570231": "প্রক্রিয়া করা হচ্ছে...",
     "literal.483bf2075c12": "প্রকাশিত হয়েছে",
     "literal.313503fa9540": "কোড পাঠান",
+    "literal.05665c93f216": "একটি প্রশ্ন জিজ্ঞাসা করুন…",
+    "literal.1aded95423be":
+      "পণ্য, শিপিং, রিটার্ন বা True Grit কীভাবে কাজ করে সে সম্পর্কে জিজ্ঞাসা করুন।",
+    "literal.2fdc0288d97d": "পণ্য, শিপিং, রিটার্ন বা আপনার অর্ডারের অবস্থা সম্পর্কে জিজ্ঞাসা করুন।",
+    "literal.2cfaa6da9c4f": "আমাদের কিছু জিজ্ঞাসা করুন",
+    "literal.bbfa773e5a63": "বন্ধ",
+    "literal.4244e822a06c": "কিছু ভুল হয়েছে আবার চেষ্টা করুন",
+    "literal.a60d9c9c5390": "ভাবছেন…",
   },
   mr: {
     "literal.87df31bb89b3": "— आवर्ती वितरण सेट करण्यासाठी खाते मेनूमधून साइन इन करा",
@@ -7982,6 +7998,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.483bf2075c12": "प्रकाशित",
     "literal.313503fa9540": "कोड पाठवा",
     "literal.0b63a41933f6": "चर्चा सुरू करा",
+    "literal.05665c93f216": "एक प्रश्न विचारा…",
+    "literal.1aded95423be":
+      "उत्पादने, शिपिंग, परतावा किंवा True Grit कसे कार्य करते याबद्दल विचारा.",
+    "literal.2fdc0288d97d": "उत्पादने, शिपिंग, परतावा किंवा तुमच्या ऑर्डरची स्थिती याबद्दल विचारा.",
+    "literal.2cfaa6da9c4f": "आम्हाला काहीही विचारा",
+    "literal.bbfa773e5a63": "बंद करा",
+    "literal.4244e822a06c": "काहीतरी चूक झाली. पुन्हा प्रयत्न करा.",
+    "literal.a60d9c9c5390": "विचार करत आहे…",
   },
   te: {
     "literal.87df31bb89b3": "— పునరావృత డెలివరీని సెటప్ చేయడానికి ఖాతా మెను నుండి సైన్ ఇన్ చేయండి",
@@ -8889,6 +8913,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
       "దయచేసి ఒక క్షణంలో మళ్లీ ప్రయత్నించండి. ఇది కొనసాగితే, మా లాగ్‌లలోని అభ్యర్థన id దానిని కనుగొంటుంది.",
     "literal.93d175570231": "ప్రాసెస్ చేస్తోంది...",
     "literal.8d886c0ba6f2": "ఏదో తప్పు జరిగింది",
+    "literal.05665c93f216": "ఒక ప్రశ్న అడగండి...",
+    "literal.1aded95423be":
+      "ఉత్పత్తులు, షిప్పింగ్, రిటర్న్‌లు లేదా True Grit ఎలా పని చేస్తుందో అడగండి.",
+    "literal.2fdc0288d97d":
+      "ఉత్పత్తులు, షిప్పింగ్, రిటర్న్‌లు లేదా మీ ఆర్డర్ స్థితి గురించి అడగండి.",
+    "literal.2cfaa6da9c4f": "మమ్మల్ని ఏదైనా అడగండి",
+    "literal.bbfa773e5a63": "మూసివేయి",
+    "literal.4244e822a06c": "ఏదో తప్పు జరిగింది. మళ్లీ ప్రయత్నించండి.",
+    "literal.a60d9c9c5390": "ఆలోచిస్తూ...",
   },
   ta: {
     "literal.87df31bb89b3": "— தொடர்ச்சியான விநியோகத்தை அமைக்க கணக்கு மெனுவிலிருந்து உள்நுழைக",
@@ -9811,6 +9844,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "வரவேற்கிறோம்",
     "literal.ed14777743d2": "உங்கள் இடுகை",
     "literal.d4ae137ac5ef": "உங்கள் கூடையில் சேர்க்கப்பட்டது.",
+    "literal.05665c93f216": "கேள்வி கேள்…",
+    "literal.1aded95423be":
+      "தயாரிப்புகள், ஷிப்பிங், வருமானம் அல்லது True Grit எப்படி வேலை செய்கிறது என்பதைப் பற்றி கேளுங்கள்.",
+    "literal.2fdc0288d97d":
+      "தயாரிப்புகள், ஷிப்பிங், வருமானம் அல்லது உங்கள் ஆர்டரின் நிலை பற்றி கேளுங்கள்.",
+    "literal.2cfaa6da9c4f": "எங்களிடம் எதையும் கேளுங்கள்",
+    "literal.bbfa773e5a63": "மூடு",
+    "literal.4244e822a06c": "ஏதோ தவறாகிவிட்டது. மீண்டும் முயற்சிக்கவும்.",
+    "literal.a60d9c9c5390": "சிந்திக்கிறது…",
   },
   gu: {
     "literal.87df31bb89b3": "— રિકરિંગ ડિલિવરી સેટ કરવા માટે એકાઉન્ટ મેનૂમાંથી સાઇન ઇન કરો",
@@ -10711,6 +10753,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.0b63a41933f6": "ચર્ચા શરૂ કરો",
     "literal.44cddb4f5033": "સમીક્ષા સબમિટ કરો",
     "literal.25bdf9860e96": "સબમિટ કરી રહ્યાં છીએ...",
+    "literal.05665c93f216": "એક પ્રશ્ન પૂછો…",
+    "literal.1aded95423be":
+      "ઉત્પાદનો, શિપિંગ, વળતર અથવા True Grit કેવી રીતે કાર્ય કરે છે તે વિશે પૂછો.",
+    "literal.2fdc0288d97d": "ઉત્પાદનો, શિપિંગ, વળતર અથવા તમારા ઓર્ડરની સ્થિતિ વિશે પૂછો.",
+    "literal.2cfaa6da9c4f": "અમને કંઈપણ પૂછો",
+    "literal.bbfa773e5a63": "બંધ કરો",
+    "literal.4244e822a06c": "કંઈક ખોટું થયું. ફરી પ્રયાસ કરો.",
+    "literal.a60d9c9c5390": "વિચારી રહ્યા છીએ…",
   },
   ur: {
     "literal.87df31bb89b3": "—",
@@ -11614,6 +11664,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.060be00f4f26": "تمام زمرے",
     "literal.93d175570231": "کارروائی ہو رہی ہے…",
     "literal.483bf2075c12": "شائع شدہ",
+    "literal.05665c93f216": "ایک سوال پوچھیں…",
+    "literal.1aded95423be":
+      "مصنوعات، شپنگ، واپسی، یا True Grit کیسے کام کرتا ہے کے بارے میں پوچھیں۔",
+    "literal.2fdc0288d97d": "مصنوعات، شپنگ، واپسی، یا اپنے آرڈر کی حیثیت کے بارے میں پوچھیں۔",
+    "literal.2cfaa6da9c4f": "ہم سے کچھ بھی پوچھیں۔",
+    "literal.bbfa773e5a63": "بند",
+    "literal.4244e822a06c": "کچھ غلط ہو گیا۔ دوبارہ کوشش کریں۔",
+    "literal.a60d9c9c5390": "سوچ رہا ہے…",
   },
   kn: {
     "literal.87df31bb89b3": "— ಮರುಕಳಿಸುವ ವಿತರಣೆಯನ್ನು ಹೊಂದಿಸಲು ಖಾತೆ ಮೆನುವಿನಿಂದ ಸೈನ್ ಇನ್ ಮಾಡಿ",
@@ -12524,6 +12582,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "ಸ್ವಾಗತ",
     "literal.ed14777743d2": "ನಿಮ್ಮ ಪೋಸ್ಟ್",
     "literal.c53c1c85a9cf": "ಪಾವತಿಸಿ ಮತ್ತು ಆದೇಶವನ್ನು ಇರಿಸಿ",
+    "literal.05665c93f216": "ಪ್ರಶ್ನೆ ಕೇಳಿ...",
+    "literal.1aded95423be":
+      "ಉತ್ಪನ್ನಗಳು, ಶಿಪ್ಪಿಂಗ್, ರಿಟರ್ನ್ಸ್ ಅಥವಾ True Grit ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ ಎಂಬುದರ ಕುರಿತು ಕೇಳಿ.",
+    "literal.2fdc0288d97d":
+      "ಉತ್ಪನ್ನಗಳು, ಶಿಪ್ಪಿಂಗ್, ರಿಟರ್ನ್ಸ್ ಅಥವಾ ನಿಮ್ಮ ಆರ್ಡರ್ ಸ್ಥಿತಿಯ ಬಗ್ಗೆ ಕೇಳಿ.",
+    "literal.2cfaa6da9c4f": "ನಮಗೆ ಏನು ಬೇಕಾದರೂ ಕೇಳಿ",
+    "literal.bbfa773e5a63": "ಮುಚ್ಚಿ",
+    "literal.4244e822a06c": "ಏನೋ ತಪ್ಪಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    "literal.a60d9c9c5390": "ಯೋಚಿಸುತ್ತಿದೆ...",
   },
   or: {
     "literal.87df31bb89b3": "- ବାରମ୍ବାର ବିତରଣର ସେଟ୍ ଅପ୍ କରିବାକୁ ଆକାଉଣ୍ଟ୍ ମେନୁରୁ ସାଇନ୍ ଇନ୍ କରନ୍ତୁ |",
@@ -13433,6 +13500,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "ଆମେ ଏକ ସ୍ନାଗ୍ ମାରିଲୁ |",
     "literal.ca4f9dcf204e": "ସ୍ Welcome ାଗତ",
     "literal.ed14777743d2": "ତୁମର ପୋଷ୍ଟ",
+    "literal.05665c93f216": "ଏକ ପ୍ରଶ୍ନ ପଚାର…",
+    "literal.1aded95423be":
+      "ଉତ୍ପାଦ, ପରିବହନ, ରିଟର୍ନ, କିମ୍ବା True Grit କିପରି କାର୍ଯ୍ୟ କରେ ସେ ବିଷୟରେ ପଚାର |",
+    "literal.2fdc0288d97d": "ଉତ୍ପାଦ, ସିପିଂ, ରିଟର୍ନ, କିମ୍ବା ତୁମର ଅର୍ଡରର ସ୍ଥିତି ବିଷୟରେ ପଚାର |",
+    "literal.2cfaa6da9c4f": "ଆମକୁ କିଛି ପଚାର |",
+    "literal.bbfa773e5a63": "ବନ୍ଦ",
+    "literal.4244e822a06c": "କିଛି ଭୁଲ୍ ହୋଇଗଲା | ପୁନର୍ବାର ଚେଷ୍ଟା କରନ୍ତୁ |",
+    "literal.a60d9c9c5390": "ଭାବୁଛି…",
   },
   ml: {
     "literal.87df31bb89b3":
@@ -14359,6 +14434,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "സ്വാഗതം",
     "literal.ed14777743d2": "നിങ്ങളുടെ പോസ്റ്റ്",
     "literal.d4ae137ac5ef": "നിങ്ങളുടെ കൊട്ടയിൽ ചേർത്തു.",
+    "literal.05665c93f216": "ഒരു ചോദ്യം ചോദിക്കൂ...",
+    "literal.1aded95423be":
+      "ഉൽപ്പന്നങ്ങൾ, ഷിപ്പിംഗ്, റിട്ടേണുകൾ അല്ലെങ്കിൽ True Grit എങ്ങനെ പ്രവർത്തിക്കുന്നു എന്നതിനെക്കുറിച്ച് ചോദിക്കുക.",
+    "literal.2fdc0288d97d":
+      "ഉൽപ്പന്നങ്ങൾ, ഷിപ്പിംഗ്, റിട്ടേണുകൾ അല്ലെങ്കിൽ നിങ്ങളുടെ ഓർഡറിൻ്റെ നില എന്നിവയെക്കുറിച്ച് ചോദിക്കുക.",
+    "literal.2cfaa6da9c4f": "ഞങ്ങളോട് എന്തും ചോദിക്കൂ",
+    "literal.bbfa773e5a63": "അടയ്ക്കുക",
+    "literal.4244e822a06c": "എന്തോ കുഴപ്പം സംഭവിച്ചു. വീണ്ടും ശ്രമിക്കുക.",
+    "literal.a60d9c9c5390": "ചിന്തിക്കുന്നു...",
   },
   pa: {
     "literal.87df31bb89b3": "— ਦੀ ਆਵਰਤੀ ਡਿਲੀਵਰੀ ਸੈਟ ਅਪ ਕਰਨ ਲਈ ਖਾਤਾ ਮੀਨੂ ਤੋਂ ਸਾਈਨ ਇਨ ਕਰੋ",
@@ -15256,6 +15340,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.0b63a41933f6": "ਚਰਚਾ ਸ਼ੁਰੂ ਕਰੋ",
     "literal.44cddb4f5033": "ਸਮੀਖਿਆ ਦਰਜ ਕਰੋ",
     "literal.25bdf9860e96": "ਸਪੁਰਦ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ...",
+    "literal.05665c93f216": "ਇੱਕ ਸਵਾਲ ਪੁੱਛੋ…",
+    "literal.1aded95423be": "ਉਤਪਾਦਾਂ, ਸ਼ਿਪਿੰਗ, ਰਿਟਰਨ, ਜਾਂ True Grit ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ ਬਾਰੇ ਪੁੱਛੋ।",
+    "literal.2fdc0288d97d": "ਉਤਪਾਦਾਂ, ਸ਼ਿਪਿੰਗ, ਵਾਪਸੀ ਜਾਂ ਤੁਹਾਡੇ ਆਰਡਰ ਦੀ ਸਥਿਤੀ ਬਾਰੇ ਪੁੱਛੋ।",
+    "literal.2cfaa6da9c4f": "ਸਾਨੂੰ ਕੁਝ ਵੀ ਪੁੱਛੋ",
+    "literal.bbfa773e5a63": "ਬੰਦ ਕਰੋ",
+    "literal.4244e822a06c": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਫਿਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ.",
+    "literal.a60d9c9c5390": "ਸੋਚ ਰਿਹਾ ਹੈ...",
   },
   as: {
     "literal.87df31bb89b3": "— প্ৰয়োগ কৰা",
@@ -16156,6 +16247,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "আমি এটা স্নেগ মাৰিলোঁ।",
     "literal.ca4f9dcf204e": "আপোনাৰ পোষ্টটো স্বাগতম",
     "literal.ed14777743d2": "আপোনাৰ পোষ্ট",
+    "literal.05665c93f216": "একটি প্রশ্ন সোধক...",
+    "literal.1aded95423be": "পণ্য, শিপিং, ৰিটাৰ্ণ, বা True Grit কেনেকৈ কাম কৰে তাৰ বিষয়ে সুধিব।",
+    "literal.2fdc0288d97d": "পণ্য, শিপিং, ৰিটাৰ্ণ, বা আপোনাৰ অৰ্ডাৰৰ অৱস্থাৰ বিষয়ে সুধিব।",
+    "literal.2cfaa6da9c4f": "আমাক যিকোনো কথা সুধিব",
+    "literal.bbfa773e5a63": "বন্ধ",
+    "literal.4244e822a06c": "কিবা এটা ভুল হ’ল। আকৌ এবাৰ চেষ্টা কৰক।",
+    "literal.a60d9c9c5390": "চিন্তা...",
   },
   mai: {
     "literal.87df31bb89b3": "— कें आवर्ती वितरण कें सेटअप करय कें लेल खाता मेनू सं साइन इन करूं",
@@ -17052,6 +17150,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "हम एकटा गड़बड़ी मारलहुँ।",
     "literal.ca4f9dcf204e": "स्वागत",
     "literal.ed14777743d2": "अहाँक पोस्ट",
+    "literal.05665c93f216": "एकटा सवाल पूछू...",
+    "literal.1aded95423be":
+      "उत्पाद, शिपिंग, रिटर्न, या True Grit कोना काज करैत अछि ओकर बारे मे पूछू.",
+    "literal.2fdc0288d97d": "उत्पाद, शिपिंग, रिटर्न, या अपन ऑर्डर कें स्थिति कें बारे मे पूछूं.",
+    "literal.2cfaa6da9c4f": "हमरा सभसँ किछु पूछू",
+    "literal.bbfa773e5a63": "बंद",
+    "literal.4244e822a06c": "किछु गड़बड़ भ’ गेलै। फेर कोशिश करू।",
+    "literal.a60d9c9c5390": "सोचि रहल छी...",
   },
   sat: {
     "literal.87df31bb89b3": "— ᱮᱠᱟᱣᱩᱱᱴ ᱢᱮᱱᱩ ᱠᱷᱚᱱ ᱥᱟᱭᱤᱱ ᱤᱱ ᱢᱮ ᱫᱚᱦᱲᱟ ᱰᱮᱞᱤᱵᱷᱟᱨᱤ ᱥᱮᱴ ᱟᱯ ᱞᱟᱹᱜᱤᱫ",
@@ -17955,6 +18061,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ed14777743d2": "ᱟᱢᱟᱜ ᱯᱚᱥᱴ",
     "literal.4581981e33c2":
       "ᱟᱢ ᱡᱟᱦᱟᱸ ᱥᱟᱦᱴᱟ ᱮᱢ ᱯᱟᱱᱛᱮ ᱮᱫᱟ ᱚᱱᱟ ᱫᱚ ᱥᱤᱡᱚᱱ ᱥᱟᱶ ᱞᱟᱦᱟ ᱪᱟᱞᱟᱣ ᱟᱠᱟᱱᱟ ᱦᱩᱭ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ᱾",
+    "literal.05665c93f216": "ᱢᱤᱫ ᱠᱩᱠᱞᱤ ᱠᱩᱞᱤᱭ ᱢᱮ...",
+    "literal.1aded95423be":
+      "ᱡᱤᱱᱤᱥ ᱵᱟᱵᱚᱛ ᱠᱩᱞᱤᱠᱚᱢ, ᱥᱤᱯᱤᱝ, ᱨᱩᱣᱟᱹᱲ, ᱟᱨ ᱵᱟᱝ ᱪᱮᱫ ᱞᱮᱠᱟ True Grit ᱠᱟᱹᱢᱤ ᱮᱫᱟᱭ ᱾",
+    "literal.2fdc0288d97d": "ᱡᱤᱱᱤᱥ, ᱥᱤᱯᱤᱝ, ᱨᱩᱣᱟᱹᱲ, ᱵᱟᱝᱠᱷᱟᱱ ᱟᱢᱟᱜ ᱚᱰᱟᱨ ᱨᱮᱭᱟᱜ ᱥᱛᱤᱛᱤ ᱵᱟᱵᱚᱛ ᱠᱩᱞᱤᱠᱚᱢ᱾",
+    "literal.2cfaa6da9c4f": "ᱟᱞᱮ ᱡᱟᱦᱟᱱᱟᱜ ᱜᱮ ᱠᱩᱞᱤ ᱞᱮᱢ",
+    "literal.bbfa773e5a63": "ᱵᱚᱱᱫᱚ",
+    "literal.4244e822a06c": "ᱡᱟᱦᱟᱱᱟᱜ ᱜᱮ ᱵᱟᱹᱲᱤᱡ ᱪᱟᱞᱟᱣ ᱮᱱᱟ ᱾ ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ ᱢᱮ᱾",
+    "literal.a60d9c9c5390": "ᱩᱭᱦᱟᱹᱨ...",
   },
   ks: {
     "literal.87df31bb89b3": "—",
@@ -18858,6 +18972,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.060be00f4f26": "تمام زمرے",
     "literal.93d175570231": "کارروائی ہو رہی ہے…",
     "literal.483bf2075c12": "شائع شدہ",
+    "literal.05665c93f216": "ایک سوال پوچھیں…",
+    "literal.1aded95423be":
+      "مصنوعات، شپنگ، واپسی، یا True Grit کیسے کام کرتا ہے کے بارے میں پوچھیں۔",
+    "literal.2fdc0288d97d": "مصنوعات، شپنگ، واپسی، یا اپنے آرڈر کی حیثیت کے بارے میں پوچھیں۔",
+    "literal.2cfaa6da9c4f": "ہم سے کچھ بھی پوچھیں۔",
+    "literal.bbfa773e5a63": "بند",
+    "literal.4244e822a06c": "کچھ غلط ہو گیا۔ دوبارہ کوشش کریں۔",
+    "literal.a60d9c9c5390": "سوچ رہا ہے…",
   },
   ne: {
     "literal.87df31bb89b3": "—",
@@ -19758,6 +19880,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.93d175570231": "प्रशोधन गर्दै...",
     "literal.483bf2075c12": "प्रकाशित",
     "literal.313503fa9540": "कोड पठाउनुहोस्",
+    "literal.05665c93f216": "प्रश्न सोध्नुहोस्…",
+    "literal.1aded95423be":
+      "उत्पादनहरू, ढुवानी, फिर्ताहरू, वा True Grit कसरी काम गर्छ भन्ने बारे सोध्नुहोस्।",
+    "literal.2fdc0288d97d":
+      "उत्पादनहरू, ढुवानी, फिर्ताहरू, वा तपाईंको अर्डरको स्थिति बारे सोध्नुहोस्।",
+    "literal.2cfaa6da9c4f": "हामीलाई केहि सोध्नुहोस्",
+    "literal.bbfa773e5a63": "बन्द गर्नुहोस्",
+    "literal.4244e822a06c": "केही गडबड भयो। पुन: प्रयास गर्नुहोस्।",
+    "literal.a60d9c9c5390": "सोच्दै…",
   },
   sd: {
     "literal.87df31bb89b3": "—",
@@ -20651,6 +20782,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.44cddb4f5033": "جائزو پيش ڪريو",
     "literal.25bdf9860e96": "جمع ڪرايو پيو وڃي…",
     "literal.ca4f9dcf204e": "ڀلي ڪري آيا",
+    "literal.05665c93f216": "سوال پڇو…",
+    "literal.1aded95423be": "پروڊڪٽس، شپنگ، واپسي، يا ڪيئن True Grit ڪم ڪري ٿو بابت پڇو.",
+    "literal.2fdc0288d97d": "پراڊڪٽس، شپنگ، واپسي، يا توهان جي آرڊر جي صورتحال بابت پڇو.",
+    "literal.2cfaa6da9c4f": "اسان کان ڪجھ پڇو",
+    "literal.bbfa773e5a63": "بند",
+    "literal.4244e822a06c": "ڪجهه غلط ٿي ويو. ٻيهر ڪوشش ڪريو.",
+    "literal.a60d9c9c5390": "سوچڻ…",
   },
   kok: {
     "literal.87df31bb89b3": "— ची परत परत वितरण सेट करपाक खातें मेनूंतल्यान सायन इन करात",
@@ -21548,6 +21686,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "आमी एक स्नॅग मारला.",
     "literal.ca4f9dcf204e": "तुमच्या पोस्टाक येवकार",
     "literal.ed14777743d2": "तुमच्या पोस्टाक",
+    "literal.05665c93f216": "एक प्रस्न विचारात...",
+    "literal.1aded95423be": "उत्पाद, शिपिंग, परताव, वा True Grit कशें काम करता हाचे विशीं विचारात.",
+    "literal.2fdc0288d97d": "उत्पाद, शिपिंग, रिटर्न वा तुमच्या ऑर्डराची स्थिती विचारात.",
+    "literal.2cfaa6da9c4f": "आमकां कितेंय विचारात",
+    "literal.bbfa773e5a63": "धांपप",
+    "literal.4244e822a06c": "कितें तरी चुकलें. परतून यत्न करात.",
+    "literal.a60d9c9c5390": "विचार करून...",
   },
   doi: {
     "literal.87df31bb89b3": "— दी आवर्ती डिलीवरी गी सेट करने लेई खाता मेनू थमां साइन इन करो",
@@ -22449,6 +22594,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "अस इक गड़बड़ी मारी ऐ।",
     "literal.ca4f9dcf204e": "स्वागत ऐ",
     "literal.ed14777743d2": "तुंदी पोस्ट",
+    "literal.05665c93f216": "इक सवाल पुच्छो...",
+    "literal.1aded95423be":
+      "उत्पादें, शिपिंग, रिटर्न, जां True Grit किस चाल्ली कम्म करदा ऐ इसदे बारे च पुच्छो।",
+    "literal.2fdc0288d97d": "उत्पाद, शिपिंग, रिटर्न, जां अपने आर्डर दी स्थिति दे बारे च पुच्छो।",
+    "literal.2cfaa6da9c4f": "साडे कोल कुझ वी पूछो",
+    "literal.bbfa773e5a63": "बंद",
+    "literal.4244e822a06c": "कुछ गड़बड़ हो गया। दोबारा कोशिश करो।",
+    "literal.a60d9c9c5390": "सोचदे होई...",
   },
   mni: {
     "literal.87df31bb89b3": "— পুনরাবৃত্ত ডেলিভারি সেট আপ করতে অ্যাকাউন্ট মেনু থেকে সাইন ইন করুন",
@@ -23346,6 +23499,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.93d175570231": "প্রক্রিয়া করা হচ্ছে...",
     "literal.483bf2075c12": "প্রকাশিত হয়েছে",
     "literal.313503fa9540": "কোড পাঠান",
+    "literal.05665c93f216": "একটি প্রশ্ন জিজ্ঞাসা করুন…",
+    "literal.1aded95423be":
+      "পণ্য, শিপিং, রিটার্ন বা True Grit কীভাবে কাজ করে সে সম্পর্কে জিজ্ঞাসা করুন।",
+    "literal.2fdc0288d97d": "পণ্য, শিপিং, রিটার্ন বা আপনার অর্ডারের অবস্থা সম্পর্কে জিজ্ঞাসা করুন।",
+    "literal.2cfaa6da9c4f": "আমাদের কিছু জিজ্ঞাসা করুন",
+    "literal.bbfa773e5a63": "বন্ধ",
+    "literal.4244e822a06c": "কিছু ভুল হয়েছে আবার চেষ্টা করুন",
+    "literal.a60d9c9c5390": "ভাবছেন…",
   },
   brx: {
     "literal.87df31bb89b3": "- आवर्ती डिलीवरी सेट करने के लिए खाता मेनू से साइन इन करें",
@@ -24250,6 +24411,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "हमने एक समस्या का सामना किया है।",
     "literal.ca4f9dcf204e": "आपका स्वागत है",
     "literal.ed14777743d2": "आपकी पोस्ट",
+    "literal.05665c93f216": "प्रश्न पूछें…",
+    "literal.1aded95423be":
+      "उत्पादों, शिपिंग, रिटर्न या True Grit कैसे काम करता है, इसके बारे में पूछें।",
+    "literal.2fdc0288d97d": "उत्पादों, शिपिंग, रिटर्न या अपने ऑर्डर की स्थिति के बारे में पूछें।",
+    "literal.2cfaa6da9c4f": "हमसे कुछ भी पूछें",
+    "literal.bbfa773e5a63": "बंद करना",
+    "literal.4244e822a06c": "कुछ गलत हो गया। पुनः प्रयास करें।",
+    "literal.a60d9c9c5390": "सोच…",
   },
   sa: {
     "literal.87df31bb89b3": "— पुनरावर्तनीयवितरणं स्थापयितुं खातामेनूतः प्रवेशं कुर्वन्तु",
@@ -25156,6 +25325,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "वयं एकं स्नैग् मारयामः।",
     "literal.ca4f9dcf204e": "स्वागतं",
     "literal.ed14777743d2": "भवतः पोस्ट्",
+    "literal.05665c93f216": "प्रश्नं पृच्छतु...",
+    "literal.1aded95423be":
+      "उत्पादानाम्, शिपिंग, रिटर्न्, अथवा True Grit कथं कार्यं करोति इति विषये पृच्छन्तु।",
+    "literal.2fdc0288d97d":
+      "उत्पादानाम्, शिपिङ्गस्य, पुनरागमनस्य, अथवा भवतः आदेशस्य स्थितिविषये पृच्छन्तु।",
+    "literal.2cfaa6da9c4f": "अस्मान् किमपि पृच्छतु",
+    "literal.bbfa773e5a63": "पिधानं करोतु",
+    "literal.4244e822a06c": "किमपि भ्रष्टं जातम्। पुनः प्रयासं कुरुत।",
+    "literal.a60d9c9c5390": "चिन्तयन्...",
   },
   "zh-Hans": {
     "literal.87df31bb89b3": "— 从帐户菜单登录，设置定期配送",
@@ -25988,6 +26166,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "我们遇到了麻烦。",
     "literal.ca4f9dcf204e": "欢迎",
     "literal.ed14777743d2": "您的帖子",
+    "literal.05665c93f216": "问一个问题...",
+    "literal.1aded95423be": "询问产品、运输、退货或 True Grit 的运作方式。",
+    "literal.2fdc0288d97d": "询问产品、运输、退货或订单状态。",
+    "literal.2cfaa6da9c4f": "有什么问题都可以向我们询问",
+    "literal.bbfa773e5a63": "关闭",
+    "literal.4244e822a06c": "出了点问题。再试一次。",
+    "literal.a60d9c9c5390": "思维…",
   },
   es: {
     "literal.87df31bb89b3":
@@ -26906,6 +27091,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Tuvimos un problema.",
     "literal.ca4f9dcf204e": "Bienvenido",
     "literal.ed14777743d2": "Tu publicación",
+    "literal.05665c93f216": "Haz una pregunta...",
+    "literal.1aded95423be":
+      "Pregunte sobre productos, envíos, devoluciones o cómo funciona True Grit.",
+    "literal.2fdc0288d97d":
+      "Pregunta sobre productos, envíos, devoluciones o el estado de tu pedido.",
+    "literal.2cfaa6da9c4f": "Pregúntanos cualquier cosa",
+    "literal.bbfa773e5a63": "Cerca",
+    "literal.4244e822a06c": "Algo salió mal. Intentar otra vez.",
+    "literal.a60d9c9c5390": "Pensamiento…",
   },
   ar: {
     "literal.87df31bb89b3": "— قم بتسجيل الدخول من قائمة الحساب لإعداد التسليم المتكرر",
@@ -27785,6 +27979,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "لقد واجهنا عقبة.",
     "literal.ca4f9dcf204e": "مرحبًا",
     "literal.ed14777743d2": "مشاركتك",
+    "literal.05665c93f216": "اطرح سؤالاً…",
+    "literal.1aded95423be": "اسأل عن المنتجات أو الشحن أو الإرجاع أو كيفية عمل True Grit.",
+    "literal.2fdc0288d97d": "اسأل عن المنتجات أو الشحن أو المرتجعات أو حالة طلبك.",
+    "literal.2cfaa6da9c4f": "اسألنا أي شيء",
+    "literal.bbfa773e5a63": "يغلق",
+    "literal.4244e822a06c": "حدث خطأ ما. حاول ثانية.",
+    "literal.a60d9c9c5390": "التفكير…",
   },
   pt: {
     "literal.87df31bb89b3": "— faça login no menu da conta para configurar a entrega recorrente de",
@@ -28694,6 +28895,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Encontramos um obstáculo.",
     "literal.ca4f9dcf204e": "Bem-vindo",
     "literal.ed14777743d2": "Sua postagem",
+    "literal.05665c93f216": "Faça uma pergunta…",
+    "literal.1aded95423be":
+      "Pergunte sobre produtos, frete, devoluções ou como funciona True Grit.",
+    "literal.2fdc0288d97d": "Pergunte sobre produtos, frete, devoluções ou o status do seu pedido.",
+    "literal.2cfaa6da9c4f": "Pergunte-nos qualquer coisa",
+    "literal.bbfa773e5a63": "Fechar",
+    "literal.4244e822a06c": "Algo deu errado. Tente novamente.",
+    "literal.a60d9c9c5390": "Pensamento…",
   },
   fr: {
     "literal.87df31bb89b3":
@@ -29614,6 +29823,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Nous avons rencontré un problème.",
     "literal.ca4f9dcf204e": "Bienvenue",
     "literal.ed14777743d2": "Votre message",
+    "literal.05665c93f216": "Posez une question…",
+    "literal.1aded95423be":
+      "Renseignez-vous sur les produits, l'expédition, les retours ou le fonctionnement de True Grit.",
+    "literal.2fdc0288d97d":
+      "Renseignez-vous sur les produits, l'expédition, les retours ou l'état de votre commande.",
+    "literal.2cfaa6da9c4f": "Demandez-nous n'importe quoi",
+    "literal.bbfa773e5a63": "Fermer",
+    "literal.4244e822a06c": "Quelque chose s'est mal passé. Essayer à nouveau.",
+    "literal.a60d9c9c5390": "Pensée…",
   },
   ru: {
     "literal.87df31bb89b3":
@@ -30523,6 +30741,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Мы столкнулись с проблемой.",
     "literal.ca4f9dcf204e": "Добро пожаловать",
     "literal.ed14777743d2": "Ваше сообщение",
+    "literal.05665c93f216": "Задайте вопрос…",
+    "literal.1aded95423be":
+      "Спросите о продуктах, доставке, возврате или о том, как работает True Grit.",
+    "literal.2fdc0288d97d": "Спросите о продуктах, доставке, возврате или статусе вашего заказа.",
+    "literal.2cfaa6da9c4f": "Спросите нас о чем угодно",
+    "literal.bbfa773e5a63": "Закрывать",
+    "literal.4244e822a06c": "Что-то пошло не так. Попробуйте еще раз.",
+    "literal.a60d9c9c5390": "Думая…",
   },
   id: {
     "literal.87df31bb89b3": "— masuk dari menu akun untuk menyiapkan pengiriman berulang dari",
@@ -31437,6 +31663,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Kami mengalami masalah.",
     "literal.ca4f9dcf204e": "Selamat datang",
     "literal.ed14777743d2": "Postingan Anda",
+    "literal.05665c93f216": "Ajukan pertanyaan…",
+    "literal.1aded95423be":
+      "Tanyakan tentang produk, pengiriman, pengembalian, atau cara kerja True Grit.",
+    "literal.2fdc0288d97d":
+      "Tanyakan tentang produk, pengiriman, pengembalian, atau status pesanan Anda.",
+    "literal.2cfaa6da9c4f": "Tanyakan apa saja kepada kami",
+    "literal.bbfa773e5a63": "Menutup",
+    "literal.4244e822a06c": "Ada yang tidak beres. Coba lagi.",
+    "literal.a60d9c9c5390": "Pemikiran…",
   },
   de: {
     "literal.87df31bb89b3":
@@ -32359,6 +32594,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Wir haben einen Treffer erzielt Haken.",
     "literal.ca4f9dcf204e": "Willkommen",
     "literal.ed14777743d2": "Ihr Beitrag",
+    "literal.05665c93f216": "Eine Frage stellen…",
+    "literal.1aded95423be":
+      "Fragen Sie nach Produkten, Versand, Rücksendungen oder wie True Grit funktioniert.",
+    "literal.2fdc0288d97d":
+      "Fragen Sie nach Produkten, Versand, Retouren oder dem Status Ihrer Bestellung.",
+    "literal.2cfaa6da9c4f": "Fragen Sie uns alles",
+    "literal.bbfa773e5a63": "Schließen",
+    "literal.4244e822a06c": "Etwas ist schief gelaufen. Versuchen Sie es erneut.",
+    "literal.a60d9c9c5390": "Denken…",
   },
   ja: {
     "literal.87df31bb89b3": "— アカウント メニューからサインインして、",
@@ -33251,6 +33495,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "問題が発生しました。",
     "literal.ca4f9dcf204e": "ようこそ",
     "literal.ed14777743d2": "あなたの投稿",
+    "literal.05665c93f216": "質問してください…",
+    "literal.1aded95423be": "製品、配送、返品、True Grit の仕組みについて質問してください。",
+    "literal.2fdc0288d97d": "製品、配送、返品、または注文の状況についてお問い合わせください。",
+    "literal.2cfaa6da9c4f": "何でも聞いてください",
+    "literal.bbfa773e5a63": "近い",
+    "literal.4244e822a06c": "何か問題が発生しました。もう一度やり直してください。",
+    "literal.a60d9c9c5390": "考え…",
   },
   tr: {
     "literal.87df31bb89b3": "— uygulanan",
@@ -34164,6 +34415,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Bir sorunla karşılaştık.",
     "literal.ca4f9dcf204e": "Hoş geldiniz",
     "literal.ed14777743d2": "Gönderiniz",
+    "literal.05665c93f216": "Bir soru sorun…",
+    "literal.1aded95423be":
+      "Ürünler, nakliye, iadeler veya True Grit'ın nasıl çalıştığı hakkında bilgi alın.",
+    "literal.2fdc0288d97d":
+      "Ürünler, gönderim bedeli, iadeler veya siparişinizin durumu hakkında bilgi alın.",
+    "literal.2cfaa6da9c4f": "Bize herhangi bir şey sorun",
+    "literal.bbfa773e5a63": "Kapalı",
+    "literal.4244e822a06c": "Bir şeyler ters gitti. Tekrar deneyin.",
+    "literal.a60d9c9c5390": "Düşünüyorum…",
   },
   vi: {
     "literal.87df31bb89b3": "— đăng nhập từ menu tài khoản để thiết lập việc phân phối định kỳ",
@@ -35077,6 +35337,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Chúng tôi gặp phải trở ngại.",
     "literal.ca4f9dcf204e": "Chào mừng",
     "literal.ed14777743d2": "Bài đăng của bạn",
+    "literal.05665c93f216": "Đặt một câu hỏi…",
+    "literal.1aded95423be": "Hỏi về sản phẩm, vận chuyển, trả lại hoặc cách True Grit hoạt động.",
+    "literal.2fdc0288d97d":
+      "Hỏi về sản phẩm, vận chuyển, trả lại hoặc trạng thái đơn đặt hàng của bạn.",
+    "literal.2cfaa6da9c4f": "Hãy hỏi chúng tôi bất cứ điều gì",
+    "literal.bbfa773e5a63": "Đóng",
+    "literal.4244e822a06c": "Đã xảy ra lỗi. Hãy thử lại.",
+    "literal.a60d9c9c5390": "Đang suy nghĩ…",
   },
   ko: {
     "literal.87df31bb89b3": "— 계정 메뉴에서 로그인하여 반복 배송을 설정하세요",
@@ -35958,6 +36226,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "문제가 발생했습니다.",
     "literal.ca4f9dcf204e": "환영합니다",
     "literal.ed14777743d2": "귀하의 게시물",
+    "literal.05665c93f216": "질문을 해보세요…",
+    "literal.1aded95423be": "제품, 배송, 반품 또는 True Grit 작동 방식에 대해 문의하세요.",
+    "literal.2fdc0288d97d": "제품, 배송, 반품 또는 주문 상태에 대해 문의하세요.",
+    "literal.2cfaa6da9c4f": "무엇이든 물어보세요",
+    "literal.bbfa773e5a63": "닫다",
+    "literal.4244e822a06c": "문제가 발생했습니다. 다시 시도해 보세요.",
+    "literal.a60d9c9c5390": "생각…",
   },
   it: {
     "literal.87df31bb89b3": "— accedi dal menu account per impostare la consegna ricorrente di",
@@ -36871,6 +37146,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Abbiamo riscontrato un problema.",
     "literal.ca4f9dcf204e": "Benvenuto",
     "literal.ed14777743d2": "Il tuo post",
+    "literal.05665c93f216": "Fai una domanda...",
+    "literal.1aded95423be":
+      "Chiedi informazioni su prodotti, spedizioni, resi o come funziona True Grit.",
+    "literal.2fdc0288d97d":
+      "Chiedi informazioni sui prodotti, sulla spedizione, sui resi o sullo stato del tuo ordine.",
+    "literal.2cfaa6da9c4f": "Chiedici qualsiasi cosa",
+    "literal.bbfa773e5a63": "Vicino",
+    "literal.4244e822a06c": "Qualcosa è andato storto. Riprova.",
+    "literal.a60d9c9c5390": "Pensiero…",
   },
   fa: {
     "literal.87df31bb89b3": "— از منوی حساب وارد شوید تا تحویل تکرار شونده را تنظیم کنید",
@@ -37763,6 +38047,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ed14777743d2": "پست شما",
     "literal.d4ae137ac5ef": "به سبد شما اضافه شد",
     "literal.44cddb4f5033": "ارسال بررسی",
+    "literal.05665c93f216": "سوال بپرس…",
+    "literal.1aded95423be": "درباره محصولات، حمل و نقل، برگرداندن یا نحوه عملکرد True Grit بپرسید.",
+    "literal.2fdc0288d97d": "در مورد محصولات، حمل و نقل، مرجوعی یا وضعیت سفارش خود بپرسید.",
+    "literal.2cfaa6da9c4f": "هر چیزی از ما بپرسید",
+    "literal.bbfa773e5a63": "بستن",
+    "literal.4244e822a06c": "مشکلی پیش آمد. دوباره امتحان کنید.",
+    "literal.a60d9c9c5390": "فکر کردن…",
   },
   "zh-Hant": {
     "literal.87df31bb89b3": "— 從帳戶選單登錄，設定定期交付",
@@ -38595,6 +38886,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "我們遇到了障礙。",
     "literal.ca4f9dcf204e": "歡迎",
     "literal.ed14777743d2": "您的貼文",
+    "literal.05665c93f216": "問一個問題...",
+    "literal.1aded95423be": "詢問產品、運輸、退貨或 True Grit 的運作方式。",
+    "literal.2fdc0288d97d": "詢問產品、運送、退貨或訂單狀態。",
+    "literal.2cfaa6da9c4f": "有什麼問題都可以向我們詢問",
+    "literal.bbfa773e5a63": "關閉",
+    "literal.4244e822a06c": "出了點問題。再試一次。",
+    "literal.a60d9c9c5390": "思維…",
   },
   th: {
     "literal.87df31bb89b3": "— ลงชื่อเข้าใช้จากเมนูบัญชีเพื่อตั้งค่าการจัดส่งแบบประจำของ",
@@ -39478,6 +39776,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "เราประสบปัญหา",
     "literal.ca4f9dcf204e": "ยินดีต้อนรับ",
     "literal.ed14777743d2": "โพสต์ของคุณ",
+    "literal.05665c93f216": "ถามคำถาม...",
+    "literal.1aded95423be":
+      "ถามเกี่ยวกับผลิตภัณฑ์ การจัดส่ง การคืนสินค้า หรือวิธีการทำงานของ True Grit",
+    "literal.2fdc0288d97d":
+      "สอบถามเกี่ยวกับสินค้า การจัดส่ง การคืนสินค้า หรือสถานะคำสั่งซื้อของคุณ",
+    "literal.2cfaa6da9c4f": "ถามเราอะไรก็ได้",
+    "literal.bbfa773e5a63": "ปิด",
+    "literal.4244e822a06c": "มีบางอย่างผิดพลาด ลองอีกครั้ง",
+    "literal.a60d9c9c5390": "กำลังคิด...",
   },
   pl: {
     "literal.87df31bb89b3": "— zaloguj się z menu konta, aby ustawić powtarzającą się dostawę",
@@ -40386,6 +40693,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Natrafiliśmy na przeszkodę.",
     "literal.ca4f9dcf204e": "Witamy",
     "literal.ed14777743d2": "Twój post",
+    "literal.05665c93f216": "Zadaj pytanie…",
+    "literal.1aded95423be": "Zapytaj o produkty, wysyłkę, zwroty lub działanie True Grit.",
+    "literal.2fdc0288d97d": "Zapytaj o produkty, wysyłkę, zwroty lub status swojego zamówienia.",
+    "literal.2cfaa6da9c4f": "Zapytaj nas o cokolwiek",
+    "literal.bbfa773e5a63": "Zamknąć",
+    "literal.4244e822a06c": "Coś poszło nie tak. Spróbuj ponownie.",
+    "literal.a60d9c9c5390": "Myślący…",
   },
   uk: {
     "literal.87df31bb89b3":
@@ -41291,6 +41605,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Ми зіткнулися з проблемою.",
     "literal.ca4f9dcf204e": "Вітаємо",
     "literal.ed14777743d2": "Ваша публікація",
+    "literal.05665c93f216": "Задати питання…",
+    "literal.1aded95423be": "Запитайте про продукти, доставку, повернення або як працює True Grit.",
+    "literal.2fdc0288d97d":
+      "Запитайте про продукти, доставку, повернення або статус вашого замовлення.",
+    "literal.2cfaa6da9c4f": "Запитайте нас що завгодно",
+    "literal.bbfa773e5a63": "Закрити",
+    "literal.4244e822a06c": "Щось пішло не так. Спробуйте знову.",
+    "literal.a60d9c9c5390": "Думаючи…",
   },
   nl: {
     "literal.87df31bb89b3":
@@ -42198,6 +42520,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Er is een probleem opgetreden probleem.",
     "literal.ca4f9dcf204e": "Welkom",
     "literal.ed14777743d2": "Je bericht",
+    "literal.05665c93f216": "Stel een vraag…",
+    "literal.1aded95423be": "Vraag naar producten, verzending, retouren of hoe True Grit werkt.",
+    "literal.2fdc0288d97d":
+      "Vraag naar producten, verzending, retouren of de status van uw bestelling.",
+    "literal.2cfaa6da9c4f": "Vraag ons alles",
+    "literal.bbfa773e5a63": "Dichtbij",
+    "literal.4244e822a06c": "Er is iets misgegaan. Probeer het opnieuw.",
+    "literal.a60d9c9c5390": "Denken…",
   },
   fil: {
     "literal.87df31bb89b3":
@@ -43120,6 +43450,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.20271153cfd5":
       "Kwalipikado para sa pagbabalik — tingnan ang aming patakaran sa pagbabalik.",
     "literal.c53c1c85a9cf": "Magbayad at mag-order",
+    "literal.05665c93f216": "Magtanong…",
+    "literal.1aded95423be":
+      "Magtanong tungkol sa mga produkto, pagpapadala, pagbabalik, o kung paano gumagana ang True Grit.",
+    "literal.2fdc0288d97d":
+      "Magtanong tungkol sa mga produkto, pagpapadala, pagbabalik, o status ng iyong order.",
+    "literal.2cfaa6da9c4f": "Magtanong sa amin ng kahit ano",
+    "literal.bbfa773e5a63": "Isara",
+    "literal.4244e822a06c": "Nagkaproblema. Subukan muli.",
+    "literal.a60d9c9c5390": "Iniisip…",
   },
   sw: {
     "literal.87df31bb89b3":
@@ -44022,6 +44361,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Tuligonga mwamba.",
     "literal.ca4f9dcf204e": "Karibu",
     "literal.ed14777743d2": "Chapisho lako",
+    "literal.05665c93f216": "Uliza swali...",
+    "literal.1aded95423be":
+      "Uliza kuhusu bidhaa, usafirishaji, marejesho, au jinsi True Grit inavyofanya kazi.",
+    "literal.2fdc0288d97d": "Uliza kuhusu bidhaa, usafirishaji, marejesho, au hali ya agizo lako.",
+    "literal.2cfaa6da9c4f": "Utuulize chochote",
+    "literal.bbfa773e5a63": "Funga",
+    "literal.4244e822a06c": "Hitilafu fulani imetokea. Jaribu tena.",
+    "literal.a60d9c9c5390": "Kufikiri...",
   },
   he: {
     "literal.87df31bb89b3": "— היכנס מתפריט החשבון כדי להגדיר מסירה חוזרת של",
@@ -44877,6 +45224,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "ברוך הבא",
     "literal.ed14777743d2": "הפוסט שלך",
     "literal.25bdf9860e96": "הַגָשָׁה…",
+    "literal.05665c93f216": "שאל שאלה…",
+    "literal.1aded95423be": "שאל על מוצרים, משלוח, החזרות או איך True Grit עובד.",
+    "literal.2fdc0288d97d": "שאל לגבי מוצרים, משלוח, החזרות או מצב ההזמנה שלך.",
+    "literal.2cfaa6da9c4f": "תשאל אותנו כל דבר",
+    "literal.bbfa773e5a63": "לִסְגוֹר",
+    "literal.4244e822a06c": "משהו השתבש. נסה שוב.",
+    "literal.a60d9c9c5390": "חֲשִׁיבָה…",
   },
   sv: {
     "literal.87df31bb89b3": "— logga in från kontomenyn för att ställa in återkommande leverans av",
@@ -45777,6 +46131,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Vi har en problematik.",
     "literal.ca4f9dcf204e": "Välkommen",
     "literal.ed14777743d2": "Ditt inlägg",
+    "literal.05665c93f216": "Ställa en fråga…",
+    "literal.1aded95423be": "Fråga om produkter, frakt, returer eller hur True Grit fungerar.",
+    "literal.2fdc0288d97d": "Fråga om produkter, frakt, returer eller status för din beställning.",
+    "literal.2cfaa6da9c4f": "Fråga oss vad som helst",
+    "literal.bbfa773e5a63": "Nära",
+    "literal.4244e822a06c": "Något gick fel. Försök igen.",
+    "literal.a60d9c9c5390": "Tänkande…",
   },
   nb: {
     "literal.87df31bb89b3": "— logg på fra kontomenyen for å konfigurere gjentakende levering av",
@@ -46675,6 +47036,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Vi traff en hake.",
     "literal.ca4f9dcf204e": "Velkommen",
     "literal.ed14777743d2": "Innlegget ditt",
+    "literal.05665c93f216": "Still et spørsmål...",
+    "literal.1aded95423be": "Spør om produkter, frakt, returer eller hvordan True Grit fungerer.",
+    "literal.2fdc0288d97d": "Spør om produkter, frakt, returer eller status for bestillingen din.",
+    "literal.2cfaa6da9c4f": "Spør oss om hva som helst",
+    "literal.bbfa773e5a63": "Lukke",
+    "literal.4244e822a06c": "Noe gikk galt. Prøv igjen.",
+    "literal.a60d9c9c5390": "Tenker...",
   },
   da: {
     "literal.87df31bb89b3":
@@ -47579,6 +47947,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Vi har ramt en hage.",
     "literal.ca4f9dcf204e": "Velkommen",
     "literal.ed14777743d2": "Dit indlæg",
+    "literal.05665c93f216": "Stil et spørgsmål...",
+    "literal.1aded95423be":
+      "Spørg om produkter, forsendelse, returnering, eller hvordan True Grit fungerer.",
+    "literal.2fdc0288d97d":
+      "Spørg om produkter, forsendelse, returnering eller status på din ordre.",
+    "literal.2cfaa6da9c4f": "Spørg os om hvad som helst",
+    "literal.bbfa773e5a63": "Tæt",
+    "literal.4244e822a06c": "Noget gik galt. Prøv igen.",
+    "literal.a60d9c9c5390": "Tænker...",
   },
   fi: {
     "literal.87df31bb89b3": "— kirjaudu sisään tilivalikosta ja määritä toistuva toimitus",
@@ -48487,6 +48864,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "Tervetuloa",
     "literal.ed14777743d2": "Viestisi",
     "literal.483bf2075c12": "Julkaistu",
+    "literal.05665c93f216": "Esitä kysymys…",
+    "literal.1aded95423be":
+      "Kysy tuotteista, toimituksesta, palautuksista tai miten True Grit toimii.",
+    "literal.2fdc0288d97d": "Kysy tuotteista, toimituksesta, palautuksista tai tilauksesi tilasta.",
+    "literal.2cfaa6da9c4f": "Kysy meiltä mitä tahansa",
+    "literal.bbfa773e5a63": "Lähellä",
+    "literal.4244e822a06c": "Jotain meni pieleen. Yritä uudelleen.",
+    "literal.a60d9c9c5390": "Ajattelu…",
   },
   el: {
     "literal.87df31bb89b3":
@@ -49406,6 +49791,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "Καλώς ήρθατε",
     "literal.ed14777743d2": "Η ανάρτησή σας",
     "literal.20271153cfd5": "Κατάλληλο για επιστροφή — δείτε την πολιτική επιστροφών μας.",
+    "literal.05665c93f216": "Κάντε μια ερώτηση…",
+    "literal.1aded95423be":
+      "Ρωτήστε για προϊόντα, αποστολή, επιστροφές ή πώς λειτουργεί το True Grit.",
+    "literal.2fdc0288d97d":
+      "Ρωτήστε για τα προϊόντα, την αποστολή, τις επιστροφές ή την κατάσταση της παραγγελίας σας.",
+    "literal.2cfaa6da9c4f": "Ρωτήστε μας οτιδήποτε",
+    "literal.bbfa773e5a63": "Κοντά",
+    "literal.4244e822a06c": "Κάτι πήγε στραβά. Προσπαθήστε ξανά.",
+    "literal.a60d9c9c5390": "Σκέψη…",
   },
   cs: {
     "literal.87df31bb89b3": "— přihlaste se z nabídky účtu a nastavte opakující se doručování",
@@ -50308,6 +50702,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "Vítejte",
     "literal.ed14777743d2": "Váš příspěvek",
     "literal.483bf2075c12": "Publikováno",
+    "literal.05665c93f216": "Zeptejte se…",
+    "literal.1aded95423be":
+      "Zeptejte se na produkty, dopravu, vracení nebo na to, jak True Grit funguje.",
+    "literal.2fdc0288d97d": "Zeptejte se na produkty, dopravu, vrácení nebo stav vaší objednávky.",
+    "literal.2cfaa6da9c4f": "Zeptejte se nás na cokoliv",
+    "literal.bbfa773e5a63": "Blízko",
+    "literal.4244e822a06c": "Něco se pokazilo. Zkuste to znovu.",
+    "literal.a60d9c9c5390": "Myslící…",
   },
   hu: {
     "literal.87df31bb89b3": "— jelentkezzen be a fiókmenüből az ismétlődő kézbesítés beállításához",
@@ -51215,6 +51617,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Gondba ütköztünk.",
     "literal.ca4f9dcf204e": "Üdvözlünk!",
     "literal.ed14777743d2": "Az Ön bejegyzése",
+    "literal.05665c93f216": "Tegyen fel kérdést…",
+    "literal.1aded95423be":
+      "Kérdezzen a termékekről, a szállításról, a visszaküldésről vagy a True Grit működéséről.",
+    "literal.2fdc0288d97d":
+      "Kérdezzen a termékekről, a szállításról, a visszaküldésről vagy a rendelés állapotáról.",
+    "literal.2cfaa6da9c4f": "Kérdezz tőlünk bármit",
+    "literal.bbfa773e5a63": "Közeli",
+    "literal.4244e822a06c": "Valami elromlott. Próbáld újra.",
+    "literal.a60d9c9c5390": "Gondolkodás…",
   },
   ro: {
     "literal.87df31bb89b3":
@@ -52131,6 +52542,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.060be00f4f26": "Toate categoriile",
     "literal.cfea419c3b4e": "Aplicați",
     "literal.e305a839e38a": "Fiecare produs publicat pe piață, mai întâi cel mai nou.",
+    "literal.05665c93f216": "Pune o întrebare…",
+    "literal.1aded95423be":
+      "Întrebați despre produse, livrare, retururi sau cum funcționează True Grit.",
+    "literal.2fdc0288d97d": "Întrebați despre produse, livrare, retururi sau starea comenzii dvs.",
+    "literal.2cfaa6da9c4f": "Întreabă-ne orice",
+    "literal.bbfa773e5a63": "Aproape",
+    "literal.4244e822a06c": "Ceva a mers prost. Încearcă din nou.",
+    "literal.a60d9c9c5390": "Gândire…",
   },
   sk: {
     "literal.87df31bb89b3": "— prihláste sa z ponuky účtu a nastavte si opakované doručovanie",
@@ -53035,6 +53454,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "Vitajte",
     "literal.ed14777743d2": "Váš príspevok",
     "literal.483bf2075c12": "Zverejnené",
+    "literal.05665c93f216": "Položiť otázku…",
+    "literal.1aded95423be":
+      "Opýtajte sa na produkty, dopravu, vrátenie tovaru alebo ako funguje True Grit.",
+    "literal.2fdc0288d97d":
+      "Opýtajte sa na produkty, dopravu, vrátenie alebo stav vašej objednávky.",
+    "literal.2cfaa6da9c4f": "Opýtajte sa nás na čokoľvek",
+    "literal.bbfa773e5a63": "Zavrieť",
+    "literal.4244e822a06c": "Niečo sa pokazilo. Skúste to znova.",
+    "literal.a60d9c9c5390": "Premýšľanie…",
   },
   bg: {
     "literal.87df31bb89b3": "— влезте от менюто на акаунта, за да настроите периодична доставка на",
@@ -53943,6 +54371,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Натъкнахме се на камък.",
     "literal.ca4f9dcf204e": "Добре дошли",
     "literal.ed14777743d2": "Вашата публикация",
+    "literal.05665c93f216": "Задайте въпрос...",
+    "literal.1aded95423be": "Попитайте за продукти, доставка, връщане или как работи True Grit.",
+    "literal.2fdc0288d97d":
+      "Попитайте за продукти, доставка, връщане или статус на вашата поръчка.",
+    "literal.2cfaa6da9c4f": "Попитайте ни каквото и да било",
+    "literal.bbfa773e5a63": "затвори",
+    "literal.4244e822a06c": "Нещо се обърка. Опитайте отново.",
+    "literal.a60d9c9c5390": "мислене...",
   },
   af: {
     "literal.87df31bb89b3": "— meld aan vanaf die rekeningkieslys om herhalende aflewering van",
@@ -54851,6 +55287,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Ons het 'n probleem.",
     "literal.ca4f9dcf204e": "Welkom",
     "literal.ed14777743d2": "Jou plasing",
+    "literal.05665c93f216": "Vra 'n vraag...",
+    "literal.1aded95423be": "Vra oor produkte, versending, terugsendings of hoe True Grit werk.",
+    "literal.2fdc0288d97d":
+      "Vra oor produkte, versending, terugsendings of die status van jou bestelling.",
+    "literal.2cfaa6da9c4f": "Vra ons enigiets",
+    "literal.bbfa773e5a63": "Maak toe",
+    "literal.4244e822a06c": "Iets het verkeerd geloop. Probeer weer.",
+    "literal.a60d9c9c5390": "Dink…",
   },
   sq: {
     "literal.87df31bb89b3":
@@ -55758,6 +56202,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Kemi hasur në një pengesë.",
     "literal.ca4f9dcf204e": "Mirë se erdhe",
     "literal.ed14777743d2": "Postimi yt",
+    "literal.05665c93f216": "Bëj një pyetje…",
+    "literal.1aded95423be":
+      "Pyetni për produktet, transportin, kthimet ose se si funksionon True Grit.",
+    "literal.2fdc0288d97d":
+      "Pyesni për produktet, transportin, kthimet ose statusin e porosisë tuaj.",
+    "literal.2cfaa6da9c4f": "Na pyesni për çdo gjë",
+    "literal.bbfa773e5a63": "Mbylle",
+    "literal.4244e822a06c": "Diçka shkoi keq. Provo sërish.",
+    "literal.a60d9c9c5390": "Duke menduar…",
   },
   am: {
     "literal.87df31bb89b3": "— ተደጋጋሚ ማድረሻን ለማዘጋጀት ከመለያው ሜኑ ይግቡ",
@@ -56599,6 +57052,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "አስቸጋሪ ሁኔታ ላይ ደርሰናል።",
     "literal.ca4f9dcf204e": "እንኳን በደህና መጡ",
     "literal.ed14777743d2": "የእርስዎ ልጥፍ",
+    "literal.05665c93f216": "ጥያቄ ጠይቅ…",
+    "literal.1aded95423be": "ስለ ምርቶች፣ መላኪያ፣ ተመላሾች ወይም True Grit እንዴት እንደሚሰራ ይጠይቁ።",
+    "literal.2fdc0288d97d": "ስለ ምርቶች፣ መላኪያ፣ ተመላሾች ወይም የትዕዛዝዎ ሁኔታ ይጠይቁ።",
+    "literal.2cfaa6da9c4f": "ማንኛውንም ነገር ይጠይቁን።",
+    "literal.bbfa773e5a63": "ገጠመ",
+    "literal.4244e822a06c": "የሆነ ችግር ተፈጥሯል። እንደገና ይሞክሩ።",
+    "literal.a60d9c9c5390": "በማሰብ…",
   },
   hy: {
     "literal.87df31bb89b3": "— մուտք գործեք հաշվի ընտրացանկից՝ կարգավորելու",
@@ -57506,6 +57966,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "Բարի գալուստ",
     "literal.ed14777743d2": "Ձեր գրառումը",
     "literal.20271153cfd5": "Իրավասու է վերադարձի համար. տես մեր վերադարձի քաղաքականությունը:",
+    "literal.05665c93f216": "Հարց տվեք…",
+    "literal.1aded95423be": "Հարցրեք ապրանքների, առաքման, վերադարձի կամ True Grit-ի մասին:",
+    "literal.2fdc0288d97d":
+      "Հարցրեք ապրանքների, առաքման, վերադարձի կամ ձեր պատվերի կարգավիճակի մասին:",
+    "literal.2cfaa6da9c4f": "Հարցրեք մեզ ինչ-որ բան",
+    "literal.bbfa773e5a63": "Փակել",
+    "literal.4244e822a06c": "Սխալ առաջացավ։ Կրկին փորձեք:",
+    "literal.a60d9c9c5390": "Մտածում…",
   },
   az: {
     "literal.87df31bb89b3":
@@ -58418,6 +58886,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.483bf2075c12": "Nəşr edilmişdir",
     "literal.ca4f9dcf204e": "Xoş gəldiniz",
     "literal.ed14777743d2": "Sizin postunuz",
+    "literal.05665c93f216": "Sual verin...",
+    "literal.1aded95423be":
+      "Məhsullar, göndərmə, geri qaytarma və ya True Grit necə işlədiyi barədə soruşun.",
+    "literal.2fdc0288d97d":
+      "Məhsullar, göndərmə, geri qaytarma və ya sifarişinizin vəziyyəti haqqında soruşun.",
+    "literal.2cfaa6da9c4f": "Bizdən bir şey soruşun",
+    "literal.bbfa773e5a63": "Bağlayın",
+    "literal.4244e822a06c": "Nəsə xəta baş verdi. Yenidən cəhd edin.",
+    "literal.a60d9c9c5390": "Düşünür...",
   },
   eu: {
     "literal.87df31bb89b3": "— hasi saioa kontuaren menutik",
@@ -59327,6 +59804,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.58293560f293": "Ordaindu PayPal-ekin",
     "literal.313503fa9540": "Bidali kodea",
     "literal.25bdf9860e96": "Bidaltzen…",
+    "literal.05665c93f216": "Galdera bat egin...",
+    "literal.1aded95423be":
+      "Galdetu produktuei, bidalketari, itzulketei edo True Grit-k nola funtzionatzen duen.",
+    "literal.2fdc0288d97d":
+      "Galdetu produktuei, bidalketari, itzulketei edo zure eskaeraren egoerari buruz.",
+    "literal.2cfaa6da9c4f": "Galde iezaguzu edozer",
+    "literal.bbfa773e5a63": "Itxi",
+    "literal.4244e822a06c": "Zerbait gaizki joan da. Saiatu berriro.",
+    "literal.a60d9c9c5390": "Pentsatzen…",
   },
   be: {
     "literal.87df31bb89b3":
@@ -60237,6 +60723,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Мы сутыкнуліся з праблемай.",
     "literal.ca4f9dcf204e": "Вітаем",
     "literal.ed14777743d2": "Ваша публікацыя",
+    "literal.05665c93f216": "Задайце пытанне…",
+    "literal.1aded95423be":
+      "Спытайце аб прадуктах, дастаўцы, вяртанні або аб тым, як працуе True Grit.",
+    "literal.2fdc0288d97d": "Спытайце аб прадуктах, дастаўцы, вяртанні або статусе вашага замовы.",
+    "literal.2cfaa6da9c4f": "Спытайце ў нас што-небудзь",
+    "literal.bbfa773e5a63": "Блізка",
+    "literal.4244e822a06c": "Нешта пайшло не так. Паспрабуйце яшчэ раз.",
+    "literal.a60d9c9c5390": "Думаючы…",
   },
   bs: {
     "literal.87df31bb89b3": "— prijavite se iz menija računa da postavite ponavljajuću isporuku",
@@ -61139,6 +61633,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.20271153cfd5": "Ispunjava uslove za povrat — pogledajte našu politiku povrata.",
     "literal.9bc2575c3930": "Pošalji",
     "literal.313503fa9540": "Pošalji kod",
+    "literal.05665c93f216": "Postavite pitanje…",
+    "literal.1aded95423be":
+      "Pitajte o proizvodima, otpremi, povratu ili kako True Grit funkcionira.",
+    "literal.2fdc0288d97d": "Pitajte o proizvodima, otpremi, povratu ili statusu vaše narudžbe.",
+    "literal.2cfaa6da9c4f": "Pitajte nas bilo šta",
+    "literal.bbfa773e5a63": "Zatvori",
+    "literal.4244e822a06c": "Nešto je pošlo po zlu. Pokušajte ponovo.",
+    "literal.a60d9c9c5390": "Razmišljajući…",
   },
   ca: {
     "literal.87df31bb89b3":
@@ -62060,6 +62562,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "Benvingut",
     "literal.ed14777743d2": "La teva publicació",
     "literal.25bdf9860e96": "S'està enviant…",
+    "literal.05665c93f216": "Fes una pregunta…",
+    "literal.1aded95423be":
+      "Pregunta sobre productes, enviaments, devolucions o com funciona True Grit.",
+    "literal.2fdc0288d97d":
+      "Pregunta sobre productes, enviaments, devolucions o l'estat de la teva comanda.",
+    "literal.2cfaa6da9c4f": "Pregunta'ns qualsevol cosa",
+    "literal.bbfa773e5a63": "Tancar",
+    "literal.4244e822a06c": "Alguna cosa va fallar. Torna-ho a provar.",
+    "literal.a60d9c9c5390": "Pensant…",
   },
   hr: {
     "literal.87df31bb89b3":
@@ -62961,6 +63472,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Naišli smo na problem.",
     "literal.ca4f9dcf204e": "Dobro došli",
     "literal.ed14777743d2": "Vaš post",
+    "literal.05665c93f216": "Postavite pitanje…",
+    "literal.1aded95423be":
+      "Raspitajte se o proizvodima, otpremi, povratima ili o tome kako True Grit funkcionira.",
+    "literal.2fdc0288d97d":
+      "Raspitajte se o proizvodima, otpremi, povratima ili statusu svoje narudžbe.",
+    "literal.2cfaa6da9c4f": "Pitajte nas bilo što",
+    "literal.bbfa773e5a63": "Zatvoriti",
+    "literal.4244e822a06c": "Nešto nije u redu. Pokušajte ponovno.",
+    "literal.a60d9c9c5390": "razmišljanje...",
   },
   et: {
     "literal.87df31bb89b3": "— logige sisse kontomenüüst, et seadistada korduv tarne",
@@ -63859,6 +64379,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "Tere tulemast",
     "literal.ed14777743d2": "Teie postitus",
     "literal.0b63a41933f6": "Alusta arutelu",
+    "literal.05665c93f216": "Esitage küsimus…",
+    "literal.1aded95423be": "Küsige toodete, saatmise, tagastamise või True Grit toimimise kohta.",
+    "literal.2fdc0288d97d": "Küsige toodete, saatmise, tagastamise või tellimuse oleku kohta.",
+    "literal.2cfaa6da9c4f": "Küsi meilt midagi",
+    "literal.bbfa773e5a63": "Sule",
+    "literal.4244e822a06c": "Midagi läks valesti. Proovi uuesti.",
+    "literal.a60d9c9c5390": "Mõeldes…",
   },
   gl: {
     "literal.87df31bb89b3":
@@ -64771,6 +65298,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.8d9185d6f499": "Non queda ningún reenvío",
     "literal.483bf2075c12": "Publicado",
     "literal.25bdf9860e96": "Enviando…",
+    "literal.05665c93f216": "Fai unha pregunta...",
+    "literal.1aded95423be":
+      "Pregunta sobre produtos, envíos, devolucións ou como funciona True Grit.",
+    "literal.2fdc0288d97d":
+      "Pregunta sobre produtos, envíos, devolucións ou o estado do teu pedido.",
+    "literal.2cfaa6da9c4f": "Pregúntanos calquera cousa",
+    "literal.bbfa773e5a63": "Pechar",
+    "literal.4244e822a06c": "Algo saíu mal. Téntao de novo.",
+    "literal.a60d9c9c5390": "Pensando…",
   },
   ka: {
     "literal.87df31bb89b3": "— შედით ანგარიშის მენიუდან, რათა დააყენოთ",
@@ -65673,6 +66209,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ed14777743d2": "თქვენი პოსტი",
     "literal.d4ae137ac5ef": "დამატებულია თქვენს კალათაში.",
     "literal.20271153cfd5": "დაბრუნების უფლება - იხილეთ ჩვენი დაბრუნების პოლიტიკა.",
+    "literal.05665c93f216": "დასვით შეკითხვა…",
+    "literal.1aded95423be":
+      "ჰკითხეთ პროდუქტების, მიწოდების, დაბრუნების ან როგორ მუშაობს True Grit.",
+    "literal.2fdc0288d97d":
+      "იკითხეთ პროდუქტების, მიწოდების, დაბრუნების ან თქვენი შეკვეთის სტატუსის შესახებ.",
+    "literal.2cfaa6da9c4f": "გვკითხეთ რამე",
+    "literal.bbfa773e5a63": "დახურვა",
+    "literal.4244e822a06c": "რაღაც შეფერხდა. სცადეთ ხელახლა.",
+    "literal.a60d9c9c5390": "ფიქრი…",
   },
   ha: {
     "literal.87df31bb89b3": "- shiga daga menu na asusun don saita isar da akai-akai na",
@@ -66574,6 +67119,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Mun yi nasara.",
     "literal.ca4f9dcf204e": "Barka da zuwa",
     "literal.ed14777743d2": "Aikawar ku",
+    "literal.05665c93f216": "Yi tambaya…",
+    "literal.1aded95423be":
+      "Tambayi game da samfurori, jigilar kaya, dawowa, ko yadda True Grit ke aiki.",
+    "literal.2fdc0288d97d": "Tambayi game da samfura, jigilar kaya, dawowa, ko matsayin odar ku.",
+    "literal.2cfaa6da9c4f": "Tambaye mu komai",
+    "literal.bbfa773e5a63": "Kusa",
+    "literal.4244e822a06c": "Wani abu ya faru. Gwada kuma.",
+    "literal.a60d9c9c5390": "Tunani…",
   },
   is: {
     "literal.87df31bb89b3":
@@ -67479,6 +68032,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "Velkomin",
     "literal.ed14777743d2": "færslan þín",
     "literal.313503fa9540": "Sendu kóða",
+    "literal.05665c93f216": "Spyrðu spurningu…",
+    "literal.1aded95423be": "Spyrðu um vörur, sendingu, skil eða hvernig True Grit virkar.",
+    "literal.2fdc0288d97d": "Spyrðu um vörur, sendingu, skil eða stöðu pöntunarinnar.",
+    "literal.2cfaa6da9c4f": "Spurðu okkur hvað sem er",
+    "literal.bbfa773e5a63": "Loka",
+    "literal.4244e822a06c": "Eitthvað fór úrskeiðis. Reyndu aftur.",
+    "literal.a60d9c9c5390": "Er að hugsa…",
   },
   ga: {
     "literal.87df31bb89b3":
@@ -68395,6 +68955,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Bhuaileamar snag.",
     "literal.ca4f9dcf204e": "Fáilte",
     "literal.ed14777743d2": "Do phostáil",
+    "literal.05665c93f216": "Cuir ceist…",
+    "literal.1aded95423be":
+      "Fiafraigh faoi tháirgí, faoi sheoltóireacht, faoi thuairisceáin, nó faoi conas a oibríonn True Grit.",
+    "literal.2fdc0288d97d":
+      "Fiafraigh faoi tháirgí, loingseoireachta, tuairisceáin, nó stádas d'ordaithe.",
+    "literal.2cfaa6da9c4f": "Iarr orainn rud ar bith",
+    "literal.bbfa773e5a63": "Dún",
+    "literal.4244e822a06c": "Chuaigh rud éigin mícheart. Bain triail eile as.",
+    "literal.a60d9c9c5390": "Ag smaoineamh…",
   },
   jv: {
     "literal.87df31bb89b3": "— mlebu saka menu akun kanggo nyiyapake pangiriman bola-bali",
@@ -69297,6 +69866,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "Sugeng rawuh",
     "literal.ed14777743d2": "Postingan panjenengan",
     "literal.c53c1c85a9cf": "Bayar & order",
+    "literal.05665c93f216": "Takon pitakon…",
+    "literal.1aded95423be": "Takon babagan produk, pengiriman, bali, utawa cara kerjane True Grit.",
+    "literal.2fdc0288d97d":
+      "Takon babagan produk, pengiriman, bali, utawa status pesenan sampeyan.",
+    "literal.2cfaa6da9c4f": "Takon apa wae",
+    "literal.bbfa773e5a63": "Nutup",
+    "literal.4244e822a06c": "Ana sing salah. Coba maneh.",
+    "literal.a60d9c9c5390": "Mikir…",
   },
   kk: {
     "literal.87df31bb89b3": "— қайталанатын жеткізуді орнату үшін есептік жазба мәзірінен кіріңіз",
@@ -70206,6 +70783,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.0b63a41933f6": "Талқылауды бастау",
     "literal.ca4f9dcf204e": "Қош келдіңіз",
     "literal.ed14777743d2": "Сіздің постыңыз",
+    "literal.05665c93f216": "Сұрақ қою…",
+    "literal.1aded95423be":
+      "Өнімдер, жеткізу, қайтару немесе True Grit қалай жұмыс істейтіні туралы сұраңыз.",
+    "literal.2fdc0288d97d":
+      "Өнімдер, жеткізу, қайтарулар немесе тапсырысыңыздың күйі туралы сұраңыз.",
+    "literal.2cfaa6da9c4f": "Бізден кез келген нәрсені сұраңыз",
+    "literal.bbfa773e5a63": "Жабу",
+    "literal.4244e822a06c": "Бірдеңе дұрыс болмады. Қайтадан байқап көріңіз.",
+    "literal.a60d9c9c5390": "Ойлану…",
   },
   km: {
     "literal.87df31bb89b3": "— ចូល​ពី​ម៉ឺនុយ​គណនី ដើម្បី​រៀបចំ​ការ​ចែកចាយ​ដដែលៗ​នៃ",
@@ -71106,6 +71692,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "យើង​បាន​ជួប​បញ្ហា។",
     "literal.ca4f9dcf204e": "សូម​ស្វាគមន៍",
     "literal.ed14777743d2": "ការ​បង្ហោះ​របស់​អ្នក",
+    "literal.05665c93f216": "សួរសំណួរមួយ…",
+    "literal.1aded95423be":
+      "សួរអំពីផលិតផល ការដឹកជញ្ជូន ការត្រឡប់មកវិញ ឬរបៀបដែល True Grit ដំណើរការ។",
+    "literal.2fdc0288d97d":
+      "សួរអំពីផលិតផល ការដឹកជញ្ជូន ការត្រឡប់មកវិញ ឬស្ថានភាពនៃការបញ្ជាទិញរបស់អ្នក។",
+    "literal.2cfaa6da9c4f": "សួរយើងអ្វីទាំងអស់។",
+    "literal.bbfa773e5a63": "បិទ",
+    "literal.4244e822a06c": "មានអ្វីមួយខុសប្រក្រតី។ ព្យាយាមម្តងទៀត។",
+    "literal.a60d9c9c5390": "កំពុងគិត…",
   },
   lo: {
     "literal.87df31bb89b3": "— ເຂົ້າສູ່ລະບົບຈາກເມນູບັນຊີເພື່ອຕັ້ງຄ່າການຈັດສົ່ງແບບເກີດຂຶ້ນຊ້ຳໆຂອງ",
@@ -71992,6 +72587,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "ພວກເຮົາຕົກເປັນເຫຍື່ອ.",
     "literal.ca4f9dcf204e": "ຍິນດີຕ້ອນຮັບ",
     "literal.ed14777743d2": "ໂພສຂອງເຈົ້າ",
+    "literal.05665c93f216": "ຖາມຄຳຖາມ...",
+    "literal.1aded95423be":
+      "ຖາມກ່ຽວກັບຜະລິດຕະພັນ, ການຂົນສົ່ງ, ການສົ່ງຄືນ, ຫຼືວິທີການເຮັດວຽກ True Grit.",
+    "literal.2fdc0288d97d":
+      "ຖາມກ່ຽວກັບຜະລິດຕະພັນ, ການຂົນສົ່ງ, ການສົ່ງຄືນ, ຫຼືສະຖານະຂອງຄໍາສັ່ງຂອງທ່ານ.",
+    "literal.2cfaa6da9c4f": "ຖາມຫຍັງພວກເຮົາ",
+    "literal.bbfa773e5a63": "ປິດ",
+    "literal.4244e822a06c": "ມີບາງຢ່າງຜິດພາດ. ລອງອີກຄັ້ງ.",
+    "literal.a60d9c9c5390": "ຄິດ...",
   },
   lv: {
     "literal.87df31bb89b3": "— pierakstieties no konta izvēlnes, lai iestatītu periodisku piegādi",
@@ -72899,6 +73503,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "Laipni lūdzam!",
     "literal.ed14777743d2": "Jūsu ziņa",
     "literal.25bdf9860e96": "Notiek iesniegšana…",
+    "literal.05665c93f216": "Uzdot jautājumu…",
+    "literal.1aded95423be": "Jautājiet par produktiem, piegādi, atgriešanu vai True Grit darbību.",
+    "literal.2fdc0288d97d": "Jautājiet par produktiem, piegādi, atgriešanu vai pasūtījuma statusu.",
+    "literal.2cfaa6da9c4f": "Jautājiet mums jebko",
+    "literal.bbfa773e5a63": "Aizvērt",
+    "literal.4244e822a06c": "Kaut kas nogāja greizi. Mēģiniet vēlreiz.",
+    "literal.a60d9c9c5390": "Domājot…",
   },
   lt: {
     "literal.87df31bb89b3":
@@ -73801,6 +74412,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ed14777743d2": "Jūsų įrašas",
     "literal.483bf2075c12": "Paskelbta",
     "literal.25bdf9860e96": "Pateikiama…",
+    "literal.05665c93f216": "Užduoti klausimą…",
+    "literal.1aded95423be":
+      "Paklauskite apie produktus, pristatymą, grąžinimą arba kaip veikia True Grit.",
+    "literal.2fdc0288d97d": "Klauskite apie produktus, pristatymą, grąžinimą ar užsakymo būseną.",
+    "literal.2cfaa6da9c4f": "Paklausk mūsų bet ko",
+    "literal.bbfa773e5a63": "Uždaryti",
+    "literal.4244e822a06c": "Kažkas nutiko. Bandykite dar kartą.",
+    "literal.a60d9c9c5390": "Galvoju…",
   },
   mk: {
     "literal.87df31bb89b3":
@@ -74699,6 +75318,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Наидовме на пречка.",
     "literal.ca4f9dcf204e": "Добре дојдовте",
     "literal.ed14777743d2": "Вашата објава",
+    "literal.05665c93f216": "Поставете прашање…",
+    "literal.1aded95423be":
+      "Прашајте за производите, испораката, враќањето или како функционира True Grit.",
+    "literal.2fdc0288d97d":
+      "Прашајте за производите, испораката, враќањето или статусот на вашата нарачка.",
+    "literal.2cfaa6da9c4f": "Прашајте не што било",
+    "literal.bbfa773e5a63": "Затвори",
+    "literal.4244e822a06c": "Нешто тргна наопаку. Обидете се повторно.",
+    "literal.a60d9c9c5390": "Размислувајќи…",
   },
   ms: {
     "literal.87df31bb89b3":
@@ -75615,6 +76243,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "Selamat datang",
     "literal.ed14777743d2": "Siaran anda",
     "literal.c53c1c85a9cf": "Bayar & buat pesanan",
+    "literal.05665c93f216": "Tanya soalan…",
+    "literal.1aded95423be":
+      "Tanya tentang produk, penghantaran, pemulangan atau cara True Grit berfungsi.",
+    "literal.2fdc0288d97d":
+      "Tanya tentang produk, penghantaran, pemulangan atau status pesanan anda.",
+    "literal.2cfaa6da9c4f": "Tanya kami apa sahaja",
+    "literal.bbfa773e5a63": "tutup",
+    "literal.4244e822a06c": "Sesuatu telah berlaku. Cuba lagi.",
+    "literal.a60d9c9c5390": "Berfikir…",
   },
   mn: {
     "literal.87df31bb89b3": "—",
@@ -76520,6 +77157,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.060be00f4f26": "Бүх ангилал",
     "literal.93d175570231": "Боловсруулж байна…",
     "literal.483bf2075c12": "Нийтэлсэн",
+    "literal.05665c93f216": "Асуулт асуу...",
+    "literal.1aded95423be":
+      "Бүтээгдэхүүн, тээвэрлэлт, буцаалт эсвэл True Grit хэрхэн ажилладаг талаар асууна уу.",
+    "literal.2fdc0288d97d":
+      "Бүтээгдэхүүн, тээвэрлэлт, буцаалт эсвэл захиалгын статусын талаар асуу.",
+    "literal.2cfaa6da9c4f": "Биднээс юу ч асуугаарай",
+    "literal.bbfa773e5a63": "Хаах",
+    "literal.4244e822a06c": "Ямар нэг зүйл буруу болсон. Дахин оролдоно уу.",
+    "literal.a60d9c9c5390": "Бодож байна…",
   },
   my: {
     "literal.87df31bb89b3": "— ထပ်တလဲလဲ ပေးပို့ခြင်းကို စနစ်ထည့်သွင်းရန်",
@@ -77441,6 +78087,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "ကျွန်ုပ်တို့ တံစို့နှင့် ထိမိပါသည်။",
     "literal.ca4f9dcf204e": "ကြိုဆိုပါသည်",
     "literal.ed14777743d2": "သင့်ပို့စ်",
+    "literal.05665c93f216": "မေးခွန်းတစ်ခုမေးပါ…",
+    "literal.1aded95423be":
+      "ထုတ်ကုန်များ၊ ပို့ဆောင်မှု၊ ပြန်ပို့မှု၊ သို့မဟုတ် True Grit အလုပ်လုပ်ပုံအကြောင်း မေးပါ။",
+    "literal.2fdc0288d97d":
+      "ထုတ်ကုန်များ၊ ပို့ဆောင်မှု၊ ပြန်ပို့မှု၊ သို့မဟုတ် သင့်မှာယူမှုအခြေအနေအကြောင်း မေးပါ။",
+    "literal.2cfaa6da9c4f": "ငါတို့ကို ဘာမဆိုမေးပါ။",
+    "literal.bbfa773e5a63": "ပိတ်လိုက်",
+    "literal.4244e822a06c": "တစ်ခုခုမှားသွားသည်။ ထပ်ကြိုးစားပါ။",
+    "literal.a60d9c9c5390": "စဉ်းစားနေသည်...",
   },
   ps: {
     "literal.87df31bb89b3": "— د حساب له مینو څخه ننوتئ ترڅو د تکراري تحویل تنظیم کړئ د",
@@ -78334,6 +78989,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.93d175570231": "پروسس کوي…",
     "literal.483bf2075c12": "خپور شوی",
     "literal.313503fa9540": "کوډ ولېږئ",
+    "literal.05665c93f216": "یوه پوښتنه وکړئ…",
+    "literal.1aded95423be":
+      "د محصولاتو، بار وړلو، بیرته ستنیدو، یا د True Grit د کار کولو څرنګوالي په اړه پوښتنه وکړئ.",
+    "literal.2fdc0288d97d":
+      "د محصولاتو، بار وړلو، بیرته راستنیدو، یا ستاسو د امر وضعیت په اړه پوښتنه وکړئ.",
+    "literal.2cfaa6da9c4f": "له موږ څخه څه پوښتنه وکړئ",
+    "literal.bbfa773e5a63": "تړل",
+    "literal.4244e822a06c": "یو څه غلط شو. بیا هڅه وکړئ.",
+    "literal.a60d9c9c5390": "فکر…",
   },
   sr: {
     "literal.87df31bb89b3": "— пријавите се из менија налога да бисте подесили периодичну испоруку",
@@ -79233,6 +79897,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Наишли смо на препреку.",
     "literal.ca4f9dcf204e": "Добродошли",
     "literal.ed14777743d2": "Ваш пост",
+    "literal.05665c93f216": "Поставите питање…",
+    "literal.1aded95423be":
+      "Питајте о производима, испоруци, враћању или како __ТГБРАНД__ функционише.",
+    "literal.2fdc0288d97d": "Питајте о производима, испоруци, враћању или статусу ваше поруџбине.",
+    "literal.2cfaa6da9c4f": "Питајте нас било шта",
+    "literal.bbfa773e5a63": "Затвори",
+    "literal.4244e822a06c": "Нешто је пошло по злу. Покушајте поново.",
+    "literal.a60d9c9c5390": "Размишљајући…",
   },
   sl: {
     "literal.87df31bb89b3": "— prijavite se v meniju računa, da nastavite ponavljajočo se dostavo",
@@ -80132,6 +80804,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Naleteli smo na težavo.",
     "literal.ca4f9dcf204e": "Pozdravljeni",
     "literal.ed14777743d2": "Vaša objava",
+    "literal.05665c93f216": "Postavite vprašanje ...",
+    "literal.1aded95423be":
+      "Vprašajte o izdelkih, pošiljanju, vračilih ali o tem, kako deluje True Grit.",
+    "literal.2fdc0288d97d":
+      "Vprašajte o izdelkih, pošiljanju, vračilih ali statusu vašega naročila.",
+    "literal.2cfaa6da9c4f": "Vprašajte nas karkoli",
+    "literal.bbfa773e5a63": "Zapri",
+    "literal.4244e822a06c": "Nekaj ​​je šlo narobe. poskusi ponovno",
+    "literal.a60d9c9c5390": "Razmišljam ...",
   },
   so: {
     "literal.87df31bb89b3":
@@ -81043,6 +81724,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Waxaan ku dhufannay meel xun.",
     "literal.ca4f9dcf204e": "soo dhawaada",
     "literal.ed14777743d2": "Boostada",
+    "literal.05665c93f216": "Weydii su'aal…",
+    "literal.1aded95423be":
+      "Weydii wax ku saabsan alaabta, raridda, soo celinta, ama sida True Grit u shaqeyso.",
+    "literal.2fdc0288d97d":
+      "Waydii wax ku saabsan alaabta, rarida, soo celinta, ama heerka dalabkaga.",
+    "literal.2cfaa6da9c4f": "Wax walba na weydii",
+    "literal.bbfa773e5a63": "Xir",
+    "literal.4244e822a06c": "Wax baa khaldamay Isku day mar kale",
+    "literal.a60d9c9c5390": "Fikirka…",
   },
   zu: {
     "literal.87df31bb89b3":
@@ -81955,6 +82645,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Sifike e-snag.",
     "literal.ca4f9dcf204e": "Siyakwamukela",
     "literal.ed14777743d2": "Okuthunyelwe kwakho",
+    "literal.05665c93f216": "Buza umbuzo...",
+    "literal.1aded95423be":
+      "Buza ngemikhiqizo, ukuthunyelwa, ukubuyisela, noma ukuthi True Grit isebenza kanjani.",
+    "literal.2fdc0288d97d":
+      "Buza ngemikhiqizo, ukuthunyelwa, ukubuyisela, noma isimo se-oda lakho.",
+    "literal.2cfaa6da9c4f": "Sibuze noma yini",
+    "literal.bbfa773e5a63": "Vala",
+    "literal.4244e822a06c": "Kukhona into engahambanga kahle. Zama futhi.",
+    "literal.a60d9c9c5390": "Iyacabanga...",
   },
   xh: {
     "literal.87df31bb89b3": "— ngena kwi-akhawunti yemenyu ukuseta unikezelo oluqhubekayo lwe",
@@ -82862,6 +83561,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ed14777743d2": "Iposti yakho",
     "literal.58293560f293": "Hlawula ngePayPal",
     "literal.483bf2075c12": "Ipapashiwe",
+    "literal.05665c93f216": "Buza umbuzo…",
+    "literal.1aded95423be":
+      "Buza malunga neemveliso, ukuthunyelwa, imbuyekezo, okanye ukuba True Grit isebenza njani.",
+    "literal.2fdc0288d97d":
+      "Buza malunga neemveliso, ukuthunyelwa, ukubuyisela, okanye ubume be-odolo yakho.",
+    "literal.2cfaa6da9c4f": "Sibuze nantoni na",
+    "literal.bbfa773e5a63": "Vala",
+    "literal.4244e822a06c": "Into ayihamba kakuhle. Zama kwakhona.",
+    "literal.a60d9c9c5390": "Ukucinga...",
   },
   yo: {
     "literal.87df31bb89b3": "— wole lati inu akoto akoto lati seto ifijiṣẹ loorekoore ti",
@@ -83748,6 +84456,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "A lu snag kan.",
     "literal.ca4f9dcf204e": "Kaabo",
     "literal.ed14777743d2": "Ifiranṣẹ rẹ",
+    "literal.05665c93f216": "Beere ibeere kan…",
+    "literal.1aded95423be": "Beere nipa awọn ọja, sowo, awọn ipadabọ, tabi bi True Grit ṣe n ṣiṣẹ.",
+    "literal.2fdc0288d97d": "Beere nipa awọn ọja, sowo, awọn ipadabọ, tabi ipo aṣẹ rẹ.",
+    "literal.2cfaa6da9c4f": "Beere ohunkohun fun wa",
+    "literal.bbfa773e5a63": "Sunmọ",
+    "literal.4244e822a06c": "Nkankan ti ko tọ. Gbiyanju lẹẹkansi.",
+    "literal.a60d9c9c5390": "N ronu…",
   },
   ig: {
     "literal.87df31bb89b3": "— banye na menu akaụntụ ka hazie nnyefe ugboro ugboro nke",
@@ -84634,6 +85349,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Anyị kụrụ nhịahụ.",
     "literal.ca4f9dcf204e": "Nnọọ",
     "literal.ed14777743d2": "post gị",
+    "literal.05665c93f216": "Jụọ ajụjụ…",
+    "literal.1aded95423be": "Jụọ maka ngwaahịa, mbupu, nloghachi, ma ọ bụ ka True Grit si arụ ọrụ.",
+    "literal.2fdc0288d97d": "Jụọ maka ngwaahịa, mbupu, nloghachi, ma ọ bụ ọkwa nke ịtụ gị.",
+    "literal.2cfaa6da9c4f": "Jụọ anyị ihe ọ bụla",
+    "literal.bbfa773e5a63": "Mechie",
+    "literal.4244e822a06c": "Ọ nwere ihe adịghị mma. Nwaa ọzọ.",
+    "literal.a60d9c9c5390": "Na-eche…",
   },
   uz: {
     "literal.87df31bb89b3": "— takroriy yetkazib berishni sozlash uchun hisob menyusiga kiring",
@@ -85546,6 +86268,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.0b63a41933f6": "Munozarani boshlang",
     "literal.ca4f9dcf204e": "Xush kelibsiz",
     "literal.ed14777743d2": "Sizning postingiz",
+    "literal.05665c93f216": "Savol bering…",
+    "literal.1aded95423be":
+      "Mahsulotlar, yetkazib berish, qaytarish yoki True Grit qanday ishlashi haqida so'rang.",
+    "literal.2fdc0288d97d":
+      "Mahsulotlar, etkazib berish, qaytarib berish yoki buyurtmangiz holati haqida so'rang.",
+    "literal.2cfaa6da9c4f": "Bizdan biror narsa so'rang",
+    "literal.bbfa773e5a63": "Yopish",
+    "literal.4244e822a06c": "Nimadir xato ketdi. Qayta urinib ko'ring.",
+    "literal.a60d9c9c5390": "O‘ylash…",
   },
   tk: {
     "literal.87df31bb89b3": "- gaýtalanýan eltip bermek üçin hasap menýusyndan giriň",
@@ -86445,6 +87176,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Biz bir gysdyk.",
     "literal.ca4f9dcf204e": "Hoş geldiňiz",
     "literal.ed14777743d2": "Siziň ýazgyňyz",
+    "literal.05665c93f216": "Sorag beriň ...",
+    "literal.1aded95423be":
+      "Önümler, ýük daşamak, gaýdyp gelmek ýa-da True Grit nähili işleýändigi barada soraň.",
+    "literal.2fdc0288d97d":
+      "Önümler, ýük daşamak, gaýdyp gelmek ýa-da sargydyňyzyň ýagdaýy barada soraň.",
+    "literal.2cfaa6da9c4f": "Bizden bir zat sora",
+    "literal.bbfa773e5a63": ".Akyn",
+    "literal.4244e822a06c": "Bir zat nädogry boldy. Gaýtadan synanyşyň.",
+    "literal.a60d9c9c5390": "Oýlanmak…",
   },
   ky: {
     "literal.87df31bb89b3": "— кайталануучу жеткирүүнү орнотуу үчүн эсеп менюсуна кириңиз",
@@ -87351,6 +88091,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.0b63a41933f6": "Талкууну баштоо",
     "literal.ca4f9dcf204e": "Кош келдиңиз",
     "literal.ed14777743d2": "Сиздин пост",
+    "literal.05665c93f216": "Суроо бериңиз…",
+    "literal.1aded95423be":
+      "Товарлар, жеткирүү, кайтарып берүү же True Grit кантип иштээри жөнүндө сураңыз.",
+    "literal.2fdc0288d97d":
+      "Продукциялар, жеткирүү, кайтаруу же буйрутмаңыздын абалы жөнүндө сураңыз.",
+    "literal.2cfaa6da9c4f": "Бизден бир нерсе сураңыз",
+    "literal.bbfa773e5a63": "Жабуу",
+    "literal.4244e822a06c": "Бир жерден ката кетти. Кайра аракет кыл.",
+    "literal.a60d9c9c5390": "Ойлоо…",
   },
   tg: {
     "literal.87df31bb89b3": "— аз менюи ҳисоб ворид шавед, то интиқоли такрории",
@@ -88261,6 +89010,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.44cddb4f5033": "Баррасиро пешниҳод кунед",
     "literal.25bdf9860e96": "Пешниҳод…",
     "literal.ca4f9dcf204e": "Хуш омадед",
+    "literal.05665c93f216": "Савол диҳед…",
+    "literal.1aded95423be":
+      "Дар бораи маҳсулот, интиқол, баргардонидан ё чӣ гуна кор кардани True Grit пурсед.",
+    "literal.2fdc0288d97d":
+      "Дар бораи маҳсулот, интиқол, баргардонидан ё ҳолати фармоиши худ пурсед.",
+    "literal.2cfaa6da9c4f": "Аз мо чизе пурсед",
+    "literal.bbfa773e5a63": "Пӯшед",
+    "literal.4244e822a06c": "Чизе хато рафт. Як бори дигар санҷед.",
+    "literal.a60d9c9c5390": "Фикр кардан…",
   },
   ceb: {
     "literal.87df31bb89b3":
@@ -89182,6 +89940,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Naigo mi.",
     "literal.ca4f9dcf204e": "Welcome",
     "literal.ed14777743d2": "Imong post",
+    "literal.05665c93f216": "Pangutana…",
+    "literal.1aded95423be":
+      "Pangutana bahin sa mga produkto, pagpadala, pagbalik, o kung giunsa ang True Grit molihok.",
+    "literal.2fdc0288d97d":
+      "Pangutana bahin sa mga produkto, pagpadala, pagbalik, o kahimtang sa imong order.",
+    "literal.2cfaa6da9c4f": "Pangutan-a kami bisan unsa",
+    "literal.bbfa773e5a63": "Duol",
+    "literal.4244e822a06c": "Naay nahitabo. Sulayi pag-usab.",
+    "literal.a60d9c9c5390": "Naghunahuna…",
   },
   cy: {
     "literal.87df31bb89b3": "— mewngofnodwch o ddewislen y cyfrif i sefydlu dosbarthiad cylchol",
@@ -90092,6 +90859,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Rydym yn taro snag.",
     "literal.ca4f9dcf204e": "Croeso",
     "literal.ed14777743d2": "Eich postiad",
+    "literal.05665c93f216": "Gofynnwch gwestiwn…",
+    "literal.1aded95423be":
+      "Gofynnwch am gynhyrchion, cludo, dychwelyd, neu sut mae True Grit yn gweithio.",
+    "literal.2fdc0288d97d": "Gofynnwch am gynhyrchion, cludo, dychwelyd, neu statws eich archeb.",
+    "literal.2cfaa6da9c4f": "Gofynnwch unrhyw beth i ni",
+    "literal.bbfa773e5a63": "Cau",
+    "literal.4244e822a06c": "Aeth rhywbeth o'i le. Ceisiwch eto.",
+    "literal.a60d9c9c5390": "Meddwl…",
   },
   mt: {
     "literal.87df31bb89b3": "— idħol mill-menu tal-kont biex twaqqaf konsenja rikorrenti ta",
@@ -90999,6 +91774,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.313503fa9540": "Ibgħat il-kodiċi",
     "literal.25bdf9860e96": "Tissottometti...",
     "literal.ed14777743d2": "Il-kariga tiegħek",
+    "literal.05665c93f216": "Saqsi mistoqsija...",
+    "literal.1aded95423be":
+      "Staqsi dwar il-prodotti, it-tbaħħir, ir-ritorni, jew kif jaħdem True Grit.",
+    "literal.2fdc0288d97d":
+      "Staqsi dwar il-prodotti, it-tbaħħir, ir-ritorni, jew l-istatus tal-ordni tiegħek.",
+    "literal.2cfaa6da9c4f": "Staqsina xi ħaġa",
+    "literal.bbfa773e5a63": "Agħlaq",
+    "literal.4244e822a06c": "Xi ħaġa marret ħażin. Erġa' pprova.",
+    "literal.a60d9c9c5390": "Taħseb...",
   },
   lb: {
     "literal.87df31bb89b3": "— mellt Iech aus dem Kontomenü un fir widderhuelend Liwwerung vu",
@@ -91903,6 +92687,15 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Mir hunn e Schlag fonnt.",
     "literal.ca4f9dcf204e": "Wëllkomm",
     "literal.ed14777743d2": "Äre Post",
+    "literal.05665c93f216": "Stellt eng Fro…",
+    "literal.1aded95423be":
+      "Frot iwwer Produkter, Versand, Retouren oder wéi True Grit funktionnéiert.",
+    "literal.2fdc0288d97d":
+      "Frot iwwer Produkter, Versand, Retouren oder de Status vun Ärer Bestellung.",
+    "literal.2cfaa6da9c4f": "Frot eis eppes",
+    "literal.bbfa773e5a63": "Zoumaachen",
+    "literal.4244e822a06c": "Eppes ass falsch gaangen. Probéiert nach eng Kéier.",
+    "literal.a60d9c9c5390": "Denken…",
   },
   rw: {
     "literal.87df31bb89b3": "- injira muri konte ya menu kugirango ushireho itangwa rya",
@@ -92797,6 +93590,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "Twakubise agati.",
     "literal.ca4f9dcf204e": "Murakaza neza",
     "literal.ed14777743d2": "Inyandiko yawe",
+    "literal.05665c93f216": "Baza ikibazo…",
+    "literal.1aded95423be": "Baza ibicuruzwa, kohereza, kugaruka, cyangwa uko True Grit ikora.",
+    "literal.2fdc0288d97d": "Baza ibicuruzwa, kohereza, kugaruka, cyangwa uko ibintu byateganijwe.",
+    "literal.2cfaa6da9c4f": "Tubaze ikintu icyo ari cyo cyose",
+    "literal.bbfa773e5a63": "Funga",
+    "literal.4244e822a06c": "Ikintu kitagenze neza. Ongera ugerageze.",
+    "literal.a60d9c9c5390": "Gutekereza…",
   },
   ny: {
     "literal.87df31bb89b3": "— lowani muakaunti yanu kuti mukhazikitse",
@@ -93692,6 +94492,14 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ca4f9dcf204e": "Takulandirani",
     "literal.ed14777743d2": "Positi yanu",
     "literal.483bf2075c12": "Lofalitsidwa",
+    "literal.05665c93f216": "Funsani funso…",
+    "literal.1aded95423be":
+      "Funsani za malonda, kutumiza, zobweza, kapena momwe True Grit imagwirira ntchito.",
+    "literal.2fdc0288d97d": "Funsani za malonda, kutumiza, zobweza, kapena momwe mungagulitsire.",
+    "literal.2cfaa6da9c4f": "Tifunseni chilichonse",
+    "literal.bbfa773e5a63": "Tsekani",
+    "literal.4244e822a06c": "Chinachake chalakwika. Yesaninso.",
+    "literal.a60d9c9c5390": "Kuganiza…",
   },
   ug: {
     "literal.87df31bb89b3": "- ھېسابات تىزىملىكىدىن كىرىپ قايتا-قايتا يەتكۈزۈشنى تەڭشەڭ",
@@ -94598,5 +95406,13 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.b50c9118720f": "بىز بىر تال ئۇردۇق.",
     "literal.ca4f9dcf204e": "خۇش كەپسىز",
     "literal.ed14777743d2": "يازمىڭىز",
+    "literal.05665c93f216": "سوئال سوراڭ…",
+    "literal.1aded95423be":
+      "مەھسۇلات ، توشۇش ، قايتۇرۇش ياكى True Grit نىڭ قانداق ئىشلەيدىغانلىقىنى سوراڭ.",
+    "literal.2fdc0288d97d": "مەھسۇلات ، توشۇش ، قايتۇرۇش ياكى زاكاز ئەھۋالىڭىزنى سوراڭ.",
+    "literal.2cfaa6da9c4f": "بىزدىن بىر نەرسە سوراڭ",
+    "literal.bbfa773e5a63": "تاقاش",
+    "literal.4244e822a06c": "چاتاق چىقتى. قايتا سىناڭ.",
+    "literal.a60d9c9c5390": "تەپەككۇر…",
   },
 };

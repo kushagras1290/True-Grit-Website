@@ -84,12 +84,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "መደብ አክል",
   "Add code": "ኮድ አክል",
   "Add country": "ሀገር ጨምር",
+  "Add entry": "ግቤት አክል",
   "Add farm owner": "የእርሻ ባለቤት አክል",
   "Add ingredient": "ንጥረ ነገር አክል",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "ቅርቡን ከፈጠሩ በኋላ ንጥሎችን (ተለዋዋጮች፣ የእያንዳንዳቸው ስንት) አክል፣ ከአስተዳድር።",
+  "Add knowledge entry": "የእውቀት ግቤት ጨምር",
   "Add one above to get started.": "ለመጀመር አንድ ከላይ ያክሉ።",
   "Add one below to get started.": "ለመጀመር ከታች አንዱን ጨምር።",
+  "Add one so the bot has something to reference for this scope.":
+    "ቦቱ ለዚህ ወሰን የሚጠቅሰው ነገር እንዲኖረው አንድ ጨምር።",
   "Add page": "ገጽ አክል",
   "Add participants": "ተሳታፊዎችን አክል",
   "Add role": "ሚና ጨምር",
@@ -107,9 +111,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "ፍለጋውን አስተካክል ወይም ምርት ፍጠር።",
   "Adjustment %": "ማስተካከያ %",
   "Adjustments restricted": "ማስተካከያዎች ተገድበዋል",
+  Admin: "አስተዳዳሪ",
   "Admin API is unavailable": "አስተዳዳሪ ኤፒአይ አይገኝም",
   "Admin Logs": "የአስተዳዳሪ ምዝግብ ማስታወሻዎች",
   "Admin navigation": "የአስተዳዳሪ አሰሳ",
+  "Admin panel bot": "የአስተዳዳሪ ፓነል ቦት",
   ADMIN_LOGIN_EMAIL: 'id="t0005">ADMIN_LOGIN_PASSWORD',
   Afrikaans: "አፍሪካውያን",
   "After refunds, all farms": "ገንዘብ ከተመላሽ በኋላ ሁሉም እርሻዎች",
@@ -171,6 +177,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "አርሜኒያ",
   "Article not found": "ጽሑፉ አልተገኘም",
   "Asha Rao": "አሻ ራኦ",
+  "Ask a question…": "ጥያቄ ይጠይቁ…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "በአስተዳዳሪ ፓኔል ውስጥ የሆነ ነገር እንዴት እንደሚደረግ ጠይቅ ወይም በመጠባበቅ ላይ ያሉ ትዕዛዞችን፣ ዝቅተኛ የአክሲዮን እቃዎች ወይም የትዕዛዝ ሁኔታን ጠይቅ።",
   "Assamese (অসমীয়া)": "አሳሜዝ (አሳሜዝ)",
   "Assigned roles": "የተሰጡ ሚናዎች",
   Attribution: "ባለቤትነት",
@@ -178,6 +187,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "ደራሲ",
   "Auto-translate": "በራስ-መተርጎም",
   "Auto-translate all": "ሁሉንም በራስ-ሰር መተርጎም",
+  Availability: "ተገኝነት",
   Available: "ይገኛል",
   "available · reorder at": "ይገኛል · እንደገና ማዘዝ በ",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -222,6 +232,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "የሰውነት ጽሑፍ",
   Bosnian: "ቦስኒያ",
   Brand: "ብራንድ",
+  "Built-in": "አብሮ የተሰራ",
   "Bulgarian (Български)": "ቡልጋሪያኛ (Български)",
   Bundle: "ጥቅል",
   "bundle price · items priced at": 'በዋጋ id="t0005">የጥቅል ዋጋ፣ ₹',
@@ -274,6 +285,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "በማጽዳት ላይ...",
   "Click link": "አገናኙን ጠቅ ያድርጉ",
   Close: "ዝጋ",
+  "Close help assistant": "የእገዛ ረዳትን ዝጋ",
   "Close navigation": "አሰሳ ዝጋ",
   "CMS pages": "የሲኤምኤስ ገጾች",
   "CMS pages & SEO": "የሲኤምኤስ ገጾች እና SEO",
@@ -306,6 +318,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "በፌስቡክ ይቀጥሉ",
   "Control what each role can view, create, edit, publish or manage.":
     "እያንዳንዱ ሚና ማየት፣ መፍጠር፣ ማርትዕ፣ ማተም ወይም ማስተዳደር የሚችለውን ይቆጣጠሩ።",
+  "Control whether each bot is available, and edit what it knows.":
+    "እያንዳንዱ ቦት የሚገኝ መሆኑን ይቆጣጠሩ እና የሚያውቀውን ያርትዑ።",
   Cook: "ማብሰል",
   "Cook minutes": "የማብሰያ ደቂቃዎች",
   "Copy inside dark bands.": "በጨለማ ባንዶች ውስጥ ቅዳ።",
@@ -374,9 +388,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "ሰርዝ",
   "Delete (spam)": "ሰርዝ (አይፈለጌ መልእክት)",
   "Delete category": "መደብን ሰርዝ",
+  "Delete entry": "ግቤት ይሰርዙ",
   "Delete farm": "እርሻ ሰርዝ",
   "Delete image": "ምስል ሰርዝ",
   "Delete inventory row": "የእቃ ዝርዝርን ሰርዝ",
+  "Delete knowledge entry?": "የእውቀት ግቤት ይሰረዝ?",
   "Delete permanently": "እስከመጨረሻው ሰርዝ",
   "Delete product": "ምርቱን ሰርዝ",
   "Delete role": "ሚና ሰርዝ",
@@ -429,7 +445,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "የሲኤምኤስ ገጽ ሜታዳታ፣ መረጃ ጠቋሚ እና የጥሬ ገጽ ብሎኮችን ያርትዑ። የመነሻ ገጽ መዝገቡ እዚህም ተዘርዝሯል፣ ነገር ግን የመነሻ ገጽ ቅንጅቶች እሱን ለመለወጥ በጣም አስተማማኝ መንገድ ነው - ይህ አርታኢ ጥሬ JSON ይወስዳል።",
   "Edit content": "ይዘትን ያርትዑ",
+  "Edit entry": "ግቤት ያርትዑ",
   "Edit farm": "እርሻ አርትዕ",
+  "Edit knowledge entry": "የእውቀት ግቤት አርትዕ",
   "Edit media": "ሚዲያ አርትዕ",
   "Edit review": "ግምገማ አርትዕ",
   "Edit role": "ሚና አርትዕ",
@@ -543,6 +561,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "ርዕስ እና ቅጂ።",
   Headline: "አርዕስተ ዜና",
   "Hebrew (עברית)": "ዕብራይስጥ (ኢብራይት)",
+  "Help assistant": "ረዳት ረዳት",
+  "Help Assistant": "ረዳት ረዳት",
   "Hero description": "የጀግና መግለጫ",
   "Hero eyebrow": "የጀግና ቅንድብ",
   "Hero image alt text": "የጀግና ምስል አልት ጽሑፍ",
@@ -617,6 +637,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "ካዛክኛ",
   "Keep artwork clean": "የጥበብ ስራውን ንፁህ ያድርጉት",
   "Keep typing to search…": "ለመፈለግ መተየቡን ይቀጥሉ…",
+  Keywords: "ቁልፍ ቃላት",
   Khmer: "ክመር",
   Kinyarwanda: "ኪንያርዋንዳ",
   "Konkani (कोंकणी)": "ኮንካኒ (कोंकणी)",
@@ -809,6 +830,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "ምንም መረጃ ጠቋሚ የለም",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "ገና ምንም ንጥሎች የሉም — ቢያንስ አንድ ከታች ያክሉ። Checkout ይህን የጥቅል ቅናሽ የሚመለከተው ቅርጫቱ እዚህ ጋር ሲኖር ብቻ ነው፣ቢያንስ በእነዚህ መጠኖች።",
+  "No knowledge entries": "ምንም የእውቀት ግቤቶች የሉም",
   "No line items recorded.": "ምንም የመስመር ንጥሎች አልተመዘገቡም።",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ከአሁን በኋላ መግቢያውን አይለውጥም — ስለዚህ እዚህ ያቀናብሩት የይለፍ ቃል አሮጌውን ይተካል።",
@@ -891,6 +913,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "የሚና ወሰኖችን ማስተዳደር የሚችለው ባለቤቱ ብቻ ነው።",
   "Only the owner can review payments and refunds.":
     "ክፍያዎችን እና ተመላሽ ገንዘቦችን መገምገም የሚችለው ባለቤቱ ብቻ ነው።",
+  "Open help assistant": "ክፍት የእገዛ ረዳት",
   "Open navigation": "ክፍት አሰሳ",
   Optional: "አማራጭ",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1164,6 +1187,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "ማስቀመጥ…",
   "Say how often you will write and that unsubscribing is easy.":
     "በየስንት ጊዜ እንደሚጽፉ እና ከደንበኝነት ምዝገባ መውጣት ቀላል እንደሆነ ይናገሩ።",
+  Scope: "ወሰን",
   "Scope Management": "የቦታ አስተዳደር",
   "Scopes unavailable": "ቦታዎች አይገኙም",
   "Search archive": "የፍለጋ ማህደር",
@@ -1227,6 +1251,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "የተመረጡት ረድፎች ወደተያዙት ክምችት ይጸዳሉ፣ ይህም የተያዙ ቦታዎችን፣ የእንቅስቃሴ ታሪክን እና የኦዲት ምዝግብ ማስታወሻዎችን በማቆየት የዜሮ ዜሮ እንዲሆን ያደርጋል።",
   "Selected users will be removed from the users list and signed out.":
     "የተመረጡ ተጠቃሚዎች ከተጠቃሚዎች ዝርዝር ውስጥ ይወገዳሉ እና ዘግተው ይወጣሉ።",
+  Send: "ላክ",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "ደህንነቱ የተጠበቀ የይለፍ ቃል ዳግም ማስጀመሪያ አገናኝ ለዚህ ተጠቃሚ ይላኩ። አዲሱን የይለፍ ቃላቸውን ከአስተዳዳሪው ዳግም ማስጀመሪያ ገጽ ያዘጋጃሉ።",
   "Send back to draft": "ወደ ረቂቅ መልሰው ይላኩ",
@@ -1295,6 +1320,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "ቅንጣ",
   "Sold out": "የተሸጠ",
   Somali: "ሶማሊኛ",
+  "space separated, e.g. product publish visibility": "ቦታ ተለያይቷል፣ ለምሳሌ የምርት ህትመት ታይነት",
   "Spanish (Español)": "ስፓኒሽ (ኢስፓኞል)",
   "Sprouted ragi flour": "የበቀለ ራጊ ዱቄት",
   "SQL Tables": "SQL ሰንጠረዦች",
@@ -1307,6 +1333,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "ደረጃዎች (በአንድ መስመር አንድ)",
   "Stock Status": "የአክሲዮን ሁኔታ",
   "Store credit": "የማከማቻ ክሬዲት",
+  Storefront: "የመደብር ፊት",
+  "Storefront bot": "የመደብር የፊት ቦት",
   "Storefront switches": "የመደብር የፊት ማብሪያ / ማጥፊያዎች",
   "Storefront switches unavailable": "የመደብር የፊት ቁልፎች አይገኙም",
   "Strong border": "ጠንካራ ድንበር",
@@ -1344,9 +1372,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "ከላይ ያለው ባነር",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "ባነር፣ የምድብ ረድፍ፣ የምርት ረድፍ እና SEO መስኮች አንድ ላይ ይቆጠባሉ። የክፍል ምልክት ሳጥኖች፣ ማዘዣ እና ብጁ ክፍል ቅጂ ሲቀይሩ በራሳቸው ይቆጥባሉ።",
+  "The chat widget customers and visitors see on the storefront.":
+    "የቻት መግብር ደንበኞች እና ጎብኝዎች በመደብሩ ፊት ለፊት የሚያዩት።",
   "The classic credential pair, including the password-reset flow.":
     "የይለፍ ቃል ዳግም ማስጀመሪያ ፍሰትን ጨምሮ የጥንታዊው ምስክርነት ጥንድ።",
   "the farm owner": "የእርሻው ባለቤት",
+  "The floating Help Assistant staff see on every admin page.":
+    "ተንሳፋፊው የእገዛ ረዳት ሰራተኞች በእያንዳንዱ የአስተዳዳሪ ገጽ ላይ ያዩታል።",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'የራስጌ እና የግርጌ ማያያዣ መለያዎች እያንዳንዱ ገጽ በእያንዳንዱ ቋንቋ ተተርጉሟል (ሚግሬሽን 0068)። ባዶ የቀረ አከባቢ በመደብር ፊት ወደ እንግሊዝኛ ይመለሳል። ይህ በእንግሊዝኛ "ሱቅ" / "ወቅታዊ" የሚያሳይ አርዕስት የሚያስተካክለው ተመሳሳይ ቁጥጥር ነው በዙሪያው ያሉት ሁሉም ነገሮች ቋንቋ ሲቀየሩ - እነዚያ መለያዎች ከዚህ የመጡ ናቸው እንጂ ከላይ ካለው የገጽ ይዘት ትርጉሞች አይደሉም።',
   "The homepage has no sections": "የመነሻ ገጹ ምንም ክፍሎች የሉትም",
@@ -1374,6 +1406,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "እነዚህ ቀለሞች ከታች ባሉት ገጾች ላይም ይሠራሉ",
   "These roles define the permission sets available when inviting or editing users.":
     "እነዚህ ሚናዎች ተጠቃሚዎችን ሲጋበዙ ወይም ሲያርትዑ ያሉትን የፍቃድ ስብስቦች ይገልፃሉ።",
+  "Thinking…": "በማሰብ ላይ…",
   "This application is": "ይህ መተግበሪያ",
   "This order is in a final state.": "ይህ ትዕዛዝ በመጨረሻው ደረጃ ላይ ነው።",
   "This page contains sensitive application diagnostics.": "ይህ ገጽ ሚስጥራዊነት ያለው የመተግበሪያ ምርመራዎችን ይዟል።",
@@ -1492,6 +1525,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Whole site (default)": "ሙሉ ጣቢያ (ነባሪ)",
   "Why are changes needed, or why was this declined?": "ለውጦች ለምን ያስፈልጋሉ፣ ወይም ይህ ለምን ተቀባይነት አላገኘም?",
   "Why is stock changing?": "ለምንድን ነው አክሲዮን የሚለወጠው?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "ይህ ግቤት ተገቢ መሆኑን ለመወሰን ቦት ከጥያቄ ጋር የሚዛመድ ቃላት።",
   "Working...": "በመሥራት ላይ...",
   "World languages": "የአለም ቋንቋዎች",
   "Write a message…": "መልዕክት ጻፍ…",

@@ -82,12 +82,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": 'id="t0005">Shto pronar ferme',
   "Add code": "Shto kod",
   "Add country": "Shto shtet",
+  "Add entry": "Shto hyrje",
   "Add farm owner": "Shto pronarin e fermës",
   "Add ingredient": "Shto përbërës",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     'Shto artikuj (cilat variante, sa nga secili) pas krijimit të paketës, nga "Menaxho".',
+  "Add knowledge entry": "Shto hyrje njohurish",
   "Add one above to get started.": "Shto një më lart për të filluar.",
   "Add one below to get started.": "Shto një më poshtë për të filluar.",
+  "Add one so the bot has something to reference for this scope.":
+    "Shto një në mënyrë që roboti të ketë diçka për të referuar për këtë fushë.",
   "Add page": "Shto faqen",
   "Add participants": "Shto pjesëmarrës",
   "Add role": "Shto rol",
@@ -105,9 +109,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Rregulloni kërkimin ose krijoni një produkt.",
   "Adjustment %": "Rregullimi %",
   "Adjustments restricted": "Rregullimet e kufizuara",
+  Admin: "Administrja",
   "Admin API is unavailable": "API-ja e administratorit nuk disponohet",
   "Admin Logs": "Regjistrimet e administratorit",
   "Admin navigation": "navigimi i administratorit",
+  "Admin panel bot": "Bot i panelit të administratorit",
   Afrikaans: "Afrikanët",
   "After refunds, all farms": "Pas rimbursimeve, të gjitha fermat",
   Albanian: "shqiptare",
@@ -167,6 +173,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Artikujt e arkivuar do të shfaqen këtu.",
   Armenian: "Armenisht",
   "Article not found": "Artikulli nuk u gjet",
+  "Ask a question…": "Bëj një pyetje…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Pyet se si të bësh diçka në panelin e administratorit ose pyet për porositë në pritje, artikujt me stok të ulët ose statusin e një porosie.",
   "Assamese (অসমীয়া)": "Asameze (অসমীয়া)",
   "Assigned roles": "Rolet e caktuara",
   Attribution: "Atributi",
@@ -174,6 +183,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Autor",
   "Auto-translate": "Përkthe automatikisht",
   "Auto-translate all": "Përkthe automatikisht të gjitha",
+  Availability: "Disponueshmëria",
   Available: "E disponueshme",
   "available · reorder at": "disponohet · riporosit në",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -215,6 +225,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Teksti i trupit",
   Bosnian: "boshnjake",
   Brand: "Marka",
+  "Built-in": "E integruar",
   "Bulgarian (Български)": "bullgarisht (bългарски)",
   Bundle: "Paketë",
   "bundle price · items priced at": "çmimi i paketës · artikujt me çmim",
@@ -267,6 +278,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Po pastrohet...",
   "Click link": "Kliko lidhjen",
   Close: "Mbyll",
+  "Close help assistant": "Mbyll asistentin e ndihmës",
   "Close navigation": "Mbyll navigimin",
   "CMS pages": "faqet CMS",
   "CMS pages & SEO": "faqet CMS dhe SEO",
@@ -301,6 +313,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Vazhdo me Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Kontrollo se çfarë mund të shikojë, krijojë, modifikojë, publikojë ose menaxhojë secili rol.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Kontrollo nëse çdo robot është i disponueshëm dhe modifiko atë që di.",
   Cook: '><span id="t0019">Cooksok',
   "Cook minutes": "Mutat e gatimit",
   "Copy inside dark bands.": "Kopjo brenda brezave të errët.",
@@ -370,9 +384,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Fshi",
   "Delete (spam)": "Fshi (të padëshiruar)",
   "Delete category": "Fshi kategorinë",
+  "Delete entry": "Fshi hyrjen",
   "Delete farm": "Fshi fermën",
   "Delete image": "Fshi imazhin",
   "Delete inventory row": "Fshi rreshtin e inventarit",
+  "Delete knowledge entry?": "Të fshihet hyrja e njohurive?",
   "Delete permanently": "Fshi përgjithmonë",
   "Delete product": "Fshi produktin",
   "Delete role": "Fshi rolin",
@@ -421,7 +437,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     'Modifiko të dhënat meta të faqeve CMS, indeksimin dhe blloqet e faqeve të papërpunuara. Regjistrimi i faqes kryesore është renditur gjithashtu këtu, por "Cilësimet e faqes kryesore" janë mënyra më e sigurt për ta ndryshuar atë — ky redaktues përdor JSON të papërpunuar.',
   "Edit content": "Ndrysho përmbajtjen",
+  "Edit entry": "Ndrysho hyrjen",
   "Edit farm": "Modifiko fermën",
+  "Edit knowledge entry": "Redakto hyrjen e njohurive",
   "Edit media": "Modifiko media",
   "Edit review": "Modifiko komentin",
   "Edit role": "Modifiko rolin",
@@ -536,6 +554,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Titujt dhe kopjoni.",
   Headline: "Titulli",
   "Hebrew (עברית)": "Hebraisht (עברית)",
+  "Help assistant": "Asistenti i ndihmës",
+  "Help Assistant": "Asistenti i ndihmës",
   "Hero description": "Përshkrimi i heroit",
   "Hero eyebrow": "Vetulla heroike",
   "Hero image alt text": "Teksti alt i imazhit hero",
@@ -610,6 +630,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "Kazakisht",
   "Keep artwork clean": "Mbaje vepra arti të pastra",
   "Keep typing to search…": "Vazhdo të shkruash për të kërkuar…",
+  Keywords: "Fjalë kyçe",
   "Korean (한국어)": "Koreanisht (한국어)",
   Kyrgyz: "Kirgistan",
   Label: "Etiketa",
@@ -801,6 +822,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Nuk ka indeks",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Nuk ka ende artikuj — shtoni të paktën një më poshtë. Checkout zbaton zbritjen e kësaj pakete vetëm kur shporta ka çdo artikull këtu, të paktën në këto sasi.",
+  "No knowledge entries": "Nuk ka shënime njohurish",
   "No line items recorded.": "Nuk është regjistruar asnjë artikull rreshti.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "nuk e ndryshon më identifikimin — kështu që një fjalëkalim që vendosni këtu zëvendëson vërtet atë të vjetër.",
@@ -885,6 +907,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Vetëm zotëruesi mund të menaxhojë sferat e roleve.",
   "Only the owner can review payments and refunds.":
     "Vetëm zotëruesi mund të shqyrtojë pagesat dhe rimbursimet.",
+  "Open help assistant": "Hap asistentin e ndihmës",
   "Open navigation": "Hap navigimin",
   Optional: "Opsionale",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1162,6 +1185,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Po ruhet…",
   "Say how often you will write and that unsubscribing is easy.":
     "Thuaj sa shpesh do të shkruash dhe se çregjistrimi është i lehtë.",
+  Scope: "Fushëveprimi",
   "Scope Management": "Menaxhimi i fushëveprimit",
   "Scopes unavailable": "Skopet e padisponueshme",
   "Search archive": "Kërko arkivin",
@@ -1227,6 +1251,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Rreshtat e zgjedhur do të pastrohen në stokun e rezervuar, duke e bërë të disponueshëm stokun zero duke ruajtur rezervimet, historikun e lëvizjeve dhe regjistrat e auditimit.",
   "Selected users will be removed from the users list and signed out.":
     "Përdoruesit e përzgjedhur do të hiqen nga lista e përdoruesve dhe do të dalin nga llogaria.",
+  Send: "Dërgo",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Dërgoji një lidhje të sigurt të rivendosjes së fjalëkalimit këtij përdoruesi. Ata do të vendosin fjalëkalimin e tyre të ri nga faqja e rivendosjes së administratorit.",
   "Send back to draft": "Dërgoje përsëri në draft",
@@ -1295,6 +1320,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pamjet e çastit në kohën e blerjes — modifikimet e katalogut nuk e rishkruajnë kurrë një porosi.",
   Snippet: "Pjesë",
   "Sold out": "Të shitur",
+  "space separated, e.g. product publish visibility":
+    "hapësirë ​​e ndarë, p.sh. dukshmëria e publikimit të produktit",
   "Spanish (Español)": "Spanjisht (Español)",
   "Sprouted ragi flour": "Miell ragi i mbirë",
   "SQL Tables": "Tabelat SQL",
@@ -1307,6 +1334,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Hapat (një për rresht)",
   "Stock Status": "Statusi i aksioneve",
   "Store credit": "Krediti i dyqanit",
+  "Storefront bot": "Bot Storefront",
   "Storefront switches": "Çelsin e dritares së dyqanit",
   "Storefront switches unavailable": "çelsat e dyqanit nuk disponohen",
   "Strong border": "Kufi i fortë",
@@ -1343,9 +1371,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Baneri në krye të",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Flamuri, rreshti i kategorisë, rreshti i produktit dhe fushat e SEO ruhen së bashku. Kutitë e shënimeve të seksioneve, porositë dhe kopjimi i personalizuar i seksionit ruhen vetë, ndërsa i ndryshoni ato.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Vendi i chat-it që klientët dhe vizitorët e shohin në vitrinë.",
   "The classic credential pair, including the password-reset flow.":
     "Çifti klasik i kredencialeve, duke përfshirë rrjedhën e rivendosjes së fjalëkalimit.",
   "the farm owner": "pronari i fermës",
+  "The floating Help Assistant staff see on every admin page.":
+    'Stafi lundrues i "Asistentit të Ndihmës" e sheh në çdo faqe administratori.',
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Titulli i përkthyer për gjuhë dhe çdo faqe në këmbë tregon (lidhjen e përkthyer për çdo gjuhë, titullin dhe këmbimin e faqeve nga mi). 0068). Një vend i lënë bosh kthehet në anglisht në vitrinën e dyqanit. Ky është i njëjti kontroll që rregullon një kokë që tregon "Dyq" / "Sezonal" në anglisht, ndërkohë që gjithçka rreth tij ka ndërruar gjuhën — ato etiketa vijnë nga këtu, jo nga përkthimet e përmbajtjes së faqes më lart.',
   "The homepage has no sections": "Faqja kryesore nuk ka seksione",
@@ -1375,6 +1407,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Këto ngjyra vlejnë edhe për faqet më poshtë",
   "These roles define the permission sets available when inviting or editing users.":
     "Këto role përcaktojnë grupet e lejeve të disponueshme kur ftohen ose modifikohen përdoruesit.",
+  "Thinking…": "Mendimi…",
   "This application is": "Ky aplikacion është",
   "This order is in a final state.": "Ky porosi është në gjendjen përfundimtare.",
   "This page contains sensitive application diagnostics.":
@@ -1491,6 +1524,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Pse nevojiten ndryshime, ose pse u refuzua?",
   "Why is stock changing?": "Pse po ndryshon stoku?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Fjalët që roboti përputhet me një pyetje për të vendosur se kjo hyrje është e rëndësishme.",
   "Working...": "Po funksionon...",
   "World languages": "Gjuhët botërore",
   "Write a message…": "Shkruaj një mesazh…",

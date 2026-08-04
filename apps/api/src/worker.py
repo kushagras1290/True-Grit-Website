@@ -341,20 +341,8 @@ class Default(WorkerEntrypoint):
                 # this file) -- its methods keep their native JS camelCase
                 # names; there is no Python-side getByName -> get_by_name
                 # rewrite the way DurableObjectState's own helper methods get.
-                try:
-                    stub = self.env.CHAT_ROOMS.getByName(conversation_id)
-                    return await stub.fetch(request)
-                except Exception:  # TEMPORARY: remove once verified live
-                    import json
-                    import traceback
-
-                    detail = traceback.format_exc()
-                    print(f"chat realtime routing crashed: {detail}")
-                    return _json_response(
-                        json.dumps({"error": {"code": "internal_error", "detail": detail}}),
-                        500,
-                        _cors_headers(self.env, request),
-                    )
+                stub = self.env.CHAT_ROOMS.getByName(conversation_id)
+                return await stub.fetch(request)
             if _app is None:
                 _bridge_worker_env(self.env)
                 # `AI` is optional in wrangler.jsonc's binding list -- an

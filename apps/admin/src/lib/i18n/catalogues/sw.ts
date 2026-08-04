@@ -79,12 +79,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Ongeza aina",
   "Add code": "Ongeza msimbo",
   "Add country": "Ongeza nchi",
+  "Add entry": "Ongeza ingizo",
   "Add farm owner": "Ongeza mmiliki wa shamba",
   "Add ingredient": "Ongeza kiungo",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Ongeza vipengee (vibadala vipi, ngapi vya kila kimoja) baada ya kuunda kifurushi, kutoka kwa Dhibiti.",
+  "Add knowledge entry": "Ongeza ingizo la maarifa",
   "Add one above to get started.": "Ongeza kimoja hapo juu ili kuanza.",
   "Add one below to get started.": "Ongeza moja hapa chini ili kuanza.",
+  "Add one so the bot has something to reference for this scope.":
+    "Ongeza moja ili roboti ipate kitu cha kurejelea kwa upeo huu.",
   "Add page": "Ongeza ukurasa",
   "Add participants": "Ongeza washiriki",
   "Add role": "Ongeza jukumu",
@@ -102,9 +106,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Rekebisha utafutaji au uunde bidhaa.",
   "Adjustment %": "Marekebisho %",
   "Adjustments restricted": "Marekebisho yamezuiwa",
+  Admin: "Msimamizi",
   "Admin API is unavailable": "API ya Msimamizi haipatikani",
   "Admin Logs": "Kumbukumbu za Wasimamizi",
   "Admin navigation": "Uelekezaji wa msimamizi",
+  "Admin panel bot": "Kijibu cha paneli ya msimamizi",
   Afrikaans: "Kiafrikaans",
   "After refunds, all farms": "Baada ya kurejeshewa fedha, mashamba yote",
   Albanian: "Kialbania",
@@ -163,6 +169,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Vipengee vilivyowekwa kwenye kumbukumbu vitaonekana hapa.",
   Armenian: "Kiarmenia",
   "Article not found": "Makala hayajapatikana",
+  "Ask a question…": "Uliza swali…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Uliza jinsi ya kufanya jambo katika paneli ya msimamizi, au uulize kuhusu maagizo ambayo hayajashughulikiwa, bidhaa za bei ya chini au hali ya agizo.",
   "Assamese (অসমীয়া)": "Kiassamese (অসমীয়া)",
   "Assigned roles": "Majukumu yaliyokabidhiwa",
   Attribution: "Sifa",
@@ -170,6 +179,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Mwandishi",
   "Auto-translate": "Tafsiri kiotomatiki",
   "Auto-translate all": "Tafsiri zote kiotomatiki",
+  Availability: "Upatikanaji",
   Available: "Inapatikana",
   "available · reorder at": "inapatikana · Panga upya kwa",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -211,6 +221,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Maandishi ya mwili",
   Bosnian: "Kibosnia",
   Brand: "Chapa",
+  "Built-in": "Imejengewa ndani",
   "Bulgarian (Български)": "Kibulgaria (Български)",
   "bundle price · items priced at": "bei ya kifurushi · bidhaa bei yake ni",
   "Bundle price, ₹": "Bei ya pakiti, ₹",
@@ -261,6 +272,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Inafuta...",
   "Click link": "Bofya kiungo",
   Close: "Funga",
+  "Close help assistant": "Funga msaidizi wa usaidizi",
   "Close navigation": "Funga urambazaji",
   "CMS pages": "Kurasa za CMS",
   "CMS pages & SEO": "Kurasa za CMS na SEO",
@@ -293,6 +305,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Endelea na Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Dhibiti kile ambacho kila jukumu linaweza kuona, kuunda, kuhariri, kuchapisha au kudhibiti.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Dhibiti ikiwa kila kijibu kinapatikana, na uhariri kile kinachojua.",
   "Cook minutes": "Dakika za kupika",
   "Copy inside dark bands.": "Nakili ndani ya bendi za giza.",
   Correction: "Urekebishaji",
@@ -360,9 +374,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Futa",
   "Delete (spam)": "Futa (spam)",
   "Delete category": "Futa aina",
+  "Delete entry": "Futa ingizo",
   "Delete farm": "Futa shamba",
   "Delete image": "Futa picha",
   "Delete inventory row": "Futa safu mlalo ya orodha",
+  "Delete knowledge entry?": "Futa ingizo la maarifa?",
   "Delete permanently": "Futa kabisa",
   "Delete product": "Futa bidhaa",
   "Delete role": "Futa jukumu",
@@ -412,7 +428,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Hariri metadata ya ukurasa wa CMS, faharasa na vizuizi vya ukurasa ghafi. Rekodi ya ukurasa wa nyumbani imeorodheshwa hapa pia, lakini Mipangilio ya Ukurasa wa Nyumbani ndiyo njia salama zaidi ya kuibadilisha - kihariri hiki kinatumia JSON ghafi.",
   "Edit content": "Hariri maudhui",
+  "Edit entry": "Badilisha ingizo",
   "Edit farm": "Hariri shamba",
+  "Edit knowledge entry": "Hariri ingizo la maarifa",
   "Edit media": "Hariri maudhui",
   "Edit review": "Hariri ukaguzi",
   "Edit role": "Badilisha jukumu",
@@ -528,6 +546,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Vichwa na nakala.",
   Headline: "Kichwa cha habari",
   "Hebrew (עברית)": "Kiebrania (ebrania)",
+  "Help assistant": "Mratibu wa Usaidizi",
+  "Help Assistant": "Mratibu wa Usaidizi",
   "Hero description": "Maelezo ya shujaa",
   "Hero eyebrow": "Nyushi ya shujaa",
   "Hero image alt text": "Maandishi mbadala ya picha ya shujaa",
@@ -600,6 +620,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Kannada (ಕನ್ನಡ)": "Kikannada (ಕನ್ನಡ)",
   "Keep artwork clean": "Weka kazi ya sanaa ikiwa safi",
   "Keep typing to search…": "Endelea kuandika ili kutafuta…",
+  Keywords: "Nenomsingi",
   "Korean (한국어)": "Kikorea (한국어)",
   Kyrgyz: "Kirigizi",
   Label: "Lebo",
@@ -787,6 +808,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Hakuna faharasa",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Bado hakuna vipengee — ongeza angalau kimoja hapa chini. Malipo hutumika tu punguzo la kifurushi hiki wakati kikapu kina kila kipengee hapa, kwa angalau idadi hii.",
+  "No knowledge entries": "Hakuna maingizo ya maarifa",
   "No line items recorded.": "Hakuna vipengee vya laini vilivyorekodiwa.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "haibadilishi tena kuingia - kwa hivyo nenosiri uliloweka hapa linachukua nafasi ya lile la zamani.",
@@ -870,6 +892,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Mmiliki pekee ndiye anayeweza kudhibiti upeo wa majukumu.",
   "Only the owner can review payments and refunds.":
     "Mmiliki pekee ndiye anayeweza kukagua malipo na kurejesha pesa.",
+  "Open help assistant": "Mratibu wa usaidizi wa wazi",
   "Open navigation": "Fungua usogezaji",
   Optional: "Si lazima",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1146,6 +1169,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Inahifadhi…",
   "Say how often you will write and that unsubscribing is easy.":
     "Sema ni mara ngapi utaandika na kwamba kujiondoa ni rahisi.",
+  Scope: "Upeo",
   "Scope Management": "Udhibiti wa Upeo",
   "Scopes unavailable": "Maeneo hayapatikani",
   "Search archive": "Kumbukumbu ya Utafutaji",
@@ -1212,6 +1236,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Safu mlalo zilizochaguliwa zitaondolewa kwenye hifadhi iliyohifadhiwa, na hivyo kufanya hisa ipatikane sifuri huku ikihifadhi uhifadhi, historia ya harakati na kumbukumbu za ukaguzi.",
   "Selected users will be removed from the users list and signed out.":
     "Watumiaji waliochaguliwa wataondolewa kwenye orodha ya watumiaji na kuondoka.",
+  Send: "Tuma",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Tuma kiungo salama cha kuweka upya nenosiri kwa mtumiaji huyu. Wataweka nenosiri lake jipya kutoka kwa ukurasa wa kuweka upya msimamizi.",
   "Send back to draft": "Tuma tena kwa rasimu",
@@ -1282,6 +1307,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Kijisehemu",
   "Sold out": "Zimeuzwa",
   Somali: "Kisomali",
+  "space separated, e.g. product publish visibility":
+    "nafasi iliyotenganishwa, k.m. mwonekano wa uchapishaji wa bidhaa",
   "Spanish (Español)": "Kihispania (Español)",
   "Sprouted ragi flour": "Unga wa ragi uliochipua",
   "SQL Tables": "Meza za SQL",
@@ -1294,6 +1321,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Hatua (moja kwa kila mstari)",
   "Stock Status": "Hali ya Hisa",
   "Store credit": "Salio la Duka",
+  Storefront: "Mbele ya duka",
+  "Storefront bot": "Boti ya mbele ya duka",
   "Storefront switches": "Swichi za mbele ya duka",
   "Storefront switches unavailable": "Swichi za mbele ya duka hazipatikani",
   "Strong border": "Mpaka thabiti",
@@ -1330,9 +1359,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Bango lililo juu ya",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Bango, safu mlalo ya kategoria, safu mlalo ya bidhaa na sehemu za SEO huhifadhiwa pamoja. Visanduku vya tiki vya sehemu, uagizaji na nakala za sehemu maalum huhifadhi peke yake, unapozibadilisha.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Wateja na wageni wa wijeti ya gumzo mbele ya duka.",
   "The classic credential pair, including the password-reset flow.":
     "Jozi za kitambulisho cha kawaida, ikijumuisha mtiririko wa kuweka upya nenosiri.",
   "the farm owner": "mmiliki wa shamba",
+  "The floating Help Assistant staff see on every admin page.":
+    "Wafanyikazi wa Usaidizi wanaoelea wanaona kwenye kila ukurasa wa msimamizi.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Kichwa na kiungo cha kijachini huweka lebo za kila lugha (mig 60 kwa kila ukurasa hutafsiriwa). Lugha iliyoachwa wazi inarudi kwa Kiingereza kwenye mbele ya duka. Hiki ni kidhibiti kile kile ambacho hurekebisha kichwa kinachoonyesha "Duka" / "Msimu" kwa Kiingereza wakati kila kitu kilicho karibu nacho kimebadilisha lugha - lebo hizo hutoka hapa, si kutoka kwa tafsiri za maudhui ya ukurasa hapo juu.',
   "The homepage has no sections": "Ukurasa wa nyumbani hauna sehemu",
@@ -1362,6 +1395,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Rangi hizi pia hutumika kwa kurasa zilizo chini",
   "These roles define the permission sets available when inviting or editing users.":
     "Majukumu haya yanabainisha seti za ruhusa zinazopatikana wakati wa kualika au kuhariri watumiaji.",
+  "Thinking…": "Kufikiri…",
   "This application is": "Programu hii iko",
   "This order is in a final state.": "Agizo hili liko katika hali ya mwisho.",
   "This page contains sensitive application diagnostics.":
@@ -1478,6 +1512,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Whole site": "Tovuti nzima",
   "Whole site (default)": "Tovuti nzima (chaguo-msingi)",
   "Why is stock changing?": "Kwa nini hisa inabadilika?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Maneno majibu yanalingana na swali ili kuamua ingizo hili linafaa.",
   "Working...": "Inafanya kazi...",
   "World languages": "Lugha za ulimwengu",
   "Write a message…": "Andika ujumbe…",

@@ -84,12 +84,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Żid kategorija",
   "Add code": "Żid il-kodiċi",
   "Add country": "Żid pajjiż",
+  "Add entry": "Żid dħul",
   "Add farm owner": "Add razzett",
   "Add ingredient": "Żid l-ingredjent",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Żid oġġetti (liema varjanti, kemm minn kull wieħed) wara li toħloq il-pakkett, minn Manage.",
+  "Add knowledge entry": "Żid dħul ta' għarfien",
   "Add one above to get started.": "Żid wieħed hawn fuq biex tibda.",
   "Add one below to get started.": "Żid waħda hawn taħt biex tibda.",
+  "Add one so the bot has something to reference for this scope.":
+    "Żid waħda sabiex il-bot ikollu xi ħaġa għal referenza għal dan l-ambitu.",
   "Add page": "Żid il-paġna",
   "Add participants": "Żid parteċipanti",
   "Add role": "Żid ir-rwol",
@@ -107,8 +111,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Aġġusta t-tfittxija jew oħloq prodott.",
   "Adjustment %": "Aġġustament %",
   "Adjustments restricted": "Aġġustamenti ristretti",
+  Admin: "Amministratur",
   "Admin API is unavailable": "Admin API mhix disponibbli",
   "Admin navigation": "Ammin navigazzjoni",
+  "Admin panel bot": "Bot tal-pannell tal-amministrazzjoni",
   "After refunds, all farms": "Wara rifużjonijiet, irziezet kollha",
   Albanian: "Albaniż",
   All: "Kull",
@@ -169,6 +175,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "Armeni",
   "Article not found": "Artiklu mhux misjub",
   "Asha Rao": "Role",
+  "Ask a question…": "Saqsi mistoqsija...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Staqsi kif tagħmel xi ħaġa fil-pannell tal-amministrazzjoni, jew staqsi dwar ordnijiet pendenti, oġġetti ta' stokk baxx, jew status ta' ordni.",
   "Assamese (অসমীয়া)": 'Assamese id="t0010">Attribuzzjoni',
   "Assigned roles": "Rwoli assenjati",
   Attribution: "Attribuzzjoni",
@@ -176,6 +185,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Awtur",
   "Auto-translate": "Traduzzjoni awtomatika",
   "Auto-translate all": 'riżerva (t00005) dejjem id="t00005">. Kull bidla hija moviment.',
+  Availability: "Disponibbiltà",
   Available: "Disponibbli",
   "available · reorder at": "disponibbli · ordna mill-ġdid fi",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -267,6 +277,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Jikklerja...",
   "Click link": "Ikklikkja fuq il-link",
   Close: "Agħlaq",
+  "Close help assistant": "Agħlaq l-assistent tal-għajnuna",
   "Close navigation": "Agħlaq in-navigazzjoni",
   "CMS pages": "Paġni tas-CMS",
   "CMS pages & SEO": "Paġni tas-CMS u SEO",
@@ -300,6 +311,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Kompli ma' Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Ikkontrolla x'jista' jara, joħloq, jeditja, jippubblika jew jimmaniġġja kull rwol.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Ikkontrolla jekk kull bot huwiex disponibbli, u editja dak li jaf.",
   Cook: "Sajjar",
   "Cook minutes": "Sajjar il-minuti",
   "Copy inside dark bands.": "Ikkopja ġewwa meded skuri.",
@@ -368,9 +381,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Ħassar",
   "Delete (spam)": "Ħassar (spam)",
   "Delete category": "Ħassar il-kategorija",
+  "Delete entry": "Ħassar id-daħla",
   "Delete farm": "Ħassar ir-razzett",
   "Delete image": "Ħassar l-immaġni",
   "Delete inventory row": "Ħassar ringiela tal-inventarju",
+  "Delete knowledge entry?": "Ħassar id-daħla ta' l-għarfien?",
   "Delete permanently": "Ħassar b'mod permanenti",
   "Delete product": "Ħassar prodott",
   "Delete role": "Ħassar ir-rwol",
@@ -419,7 +434,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Editja l-metadata tal-paġna tas-CMS, l-indiċjar u l-blokki tal-paġni mhux ipproċessati. Ir-rekord tal-homepage huwa elenkat hawn ukoll, iżda l-Issettjar tal-Homepage huwa l-aktar mod sikur biex jinbidel — dan l-editur jieħu JSON mhux maħdum.",
   "Edit content": "Editja l-kontenut",
+  "Edit entry": "Editja l-entrata",
   "Edit farm": "Editja tar-razzett",
+  "Edit knowledge entry": "Assistent ta' għajnuna",
   "Edit media": "Editja l-midja",
   "Edit review": "Editja r-reviżjoni",
   "Edit role": "Editja r-rwol",
@@ -524,6 +541,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Heading: "Intestatura",
   "Headings and copy.": "Intestaturi u kopja.",
   "Hebrew (עברית)": "Ebrajk (עברית)",
+  "Help assistant": "Għajnuna assistent",
+  "Help Assistant": "Għajnuna Assistent",
   "Hero description": "Deskrizzjoni tal-eroj",
   "Hero eyebrow": "Eyebrow tal-eroj",
   "Hero image alt text": "Test alternattiv tal-immaġni tal-eroj",
@@ -596,6 +615,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "Każak",
   "Keep artwork clean": "Żomm ix-xogħol ta' l-arti nadif",
   "Keep typing to search…": "Ibqa' ittajpja biex tfittex...",
+  Keywords: "Kliem ewlenin",
   Khmer: "Kmer",
   Kinyarwanda: "Kinjarwanda",
   "Korean (한국어)": "Korejan (한국어)",
@@ -787,6 +807,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "L-ebda indiċi",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Għadu l-ebda oġġett — żid mill-inqas wieħed hawn taħt. Checkout japplika biss ir-roħs ta' dan il-pakkett meta l-basket ikollu kull oġġett hawn, f'mill-inqas dawn il-kwantitajiet.",
+  "No knowledge entries": "L-ebda dħul ta' għarfien",
   "No line items recorded.": "Ebda oġġett tal-linja rreġistrati.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "m'għadux jibdel il-login — għalhekk password li ssettja hawn verament tissostitwixxi l-qadima.",
@@ -869,6 +890,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Is-sid biss jista' jimmaniġġja l-ambitu tar-rwoli.",
   "Only the owner can review payments and refunds.":
     "Is-sid biss jista' jirrevedi l-ħlasijiet u r-rifużjonijiet.",
+  "Open help assistant": "Assistent ta' għajnuna miftuħa",
   "Open navigation": "Navigazzjoni miftuħa",
   Optional: "Order",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1143,6 +1165,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Save...",
   "Say how often you will write and that unsubscribing is easy.":
     "Għid li kemm-il darba se tikteb.",
+  Scope: "Ambitu",
   "Scope Management": "Ġestjoni ta' l-ambitu",
   "Scopes unavailable": "Skopijiet mhux disponibbli",
   "Search archive": "Fittex fl-arkivju",
@@ -1212,6 +1235,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ringieli magħżula se jitneħħew għal stokk riżervat, billi jsir disponibbli l-istokk żero filwaqt li jiġu ppreservati r-riżervi, l-istorja tal-moviment u r-reġistru tal-verifika.",
   "Selected users will be removed from the users list and signed out.":
     "Utenti magħżula se jitneħħew mil-lista tal-utenti u jiġu ffirmati.",
+  Send: "Ibgħat",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Ibgħat link sigur għall-irrisettjar tal-password lil dan l-utent. Se jissettjaw il-password il-ġdida tagħhom mill-paġna ta' reset ta' l-amministratur.",
   "Send back to draft": "Ibgħat lura lill-abbozz",
@@ -1280,6 +1304,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Snapshots at purchase time — catalogue edits never rewrite an order.":
     "Snapshots fil-ħin tax-xiri — editjar tal-katalgu qatt ma jerġa’ jikteb ordni.",
   "Sold out": "Mibjugħa",
+  "space separated, e.g. product publish visibility":
+    "spazju separati, eż. prodott tippubblika viżibilità",
   "Spanish (Español)": "Spanjol (Español) (Español) dqiq ragi",
   "Sprouted ragi flour": 't0009">tagħna',
   "SQL Tables": "Tabelli SQL",
@@ -1324,9 +1350,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Il-banner fuq in-naħa ta' fuq ta'",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Il-banner, ir-ringiela tal-kategorija, ir-ringiela tal-prodott u l-oqsma SEO jiffrankaw flimkien. Tickboxes tas-sezzjoni, ordnijiet u kopji tas-sezzjoni tad-dwana jiffrankaw waħedhom, hekk kif tibdelhom.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Il-klijenti u l-viżitaturi tal-widget taċ-chat jaraw fuq il-faċċata.",
   "The classic credential pair, including the password-reset flow.":
     "Il-par tal-kredenzjali klassiku, inkluż il-fluss tal-password-reset.",
   "the farm owner": "is-sid tar-razzett",
+  "The floating Help Assistant staff see on every admin page.":
+    "Il-persunal tal-Assistent tal-Għajnuna f'wiċċ l-ilma jara f'kull paġna tal-amministrazzjoni.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'It-tikketti tal-header u footer link kull paġna turi 68800 lingwa (transazzjoni). A lokal li jitħalla vojt jaqa\' lura għall-Ingliż fuq il-faċċata tal-ħanut. Dan huwa l-istess kontroll li jiffissa header li juri "Ħanut" / "Staġjonali" bl-Ingliż filwaqt li kollox madwaru biddel il-lingwa — dawk it-tikketti ġejjin minn hawn, mhux mit-traduzzjonijiet tal-kontenut tal-paġna hawn fuq.',
   "The homepage has no sections": "Il-paġna ewlenija m'għandha l-ebda sezzjoni",
@@ -1356,6 +1386,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": 'id="t0004">Din l-applikazzjoni hija',
   "These roles define the permission sets available when inviting or editing users.":
     "Jiffissaw l-utenti.",
+  "Thinking…": "Taħseb...",
   "This application is": "Din l-applikazzjoni hija",
   "This order is in a final state.": "Din l-ordni tinsab fi stat finali.",
   "This page contains sensitive application diagnostics.":
@@ -1477,6 +1508,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Għaliex huma meħtieġa bidliet, jew għaliex dan ġie mnaqqas?",
   "Why is stock changing?": "Għaliex qed jinbidel l-istokk?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Kliem li l-bot jaqbel ma' mistoqsija biex jiddeċiedi li din l-entrata hija rilevanti.",
   "Working...": "Taħdem...",
   "World languages": "Lingwi tad-dinja",
   "Write a message…": "Ikteb messaġġ...",

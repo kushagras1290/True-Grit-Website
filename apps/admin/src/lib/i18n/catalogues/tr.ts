@@ -77,12 +77,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Kategori ekle",
   "Add code": "Kod ekle",
   "Add country": "Ülke ekle",
+  "Add entry": "Giriş ekle",
   "Add farm owner": "Çiftlik sahibi ekle",
   "Add ingredient": "İçerik ekleyin",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Paketi oluşturduktan sonra Yönetim'den öğeleri ekleyin (hangi varyantlar, her birinden kaç adet).",
+  "Add knowledge entry": "Bilgi girişi ekle",
   "Add one above to get started.": "Başlamak için yukarıya bir tane ekleyin.",
   "Add one below to get started.": "Başlamak için aşağıya bir tane ekleyin.",
+  "Add one so the bot has something to reference for this scope.":
+    "Bot'un bu kapsam için referans alabileceği bir şey olması için bir tane ekleyin.",
   "Add page": "Sayfa ekle",
   "Add participants": "Katılımcı ekle",
   "Add role": "Rol ekle",
@@ -100,9 +104,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Aramayı ayarlayın veya bir ürün oluşturun.",
   "Adjustment %": "Ayarlama %",
   "Adjustments restricted": "Ayarlamalar kısıtlandı",
+  Admin: "Yönetici",
   "Admin API is unavailable": "Yönetici API'si kullanılamıyor",
   "Admin Logs": "Yönetici Günlükleri",
   "Admin navigation": "Yönetici gezinmesi",
+  "Admin panel bot": "Yönetici paneli botu",
   Afrikaans: "Afrikalılar",
   "After refunds, all farms": "Geri ödemelerden sonra tüm çiftlikler",
   Albanian: "Arnavutça",
@@ -163,6 +169,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Arşivlenen öğeler burada görünecek.",
   Armenian: "Ermenice",
   "Article not found": "Makale bulunamadı",
+  "Ask a question…": "Birine sorun soru…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Yönetici panelinde bir şeyin nasıl yapılacağını sorun veya bekleyen siparişler, düşük stoklu ürünler veya bir siparişin durumu hakkında soru sorun.",
   "Assamese (অসমীয়া)": "Assam Dili (অসমীয়া)",
   "Assigned roles": "Atanan roller",
   Attribution: "İlişkilendirme",
@@ -170,6 +179,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Yazar",
   "Auto-translate": "Otomatik çeviri",
   "Auto-translate all": "Tümünü otomatik çevir",
+  Availability: "Kullanılabilirlik",
   Available: "Mevcut",
   "available · reorder at": "mevcut · şu adreste yeniden sıralayın:",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -213,6 +223,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Gövde metni",
   Bosnian: "Boşnakça",
   Brand: "Marka",
+  "Built-in": "Yerleşik",
   "Bulgarian (Български)": "Bulgarca (Български)",
   Bundle: "Paket",
   "bundle price · items priced at": "paket fiyatı · fiyatlandırılan öğeler",
@@ -264,6 +275,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Temizleniyor...",
   "Click link": "Tıklayın bağlantı",
   Close: "Kapat",
+  "Close help assistant": "Yardım asistanını kapat",
   "Close navigation": "Gezinmeyi kapat",
   "CMS pages": "CMS sayfaları",
   "CMS pages & SEO": "CMS sayfaları ve SEO",
@@ -296,6 +308,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Facebook ile devam et",
   "Control what each role can view, create, edit, publish or manage.":
     "Her rolün neyi görüntüleyebileceğini, oluşturabileceğini, düzenleyebileceğini, yayınlayabileceğini veya yönetebileceğini kontrol edin.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Her birinin olup olmayacağını kontrol edin bot kullanılabilir ve bildiklerini düzenleyin.",
   Cook: "Yemek yapma",
   "Cook minutes": "Dakika pişirme",
   "Copy inside dark bands.": "Koyu bantların içinde kopyalama.",
@@ -365,9 +379,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Sil",
   "Delete (spam)": "Sil (spam)",
   "Delete category": "Kategoriyi sil",
+  "Delete entry": "Girdi silinsin",
   "Delete farm": "Çiftliği sil",
   "Delete image": "Resmi sil",
   "Delete inventory row": "Envanter satırını sil",
+  "Delete knowledge entry?": "Bilgi girişi silinsin mi?",
   "Delete permanently": "Kalıcı olarak sil",
   "Delete product": "Ürünü sil",
   "Delete role": "Rolü sil",
@@ -417,7 +433,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS sayfası meta verilerini, dizine eklemeyi ve ham sayfa bloklarını düzenleyin. Ana sayfa kaydı da burada listelenir, ancak Ana Sayfa Ayarları bunu değiştirmenin daha güvenli yoludur; bu düzenleyici ham JSON alır.",
   "Edit content": "İçeriği düzenle",
+  "Edit entry": "Girişi düzenle",
   "Edit farm": "Çiftliği düzenle",
+  "Edit knowledge entry": "Bilgi girişini düzenle",
   "Edit media": "Medyayı düzenle",
   "Edit review": "İncelemeyi düzenle",
   "Edit role": "Rolü düzenle",
@@ -532,6 +550,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Başlıklar ve metin.",
   Headline: "Başlık",
   "Hebrew (עברית)": "İbranice (עברית)",
+  "Help assistant": "Yardım asistanı",
+  "Help Assistant": "Yardım Asistan",
   "Hero description": "Kahraman açıklaması",
   "Hero eyebrow": "Kahraman kaşı",
   "Hero image alt text": "Kahraman resmi alt metni",
@@ -607,6 +627,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "Kazakça",
   "Keep artwork clean": "Resmi temiz tutun",
   "Keep typing to search…": "Aramak için yazmaya devam edin…",
+  Keywords: "Anahtar kelimeler",
   Khmer: "Kmerce",
   "Korean (한국어)": "Korece (한국어)",
   Kyrgyz: "Kırgız",
@@ -795,6 +816,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Dizin yok",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Henüz öğe yok — aşağıya en az bir tane ekleyin. Ödeme işlemi, yalnızca sepette tüm öğeler en azından bu miktarlarda olduğunda bu paketin indirimini uygular.",
+  "No knowledge entries": "Bilgi girişi yok",
   "No line items recorded.": "Kayıtlı satır öğesi yok.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "artık giriş bilgilerini değiştirmez; yani burada belirlediğiniz şifre gerçekten eski şifrenin yerini alır.",
@@ -879,6 +901,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Rol kapsamlarını yalnızca sahip yönetebilir.",
   "Only the owner can review payments and refunds.":
     "Ödemeleri ve geri ödemeleri yalnızca sahibi inceleyebilir.",
+  "Open help assistant": "Yardım asistanını aç",
   "Open navigation": "Gezinmeyi aç",
   Optional: "İsteğe bağlı",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1159,6 +1182,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Kaydediliyor…",
   "Say how often you will write and that unsubscribing is easy.":
     "Ne sıklıkta yazacağınızı ve abonelikten çıkmanın kolay olduğunu söyleyin.",
+  Scope: "Kapsam",
   "Scope Management": "Kapsam Yönetim",
   "Scopes unavailable": "Kapsamlar kullanılamıyor",
   "Search archive": "Arşivde ara",
@@ -1225,6 +1249,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Seçilen satırlar ayrılmış stoklara temizlenecek, böylece rezervasyonlar, hareket geçmişi ve denetim günlükleri korunurken stok sıfır haline getirilecek.",
   "Selected users will be removed from the users list and signed out.":
     "Seçili kullanıcılar kullanıcı listesinden kaldırılacak ve oturumları kapatılacak.",
+  Send: "Gönder",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Bu kullanıcıya güvenli bir şifre sıfırlama bağlantısı gönder. Yeni şifrelerini yönetici sıfırlama sayfasından ayarlayacaklar.",
   "Send back to draft": "Taslağa geri gönder",
@@ -1293,6 +1318,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Snapshots at purchase time — catalogue edits never rewrite an order.":
     "Satın alma sırasındaki anlık görüntüler — katalog düzenlemeleri asla bir siparişi yeniden yazmaz.",
   "Sold out": "Tükendi",
+  "space separated, e.g. product publish visibility":
+    "boşlukla ayrılmış, ör. ürün yayınlama görünürlüğü",
   "Spanish (Español)": "İspanyolca (Español)",
   "Sprouted ragi flour": "Filizlenmiş ragi unu",
   "SQL Tables": "SQL Tabloları",
@@ -1305,6 +1332,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Adımlar (satır başına bir tane)",
   "Stock Status": "Stok Durumu",
   "Store credit": "Mağaza kredisi",
+  Storefront: "Vitrin",
+  "Storefront bot": "Vitrin botu",
   "Storefront switches": "Mağaza anahtarları",
   "Storefront switches unavailable": "Vitrin anahtarları kullanılamıyor",
   "Strong border": "Güçlü kenarlık",
@@ -1342,9 +1371,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Üst taraftaki banner",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Banner, kategori satırı, ürün satırı ve SEO alanları birlikte kaydedilir. Bölüm onay kutuları, sıralama ve özel bölüm kopyası, siz değiştirdikçe kendi başlarına kaydedilir.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Müşterilerin ve ziyaretçilerin vitrinde gördüğü sohbet widget'ı.",
   "The classic credential pair, including the password-reset flow.":
     "Şifre sıfırlama akışı da dahil olmak üzere klasik kimlik bilgisi çifti.",
   "the farm owner": "çiftlik sahibi",
+  "The floating Help Assistant staff see on every admin page.":
+    "Geçici Yardım Asistanı personeli her yönetici sayfasında görür.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Her sayfada gösterilen üstbilgi ve altbilgi bağlantısı etiketleri, dile göre çevrilmiş olarak gösterilir (geçiş 0068). Boş bırakılan bir yerel ayar, vitrinde İngilizceye geri döner. Bu, etrafındaki her şey dil değiştirirken İngilizce "Mağaza" / "Sezonluk" yazan başlığı düzelten kontrolün aynısıdır; bu etiketler yukarıdaki sayfa içeriği çevirilerinden değil buradan gelir.',
   "The homepage has no sections": "Ana sayfada bölüm yoktur",
@@ -1374,6 +1407,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Bu renkler aynı zamanda alttaki sayfalar için de geçerlidir",
   "These roles define the permission sets available when inviting or editing users.":
     "Bu roller, kullanıcıları davet ederken veya düzenlerken kullanılabilen izin kümelerini tanımlar.",
+  "Thinking…": "Düşünüyor…",
   "This application is": "Bu uygulama",
   "This order is in a final state.": "Bu sipariş son durumdadır.",
   "This page contains sensitive application diagnostics.":
@@ -1495,6 +1529,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Neden değişiklik yapılması gerekiyor veya bu neden reddedildi?",
   "Why is stock changing?": "Stoklar neden değişiyor?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Bu girişin alakalı olduğuna karar vermek için botun bir soruyla eşleştirdiği kelimeler.",
   "Working...": "Çalışıyor...",
   "World languages": "Dünya dilleri",
   "Write a message…": "Bir mesaj yazın mesaj…",

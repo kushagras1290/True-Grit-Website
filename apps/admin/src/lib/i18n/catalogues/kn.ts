@@ -79,12 +79,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "ವರ್ಗವನ್ನು ಸೇರಿಸಿ",
   "Add code": "ಕೋಡ್ ಸೇರಿಸಿ",
   "Add country": "ದೇಶವನ್ನು ಸೇರಿಸಿ",
+  "Add entry": "ಪ್ರವೇಶವನ್ನು ಸೇರಿಸಿ",
   "Add farm owner": "ಫಾರ್ಮ್ ಮಾಲೀಕರನ್ನು ಸೇರಿಸಿ",
   "Add ingredient": "ಪದಾರ್ಥವನ್ನು ಸೇರಿಸಿ",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "ಬಂಡಲ್ ಅನ್ನು ರಚಿಸಿದ ನಂತರ ಐಟಂಗಳನ್ನು ಸೇರಿಸಿ (ಯಾವ ರೂಪಾಂತರಗಳು, ಪ್ರತಿಯೊಂದರಲ್ಲಿ ಎಷ್ಟು) ನಿರ್ವಹಿಸಿ.",
+  "Add knowledge entry": "ಜ್ಞಾನದ ನಮೂದನ್ನು ಸೇರಿಸಿ",
   "Add one above to get started.": "ಪ್ರಾರಂಭಿಸಲು ಮೇಲಿನ ಒಂದನ್ನು ಸೇರಿಸಿ. ಪ್ರಾರಂಭಿಸಲಾಗಿದೆ.",
   "Add one below to get started.": "ಪ್ರಾರಂಭಿಸಲು ಕೆಳಗೆ ಒಂದನ್ನು ಸೇರಿಸಿ.",
+  "Add one so the bot has something to reference for this scope.":
+    "ಒಂದನ್ನು ಸೇರಿಸಿ ಇದರಿಂದ ಬೋಟ್ ಈ ಸ್ಕೋಪ್‌ಗೆ ಏನನ್ನಾದರೂ ಉಲ್ಲೇಖಿಸುತ್ತದೆ.",
   "Add page": "ಪುಟವನ್ನು ಸೇರಿಸಿ",
   "Add participants": "ಭಾಗವಹಿಸುವವರನ್ನು ಸೇರಿಸಿ",
   "Add role": "ಪಾತ್ರವನ್ನು ಸೇರಿಸಿ",
@@ -102,9 +106,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "ಹುಡುಕಾಟವನ್ನು ಹೊಂದಿಸಿ ಅಥವಾ ಉತ್ಪನ್ನವನ್ನು ರಚಿಸಿ.",
   "Adjustment %": "ಹೊಂದಾಣಿಕೆ %",
   "Adjustments restricted": "ಹೊಂದಾಣಿಕೆಗಳನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ",
+  Admin: "ನಿರ್ವಾಹಕರು",
   "Admin API is unavailable": "ನಿರ್ವಾಹಕ API ಲಭ್ಯವಿಲ್ಲ",
   "Admin Logs": 'span><span id="t0008"> ನ್ಯಾವಿಗೇಶನ್',
   "Admin navigation": "ನಿರ್ವಾಹಕ ನ್ಯಾವಿಗೇಶನ್",
+  "Admin panel bot": "ನಿರ್ವಾಹಕ ಫಲಕ ಬೋಟ್",
   Afrikaans: "ಆಫ್ರಿಕಾನ್ಸ್",
   "After refunds, all farms": "ಮರುಪಾವತಿಯ ನಂತರ, ಎಲ್ಲಾ ಫಾರ್ಮ್‌ಗಳು",
   Albanian: "ಅಲ್ಬೇನಿಯನ್",
@@ -165,6 +171,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "ಅರ್ಮೇನಿಯನ್",
   "Article not found": "ಲೇಖನ ಕಂಡುಬಂದಿಲ್ಲ",
   "Asha Rao": "ಆಶಾ ರಾವ್",
+  "Ask a question…": "ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "ನಿರ್ವಾಹಕ ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ ಏನನ್ನಾದರೂ ಮಾಡುವುದು ಹೇಗೆ ಎಂದು ಕೇಳಿ ಅಥವಾ ಬಾಕಿ ಇರುವ ಆರ್ಡರ್‌ಗಳು, ಕಡಿಮೆ-ಸ್ಟಾಕ್ ಐಟಂಗಳು ಅಥವಾ ಆರ್ಡರ್‌ನ ಸ್ಥಿತಿಯ ಬಗ್ಗೆ ಕೇಳಿ.",
   "Assamese (অসমীয়া)": "ಅಸ್ಸಾಮಿ (অসমীয়া)",
   "Assigned roles": "ನಿಯೋಜಿತ ಪಾತ್ರಗಳು",
   Attribution: "ಗುಣಲಕ್ಷಣ",
@@ -172,6 +181,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "ಲೇಖಕ",
   "Auto-translate": "ಸ್ವಯಂ-ಅನುವಾದ",
   "Auto-translate all": "ಎಲ್ಲವನ್ನೂ ಸ್ವಯಂ-ಅನುವಾದಿಸಿ",
+  Availability: "ಲಭ್ಯತೆ",
   Available: "ಲಭ್ಯವಿದೆ",
   "available · reorder at": "ಲಭ್ಯವಿದೆ · ಇಲ್ಲಿ ಮರುಕ್ರಮಗೊಳಿಸಿ",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -217,6 +227,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "ದೇಹ ಪಠ್ಯ",
   Bosnian: "ಬೋಸ್ನಿಯನ್",
   Brand: "ಬ್ರಾಂಡ್",
+  "Built-in": "ಅಂತರ್ನಿರ್ಮಿತ",
   "Bulgarian (Български)": "ಬಲ್ಗೇರಿಯನ್ (Български)",
   Bundle: "ಬಂಡಲ್",
   "bundle price · items priced at": "ಬಂಡಲ್ ಬೆಲೆ · ಬೆಲೆಯ ಐಟಂಗಳು",
@@ -271,6 +282,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "ತೆರವುಗೊಳಿಸಲಾಗುತ್ತಿದೆ...",
   "Click link": "ಲಿಂಕ್ ಕ್ಲಿಕ್ ಮಾಡಿ",
   Close: "ಮುಚ್ಚು",
+  "Close help assistant": "ಸಹಾಯ ಸಹಾಯಕವನ್ನು ಮುಚ್ಚಿ",
   "Close navigation": "ನ್ಯಾವಿಗೇಶನ್ ಮುಚ್ಚಿ",
   "CMS pages": "CMS ಪುಟಗಳು",
   "CMS pages & SEO": "CMS ಪುಟಗಳು ಮತ್ತು SEO",
@@ -304,6 +316,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Facebook ನೊಂದಿಗೆ ಮುಂದುವರಿಸಿ",
   "Control what each role can view, create, edit, publish or manage.":
     "ಪ್ರತಿ ಪಾತ್ರವು ಏನನ್ನು ವೀಕ್ಷಿಸಬಹುದು, ರಚಿಸಬಹುದು, ಸಂಪಾದಿಸಬಹುದು, ಪ್ರಕಟಿಸಬಹುದು ಅಥವಾ ನಿರ್ವಹಿಸಬಹುದು ಎಂಬುದನ್ನು ನಿಯಂತ್ರಿಸಿ.",
+  "Control whether each bot is available, and edit what it knows.":
+    "ಪ್ರತಿ ಬೋಟ್ ಲಭ್ಯವಿದೆಯೇ ಎಂಬುದನ್ನು ನಿಯಂತ್ರಿಸಿ ಮತ್ತು ಅದಕ್ಕೆ ತಿಳಿದಿರುವದನ್ನು ಸಂಪಾದಿಸಿ.",
   Cook: "ಕುಕ್",
   "Cook minutes": "ನಿಮಿಷಗಳನ್ನು ಬೇಯಿಸಿ",
   "Copy inside dark bands.": "ಡಾರ್ಕ್ ಬ್ಯಾಂಡ್‌ಗಳ ಒಳಗೆ ನಕಲಿಸಿ.",
@@ -373,9 +387,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "ಅಳಿಸಿ",
   "Delete (spam)": "ಅಳಿಸಿ (ಸ್ಪ್ಯಾಮ್)",
   "Delete category": "ವರ್ಗವನ್ನು ಅಳಿಸಿ",
+  "Delete entry": "ಪ್ರವೇಶವನ್ನು ಅಳಿಸುವುದೇ",
   "Delete farm": "ಫಾರ್ಮ್ ಅನ್ನು ಅಳಿಸಿ",
   "Delete image": "ಚಿತ್ರವನ್ನು ಅಳಿಸಿ",
   "Delete inventory row": "ದಾಸ್ತಾನು ಸಾಲನ್ನು ಅಳಿಸಿ",
+  "Delete knowledge entry?": "ಜ್ಞಾನದ ನಮೂದನ್ನು ಅಳಿಸುವುದೇ?",
   "Delete permanently": "ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಿ",
   "Delete product": "ಉತ್ಪನ್ನವನ್ನು ಅಳಿಸಿ",
   "Delete role": "ಪಾತ್ರವನ್ನು ಅಳಿಸಿ",
@@ -428,7 +444,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS ಪುಟ ಮೆಟಾಡೇಟಾ, ಇಂಡೆಕ್ಸಿಂಗ್ ಮತ್ತು ಕಚ್ಚಾ ಪುಟ ಬ್ಲಾಕ್‌ಗಳನ್ನು ಸಂಪಾದಿಸಿ. ಮುಖಪುಟದ ದಾಖಲೆಯನ್ನು ಇಲ್ಲಿಯೂ ಪಟ್ಟಿಮಾಡಲಾಗಿದೆ, ಆದರೆ ಮುಖಪುಟ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಅದನ್ನು ಬದಲಾಯಿಸಲು ಸುರಕ್ಷಿತ ಮಾರ್ಗವಾಗಿದೆ - ಈ ಸಂಪಾದಕವು ಕಚ್ಚಾ JSON ಅನ್ನು ತೆಗೆದುಕೊಳ್ಳುತ್ತದೆ.",
   "Edit content": "ವಿಷಯವನ್ನು ಸಂಪಾದಿಸಿ",
+  "Edit entry": "ಪ್ರವೇಶವನ್ನು ಸಂಪಾದಿಸಿ",
   "Edit farm": "ಫಾರ್ಮ್ ಸಂಪಾದಿಸಿ",
+  "Edit knowledge entry": "ಜ್ಞಾನ ನಮೂದನ್ನು ಸಂಪಾದಿಸಿ",
   "Edit media": "ಮಾಧ್ಯಮ ಸಂಪಾದಿಸಿ",
   "Edit review": "ವಿಮರ್ಶೆ ಸಂಪಾದಿಸಿ",
   "Edit role": "ಪಾತ್ರವನ್ನು ಸಂಪಾದಿಸಿ",
@@ -545,6 +563,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "ಶೀರ್ಷಿಕೆಗಳು ಮತ್ತು ನಕಲು.",
   Headline: "ಹೆಡ್‌ಲೈನ್",
   "Hebrew (עברית)": "ಪಠ್ಯ",
+  "Help assistant": "ಸಹಾಯ ಸಹಾಯಕ",
+  "Help Assistant": "ಸಹಾಯ ಸಹಾಯಕ",
   "Hero description": "ಹೀರೋ ವಿವರಣೆ",
   "Hero eyebrow": "ಹೀರೋ ಐಬ್ರೋ",
   "Hero image alt text": "ಹೀರೋ ಇಮೇಜ್ ಆಲ್ಟ್ ಟೆಕ್ಸ್ಟ್",
@@ -621,6 +641,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "ಕಝಕ್",
   "Keep artwork clean": "ಕಲಾಕೃತಿಯನ್ನು ಸ್ವಚ್ಛವಾಗಿಡಿ",
   "Keep typing to search…": "ಹುಡುಕಲು ಟೈಪ್ ಮಾಡುತ್ತಿರಿ...",
+  Keywords: "ಕೀವರ್ಡ್‌ಗಳು",
   Khmer: "ಖಮೇರ್",
   Kinyarwanda: "ಕಿನ್ಯಾರವಾಂಡಾ",
   "Konkani (कोंकणी)": "ಕೊಂಕಣಿ (ಕೊಂಕಣಿ)",
@@ -817,6 +838,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "ಇಂಡೆಕ್ಸ್ ಇಲ್ಲ",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "ಇನ್ನೂ ಯಾವುದೇ ಐಟಂಗಳಿಲ್ಲ — ಕನಿಷ್ಠ ಒಂದನ್ನಾದರೂ ಕೆಳಗೆ ಸೇರಿಸಿ. ಚೆಕ್‌ಔಟ್ ಈ ಬಂಡಲ್‌ನ ರಿಯಾಯಿತಿಯನ್ನು ಬ್ಯಾಸ್ಕೆಟ್‌ನಲ್ಲಿ ಹೊಂದಿರುವಾಗ ಮಾತ್ರ ಅನ್ವಯಿಸುತ್ತದೆ, ಕನಿಷ್ಠ ಈ ಪ್ರಮಾಣಗಳಲ್ಲಿ.",
+  "No knowledge entries": "ಯಾವುದೇ ಜ್ಞಾನ ನಮೂದುಗಳಿಲ್ಲ",
   "No line items recorded.": "ಯಾವುದೇ ಸಾಲಿನ ಐಟಂಗಳನ್ನು ದಾಖಲಿಸಲಾಗಿಲ್ಲ.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ಇನ್ನು ಮುಂದೆ ಲಾಗಿನ್ ಅನ್ನು ಬದಲಾಯಿಸುವುದಿಲ್ಲ - ಆದ್ದರಿಂದ ನೀವು ಇಲ್ಲಿ ಹೊಂದಿಸಿರುವ ಪಾಸ್‌ವರ್ಡ್ ನಿಜವಾಗಿಯೂ ಹಳೆಯದನ್ನು ಬದಲಾಯಿಸುತ್ತದೆ.",
@@ -903,6 +925,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "ಮಾಲೀಕರು ಮಾತ್ರ ಪಾತ್ರ ಸ್ಕೋಪ್‌ಗಳನ್ನು ನಿರ್ವಹಿಸಬಹುದು.",
   "Only the owner can review payments and refunds.":
     "ಮಾಲೀಕರು ಮಾತ್ರ ಪಾವತಿಗಳು ಮತ್ತು ಮರುಪಾವತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಬಹುದು.",
+  "Open help assistant": "ಸಹಾಯ ಸಹಾಯಕವನ್ನು ತೆರೆಯಿರಿ",
   "Open navigation": "ಓಪನ್ ನ್ಯಾವಿಗೇಷನ್",
   Optional: "ಐಚ್ಛಿಕ",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1181,6 +1204,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "ಉಳಿಸಲಾಗುತ್ತಿದೆ...",
   "Say how often you will write and that unsubscribing is easy.":
     "ನೀವು ಎಷ್ಟು ಬಾರಿ ಬರೆಯುತ್ತೀರಿ ಮತ್ತು ಅನ್‌ಸಬ್‌ಸ್ಕ್ರೈಬ್ ಮಾಡುವುದು ಸುಲಭ ಎಂದು ಹೇಳಿ.",
+  Scope: "ವ್ಯಾಪ್ತಿ",
   "Scope Management": "ಸ್ಕೋಪ್ ನಿರ್ವಹಣೆ",
   "Scopes unavailable": "ವ್ಯಾಪ್ತಿಗಳು ಲಭ್ಯವಿಲ್ಲ",
   "Search archive": "ಆರ್ಕೈವ್ ಹುಡುಕಿ",
@@ -1247,6 +1271,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ಆಯ್ಕೆಮಾಡಿದ ಸಾಲುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಿದ ಸ್ಟಾಕ್‌ಗೆ ತೆರವುಗೊಳಿಸಲಾಗುತ್ತದೆ, ಕಾಯ್ದಿರಿಸುವಿಕೆಗಳು, ಚಲನೆಯ ಇತಿಹಾಸ ಮತ್ತು ಆಡಿಟ್ ಲಾಗ್‌ಗಳನ್ನು ಸಂರಕ್ಷಿಸುವಾಗ ಲಭ್ಯವಿರುವ ಸ್ಟಾಕ್ ಶೂನ್ಯವನ್ನು ಮಾಡುತ್ತದೆ.",
   "Selected users will be removed from the users list and signed out.":
     "ಆಯ್ಕೆ ಮಾಡಿದ ಬಳಕೆದಾರರನ್ನು ಬಳಕೆದಾರರ ಪಟ್ಟಿಯಿಂದ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ ಮತ್ತು ಸೈನ್ ಔಟ್ ಮಾಡಲಾಗುತ್ತದೆ.",
+  Send: "ಕಳುಹಿಸಿ",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "ಈ ಬಳಕೆದಾರರಿಗೆ ಸುರಕ್ಷಿತ ಪಾಸ್‌ವರ್ಡ್ ಮರುಹೊಂದಿಸುವ ಲಿಂಕ್ ಅನ್ನು ಕಳುಹಿಸಿ. ನಿರ್ವಾಹಕ ಮರುಹೊಂದಿಸುವ ಪುಟದಿಂದ ಅವರು ತಮ್ಮ ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಹೊಂದಿಸುತ್ತಾರೆ.",
   "Send back to draft": "ಡ್ರಾಫ್ಟ್‌ಗೆ ಮರಳಿ ಕಳುಹಿಸಿ",
@@ -1318,6 +1343,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "ತುಣುಕು",
   "Sold out": "ಸೋಲ್ಡ್ ಔಟ್",
   Somali: "ಸೊಮಾಲಿ",
+  "space separated, e.g. product publish visibility":
+    "ಸ್ಪೇಸ್ ಪ್ರತ್ಯೇಕಿಸಲಾಗಿದೆ, ಉದಾ. ಉತ್ಪನ್ನದ ಪ್ರಕಟಣೆಯ ಗೋಚರತೆ",
   "Spanish (Español)": "ಸ್ಪ್ಯಾನಿಷ್ (ಎಸ್ಪಾನೊಲ್)",
   "Sprouted ragi flour": "ಮೊಳಕೆಯೊಡೆದ ರಾಗಿ ಹಿಟ್ಟು",
   "SQL Tables": "SQL ಕೋಷ್ಟಕಗಳು",
@@ -1330,6 +1357,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "ಹಂತಗಳು (ಪ್ರತಿ ಸಾಲಿಗೆ ಒಂದು)",
   "Stock Status": "ಸ್ಟಾಕ್ ಸ್ಥಿತಿ",
   "Store credit": "ಸ್ಟೋರ್ ಕ್ರೆಡಿಟ್",
+  Storefront: "ಅಸಿಸ್ಟೆಂಟ್‌ನಲ್ಲಿ ಪ್ರತಿ ಸಹಾಯ> t000 ಜಾಹೀರಾತು ನೋಡಿ page.",
+  "Storefront bot": "ಸ್ಟೋರ್‌ಫ್ರಂಟ್ ಬೋಟ್",
   "Storefront switches": "ಸ್ಟೋರ್‌ಫ್ರಂಟ್ ಸ್ವಿಚ್‌ಗಳು",
   "Storefront switches unavailable": "ಸ್ಟೋರ್‌ಫ್ರಂಟ್ ಸ್ವಿಚ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ",
   "Strong border": "ಸ್ಟ್ರಾಂಗ್ ಬಾರ್ಡರ್",
@@ -1367,9 +1396,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "ನ ಮೇಲ್ಭಾಗದಲ್ಲಿರುವ ಬ್ಯಾನರ್",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "ಬ್ಯಾನರ್, ವರ್ಗದ ಸಾಲು, ಉತ್ಪನ್ನ ಸಾಲು ಮತ್ತು SEO ಕ್ಷೇತ್ರಗಳು ಒಟ್ಟಿಗೆ ಉಳಿಸುತ್ತವೆ. ವಿಭಾಗ ಟಿಕ್‌ಬಾಕ್ಸ್‌ಗಳು, ಆರ್ಡರ್ ಮಾಡುವಿಕೆ ಮತ್ತು ಕಸ್ಟಮ್ ವಿಭಾಗದ ನಕಲು ನೀವು ಅವುಗಳನ್ನು ಬದಲಿಸಿದಂತೆ ತಮ್ಮದೇ ಆದ ಮೇಲೆ ಉಳಿಸುತ್ತದೆ.",
+  "The chat widget customers and visitors see on the storefront.":
+    "ಚಾಟ್ ವಿಜೆಟ್ ಸಿಬ್ಬಂದಿ ಮತ್ತು ಸಂದರ್ಶಕರು ಅಂಗಡಿಯ ಮುಂಭಾಗದಲ್ಲಿ ನೋಡುತ್ತಾರೆ.",
   "The classic credential pair, including the password-reset flow.":
     "ಪಾಸ್‌ವರ್ಡ್-ಮರುಹೊಂದಿಸುವ ಹರಿವನ್ನು ಒಳಗೊಂಡಂತೆ ಕ್ಲಾಸಿಕ್ ರುಜುವಾತು ಜೋಡಿ.",
   "the farm owner": "ಫಾರ್ಮ್ ಮಾಲೀಕರು",
+  "The floating Help Assistant staff see on every admin page.":
+    "ಫ್ಲೋಟಿಂಗ್ ಸಹಾಯ ಸಹಾಯಕ ಸಿಬ್ಬಂದಿ ಪ್ರತಿ ನಿರ್ವಾಹಕ ಪುಟದಲ್ಲಿ ನೋಡುತ್ತಾರೆ.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'ಲಿಂಕ್ ಪ್ರತಿ ಭಾಷಾಂತರಿಸಿದ ಲೇಬಲ್‌ಗಳು ಮತ್ತು ಅಡಿಟಿಪ್ಪಣಿ ಪುಟಕ್ಕೆ ಅನುವಾದಿಸಲಾಗಿದೆ. 0068). ಖಾಲಿ ಬಿಟ್ಟ ಸ್ಥಳವು ಅಂಗಡಿಯ ಮುಂಭಾಗದಲ್ಲಿ ಇಂಗ್ಲಿಷ್‌ಗೆ ಹಿಂತಿರುಗುತ್ತದೆ. "ಶಾಪ್" / "ಸೀಸನಲ್" ಅನ್ನು ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ ತೋರಿಸುವ ಶಿರೋಲೇಖವನ್ನು ಸರಿಪಡಿಸುವ ಅದೇ ನಿಯಂತ್ರಣವು ಅದರ ಸುತ್ತಲಿನ ಎಲ್ಲವೂ ಭಾಷೆಯನ್ನು ಬದಲಾಯಿಸಿದಾಗ — ಆ ಲೇಬಲ್‌ಗಳು ಇಲ್ಲಿಂದ ಬಂದಿವೆ, ಮೇಲಿನ ಪುಟದ ವಿಷಯ ಅನುವಾದಗಳಿಂದ ಅಲ್ಲ.',
   "The homepage has no sections": "ಮುಖಪುಟವು ಯಾವುದೇ ವಿಭಾಗಗಳನ್ನು ಹೊಂದಿಲ್ಲ",
@@ -1398,6 +1431,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "ಈ ಬಣ್ಣಗಳು ಕೆಳಗಿನ ಪುಟಗಳಿಗೂ ಅನ್ವಯಿಸುತ್ತವೆ",
   "These roles define the permission sets available when inviting or editing users.":
     "ಈ ಪಾತ್ರಗಳು ಬಳಕೆದಾರರನ್ನು ಆಹ್ವಾನಿಸುವಾಗ ಅಥವಾ ಸಂಪಾದಿಸುವಾಗ ಲಭ್ಯವಿರುವ ಅನುಮತಿ ಸೆಟ್‌ಗಳನ್ನು ವ್ಯಾಖ್ಯಾನಿಸುತ್ತವೆ.",
+  "Thinking…": "ಚಿಂತನೆ...",
   "This application is": "ಈ ಅಪ್ಲಿಕೇಶನ್",
   "This order is in a final state.": "ಈ ಆದೇಶವು ಅಂತಿಮ ಸ್ಥಿತಿಯಲ್ಲಿದೆ.",
   "This page contains sensitive application diagnostics.":
@@ -1520,6 +1554,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     'ಯಾಕೆ ಈ ಬದಲಾವಣೆಗಳನ್ನು ನಿರಾಕರಿಸಲಾಯಿತು? id="t0007">ವಿಶ್ವ ಭಾಷೆಗಳು',
   "Why is stock changing?": "ಸ್ಟಾಕ್ ಏಕೆ ಬದಲಾಗುತ್ತಿದೆ?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "ಈ ನಮೂದು ಪ್ರಸ್ತುತವಾಗಿದೆ ಎಂದು ನಿರ್ಧರಿಸಲು ಪ್ರಶ್ನೆಯೊಂದಕ್ಕೆ ಬೋಟ್ ಹೊಂದಿಕೆಯಾಗುವ ಪದಗಳು.",
   "Working...": "ಕೆಲಸ ಮಾಡುತ್ತಿದೆ...",
   "World languages": "ವಿಶ್ವ ಭಾಷೆಗಳು",
   "Write a message…": "ಸಂದೇಶ ಬರೆಯಿರಿ...",

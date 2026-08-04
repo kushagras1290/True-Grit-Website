@@ -77,12 +77,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Добавить категорию",
   "Add code": "Добавить код",
   "Add country": "Добавить страну",
+  "Add entry": "Добавить запись",
   "Add farm owner": "Добавить ферму владелец",
   "Add ingredient": "Добавить ингредиент",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     'Добавьте элементы (какие варианты, сколько каждого) после создания пакета из раздела "Управление".',
+  "Add knowledge entry": "Добавить запись знаний",
   "Add one above to get started.": "Добавьте один ингредиент выше, чтобы начать.",
   "Add one below to get started.": "Добавьте один элемент ниже, чтобы начать.",
+  "Add one so the bot has something to reference for this scope.":
+    "Добавьте ее, чтобы боту было на что ссылаться в этой области.",
   "Add page": "Добавить страницу",
   "Add participants": "Добавить участников",
   "Add role": "Добавить роль",
@@ -100,9 +104,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Настройте поиск или создайте товар.",
   "Adjustment %": "Корректировка %",
   "Adjustments restricted": "Корректировки ограничены",
+  Admin: "Администратор",
   "Admin API is unavailable": "API администратора недоступен",
   "Admin Logs": "Журналы администратора",
   "Admin navigation": "Навигация администратора",
+  "Admin panel bot": "Бот панели администратора",
   Afrikaans: "африкаанс",
   "After refunds, all farms": "После возврата средств все фермы",
   Albanian: "албанский",
@@ -165,6 +171,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "Армянский",
   "Article not found": "Статья не найдена",
   "Asha Rao": "Аша Рао",
+  "Ask a question…": "Задать вопрос...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Спросить, как что-то сделать в панели администратора, узнать об отложенных заказах, товарах на складе или статусе заказа.",
   "Assamese (অসমীয়া)": "Ассамский (অসমীয়া)",
   "Assigned roles": "Назначенные роли",
   Attribution: "Атрибуция",
@@ -172,6 +181,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Автор",
   "Auto-translate": "Автоперевод",
   "Auto-translate all": "Автоперевод все",
+  Availability: "Доступность",
   Available: "Доступно",
   "available · reorder at": "доступно · изменить заказ на",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -216,6 +226,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Основной текст",
   Bosnian: "Боснийский",
   Brand: "Бренд",
+  "Built-in": "Встроенный",
   "Bulgarian (Български)": "Болгарский (Българский)",
   Bundle: "Набор",
   "bundle price · items priced at": "цена пакета · товары по цене",
@@ -270,6 +281,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Очистка...",
   "Click link": "Нажмите ссылку",
   Close: "Закрыть",
+  "Close help assistant": "Закрыть помощник",
   "Close navigation": "Закрыть навигацию",
   "CMS pages": "Страницы CMS",
   "CMS pages & SEO": "Страницы CMS & SEO",
@@ -303,6 +315,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Продолжить с Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Управляйте тем, что каждая роль может просматривать, создавать, редактировать, публиковать или управлять.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Контролировать, доступен ли каждый бот, и редактировать то, что он знает.",
   Cook: "Готовить",
   "Cook minutes": "Минуты приготовления",
   "Copy inside dark bands.": "Копировать внутри темных полос.",
@@ -372,9 +386,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Удалить",
   "Delete (spam)": "Удалить (спам)",
   "Delete category": "Удалить категорию",
+  "Delete entry": "Удалить запись",
   "Delete farm": "Удалить ферму",
   "Delete image": "Удалить image",
   "Delete inventory row": "Удалить строку инвентаря",
+  "Delete knowledge entry?": "Удалить запись знаний?",
   "Delete permanently": "Удалить навсегда",
   "Delete product": "Удалить продукт",
   "Delete role": "Удалить роль",
@@ -426,7 +442,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Редактировать метаданные страницы CMS, индексацию и необработанные блоки страниц. Запись домашней страницы также указана здесь, но настройки домашней страницы – это более безопасный способ изменить ее: этот редактор использует необработанный JSON.",
   "Edit content": "Редактировать контент",
+  "Edit entry": "Изменить запись",
   "Edit farm": "Редактировать ферму",
+  "Edit knowledge entry": "Изменить запись знаний",
   "Edit media": "Редактировать медиа",
   "Edit review": "Редактировать обзор",
   "Edit role": "Изменить роль",
@@ -542,6 +560,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Заголовки и текст.",
   Headline: "Заголовок",
   "Hebrew (עברית)": "Иврит (עברית)",
+  "Help assistant": "Помощник",
+  "Help Assistant": "Помощник",
   "Hero description": "Описание героя",
   "Hero eyebrow": "Бровь героя",
   "Hero image alt text": "Альтернативный текст изображения героя",
@@ -619,6 +639,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "Казахский",
   "Keep artwork clean": "Содержите иллюстрации в чистоте",
   "Keep typing to search…": "Продолжайте вводить текст для поиска…",
+  Keywords: "Ключевые слова",
   Khmer: "Кхмерский",
   Kinyarwanda: "Киньяруанда",
   "Konkani (कोंकणी)": "Конкани (कोंकणी)",
@@ -814,6 +835,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Нет индекса",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Элементов пока нет — добавьте хотя бы один ниже. Checkout применяет скидку на этот пакет только в том случае, если в корзине есть все товары, по крайней мере, в этих количествах.",
+  "No knowledge entries": "Нет записей знаний",
   "No line items recorded.": "Позиции не записаны.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "больше не меняет логин — поэтому пароль, который вы здесь устанавливаете, действительно заменяет старый.",
@@ -898,6 +920,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Только владелец может управлять областями ролей.",
   "Only the owner can review payments and refunds.":
     "Только владелец может просматривать платежи и возвраты.",
+  "Open help assistant": "Открыть помощник",
   "Open navigation": "Открыть навигацию",
   Optional: "Необязательно",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1177,6 +1200,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Сохранение...",
   "Say how often you will write and that unsubscribing is easy.":
     "Скажите, как часто вы напишете, и отписаться будет легко.",
+  Scope: "Область",
   "Scope Management": "Управление областью действия",
   "Scopes unavailable": "Области действия недоступны",
   "Search archive": "Поиск в архиве",
@@ -1245,6 +1269,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Выбранные строки будут очищены от зарезервированных запасов, что сделает доступными нулевые запасы, сохраняя при этом резервирования, историю перемещений и журналы аудита.",
   "Selected users will be removed from the users list and signed out.":
     "Выбранные пользователи будет удален из списка пользователей и выйдет из системы.",
+  Send: "Отправить",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Отправьте этому пользователю ссылку для безопасного сброса пароля. Они установят свой новый пароль на странице сброса администратора.",
   "Send back to draft": "Отправить обратно в черновик",
@@ -1315,6 +1340,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Фрагмент",
   "Sold out": "Распродано",
   Somali: "Сомали",
+  "space separated, e.g. product publish visibility":
+    "через пробел, например. видимость публикации продукта",
   "Spanish (Español)": "Испанский (Español)",
   "Sprouted ragi flour": "Проросшая мука раги",
   "SQL Tables": "Таблицы SQL",
@@ -1327,6 +1354,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Шаги (по одному в строке)",
   "Stock Status": "Состояние запасов",
   "Store credit": "Купить кредит",
+  Storefront: "Витрина",
+  "Storefront bot": "Бот витрины",
   "Storefront switches": "Переключатели витрины",
   "Storefront switches unavailable": "Переключатели витрины недоступны",
   "Strong border": "Сильная граница",
@@ -1364,9 +1393,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Баннер в верхней части",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Баннер, строка категории, строка продукта и поля SEO сохраняются вместе. Флажки разделов, упорядочение и пользовательские копии разделов сохраняются самостоятельно при их изменении.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Виджет чата, который клиенты и посетители видят на витрине.",
   "The classic credential pair, including the password-reset flow.":
     "Классическая пара учетных данных, включая процедуру сброса пароля.",
   "the farm owner": "владелец фермы",
+  "The floating Help Assistant staff see on every admin page.":
+    "Плавающий Справочный помощник, который сотрудники видят на каждой странице администратора.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "Ссылка в верхнем и нижнем колонтитуле обозначает каждую отображаемую страницу, переведена для каждого языка (миграция 0068). Языковой стандарт, оставленный пустым, на витрине магазина снова станет английским. Это тот же элемент управления, который исправляет заголовок, показывающий «Магазин» / «Сезонное» на английском языке, в то время как все вокруг него переключает язык — эти ярлыки берутся отсюда, а не из приведенных выше переводов содержимого страницы.",
   "The homepage has no sections": "На главной странице нет разделов",
@@ -1395,6 +1428,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Эти цвета также применяются к страницам ниже.",
   "These roles define the permission sets available when inviting or editing users.":
     "Эти роли определяют наборы разрешений, доступные при приглашении или редактировании пользователей.",
+  "Thinking…": "Думая…",
   "This application is": "Это приложение",
   "This order is in a final state.": "Этот заказ находится в окончательном состоянии.",
   "This page contains sensitive application diagnostics.":
@@ -1517,6 +1551,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Почему необходимы изменения или почему это было отклонено?",
   "Why is stock changing?": "Почему акции меняются?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Слова, которые бот сопоставляет с вопросом, чтобы решить, что эта запись релевантна.",
   "Working...": "Работает...",
   "World languages": "Мировые языки",
   "Write a message…": "Написать сообщение…",

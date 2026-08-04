@@ -87,12 +87,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "वर्ग जोडचो",
   "Add code": "कोड जोडचो",
   "Add country": "देश जोडचो",
+  "Add entry": "प्रविष्टी जोडची",
   "Add farm owner": "शेतकार जोडचो",
   "Add ingredient": "घटक जोडात",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "बंडल तयार केल्या उपरांत आयटम (खंयचे वेरिएंट, दरेकाचे कितले) जोडात, वेवस्थापन कडल्यान.",
+  "Add knowledge entry": "ज्ञान नोंद जोडची",
   "Add one above to get started.": "सुरवाती करपाक वयर एक जोडात.",
   "Add one below to get started.": "सुरवाती करपाक सकयल एक जोडात.",
+  "Add one so the bot has something to reference for this scope.":
+    "एक जोडची म्हणजे बॉटाक ह्या व्याप्ती खातीर संदर्भ दिवपाक कितें तरी आसतलें.",
   "Add page": "पान जोडात",
   "Add participants": "भाग घेवपी जोडप",
   "Add role": "भूमिका जोडात",
@@ -110,9 +114,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "सोद समायोजीत करात वा उत्पादन तयार करात.",
   "Adjustment %": "समायोजन %",
   "Adjustments restricted": "समायोजन प्रतिबंधीत",
+  Admin: "प्रशासक",
   "Admin API is unavailable": "प्रशासक एपीआय उपलब्ध ना",
   "Admin Logs": "प्रशासक लॉग",
   "Admin navigation": "प्रशासक नेव्हिगेशन",
+  "Admin panel bot": "प्रशासक पॅनल बॉट",
   ADMIN_LOGIN_EMAIL: "प्रशासक_LOGIN_EMAIL",
   Afrikaans: "आफ्रिकन",
   "After refunds, all farms": "परतावो दिल्या उपरांत, सगळ्यो शेत",
@@ -175,6 +181,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "आर्मेनिया",
   "Article not found": "लेख मेळूंक ना",
   "Asha Rao": "आशा राव",
+  "Ask a question…": "प्रस्न विचारात...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "प्रशासक पॅनेलांत कितेंय कशें करचें तें विचारात, वा प्रलंबीत ऑर्डर, उण्या स्टॉकाच्यो वस्तू, वा ऑर्डराची स्थिती विचारात.",
   "Assamese (অসমীয়া)": "आसामी (অসমীয়া)",
   "Assigned roles": "नियुक्त भुमिका",
   Attribution: "एट्रिब्यूशन",
@@ -182,6 +191,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "लेखक",
   "Auto-translate": "ऑटो-अणकार",
   "Auto-translate all": "सगले स्वयं-अणकार",
+  Availability: "उपलब्धताय",
   Available: "उपलब्ध",
   "available · reorder at": "उपलब्ध ·",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -225,6 +235,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "शरीर मजकूर",
   Bosnian: "बोस्निया",
   Brand: "ब्रांड",
+  "Built-in": "बिल्ट-इन",
   "Bulgarian (Български)": "बल्गेरियन (Български)",
   Bundle: "बंडल",
   "bundle price · items priced at": "बंडल किंमत · वस्तूंची किंमत",
@@ -276,6 +287,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "साफ करप मेरेन निवडात...",
   "Click link": "क्लिक करात दुवो",
   Close: "बंद करचें",
+  "Close help assistant": "मदत सहाय्यक बंद करात",
   "Close navigation": "नेव्हिगेशन बंद करचें",
   "CMS pages": "सीएमएस पानां",
   "CMS pages & SEO": "सीएमएस पानां & एसईओ",
@@ -308,6 +320,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "सामुग्री चालू दवरात Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "दरेक भुमिका कितें पळोवंक, तयार करूंक, संपादीत करूंक, प्रकाशीत करूंक वा वेवस्थापन करूंक शकता हाचेर नियंत्रण दवरचें.",
+  "Control whether each bot is available, and edit what it knows.":
+    "दरेक बॉट उपलब्ध आसा काय ना तें नियंत्रीत करात, आनी ताका खबर आसा तें संपादीत करात.",
   Cook: "कुक",
   "Cook minutes": "कुक मिण्टां",
   "Copy inside dark bands.": "काळ्या पट्ट्यां भितर कॉपी करची.",
@@ -377,9 +391,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "काडून उडोवप",
   "Delete (spam)": "काडून उडोवप (स्पॅम)",
   "Delete category": "वर्ग काडून उडोवप",
+  "Delete entry": "प्रविष्टी काडून उडोवची",
   "Delete farm": "फार्म काडून उडोवप",
   "Delete image": "प्रतिमा काडून उडोवप",
   "Delete inventory row": "इन्व्हेंट्री ओळ काडून उडोवप",
+  "Delete knowledge entry?": "ज्ञान नोंद काडून उडोवची?",
   "Delete permanently": "कायमचे काडून उडोवप",
   "Delete product": "उत्पादन काडून उडोवप",
   "Delete role": "भुमिका काडून उडोवप",
@@ -432,7 +448,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "सीएमएस पान मेटाडेटा, अनुक्रमणिका आनी कच्चे पान ब्लॉक संपादीत करात. मुखेल पान रेकॉर्ड हांगाय दिल्लो आसा, पूण मुखेल पान मांडावळी हो तो बदलपाचो सुरक्षीत मार्ग आसा — हो संपादक कच्चो JSON घेता.",
   "Edit content": "सामुग्री संपादीत करचो",
+  "Edit entry": "प्रविष्टी संपादीत करची",
   "Edit farm": "फार्म संपादीत करचो",
+  "Edit knowledge entry": "ज्ञान नोंदी संपादीत करात",
   "Edit media": "माध्यम संपादीत करचो",
   "Edit review": "पुनरावलोकन संपादीत करचो",
   "Edit role": "संपादन भुमिका",
@@ -550,6 +568,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "शीर्षकां आनी प्रत.",
   Headline: "मथळो",
   "Hebrew (עברית)": "हिब्रू (עברית)",
+  "Help assistant": "मदत सहाय्यक",
+  "Help Assistant": "मदत सहाय्यक",
   "Hero description": "हीरो वर्णन",
   "Hero eyebrow": "हीरो भौं",
   "Hero image alt text": "हीरो इमेज alt text",
@@ -626,6 +646,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "कझाख",
   "Keep artwork clean": "कलाकृती निवळ दवरात",
   "Keep typing to search…": "सोदपाक टायप करत रावात...",
+  Keywords: "मुखेल शब्द",
   Khmer: "ख्मेर",
   Kinyarwanda: "किनियारवांडा",
   "Konkani (कोंकणी)": "कोंकणी (कोंकणी)",
@@ -821,6 +842,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "अनुक्रमणिका ना",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "आतां मेरेन वस्तू ना — सकयल उण्यांत उणी एक जोडात. चेकआउट फकत तेन्नाच ह्या बंडलाची सवलत लागू करता जेन्ना बास्केटांत हांगा दरेक वस्तू आसता, उण्यांत उण्या ह्या प्रमाणांत.",
+  "No knowledge entries": "ज्ञान नोंदी ना",
   "No line items recorded.": "कोणच ओळी आयटम रेकॉर्ड करूंक नात.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "आतां लॉगीन बदलना — देखून तुमी हांगा सेट केल्लो पासवर्ड खरेंच पोरन्या पासवर्डाची सुवात घेता.",
@@ -904,6 +926,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "फकत मालक भुमिका व्याप्ती वेवस्थापन करूंक शकता.",
   "Only the owner can review payments and refunds.":
     "फकत मालक फारीकणी आनी परतावो नियाळ करूंक शकता.",
+  "Open help assistant": "मदत सहाय्यक उगडात",
   "Open navigation": "उगडें नेव्हिगेशन",
   Optional: "पर्यायी",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1185,6 +1208,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "साजवप...",
   "Say how often you will write and that unsubscribing is easy.":
     "तुमी कितले फावट बरयतले आनी अनसबस्क्रिप्शन आसा तें सांगात सोंपें.",
+  Scope: "व्याप्ती",
   "Scope Management": "व्याप्ती वेवस्थापन",
   "Scopes unavailable": "व्याप्ती उपलब्ध ना",
   "Search archive": "संग्रह सोद",
@@ -1249,6 +1273,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "निवडिल्लीं ओळीं राखीव स्टॉकांत निवळ करतले, जाका लागून आरक्षण, हालचालींचो इतिहास आनी ऑडिट लॉग सांबाळटना उपलब्ध स्टॉक शून्य जातलो.",
   "Selected users will be removed from the users list and signed out.":
     "निवडलेले वापरपी वापरप्यांच्या वळेरेंतल्यान काडून उडयतले आनी सायन आउट करतले.",
+  Send: "धाडप",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "ह्या वापरप्याक सुरक्षीत गुप्तशब्द रीसेट दुवो धाडचो. ते आपलो नवो पासवर्ड प्रशासक रीसेट पानाचेर सेट करतले.",
   "Send back to draft": "मसुद्याचेर परत धाड",
@@ -1320,6 +1345,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "स्निपेट",
   "Sold out": "विकून गेले",
   Somali: "सोमाली",
+  "space separated, e.g. product publish visibility":
+    "जागो वेगळो केल्लो, उदा. उत्पादन प्रकाशीत दृश्यताय",
   "Spanish (Español)": "स्पेनीश (Español)",
   "Sprouted ragi flour": "अंकुरीत रागी पिठो",
   "SQL Tables": "SQL कोश्टकां",
@@ -1332,6 +1359,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "पांवडे (दर ओळीक एक)",
   "Stock Status": "स्टॉक स्थिती",
   "Store credit": "स्टोर क्रेडीट",
+  Storefront: "स्टोरफ्रंट",
+  "Storefront bot": "स्टोरफ्रंट बॉट",
   "Storefront switches": "स्टोरफ्रंट स्वीच",
   "Storefront switches unavailable": "स्टोरफ्रंट स्वीच उपलब्ध ना",
   "Strong border": "बळिश्ट शिमो",
@@ -1368,9 +1397,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Thai (ไทย)": "थाई (ไทย)",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "बॅनर, श्रेणी ओळ, उत्पादन ओळ आनी एसईओ क्षेत्रां एकठांय जतनाय घेतात. विभाग टिकबॉक्स, ऑर्डर करप आनी सानुकूल विभाग प्रत स्वता जतनाय घेतात, जशें तुमी बदलतात.",
+  "The chat widget customers and visitors see on the storefront.":
+    "गप्पा विजेट गिरायक आनी भेट दिवपी स्टोरफ्रंटाचेर पळयतात.",
   "The classic credential pair, including the password-reset flow.":
     "गुप्तशब्द-रीसेट प्रवाह सयत क्लासिक प्रमाणपत्र जोड.",
   "the farm owner": "शेत मालक",
+  "The floating Help Assistant staff see on every admin page.":
+    "फ्लोटिंग मदत सहाय्यक कर्मचाऱ्यांक दर एका प्रशासक पानाचेर दिसता.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'शीर्षक आनी तळटीप दुवो दरेक पान दाखयता, दर भाशेक अणकारीत केला (स्थलांतर 0068). रितो सोडिल्लो एक लोकेल स्टोरफ्रंटाचेर परतून इंग्लीशीक पडटा. हें तेंच नियंत्रण आसा जें इंग्लीशींत "Shop" / "Seasonal" दाखोवपी शीर्षक सुदारता जाल्यार ताचे भोंवतणीं सगळ्यांनी भास बदलल्या — तीं लेबलां हांगाच्यान येतात, वयर दिल्ल्या पानाच्या आशय अणकारांतल्यान न्हय.',
   "The homepage has no sections": "मुखेल पानाचेर विभाग नात",
@@ -1400,6 +1433,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "ह्यो रंग",
   "These roles define the permission sets available when inviting or editing users.":
     "ह्या भुमिका सकयल दिल्ल्या पानांकय लागू जातात वापरप्यांक आपयतना वा संपादीत करतना उपलब्ध आशिल्ले संच.",
+  "Thinking…": "विचार...",
   "This application is": "हो ऍप्लिकेशन",
   "This order is in a final state.": "हो क्रम निमाणे स्थितींत आसा.",
   "This page contains sensitive application diagnostics.":
@@ -1522,6 +1556,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "बदल कित्याक जाय, वा हें कित्याक नाका म्हणलें?",
   "Why is stock changing?": "स्टॉक कित्याक बदलत आसा?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "बॉट प्रस्ना आड जुळपी शब्द ही नोंद संबंदीत आसा अशें थारावपाक.",
   "Working...": "काम...",
   "World languages": "संवसारीक भासो",
   "Write a message…": "संदेश बरोवचो...",

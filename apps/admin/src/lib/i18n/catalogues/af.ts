@@ -85,12 +85,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Voeg kategorie by",
   "Add code": "Voeg kode by",
   "Add country": "Voeg land by",
+  "Add entry": "Voeg inskrywing by",
   "Add farm owner": "Voeg plaaseienaar by",
   "Add ingredient": "Voeg bestanddeel by",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Voeg items by (watter variante, hoeveel van elk) nadat die bondel geskep is, vanaf Bestuur.",
+  "Add knowledge entry": "Voeg kennisinskrywing by",
   "Add one above to get started.": "Voeg een hierbo by om te begin.",
   "Add one below to get started.": "Voeg een hieronder by om te begin.",
+  "Add one so the bot has something to reference for this scope.":
+    "Voeg een by sodat die bot iets het om na te verwys vir hierdie omvang.",
   "Add page": "Voeg bladsy by",
   "Add participants": "Voeg deelnemers by",
   "Add role": "Voeg rol by",
@@ -110,6 +114,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjustments restricted": "Aanpassings beperk",
   "Admin API is unavailable": "Admin API is nie beskikbaar nie",
   "Admin navigation": "Admin-navigasie",
+  "Admin panel bot": "Adminpaneelbot",
   "After refunds, all farms": "Na terugbetalings, alle plase",
   Albanian: "Albanees",
   All: "Alle",
@@ -168,6 +173,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Geargiveerde items sal hier verskyn.",
   Armenian: "Armeens",
   "Article not found": "Artikel nie gevind nie",
+  "Ask a question…": "Vra 'n vraag...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Vra hoe om iets in die administrasiepaneel te doen, of vra oor hangende bestellings, laevoorraaditems of 'n bestelling se status.",
   "Assamese (অসমীয়া)": "Assamees (অসমীয়া)",
   "Assigned roles": "Toegewysde rolle",
   Attribution: "Erkenning",
@@ -175,6 +183,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Skrywer",
   "Auto-translate": "Outo-vertaal",
   "Auto-translate all": "Vertaal alles outomaties",
+  Availability: "Beskikbaarheid",
   Available: "Beskikbaar",
   "available · reorder at": "beskikbaar · herbestel by",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -216,6 +225,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Liggaampeks",
   Bosnian: "Bosnies",
   Brand: "handelsmerk",
+  "Built-in": "Ingeboude",
   "Bulgarian (Български)": "Bulgaars (Български)",
   Bundle: "bondel",
   "bundle price · items priced at": "bondelprys · items geprys teen",
@@ -268,6 +278,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Vee tans uit...",
   "Click link": "Klik skakel",
   Close: "Sluit",
+  "Close help assistant": "Sluit hulpassistent",
   "Close navigation": "Sluit navigasie",
   "CMS pages": "CMS-bladsye",
   "CMS pages & SEO": "CMS-bladsye en SEO",
@@ -300,6 +311,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Gaan voort met Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Beheer wat elke rol kan sien, skep, redigeer, publiseer of bestuur.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Beheer of elke bot beskikbaar is, en wysig wat dit weet.",
   Cook: "Kook",
   "Cook minutes": "Kookminute",
   "Copy inside dark bands.": "Kopieer binne donker bande.",
@@ -368,9 +381,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Vee uit",
   "Delete (spam)": "Vee uit (spam)",
   "Delete category": "Vee kategorie uit",
+  "Delete entry": "Vee inskrywing uit",
   "Delete farm": "Vee plaas",
   "Delete image": "Vee uit",
   "Delete inventory row": "Vee voorraadry uit",
+  "Delete knowledge entry?": "Vee kennisinskrywing uit?",
   "Delete permanently": "Vee permanent uit",
   "Delete product": "Vee produk uit",
   "Delete role": "Vee rol uit",
@@ -420,7 +435,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Wysig CMS-bladsy-metadata, indeksering en rou bladsyblokke. Die tuisbladrekord word ook hier gelys, maar tuisbladinstellings is die veiliger manier om dit te verander – hierdie redigeerder neem rou JSON.",
   "Edit content": "Wysig inhoud",
+  "Edit entry": "Wysig inskrywing",
   "Edit farm": "Redigeer plaas",
+  "Edit knowledge entry": "Wysig kennisinskrywing",
   "Edit media": "Redigeer media",
   "Edit review": "Redigeer resensie",
   "Edit role": "Redigeer rol",
@@ -534,6 +551,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Opskrifte en kopieer.",
   Headline: "Opskrif",
   "Hebrew (עברית)": "Hebreeus (עברית)",
+  "Help assistant": "Hulpassistent",
+  "Help Assistant": "Helpassistent",
   "Hero description": "Heldbeskrywing",
   "Hero eyebrow": "Heldwenkbrou",
   "Hero image alt text": "Heldprent alteks",
@@ -603,6 +622,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Javanese: "Javanees",
   "Keep artwork clean": "Hou kunswerk skoon",
   "Keep typing to search…": "Hou aan tik om te soek...",
+  Keywords: "Sleutelwoorde",
   Kinyarwanda: "Kiniarwanda",
   "Korean (한국어)": "Koreaans (한국어)",
   Kyrgyz: "Kirgisies",
@@ -790,6 +810,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Geen indeks",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Geen items nog nie – voeg ten minste een hieronder by. Checkout pas hierdie bondel se afslag slegs toe wanneer die mandjie elke item hier het, in ten minste hierdie hoeveelhede.",
+  "No knowledge entries": "Geen kennisinskrywings",
   "No line items recorded.": "Geen lynitems aangeteken nie.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "verander nie meer die aanmelding nie - so 'n wagwoord wat jy hier instel vervang regtig die ou een.",
@@ -873,6 +894,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Slegs die eienaar kan rolomvange bestuur.",
   "Only the owner can review payments and refunds.":
     "Slegs die eienaar kan betalings en terugbetalings hersien.",
+  "Open help assistant": "Open hulpassistent",
   "Open navigation": "Open navigasie",
   Optional: "Opsioneel",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1149,6 +1171,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Stoor...",
   "Say how often you will write and that unsubscribing is easy.":
     "Sê hoe gereeld jy sal skryf en dat dit maklik is om uit te teken.",
+  Scope: "Omvang",
   "Scope Management": "Omvangbestuur",
   "Scopes unavailable": "Omvang onbeskikbaar",
   "Search archive": "Soek argief",
@@ -1214,6 +1237,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "S sal beskikbaar wees, terwyl voorraad beskikbaar gestel word. die behoud van besprekings, bewegingsgeskiedenis en ouditlogboeke.",
   "Selected users will be removed from the users list and signed out.":
     "Geselekteerde gebruikers sal van die gebruikerslys verwyder word en afgemeld word.",
+  Send: "Stuur",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Stuur 'n veilige wagwoordterugstelskakel na hierdie gebruiker. Hulle sal hul nuwe wagwoord vanaf die admin-terugstelbladsy stel.",
   "Send back to draft": "Stuur terug na konsep",
@@ -1283,6 +1307,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Klikkies tydens aankooptyd — kataloguswysigings herskryf nooit 'n bestelling nie.",
   "Sold out": "Uitverkoop",
   Somali: "Somalies",
+  "space separated, e.g. product publish visibility":
+    "spasie geskei, bv. produk publiseer sigbaarheid",
   "Spanish (Español)": "Spaans (Español)",
   "Sprouted ragi flour": "Uitgekiemde ragimeel",
   "SQL Tables": "SQL-tabelle",
@@ -1325,9 +1351,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Die banier bo-aan",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Die banier, kategoriery, produkry en SEO-velde stoor saam. Afdeling-merkblokkies, bestelling en pasgemaakte afdeling-kopie stoor op hul eie, soos jy dit verander.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Die kletslegstuk wat klante en besoekers op die winkelfront sien.",
   "The classic credential pair, including the password-reset flow.":
     "Die klassieke geloofsbriewepaar, insluitend die wagwoord-terugstel-vloei.",
   "the farm owner": "die plaaseienaar",
+  "The floating Help Assistant staff see on every admin page.":
+    "Die drywende hulpassistent-personeel sien op elke administrasiebladsy.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Die kop- en voetskrif-skakel wat elke bladsy 000 transiglasie etikette per bladsy wys (8m). \'n Plek wat leeg gelaat word, val terug na Engels op die winkelfront. Dit is dieselfde kontrole wat \'n kopskrif regmaak wat "Winkel" / "Seisoenaal" in Engels wys terwyl alles rondom dit van taal verander het – daardie etikette kom van hier af, nie van die bladsyinhoudvertalings hierbo nie.',
   "The homepage has no sections": "Die tuisblad het geen afdelings nie",
@@ -1358,6 +1388,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Hierdie kleure is ook van toepassing op bladsye onder",
   "These roles define the permission sets available when inviting or editing users.":
     "hierdie rol-instellings beskikbaar wanneer die uitnodiging of definisie beskikbaar is. gebruikers.",
+  "Thinking…": "Dink…",
   "This application is": "Hierdie toepassing is",
   "This order is in a final state.": "Hierdie bestelling is in 'n finale toestand.",
   "This page contains sensitive application diagnostics.":
@@ -1474,6 +1505,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Hoekom is veranderinge nodig, of hoekom is dit afgekeur?",
   "Why is stock changing?": "Hoekom verander voorraad?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Woorde wat die bot teen 'n vraag pas om te besluit dat hierdie inskrywing relevant is.",
   "Working...": "Werk...",
   "World languages": "Wêreldtale",
   "Write a message…": "Skryf 'n boodskap...",

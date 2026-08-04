@@ -84,12 +84,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Ավելացնել կատեգորիա",
   "Add code": "Ավելացնել կոդ",
   "Add country": "Ավելացնել երկիր",
+  "Add entry": "Ավելացնել գրառում",
   "Add farm owner": "Ավելացնել ֆերմայի սեփականատիրոջը",
   "Add ingredient": "Ավելացրեք բաղադրիչ",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Ավելացրեք տարրեր (որ տարբերակները, յուրաքանչյուրից քանիսը) փաթեթը ստեղծելուց հետո Կառավարումից:",
+  "Add knowledge entry": "Ավելացնել գիտելիքների մուտք",
   "Add one above to get started.": "Սկսելու համար վերևում ավելացրեք մեկը:",
   "Add one below to get started.": "Սկսելու համար ներքևում ավելացրեք մեկը:",
+  "Add one so the bot has something to reference for this scope.":
+    "Ավելացրե՛ք մեկը, որպեսզի բոտն ունենա հղում այս շրջանակի համար:",
   "Add page": "Ավելացնել էջ",
   "Add participants": "Ավելացնել մասնակիցների",
   "Add role": "Ավելացնել դեր",
@@ -107,9 +111,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Կարգավորեք որոնումը կամ ստեղծեք ապրանք:",
   "Adjustment %": "Կարգավորում %",
   "Adjustments restricted": "Կարգավորումները սահմանափակված են",
+  Admin: "Ադմինիստրատոր",
   "Admin API is unavailable": "Ադմինիստրատորի API-ն անհասանելի է",
   "Admin Logs": "Ադմինիստրատորի մատյաններ",
   "Admin navigation": "Ադմինիստրատորի նավարկություն",
+  "Admin panel bot": "Ադմինիստրատորի վահանակի բոտ",
   Afrikaans: "աֆրիկացիներ",
   "After refunds, all farms": "Վճարումները վերադարձվելուց հետո բոլոր գյուղացիական տնտեսությունները",
   Albanian: "ալբաներեն",
@@ -171,6 +177,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "Հայերեն",
   "Article not found": "Հոդվածը չի գտնվել",
   "Asha Rao": "Աշա Ռաո",
+  "Ask a question…": "Հարց տվեք…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Հարցրեք, թե ինչպես անել ինչ-որ բան ադմինիստրատորի վահանակում, կամ հարցրեք առկախ պատվերների, ցածր պաշարների կամ պատվերի կարգավիճակի մասին:",
   "Assamese (অসমীয়া)": 'ասամերեն (অসমীয়়া0sign"id="t0007">Աշա Ռաո դերեր',
   "Assigned roles": "Հանձնարարված դերեր",
   Attribution: "Վերագրում",
@@ -178,6 +187,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Հեղինակ",
   "Auto-translate": "Ավտոմատ թարգմանություն",
   "Auto-translate all": "Ավտոմատ թարգմանել բոլորը",
+  Availability: "Հասանելիություն",
   Available: "Հասանելի է",
   "available · reorder at":
     'id="t0005">Հասանելին միշտ ստացվում է (ձեռքի տակ − վերապահված): Յուրաքանչյուր փոփոխություն շարժում է:',
@@ -223,6 +233,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Տեքստային տեքստ",
   Bosnian: "բոսնիերեն",
   Brand: "ապրանքանիշը",
+  "Built-in": "Ներկառուցված",
   "Bulgarian (Български)": "բուլղարերեն (Български)",
   Bundle: "Փաթեթ",
   "bundle price · items priced at": 'id="t0005">Փաթեթի գինը, ₹',
@@ -277,6 +288,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Մաքրում...",
   "Click link": "Սեղմեք հղումը",
   Close: "Փակել",
+  "Close help assistant": "Փակել օգնության օգնականը",
   "Close navigation": "Փակել նավիգացիան",
   "CMS pages": "CMS էջերը",
   "CMS pages & SEO": "CMS էջեր և SEO",
@@ -310,6 +322,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Շարունակել Facebook-ի հետ",
   "Control what each role can view, create, edit, publish or manage.":
     "Վերահսկեք, թե յուրաքանչյուր դերը ինչ կարող է դիտել, ստեղծել, խմբագրել, հրապարակել կամ կառավարել:",
+  "Control whether each bot is available, and edit what it knows.":
+    "Վերահսկել, արդյոք յուրաքանչյուր բոտը հասանելի է, և խմբագրել այն, ինչ նա գիտի:",
   Cook: "Խոհարարություն",
   "Cook minutes": "Պատրաստման րոպեներ",
   "Copy inside dark bands.": "Պատճենել մուգ շերտերի ներսում:",
@@ -380,9 +394,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Ջնջել",
   "Delete (spam)": "Ջնջել (սպամ)",
   "Delete category": "Ջնջել կատեգորիա",
+  "Delete entry": "Ջնջե՞լ գրառումը",
   "Delete farm": "Ջնջել 0-ը պատկեր",
   "Delete image": "Ջնջել պատկերը",
   "Delete inventory row": "Ջնջել գույքագրման տողը",
+  "Delete knowledge entry?": "Ջնջե՞լ գիտելիքների մուտքագրումը:",
   "Delete permanently": "Ընդմիշտ ջնջել",
   "Delete product": "Ջնջել արտադրանքը",
   "Delete role": "Ջնջել դերը",
@@ -434,7 +450,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Խմբագրել CMS էջի մետատվյալները, ինդեքսավորումը և չմշակված էջի բլոկները: Գլխավոր էջի գրառումը նույնպես նշված է այստեղ, սակայն Գլխավոր էջի կարգավորումներն այն փոխելու առավել անվտանգ միջոցն են. այս խմբագրիչը օգտագործում է չմշակված JSON:",
   "Edit content": "Խմբագրել բովանդակությունը",
+  "Edit entry": "Օգնական",
   "Edit farm": "Խմբագրել ֆերմա",
+  "Edit knowledge entry": "Խմբագրել գիտելիքների մուտքագրումը",
   "Edit media": "Խմբագրել մեդիա",
   "Edit review": "Խմբագրել կարծիքը",
   "Edit role": "Խմբագրել դերը",
@@ -552,6 +570,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Վերնագրեր և պատճեն:",
   Headline: "Վերնագիր",
   "Hebrew (עברית)": "եբրայերեն (עברית)",
+  "Help assistant": '><span id="t0004">Օգնություն </span0004">Օգնության օգնականը',
+  "Help Assistant": "Օգնության օգնական",
   "Hero description": "Հերոսի նկարագրություն",
   "Hero eyebrow": "Հերոսի հոնք",
   "Hero image alt text": "Հերոսի պատկերի այլընտրանքային տեքստ",
@@ -628,6 +648,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "ղազախական",
   "Keep artwork clean": "Մաքուր պահեք արվեստի գործերը",
   "Keep typing to search…": "Շարունակեք մուտքագրել որոնման համար…",
+  Keywords: "Հիմնաբառեր",
   Khmer: "խմեր",
   Kinyarwanda: "կինյարվանդա",
   "Konkani (कोंकणी)": "կոնկանի (कोंकणी)",
@@ -824,6 +845,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Ցուցանիշ չկա",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Դեռևս ոչ մի տարր. ներքևում ավելացրեք առնվազն մեկը: Checkout-ը կիրառում է այս փաթեթի զեղչը միայն այն դեպքում, երբ զամբյուղում առկա են բոլոր ապրանքները, առնվազն այս քանակությամբ:",
+  "No knowledge entries": "Գիտելիքի գրառումներ չկան",
   "No line items recorded.": "Տողերի ապրանքներ չեն գրանցվել:",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "այլևս չի փոխում մուտքը, այնպես որ այստեղ ձեր սահմանած գաղտնաբառը իսկապես փոխարինում է հինին:",
@@ -909,6 +931,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Միայն սեփականատերը կարող է կառավարել դերերի շրջանակները:",
   "Only the owner can review payments and refunds.":
     "Միայն սեփականատերը կարող է վերանայել վճարումները և հետվճարումները:",
+  "Open help assistant": "Բացել օգնության օգնականը",
   "Open navigation": "Բացել նավիգացիա",
   Optional: "Ըստ ցանկության",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1192,6 +1215,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving...": "Պահվում է...",
   "Saving…": "Պահպանում եք հաճախակի... կգրի, և որ բաժանորդագրությունից դուրս գալը հեշտ է:",
   "Say how often you will write and that unsubscribing is easy.": 'id="t0004">Ընտրեք խոսակցություն',
+  Scope: "Շրջանակ",
   "Scope Management": "Շրջանակի կառավարում",
   "Scopes unavailable": "Հասանելի չէ շրջանակները",
   "Search archive": "Որոնման արխիվ",
@@ -1258,6 +1282,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ընտրված տողերը կջնջվեն վերապահված ֆոնդում` հասանելի դարձնելով պաշարները` պահպանելով ամրագրումները, շարժման պատմությունը և աուդիտի մատյանները:",
   "Selected users will be removed from the users list and signed out.":
     "Ընտրված օգտվողները կհեռացվեն օգտատերերի ցանկից և դուրս կգան հաշվից:",
+  Send: "Ուղարկել",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Այս օգտվողին գաղտնաբառի վերակայման անվտանգ հղում ուղարկեք: Նրանք կսահմանեն իրենց նոր գաղտնաբառը ադմինիստրատորի վերակայման էջից:",
   "Send back to draft": "Ուղարկեք հետ նախագծին",
@@ -1327,6 +1352,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Պատկերներ գնման պահին — կատալոգի խմբագրումները երբեք չեն վերագրում պատվերը:",
   Snippet: "(Español)",
   "Sold out": "Վաճառված է",
+  "space separated, e.g. product publish visibility":
+    "առանձնացված տարածություն, օրինակ. արտադրանքի հրապարակման տեսանելիություն",
   "Spanish (Español)": "իսպաներեն (իսպաներեն)",
   "Sprouted ragi flour": "Բողբոջած ռագի ալյուր",
   "SQL Tables": "SQL աղյուսակներ",
@@ -1340,6 +1367,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Քայլեր (մեկ տողում)",
   "Stock Status": "Պաշարների կարգավիճակը",
   "Store credit": "Խանութի վարկ",
+  "Storefront bot": "Storefront բոտ",
   "Storefront switches": "Խանութի ցուցափեղկի անջատիչներ",
   "Storefront switches unavailable": "Խանութի ցուցափեղկերի անջատիչներն անհասանելի են",
   "Strong border": "Ուժեղ եզրագիծ",
@@ -1377,9 +1405,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Դրոշակը վերևի մասում",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Դրոշի, կատեգորիայի տողի, արտադրանքի տողի և SEO դաշտերը միասին պահվում են: Բաժինների վանդակները, պատվերները և հատուկ բաժնի պատճենները պահվում են ինքնուրույն, երբ դուք փոխում եք դրանք:",
+  "The chat widget customers and visitors see on the storefront.":
+    "Զրույցի վիջեթը հաճախորդները և այցելուները տեսնում են խանութի ցուցափեղկին:",
   "The classic credential pair, including the password-reset flow.":
     "Դասական հավատարմագրերի զույգը, ներառյալ գաղտնաբառի վերակայման հոսքը:",
   "the farm owner": "ֆերմայի սեփականատերը",
+  "The floating Help Assistant staff see on every admin page.":
+    "Լողացող Օգնականի անձնակազմը տեսնում է յուրաքանչյուր ադմինիստրատորի էջում:",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "վերնագիրն ու ոտքը թարգմանված են յուրաքանչյուր էջից (լեզուների վերնագիրն ու էջը թարգմանված հղումը) 0068): Խանութի ցուցափեղկին դատարկ մնացած տեղանունը վերադարձվում է անգլերեն: Սա նույն կառավարումն է, որն ամրագրում է անգլերենով «Խանութ» / «Սեզոնային» վերնագիրը, մինչդեռ դրա շուրջ ամեն ինչ փոխված է լեզվով. այդ պիտակները գալիս են այստեղից, ոչ թե վերը նշված էջի բովանդակության թարգմանություններից:",
   "The homepage has no sections": "Գլխավոր էջը բաժիններ չունի",
@@ -1407,6 +1439,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Այս գույները կիրառվում են նաև ներքևի էջերի վրա:",
   "These roles define the permission sets available when inviting or editing users.":
     "Այս դերերը սահմանում են թույլտվությունների հավաքածուները, որոնք հասանելի են օգտատերերին հրավիրելիս կամ խմբագրելիս:",
+  "Thinking…": "Մտածում…",
   "This application is": "Այս հավելվածը",
   "This order is in a final state.": "Այս պատվերը վերջնական վիճակում է:",
   "This page contains sensitive application diagnostics.":
@@ -1528,6 +1561,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Ինչո՞ւ են անհրաժեշտ փոփոխությունները կամ ինչո՞ւ մերժվեց:",
   "Why is stock changing?": "Ինչո՞ւ է փոխվում պահեստը:",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Բառերը, որոնք բոտը համընկնում են հարցի հետ, որոշելու համար, որ այս գրառումը տեղին է:",
   "Working...": "Աշխատում է...",
   "World languages": "Աշխարհի լեզուներ",
   "Write a message…": "Գրեք հաղորդագրություն…",

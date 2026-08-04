@@ -82,12 +82,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "বিভাগ যোগ করুন",
   "Add code": "কোড যোগ করুন",
   "Add country": "দেশ যোগ করুন",
+  "Add entry": "এন্ট্রি যোগ করুন",
   "Add farm owner": "খামার মালিক যোগ করুন",
   "Add ingredient": "উপাদান যোগ করুন",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "ব্যবস্থাপনা থেকে বান্ডেল তৈরি করার পরে আইটেমগুলি (কোনটি রূপ, প্রতিটির কতগুলি) যোগ করুন৷",
+  "Add knowledge entry": "নলেজ এন্ট্রি যোগ করুন",
   "Add one above to get started.": "শুরু করতে উপরে একটি যোগ করুন৷",
   "Add one below to get started.": "শুরু করতে নিচে একটি যোগ করুন।",
+  "Add one so the bot has something to reference for this scope.":
+    "একটি যোগ করুন যাতে এই সুযোগের জন্য বটটির রেফারেন্সের মতো কিছু থাকে৷",
   "Add page": "পৃষ্ঠা যোগ করুন",
   "Add participants": "অংশগ্রহণকারীদের যোগ করুন",
   "Add role": "ভুমিকা যোগ করুন",
@@ -105,9 +109,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "অনুসন্ধান সামঞ্জস্য করুন বা একটি পণ্য তৈরি করুন৷ %",
   "Adjustment %": "অ্যাডজাস্ট করুন স্ট্যাটাস",
   "Adjustments restricted": "সামঞ্জস্য সীমাবদ্ধ",
+  Admin: "প্রশাসন",
   "Admin API is unavailable": "Admin API অনুপলব্ধ",
   "Admin Logs": "প্রশাসন লগ",
   "Admin navigation": "অ্যাডমিন নেভিগেশন",
+  "Admin panel bot": "প্রশাসন প্যানেল বট",
   Afrikaans: "আফ্রিকান",
   "After refunds, all farms": "ফেরতের পরে, সমস্ত খামার",
   Albanian: "আলবেনিয়ান",
@@ -168,6 +174,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "আর্মেনিয়ান",
   "Article not found": "নিবন্ধ পাওয়া যায়নি",
   "Asha Rao": "আশা রাও",
+  "Ask a question…": "একটি প্রশ্ন জিজ্ঞাসা করুন...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "প্রশাসক প্যানেলে কীভাবে কিছু করতে হয় তা জিজ্ঞাসা করুন, বা মুলতুবি অর্ডার, কম-স্টক আইটেম বা অর্ডারের স্থিতি সম্পর্কে জিজ্ঞাসা করুন৷",
   "Assamese (অসমীয়া)": "অসমীয়া (অসমীয়া)",
   "Assigned roles": "অর্পিত ভূমিকা",
   Attribution: "অ্যাট্রিবিউশন",
@@ -175,6 +184,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "লেখক",
   "Auto-translate": "অটো-অনুবাদ করুন - সংরক্ষিত)। প্রতিটি পরিবর্তনই একটি আন্দোলন৷",
   "Auto-translate all": "সব স্বতঃ-অনুবাদ করুন",
+  Availability: "উপলভ্যতা",
   Available: "উপলব্ধ",
   "available · reorder at": "উপলব্ধ · পুনঃক্রম এ",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -220,6 +230,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "বডি টেক্সট",
   Bosnian: "বসনিয়ান",
   Brand: '0007">ব্র্যান্ড',
+  "Built-in": "বিল্ট-ইন",
   "Bulgarian (Български)": "বুলগেরিয়ান (Български)",
   Bundle: "বান্ডেল",
   "bundle price · items priced at": "বান্ডেল মূল্য · আইটেমগুলির মূল্য",
@@ -273,6 +284,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "সাফ করা হচ্ছে...",
   "Click link": "লিঙ্কে ক্লিক করুন",
   Close: "বন্ধ করুন",
+  "Close help assistant": "সাহায্য সহকারী বন্ধ করুন",
   "Close navigation": "নেভিগেশন বন্ধ করুন",
   "CMS pages": "CMS পৃষ্ঠাগুলি",
   "CMS pages & SEO": "CMS পৃষ্ঠা এবং SEO",
@@ -305,6 +317,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": 'invent id="t0006">বিশদ আয়',
   "Control what each role can view, create, edit, publish or manage.":
     "প্রতিটি ভূমিকা কী দেখতে, তৈরি, সম্পাদনা, প্রকাশ বা পরিচালনা করতে পারে তা নিয়ন্ত্রণ করুন৷",
+  "Control whether each bot is available, and edit what it knows.":
+    "প্রতিটি বট উপলব্ধ কিনা তা নিয়ন্ত্রণ করুন এবং এটি যা জানে তা সম্পাদনা করুন৷",
   Cook: "রান্না",
   "Cook minutes": "মিনিট রান্না করুন",
   "Copy inside dark bands.": "ডার্ক ব্যান্ডের ভিতরে কপি করুন।",
@@ -374,9 +388,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "মুছুন",
   "Delete (spam)": "মুছুন (স্প্যাম)",
   "Delete category": "বিভাগ মুছুন",
+  "Delete entry": "এন্ট্রি মুছবেন",
   "Delete farm": 'id="t0006">ইনভেন্টরি সারি মুছুন',
   "Delete image": "ছবি মুছুন",
   "Delete inventory row": "ইনভেন্টরি সারি মুছুন",
+  "Delete knowledge entry?": "নলেজ এন্ট্রি মুছবেন?",
   "Delete permanently": "স্থায়ীভাবে মুছুন",
   "Delete product": "পণ্য মুছুন",
   "Delete role": "ভুমিকা মুছুন",
@@ -428,7 +444,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS পৃষ্ঠার মেটাডেটা, ইন্ডেক্সিং এবং কাঁচা পৃষ্ঠা ব্লকগুলি সম্পাদনা করুন৷ হোমপেজ রেকর্ডটি এখানেও তালিকাভুক্ত করা হয়েছে, কিন্তু হোমপেজ সেটিংস এটি পরিবর্তন করার নিরাপদ উপায় — এই সম্পাদকটি কাঁচা JSON নেয়৷",
   "Edit content": "সামগ্রী সম্পাদনা করুন",
+  "Edit entry": "এন্ট্রি সম্পাদনা করবেন",
   "Edit farm": "খামার সম্পাদনা করুন",
+  "Edit knowledge entry": "নলেজ এন্ট্রি সম্পাদনা করুন",
   "Edit media": "মিডিয়া সম্পাদনা করুন",
   "Edit review": "পর্যালোচনা সম্পাদনা করুন",
   "Edit role": "ভূমিকা সম্পাদনা করুন",
@@ -545,6 +563,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "শিরোনাম এবং অনুলিপি৷",
   Headline: "শিরোনাম",
   "Hebrew (עברית)": "হিব্রু (עברית)",
+  "Help assistant": "হেল্প অ্যাসিস্ট্যান্ট",
+  "Help Assistant": "সহকারীকে সাহায্য করুন",
   "Hero description": "হিরো বর্ণনা",
   "Hero eyebrow": "হিরো আইব্রো",
   "Hero image alt text": "হিরো ইমেজ অল্ট টেক্সট",
@@ -619,6 +639,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "কাজাখ",
   "Keep artwork clean": "শিল্পকর্ম পরিষ্কার রাখুন",
   "Keep typing to search…": "অনুসন্ধান করতে টাইপ করতে থাকুন…",
+  Keywords: "কীওয়ার্ড",
   Khmer: "খমের",
   Kinyarwanda: "কিনিয়ারওয়ান্ডা",
   "Konkani (कोंकणी)": "কোঙ্কানি (कोंकणी)",
@@ -815,6 +836,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "কোন সূচক নেই",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "এখনও কোনো আইটেম নেই — নীচে অন্তত একটি যোগ করুন৷ চেকআউট শুধুমাত্র এই বান্ডিলের ডিসকাউন্ট প্রযোজ্য হয় যখন ঝুড়িতে এখানে প্রতিটি আইটেম থাকে, অন্তত এই পরিমাণে৷",
+  "No knowledge entries": "কোন জ্ঞান এন্ট্রি নেই",
   "No line items recorded.": "কোন লাইন আইটেম রেকর্ড করা নেই৷",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "আর লগইন পরিবর্তন করে না — তাই আপনি এখানে সেট করা একটি পাসওয়ার্ড সত্যিই পুরানোটিকে প্রতিস্থাপন করে৷",
@@ -898,6 +920,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "শুধুমাত্র মালিক ভূমিকার সুযোগগুলি পরিচালনা করতে পারেন৷",
   "Only the owner can review payments and refunds.":
     "শুধুমাত্র মালিক পেমেন্ট এবং ফেরত পর্যালোচনা করতে পারেন।",
+  "Open help assistant": "ওপেন হেল্প অ্যাসিস্ট্যান্ট",
   "Open navigation": "ওপেন নেভিগেশন",
   Optional: "ঐচ্ছিক",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1176,6 +1199,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "সংরক্ষণ হচ্ছে...",
   "Say how often you will write and that unsubscribing is easy.":
     "কত ঘন ঘন লিখবেন বলুন এবং সদস্যতা ত্যাগ করা সহজ৷",
+  Scope: "স্কোপ",
   "Scope Management": "স্কোপ ম্যানেজমেন্ট",
   "Scopes unavailable": "স্কোপগুলি অনুপলব্ধ",
   "Search archive": "অনুসন্ধান সংরক্ষণাগার",
@@ -1243,6 +1267,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "নির্বাচিত সারিগুলি সংরক্ষিত স্টকে সাফ করা হবে, স্টক সংরক্ষণের ইতিহাস শূন্য এবং প্রিসার্ভেশন সার্ভ করার সময়",
   "Selected users will be removed from the users list and signed out.":
     "নির্বাচিত ব্যবহারকারীদের ব্যবহারকারীদের তালিকা থেকে সরানো হবে এবং সাইন আউট করা হবে৷",
+  Send: "পাঠান",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "এই ব্যবহারকারীকে একটি নিরাপদ পাসওয়ার্ড রিসেট লিঙ্ক পাঠান৷ তারা অ্যাডমিন রিসেট পৃষ্ঠা থেকে তাদের নতুন পাসওয়ার্ড সেট করবে।",
   "Send back to draft": "Send লিঙ্ক",
@@ -1313,6 +1338,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "স্নিপেট",
   "Sold out": "বিক্রি হয়ে গেছে",
   Somali: "সোমালি",
+  "space separated, e.g. product publish visibility":
+    "স্পেস আলাদা করা হয়েছে, যেমন পণ্য প্রকাশের দৃশ্যমানতা",
   "Spanish (Español)": "স্প্যানিশ (Español)",
   "Sprouted ragi flour": "অঙ্কুরিত রাগি আটা",
   "SQL Tables": "SQL টেবিল",
@@ -1325,6 +1352,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "পদক্ষেপ (প্রতি লাইনে একটি)",
   "Stock Status": "স্টক স্ট্যাটাস",
   "Store credit": "স্টোরের ক্রেডিট",
+  Storefront: "স্টোরফ্রন্ট",
+  "Storefront bot": "স্টোরফ্রন্ট বট",
   "Storefront switches": "স্টোরফ্রন্ট সুইচগুলি",
   "Storefront switches unavailable": 'অন্যান্যযোগ্য id="t0005">দৃঢ় সীমানা',
   "Strong border": "শক্তিশালী বর্ডার",
@@ -1362,9 +1391,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "ব্যানারের উপরে",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "ব্যানার, বিভাগ সারি, পণ্য সারি এবং SEO ক্ষেত্রগুলি একসাথে সংরক্ষণ করে৷ সেকশন টিকবক্স, অর্ডারিং এবং কাস্টম সেকশন কপি নিজে থেকেই সেভ করে, যেমন আপনি সেগুলি পরিবর্তন করেন।",
+  "The chat widget customers and visitors see on the storefront.":
+    "চ্যাট উইজেট গ্রাহক এবং দর্শকরা স্টোরফ্রন্টে দেখতে পান৷",
   "The classic credential pair, including the password-reset flow.":
     "পাসওয়ার্ড-রিসেট ফ্লো সহ ক্লাসিক ক্রেডেনশিয়াল জুটি।",
   "the farm owner": "খামারের মালিক",
+  "The floating Help Assistant staff see on every admin page.":
+    "প্রত্যেক অ্যাডমিন পৃষ্ঠায় ফ্লোটিং হেল্প অ্যাসিস্ট্যান্ট স্টাফরা দেখতে পায়।",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'শিরোনাম এবং পাদচরণ লিঙ্ক, প্রতি পৃষ্ঠায় অনুবাদ করা 08g লেবেলগুলি প্রতি পৃষ্ঠায় দেখায়। একটি লোকেল ফাঁকা রেখে স্টোরফ্রন্টে ইংরেজিতে ফিরে আসে। এটি একই নিয়ন্ত্রণ যা ইংরেজিতে "শপ" / "সিজনাল" দেখানো একটি শিরোনামকে ঠিক করে যখন এটির চারপাশের সবকিছুর ভাষা পরিবর্তন করা হয় — এই লেবেলগুলি এখান থেকে আসে, উপরের পৃষ্ঠার বিষয়বস্তু অনুবাদ থেকে নয়৷',
   "The homepage has no sections": "হোমপেজে কোনও বিভাগ নেই",
@@ -1392,6 +1425,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "এই রঙগুলি নীচের পৃষ্ঠাগুলিতেও প্রযোজ্য",
   "These roles define the permission sets available when inviting or editing users.":
     "এই ভূমিকাগুলি ব্যবহারকারীদের আমন্ত্রণ বা সম্পাদনা করার সময় উপলব্ধ অনুমতি সেটগুলিকে সংজ্ঞায়িত করে৷",
+  "Thinking…": "চিন্তা…",
   "This application is": "এই অ্যাপ্লিকেশনটি",
   "This order is in a final state.": "এই অর্ডারটি চূড়ান্ত অবস্থায় রয়েছে৷",
   "This page contains sensitive application diagnostics.":
@@ -1511,6 +1545,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "কেন পরিবর্তনগুলি প্রয়োজন, বা কেন এটি ডিলিন করা হয়েছিল?",
   "Why is stock changing?": "স্টক বদলাচ্ছে কেন?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "এই এন্ট্রি প্রাসঙ্গিক কিনা তা সিদ্ধান্ত নেওয়ার জন্য বটটি কোন প্রশ্নের সাথে মিলে যায়।",
   "Working...": "কাজ করছে...",
   "World languages": "বিশ্বের ভাষাগুলি",
   "Write a message…": "একটি বার্তা লিখুন...",

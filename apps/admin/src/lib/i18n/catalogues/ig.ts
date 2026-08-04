@@ -78,12 +78,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Tinye otu",
   "Add code": "Tinye koodu",
   "Add country": "Tụnye obodo",
+  "Add entry": "Tinye ntinye",
   "Add farm owner": "Tinye onye nwe ugbo",
   "Add ingredient": "Tinye mgwa ihe",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Tinye ihe (ụdị dị iche iche, ole n'ime nke ọ bụla) ka ịmechara ngwugwu ahụ, site na Jikwaa.",
+  "Add knowledge entry": "Tinye ntinye ọmụma",
   "Add one above to get started.": "Tinye otu n'elu ka ịmalite.",
   "Add one below to get started.": "Add",
+  "Add one so the bot has something to reference for this scope.":
+    "Tinye otu ka bot nwere ihe a ga-ekwu maka oke a.",
   "Add page": "Tinye ibe",
   "Add participants": "Tinye ndị sonyere",
   "Add role": "Tinye ọrụ",
@@ -104,6 +108,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Admin API is unavailable": "API onye nchịkwa adịghị",
   "Admin Logs": "Adekọ nchịkwa",
   "Admin navigation": "Nzọgharị onye nchịkwa",
+  "Admin panel bot": "Admin panel ajụjụ…",
   Afrikaans: "Afrịka",
   "After refunds, all farms": "Mgbe nkwụghachi ụgwọ, ugbo niile",
   Albanian: "Albania",
@@ -160,12 +165,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Archived: "Edobere",
   "Archived items will appear here.": "Akụkụ echekwara ga-apụta ebe a.",
   "Article not found": "Achọtaghị akụkọ",
+  "Ask a question…": "Jụọ ajụjụ…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Jụọ otu esi eme ihe na ngalaba nchịkwa, ma ọ bụ jụọ maka iwu na-echere, ihe ndị dị obere, ma ọ bụ ọkwa iwu.",
   "Assigned roles": "ọrụ ekenyere",
   Attribution: "Njirimara",
   "Audit Log": "Log nyocha",
   Author: "Onye ode akwụkwọ",
   "Auto-translate": "Atụgharị akpaaka",
   "Auto-translate all": "Na-akpaghị aka-translate niile",
+  Availability: "Nweta",
   Available: "dị",
   "available · reorder at": "A na-enwetakwa ya mgbe niile na",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -202,6 +211,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "ederede anụ ahụ",
   Bosnian: "Bosnia",
   Brand: 'Brand="t0007" ( Български)',
+  "Built-in": "Ewubere",
   "bundle price · items priced at": "ọnụahịa ngwugwu · ihe ọnụ na",
   "Bundle price, ₹": "ọnụahịa ngwugwu, ₹",
   Bundles: "Mkpokọta",
@@ -247,6 +257,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Na-ehichapụ...",
   "Click link": "Pịa njikọ",
   Close: "Mechie",
+  "Close help assistant": "Mechie onye enyemaka",
   "Close navigation": "Mechie igodo",
   "CMS pages": "Ibe CMS",
   "CMS pages & SEO": "Ibe CMS & SEO",
@@ -279,6 +290,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Gaa n'ihu na Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Jikwaa ihe ọrụ ọ bụla nwere ike ịhụ, mepụta, dezie, bipụta ma ọ bụ jikwaa.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Jikwaa ma bot ọ bụla dị, ma dezie ihe ọ maara.",
   Cook: "isi nri",
   "Cook minutes": "isi nri nkeji",
   "Copy inside dark bands.": "Detuo n'ime ndị agha gbara ọchịchịrị.",
@@ -343,9 +356,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Hichapụ",
   "Delete (spam)": "Hichapụ (spam)",
   "Delete category": "Hichapụ Atiya",
+  "Delete entry": "Hichapụ ntinye",
   "Delete farm": 'Delete. id="t0006">Hichapụ ahịrị ngwa ahịa',
   "Delete image": "Hichapụ onyonyo",
   "Delete inventory row": "Hichapụ ahịrị ngwa ahịa",
+  "Delete knowledge entry?": "Hichapụ ntinye ọmụma?",
   "Delete permanently": "Hichapụ kpamkpam",
   "Delete product": "Hichapụ ngwaahịa",
   "Delete role": "Hichapụ ọrụ",
@@ -391,7 +406,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Dezie metadata ibe CMS, ntụnye na ihe mgbochi ibe akwụkwọ. Edepụtara ndekọ ibe ụlọ ebe a, mana Ntọala ibe bụ ụzọ dị mma iji gbanwee ya - onye nchịkọta akụkọ a na-ewe JSON raw.",
   "Edit content": "Dezie ọdịnaya",
+  "Edit entry": "Dezie ntinye",
   "Edit farm": "Dezie ugbo",
+  "Edit knowledge entry": "Dezie ntinye ihe ọmụma",
   "Edit media": "Dezie mgbasa ozi",
   "Edit review": "Dezie nyocha",
   "Edit role": "Dezie ọrụ",
@@ -497,6 +514,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Isi akwụkwọ na oyiri.",
   Headline: "Isi okwu",
   "Hebrew (עברית)": "Hibru (עברית)",
+  "Help assistant": "Onye enyemaka",
+  "Help Assistant": "Onye enyemaka",
   "Hero description": "Nkọwa dike",
   "Hero eyebrow": "Nkuanya dike",
   "Hero image alt text": "Onyinye dike alt ederede",
@@ -557,6 +576,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Kannada (ಕನ್ನಡ)": "Kanada (ಕನ್ನಡ)",
   "Keep artwork clean": "Dọọkwa ka ihe osise dị ọcha",
   "Keep typing to search…": "Nọgide na-ede iji chọọ…",
+  Keywords: "Kemokwu",
   Label: "Akara",
   "Land under cultivation": "Ala a na-akụ ihe",
   Language: "Asụsụ",
@@ -733,6 +753,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Onweghị index",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Ọnweghị ihe ọ bụla - tinye opekata mpe otu n'okpuru. Checkout na-emetụta naanị mbelata ngwugwu a mgbe nkata nwere ihe ọ bụla ebe a, opekata mpe ndị a.",
+  "No knowledge entries": "Ọnweghị ntinye ihe ọmụma",
   "No line items recorded.": "Enweghị ihe ahịrị edekọ.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "anaghịzi agbanwe nbanye - yabụ okwuntughe ị debere ebe a na-edochi nke ochie.",
@@ -815,6 +836,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "naanị onye nwe ya nwere ike ijikwa oke ọrụ.",
   "Only the owner can review payments and refunds.":
     "Naanị onye nwe ya nwere ike nyochaa ugwo na nkwụghachi.",
+  "Open help assistant": "Onye enyemaka mepere emepe",
   "Open navigation": "Mepee igodo",
   Optional: "Nhọrọ",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1144,6 +1166,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "A ga-ekpochapụ ahịrị ndị ahọpụtara ka ọ bụrụ ngwaahịa echekwara, na-eme ka efu ngwaahịa dị ma na-echekwa ndoputa, akụkọ mmegharị na ndekọ nyocha.",
   "Selected users will be removed from the users list and signed out.":
     "A ga-ewepụ ndị ọrụ ahọpụtara na ndetu ndị ọrụ wee banye.",
+  Send: "Zipu",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Zitere njikọ nrụgharị paswọọdụ echedoro na onye ọrụ a. Ha ga-edozi okwuntughe ọhụrụ ha site na ibe nrụpụta nchịkwa.",
   "Send back to draft": "Zighachi na draft",
@@ -1207,6 +1230,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Snapshots at purchase time — catalogue edits never rewrite an order.":
     "Snapshot n'oge ịzụrụ — catalog edits agaghị edegharị iwu.",
   "Sold out": "eresị",
+  "space separated, e.g. product publish visibility":
+    "oghere kewapụrụ, dịka. ngwaahịa ebipụta visibiliti",
   "Spanish (Español)": 'Spanish id="t0005"> ntụ ọka ragi pulitere',
   "Sprouted ragi flour": "ntụ ọka ragi pulitere",
   "SQL Tables": "SQL Tebụl",
@@ -1219,6 +1244,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Nzọụkwụ (otu ahịrị)",
   "Stock Status": "Ọnọdụ ngwaahịa",
   "Store credit": "kredit ụlọ ahịa",
+  Storefront: "n'ihu ụlọ ahịa",
+  "Storefront bot": "Bot n'ihu ụlọ ahịa",
   "Storefront switches": "Mgbanwe ihu ụlọ ahịa",
   "Storefront switches unavailable": "Mgbanwe ihu ụlọ ahịa adịghị",
   "Strong border": "oke oke",
@@ -1246,9 +1273,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Ọkọlọtọ gafere elu",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Ọkọlọtọ, ahịrị otu, ahịrị ngwaahịa na mpaghara SEO na-echekwa ọnụ. Igbe tickbox nke ngalaba, inye iwu na ngalaba omenala echekwara n'onwe ha, ka ị na-agbanwe ha.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Ndị ahịa wijetị nkata na ndị ọbịa na-ahụ n'ihu ụlọ ahịa.",
   "The classic credential pair, including the password-reset flow.":
     "Ụdị nzere kpochapụwo, gụnyere mgbagharị okwuntughe-ntọgharị.",
   "the farm owner": "onye nwe ugbo",
+  "The floating Help Assistant staff see on every admin page.":
+    "Ndị ọrụ enyemaka na-ese n'elu mmiri na-ahụ na ibe nchịkwa ọ bụla.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Ntụgharị asụsụ na akara njikọ asụsụ kwa ibe na-egosi (migration). Mpaghara aka ekpe na-adaghị azụ na Bekee n\'ihu ụlọ ahịa. Nke a bụ otu njikwa ahụ na-edozi nkụnye eji isi mee na-egosi "Shop" / "Seasonal" na Bekee ebe ihe niile gbara ya gburugburu agbanweela asụsụ — akara ndị ahụ si ebe a abịa, ọ bụghị site na ntụgharị ọdịnaya ibe n\'elu.',
   "The homepage has no sections": "Ibe akwụkwọ enweghị ngalaba",
@@ -1277,6 +1308,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Agba ndị a na-emetụtakwa ibe n'okpuru",
   "These roles define the permission sets available when inviting or editing users.":
     "Ọrụ ndị a na-akọwapụta usoro ikike dị mgbe ị na-akpọ ma ọ bụ na-edezi ndị ọrụ.",
+  "Thinking…": "Echere…",
   "This application is": "ngwa a bụ",
   "This order is in a final state.": "Iwu a dị na steeti ikpeazụ.",
   "This page contains sensitive application diagnostics.": "Ibe a nwere nyocha ngwa nwere mmetụta.",
@@ -1384,6 +1416,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Gịnị kpatara eji chọ mgbanwe, ma ọ bụ gịnị kpatara nke a jụrụ?",
   "Why is stock changing?": "Gịnị kpatara ngwaahịa na-agbanwe?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Okwu ndị bot dakọtara megide ajụjụ iji kpebie ntinye a bara uru.",
   "Working...": "Ịkwalite ikike ị ga-enweta kpọmkwem ebe a.",
   "World languages": "Asụsụ ụwa",
   "Write a message…": "Dee ozi…",

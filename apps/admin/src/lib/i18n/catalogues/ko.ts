@@ -78,12 +78,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "카테고리 추가",
   "Add code": "코드 추가",
   "Add country": "국가 추가",
+  "Add entry": "항목 추가",
   "Add farm owner": "농장 소유자 추가",
   "Add ingredient": "추가 성분",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "관리에서 번들을 생성한 후 항목(변형, 각 항목의 개수)을 추가하세요.",
+  "Add knowledge entry": "지식 항목 추가",
   "Add one above to get started.": "시작하려면 위에 항목을 추가하세요.",
   "Add one below to get started.": "시작하려면 아래 항목을 추가하세요.",
+  "Add one so the bot has something to reference for this scope.":
+    "봇이 이 범위에 대해 참조할 내용이 있도록 하나를 추가하세요.",
   "Add page": "페이지 추가",
   "Add participants": "참가자 추가",
   "Add role": "역할 추가",
@@ -101,9 +105,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "검색을 조정하거나 제품을 생성하세요.",
   "Adjustment %": "조정 %",
   "Adjustments restricted": "조정이 제한됨",
+  Admin: "관리",
   "Admin API is unavailable": "Admin API를 사용할 수 없음",
   "Admin Logs": "관리 로그",
   "Admin navigation": "관리 탐색",
+  "Admin panel bot": "관리 패널 봇",
   Afrikaans: "아프리칸스어",
   "After refunds, all farms": "환불 후 모든 농장",
   Albanian: "알바니아어",
@@ -163,6 +169,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "보관처리된 항목이 여기에 표시됩니다.",
   Armenian: "아르메니아어",
   "Article not found": "기사를 찾을 수 없음",
+  "Ask a question…": "질문하세요...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "관리 패널에서 작업 방법을 묻거나 대기 중인 주문, 재고가 적은 항목 또는 주문 상태에 대해 문의하세요.",
   "Assamese (অসমীয়া)": "아삼어(অসমীয়া)",
   "Assigned roles": "지정된 역할",
   Attribution: "속성",
@@ -170,6 +179,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "저자",
   "Auto-translate": "자동 번역",
   "Auto-translate all": "모두 자동 번역",
+  Availability: "가용성",
   Available: "사용 가능",
   "available · reorder at": "사용 가능 · 재주문 위치",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -214,6 +224,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "본문 텍스트",
   Bosnian: "보스니아어",
   Brand: "브랜드",
+  "Built-in": "내장",
   "Bulgarian (Български)": "불가리아어 (Български)",
   Bundle: "번들",
   "bundle price · items priced at": "번들 가격 · 품목 가격",
@@ -266,6 +277,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "삭제 중...",
   "Click link": "클릭 링크",
   Close: "닫기",
+  "Close help assistant": "도움말 도우미 닫기",
   "Close navigation": "탐색 닫기",
   "CMS pages": "CMS 페이지",
   "CMS pages & SEO": "CMS 페이지 및 SEO",
@@ -299,6 +311,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Facebook 계속하기",
   "Control what each role can view, create, edit, publish or manage.":
     "각 역할이 보고, 만들고, 만들 수 있는 항목 제어 편집, 게시 또는 관리하세요.",
+  "Control whether each bot is available, and edit what it knows.":
+    "각 봇의 사용 가능 여부를 제어하고 편집하세요. 알고 있는 내용입니다.",
   Cook: "요리",
   "Cook minutes": "요리 시간",
   "Copy inside dark bands.": "어두운 띠 안에 복사하세요.",
@@ -367,9 +381,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "삭제",
   "Delete (spam)": "삭제(스팸)",
   "Delete category": "카테고리 삭제",
+  "Delete entry": "항목 삭제",
   "Delete farm": "팜 삭제",
   "Delete image": "이미지 삭제",
   "Delete inventory row": "인벤토리 행 삭제",
+  "Delete knowledge entry?": "지식 항목을 삭제하시겠습니까?",
   "Delete permanently": "영구 삭제",
   "Delete product": "제품 삭제",
   "Delete role": "역할 삭제",
@@ -421,7 +437,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS 페이지 메타데이터, 색인 생성 및 원시 페이지 블록을 수정합니다. 홈페이지 기록도 여기에 나열되어 있지만 홈페이지 설정을 변경하는 것이 더 안전한 방법입니다. 이 편집기는 원시 JSON을 사용합니다.",
   "Edit content": "콘텐츠 편집",
+  "Edit entry": "항목 수정",
   "Edit farm": "팜 편집",
+  "Edit knowledge entry": "지식 항목 수정",
   "Edit media": "미디어 편집",
   "Edit review": "리뷰 편집",
   "Edit role": "역할 편집",
@@ -538,6 +556,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "제목 및 문구.",
   Headline: "제목",
   "Hebrew (עברית)": "히브리어(עברית)",
+  "Help assistant": "도움말 도우미",
+  "Help Assistant": "도움말 도우미",
   "Hero description": "영웅 설명",
   "Hero eyebrow": "영웅 눈썹",
   "Hero image alt text": "히어로 이미지 대체 텍스트",
@@ -613,6 +633,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "카자흐어",
   "Keep artwork clean": "유지 예술작품 깨끗함",
   "Keep typing to search…": "검색하려면 계속 입력하세요...",
+  Keywords: "키워드",
   Khmer: "크메르어",
   Kinyarwanda: "키냐르완다",
   "Konkani (कोंकणी)": "콘카니(konkणي)",
@@ -805,6 +826,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "색인이 없습니다",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "아직 항목이 없습니다. 아래에 하나 이상 추가하세요. Checkout은 장바구니에 모든 품목이 다음 수량 이상 포함된 경우에만 이 번들의 할인을 적용합니다.",
+  "No knowledge entries": "지식 항목 없음",
   "No line items recorded.": "기록된 품목이 없습니다.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "더 이상 로그인을 변경하지 않으므로 여기에서 설정한 비밀번호가 실제로 이전 비밀번호를 대체합니다.",
@@ -887,6 +909,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "소유자 계정만 볼 수 있습니다. sitemap.xml, robots.txt 및 llms.txt를 편집하세요.",
   "Only the owner can manage role scopes.": "소유자만 역할 범위를 관리할 수 있습니다.",
   "Only the owner can review payments and refunds.": "소유자만 결제 및 환불을 검토할 수 있습니다.",
+  "Open help assistant": "도움말 도우미 열기",
   "Open navigation": "탐색 열기",
   Optional: "선택 사항",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1167,6 +1190,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "저장 중...",
   "Say how often you will write and that unsubscribing is easy.":
     "글을 얼마나 자주 작성할 것인지, 구독 취소도 쉽다는 점을 알려주세요.",
+  Scope: "범위",
   "Scope Management": "범위 관리",
   "Scopes unavailable": "사용할 수 없는 범위",
   "Search archive": "아카이브 검색",
@@ -1230,6 +1254,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "선택한 행이 예약 재고로 지워져 예약, 이동 기록 및 감사 로그가 보존되는 동안 재고가 0이 됩니다.",
   "Selected users will be removed from the users list and signed out.":
     "선택한 사용자가 사용자 목록에서 제거되고 로그아웃됩니다.",
+  Send: "보내기",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "이 사용자에게 보안 비밀번호 재설정 링크를 보냅니다. 관리자 재설정 페이지에서 새 비밀번호를 설정하게 됩니다.",
   "Send back to draft": "초안으로 다시 보내기",
@@ -1298,6 +1323,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "스니펫",
   "Sold out": "매진",
   Somali: "소말리아",
+  "space separated, e.g. product publish visibility": "공백으로 구분됨(예: 제품 게시 가시성",
   "Spanish (Español)": "스페인어(Español)",
   "Sprouted ragi flour": "발아된 라기 가루",
   "SQL Tables": "SQL 테이블",
@@ -1310,6 +1336,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "단계(한 줄에 하나)",
   "Stock Status": "재고 상태",
   "Store credit": "스토어 크레딧",
+  Storefront: "매장",
+  "Storefront bot": "매장 봇",
   "Storefront switches": "매장 스위치",
   "Storefront switches unavailable": "매장 스위치 사용할 수 없음",
   "Strong border": "강한 테두리",
@@ -1347,9 +1375,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "상단에 있는 배너",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "배너, 카테고리 행, 제품 행, SEO 필드가 함께 저장됩니다. 섹션 체크박스, 순서 및 사용자 정의 섹션 사본은 변경 시 자체적으로 저장됩니다.",
+  "The chat widget customers and visitors see on the storefront.":
+    "고객과 방문자가 매장에서 보는 채팅 위젯.",
   "The classic credential pair, including the password-reset flow.":
     "비밀번호 재설정 흐름을 포함한 클래식 자격 증명 쌍.",
   "the farm owner": "팜 소유자",
+  "The floating Help Assistant staff see on every admin page.":
+    "떠다니는 도움말 도우미 직원이 모든 관리 페이지에서 봅니다.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     '모든 페이지에 표시되는 머리글 및 바닥글 링크 레이블은 언어별로 번역됩니다(마이그레이션 0068). 공백으로 남겨진 로케일은 상점 첫 화면에서 영어로 대체됩니다. 이는 "Shop" / "Seasonal"을 영어로 표시하는 헤더를 수정하는 것과 동일한 컨트롤입니다. 주변의 모든 항목은 언어가 바뀌었습니다. 이러한 라벨은 여기에서 온 것이지 위의 페이지 콘텐츠 번역에서 온 것이 아닙니다.',
   "The homepage has no sections": "홈페이지에는 섹션이 없습니다",
@@ -1378,6 +1410,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "이러한 색상은 아래 페이지에도 적용됩니다",
   "These roles define the permission sets available when inviting or editing users.":
     "이러한 역할은 사용자를 초대하거나 편집할 때 사용할 수 있는 권한 집합을 정의합니다.",
+  "Thinking…": "생각하기…",
   "This application is": "이 애플리케이션 입니다",
   "This order is in a final state.": "이 주문은 최종 상태입니다.",
   "This page contains sensitive application diagnostics.":
@@ -1498,6 +1531,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "변경이 필요한 이유 또는 변경이 거부된 이유는 무엇인가요?",
   "Why is stock changing?": "재고가 변경되는 이유는 무엇인가요?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "이 항목이 관련성이 있는지 판단하기 위해 봇이 질문과 일치시키는 단어입니다.",
   "Working...": "작업 중...",
   "World languages": "세계 언어",
   "Write a message…": "글 쓰기 메시지…",

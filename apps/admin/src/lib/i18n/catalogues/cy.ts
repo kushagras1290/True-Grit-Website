@@ -80,12 +80,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Ychwanegu categori",
   "Add code": "Ychwanegu cod",
   "Add country": "Ychwanegu gwlad",
+  "Add entry": "Ychwanegu cofnod",
   "Add farm owner": "perchennog fferm",
   "Add ingredient": "Ychwanegu cynhwysyn",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Ychwanegu eitemau (pa amrywiadau, faint o bob un) ar ôl creu'r bwndel, o Manage.",
+  "Add knowledge entry": "Ychwanegu cofnod gwybodaeth",
   "Add one above to get started.": "Ychwanegwch un uchod i gychwyn arni.",
   "Add one below to get started.": "Ychwanegwch un isod i gychwyn arni.",
+  "Add one so the bot has something to reference for this scope.":
+    "Ychwanegwch un fel bod gan y bot rywbeth i gyfeirio ato ar gyfer y cwmpas hwn.",
   "Add page": "Ychwanegu tudalen",
   "Add participants": "Ychwanegu cyfranogwyr",
   "Add role": "Ychwanegu rôl",
@@ -103,9 +107,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Addaswch y chwiliad neu crëwch gynnyrch.",
   "Adjustment %": "Addasiad %",
   "Adjustments restricted": "Addasiadau wedi'u cyfyngu",
+  Admin: "Gweinyddol",
   "Admin API is unavailable": "Nid yw API Gweinyddol ar gael",
   "Admin Logs": "Logiau Gweinyddol",
   "Admin navigation": "llywio gweinyddol",
+  "Admin panel bot": "Bot panel gweinyddol",
   Afrikaans: "Affricanaidd",
   "After refunds, all farms": "Ar ôl ad-daliadau, pob fferm",
   Albanian: "Albanaidd",
@@ -165,6 +171,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Bydd eitemau sydd wedi'u harchifo yn ymddangos yma.",
   Armenian: "Armeneg",
   "Article not found": "Erthygl heb ei ganfod",
+  "Ask a question…": "Gofyn cwestiwn…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Gofynnwch sut i wneud rhywbeth yn y panel gweinyddol, neu gofynnwch am archebion sydd ar y gweill, eitemau stoc isel, neu statws archeb.",
   "Assamese (অসমীয়া)": "Asameg (অসমীয়া)",
   "Assigned roles": "Rolau wedi'u haseinio",
   Attribution: "Priodoliad",
@@ -172,6 +181,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Awdur",
   "Auto-translate": "Cyfieithu’n awtomatig",
   "Auto-translate all": "Cyfieithu popeth yn awtomatig",
+  Availability: "Argaeledd",
   Available: "Ar gael",
   "available · reorder at": "ar gael · ail-archebu yn",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -211,6 +221,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Body: "Corff",
   "Body text": "Testun corff",
   Bosnian: "Bosnieg",
+  "Built-in": "Adeiledig",
   "Bulgarian (Български)": "Bwlgareg (Български)",
   Bundle: "Bwndel",
   "bundle price · items priced at": "pris bwndel · eitemau wedi'u prisio ar",
@@ -260,6 +271,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Clirio...",
   "Click link": "Cliciwch y ddolen",
   Close: "Cau",
+  "Close help assistant": "Cau cynorthwyydd cymorth",
   "Close navigation": "Cau llywio",
   "CMS pages": "tudalennau CMS",
   "CMS pages & SEO": "tudalennau CMS & SEO",
@@ -293,6 +305,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Parhau gyda Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Rheolwch yr hyn y gall pob rôl ei weld, ei greu, ei olygu, ei gyhoeddi neu ei reoli.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Rheolwch a yw pob bot ar gael, a golygwch yr hyn y mae'n ei wybod.",
   "Cook minutes": "Coginio munudau",
   "Copy inside dark bands.": "Copïwch y tu mewn i fandiau tywyll.",
   Correction: "Cywiro",
@@ -360,9 +374,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Dileu",
   "Delete (spam)": "Dileu (spam)",
   "Delete category": "Dileu categori",
+  "Delete entry": "Dileu cofnod",
   "Delete farm": "Dileu fferm",
   "Delete image": "Dileu delwedd",
   "Delete inventory row": "Dileu rhes rhestr eiddo",
+  "Delete knowledge entry?": "Dileu cofnod gwybodaeth?",
   "Delete permanently": "Dileu yn barhaol",
   "Delete product": "Dileu cynnyrch",
   "Delete role": "Dileu rôl",
@@ -412,7 +428,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Golygu metadata tudalennau CMS, mynegeio a blociau tudalennau crai. Mae'r cofnod hafan wedi'i restru yma hefyd, ond Gosodiadau Hafan yw'r ffordd fwyaf diogel i'w newid - mae'r golygydd hwn yn cymryd JSON amrwd.",
   "Edit content": "Golygu cynnwys",
+  "Edit entry": "Golygu cofnod",
   "Edit farm": "Golygu fferm",
+  "Edit knowledge entry": "Golygu cofnod gwybodaeth",
   "Edit media": "Golygu media",
   "Edit review": "Golygu adolygiad",
   "Edit role": "Golygu rôl",
@@ -522,6 +540,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Penawdau a chopïo.",
   Headline: "Pennawd",
   "Hebrew (עברית)": "Hebraeg (עברית)",
+  "Help assistant": "Cynorthwyydd cymorth",
+  "Help Assistant": "Cynorthwyydd Cymorth",
   "Hero description": "Disgrifiad arwr",
   "Hero eyebrow": "Ael arwr",
   "Hero image alt text": "Delwedd arwr alt text",
@@ -589,6 +609,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "items visible on storefront": "eitemau i'w gweld ar flaen y siop",
   "Keep artwork clean": "Cadwch y gwaith celf yn lân",
   "Keep typing to search…": "Daliwch i deipio i chwilio…",
+  Keywords: "Geiriau allweddol",
   "Korean (한국어)": "Corea (한국어)",
   "Land under cultivation": "Tir yn cael ei drin",
   Language: "Iaith",
@@ -772,6 +793,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Dim mynegai",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Dim eitemau eto - ychwanegwch o leiaf un isod. Dim ond pan fydd gan y fasged bob eitem yma y mae'r ddesg dalu yn berthnasol, pan fydd gan y fasged bob eitem yma o leiaf.",
+  "No knowledge entries": "Dim cofnodion gwybodaeth",
   "No line items recorded.": "Dim eitemau llinell wedi'u cofnodi.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ddim yn newid y mewngofnodi mwyach - felly mae cyfrinair a osodwyd gennych yma wir yn disodli'r hen un.",
@@ -855,6 +877,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Dim ond y perchennog all reoli cwmpasau rôl.",
   "Only the owner can review payments and refunds.":
     "Dim ond y perchennog all adolygu taliadau ac ad-daliadau.",
+  "Open help assistant": "Cynorthwyydd cymorth agored",
   Optional: "Dewisol",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
     "Cynnwys dewisol a ddangosir uwchben y cynhwysion — yn cefnogi'r un blociau â phostiadau blog, gan gynnwys",
@@ -1190,6 +1213,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Bydd rhesi a ddewiswyd yn cael eu clirio i stoc wrth gefn, gan sicrhau bod y stoc ar gael yn sero tra'n cadw archebion, hanes symud a logiau archwilio.",
   "Selected users will be removed from the users list and signed out.":
     "Bydd defnyddwyr a ddewiswyd yn cael eu tynnu oddi ar y rhestr defnyddwyr a'u hallgofnodi.",
+  Send: "Anfon",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Anfon dolen ailosod cyfrinair diogel i'r defnyddiwr hwn. Byddant yn gosod eu cyfrinair newydd o'r dudalen ailosod gweinyddwr.",
   "Send back to draft": "Anfon yn ôl i'r drafft",
@@ -1257,6 +1281,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Cipluniau ar amser prynu - nid yw golygiadau catalog byth yn ailysgrifennu archeb.",
   Snippet: "Tamaid",
   "Sold out": "Wedi gwerthu allan",
+  "space separated, e.g. product publish visibility":
+    "gofod wedi ei wahanu, e.e. gwelededd cyhoeddi cynnyrch",
   "Spanish (Español)": "Sbaeneg (Sbaeneg)",
   "Sprouted ragi flour": "blawd ragi wedi'i egino",
   "SQL Tables": "Tablau SQL",
@@ -1269,6 +1295,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Camau (un i bob llinell)",
   "Stock Status": "Statws Stoc",
   "Store credit": "Credyd siop",
+  Storefront: "Ymlaen Siop",
+  "Storefront bot": "Bot blaen siop",
   "Storefront switches": "Switsys blaen siop",
   "Storefront switches unavailable": "Switsys blaen siop ddim ar gael",
   "Strong border": "Ffin gref",
@@ -1301,9 +1329,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Mae'r faner ar frig",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Mae'r faner, rhes categori, rhes cynnyrch a meysydd SEO yn cadw gyda'i gilydd. Mae blychau ticio'r adran, archebu a chopi adran personol yn cael eu cadw ar eu pen eu hunain, wrth i chi eu newid.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Y teclyn sgwrsio y mae cwsmeriaid ac ymwelwyr yn ei weld ar flaen y siop.",
   "The classic credential pair, including the password-reset flow.":
     "Y pâr credential clasurol, gan gynnwys y llif ailosod cyfrinair.",
   "the farm owner": "perchennog y fferm",
+  "The floating Help Assistant staff see on every admin page.":
+    "Mae staff Cynorthwyydd Cymorth Symudol yn gweld ar bob tudalen weinyddol.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "Mae'r dolenni pennyn a throedyn yn dangos pob tudalen, 00 cyfieithu fesul iaith (mudo). Mae locale a adawyd yn wag yn disgyn yn ôl i'r Saesneg ar flaen y siop. Dyma'r un rheolaeth sy'n trwsio pennyn sy'n dangos \"Shop\" / \"Seasonal\" yn Saesneg tra bod popeth o'i gwmpas wedi newid iaith - mae'r labeli hynny'n dod o'r fan hon, nid o gyfieithiadau cynnwys y dudalen uchod.",
   "The homepage has no sections": "Nid oes gan y dudalen hafan unrhyw adrannau",
@@ -1333,6 +1365,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Mae'r lliwiau hyn hefyd yn berthnasol i dudalennau o dan",
   "These roles define the permission sets available when inviting or editing users.":
     "Mae'r rolau hyn yn diffinio'r setiau caniatâd sydd ar gael wrth wahodd neu olygu defnyddwyr.",
+  "Thinking…": "Meddwl…",
   "This application is": "Mae'r rhaglen hon yn",
   "This order is in a final state.": "Mae'r archeb hon mewn cyflwr terfynol.",
   "This page contains sensitive application diagnostics.":
@@ -1454,6 +1487,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Pam fod angen newidiadau, neu pam y gwrthodwyd hyn?",
   "Why is stock changing?": "Pam mae stoc yn newid?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Geiriau mae'r bot yn cyfateb i gwestiwn i benderfynu a yw'r cofnod hwn yn berthnasol.",
   "Working...": "Wrthi'n gweithio...",
   "World languages": "Ieithoedd y byd",
   "Write a message…": "Ysgrifennwch neges…",

@@ -78,12 +78,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Илова кардани категория",
   "Add code": "Илова кардани код",
   "Add country": "Иловаи кишвар",
+  "Add entry": "Иловаи вуруд",
   "Add farm owner": "Илова кардани соҳиби ферма",
   "Add ingredient": "Илова кардани компонент",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Баъд аз сохтани баста ҷузъҳоро илова кунед (кадом вариантҳо, чанд нафар аз ҳар кадоме) аз Идоракунӣ.",
+  "Add knowledge entry": "Иловаи вуруди дониш",
   "Add one above to get started.": "Барои оғози кор як ҷузъи боло илова кунед.",
   "Add one below to get started.": "Барои оғоз кардан яке аз зерро илова кунед.",
+  "Add one so the bot has something to reference for this scope.":
+    "Яке илова кунед, то бот барои ин миқёс чизе барои истинод дошта бошад.",
   "Add page": "Илова кардани саҳифа",
   "Add participants": "Илова кардани иштирокчиён",
   "Add role": "Илова кардани нақш",
@@ -104,6 +108,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Admin API is unavailable": "API-и администратор дастрас нест",
   "Admin Logs": "Рӯзномаҳои администратор",
   "Admin navigation": "Намоиши маъмур",
+  "Admin panel bot": 'Ad><span bot id="t0005">Савол диҳед…',
   Afrikaans: "Африкаҳо",
   "After refunds, all farms": "Пас аз баргардонидани маблағҳо, ҳамаи хоҷагиҳо",
   Albanian: "албанӣ",
@@ -165,6 +170,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "Арманӣ",
   "Article not found": "Мақола ёфт нашуд",
   "Asha Rao": "Аша Рао",
+  "Ask a question…": "Савол диҳед…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Дар панели администратор пурсед, ки чӣ гуна кореро иҷро кардан мумкин аст ё дар бораи фармоишҳои интизорӣ, ашёи камхарҷ ё ҳолати фармоиш пурсед.",
   "Assamese (অসমীয়া)": "Ассамӣ (অসমীয়া)",
   "Assigned roles": "Нақшҳои таъиншуда",
   Attribution: "Атрибюсия",
@@ -172,6 +180,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Муаллиф",
   "Auto-translate": "Тарҷумаи худкор",
   "Auto-translate all": "Ҳамаро ба таври худкор тарҷума кардан",
+  Availability: "Дастрасӣ",
   Available: "Дастрас",
   "available · reorder at": "дастрас · аз нав фармоиш додан дар",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -217,6 +226,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Матни асосӣ",
   Bosnian: "Босния",
   Brand: "Бренди",
+  "Built-in": "Дохилшуда",
   "Bulgarian (Български)": "Булғорӣ (Български)",
   Bundle: "Баста",
   "bundle price · items priced at": "нархи баста · ашё бо нархаш",
@@ -271,6 +281,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Тоза карда мешавад...",
   "Click link": "Пайвандро клик кунед",
   Close: 'Пушидани id="t0016">Саҳифаҳои CMS дастнорас аст',
+  "Close help assistant": "Пушидани ёрдамчӣ",
   "Close navigation": "Пӯшидани паймоиш",
   "CMS pages": "саҳифаҳои CMS",
   "CMS pages & SEO": "Саҳифаҳои CMS ва SEO",
@@ -303,6 +314,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Идома кардан бо Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Назорат кунед, ки ҳар як нақш чиро дидан, эҷод кардан, таҳрир кардан, нашр кардан ё идора кардан мумкин аст.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Назорат кунед, ки оё ҳар як бот дастрас аст ва он чизеро, ки медонад, таҳрир кунед.",
   Cook: "Пухтан",
   "Cook minutes": "дақиқаҳои пухтупаз",
   "Copy inside dark bands.": "Дар дохили бандҳои торик нусхабардорӣ кунед.",
@@ -372,9 +385,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: 'id="t0006">Нест кардани сатри инвентаризатсия',
   "Delete (spam)": "Нест кардан (спам)",
   "Delete category": "Нест кардани категория",
+  "Delete entry": "Нест кардани вуруд",
   "Delete farm": "Нест кардани ферма",
   "Delete image": "Тасвирро нест кунед",
   "Delete inventory row": "Нест кардани сатри инвентаризатсия",
+  "Delete knowledge entry?": "Нест кардани вуруди дониш?",
   "Delete permanently": "Ба таври доимӣ нест кунед",
   "Delete product": "Нест кардани маҳсулот",
   "Delete role": "Нест кардани нақш",
@@ -427,7 +442,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Таҳрири метамаълумоти саҳифаи CMS, индексатсия ва блокҳои саҳифаи хом. Сабти саҳифаи асосӣ дар ин ҷо низ номбар шудааст, аммо Танзимоти саҳифаи асосӣ роҳи бехатартари тағир додани он аст — ин муҳаррир JSON-и хомро мегирад.",
   "Edit content": "Таҳрири мундариҷа",
+  "Edit entry": "Таҳрири вуруд",
   "Edit farm": "Таҳрири ферма",
+  "Edit knowledge entry": "Таҳрири вуруди дониш",
   "Edit media": "Таҳрири медиа",
   "Edit review": "Таҳрири барраси",
   "Edit role": "Таҳрири нақш",
@@ -545,6 +562,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Сарлавҳаҳо ва нусхабардорӣ.",
   Headline: "Сарлавҳа",
   "Hebrew (עברית)": "Ибрӣ (עברית)",
+  "Help Assistant": "Ёрдамчӣ",
   "Hero description": "Тавсифи қаҳрамон",
   "Hero eyebrow": "Абрӯвони қаҳрамон",
   "Hero image alt text": "Матни алтернативии тасвири қаҳрамон",
@@ -620,6 +638,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "Қазоқӣ",
   "Keep artwork clean": "Асари рассомиро тоза нигоҳ доред",
   "Keep typing to search…": "Барои ҷустуҷӯ нависед…",
+  Keywords: "Калидвожаҳо",
   Khmer: "Кхмер",
   Kinyarwanda: "Кинярванда",
   "Konkani (कोंकणी)": "Конканӣ (कोंकणी)",
@@ -818,6 +837,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Не индекс",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Ҳанӯз ягон ашё вуҷуд надорад — ақаллан якеро дар зер илова кунед. Санҷиши ин баста тахфифи ин бастаро танҳо вақте татбиқ мекунад, ки дар сабад ҳар як ашё дар ин ҷо ҳадди аққал ин миқдор дошта бошад.",
+  "No knowledge entries": "Ягон вуруди дониш",
   "No line items recorded.": "Ягон адад сатр сабт нашудааст.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "дигар логинро тағир намедиҳад — аз ин рӯ, пароле, ки шумо дар ин ҷо гузоштаед, воқеан пароли кӯҳнаро иваз мекунад.",
@@ -901,6 +921,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Танҳо соҳиби миқёси нақшҳоро идора карда метавонад.",
   "Only the owner can review payments and refunds.":
     "Танҳо соҳиби пардохтҳо ва баргардонидани маблағҳоро дида мебарояд.",
+  "Open help assistant": "Ёрдамчии ёриро кушоед",
   "Open navigation": "Навигасияи кушода",
   Optional: "Ихтиёрӣ",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1184,6 +1205,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Захира кардан…",
   "Say how often you will write and that unsubscribing is easy.":
     'Чӣ гуна зуд-зуд нависед. id="t0018">Идоракунии миқёс',
+  Scope: "Миқёс",
   "Scope Management": "Идоракунии доираи",
   "Scopes unavailable": "Миқёсҳо дастнорас",
   "Search archive": "Бойгонии ҷустуҷӯ",
@@ -1251,6 +1273,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Сатрҳои интихобшуда ба захираи захирашуда тоза карда мешаванд ва бо нигоҳ доштани захираҳо, таърихи ҳаракат ва гузоришҳои аудит захираҳои сифр дастрас мешаванд.",
   "Selected users will be removed from the users list and signed out.":
     "Истифодабарандагони интихобшуда аз рӯйхати корбарон хориҷ карда мешаванд ва аз система хориҷ карда мешаванд.",
+  Send: "Ирсол кунед",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Истиноди бехатари барқароркунии паролро ба ин корбар фиристед. Онҳо гузарвожаи нави худро аз саҳифаи азнавсозии администратор таъин мекунанд.",
   "Send back to draft": '... id="t0007">Иристодан...',
@@ -1321,6 +1344,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Франҷҳо",
   "Sold out": "Фурӯхта шуданд",
   Somali: "Сомалӣ",
+  "space separated, e.g. product publish visibility":
+    "фазо ҷудо, масалан. намоиши интишори маҳсулот",
   "Spanish (Español)": "Испанӣ (Испанол)",
   "Sprouted ragi flour": "Орди сабзидаи раги",
   "SQL Tables": "Ҷадвалҳои SQL",
@@ -1333,6 +1358,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": 'id="t0016">Гузаришҳои мағоза дастрас нестанд',
   "Stock Status": "Вазъи саҳҳомӣ",
   "Store credit": "гузариши мағоза",
+  "Storefront bot": "Боти мағоза",
   "Storefront switches": "Гузаришҳои рӯи дӯкон",
   "Storefront switches unavailable": "Гузаришҳои мағоза дастрас нестанд",
   "Strong border": "Сарҳади қавӣ",
@@ -1370,9 +1396,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Баннер дар болои",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Майдонҳои баннер, сатри категория, сатри маҳсулот ва SEO якҷоя захира мекунанд. Қуттиҳои аломатҳои бахш, фармоиш ва нусхаи қисмҳои фармоишӣ ҳангоми тағир додани онҳо мустақилона захира карда мешаванд.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Виҷети чат муштариён ва меҳмононро дар витрина мебинанд.",
   "The classic credential pair, including the password-reset flow.":
     "Ҷуфти эътимоднокии классикӣ, аз ҷумла ҷараёни барқароркунии парол.",
   "the farm owner": "соҳиби ферма",
+  "The floating Help Assistant staff see on every admin page.": 'id="t0005">Фикр кардан…',
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Сарлавҳа ва поёни истинод ҳар як саҳифаро нишон медиҳад, ки истинодҳои сарлавҳа ва поёнро дар ҳар як саҳифа нишон медиҳанд (mi translatation дар ҳар саҳифа нишон дода шудаанд). Маҳалли холӣ дар рӯи дӯкон ба забони англисӣ бармегардад. Ин ҳамон назоратест, ки сарлавҳаеро, ки "Дӯкон" / "Мавсимӣ"-ро бо забони англисӣ нишон медиҳад, ислоҳ мекунад, дар ҳоле ки ҳама чиз дар атрофи он забонро иваз кардааст - ин тамғакоғазҳо аз ин ҷо омадаанд, на аз тарҷумаҳои мундариҷаи саҳифа.',
   "The homepage has no sections": "Саҳифаи асосӣ бахш надорад",
@@ -1402,6 +1431,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Ин рангҳо ба саҳифаҳои зер низ дахл доранд",
   "These roles define the permission sets available when inviting or editing users.":
     "Ин нақшҳо маҷмӯи иҷозатҳоро ҳангоми даъват ё таҳрири корбарон муайян мекунанд.",
+  "Thinking…": "Фикр кардан…",
   "This application is": "Ин барнома",
   "This order is in a final state.": "Ин фармоиш дар ҳолати ниҳоӣ қарор дорад.",
   "This page contains sensitive application diagnostics.":
@@ -1521,6 +1551,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Чаро тағирот лозим аст ё чаро ин рад карда шуд?",
   "Why is stock changing?": "Чаро захираҳо тағйир меёбанд?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Калимаҳои бот бо саволе мувофиқат мекунанд, то мувофиқ будани ин воридотро муайян кунанд.",
   "Working...": "Кор...",
   "World languages": "Забонҳои ҷаҳонӣ",
   "Write a message…": "Паём нависед…",

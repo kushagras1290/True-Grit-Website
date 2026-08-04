@@ -16,6 +16,7 @@ import appCss from "./app.css?url";
 import { Footer, Header } from "./components/chrome";
 import { AmbientEffect, CursorTrail } from "./components/effects";
 import { LanguageSuggestionPrompt } from "./components/language-suggestion";
+import { SupportBotWidget } from "./components/support-bot-widget";
 import { NavigationProgress } from "./components/navigation-progress";
 import { catalogueRuntime, loadBootstrap, loadSiteSettings } from "./lib/catalogue.server";
 import { CartProvider } from "./lib/cart";
@@ -197,6 +198,7 @@ export default function App() {
                       hideNativeCursor={siteSettings.effects.cursor.hideNativeCursor}
                     />
                     <LanguageSuggestionPrompt locale={locale} active={localeSource === "geo"} />
+                    <SupportBotWidget country={country} />
                   </>
                 )}
               </CurrencyProvider>

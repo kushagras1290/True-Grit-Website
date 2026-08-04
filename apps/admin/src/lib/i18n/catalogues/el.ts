@@ -79,12 +79,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Προσθήκη κατηγορίας",
   "Add code": 'id="t0010">Προσθήκη χώρας',
   "Add country": "Προσθήκη χώρας",
+  "Add entry": "Προσθήκη καταχώρισης",
   "Add farm owner": "Προσθήκη κατόχου φάρμας",
   "Add ingredient": "Προσθήκη συστατικού",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "get below. ξεκίνησε.",
+  "Add knowledge entry": "Προσθήκη καταχώρισης γνώσεων",
   "Add one above to get started.": "Προσθέστε ένα παραπάνω για να ξεκινήσετε.",
   "Add one below to get started.": "Προσθέστε μία παρακάτω για να ξεκινήσετε.",
+  "Add one so the bot has something to reference for this scope.":
+    "Προσθέστε μία, ώστε το ρομπότ να έχει κάτι να αναφέρει για αυτό το εύρος.",
   "Add page": "Προσθήκη σελίδας",
   "Add participants": "Προσθήκη συμμετεχόντων",
   "Add role": "Προσθήκη ρόλου",
@@ -103,9 +107,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Προσαρμόστε την αναζήτηση ή δημιουργήστε ένα προϊόν.",
   "Adjustment %": "Προσαρμογή %",
   "Adjustments restricted": "Περιορισμένες προσαρμογές",
+  Admin: "Διαχειριστής",
   "Admin API is unavailable": "Το API διαχειριστή δεν είναι διαθέσιμο",
   "Admin Logs": "Αρχεία καταγραφής διαχειριστή",
   "Admin navigation": "Πλοήγηση διαχειριστή",
+  "Admin panel bot": "Ρομπότ πίνακα διαχειριστή",
   Afrikaans: "Αφρικανοί",
   "After refunds, all farms": "Μετά από επιστροφές χρημάτων, όλα τα αγροκτήματα",
   Albanian: "Αλβανικά",
@@ -165,6 +171,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Τα αρχειοθετημένα στοιχεία θα εμφανιστούν εδώ.",
   Armenian: "Αρμενικά",
   "Article not found": "Το άρθρο δεν βρέθηκε",
+  "Ask a question…": "Κάντε μια ερώτηση…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Ρωτήστε πώς να κάνετε κάτι στον πίνακα διαχείρισης ή ρωτήστε σχετικά με παραγγελίες σε εκκρεμότητα, στοιχεία χαμηλής διαθεσιμότητας ή την κατάσταση μιας παραγγελίας.",
   "Assamese (অসমীয়া)": "Ασαμέζικα (অসমীয়া)",
   "Assigned roles": "Ανατεθειμένοι ρόλοι",
   Attribution: "Απόδοση",
@@ -172,6 +181,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Συγγραφέας",
   "Auto-translate": "Αυτόματη μετάφραση",
   "Auto-translate all": "Αυτόματη μετάφραση όλων",
+  Availability: "Διαθεσιμότητα",
   Available: "Διαθέσιμο",
   "available · reorder at": "διαθέσιμο · επαναπαραγγελία στο",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -215,6 +225,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Κείμενο σώματος",
   Bosnian: "Βοσνιακά",
   Brand: "Επωνυμία",
+  "Built-in": "Ενσωματωμένη",
   "Bulgarian (Български)": "Βουλγαρικά (Български)",
   Bundle: "Πακέτο",
   "bundle price · items priced at": 'id="t0005">Τιμή πακέτου, ₹',
@@ -269,6 +280,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Εκκαθάριση...",
   "Click link": "Κάντε κλικ στον σύνδεσμο",
   Close: "Κλείσιμο",
+  "Close help assistant": "Κλείσιμο βοηθού βοήθειας",
   "Close navigation": "Κλείσιμο πλοήγησης",
   "CMS pages": "σελίδων CMS",
   "CMS pages & SEO": "Σελίδες CMS & SEO",
@@ -302,6 +314,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Συνέχεια με το Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Ελέγξτε τι μπορεί να προβάλει, να δημιουργήσει, να επεξεργαστεί, να δημοσιεύσει ή να διαχειριστεί κάθε ρόλος.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Ελέγξτε εάν κάθε bot είναι διαθέσιμο και επεξεργαστείτε όσα γνωρίζει.",
   Cook: "Μαγείρεμα",
   "Cook minutes": "Λεπτά μαγειρέματος",
   "Copy inside dark bands.": "Αντιγραφή σε σκούρες ζώνες.",
@@ -369,9 +383,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Διαγραφή",
   "Delete (spam)": "Διαγραφή (ανεπιθύμητα)",
   "Delete category": "Διαγραφή κατηγορίας",
+  "Delete entry": "Διαγραφή καταχώρισης",
   "Delete farm": "Διαγραφή φάρμας",
   "Delete image": "Διαγραφή εικόνας",
   "Delete inventory row": "Διαγραφή σειράς αποθέματος",
+  "Delete knowledge entry?": "Διαγραφή καταχώρισης γνώσεων;",
   "Delete permanently": "Μόνιμη διαγραφή",
   "Delete product": "Διαγραφή προϊόντος",
   "Delete role": "Διαγραφή ρόλου",
@@ -422,7 +438,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Επεξεργασία μεταδεδομένων σελίδας CMS, ευρετηρίαση και μη επεξεργασμένα μπλοκ σελίδων. Η εγγραφή της αρχικής σελίδας παρατίθεται επίσης εδώ, αλλά οι Ρυθμίσεις αρχικής σελίδας είναι ο ασφαλέστερος τρόπος για να την αλλάξετε — αυτό το πρόγραμμα επεξεργασίας χρησιμοποιεί ακατέργαστο JSON.",
   "Edit content": "Επεξεργασία περιεχομένου",
+  "Edit entry": "Επεξεργασία καταχώρισης Βοηθός",
   "Edit farm": "Επεξεργασία φάρμας",
+  "Edit knowledge entry": "Επεξεργασία καταχώρισης γνώσεων",
   "Edit media": "Επεξεργασία πολυμέσων",
   "Edit review": "Επεξεργασία παραλλαγής",
   "Edit role": "Επεξεργασία ρόλου",
@@ -540,6 +558,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Επικεφαλίδες και αντιγραφή.",
   Headline: "Επικεφαλίδα",
   "Hebrew (עברית)": "Εβραϊκά (עברית)",
+  "Help assistant": '><span id="t0004">Βοηθός βοήθειας',
+  "Help Assistant": "Βοηθός βοήθειας",
   "Hero description": "Περιγραφή ήρωα",
   "Hero eyebrow": "φρύδι ήρωα",
   "Hero image alt text": "Εναλλακτικό κείμενο εικόνας ήρωα",
@@ -615,6 +635,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "Καζακικά",
   "Keep artwork clean": "Διατηρήστε το έργο τέχνης καθαρό",
   "Keep typing to search…": "Συνεχίστε να πληκτρολογείτε για αναζήτηση…",
+  Keywords: "Λέξεις-κλειδιά",
   Khmer: "Χμερ",
   Kinyarwanda: "Κινιαρουάντα",
   "Konkani (कोंकणी)": "Κονκάνι (कोंकणी)",
@@ -813,6 +834,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Δεν υπάρχει ευρετήριο",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Δεν υπάρχουν ακόμη στοιχεία — προσθέστε τουλάχιστον ένα παρακάτω. Το Checkout εφαρμόζει την έκπτωση αυτού του πακέτου μόνο όταν το καλάθι έχει όλα τα είδη εδώ, τουλάχιστον σε αυτές τις ποσότητες.",
+  "No knowledge entries": "Δεν υπάρχουν καταχωρήσεις γνώσεων",
   "No line items recorded.": "Δεν έχουν καταγραφεί στοιχεία γραμμής.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "δεν αλλάζει πλέον τα στοιχεία σύνδεσης — επομένως ένας κωδικός πρόσβασης που ορίζετε εδώ αντικαθιστά πραγματικά τον παλιό.",
@@ -897,6 +919,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Μόνο ο κάτοχος μπορεί να διαχειριστεί τα πεδία ρόλων.",
   "Only the owner can review payments and refunds.":
     "Μόνο ο κάτοχος μπορεί να ελέγξει τις πληρωμές και τις επιστροφές χρημάτων.",
+  "Open help assistant": "Άνοιγμα βοηθού βοήθειας",
   "Open navigation": "Ανοικτή πλοήγηση",
   Optional: "Προαιρετικό",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1180,6 +1203,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Αποθήκευση…",
   "Say how often you will write and that unsubscribing is easy.":
     "Πείτε πόσο συχνά θα γράφετε και ότι η κατάργηση της εγγραφής είναι εύκολη.",
+  Scope: "Πεδίο εφαρμογής",
   "Scope Management": "Διαχείριση εμβέλειας",
   "Scopes unavailable": "Δεν είναι διαθέσιμα πεδία",
   "Search archive": "Αρχείο αναζήτησης",
@@ -1247,6 +1271,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Οι επιλεγμένες σειρές θα διαγραφούν στο δεσμευμένο απόθεμα, καθιστώντας το διαθέσιμο απόθεμα μηδέν διατηρώντας τις κρατήσεις, το ιστορικό κινήσεων και τα αρχεία καταγραφής ελέγχου.",
   "Selected users will be removed from the users list and signed out.":
     "Οι επιλεγμένοι χρήστες θα αφαιρεθούν από τη λίστα χρηστών και θα αποσυνδεθούν.",
+  Send: "Αποστολή",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Στείλτε έναν ασφαλή σύνδεσμο επαναφοράς κωδικού πρόσβασης σε αυτόν τον χρήστη. Θα ορίσουν τον νέο κωδικό πρόσβασής τους από τη σελίδα επαναφοράς διαχειριστή.",
   "Send back to draft": "Αποστολή πίσω στο πρόχειρο",
@@ -1316,6 +1341,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Στιγμιότυπα κατά την αγορά — οι επεξεργασίες καταλόγου δεν επαναγράφουν ποτέ μια παραγγελία.",
   "Sold out": "Εξαντλήθηκε. (Español)",
   Somali: 'Σομαλικά </span4="t0003"><span id="t0003">Somali',
+  "space separated, e.g. product publish visibility":
+    "διαχωρισμένος χώρος, π.χ. ορατότητα δημοσίευσης προϊόντος",
   "Spanish (Español)": "Ισπανικά (Ισπανικά)",
   "Sprouted ragi flour": "Αλεύρι ραγι που έχει φυτρώσει",
   "SQL Tables": "Πίνακες SQL",
@@ -1329,6 +1356,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Βήματα (ένα ανά γραμμή)",
   "Stock Status": 'S id="t0014">Πίστωση καταστήματος',
   "Store credit": "Πίστωση καταστήματος",
+  Storefront: "Βιτρίνα καταστήματος",
+  "Storefront bot": "ρομπότ καταστήματος",
   "Storefront switches": "Διακόπτες βιτρίνας",
   "Storefront switches unavailable": "Μη διαθέσιμοι διακόπτες βιτρίνας",
   "Strong border": "Ισχυρό περίγραμμα",
@@ -1366,9 +1395,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Το banner στην κορυφή του",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Το banner, η σειρά κατηγορίας, η σειρά προϊόντων και τα πεδία SEO αποθηκεύονται μαζί. Τα πλαίσια επιλογής ενότητας, η παραγγελία και το προσαρμοσμένο αντίγραφο ενότητας αποθηκεύονται από μόνα τους, καθώς τα αλλάζετε.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Το γραφικό στοιχείο συνομιλίας που βλέπουν οι πελάτες και οι επισκέπτες στη βιτρίνα.",
   "The classic credential pair, including the password-reset flow.":
     "Το κλασικό ζεύγος διαπιστευτηρίων, συμπεριλαμβανομένης της ροής επαναφοράς κωδικού πρόσβασης.",
   "the farm owner": "ο κάτοχος της φάρμας",
+  "The floating Help Assistant staff see on every admin page.":
+    "Το αιωρούμενο προσωπικό του Βοηθού βοήθειας βλέπει σε κάθε σελίδα διαχειριστή.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Η κεφαλίδα και η γλώσσα μεταφράζονται σε κάθε σελίδα ποδιών (σύνδεσμος ετικέτας ανά σελίδα και πόδι) 0068). Μια τοπική γλώσσα που μένει κενή επιστρέφει στα Αγγλικά στη βιτρίνα. Αυτό είναι το ίδιο στοιχείο ελέγχου που διορθώνει μια κεφαλίδα που εμφανίζει "Κατάστημα" / "Εποχιακό" στα Αγγλικά, ενώ τα πάντα γύρω του έχουν αλλάξει γλώσσα — αυτές οι ετικέτες προέρχονται από εδώ, όχι από τις μεταφράσεις περιεχομένου σελίδας παραπάνω.',
   "The homepage has no sections": "Η αρχική σελίδα δεν έχει ενότητες",
@@ -1400,6 +1433,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Αυτά τα χρώματα ισχύουν και για τις παρακάτω σελίδες",
   "These roles define the permission sets available when inviting or editing users.":
     "Αυτοί οι ρόλοι ορίζουν τα σύνολα αδειών που είναι διαθέσιμα κατά την πρόσκληση ή την επεξεργασία χρηστών.",
+  "Thinking…": "Σκέφτομαι…",
   "This application is": "Αυτή η εφαρμογή είναι",
   "This order is in a final state.": "Αυτή η παραγγελία βρίσκεται σε τελική κατάσταση.",
   "This page contains sensitive application diagnostics.":
@@ -1523,6 +1557,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Γιατί χρειάζονται αλλαγές ή γιατί απορρίφθηκε;",
   "Why is stock changing?": "Γιατί αλλάζει το απόθεμα;",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Λέξεις που το ρομπότ ταιριάζουν με μια ερώτηση για να αποφασίσουν ότι αυτή η καταχώριση είναι σχετική.",
   "Working...": "Λειτουργεί...",
   "World languages": "Παγκόσμιες γλώσσες",
   "Write a message…": "Γράψτε ένα μήνυμα…",

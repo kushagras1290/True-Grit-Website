@@ -79,12 +79,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Kategoriya qo'shish",
   "Add code": "Kod qo'shish",
   "Add country": "Mamlakat qo'shish",
+  "Add entry": "Yozuv qo‘shish",
   "Add farm owner": "Ferma egasi qo‘shish",
   "Add ingredient": "Ingredient qo‘shing",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "To‘plamni yaratgandan so‘ng “Boshqarish” orqali elementlarni qo‘shing (qaysi variant, har birida nechta).",
+  "Add knowledge entry": "Ma’lumotli yozuvni qo‘shish",
   "Add one above to get started.": "Boshlash uchun yuqoridan bittasini qo‘shing.",
   "Add one below to get started.": "Boshlash uchun quyida bittasini qo‘shing. page",
+  "Add one so the bot has something to reference for this scope.":
+    "Botda ushbu sohaga havola qilish uchun biror narsa qo‘shing.",
   "Add page": "Sahifa qo'shish",
   "Add participants": "Ishtirokchilarni qo'shish",
   "Add selected": "Tanlanganlarni qo'shish",
@@ -100,6 +104,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Admin API is unavailable": "Admin API mavjud emas",
   "Admin Logs": "Administrator jurnallari",
   "Admin navigation": "Administrator navigatsiyasi",
+  "Admin panel bot": 'Admin panel id="t0005">Savol bering…',
   Afrikaans: "Afrikaliklar",
   "After refunds, all farms": "To‘lovlar qaytarilgandan so‘ng barcha fermer xo‘jaliklari",
   Albanian: "albancha",
@@ -160,6 +165,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Arxivlangan elementlar shu yerda chiqadi.",
   Armenian: "Armancha",
   "Article not found": "Maqola topilmadi",
+  "Ask a question…": "Savol bering…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Administrator panelida qanday qilib biror narsa qilishni so‘rang yoki kutilayotgan buyurtmalar, kam zaxiradagi mahsulotlar yoki buyurtma holati haqida so‘rang.",
   "Assamese (অসমীয়া)": "Assam (অসমীয়া)",
   "Assigned roles": "Tayinlangan rollar",
   Attribution: "Attribut",
@@ -167,6 +175,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Muallif",
   "Auto-translate": "Avtomatik tarjima",
   "Auto-translate all": "Hammasini avtomatik tarjima qilish",
+  Availability: "Mavjudligi",
   Available: "Mavjud",
   "available · reorder at": "mavjud · qayta buyurtma:",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -211,6 +220,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Matna matni",
   Bosnian: "Bosniyalik",
   Brand: "Brend",
+  "Built-in": "O‘rnatilgan help assistant",
   "Bulgarian (Български)": "Bolgar (B'lgarski)",
   Bundle: "To‘plam",
   "bundle price · items priced at": "to‘plam narxi · mahsulotlar narxi",
@@ -266,6 +276,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "0lickid>0lickidgacha tanlang. havola",
   "Click link": "Havolani bosing",
   Close: "Yopish",
+  "Close help assistant": "Yordam yordamchisini yoping",
   "Close navigation": "navigatsiyani yopish",
   "CMS pages": "CMS sahifalari",
   "CMS pages & SEO": "CMS sahifalari va SEO",
@@ -299,6 +310,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Facebookda davom etish",
   "Control what each role can view, create, edit, publish or manage.":
     "Har bir rol nimani ko‘rishi, yaratishi, tahrirlashi, nashr etishi yoki boshqarishi mumkinligini boshqaring.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Har bir bot mavjudligini nazorat qiling va u bilganini tahrirlang.",
   Cook: "Pishirish",
   "Cook minutes": "Pishirish daqiqalari",
   "Copy inside dark bands.": "Qorongʻi chiziqlar ichidan nusxalash.",
@@ -368,9 +381,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Oʻchirish",
   "Delete (spam)": "Oʻchirish (spam)",
   "Delete category": "Kurumni o‘chirish",
+  "Delete entry": "Yozuvni o‘chirish",
   "Delete farm": "Fermani o‘chirish",
   "Delete image": "Rasmni o‘chirish",
   "Delete inventory row": "Inventar qatorini o‘chirish",
+  "Delete knowledge entry?": "Ma’lumotli yozuvni o‘chirish?",
   "Delete permanently": "To‘liq o‘chirish",
   "Delete product": "Mahsulotni o‘chirish",
   "Delete role": "Rolni o‘chirish",
@@ -421,7 +436,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS sahifa metamaʼlumotlarini, indekslash va xom sahifa bloklarini tahrirlash. Bosh sahifa yozuvi ham shu yerda keltirilgan, lekin Bosh sahifa sozlamalari uni oʻzgartirishning xavfsiz usuli hisoblanadi — bu muharrir xom JSON faylini oladi.",
   "Edit content": "Kontentni tahrirlash",
+  "Edit entry": "Yozuvni tahrirlash",
   "Edit farm": "Fermani tahrirlash",
+  "Edit knowledge entry": "Ma’lumot kiritishni tahrirlash",
   "Edit media": "Mediani tahrirlash",
   "Edit review": "Ko‘rib chiqishni tahrirlash",
   "Edit role": "Rolni tahrirlash",
@@ -538,6 +555,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Sarlavhalar va nusxa.",
   Headline: "Sarlavha",
   "Hebrew (עברית)": "Ibroniycha (Ibron)",
+  "Help assistant": "Yordamchi",
+  "Help Assistant": "Yordamchi yordamchi",
   "Hero description": "Qahramon tavsifi",
   "Hero eyebrow": "Qahramon qoshi",
   "Hero image alt text": "Qahramon tasviri05 URL",
@@ -613,6 +632,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "Qozoqcha",
   "Keep artwork clean": "San'at asarini toza tuting",
   "Keep typing to search…": "Qidirish uchun yozishni davom eting...",
+  Keywords: "Kalit so'zlar",
   Khmer: "Kxmer",
   Kinyarwanda: "Kinyarvanda",
   "Konkani (कोंकणी)": "Konkani (कोंकी)",
@@ -798,6 +818,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Indeks yo‘q",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Hali hech qanday element yoʻq — pastga kamida bittasini qoʻshing. To‘plam chegirmasi savatda kamida shu miqdorda bo‘lsagina qo‘llaniladi.",
+  "No knowledge entries": "Ma'lumotlarga oid yozuvlar yo'q",
   "No line items recorded.": "Hech qanday qator elementi qayd etilmagan.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "endi loginni o'zgartirmaydi — shuning uchun siz bu yerda o'rnatgan parol haqiqatdan ham eskisini almashtiradi.",
@@ -881,6 +902,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Faqat egasi rol doirasini boshqarishi mumkin.",
   "Only the owner can review payments and refunds.":
     "Faqat egasi to‘lovlar va qaytarilgan mablag‘larni ko‘rib chiqishi mumkin.",
+  "Open help assistant": "Yordam yordamchisini oching",
   "Open navigation": "Ochiq navigatsiya",
   Optional: "Ixtiyoriy",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1164,6 +1186,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Saqlash...",
   "Say how often you will write and that unsubscribing is easy.":
     "Qanchalik tez-tez yozishingizni va obunani bekor qilish osonligini ayting.",
+  Scope: "Qo'llash doirasi",
   "Scopes unavailable": "Scopes mavjud emas",
   "Search archive": "Arxivni qidirish",
   "Search blog posts": "Blog postlarini qidirish",
@@ -1233,6 +1256,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "zaxiraga qo‘yiladigan zaxiralar tozalanadi. bandlovlar, harakat tarixi va audit jurnallarini saqlab qolgan holda.",
   "Selected users will be removed from the users list and signed out.":
     "Tanlangan foydalanuvchilar foydalanuvchilar roʻyxatidan oʻchiriladi va tizimdan chiqariladi.",
+  Send: "Yuborish",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Ushbu foydalanuvchiga parolni xavfsiz tiklash havolasini yuboring. Ular yangi parolni administrator sozlamalari sahifasidan o‘rnatadilar.",
   "Send back to draft": "Qayta qoralamaga yuborish",
@@ -1281,6 +1305,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Snapshots at purchase time — catalogue edits never rewrite an order.":
     "Xarid vaqtida olingan suratlar — katalog tahrirlari hech qachon buyurtmani qayta yozmaydi.",
   "Sold out": "Sotilgan",
+  "space separated, e.g. product publish visibility":
+    "bo'sh joy ajratilgan, masalan. mahsulotni nashr qilish koʻrinishi",
   "Spanish (Español)": "Ispan (Espanol)",
   "Sprouted ragi flour": "O‘sib chiqqan ragi uni",
   "SQL Tables": "SQL jadvallari",
@@ -1330,9 +1356,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Yuqori tomonidagi banner",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Banner, turkum qatori, mahsulot qatori va SEO maydonlari birgalikda saqlanadi. Boʻlim belgilash katakchalari, buyurtma va moslashtirilgan boʻlim nusxalari siz ularni oʻzgartirganingizdek oʻz-oʻzidan saqlanadi.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Chat vidjeti mijozlar va tashrif buyuruvchilar doʻkonda koʻrishadi.",
   "The classic credential pair, including the password-reset flow.":
     "Klassik hisob maʼlumotlari juftligi, jumladan, parolni qayta oʻrnatish jarayoni.",
   "the farm owner": "ferma egasi",
+  "The floating Help Assistant staff see on every admin page.":
+    "Yordamchi yordamchi xodimlari har bir administrator sahifasida koʻrishadi.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "Sarlavha va altbilgi havolalari har bir sahifada 060 tilda koʻrsatilgan. Boʻsh qoldirilgan til doʻkon peshtaxtasida ingliz tiliga qaytadi. Bu ingliz tilidagi “Do‘kon” / “Mavsumiy” sarlavhasini tuzatuvchi, uning atrofidagi hamma narsa tilni o‘zgartirgan bo‘lsa, xuddi shu boshqaruv – bu teglar yuqoridagi sahifa kontenti tarjimalaridan emas, bu yerdan olingan.",
   "The homepage has no sections": "Bosh sahifada hech qanday bo‘lim yo‘q",
@@ -1361,6 +1391,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Bu ranglar quyidagi sahifalarga ham tegishli",
   "These roles define the permission sets available when inviting or editing users.":
     "Ushbu rollar foydalanuvchilarni taklif qilish yoki tahrirlashda mavjud ruxsatlar to‘plamini belgilaydi.",
+  "Thinking…": "Fikrlash...",
   "This application is": "Ushbu ilova",
   "This order is in a final state.": "Bu buyurtma yakuniy holatda.",
   "This page contains sensitive application diagnostics.":
@@ -1479,6 +1510,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Nega o‘zgartirishlar kerak yoki nima uchun bu rad etildi?",
   "Why is stock changing?": "Nega aksiyalar o‘zgarib bormoqda?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Bu yozuvning tegishli ekanligini aniqlash uchun bot soʻzlari savolga mos keladi.",
   "Working...": "Ishlayapti...",
   "World languages": "Jahon tillari",
   "Write a message…": "Xabar yozish...",

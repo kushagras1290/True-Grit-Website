@@ -83,12 +83,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Pievienot kategoriju",
   "Add code": "Pievienot kodu",
   "Add country": "Pievienot valsti",
+  "Add entry": "Pievienot ierakstu",
   "Add farm owner": "Reklāma fermas īpašnieks",
   "Add ingredient": "Pievienot sastāvdaļu",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Pievienojiet vienumus (kurus variantus, cik no katra) pēc komplekta izveides no sadaļas Pārvaldīt.",
+  "Add knowledge entry": "Pievienot zināšanu ierakstu",
   "Add one above to get started.": "Lai sāktu, pievienojiet vienu iepriekš.",
   "Add one below to get started.": "Lai sāktu, pievienojiet vienu tālāk.",
+  "Add one so the bot has something to reference for this scope.":
+    "Pievienojiet to, lai robotam būtu uz ko atsaukties šajā jomā.",
   "Add page": "Pievienot lapu",
   "Add participants": "Pievienot dalībniekus",
   "Add role": "Pievienot lomu",
@@ -106,9 +110,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Pielāgojiet meklēšanu vai izveidojiet produktu.",
   "Adjustment %": "Korekcija %",
   "Adjustments restricted": "Ierobežotas korekcijas",
+  Admin: "Administrators",
   "Admin API is unavailable": "Administratora API nav pieejams",
   "Admin Logs": "Administratora žurnāli",
   "Admin navigation": "Administratora navigācija",
+  "Admin panel bot": "Administratora paneļa robots",
   Afrikaans: "afrikandu",
   "After refunds, all farms": "Pēc atmaksas visas saimniecības",
   Albanian: "albāņu",
@@ -168,6 +174,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Šeit tiks parādīti arhivētie vienumi.",
   Armenian: "Armēņu",
   "Article not found": "Raksts nav atrasts",
+  "Ask a question…": "Uzdot jautājumu...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Vaicājiet, kā veikt darbības administratora panelī, vai jautājiet par neapstiprinātajiem pasūtījumiem, precēm ar zemu krājumu vai pasūtījuma statusu.",
   "Assamese (অসমীয়া)": "asamiešu (অসমীয়া)",
   "Assigned roles": "Piešķirtās lomas",
   Attribution: "Attiecinājums",
@@ -175,6 +184,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Autors",
   "Auto-translate": "Automātiski tulkot",
   "Auto-translate all": "Automātiski tulkot visu",
+  Availability: "Pieejamība",
   Available: "Pieejams",
   "available · reorder at": "pieejams · pārkārtot vietnē",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -219,6 +229,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Pamatteksts",
   Bosnian: "Bosniešu",
   Brand: 'Brandu</07"> (Български)',
+  "Built-in": "Iebūvēts",
   "Bulgarian (Български)": "Bulgāru (Български)",
   Bundle: "Pakete",
   "bundle price · items priced at": "komplekta cena · preces, kuru cena ir",
@@ -271,6 +282,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Notiek tīrīšana...",
   "Click link": "Noklikšķiniet uz saites",
   Close: "Aizvērt",
+  "Close help assistant": "Aizvērt palīdzības palīgu",
   "Close navigation": "Aizvērt navigāciju",
   "CMS pages": "SPS lapas",
   "CMS pages & SEO": "SPS lapas un SEO",
@@ -303,6 +315,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Turpināt ar Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Kontrolējiet, ko katra loma var skatīt, izveidot, rediģēt, publicēt vai pārvaldīt.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Pārvaldiet, vai katrs robots ir pieejams, un rediģējiet to, ko tā zina.",
   Cook: "Gatavot",
   "Cook minutes": "Pagatavot minūtes",
   "Copy inside dark bands.": "Kopēt tumšās joslās.",
@@ -372,9 +386,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Dzēst",
   "Delete (spam)": "Dzēst (surogātpastu)",
   "Delete category": "Dzēst kategoriju",
+  "Delete entry": "Dzēst ierakstu",
   "Delete farm": "Dzēst fermu",
   "Delete image": "Dzēst attēlu",
   "Delete inventory row": "Dzēst krājumu rindu",
+  "Delete knowledge entry?": "Vai dzēst zināšanu ierakstu?",
   "Delete permanently": "Neatgriezeniski dzēst",
   "Delete product": "Dzēst produktu",
   "Delete role": "Dzēst lomu",
@@ -424,7 +440,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Rediģēt CMS lapas metadatus, indeksēšanu un neapstrādātus lapu blokus. Šeit ir norādīts arī sākumlapas ieraksts, taču sākumlapas iestatījumi ir drošāks veids, kā to mainīt — šis redaktors izmanto neapstrādātu JSON.",
   "Edit content": "Satura rediģēšana",
+  "Edit entry": "Rediģēt ierakstu",
   "Edit farm": "Rediģēt saimniecību",
+  "Edit knowledge entry": "Rediģēt zināšanu ierakstu",
   "Edit media": "Rediģēt multividi",
   "Edit review": "Rediģēt atsauksmi",
   "Edit role": "Rediģēt lomu",
@@ -540,6 +558,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Virsraksti un kopija.",
   Headline: "Virsraksts",
   "Hebrew (עברית)": "Ebreju (עברית)",
+  "Help assistant": "Palīdzības palīgs",
+  "Help Assistant": 'Palīdzība id="t0006">Atslēgvārdi',
   "Hero description": "Varoņa apraksts",
   "Hero eyebrow": "Varoņa uzacis",
   "Hero image alt text": "Varoņa attēla alternatīvais teksts",
@@ -615,6 +635,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "kazahu",
   "Keep artwork clean": "Saglabājiet mākslas darbu tīru",
   "Keep typing to search…": "Turpiniet rakstīt, lai meklētu…",
+  Keywords: "Atslēgvārdi",
   Khmer: "khmeru",
   Kinyarwanda: "Kinjarvanda",
   "Korean (한국어)": "korejiešu (한국어)",
@@ -808,6 +829,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Nav rādītāja.",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Vēl nav vienumu — pievienojiet vismaz vienu zemāk. Pakalpojumā Checkout šī komplekta atlaide tiek piemērota tikai tad, ja grozā ir visas preces vismaz šādos daudzumos.",
+  "No knowledge entries": "Nav zināšanu ierakstu",
   "No line items recorded.": "Neviena rindas vienība nav reģistrēta.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "pieteikšanās vārds vairs netiek mainīts — tāpēc šeit iestatītā parole patiešām aizstāj veco.",
@@ -891,6 +913,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Tikai īpašnieks var pārvaldīt lomu tvērumus.",
   "Only the owner can review payments and refunds.":
     "Tikai īpašnieks var pārskatīt maksājumus un atmaksas.",
+  "Open help assistant": "Atvērt palīdzības palīgu",
   "Open navigation": "Atvērt navigāciju",
   Optional: "Neobligāti",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1169,6 +1192,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving...": "Saglabāt...",
   "Saving…": "Saglabāt...",
   "Say how often you will write and that unsubscribing is easy.": "Sakiet, cik bieži jūs rakstāt.",
+  Scope: "Tvērums",
   "Scope Management": "Tvēruma pārvaldība",
   "Scopes unavailable": "Tvērumi nav pieejami",
   "Search archive": "Meklēt arhīvā",
@@ -1234,6 +1258,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "tiks notīrīti krājumi, padarot tos pieejamus. saglabājot rezervācijas, kustības vēsturi un audita žurnālus.",
   "Selected users will be removed from the users list and signed out.":
     "Atlasītie lietotāji tiks noņemti no lietotāju saraksta un tiks izrakstīti.",
+  Send: "Sūtīt",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Nosūtiet šim lietotājam drošu paroles atiestatīšanas saiti. Viņi iestatīs savu jauno paroli administratora atiestatīšanas lapā.",
   "Send back to draft": "Nosūtīt atpakaļ uz melnrakstu",
@@ -1305,6 +1330,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Fragments",
   "Sold out": "Izpārdots",
   Somali: "Somālijas",
+  "space separated, e.g. product publish visibility":
+    "atdalīta atstarpe, piem. produkta publicēšanas redzamība",
   "Spanish (Español)": "Spāņu (Ispanija)",
   "Sprouted ragi flour": "Dīguši ragi milti",
   "SQL Tables": "SQL tabulas",
@@ -1317,6 +1344,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Soļi (viena katrā rindā)",
   "Stock Status": "Krājumu statuss",
   "Store credit": "Veikala kredīts",
+  Storefront: "Veikala mājas lapa",
+  "Storefront bot": "Veikala mājaslapas robots",
   "Storefront switches": "Veikala slēdži",
   "Storefront switches unavailable": "Veikala slēdži nav pieejami",
   "Strong border": "Stingra apmale",
@@ -1352,9 +1381,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Reklāmkarogs augšpusē",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Reklāmkarogs, kategorijas rinda, produktu rinda un SEO lauki tiek saglabāti kopā. Sadaļu izvēles rūtiņas, secība un pielāgotās sadaļas kopijas tiek saglabātas atsevišķi, tiklīdz tās tiek mainītas.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Tērzēšanas logrīks, ko klienti un apmeklētāji redz veikala fasādē.",
   "The classic credential pair, including the password-reset flow.":
     "Klasiskais akreditācijas datu pāris, tostarp paroles atiestatīšanas plūsma.",
   "the farm owner": "saimniecības īpašnieks",
+  "The floating Help Assistant staff see on every admin page.":
+    "Peldošais palīdzības palīga personāls ir redzams katrā administratora lapā.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     "Galvenes un kājenes saišu etiķetes ir norādītas katrā valodā katrā valodā (6 min, tulkošana 8). Lokalizācija, kas atstāta tukša, veikala vitrīnā tiek atgriezta angļu valodā. Šī ir tā pati vadīkla, ar kuru tiek labota galvene ar nosaukumu “Veikals”/“Sezona” angļu valodā, kamēr visapkārt ir mainīta valoda — šīs iezīmes nāk no šejienes, nevis no iepriekš sniegtajiem lapas satura tulkojumiem.",
   "The homepage has no sections": "Sākumlapā nav sadaļu.",
@@ -1383,6 +1416,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Šīs krāsas attiecas arī uz lapām, kas atrodas zem",
   "These roles define the permission sets available when inviting or editing users.":
     "šīs lomas ir pieejamas rediģēšanas vai definēšanas atļaujas. lietotāji.",
+  "Thinking…": "Domā...",
   "This application is": "Šī lietojumprogramma ir",
   "This order is in a final state.": "Šis pasūtījums ir galīgajā stāvoklī.",
   "This page contains sensitive application diagnostics.":
@@ -1506,6 +1540,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Kāpēc ir nepieciešamas izmaiņas vai kāpēc tas tika noraidīts?",
   "Why is stock changing?": "Kāpēc krājumi mainās?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Vārdus robots sakrīt ar jautājumu, lai noteiktu, vai šis ieraksts ir atbilstošs.",
   "Working...": "Strādā...",
   "World languages": "Pasaules valodas",
   "Write a message…": "Rakstīt ziņojumu...",

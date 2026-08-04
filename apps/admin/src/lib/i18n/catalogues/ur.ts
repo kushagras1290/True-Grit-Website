@@ -79,12 +79,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "زمرہ شامل کریں",
   "Add code": "کوڈ شامل کریں",
   "Add country": "ملک شامل کریں",
+  "Add entry": "داخلہ شامل کریں",
   "Add farm owner": "کھیتی کا مالک شامل کریں",
   "Add ingredient": "اجزاء شامل کریں",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "منیج سے بنڈل بنانے کے بعد آئٹمز (کون سی مختلف حالتیں، ہر ایک میں سے کتنی) شامل کریں۔",
+  "Add knowledge entry": "علمی اندراج شامل کریں",
   "Add one above to get started.": "شروع کرنے کے لیے اوپر ایک شامل کریں۔",
   "Add one below to get started.": "شروع کرنے کے لیے نیچے ایک شامل کریں۔",
+  "Add one so the bot has something to reference for this scope.":
+    "ایک شامل کریں تاکہ بوٹ کے پاس اس دائرہ کار کا حوالہ دینے کے لیے کچھ ہو۔",
   "Add page": "صفحہ شامل کریں",
   "Add participants": "شرکاء کو شامل کریں",
   "Add role": "کردار شامل کریں",
@@ -102,9 +106,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "تلاش کو ایڈجسٹ کریں۔ %",
   "Adjustment %": "ایڈجسٹمنٹ %",
   "Adjustments restricted": "ایڈجسٹمنٹ پر پابندی ہے",
+  Admin: "ایڈمن",
   "Admin API is unavailable": "Admin API دستیاب نہیں ہے",
   "Admin Logs": "ایڈمن لاگز",
   "Admin navigation": "ایڈمن نیویگیشن",
+  "Admin panel bot": "ایڈمن پینل بوٹ",
   Afrikaans: "افریقی",
   "After refunds, all farms": "ریفنڈز کے بعد، تمام فارمز",
   Albanian: "البانی",
@@ -164,6 +170,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "آرمینیائی",
   "Article not found": "آرٹیکل نہیں ملا",
   "Asha Rao": "آشا راؤ",
+  "Ask a question…": "سوال پوچھیں…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "ایڈمن پینل میں کچھ کرنے کا طریقہ پوچھیں، یا زیر التواء آرڈرز، کم اسٹاک آئٹمز، یا آرڈر کی حیثیت کے بارے میں پوچھیں۔",
   "Assamese (অসমীয়া)": "آسامی (অসমীয়া)",
   "Assigned roles": "تفویض کردہ کردار",
   Attribution: "انتساب",
@@ -171,6 +180,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "مصنف",
   "Auto-translate": "خودکار ترجمہ",
   "Auto-translate all": "سب کا خودکار ترجمہ کریں",
+  Availability: "دستیابیت",
   Available: "دستیاب",
   "available · reorder at": "دستیاب · دوبارہ ترتیب دیں",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -214,6 +224,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "باڈی ٹیکسٹ",
   Bosnian: "بوسنیائی",
   Brand: "برانڈ",
+  "Built-in": "بلٹ ان",
   "Bulgarian (Български)": "بلغاریائی (Български)",
   Bundle: "بنڈل",
   "bundle price · items priced at": "بنڈل کی قیمت · اشیاء کی قیمت",
@@ -266,6 +277,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "کلیئرنگ...",
   "Click link": "لنک پر کلک کریں",
   Close: "بند کریں",
+  "Close help assistant": "مدد اسسٹنٹ کو بند کریں",
   "Close navigation": "نیویگیشن بند کریں",
   "CMS pages": "CMS صفحات",
   "CMS pages & SEO": "CMS صفحات اور SEO",
@@ -298,6 +310,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Facebook کے ساتھ جاری رکھیں",
   "Control what each role can view, create, edit, publish or manage.":
     "کنٹرول کریں کہ ہر کردار کیا دیکھ سکتا ہے، کیا بنا سکتا ہے، ترمیم کر سکتا ہے، شائع کر سکتا ہے یا نظم کر سکتا ہے۔",
+  "Control whether each bot is available, and edit what it knows.":
+    "کنٹرول کریں کہ آیا ہر بوٹ دستیاب ہے، اور جو کچھ جانتا ہے اس میں ترمیم کریں۔",
   Cook: "کک",
   "Cook minutes": "کک منٹ",
   "Copy inside dark bands.": "ڈارک بینڈز کے اندر کاپی کریں۔",
@@ -365,9 +379,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "حذف کریں",
   "Delete (spam)": "حذف کریں (سپیم)",
   "Delete category": "زمرہ حذف کریں",
+  "Delete entry": "داخلہ حذف کریں",
   "Delete farm": "فارم حذف کریں",
   "Delete image": "تصویر حذف کریں",
   "Delete inventory row": "انوینٹری کی قطار کو حذف کریں",
+  "Delete knowledge entry?": "علمی اندراج کو حذف کریں؟",
   "Delete permanently": "مستقل طور پر حذف کریں",
   "Delete product": "پروڈکٹ کو حذف کریں",
   "Delete role": "رول کو حذف کریں",
@@ -419,7 +435,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS صفحہ میٹا ڈیٹا، انڈیکسنگ اور خام صفحہ بلاکس میں ترمیم کریں۔ ہوم پیج کا ریکارڈ یہاں بھی درج ہے، لیکن ہوم پیج کی ترتیبات اسے تبدیل کرنے کا زیادہ محفوظ طریقہ ہے — یہ ایڈیٹر خام JSON لیتا ہے۔",
   "Edit content": "مواد میں ترمیم کریں",
+  "Edit entry": "انٹری میں ترمیم کریں",
   "Edit farm": "فارم میں ترمیم کریں",
+  "Edit knowledge entry": "علمی اندراج میں ترمیم کریں",
   "Edit media": "میڈیا میں ترمیم کریں",
   "Edit review": "جائزہ میں ترمیم کریں",
   "Edit role": "رول میں ترمیم کریں",
@@ -535,6 +553,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "ہیڈنگز اور کاپی۔",
   Headline: "ہیڈ لائن",
   "Hebrew (עברית)": "عبرانی (عبرانی)",
+  "Help assistant": "مدد اسسٹنٹ",
+  "Help Assistant": "مدد اسسٹنٹ",
   "Hero description": "ہیرو کی تفصیل",
   "Hero eyebrow": "ہیرو ابرو",
   "Hero image alt text": "ہیرو امیج Alt text",
@@ -606,6 +626,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "قزاخ",
   "Keep artwork clean": "آرٹ ورک کو صاف رکھیں",
   "Keep typing to search…": "تلاش کرنے کے لیے ٹائپ کرتے رہیں…",
+  Keywords: "کلیدی الفاظ",
   Khmer: "خمیر",
   Kinyarwanda: "کنیاروانڈا",
   "Konkani (कोंकणी)": "کونکنی (कोंकणी)",
@@ -800,6 +821,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "کوئی انڈیکس نہیں ہے",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "ابھی تک کوئی آئٹم نہیں — نیچے کم از کم ایک شامل کریں۔ چیک آؤٹ صرف اس بنڈل کی رعایت کو لاگو کرتا ہے جب ٹوکری میں یہاں ہر آئٹم، کم از کم ان مقداروں میں ہو۔",
+  "No knowledge entries": "کوئی علمی اندراج نہیں",
   "No line items recorded.": "کوئی لائن آئٹم ریکارڈ نہیں کیا گیا ہے۔",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "اب لاگ ان کو تبدیل نہیں کیا جائے گا — لہذا جو پاس ورڈ آپ نے یہاں سیٹ کیا ہے وہ واقعی پرانے کو بدل دیتا ہے۔",
@@ -882,6 +904,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "صرف مالک ہی کردار کے دائرہ کار کا نظم کر سکتا ہے۔",
   "Only the owner can review payments and refunds.":
     "صرف مالک ہی ادائیگیوں اور ریفنڈز کا جائزہ لے سکتا ہے۔",
+  "Open help assistant": "ہیلپ اسسٹنٹ کھولیں",
   "Open navigation": "اوپن نیویگیشن",
   Optional: "اختیاری",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1203,6 +1226,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "منتخب قطاروں کو محفوظ اسٹاک پر صاف کردیا جائے گا، ریزرویشنز، نقل و حرکت کی تاریخ اور آڈٹ لاگز کو محفوظ رکھتے ہوئے اسٹاک صفر دستیاب ہوگا۔",
   "Selected users will be removed from the users list and signed out.":
     "منتخب صارفین کو صارفین کی فہرست سے ہٹا دیا جائے گا اور سائن آؤٹ کر دیا جائے گا۔",
+  Send: "بھیجیں",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "اس صارف کو ایک محفوظ پاس ورڈ دوبارہ ترتیب دینے کا لنک بھیجیں۔ وہ ایڈمن ری سیٹ صفحہ سے اپنا نیا پاس ورڈ سیٹ کریں گے۔",
   "Send back to draft": "Send لنک",
@@ -1269,6 +1293,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "خریداری کے وقت کے سنیپ شاٹس — کیٹلاگ کی ترامیم کبھی بھی آرڈر کو دوبارہ نہیں لکھتی ہیں۔",
   "Sold out": "بک گیا",
   Somali: "صومالی",
+  "space separated, e.g. product publish visibility":
+    "جگہ الگ کی گئی، جیسے پروڈکٹ کی اشاعت کی مرئیت",
   "Spanish (Español)": "ہسپانوی (Español)",
   "Sprouted ragi flour": "انکرا ہوا راگی کا آٹا",
   "SQL Tables": "SQL میزیں",
@@ -1281,6 +1307,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "قدم (ہر لائن میں ایک)",
   "Stock Status": "اسٹاک کی حیثیت",
   "Store credit": "اسٹور کریڈٹ",
+  Storefront: "اسٹور فرنٹ",
+  "Storefront bot": "اسٹور فرنٹ بوٹ",
   "Storefront switches": "اسٹور فرنٹ سوئچز",
   "Storefront switches unavailable": "اسٹور فرنٹ سوئچز دستیاب نہیں ہیں",
   "Strong border": "مضبوط بارڈر",
@@ -1317,9 +1345,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "بینر",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "کے اوپری حصے میں بینر، زمرہ کی قطار، مصنوعات کی قطار اور SEO فیلڈز ایک ساتھ محفوظ ہوتے ہیں۔ سیکشن ٹک باکسز، آرڈرنگ اور حسب ضرورت سیکشن کاپی اپنے طور پر محفوظ کریں، جیسا کہ آپ انہیں تبدیل کرتے ہیں۔",
+  "The chat widget customers and visitors see on the storefront.":
+    "چیٹ ویجیٹ صارفین اور زائرین اسٹور فرنٹ پر دیکھتے ہیں۔",
   "The classic credential pair, including the password-reset flow.":
     "کلاسک اسناد کا جوڑا، بشمول پاس ورڈ دوبارہ ترتیب دینے کا بہاؤ۔",
   "the farm owner": "کھیتی کا مالک",
+  "The floating Help Assistant staff see on every admin page.":
+    "فلوٹنگ ہیلپ اسسٹنٹ کا عملہ ہر ایڈمن پیج پر دیکھتا ہے۔",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'ہیڈر اور فوٹر لنک لیبل ہر صفحہ دکھاتا ہے، ترجمہ فی زبان (مائیگریشن 0068)۔ اسٹور فرنٹ پر خالی چھوڑا ہوا مقام انگریزی میں واپس آتا ہے۔ یہ وہی کنٹرول ہے جو انگریزی میں "Shop" / "Seasonal" کو ظاہر کرنے والے ہیڈر کو ٹھیک کرتا ہے جبکہ اس کے آس پاس کی ہر چیز نے زبان کو تبدیل کر دیا ہے — وہ لیبلز یہاں سے آتے ہیں، اوپر صفحے کے مواد کے ترجمے سے نہیں۔',
   "The homepage has no sections": "ہوم پیج کا کوئی سیکشن نہیں ہے",
@@ -1348,6 +1380,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "یہ رنگ نیچے والے صفحات پر بھی لاگو ہوتے ہیں",
   "These roles define the permission sets available when inviting or editing users.":
     "یہ کردار صارفین کو مدعو یا ترمیم کرتے وقت دستیاب اجازت سیٹوں کی وضاحت کرتے ہیں۔",
+  "Thinking…": "سوچنا…",
   "This application is": "یہ ایپلیکیشن",
   "This order is in a final state.": "یہ آرڈر حتمی حالت میں ہے۔",
   "This page contains sensitive application diagnostics.":
@@ -1467,6 +1500,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "تبدیلیاں کیوں درکار ہیں، یا یہ کیوں ضروری تھا؟",
   "Why is stock changing?": "اسٹاک کیوں تبدیل ہو رہا ہے؟",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "یہ فیصلہ کرنے کے لیے بوٹ کے الفاظ کسی سوال کے ساتھ مماثل ہیں۔",
   "Working...": "کام کر رہا ہے...",
   "World languages": "عالمی زبانیں",
   "Write a message…": "ایک پیغام لکھیں…",

@@ -77,12 +77,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "کټګورۍ اضافه کړئ",
   "Add code": "کوډ اضافه کړئ",
   "Add country": "مالک اضافه کړئ",
+  "Add entry": "داخله اضافه کړئ",
   "Add farm owner": "د فارم مالک اضافه کړئ",
   "Add ingredient": "اجزا اضافه کړئ",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "د بنډل له جوړولو وروسته توکي (کوم ډولونه، هر یو څومره) اضافه کړئ، له مدیریت څخه.",
+  "Add knowledge entry": "د پوهې داخلول اضافه کړئ",
   "Add one above to get started.": "د پیل کولو لپاره پورته یو اضافه کړئ.",
   "Add one below to get started.": "د پیل کولو لپاره لاندې یو اضافه کړئ.",
+  "Add one so the bot has something to reference for this scope.":
+    "یو اضافه کړئ نو بوټ د دې ساحې لپاره حواله کولو لپاره یو څه لري.",
   "Add page": "پاڼه اضافه کړئ",
   "Add participants": "ګډون کوونکي شامل کړئ",
   "Add role": "رول اضافه کړئ",
@@ -100,9 +104,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "لټون تنظیم کړئ یا محصول جوړ کړئ.",
   "Adjustment %": "تعدیل٪",
   "Adjustments restricted": "تعدیلات محدود دي",
+  Admin: "اډمین",
   "Admin API is unavailable": "اډمین API شتون نلري",
   "Admin Logs": "اډمین لوګ",
   "Admin navigation": "اډمین نیویګیشن",
+  "Admin panel bot": "اډمین پینل بوټ",
   Afrikaans: "افریقا",
   "After refunds, all farms": "د بیرته ستنیدو وروسته، ټول فارمونه",
   Albanian: "الباني",
@@ -160,11 +166,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "آرشيف شوي توکي به دلته ښکاره شي.",
   Armenian: "ارمني",
   "Article not found": "مضمون ونه موندل شو",
+  "Ask a question…": "یوه پوښتنه وکړئ…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "پوښتنه وکړئ چې څنګه په اډمین پینل کې یو څه ترسره کړئ، یا د پاتې سپارښتنو، ټیټ سټاک توکو، یا د امر د وضعیت په اړه پوښتنه وکړئ.",
   "Assamese (অসমীয়া)": "آسامی (অসমিয়া)",
   "Assigned roles": "سپارل شوي رولونه",
   Attribution: "انتساب",
   "Audit Log": "د پلټنې لاګ",
   Author: "لیکوال",
+  Availability: "موجودیت",
   Available: "د موجود",
   "available · reorder at": "د",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -209,6 +219,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "د بدن متن",
   Bosnian: "بوسني",
   Brand: "برانډ",
+  "Built-in": "جوړ شوی",
   "Bulgarian (Български)": "بلغاریايي (Български)",
   Bundle: "بنډل",
   "bundle price · items priced at": "د بنډل نرخ · د توکو قیمت په",
@@ -259,6 +270,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "پاک کول...",
   "Click link": "لنک کلیک کړئ",
   Close: "بند",
+  "Close help assistant": "د مرستې مرستندویه بندول",
   "Close navigation": "تقسیم نیویګیشن",
   "CMS pages": "CMS مخونه",
   "CMS pages & SEO": "CMS پاڼې او SEO",
@@ -291,6 +303,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Facebook ته دوام ورکړئ",
   "Control what each role can view, create, edit, publish or manage.":
     "کنټرول کړئ چې هر رول څه شی لیدلی شي، جوړ کړي، ایډیټ کړي، خپروي یا اداره کړي.",
+  "Control whether each bot is available, and edit what it knows.":
+    "کنټرول کړئ چې آیا هر بوټ شتون لري، او هغه څه سم کړئ چې پوهیږي.",
   Cook: "کوک",
   "Cook minutes": "د پخلي دقیقې",
   "Copy inside dark bands.": "کاپي په تیاره بینډونو کې.",
@@ -359,9 +373,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "ړول",
   "Delete (spam)": "حذف کړئ (سپیم)",
   "Delete category": "کټګورۍ ړنګ کړئ",
+  "Delete entry": "داخله ړنګ کړئ",
   "Delete farm": 'Form ړنګ کړئ id="t0006">د موجوداتو قطار ړنګ کړئ',
   "Delete image": "عکس ړنګ کړئ",
   "Delete inventory row": "د موجوداتو قطار ړنګ کړئ",
+  "Delete knowledge entry?": "د پوهې داخله ړنګه کړئ؟",
   "Delete permanently": "په دايمي توګه ړنګ کړئ",
   "Delete product": "محصول ړنګ کړئ",
   "Delete role": "رول ړنګ کړئ",
@@ -410,7 +426,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "د CMS پاڼې میټاډاټا، انډیکسینګ او خام پاڼې بلاکونه ایډیټ کړئ. د کور پاڼې ریکارډ دلته هم لیست شوی، مګر د کور پاڼې ترتیبات د دې بدلولو لپاره خوندي لاره ده — دا مدیر خام JSON اخلي.",
   "Edit content": "منځپانګه ایډیټ کړئ",
+  "Edit entry": "داخله ایډیټ کړئ",
   "Edit farm": "Edit Farm",
+  "Edit knowledge entry": "د پوهې داخله ایډیټ کړئ",
   "Edit review": "Edit Review",
   "Edit role": "Edit رول",
   Editing: "0",
@@ -519,6 +537,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "سرلیکونه او کاپي.",
   Headline: "سرلیک",
   "Hebrew (עברית)": "عبرانی (عبرانی)",
+  "Help assistant": "مرستې معاون",
+  "Help Assistant": "مرسته کوونکی",
   "Hero description": "د هیرو توضیحات",
   "Hero eyebrow": "د هیرو ابرو",
   "Hero image alt text": "د هیرو انځور alt متن",
@@ -592,6 +612,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "قزاق",
   "Keep artwork clean": "هنر پاک وساتئ",
   "Keep typing to search…": "د لټون لپاره ټایپ کولو ته دوام ورکړئ…",
+  Keywords: "کلیدي ټکي",
   Khmer: "خمیر",
   Kinyarwanda: "کینیاروندا",
   "Konkani (कोंकणी)": "کونکني (کونکنی)",
@@ -784,6 +805,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "هیڅ شاخص نشته",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "تر اوسه کوم توکي نشته — لږ تر لږه یو لاندې اضافه کړئ. چیک آوټ یوازې د دې بنډل تخفیف پلي کوي کله چې باسکیټ دلته هر توکي ولري، لږترلږه په دې مقدارونو کې.",
+  "No knowledge entries": "هیڅ پوهه داخله نشته",
   "No line items recorded.": "هیڅ لاین توکي ندي ثبت شوي.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "نور د ننوتلو بدلون نه کوي - نو هغه پټنوم چې تاسو یې دلته تنظیم کړئ په حقیقت کې زاړه بدلوي.",
@@ -866,6 +888,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "یوازې مالک کولی شي د رول سکوپونه اداره کړي.",
   "Only the owner can review payments and refunds.":
     "یوازې مالک کولی شي د تادیاتو او بیرته ستنیدو بیاکتنه وکړي.",
+  "Open help assistant": "د مرستې معاون",
   "Open navigation": "پرانستی نیویګیشن",
   Optional: "اختیاري",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1194,6 +1217,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ټاکل شوي قطارونه به خوندي ذخیره ته پاک شي، د ذخیره کولو، د حرکت تاریخ او د پلټنې لاګونو ساتلو په وخت کې به د ذخیره صفر شتون ولري.",
   "Selected users will be removed from the users list and signed out.":
     "ټاکل شوي کارونکي به د کاروونکو له لیست څخه لرې شي او لاسلیک شي.",
+  Send: "لیږل",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "دې کارونکي ته د خوندي پټنوم د بیا تنظیم کولو لینک واستوئ. دوی به خپل نوی پټنوم د اډمین ریسیټ پا pageې څخه تنظیم کړي.",
   "Send back to draft": 'id="t0007">لیږل…',
@@ -1259,6 +1283,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "د پیرودلو په وخت کې عکسونه — د کتلاګ سمونونه هیڅکله امر نه لیکي.",
   "Sold out": "پلورل شوی",
   Somali: "صومالي",
+  "space separated, e.g. product publish visibility":
+    "ځای جلا شوی، د بیلګې په توګه د محصول خپرول لید لید",
   "Spanish (Español)": "هسپانوي (Español)",
   "Sprouted ragi flour": "توکي شوي راګي اوړه",
   "SQL Tables": "SQL جدولونه",
@@ -1307,9 +1333,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "په پورتنۍ برخه کې بینر",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "بینر، د کټګورۍ قطار، د محصول قطار او د SEO ساحې یوځای خوندي کوي. د برخې ټیک بکسونه، ترتیب کول او د ګمرک برخې کاپي پخپله خوندي کوي، لکه څنګه چې تاسو یې بدل کړئ.",
+  "The chat widget customers and visitors see on the storefront.":
+    "د چیټ ویجټ پیرودونکي او لیدونکي په پلورنځي کې ګوري.",
   "The classic credential pair, including the password-reset flow.":
     "د کلاسیک اعتبار جوړه، په شمول د پټنوم-ری سیٹ جریان.",
   "the farm owner": "د فارم مالک",
+  "The floating Help Assistant staff see on every admin page.":
+    "Floating Help Assistent staff to see every admin page.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'د سرلیک او فوټر لینک لیبل هره پاڼه ښکاره کوي، په هره ژبه ژباړل شوي (مهاجرت 0068). یو ځای خالي پاتې شوی د پلورنځي په مخ کې بیرته انګلیسي ته راځي. دا هماغه کنټرول دی چې یو سرلیک حل کوي چې په انګلیسي کې "دوکان" / "موسمی" ښیې پداسې حال کې چې شاوخوا هرڅه یې ژبه بدله کړې - هغه لیبلونه له دې ځایه راځي، نه د پورتنۍ پاڼې منځپانګې ژباړې څخه.',
   "The homepage has no sections": "کورپاڼه هیڅ برخه نلري",
@@ -1338,6 +1368,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "دا رنګونه لاندې مخونو کې هم پلي کیږي",
   "These roles define the permission sets available when inviting or editing users.":
     "دا رولونه د اجازې سیټونه تعریفوي کله چې کاروونکو ته بلنه ورکول یا ترمیم کول شتون لري.",
+  "Thinking…": "فکر کول…",
   "This application is": "دا غوښتنلیک دی",
   "This order is in a final state.": "دا حکم په وروستي حالت کې دی.",
   "This page contains sensitive application diagnostics.": "دا پاڼه د غوښتنلیک حساسیتونه لري.",
@@ -1456,6 +1487,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "ولې بدلونونو ته اړتیا ده، یا دا ولې اړینه وه؟",
   "Why is stock changing?": "ولې سټاک بدلیږي؟",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "د بوټو کلمې د یوې پوښتنې سره سمون خوري ترڅو پریکړه وکړي چې دا داخله اړونده ده.",
   "Working...": "کار کوي...",
   "World languages": "نړۍ ژبې",
   "Write a message…": "یو پیغام ولیکئ…",

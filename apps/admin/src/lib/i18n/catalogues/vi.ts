@@ -78,12 +78,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Thêm danh mục",
   "Add code": "Thêm mã",
   "Add country": "Thêm quốc gia",
+  "Add entry": "Thêm mục",
   "Add farm owner": "Thêm chủ trang trại",
   "Add ingredient": "Thêm thành phần",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Thêm các mục (biến thể nào, số lượng mỗi loại) sau khi tạo gói, từ Quản lý.",
+  "Add knowledge entry": "Thêm mục kiến thức",
   "Add one above to get started.": "Thêm một trang ở trên để bắt đầu.",
   "Add one below to get started.": "Thêm một trang bên dưới để bắt đầu.",
+  "Add one so the bot has something to reference for this scope.":
+    "Thêm một mục để bot có nội dung tham khảo cho phạm vi này.",
   "Add page": "Thêm trang",
   "Add participants": "Thêm người tham gia",
   "Add role": "Thêm vai trò",
@@ -101,9 +105,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Điều chỉnh tìm kiếm hoặc tạo sản phẩm.",
   "Adjustment %": "Điều chỉnh %",
   "Adjustments restricted": "Điều chỉnh bị hạn chế",
+  Admin: "Quản trị viên",
   "Admin API is unavailable": "API quản trị không khả dụng",
   "Admin Logs": "Nhật ký quản trị",
   "Admin navigation": "Điều hướng quản trị",
+  "Admin panel bot": "Bot bảng quản trị",
   Afrikaans: "Tiếng Nam Phi",
   "After refunds, all farms": "Sau hoàn lại tiền, tất cả trang trại",
   All: "Tất cả",
@@ -161,6 +167,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Các mục đã lưu trữ sẽ xuất hiện ở đây.",
   Armenian: "Tiếng Armenia",
   "Article not found": "Không tìm thấy bài viết",
+  "Ask a question…": "Đặt câu hỏi…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Hỏi cách thực hiện điều gì đó trong bảng quản trị hoặc hỏi về các đơn đặt hàng đang chờ xử lý, mặt hàng sắp hết hàng hoặc trạng thái của đơn đặt hàng.",
   "Assamese (অসমীয়া)": "Tiếng Assamese (অসমীয়া)",
   "Assigned roles": "Các vai trò được chỉ định",
   Attribution: "Ghi công",
@@ -168,6 +177,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Tác giả",
   "Auto-translate": "Tự động dịch",
   "Auto-translate all": "Tự động dịch tất cả",
+  Availability: "Tính sẵn có",
   Available: "Có sẵn",
   "available · reorder at": "có sẵn · sắp xếp lại tại",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -210,6 +220,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Nội dung",
   Bosnian: "Tiếng Bosnia",
   Brand: "Thương hiệu",
+  "Built-in": "Tích hợp sẵn",
   "Bulgarian (Български)": "Tiếng Bungari (Български)",
   Bundle: "Gói",
   "bundle price · items priced at": "giá gói · các mặt hàng có giá",
@@ -261,6 +272,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Đang xóa...",
   "Click link": "Nhấp vào liên kết",
   Close: "Đóng",
+  "Close help assistant": "Đóng trợ lý trợ giúp",
   "Close navigation": "Đóng điều hướng",
   "CMS pages": "Các trang CMS",
   "CMS pages & SEO": "Các trang CMS và SEO",
@@ -294,6 +306,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Tiếp tục với Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Kiểm soát nội dung mà mỗi vai trò có thể xem, tạo, chỉnh sửa, xuất bản hoặc quản lý.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Kiểm soát xem mỗi bot có sẵn hay không và chỉnh sửa những gì nó biết.",
   Cook: "Nấu ăn",
   "Cook minutes": "Nấu ăn phút",
   "Copy inside dark bands.": "Sao chép bên trong các dải tối.",
@@ -363,9 +377,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Xóa",
   "Delete (spam)": "Xóa (spam)",
   "Delete category": "Xóa danh mục",
+  "Delete entry": "Xóa mục nhập",
   "Delete farm": "Xóa trang trại",
   "Delete image": "Xóa hình ảnh",
   "Delete inventory row": "Xóa hàng tồn kho",
+  "Delete knowledge entry?": "Xóa mục kiến thức?",
   "Delete permanently": "Xóa vĩnh viễn",
   "Delete product": "Xóa sản phẩm",
   "Delete role": "Xóa vai trò",
@@ -415,7 +431,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Chỉnh sửa siêu dữ liệu, lập chỉ mục và khối trang thô của trang CMS. Bản ghi trang chủ cũng được liệt kê ở đây, nhưng Cài đặt trang chủ là cách an toàn hơn để thay đổi nó — trình chỉnh sửa này sử dụng JSON thô.",
   "Edit content": "Chỉnh sửa nội dung",
+  "Edit entry": "Chỉnh sửa mục nhập",
   "Edit farm": "Chỉnh sửa trang trại",
+  "Edit knowledge entry": "Chỉnh sửa mục kiến thức",
   "Edit media": "Chỉnh sửa phương tiện",
   "Edit review": "Chỉnh sửa bài đánh giá",
   "Edit role": "Chỉnh sửa vai trò",
@@ -528,6 +546,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Tiêu đề và bản sao.",
   Headline: "Tiêu đề",
   "Hebrew (עברית)": "Tiếng Do Thái (עברית)",
+  "Help assistant": "Trợ lý trợ giúp",
+  "Help Assistant": "Trợ lý trợ giúp",
   "Hero description": "Mô tả anh hùng",
   "Hero eyebrow": "Lông mày anh hùng",
   "Hero image alt text": "Hình ảnh anh hùng alt text",
@@ -600,6 +620,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Javanese: "Tiếng Java",
   "Keep artwork clean": "Giữ tác phẩm nghệ thuật sạch sẽ",
   "Keep typing to search…": "Tiếp tục nhập để tìm kiếm…",
+  Keywords: "Từ khóa",
   "Korean (한국어)": "Tiếng Hàn (한국어)",
   Label: "Nhãn",
   "Land under cultivation": "Đất đai đang trồng trọt",
@@ -787,6 +808,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Chưa có chỉ mục",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Chưa có mục nào — thêm ít nhất một mục bên dưới. Thanh toán chỉ áp dụng giảm giá cho gói này khi giỏ có mọi mặt hàng ở đây, với số lượng ít nhất như sau.",
+  "No knowledge entries": "Không có mục nhập kiến thức",
   "No line items recorded.": "Không có chi tiết đơn hàng nào được ghi lại.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "không còn thay đổi thông tin đăng nhập nữa — vì vậy mật khẩu bạn đặt ở đây thực sự thay thế mật khẩu cũ.",
@@ -871,6 +893,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Chỉ chủ sở hữu mới có thể quản lý phạm vi vai trò.",
   "Only the owner can review payments and refunds.":
     "Chỉ chủ sở hữu mới có thể xem xét các khoản thanh toán và tiền hoàn lại.",
+  "Open help assistant": "Mở trợ giúp trợ lý",
   "Open navigation": "Điều hướng mở",
   Optional: "Tùy chọn",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1150,6 +1173,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Tiết kiệm…",
   "Say how often you will write and that unsubscribing is easy.":
     "Cho biết tần suất bạn sẽ viết và việc hủy đăng ký thật dễ dàng.",
+  Scope: "Phạm vi",
   "Scope Management": "Quản lý phạm vi",
   "Scopes unavailable": "Phạm vi không có sẵn",
   "Search archive": "Tìm kiếm kho lưu trữ",
@@ -1217,6 +1241,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Các hàng đã chọn sẽ được chuyển sang kho dự trữ, khiến lượng hàng còn lại bằng 0 trong khi vẫn lưu giữ các đặt chỗ, lịch sử di chuyển và nhật ký kiểm tra.",
   "Selected users will be removed from the users list and signed out.":
     "Những người dùng đã chọn sẽ bị xóa khỏi danh sách người dùng và đăng xuất.",
+  Send: "Gửi",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Gửi liên kết đặt lại mật khẩu an toàn cho người dùng này. Họ sẽ đặt mật khẩu mới từ trang đặt lại quản trị viên.",
   "Send back to draft": "Gửi lại bản nháp",
@@ -1285,6 +1310,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ảnh chụp nhanh tại thời điểm mua hàng — chỉnh sửa danh mục không bao giờ viết lại đơn đặt hàng.",
   Snippet: "Đoạn trích",
   "Sold out": "Đã bán hết",
+  "space separated, e.g. product publish visibility":
+    "cách nhau bằng dấu cách, ví dụ: khả năng hiển thị khi xuất bản sản phẩm",
   "Spanish (Español)": "Tiếng Tây Ban Nha (Español)",
   "Sprouted ragi flour": "Ragi mọc mầm bột",
   "SQL Tables": "Bảng SQL",
@@ -1297,6 +1324,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Các bước (mỗi bước một dòng)",
   "Stock Status": "Trạng thái tồn kho",
   "Store credit": "Tín dụng cửa hàng",
+  Storefront: "Mặt tiền cửa hàng",
+  "Storefront bot": "Bot mặt tiền cửa hàng",
   "Storefront switches": "Bộ chuyển đổi mặt tiền cửa hàng",
   "Storefront switches unavailable": "Không có bộ chuyển đổi mặt tiền cửa hàng",
   "Strong border": "Đường viền mạnh",
@@ -1331,9 +1360,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Biểu ngữ ở đầu",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Biểu ngữ, hàng danh mục, hàng sản phẩm và các trường SEO được lưu cùng nhau. Các hộp kiểm mục, thứ tự và bản sao phần tùy chỉnh sẽ tự lưu khi bạn thay đổi chúng.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Tiện ích trò chuyện mà khách hàng và khách truy cập nhìn thấy trên mặt tiền cửa hàng.",
   "The classic credential pair, including the password-reset flow.":
     "Cặp thông tin xác thực cổ điển, bao gồm cả quy trình đặt lại mật khẩu.",
   "the farm owner": "chủ trang trại",
+  "The floating Help Assistant staff see on every admin page.":
+    "Nhân viên Trợ lý trợ giúp nổi nhìn thấy trên mọi trang quản trị.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Nhãn liên kết đầu trang và chân trang trên mỗi trang đều hiển thị, được dịch theo ngôn ngữ (di chuyển 0068). Ngôn ngữ được để trống sẽ chuyển sang tiếng Anh trên mặt tiền cửa hàng. Đây là công cụ kiểm soát tương tự giúp sửa tiêu đề hiển thị "Mua sắm" / "Theo mùa" bằng tiếng Anh trong khi mọi thứ xung quanh nó đã chuyển ngôn ngữ — những nhãn đó đến từ đây chứ không phải từ bản dịch nội dung trang ở trên.',
   "The homepage has no sections": "Trang chủ không có phần nào",
@@ -1362,6 +1395,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Những màu này cũng áp dụng cho các trang bên dưới",
   "These roles define the permission sets available when inviting or editing users.":
     "Các vai trò này xác định các bộ quyền có sẵn khi mời hoặc chỉnh sửa người dùng.",
+  "Thinking…": "Suy nghĩ…",
   "This application is": "Ứng dụng này là",
   "This order is in a final state.": "Đơn đặt hàng này đang ở trạng thái cuối cùng.",
   "This page contains sensitive application diagnostics.":
@@ -1480,6 +1514,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Tại sao có những thay đổi cần thiết hoặc tại sao điều này lại bị từ chối?",
   "Why is stock changing?": "Tại sao cổ phiếu lại thay đổi?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Các từ mà bot đối sánh với một câu hỏi để quyết định mục này có liên quan.",
   "Working...": "Đang hoạt động...",
   "World languages": "Ngôn ngữ trên thế giới",
   "Write a message…": "Viết tin nhắn…",

@@ -88,12 +88,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Ongeraho icyiciro",
   "Add code": "Ongeraho kode",
   "Add country": "Ongeraho igihugu",
+  "Add entry": "Ongeraho ibyinjira",
   "Add farm owner": "Ongeraho nyir'umurima",
   "Add ingredient": "Ongeramo ibirungo",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Ongeramo ibintu (bihinduka, bangahe muri buri) nyuma yo gukora bundle, uhereye kubuyobozi.",
+  "Add knowledge entry": "Ongeraho ubumenyi",
   "Add one above to get started.": "Ongeraho imwe hejuru kugirango utangire.",
   "Add one below to get started.": "Ongeraho imwe hepfo kugirango utangire.",
+  "Add one so the bot has something to reference for this scope.":
+    "Ongeraho imwe kugirango bot igire icyo yerekeza kuriyi ntera.",
   "Add page": "Ongeraho urupapuro",
   "Add participants": "Ongeramo abitabiriye amahugurwa",
   "Add role": "Ongeraho uruhare",
@@ -111,9 +115,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Hindura gushakisha cyangwa gukora ibicuruzwa.",
   "Adjustment %": "Guhindura%",
   "Adjustments restricted": "Guhindura birabujijwe",
+  Admin: "Umuyobozi",
   "Admin API is unavailable": "Admin API ntishobora kuboneka",
   "Admin Logs": "Ibirango bya Admin",
   "Admin navigation": "Kugenda kwa Admin",
+  "Admin panel bot": "Umuyobozi wa bot",
   Afrikaans: "Abanyafurika",
   "After refunds, all farms": "Nyuma yo gusubizwa, imirima yose",
   Albanian: "Ikinyalubaniya",
@@ -174,12 +180,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Ibikoresho byabitswe bizagaragara hano.",
   Armenian: "Ikinyarumeniya",
   "Article not found": "Ingingo ntiyabonetse",
+  "Ask a question…": "Baza ikibazo…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Baza uburyo bwo gukora ikintu mumwanya wa admin, cyangwa ubaze ibyateganijwe, ibicuruzwa bito, cyangwa imiterere yumuteguro.",
   "Assigned roles": "Inshingano zahawe",
   Attribution: "Inshingano",
   "Audit Log": "Igenzura",
   Author: "Umwanditsi",
   "Auto-translate": "Bikora",
   "Auto-translate all": "Hindura-byose",
+  Availability: "Kuboneka",
   Available: "Birashoboka",
   "available · reorder at": "kuboneka · reorder kuri",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -222,6 +232,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Inyandiko yumubiri",
   Bosnian: "Bosiniya",
   Brand: "Ikirango",
+  "Built-in": "Yubatswe",
   "Bulgarian (Български)": "Buligariya (Български)",
   "bundle price · items priced at": "bundle igiciro · ibintu bigiciro kuri",
   "Bundle price, ₹": "Igiciro cya bundle, ₹",
@@ -272,6 +283,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Gukuraho ...",
   "Click link": "Kanda ihuza",
   Close: "Funga",
+  "Close help assistant": "Gufasha umufasha",
   "Close navigation": "Funga inzira",
   "CMS pages": "Impapuro za CMS",
   "CMS pages & SEO": "Urupapuro rwa CMS & SEO",
@@ -305,6 +317,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Komeza na Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Igenzura icyo buri ruhare rushobora kureba, kurema, guhindura, gutangaza cyangwa gucunga.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Igenzura niba buri bot ihari, kandi uhindure ibyo izi.",
   Cook: "Teka",
   "Cook minutes": "Teka iminota",
   "Copy inside dark bands.": "Wandukure imbere yijimye.",
@@ -374,9 +388,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Siba",
   "Delete (spam)": "Gusiba (spam)",
   "Delete category": "Siba icyiciro",
+  "Delete entry": "Siba ibyinjira",
   "Delete farm": "Siba umurima",
   "Delete image": "Siba ishusho",
   "Delete inventory row": "Siba umurongo wabaruwe",
+  "Delete knowledge entry?": "Gusiba ibyinjira?",
   "Delete permanently": "Siba burundu",
   "Delete product": "Siba ibicuruzwa",
   "Delete role": "Siba uruhare",
@@ -427,7 +443,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Hindura urupapuro rwa CMS metadata, urutonde hamwe nurupapuro rwibanze. Urupapuro rwibanze rwanditswe hano, ariko Igenamiterere ryurugo nuburyo bwizewe bwo kubihindura - uyu mwanditsi afata JSON mbisi.",
   "Edit content": "Hindura ibirimo",
+  "Edit entry": "Hindura ibyinjira",
   "Edit farm": "Hindura umurima",
+  "Edit knowledge entry": "Hindura ibyinjira mubumenyi",
   "Edit media": "Hindura itangazamakuru",
   "Edit review": "Hindura isubiramo",
   "Edit role": "Hindura uruhare",
@@ -541,6 +559,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Imitwe na kopi.",
   Headline: "Umutwe",
   "Hebrew (עברית)": "Igiheburayo (עברית)",
+  "Help assistant": "Umufasha",
+  "Help Assistant": "Umufasha",
   "Hero description": "Ibisobanuro byintwari",
   "Hero eyebrow": "Intwari ijisho",
   "Hero image alt text": "Intwari ishusho alt inyandiko",
@@ -612,6 +632,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "Kazak",
   "Keep artwork clean": "Komeza ibihangano",
   "Keep typing to search…": "Komeza wandike gushakisha…",
+  Keywords: "Ijambo ryibanze",
   "Korean (한국어)": "Igikoreya (한국어)",
   Kyrgyz: "Kirigizisitani",
   Label: "Ikirango",
@@ -794,6 +815,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Nta rutonde",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Nta kintu na kimwe - ongera byibuze kimwe hepfo. Igenzura rikoresha gusa kugabanywa kwa bundle mugihe igitebo gifite buri kintu hano, byibuze ingano.",
+  "No knowledge entries": "Nta bumenyi bwanditse",
   "No line items recorded.": "Nta murongo wumurongo wanditse.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ntagihindura kwinjira - ijambo ryibanga washyizeho hano rwose risimbuza irishaje.",
@@ -878,6 +900,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Nyirubwite wenyine niwe ushobora gucunga inshingano.",
   "Only the owner can review payments and refunds.":
     "Gusa nyirubwite ashobora gusuzuma ubwishyu no gusubizwa.",
+  "Open help assistant": "Fungura umufasha",
   "Open navigation": "Fungura inzira",
   Optional: "Bihitamo",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1152,6 +1175,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Kuzigama…",
   "Say how often you will write and that unsubscribing is easy.":
     "Vuga inshuro uzandika kandi ko kutiyandikisha byoroshye.",
+  Scope: "Umwanya",
   "Scope Management": "Gucunga imipaka",
   "Scopes unavailable": "Ibibanza ntibishoboka",
   "Search archive": "Shakisha ububiko",
@@ -1219,6 +1243,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Imirongo yatoranijwe izahanagurwa kububiko bwabitswe, itange ububiko bwa zeru mugihe uzigama kubika, amateka yimodoka hamwe nigitabo cyo kugenzura.",
   "Selected users will be removed from the users list and signed out.":
     "Abakoresha batoranijwe bazavanwa kurutonde rwabakoresha hanyuma basohoke.",
+  Send: "Ohereza",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Ohereza ijambo ryibanga ryizewe gusubiramo uyumukoresha. Bazashyiraho ijambo ryibanga rishya kuva kurupapuro rwa admin.",
   "Send back to draft": "Ohereza inyuma kumushinga",
@@ -1287,6 +1312,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Igice",
   "Sold out": "Igurishwa",
   Somali: "Somaliya",
+  "space separated, e.g. product publish visibility":
+    "umwanya watandukanijwe, ibicuruzwa bitangaza kugaragara",
   "Spanish (Español)": "Icyesipanyoli (Español)",
   "Sprouted ragi flour": "Ifu ya ragi",
   "SQL Tables": "Imbonerahamwe ya SQL",
@@ -1299,6 +1326,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Intambwe (imwe kumurongo)",
   "Stock Status": "Imiterere yimigabane",
   "Store credit": "Bika inguzanyo",
+  Storefront: "Ububiko",
+  "Storefront bot": "Ububiko bwa bot",
   "Storefront switches": "Guhindura ububiko",
   "Storefront switches unavailable": "Guhindura ububiko ntibishobora kuboneka",
   "Strong border": "Umupaka ukomeye",
@@ -1332,9 +1361,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Ibendera hejuru ya",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Ibendera, umurongo wumurongo, umurongo wibicuruzwa hamwe na SEO imirima ibike hamwe. Igice cyamatiku, gutumiza hamwe nigice cyigice kopi ubike wenyine, nkuko ubihindura.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Abakiriya ba widget baganira nabashyitsi bareba kububiko.",
   "The classic credential pair, including the password-reset flow.":
     "Ibyangombwa byemewe byombi, harimo ijambo ryibanga-gusubiramo.",
   "the farm owner": "nyir'umurima",
+  "The floating Help Assistant staff see on every admin page.":
+    "Abakozi bafasha ubufasha bareremba reba kuri page yose ya admin.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Umutwe na footer ihuza ibirango buri page yerekana, byahinduwe mururimi (kwimuka 0068). Ahantu hasigaye ubusa hagaruka mucyongereza kububiko. Ubu ni bwo bugenzuzi bukosora umutwe werekana "Guhaha" / "Igihe" mucyongereza mugihe ibintu byose bizengurutse byahinduye imvugo - ibyo birango biva hano, ntabwo biva mubisobanuro byurupapuro rwahinduwe hejuru.',
   "The homepage has no sections": "Urupapuro rwibanze ntirufite ibice",
@@ -1365,6 +1398,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Aya mabara nayo akoreshwa kurupapuro munsi",
   "These roles define the permission sets available when inviting or editing users.":
     "Inshingano zisobanura uruhushya ruboneka mugihe utumira cyangwa uhindura abakoresha.",
+  "Thinking…": "Gutekereza…",
   "This application is": "Porogaramu ni",
   "This order is in a final state.": "Iri teka riri mubihe byanyuma.",
   "This page contains sensitive application diagnostics.":
@@ -1483,6 +1517,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Kuki impinduka zikenewe, cyangwa kuki ibi byanze?",
   "Why is stock changing?": "Kuki imigabane ihinduka?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Amagambo bot ahuye nikibazo cyo guhitamo ibyinjira ni ngombwa.",
   "Working...": "Gukora ...",
   "World languages": "Indimi z'isi",
   "Write a message…": "Andika ubutumwa…",

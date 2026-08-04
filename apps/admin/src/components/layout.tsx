@@ -8,6 +8,7 @@ import {
   BarChart3,
   Bell,
   BookOpen,
+  Bot,
   Boxes,
   ClipboardList,
   Database,
@@ -55,6 +56,7 @@ import { api, demoMode, type AdminNotification } from "../lib/api";
 import { useMe, usePermissions } from "../lib/permissions";
 import { T } from "../lib/i18n";
 import { LanguageSwitcher } from "./language-switcher";
+import { SupportBotWidget } from "./support-bot-widget";
 
 const SIDEBAR_COLLAPSED_KEY = "truegrit.admin.sidebar-collapsed";
 
@@ -283,6 +285,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         label: "Owner Reports",
         icon: <BarChart3 size={16} />,
         permission: "reports.query",
+      },
+      {
+        to: "/help-assistant",
+        label: "Help Assistant",
+        icon: <Bot size={16} />,
+        permission: "support_bot.manage",
       },
       {
         to: "/admin-logs",
@@ -673,6 +681,7 @@ export function Shell() {
           <Outlet />
         </main>
       </div>
+      <SupportBotWidget />
     </div>
   );
 }

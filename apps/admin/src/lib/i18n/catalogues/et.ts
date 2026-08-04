@@ -82,12 +82,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Lisa kategooria",
   "Add code": "Lisa kood",
   "Add country": "Lisage riik",
+  "Add entry": "Lisa kirje",
   "Add farm owner": "Reklaami talu omanik",
   "Add ingredient": "Lisage koostisosa",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Lisage üksusi (millised variandid, mitu neist) pärast komplekti loomist jaotisest Halda.",
+  "Add knowledge entry": "Lisage teadmiste kirje",
   "Add one above to get started.": "Alustamiseks lisage üks ülalpool.",
   "Add one below to get started.": "Alustamiseks lisage üks allpool.",
+  "Add one so the bot has something to reference for this scope.":
+    "Lisage üks, et robotil oleks selle ulatuse jaoks midagi viidata.",
   "Add page": "Lisa leht",
   "Add participants": "Lisa osalejad",
   "Add role": "Lisa roll",
@@ -105,9 +109,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Kohandage otsingut või looge toode.",
   "Adjustment %": "Korrigeerige %",
   "Adjustments restricted": "Kohandused on piiratud",
+  Admin: "Administraator",
   "Admin API is unavailable": "Administraatori API pole saadaval",
   "Admin Logs": "Administraatori logid",
   "Admin navigation": "Administraatori navigeerimine",
+  "Admin panel bot": "Administraatoripaneeli robot",
   Afrikaans: "afrikaani",
   "After refunds, all farms": "Pärast tagasimakseid kõik talud",
   Albanian: "albaania",
@@ -168,6 +174,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Arhiivitud üksused kuvatakse siin.",
   Armenian: "armeenia",
   "Article not found": "Artiklit ei leitud",
+  "Ask a question…": "Esitage küsimus...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Küsige administraatoripaneelil, kuidas midagi teha, või küsige ootel olevate tellimuste, vähese laoseisuga kaupade või tellimuse oleku kohta.",
   "Assamese (অসমীয়া)": "assami (অসমীয়া)",
   "Assigned roles": "Määratud rollid",
   Attribution: "Omistamine",
@@ -175,6 +184,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "Autor",
   "Auto-translate": "Iga muudatus on liikumine.",
   "Auto-translate all": "Kõigi automaatne tõlge",
+  Availability: "Saadaval",
   Available: "Saadaval",
   "available · reorder at": "saadaval · telli ümber aadressil",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -218,6 +228,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Sisutekst",
   Bosnian: "Bosnia",
   Brand: '8Brand</007"> (Български)',
+  "Built-in": "Sisseehitatud",
   "Bulgarian (Български)": "bulgaaria (Български)",
   Bundle: "Komplekti",
   "bundle price · items priced at": "komplekti hind · kaupade hind",
@@ -269,6 +280,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Tühjendamine...",
   "Click link": "Klõpsake lingil",
   Close: "Sule",
+  "Close help assistant": "Sulge abiassistent",
   "Close navigation": "Sule navigeerimine",
   "CMS pages": "CMS-i lehed",
   "CMS pages & SEO": "CMS-lehed ja SEO",
@@ -302,6 +314,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Jätka Facebookiga",
   "Control what each role can view, create, edit, publish or manage.":
     "Juhtige, mida iga roll saab vaadata, luua, redigeerida, avaldada või hallata.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Juhtige, kas iga robot on saadaval, ja muutke seda, mida see teab.",
   Cook: "Toiduvalmistamine",
   "Cook minutes": "Küpsetusminutid",
   "Copy inside dark bands.": "Kopeerige tumedate ribade sees.",
@@ -371,9 +385,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Kustuta",
   "Delete (spam)": "Kustuta (rämpspost)",
   "Delete category": "Kategooria kustutamine",
+  "Delete entry": "Kustuta kirje",
   "Delete farm": "Kustuta talu",
   "Delete image": "Kustuta pilt",
   "Delete inventory row": "Kustuta varude rida",
+  "Delete knowledge entry?": "Kas kustutada teadmiste kirje?",
   "Delete permanently": "Kustuta jäädavalt",
   "Delete product": "Kustuta toode",
   "Delete role": "Kustuta roll",
@@ -423,7 +439,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS-i lehe metaandmeid, indekseerimist ja töötlemata leheplokke. Siin on loetletud ka kodulehe kirje, kuid kodulehe seaded on turvalisem viis selle muutmiseks – see redaktor kasutab töötlemata JSON-i.",
   "Edit content": "Sisu muutmine",
+  "Edit entry": "Muuda kirjet",
   "Edit farm": "Muuda talu",
+  "Edit knowledge entry": "Muuda teadmiste kirjet",
   "Edit media": "Muuda meediat",
   "Edit review": "Muuda arvustust",
   "Edit role": "Rooli muutmine",
@@ -540,6 +558,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Pealkirjad ja koopia.",
   Headline: "Pealkiri",
   "Hebrew (עברית)": "heebrea (עברית)",
+  "Help assistant": "Abiassistent",
+  "Help Assistant": 'Abi id="t0006">Märksõnad',
   "Hero description": "kangelase kirjeldus",
   "Hero eyebrow": "kangelase kulm",
   "Hero image alt text": "kangelase kujutise alternatiivtekst",
@@ -614,6 +634,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "kasahhi",
   "Keep artwork clean": "Hoidke kunstiteos puhtana",
   "Keep typing to search…": "Jätkake otsimiseks tippimist…",
+  Keywords: "Märksõnad",
   Khmer: "khmeeri",
   "Konkani (कोंकणी)": "konkani (कोंकणी)",
   "Korean (한국어)": "korea (한국어)",
@@ -803,6 +824,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Indeks puudub",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Üksusi pole veel – lisage alla vähemalt üks. Checkout rakendab selle komplekti allahindlust ainult siis, kui ostukorvis on siin kõik üksused, vähemalt selles koguses.",
+  "No knowledge entries": "Teadmiste kirjeid pole",
   "No line items recorded.": "Ühtegi reaüksust ei salvestata.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ei muuda enam sisselogimist – seega asendab siin määratud parool tõesti vana.",
@@ -887,6 +909,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Ainult omanik saab hallata rollide ulatust.",
   "Only the owner can review payments and refunds.":
     "Ainult omanik saab makseid ja tagasimakseid üle vaadata.",
+  "Open help assistant": "Ava abimees",
   "Open navigation": "Ava navigeerimisseade",
   Optional: "Valikuline",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1165,6 +1188,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving...": "Salvestamine...",
   "Saving…": "Salvestamine...",
   "Say how often you will write and that unsubscribing is easy.": "Öelge, kui tihti te kirjutate.",
+  Scope: "Ulatus",
   "Scope Management": "Ulatusala haldus",
   "Scopes unavailable": "Ulatused pole saadaval",
   "Search archive": "Otsinguarhiivist",
@@ -1229,6 +1253,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Valitud kategooriad tühjendatakse laost reservi tegemise ajal. broneeringute, liikumisajaloo ja auditi logide säilitamine.",
   "Selected users will be removed from the users list and signed out.":
     "Valitud kasutajad eemaldatakse kasutajate loendist ja logitakse välja.",
+  Send: "Saada",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Saatke sellele kasutajale turvalise parooli lähtestamise link. Nad määravad oma uue parooli administraatori lähtestamise lehel.",
   "Send back to draft": "Saada tagasi mustandisse",
@@ -1298,6 +1323,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Kitk",
   "Sold out": "Välja müüdud",
   Somali: "Somaalia",
+  "space separated, e.g. product publish visibility":
+    "tühikuga eraldatud, nt. toote avaldamise nähtavus",
   "Spanish (Español)": "Hispaania (español)",
   "Sprouted ragi flour": "Idandatud ragi jahu",
   "SQL Tables": "SQL-tabelid",
@@ -1310,6 +1337,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Sammid (üks rea kohta)",
   "Stock Status": "Laoseisund",
   "Store credit": "Poekrediit",
+  Storefront: "Poeplaan",
+  "Storefront bot": "Poepinna robot",
   "Storefront switches": "Poe esipinna lülitid",
   "Storefront switches unavailable": "Poe esipinna lülitid pole saadaval",
   "Strong border": "Tugev ääris",
@@ -1346,9 +1375,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Bänner ülaosas",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Bänner, kategooria rida, tooterida ja SEO väljad salvestavad koos. Jaotiste märkekastid, järjestamine ja kohandatud jaotise koopia salvestatakse ise, kui te neid muudate.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Vestlusvidin, mida kliendid ja külastajad poefassaadil näevad.",
   "The classic credential pair, including the password-reset flow.":
     "Klassikaline mandaadipaar, sealhulgas parooli lähtestamise voog.",
   "the farm owner": "talu omanik",
+  "The floating Help Assistant staff see on every admin page.": "Ujuv abiabi assistendi leht.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Päise ja jaluse lingid on sildid iga lehe kohta 0 keeles (6 m, tõlge 8). Tühjaks jäetud lokaat läheb poe esiküljel tagasi inglise keelde. See on sama juhtelement, mis parandab päise, mis näitab inglise keeles "Shop" / "Seasonal", samas kui kõik selle ümber on keelt vahetanud – need sildid pärinevad siit, mitte ülaltoodud lehe sisu tõlgetest.',
   "The homepage has no sections": "Avalehel pole jaotisi",
@@ -1376,6 +1408,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Need värvid kehtivad ka lehtedel, mis asuvad",
   "These roles define the permission sets available when inviting or editing users.":
     "nende rollide muutmise või määratlemise korral allpool. kasutajad.",
+  "Thinking…": "Mõtlemine…",
   "This application is": "See rakendus on",
   "This order is in a final state.": "See tellimus on lõplikus olekus.",
   "This page contains sensitive application diagnostics.":
@@ -1498,6 +1531,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Miks on vaja muudatusi või miks see tagasi lükati?",
   "Why is stock changing?": "Miks aktsiad muutuvad?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Sõnad, mille robot vastab küsimusele, otsustab, kas see kirje on asjakohane.",
   "Working...": "Töötab...",
   "World languages": "Maailma keeled",
   "Write a message…": "Kirjutage sõnum...",

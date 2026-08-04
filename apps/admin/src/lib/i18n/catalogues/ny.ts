@@ -76,12 +76,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Onjezani gulu",
   "Add code": "Onjezani khodi",
   "Add country": "Onjezani dziko",
+  "Add entry": "Onjezani cholowa",
   "Add farm owner": "Onjezani eni famu",
   "Add ingredient": "Onjezani cholowa",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Onjezani zinthu (zosiyanasiyana, zingati pa chilichonse) mutapanga mtolo, kuchokera ku Sinthani.",
+  "Add knowledge entry": "Onjezani chidziwitso",
   "Add one above to get started.": "Onjezani chimodzi pamwambapa kuti muyambe.",
   "Add one below to get started.": "Onjezani imodzi pansipa kuti muyambe.",
+  "Add one so the bot has something to reference for this scope.":
+    "Onjezani chimodzi kuti botyo ikhale ndi kena kake kosonyeza kukula kumeneku.",
   "Add page": "Onjezani tsamba",
   "Add participants": "Onjezani otenga nawo mbali",
   "Add role": "Onjezani udindo",
@@ -158,10 +162,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Archived: "Zosungidwa",
   "Archived items will appear here.": "Zosungidwa zakale ziwonekera apa.",
   "Article not found": "Nkhani sinapezeke",
+  "Ask a question…": "Funsani funso…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Funsani momwe mungachitire zinazake mugulu la oyang'anira, kapena funsani za maoda omwe akuyembekezera, zinthu zochepa, kapena malo oda.",
   "Assigned roles": "Maudindo opatsidwa",
   Author: "Wolemba",
   "Auto-translate": "Tanthauzirani zokha",
   "Auto-translate all": "Tanthauzirani zokha zonse",
+  Availability: "Kupezeka",
   Available: "Ilipo",
   "available · reorder at": "ikupezeka · yitanitsanso pa",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -200,6 +208,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Zolemba zathupi",
   Bosnian: "Chibosnia",
   Brand: "Mtundu",
+  "Built-in": "Zomangidwa",
   "Bulgarian (Български)": "Chibugariya (Български)",
   Bundle: "Mtundu",
   "bundle price · items priced at": "mtengo wa mtolo · zinthu pamtengo",
@@ -248,6 +257,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Kuchotsa...",
   "Click link": "Dinani ulalo",
   Close: "Tsekani",
+  "Close help assistant": "Tsekani wothandizira",
   "Close navigation": "Ttsekani kusakatula",
   "CMS pages": "masamba a CMS",
   "CMS pages & SEO": "Masamba a CMS & SEO",
@@ -280,6 +290,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Pitirizani ndi Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Landirani zomwe gawo lililonse lingawone, kupanga, kusintha, kusindikiza kapena kuwongolera.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Landirani ngati boti iliyonse ilipo, ndikusintha zomwe ikudziwa.",
   "Copy inside dark bands.": "Koperani mkati mwa magulu akuda.",
   Correction: "Kukonza",
   "Could not load archived records.": "Sizinatheke kutsegula zosungidwa zakale.",
@@ -342,9 +354,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Fufutani",
   "Delete (spam)": "Chotsani (spam)",
   "Delete category": "Chotsani gulu",
+  "Delete entry": "Chotsani cholowa",
   "Delete farm": "Chotsani famu",
   "Delete image": "Chotsani chithunzi",
   "Delete inventory row": "Chotsani mzere wa katundu",
+  "Delete knowledge entry?": "Fufutani chidziwitso?",
   "Delete permanently": "Chotsani kotheratu",
   "Delete product": "Chotsani malonda",
   "Delete role": "Chotsani ntchito",
@@ -390,7 +404,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Sinthani metadata yamasamba a CMS, milozera ndi midadada yamasamba. Mbiri yatsamba lofikira yalembedwanso apa, koma Zokonda pa Tsamba Loyamba ndiyo njira yotetezeka yosinthira — mkonziyu amatenga JSON yaiwisi.",
   "Edit content": "Sinthani zomwe zili",
+  "Edit entry": "Sinthani cholowa",
   "Edit farm": "Sinthani famu",
+  "Edit knowledge entry": "Sinthani chidziwitso",
   "Edit media": "Sinthani zofalitsa",
   "Edit review": "Sinthani ndemanga",
   "Edit role": "Sinthani udindo",
@@ -493,6 +509,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Mitu ndi kukopera.",
   Headline: "Mutu",
   "Hebrew (עברית)": "Chihebri (עברית)",
+  "Help assistant": "Wothandizira",
+  "Help Assistant": "Wothandizira Wothandizira",
   "Hero description": "Malongosoledwe a ngwazi",
   "Hero eyebrow": "Nsiyi za ngwazi",
   "Hero image alt text": "Zolemba zina za ngwazi",
@@ -558,6 +576,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Japanese (日本語)": "Chijapani (日本語)",
   "Keep artwork clean": "Sungani zojambulajambula zoyera",
   "Keep typing to search…": "Pitirizani kulemba kuti mufufuze…",
+  Keywords: "Mawu Ofunikira",
   "Land under cultivation": "Malo olimidwa",
   "Last activity": "Zochitika zomaliza",
   "Last reviewer note": "Zolemba zomaliza",
@@ -733,6 +752,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Palibe cholozera",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Palibe zinthu — onjezani chimodzi pansipa. Kulipira kumangochotseratu mtolowu ngati basiketi ili ndi chilichonse pano, mosachepera izi.",
+  "No knowledge entries": "Palibe zolowa",
   "No line items recorded.": "Palibe mizere yojambulidwa.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "sikusinthanso malowedwe — kotero mawu achinsinsi omwe mwakhazikitsa apa alowadi m'malo akale.",
@@ -818,6 +838,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Eni ake okha ndi omwe angayang'anire kuchuluka kwa magawo.",
   "Only the owner can review payments and refunds.":
     "Eni eni ake okha ndi omwe angawunikenso zomwe zalipidwa ndi kubwezeredwa.",
+  "Open help assistant": "Otsegula wothandizira",
   Optional: "Mwachokha",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
     "Zosankha zomwe zasonyezedwa pamwamba pa zosakanizazo — zimathandizira midadada yofanana ndi mabulogu, kuphatikiza",
@@ -1152,6 +1173,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Selected clear stock to reserve will Kusunga zosungitsa, mbiri yamayendedwe ndi zolemba zowerengera.",
   "Selected users will be removed from the users list and signed out.":
     "Ogwiritsa osankhidwa adzachotsedwa pamndandanda wa ogwiritsa ntchito ndikutuluka.",
+  Send: "Tumizani",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Tumizani ulalo wotetezedwa wokhazikitsanso mawu achinsinsi kwa wogwiritsayu. Akhazikitsa mawu achinsinsi awo atsopano kuchokera patsamba lokhazikitsiranso admin.",
   "Send back to draft": "Tumizani ku zolembedwa",
@@ -1222,6 +1244,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "Zidutswa",
   "Sold out": "Zagulitsidwa",
   Somali: "Chisomali",
+  "space separated, e.g. product publish visibility":
+    "malo olekanitsidwa, mwachitsanzo. kusindikizidwa kwa malonda",
   "Spanish (Español)": "Chisipanishi (Español)",
   "Sprouted ragi flour": "Ufa wa ragi wophuka",
   "SQL Tables": "Matebulo a SQL",
@@ -1233,6 +1257,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Masitepe (chimodzi pamzere uliwonse)",
   "Stock Status": "Mkhalidwe wa Sstock",
   "Store credit": "ngongole ya sitolo",
+  Storefront: "Kutsogolo",
+  "Storefront bot": "Boti yapasitolo",
   "Storefront switches": "Zosintha zam'sitolo",
   "Storefront switches unavailable": "Zosinthira zam'sitolo sizikupezeka",
   "Strong border": "Malire amphamvu",
@@ -1262,9 +1288,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Banner pamwamba pa",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Banner, gulu la mzere, mzere wazogulitsa ndi minda ya SEO zimasunga pamodzi. Mabokosi a tickbox, kuyitanitsa ndi kukopera makonda a gawo sungani paokha, mukamawasintha.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Magawo ochezera a makasitomala ndi alendo amawawona kutsogolo kwa sitolo.",
   "The classic credential pair, including the password-reset flow.":
     "Ziwiri zodziwika bwino, kuphatikiza mawu okhazikitsanso mawu achinsinsi.",
   "the farm owner": "mwini famu",
+  "The floating Help Assistant staff see on every admin page.":
+    "Wothandizira Wothandizira omwe akuyandama amawona patsamba lililonse la oyang'anira.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Pamutu ndi ulalo wapamunsi amalemba chilankhulo chilichonse (mig 60 imatanthauziridwa patsamba lililonse). Malo osiyidwa opanda kanthu amabwerera ku Chingerezi chakutsogolo kwa sitolo. Uku ndi kuwongolera komweko komwe kumakonza mutu womwe ukuwonetsa "Shop" / "Seasonal" mu Chingerezi pomwe chilichonse chozungulira chimasinthiratu chilankhulo - zilembozo zimachokera pano, osati patsamba lomasulira zomwe zili pamwambapa.',
   "The homepage has no sections": "Patsamba lofikira ilibe magawo",
@@ -1295,6 +1325,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Mitundu iyi imagwiranso ntchito patsamba ili pansi pa",
   "These roles define the permission sets available when inviting or editing users.":
     "Maudindowa amafotokoza za chilolezo chomwe chimapezeka mukayitanira kapena kusintha anthu.",
+  "Thinking…": "Kuganiza…",
   "This application is": "Pulogalamuyi ili",
   "This order is in a final state.": "Zomwe zilipo tsopano.",
   "This page contains sensitive application diagnostics.":
@@ -1407,6 +1438,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Nchifukwa chiyani zosintha zikufunika, kapena chifukwa chiyani izi zidakanidwa?",
   "Why is stock changing?": "N'chifukwa chiyani katundu akusintha?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Mawu omwe boti amafanana ndi funso kuti anene kuti cholowacho n'choyenera.",
   "Working...": "Ikugwira ntchito...",
   "World languages": "Zilankhulo zapadziko lonse lapansi",
   "Write a message…": "Lembani uthenga…",

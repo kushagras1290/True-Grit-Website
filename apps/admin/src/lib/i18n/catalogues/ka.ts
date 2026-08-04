@@ -85,12 +85,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "კატეგორიის დამატება",
   "Add code": "კოდის დამატება",
   "Add country": "ქვეყნის დამატება",
+  "Add entry": "ჩანაწერის დამატება",
   "Add farm owner": "ფერმის მფლობელის დამატება",
   "Add ingredient": "დაამატეთ ინგრედიენტი",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "დაამატეთ ერთეულები (რომელი ვარიანტია, თითოეულიდან რამდენი) ნაკრების შექმნის შემდეგ მართვადან.",
+  "Add knowledge entry": "ცოდნის ჩანაწერის დამატება",
   "Add one above to get started.": "დაამატეთ ერთი ზემოთ დასაწყებად.",
   "Add one below to get started.": "დაამატეთ ერთი ქვემოთ დასაწყებად.",
+  "Add one so the bot has something to reference for this scope.":
+    "დაამატეთ ერთი, რათა ბოტს ჰქონდეს რაიმე მითითება ამ სფეროსთვის.",
   "Add page": "გვერდის დამატება",
   "Add participants": "მონაწილეების დამატება",
   "Add role": "როლის დამატება",
@@ -108,9 +112,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "დაარეგულირეთ ძიება ან შექმენით პროდუქტი.",
   "Adjustment %": "მორგება %",
   "Adjustments restricted": "შესწორებები შეზღუდულია",
+  Admin: "ადმინისტრატორი",
   "Admin API is unavailable": "ადმინისტრატორის API მიუწვდომელია",
   "Admin Logs": "ადმინისტრატორის ჟურნალები",
   "Admin navigation": "ადმინისტრატორის ნავიგაცია",
+  "Admin panel bot": "ადმინისტრატორის პანელის ბოტი",
   Afrikaans: "აფრიკელები",
   "After refunds, all farms": "თანხის დაბრუნების შემდეგ, ყველა ფერმა",
   Albanian: "ალბანური",
@@ -171,6 +177,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "სომხური",
   "Article not found": "სტატია ვერ მოიძებნა",
   "Asha Rao": "აშა რაო",
+  "Ask a question…": "დასვით შეკითხვა…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "იკითხეთ, როგორ გააკეთოთ რამე ადმინისტრაციულ პანელში, ან ჰკითხეთ მომლოდინე შეკვეთებს, დაბალი მარაგის ერთეულებს ან შეკვეთის სტატუსს.",
   "Assamese (অসমীয়া)": "ასამური (অসমীয়া)",
   "Assigned roles": "მინიჭებული როლები",
   Attribution: "ატრიბუცია",
@@ -178,6 +187,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "ავტორი",
   "Auto-translate": "ავტომატური თარგმნა",
   "Auto-translate all": "ყველას ავტომატური თარგმნა",
+  Availability: "ხელმისაწვდომობა",
   Available: "ხელმისაწვდომია",
   "available · reorder at": "ხელმისაწვდომია · ხელახლა შეკვეთა მისამართზე",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -222,6 +232,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "ძირითადი ტექსტი",
   Bosnian: "ბოსნიური",
   Brand: "ბრენდი",
+  "Built-in": "ჩაშენებული",
   "Bulgarian (Български)": "ბულგარული (ბულგარული)",
   Bundle: "შეფუთვა",
   "bundle price · items priced at": 'id="t0005">პაკეტის ფასი, ₹',
@@ -276,6 +287,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "გასუფთავება...",
   "Click link": "დააწკაპუნეთ ბმულზე",
   Close: "დახურვა",
+  "Close help assistant": "დახურეთ დახმარების ასისტენტი",
   "Close navigation": "ნავიგაციის დახურვა",
   "CMS pages": "CMS გვერდები",
   "CMS pages & SEO": "CMS გვერდები და SEO",
@@ -308,6 +320,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "გაგრძელება Facebook-ით",
   "Control what each role can view, create, edit, publish or manage.":
     "აკონტროლეთ, რა შეუძლია თითოეულ როლს ნახოს, შექმნას, რედაქტირება, გამოქვეყნება ან მართვა.",
+  "Control whether each bot is available, and edit what it knows.":
+    "აკონტროლეთ არის თუ არა თითოეული ბოტი ხელმისაწვდომი და დაარედაქტირეთ ის, რაც მან იცის.",
   Cook: "მზარეული",
   "Cook minutes": "წუთების მომზადება",
   "Copy inside dark bands.": "კოპირება მუქი ზოლებში.",
@@ -376,9 +390,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "წაშლა",
   "Delete (spam)": "წაშლა (სპამი)",
   "Delete category": "კატეგორიის წაშლა",
+  "Delete entry": "წაშალო ჩანაწერი",
   "Delete farm": "ფერმის წაშლა",
   "Delete image": "სურათის წაშლა",
   "Delete inventory row": "ინვენტარის მწკრივის წაშლა",
+  "Delete knowledge entry?": "წაშალო ცოდნის ჩანაწერი?",
   "Delete permanently": "სამუდამოდ წაშლა",
   "Delete product": "პროდუქტის წაშლა",
   "Delete role": "როლის წაშლა",
@@ -430,7 +446,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS გვერდის მეტამონაცემების, ინდექსირების და ნედლი გვერდების ბლოკების რედაქტირება. საწყისი გვერდის ჩანაწერი აქაც არის ჩამოთვლილი, მაგრამ საწყისი გვერდის პარამეტრები მისი შესაცვლელად უფრო უსაფრთხო გზაა — ეს რედაქტორი იღებს დაუმუშავებელ JSON-ს.",
   "Edit content": "კონტენტის რედაქტირება",
+  "Edit entry": "ჩანაწერის რედაქტირება",
   "Edit farm": "ფერმის რედაქტირება",
+  "Edit knowledge entry": "ცოდნის ჩანაწერის რედაქტირება",
   "Edit media": "მედიის რედაქტირება",
   "Edit review": "მიმოხილვის რედაქტირება",
   "Edit role": "როლის რედაქტირება",
@@ -548,6 +566,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "სათაურები და კოპირება.",
   Headline: "სათაური",
   "Hebrew (עברית)": "ებრაული (עברית)",
+  "Help assistant": "დახმარების ასისტენტი",
+  "Help Assistant": "დახმარების ასისტენტი",
   "Hero description": "გმირის აღწერა",
   "Hero eyebrow": "გმირის წარბი",
   "Hero image alt text": "გმირის სურათის ალტ ტექსტი",
@@ -624,6 +644,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "ყაზახური",
   "Keep artwork clean": "შეინარჩუნეთ ნამუშევრის სისუფთავე",
   "Keep typing to search…": "განაგრძეთ აკრეფა საძიებლად…",
+  Keywords: "საკვანძო სიტყვები",
   Khmer: "ქმერული",
   Kinyarwanda: "კინიარვანდა",
   "Konkani (कोंकणी)": "კონკანი (कोंकणी)",
@@ -819,6 +840,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "ინდექსი არ არის",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "ერთეული ჯერ არ არის — დაამატეთ მინიმუმ ერთი ქვემოთ. Checkout იყენებს ამ პაკეტის ფასდაკლებას მხოლოდ მაშინ, როდესაც კალათაში არის ყველა ელემენტი აქ, სულ მცირე ამ რაოდენობით.",
+  "No knowledge entries": "ცოდნის ჩანაწერები არ არის",
   "No line items recorded.": "არ არის ჩაწერილი ერთეულები.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "აღარ ცვლის შესვლას — ასე რომ, თქვენ მიერ აქ დაყენებული პაროლი ნამდვილად ცვლის ძველს.",
@@ -903,6 +925,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "მხოლოდ მფლობელს შეუძლია როლების არეალის მართვა.",
   "Only the owner can review payments and refunds.":
     "მხოლოდ მფლობელს შეუძლია გადახედოს გადახდებს და თანხის დაბრუნებას.",
+  "Open help assistant": "დახმარების ასისტენტის გახსნა",
   "Open navigation": "გახსენით ნავიგაცია",
   Optional: "არასავალდებულო",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1185,6 +1208,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "შენახვა...",
   "Say how often you will write and that unsubscribing is easy.":
     "თქვით რამდენად ხშირად წერთ და რომ გამოწერის გაუქმება მარტივია.",
+  Scope: "ფარგლები",
   "Scopes unavailable": "Scopes მიუწვდომელია",
   "Search archive": "ძიების არქივი",
   "Search blog posts": "ბლოგის პოსტების ძიება",
@@ -1251,6 +1275,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "არჩეული სტრიქონები წაიშლება რეზერვირებული მარაგისთვის, რაც ხელმისაწვდომი გახდება ნულოვანი მარაგით, ხოლო შენახული იქნება ჯავშნები, მოძრაობის ისტორია და აუდიტის ჟურნალი.",
   "Selected users will be removed from the users list and signed out.":
     "არჩეული მომხმარებლები წაიშლება მომხმარებელთა სიიდან და გამოვლენ.",
+  Send: "გაგზავნა",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "გაუგზავნეთ პაროლის გადატვირთვის უსაფრთხო ბმული ამ მომხმარებელს. ისინი დააყენებენ ახალ პაროლს ადმინისტრატორის გადატვირთვის გვერდიდან.",
   "Send back to draft": "დაბრუნების მონახაზზე",
@@ -1321,6 +1346,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "ნაწყვეტი",
   "Sold out": "(ესპანური)",
   Somali: 'სომალიში</span00="t0003">სომალიში</span00="t0001">სნიპეტი',
+  "space separated, e.g. product publish visibility":
+    "გამოყოფილი სივრცე, მაგ. პროდუქტის გამოქვეყნების ხილვადობა",
   "Spanish (Español)": '><span id="t0003">სპანური',
   "Sprouted ragi flour": "გადასული რაგის ფქვილი",
   "SQL Tables": "SQL ცხრილები",
@@ -1371,9 +1398,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "ბანერი ზემოთ",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "ბანერის, კატეგორიის მწკრივის, პროდუქტის მწკრივის და SEO ველების ერთად შენახვა. სექციების მონიშვნის ველები, შეკვეთა და მორგებული განყოფილების ასლი შეინახება დამოუკიდებლად, როდესაც თქვენ შეცვლით მათ.",
+  "The chat widget customers and visitors see on the storefront.":
+    "ჩეთის ვიჯეტს მომხმარებლები და ვიზიტორები ხედავენ ვიტრინაზე.",
   "The classic credential pair, including the password-reset flow.":
     "კლასიკური რწმუნებათა სიგელების წყვილი, პაროლის გადატვირთვის ნაკადის ჩათვლით.",
   "the farm owner": "ფერმის მფლობელი",
+  "The floating Help Assistant staff see on every admin page.":
+    "მცურავი დახმარების ასისტენტის პერსონალი ხედავს ყველა ადმინისტრატორის გვერდზე.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'სათაური და ფუტკრის ენაზე თარგმნილი ბმულები (labelration თითო გვერდის ბმულები გვიჩვენებს). 0068). მაღაზიის ვიტრინაზე ცარიელი დატოვებული ლოკალი ბრუნდება ინგლისურად. ეს არის იგივე კონტროლი, რომელიც აფიქსირებს სათაურს, რომელშიც ნაჩვენებია "მაღაზია" / "სეზონური" ინგლისურად, ხოლო მის გარშემო ყველაფერი შეიცვალა ენაზე — ეს ლეიბლები აქედან მოდის და არა გვერდის შიგთავსის ზემოთ.',
   "The homepage has no sections": "მთავარ გვერდს არ აქვს სექციები",
@@ -1402,6 +1433,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "ეს ფერები ასევე ვრცელდება ქვემოთ გვერდებზე",
   "These roles define the permission sets available when inviting or editing users.":
     "ეს როლები განსაზღვრავს ნებართვების კომპლექტს, რომელიც ხელმისაწვდომია მომხმარებლების მოწვევის ან რედაქტირებისას.",
+  "Thinking…": "ფიქრი…",
   "This application is": "ეს აპლიკაცია არის",
   "This order is in a final state.": "ეს შეკვეთა საბოლოო მდგომარეობაშია.",
   "This page contains sensitive application diagnostics.":
@@ -1521,6 +1553,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "რატომ არის საჭირო ცვლილებები ან რატომ იქნა ეს უარყოფილი?",
   "Why is stock changing?": "რატომ იცვლება მარაგი?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "სიტყვები, რომლებიც ბოტი ემთხვევა კითხვას, რათა გადაწყვიტოს, რომ ეს ჩანაწერი რელევანტურია.",
   "Working...": "მუშაობს...",
   "World languages": "მსოფლიო ენები",
   "Write a message…": "დაწერეთ შეტყობინება…",

@@ -79,12 +79,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "ڪيٽيگري شامل ڪريو",
   "Add code": "ڪوڊ شامل ڪريو",
   "Add country": "ملڪ شامل ڪريو",
+  "Add entry": "داخلا شامل ڪريو",
   "Add farm owner": "شامل ڪريو فارم مالڪ",
   "Add ingredient": "جزا شامل ڪريو",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "بنڊل ٺاهڻ کان پوءِ، انتظام مان شيون شامل ڪريو (ڪهڙا مختلف قسم، هر هڪ مان ڪيترا).",
+  "Add knowledge entry": "علم داخل ڪريو",
   "Add one above to get started.": "شروع ڪرڻ لاءِ مٿي هڪ شامل ڪريو.",
   "Add one below to get started.": "شروع ڪرڻ لاءِ هيٺان هڪ شامل ڪريو.",
+  "Add one so the bot has something to reference for this scope.":
+    "ھڪڙو شامل ڪريو پوءِ بوٽ وٽ ڪجھ آھي ھن دائري جي حوالي سان.",
   "Add page": "صفحو شامل ڪريو",
   "Add participants": "حصو وٺندڙ شامل ڪريو",
   "Add role": "رول شامل ڪريو",
@@ -102,9 +106,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "ڳولا کي ترتيب ڏيو يا ھڪڙو پراڊڪٽ ٺاھيو.",
   "Adjustment %": "ايڊجسٽمينٽ %",
   "Adjustments restricted": "تنظيم تي پابندي",
+  Admin: "ايڊمن",
   "Admin API is unavailable": "Admin API موجود ناهي",
   "Admin Logs": "ايڊمن لاگز",
   "Admin navigation": "ايڊمن نيويگيشن",
+  "Admin panel bot": "ايڊمنٽ پينل بوٽ",
   Afrikaans: "آفريڪن",
   "After refunds, all farms": "واپسي کان پوءِ، سڀ فارمز",
   Albanian: "الباني",
@@ -162,12 +168,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "آرڪائيو ٿيل شيون هتي ظاهر ٿينديون.",
   Armenian: "آرمينيائي",
   "Article not found": "آرٽيڪل نه مليو",
+  "Ask a question…": "سوال پڇو…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "پوچھو ته ايڊمن پينل ۾ ڪجهه ڪيئن ڪجي، يا پڇو ته آرڊر جي التوا، گهٽ-اسٽاڪ شيون، يا آرڊر جي حالت بابت.",
   "Assamese (অসমীয়া)": "آسامي (অসমিয়া)",
   "Assigned roles": "مقرر ڪيل ڪردار",
   "Audit Log": "آڊيٽ لاگ",
   Author: "ليکڪ",
   "Auto-translate": "خودڪار ترجمو",
   "Auto-translate all": "سڀني خود ترجمو",
+  Availability: "دستياب",
   Available: "دستياب",
   "available · reorder at": "Available> - محفوظ ٿيل). هر تبديلي هڪ تحريڪ آهي.",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -207,6 +217,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Bodo (बर’)": "Bodo (ber’)",
   Bosnian: "بوسني",
   Brand: "برانڊ",
+  "Built-in": "بلٽ ان",
   "Bulgarian (Български)": "بلغارين (Български)",
   Bundle: "بنڊل",
   "bundle price · items priced at": 'Bundle price · 5/span 0004">آئٽمز جي قيمت ₹',
@@ -256,6 +267,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "صاف ڪري رهيو آهي...",
   "Click link": "لنڪ تي ڪلڪ ڪريو",
   Close: "بند ڪريو",
+  "Close help assistant": "مدد اسسٽنٽ بند ڪريو",
   "Close navigation": "نويگيشن بند ڪريو",
   "CMS pages": "CMS صفحا",
   "CMS pages & SEO": "CMS صفحا ۽ SEO",
@@ -288,6 +300,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Facebook سان جاري رکو",
   "Control what each role can view, create, edit, publish or manage.":
     "ڪنٽرول ڪريو ته هر ڪردار ڇا ڏسي، ٺاهي، ايڊٽ ڪري، شايع ڪري يا منظم ڪري سگهي ٿو.",
+  "Control whether each bot is available, and edit what it knows.":
+    "ڪنٽرول ڪريو ته ڇا هر بوٽ موجود آهي، ۽ ايڊٽ ڪريو جيڪو اهو ڄاڻي ٿو.",
   Cook: "ڪڪ",
   "Cook minutes": "ڪڪ منٽ",
   "Copy inside dark bands.": "ڪاپي ڪريو اونداهي بينڊ اندر.",
@@ -350,9 +364,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ڊفالٽ. ترتيب ڏيڻ جي قابل آهي جڏهن سائيٽ ڪنٽرول جي ادائيگي جي سوئچ آن هجي.",
   "Delete (spam)": "خارج ڪريو (اسپام)",
   "Delete category": "ڪيٽيگري کي ختم ڪريو",
+  "Delete entry": "داخلي کي حذف ڪريو",
   "Delete farm": "فارم ختم ڪريو",
   "Delete image": "تصوير حذف ڪريو",
   "Delete inventory row": "موجد جي قطار کي ختم ڪريو",
+  "Delete knowledge entry?": "ڄاڻ جي داخلا کي ختم ڪريو؟",
   "Delete permanently": "مستقل طور تي حذف ڪريو",
   "Delete product": "پراڊڪٽ کي حذف ڪريو",
   "Delete role": "ڊليٽ ڪريو ڪردار",
@@ -403,6 +419,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "سي ايم ايس پيج ميٽا ڊيٽا، انڊيڪسنگ ۽ خام پيج بلاڪس. هوم پيج رڪارڊ هتي پڻ درج ٿيل آهي، پر هوم پيج سيٽنگ ان کي تبديل ڪرڻ جو وڌيڪ محفوظ طريقو آهي — هي ايڊيٽر خام JSON وٺندو آهي.",
   "Edit content": "مواد ۾ ترميم ڪريو",
+  "Edit entry": "داخلي ۾ ترميم ڪريو",
+  "Edit knowledge entry": "علم جي داخلا ۾ ترميم ڪريو",
   "Edit media": "ميڊيا ايڊٽ ڪريو",
   "Edit review": "نظرثاني ۾ تبديلي آڻيو",
   "Edit role": "رول ۾ تبديلي آڻيو",
@@ -513,6 +531,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "هيڊنگ ۽ ڪاپي.",
   Headline: "هيڊ لائن",
   "Hebrew (עברית)": "هبرو (عبراني)",
+  "Help assistant": "مدد اسسٽنٽ",
+  "Help Assistant": "مدد اسسٽنٽ",
   "Hero description": "هيرو بيان",
   "Hero eyebrow": "هيرو ابرو",
   "Hero image alt text": "هيرو تصوير جو Alt متن",
@@ -772,6 +792,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "ڪو به انڊيڪس نه آهي",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "اڃا تائين ڪابه شيءِ نه آهي — گهٽ ۾ گهٽ هڪ هيٺ شامل ڪريو. چيڪ آئوٽ صرف ان بنڊل جي رعايت تي لاڳو ٿئي ٿو جڏهن ٽوڪري وٽ هر شيءِ هتي هجي، گهٽ ۾ گهٽ انهن مقدار ۾.",
+  "No knowledge entries": "ڪو ڄاڻ داخل نه ٿيو",
   "No line items recorded.": "ڪو به لائن آئٽم رڪارڊ ٿيل ناهي.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "هاڻي لاگ ان ۾ تبديلي نه ايندي — تنهن ڪري جيڪو پاسورڊ توهان هتي سيٽ ڪيو اهو واقعي پراڻي کي بدلائي ٿو.",
@@ -852,6 +873,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "صرف مالڪ ڪردار جي دائري کي منظم ڪري سگهي ٿو.",
   "Only the owner can review payments and refunds.":
     "صرف مالڪ ئي ادائگي ۽ واپسي جو جائزو وٺي سگھي ٿو.",
+  "Open help assistant": "اوپن مدد اسسٽنٽ",
   "Open navigation": "اوپن نيويگيشن",
   Optional: "اختياري",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1180,6 +1202,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "منتخب قطارون محفوظ ڪيل اسٽاڪ ڏانهن صاف ڪيون وينديون، رزرويشنز، حرڪت جي تاريخ ۽ آڊٽ لاگز کي محفوظ ڪندي اسٽاڪ صفر کي دستياب بڻائيندي.",
   "Selected users will be removed from the users list and signed out.":
     "منتخب صارفين کي استعمال ڪندڙن جي فهرست مان هٽايو ويندو ۽ سائن آئوٽ ڪيو ويندو.",
+  Send: "موڪليو",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "هن صارف کي هڪ محفوظ پاسورڊ ري سيٽ لنڪ موڪليو. اهي ايڊمن ري سيٽ پيج تان پنهنجو نئون پاسورڊ سيٽ ڪندا.",
   "Send back to draft": "Send link",
@@ -1248,6 +1271,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Snapshots at purchase time — catalogue edits never rewrite an order.":
     "خريد جي وقت تي اسنيپ شاٽ — ڪيٽلاگ ايڊيشن ڪڏهن به آرڊر ٻيهر نه لکندا آهن.",
   Somali: "صومالي",
+  "space separated, e.g. product publish visibility":
+    "جڳه الڳ ٿيل، مثال طور پراڊڪٽ جي اشاعت جي نمائش",
   "Spanish (Español)": "اسپين (Español)",
   "Sprouted ragi flour": "اسپائوٽ ريگي اٽو",
   "SQL Tables": "SQL ٽيبل",
@@ -1297,9 +1322,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "بينر جي چوٽيءَ تي",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "بينر، ڪيٽيگري قطار، پراڊڪٽ جي قطار ۽ ايس اي او جا شعبا گڏ ٿين ٿا. سيڪشن ٽڪ باڪس، آرڊرنگ ۽ ڪسٽم سيڪشن ڪاپي پاڻ تي محفوظ ڪريو، جيئن توھان انھن کي تبديل ڪريو.",
+  "The chat widget customers and visitors see on the storefront.":
+    "چيٽ ويجيٽ گراهڪ ۽ سياحن کي اسٽور فرنٽ تي ڏسڻ ۾ اچي ٿو.",
   "The classic credential pair, including the password-reset flow.":
     "کلاسک سندي جوڙو، بشمول پاسورڊ ري سيٽ فلو.",
   "the farm owner": "فارم مالڪ",
+  "The floating Help Assistant staff see on every admin page.": "The floating admin",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'هيڊر ۽ فوٽر لنڪ ليبل هر صفحي کي ڏيکاري ٿو، ترجمو ڪيل في ٻولي (لڏپلاڻ 0068). هڪ مقامي کاٻي جاءِ خالي ٿي پوي ٿي واپس انگريزي ڏانهن اسٽور فرنٽ تي. اهو ساڳيو ڪنٽرول آهي جيڪو انگريزي ۾ "Shop" / "Seasonal" ڏيکاريندڙ هيڊر کي درست ڪري ٿو جڏهن ته ان جي چوڌاري هر شيءِ ٻولي مٽائي وئي آهي — اهي ليبل هتان اچن ٿا، نه ته مٿي ڏنل صفحي جي مواد جي ترجمي مان.',
   "The homepage has no sections": "هوم پيج ۾ ڪوبه سيڪشن ناهي",
@@ -1328,6 +1356,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "اهي رنگ به انهن صفحن تي لاڳو ٿين ٿا جيڪي هيٺ ڏنل صفحا تي لاڳو ٿين ٿا",
   "These roles define the permission sets available when inviting or editing users.":
     "اهي ڪردار استعمال ڪندڙن کي مدعو ڪرڻ يا ايڊٽ ڪرڻ وقت موجود اجازتن جي سيٽ جي وضاحت ڪن ٿا.",
+  "Thinking…": "سوچڻ…",
   "This application is": "هي ايپليڪيشن آهي",
   "This order is in a final state.": "هي آرڊر حتمي حالت ۾ آهي.",
   "This page contains sensitive application diagnostics.":
@@ -1443,6 +1472,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Whole site (default)": "سڄي سائيٽ (ڊفالٽ)",
   "Why are changes needed, or why was this declined?": "تبديلين جي ضرورت ڇو آهي، يا هي ڇو ڪيو ويو؟",
   "Why is stock changing?": "اسٽاڪ ڇو تبديل ٿي رهيو آهي؟",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "لفظ بوٽ هڪ سوال سان ملن ٿا اهو فيصلو ڪرڻ لاءِ ته هي داخلا لاڳاپيل آهي.",
   "Working...": "ڪم ڪري رهيو آهي...",
   "World languages": "عالمي ٻوليون",
   "Write a message…": "پيغام لکو…",

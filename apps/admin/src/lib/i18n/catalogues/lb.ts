@@ -79,12 +79,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Kategorie derbäisetzen",
   "Add code": "Code derbäisetzen",
   "Add country": "Land derbäisetzen",
+  "Add entry": "Entrée dobäisetzen",
   "Add farm owner": "Bauerebesëtzer derbäisetzen",
   "Add ingredient": "Ingredient addéieren",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Füügt Artikelen (wéi eng Varianten, wéi vill vun all) nodeems Dir de Bündel erstallt hutt, vu Manage.",
+  "Add knowledge entry": "Wësseneintrag dobäisetzen",
   "Add one above to get started.": "Füügt een hei uewen fir unzefänken.",
   "Add one below to get started.": "Füügt een hei drënner fir unzefänken.",
+  "Add one so the bot has something to reference for this scope.":
+    "Füügt een esou datt de Bot eppes fir dësen Ëmfang ze referenzéieren.",
   "Add page": "Säit derbäi",
   "Add participants": "Participanten derbäi",
   "Add role": "Roll dobäisetzen",
@@ -105,6 +109,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Admin API is unavailable": "Admin API ass net verfügbar",
   "Admin Logs": "Admin Logbicher",
   "Admin navigation": "Admin Navigatioun",
+  "Admin panel bot": "Admin Panel Bot",
   "After refunds, all farms": "No Remboursementer, all Bauerenhaff",
   Albanian: "Albanesch",
   "All ratings": "All Bewäertungen",
@@ -163,12 +168,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Archivéiert Elementer erschéngen hei.",
   Armenian: "Armenesch",
   "Article not found": "Artikel net fonnt",
+  "Ask a question…": "Fro stellen ...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Fro wéi eppes an der Administratiounspanel ze maachen, oder frot iwwer pendend Bestellungen, Low-stock Artikelen oder de Status vun enger Bestellung.",
   "Assamese (অসমীয়া)": "Assamesch (অসমীয়া)",
   "Assigned roles": "Aviséiert Rollen",
   Attribution: "Attributioun",
   Author: "Auteur",
   "Auto-translate": "Auto-iwwersetzen",
   "Auto-translate all": "Alles automatesch iwwersetzen",
+  Availability: "Verfügbarkeet",
   Available: "Verfügbar",
   "available · reorder at": "verfügbar · nei bestellen op",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -260,6 +269,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Läschen...",
   "Click link": "Klickt op de Link",
   Close: "Zoumaachen",
+  "Close help assistant": "Hëllef Assistent zoumaachen",
   "Close navigation": "Navigatioun zoumaachen",
   "CMS pages": "CMS Säiten",
   "CMS pages & SEO": "CMS Säiten & SEO",
@@ -292,6 +302,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Weider mat Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Kontrolléiert wat all Roll ka gesinn, erstellen, änneren, publizéieren oder verwalten.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Kontrollen ob all Bot verfügbar ass, an änneren wat e weess.",
   Cook: "Kach",
   "Cook minutes": "Kachminutt",
   "Copy inside dark bands.": "Kopieer an donkele Bänner.",
@@ -358,9 +370,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Läschen",
   "Delete (spam)": "Läschen (Spam)",
   "Delete category": "Kategorie läschen",
+  "Delete entry": "Entrée läschen",
   "Delete farm": "Bauerenhaff läschen",
   "Delete image": "Bild läschen",
   "Delete inventory row": "Inventarrei läschen",
+  "Delete knowledge entry?": "Wësseneintrag läschen?",
   "Delete permanently": "Läschen permanent",
   "Delete product": "Produkt läschen",
   "Delete role": "Roll läschen",
@@ -409,7 +423,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Änneren CMS Säit Metadaten, Indexéierung a raw Säitblocken. D'Homepage-Rekord ass och hei opgelëscht, awer d'Homepage-Astellunge sinn de méi séchere Wee fir se z'änneren - dësen Editor hëlt rau JSON.",
   "Edit content": "Inhalt änneren",
+  "Edit entry": "Eintrag änneren",
   "Edit farm": "Ännere Bauerenhaff",
+  "Edit knowledge entry": "Wësseneintrag änneren",
   "Edit media": "Medien änneren",
   "Edit review": "Bewäertung änneren",
   "Edit role": "Roll änneren",
@@ -518,6 +534,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Iwwerschrëften a Kopie.",
   Headline: "Iwwerschrëft",
   "Hebrew (עברית)": "Hebräesch (Ebresch)",
+  "Help assistant": "Hëllef Assistent",
+  "Help Assistant": "Hëllef Assistent",
   "Hero description": "Heldbeschreiwung",
   "Hero eyebrow": "Heldenbrie",
   "Hero image alt text": "Heldbild Alttext",
@@ -586,6 +604,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "Kasachesch",
   "Keep artwork clean": "Halt d'Artwork propper",
   "Keep typing to search…": "Tipp weider fir ze sichen ...",
+  Keywords: "Schlësselwierder",
   Kinyarwanda: "Kinjarwanda",
   "Korean (한국어)": "Koreanesch (한국어)",
   Kyrgyz: "Kirgisesch",
@@ -767,6 +786,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Keen Index",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Keng Elementer nach - füügt op d'mannst een hei drënner. Checkout gëlt nëmmen dës Remise vun dësem Bündel wann de Kuerf all Artikel hei huet, op d'mannst an dëse Quantitéiten.",
+  "No knowledge entries": "Keng Kenntnisser",
   "No line items recorded.": "Keng Zeilartikel opgeholl.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ännert de Login net méi - also e Passwuert dat Dir hei agestallt hutt ersetzt wierklech dat al.",
@@ -849,6 +869,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Nëmmen de Besëtzer kann Rollenomfang verwalten.",
   "Only the owner can review payments and refunds.":
     "Nëmmen de Besëtzer kann Bezuelungen a Remboursementer iwwerpréiwen.",
+  "Open help assistant": "Open Help Assistant",
   "Open navigation": "Open Navigatioun",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
     "Optional Inhalt iwwer d'Ingredienten ugewisen - ënnerstëtzt déiselwecht Blocks wéi Blogposten, dorënner",
@@ -1121,6 +1142,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Spueren...",
   "Say how often you will write and that unsubscribing is easy.":
     "Sot wéi dacks Dir schreift an datt d'Abonnement einfach ass.",
+  Scope: "Omfang",
   "Scopes unavailable": "Scope net verfügbar",
   "Search archive": "Sicharchiv",
   "Search blog posts": "Sich op Blogposten",
@@ -1252,6 +1274,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Snapshots bei Akafszäit - Katalog Ännerungen schreiwen ni eng Bestellung ëm.",
   "Sold out": "Ausverkaaft",
   Somali: "Somalesch",
+  "space separated, e.g. product publish visibility":
+    "raum getrennt, z.B. Produkt publizéieren Visibilitéit",
   "Spanish (Español)": "Spuenesch (Spuenesch)",
   "Sprouted ragi flour": "Sprëtzt Ragimiel",
   "SQL Tables": "SQL Tabellen",
@@ -1263,6 +1287,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "Schrëtt (eent pro Zeil)",
   "Stock Status": "Stockstatus",
   "Store credit": "Storekredit",
+  "Storefront bot": "Storefront Bot",
   "Storefront switches": "Storefront Switches",
   "Storefront switches unavailable": "Storefront Switches net verfügbar",
   "Strong border": "Staark Grenz",
@@ -1291,9 +1316,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "De Banner uewen op",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "De Banner, Kategorie Rei, Produktrei a SEO Felder späicheren zesummen. Sektioun Tickboxen, Uerdnung a Benotzerdefinéiert Rubrik Kopie späicheren eleng, wéi Dir se ännert.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Den Chat Widget Clienten a Besucher gesinn am Storefront.",
   "The classic credential pair, including the password-reset flow.":
     "Déi klassesch Umeldungspaar, inklusiv de Passwuert-Reset-Flow.",
   "the farm owner": "de Bauerenhaffbesëtzer",
+  "The floating Help Assistant staff see on every admin page.":
+    "Déi schwiewend Help Assistant Personal gesinn op all Admin Säit.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Den Header an de Fousszeilen etikettéiert all Säit 000 Sproochen, transigléiert all Säit 000 (6m). Eng locale lénks eidel fällt zréck op Englesch am Storefront. Dëst ass déiselwecht Kontroll déi en Header fixéiert deen "Shop" / "Saisonal" op Englesch weist, während alles ronderëm d\'Sprooch gewiesselt huet - déi Etiketten kommen vun hei, net vun de Säitinhalt Iwwersetzungen uewen.',
   "The homepage has no sections": "D'Homepage huet keng Sektiounen",
@@ -1323,6 +1352,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Dës Faarwen gëllen och fir Säiten ënner",
   "These roles define the permission sets available when inviting or editing users.":
     "Dës Invitatiounssätz definéiert wann dës Invitatioun verfügbar ass. Benotzer.",
+  "Thinking…": "Denken ...",
   "This application is": "Dës Applikatioun ass",
   "This order is in a final state.": "Dës Bestellung ass an engem definitiven Zoustand.",
   "This page contains sensitive application diagnostics.":
@@ -1440,6 +1470,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Firwat sinn Ännerungen néideg, oder firwat gouf dës ofgeleent?",
   "Why is stock changing?": "Firwat ännert sech d'Aktie?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Wierder déi de Bot mat enger Fro entsprécht fir ze entscheeden datt dësen Entrée relevant ass.",
   "Working...": "Schafft...",
   "World languages": "Weltsproochen",
   "Write a message…": "Schreift e Message...",

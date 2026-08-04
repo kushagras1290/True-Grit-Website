@@ -84,12 +84,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Lägg till kategori",
   "Add code": "Lägg till kod",
   "Add country": "Lägg till land",
+  "Add entry": "Lägg till post",
   "Add farm owner": "Lägg till gårdsägare",
   "Add ingredient": "Lägg till ingrediens",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Lägg till objekt (vilka varianter, hur många av varje) efter att du har skapat paketet, från Hantera.",
+  "Add knowledge entry": "Lägg till kunskapspost",
   "Add one above to get started.": "Lägg till en ovan för att komma igång.",
   "Add one below to get started.": "Lägg till en nedan för att komma igång.",
+  "Add one so the bot has something to reference for this scope.":
+    "Lägg till en så att boten har något att referera till för detta omfång.",
   "Add page": "Lägg till sida",
   "Add participants": "Lägg till deltagare",
   "Add role": "Lägg till roll",
@@ -110,6 +114,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Admin API is unavailable": "Admin API är inte tillgängligt",
   "Admin Logs": "Adminloggar",
   "Admin navigation": "Adminnavigering",
+  "Admin panel bot": "Adminpanelbot",
   Afrikaans: "afrikaans",
   "After refunds, all farms": "Efter återbetalningar, alla gårdar",
   Albanian: "albanska",
@@ -168,12 +173,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Archived items will appear here.": "Arkiverade objekt kommer att visas här.",
   Armenian: "armeniska",
   "Article not found": "Artikel hittades inte",
+  "Ask a question…": "Ställ en fråga...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Fråga hur man gör något i administratörspanelen, eller fråga om väntande beställningar, varor i lågt lager eller status för en beställning.",
   "Assamese (অসমীয়া)": "Assamiska (অসমীয়া)",
   "Assigned roles": "Tilldelade roller",
   "Audit Log": "Revisionslogg",
   Author: "Författare",
   "Auto-translate": "Översätt automatiskt",
   "Auto-translate all": "Översätt alla automatiskt",
+  Availability: "Tillgänglighet",
   Available: "Tillgänglig",
   "available · reorder at": "tillgänglig · beställ om på",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -216,6 +225,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Brödtext",
   Bosnian: "bosniska",
   Brand: "Varumärke",
+  "Built-in": "Inbyggd",
   "Bulgarian (Български)": "bulgariska (Български)",
   Bundle: "paket",
   "bundle price · items priced at": "paketpris · artiklar prissatta till",
@@ -268,6 +278,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Rensar...",
   "Click link": "Klicka på länken",
   Close: "Stäng",
+  "Close help assistant": "Stäng hjälpassistent",
   "Close navigation": "Stäng navigering",
   "CMS pages": "CMS-sidor",
   "CMS pages & SEO": "CMS-sidor och SEO",
@@ -300,6 +311,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Fortsätt med Facebook",
   "Control what each role can view, create, edit, publish or manage.":
     "Kontrollera vad varje roll kan visa, skapa, redigera, publicera eller hantera.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Kontrollera om varje bot är tillgänglig och redigera vad den vet.",
   Cook: "Koka",
   "Cook minutes": "Koka minuter",
   "Copy inside dark bands.": "Kopiera innanför mörka band.",
@@ -363,6 +376,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'Dekoration ovanpå skyltfönstret: drivande partiklar följer efter sidan, och en pekare. Båda är avstängda som standard, båda hoppas över helt för besökare som har bett sin enhet om reducerad rörelse, och ingen av dem visas någonsin i betalningsfönstret - ett snöfall över ett kortformulär är en distraktion vid exakt fel ögonblick. Ett lands effekter ersätter direkt de webbplatsomfattande effekterna för sina besökare snarare än att blandas med dem – "någon snö" är inte en meningsfull blandning av snö och ingen effekt.',
   "Default commission": "Standardprovision",
+  "Delete entry": "Ta bort post",
+  "Delete knowledge entry?": "Ta bort kunskapsinlägg?",
   "Demo mode — set": "Demoläge — set",
   "Demo mode has no API, so a password change cannot be saved. Set":
     "Demoläget har inget API, så en lösenordsändring kan inte sparas",
@@ -400,7 +415,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Redigera CMS-sidans metadata, indexering och råa sidblock. Hemsidesposten listas här också, men Homepage Settings är det säkrare sättet att ändra det – den här redigeraren tar rå JSON.",
   "Edit content": "Redigera innehåll",
+  "Edit entry": "Redigera post",
   "Edit farm": "Redigera gård",
+  "Edit knowledge entry": "Redigera kunskapsinlägg",
   "Edit media": "Redigera media",
   "Edit review": "Redigera recension",
   "Edit role": "Redigera roll",
@@ -514,6 +531,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Rubriker och kopia.",
   Headline: "Rubrik",
   "Hebrew (עברית)": "Hebreiska (עברית)",
+  "Help assistant": "Hjälpassistent",
+  "Help Assistant": "Hjälpassistent",
   "Hero description": "Hjältebeskrivning",
   "Hero eyebrow": "Hjälteögonbryn",
   "Hero image alt text": "Hjältebild alt text",
@@ -585,6 +604,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "kazakiska",
   "Keep artwork clean": "Håll konstverk rent",
   "Keep typing to search…": "Fortsätt att skriva för att söka...",
+  Keywords: "Sökord",
   "Korean (한국어)": "koreanska (한국어)",
   Kyrgyz: "Kirgizistan",
   Label: "Etikett",
@@ -767,6 +787,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Inget index",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Inga objekt ännu – lägg till minst en nedan. Checkout tillämpar endast detta pakets rabatt när varukorgen har alla varor här, i åtminstone dessa kvantiteter.",
+  "No knowledge entries": "Inga kunskapsposter",
   "No line items recorded.": "Inga rader registrerade.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "ändrar inte längre inloggningen – så ett lösenord du anger här ersätter verkligen det gamla.",
@@ -851,6 +872,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Endast ägaren kan hantera rollomfång.",
   "Only the owner can review payments and refunds.":
     "Endast ägaren kan granska betalningar och återbetalningar.",
+  "Open help assistant": "Öppen hjälpassistent",
   "Open navigation": "Öppen navigering",
   Optional: "Valfritt",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1119,6 +1141,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Spara...",
   "Say how often you will write and that unsubscribing is easy.":
     "säg hur ofta du kommer att skriva av dig.",
+  Scope: "Omfattning",
   "Scope Management": "Omfattningshantering",
   "Scopes unavailable": "Omfattningar otillgängliga",
   "Search archive": "Sök i arkiv",
@@ -1183,6 +1206,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "S kommer att göras tillgängligt i lager till reserverade lager. bevara reservationer, rörelsehistorik och revisionsloggar.",
   "Selected users will be removed from the users list and signed out.":
     "Utvalda användare kommer att tas bort från användarlistan och loggas ut.",
+  Send: "Skicka",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Skicka en säker länk för återställning av lösenord till denna användare. De kommer att ställa in sitt nya lösenord från administratörsåterställningssidan.",
   "Send back to draft": "Skicka tillbaka till utkast",
@@ -1252,6 +1276,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ögonblicksbilder vid köptillfället – katalogredigeringar skriver aldrig om en beställning.",
   "Sold out": "Sålt",
   Somali: "somaliska",
+  "space separated, e.g. product publish visibility":
+    "mellanslag separerat, t.ex. produktpubliceringssynlighet",
   "Spanish (Español)": "spanska (Español)",
   "Sprouted ragi flour": "Grodd ragimjöl",
   "SQL Tables": "SQL-tabeller",
@@ -1298,9 +1324,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Bannern överst på",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Fälten för banner, kategorirad, produktrad och SEO sparas tillsammans. Avsnittskryssrutor, beställning och anpassad avsnittskopiering sparas på egen hand, allteftersom du ändrar dem.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Chattwidgeten som kunder och besökare ser i skyltfönstret.",
   "The classic credential pair, including the password-reset flow.":
     "Det klassiska autentiseringsparet, inklusive flödet för återställning av lösenord.",
   "the farm owner": "gårdsägaren",
+  "The floating Help Assistant staff see on every admin page.":
+    "Den flytande hjälpassistentpersonalen ser på varje administratörssida.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Sidhuvudet och sidfotslänken etiketteras per 000 sidor av 000 sidor (6 m språköversättning). Ett språk som lämnas tomt går tillbaka till engelska i skyltfönstret. Det här är samma kontroll som fixar en rubrik som visar "Shop" / "Seasonal" på engelska medan allt runtomkring har bytt språk – de etiketterna kommer härifrån, inte från sidinnehållsöversättningarna ovan.',
   "The homepage has no sections": "Hemsidan har inga sektioner",
@@ -1329,6 +1359,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These colours also apply to pages beneath": "Dessa färger gäller även för sidor under",
   "These roles define the permission sets available when inviting or editing users.":
     "dessa rolluppsättningar är tillgängliga när de här inbjudande inställningarna är tillgängliga. användare.",
+  "Thinking…": "Tänker...",
   "This application is": "Denna applikation är",
   "This order is in a final state.": "Denna beställning är i ett slutgiltigt tillstånd.",
   "This page contains sensitive application diagnostics.":
@@ -1445,6 +1476,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Varför behövs ändringar, eller varför avvisades detta?",
   "Why is stock changing?": "Varför förändras aktien?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Ord som boten matchar mot en fråga för att avgöra att denna post är relevant.",
   "Working...": "Fungerar...",
   "World languages": "Världens språk",
   "Write a message…": "Skriv ett meddelande...",

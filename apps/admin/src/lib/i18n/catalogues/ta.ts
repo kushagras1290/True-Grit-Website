@@ -82,12 +82,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "வகையைச் சேர்",
   "Add code": "குறியீட்டைச் சேர்",
   "Add country": "நாட்டைச் சேர்",
+  "Add entry": "உள்ளீட்டைச் சேர்",
   "Add farm owner": "பண்ணை உரிமையாளரைச் சேர்",
   "Add ingredient": "மூலப்பொருளைச் சேர்",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "நிர்வகி என்பதில் இருந்து மூட்டையை உருவாக்கிய பிறகு உருப்படிகளைச் (எந்த மாறுபாடுகள், ஒவ்வொன்றும் எத்தனை) சேர்க்கவும்.",
+  "Add knowledge entry": "அறிவு உள்ளீட்டைச் சேர்",
   "Add one above to get started.": "தொடங்குவதற்கு மேலே ஒன்றைச் சேர்க்கவும்.",
   "Add one below to get started.": "தொடங்குவதற்கு கீழே ஒன்றைச் சேர்க்கவும்.",
+  "Add one so the bot has something to reference for this scope.":
+    "ஒன்றைச் சேர், அதனால் இந்த நோக்கத்திற்காக பாட் எதையாவது குறிப்பிட வேண்டும்.",
   "Add page": "பக்கத்தைச் சேர்",
   "Add participants": "பங்கேற்பாளர்களைச் சேர்",
   "Add role": "பாத்திரத்தைச் சேர்",
@@ -105,9 +109,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "தேடலைச் சரிசெய்யவும் அல்லது தயாரிப்பை உருவாக்கவும்.",
   "Adjustment %": "சரிசெய்தல் %",
   "Adjustments restricted": "சரிசெய்தல் தடைசெய்யப்பட்டுள்ளது",
+  Admin: "நிர்வாகம்",
   "Admin API is unavailable": "நிர்வாகம் API கிடைக்கவில்லை",
   "Admin Logs": "நிர்வாகப் பதிவுகள்",
   "Admin navigation": "நிர்வாகி வழிசெலுத்தல்",
+  "Admin panel bot": "நிர்வாக குழு பாட்",
   Afrikaans: "ஆப்ரிகான்ஸ்",
   "After refunds, all farms": "பணத்தைத் திரும்பப் பெற்ற பிறகு, அனைத்து பண்ணைகளும்",
   Albanian: "அல்பேனியன்",
@@ -169,6 +175,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "ஆர்மேனியன்",
   "Article not found": "கட்டுரை கிடைக்கவில்லை",
   "Asha Rao": "ஆஷா ராவ்",
+  "Ask a question…": "கேள்வி கேள்...",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "நிர்வாகக் குழுவில் எதையாவது செய்வது எப்படி என்று கேட்கவும் அல்லது நிலுவையில் உள்ள ஆர்டர்கள், குறைந்த ஸ்டாக் பொருட்கள் அல்லது ஆர்டரின் நிலையைப் பற்றி கேட்கவும்.",
   "Assamese (অসমীয়া)": "அசாமிஸ் (অসমী়া)",
   "Assigned roles": "ஒதுக்கப்பட்ட பாத்திரங்கள்",
   Attribution: "பண்பு",
@@ -176,6 +185,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Author: "ஆசிரியர்",
   "Auto-translate": "தானாக மொழிபெயர்",
   "Auto-translate all": "அனைத்தையும் தானாக மொழிபெயர்",
+  Availability: "கிடைக்கும் நிலை",
   Available: "கிடைக்கிறது",
   "available · reorder at": "கிடைக்கிறது · மறுவரிசைப்படுத்தவும்",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -220,6 +230,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "உடல் உரை",
   Bosnian: "போஸ்னியன்",
   Brand: "பிராண்ட்",
+  "Built-in": "உள்ளமைக்கப்பட்டவை",
   "Bulgarian (Български)": "விலை",
   Bundle: "பண்டல்",
   "bundle price · items priced at": "பண்டல் விலை · பொருட்களின் விலை",
@@ -274,6 +285,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "அழிக்கிறது...",
   "Click link": "இணைப்பை கிளிக் செய்யவும்",
   Close: "மூடு",
+  "Close help assistant": "உதவி உதவியாளரை மூடு",
   "Close navigation": "வழிசெலுத்தலை மூடு",
   "CMS pages": "CMS பக்கங்கள்",
   "CMS pages & SEO": "CMS பக்கங்கள் & SEO",
@@ -307,6 +319,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Facebookஐத் தொடரவும்",
   "Control what each role can view, create, edit, publish or manage.":
     "ஒவ்வொரு பாத்திரமும் எதைப் பார்க்கலாம், உருவாக்கலாம், திருத்தலாம், வெளியிடலாம் அல்லது நிர்வகிக்கலாம் என்பதைக் கட்டுப்படுத்தவும்.",
+  "Control whether each bot is available, and edit what it knows.":
+    "ஒவ்வொரு பாட்டும் கிடைக்குமா என்பதைக் கட்டுப்படுத்தவும், அதற்குத் தெரிந்ததைத் திருத்தவும்.",
   Cook: "சமைக்கவும்",
   "Cook minutes": "சமையல் நிமிடங்கள்",
   "Copy inside dark bands.": "அடர்ந்த பட்டைகளுக்குள் நகலெடுக்கவும்.",
@@ -376,9 +390,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "நீக்கு",
   "Delete (spam)": "நீக்கு (ஸ்பேம்)",
   "Delete category": "வகையை நீக்கு",
+  "Delete entry": "உள்ளீட்டை நீக்கவா",
   "Delete farm": "பண்ணையை நீக்கு",
   "Delete image": "படத்தை நீக்கு",
   "Delete inventory row": "இருப்பு வரிசையை நீக்கு",
+  "Delete knowledge entry?": "அறிவு உள்ளீட்டை நீக்கவா?",
   "Delete permanently": "நிரந்தரமாக நீக்கு",
   "Delete product": "தயாரிப்பு நீக்கு",
   "Delete role": "பாலை நீக்கு",
@@ -432,7 +448,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS பக்க மெட்டாடேட்டா, அட்டவணைப்படுத்தல் மற்றும் மூல பக்கத் தொகுதிகளைத் திருத்தவும். முகப்புப் பதிவு இங்கேயும் பட்டியலிடப்பட்டுள்ளது, ஆனால் முகப்புப் பக்க அமைப்புகளே அதை மாற்றுவதற்கான பாதுகாப்பான வழியாகும் — இந்த எடிட்டர் JSON ஐப் பயன்படுத்துகிறது.",
   "Edit content": "உள்ளடக்கத்தைத் திருத்தவும்",
+  "Edit entry": "பதிவைத் திருத்து",
   "Edit farm": "பண்ணையைத் திருத்து",
+  "Edit knowledge entry": "அறிவு உள்ளீட்டைத் திருத்தவும்",
   "Edit media": "மீடியாவைத் திருத்து",
   "Edit review": "மதிப்புரையைத் திருத்து",
   "Edit role": "பாத்திரத்தைத் திருத்து",
@@ -551,6 +569,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "தலைப்புகள் மற்றும் நகல்.",
   Headline: "தலைப்பு",
   "Hebrew (עברית)": "ஹீப்ரு (עברית)",
+  "Help assistant": "உதவி உதவியாளர்",
+  "Help Assistant": "உதவி உதவியாளர்",
   "Hero description": "ஹீரோ விளக்கம்",
   "Hero eyebrow": "ஹீரோ புருவம்",
   "Hero image alt text": "ஹீரோ படத்தின் மாற்று உரை",
@@ -627,6 +647,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Kazakh: "கசாக்",
   "Keep artwork clean": "கலைப்படைப்புகளை சுத்தமாக வைத்திருங்கள்",
   "Keep typing to search…": "தேடுவதற்கு தட்டச்சு செய்து கொண்டே இருங்கள்...",
+  Keywords: "முக்கிய வார்த்தைகள்",
   Khmer: "கெமர்",
   Kinyarwanda: "கின்யர்வாண்டா",
   "Konkani (कोंकणी)": "கொங்கனி (கொங்கணி)",
@@ -825,6 +846,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "குறியீடு இல்லை",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "இன்னும் உருப்படிகள் எதுவும் இல்லை — குறைந்தபட்சம் ஒன்றை கீழே சேர்க்கவும். செக்அவுட் ஆனது, கூடையில் ஒவ்வொரு பொருளையும் குறைந்தபட்சம் இந்த அளவுகளில் வைத்திருக்கும் போது மட்டுமே இந்த மூட்டையின் தள்ளுபடி பொருந்தும்.",
+  "No knowledge entries": "அறிவு உள்ளீடுகள் இல்லை",
   "No line items recorded.": "வரி உருப்படிகள் எதுவும் பதிவு செய்யப்படவில்லை.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "இனி உள்நுழைவை மாற்றாது - எனவே நீங்கள் இங்கு அமைத்த கடவுச்சொல் பழையதை மாற்றும்.",
@@ -911,6 +933,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "நோக்கை உரிமையாளரால் மட்டுமே நிர்வகிக்க முடியும்.",
   "Only the owner can review payments and refunds.":
     "உரிமையாளரால் மட்டுமே பணம் செலுத்துதல் மற்றும் பணத்தைத் திரும்பப்பெறுதல் ஆகியவற்றை மதிப்பாய்வு செய்ய முடியும்.",
+  "Open help assistant": "உதவி உதவியாளரைத் திறக்கவும்",
   "Open navigation": "திறந்த வழிசெலுத்தல்",
   Optional: "விருப்பம்",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1193,6 +1216,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "சேமிக்கிறது...",
   "Say how often you will write and that unsubscribing is easy.":
     "எவ்வளவு அடிக்கடி எழுதுவீர்கள், குழுவிலகுவது எளிது என்று கூறுங்கள்.",
+  Scope: "நோக்கம்",
   "Scope Management": "ஸ்கோப் மேனேஜ்மென்ட்",
   "Scopes unavailable": "ஸ்கோப்கள் கிடைக்கவில்லை",
   "Search archive": "தேடல் காப்பகம்",
@@ -1261,6 +1285,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "தேர்ந்தெடுக்கப்பட்ட வரிசைகள் முன்பதிவுகள், நகர்வு வரலாறு மற்றும் தணிக்கைப் பதிவுகளைப் பாதுகாக்கும் போது, ​​கையிருப்பு பூஜ்ஜியமாக இருக்கும்.",
   "Selected users will be removed from the users list and signed out.":
     "தேர்ந்தெடுக்கப்பட்ட பயனர்கள் பயனர் பட்டியலிலிருந்து அகற்றப்பட்டு வெளியேறுவார்கள்.",
+  Send: "அனுப்பு",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "இந்தப் பயனருக்கு பாதுகாப்பான கடவுச்சொல் மீட்டமைப்பு இணைப்பை அனுப்பவும். நிர்வாகி மீட்டமைப்புப் பக்கத்திலிருந்து அவர்கள் புதிய கடவுச்சொல்லை அமைப்பார்கள்.",
   "Send back to draft": "வரைவுக்குத் திரும்ப அனுப்பு",
@@ -1332,6 +1357,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Snippet: "துணுக்கை",
   "Sold out": "விற்றுவிட்டன",
   Somali: "சோமாலி",
+  "space separated, e.g. product publish visibility":
+    "இடம் பிரிக்கப்பட்டது, எ.கா. தயாரிப்பு வெளியீட்டுத் தெரிவுநிலை",
   "Spanish (Español)": "ஸ்பானிஷ் (Español)",
   "Sprouted ragi flour": "முளைத்த ராகி மாவு",
   "SQL Tables": "SQL டேபிள்கள்",
@@ -1345,6 +1372,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Steps (one per line)": "படிகள் (ஒரு வரிக்கு ஒன்று)",
   "Stock Status": "பங்கு நிலை",
   "Store credit": "ஸ்டோர் கிரெடிட்",
+  Storefront: "அசிஸ்டண்ட்-ல் ஒவ்வொரு உதவியிலும் பார்க்கவும் page.",
+  "Storefront bot": "ஸ்டோர்ஃபிரண்ட் போட்",
   "Storefront switches": "ttoref சுவிட்சுகள் கிடைக்கவில்லை",
   "Storefront switches unavailable": "கடை முகப்பு சுவிட்சுகள் கிடைக்கவில்லை",
   "Strong border": 'சமர்ப்பிப்புகள் </span="t0000 id"',
@@ -1382,9 +1411,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "மேலே உள்ள பேனர்",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "பேனர், வகை வரிசை, தயாரிப்பு வரிசை மற்றும் SEO புலங்கள் ஒன்றாகச் சேமிக்கப்படும். பிரிவு டிக்பாக்ஸ்கள், ஆர்டர் செய்தல் மற்றும் பிரத்தியேகப் பிரிவின் நகலை நீங்கள் மாற்றும்போது, அவை தானாகவே சேமிக்கப்படும்.",
+  "The chat widget customers and visitors see on the storefront.":
+    "அரட்டை விட்ஜெட் ஊழியர்கள் மற்றும் பார்வையாளர்கள் கடை முகப்பில் பார்க்கிறார்கள்.",
   "The classic credential pair, including the password-reset flow.":
     "கடவுச்சொல்-மீட்டமைப்பு ஓட்டம் உட்பட கிளாசிக் நற்சான்றிதழ் ஜோடி.",
   "the farm owner": "பண்ணை உரிமையாளர்",
+  "The floating Help Assistant staff see on every admin page.":
+    "மிதக்கும் உதவி உதவி ஊழியர்கள் ஒவ்வொரு நிர்வாகப் பக்கத்திலும் பார்க்கிறார்கள்.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'மொழிபெயர்க்கப்பட்ட ஒவ்வொரு லேபிள் மற்றும் அடிக்குறிப்பு பக்கமும், மொழி பெயர்க்கப்பட்ட ஒவ்வொரு பக்கத்திலும் தலைப்பு மற்றும் அடிக்குறிப்புகளைக் காட்டுகிறது 0068) காலியாக உள்ள ஒரு மொழி கடையின் முகப்பில் மீண்டும் ஆங்கிலத்திற்கு வரும். ஆங்கிலத்தில் "Shop" / "Seasonal" என்பதைக் காட்டும் தலைப்பைச் சரிசெய்யும் அதே கட்டுப்பாடுதான், அதைச் சுற்றியுள்ள அனைத்தும் மொழியை மாற்றியிருக்கும் — அந்த லேபிள்கள் இங்கிருந்து வந்தவை, மேலே உள்ள பக்க உள்ளடக்க மொழிபெயர்ப்புகளிலிருந்து அல்ல.',
   "The homepage has no sections": "முகப்புப் பக்கத்தில் பிரிவுகள் இல்லை",
@@ -1415,6 +1448,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "இந்த வண்ணங்கள் கீழே உள்ள பக்கங்களுக்கும் பொருந்தும்",
   "These roles define the permission sets available when inviting or editing users.":
     "பயனர்களை அழைக்கும் போது அல்லது திருத்தும்போது கிடைக்கும் அனுமதித் தொகுப்புகளை இந்தப் பாத்திரங்கள் வரையறுக்கின்றன.",
+  "Thinking…": "சிந்தனை…",
   "This application is": "இந்தப் பயன்பாடு",
   "This order is in a final state.": "இந்த ஆர்டர் இறுதி நிலையில் உள்ளது.",
   "This page contains sensitive application diagnostics.":
@@ -1536,6 +1570,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "ஏன் மாற்றங்கள் தேவை, அல்லது இது ஏன் நிராகரிக்கப்பட்டது?",
   "Why is stock changing?": "பங்கு ஏன் மாறுகிறது?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "இந்த உள்ளீடு பொருத்தமானதா என்பதை தீர்மானிக்க, ஒரு கேள்வியுடன் போட் பொருந்திய வார்த்தைகள்.",
   "Working...": "செயல்படுகிறது...",
   "World languages": "உலக மொழிகள்",
   "Write a message…": "ஒரு செய்தியை எழுது...",

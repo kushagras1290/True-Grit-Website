@@ -82,12 +82,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Gehitu kategoria",
   "Add code": "Gehitu kodea",
   "Add country": "Gehitu herrialdea",
+  "Add entry": "Gehitu sarrera",
   "Add farm owner": "Iragarki baserriaren jabea",
   "Add ingredient": "Gehitu osagaia",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
     "Gehitu elementuak (zein aldaera, bakoitza zenbat) sorta sortu ondoren, Kudeatu atalean.",
+  "Add knowledge entry": "Gehitu ezagutza sarrera",
   "Add one above to get started.": "Gehitu goiko bat hasteko.",
   "Add one below to get started.": "Gehitu bat behean hasteko.",
+  "Add one so the bot has something to reference for this scope.":
+    "Gehitu bat, bot-ak esparru honetarako erreferentzia egiteko zerbait izan dezan.",
   "Add page": "Gehitu orria",
   "Add participants": "Gehitu parte-hartzaileak",
   "Add role": "Gehitu rola",
@@ -105,9 +109,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjust the search or create a product.": "Egokitu bilaketa edo sortu produktu bat.",
   "Adjustment %": "Doikuntza %",
   "Adjustments restricted": "Doikuntzak mugatuta",
+  Admin: "Administratzailea",
   "Admin API is unavailable": "Admin APIa ez dago erabilgarri",
   "Admin Logs": "Administrazio erregistroak",
   "Admin navigation": "Administrazio-nabigazioa",
+  "Admin panel bot": "Administrazio paneleko bot",
   "After refunds, all farms": "Itzuli ondoren, baserri guztiak",
   Albanian: "Albaniera",
   All: "Guztiak",
@@ -168,6 +174,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Armenian: "Armeniar",
   "Article not found": "Artikulua ez da aurkitu",
   "Asha Rao": "Role",
+  "Ask a question…": "Egin galdera…",
+  "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
+    "Galdetu nola egin zerbait administrazio-panelean, edo galdetu zain dauden eskaerei, stock baxuko elementuei edo eskaera baten egoerari buruz.",
   "Assamese (অসমীয়া)": 'Assamera id="t0010">Esleipena',
   "Assigned roles": "Esleitutako rolak",
   Attribution: "Esleipena",
@@ -176,6 +185,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Auto-translate": "Itzulpen automatikoa",
   "Auto-translate all":
     "beti dago erreserbatuta (t0005 eskuz-a beti dago). Aldaketa bakoitza mugimendu bat da.",
+  Availability: "Eskuragarritasuna",
   Available: "Eskuragarri",
   "available · reorder at": "eskuragarri · berrantolatu hemen",
   "Available is always derived (on hand − reserved). Every change is a movement.":
@@ -219,6 +229,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Body text": "Gorputz testua",
   Bosnian: "Bosniarra",
   Brand: "Marka",
+  "Built-in": "Incorporatua",
   "Bulgarian (Български)": "Bulgariera (Български)",
   Bundle: "Sortea",
   "bundle price · items priced at": "sorta-prezioa · prezioa duten elementuak",
@@ -270,6 +281,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Clearing...": "Garbatzen...",
   "Click link": "Egin klik estekan",
   Close: "Itxi",
+  "Close help assistant": "Itxi laguntza-laguntzailea",
   "Close navigation": "Itxi nabigazioa",
   "CMS pages": "CMS orriak",
   "CMS pages & SEO": "CMS orriak eta SEO",
@@ -303,6 +315,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Continue with Facebook": "Jarraitu Facebook-ekin",
   "Control what each role can view, create, edit, publish or manage.":
     "Kontrolatu rol bakoitzak zer ikusi, sortu, editatu, argitaratu edo kudeatu dezakeen.",
+  "Control whether each bot is available, and edit what it knows.":
+    "Kontrolatu bot bakoitza erabilgarri dagoen ala ez eta editatu dakiena.",
   Cook: "Sukaldatu",
   "Cook minutes": "Egosi minutuak",
   "Copy inside dark bands.": "Kopiatu banda ilunen barruan.",
@@ -371,9 +385,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Delete: "Ezabatu",
   "Delete (spam)": "Ezabatu (spama)",
   "Delete category": "Ezabatu kategoria",
+  "Delete entry": "Ezabatu sarrera",
   "Delete farm": "Ezabatu baserria",
   "Delete image": "Ezabatu irudia",
   "Delete inventory row": "Ezabatu inbentarioaren errenkada",
+  "Delete knowledge entry?": "Ezabatu ezagutza-sarrera?",
   "Delete permanently": "Ezabatu betiko",
   "Delete product": "Ezabatu produktua",
   "Delete role": "Ezabatu rola",
@@ -423,7 +439,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Editatu CMS orriaren metadatuak, indexatzea eta orrialde-bloke gordinak. Hasierako orriaren erregistroa hemen ere agertzen da, baina Orriaren ezarpenak aldatzeko modu seguruena da: editore honek JSON gordina hartzen du.",
   "Edit content": "Editatu edukia",
+  "Edit entry": "Editatu sarrera",
   "Edit farm": "Editatu baserria",
+  "Edit knowledge entry": "Editatu ezagutza-sarrera",
   "Edit media": "Editatu multimedia",
   "Edit review": "Editatu berrikuspena",
   "Edit role": "Editatu rola",
@@ -539,6 +557,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Headings and copy.": "Izenburuak eta kopia.",
   Headline: "Izenburua",
   "Hebrew (עברית)": "Hebreera (עברית)",
+  "Help assistant": "Laguntza-laguntzailea",
+  "Help Assistant": "Laguntza-laguntzailea",
   "Hero description": "Heroiaren deskribapena",
   "Hero eyebrow": "Heroiaren bekaina",
   "Hero image alt text": "Heroien irudiaren alt testua",
@@ -611,6 +631,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Kashmiri (کٲشُر)": "Kaxmirera (کٲشُر)",
   "Keep artwork clean": "Mantendu artelanak garbi",
   "Keep typing to search…": "Jarraitu idazten bilatzeko...",
+  Keywords: "Gako-hitzak",
   "Konkani (कोंकणी)": "Konkaniera (कोंकणी)",
   "Korean (한국어)": "Koreera (한국어)",
   Kyrgyz: "Kirgizerra",
@@ -804,6 +825,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No index": "Ez dago aurkibiderik",
   "No items yet — add at least one below. Checkout only applies this bundle's discount when the basket has every item here, in at least these quantities.":
     "Oraindik ez dago elementurik — gehitu gutxienez bat behean. Checkout-ek sorta honen deskontua aplikatzen du saskian elementu guztiak hemen daudenean, gutxienez kantitate hauetan.",
+  "No knowledge entries": "Ez dago ezagutza-sarrerarik",
   "No line items recorded.": "Ez dago lerro-elementurik erregistratu.",
   "no longer changes the login — so a password you set here really does replace the old one.":
     "jada ez du saio-hasiera aldatzen; beraz, hemen ezarri duzun pasahitzak zaharra ordezkatzen du benetan.",
@@ -887,6 +909,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Only the owner can manage role scopes.": "Jabeak soilik kudea ditzake rol-esparruak.",
   "Only the owner can review payments and refunds.":
     "Jabeak bakarrik berrikusi ditzake ordainketak eta itzulketak.",
+  "Open help assistant": "Ireki laguntza-laguntzailea",
   "Open navigation": "Ireki nabigazioa",
   Optional: "Aukera",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
@@ -1167,6 +1190,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Saving…": "Gorde...",
   "Say how often you will write and that unsubscribing is easy.":
     "Esan zein maiztasunez idatziko duzun.",
+  Scope: "Eremua",
   "Scopes unavailable": "Esparruak ez daude erabilgarri",
   "Search archive": "Bilatu artxiboa",
   "Search blog posts": "Bilatu izena...",
@@ -1239,6 +1263,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Hautatutako errenkadak erreserbatutako izakinetan garbituko dira, stock-zero eskuragarri jarriz, erreserbak, mugimendu-historia eta auditoretza-erregistroak gordez.",
   "Selected users will be removed from the users list and signed out.":
     "Hautatutako erabiltzaileak erabiltzaileen zerrendatik kenduko dira eta saioa amaituko da.",
+  Send: "Bidali",
   "Send a secure password reset link to this user. They will set their new password from the admin reset page.":
     "Bidali pasahitza berrezartzeko esteka segurua erabiltzaile honi. Pasahitz berria ezarriko dute administratzailea berrezartzeko orrialdetik.",
   "Send back to draft": "Itzuli zirriborrora",
@@ -1307,6 +1332,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Erosketa garaiko argazkiak — katalogoko aldaketek ez dute inoiz eskaerarik berridazten.",
   "Sold out": "Agortuta",
   Somali: "Somaliera",
+  "space separated, e.g. product publish visibility":
+    "espazio bereizita, adibidez. produktuak argitaratzeko ikusgarritasuna",
   "Spanish (Español)": "Gaztelania (Español)",
   "Sprouted ragi flour": "Kimatutako ragi irina",
   "SQL Tables": "SQL Taulak",
@@ -1355,9 +1382,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "The banner across the top of": "Bannerra goiko aldean",
   "The banner, category row, product row and SEO fields save together. Section tickboxes, ordering and custom section copy save on their own, as you change them.":
     "Banerra, kategoriako errenkada, produktuen errenkada eta SEO eremuak batera gordetzen dira. Ataleko marka-koadroak, eskaerak eta atal pertsonalizatuen kopiak bere kabuz gordetzen dira, haiek aldatzen dituzun heinean.",
+  "The chat widget customers and visitors see on the storefront.":
+    "Bezeroek eta bisitariek erakusleihoan ikusten duten txat-widgeta.",
   "The classic credential pair, including the password-reset flow.":
     "Kredentzial-bikote klasikoa, pasahitza berrezartzeko fluxua barne.",
   "the farm owner": "ustiategiaren jabea",
+  "The floating Help Assistant staff see on every admin page.":
+    "Laguntza Laguntzailea eginbide mugikorreko langileek administrazio-orri guztietan ikusten dute.",
   'The header and footer link labels every page shows, translated per language (migration 0068). A locale left blank falls back to English on the storefront. This is the same control that fixes a header showing "Shop" / "Seasonal" in English while everything around it has switched language — those labels come from here, not from the page content translations above.':
     'Goiburua eta orri-oinaren estekak etiketak erakusten ditu orrialde bakoitzean (migrazioa, itzulketa6) hizkuntza bakoitzeko. Hutsik utzitako lokalizazio bat ingelesera itzultzen da erakusleihoan. Ingelesez "Denda" / "Sasoiko" erakusten duen goiburua konpontzen duen kontrol bera da, inguruan dagoen guztia hizkuntzaz aldatu den bitartean; etiketa horiek hemendik datoz, ez goiko orrialdeko edukiaren itzulpenetatik.',
   "The homepage has no sections": "Hasierako orrialdeak ez du atalik",
@@ -1387,6 +1418,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kolore hauek beheko orrialdeetan ere aplikatzen dira",
   "These roles define the permission sets available when inviting or editing users.":
     "Rol hauek erabiltzaileak gonbidatzeko edo editatzeko erabilgarri dauden baimen multzoak definitzen dituzte.",
+  "Thinking…": "Pentsatuz...",
   "This application is": "Aplikazio hau",
   "This order is in a final state.": "Eskaera hau azken egoeran dago.",
   "This page contains sensitive application diagnostics.":
@@ -1508,6 +1540,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Zergatik behar dira aldaketak, edo zergatik baztertu da hau?",
   "Why is stock changing?": "Zergatik ari dira aldatzen stockak?",
+  "Words the bot matches against a question to decide this entry is relevant.":
+    "Bot-a galdera batekin bat datozen hitzak sarrera hau garrantzitsua dela erabakitzeko.",
   "Working...": "Lanean...",
   "World languages": "Munduko hizkuntzak",
   "Write a message…": "Idatzi mezu bat...",
