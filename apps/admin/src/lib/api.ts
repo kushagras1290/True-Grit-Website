@@ -542,9 +542,19 @@ export interface SupportBotKnowledgeEntry {
   updatedAt: string;
 }
 
+export type SupportBotTuningKey = "historyTurns" | "knowledgeSnippets" | "searchResults";
+
 export interface SupportBotSettings {
   admin: boolean;
   storefront: boolean;
+  /** How many prior turns the client may replay into the prompt. */
+  historyTurns: number;
+  /** How many knowledge-base entries are embedded as reference material. */
+  knowledgeSnippets: number;
+  /** How many hits the storefront bot's search tools return per call. */
+  searchResults: number;
+  /** Hex colour for both chat widgets; blank means inherit the site brand. */
+  widgetColor: string;
 }
 
 export interface SiteControl {
@@ -738,7 +748,11 @@ export interface PageTranslation {
  *  `fields` actually carries is entity-type-specific (mirrors
  *  `services.entity_translation.TRANSLATABLE_FIELDS` on the API). */
 export type EntityTranslationType =
-  "navigation_item" | "category" | "product" | "article" | "recipe";
+  | "navigation_item"
+  | "category"
+  | "product"
+  | "article"
+  | "recipe";
 
 export interface EntityTranslationSummary {
   locale: string;
@@ -3454,7 +3468,16 @@ export const api = {
       : del(`/v1/admin/support-bot/knowledge/${entryId}`),
 
   supportBotSettings: (): Promise<SupportBotSettings> =>
-    demoMode ? demo({ admin: true, storefront: true }) : get("/v1/admin/support-bot/settings"),
+    demoMode
+      ? demo({
+          admin: true,
+          storefront: true,
+          historyTurns: 10,
+          knowledgeSnippets: 6,
+          searchResults: 5,
+          widgetColor: "",
+        })
+      : get("/v1/admin/support-bot/settings"),
 
   setSupportBotEnabled: (
     scope: SupportBotScope,
@@ -3463,6 +3486,27 @@ export const api = {
     demoMode
       ? demo({ scope, enabled })
       : patch(`/v1/admin/support-bot/settings/${scope}`, { enabled }),
+
+  /** The API clamps each key to its own range, so the value it returns is
+   *  authoritative and may differ from the one sent. */
+  setSupportBotTuning: (
+    key: SupportBotTuningKey,
+    value: number,
+  ): Promise<{ key: SupportBotTuningKey; value: number }> =>
+    demoMode ? demo({ key, value }) : patch(`/v1/admin/support-bot/tuning/${key}`, { value }),
+
+  /** Blank clears the override and returns both widgets to the brand colour. */
+  setSupportBotWidgetColor: (widgetColor: string): Promise<{ widgetColor: string }> =>
+    demoMode ? demo({ widgetColor }) : patch("/v1/admin/support-bot/widget-color", { widgetColor }),
+
+  /** Public, unauthenticated: the floating widget is shown to every staff
+   *  member, but the settings endpoint above is `support_bot.manage`-gated. */
+  supportBotWidgetColor: (): Promise<string> =>
+    demoMode
+      ? demo("")
+      : get<{ supportBotColor?: string }>("/v1/public/settings").then(
+          (body) => body.supportBotColor ?? "",
+        ),
 };
 
 /** `wss://…/v1/admin/messages/realtime/{conversationId}` — the session cookie

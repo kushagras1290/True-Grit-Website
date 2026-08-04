@@ -137,6 +137,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Isibhengezo sesimemezelo",
   "Announcements unavailable": "Izimemezelo azitholakali",
   Answer: "Impendulo",
+  "Answer tuning": "Ukushuna kwempendulo",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Noma ubani ongene ngemvume angase abeke amazwana. Ukuqala ingxoxo entsha kuphela kuvunyelwa iminyaka ye-akhawunti.",
   "API mode": "Imodi ye-API",
@@ -155,6 +156,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Asebenza kuwo wonke amapulazi ngaphandle kwenani lawo.",
   "Applies to": "Isebenza kokuthi",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Kusebenza kuwo womabili ama-bot. Amanani amakhulu anikeza umsizi okwengeziwe ukusebenza naye futhi abize kakhulu ngempendulo ngayinye.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Isebenza kuzo zombili izinqunjwana zengxoxo. Kushiye kusuliwe ukuze ulandele umbala womkhiqizo wesayithi kokuthi Imibala Nemiphumela.",
   "Applies to every visitor Cloudflare resolves to":
     "Isebenza kuso sonke isivakashi i-Cloudflare inquma ukuthi",
   Approve: "Igunyaze",
@@ -263,6 +268,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Khetha umbiko ohlwini ukuze uwuqalise.",
   "Choose up to": "Khetha kufika ku",
   "City / town": "Idolobha / idolobha",
+  Clear: "Sula",
   "Clearing...": "Iyasula...",
   "Click link": "Chofoza isixhumanisi",
   Close: "Vala",
@@ -301,6 +307,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Lawula ukuthi indima ngayinye ingabuka ini, idale, ihlele, ishicilele noma ilawule.",
   "Control whether each bot is available, and edit what it knows.":
     "Lawula ukuthi i-bot ngayinye iyatholakala yini, futhi uhlele ekwaziyo.",
+  "Conversation turns remembered": "Ingxoxo iyaphenduka ikhunjulwe",
   "Cook minutes": "Amaminithi okupheka",
   "Copy inside dark bands.": "Kopisha ngaphakathi kwamabhendi amnyama.",
   Correction: "Ukulungisa",
@@ -551,10 +558,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO yekhasi eliyisiqalo",
   "Homepage Settings": "Izilungiselelo zekhasi eliyisiqalo",
   "Homepage settings unavailable": "Izilungiselelo zekhasi eliyisiqalo azitholakali",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Kungakhi okufakiwe okuvela kuhlu olungezansi okunikezwa umsizi njengereferensi.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Mingaki imikhiqizo noma izigaba u-opharetha angazikhetha kokuthi Izintandokazi Ezintsha, Izigaba Ezifakiwe (Izilungiselelo Zekhasi Lasekhaya) kanye nemikhiqizo Egqanyisiwe (ngezansi). Ukuyikhulisa kusindisa ngokushesha, akukho ukuthunyelwa okudingekayo; kufika ku-50, usilingi ifomethi yebhulokhi iyasebenza.",
   "How many products to show": "Mingaki imikhiqizo ezoboniswa",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Mingaki imikhiqizo, ama-athikili noma amarisiphu osesho lwe-bot yangaphambili yesitolo olubuyisela ngaso sonke isikhathi uma lubheka okuthile.",
   "How many to show": "Mingaki okumele iboniswe",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Ingakanani ingxoxo yamanje ebuyiselwa emuva ngombuzo ngamunye. 0 uphendula yonke imibuzo ngokuhlukana.",
   "How this password works": "Isebenza kanjani le phasiwedi",
   "If that email has an account, a reset link is on its way.":
     "Uma leyo imeyili ine-akhawunti, isixhumanisi sokusetha kabusha sisendleleni.",
@@ -601,6 +614,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Gcina umsebenzi wobuciko uhlanzekile",
   "Keep typing to search…": "Qhubeka uthayipha ukuze useshe…",
   Keywords: "Amagama angukhiye",
+  "Knowledge entries per answer": "Okufakiwe kolwazi ngempendulo ngayinye",
   Label: "Ilebula",
   "Land under cultivation": "Indawo engalinywayo",
   Language: "Ulimi",
@@ -1175,6 +1189,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Sesha imikhiqizo, ama-oda, abasebenzisi, izigaba…",
   "Search promotions": "Sesha amaphromoshini",
   "Search recipes": "Sesha amaresiphi",
+  "Search results per lookup": "Imiphumela yosesho ngokubheka ngakunye",
   "Search returns": "Izimbuyiselo zosesho",
   "Search reviews": "Sesha izibuyekezo",
   "Search submissions": "Sesha okuthunyelwe",
@@ -1430,6 +1445,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Abasebenzisi",
   "Users & Roles": "Abasebenzisi Nezindima",
   "Users unavailable": "Abasebenzisi abatholakali",
+  "Using the site brand colour": "Usebenzisa umbala womkhiqizo wesayithi",
   Variant: "Okuhlukile",
   "Variant (SKU)": "Okuhlukile (SKU)",
   "Variant Name": "Igama Elihlukile",
@@ -1469,6 +1485,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Whole site": "Yonke isayithi",
   "Whole site (default)": "Yonke isayithi (okuzenzakalelayo)",
   "Why is stock changing?": "Kungani isitoko sishintsha?",
+  "Widget colour": "Umbala wewijethi",
+  "Widget colour hex": "I-hex yombala wewijethi",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Amagama i-bot ahambisana nombuzo ukuze anqume ukuthi lokhu okufakiwe kuhlobene.",
   "Working...": "Iyasebenza...",

@@ -29,6 +29,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/recipes/": "/ reseptler /",
   "/recipes/my-recipe": "/ reseptler / reseptim",
   "/shop": "/ dükan",
+  "#1f7a4d": "# 1f7a4d",
   "← All farms": "← fermalaryň hemmesi",
   "+ stars": "+ ýyldyzlar",
   "1 star": "1 ýyldyz",
@@ -147,6 +148,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Bildiriş banner",
   "Announcements unavailable": "Bildirişler elýeterli däl",
   Answer: "Jogap",
+  "Answer tuning": "Jogap düzmek",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Giren her kim teswir berip biler. Diňe täze çekişmä başlamak hasaby ýaşyna görä kesgitlenýär.",
   "API mode": "API tertibi",
@@ -164,6 +166,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Islendik talondan ýa-da mahabat arzanladyşyndan öň töleg wagtynda ulanylýar. Mugt eltmegiň çäginden ýokary ýa-da ondan ýokary sargytlar hiç hili töleg tölemeýär.",
   "Applied to every farm without its own rate.": "Her ferma öz nyrhy bolmazdan ulanylýar.",
   "Applies to": "Degişlidir",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Iki bot üçin hem ulanylýar. Uly bahalar kömekçä has köp işlemäge we her jogap üçin has köp çykdajy etmäge mümkinçilik berýär.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Söhbet gurallarynyň ikisine-de degişlidir. Reňkler we effektler sahypasynyň markasynyň reňkine eýermek üçin arassalaň.",
   "Applies to every visitor Cloudflare resolves to":
     "“Cloudflare” çözýän her bir myhmana degişlidir",
   Approve: "Tassykla",
@@ -283,6 +289,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Işletmek üçin sanawdan hasabat saýlaň.",
   "Choose up to": "Şu wagta çenli saýlaň",
   "City / town": "Şäher / şäher",
+  Clear: "Arassala",
   "Clearing...": "Arassalamak ...",
   "Click link": "Salgy basyň",
   Close: ".Akyn",
@@ -321,6 +328,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Her bir roluň görüp, döredip, redaktirläp, neşir edip ýa-da dolandyryp biljekdigine gözegçilik ediň.",
   "Control whether each bot is available, and edit what it knows.":
     "Her botyň elýeterlidigine gözegçilik ediň we bilýänlerini redaktirläň.",
+  "Conversation turns remembered": "Söhbet ýadyňa düşýär",
   Cook: "Bişiriň",
   "Cook minutes": "Birnäçe minut bişiriň",
   "Copy inside dark bands.": "Garaňky zolaklaryň içinde göçüriň.",
@@ -579,10 +587,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Baş sahypa SEO",
   "Homepage Settings": "Baş sahypa sazlamalary",
   "Homepage settings unavailable": "Baş sahypa sazlamalary elýeterli däl",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Aşakdaky sanawdan näçe ýazgy kömekçä berilýär.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Operator täze halanýanlara, aýratyn kategoriýalara (Baş sahypa sazlamalary) we tapawutlandyrylan önümlere (aşakda) näçe önüm ýa-da kategoriýa saýlap biler. Ony ýokarlandyrmak derrew tygşytlaýar, ýerleşdirmek zerur däl; 50-e çenli, blok blokynyň formasynyň özi ýerine ýetirýär.",
   "How many products to show": "Näçe önüm görkezmeli",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Dükanyň öňündäki botyň gözlegi her gezek bir zat görünse näçe önüm, makala ýa-da resept.",
   "How many to show": "Näçe görkezmeli",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Häzirki söhbetiň näçesi her sorag bilen yzyna iberilýär. 0 her soraga üzňelikde jogap berýär.",
   "How this password works": "Bu parolyň işleýşi",
   "Hungarian (Magyar)": "Wenger (Magyar)",
   Icelandic: "Islandiýa",
@@ -636,6 +650,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Çeper eserleri arassa saklaň",
   "Keep typing to search…": "Gözlemek üçin ýazmagy dowam ediň ...",
   Keywords: "Açar sözler",
+  "Knowledge entries per answer": "Her jogap üçin bilim ýazgylary",
   "Korean (한국어)": "Koreýçe (한국어)",
   Kyrgyz: "Gyrgyzystan",
   Label: "Bellik",
@@ -1230,6 +1245,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Önümleri, sargytlary, ulanyjylary, kategoriýalary gözläň…",
   "Search promotions": "Mahabaty gözläň",
   "Search recipes": "Reseptleri gözläň",
+  "Search results per lookup": "Gözleg üçin gözleg netijeleri",
   "Search returns": "Gözleg netijeleri",
   "Search reviews": "Synlary gözläň",
   "Search submissions": "Iberilenleri gözläň",
@@ -1488,6 +1504,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Ulanyjylar",
   "Users & Roles": "Ulanyjylar we rollar",
   "Users unavailable": "Ulanyjylar elýeterli däl",
+  "Using the site brand colour": "Sahypanyň markasynyň reňkini ulanmak",
   Uyghur: "Uýgur",
   Uzbek: "Özbek",
   Variant: "Wariant",
@@ -1533,6 +1550,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Näme üçin üýtgeşmeler gerek ýa-da bu näme üçin ret edildi?",
   "Why is stock changing?": "Näme üçin aksiýa üýtgeýär?",
+  "Widget colour": "Widjetiň reňki",
+  "Widget colour hex": "Widget reňk hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Bot, bu ýazgyny çözmek üçin bir soraga gabat gelýän sözler.",
   "Working...": "Işleýän ...",

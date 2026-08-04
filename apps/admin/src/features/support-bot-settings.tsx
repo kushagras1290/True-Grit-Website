@@ -7,7 +7,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Button,
@@ -25,7 +25,13 @@ import {
   Th,
 } from "../components/ui";
 import { useToast } from "../components/toast";
-import { ApiError, api, type SupportBotKnowledgeEntry, type SupportBotScope } from "../lib/api";
+import {
+  ApiError,
+  api,
+  type SupportBotKnowledgeEntry,
+  type SupportBotScope,
+  type SupportBotTuningKey,
+} from "../lib/api";
 import { formatDateTime } from "../lib/format";
 import { T } from "../lib/i18n";
 
@@ -69,6 +75,114 @@ function AvailabilityRow({
         {checked ? <T>On</T> : <T>Off</T>}
       </span>
     </li>
+  );
+}
+
+/** Commits on blur/Enter rather than per keystroke, so a half-typed number
+ *  ("1" on the way to "12") is never written and immediately clamped. */
+function TuningRow({
+  label,
+  description,
+  value,
+  min,
+  max,
+  disabled,
+  onCommit,
+}: {
+  label: string;
+  description: string;
+  value: number;
+  min: number;
+  max: number;
+  disabled: boolean;
+  onCommit: (next: number) => void;
+}) {
+  const [draft, setDraft] = useState(String(value));
+  useEffect(() => setDraft(String(value)), [value]);
+
+  function commit() {
+    const parsed = Number.parseInt(draft, 10);
+    if (Number.isNaN(parsed)) {
+      setDraft(String(value));
+      return;
+    }
+    const bounded = Math.min(max, Math.max(min, parsed));
+    setDraft(String(bounded));
+    if (bounded !== value) onCommit(bounded);
+  }
+
+  return (
+    <li className="flex items-start justify-between gap-4 border-t border-line py-3 first:border-t-0">
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-ink">{label}</p>
+        <p className="mt-1 text-sm text-ink-muted">{description}</p>
+      </div>
+      <Input
+        type="number"
+        className="w-24 shrink-0"
+        min={min}
+        max={max}
+        value={draft}
+        disabled={disabled}
+        aria-label={label}
+        onChange={(event) => setDraft(event.target.value)}
+        onBlur={commit}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") event.currentTarget.blur();
+        }}
+      />
+    </li>
+  );
+}
+
+/** `<input type="color">` cannot express "no override", so the swatch is paired
+ *  with a Clear button rather than trying to encode blank as a colour. */
+function WidgetColorRow({
+  value,
+  disabled,
+  onCommit,
+}: {
+  value: string;
+  disabled: boolean;
+  onCommit: (next: string) => void;
+}) {
+  const [draft, setDraft] = useState(value);
+  useEffect(() => setDraft(value), [value]);
+
+  return (
+    <div className="mt-3 flex flex-wrap items-center gap-3">
+      <input
+        type="color"
+        className="h-9 w-14 cursor-pointer rounded-sm border border-line-strong bg-surface"
+        value={draft || "#1f7a4d"}
+        disabled={disabled}
+        aria-label="Widget colour"
+        onChange={(event) => setDraft(event.target.value)}
+        onBlur={() => draft !== value && onCommit(draft)}
+      />
+      <Input
+        className="w-32"
+        value={draft}
+        placeholder="#1f7a4d"
+        maxLength={7}
+        disabled={disabled}
+        aria-label="Widget colour hex"
+        onChange={(event) => setDraft(event.target.value)}
+        onBlur={() => draft !== value && onCommit(draft)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") event.currentTarget.blur();
+        }}
+      />
+      {value ? (
+        <Button type="button" variant="secondary" disabled={disabled} onClick={() => onCommit("")}>
+          <T>Clear</T>
+        </Button>
+      ) : (
+        <span className="text-sm text-ink-muted">
+          <T>Using the site brand colour</T>
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -197,6 +311,19 @@ export function SupportBotSettingsPage() {
     onError: (error) => toast.error(errorMessage(error, "Could not update the switch.")),
   });
 
+  const tuneBot = useMutation({
+    mutationFn: ({ key, value }: { key: SupportBotTuningKey; value: number }) =>
+      api.setSupportBotTuning(key, value),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["support-bot-settings"] }),
+    onError: (error) => toast.error(errorMessage(error, "Could not update that setting.")),
+  });
+
+  const setColor = useMutation({
+    mutationFn: (widgetColor: string) => api.setSupportBotWidgetColor(widgetColor),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["support-bot-settings"] }),
+    onError: (error) => toast.error(errorMessage(error, "Could not update the widget colour.")),
+  });
+
   const createEntry = useMutation({
     mutationFn: api.createSupportBotKnowledge,
     onSuccess: () => {
@@ -261,6 +388,64 @@ export function SupportBotSettingsPage() {
             onChange={(enabled) => toggleBot.mutate({ scope: "storefront", enabled })}
           />
         </ul>
+      </section>
+
+      <section className="mb-6 rounded-md border border-line bg-surface p-4">
+        <h2 className="font-display text-base text-ink">
+          <T>Answer tuning</T>
+        </h2>
+        <p className="mt-1 text-sm text-ink-muted">
+          <T>
+            Applies to both bots. Larger values give the assistant more to work with and cost more
+            per answer.
+          </T>
+        </p>
+        <ul className="mt-2">
+          <TuningRow
+            label="Conversation turns remembered"
+            description="How much of the current chat is sent back with each question. 0 answers every question in isolation."
+            value={settings?.historyTurns ?? 10}
+            min={0}
+            max={40}
+            disabled={tuneBot.isPending}
+            onCommit={(value) => tuneBot.mutate({ key: "historyTurns", value })}
+          />
+          <TuningRow
+            label="Knowledge entries per answer"
+            description="How many entries from the list below are given to the assistant as reference."
+            value={settings?.knowledgeSnippets ?? 6}
+            min={1}
+            max={30}
+            disabled={tuneBot.isPending}
+            onCommit={(value) => tuneBot.mutate({ key: "knowledgeSnippets", value })}
+          />
+          <TuningRow
+            label="Search results per lookup"
+            description="How many products, articles or recipes the storefront bot's search returns each time it looks something up."
+            value={settings?.searchResults ?? 5}
+            min={1}
+            max={20}
+            disabled={tuneBot.isPending}
+            onCommit={(value) => tuneBot.mutate({ key: "searchResults", value })}
+          />
+        </ul>
+      </section>
+
+      <section className="mb-6 rounded-md border border-line bg-surface p-4">
+        <h2 className="font-display text-base text-ink">
+          <T>Widget colour</T>
+        </h2>
+        <p className="mt-1 text-sm text-ink-muted">
+          <T>
+            Applies to both chat widgets. Leave it cleared to follow the site brand colour from
+            Colours &amp; Effects.
+          </T>
+        </p>
+        <WidgetColorRow
+          value={settings?.widgetColor ?? ""}
+          disabled={setColor.isPending}
+          onCommit={(value) => setColor.mutate(value)}
+        />
       </section>
 
       <div className="mb-4 flex items-center gap-2">

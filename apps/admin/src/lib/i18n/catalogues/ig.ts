@@ -137,6 +137,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "ọkọlọtọ ọkwa",
   "Announcements unavailable": "Mma ọkwa adịghị",
   Answer: "Azịza",
+  "Answer tuning": "Ntugharị azịza",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Onye ọ bụla banyere nwere ike ikwu. Naanị ịmalite mkparịta ụka ọhụrụ bụ afọ akaụntụ",
   "Appearance unavailable": "ọdịdị adịghị adị",
@@ -154,6 +155,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "A na-etinye n'ugbo ọ bụla na-enweghị ọnụego nke ya.",
   "Applies to": "Adabara na",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Na-emetụta ma bots abụọ ahụ. Ụkpụrụ ndị buru ibu na-enye onye nnyemaaka aka ka ọ rụọ ọrụ yana ọ na-efu karịa otu azịza.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "dabara ma wijetị nkata. Hapụ ya kpochaa ka ọ soro akara akara saịtị sitere na Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "Adabara onye ọbịa ọ bụla Cloudflare kpebiri na",
   Approve: "kwanye",
@@ -292,6 +297,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Jikwaa ihe ọrụ ọ bụla nwere ike ịhụ, mepụta, dezie, bipụta ma ọ bụ jikwaa.",
   "Control whether each bot is available, and edit what it knows.":
     "Jikwaa ma bot ọ bụla dị, ma dezie ihe ọ maara.",
+  "Conversation turns remembered": "Echetara mkparịta ụka",
   Cook: "isi nri",
   "Cook minutes": "isi nri nkeji",
   "Copy inside dark bands.": "Detuo n'ime ndị agha gbara ọchịchịrị.",
@@ -533,10 +539,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Ibe SEO",
   "Homepage Settings": "Ntọala ibe",
   "Homepage settings unavailable": "Mwube ibe obibi adịghị",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Ole ndenye sitere na listi dị n'okpuru ka enyere onye inyeaka dịka ntụaka.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Ego ngwaahịa ma ọ bụ otu onye ọrụ nwere ike iburu n'ime ọkacha mmasị ọhụrụ, Atiya egosipụtara (Ntọala ibe mbụ) na ngwaahịa ndị egosipụtara (n'okpuru). Ịkwalite ya na-azọpụta ozugbo, ọ dịghị mkpa ịkwaga; ruo 50, n'uko ụlọ ngọngọ n'onwe ya na-akwado.",
   "How many products to show": "Ole ngwaahịa a ga-egosi",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Ole ngwaahịa, akụkọ ma ọ bụ usoro ntụzịaka ihe nchọta bot nke ụlọ ahịa na-alọta oge ọ bụla ọ lere ihe elu.",
   "How many to show": "Ole ka a ga-egosi",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Ole n'ime nkata ugbu a ka a na-ezigaghachi na ajụjụ ọ bụla. 0 na-aza ajụjụ ọ bụla na iche.",
   "How this password works": "Otu paswọọdụ a si arụ ọrụ",
   "If that email has an account, a reset link is on its way.":
     "Ọ bụrụ na email ahụ nwere akaụntụ, njikọ nrụpụta ga-aga.",
@@ -577,6 +589,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Dọọkwa ka ihe osise dị ọcha",
   "Keep typing to search…": "Nọgide na-ede iji chọọ…",
   Keywords: "Kemokwu",
+  "Knowledge entries per answer": "Etinye ihe ọmụma maka azịza",
   Label: "Akara",
   "Land under cultivation": "Ala a na-akụ ihe",
   Language: "Asụsụ",
@@ -1138,6 +1151,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "Chọọ ngwaahịa, iwu, ndị ọrụ, otu…",
   "Search promotions": "Nkwalite nchọ",
   "Search recipes": "Chọọ ntụzịaka",
+  "Search results per lookup": "Chọọ nsonaazụ n'otu n'otu",
   "Search returns": "Nchọgharị weghachi",
   "Search reviews": "Nlebanya ọchụchọ",
   "Search submissions": "Nchọgharị ntinye",
@@ -1378,6 +1392,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Ndị ọrụ",
   "Users & Roles": "Ndị ọrụ & Ọrụ",
   "Users unavailable": "Ndị ọrụ adịghị",
+  "Using the site brand colour": "Iji njiri agba saịtị",
   "Variant Name": "Aha dị iche iche",
   Variants: "Ụdị",
   "Variants of": "Ụdị",
@@ -1416,6 +1431,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Gịnị kpatara eji chọ mgbanwe, ma ọ bụ gịnị kpatara nke a jụrụ?",
   "Why is stock changing?": "Gịnị kpatara ngwaahịa na-agbanwe?",
+  "Widget colour": "Agba ngwaọrụ",
+  "Widget colour hex": "hex agba wijetị",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Okwu ndị bot dakọtara megide ajụjụ iji kpebie ntinye a bara uru.",
   "Working...": "Ịkwalite ikike ị ga-enweta kpọmkwem ebe a.",

@@ -143,6 +143,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "அறிவிப்பு பேனர்",
   "Announcements unavailable": "அறிவிப்புகள் கிடைக்கவில்லை",
   Answer: "பதில்",
+  "Answer tuning": "பதில் சரிசெய்தல்",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "உள்நுழைந்துள்ள எவரும் கருத்து தெரிவிக்கலாம். புதிய விவாதத்தைத் தொடங்குவது கணக்கு வயதின் அடிப்படையில் மட்டுமே.",
   "API mode": "API பயன்முறை",
@@ -161,6 +162,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "ஒவ்வொரு பண்ணைக்கும் அதன் சொந்த விலை இல்லாமல் பொருந்தும்.",
   "Applies to": "இதற்குப் பொருந்தும்",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "இரண்டு போட்களுக்கும் பொருந்தும். பெரிய மதிப்புகள் அசிஸ்டண்ட்டுடன் பணிபுரிய அதிக வாய்ப்பையும், ஒரு பதிலுக்கும் அதிக விலையையும் தருகிறது.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "இரண்டு அரட்டை விட்ஜெட்டுகளுக்கும் பொருந்தும். வண்ணங்கள் மற்றும் விளைவுகளிலிருந்து தளத்தின் பிராண்ட் நிறத்தைப் பின்பற்ற, அதை அழிக்கவும்.",
   "Applies to every visitor Cloudflare resolves to":
     "ஒவ்வொரு பார்வையாளருக்கும் பொருந்தும் Cloudflare தீர்க்கும்",
   Approve: "ஒப்புதல்",
@@ -282,6 +287,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "அதை இயக்க பட்டியலிலிருந்து ஒரு அறிக்கையைத் தேர்ந்தெடுக்கவும்.",
   "Choose up to": "வரை தேர்வு செய்யவும்",
   "City / town": "நகரம் / நகரம்",
+  Clear: "தெளிவு",
   "Clearing...": "அழிக்கிறது...",
   "Click link": "இணைப்பை கிளிக் செய்யவும்",
   Close: "மூடு",
@@ -321,6 +327,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ஒவ்வொரு பாத்திரமும் எதைப் பார்க்கலாம், உருவாக்கலாம், திருத்தலாம், வெளியிடலாம் அல்லது நிர்வகிக்கலாம் என்பதைக் கட்டுப்படுத்தவும்.",
   "Control whether each bot is available, and edit what it knows.":
     "ஒவ்வொரு பாட்டும் கிடைக்குமா என்பதைக் கட்டுப்படுத்தவும், அதற்குத் தெரிந்ததைத் திருத்தவும்.",
+  "Conversation turns remembered": "உரையாடல் திருப்பங்கள் நினைவில் இருந்தன",
   Cook: "சமைக்கவும்",
   "Cook minutes": "சமையல் நிமிடங்கள்",
   "Copy inside dark bands.": "அடர்ந்த பட்டைகளுக்குள் நகலெடுக்கவும்.",
@@ -589,10 +596,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "முகப்புப்பக்கம் SEO",
   "Homepage Settings": "முகப்புப் பக்க அமைப்புகள்",
   "Homepage settings unavailable": "முகப்புப் பக்க அமைப்புகள் கிடைக்கவில்லை",
+  "How many entries from the list below are given to the assistant as reference.":
+    "கீழே உள்ள பட்டியலில் இருந்து எத்தனை உள்ளீடுகள் உதவியாளருக்குக் குறிப்புகளாக வழங்கப்படுகின்றன.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "புதிய பிடித்தவை, பிரத்யேக வகைகள் (முகப்புப் பக்க அமைப்புகள்) மற்றும் தனிப்படுத்தப்பட்ட தயாரிப்புகள் (கீழே) ஒரு ஆபரேட்டர் எத்தனை தயாரிப்புகள் அல்லது வகைகளைத் தேர்ந்தெடுக்கலாம். அதை உயர்த்துவது உடனடியாக சேமிக்கிறது, வரிசைப்படுத்த தேவையில்லை; 50 வரை, பிளாக் வடிவமைப்பே செயல்படுத்தும் உச்சவரம்பு.",
   "How many products to show": "எத்தனை தயாரிப்புகளைக் காட்ட வேண்டும்",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "ஸ்டோர் ஃபிரண்ட் போட் தேடும் ஒவ்வொரு முறையும் எத்தனை தயாரிப்புகள், கட்டுரைகள் அல்லது சமையல் குறிப்புகள் கிடைக்கும்.",
   "How many to show": "எத்தனை காட்ட வேண்டும்",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "ஒவ்வொரு கேள்விக்கும் தற்போதைய அரட்டை எவ்வளவு அனுப்பப்படுகிறது 0 ஒவ்வொரு கேள்விக்கும் தனித்தனியாக பதிலளிக்கிறது.",
   "How this password works": "இந்தக் கடவுச்சொல் எவ்வாறு செயல்படுகிறது",
   "Hungarian (Magyar)": "ஹங்கேரியன் (Magyar)",
   Icelandic: "ஐஸ்லாண்டிக்",
@@ -650,6 +663,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "முக்கிய வார்த்தைகள்",
   Khmer: "கெமர்",
   Kinyarwanda: "கின்யர்வாண்டா",
+  "Knowledge entries per answer": "ஒரு பதிலுக்கு அறிவு உள்ளீடுகள்",
   "Konkani (कोंकणी)": "கொங்கனி (கொங்கணி)",
   "Korean (한국어)": "கொரியன் (한국어)",
   Kyrgyz: "கிர்கிஸ்",
@@ -1256,6 +1270,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "தயாரிப்புகள், ஆர்டர்கள், பயனர்கள், வகைகள்...",
   "Search promotions": "தேடல் விளம்பரங்கள்",
   "Search recipes": "தேடல் செய்முறைகள்",
+  "Search results per lookup": "ஒரு தேடலுக்கு தேடல் முடிவுகள்",
   "Search returns": "தேடல் வருமானங்கள்",
   "Search reviews": "தேடல் மதிப்புரைகள்",
   "Search submissions": "தேடல் சமர்ப்பிப்புகள்",
@@ -1525,6 +1540,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "பயனர்கள்",
   "Users & Roles": "பயனர்கள் & பாத்திரங்கள்",
   "Users unavailable": "பயனர்கள் கிடைக்கவில்லை",
+  "Using the site brand colour": "தள பிராண்ட் நிறத்தைப் பயன்படுத்துதல்",
   Uyghur: "உய்குர்",
   Uzbek: "உஸ்பெக்",
   Variant: "மாறுபாடு",
@@ -1570,6 +1586,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "ஏன் மாற்றங்கள் தேவை, அல்லது இது ஏன் நிராகரிக்கப்பட்டது?",
   "Why is stock changing?": "பங்கு ஏன் மாறுகிறது?",
+  "Widget colour": "விட்ஜெட் நிறம்",
+  "Widget colour hex": "விட்ஜெட் வண்ண ஹெக்ஸ்",
   "Words the bot matches against a question to decide this entry is relevant.":
     "இந்த உள்ளீடு பொருத்தமானதா என்பதை தீர்மானிக்க, ஒரு கேள்வியுடன் போட் பொருந்திய வார்த்தைகள்.",
   "Working...": "செயல்படுகிறது...",

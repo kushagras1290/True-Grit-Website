@@ -137,6 +137,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Ukënnegungsbanner",
   "Announcements unavailable": "Ukënnegung net verfügbar",
   Answer: "Äntwert",
+  "Answer tuning": "Äntwerttuning",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Jiddereen, deen ugemellt ass, ka kommentéieren. Nëmmen eng nei Diskussioun unzefänken gëtt vum Kontalter gespaart.",
   "API mode": "API Modus",
@@ -155,6 +156,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Op all Bauerenhaff ugewannt ouni säin eegenen Tarif.",
   "Applies to": "Gëlt fir",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Gëlt fir béid Bots. Méi grouss Wäerter ginn dem Assistent méi mat ze schaffen a kascht méi pro Äntwert.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Gëlt fir béid Chat-Widgets. Loosst et geläscht fir d'Markfaarf vum Site vu Faarwen & Effekter ze verfollegen.",
   "Applies to every visitor Cloudflare resolves to":
     "Gëlt fir all Besucher Cloudflare entscheet fir",
   Approve: "Zesummen",
@@ -304,6 +309,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kontrolléiert wat all Roll ka gesinn, erstellen, änneren, publizéieren oder verwalten.",
   "Control whether each bot is available, and edit what it knows.":
     "Kontrollen ob all Bot verfügbar ass, an änneren wat e weess.",
+  "Conversation turns remembered": "Gespréichsdréinen erënnert",
   Cook: "Kach",
   "Cook minutes": "Kachminutt",
   "Copy inside dark bands.": "Kopieer an donkele Bänner.",
@@ -550,10 +556,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage sections by country": "Homepage Sektiounen no Land",
   "Homepage sections unavailable": "Homepage Sektiounen net verfügbar",
   "Homepage settings unavailable": "Homepage-Astellunge sinn net verfügbar",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Wéi vill Entréen aus der Lëscht hei drënner ginn dem Assistent als Referenz ginn.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Wéi vill Produkter oder Kategorien en Bedreiwer kann a Frësch Favoritten, Featured Kategorien (Homepage Settings) an Highlighted Produkter (ënnert) auswielen. Erhéije et spuert direkt, keen Deployment néideg; bis zu 50, d'Plafong setzt de Blockformat selwer duerch.",
   "How many products to show": "Wéi vill Produkter ze weisen",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Wéivill Produiten, Artikelen oder Rezepter d'Sich vum Storefront Bot all Kéier wann et eppes ausgesäit.",
   "How many to show": "Wéi vill ze weisen",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Wéi vill vum aktuellen Chat gëtt mat all Fro zréckgeschéckt. 0 beäntwert all Fro isoléiert.",
   "How this password works": "Wéi funktionnéiert dëst Passwuert",
   "Hungarian (Magyar)": "Ungaresch (Magyar)",
   Icelandic: "Islännesch",
@@ -606,6 +618,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "Tipp weider fir ze sichen ...",
   Keywords: "Schlësselwierder",
   Kinyarwanda: "Kinjarwanda",
+  "Knowledge entries per answer": "Wëssenentrée pro Äntwert",
   "Korean (한국어)": "Koreanesch (한국어)",
   Kyrgyz: "Kirgisesch",
   "Land under cultivation": "Land ënner Kultivatioun",
@@ -1179,6 +1192,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Sich Produkter, Bestellungen, Benotzer, Kategorien…",
   "Search promotions": "Sich Promotiounen",
   "Search recipes": "Sich Rezepter",
+  "Search results per lookup": "Sichresultater pro Lookup",
   "Search returns": "Sich zréck",
   "Search reviews": "Sich Bewäertungen",
   "Search submissions": "Sich Soumissioun",
@@ -1427,6 +1441,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Benotzer",
   "Users & Roles": "Benotzer & Rollen",
   "Users unavailable": "Benotzer net verfügbar",
+  "Using the site brand colour": "Benotzen vun der Markfaarf vum Site",
   Uyghur: "Uighur",
   Uzbek: "Usbekesch",
   "Variant Name": "Variantnumm",
@@ -1470,6 +1485,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Firwat sinn Ännerungen néideg, oder firwat gouf dës ofgeleent?",
   "Why is stock changing?": "Firwat ännert sech d'Aktie?",
+  "Widget colour": "Widget-Faarf",
+  "Widget colour hex": "Widget-Faarf Hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Wierder déi de Bot mat enger Fro entsprécht fir ze entscheeden datt dësen Entrée relevant ass.",
   "Working...": "Schafft...",

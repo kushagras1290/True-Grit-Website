@@ -138,6 +138,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Elan banneri",
   "Announcements unavailable": "Elanlar əlçatan deyil",
   Answer: "Cavab",
+  "Answer tuning": "Cavab tənzimlənməsi",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Daxil olan hər kəs şərh yaza bilər. Yalnız yeni müzakirəyə başlamaq hesabın yaşı ilə bağlıdır.",
   "API mode": "API rejimi",
@@ -155,6 +156,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Hər hansı kupon və ya promosyon endirimindən əvvəl ödəniş zamanı tətbiq edilir. Pulsuz çatdırılma həddi və ya ondan yuxarı olan sifarişlər heç bir çatdırılma haqqı ödəmir.",
   "Applied to every farm without its own rate.": "Öz tarifi olmadan hər fermaya tətbiq edilir.",
   "Applies to": "Tətbiq edilir",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Hər iki bota aiddir. Daha böyük dəyərlər köməkçiyə daha çox işləmək imkanı verir və hər cavab üçün daha baha başa gəlir.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Hər iki söhbət vidcetinə tətbiq edilir. Rənglər və Effektlərdən sayt brendinin rəngini izləmək üçün onu təmiz buraxın.",
   "Applies to every visitor Cloudflare resolves to": "Hər ziyarətçiyə aiddir Cloudflare",
   Approve: "Təsdiqlə",
   "Approve & publish": "Təsdiqlə və dərc edilməklə",
@@ -273,6 +278,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "İşlətmək üçün siyahıdan hesabat seçin.",
   "Choose up to": "Maksimum seçin",
   "City / town": "Şəhər / şəhər",
+  Clear: "Təmizləyin",
   "Clearing...": "Təmizlənir...",
   "Click link": "Linkə klikləyin",
   Close: "Bağlayın",
@@ -312,6 +318,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Hər rolun nələrə baxa, yarada, redaktə edə, dərc edə və ya idarə edə biləcəyinə nəzarət edin.",
   "Control whether each bot is available, and edit what it knows.":
     "Hər bir botun əlçatan olub-olmamasına nəzarət edin və bildiklərini redaktə edin.",
+  "Conversation turns remembered": "Yadda qalan söhbət növbələri",
   Cook: "Bişirin",
   "Cook minutes": "Pişirmə dəqiqələri",
   "Copy inside dark bands.": "C",
@@ -571,10 +578,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Əsas səhifə SEO",
   "Homepage Settings": "Əsas səhifə Parametrləri",
   "Homepage settings unavailable": "Əsas səhifə parametrləri əlçatan deyil",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Aşağıdakı siyahıdan neçə giriş köməkçiyə istinad olaraq verilir.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Operator Təzə Sevimlilər, Seçilmiş Kateqoriyalar (Əsas Səhifə Parametrləri) və Vurğulanmış məhsullar (aşağıda) üçün neçə məhsul və ya kateqoriya seçə bilər. Onu qaldırmaq dərhal qənaət edir, yerləşdirməyə ehtiyac yoxdur; 50-yə qədər, blok formatının özünün tətbiq etdiyi tavan.",
   "How many products to show": "Nə qədər məhsul göstərilməlidir",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Vitrin botunun axtarışı hər dəfə nəyəsə baxanda neçə məhsul, məqalə və ya resept qaytarır.",
   "How many to show": "Neçə məhsul göstərilməlidir",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Hər sualla cari söhbətin nə qədəri geri göndərilir. 0 answers every question in isolation.",
   "How this password works": "Bu parol necə işləyir",
   "Hungarian (Magyar)": "Macar (Macar)",
   Icelandic: "İslandiya",
@@ -1466,6 +1479,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "İstifadəçilər",
   "Users & Roles": "İstifadəçilər və Rollar",
   "Users unavailable": "İstifadəçilər əlçatmazdır",
+  "Using the site brand colour": "Sayt brendinin rəngindən istifadə",
   Uzbek: "Özbək",
   Variant: "Viant",
   "Variant Name": "Variant adına",
@@ -1510,6 +1524,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Niyə dəyişikliklərə ehtiyac var və ya bu, niyə rədd edildi?",
   "Why is stock changing?": "Səhm niyə dəyişir?",
+  "Widget colour": "Vidjet rəngi",
+  "Widget colour hex": "Vidjet rəng hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Bu girişin müvafiq olduğuna qərar vermək üçün botun suala uyğun gələn sözləri.",
   "Working...": "Professional icazəyə ehtiyacınız var. burada xüsusi tanıtım seçin.",

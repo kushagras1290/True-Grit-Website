@@ -143,6 +143,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Asia ikede",
   "Announcements unavailable": "Awọn ikede ko si",
   Answer: "Idahun",
+  "Answer tuning": "Idahun tuning",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Ẹnikẹni ti o wọle le ṣe asọye. Bibẹrẹ ifọrọwọrọ tuntun nikan ni a fi silẹ nipasẹ ọjọ ori akọọlẹ.",
   "API mode": "Ipo API",
@@ -160,6 +161,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ti a lo ni ibi isanwo ṣaaju eyikeyi coupon tabi ẹdinwo igbega. Awọn aṣẹ ni tabi loke ẹnu-ọna ifijiṣẹ ọfẹ ko sanwo ọya ifijiṣẹ.",
   "Applied to every farm without its own rate.": "Ti a lo si gbogbo oko laisi oṣuwọn tirẹ.",
   "Applies to": "Waye si",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Kan si awọn bot mejeeji. Awọn iye ti o tobi julọ fun oluranlọwọ diẹ sii lati ṣiṣẹ pẹlu ati idiyele diẹ sii fun idahun.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "O kan si awọn ẹrọ ailorukọ iwiregbe mejeeji. Fi silẹ ni mimọ lati tẹle awọ ami iyasọtọ aaye lati Awọn awọ & Awọn ipa.",
   "Applies to every visitor Cloudflare resolves to": "Waye si gbogbo alejo Cloudflare pinnu lati",
   Approve: "fọwọsi",
   "Approve & publish": "Afọwọsi & gbejade",
@@ -303,6 +308,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ṣakoso ohun ti ipa kọọkan le wo, ṣẹda, ṣatunkọ, ṣe atẹjade tabi ṣakoso.",
   "Control whether each bot is available, and edit what it knows.":
     "Ṣakoso boya bot kọọkan wa, ati ṣatunkọ ohun ti o mọ.",
+  "Conversation turns remembered": "Ibaraẹnisọrọ yipada ni iranti",
   "Cook minutes": "Awọn iṣẹju sise",
   "Copy inside dark bands.": "Daakọ inu awọn ẹgbẹ dudu.",
   Correction: "Atunse",
@@ -547,10 +553,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO oju-iwe ile",
   "Homepage Settings": "Eto oju-iwe ile",
   "Homepage settings unavailable": "Eto oju-iwe akọọkan ko si",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Melo awọn titẹ sii lati inu atokọ ni isalẹ ni a fi fun oluranlọwọ gẹgẹbi itọkasi.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Melo ni ọja tabi awọn ẹka oniṣẹ ẹrọ le mu sinu Awọn ayanfẹ Tuntun, Awọn Ẹka ti a ṣe afihan (Eto Oju-ile) ati awọn ọja Ifojusi (isalẹ). Igbega o fipamọ lẹsẹkẹsẹ, ko si imuṣiṣẹ ti nilo; to 50, aja ti ọna kika Àkọsílẹ funrarẹ fi agbara mu.",
   "How many products to show": "Melo ni awọn ọja lati ṣafihan",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Melo ni ọja, awọn nkan tabi ilana wiwa bot iwaju itaja yoo pada ni igba kọọkan ti o ba wo nkan soke.",
   "How many to show": "Melo ni lati ṣafihan",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Elo ninu iwiregbe lọwọlọwọ ni a firanṣẹ pada pẹlu ibeere kọọkan. 0 dahun ibeere kọọkan ni ipinya.",
   "How this password works": "Bawo ni ọrọ igbaniwọle yii ṣe n ṣiṣẹ",
   "If that email has an account, a reset link is on its way.":
     "Ti imeeli yẹn ba ni akọọlẹ kan, ọna asopọ atunto wa ni ọna rẹ.",
@@ -599,6 +611,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Jeki iṣẹ-ọnà di mimọ",
   "Keep typing to search…": "Tẹsiwaju titẹ lati wa…",
   Keywords: "Awọn koko-ọrọ",
+  "Knowledge entries per answer": "Awọn titẹ sii imọ fun idahun",
   "Korean (한국어)": "Korea (한국어)",
   Label: "Aami",
   "Land under cultivation": "Ilẹ ti o wa labẹ ogbin",
@@ -1171,6 +1184,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ṣawari awọn ọja, awọn aṣẹ, awọn olumulo, awọn ẹka…",
   "Search promotions": "Awọn igbega wiwa",
   "Search recipes": "Awọn ilana wiwa",
+  "Search results per lookup": "Awọn abajade wiwa fun wiwa",
   "Search returns": "Awọn ipadabọ wiwa",
   "Search reviews": "Awọn atunwo wiwa",
   "Search submissions": "Awọn ifisilẹ wiwa",
@@ -1415,6 +1429,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Awọn olumulo",
   "Users & Roles": "Awọn olumulo & Awọn ipa",
   "Users unavailable": "Ko si awọn olumulo",
+  "Using the site brand colour": "Lilo awọ ami iyasọtọ aaye naa",
   Variant: "Iyatọ",
   "Variant (SKU)": "Iyatọ (SKU)",
   "Variant Name": "Orukọ iyatọ",
@@ -1456,6 +1471,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Kilode ti awọn iyipada ṣe nilo, tabi kilode ti eyi fi kọ?",
   "Why is stock changing?": "Kilode ti ọja fi n yipada?",
+  "Widget colour": "Awọ ẹrọ ailorukọ",
+  "Widget colour hex": "Hex Awọ ẹrọ ailorukọ",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Awọn ọrọ bot baramu lodi si ibeere kan lati pinnu titẹ sii wulo.",
   "Working...": "Ṣiṣẹ...",

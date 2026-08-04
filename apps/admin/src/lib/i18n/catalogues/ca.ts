@@ -140,6 +140,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Bàner d'anunci",
   "Announcements unavailable": "Anuncis no disponibles",
   Answer: "Resposta",
+  "Answer tuning": "Ajustament de respostes",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Qualsevol persona que hagi iniciat sessió pot comentar. Només l'inici d'una discussió nova està determinat per l'edat del compte.",
   "API mode": "Mode API",
@@ -158,6 +159,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "S'aplica a totes les granges sense la seva pròpia tarifa.",
   "Applies to": "S'aplica a",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "S'aplica als dos robots. Els valors més grans donen a l'assistent més per treballar i costen més per resposta.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "S'aplica als dos ginys de xat. Deixeu-lo esborrat per seguir el color de la marca del lloc a Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "S'aplica a tots els visitants que Cloudflare resol",
   Approve: "Aprova",
@@ -273,6 +278,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Trieu un informe de la llista per executar-lo.",
   "Choose up to": "Trieu fins a",
   "City / town": "Ciutat",
+  Clear: "Esborra",
   "Clearing...": "Esborrant...",
   "Click link": "Feu clic a l'enllaç",
   Close: "Tancar",
@@ -312,6 +318,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Controleu què pot veure, crear, editar, publicar o gestionar cada rol.",
   "Control whether each bot is available, and edit what it knows.":
     "Controla si cada bot està disponible i edita el que sap.",
+  "Conversation turns remembered": "Es recorda els torns de conversa",
   Cook: "Cuina",
   "Cook minutes": "Minuts de cuina",
   "Copy inside dark bands.": "Copia dins de bandes fosques.",
@@ -568,10 +575,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Seo de la pàgina d'inici",
   "Homepage Settings": "Configuració de la pàgina d'inici",
   "Homepage settings unavailable": "La configuració de la pàgina d'inici no està disponible",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Quantes entrades de la llista següent es donen a l'assistent com a referència.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Quants productes o categories pot triar un operador per a Preferits nous, Categories destacades (Configuració de la pàgina d'inici) i Productes destacats (a continuació). Aixecar-lo estalvia immediatament, no cal desplegar-lo; fins a 50, el sostre que imposa el format de bloc.",
   "How many products to show": "Quants productes s'han de mostrar",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Quants productes, articles o receptes retorna la cerca del bot d'aparador cada vegada que cerca alguna cosa.",
   "How many to show": "Quants s'han de mostrar",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Quanta part del xat actual s'envia amb cada pregunta. 0 respon a cada pregunta de manera aïllada.",
   "How this password works": "Com funciona aquesta contrasenya",
   "Hungarian (Magyar)": "hongarès (magiar)",
   Icelandic: "islandès",
@@ -622,6 +635,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Mantenir netes les obres d'art",
   "Keep typing to search…": "Continua escrivint per cercar...",
   Keywords: "Paraules clau",
+  "Knowledge entries per answer": "Entrades de coneixement per resposta",
   "Korean (한국어)": "Coreà (한국어)",
   Kyrgyz: "Kirguis",
   Label: "Etiqueta",
@@ -1217,6 +1231,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Cerca productes, comandes, usuaris, categories...",
   "Search promotions": "Cerca promocions",
   "Search recipes": "Cerca receptes",
+  "Search results per lookup": "Resultats de la cerca per cerca",
   "Search returns": "Cerca resultats",
   "Search reviews": '1>Cerca id="t0008">Cerca enviaments',
   "Search submissions": "Cerca enviaments",
@@ -1479,6 +1494,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Usuaris",
   "Users & Roles": "Usuaris i rols",
   "Users unavailable": "Usuaris no disponibles",
+  "Using the site brand colour": "Ús del color de la marca del lloc",
   Uyghur: "Uigur",
   Uzbek: "Uzbec",
   "Variant Name": "Nom de la variant",
@@ -1520,6 +1536,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Per què cal fer canvis o per què s'ha rebutjat?",
   "Why is stock changing?": "Per què canvien les existències?",
+  "Widget colour": "Color del widget",
+  "Widget colour hex": "Color hexadecimal del widget",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Paraules que el bot coincideix amb una pregunta per decidir que aquesta entrada és rellevant.",
   "Working...": "Funcionant...",

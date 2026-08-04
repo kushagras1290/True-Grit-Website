@@ -145,6 +145,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "घोषणाबैनर",
   "Announcements unavailable": "घोषणानि अनुपलब्धानि",
   Answer: "उत्तर",
+  "Answer tuning": "उत्तर-ट्यूनिङ्ग्",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "कोऽपि प्रवेशं कृतवान् कोऽपि टिप्पणीं कर्तुं शक्नोति। केवलं नूतनविमर्शस्य आरम्भः खातावयोः द्वारं भवति ।",
   "API mode": "API मोड",
@@ -163,6 +164,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "स्वकीयं दरं विना प्रत्येकं कृषिक्षेत्रे प्रयुक्तम् ।",
   "Applies to": "प्रत्येकं आगन्तुकं प्रति प्रवर्तते",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "उभय-बोट्-मध्ये प्रवर्तते । बृहत्तराणि मूल्यानि सहायकं अधिकं कार्यं कर्तुं ददति तथा च प्रति उत्तरं अधिकं मूल्यं ददाति।",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "उभयोः गपशपविजेट्योः कृते प्रवर्तते । Colors & Effects इत्यस्मात् साइट् ब्राण्ड्-वर्णस्य अनुसरणं कर्तुं तत् स्वच्छं त्यजन्तु ।",
   "Applies to every visitor Cloudflare resolves to":
     "प्रत्येकं आगन्तुकं प्रति प्रवर्तते Cloudflare संकल्पयति",
   Approve: "अनुमोदनं",
@@ -282,6 +287,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a reason": "कारणं चिनोतु",
   "Choose a report from the list to run it.": "तत् चालयितुं सूचीतः प्रतिवेदनं चिनोतु ।",
   "City / town": "नगरं / नगरं",
+  Clear: "साफ",
   "Clearing...": "समाप्तिम्...",
   "Click link": "पर्यन्तं चिनोतु लिङ्क",
   Close: "बन्द",
@@ -321,6 +327,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "प्रत्येकं भूमिका किं द्रष्टुं, निर्मातुं, सम्पादयितुं, प्रकाशयितुं वा प्रबन्धयितुं वा शक्नोति इति नियन्त्रयन्तु ।",
   "Control whether each bot is available, and edit what it knows.":
     "प्रत्येकं बोट् उपलब्धं वा इति नियन्त्रयन्तु, तथा च यत् जानाति तत् सम्पादयन्तु।",
+  "Conversation turns remembered": "वार्तालापः स्मरणीयः भवति",
   Cook: "पाक",
   "Cook minutes": "पाचयतु निमेषाः",
   "Copy inside dark bands.": "अन्धकारपट्टिकानां अन्तः प्रतिलिपिं कुर्वन्तु ।",
@@ -586,10 +593,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "मुखपृष्ठ SEO",
   "Homepage Settings": "मुखपृष्ठसेटिंग्स्",
   "Homepage settings unavailable": "मुखपृष्ठसेटिंग्स् अनुपलब्धा",
+  "How many entries from the list below are given to the assistant as reference.":
+    "अधः सूचीतः कति प्रविष्टयः सहायकाय सन्दर्भरूपेण दत्ताः सन्ति ।",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "एकः संचालकः ताजाप्रियेषु, विशेषताश्रेणीषु (होमपेज सेटिंग्स्) तथा हाइलाइट्ड् प्रोडक्ट्स् (अधः)। तत् उत्थापयन् तत्क्षणमेव रक्षति, परिनियोजनस्य आवश्यकता नास्ति; ५० पर्यन्तं, छतम् अवरोधस्वरूपं स्वयं प्रवर्तयति।",
   "How many products to show": "कति उत्पादाः दर्शयितव्याः",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "कति उत्पादाः, लेखाः वा... recipes storefront bot इत्यस्य अन्वेषणं प्रत्येकं किमपि दृष्ट्वा प्रत्यागच्छति।",
   "How many to show": "कति दर्शयितव्याः",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "वर्तमानस्य गपशपस्य कियत् भागं प्रत्येकं प्रश्नेन सह पुनः प्रेष्यते। 0 प्रत्येकं प्रश्नस्य उत्तरं पृथक् पृथक् ददाति ।",
   "How this password works": "इदं गुप्तशब्दं कथं कार्यं करोति",
   "Hungarian (Magyar)": "हङ्गेरी (मग्यार)",
   Icelandic: "आइसलैण्डिक",
@@ -646,6 +659,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "मुख्यशब्द",
   Khmer: "ख्मेर",
   Kinyarwanda: "किन्यरवाण्डा",
+  "Knowledge entries per answer": "प्रति उत्तरं ज्ञानप्रविष्टयः",
   "Konkani (कोंकणी)": "कोंकणी (कोंकणी)",
   "Korean (한국어)": "कोरियाई (한국어)",
   Kyrgyz: "किर्गिज",
@@ -1245,6 +1259,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "उत्पादाः, आदेशाः, उपयोक्तारः, श्रेणयः अन्वेष्टुम्...",
   "Search promotions": "अन्वेषणप्रचाराः",
   "Search recipes": "अन्वेषणव्यञ्जनानि",
+  "Search results per lookup": "प्रति पश्यन् अन्वेषणपरिणामाः",
   "Search returns": "अन्वेषणप्रतिफलनानि",
   "Search reviews": "अन्वेषणसमीक्षाः",
   "Search submissions": "अन्वेषणनिवेदनानि",
@@ -1507,6 +1522,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "उपयोक्तृणां",
   "Users & Roles": "उपयोक्तृणां भूमिकानां",
   "Users unavailable": "उपयोक्तारः अनुपलब्धाः",
+  "Using the site brand colour": "साइट् ब्राण्ड् वर्णस्य",
   Uyghur: "उयघुर",
   Uzbek: "उज्बेक",
   Variant: "विविधता",
@@ -1551,6 +1567,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "किमर्थं परिवर्तनस्य आवश्यकता अस्ति, अथवा एतत् किमर्थं अङ्गीकृतम्?",
   "Why is stock changing?": "किमर्थं स्टॉकः परिवर्तते?",
+  "Widget colour": "विजेट् वर्णस्य",
+  "Widget colour hex": "विजेट् वर्णस्य हेक्स",
   "Words the bot matches against a question to decide this entry is relevant.":
     "शब्दाः बोट् प्रश्नस्य विरुद्धं मेलयति यत् एषा प्रविष्टिः प्रासंगिका इति निर्णयं करोति।",
   "Working...": "कार्यं कुर्वन्...",

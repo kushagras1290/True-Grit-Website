@@ -140,6 +140,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "ప్రకటన బ్యానర్",
   "Announcements unavailable": "ప్రకటనలు అందుబాటులో లేవు",
   Answer: "సమాధానం",
+  "Answer tuning": "సమాధానం ట్యూనింగ్",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "సైన్ ఇన్ చేసిన ఎవరైనా వ్యాఖ్యానించవచ్చు. ఖాతా వయస్సు ఆధారంగా మాత్రమే కొత్త చర్చను ప్రారంభించడం జరుగుతుంది.",
   "API mode": "API మోడ్",
@@ -158,6 +159,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "ప్రతి పొలానికి దాని స్వంత రేటు లేకుండా వర్తింపజేయబడుతుంది.",
   "Applies to": "దీనికి వర్తిస్తుంది",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "రెండు బాట్‌లకు వర్తిస్తుంది. పెద్ద విలువలు అసిస్టెంట్‌కి పని చేయడానికి మరింత ఇస్తాయి మరియు ప్రతి సమాధానానికి ఎక్కువ ఖర్చు అవుతుంది.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "రెండు చాట్ విడ్జెట్‌లకు వర్తిస్తుంది. రంగులు & ఎఫెక్ట్‌ల నుండి సైట్ బ్రాండ్ రంగును అనుసరించడానికి దాన్ని క్లియర్ చేసి వదిలేయండి.",
   "Applies to every visitor Cloudflare resolves to":
     'పరిష్కరించే ప్రతి సందర్శకులకు <sfl id="t0009">ఆమోదించండి',
   Approve: "ఆమోదించండి",
@@ -281,6 +286,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "దానిని అమలు చేయడానికి జాబితా నుండి నివేదికను ఎంచుకోండి.",
   "Choose up to": "వరకు ఎంచుకోండి",
   "City / town": "నగరం / పట్టణం",
+  Clear: "క్లియర్",
   "Clearing...": "క్లియర్ అవుతోంది...",
   "Click link": "లింక్‌ని క్లిక్ చేయండి",
   Close: "మూసివేయి",
@@ -320,6 +326,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ప్రతి పాత్ర వీక్షించగల, సృష్టించగల, సవరించగల, ప్రచురించగల లేదా నిర్వహించగల వాటిని నియంత్రించండి.",
   "Control whether each bot is available, and edit what it knows.":
     "ప్రతి బాట్ అందుబాటులో ఉందో లేదో నియంత్రించండి మరియు దానికి తెలిసిన వాటిని సవరించండి.",
+  "Conversation turns remembered": "సంభాషణ మలుపులు గుర్తుంచుకున్నాయి",
   Cook: "వంట",
   "Cook minutes": "నిమిషాలు ఉడికించాలి",
   "Copy inside dark bands.": "డార్క్ బ్యాండ్‌ల లోపల కాపీ చేయండి.",
@@ -588,10 +595,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "హోమ్‌పేజీ SEO",
   "Homepage Settings": "హోమ్‌పేజీ సెట్టింగ్‌లు",
   "Homepage settings unavailable": "హోమ్‌పేజీ సెట్టింగ్‌లు అందుబాటులో లేవు",
+  "How many entries from the list below are given to the assistant as reference.":
+    "దిగువ జాబితా నుండి ఎన్ని ఎంట్రీలు రిఫరెన్స్‌గా అసిస్టెంట్‌కి ఇవ్వబడ్డాయి.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "ఒక ఆపరేటర్ తాజా ఇష్టమైనవి, ఫీచర్ చేసిన వర్గాలు (హోమ్‌పేజీ సెట్టింగ్‌లు) మరియు హైలైట్ చేసిన ఉత్పత్తుల్లో (క్రింద) ఎన్ని ఉత్పత్తులు లేదా వర్గాలను ఎంచుకోవచ్చు. దీన్ని పెంచడం తక్షణమే ఆదా అవుతుంది, విస్తరణ అవసరం లేదు; 50 వరకు, బ్లాక్ ఫార్మాట్ స్వయంగా అమలు చేస్తుంది.",
   "How many products to show": "ఎన్ని ఉత్పత్తులను చూపించాలి",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "స్టోర్ ఫ్రంట్ బాట్ యొక్క శోధన ఏదైనా కనిపించిన ప్రతిసారీ ఎన్ని ఉత్పత్తులు, కథనాలు లేదా వంటకాలను అందిస్తుంది.",
   "How many to show": "ఎన్ని చూపించాలి",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "ప్రస్తుత చాట్‌లో ప్రతి ప్రశ్నకు ఎంత తిరిగి పంపబడుతుంది. 0 ప్రతి ప్రశ్నకు ఐసోలేషన్‌లో సమాధానమిస్తుంది.",
   "How this password works": "ఈ పాస్‌వర్డ్ ఎలా పని చేస్తుంది",
   "Hungarian (Magyar)": "హంగేరియన్ (Magyar)",
   Icelandic: "ఐస్‌లాండిక్",
@@ -649,6 +662,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "కీవర్డ్‌లు",
   Khmer: "ఖ్మేర్",
   Kinyarwanda: "కిన్యార్వాండా",
+  "Knowledge entries per answer": "ప్రతి సమాధానానికి నాలెడ్జ్ ఎంట్రీలు",
   "Konkani (कोंकणी)": "కొంకణి (కొంకణి)",
   "Korean (한국어)": "కొరియన్ (한국어)",
   Kyrgyz: "కిర్గిజ్",
@@ -1247,6 +1261,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ఉత్పత్తులు, ఆర్డర్‌లు, వినియోగదారులు, వర్గాలను శోధించండి...",
   "Search promotions": "శోధన ప్రమోషన్‌లు",
   "Search recipes": "వంటకాలను శోధించండి",
+  "Search results per lookup": "ఒక లుక్‌అప్‌కి శోధన ఫలితాలు",
   "Search returns": "శోధన రిటర్న్‌లు",
   "Search reviews": "శోధన సమీక్షలు",
   "Search submissions": "శోధన సమర్పణలు",
@@ -1511,6 +1526,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "వినియోగదారులు",
   "Users & Roles": "వినియోగదారులు & పాత్రలు",
   "Users unavailable": "వినియోగదారులు అందుబాటులో లేరు",
+  "Using the site brand colour": "సైట్ బ్రాండ్ రంగును ఉపయోగించడం",
   Uyghur: "ఉయ్ఘూర్",
   Uzbek: "ఉజ్బెక్",
   Variant: "వేరియంట్",
@@ -1556,6 +1572,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "మార్పులు ఎందుకు అవసరం, లేదా ఇది ఎందుకు తిరస్కరించబడింది?",
   "Why is stock changing?": "స్టాక్ ఎందుకు మారుతోంది?",
+  "Widget colour": "విడ్జెట్ రంగు",
+  "Widget colour hex": "విడ్జెట్ రంగు హెక్స్",
   "Words the bot matches against a question to decide this entry is relevant.":
     "ఈ ఎంట్రీ సంబంధితమైనదని నిర్ణయించడానికి బోట్ పదాలు ప్రశ్నతో సరిపోలుతున్నాయి.",
   "Working...": "పని చేస్తోంది...",

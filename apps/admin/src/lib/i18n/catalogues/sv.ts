@@ -143,6 +143,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Meddelandebanner",
   "Announcements unavailable": "Meddelanden otillgängliga",
   Answer: "Svar",
+  "Answer tuning": "Svarsjustering",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Alla som är inloggade får kommentera. Det är bara kontots ålder att starta en ny diskussion.",
   "API mode": "API-läge",
@@ -160,6 +161,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ansöks i kassan före eventuell kupong eller kampanjrabatt. Beställningar på eller över tröskeln för fri frakt betalar ingen leveransavgift.",
   "Applied to every farm without its own rate.": "Tillämpas på varje gård utan eget pris.",
   "Applies to": "Gäller",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Gäller båda botarna. Större värden ger assistenten mer att arbeta med och kostar mer per svar.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Gäller båda chattwidgetarna. Lämna det fritt för att följa webbplatsens varumärkesfärg från Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "Gäller alla besökare som Cloudflare beslutar om",
   Approve: "Godkänn",
@@ -275,6 +280,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Välj en rapport från listan för att köra den.",
   "Choose up to": "Välj upp till",
   "City / town": "Stad/stad",
+  Clear: "Rensa",
   "Clearing...": "Rensar...",
   "Click link": "Klicka på länken",
   Close: "Stäng",
@@ -313,6 +319,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kontrollera vad varje roll kan visa, skapa, redigera, publicera eller hantera.",
   "Control whether each bot is available, and edit what it knows.":
     "Kontrollera om varje bot är tillgänglig och redigera vad den vet.",
+  "Conversation turns remembered": "Konversationsvändningar ihågkomna",
   Cook: "Koka",
   "Cook minutes": "Koka minuter",
   "Copy inside dark bands.": "Kopiera innanför mörka band.",
@@ -550,10 +557,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Hemsides SEO",
   "Homepage Settings": "Hemsidesinställningar",
   "Homepage settings unavailable": "Hemsidesinställningar är inte tillgängliga",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Hur många poster från listan nedan ges till assistenten som referens.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Hur många produkter eller kategorier en operatör kan välja bland färska favoriter, utvalda kategorier (hemsidainställningar) och markerade produkter (nedan). Att höja den sparar omedelbart, ingen driftsättning behövs; upp till 50, taket som själva blockformatet upprätthåller.",
   "How many products to show": "Hur många produkter som ska visas",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Hur många produkter, artiklar eller recept som butiksrobotens sökning returnerar varje gång den letar upp något.",
   "How many to show": "Hur många som ska visas",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Hur mycket av den aktuella chatten skickas tillbaka med varje fråga. 0 svarar på varje fråga isolerat.",
   "How this password works": "Så fungerar det här lösenordet",
   "Hungarian (Magyar)": "ungerska (magyariska)",
   Icelandic: "isländska",
@@ -605,6 +618,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Håll konstverk rent",
   "Keep typing to search…": "Fortsätt att skriva för att söka...",
   Keywords: "Sökord",
+  "Knowledge entries per answer": "Kunskapsposter per svar",
   "Korean (한국어)": "koreanska (한국어)",
   Kyrgyz: "Kirgizistan",
   Label: "Etikett",
@@ -1178,6 +1192,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Sök efter produkter, beställningar, användare, kategorier...",
   "Search promotions": "Sökkampanjer",
   "Search recipes": "Sök recept",
+  "Search results per lookup": "Sökresultat per uppslag",
   "Search returns": "Sökresultat",
   "Search reviews": "Sökrecensioner",
   "Search submissions": "Sökbidrag",
@@ -1433,6 +1448,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Användare",
   "Users & Roles": "Användare och roller",
   "Users unavailable": "Användare otillgängliga",
+  "Using the site brand colour": "Använda webbplatsens varumärkesfärg",
   Uyghur: "uiguriska",
   Uzbek: "uzbekiska",
   "Variant Name": "Variantnamn",
@@ -1476,6 +1492,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Varför behövs ändringar, eller varför avvisades detta?",
   "Why is stock changing?": "Varför förändras aktien?",
+  "Widget colour": "Widgetfärg",
+  "Widget colour hex": "Widgetfärg hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Ord som boten matchar mot en fråga för att avgöra att denna post är relevant.",
   "Working...": "Fungerar...",

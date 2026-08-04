@@ -138,6 +138,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "ປ້າຍໂຄສະນາປະກາດ",
   "Announcements unavailable": "ປະກາດບໍ່ສາມາດໃຊ້ໄດ້",
   Answer: "ຄຳຕອບ",
+  "Answer tuning": "ການປັບຄຳຕອບ",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "ໃຜກໍຕາມທີ່ເຂົ້າສູ່ລະບົບສາມາດຂຽນຄຳເຫັນໄດ້. ມີພຽງແຕ່ການເລີ່ມຕົ້ນການສົນທະນາໃໝ່ເທົ່ານັ້ນທີ່ກຳນົດໂດຍອາຍຸບັນຊີ.",
   "API mode": "ໂໝດ API",
@@ -155,6 +156,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ຖືກນຳໃຊ້ໃນຕອນຈ່າຍເງິນກ່ອນຄູປອງ ຫຼືສ່ວນຫຼຸດໂປຣໂມຊັນ. ການສັ່ງຊື້ທີ່ ຫຼື ເກີນຂອບເຂດການຈັດສົ່ງຟຣີແມ່ນບໍ່ມີຄ່າສົ່ງ.",
   "Applied to every farm without its own rate.": "ນຳໃຊ້ກັບທຸກໆຟາມໂດຍບໍ່ມີອັດຕາຄ່າສົ່ງເອງ.",
   "Applies to": "ນຳໃຊ້ກັບ",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "ນຳໃຊ້ກັບທັງສອງບັອດ. ຄ່າທີ່ໃຫຍ່ກວ່າເຮັດໃຫ້ຜູ້ຊ່ວຍເຮັດວຽກນຳໄດ້ຫຼາຍຂຶ້ນ ແລະ ຄ່າໃຊ້ຈ່າຍຕໍ່ຄຳຕອບຫຼາຍຂື້ນ.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "ນຳໃຊ້ກັບທັງສອງວິດເຈັດສົນທະນາ. ປ່ອຍມັນໄວ້ເພື່ອເຮັດຕາມສີຍີ່ຫໍ້ຂອງເວັບໄຊຈາກ Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "ນຳໃຊ້ກັບຜູ້ເຂົ້າຊົມທຸກໆຄົນ Cloudflare ແກ້ໄຂກັບ",
   Approve: "ອະນຸມັດ",
@@ -305,6 +310,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ຄວບຄຸມສິ່ງທີ່ແຕ່ລະບົດບາດສາມາດເບິ່ງ, ສ້າງ, ແກ້ໄຂ, ເຜີຍແຜ່ ຫຼືຈັດການ.",
   "Control whether each bot is available, and edit what it knows.":
     "ຄວບຄຸມວ່າແຕ່ລະ bot ມີໃຫ້ຫຼືບໍ່, ແລະແກ້ໄຂສິ່ງທີ່ມັນຮູ້.",
+  "Conversation turns remembered": "ການປ່ຽນການສົນທະນາຈື່ຈໍາ",
   Cook: "ແຕ່ງກິນ",
   "Cook minutes": "ນາທີປຸງອາຫານ",
   "Copy inside dark bands.": "ສຳເນົາຢູ່ໃນແຖບສີມືດ.",
@@ -556,10 +562,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ໜ້າຫຼັກ SEO",
   "Homepage Settings": "ການຕັ້ງຄ່າໜ້າຫຼັກ",
   "Homepage settings unavailable": "ການຕັ້ງຄ່າໜ້າຫຼັກບໍ່ສາມາດໃຊ້ໄດ້",
+  "How many entries from the list below are given to the assistant as reference.":
+    "ຈໍານວນລາຍການຈາກລາຍການຂ້າງລຸ່ມນີ້ແມ່ນມອບໃຫ້ຜູ້ຊ່ວຍເປັນການອ້າງອີງ.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "ຈຳນວນຜະລິດຕະພັນ ຫຼືໝວດໝູ່ທີ່ຜູ້ປະກອບການສາມາດເລືອກເຂົ້າໃນລາຍການທີ່ມັກສົດຊື່ນ, ໝວດໝູ່ແນະນຳ (ການຕັ້ງຄ່າໜ້າຫຼັກ) ແລະຜະລິດຕະພັນທີ່ເນັ້ນໃສ່ (ຂ້າງລຸ່ມນີ້). ການລ້ຽງມັນຊ່ວຍປະຢັດທັນທີ, ບໍ່ຈໍາເປັນຕ້ອງໃຊ້; ສູງສຸດ 50, ເພດານຮູບແບບບລັອກຕົວມັນເອງບັງຄັບ.",
   "How many products to show": "ຈໍານວນຜະລິດຕະພັນທີ່ຈະສະແດງ",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "ຈຳນວນຜະລິດຕະພັນ, ບົດຄວາມ ຫຼືສູດອາຫານທີ່ການຊອກຫາຂອງບອທ໌ໜ້າຮ້ານຈະສົ່ງຄືນແຕ່ລະຄັ້ງທີ່ມັນເຫັນອັນໃດອັນໜຶ່ງ.",
   "How many to show": "ຈໍານວນສິນຄ້າທີ່ຈະສະແດງ",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "ຈຳນວນຂອງການສົນທະນາປັດຈຸບັນຖືກສົ່ງຄືນກັບແຕ່ລະຄຳຖາມ. 0 ຕອບທຸກຄຳຖາມໃນແບບໂດດດ່ຽວ.",
   "How this password works": "ລະຫັດຜ່ານນີ້ເຮັດວຽກແນວໃດ",
   "Hungarian (Magyar)": "ຮັງກາຣີ (Magyar)",
   Icelandic: "ໄອສແລນຕິກ",
@@ -613,6 +625,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "ສືບຕໍ່ພິມເພື່ອຊອກຫາ...",
   Keywords: "ຄີເວີດ",
   Khmer: "ພາສາຂະແມ",
+  "Knowledge entries per answer": "ຄວາມຮູ້ຕໍ່ຄຳຕອບ",
   "Korean (한국어)": "ເກົາຫຼີ (한국어)",
   Kyrgyz: "ພາສາກີສ",
   Label: "ປ້າຍກຳກັບ",
@@ -1189,6 +1202,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "ຄົ້ນຫາຜະລິດຕະພັນ, ການສັ່ງຊື້, ຜູ້ໃຊ້, ໝວດໝູ່…",
   "Search promotions": "ຄົ້ນຫາໂປຣໂມຊັນ",
   "Search recipes": "ຄົ້ນຫາສູດອາຫານ",
+  "Search results per lookup": "ຜົນການຊອກຫາຕໍ່ການຊອກຫາ",
   "Search returns": "ຜົນການຄົ້ນຫາ",
   "Search reviews": "ການຕິຊົມການຄົ້ນຫາ",
   "Search submissions": "ການສົ່ງຂໍ້ມູນການຄົ້ນຫາ",
@@ -1441,6 +1455,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "ຜູ້ໃຊ້",
   "Users & Roles": "ຜູ້ໃຊ້ ແລະບົດບາດ",
   "Users unavailable": "ຜູ້ໃຊ້ບໍ່ສາມາດໃຊ້ໄດ້",
+  "Using the site brand colour": "ການໃຊ້ສີຍີ່ຫໍ້ຂອງເວັບໄຊ",
   Variant: "ຕົວແປ",
   "Variant (SKU)": "ຕົວແປ (SKU)",
   "Variant Name": "ຊື່ຕົວປ່ຽນ",
@@ -1482,6 +1497,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Whole site (default)": "ເວັບໄຊທ໌ທັງໝົດ (ຄ່າເລີ່ມຕົ້ນ)",
   "Why are changes needed, or why was this declined?": "ເປັນຫຍັງຕ້ອງມີການປ່ຽນແປງ, ຫຼືເປັນຫຍັງ",
   "Why is stock changing?": "ເປັນຫຍັງຫຼັກຊັບຈຶ່ງມີການປ່ຽນແປງ?",
+  "Widget colour": "ສີວິດເຈັດ",
+  "Widget colour hex": "ສີ Widget hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "ຄຳສັບທີ່ບັອດກົງກັບຄຳຖາມເພື່ອຕັດສິນໃຈວ່າລາຍການນີ້ມີຄວາມກ່ຽວຂ້ອງ.",
   "Working...": "ກຳລັງເຮັດວຽກ...",

@@ -47,6 +47,7 @@ from truegrit_api.schemas.public import (
     RecipeListResponse,
     SearchResponse,
 )
+from truegrit_api.services import support_bot_settings
 from truegrit_api.services.announcements import resolve_announcement
 from truegrit_api.services.appearance import load_public_appearance
 from truegrit_api.services.email import send_email
@@ -163,11 +164,18 @@ async def storefront_settings(
     `effects` before either ever reaches the browser, so the storefront itself
     stays completely unaware that "global" was resolved per visitor.
     """
-    settings, appearance = await asyncio.gather(
+    settings, appearance, support_bot_color = await asyncio.gather(
         load_public_settings(db, get_settings()),
         load_public_appearance(db, country),
+        # Rides along for the same reason the colours above do: the chat
+        # widget renders on first paint, and a second request would repaint it
+        # in front of the visitor. Also the only source the admin panel's own
+        # widget can read -- /v1/admin/support-bot/settings is
+        # `support_bot.manage`-gated, and the widget is shown to every staff
+        # member. A colour carries nothing sensitive.
+        support_bot_settings.get_widget_color(db),
     )
-    return {**settings.to_camel_dict(), **appearance}
+    return {**settings.to_camel_dict(), **appearance, "supportBotColor": support_bot_color}
 
 
 @router.get("/payment-methods")

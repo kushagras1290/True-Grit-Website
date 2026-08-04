@@ -144,6 +144,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Skelbimų reklamjuostė",
   "Announcements unavailable": "Pranešimai nepasiekiami",
   Answer: "Atsakymas",
+  "Answer tuning": "Atsakymų derinimas",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Kiekvienas prisijungęs gali komentuoti. Tik naujos diskusijos pradžia priklauso nuo paskyros amžiaus.",
   "API mode": "API režimas",
@@ -161,6 +162,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Taikoma atsiskaitant prieš kuponą ar reklaminę nuolaidą. Užsakymai, atitinkantys nemokamo pristatymo slenkstį arba viršijantys ribą, pristatymo mokesčio nemokami.",
   "Applied to every farm without its own rate.": "Taikoma kiekvienam ūkiui be atskiro tarifo.",
   "Applies to": "Taikoma",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Taikoma abiem robotams. Didesnės vertės suteikia Padėjėjui daugiau galimybių dirbti ir kainuoja daugiau už atsakymą.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Taikoma abiem pokalbių valdikliais. Palikite jį išvalytą, kad atitiktumėte svetainės prekės ženklo spalvą skiltyje „Spalvos ir efektai“.",
   "Applies to every visitor Cloudflare resolves to":
     "Taikoma kiekvienam lankytojui, „Cloudflare“ nusprendžia",
   Approve: "Patvirtinti",
@@ -278,6 +283,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Sąraše pasirinkite ataskaitą, kad ją paleistumėte.",
   "Choose up to": "Pasirinkite iki",
   "City / town": "Miestas / miestelis",
+  Clear: "Išvalyti",
   "Clearing...": "Išvaloma...",
   "Click link": "Spustelėkite nuorodą",
   Close: "Uždaryti",
@@ -317,6 +323,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Valdykite, ką kiekvienas vaidmuo gali peržiūrėti, kurti, redaguoti, skelbti ar tvarkyti.",
   "Control whether each bot is available, and edit what it knows.":
     "Valdykite, ar kiekvienas robotas pasiekiamas, ir redaguokite, ką jis žino.",
+  "Conversation turns remembered": "Prisimeni pokalbio posūkiai",
   Cook: "Maisto gaminimas",
   "Cook minutes": "Kepkite minutes",
   "Copy inside dark bands.": "Kopijuoti tamsių juostų viduje.",
@@ -577,10 +584,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Pagrindinio puslapio SEO",
   "Homepage Settings": "Pagrindinio puslapio nustatymai",
   "Homepage settings unavailable": "Pagrindinio puslapio nustatymai nepasiekiami",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Kiek įrašų iš toliau pateikto sąrašo pateikiama asistentui kaip nuoroda.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Kiek produktų arba kategorijų operatorius gali pasirinkti į naujus mėgstamiausius, panašaus pobūdžio kategorijas (pagrindinio puslapio nustatymai) ir paryškintus produktus (toliau). Jį pakėlus išsaugomas iš karto, nereikia diegti; iki 50, lubos, kurias taiko pats bloko formatas.",
   "How many products to show": "Kiek produktų rodyti",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Kiek produktų, straipsnių ar receptų parduotuvės vitrinos roboto paieška pateikia kiekvieną kartą, kai ką nors atranda.",
   "How many to show": "Kiek rodyti",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Kiek dabartinio pokalbio dalis siunčiama su kiekvienu klausimu. 0 atsakymų į kiekvieną klausimą atskirai.",
   "How this password works": "Kaip veikia šis slaptažodis",
   "Hungarian (Magyar)": "Vengrų (Magyarų)",
   Icelandic: "Islandų k.",
@@ -637,6 +650,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "Raktažodžiai",
   Khmer: "khmerų",
   Kinyarwanda: "Kinjaruanda",
+  "Knowledge entries per answer": "Žinių įrašai vienam atsakymui",
   "Korean (한국어)": "korėjiečių (한국어)",
   Kyrgyz: "Kirgizų",
   Label: "Etiketė",
@@ -1231,6 +1245,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ieškoti produktų, užsakymų, naudotojų, kategorijų...",
   "Search promotions": "Paieškos reklamos",
   "Search recipes": "Ieškoti receptų",
+  "Search results per lookup": "Paieškos rezultatai per paiešką",
   "Search returns": "Paieškos rezultatai",
   "Search reviews": "Ieškoti atsiliepimų",
   "Search submissions": "Paieškos pateikimų",
@@ -1500,6 +1515,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "naudotojams",
   "Users & Roles": "naudotojams ir vaidmenims",
   "Users unavailable": "Naudotojai nepasiekiami",
+  "Using the site brand colour": "Svetainės prekės ženklo spalvos naudojimas",
   Uyghur: "uigūrų",
   Uzbek: "uzbekų",
   Variant: "variantas",
@@ -1545,6 +1561,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Kodėl reikalingi pakeitimai arba kodėl tai buvo atmesta?",
   "Why is stock changing?": "Kodėl keičiasi akcijos?",
+  "Widget colour": "Valdiklio spalva",
+  "Widget colour hex": "Valdiklio spalvos šešiakampis",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Žodžius, kad robotas sutampa su klausimu, kad nuspręstų, ar šis įrašas yra tinkamas.",
   "Working...": "Veikia...",

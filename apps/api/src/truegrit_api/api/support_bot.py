@@ -29,7 +29,7 @@ from truegrit_api.platform.ai_chat import ChatModel
 from truegrit_api.platform.database import Database
 from truegrit_api.services import support_bot, support_bot_knowledge, support_bot_settings
 from truegrit_api.services.support_bot_knowledge import Scope
-from truegrit_api.services.support_bot_settings import BotScope
+from truegrit_api.services.support_bot_settings import BotScope, TuningKey
 
 router = APIRouter(tags=["admin-support-bot"])
 
@@ -63,6 +63,19 @@ class KnowledgeEntryUpdateRequest(_CamelModel):
 
 class BotToggleRequest(_CamelModel):
     enabled: bool
+
+
+class BotWidgetColorRequest(_CamelModel):
+    """Blank clears the override and returns the widgets to the site brand colour."""
+
+    widget_color: str = Field(default="", max_length=7)
+
+
+class BotTuningRequest(_CamelModel):
+    # Bounds mirror services.support_bot_settings' own clamps -- rejecting an
+    # out-of-range value outright is clearer to an operator than silently
+    # storing something different from what they typed.
+    value: int = Field(ge=0, le=40)
 
 
 def _request_id(request: Request) -> str:
@@ -155,7 +168,7 @@ async def delete_knowledge(
 @router.get("/support-bot/settings")
 async def get_support_bot_settings(
     db: Annotated[Database, Depends(get_database)], actor: _ManageActor
-) -> dict[str, bool]:
+) -> dict[str, Any]:
     return await support_bot_settings.get_all(db)
 
 
@@ -169,4 +182,27 @@ async def set_support_bot_enabled(
 ) -> dict[str, Any]:
     return await support_bot_settings.set_enabled(
         db, actor, _request_id(request), scope, body.enabled
+    )
+
+
+@router.patch("/support-bot/tuning/{key}")
+async def set_support_bot_tuning(
+    db: Annotated[Database, Depends(get_database)],
+    actor: _ManageActor,
+    request: Request,
+    key: TuningKey,
+    body: BotTuningRequest,
+) -> dict[str, Any]:
+    return await support_bot_settings.set_tuning(db, actor, _request_id(request), key, body.value)
+
+
+@router.patch("/support-bot/widget-color")
+async def set_support_bot_widget_color(
+    db: Annotated[Database, Depends(get_database)],
+    actor: _ManageActor,
+    request: Request,
+    body: BotWidgetColorRequest,
+) -> dict[str, str]:
+    return await support_bot_settings.set_widget_color(
+        db, actor, _request_id(request), body.widget_color
     )

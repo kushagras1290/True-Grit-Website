@@ -70,11 +70,14 @@ def test_tool_call_round_trip_returns_live_data(db: SQLiteDatabase):
     assert response.status_code == 200, response.text
     assert response.json() == {"reply": "There are 0 pending orders."}
     assert len(chat.calls) == 2
-    # The tool result was actually threaded back into the second call.
-    second_call_messages = chat.calls[1]["messages"]
-    tool_messages = [m for m in second_call_messages if m.get("role") == "tool"]
-    assert len(tool_messages) == 1
-    assert '"pendingOrders"' in tool_messages[0]["content"]
+    # The tool result was actually threaded back into the second call, stated
+    # as plain text rather than an OpenAI-style tool message -- see
+    # platform.ai_chat.tool_results_message.
+    follow_up = chat.calls[1]["messages"][-1]
+    assert follow_up["role"] == "user"
+    assert '"pendingOrders"' in follow_up["content"]
+    # The second call must not re-offer the tools, or the model can loop.
+    assert chat.calls[1]["tools"] is None
 
 
 def test_tool_denies_when_caller_lacks_permission(db: SQLiteDatabase):
@@ -94,9 +97,7 @@ def test_tool_denies_when_caller_lacks_permission(db: SQLiteDatabase):
         "/v1/admin/support-bot/chat", json={"message": "How many orders are pending?"}
     )
     assert response.status_code == 200, response.text
-    second_call_messages = chat.calls[1]["messages"]
-    tool_messages = [m for m in second_call_messages if m.get("role") == "tool"]
-    assert "permission" in tool_messages[0]["content"]
+    assert "permission" in chat.calls[1]["messages"][-1]["content"]
 
 
 def test_requires_staff_authentication(db: SQLiteDatabase):
@@ -194,7 +195,14 @@ def test_bot_enabled_by_default(db: SQLiteDatabase):
 
     settings = client.get("/v1/admin/support-bot/settings")
     assert settings.status_code == 200
-    assert settings.json() == {"admin": True, "storefront": True}
+    assert settings.json() == {
+        "admin": True,
+        "storefront": True,
+        "historyTurns": 10,
+        "knowledgeSnippets": 6,
+        "searchResults": 5,
+        "widgetColor": "",  # blank = inherit the site brand colour
+    }
 
 
 def test_disabling_the_bot_blocks_chat_and_is_reversible(db: SQLiteDatabase):
@@ -223,4 +231,106 @@ def test_toggle_requires_manage_permission(db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
 
     response = client.patch("/v1/admin/support-bot/settings/admin", json={"enabled": False})
+    assert response.status_code == 403
+
+
+def test_tuning_is_editable_and_takes_effect(db: SQLiteDatabase):
+    """The knobs are admin-editable rather than module constants, so a change
+    has to actually reach the next answer's prompt."""
+    chat = ScriptedChat(
+        [
+            ChatCompletion(text="First.", tool_calls=[]),
+            ChatCompletion(text="Second.", tool_calls=[]),
+        ]
+    )
+    client = _client_with_chat(db, chat)
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
+
+    history = [
+        {"role": "user", "content": "one"},
+        {"role": "assistant", "content": "two"},
+        {"role": "user", "content": "three"},
+        {"role": "assistant", "content": "four"},
+    ]
+    client.post(
+        "/v1/admin/support-bot/chat", json={"message": "How do I publish?", "history": history}
+    )
+    # Default depth (10) keeps every one of the four prior turns, plus the
+    # new question.
+    assert len(chat.calls[0]["messages"]) == 5
+
+    updated = client.patch("/v1/admin/support-bot/tuning/historyTurns", json={"value": 2})
+    assert updated.status_code == 200, updated.text
+    assert updated.json() == {"key": "historyTurns", "value": 2}
+
+    client.post(
+        "/v1/admin/support-bot/chat", json={"message": "How do I publish?", "history": history}
+    )
+    assert len(chat.calls[1]["messages"]) == 3  # 2 kept turns + the question
+
+
+def test_tuning_clamps_out_of_range_values(db: SQLiteDatabase):
+    chat = ScriptedChat([])
+    client = _client_with_chat(db, chat)
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
+
+    # Above the field's own bound: rejected outright rather than silently stored.
+    assert (
+        client.patch("/v1/admin/support-bot/tuning/searchResults", json={"value": 999}).status_code
+        == 422
+    )
+    # Within the field bound but above this key's maximum: clamped.
+    clamped = client.patch("/v1/admin/support-bot/tuning/searchResults", json={"value": 40})
+    assert clamped.status_code == 200
+    assert clamped.json() == {"key": "searchResults", "value": 20}
+
+
+def test_widget_color_round_trips_and_reaches_the_storefront(db: SQLiteDatabase):
+    """The colour has to be readable without `support_bot.manage` -- both the
+    storefront widget and the admin widget (shown to every staff member) read
+    it from the public settings payload."""
+    chat = ScriptedChat([])
+    client = _client_with_chat(db, chat)
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
+
+    assert client.get("/v1/public/settings").json()["supportBotColor"] == ""
+
+    saved = client.patch("/v1/admin/support-bot/widget-color", json={"widgetColor": "#1f7a4d"})
+    assert saved.status_code == 200, saved.text
+    assert saved.json() == {"widgetColor": "#1f7a4d"}
+    assert client.get("/v1/public/settings").json()["supportBotColor"] == "#1f7a4d"
+
+    cleared = client.patch("/v1/admin/support-bot/widget-color", json={"widgetColor": ""})
+    assert cleared.status_code == 200
+    assert client.get("/v1/public/settings").json()["supportBotColor"] == ""
+
+
+def test_widget_color_rejects_anything_that_is_not_a_hex_colour(db: SQLiteDatabase):
+    """The value lands in an inline style attribute, so a CSS function or a
+    stray semicolon must never be storable."""
+    chat = ScriptedChat([])
+    client = _client_with_chat(db, chat)
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
+
+    for bad in ("red", "#12", "url(x)", "#fff;color:red"):
+        response = client.patch("/v1/admin/support-bot/widget-color", json={"widgetColor": bad})
+        assert response.status_code in {422}, f"{bad!r} was accepted"
+    assert client.get("/v1/public/settings").json()["supportBotColor"] == ""
+
+
+def test_widget_color_requires_manage_permission(db: SQLiteDatabase):
+    chat = ScriptedChat([])
+    client = _client_with_chat(db, chat)
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
+
+    response = client.patch("/v1/admin/support-bot/widget-color", json={"widgetColor": "#1f7a4d"})
+    assert response.status_code == 403
+
+
+def test_tuning_requires_manage_permission(db: SQLiteDatabase):
+    chat = ScriptedChat([])
+    client = _client_with_chat(db, chat)
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
+
+    response = client.patch("/v1/admin/support-bot/tuning/historyTurns", json={"value": 3})
     assert response.status_code == 403

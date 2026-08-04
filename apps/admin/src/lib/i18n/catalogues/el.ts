@@ -141,6 +141,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Πάνω ανακοινώσεων",
   "Announcements unavailable": "Οι ανακοινώσεις δεν είναι διαθέσιμες",
   Answer: "Απάντηση",
+  "Answer tuning": "Συντονισμός απαντήσεων",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Όποιος είναι συνδεδεμένος μπορεί να σχολιάσει. Μόνο η έναρξη μιας νέας συζήτησης περιορίζεται από την ηλικία του λογαριασμού.",
   "API mode": "Λειτουργία API",
@@ -159,6 +160,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Ισχύει για κάθε αγρόκτημα χωρίς τη δική του τιμή.",
   "Applies to": "Ισχύει για",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Ισχύει και για τα δύο bots. Οι μεγαλύτερες τιμές δίνουν στον βοηθό περισσότερη εργασία και κοστίζει περισσότερο ανά απάντηση.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Ισχύει και για τα δύο γραφικά στοιχεία συνομιλίας. Αφήστε το απαλό για να ακολουθήσετε το χρώμα της επωνυμίας του ιστότοπου από τα Χρώματα και τα εφέ.",
   "Applies to every visitor Cloudflare resolves to": "Ισχύει για κάθε επισκέπτη</spanflarespansslo",
   Approve: "Έγκριση",
   "Approve & publish": "Έγκριση και δημοσίευση",
@@ -277,6 +282,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Επιλέξτε μια αναφορά από τη λίστα για να την εκτελέσετε.",
   "Choose up to": "Επιλέξτε έως",
   "City / town": "Πόλη / πόλη",
+  Clear: "Διαγραφή",
   "Clearing...": "Εκκαθάριση...",
   "Click link": "Κάντε κλικ στον σύνδεσμο",
   Close: "Κλείσιμο",
@@ -316,6 +322,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ελέγξτε τι μπορεί να προβάλει, να δημιουργήσει, να επεξεργαστεί, να δημοσιεύσει ή να διαχειριστεί κάθε ρόλος.",
   "Control whether each bot is available, and edit what it knows.":
     "Ελέγξτε εάν κάθε bot είναι διαθέσιμο και επεξεργαστείτε όσα γνωρίζει.",
+  "Conversation turns remembered": "Απομνημόνευση στροφών συνομιλίας",
   Cook: "Μαγείρεμα",
   "Cook minutes": "Λεπτά μαγειρέματος",
   "Copy inside dark bands.": "Αντιγραφή σε σκούρες ζώνες.",
@@ -578,10 +585,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO αρχικής σελίδας",
   "Homepage Settings": "Ρυθμίσεις αρχικής σελίδας",
   "Homepage settings unavailable": "Δεν είναι διαθέσιμες οι ρυθμίσεις αρχικής σελίδας",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Πόσες καταχωρίσεις από την παρακάτω λίστα δίνονται στον βοηθό",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Πόσα προϊόντα ή κατηγορίες μπορεί να επιλέξει ένας χειριστής σε Φρέσκα Αγαπημένα, Επιλεγμένες Κατηγορίες (Ρυθμίσεις αρχικής σελίδας) και Επισημασμένα προϊόντα (παρακάτω). Η ανύψωσή του αποθηκεύει αμέσως, δεν χρειάζεται ανάπτυξη. έως 50, το ανώτατο όριο που επιβάλλει η ίδια η μορφή μπλοκ.",
   "How many products to show": "Πόσα προϊόντα να εμφανιστούν",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Πόσα προϊόντα, άρθρα ή συνταγές επιστρέφει η αναζήτηση του ρομπότ της βιτρίνας κάθε φορά που αναζητά κάτι.",
   "How many to show": "Πόσα να εμφανιστούν",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Πόσα από την τρέχουσα συζήτηση αποστέλλεται πίσω με κάθε ερώτηση. 0 απαντήσεις σε κάθε ερώτηση μεμονωμένα.",
   "How this password works": "Πώς λειτουργεί αυτός ο κωδικός πρόσβασης",
   "Hungarian (Magyar)": "Ουγγρικά (Μαγυάρικα)",
   Icelandic: "Ισλανδικά",
@@ -638,6 +651,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "Λέξεις-κλειδιά",
   Khmer: "Χμερ",
   Kinyarwanda: "Κινιαρουάντα",
+  "Knowledge entries per answer": "Καταχωρίσεις γνώσεων ανά απάντηση",
   "Konkani (कोंकणी)": "Κονκάνι (कोंकणी)",
   "Korean (한국어)": "Κορεάτικα (한국어)",
   Kyrgyz: "Κιργιζία",
@@ -1243,6 +1257,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Αναζήτηση προϊόντων, παραγγελιών, χρηστών, κατηγοριών…",
   "Search promotions": "Αναζήτηση προωθήσεων",
   "Search recipes": "Αναζήτηση συνταγών",
+  "Search results per lookup": "Αποτελέσματα αναζήτησης ανά αναζήτηση",
   "Search returns": "Η αναζήτηση επιστρέφει",
   "Search reviews": "Αναζήτηση κριτικών",
   "Search submissions": "Αναζήτηση υποβολών",
@@ -1512,6 +1527,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Χρήστες",
   "Users & Roles": "Χρήστες και ρόλους",
   "Users unavailable": "Μη διαθέσιμοι χρήστες",
+  "Using the site brand colour": "Χρήση του χρώματος της επωνυμίας του ιστότοπου",
   Uyghur: "Ουιγούρη",
   Uzbek: "Ουζμπεκικά",
   Variant: "Παραλλαγή",
@@ -1557,6 +1573,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Γιατί χρειάζονται αλλαγές ή γιατί απορρίφθηκε;",
   "Why is stock changing?": "Γιατί αλλάζει το απόθεμα;",
+  "Widget colour": "Χρώμα γραφικού στοιχείου",
+  "Widget colour hex": "Χρώμα γραφικού στοιχείου εξαγωνικό",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Λέξεις που το ρομπότ ταιριάζουν με μια ερώτηση για να αποφασίσουν ότι αυτή η καταχώριση είναι σχετική.",
   "Working...": "Λειτουργεί...",

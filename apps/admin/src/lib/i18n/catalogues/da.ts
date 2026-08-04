@@ -137,6 +137,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Meddelelsesbanner",
   "Announcements unavailable": "Meddelelser utilgængelige",
   Answer: "Svar",
+  "Answer tuning": "Tilpasning af svar",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Alle, der er logget ind, kan kommentere. Kun start af en ny diskussion er begrænset af kontoalder.",
   "API mode": "API-tilstand",
@@ -154,6 +155,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Anvendes ved kassen før enhver kupon- eller kampagnerabat. Ordrer på eller over tærsklen for gratis levering betaler intet leveringsgebyr.",
   "Applied to every farm without its own rate.": "Gældes for hver bedrift uden egen takst.",
   "Applies to": "Gælder for",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Gælder for begge bots. Større værdier giver assistenten mere at arbejde med og koster mere pr. svar.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Gælder for begge chat-widgets. Lad det være ryddet for at følge webstedets mærkefarve fra Farver og effekter.",
   "Applies to every visitor Cloudflare resolves to":
     "Gælder for alle besøgende, Cloudflare beslutter at",
   Approve: "Godkend",
@@ -268,6 +273,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Vælg en rapport fra listen for at køre den.",
   "Choose up to": "Vælg op til",
   "City / town": "By/by",
+  Clear: "Ryd",
   "Clearing...": "Ryder...",
   "Click link": "Klik på linket",
   Close: "Luk",
@@ -307,6 +313,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kontrollér, hvad hver rolle kan se, oprette, redigere, udgive eller administrere.",
   "Control whether each bot is available, and edit what it knows.":
     "Kontrollér, om hver bot er tilgængelig, og rediger det, den ved.",
+  "Conversation turns remembered": "Konversationsvendinger husket",
   "Copy inside dark bands.": "Kopiér inden for mørke bånd.",
   Correction: "Rettelse",
   "Could not load archived records.": "Kunne ikke indlæse arkiverede poster.",
@@ -561,10 +568,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Startside-SEO",
   "Homepage Settings": "Startsideindstillinger",
   "Homepage settings unavailable": "Hjemmesideindstillinger er ikke tilgængelige",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Hvor mange poster fra listen nedenfor gives til assistenten som reference.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Hvor mange produkter eller kategorier en operatør kan vælge i friske favoritter, udvalgte kategorier (hjemmesideindstillinger) og fremhævede produkter (nedenfor). At hæve den sparer med det samme, ingen installation nødvendig; op til 50, det loft, som blokformatet selv håndhæver.",
   "How many products to show": "Hvor mange produkter skal vises",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Hvor mange produkter, artikler eller opskrifter returnerer butiksfrontrobottens søgning, hver gang den slår noget op.",
   "How many to show": "Hvor mange skal vises",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Hvor meget af den aktuelle chat sendes tilbage med hvert spørgsmål. 0 besvarer hvert spørgsmål isoleret.",
   "How this password works": "Sådan fungerer denne adgangskode",
   "Hungarian (Magyar)": "ungarsk (magyarisk)",
   Icelandic: "islandsk",
@@ -617,6 +630,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Hold kunstværket rent",
   "Keep typing to search…": "Fortsæt med at skrive for at søge...",
   Keywords: "Søgeord",
+  "Knowledge entries per answer": "Vidensindtastninger pr. svar",
   "Korean (한국어)": "koreansk (한국어)",
   Kyrgyz: "Kirgisisk",
   Label: "Etiket",
@@ -1175,6 +1189,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Søg efter produkter, ordrer, brugere, kategorier...",
   "Search promotions": "Søg i kampagner",
   "Search recipes": "Søg efter opskrifter",
+  "Search results per lookup": "Søgeresultater pr. opslag",
   "Search returns": "Søgeafkast",
   "Search reviews": "Søgeanmeldelser",
   "Search submissions": "Søgeindsendelser",
@@ -1420,6 +1435,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Brugere",
   "Users & Roles": "Brugere og roller",
   "Users unavailable": "Brugere utilgængelige",
+  "Using the site brand colour": "Brug af webstedets brandfarve",
   Uyghur: "uigurisk",
   Uzbek: "uzbekisk",
   "Variant Name": "Variantnavn",
@@ -1463,6 +1479,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Hvorfor er der behov for ændringer, eller hvorfor blev dette afvist?",
   "Why is stock changing?": "Hvorfor ændres aktien?",
+  "Widget colour": "Widget-farve",
+  "Widget colour hex": "Widget-farve hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Ord, som botten matcher med et spørgsmål for at afgøre, at denne post er relevant.",
   "Working...": "Fungerer...",

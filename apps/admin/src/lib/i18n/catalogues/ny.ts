@@ -133,6 +133,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Chikwangwani cholengeza",
   "Announcements unavailable": "Zilengezo sizikupezeka",
   Answer: "Yankho",
+  "Answer tuning": "Kuyankhidwa kwamayankho",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Aliyense wolowa muakaunti yanu atha kuyankhapo. Kungoyambitsa zokambirana zatsopano kumayendetsedwa ndi msinkhu wa akaunti.",
   "Appearance unavailable": "Kuwoneka sikukupezeka",
@@ -150,6 +151,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Amagwiritsidwa ntchito pafamu iliyonse popanda mtengo wake.",
   "Applies to": "Imagwira ntchito ku",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Ikugwira ntchito ku mabotolo onse awiri. Zinenero zazikulu zimapatsa wothandizira zambiri kuti azigwira naye ntchito komanso amawononga ndalama zambiri pa yankho lililonse.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Imagwira pa ma chat widget onse awiri. Zisiyeni kuti mutsatire mtundu wa mtundu wa tsambalo kuchokera ku Colours & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "Imagwira mlendo aliyense Cloudflare yatsimikiza",
   Approve: "Kuvomereza",
@@ -254,6 +259,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Sankhani lipoti pamndandanda kuti mugwiritse ntchito.",
   "Choose up to": "Sankhani mpaka",
   "City / town": "Mzinda / tawuni",
+  Clear: "Chotsani",
   "Clearing...": "Kuchotsa...",
   "Click link": "Dinani ulalo",
   Close: "Tsekani",
@@ -292,6 +298,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Landirani zomwe gawo lililonse lingawone, kupanga, kusintha, kusindikiza kapena kuwongolera.",
   "Control whether each bot is available, and edit what it knows.":
     "Landirani ngati boti iliyonse ilipo, ndikusintha zomwe ikudziwa.",
+  "Conversation turns remembered": "Chotsani kukumbukiridwa",
   "Copy inside dark bands.": "Koperani mkati mwa magulu akuda.",
   Correction: "Kukonza",
   "Could not load archived records.": "Sizinatheke kutsegula zosungidwa zakale.",
@@ -529,10 +536,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO yatsamba Loyamba",
   "Homepage Settings": "Zokonda Tsamba Lofikira",
   "Homepage settings unavailable": "Zokonda patsamba lofikira sizikupezeka",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Ndi zolemba zingati zochokera pamndandanda womwe uli pansipa womwe waperekedwa kwa wothandizira.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Ndi zinthu zingati kapena magulu omwe wogwiritsa ntchito angasankhe mu Zokonda Zatsopano, Magulu Owonekera (Zokonda Patsamba Loyamba) ndi Zowonetsedwa (pansipa). Kukweza kumapulumutsa nthawi yomweyo, palibe kutumiza kofunikira; mpaka 50, pamwamba pa siling'i mawonekedwe a block imagwira ntchito.",
   "How many products to show": "Ndi zinthu zingati zomwe ziwonetsedwe",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Ndi zinthu zingati, zolemba kapena maphikidwe omwe kusaka kwa boti yaku sitolo kumabwerera nthawi iliyonse ikawoneka bwino.",
   "How many to show": "Ndi zingati zowonetsera",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Ndi kuchuluka kwa macheza omwe amatumizidwa ndi funso lililonse. 0 imayankha funso lililonse palokha.",
   "How this password works": "Mmene mawu achinsinsiwa amagwirira ntchito",
   Icelandic: "Chiaisilandi",
   "If that email has an account, a reset link is on its way.":
@@ -577,6 +590,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Sungani zojambulajambula zoyera",
   "Keep typing to search…": "Pitirizani kulemba kuti mufufuze…",
   Keywords: "Mawu Ofunikira",
+  "Knowledge entries per answer": "Zolemba zachidziwitso pa yankho lililonse",
   "Land under cultivation": "Malo olimidwa",
   "Last activity": "Zochitika zomaliza",
   "Last reviewer note": "Zolemba zomaliza",
@@ -1145,6 +1159,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Sakani katundu, maoda, ogwiritsa ntchito, magulu…",
   "Search promotions": "Sakani zotsatsa",
   "Search recipes": "Sakani maphikidwe",
+  "Search results per lookup": "Zotsatira zakusaka pofufuza",
   "Search returns": "Zobwereranso pakusaka",
   "Search reviews": "Sakani ndemanga",
   "Search submissions": "Sakani zomwe mwatumiza",
@@ -1395,6 +1410,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Ogwiritsa",
   "Users & Roles": "Ogwiritsa & Maudindo",
   "Users unavailable": "Ogwiritsa sakupezeka",
+  "Using the site brand colour": "Kugwiritsa ntchito mtundu wamtundu watsamba",
   Uyghur: "Chiuyghur",
   Variant: "Zosiyanasiyana",
   "Variant (SKU)": "Zosiyana (SKU)",
@@ -1438,6 +1454,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Nchifukwa chiyani zosintha zikufunika, kapena chifukwa chiyani izi zidakanidwa?",
   "Why is stock changing?": "N'chifukwa chiyani katundu akusintha?",
+  "Widget colour": "Mtundu wawiji",
+  "Widget colour hex": "Widget color hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Mawu omwe boti amafanana ndi funso kuti anene kuti cholowacho n'choyenera.",
   "Working...": "Ikugwira ntchito...",

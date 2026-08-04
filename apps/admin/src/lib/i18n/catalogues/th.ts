@@ -137,6 +137,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "แบนเนอร์ประกาศ",
   "Announcements unavailable": "ประกาศไม่พร้อมใช้งาน",
   Answer: "ตอบ",
+  "Answer tuning": "การปรับคำตอบ",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "ใครก็ตามที่ลงชื่อเข้าใช้สามารถแสดงความคิดเห็นได้ เฉพาะการเริ่มต้นการสนทนาใหม่เท่านั้นที่ถูกควบคุมตามอายุบัญชี",
   "API mode": "โหมด API",
@@ -154,6 +155,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ใช้เมื่อชำระเงินก่อนคูปองหรือส่วนลดส่งเสริมการขายใดๆ คำสั่งซื้อที่หรือสูงกว่าเกณฑ์การจัดส่งฟรีจะไม่เสียค่าธรรมเนียมการจัดส่ง",
   "Applied to every farm without its own rate.": "นำไปใช้กับทุกฟาร์มโดยไม่มีอัตราของตัวเอง",
   "Applies to": "นำไปใช้กับ",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "ใช้กับบอททั้งสองตัว ค่าที่มากขึ้นทำให้ Assistant ทำงานด้วยได้มากขึ้นและมีค่าใช้จ่ายต่อคำตอบมากขึ้น",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "ใช้กับวิดเจ็ตแชททั้งสองรายการ ปล่อยให้ชัดเจนเพื่อให้เป็นไปตามสีของแบรนด์ไซต์จากสีและเอฟเฟกต์",
   "Applies to every visitor Cloudflare resolves to": "ใช้กับผู้เยี่ยมชมทุกคน Cloudflare แก้ไขเพื่อ",
   Approve: "อนุมัติ",
   "Approve & publish": "อนุมัติ & เผยแพร่",
@@ -267,6 +272,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "เลือกรายงานจากรายการที่จะเรียกใช้",
   "Choose up to": "เลือกได้ถึง",
   "City / town": "เมือง / เมือง",
+  Clear: "ชัดเจน",
   "Clearing...": "กำลังล้าง...",
   "Click link": "คลิกลิงก์",
   Close: "ปิด",
@@ -305,6 +311,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ควบคุมสิ่งที่แต่ละบทบาทสามารถดู สร้าง แก้ไข เผยแพร่ หรือจัดการได้",
   "Control whether each bot is available, and edit what it knows.":
     "ควบคุมว่าบอทแต่ละตัวจะพร้อมใช้งานหรือไม่ และแก้ไขบอท รู้",
+  "Conversation turns remembered": "การจดจำการสนทนา",
   Cook: "ปรุง",
   "Cook minutes": "นาทีปรุง",
   "Copy inside dark bands.": "คัดลอกภายในแถบสีเข้ม",
@@ -562,10 +569,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO หน้าแรก",
   "Homepage Settings": "การตั้งค่าหน้าแรก",
   "Homepage settings unavailable": "การตั้งค่าหน้าแรกไม่พร้อมใช้งาน",
+  "How many entries from the list below are given to the assistant as reference.":
+    "มีกี่รายการจากรายการด้านล่างที่มอบให้กับผู้ช่วยเพื่อใช้อ้างอิง",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "จำนวนผลิตภัณฑ์หรือหมวดหมู่ที่ผู้ดำเนินการอาจเลือกเป็นรายการโปรดใหม่ หมวดหมู่แนะนำ (การตั้งค่าหน้าแรก) และผลิตภัณฑ์ไฮไลต์ (ด้านล่าง) การเพิ่มจะบันทึกทันที ไม่จำเป็นต้องปรับใช้ มากถึง 50 รายการ โดยเพดานสูงสุดที่รูปแบบบล็อกบังคับใช้",
   "How many products to show": "มีผลิตภัณฑ์ที่จะแสดงกี่รายการ",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "จำนวนผลิตภัณฑ์ บทความ หรือสูตรอาหารที่การค้นหาของบอตหน้าร้านส่งคืนแต่ละครั้งที่พบบางสิ่งบางอย่าง up.",
   "How many to show": "มีกี่รายการที่จะแสดง",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "แต่ละคำถามมีการแชทปัจจุบันจำนวนเท่าใดถูกส่งกลับ 0 ตอบคำถามทุกข้อแยกกัน",
   "How this password works": "รหัสผ่านนี้ทำงานอย่างไร",
   "Hungarian (Magyar)": "ฮังการี (Magyar)",
   Icelandic: "ไอซ์แลนด์",
@@ -621,6 +634,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "พิมพ์ต่อไปเพื่อ ค้นหา…",
   Keywords: "คำหลัก",
   Khmer: "เขมร",
+  "Knowledge entries per answer": "รายการความรู้ต่อคำตอบ",
   "Korean (한국어)": "เกาหลี (เกาหลี)",
   Kyrgyz: "คีร์กีซ",
   Label: "ฉลาก",
@@ -1204,6 +1218,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "ค้นหาผลิตภัณฑ์ คำสั่งซื้อ ผู้ใช้ หมวดหมู่…",
   "Search promotions": "ค้นหาโปรโมชั่น",
   "Search recipes": "ค้นหาสูตรอาหาร",
+  "Search results per lookup": "ผลการค้นหาต่อการค้นหา",
   "Search returns": "ค้นหาผลตอบแทน",
   "Search reviews": "ค้นหาบทวิจารณ์",
   "Search submissions": "ค้นหาการส่ง",
@@ -1461,6 +1476,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "ผู้ใช้",
   "Users & Roles": "ผู้ใช้และบทบาท",
   "Users unavailable": "ผู้ใช้ไม่พร้อมใช้งาน",
+  "Using the site brand colour": "การใช้สีของแบรนด์ไซต์",
   Uzbek: "อุซเบก",
   Variant: "ตัวแปร",
   "Variant (SKU)": "ตัวแปร (SKU)",
@@ -1505,6 +1521,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "เหตุใดจึงต้องมีการเปลี่ยนแปลง หรือเหตุใดจึงถูกปฏิเสธ",
   "Why is stock changing?": "เหตุใดหุ้นจึงเปลี่ยนแปลง",
+  "Widget colour": "สีวิดเจ็ต",
+  "Widget colour hex": "ฐานสิบหกสีวิดเจ็ต",
   "Words the bot matches against a question to decide this entry is relevant.":
     "คำที่บอทจับคู่กับคำถามเพื่อตัดสินว่ารายการนี้มีความเกี่ยวข้อง",
   "Working...": "กำลังทำงาน...",

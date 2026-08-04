@@ -142,6 +142,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Iragarkien pankarta",
   "Announcements unavailable": "Iragarkiak ez daude erabilgarri",
   Answer: "Erantzuna",
+  "Answer tuning": "Erantzunen doikuntza",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Saioa hasita dagoen edonork iruzkin dezake. Eztabaida berri bat hastea soilik kontuaren adinaren araberakoa da.",
   "API mode": "API modua",
@@ -160,6 +161,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Ustiategi guztietan aplikatzen da bere tarifarik gabe.",
   "Applies to": "Hori aplikatzen zaio",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Bi bot-ei aplikatzen zaie. Balio handiagoek laguntzaileari gehiago lan egiteko aukera ematen diote eta erantzun bakoitzeko kostu handiagoa ematen diote.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Txat-widget biei aplikatzen zaie. Utzi garbitu Koloreak eta efektuak guneko markaren kolorea jarraitzeko.",
   "Applies to every visitor Cloudflare resolves to":
     "Bisitari guztiei aplikatzen zaie Cloudflare-k honako hau ebazten du",
   Approve: "Onartu",
@@ -278,6 +283,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Aukeratu zerrendako txosten bat exekutatzeko.",
   "Choose up to": "Aukeratu gehienez",
   "City / town": "Hiria",
+  Clear: "Garbitu",
   "Clearing...": "Garbatzen...",
   "Click link": "Egin klik estekan",
   Close: "Itxi",
@@ -317,6 +323,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kontrolatu rol bakoitzak zer ikusi, sortu, editatu, argitaratu edo kudeatu dezakeen.",
   "Control whether each bot is available, and edit what it knows.":
     "Kontrolatu bot bakoitza erabilgarri dagoen ala ez eta editatu dakiena.",
+  "Conversation turns remembered": "Elkarrizketa txandak gogoratzen diren",
   Cook: "Sukaldatu",
   "Cook minutes": "Egosi minutuak",
   "Copy inside dark bands.": "Kopiatu banda ilunen barruan.",
@@ -576,10 +583,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Hasierako orriaren SEO",
   "Homepage Settings": "Hasierako orriaren ezarpenak",
   "Homepage settings unavailable": "Hasierako orriaren ezarpenak ez daude erabilgarri",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Beheko zerrendako zenbat sarrera ematen zaizkio erreferentzia gisa laguntzaileari.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Zenbat produktu edo kategoria hauta ditzakeen operadore batek gogoko berriak, kategoria aipagarriak (orriaren ezarpenak) eta produktu nabarmenduak (behean). Altxatzeak berehala aurrezten du, ez da inplementatu behar; 50era arte, bloke formatuak berak ezartzen duen sabaia.",
   "How many products to show": "Zenbat produktu erakutsi",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Zenbat produktu, artikulu edo errezeta itzultzen dituen erakusleihoaren bot-aren bilaketak zerbait bilatzen duen bakoitzean.",
   "How many to show": "Zenbat erakutsi",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Uneko txataren zenbat itzultzen den galdera bakoitzarekin. 0 galdera guztiei erantzuten die modu isolatuan.",
   "How this password works": "Pasahitz honek nola funtzionatzen duen",
   "Hungarian (Magyar)": "Hungariara (magiarra)",
   Icelandic: "Islandiera",
@@ -632,6 +645,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Mantendu artelanak garbi",
   "Keep typing to search…": "Jarraitu idazten bilatzeko...",
   Keywords: "Gako-hitzak",
+  "Knowledge entries per answer": "Erantzun bakoitzeko ezagutza-sarrerak",
   "Konkani (कोंकणी)": "Konkaniera (कोंकणी)",
   "Korean (한국어)": "Koreera (한국어)",
   Kyrgyz: "Kirgizerra",
@@ -1234,6 +1248,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Bilatu produktuak, eskaerak, erabiltzaileak, kategoriak...",
   "Search promotions": "Bilatu sustapenak",
   "Search recipes": "Bilatu errezetak",
+  "Search results per lookup": "Bilaketa bakoitzeko emaitzak",
   "Search returns": "Bilatu itzulerak",
   "Search reviews": 'Bilaketa id="t0010">1>Bilatu id="t0010">1>Bilatu id="t0008"> Bidalketak',
   "Search submissions": "Bilatu bidalketak",
@@ -1496,6 +1511,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Erabiltzaileentzat",
   "Users & Roles": "Erabiltzaile eta rolak",
   "Users unavailable": "Erabiltzaileak ez daude erabilgarri",
+  "Using the site brand colour": "Gunearen markaren kolorea erabiltzea",
   Uyghur: "Uigur",
   Variant: "Aldaera",
   "Variant (SKU)": "Aldaera (SKU)",
@@ -1540,6 +1556,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Zergatik behar dira aldaketak, edo zergatik baztertu da hau?",
   "Why is stock changing?": "Zergatik ari dira aldatzen stockak?",
+  "Widget colour": "Widget kolorea",
+  "Widget colour hex": "Widget kolorea hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Bot-a galdera batekin bat datozen hitzak sarrera hau garrantzitsua dela erabakitzeko.",
   "Working...": "Lanean...",

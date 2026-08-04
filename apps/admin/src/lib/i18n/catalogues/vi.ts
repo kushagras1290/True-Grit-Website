@@ -136,6 +136,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Biểu ngữ thông báo",
   "Announcements unavailable": "Thông báo không có sẵn",
   Answer: "Trả lời",
+  "Answer tuning": "Điều chỉnh câu trả lời",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Bất kỳ ai đăng nhập đều có thể nhận xét. Chỉ việc bắt đầu một cuộc thảo luận mới bị giới hạn theo độ tuổi của tài khoản.",
   "API mode": "Chế độ API",
@@ -154,6 +155,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Áp dụng cho mọi trang trại mà không có mức phí riêng.",
   "Applies to": "Áp dụng cho",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Áp dụng cho cả hai bot. Giá trị lớn hơn giúp trợ lý phải làm việc nhiều hơn và chi phí cho mỗi câu trả lời cao hơn.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Áp dụng cho cả hai tiện ích trò chuyện. Hãy để trống để theo màu thương hiệu của trang web từ Màu sắc & Hiệu ứng.",
   "Applies to every visitor Cloudflare resolves to":
     "Áp dụng cho mọi khách truy cập Cloudflare quyết tâm",
   Approve: "Phê duyệt",
@@ -269,6 +274,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Chọn một báo cáo từ danh sách để chạy báo cáo đó.",
   "Choose up to": "Chọn tối đa",
   "City / town": "Thành phố / thị trấn",
+  Clear: "Xóa",
   "Clearing...": "Đang xóa...",
   "Click link": "Nhấp vào liên kết",
   Close: "Đóng",
@@ -308,6 +314,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kiểm soát nội dung mà mỗi vai trò có thể xem, tạo, chỉnh sửa, xuất bản hoặc quản lý.",
   "Control whether each bot is available, and edit what it knows.":
     "Kiểm soát xem mỗi bot có sẵn hay không và chỉnh sửa những gì nó biết.",
+  "Conversation turns remembered": "Cuộc trò chuyện sẽ được ghi nhớ",
   Cook: "Nấu ăn",
   "Cook minutes": "Nấu ăn phút",
   "Copy inside dark bands.": "Sao chép bên trong các dải tối.",
@@ -566,10 +573,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO trang chủ",
   "Homepage Settings": "Cài đặt trang chủ",
   "Homepage settings unavailable": "Cài đặt trang chủ không khả dụng",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Có bao nhiêu mục trong danh sách bên dưới được cung cấp cho trợ lý để tham khảo.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Số lượng sản phẩm hoặc danh mục mà nhà điều hành có thể chọn vào Danh mục yêu thích mới, Danh mục nổi bật (Cài đặt trang chủ) và Sản phẩm nổi bật (bên dưới). Nâng nó lên sẽ lưu ngay lập tức, không cần triển khai; tối đa 50, mức trần mà định dạng khối tự thực thi.",
   "How many products to show": "Hiển thị bao nhiêu sản phẩm",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Có bao nhiêu sản phẩm, bài viết hoặc công thức mà tìm kiếm của bot mặt tiền cửa hàng trả về mỗi khi nó tìm kiếm thứ gì đó.",
   "How many to show": "Hiển thị bao nhiêu sản phẩm",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Số lượng cuộc trò chuyện hiện tại được gửi lại với mỗi câu hỏi. 0 trả lời từng câu hỏi một cách riêng biệt.",
   "How this password works": "Mật khẩu này hoạt động như thế nào",
   "Hungarian (Magyar)": "Tiếng Hungary (Magyar)",
   Icelandic: "Tiếng Iceland",
@@ -621,6 +634,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Giữ tác phẩm nghệ thuật sạch sẽ",
   "Keep typing to search…": "Tiếp tục nhập để tìm kiếm…",
   Keywords: "Từ khóa",
+  "Knowledge entries per answer": "Mục kiến ​​thức cho mỗi câu trả lời",
   "Korean (한국어)": "Tiếng Hàn (한국어)",
   Label: "Nhãn",
   "Land under cultivation": "Đất đai đang trồng trọt",
@@ -1213,6 +1227,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Tìm kiếm sản phẩm, đơn đặt hàng, người dùng, danh mục…",
   "Search promotions": "Tìm kiếm chương trình khuyến mãi",
   "Search recipes": "Tìm kiếm công thức nấu ăn",
+  "Search results per lookup": "Kết quả tìm kiếm cho mỗi lần tra cứu",
   "Search returns": "Tìm kiếm trả về",
   "Search reviews": "Tìm kiếm đánh giá",
   "Search submissions": "Tìm kiếm nội dung gửi",
@@ -1471,6 +1486,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Người dùng",
   "Users & Roles": "Người dùng và vai trò",
   "Users unavailable": "Không có người dùng",
+  "Using the site brand colour": "Sử dụng màu thương hiệu của trang web",
   Uzbek: "Tiếng Uzbek",
   Variant: "Biến thể",
   "Variant (SKU)": "Biến thể (SKU)",
@@ -1514,6 +1530,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Tại sao có những thay đổi cần thiết hoặc tại sao điều này lại bị từ chối?",
   "Why is stock changing?": "Tại sao cổ phiếu lại thay đổi?",
+  "Widget colour": "Màu tiện ích",
+  "Widget colour hex": "Hệ lục phân màu tiện ích",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Các từ mà bot đối sánh với một câu hỏi để quyết định mục này có liên quan.",
   "Working...": "Đang hoạt động...",

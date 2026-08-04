@@ -109,6 +109,35 @@ def _tool_to_wire(tool: ToolDefinition) -> dict[str, Any]:
     }
 
 
+def tool_results_message(results: list[tuple[ToolCall, Any]]) -> dict[str, str]:
+    """Fold executed tool results back into the conversation as plain user text.
+
+    Workers AI's raw `env.AI.run` binding has no documented contract for
+    returning tool output — Cloudflare's own docs route multi-turn tool calling
+    through the AI SDK's `runWithTools` helper instead. Feeding results back the
+    OpenAI way (an assistant turn carrying `tool_calls`, then `role: "tool"`
+    messages) is silently ignored by the binding: the model never sees the
+    output and simply re-issues the identical call until the loop gives up,
+    which is exactly what it did here.
+
+    Stating the results as ordinary text is understood by any chat model, so
+    the answer no longer depends on an unspecified wire format.
+    """
+    lines = [
+        f"{call.name}({json.dumps(call.arguments, default=str)}) returned"
+        f" {json.dumps(result, default=str)}"
+        for call, result in results
+    ]
+    return {
+        "role": "user",
+        "content": (
+            "I ran the lookups you asked for. Results:\n"
+            + "\n".join(lines)
+            + "\n\nAnswer my original question using only these results."
+        ),
+    }
+
+
 def _message_to_wire(message: dict[str, Any]) -> dict[str, Any]:
     """Workers AI's schema requires every message's `content` to be a string.
 

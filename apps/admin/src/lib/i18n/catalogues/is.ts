@@ -143,6 +143,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Tilkynningarborði",
   "Announcements unavailable": "Tilkynningar ekki tiltækar",
   Answer: "Svar",
+  "Answer tuning": "Svarstilling",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Allir sem eru skráðir inn mega gera athugasemdir. Aðeins að hefja nýja umræðu er lokað af aldri reikningsins.",
   "API mode": "API ham",
@@ -160,6 +161,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Sótt við útritun fyrir afsláttarmiða eða kynningarafslátt. Pantanir sem eru á eða yfir mörkum frírar sendingar greiða ekkert sendingargjald.",
   "Applied to every farm without its own rate.": "Gilt á hvern bæ án þess að vera með eigin taxta.",
   "Applies to": "Á við um",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Á við um báða vélmenni. Stærri gildi gefa aðstoðarmanninum meira að vinna með og kosta meira á hvert svar.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Á við um báðar spjallgræjurnar. Látið það vera hreint til að fylgja vörumerkjalit vefsvæðisins úr Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "Á við um alla gesti sem Cloudflare ákveður að",
   Approve: "Samþykkja",
@@ -277,6 +282,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Veldu skýrslu af listanum til að keyra hana.",
   "Choose up to": "Veldu allt að",
   "City / town": "Borg / bær",
+  Clear: "Hreinsa",
   "Clearing...": "Hreinsar...",
   "Click link": "Smelltu á tengil",
   Close: "Loka",
@@ -315,6 +321,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Stjórna því hvað hvert hlutverk getur skoðað, búið til, breytt, birt eða stjórnað.",
   "Control whether each bot is available, and edit what it knows.":
     "Stjórnaðu því hvort sérhver botni sé tiltækur og breyttu því sem hann veit.",
+  "Conversation turns remembered": "Samtalabeygjur í minni",
   Cook: "Elda",
   "Cook minutes": "Matar mínútur",
   "Copy inside dark bands.": "Afrita innan dökkra teyma.",
@@ -573,10 +580,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage sections unavailable": "Hlutar heimasíðna ekki tiltækir",
   "Homepage Settings": "Heimsíðastillingar",
   "Homepage settings unavailable": "Heimsíðastillingar ekki tiltækar",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Hversu margar færslur af listanum hér að neðan eru veittar aðstoðarmanninum til viðmiðunar.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Hversu margar vörur eða flokka getur rekstraraðili valið í ferska uppáhaldsflokka, sérflokka (heimasíðustillingar) og auðkenndar vörur (fyrir neðan). Að hækka það sparar strax, engin þörf á uppsetningu; allt að 50, þakið sem blokkarsniðið sjálft framfylgir.",
   "How many products to show": "Hversu margar vörur á að sýna",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Hversu margar vörur, greinar eða uppskriftir leit verslunargluggans skilar í hvert sinn sem það flettir einhverju upp.",
   "How many to show": "Hversu margar á að sýna",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Hversu mikið af núverandi spjalli er sent til baka með hverri spurningu. 0 svarar hverri spurningu fyrir sig.",
   "How this password works": "Hvernig þetta lykilorð virkar",
   "Hungarian (Magyar)": "ungverska (Magyar)",
   Icelandic: "íslenska",
@@ -630,6 +643,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "Haltu áfram að slá inn til að leita...",
   Keywords: "Lykilorð",
   Kinyarwanda: "Kínjarvanda",
+  "Knowledge entries per answer": "Þekkingarfærslur fyrir hvert svar",
   "Korean (한국어)": "kóreska (한국어)",
   Kyrgyz: "Kirgisa",
   Label: "Flokkar",
@@ -1210,6 +1224,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "Leita að vörum, pöntunum, notendum, flokkum...",
   "Search promotions": "Leita kynningar",
   "Search recipes": "Leita að uppskriftum",
+  "Search results per lookup": "Leitarniðurstöður fyrir hverja uppflettingu",
   "Search returns": "Leitarskila",
   "Search reviews": "Leitarumsagnir",
   "Search submissions": "Leiðarsendingar",
@@ -1467,6 +1482,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Notendur",
   "Users & Roles": "Notendur og hlutverk",
   "Users unavailable": "Notendur ekki tiltækir",
+  "Using the site brand colour": "Notaðu vörumerkjalit vefsvæðisins",
   Uyghur: "Úygúr",
   Uzbek: "Úsbekska",
   Variant: "Afbrigði",
@@ -1512,6 +1528,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Hvers vegna er þörf á breytingum eða hvers vegna var þessu hafnað?",
   "Why is stock changing?": "Af hverju breytist hlutabréf?",
+  "Widget colour": "Græjulitur",
+  "Widget colour hex": "Græjulitur hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Orð sem vélmenni passar við spurningu til að ákveða að þessi færsla eigi við.",
   "Working...": "Vinnur...",

@@ -143,6 +143,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "ilmoitusbannerin",
   "Announcements unavailable": "Ilmoitukset eivät ole saatavilla",
   Answer: "Vastaus",
+  "Answer tuning": "Vastausten viritys",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Kuka tahansa sisäänkirjautunut voi kommentoida. Vain uuden keskustelun aloittaminen on rajoitettu tilin iän mukaan.",
   "API mode": "API-tila",
@@ -160,6 +161,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Käytetty kassalla ennen kuponki- tai tarjousalennusta. Ilmaisen toimituksen kynnyksen ylittävistä tilauksista ei peritä toimitusmaksua.",
   "Applied to every farm without its own rate.": "Koskee jokaista maatilaa ilman omaa hintaa.",
   "Applies to": "Koskee",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Koskee molempia botteja. Suuremmat arvot antavat avustajalle enemmän työskentelyä ja maksavat enemmän vastausta kohden.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Koskee molempia chat-widgetejä. Jätä se tyhjäksi seurataksesi sivuston tuotemerkkiväriä Colors & Effects -sovelluksesta.",
   "Applies to every visitor Cloudflare resolves to":
     "Koskee jokaista vierailijaa Cloudflare päättää",
   Approve: "hyväksyä",
@@ -277,6 +282,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Suorita se valitsemalla luettelosta raportti.",
   "Choose up to": "Valitse enintään",
   "City / town": "Kaupunki/kylä",
+  Clear: "Tyhjennä",
   "Clearing...": "Tyhjennetään...",
   "Click link": "Napsauta linkkiä",
   Close: "Sulje",
@@ -316,6 +322,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Hallitse, mitä kukin rooli voi tarkastella, luoda, muokata, julkaista tai hallita.",
   "Control whether each bot is available, and edit what it knows.":
     "Hallitse, onko jokainen botti saatavilla, ja muokkaa sen tietoja.",
+  "Conversation turns remembered": "Keskusteluvuorot muistetaan",
   Cook: "Kokista",
   "Cook minutes": "Paista minuuttia",
   "Copy inside dark bands.": "Kopioi tummien juovien sisään.",
@@ -578,10 +585,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Etusivun hakukoneoptimointi",
   "Homepage Settings": "Etusivun asetukset",
   "Homepage settings unavailable": "Etusivun asetukset eivät ole käytettävissä",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Kuinka monta merkintää alla olevasta luettelosta annetaan avustajalle viitteenä.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Kuinka monta tuotetta tai luokkaa operaattori voi valita uusiin suosikkeihin, Suositeltuihin kategorioihin (Kotisivun asetukset) ja Korostettuihin tuotteisiin (alla). Sen nostaminen säästää välittömästi, käyttöönottoa ei tarvita; enintään 50, enimmäismäärä, jonka lohkomuoto itse pakottaa.",
   "How many products to show": "Kuinka monta tuotetta näytetään",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Kuinka monta tuotetta, artikkelia tai reseptiä myymäläbotin haku palauttaa aina, kun se etsii jotain.",
   "How many to show": "Kuinka monta näytettävää",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Kuinka suuri osa nykyisestä keskustelusta lähetetään takaisin kunkin kysymyksen yhteydessä. 0 vastausta jokaiseen kysymykseen erikseen.",
   "How this password works": "Kuinka tämä salasana toimii?",
   "Hungarian (Magyar)": "Unkari (Magyar)",
   Icelandic: "islanti",
@@ -638,6 +651,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "Jatka kirjoittamista hakeaksesi…",
   Keywords: "Avainsanat",
   Khmer: "khmerit",
+  "Knowledge entries per answer": "Tietomerkintöjä vastausta kohden",
   "Konkani (कोंकणी)": "konkani (कोंकणी)",
   "Korean (한국어)": "korea (한국어)",
   Kyrgyz: "Kirgisia",
@@ -1225,6 +1239,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "Hae tuotteita, tilauksia, käyttäjiä, luokkia…",
   "Search promotions": "Hakutarjoukset",
   "Search recipes": "Hae reseptejä",
+  "Search results per lookup": "Hakutulokset hakua kohti",
   "Search returns": "Hakupalaut",
   "Search reviews": "Hae arvostelut",
   "Search submissions": "Hae lähetyksiä",
@@ -1485,6 +1500,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Käyttäjille",
   "Users & Roles": "Käyttäjille ja rooleille",
   "Users unavailable": "Käyttäjät eivät ole käytettävissä",
+  "Using the site brand colour": "Sivuston brändin värin käyttäminen",
   Uyghur: "uiguuri",
   Uzbek: "uzbekki",
   Variant: "versio",
@@ -1529,6 +1545,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Miksi muutoksia tarvitaan tai miksi tämä hylättiin?",
   "Why is stock changing?": "Miksi osakkeet muuttuvat?",
+  "Widget colour": "Vidgetin väri",
+  "Widget colour hex": "Vidgetin värin kuusikulmainen",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Sanat, jotka robotti vastaa kysymystä, päättää, onko tämä merkintä olennainen.",
   "Working...": "Toimii...",

@@ -141,6 +141,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "បដាការប្រកាស",
   "Announcements unavailable": "ការប្រកាសមិនអាចប្រើបាន",
   Answer: "ចម្លើយ",
+  "Answer tuning": "ការលៃតម្រូវចម្លើយ",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "អ្នក​ណា​ម្នាក់​ដែល​ចូល​អាច​ផ្ដល់​មតិ។ មានតែការចាប់ផ្ដើមការពិភាក្សាថ្មីប៉ុណ្ណោះដែលត្រូវបានកំណត់ដោយអាយុគណនី។",
   "API mode": "របៀប API",
@@ -159,6 +160,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "អនុវត្ត​ចំពោះ​កសិដ្ឋាន​នីមួយៗ​ដោយ​មិន​មាន​អត្រា​ផ្ទាល់​ខ្លួន។",
   "Applies to": "អនុវត្ត​ចំពោះ",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "អនុវត្តចំពោះរូបយន្តទាំងពីរ។ តម្លៃធំជាងផ្តល់ឱ្យជំនួយការបន្ថែមទៀតដើម្បីធ្វើការជាមួយ និងចំណាយកាន់តែច្រើនក្នុងមួយចម្លើយ។",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "អនុវត្តចំពោះធាតុក្រាហ្វិកជជែកទាំងពីរ។ ទុកវាឱ្យច្បាស់ដើម្បីធ្វើតាមពណ៌ម៉ាកគេហទំព័រពី Colors & Effects។",
   "Applies to every visitor Cloudflare resolves to":
     "អនុវត្ត​ចំពោះ​រាល់​អ្នក​ចូល​មើល Cloudflare ដោះស្រាយ​ដើម្បី",
   Approve: "យល់ព្រម",
@@ -273,6 +278,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "ជ្រើសរើសរបាយការណ៍ពីបញ្ជីដើម្បីដំណើរការវា។",
   "Choose up to": "ជ្រើសរើសរហូតដល់",
   "City / town": "ទីក្រុង / ទីក្រុង",
+  Clear: "ជម្រះ",
   "Clearing...": "កំពុង​សម្អាត...",
   "Click link": "ចុច​តំណ",
   Close: "បិទ",
@@ -312,6 +318,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "គ្រប់គ្រងអ្វីដែលតួនាទីនីមួយៗអាចមើល បង្កើត កែសម្រួល បោះពុម្ពផ្សាយ ឬគ្រប់គ្រង។",
   "Control whether each bot is available, and edit what it knows.":
     "គ្រប់គ្រងថាតើ bot នីមួយៗមាន ហើយកែសម្រួលអ្វីដែលវាដឹង។",
+  "Conversation turns remembered": "ការសន្ទនាត្រូវបានចងចាំ",
   Cook: "ចម្អិន",
   "Cook minutes": "នាទីចម្អិនអាហារ",
   "Copy inside dark bands.": "ចម្លង​នៅ​ក្នុង​ក្រុម​ងងឹត។",
@@ -571,10 +578,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ទំព័រដើម SEO",
   "Homepage Settings": "ការកំណត់ទំព័រដើម",
   "Homepage settings unavailable": "ការកំណត់ទំព័រដើមមិនអាចប្រើបានទេ",
+  "How many entries from the list below are given to the assistant as reference.":
+    "ចំនួនធាតុពីបញ្ជីខាងក្រោមត្រូវបានផ្តល់ទៅឱ្យជំនួយការជាឯកសារយោង។",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "ចំនួនផលិតផល ឬប្រភេទដែលប្រតិបត្តិករអាចជ្រើសរើសទៅក្នុងចំណូលចិត្តថ្មីៗ ប្រភេទពិសេស (ការកំណត់ទំព័រដើម) និងផលិតផលដែលរំលេច (ខាងក្រោម)។ បង្កើនវារក្សាទុកភ្លាមៗ មិនចាំបាច់ដាក់ពង្រាយទេ។ រហូតដល់ 50 ពិដានដែលទម្រង់ប្លុកខ្លួនឯងអនុវត្ត។",
   "How many products to show": "ចំនួនផលិតផលដែលត្រូវបង្ហាញ",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "តើផលិតផល អត្ថបទ ឬរូបមន្តប៉ុន្មានដែលការស្វែងរករបស់ bot មុខហាងនឹងត្រឡប់មកវិញរាល់ពេលដែលវាមើលទៅអ្វីមួយ។",
   "How many to show": "ចំនួនប៉ុន្មានដែលត្រូវបង្ហាញ",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "ចំនួននៃការជជែកបច្ចុប្បន្នត្រូវបានផ្ញើត្រឡប់មកវិញជាមួយនឹងសំណួរនីមួយៗ។ 0 ឆ្លើយរាល់សំណួរក្នុងភាពឯកោ។",
   "How this password works": "របៀបដែលពាក្យសម្ងាត់នេះដំណើរការ",
   "Hungarian (Magyar)": "ហុងគ្រី (Magyar)",
   Icelandic: "អ៊ីស្លង់",
@@ -629,6 +642,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "បន្ត​វាយ​ដើម្បី​ស្វែងរក...",
   Keywords: "ពាក្យគន្លឹះ",
   Khmer: "ខ្មែរ",
+  "Knowledge entries per answer": "ព័ត៌មានចំណេះដឹងក្នុងមួយចម្លើយ",
   "Korean (한국어)": "កូរ៉េ (한국어)",
   Kyrgyz: "គៀហ្គីស",
   Label: "ស្លាក",
@@ -1212,6 +1226,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "ស្វែងរកផលិតផល ការបញ្ជាទិញ អ្នកប្រើប្រាស់ ប្រភេទ…",
   "Search promotions": "ការផ្សព្វផ្សាយស្វែងរក",
   "Search recipes": "ស្វែងរករូបមន្ត",
+  "Search results per lookup": "លទ្ធផលស្វែងរកក្នុងមួយរកមើល",
   "Search returns": "ការ​ស្វែងរក​ត្រឡប់",
   "Search reviews": "ការ​ពិនិត្យ​លើ​ការ​ស្វែងរក",
   "Search submissions": "ការ​បញ្ជូន​ការ​ស្វែងរក",
@@ -1470,6 +1485,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "អ្នកប្រើប្រាស់",
   "Users & Roles": "អ្នកប្រើប្រាស់ និងតួនាទី",
   "Users unavailable": "អ្នកប្រើប្រាស់មិនអាចប្រើបាន",
+  "Using the site brand colour": "ការប្រើប្រាស់ពណ៌ម៉ាកគេហទំព័រ",
   Uyghur: "អ៊ុយហ្គ័រ",
   Uzbek: "អ៊ូសបេក",
   Variant: "វ៉ារ្យង់",
@@ -1515,6 +1531,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "ហេតុអ្វីបានជាត្រូវការការផ្លាស់ប្តូរ ឬហេតុអ្វីបានជាវាត្រូវបានបដិសេធ?",
   "Why is stock changing?": "ហេតុអ្វីបានជាភាគហ៊ុនផ្លាស់ប្តូរ?",
+  "Widget colour": "ពណ៌ធាតុក្រាហ្វិក",
+  "Widget colour hex": "ពណ៌ធាតុក្រាហ្វិក hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "ពាក្យដែល bot ត្រូវគ្នានឹងសំណួរដើម្បីសម្រេចថាការបញ្ចូលនេះគឺពាក់ព័ន្ធ។",
   "Working...": "កំពុងធ្វើការ...",

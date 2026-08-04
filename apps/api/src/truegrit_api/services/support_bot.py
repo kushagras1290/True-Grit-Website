@@ -13,24 +13,26 @@ independently of what the UI happens to show).
 
 from __future__ import annotations
 
-import json
 from typing import Any
 
 from truegrit_api.auth.principal import Principal
 from truegrit_api.errors import PermissionDeniedError
-from truegrit_api.platform.ai_chat import ChatModel, ChatUnavailableError, ToolCall, ToolDefinition
+from truegrit_api.platform.ai_chat import (
+    ChatModel,
+    ChatUnavailableError,
+    ToolCall,
+    ToolDefinition,
+    tool_results_message,
+)
 from truegrit_api.platform.database import Database
 from truegrit_api.services import support_bot_knowledge, support_bot_settings
 
 # No server-side conversation storage -- the client resends the turns it
-# wants remembered (features/support-bot-widget.tsx keeps them in React
-# state), capped here so a long-running session can't grow the prompt
-# without bound.
-_MAX_HISTORY_TURNS = 10
-# One user question should resolve in one or two tool calls; this is a
-# runaway guard, not an expected depth.
-_MAX_TOOL_ROUNDS = 4
-_KNOWLEDGE_SNIPPETS_PER_ANSWER = 6
+# wants remembered (components/support-bot-widget.tsx keeps them in React
+# state). How many of those turns are kept, and how much reference material
+# is embedded, are admin-editable (services.support_bot_settings) so answer
+# quality can be tuned without a deploy; both are clamped there so the
+# prompt can never grow without bound.
 
 _SYSTEM_PROMPT_HEADER = (
     "You are the True Grit admin panel's built-in help assistant. You help "
@@ -45,7 +47,10 @@ _SYSTEM_PROMPT_HEADER = (
 
 async def _build_system_prompt(db: Database, question: str) -> str:
     entries = await support_bot_knowledge.select_relevant(
-        db, question, scope="admin", limit=_KNOWLEDGE_SNIPPETS_PER_ANSWER
+        db,
+        question,
+        scope="admin",
+        limit=await support_bot_settings.get_tuning(db, "knowledgeSnippets"),
     )
     knowledge = "\n\n".join(entries)
     return f"{_SYSTEM_PROMPT_HEADER}\n\nAdmin panel reference:\n{knowledge}"
@@ -162,47 +167,30 @@ async def ask(
             "The support bot is currently turned off. A super admin can turn it back"
             " on from Site Settings."
         )
-    trimmed_history = history[-_MAX_HISTORY_TURNS:]
+    history_turns = await support_bot_settings.get_tuning(db, "historyTurns")
+    trimmed_history = history[-history_turns:] if history_turns else []
     messages: list[dict[str, Any]] = [*trimmed_history, {"role": "user", "content": message}]
     system_prompt = await _build_system_prompt(db, message)
 
-    for _ in range(_MAX_TOOL_ROUNDS):
-        completion = await chat.complete(
-            system_prompt=system_prompt, messages=messages, tools=_TOOLS
-        )
-        if completion.text is not None:
-            return {"reply": completion.text}
+    completion = await chat.complete(system_prompt=system_prompt, messages=messages, tools=_TOOLS)
+    if completion.text is not None:
+        return {"reply": completion.text}
 
-        messages.append(
-            {
-                "role": "assistant",
-                "content": None,
-                "tool_calls": [
-                    {
-                        "id": call.id,
-                        "type": "function",
-                        "function": {
-                            "name": call.name,
-                            "arguments": json.dumps(call.arguments),
-                        },
-                    }
-                    for call in completion.tool_calls
-                ],
-            }
-        )
-        for call in completion.tool_calls:
-            result = await _run_tool(db, actor, call)
-            messages.append(
-                {
-                    "role": "tool",
-                    "tool_call_id": call.id,
-                    "content": json.dumps(result),
-                }
+    # Exactly one round of tools, then a final answer -- not a loop. The model
+    # is asked again with the results stated as plain text and no tools on
+    # offer, so it has to reply in prose; see `tool_results_message` for why
+    # the OpenAI-style tool-result messages cannot be used here.
+    results = [(call, await _run_tool(db, actor, call)) for call in completion.tool_calls]
+    final = await chat.complete(
+        system_prompt=system_prompt,
+        messages=[*messages, tool_results_message(results)],
+        tools=None,
+    )
+    if final.text is None:
+        return {
+            "reply": (
+                "I wasn't able to finish looking that up. Try rephrasing, or check"
+                " the relevant admin page directly."
             )
-
-    return {
-        "reply": (
-            "I wasn't able to finish looking that up. Try rephrasing, or check"
-            " the relevant admin page directly."
-        )
-    }
+        }
+    return {"reply": final.text}

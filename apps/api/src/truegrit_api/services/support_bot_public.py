@@ -18,18 +18,22 @@ visitor simply is not offered those tools at all, not merely hidden in the UI.
 
 from __future__ import annotations
 
-import json
 from typing import Any
 
 from truegrit_api.auth.principal import Principal
-from truegrit_api.platform.ai_chat import ChatModel, ChatUnavailableError, ToolCall, ToolDefinition
+from truegrit_api.platform.ai_chat import (
+    ChatModel,
+    ChatUnavailableError,
+    ToolCall,
+    ToolDefinition,
+    tool_results_message,
+)
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.content import SearchRepository
 from truegrit_api.services import support_bot_knowledge, support_bot_settings
 
-_MAX_HISTORY_TURNS = 10
-_MAX_TOOL_ROUNDS = 4
-_KNOWLEDGE_SNIPPETS_PER_ANSWER = 6
+# History depth and reference size are admin-editable
+# (services.support_bot_settings), shared with the admin bot.
 _SEARCH_RESULT_LIMIT = 5
 
 _SYSTEM_PROMPT_HEADER = (
@@ -58,14 +62,12 @@ def _build_system_prompt(knowledge: list[str], *, signed_in: bool) -> str:
 
 
 async def _search_site(
-    db: Database, *, query: str, country: str | None, locale: str | None
+    db: Database, *, query: str, country: str | None, locale: str | None, limit: int
 ) -> dict[str, Any]:
-    return await SearchRepository(db).search(
-        query, limit=_SEARCH_RESULT_LIMIT, country=country, locale=locale
-    )
+    return await SearchRepository(db).search(query, limit=limit, country=country, locale=locale)
 
 
-async def _search_categories(db: Database, *, query: str) -> dict[str, Any]:
+async def _search_categories(db: Database, *, query: str, limit: int) -> dict[str, Any]:
     like = f"%{query}%"
     rows = await db.fetch_all(
         """
@@ -76,7 +78,7 @@ async def _search_categories(db: Database, *, query: str) -> dict[str, Any]:
         ORDER BY name
         LIMIT ?
         """,
-        (like, like, _SEARCH_RESULT_LIMIT),
+        (like, like, limit),
     )
     return {
         "categories": [
@@ -198,17 +200,20 @@ async def _run_tool(
     *,
     country: str | None,
     locale: str | None,
+    search_limit: int,
 ) -> dict[str, Any]:
     if call.name == "search_site":
         query = str(call.arguments.get("query", "")).strip()
         if not query:
             return {"error": "No search query was given."}
-        return await _search_site(db, query=query, country=country, locale=locale)
+        return await _search_site(
+            db, query=query, country=country, locale=locale, limit=search_limit
+        )
     if call.name == "search_categories":
         query = str(call.arguments.get("query", "")).strip()
         if not query:
             return {"error": "No search query was given."}
-        return await _search_categories(db, query=query)
+        return await _search_categories(db, query=query, limit=search_limit)
     if call.name == "get_my_orders":
         if customer is None:
             return {"error": "Sign in to check your orders."}
@@ -242,50 +247,43 @@ async def ask(
         )
 
     knowledge = await support_bot_knowledge.select_relevant(
-        db, message, scope="storefront", limit=_KNOWLEDGE_SNIPPETS_PER_ANSWER
+        db,
+        message,
+        scope="storefront",
+        limit=await support_bot_settings.get_tuning(db, "knowledgeSnippets"),
     )
     system_prompt = _build_system_prompt(knowledge, signed_in=customer is not None)
     tools = _PUBLIC_TOOLS + _CUSTOMER_TOOLS if customer is not None else _PUBLIC_TOOLS
 
-    trimmed_history = history[-_MAX_HISTORY_TURNS:]
+    history_turns = await support_bot_settings.get_tuning(db, "historyTurns")
+    trimmed_history = history[-history_turns:] if history_turns else []
     messages: list[dict[str, Any]] = [*trimmed_history, {"role": "user", "content": message}]
 
-    for _ in range(_MAX_TOOL_ROUNDS):
-        completion = await chat.complete(
-            system_prompt=system_prompt, messages=messages, tools=tools
-        )
-        if completion.text is not None:
-            return {"reply": completion.text}
+    completion = await chat.complete(system_prompt=system_prompt, messages=messages, tools=tools)
+    if completion.text is not None:
+        return {"reply": completion.text}
 
-        messages.append(
-            {
-                "role": "assistant",
-                "content": None,
-                "tool_calls": [
-                    {
-                        "id": call.id,
-                        "type": "function",
-                        "function": {
-                            "name": call.name,
-                            "arguments": json.dumps(call.arguments),
-                        },
-                    }
-                    for call in completion.tool_calls
-                ],
-            }
+    # Exactly one round of tools, then a final answer -- see the admin bot's
+    # `ask` and `tool_results_message` for why this is not a loop.
+    search_limit = await support_bot_settings.get_tuning(db, "searchResults")
+    results = [
+        (
+            call,
+            await _run_tool(
+                db, customer, call, country=country, locale=locale, search_limit=search_limit
+            ),
         )
-        for call in completion.tool_calls:
-            result = await _run_tool(db, customer, call, country=country, locale=locale)
-            messages.append(
-                {
-                    "role": "tool",
-                    "tool_call_id": call.id,
-                    "content": json.dumps(result),
-                }
+        for call in completion.tool_calls
+    ]
+    final = await chat.complete(
+        system_prompt=system_prompt,
+        messages=[*messages, tool_results_message(results)],
+        tools=None,
+    )
+    if final.text is None:
+        return {
+            "reply": (
+                "I wasn't able to finish looking that up. Try rephrasing, or use the contact form."
             )
-
-    return {
-        "reply": (
-            "I wasn't able to finish looking that up. Try rephrasing, or use the contact form."
-        )
-    }
+        }
+    return {"reply": final.text}

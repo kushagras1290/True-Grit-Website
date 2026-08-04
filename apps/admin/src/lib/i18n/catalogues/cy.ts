@@ -140,6 +140,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "baner gyhoeddiad",
   "Announcements unavailable": "Cyhoeddiadau ddim ar gael",
   Answer: "Ateb",
+  "Answer tuning": "Tiwnio ateb",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Gall unrhyw un sydd wedi mewngofnodi wneud sylw. Dim ond cychwyn trafodaeth newydd sy'n cael ei gau yn ôl oedran y cyfrif.",
   "API mode": "Modd API",
@@ -158,6 +159,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Yn berthnasol i bob fferm heb ei chyfradd ei hun.",
   "Applies to": "Yn berthnasol i",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Yn berthnasol i'r ddau fot. Mae gwerthoedd mwy yn rhoi mwy i'r cynorthwyydd weithio ag ef ac yn costio mwy fesul ateb.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Yn berthnasol i'r ddau declyn sgwrsio. Gadewch ef wedi'i glirio i ddilyn lliw brand y safle o Colours & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "Yn berthnasol i bob ymwelydd Mae Cloudflare yn penderfynu",
   Approve: "Cymeradwyo",
@@ -307,6 +312,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Rheolwch yr hyn y gall pob rôl ei weld, ei greu, ei olygu, ei gyhoeddi neu ei reoli.",
   "Control whether each bot is available, and edit what it knows.":
     "Rheolwch a yw pob bot ar gael, a golygwch yr hyn y mae'n ei wybod.",
+  "Conversation turns remembered": "Cofio troeon sgwrs",
   "Cook minutes": "Coginio munudau",
   "Copy inside dark bands.": "Copïwch y tu mewn i fandiau tywyll.",
   Correction: "Cywiro",
@@ -558,10 +564,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage sections unavailable": "Adrannau tudalen gartref ddim ar gael",
   "Homepage Settings": "Gosodiadau Hafan",
   "Homepage settings unavailable": "Gosodiadau tudalen gartref ddim ar gael",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Sawl cofnod o'r rhestr isod a roddir i'r cynorthwyydd fel cyfeirnod.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Faint o gynhyrchion neu gategorïau y gall gweithredwr ddewis i mewn i Ffefrynnau Ffres, Categorïau Sylw (Gosodiadau Tudalen Cartref) a chynhyrchion a amlygwyd (isod). Mae ei godi yn arbed ar unwaith, nid oes angen defnyddio; hyd at 50, y nenfwd y mae fformat y bloc ei hun yn ei orfodi.",
   "How many products to show": "Sawl cynnyrch i'w ddangos",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Sawl cynnyrch, erthygl neu rysáit mae chwiliad y bot blaen siop yn dychwelyd bob tro mae'n edrych rhywbeth i fyny.",
   "How many to show": "Faint i'w dangos",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Faint o'r sgwrs gyfredol sy'n cael ei anfon yn ôl gyda phob cwestiwn. Mae 0 yn ateb pob cwestiwn ar ei ben ei hun.",
   "How this password works": "Sut mae'r cyfrinair hwn yn gweithio",
   "Hungarian (Magyar)": "Hwngari (Magyar)",
   Icelandic: "Gwlad yr Iâ",
@@ -610,6 +622,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Cadwch y gwaith celf yn lân",
   "Keep typing to search…": "Daliwch i deipio i chwilio…",
   Keywords: "Geiriau allweddol",
+  "Knowledge entries per answer": "Cofnodion gwybodaeth fesul ateb",
   "Korean (한국어)": "Corea (한국어)",
   "Land under cultivation": "Tir yn cael ei drin",
   Language: "Iaith",
@@ -1185,6 +1198,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Cynnyrch chwilio, archebion, defnyddwyr, categorïau…",
   "Search promotions": "Hyrwyddiadau chwilio",
   "Search recipes": "Chwilio ryseitiau",
+  "Search results per lookup": "Canlyniadau chwilio fesul chwiliad",
   "Search returns": "Dychweliadau chwilio",
   "Search reviews": "Adolygiadau chwilio",
   "Search submissions": "Cyflwyniadau chwilio",
@@ -1444,6 +1458,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Defnyddwyr",
   "Users & Roles": "Defnyddwyr a Rolau",
   "Users unavailable": "Defnyddwyr ddim ar gael",
+  "Using the site brand colour": "Defnyddio lliw brand y wefan",
   Variant: "Amrywiad",
   "Variant (SKU)": "Amrywiad (SKU)",
   "Variant Name": "Enw Amrywiad",
@@ -1487,6 +1502,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Pam fod angen newidiadau, neu pam y gwrthodwyd hyn?",
   "Why is stock changing?": "Pam mae stoc yn newid?",
+  "Widget colour": "Lliw teclyn",
+  "Widget colour hex": "Hecs lliw teclyn",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Geiriau mae'r bot yn cyfateb i gwestiwn i benderfynu a yw'r cofnod hwn yn berthnasol.",
   "Working...": "Wrthi'n gweithio...",

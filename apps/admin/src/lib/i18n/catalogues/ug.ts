@@ -29,6 +29,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/recipes/": "/ رېتسىپلار /",
   "/recipes/my-recipe": "/ رېتسېپلار / مېنىڭ رېتسېپىم",
   "/shop": "/ دۇكان",
+  "#1f7a4d": "# 1f7a4d",
   "← All farms": "← بارلىق دېھقانچىلىق مەيدانلىرى",
   "+ stars": "+ يۇلتۇزلار",
   "1 star": "1 يۇلتۇز",
@@ -144,6 +145,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "ئېلان بايرىقى",
   "Announcements unavailable": "ئېلانلارنى ئىشلەتكىلى بولمايدۇ",
   Answer: "جاۋاب",
+  "Answer tuning": "جاۋاب تەڭشەش",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "تىزىملاتقانلار باھا بېرەلەيدۇ. پەقەت يېڭى مۇنازىرە باشلىغاندىلا ھېسابات يېشى بىلەن بولىدۇ.",
   "API mode": "API ھالىتى",
@@ -162,6 +164,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "ھەر بىر دېھقانچىلىق مەيدانىغا ئۆزىنىڭ نىسبىتى يوق.",
   "Applies to": "ئىلتىماس قىلىدۇ",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "ھەر ئىككى بوتقا ماس كېلىدۇ. چوڭ قىممەتلەر ياردەمچىگە تېخىمۇ كۆپ ئىشلەش ۋە تېخىمۇ كۆپ جاۋاب بېرىدۇ.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "ھەر ئىككى پاراڭ كىچىك قورالىغا ماس كېلىدۇ. رەڭ ۋە ئۈنۈمدىن تور بېكەت ماركىسىنىڭ رەڭگىگە ئەگىشىشنى تازىلاپ قويۇڭ.",
   "Applies to every visitor Cloudflare resolves to":
     "Cloudflare ھەل قىلغان ھەر بىر زىيارەتچىگە ماس كېلىدۇ",
   Approve: "تەستىق",
@@ -308,6 +314,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ھەر بىر رولنىڭ نېمىلەرنى كۆرەلەيدىغانلىقىنى ، قۇرالايدىغانلىقىنى ، تەھرىرلىيەلەيدىغانلىقىنى ، ئېلان قىلالايدىغانلىقىنى ياكى باشقۇرالايدىغانلىقىنى كونترول قىلىڭ.",
   "Control whether each bot is available, and edit what it knows.":
     "ھەر بىر بوتنىڭ بار-يوقلۇقىنى كونترول قىلىڭ ۋە بىلگەنلىرىنى تەھرىرلەڭ.",
+  "Conversation turns remembered": "سۆھبەت ئەستە ساقلىنىدۇ",
   Cook: "كۇك",
   "Cook minutes": "مىنۇتلارنى پىشۇرۇڭ",
   "Copy inside dark bands.": "قاراڭغۇ بەلۋاغنىڭ ئىچىگە كۆچۈرۈڭ.",
@@ -560,10 +567,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "باش بەت SEO",
   "Homepage Settings": "باش بەت تەڭشىكى",
   "Homepage settings unavailable": "باش بەت تەڭشىكىنى ئىشلەتكىلى بولمايدۇ",
+  "How many entries from the list below are given to the assistant as reference.":
+    "ياردەمچىگە تۆۋەندىكى تىزىملىكتىن قانچە ئەسەر بېرىلگەن.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "تىجارەتچى يېڭى مەھسۇلاتلار ، ئالاھىدە تۈرلەر (باش بەت تەڭشىكى) ۋە يورۇتۇلغان مەھسۇلاتلار (تۆۋەندە) قانچە مەھسۇلات ياكى تۈرنى تاللىيالايدۇ. ئۇنى ئۆستۈرگەندە دەرھال تېجەيدۇ ، ئورۇنلاشتۇرۇشنىڭ ھاجىتى يوق. 50 گە قەدەر ، تورۇسنىڭ توسۇش شەكلى ئۆزى ئىجرا قىلىدۇ.",
   "How many products to show": "قانچە مەھسۇلات كۆرسىتىلىدۇ",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "ھەر قېتىم بىر نەرسە كۆرۈنگەندە دۇكان ئالدى بوتنىڭ ئىزدەش نەتىجىسى قانچىلىك مەھسۇلات ، ماقالە ياكى رېتسېپ.",
   "How many to show": "قانچە كۆرسىتىش",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "نۆۋەتتىكى پاراڭنىڭ قانچىسى ھەر بىر سوئال بىلەن قايتۇرۇلىدۇ. 0 ھەر بىر سوئالغا ئايرىم جاۋاب بېرىدۇ.",
   "How this password works": "بۇ پارول قانداق ئىشلەيدۇ",
   "Hungarian (Magyar)": "ۋېنگرىيە (ماگار)",
   Icelandic: "ئىسلاندىيە",
@@ -613,6 +626,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "سەنئەت ئەسەرلىرىنى پاكىزە ساقلاڭ",
   "Keep typing to search…": "ئىزدەشنى داۋاملاشتۇرۇڭ…",
   Keywords: "ئاچقۇچلۇق سۆزلەر",
+  "Knowledge entries per answer": "ھەر بىر جاۋابقا ئائىت بىلىملەر",
   Kyrgyz: "قىرغىزىستان",
   Label: "بەلگە",
   "Land under cultivation": "تېرىلغۇ يەر",
@@ -1187,6 +1201,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "مەھسۇلات ، زاكاز ، ئىشلەتكۈچى ، تۈرلەرنى ئىزدەش…",
   "Search promotions": "ئىزدەش تەشۋىقاتى",
   "Search recipes": "ئىزدەش رېتسېپلىرى",
+  "Search results per lookup": "ھەر بىر ئىزدەش نەتىجىسى",
   "Search returns": "ئىزدەش نەتىجىسى",
   "Search reviews": "باھالارنى ئىزدەش",
   "Search submissions": "ئىزدەش يوللانمىلىرى",
@@ -1437,6 +1452,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "ئىشلەتكۈچى",
   "Users & Roles": "ئىشلەتكۈچى ۋە رولى",
   "Users unavailable": "ئىشلەتكۈچىلەر ئىشلەتكىلى بولمايدۇ",
+  "Using the site brand colour": "بېكەت ماركىسىنىڭ رەڭگىنى ئىشلىتىش",
   Uyghur: "ئۇيغۇر",
   Uzbek: "ئۆزبېك",
   "Vietnamese (Tiếng Việt)": "ۋېيتناملىق (Tiếng Việt)",
@@ -1476,6 +1492,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "نېمە ئۈچۈن ئۆزگەرتىش كېرەك ، ياكى بۇ نېمە ئۈچۈن رەت قىلىندى؟",
   "Why is stock changing?": "نېمە ئۈچۈن پاي چېكى ئۆزگىرىدۇ؟",
+  "Widget colour": "كىچىك قورالنىڭ رەڭگى",
+  "Widget colour hex": "Widget color hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "بوت بۇ سوئالغا ماس كېلىدىغان سۆزلەر بىلەن مۇناسىۋەتلىك.",
   "Working...": "ئىشلەش ...",

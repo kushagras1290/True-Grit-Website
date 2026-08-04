@@ -144,6 +144,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Банер з аб'явамі",
   "Announcements unavailable": "Аб'явы недаступныя",
   Answer: "Адказ",
+  "Answer tuning": "Настройка адказу",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Любы, хто ўвайшоў у сістэму, можа каментаваць. Толькі пачатак новага абмеркавання залежыць ад узросту ўліковага запісу.",
   "API mode": "Рэжым API",
@@ -161,6 +162,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ужываецца пры афармленні заказу перад купонамі або скідкамі па акцыі. За заказы, якія дасягаюць або перавышаюць парог бясплатнай дастаўкі, плата за дастаўку не спаганяецца.",
   "Applied to every farm without its own rate.": "Прымяняецца да кожнай фермы без уласнай стаўкі.",
   "Applies to": "Прымяняецца да",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Ужываецца для абодвух ботаў. Большыя значэнні дазваляюць памочніку больш працаваць і каштуюць даражэй за адказ.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Ужываецца для абодвух віджэтаў чата. Пакіньце яго ачышчаным, каб адпавядаць колерам брэнда сайта з Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "Прымяняецца да кожнага наведвальніка Cloudflare вырашае",
   Approve: "Ухваліць",
@@ -280,6 +285,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Выберыце справаздачу са спісу, каб запусціць яе.",
   "Choose up to": "Выберыце да",
   "City / town": "Горад/пасёлак",
+  Clear: "Ачысціць",
   "Clearing...": "Ачыстка...",
   "Click link": "Націсніце спасылку",
   Close: "Зачыніць",
@@ -318,6 +324,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Кантралюйце, што кожная роля можа праглядаць, ствараць, рэдагаваць, публiкаваць або кiраваць.",
   "Control whether each bot is available, and edit what it knows.":
     "Кантралюйце, ці даступны кожны бот, і рэдагуйце тое, што ён ведае.",
+  "Conversation turns remembered": "Запомненыя абароты размовы",
   Cook: "Кухар",
   "Cook minutes": "Хвiлiны для кухарства",
   "Copy inside dark bands.": "Капіруйце ўнутры цёмных палос.",
@@ -581,10 +588,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO галоўнай старонкі",
   "Homepage Settings": "Налады галоўнай старонкі",
   "Homepage settings unavailable": "Налады галоўнай старонкі недаступныя",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Колькі запісаў са спісу ніжэй даецца памочніку ў якасці спасылкі.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Колькі прадуктаў ці катэгорый аператар можа выбраць у Fresh Favourites, Рэкамендаваныя катэгорыі (налады галоўнай старонкі) і вылучаныя прадукты (ніжэй). Павышэнне яго захоўвае неадкладна, разгортванне не патрабуецца; да 50, столь, якую забяспечвае сам фармат блока.",
   "How many products to show": "Колькі прадуктаў паказаць",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Колькі прадуктаў, артыкулаў або рэцэптаў пошук бота вітрыны вяртаецца кожны раз, калі ён нешта шукае.",
   "How many to show": "Колькі паказаць",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Колькі бягучага чата вяртаецца з кожным пытаннем. 0 адказвае на кожнае пытанне ізалявана.",
   "How this password works": "Як працуе гэты пароль",
   "Hungarian (Magyar)": "венгерская (мадзьярская)",
   Icelandic: "Ісландская",
@@ -642,6 +655,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "Ключавыя словы",
   Khmer: "кхмерскі",
   Kinyarwanda: "кіньяруанда",
+  "Knowledge entries per answer": "Запісы ведаў за адказ",
   "Konkani (कोंकणी)": "конкані (कोंकणी)",
   "Korean (한국어)": "карэйская (한국어)",
   Kyrgyz: "кіргізская",
@@ -1242,6 +1256,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Шукаць прадукты, заказы, карыстальнікаў, катэгорыі…",
   "Search promotions": "Шукаць акцыі",
   "Search recipes": "Шукаць рэцэпты",
+  "Search results per lookup": "Вынікі пошуку за пошук",
   "Search returns": "Шукаць вынікі",
   "Search reviews": "Шукаць водгукі",
   "Search submissions": "Шукаць даведкі",
@@ -1506,6 +1521,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "карыстальнікаў",
   "Users & Roles": "карыстальнікаў і роляў",
   "Users unavailable": "Карыстальнікі недаступныя",
+  "Using the site brand colour": "Выкарыстанне колеру брэнда сайта",
   Uyghur: "уйгурскі",
   Uzbek: "узбекскі",
   Variant: "Варыянт",
@@ -1551,6 +1567,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Чаму патрэбныя змены, або чаму гэта было адхілена?",
   "Why is stock changing?": "Чаму мяняюцца запасы?",
+  "Widget colour": "Колер віджэта",
+  "Widget colour hex": "Колер віджэта шаснаццатковы",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Словы, якія бот супадае з пытаннем, каб вырашыць, што гэты запіс рэлевантны.",
   "Working...": "Працуе...",

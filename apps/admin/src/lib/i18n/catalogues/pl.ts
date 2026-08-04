@@ -139,6 +139,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Baner ogłoszeń",
   "Announcements unavailable": "Ogłoszenia niedostępne",
   Answer: "Odpowiedź",
+  "Answer tuning": "Dostrajanie odpowiedzi",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Każdy zalogowany może komentować. Jedynie rozpoczęcie nowej dyskusji jest uzależnione od wieku konta.",
   "API mode": "Tryb API",
@@ -156,6 +157,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Stosowane przy kasie przed rabatem kuponowym lub promocyjnym. Za zamówienia na poziomie lub powyżej progu bezpłatnej dostawy nie płaci się opłaty za dostawę.",
   "Applied to every farm without its own rate.": "Dotyczy każdego gospodarstwa bez własnej stawki.",
   "Applies to": "Dotyczy",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Dotyczy obu botów. Większe wartości dają asystentowi więcej pracy i kosztują więcej za odpowiedź.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Dotyczy obu widżetów czatu. Pozostaw tę opcję wyczyszczoną, aby odpowiadała kolorowi marki witryny z Kolorów i efektów.",
   "Applies to every visitor Cloudflare resolves to":
     "Dotyczy każdego gościa, którego Cloudflare postanawia",
   Approve: "Zatwierdź",
@@ -273,6 +278,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Wybierz raport z listy, aby go wygenerować.",
   "Choose up to": "Wybierz do",
   "City / town": "Miasto / miasto",
+  Clear: "Wyczyść",
   "Clearing...": "Czyszczenie...",
   "Click link": "Kliknij link",
   Close: "Zamknij",
@@ -312,6 +318,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kontroluj, co każda rola może wyświetlać, tworzyć, edytować, publikować lub zarządzać.",
   "Control whether each bot is available, and edit what it knows.":
     "Kontroluj, czy każdy bot jest dostępny i edytuj to, co wie.",
+  "Conversation turns remembered": "Zapamiętanie zwrotów konwersacji",
   Cook: "Gotuj",
   "Cook minutes": "Gotuj minuty",
   "Copy inside dark bands.": "Kopiuj wewnątrz ciemnych pasm.",
@@ -571,10 +578,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO strony głównej",
   "Homepage Settings": "Ustawienia strony głównej",
   "Homepage settings unavailable": "Ustawienia strony głównej niedostępne",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Ile wpisów z poniższej listy jest przekazywanych asystentowi jako odniesienie.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Ile produktów lub kategorii operator może wybrać do świeżych ulubionych i wyróżnionych kategorii (Ustawienia strony głównej) i Wyróżnione produkty (poniżej). Podniesienie go powoduje natychmiastowe zapisanie stanu, nie jest konieczne wdrażanie; do 50, maksymalnie narzucany przez format blokowy.",
   "How many products to show": "Ile produktów do wyświetlenia",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Ile produktów, artykułów lub przepisów wyszukiwanie bota sklepowego zwraca za każdym razem, gdy coś wyszuka.",
   "How many to show": "Ile do wyświetlenia",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Jaka część bieżącego czatu jest odsyłana z każdym pytaniem. 0 odpowiada na każde pytanie oddzielnie.",
   "How this password works": "Jak działa to hasło",
   "Hungarian (Magyar)": "węgierski (madziarski)",
   Icelandic: "islandzki",
@@ -630,6 +643,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "Pisz dalej, aby wyszukać…",
   Keywords: "Słowa kluczowe",
   Kinyarwanda: "kinyarwanda",
+  "Knowledge entries per answer": "Wpisy wiedzy na odpowiedź",
   "Konkani (कोंकणी)": "konkani (कोंकणी)",
   "Korean (한국어)": "koreański (한국어)",
   Kyrgyz: "kirgiski",
@@ -1226,6 +1240,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Szukaj produktów, zamówień, użytkowników, kategorii…",
   "Search promotions": "Szukaj promocji",
   "Search recipes": "Szukaj przepisów",
+  "Search results per lookup": "Wyniki wyszukiwania na wyszukiwanie",
   "Search returns": "Szukaj zwrotów",
   "Search reviews": "Szukaj recenzji",
   "Search submissions": "Wyszukaj zgłoszenia",
@@ -1487,6 +1502,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Użytkownicy",
   "Users & Roles": "Użytkownicy i role",
   "Users unavailable": "Użytkownicy niedostępni",
+  "Using the site brand colour": "Korzystanie z koloru marki witryny",
   Uyghur: "Ujgurski",
   Uzbek: "uzbecki",
   Variant: "Wariant",
@@ -1532,6 +1548,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Dlaczego potrzebne są zmiany lub dlaczego zostały one odrzucone?",
   "Why is stock changing?": "Dlaczego zmieniają się zapasy?",
+  "Widget colour": "Kolor widżetu",
+  "Widget colour hex": "Kolor widżetu szesnastkowo",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Słowa, które bot dopasowuje do pytania, aby zdecydować, czy ten wpis jest istotny.",
   "Working...": "Praca...",

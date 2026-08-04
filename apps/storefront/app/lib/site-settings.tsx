@@ -51,6 +51,10 @@ export interface SiteSettings {
    *  of HTML is already the right colour. */
   theme: StorefrontTheme;
   effects: StorefrontEffects;
+  /** Hex colour for the help widget, or "" to inherit the brand colour.
+   *  Validated server-side to a hex triplet before it is stored, because it
+   *  ends up in an inline style attribute. */
+  supportBotColor: string;
 }
 
 export const DEFAULT_PAYMENTS_DISABLED_NOTICE =
@@ -71,6 +75,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   banners: { blogImageUrl: "", blogImageAlt: "", farmsImageUrl: "", farmsImageAlt: "" },
   theme: DEFAULT_THEME,
   effects: DEFAULT_EFFECTS,
+  supportBotColor: "",
 };
 
 /** Coerce an untrusted API payload into a complete `SiteSettings`.
@@ -88,6 +93,7 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
     banners: Partial<SiteSettings["banners"]>;
     theme: unknown;
     effects: unknown;
+    supportBotColor: unknown;
   }>;
   const auth = source.auth ?? {};
   const payments = source.payments ?? {};
@@ -130,6 +136,11 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
     },
     theme: normalizeTheme(source.theme),
     effects: normalizeEffects(source.effects),
+    // Re-checked here rather than trusted: this value is applied as an inline
+    // style, and normalize() exists precisely to not trust the payload.
+    supportBotColor: /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(String(source.supportBotColor))
+      ? String(source.supportBotColor)
+      : "",
   };
 }
 

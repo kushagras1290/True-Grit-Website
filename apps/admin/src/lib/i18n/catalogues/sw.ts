@@ -139,6 +139,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Bango la tangazo",
   "Announcements unavailable": "Matangazo hayapatikani",
   Answer: "Jibu",
+  "Answer tuning": "Urekebishaji wa jibu",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Yeyote aliyeingia anaweza kutoa maoni. Kuanzisha mjadala mpya pekee kunasimamiwa na umri wa akaunti.",
   "API mode": "Modi ya API",
@@ -156,6 +157,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Hutumika wakati wa kulipa kabla ya punguzo la kuponi au ofa. Maagizo yakiwa na au zaidi ya kiwango cha uwasilishaji bila malipo hulipa ada ya kuleta.",
   "Applied to every farm without its own rate.": "Inatumika kwa kila shamba bila ada yake.",
   "Applies to": "Inatumika kwa",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Hutumika kwa roboti zote mbili. Thamani kubwa humpa mratibu kazi zaidi na gharama zaidi kwa kila jibu.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Inatumika kwa wijeti zote mbili za gumzo. Iache ili ufuate rangi ya chapa ya tovuti kutoka Rangi na Madoido.",
   "Applies to every visitor Cloudflare resolves to":
     "Inatumika kwa kila mgeni Cloudflare imeazimia",
   Approve: "Kuidhinisha",
@@ -269,6 +274,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Chagua ripoti kutoka kwenye orodha ili kuiendesha.",
   "Choose up to": "Chagua hadi",
   "City / town": "Mji/mji",
+  Clear: "Futa",
   "Clearing...": "Inafuta...",
   "Click link": "Bofya kiungo",
   Close: "Funga",
@@ -307,6 +313,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Dhibiti kile ambacho kila jukumu linaweza kuona, kuunda, kuhariri, kuchapisha au kudhibiti.",
   "Control whether each bot is available, and edit what it knows.":
     "Dhibiti ikiwa kila kijibu kinapatikana, na uhariri kile kinachojua.",
+  "Conversation turns remembered": "Mazungumzo yatakumbukwa",
   "Cook minutes": "Dakika za kupika",
   "Copy inside dark bands.": "Nakili ndani ya bendi za giza.",
   Correction: "Urekebishaji",
@@ -566,10 +573,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO ya Ukurasa wa Kwanza",
   "Homepage Settings": "Mipangilio ya Ukurasa wa Mwanzo",
   "Homepage settings unavailable": "Mipangilio ya ukurasa wa nyumbani haipatikani",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Ni maingizo mangapi kutoka kwenye orodha iliyo hapa chini yanapewa mratibu kama marejeleo.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Ni bidhaa au aina ngapi ambazo opereta anaweza kuchagua katika Vipendwa Vipya, Vitengo Vilivyoangaziwa (Mipangilio ya Ukurasa wa Nyumbani) na Bidhaa Zilizoangaziwa (hapa chini). Kuinua huokoa mara moja, hakuna kupeleka inahitajika; hadi 50, dari umbizo la kizuizi yenyewe hutekelezwa.",
   "How many products to show": "Ni bidhaa ngapi zitaonyeshwa",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Ni bidhaa, vifungu au mapishi ngapi utafutaji wa roboti ya mbele ya duka hurejeshwa kila inapoonekana kuwa ni kitu kipya.",
   "How many to show": "Ni ngapi za kuonyesha",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Ni kiasi gani cha gumzo la sasa hurejeshwa kwa kila swali. 0 hujibu kila swali kivyake.",
   "How this password works": "Jinsi nenosiri hili linavyofanya kazi",
   Icelandic: "Kiaislandi",
   "If that email has an account, a reset link is on its way.":
@@ -621,6 +634,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Weka kazi ya sanaa ikiwa safi",
   "Keep typing to search…": "Endelea kuandika ili kutafuta…",
   Keywords: "Nenomsingi",
+  "Knowledge entries per answer": "Maingizo ya maarifa kwa kila jibu",
   "Korean (한국어)": "Kikorea (한국어)",
   Kyrgyz: "Kirigizi",
   Label: "Lebo",
@@ -1207,6 +1221,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "Tafuta bidhaa, maagizo, watumiaji, kategoria…",
   "Search promotions": "Tafuta matangazo",
   "Search recipes": "Tafuta mapishi",
+  "Search results per lookup": "Matokeo ya utafutaji kwa kila utafutaji",
   "Search returns": "rejesho za utafutaji",
   "Search reviews": "Tafuta ukaguzi",
   "Search submissions": "Tafuta mawasilisho",
@@ -1469,6 +1484,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Watumiaji",
   "Users & Roles": "Watumiaji na Majukumu",
   "Users unavailable": "Watumiaji hawapatikani",
+  "Using the site brand colour": "Kwa kutumia rangi ya chapa ya tovuti",
   Uyghur: "Kiuyghur",
   Uzbek: "Kiuzbeki",
   Variant: "Lahaja",
@@ -1512,6 +1528,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Whole site": "Tovuti nzima",
   "Whole site (default)": "Tovuti nzima (chaguo-msingi)",
   "Why is stock changing?": "Kwa nini hisa inabadilika?",
+  "Widget colour": "Rangi ya Wijeti",
+  "Widget colour hex": "Widget rangi hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Maneno majibu yanalingana na swali ili kuamua ingizo hili linafaa.",
   "Working...": "Inafanya kazi...",

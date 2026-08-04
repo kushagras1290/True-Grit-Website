@@ -30,6 +30,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/recipes/": "/ ibisobanuro /",
   "/recipes/my-recipe": "/ ibisubizo / my-resept",
   "/shop": "/ iduka",
+  "#1f7a4d": "# 1f7a4d",
   "← All farms": "Imirima yose",
   "+ stars": "inyenyeri",
   "1 star": "Inyenyeri 1",
@@ -149,6 +150,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Ibendera",
   "Announcements unavailable": "Amatangazo ntaboneka",
   Answer: "Igisubizo",
+  "Answer tuning": "Igisubizo",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Umuntu wese winjiye arashobora gutanga ibitekerezo. Gusa gutangira ikiganiro gishya cyerekanwe kumyaka ya konte.",
   "API mode": "Uburyo bwa API",
@@ -167,6 +169,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Bikoreshwa kuri buri murima udafite igipimo cyacyo.",
   "Applies to": "Bikurikizwa",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Bikoreshwa kuri bots zombi. Indangagaciro nini ziha umufasha byinshi gukorana nigiciro cyinshi kubisubizo.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Irasaba kuri widgets zombi. Kureka neza kugirango ukurikize ibara ryurubuga kuva Amabara & Ingaruka.",
   "Applies to every visitor Cloudflare resolves to":
     "Irasaba buri mushyitsi Cloudflare yiyemeje kuri",
   Approve: "Emeza",
@@ -280,6 +286,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Hitamo raporo kuva kurutonde kugirango uyikoreshe.",
   "Choose up to": "Hitamo kugeza",
   "City / town": "Umujyi / umujyi",
+  Clear: "Biragaragara",
   "Clearing...": "Gukuraho ...",
   "Click link": "Kanda ihuza",
   Close: "Funga",
@@ -319,6 +326,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Igenzura icyo buri ruhare rushobora kureba, kurema, guhindura, gutangaza cyangwa gucunga.",
   "Control whether each bot is available, and edit what it knows.":
     "Igenzura niba buri bot ihari, kandi uhindure ibyo izi.",
+  "Conversation turns remembered": "Ikiganiro gihinduka kwibuka",
   Cook: "Teka",
   "Cook minutes": "Teka iminota",
   "Copy inside dark bands.": "Wandukure imbere yijimye.",
@@ -578,10 +586,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Urupapuro rwa SEO",
   "Homepage Settings": "Igenamiterere ry'urugo",
   "Homepage settings unavailable": "Igenamiterere ry'urugo ntirishobora kuboneka",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Ni bangahe byanditse kurutonde rukurikira bihabwa umufasha nkibisobanuro.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Nibicuruzwa bingahe cyangwa ibyiciro umukoresha ashobora gutoranya muburyo bushya, Ibyiciro byihariye (Igenamiterere ryurugo) nibicuruzwa byerekanwe (hepfo). Kuzamura bikiza ako kanya, nta gahunda ikenewe; kugeza kuri 50, igisenge imiterere yo guhagarika ubwayo irashyira mubikorwa.",
   "How many products to show": "Nibicuruzwa bingahe byerekana",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Nibicuruzwa bingahe, ingingo cyangwa ibisubizo byububiko bwibikoresho bishakisha bigaruka buri gihe bisa nibintu hejuru.",
   "How many to show": "Ni bangahe kwerekana",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Ni bangahe mubiganiro byubu byoherejwe hamwe na buri kibazo. 0 asubiza buri kibazo mubwigunge.",
   "How this password works": "Ukuntu ijambo ryibanga rikora",
   "Hungarian (Magyar)": "Hongiriya (Magyar)",
   Icelandic: "Isilande",
@@ -633,6 +647,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Komeza ibihangano",
   "Keep typing to search…": "Komeza wandike gushakisha…",
   Keywords: "Ijambo ryibanze",
+  "Knowledge entries per answer": "Ubumenyi bwanditse kubisubizo",
   "Korean (한국어)": "Igikoreya (한국어)",
   Kyrgyz: "Kirigizisitani",
   Label: "Ikirango",
@@ -1215,6 +1230,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Shakisha ibicuruzwa, ibicuruzwa, abakoresha, ibyiciro…",
   "Search promotions": "Shakisha kuzamurwa mu ntera",
   "Search recipes": "Shakisha ibisubizo",
+  "Search results per lookup": "Shakisha ibisubizo kuri buri shakisha",
   "Search returns": "Shakisha kugaruka",
   "Search reviews": "Shakisha ibisobanuro",
   "Search submissions": "Shakisha ibyatanzwe",
@@ -1475,6 +1491,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Abakoresha",
   "Users & Roles": "Abakoresha & Inshingano",
   "Users unavailable": "Abakoresha ntibaboneka",
+  "Using the site brand colour": "Koresha ibara ryurubuga",
   Variant: "Ibitandukanye",
   "Variant (SKU)": "Ibitandukanye (SKU)",
   "Variant Name": "Izina ritandukanye",
@@ -1517,6 +1534,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Kuki impinduka zikenewe, cyangwa kuki ibi byanze?",
   "Why is stock changing?": "Kuki imigabane ihinduka?",
+  "Widget colour": "Ibara rya Widget",
+  "Widget colour hex": "Widget ibara hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Amagambo bot ahuye nikibazo cyo guhitamo ibyinjira ni ngombwa.",
   "Working...": "Gukora ...",

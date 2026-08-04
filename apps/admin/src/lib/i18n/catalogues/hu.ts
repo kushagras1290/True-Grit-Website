@@ -144,6 +144,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Bejelentés szalaghirdetés",
   "Announcements unavailable": "A közlemények nem érhetők el",
   Answer: "Válasz",
+  "Answer tuning": "Válaszhangolás",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Bárki, aki bejelentkezett, hozzászólhat. Csak az új vita elindítását korlátozza a fiók életkora.",
   "API mode": "API-mód",
@@ -161,6 +162,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "A kupon vagy promóciós kedvezmény előtt a pénztárnál érvényes. Az ingyenes kiszállítási küszöbértéket elérő vagy azt meghaladó rendelések esetén nem kell kiszállítási díjat fizetni.",
   "Applied to every farm without its own rate.": "Minden gazdaságra vonatkozik, saját díj nélkül.",
   "Applies to": "Érvényes:",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Mindkét robotra vonatkozik. A nagyobb értékek több munkát adnak az asszisztensnek, és válaszonként többe kerül.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Mindkét csevegőmodulra vonatkozik. Hagyja törölve, ha követni szeretné a webhely márkaszínét a Színek és effektusok alkalmazásból.",
   "Applies to every visitor Cloudflare resolves to": "Minden látogatóra vonatkozik. A Cloudflare a",
   Approve: "Jóváhagyás",
   "Approve & publish": "Jóváhagyás és közzététel",
@@ -276,6 +281,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Válasszon ki egy jelentést a listából a futtatásához.",
   "Choose up to": "Válasszon legfeljebb",
   "City / town": "Város/település",
+  Clear: "Törlés",
   "Clearing...": "Törlés...",
   "Click link": "Kattintson a linkre",
   Close: "Bezárás",
@@ -315,6 +321,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Szabályozhatja, hogy az egyes szerepkörök mit tekinthetnek meg, hozhatnak létre, szerkeszthetnek, publikálhatnak vagy kezelhetnek.",
   "Control whether each bot is available, and edit what it knows.":
     "Szabályozhatja, hogy az egyes robotok elérhetők-e, és szerkessze, hogy mit tud.",
+  "Conversation turns remembered": "A beszélgetési fordulatok emlékezve",
   Cook: "Főzés",
   "Cook minutes": "Főzési percek",
   "Copy inside dark bands.": "Másolás a sötét sávok belsejébe.",
@@ -574,10 +581,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "A kezdőlap keresőoptimalizálása",
   "Homepage Settings": "A kezdőlap beállításai",
   "Homepage settings unavailable": "A kezdőlap beállításai nem érhetők el",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Az alábbi listából hány bejegyzést adunk referenciaként az asszisztensnek.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Hány terméket vagy kategóriát választhat az operátor a Friss Kedvencek, Kiemelt kategóriák (Kezdőlap beállításai) és Kiemelt termékek (lent) között. Felemelése azonnal ment, nincs szükség telepítésre; 50-ig az a felső határ, amelyet maga a blokkformátum érvényesít.",
   "How many products to show": "Hány terméket kell megjeleníteni",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Hány terméket, cikket vagy receptet ad vissza a kirakatrobot keresése minden alkalommal, amikor megnéz valamit.",
   "How many to show": "Hányat kell megjeleníteni",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Mekkora részét küldi vissza az aktuális csevegés minden kérdéssel. 0 választ minden kérdésre elkülönítve.",
   "How this password works": "Hogyan működik ez a jelszó?",
   "Hungarian (Magyar)": "Magyar (Magyar)",
   Icelandic: "Izlandi",
@@ -634,6 +647,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "Kulcsszavak",
   Khmer: "khmer",
   Kinyarwanda: "Kinyaruanda",
+  "Knowledge entries per answer": "Tudásbejegyzések válaszonként",
   "Konkani (कोंकणी)": "konkani (कोंकणी)",
   "Korean (한국어)": "koreai (한국어)",
   Kyrgyz: "kirgiz",
@@ -1226,6 +1240,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Termékek, rendelések, felhasználók, kategóriák keresése…",
   "Search promotions": "Promóciók keresése",
   "Search recipes": "Receptek keresése",
+  "Search results per lookup": "Keresési eredmények keresésenként",
   "Search returns": "Receptek keresése",
   "Search reviews": "Vélemények keresése",
   "Search submissions": "Submissions",
@@ -1490,6 +1505,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Felhasználók",
   "Users & Roles": "Felhasználók és szerepkörök",
   "Users unavailable": "Nem elérhető felhasználók",
+  "Using the site brand colour": "A webhely márkaszínének használata",
   Uyghur: "ujgur",
   Uzbek: "üzbég",
   Variant: "változat",
@@ -1534,6 +1550,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Miért van szükség változtatásokra, vagy miért utasították el ezt?",
   "Why is stock changing?": "Miért változik a készlet?",
+  "Widget colour": "A modul színe",
+  "Widget colour hex": "A modul színének hatszöge",
   "Words the bot matches against a question to decide this entry is relevant.":
     "A bot szavakat egyeztet egy kérdéssel, így eldönti, hogy ez a bejegyzés releváns-e.",
   "Working...": "Működik...",

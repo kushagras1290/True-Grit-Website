@@ -141,6 +141,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Banner Ogaysiis",
   "Announcements unavailable": "Ogaysiisyada lama heli karo",
   Answer: "Jawaab",
+  "Answer tuning": "jawaab toosin",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Qof kasta oo soo gala wuu faalloon karaa. Bilaabida dood cusub oo kaliya ayaa lagu xiray da'da koontada.",
   "API mode": "qaab API",
@@ -159,6 +160,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Waxa laga codsadaa beer kasta iyada oo aan lahayn qiimaheeda.",
   "Applies to": "Waxay khusaysaa",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Waxay khusaysaa labada bots. Qiimayaasha waaweyni waxay siiyan kaaliyaha in ka badan si uu ula shaqeeyo oo qiimo badan ayuu ku bixiyaa jawaab kasta.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Waxay khusaysaa labada widgets ee lagu sheekeysto. U daa mid nadiif ah si aad u raacdo midabka astaanta goobta ee Midabka & Saamaynta.",
   "Applies to every visitor Cloudflare resolves to":
     "Waxay khusaysaa booqde kasta Cloudflare waxay go'aansataa",
   Approve: "ansixiyaa",
@@ -266,6 +271,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Dooro warbixin liiska si aad u socodsiiso.",
   "Choose up to": "dooro ilaa",
   "City / town": "Magaalo /magaalo",
+  Clear: "Nadiifi",
   "Clearing...": "Nadiifinta...",
   "Click link": "rix linkiga",
   Close: "Xir",
@@ -303,6 +309,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Maamulka door kasta waxa uu arki karo, abuuri karo, wax ka beddeli karo, daabici karo ama maamuli karo.",
   "Control whether each bot is available, and edit what it knows.":
     "Xakamee in bot kasta la heli karo, oo wax ka beddel waxa ay garanayso.",
+  "Conversation turns remembered": "Wadahadalkii waa la xusuustaa",
   Cook: "kariyo",
   "Cook minutes": "daqiiqado karinta",
   "Copy inside dark bands.": "Koobi gudaha xadhkaha mugdiga ah.",
@@ -551,10 +558,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Homebog SEO",
   "Homepage Settings": "Dejinta boggaga",
   "Homepage settings unavailable": "Dejinta boggaga lama heli karo",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Immisa ka mid ah liiska hoose ayaa la siiyay kaaliyaha tixraac ahaan.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Immisa badeecooyin ama qaybaha hawlwadeenku waxa uu ka soo qaadan karaa dookhyada cusub, Qaybaha la soo bandhigay (Homepage Settings) iyo alaabta la iftiimiyay (hoos). Kor u qaadida waxay badbaadinaysaa isla markiiba, looma baahna in la geeyo; ilaa 50, saqafka qaabka block laftiisa ayaa dhaqan galinaya.",
   "How many products to show": "Immisa badeeco ayaa la soo bandhigayaa",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Immisa badeecooyin, maqaallo ama cuntooyin ah raadinta bot-ka hore ee dukaanka ayaa soo noqda mar kasta oo ay wax u muuqdaan.",
   "How many to show": "Immisa ayaa la soo bandhigayaa",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Intee in le'eg ayaa sheekada hadda lagu soo celiyaa su'aal kasta. 0 wuxuu kaga jawaabaa su'aal kasta si gooni ah.",
   "How this password works": "sida erayga sirta ah u shaqeeyo",
   "Hungarian (Magyar)": "Hungary (Magyar)",
   Icelandic: "Iceland",
@@ -600,6 +613,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Ka dhig nadiifinta farshaxanimada",
   "Keep typing to search…": "wax ku qor si aad u raadiso…",
   Keywords: "Erayada furaha",
+  "Knowledge entries per answer": "Galitaanka aqoonta jawaabtiiba",
   "Korean (한국어)": "Kuuriyaan (한국어)",
   "Land under cultivation": "Dhulka la beero",
   Language: "Luqad",
@@ -1175,6 +1189,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Raadi badeecadaha, dalabaadka, isticmaalayaasha, qaybaha…",
   "Search promotions": "Xilliyada raadinta",
   "Search recipes": "Raadi cuntooyinka",
+  "Search results per lookup": "Natiijooyinka raadinta goob kasta",
   "Search returns": "Soo celinta raadinta",
   "Search reviews": "Raadi faallooyin",
   "Search submissions": "soo gudbinta raadinta",
@@ -1425,6 +1440,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Isticmaalayaasha",
   "Users & Roles": "Isticmalayaasha & Doorarka",
   "Users unavailable": "Isticmaalayaasha lama heli karo",
+  "Using the site brand colour": "Isticmaalka midabka astaanta goobta",
   Variant: "Varian",
   "Variant Name": "Magaca kala duwan",
   Variants: "Ka duwanaanshiyaha",
@@ -1464,6 +1480,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Waa maxay sababta isbeddellada loogu baahan yahay, ama maxaa tan loo diiday?",
   "Why is stock changing?": "Waa maxay sababta ay saamiyadu isu bedelayaan?",
+  "Widget colour": "midabka widget",
+  "Widget colour hex": "midabka widget hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Erayada bot-ku waxay u dhigmaan su'aasha si loo go'aamiyo gelitaankan inay khusayso.",
   "Working...": "shaqada...",

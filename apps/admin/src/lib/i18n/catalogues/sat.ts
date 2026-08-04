@@ -156,6 +156,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "ᱩᱪᱷᱟ.ᱱ ᱵᱮᱱᱟᱨ",
   "Announcements unavailable": "ᱩᱪᱷᱟ.ᱱ ᱵᱟᱝ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ",
   Answer: "ᱛᱮᱞᱟ",
+  "Answer tuning": "ᱛᱮᱞᱟ ᱴᱩᱱᱤᱝ",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "ᱡᱟᱦᱟᱸᱭ ᱜᱮ ᱥᱟᱭᱤᱱ ᱟᱠᱟᱱᱟ ᱠᱚ ᱛᱷᱩᱛᱤ ᱠᱚ ᱢᱮᱱ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ | ᱮᱠᱮᱱ ᱢᱤᱫ ᱱᱟᱣᱟ ᱜᱟᱞᱚᱪ ᱮᱦᱚᱵ ᱞᱟᱹᱜᱤᱫ ᱜᱮ ᱮᱠᱟᱶᱴ ᱩᱢᱮᱨ ᱞᱮᱠᱟᱛᱮ ᱜᱮᱴ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ ᱾",
   "Appearance unavailable": "ᱧᱮᱞᱚᱜ ᱵᱟᱝ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ",
@@ -172,6 +173,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ᱡᱟᱦᱟᱱ ᱠᱩᱯᱚᱱ ᱥᱮ ᱯᱨᱚᱪᱟᱨ ᱪᱷᱩᱴ ᱞᱟᱦᱟᱨᱮ ᱪᱮᱠᱟᱣᱩᱴ ᱨᱮ ᱟᱨᱫᱟᱥ ᱦᱩᱭᱩᱜᱼᱟ᱾ ᱯᱷᱨᱤ ᱰᱮᱞᱤᱵᱷᱟᱨᱤ ᱛᱷᱨᱮᱥᱦᱚᱞᱰ ᱨᱮ ᱥᱮ ᱚᱱᱟ ᱠᱷᱚᱱ ᱪᱮᱛᱟᱱ ᱨᱮ ᱚᱰᱚᱨ ᱫᱚ ᱰᱮᱞᱤᱵᱷᱟᱨᱤ ᱯᱷᱤ ᱵᱟᱝ ᱮᱢᱚᱜ ᱠᱟᱱᱟ᱾",
   "Applied to every farm without its own rate.": "ᱥᱟᱱᱟᱢ ᱵᱟᱹᱫᱽ ᱨᱮ ᱵᱮᱜᱚᱨ ᱫᱚᱨ ᱛᱮ ᱞᱟᱹᱜᱩᱜᱼᱟ᱾",
   "Applies to": "ᱞᱟᱹᱜᱩᱜ-ᱟ",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "ᱵᱟᱱᱟᱨ ᱵᱚᱴ ᱨᱮ ᱞᱟᱹᱜᱩᱜᱼᱟ, | ᱢᱟᱨᱟᱝ ᱜᱚᱱᱚᱝ ᱜᱚᱲᱚᱭᱤᱡ ᱵᱟᱹᱲᱛᱤ ᱠᱟᱹᱢᱤ ᱞᱟᱹᱜᱤᱫ ᱮᱢᱟᱭᱟ ᱟᱨ ᱛᱮᱞᱟ ᱯᱤᱪᱷᱤ ᱵᱟᱹᱲᱛᱤ ᱠᱷᱚᱨᱚᱪ ᱮᱢᱟᱭᱟ᱾",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "ᱵᱟᱱᱟᱨ ᱪᱟᱴ ᱣᱤᱡᱮᱴ ᱨᱮ ᱞᱟᱹᱜᱩᱜᱼᱟ᱾ ᱨᱚᱝ ᱟᱨ ᱮᱥᱮᱨ ᱠᱷᱚᱱ ᱥᱟᱭᱤᱴ ᱵᱨᱟᱱᱰ ᱨᱚᱝ ᱯᱟᱧᱡᱟ ᱞᱟᱹᱜᱤᱫ ᱱᱚᱣᱟ ᱯᱷᱟᱨᱪᱟ ᱟᱲᱟᱜ ᱢᱮ᱾",
   "Applies to every visitor Cloudflare resolves to":
     "ᱥᱟᱱᱟᱢ ᱦᱤᱡᱩᱜ ᱠᱚ ᱞᱟᱹᱜᱤᱫ ᱞᱟᱹᱜᱩᱜ-ᱟ ᱠᱞᱟᱣᱰᱯᱷᱞᱮᱭᱟᱨ ᱥᱚᱞᱦᱮ ᱞᱟᱹᱜᱤᱫ",
   Approve: "ᱢᱟᱱᱟᱳ",
@@ -292,6 +297,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "ᱪᱟᱞᱟᱣ ᱞᱟᱹᱜᱤᱫ ᱛᱟᱞᱠᱟ ᱠᱷᱚᱱ ᱢᱤᱫ ᱨᱤᱯᱚᱨᱴ ᱵᱟᱪᱷᱟᱣ ᱢᱮ ᱾",
   "Choose up to": "ᱵᱟᱪᱷᱟᱣ ᱵᱟᱪᱷᱟᱣ ᱢᱮ",
   "City / town": "ᱥᱚᱦᱚᱨ / ᱵᱟᱡᱟᱨ",
+  Clear: "ᱥᱟᱯᱷᱟᱭ ᱢᱮ",
   "Clearing...": "ᱥᱟᱯᱷᱟᱭᱮᱫ...",
   "Click link": "ᱞᱤᱝᱠ ᱨᱮ ᱚᱛᱟᱭ ᱢᱮ",
   Close: "ᱵᱚᱱᱫᱚ ᱢᱮ",
@@ -330,6 +336,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ᱡᱚᱛᱚ ᱵᱷᱩᱢᱤᱠᱟ ᱧᱮᱞ, ᱛᱮᱭᱟᱨ, ᱥᱟᱥᱟᱯᱲᱟᱣ, ᱪᱷᱟᱯᱟᱣ ᱟᱨ ᱵᱟᱝ ᱪᱟᱞᱟᱣ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱚᱱᱟ ᱠᱚᱵᱚᱡᱽ ᱢᱮ᱾",
   "Control whether each bot is available, and edit what it knows.":
     "ᱡᱚᱛᱚ ᱵᱚᱴ ᱢᱮᱱᱟᱜᱼᱟ ᱥᱮ ᱵᱟᱝᱟ ᱚᱱᱟ ᱠᱚᱱᱴᱨᱚᱞ ᱢᱮ, ᱟᱨ ᱚᱱᱟ ᱪᱮᱫ ᱵᱟᱲᱟᱭᱟᱭ ᱚᱱᱟ ᱥᱟᱥᱟᱯᱲᱟᱣ ᱢᱮ ᱾",
+  "Conversation turns remembered": "ᱜᱟᱞᱢᱟᱨᱟᱣ ᱩᱭᱦᱟᱹᱨᱚᱜ ᱠᱟᱱᱟ",
   Cook: "ᱤᱥᱤᱱ",
   "Cook minutes": "ᱢᱤᱱᱤᱴ ᱤᱥᱤᱱ",
   "Copy inside dark bands.": "ᱧᱩᱛ ᱵᱮᱱᱰ ᱵᱷᱤᱛᱨᱭ ᱨᱮ ᱱᱚᱠᱚᱞ ᱢᱮ ᱾",
@@ -594,10 +601,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ᱚᱲᱟᱜ ᱥᱟᱦᱴᱟ ᱮᱥᱤᱭᱳ",
   "Homepage Settings": "ᱚᱲᱟᱜ ᱥᱟᱦᱴᱟ ᱥᱮᱴᱤᱝ",
   "Homepage settings unavailable": "ᱚᱲᱟᱜ ᱥᱟᱦᱴᱟ ᱥᱮᱴᱤᱝ ᱵᱟᱝ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ",
+  "How many entries from the list below are given to the assistant as reference.":
+    "ᱞᱟᱛᱟᱨ ᱨᱮ ᱮᱢ ᱟᱠᱟᱱ ᱛᱟᱞᱠᱟ ᱠᱷᱚᱱ ᱛᱤᱱᱟᱹᱜ ᱵᱚᱞᱚᱱ ᱜᱚᱲᱚᱭᱤᱡ ᱥᱟᱠᱟᱢ ᱞᱮᱠᱟᱛᱮ ᱮᱢ ᱟᱠᱟᱱᱟ ᱾",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "ᱢᱤᱫ ᱚᱯᱨᱮᱴᱚᱨ ᱫᱚ ᱯᱷᱨᱮᱥ ᱯᱷᱮᱵᱽᱨᱤᱴ, ᱯᱷᱤᱪᱟᱨᱰ ᱠᱮᱴᱮᱜᱚᱨᱤ (ᱚᱲᱟᱜ ᱥᱟᱦᱴᱟ ᱥᱮᱴᱤᱝ) ᱟᱨ ᱦᱟᱭᱞᱟᱭᱤᱴ ᱯᱨᱚᱰᱟᱠᱴ (ᱞᱟᱛᱟᱨ) ᱨᱮ ᱛᱤᱱᱟᱹᱜ ᱜᱟᱱ ᱯᱨᱚᱰᱟᱠᱴ ᱥᱮ ᱠᱮᱴᱮᱜᱚᱨᱤ ᱵᱟᱪᱷᱟᱣ ᱫᱟᱲᱮᱭᱟᱜ-ᱟ᱾ ᱱᱚᱣᱟ ᱩᱛᱷᱱᱟᱹᱣ ᱞᱮᱠᱷᱟᱱ ᱜᱮ ᱵᱟᱧᱪᱟᱣᱚᱜᱼᱟ, ᱞᱟᱜᱟᱣ ᱨᱮᱭᱟᱜ ᱞᱟᱹᱠᱛᱤ ᱵᱟᱹᱱᱩᱜᱼᱟ; ᱕᱐ ᱦᱟᱹᱵᱤᱡ, ᱥᱤᱞᱤᱝ ᱵᱞᱚᱠ ᱨᱩᱯ ᱟᱡ ᱛᱮ ᱞᱟᱹᱜᱩᱜᱼᱟ᱾",
   "How many products to show": "ᱛᱤᱱᱟᱹᱜ ᱡᱤᱱᱤᱥ ᱩᱫᱩᱜ ᱦᱩᱭᱩᱜᱼᱟ",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "ᱥᱴᱚᱨᱯᱷᱨᱚᱱᱴ ᱵᱚᱴ ᱨᱮᱭᱟᱜ ᱥᱮᱸᱫᱽᱨᱟ ᱛᱤᱱᱟᱹᱜ ᱡᱤᱱᱤᱥ, ᱚᱱᱚᱞ ᱥᱮ ᱡᱚᱢᱟᱜ ᱥᱮᱸᱫᱽᱨᱟ ᱡᱟᱦᱟᱸ ᱛᱤᱱ ᱨᱮ ᱡᱟᱦᱟᱱᱟᱜ ᱧᱮᱞ ᱧᱟᱢᱚᱜᱼᱟ᱾",
   "How many to show": "ᱛᱤᱱᱟᱹᱜ ᱩᱫᱩᱜ ᱦᱩᱭᱩᱜᱼᱟ",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "ᱥᱟᱱᱟᱢ ᱠᱩᱠᱞᱤ ᱥᱟᱶ ᱱᱤᱛᱚᱜ ᱪᱟᱴ ᱨᱮᱭᱟᱜ ᱛᱤᱱᱟᱹᱜ ᱜᱟᱱ ᱨᱩᱣᱟᱹᱲ ᱵᱷᱮᱡᱟ ᱟᱠᱟᱱᱟ ᱾ ᱐ ᱥᱟᱱᱟᱢ ᱠᱩᱠᱞᱤ ᱨᱮᱭᱟᱜ ᱛᱮᱞᱟ ᱵᱷᱮᱜᱟᱨ ᱛᱮ ᱮᱢᱚᱜᱼᱟ᱾",
   "How this password works": "ᱱᱚᱣᱟ ᱫᱟᱱᱟᱝ ᱥᱟᱵᱟᱫᱽ ᱪᱮᱫ ᱞᱮᱠᱟᱭ ᱠᱟᱹᱢᱤᱭᱟ",
   "Hungarian (Magyar)": "ᱦᱟᱸᱜᱮᱨᱤᱭᱟᱱ (ᱢᱟᱜᱭᱟᱨ)",
   Icelandic: "ᱟᱭᱥᱞᱮᱱᱰᱤᱠ",
@@ -656,6 +669,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "ᱢᱩᱬ ᱥᱟᱵᱟᱫᱽ",
   Khmer: "ᱠᱷᱢᱮᱨ",
   Kinyarwanda: "ᱠᱤᱱᱭᱟᱨᱣᱟᱱᱰᱟ",
+  "Knowledge entries per answer": "ᱜᱭᱟᱱ ᱵᱚᱞᱚᱱ ᱯᱨᱚᱛᱤ ᱛᱮᱞᱟ",
   "Konkani (कोंकणी)": "ᱠᱚᱱᱠᱟᱱᱤ (ᱠᱚᱱᱠᱟᱱᱤ)",
   "Korean (한국어)": "ᱠᱚᱨᱤᱭᱟᱱ (한국어)",
   Kyrgyz: "ᱠᱤᱨᱜᱤᱡᱽ",
@@ -1256,6 +1270,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ᱯᱨᱚᱰᱟᱠᱴ, ᱚᱰᱚᱨ, ᱵᱮᱵᱷᱟᱨᱤᱭᱟᱹ, ᱜᱟᱛᱟᱠ ᱠᱚ ᱥᱮᱸᱫᱽᱨᱟ ᱢᱮ...",
   "Search promotions": "ᱯᱨᱚᱪᱚᱨᱥᱚᱱ ᱥᱮᱸᱫᱽᱨᱟ",
   "Search recipes": "ᱡᱚᱥᱩᱲ ᱥᱮᱸᱫᱽᱨᱟ",
+  "Search results per lookup": "ᱥᱮᱸᱫᱽᱨᱟ ᱚᱨᱡᱚ ᱯᱨᱚᱛᱤ ᱧᱮᱞ",
   "Search returns": "ᱥᱮᱸᱫᱽᱨᱟ ᱨᱩᱣᱟᱹᱲ",
   "Search reviews": "ᱥᱮᱸᱫᱽᱨᱟ ᱧᱮᱞ ᱫᱚᱦᱲᱟ",
   "Search submissions": "ᱥᱮᱸᱫᱽᱨᱟ ᱡᱚᱢᱟᱣ",
@@ -1521,6 +1536,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "ᱵᱮᱵᱷᱟᱨᱤᱭᱟᱹ ᱠᱚ",
   "Users & Roles": "ᱵᱮᱵᱷᱟᱨᱤᱭᱟᱹ ᱠᱚ ᱟᱨ ᱵᱷᱩᱢᱤᱠᱟ ᱠᱚ",
   "Users unavailable": "ᱵᱮᱵᱚᱦᱟᱨᱤᱭᱟᱹ ᱠᱚ ᱵᱟᱠᱚ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ",
+  "Using the site brand colour": "ᱥᱟᱭᱤᱴ ᱵᱨᱟᱱᱰ ᱨᱚᱝ ᱵᱮᱵᱷᱟᱨ ᱠᱟᱛᱮ",
   Uyghur: "ᱩᱭᱜᱩᱨ",
   Uzbek: "ᱩᱡᱷᱮᱠ",
   Variant: "ᱵᱷᱮᱨᱤᱭᱟᱱᱴ",
@@ -1566,6 +1582,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "ᱵᱚᱫᱚᱞ ᱪᱮᱫᱟᱜ ᱞᱟᱹᱠᱛᱤᱜ ᱠᱟᱱᱟ, ᱟᱨ ᱵᱟᱝ ᱱᱚᱣᱟ ᱪᱮᱫᱟᱜ ᱵᱟᱝ ᱦᱩᱭ ᱞᱮᱱᱟ?",
   "Why is stock changing?": "ᱥᱴᱚᱠ ᱪᱮᱫᱟᱜ ᱵᱚᱫᱚᱞᱚᱜ ᱠᱟᱱᱟ?",
+  "Widget colour": "ᱣᱤᱡᱮᱴ ᱨᱚᱝ",
+  "Widget colour hex": "ᱣᱤᱡᱮᱴ ᱨᱚᱝ ᱦᱮᱠᱥ",
   "Words the bot matches against a question to decide this entry is relevant.":
     "ᱟᱹᱲᱟᱹ ᱠᱚ ᱵᱚᱴ ᱢᱤᱫ ᱠᱩᱠᱞᱤ ᱥᱟᱶ ᱢᱤᱞᱟᱹᱣ ᱠᱟᱛᱮ ᱴᱷᱟᱹᱣᱠᱟᱹ ᱞᱟᱹᱜᱤᱫ ᱱᱚᱣᱟ ᱵᱚᱞᱚᱱ ᱫᱚ ᱡᱚᱲᱟᱱᱟᱜ ᱜᱮᱭᱟ᱾",
   "Working...": "ᱠᱟᱹᱢᱤ ᱠᱟᱱᱟ…",

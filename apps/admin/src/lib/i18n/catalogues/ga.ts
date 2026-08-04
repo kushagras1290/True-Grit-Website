@@ -146,6 +146,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Meirge fógartha",
   "Announcements unavailable": "Níl fógraí ar fáil",
   Answer: "Freagra",
+  "Answer tuning": "Tiúnadh freagartha",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Is féidir le haon duine atá sínithe isteach trácht a dhéanamh. Níl ach aois an chuntais ag tosú ar phlé nua.",
   "API mode": "Mód API",
@@ -163,6 +164,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Cuireadh i bhfeidhm é ag an tseiceáil amach roimh aon lascaine cúpón nó promóisin. Ní íocann orduithe ar nó os cionn na tairsí saorsheachadta aon táille seachadta.",
   "Applied to every farm without its own rate.": "Feidhmeach ar gach feirm gan a ráta féin.",
   "Applies to": "Baineann leis",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Baineann leis an dá róbónna. Tugann luachanna níos mó níos mó don chúntóir oibriú leo agus cosnaíonn sé níos mó in aghaidh an fhreagra.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Baineann leis an dá ghiuirléid chomhrá. Fág é glanta chun dath branda an tsuímh a leanúint ó Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "Baineann le gach cuairteoir Beartaíonn Cloudflare",
   Approve: "Faomhadh",
@@ -276,6 +281,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Roghnaigh tuairisc ón liosta chun é a rith.",
   "Choose up to": "Roghnaigh suas go dtí",
   "City / town": "Cathair / baile",
+  Clear: "Glan",
   "Clearing...": "Ag imréiteach...",
   "Click link": "Cliceáil nasc",
   Close: "Dún",
@@ -314,6 +320,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Rialaigh cad is féidir le gach ról a fheiceáil, a chruthú, a chur in eagar, a fhoilsiú nó a bhainistiú.",
   "Control whether each bot is available, and edit what it knows.":
     "Rialaigh cibé an bhfuil gach bot ar fáil, agus cuir a bhfuil ar eolas aige in eagar.",
+  "Conversation turns remembered": "Meabhraíodh ar chasadh an chomhrá",
   "Cook minutes": "Cook nóiméad",
   "Copy inside dark bands.": "Cóipeáil taobh istigh de na bandaí dorcha.",
   Correction: "Ceartú",
@@ -570,10 +577,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage sections unavailable": "Níl fáil ar na hailt leathanach baile",
   "Homepage Settings": "Socruithe Leathanach Baile",
   "Homepage settings unavailable": "Socruithe leathanach baile ar fáil",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Cé mhéad iontráil ón liosta thíos a thugtar don chúntóir mar thagairt.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Cé mhéad táirgí nó catagóirí a fhéadfaidh oibreoir a roghnú isteach i gCeanáin Úra, i gCatagóirí faoi Thrácht (Socruithe Leathanach Baile) agus i dtáirgí Aibhsithe (thíos). Sábhálann sé láithreach, ní gá imscaradh; suas le 50, an uasteorainn a fhorfheidhmíonn an fhormáid bhloc féin.",
   "How many products to show": "Cé mhéad táirge atá le taispeáint",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Cé mhéad táirge, alt nó oideas a fhilleann cuardach an bhota aghaidh siopa gach uair a bhreathnaíonn sé ar rud éigin.",
   "How many to show": "Cé mhéad atá le taispeáint",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Cé mhéad den chomhrá reatha a sheoltar ar ais le gach ceist. Freagraíonn 0 gach ceist ina aonar.",
   "How this password works": "Conas a oibríonn an pasfhocal seo",
   "Hungarian (Magyar)": "Ungáiris (Magyar)",
   Icelandic: "Íoslainnis",
@@ -626,6 +639,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "Coinnigh ag clóscríobh chun cuardach a dhéanamh…",
   Keywords: "Eochairfhocail",
   Khmer: "Ciméiris",
+  "Knowledge entries per answer": "Iontrálacha eolais in aghaidh an fhreagra",
   "Korean (한국어)": "Cóiréis (한국어)",
   Kyrgyz: "An Chirgeastáin",
   Label: "Lipéad",
@@ -1212,6 +1226,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Táirgí cuardaigh, orduithe, úsáideoirí, catagóirí…",
   "Search promotions": "Promóisin chuardaigh",
   "Search recipes": "Cuardaigh oidis",
+  "Search results per lookup": "Torthaí cuardaigh in aghaidh an chuardaigh",
   "Search returns": "Tuairisceáin chuardaigh",
   "Search reviews": "Léirmheasanna cuardaigh",
   "Search submissions": "Aighneachtaí cuardaigh",
@@ -1479,6 +1494,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Úsáideoirí",
   "Users & Roles": "Úsáideoirí & Róil",
   "Users unavailable": "Úsáideoirí ar fáil",
+  "Using the site brand colour": "Ag úsáid dath branda an tsuímh",
   Uzbek: "Úisbéic",
   Variant: "Athróg",
   "Variant (SKU)": "Athróg (SKU)",
@@ -1522,6 +1538,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Cén fáth a bhfuil gá le hathruithe, nó cén fáth ar diúltaíodh é seo?",
   "Why is stock changing?": "Cén fáth a bhfuil stoc ag athrú?",
+  "Widget colour": "dath Giuirléid",
+  "Widget colour hex": "Heics dath an ghiuirléid",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Focail a mheaitseálann an bot le ceist chun an cinneadh a dhéanamh an bhfuil an iontráil seo ábhartha.",
   "Working...": "Ag obair...",

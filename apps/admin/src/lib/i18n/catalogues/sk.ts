@@ -138,6 +138,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "banner s oznámením",
   "Announcements unavailable": "oznámenia nie sú k dispozícii",
   Answer: "odpoveď",
+  "Answer tuning": "Ladenie odpovedí",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "ktokoľvek prihlásený môže komentovať. Iba začatie novej diskusie je podmienené vekom účtu.",
   "API mode": "Režim API",
@@ -155,6 +156,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Uplatnené pri pokladni pred zľavou z kupónu alebo akcie. Objednávky s alebo nad hranicou bezplatného doručenia neplatia žiadny poplatok za doručenie.",
   "Applied to every farm without its own rate.": "Uplatňuje sa na každú farmu bez vlastnej sadzby.",
   "Applies to": "Platí pre",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Platí pre oba roboty. Vyššie hodnoty poskytujú asistentovi viac práce a sú drahšie za odpoveď.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Platí pre obe miniaplikácie rozhovoru. Ak chcete sledovať farbu značky webu z Farby a efekty, ponechajte toto políčko nezačiarknuté.",
   "Applies to every visitor Cloudflare resolves to":
     "Platí pre každého návštevníka, ktorého Cloudflare rozhodne o",
   Approve: "Schváliť",
@@ -271,6 +276,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Vyberte prehľad zo zoznamu na jeho spustenie.",
   "Choose up to": "Vyberte až",
   "City / town": "Mesto / mesto",
+  Clear: "Vymazať",
   "Clearing...": "Vymazáva sa...",
   "Click link": "Kliknite na odkaz",
   Close: "Zavrieť",
@@ -310,6 +316,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ovládajte, čo môže každá rola zobrazovať, vytvárať, upravovať, zverejňovať alebo spravovať.",
   "Control whether each bot is available, and edit what it knows.":
     "Ovládajte dostupnosť každého robota a upravujte, čo vie.",
+  "Conversation turns remembered": "Zapamätané odbočky konverzácie",
   Cook: "Varenie",
   "Cook minutes": "Minúty varenia",
   "Copy inside dark bands.": "Kopírovanie v tmavých pruhoch.",
@@ -567,10 +574,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO domovskej stránky",
   "Homepage Settings": "Nastavenia domovskej stránky",
   "Homepage settings unavailable": "Nastavenia domovskej stránky nie sú k dispozícii",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Koľko záznamov z nižšie uvedeného zoznamu dostane asistent ako referenciu.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Koľko produktov alebo kategórií si môže operátor vybrať medzi Čerstvé obľúbené, Odporúčané kategórie (Nastavenia domovskej stránky) a Zvýraznené produkty (nižšie). Zdvihnutím sa uloží okamžite, nie je potrebné nasadenie; až 50, strop, ktorý presadzuje samotný formát bloku.",
   "How many products to show": "Koľko produktov na zobrazenie",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Koľko produktov, článkov alebo receptov vráti robot vo výklade vždy, keď niečo vyhľadá.",
   "How many to show": "Koľko na zobrazenie",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Koľko z aktuálneho rozhovoru sa odošle späť s každou otázkou. 0 odpovedá na každú otázku samostatne.",
   "How this password works": "Ako funguje toto heslo",
   "Hungarian (Magyar)": "Maďarčina (Maďarčina)",
   Icelandic: "Islandčina",
@@ -625,6 +638,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "Pokračujte v písaní a vyhľadávaní…",
   Keywords: "Kľúčové slová",
   Khmer: "Khmérčina",
+  "Knowledge entries per answer": "Položky znalostí na odpoveď",
   "Korean (한국어)": "Kórejčina (한국어)",
   Kyrgyz: "Kirgizsko",
   Label: "Štítok",
@@ -1211,6 +1225,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Hľadať produkty, objednávky, používateľov, kategórie…",
   "Search promotions": "Hľadať propagácie",
   "Search recipes": "Hľadať recepty",
+  "Search results per lookup": "Výsledky vyhľadávania na vyhľadávanie",
   "Search returns": "Výsledky vyhľadávania",
   "Search reviews": "Hľadať recenzie",
   "Search submissions": "Hľadať príspevky",
@@ -1472,6 +1487,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Používateľov",
   "Users & Roles": "Používateľov a roly",
   "Users unavailable": "Používatelia nie sú k dispozícii",
+  "Using the site brand colour": "Používanie farby značky lokality",
   Uyghur: "Ujgurčina",
   Uzbek: "uzbecký",
   "Variant Name": "Názov variantu",
@@ -1515,6 +1531,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Prečo sú potrebné zmeny alebo prečo bola táto zmena odmietnutá?",
   "Why is stock changing?": "Prečo sa akcie menia?",
+  "Widget colour": "Farba miniaplikácie",
+  "Widget colour hex": "Šestnásťhranná farba miniaplikácie",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Slová, ktoré sa robot zhodujú s otázkou, aby rozhodli, že tento záznam je relevantný.",
   "Working...": "Pracujem...",

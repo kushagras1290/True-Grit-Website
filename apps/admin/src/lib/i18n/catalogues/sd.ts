@@ -138,6 +138,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "اعلان بينر",
   "Announcements unavailable": "اعلان غير دستياب آهي",
   Answer: "جواب",
+  "Answer tuning": "جواب ٽيوننگ",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "جيڪو به سائن ان آهي اهو تبصرو ڪري سگهي ٿو. صرف نئين بحث شروع ڪرڻ کي اڪائونٽ جي عمر جي حساب سان بند ڪيو ويندو آهي.",
   "API mode": "API موڊ",
@@ -155,6 +156,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ڪوپن يا پروموشن کان اڳ چيڪ آئوٽ تي لاڳو ٿيل. آرڊر مفت پهچائڻ واري حد تي يا ان کان مٿانهون ڊيليوري فيس ادا نه ڪندا.",
   "Applied to every farm without its own rate.": "هر فارم تي ان جي پنهنجي شرح کان سواءِ لاڳو.",
   "Applies to": "ان تي لاڳو ٿئي ٿو",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "ٻنهي بوٽن تي لاڳو ٿئي ٿو. وڏيون قيمتون اسسٽنٽ کي ڪم ڪرڻ لاءِ وڌيڪ ڏين ٿيون ۽ في جواب وڌيڪ قيمت ڏين ٿيون.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "ٻنهي چيٽ ويجيٽس تي لاڳو ٿئي ٿو. رنگن ۽ اثرات مان سائيٽ جي برانڊ رنگ جي پيروي ڪرڻ لاءِ ان کي صاف ڪري ڇڏيو.",
   "Applies to every visitor Cloudflare resolves to":
     "هر دورو ڪندڙ تي لاڳو ٿئي ٿو Cloudflare حل ڪري ٿو",
   Approve: "منظور ڪريو",
@@ -302,6 +307,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ڪنٽرول ڪريو ته هر ڪردار ڇا ڏسي، ٺاهي، ايڊٽ ڪري، شايع ڪري يا منظم ڪري سگهي ٿو.",
   "Control whether each bot is available, and edit what it knows.":
     "ڪنٽرول ڪريو ته ڇا هر بوٽ موجود آهي، ۽ ايڊٽ ڪريو جيڪو اهو ڄاڻي ٿو.",
+  "Conversation turns remembered": "گفتگو وارو موڙ ياد ڪيو ويو",
   Cook: "ڪڪ",
   "Cook minutes": "ڪڪ منٽ",
   "Copy inside dark bands.": "ڪاپي ڪريو اونداهي بينڊ اندر.",
@@ -548,10 +554,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "هوم پيج ايس اي او",
   "Homepage Settings": "هوم پيج سيٽنگون",
   "Homepage settings unavailable": "هوم پيج سيٽنگون دستياب نه آهن",
+  "How many entries from the list below are given to the assistant as reference.":
+    "هيٺ ڏنل فهرست مان ڪيتريون داخلائون اسسٽنٽ کي حوالي طور ڏنيون ويون آهن.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "ڪيترن پراڊڪٽس يا ڪيٽيگريز کي هڪ آپريٽر چونڊي سگھي ٿو تازيون پسنديون، فيچر ٿيل ڪيٽيگريز (هوم پيج سيٽنگون) ۽ نمايان ٿيل پروڊڪٽس (هيٺ ڏنل). ان کي بلند ڪرڻ فوري طور تي بچائيندو آهي، ڪنهن به ترتيب جي ضرورت ناهي؛ 50 تائين، ڇت بلاڪ فارميٽ پاڻ لاڳو ڪري ٿي.",
   "How many products to show": "ڪيترا پراڊڪٽ ڏيکارڻا آهن",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "ڪيترا پراڊڪٽس، آرٽيڪل يا ترڪيبون اسٽور فرنٽ بوٽ جي ڳولا هر وقت واپس ايندي آهي جڏهن اهو ڪجهه ڏسڻ ۾ اچي ٿو.",
   "How many to show": "ڪيترا ڏيکارڻا آهن",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "هر سوال سان موجوده چيٽ جو ڪيترو حصو واپس موڪليو ويندو آهي. 0 ھر سوال جو اڪيلائي ۾ جواب ڏئي ٿو.",
   "How this password works": "هي پاسورڊ ڪيئن ڪم ڪندو آهي",
   "Hungarian (Magyar)": "هنگري (مگيار)",
   Icelandic: "آئس لينڊڪ",
@@ -606,6 +618,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "ڳولاڻ لاءِ ٽائپ ڪندا رهو…",
   Khmer: "خمير",
   Kinyarwanda: "ڪنياروانڊا",
+  "Knowledge entries per answer": "علم جون داخلائون في جواب",
   "Konkani (कोंकणी)": "ڪوڪاڻي (ڪوڪاڻي)",
   "Korean (한국어)": "ڪورين (한국어)",
   Kyrgyz: "ڪرغز",
@@ -1174,6 +1187,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "ڳولا پراڊڪٽس، آرڊر، استعمال ڪندڙ، زمرا…",
   "Search promotions": "ڳولا پروموشنز",
   "Search recipes": "تلاشون ترڪيبون",
+  "Search results per lookup": "ڳولا نتيجا في لُڪ اپ",
   "Search returns": "ڳولا موٽڻ",
   "Search reviews": "تبصرا ڳولها",
   "Search submissions": "ڳولا جمع",
@@ -1430,6 +1444,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "استعمال ڪندڙ",
   "Users & Roles": "استعمال ڪندڙ ۽ ڪردار",
   "Users unavailable": "صارف غير دستياب",
+  "Using the site brand colour": "سائيٽ برانڊ رنگ استعمال ڪندي",
   Uyghur: 'ويغور id="t0006">مختلفن',
   Uzbek: "ازبڪ",
   Variant: "مختلف",
@@ -1472,6 +1487,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Whole site (default)": "سڄي سائيٽ (ڊفالٽ)",
   "Why are changes needed, or why was this declined?": "تبديلين جي ضرورت ڇو آهي، يا هي ڇو ڪيو ويو؟",
   "Why is stock changing?": "اسٽاڪ ڇو تبديل ٿي رهيو آهي؟",
+  "Widget colour hex": "ويجيٽ رنگ هيڪس",
   "Words the bot matches against a question to decide this entry is relevant.":
     "لفظ بوٽ هڪ سوال سان ملن ٿا اهو فيصلو ڪرڻ لاءِ ته هي داخلا لاڳاپيل آهي.",
   "Working...": "ڪم ڪري رهيو آهي...",

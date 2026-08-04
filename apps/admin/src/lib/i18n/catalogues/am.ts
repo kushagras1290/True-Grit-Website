@@ -147,6 +147,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "የማስታወቂያ ባነር",
   "Announcements unavailable": "ማስታወቂያዎች አይገኙም",
   Answer: "መልስ",
+  "Answer tuning": "የመልስ ማስተካከያ",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "የገባ ማንኛውም ሰው አስተያየት መስጠት ይችላል። አዲስ ውይይት መጀመር ብቻ በመለያ ዕድሜ",
   "API mode": "ኤፒአይ ሁነታ",
@@ -164,6 +165,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ከማንኛውም ኩፖን ወይም የማስተዋወቂያ ቅናሽ በፊት ተመዝግቦ መውጫ ላይ ተተግብሯል። በነጻ የማድረስ ገደብ ወይም ከዚያ በላይ የሆኑ ትዕዛዞች የማድረስ ክፍያ አይከፍሉም።",
   "Applied to every farm without its own rate.": "ያለ የራሱ ታሪፍ በእያንዳንዱ እርሻ ላይ ይተገበራል።",
   "Applies to": "ለ",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "በሁለቱም ቦቶች ላይ ተፈጻሚ ይሆናል። ትላልቅ እሴቶች ለረዳቱ የበለጠ እንዲሰራ እና ለአንድ መልስ የበለጠ ዋጋ ይሰጣሉ።",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "በሁለቱም የውይይት መግብሮች ላይ ተፈጻሚ ይሆናል። ከቀለም እና ተፅእኖዎች የጣቢያውን የምርት ቀለም ለመከተል ጸድተው ይተዉት።",
   "Applies to every visitor Cloudflare resolves to": "የሚመለከተው ለእያንዳንዱ ጎብኚ Cloudflare ውሳኔውን ለ",
   Approve: "ማጽደቅ",
   "Approve & publish": "አጽድቀው አትም",
@@ -282,6 +287,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "ለማሄድ ከዝርዝሩ ውስጥ አንድ ሪፖርት ምረጥ።",
   "Choose up to": "እስከ",
   "City / town": "ከተማ / ከተማ",
+  Clear: "አጽዳ",
   "Clearing...": "በማጽዳት ላይ...",
   "Click link": "አገናኙን ጠቅ ያድርጉ",
   Close: "ዝጋ",
@@ -320,6 +326,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "እያንዳንዱ ሚና ማየት፣ መፍጠር፣ ማርትዕ፣ ማተም ወይም ማስተዳደር የሚችለውን ይቆጣጠሩ።",
   "Control whether each bot is available, and edit what it knows.":
     "እያንዳንዱ ቦት የሚገኝ መሆኑን ይቆጣጠሩ እና የሚያውቀውን ያርትዑ።",
+  "Conversation turns remembered": "ውይይት ይታወሳል",
   Cook: "ማብሰል",
   "Cook minutes": "የማብሰያ ደቂቃዎች",
   "Copy inside dark bands.": "በጨለማ ባንዶች ውስጥ ቅዳ።",
@@ -581,10 +588,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "የመነሻ ገጽ SEO",
   "Homepage Settings": "የመነሻ ገጽ ቅንብሮች",
   "Homepage settings unavailable": "የመነሻ ገጽ ቅንጅቶች የሉም",
+  "How many entries from the list below are given to the assistant as reference.":
+    "ከታች ካለው ዝርዝር ውስጥ ስንት ግቤቶች ለረዳቱ እንደ ማጣቀሻ ተሰጥተዋል።",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "አንድ ኦፕሬተር ስንት ምርቶች ወይም ምድቦች ትኩስ ተወዳጆች፣ ተለይተው የቀረቡ ምድቦች (የመነሻ ገጽ ቅንብሮች) እና የደመቁ ምርቶች (ከታች) ሊመርጥ ይችላል። ማሳደግ ወዲያውኑ ይቆጥባል, ምንም ማሰማራት አያስፈልግም; እስከ 50 ድረስ፣ ጣሪያው የማገጃው ፎርማት ራሱ ያስፈጽማል።",
   "How many products to show": "ምን ያህል ምርቶች መታየት አለባቸው",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "የሱቅ ፊት ቦት ፍለጋ ምን ያህል ምርቶች፣ መጣጥፎች ወይም የምግብ አዘገጃጀት መመሪያዎች የሆነ ነገር በታየ ቁጥር ይመለሳል።",
   "How many to show": "ስንት ማሳየት",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "ምን ያህሉ የአሁኑ ውይይት ከእያንዳንዱ ጥያቄ ጋር ይመለሳል። 0 ለየጥያቄው መልስ ይሰጣል።",
   "How this password works": "ይህ ይለፍ ቃል እንዴት እንደሚሰራ",
   "Hungarian (Magyar)": "ሀንጋሪ (ማጂያር)",
   Icelandic: "አይስላንድኛ",
@@ -640,6 +653,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "ቁልፍ ቃላት",
   Khmer: "ክመር",
   Kinyarwanda: "ኪንያርዋንዳ",
+  "Knowledge entries per answer": "የእውቀት ግቤቶች በአንድ መልስ",
   "Konkani (कोंकणी)": "ኮንካኒ (कोंकणी)",
   "Korean (한국어)": "ኮሪያኛ (한국어)",
   Kyrgyz: "ኪርጊዝኛ",
@@ -1223,6 +1237,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "ምርቶችን ፣ ትዕዛዞችን ፣ ተጠቃሚዎችን ፣ ምድቦችን ይፈልጉ…",
   "Search promotions": "ማስታወቂያዎችን ይፈልጉ",
   "Search recipes": "የምግብ አዘገጃጀት ፍለጋ",
+  "Search results per lookup": "በመፈለግ የፍለጋ ውጤቶች",
   "Search returns": "የፍለጋ ተመላሾች",
   "Search reviews": "ግምገማዎችን ይፈልጉ",
   "Search submissions": "የፍለጋ ግቤቶች",
@@ -1481,6 +1496,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "ተጠቃሚዎች",
   "Users & Roles": "ተጠቃሚዎች እና ሚናዎች",
   "Users unavailable": "ተጠቃሚዎች አይገኙም",
+  "Using the site brand colour": "የጣቢያውን የምርት ቀለም መጠቀም",
   Uyghur: "ኡዩጉር",
   Uzbek: "ኡዝቤክ",
   Variant: "ተለዋዋጭ",
@@ -1525,6 +1541,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Whole site (default)": "ሙሉ ጣቢያ (ነባሪ)",
   "Why are changes needed, or why was this declined?": "ለውጦች ለምን ያስፈልጋሉ፣ ወይም ይህ ለምን ተቀባይነት አላገኘም?",
   "Why is stock changing?": "ለምንድን ነው አክሲዮን የሚለወጠው?",
+  "Widget colour": "የመግብር ቀለም",
+  "Widget colour hex": "የመግብር ቀለም ሄክስ",
   "Words the bot matches against a question to decide this entry is relevant.":
     "ይህ ግቤት ተገቢ መሆኑን ለመወሰን ቦት ከጥያቄ ጋር የሚዛመድ ቃላት።",
   "Working...": "በመሥራት ላይ...",

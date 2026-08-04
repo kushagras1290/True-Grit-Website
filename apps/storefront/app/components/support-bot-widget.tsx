@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { supportBotChat, type SupportBotChatTurn } from "../lib/commerce";
 import { AuthError, useCustomer } from "../lib/customer-auth";
+import { useSiteSettings } from "../lib/site-settings";
 import { useLocalizeText } from "../lib/i18n/localized-text";
 import { useLocaleContext } from "../lib/i18n/context";
 
@@ -34,6 +35,8 @@ export function SupportBotWidget({ country }: { country?: string | null }) {
   const localize = useLocalizeText();
   const { locale } = useLocaleContext();
   const { status } = useCustomer();
+  const { supportBotColor } = useSiteSettings();
+  const accentStyle = supportBotColor ? { backgroundColor: supportBotColor } : undefined;
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
@@ -110,6 +113,7 @@ export function SupportBotWidget({ country }: { country?: string | null }) {
                             ? "border border-danger/30 bg-danger/5 text-danger"
                             : "border border-line bg-canvas text-ink"
                       }`}
+                      style={isMine ? accentStyle : undefined}
                     >
                       {turn.content}
                     </div>
@@ -141,6 +145,7 @@ export function SupportBotWidget({ country }: { country?: string | null }) {
                 disabled={isPending || !draft.trim()}
                 aria-label={localize("Send")}
                 className="flex min-h-9 items-center justify-center rounded-sm bg-brand px-2.5 text-ink-inverse transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                style={accentStyle}
               >
                 <Send size={15} />
               </button>
@@ -154,6 +159,7 @@ export function SupportBotWidget({ country }: { country?: string | null }) {
         aria-label={open ? localize("Close") : localize("Help")}
         aria-expanded={open}
         className="ml-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand text-ink-inverse shadow-overlay transition-opacity hover:opacity-90"
+        style={accentStyle}
       >
         {open ? <X size={20} /> : <MessageCircle size={20} />}
       </button>

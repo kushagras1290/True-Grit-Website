@@ -137,6 +137,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Жарыялоочу баннер",
   "Announcements unavailable": "Жарыялар жеткиликсиз",
   Answer: "Жооп",
+  "Answer tuning": "Жоопту жөндөө",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Каттоо эсебине кирген ар бир адам жорум калтыра алат. Жаңы талкууну баштоо үчүн аккаунттун жашы гана чектелет.",
   "API mode": "API режими",
@@ -154,6 +155,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Кандайдыр бир купон же жарнамалык арзандатуудан мурун төлөм учурунда колдонулат. Акысыз жеткирүү босогосунан ашкан буйрутмалар жеткирүү акысын төлөбөйт.",
   "Applied to every farm without its own rate.": "Ар бир чарбага өзүнүн тарифи жок колдонулат.",
   "Applies to": "Төмөнкүгө колдонулат",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Эки ботко тең колдонулат. Чоңураак маанилер жардамчыга көбүрөөк иштөөгө мүмкүнчүлүк берет жана ар бир жооп үчүн кымбатыраак болот.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Эки чат виджетине тең колдонулат. Түстөр жана эффекттерден сайттын брендинин түсүнө көз салуу үчүн аны тазалап коюңуз.",
   "Applies to every visitor Cloudflare resolves to":
     "Ар бир келген конокко колдонулат Cloudflare чечет",
   Approve: "Кабыл алуу",
@@ -275,6 +280,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Аны иштетүү үчүн тизмеден отчетту тандаңыз.",
   "Choose up to": "Тандоого чейин",
   "City / town": "Шаар / шаар",
+  Clear: "Таза",
   "Clearing...": "Тазаланууда...",
   "Click link": "Шилтемени чыкылдатыңыз",
   Close: "Жабуу",
@@ -314,6 +320,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ар бир роль эмнелерди көрүп, түзүп, түзөтүп, жарыялай же башкара аларын көзөмөлдөңүз.",
   "Control whether each bot is available, and edit what it knows.":
     "Ар бир боттун жеткиликтүү же жок экенин көзөмөлдөп, билгенин түзөтүңүз.",
+  "Conversation turns remembered": "Сүйлөшүү кезектери эсте калды",
   Cook: "Бышыруу",
   "Cook minutes": "Бышыруу мүнөттөрү",
   "Copy inside dark bands.": 'Cap><span id="t0009">Choce.',
@@ -575,10 +582,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Башкы беттин SEO",
   "Homepage Settings": "Башкы беттин жөндөөлөрү",
   "Homepage settings unavailable": "Башкы барактын жөндөөлөрү жеткиликсиз",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Төмөнкү тизмедеги канча жазуу жардамчыга маалымдама катары берилген.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Оператор Жаңы Сүйүктүүлөр, Кызыктуу категориялар (Башкы беттин жөндөөлөрү) жана Өзгөчөлөнгөн өнүмдөрдүн (төмөндө) канча өнүмдөрүн же категорияларын тандай алат. Аны көтөрүү дароо үнөмдөйт, жайылтуунун кереги жок; 50гө чейин, шып блок форматы өзү ишке ашырат.",
   "How many products to show": "Канча продуктуларды көрсөтүү керек",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Дүкөндүн маңдайкы ботунун издөөсү ар бир жолу издеген сайын канча өнүм, макала же рецептти кайтарат.",
   "How many to show": "Канча көрсөтүү керек",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Ар бир суроо менен учурдагы чаттын канчасы кайра жөнөтүлөт. 0 ар бир суроого өзүнчө жооп берет.",
   "How this password works": "Бул сырсөз кандай иштейт",
   "Hungarian (Magyar)": "венгерче (мажар)",
   Icelandic: "Исландча",
@@ -636,6 +649,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "Ачкыч сөздөр",
   Khmer: "Кхмер",
   Kinyarwanda: "Кинярванда",
+  "Knowledge entries per answer": "Ар бир жооп үчүн маалыматтар",
   "Konkani (कोंकणी)": "Конканча (कोंकणी)",
   "Korean (한국어)": "Корея (한국어)",
   Kyrgyz: "Кыргызча",
@@ -1236,6 +1250,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Өнүмдөрдү, буйрутмаларды, колдонуучуларды, категорияларды издөө…",
   "Search promotions": "Издөө жарнамалары",
   "Search recipes": "Рецепттерди издөө",
+  "Search results per lookup": "Ар бир издөөдө издөө натыйжалары",
   "Search returns": "Search",
   "Search reviews": 'fruits боюнча издөө id="t0010">Кошумча баскыч энбелгиси',
   "Search submissions": "Тапшырмаларды издөө",
@@ -1499,6 +1514,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Колдонуучулар",
   "Users & Roles": "Колдонуучулар жана ролдор",
   "Users unavailable": "Колдонуучулар жеткиликсиз",
+  "Using the site brand colour": "Сайттын брендинин түсүн колдонуу",
   Uyghur: "Уйгур",
   Uzbek: "Өзбек",
   "Variant Name": "Варианттын аталышы",
@@ -1542,6 +1558,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Эмне үчүн өзгөртүүлөр керек же бул эмне үчүн четке кагылды?",
   "Why is stock changing?": "Эмне үчүн запас өзгөрүп жатат?",
+  "Widget colour": "Виджеттин түсү",
+  "Widget colour hex": "Виджеттин он алтылык түсү",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Боттун сөздөрү бир суроого дал келип, бул жазуу ылайыктуу экенин чечет.",
   "Working...": "Иштеп жатат...",

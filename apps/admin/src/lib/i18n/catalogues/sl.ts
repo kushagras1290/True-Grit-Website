@@ -130,6 +130,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Pasica z obvestili",
   "Announcements unavailable": "Obvestila niso na voljo",
   Answer: "Odgovor",
+  "Answer tuning": "Uravnavanje odgovorov",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Komentira lahko vsak, ki je prijavljen. Samo začetek nove razprave je odvisen od starosti računa.",
   "API mode": "Način API",
@@ -148,6 +149,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Uporablja se za vsako kmetijo brez lastne tarife.",
   "Applies to": "Velja za",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Velja za oba robota. Večje vrednosti nudijo pomočniku več dela in dražje na odgovor.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Velja za oba pripomočka za klepet. Pustite počiščeno, da bo sledilo barvi blagovne znamke spletnega mesta iz Barv in učinkov.",
   "Applies to every visitor Cloudflare resolves to":
     "Velja za vsakega obiskovalca. Cloudflare se odloči za",
   Approve: "Odobri",
@@ -265,6 +270,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Izberite poročilo s seznama, da ga zaženete.",
   "Choose up to": "Izberite do",
   "City / town": "Mesto",
+  Clear: "Počisti",
   "Clearing...": "Čiščenje ...",
   "Click link": "Kliknite povezavo",
   Close: "Zapri",
@@ -304,6 +310,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Nadzirajte, kaj si lahko vsaka vloga ogleda, ustvari, uredi, objavi ali upravlja.",
   "Control whether each bot is available, and edit what it knows.":
     "Nadzirajte, ali je vsak bot na voljo, in uredite, kar ve.",
+  "Conversation turns remembered": "Zapomni si preobrate pogovorov",
   Cook: "Kuhar",
   "Cook minutes": "Minute kuhanja",
   "Copy inside dark bands.": "Kopiraj znotraj temnih pasov.",
@@ -562,10 +569,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO domače strani",
   "Homepage Settings": "Nastavitve domače strani",
   "Homepage settings unavailable": "Nastavitve domače strani niso na voljo",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Koliko vnosov s spodnjega seznama je danih pomočniku kot referenco.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Koliko izdelkov ali kategorij lahko operater izbere med Svežimi priljubljenimi, Predstavljene kategorije (Nastavitve domače strani) in Označeni izdelki (spodaj). Če ga dvignete, se takoj shrani, namestitev ni potrebna; do 50, zgornja meja, ki jo uveljavlja sam format bloka.",
   "How many products to show": "Koliko izdelkov prikazati",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Koliko izdelkov, člankov ali receptov bot prodajalne se vrne vsakič, ko kaj poišče.",
   "How many to show": "Koliko prikazati",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Koliko trenutnega klepeta se vrne z vsakim vprašanjem. 0 odgovarja na vsako vprašanje ločeno.",
   "How this password works": "Kako deluje to geslo",
   "Hungarian (Magyar)": "Madžarščina (Madžarščina)",
   Icelandic: "Islandščina",
@@ -622,6 +635,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "Nadaljujte s tipkanjem za iskanje…",
   Keywords: "Ključne besede",
   Kinyarwanda: "kinjaruandščina",
+  "Knowledge entries per answer": "Vnosi znanja na odgovor",
   "Konkani (कोंकणी)": "konkani (कोंकणी)",
   "Korean (한국어)": "korejščina (한국어)",
   Kyrgyz: "kirgiščina",
@@ -1213,6 +1227,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "Išči izdelke, naročila, uporabnike, kategorije…",
   "Search promotions": "Išči promocije",
   "Search recipes": "Išči recepte",
+  "Search results per lookup": "Rezultati iskanja na iskanje",
   "Search returns": "Iskanje vrne",
   "Search reviews": "Išči ocene",
   "Search submissions": "Išči oddaje",
@@ -1470,6 +1485,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Uporabnike",
   "Users & Roles": "Uporabnike in vloge",
   "Users unavailable": "Uporabniki niso na voljo",
+  "Using the site brand colour": "Uporaba barve blagovne znamke spletnega mesta",
   Uyghur: "ujgurski",
   Uzbek: "uzbeški",
   Variant: "različica",
@@ -1514,6 +1530,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Zakaj so potrebne spremembe ali zakaj je bilo to zavrnjeno?",
   "Why is stock changing?": "Zakaj se zaloge spreminjajo?",
+  "Widget colour": "Barva pripomočka",
+  "Widget colour hex": "Barva pripomočka šestnajstiški",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Besede, ki jih bot ujema z vprašanjem, da se odloči, ali je ta vnos ustrezen.",
   "Working...": "Deluje ...",

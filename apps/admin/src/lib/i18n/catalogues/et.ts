@@ -144,6 +144,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Teadaannete bänner",
   "Announcements unavailable": "Teated pole saadaval",
   Answer: "Vastus",
+  "Answer tuning": "Vastuste häälestamine",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Igaüks, kes on sisse logitud, võib kommenteerida. Ainult uue arutelu alustamine on piiratud konto vanusega.",
   "API mode": "API-režiim",
@@ -161,6 +162,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Rakendatakse kassas enne kupongi või kampaania allahindlust. Tasuta kohaletoimetamise lävega või sellest kõrgemate tellimuste puhul kohaletoimetamistasu ei maksta.",
   "Applied to every farm without its own rate.": "Kehtib igale talule ilma omatariifita.",
   "Applies to": "Kehtib",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Kehtib mõlemale robotile. Suuremad väärtused annavad assistendile rohkem tööd ja maksavad ühe vastuse eest rohkem.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Kehtib mõlema vestlusvidina kohta. Leave it cleared to follow the site brand colour from Colours & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "Kehtib iga külastaja kohta, Cloudflare otsustab",
   Approve: "kinnitada",
@@ -581,7 +586,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Kui palju tooteid või kategooriaid saab operaator valida värskete lemmikute, esiletõstetud kategooriate (kodulehe seaded) ja esiletõstetud toodete jaoks (allpool). Selle tõstmine salvestab kohe, kasutuselevõttu pole vaja; kuni 50, ülemmäär, mida plokivorming ise jõustab.",
   "How many products to show": "Kui palju tooteid näidata",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Kui palju tooteid, artikleid või retsepte poeboti otsing tagastab iga kord, kui ta midagi otsib.",
   "How many to show": "Kui palju näidata",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Kui suur osa praegusest vestlusest saadetakse iga küsimusega tagasi. 0 vastust igale küsimusele eraldi.",
   "How this password works": "Kuidas see parool töötab?",
   "Hungarian (Magyar)": "Ungari (Magyari)",
   Icelandic: "Islandi",
@@ -636,6 +645,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "Jätkake otsimiseks tippimist…",
   Keywords: "Märksõnad",
   Khmer: "khmeeri",
+  "Knowledge entries per answer": "Teadmiste kirjed vastuse kohta",
   "Konkani (कोंकणी)": "konkani (कोंकणी)",
   "Korean (한국어)": "korea (한국어)",
   Kyrgyz: "Kirgiisi",
@@ -1225,6 +1235,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Otsige tooteid, tellimusi, kasutajaid, kategooriaid…",
   "Search promotions": "Otsige pakkumisi",
   "Search recipes": "Otsige retsepte",
+  "Search results per lookup": "Otsingutulemused ühe otsingu kohta",
   "Search returns": "Otsingu tagastus",
   "Search reviews": "Otsige arvustusi",
   "Search submissions": "Otsi submissions",
@@ -1486,6 +1497,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "kasutajate jaoks",
   "Users & Roles": "kasutajate ja rollide jaoks",
   "Users unavailable": "Kasutajad pole saadaval",
+  "Using the site brand colour": "Saidi brändi värvi kasutamine",
   Uyghur: "uiguuri",
   Uzbek: "usbeki",
   Variant: "variant",
@@ -1531,6 +1543,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Miks on vaja muudatusi või miks see tagasi lükati?",
   "Why is stock changing?": "Miks aktsiad muutuvad?",
+  "Widget colour": "Vidina värv",
+  "Widget colour hex": "Vidina värvi kuusnurk",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Sõnad, mille robot vastab küsimusele, otsustab, kas see kirje on asjakohane.",
   "Working...": "Töötab...",

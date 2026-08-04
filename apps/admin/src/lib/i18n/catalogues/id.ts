@@ -139,6 +139,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Spanduk pengumuman",
   "Announcements unavailable": "Pengumuman tidak tersedia",
   Answer: "Jawab",
+  "Answer tuning": "Penyetelan jawaban",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Siapa pun yang masuk boleh berkomentar. Hanya memulai diskusi baru yang dibatasi oleh usia akun.",
   "API mode": "Mode API",
@@ -157,6 +158,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Berlaku untuk setiap peternakan tanpa tarifnya sendiri.",
   "Applies to": "Berlaku untuk",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Berlaku untuk kedua bot. Nilai yang lebih besar memberi asisten lebih banyak pekerjaan dan biaya lebih banyak per jawaban.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Berlaku untuk kedua widget chat. Biarkan kosong untuk mengikuti warna merek situs dari Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "Berlaku untuk setiap pengunjung Cloudflare memutuskan untuk",
   Approve: "Menyetujui",
@@ -271,6 +276,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Pilih laporan dari daftar untuk menjalankannya.",
   "Choose up to": "Pilih hingga",
   "City / town": "Kota / kota",
+  Clear: "Hapus",
   "Clearing...": "Membersihkan...",
   "Click link": "Klik link",
   Close: "Tutup",
@@ -310,6 +316,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kontrol apa yang dapat dilihat, dibuat, diedit, dipublikasikan, atau dikelola setiap peran.",
   "Control whether each bot is available, and edit what it knows.":
     "Kontrol apakah setiap bot tersedia, dan edit apa yang diketahuinya.",
+  "Conversation turns remembered": "Percakapan diingat",
   Cook: "Memasak",
   "Cook minutes": "Menit memasak",
   "Copy inside dark bands.": "Salin di dalam pita gelap.",
@@ -565,10 +572,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO Beranda",
   "Homepage Settings": "Setelan Beranda",
   "Homepage settings unavailable": "Setelan beranda tidak tersedia",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Berapa banyak entri dari daftar di bawah yang diberikan kepada asisten sebagai referensi.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Berapa banyak produk atau kategori yang dapat dipilih operator sebagai Favorit Baru, Kategori Unggulan (Pengaturan Beranda) dan Produk yang disorot (di bawah). Meningkatkannya akan segera menghemat, tidak perlu penerapan; hingga 50, batas atas yang diberlakukan oleh format blok itu sendiri.",
   "How many products to show": "Berapa banyak produk yang ditampilkan",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Berapa banyak produk, artikel, atau resep yang dihasilkan oleh penelusuran bot etalase setiap kali ia mencari sesuatu.",
   "How many to show": "Berapa banyak yang ditampilkan",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Berapa banyak obrolan saat ini yang dikirim kembali dengan setiap pertanyaan. 0 menjawab setiap pertanyaan secara terpisah.",
   "How this password works": "Cara kerja kata sandi ini",
   "Hungarian (Magyar)": "Hongaria (Magyar)",
   Icelandic: "Bahasa Islandia",
@@ -620,6 +633,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Jaga karya seni tetap bersih",
   "Keep typing to search…": "Teruslah mengetik untuk menelusuri…",
   Keywords: "Kata kunci",
+  "Knowledge entries per answer": "Entri pengetahuan per jawaban",
   "Korean (한국어)": "Bahasa Korea (한국어)",
   Kyrgyz: "Kyrgyzstan",
   "Land under cultivation": "Tanah yang ditanami",
@@ -1210,6 +1224,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "Telusuri produk, pesanan, pengguna, kategori…",
   "Search promotions": "Telusuri promosi",
   "Search recipes": "Telusuri resep",
+  "Search results per lookup": "Hasil penelusuran per pencarian",
   "Search returns": "Telusuri pengembalian",
   "Search reviews": "Telusuri ulasan",
   "Search submissions": "Telusuri pengiriman",
@@ -1462,6 +1477,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Pengguna",
   "Users & Roles": "Pengguna & Peran",
   "Users unavailable": "Pengguna tidak tersedia",
+  "Using the site brand colour": "Menggunakan warna merek situs",
   Variant: "Varian",
   "Variant (SKU)": "Varian (SKU)",
   "Variant Name": "Nama Varian",
@@ -1504,6 +1520,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Mengapa diperlukan perubahan, atau mengapa ditolak?",
   "Why is stock changing?": "Mengapa stok berubah?",
+  "Widget colour": "Warna widget",
+  "Widget colour hex": "Warna widget hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Kata-kata yang dicocokkan bot dengan pertanyaan untuk memutuskan apakah entri ini relevan.",
   "Working...": "Bekerja...",

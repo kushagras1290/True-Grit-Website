@@ -142,6 +142,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Aankondigingbanier",
   "Announcements unavailable": "Aankondigings nie beskikbaar",
   Answer: "Antwoord",
+  "Answer tuning": "Antwoordinstelling",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Enigiemand wat aangemeld is, mag kommentaar lewer. Slegs om 'n nuwe bespreking te begin, word deur rekening ouderdom omhein.",
   "API mode": "API-modus",
@@ -160,6 +161,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Word op elke plaas toegepas sonder sy eie tarief.",
   "Applies to": "Van toepassing op",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Van toepassing op beide bots. Groter waardes gee die assistent meer om mee te werk en kos meer per antwoord.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Van toepassing op beide kletslegstukke. Laat dit skoon wees om die werf se handelsmerkkleur van Kleure en effekte te volg.",
   "Applies to every visitor Cloudflare resolves to":
     "Van toepassing op elke besoeker wat Cloudflare besluit om",
   Approve: "Goed te keur",
@@ -275,6 +280,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Kies 'n verslag uit die lys om dit uit te voer.",
   "Choose up to": "Kies tot",
   "City / town": "Stad / dorp",
+  Clear: "Vee",
   "Clearing...": "Vee tans uit...",
   "Click link": "Klik skakel",
   Close: "Sluit",
@@ -313,6 +319,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Beheer wat elke rol kan sien, skep, redigeer, publiseer of bestuur.",
   "Control whether each bot is available, and edit what it knows.":
     "Beheer of elke bot beskikbaar is, en wysig wat dit weet.",
+  "Conversation turns remembered": "Gespreksbeurte onthou",
   Cook: "Kook",
   "Cook minutes": "Kookminute",
   "Copy inside dark bands.": "Kopieer binne donker bande.",
@@ -570,10 +577,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Tuisblad-SEO",
   "Homepage Settings": "Tuisbladinstellings",
   "Homepage settings unavailable": "Tuisbladinstellings onbeskikbaar",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Hoeveel inskrywings uit die lys hieronder word aan die assistent gegee as verwysing.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Hoeveel produkte of kategorieë 'n operateur mag kies in Vars Gunstelinge, Uitstalkategorieë (Tuisbladinstellings) en Gemerkte produkte (hieronder). As u dit verhoog, bespaar u onmiddellik, geen ontplooiing nodig nie; tot 50, die plafon wat die blokformaat self afdwing.",
   "How many products to show": "Hoeveel produkte om te wys",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Hoeveel produkte, artikels of resepte die winkelfrontbot se soektog gee elke keer as dit iets opsoek.",
   "How many to show": "Hoeveel om te wys",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Hoeveel van die huidige klets word met elke vraag teruggestuur. 0 beantwoord elke vraag in isolasie.",
   "How this password works": "Hoe hierdie wagwoord werk",
   "Hungarian (Magyar)": "Hongaars (Magyars)",
   Icelandic: "Yslands",
@@ -624,6 +637,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "Hou aan tik om te soek...",
   Keywords: "Sleutelwoorde",
   Kinyarwanda: "Kiniarwanda",
+  "Knowledge entries per answer": "Kennisinskrywings per antwoord",
   "Korean (한국어)": "Koreaans (한국어)",
   Kyrgyz: "Kirgisies",
   Label: "Etiket",
@@ -1208,6 +1222,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Soek produkte, bestellings, gebruikers, kategorieë...",
   "Search promotions": "Soek promosies",
   "Search recipes": "Soek resepte",
+  "Search results per lookup": "Soekresultate per soektog",
   "Search returns": "Soekopbrengs",
   "Search reviews": "Soekresensies",
   "Search submissions": "Soekvoorleggings",
@@ -1463,6 +1478,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Gebruikers",
   "Users & Roles": "Gebruikers en rolle",
   "Users unavailable": "Gebruikers nie beskikbaar",
+  "Using the site brand colour": "Gebruik die werf se handelsmerkkleur",
   Uzbek: "Oezbeeks",
   "Variant Name": "Variantnaam",
   Variants: "Variante",
@@ -1505,6 +1521,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Hoekom is veranderinge nodig, of hoekom is dit afgekeur?",
   "Why is stock changing?": "Hoekom verander voorraad?",
+  "Widget colour": "Widget-kleur",
+  "Widget colour hex": "Widget-kleur hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Woorde wat die bot teen 'n vraag pas om te besluit dat hierdie inskrywing relevant is.",
   "Working...": "Werk...",

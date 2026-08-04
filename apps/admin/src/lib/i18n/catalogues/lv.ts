@@ -143,6 +143,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Paziņojumu reklāmkarogs",
   "Announcements unavailable": "Paziņojumi nav pieejami",
   Answer: "Atbilde",
+  "Answer tuning": "Atbilžu pielāgošana",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Ikviens, kas ir pierakstījies, var komentēt. Tikai jaunas diskusijas sākšana ir atkarīga no konta vecuma.",
   "API mode": "API režīms",
@@ -161,6 +162,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Tiek piemērota katrai saimniecībai bez savas likmes.",
   "Applies to": "Attiecas uz",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Attiecas uz abiem robotiem. Lielākas vērtības ļauj asistentam vairāk strādāt, un par atbildi maksā vairāk.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Attiecas uz abiem tērzēšanas logrīkiem. Atstājiet to notīrītu, lai sekotu vietnes zīmola krāsai sadaļā Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "Attiecas uz katru apmeklētāju, Cloudflare apņemas",
   Approve: "Apstiprināt",
@@ -279,6 +284,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Izvēlieties pārskatu no saraksta, lai to palaistu.",
   "Choose up to": "Izvēlieties līdz",
   "City / town": "Pilsēta/pilsēta",
+  Clear: "Notīrīt",
   "Clearing...": "Notiek tīrīšana...",
   "Click link": "Noklikšķiniet uz saites",
   Close: "Aizvērt",
@@ -317,6 +323,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kontrolējiet, ko katra loma var skatīt, izveidot, rediģēt, publicēt vai pārvaldīt.",
   "Control whether each bot is available, and edit what it knows.":
     "Pārvaldiet, vai katrs robots ir pieejams, un rediģējiet to, ko tā zina.",
+  "Conversation turns remembered": "Atcerēti sarunas pagriezieni",
   Cook: "Gatavot",
   "Cook minutes": "Pagatavot minūtes",
   "Copy inside dark bands.": "Kopēt tumšās joslās.",
@@ -578,10 +585,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Mājas lapas SEO",
   "Homepage Settings": "Mājas lapas iestatījumi",
   "Homepage settings unavailable": "Mājaslapas iestatījumi nav pieejami",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Cik ierakstu no tālāk esošā saraksta ir norādīts palīgam kā atsauce.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Cik daudzus produktus vai kategorijas operators var izvēlēties jaunajiem izlases veidiem, piedāvātajām kategorijām (mājaslapas iestatījumi) un izceltajiem produktiem (tālāk). Paaugstinot to, tiek ietaupīts nekavējoties, nav nepieciešama izvietošana; līdz 50 — griestus, ko ievieš pats bloka formāts.",
   "How many products to show": "Cik produktu rādīt",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Cik daudz produktu, rakstu vai recepšu veikala robota meklēšana atgriež katru reizi, kad kaut ko meklē.",
   "How many to show": "Cik daudz rādīt",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Cik liela daļa pašreizējās tērzēšanas tiek nosūtīta atpakaļ ar katru jautājumu. 0 atbilžu uz katru jautājumu atsevišķi.",
   "How this password works": "Kā šī parole darbojas",
   "Hungarian (Magyar)": "ungāru (Magāru)",
   Icelandic: "Islandiešu",
@@ -638,6 +651,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "Atslēgvārdi",
   Khmer: "khmeru",
   Kinyarwanda: "Kinjarvanda",
+  "Knowledge entries per answer": "Zināšanu ieraksti katrā atbildē",
   "Korean (한국어)": "korejiešu (한국어)",
   Kyrgyz: "Kirgizstānas",
   Label: "Etiķete",
@@ -1230,6 +1244,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Meklēt produktus, pasūtījumus, lietotājus, kategorijas…",
   "Search promotions": "Meklēšanas akcijas",
   "Search recipes": "Meklēt receptes",
+  "Search results per lookup": "Meklēšanas rezultāti vienā meklēšanā",
   "Search returns": "Meklēt atdevi",
   "Search reviews": "Meklēt atsauksmes",
   "Search submissions": "meklēt submissions",
@@ -1495,6 +1510,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "lietotājiem",
   "Users & Roles": "lietotājiem un lomām",
   "Users unavailable": "Lietotāji nav pieejami",
+  "Using the site brand colour": "Vietnes zīmola krāsas izmantošana",
   Uyghur: "uiguru",
   Uzbek: "uzbeku",
   Variant: "variants",
@@ -1540,6 +1556,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Kāpēc ir nepieciešamas izmaiņas vai kāpēc tas tika noraidīts?",
   "Why is stock changing?": "Kāpēc krājumi mainās?",
+  "Widget colour": "Logrīka krāsa",
+  "Widget colour hex": "Logrīka krāsas heksade",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Vārdus robots sakrīt ar jautājumu, lai noteiktu, vai šis ieraksts ir atbilstošs.",
   "Working...": "Strādā...",

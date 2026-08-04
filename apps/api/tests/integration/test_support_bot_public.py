@@ -117,8 +117,7 @@ def test_order_status_is_scoped_to_the_caller(db: SQLiteDatabase):
         "/v1/public/support-bot/chat", json={"message": "What's the status of order TG-A1?"}
     )
     assert response.status_code == 200, response.text
-    tool_messages = [m for m in chat.calls[1]["messages"] if m.get("role") == "tool"]
-    assert '"found": false' in tool_messages[0]["content"]
+    assert '"found": false' in chat.calls[1]["messages"][-1]["content"]
 
 
 def test_storefront_knowledge_seeded_and_matched(db: SQLiteDatabase):

@@ -139,6 +139,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Мэдэгдэлийн баннер",
   "Announcements unavailable": "Мэдэгдэл боломжгүй",
   Answer: "Хариулт",
+  "Answer tuning": "Хариулт тааруулах",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Нэвтэрсэн хэн бүхэн сэтгэгдэл бичиж болно. Зөвхөн шинэ хэлэлцүүлэг эхлүүлэх нь бүртгэлийн наснаас хамаарна.",
   "API mode": "API горим",
@@ -156,6 +157,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Аливаа купон эсвэл урамшууллын хөнгөлөлт авахаас өмнө тооцоо хийх үед хэрэгжинэ. Үнэгүй хүргэлтийн босго болон түүнээс дээш захиалгад хүргэлтийн хураамж төлдөггүй.",
   "Applied to every farm without its own rate.": "Өөрийн тарифгүйгээр ферм бүрт хэрэгжинэ.",
   "Applies to": "Хэрэглэнэ",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Хоёр роботод хамаарна. Илүү том утгууд нь туслахад илүү их ажиллах боломжийг олгодог бөгөөд нэг хариулт бүрт илүү их зардал гардаг.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Чатын виджетэд хоёуланд нь хамаарна. Өнгө ба эффектээс сайтын брэндийн өнгийг дагахын тулд үүнийг арилгана уу.",
   "Applies to every visitor Cloudflare resolves to": "Зочлогч бүрт хамаарна Cloudflare шийднэ",
   Approve: "Зөвшөөрөх",
   "Approve & publish": "Зөвшөөрөх, нийтлэх",
@@ -272,6 +277,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Ажиллуулахын тулд жагсаалтаас тайланг сонгоно уу.",
   "Choose up to": "Хүртэл",
   "City / town": "Хот / хот",
+  Clear: "Цэвэр",
   "Clearing...": "Цэвэрлэж байна...",
   "Click link": "Холбоос дарна уу",
   Close: "Хаах",
@@ -311,6 +317,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Үүр бүр юуг харах, үүсгэх, засах, нийтлэх эсвэл удирдах боломжтойг хянах.",
   "Control whether each bot is available, and edit what it knows.":
     "Бот бүр байгаа эсэхийг хянаж, мэддэг зүйлээ засаарай.",
+  "Conversation turns remembered": "Харилцааны эргэлтийг санасан",
   Cook: "Хоол хийх",
   "Cook minutes": "Хоол хийх минут",
   "Copy inside dark bands.": "Харанхуй зурвас дотор хуулах.",
@@ -574,10 +581,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Нүүр хуудасны SEO",
   "Homepage Settings": "Нүүр хуудасны тохиргоо",
   "Homepage settings unavailable": "Нүүр хуудасны тохиргоог хийх боломжгүй",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Доорх жагсаалтаас хэдэн оруулгыг туслахад лавлагаа болгон өгсөн бэ.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Оператор Шинэ дуртай, Онцолсон ангилал (Нүүр хуудасны тохиргоо) болон Тодруулсан бүтээгдэхүүн (доор) дотроос хэдэн бүтээгдэхүүн эсвэл ангиллыг сонгох боломжтой. Үүнийг өсгөх нь нэн даруй хэмнэдэг, байрлуулах шаардлагагүй; 50 хүртэл, блок формат өөрөө хэрэгжүүлдэг тааз.",
   "How many products to show": "Хэдэн бүтээгдэхүүн харуулах вэ",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Дэлгүүрийн нүүрэн талын ботын хайлт нь ямар нэг зүйл хайх бүрт хичнээн бүтээгдэхүүн, нийтлэл эсвэл жор харуулдаг вэ?",
   "How many to show": "Хэрхэн харуулах вэ",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Асуулт бүрээр одоогийн чатын хэр ихийг буцааж илгээдэг вэ. 0 нь асуулт бүрт тусад нь хариулдаг.",
   "How this password works": "Энэ нууц үг хэрхэн ажилладаг вэ",
   "Hungarian (Magyar)": "Унгар (Мажар)",
   Icelandic: "Исланд хэл",
@@ -635,6 +648,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "Түлхүүр үг",
   Khmer: "Кхмер",
   Kinyarwanda: "Кинярванд",
+  "Knowledge entries per answer": "Хариулт бүрийн мэдлэгийн оруулга",
   "Konkani (कोंकणी)": "Конкани (कोंकणी)",
   "Korean (한국어)": "Солонгос (한국)",
   Kyrgyz: "Киргиз",
@@ -1238,6 +1252,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Бүтээгдэхүүн, захиалга, хэрэглэгч, ангилал хайх...",
   "Search promotions": "Урамшуулал хайх",
   "Search recipes": "Жор хайх",
+  "Search results per lookup": "Хайлтын үр дүн",
   "Search returns": "Хайлтын өгөгдлүүд",
   "Search reviews": "Шүүмж хайх",
   "Search submissions": "Мэдүүлгийг хайх",
@@ -1499,6 +1514,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Хэрэглэгчид",
   "Users & Roles": "Хэрэглэгч ба үүрэг",
   "Users unavailable": "Хэрэглэгч ашиглах боломжгүй",
+  "Using the site brand colour": "Сайтын брэндийн өнгийг ашиглах",
   Uyghur: "Уйгур",
   Uzbek: "Узбек",
   Variant: "Хувилбар",
@@ -1544,6 +1560,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Яагаад өөрчлөлт хийх шаардлагатай вэ, эсвэл яагаад үүнийг татгалзсан бэ?",
   "Why is stock changing?": "Хувьцаа яагаад өөрчлөгдөж байна вэ?",
+  "Widget colour": "Вижетийн өнгө",
+  "Widget colour hex": "Вижетийн өнгөний зургаан өнцөгт",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Энэ оруулга хамааралтай эсэхийг шийдэхийн тулд ботын үгс асуулттай таарч байна.",
   "Working...": "Ажиллаж байна...",

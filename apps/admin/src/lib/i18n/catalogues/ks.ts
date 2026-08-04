@@ -139,6 +139,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "اعلان بینر",
   "Announcements unavailable": "اعلانات دستیاب نہیں ہیں",
   Answer: "جواب",
+  "Answer tuning": "جواب ٹیوننگ",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "جو بھی سائن ان ہے وہ تبصرہ کر سکتا ہے۔ صرف ایک نئی بحث شروع کرنے کو اکاؤنٹ کی عمر کے لحاظ سے گیٹ دیا جاتا ہے۔",
   "API mode": "API وضع",
@@ -157,6 +158,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "ہر فارم پر اس کی اپنی شرح کے بغیر لاگو کیا جاتا ہے۔",
   "Applies to": "اس پر لاگو ہوتا ہے",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "دونوں بوٹس پر لاگو ہوتا ہے۔ بڑی قدریں اسسٹنٹ کو کام کرنے کے لیے زیادہ دیتی ہیں اور فی جواب زیادہ لاگت آتی ہے۔",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "دونوں چیٹ ویجیٹس پر لاگو ہوتا ہے۔ رنگوں اور اثرات سے سائٹ کے برانڈ رنگ کی پیروی کرنے کے لیے اسے صاف رہنے دیں۔",
   "Applies to every visitor Cloudflare resolves to": "ہر آنے والے پر لاگو ہوتا ہے Cloudflare نے",
   Approve: "منظوری",
   "Approve & publish": "منظور کریں اور شائع کریں",
@@ -312,6 +317,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "کنٹرول کریں کہ ہر کردار کیا دیکھ سکتا ہے، کیا بنا سکتا ہے، ترمیم کر سکتا ہے، شائع کر سکتا ہے یا نظم کر سکتا ہے۔",
   "Control whether each bot is available, and edit what it knows.":
     "کنٹرول کریں کہ آیا ہر بوٹ دستیاب ہے، اور جو کچھ جانتا ہے اس میں ترمیم کریں۔",
+  "Conversation turns remembered": "گفتگو کے موڑ یاد رکھے گئے",
   Cook: "کک",
   "Cook minutes": "کک منٹ",
   "Copy inside dark bands.": "ڈارک بینڈز کے اندر کاپی کریں۔",
@@ -569,10 +575,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ہوم پیج SEO",
   "Homepage Settings": "ہوم پیج سیٹنگز",
   "Homepage settings unavailable": "ہوم پیج کی ترتیبات دستیاب نہیں ہیں",
+  "How many entries from the list below are given to the assistant as reference.":
+    "ذیل کی فہرست میں سے کتنی اندراجات بطور حوالہ معاون کو دی گئی ہیں۔",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "آپریٹر تازہ پسندیدہ، نمایاں زمرہ جات (ہوم ​​پیج کی ترتیبات) اور نمایاں کردہ مصنوعات (نیچے) میں کتنے پروڈکٹس یا زمروں کا انتخاب کرسکتا ہے۔ اسے اٹھانا فوری طور پر بچاتا ہے، کسی تعیناتی کی ضرورت نہیں ہے۔ 50 تک، سیلنگ بلاک فارمیٹ خود نافذ کرتی ہے۔",
   "How many products to show": "کتنے پروڈکٹس دکھائے جائیں",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "اسٹور فرنٹ بوٹ کی تلاش ہر بار جب کچھ اوپر نظر آتی ہے تو کتنے پروڈکٹس، آرٹیکلز یا ترکیبیں واپس آتی ہیں۔",
   "How many to show": "کتنے دکھائے جائیں",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "ہر سوال کے ساتھ موجودہ چیٹ کا کتنا حصہ واپس بھیجا جاتا ہے۔ 0 ہر سوال کا تنہائی میں جواب دیتا ہے۔",
   "How this password works": "یہ پاس ورڈ کیسے کام کرتا ہے",
   "Hungarian (Magyar)": "ہنگرین (میگیار)",
   Icelandic: "آئس لینڈی",
@@ -629,6 +641,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "کلیدی الفاظ",
   Khmer: "خمیر",
   Kinyarwanda: "کنیاروانڈا",
+  "Knowledge entries per answer": "علم کے اندراجات فی جواب",
   "Konkani (कोंकणी)": "کونکنی (कोंकणी)",
   "Korean (한국어)": "کورین (한국어)",
   Kyrgyz: "کرغیز",
@@ -1213,6 +1226,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "پروڈکٹس، آرڈرز، صارفین، زمرے تلاش کریں…",
   "Search promotions": "پروموشنز تلاش کریں",
   "Search recipes": "ترکیبات تلاش کریں",
+  "Search results per lookup": "تلاش کے نتائج فی تلاش",
   "Search returns": "تلاش کی واپسی",
   "Search reviews": "تحقیقات تلاش کریں",
   "Search submissions": "تلاش کی جمع آوریاں",
@@ -1470,6 +1484,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "صارفین",
   "Users & Roles": "صارفین اور کردار",
   "Users unavailable": "صارفین دستیاب نہیں ہیں",
+  "Using the site brand colour": "سائٹ برانڈ کا رنگ استعمال کرنا",
   Uyghur: "اویغور",
   Uzbek: "ازبک",
   Variant: "متغیر",
@@ -1515,6 +1530,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "تبدیلیاں کیوں درکار ہیں، یا یہ کیوں ضروری تھا؟",
   "Why is stock changing?": "اسٹاک کیوں تبدیل ہو رہا ہے؟",
+  "Widget colour hex": "ویجیٹ رنگ ہیکس",
   "Words the bot matches against a question to decide this entry is relevant.":
     "یہ فیصلہ کرنے کے لیے بوٹ کے الفاظ کسی سوال کے ساتھ مماثل ہیں۔",
   "Working...": "کام کر رہا ہے...",

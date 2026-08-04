@@ -134,6 +134,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Banner ng anunsyo",
   "Announcements unavailable": "Hindi available ang mga anunsyo",
   Answer: "Sagot",
+  "Answer tuning": "Pag-tune ng sagot",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Maaaring magkomento ang sinumang naka-sign in. Ang pagsisimula lamang ng bagong talakayan ay may gate ng edad ng account.",
   "Appearance unavailable": "Hindi available ang hitsura",
@@ -151,6 +152,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Inilapat sa bawat sakahan nang walang sariling rate.",
   "Applies to": "Nalalapat sa",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Nalalapat sa parehong mga bot. Ang mas malalaking halaga ay nagbibigay sa katulong ng higit na makatrabaho at mas mahal sa bawat sagot.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Nalalapat sa parehong mga widget ng chat. Iwanan itong naka-clear upang sundan ang kulay ng brand ng site mula sa Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "Nalalapat sa bawat bisita na niresolba ng Cloudflare sa",
   Approve: "Aprubahan",
@@ -237,6 +242,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pumili ng ulat mula sa listahan upang patakbuhin ito.",
   "Choose up to": "Pumili hanggang sa",
   "City / town": "Lungsod / bayan",
+  Clear: "I-clear",
   "Clearing...": "Kinalinis...",
   "Click link": "I-click ang link",
   Close: "Isara",
@@ -275,6 +281,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kontrolin kung ano ang maaaring tingnan, gawin, i-edit, i-publish o pamahalaan ng bawat tungkulin.",
   "Control whether each bot is available, and edit what it knows.":
     "Kontrolin kung available ang bawat bot, at i-edit ang alam nito.",
+  "Conversation turns remembered": "Naaalala ang mga pag-uusap",
   Cook: "Magluto",
   "Cook minutes": "Magluto ng minuto",
   "Copy inside dark bands.": "Kopyahin sa loob ng dark bands.",
@@ -490,10 +497,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage sections unavailable": "Hindi available ang mga seksyon ng homepage",
   "Homepage Settings": "Mga Setting ng Homepage",
   "Homepage settings unavailable": "Hindi available ang mga setting ng homepage",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Gaano karaming mga entry mula sa listahan sa ibaba ang ibinibigay sa assistant bilang reference.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Gaano karaming mga produkto o kategorya ang maaaring piliin ng operator sa Mga Bagong Paborito, Mga Tampok na Kategorya (Mga Setting ng Homepage) at Mga Naka-highlight na produkto (sa ibaba). Ang pagtataas nito ay nakakatipid kaagad, hindi kailangan ng pag-deploy; hanggang 50, ang kisame na ipinapatupad mismo ng block format.",
   "How many products to show": "Gaano karaming mga produkto ang ipapakita",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Gaano karaming mga produkto, artikulo o recipe ang ibinabalik ng paghahanap ng bot sa storefront sa tuwing may hinahanap ito.",
   "How many to show": "Ilan ang ipapakita",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Gaano karami sa kasalukuyang chat ang ibinabalik sa bawat tanong. 0 ang sumasagot sa bawat tanong nang hiwalay.",
   "How this password works": "Paano gumagana ang password na ito",
   "If that email has an account, a reset link is on its way.":
     "Kung may account ang email na iyon, may paparating na link sa pag-reset.",
@@ -535,6 +548,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Panatilihing malinis ang likhang sining",
   "Keep typing to search…": "Patuloy na mag-type para maghanap...",
   Keywords: "Mga Keyword",
+  "Knowledge entries per answer": "Mga entry sa kaalaman bawat sagot",
   "Land under cultivation": "Lupang sinasaka",
   Language: "Language i",
   "Last activity": "Huling aktibidad",
@@ -1087,6 +1101,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Maghanap ng mga produkto, order, user, kategorya...",
   "Search promotions": "Maghanap ng mga promosyon",
   "Search recipes": "Maghanap ng mga recipe",
+  "Search results per lookup": "Mga resulta ng paghahanap sa bawat paghahanap",
   "Search returns": "Maghanap ng mga pagbalik",
   "Search reviews": "Maghanap ng mga review",
   "Search submissions": "Maghanap ng mga pagsusumite",
@@ -1328,6 +1343,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Mga User",
   "Users & Roles": "Mga User at Tungkulin",
   "Users unavailable": "Hindi available ang mga user",
+  "Using the site brand colour": "Paggamit ng kulay ng brand ng site",
   "Variant Name": "Pangalan ng Variant",
   Variants: "Mga Variant",
   "Variants of": "Mga Variant ng",
@@ -1366,6 +1382,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Bakit kailangan ng mga pagbabago, o bakit ito tinanggihan?",
   "Why is stock changing?": "Bakit nagbabago ang stock?",
+  "Widget colour": "Kulay ng widget",
+  "Widget colour hex": "Hex ng kulay ng widget",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Mga salitang tumutugma ang bot sa isang tanong upang mapagpasyahan na may kaugnayan ang entry na ito.",
   "Working...": "Gumagana...",

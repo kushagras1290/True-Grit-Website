@@ -143,6 +143,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Baner za najave",
   "Announcements unavailable": "Objave nisu dostupne",
   Answer: "Odgovor",
+  "Answer tuning": "Podešavanje odgovora",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Svako ko je prijavljen može komentirati. Samo pokretanje nove diskusije je ograničeno godinama računa.",
   "API mode": "API način",
@@ -161,6 +162,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Primjenjuje se na svaku farmu bez vlastite cijene.",
   "Applies to": "Primjenjuje se na",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Primjenjuje se na oba bota. Veće vrijednosti daju pomoćniku više za rad i koštaju više po odgovoru.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Primjenjuje se na oba vidžeta za ćaskanje. Ostavite ga počišćenim da biste pratili boju brenda web-lokacije iz Boje i efekata.",
   "Applies to every visitor Cloudflare resolves to": 'id="t0009">Odobri',
   Approve: "Odobre",
   "Approve & publish": "Odobri i objavi",
@@ -277,6 +282,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Odaberite izvještaj sa liste da ga pokrenete.",
   "Choose up to": "Odaberite do",
   "City / town": "Grad/mjesto",
+  Clear: "Obriši",
   "Clearing...": "Brisanje...",
   "Click link": "Kliknite na link",
   Close: "Zatvori",
@@ -316,6 +322,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kontrolirajte šta svaka uloga može pregledavati, kreirati, uređivati, objavljivati ​​ili upravljati.",
   "Control whether each bot is available, and edit what it knows.":
     "Kontrolišite da li je svaki bot dostupan i uredite ono što zna.",
+  "Conversation turns remembered": "Zapamćeni su skretanja razgovora",
   Cook: "Kuvanje",
   "Cook minutes": "Minuti kuhanja",
   "Copy inside dark bands.": "Kopiraj unutar tamnih traka.",
@@ -575,10 +582,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO početne stranice",
   "Homepage Settings": "Postavke početne stranice",
   "Homepage settings unavailable": "Postavke početne stranice nedostupne",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Koliko unosa sa donje liste se daje pomoćniku kao referenca.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Koliko proizvoda ili kategorija operater može odabrati u Svježi favoriti, Istaknute kategorije (Postavke početne stranice) i Istaknuti proizvodi (ispod). Podizanjem se odmah sprema, nije potrebno postavljanje; do 50, plafon sam blok format nameće.",
   "How many products to show": "Koliko proizvoda prikazati",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Koliko proizvoda, članaka ili recepata bot iz prodavnice vrati svaki put kada nešto pronađe.",
   "How many to show": "Koliko prikazati",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Koliko se trenutnog chata vrati sa svakim pitanjem. 0 answers every question in isolation.",
   "How this password works": "Kako funkcioniše ova lozinka",
   "Hungarian (Magyar)": "mađarski (mađarski)",
   Icelandic: "islandski",
@@ -1478,6 +1491,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Korisnike",
   "Users & Roles": "Korisnike i uloge",
   "Users unavailable": "Korisnici nedostupni",
+  "Using the site brand colour": "Korištenje boje marke web stranice",
   Uyghur: "ujgurski",
   Uzbek: "uzbečki",
   Variant: "Varijanta",
@@ -1523,6 +1537,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Zašto su potrebne promjene ili zašto je ovo odbijeno?",
   "Why is stock changing?": "Zašto se mijenjaju zalihe?",
+  "Widget colour": "Boja widgeta",
+  "Widget colour hex": "heksadecimalna boja vidžeta",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Riječi koje bot podudara s pitanjem kako bi se odlučilo da je ovaj unos relevantan.",
   "Working...": "Radi se...",

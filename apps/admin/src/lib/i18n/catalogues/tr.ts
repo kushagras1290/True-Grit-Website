@@ -139,6 +139,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Duyuru banner'ı",
   "Announcements unavailable": "Duyurular mevcut değil",
   Answer: "Cevap",
+  "Answer tuning": "Yanıt ayarlama",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Oturum açan herkes yorum yapabilir. Yalnızca yeni bir tartışma başlatma, hesabın yaşına göre denetlenir.",
   "API mode": "API modu",
@@ -156,6 +157,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Herhangi bir kupon veya promosyon indiriminden önce ödeme sırasında uygulanır. Ücretsiz teslimat eşiğindeki veya üzerindeki siparişler teslimat ücreti ödemez.",
   "Applied to every farm without its own rate.": "Kendi ücreti olmadan her çiftliğe uygulanır.",
   "Applies to": "Şunlar için geçerlidir:",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Her iki bot için de geçerlidir. Daha büyük değerler asistana daha fazla çalışma olanağı sağlar ve yanıt başına daha fazla maliyet sağlar.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Her iki sohbet widget'ı için de geçerlidir. Renkler ve Efektler'den site markası rengini takip etmek için bu seçeneği boş bırakın.",
   "Applies to every visitor Cloudflare resolves to":
     "Cloudflare'in karar verdiği her ziyaretçi için geçerlidir",
   Approve: "Onayla",
@@ -272,6 +277,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Listeden çalıştırılacak bir rapor seçin.",
   "Choose up to": "En fazla seçin",
   "City / town": "Şehir/kasaba",
+  Clear: "Temizle",
   "Clearing...": "Temizleniyor...",
   "Click link": "Tıklayın bağlantı",
   Close: "Kapat",
@@ -310,6 +316,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Her rolün neyi görüntüleyebileceğini, oluşturabileceğini, düzenleyebileceğini, yayınlayabileceğini veya yönetebileceğini kontrol edin.",
   "Control whether each bot is available, and edit what it knows.":
     "Her birinin olup olmayacağını kontrol edin bot kullanılabilir ve bildiklerini düzenleyin.",
+  "Conversation turns remembered": "Konuşma hatırlanır",
   Cook: "Yemek yapma",
   "Cook minutes": "Dakika pişirme",
   "Copy inside dark bands.": "Koyu bantların içinde kopyalama.",
@@ -570,10 +577,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Ana Sayfa SEO'su",
   "Homepage Settings": "Ana Sayfa Ayarları",
   "Homepage settings unavailable": "Ana sayfa ayarları kullanılamıyor",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Aşağıdaki listeden kaç girişin referans olarak asistana verildiği.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Bir operatörün Yeni Favoriler, Öne Çıkan Kategoriler (Ana Sayfa Ayarları) ve Vurgulananlar'a kaç ürün veya kategori seçebileceği ürünler (altta). Yükseltmek anında kaydeder; konuşlandırmaya gerek yoktur; 50'ye kadar, blok formatının uyguladığı tavan.",
   "How many products to show": "Gösterilecek kaç ürün",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Mağaza botunun araması, bir şeye her baktığında kaç ürün, makale veya yemek tarifi döndürür? yukarı.",
   "How many to show": "Kaç tane gösterilecek",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Her soruyla birlikte mevcut sohbetin ne kadarının geri gönderildiği. 0, her soruyu ayrı ayrı yanıtlar.",
   "How this password works": "Bu şifre nasıl çalışır?",
   "Hungarian (Magyar)": "Macarca (Macarca)",
   Icelandic: "İzlandaca",
@@ -629,6 +642,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "Aramak için yazmaya devam edin…",
   Keywords: "Anahtar kelimeler",
   Khmer: "Kmerce",
+  "Knowledge entries per answer": "Cevap başına bilgi girişi",
   "Korean (한국어)": "Korece (한국어)",
   Kyrgyz: "Kırgız",
   Label: "Etiket",
@@ -1221,6 +1235,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ürünleri, siparişleri, kullanıcıları, kategorileri arayın…",
   "Search promotions": "Promosyonları arayın",
   "Search recipes": "Yemek tariflerini arayın",
+  "Search results per lookup": "Arama başına arama sonuçları",
   "Search returns": "Arama getirileri",
   "Search reviews": "Yorumları arayın",
   "Search submissions": "Gönderimleri arayın",
@@ -1484,6 +1499,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Kullanıcılar",
   "Users & Roles": "Kullanıcılar ve Roller",
   "Users unavailable": "Kullanıcı mevcut değil",
+  "Using the site brand colour": "Site marka rengini kullanma",
   Uyghur: "Uygurca",
   Uzbek: "Özbekçe",
   Variant: "Varyant",
@@ -1529,6 +1545,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Neden değişiklik yapılması gerekiyor veya bu neden reddedildi?",
   "Why is stock changing?": "Stoklar neden değişiyor?",
+  "Widget colour": "Widget rengi",
+  "Widget colour hex": "Widget rengi onaltılı",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Bu girişin alakalı olduğuna karar vermek için botun bir soruyla eşleştirdiği kelimeler.",
   "Working...": "Çalışıyor...",

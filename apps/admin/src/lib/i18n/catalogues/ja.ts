@@ -139,6 +139,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "お知らせバナー",
   "Announcements unavailable": "お知らせは利用できません",
   Answer: "回答",
+  "Answer tuning": "応答チューニング",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "サインインしている人は誰でもコメントできます。新しいディスカッションの開始のみ、アカウントの年齢によって制限されます。",
   "API mode": "API モード",
@@ -156,6 +157,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "クーポンやプロモーション割引の前にチェックアウト時に適用されます。無料配送基準値以上の注文には配送料はかかりません。",
   "Applied to every farm without its own rate.": "独自料金なしですべてのファームに適用されます。",
   "Applies to": "適用対象",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "両方のボットに適用されます。値が大きいほど、アシスタントがより多くの作業を行うことができ、回答あたりのコストも高くなります。",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "両方のチャット ウィジェットに適用されます。 [色と効果] のサイト ブランド カラーに従う場合は、オフのままにします。",
   "Applies to every visitor Cloudflare resolves to": "すべての訪問者に適用 Cloudflare は",
   Approve: "承認",
   "Approve & publish": "承認して公開",
@@ -276,6 +281,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "リストからレポートを選択して実行します。",
   "Choose up to": "最大まで選択してください",
   "City / town": "市/町",
+  Clear: "クリア",
   "Clearing...": "クリアリング...",
   "Click link": "リンクをクリックします",
   Close: "閉じる",
@@ -315,6 +321,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "各ロールが表示、作成、編集、公開、管理できる内容を制御します。",
   "Control whether each bot is available, and edit what it knows.":
     "各ボットが利用可能かどうかを制御し、ボットが認識している内容を編集します。",
+  "Conversation turns remembered": "会話が記憶に残るようになります",
   Cook: "クック",
   "Cook minutes": "分をクック",
   "Copy inside dark bands.": "暗い帯の内側にコピーします。",
@@ -579,10 +586,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ホームページ SEO",
   "Homepage Settings": "ホームページ設定",
   "Homepage settings unavailable": "ホームページ設定を利用できません",
+  "How many entries from the list below are given to the assistant as reference.":
+    "以下のリストから、参照としてアシスタントに与えられるエントリの数。",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "オペレーターが新しいお気に入り、注目のカテゴリ (ホームページ設定)、およびハイライトされた製品 (下記) に選択できる製品またはカテゴリの数。値を上げるとすぐに保存され、デプロイは必要ありません。ブロック形式自体が適用する上限である 50 まで。",
   "How many products to show": "表示する商品の数",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "何かを検索するたびに店頭ボットの検索で返される製品、記事、またはレシピの数。",
   "How many to show": "表示する商品の数",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "各質問で現在のチャットがどのくらい返信されるか。すべての質問に 0 件が個別に回答します。",
   "How this password works": "このパスワードの仕組み",
   "Hungarian (Magyar)": "ハンガリー語 (マジャル語)",
   Icelandic: "アイスランド語",
@@ -639,6 +652,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "キーワード",
   Khmer: "クメール語",
   Kinyarwanda: "ルワンダ",
+  "Knowledge entries per answer": "回答ごとのナレッジ エントリ",
   "Konkani (कोंकणी)": "コンカニ語（कोंकणी）",
   "Korean (한국어)": "韓国語（한국어）",
   Kyrgyz: "キルギス語",
@@ -1233,6 +1247,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "商品、注文、ユーザー、カテゴリの検索…",
   "Search promotions": "プロモーションの検索",
   "Search recipes": "レシピの検索",
+  "Search results per lookup": "ルックアップごとの検索結果",
   "Search returns": "返品の検索",
   "Search reviews": "レビューの検索",
   "Search submissions": "投稿の検索",
@@ -1497,6 +1512,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "ユーザー",
   "Users & Roles": "ユーザーと役割",
   "Users unavailable": "ユーザーが利用できません",
+  "Using the site brand colour": "サイト ブランド カラーの使用",
   Uyghur: "ウイグル語",
   Uzbek: "ウズベク語",
   Variant: "バリアント",
@@ -1542,6 +1558,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "変更が必要な理由、または変更が拒否された理由",
   "Why is stock changing?": "株価はなぜ変動するのですか？",
+  "Widget colour": "ウィジェット カラー",
+  "Widget colour hex": "ウィジェット カラー 16 進数",
   "Words the bot matches against a question to decide this entry is relevant.":
     "ボットが質問と照合して、このエントリが関連しているかどうかを判断する単語。",
   "Working...": "作業中...",

@@ -31,6 +31,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/recipes/": "/ ରେସିପି /",
   "/recipes/my-recipe": "/ ରେସିପି / ମୋ-ରେସିପି |",
   "/shop": "/ ଦୋକାନ",
+  "#1f7a4d": "# 1f7a4d",
   "← All farms": "← ସମସ୍ତ ଚାଷ",
   "+ stars": "+ ତାରାଗଣ |",
   "1 star": "1 ତାରା",
@@ -152,6 +153,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "ଘୋଷଣା ବ୍ୟାନର |",
   "Announcements unavailable": "ଘୋଷଣା ଉପଲବ୍ଧ ନାହିଁ |",
   Answer: "ଉତ୍ତର",
+  "Answer tuning": "ଉତ୍ତର ଟ୍ୟୁନିଂ |",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "ସାଇନ୍ ଇନ୍ କରିଥିବା ବ୍ୟକ୍ତି ମନ୍ତବ୍ୟ ଦେଇପାରନ୍ତି | କେବଳ ଏକ ନୂତନ ଆଲୋଚନା ଆରମ୍ଭ କରିବା ଆକାଉଣ୍ଟ୍ ବୟସ ଅନୁଯାୟୀ |",
   "API mode": "API ମୋଡ୍ |",
@@ -169,6 +171,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "କ coup ଣସି କୁପନ କିମ୍ବା ପଦୋନ୍ନତି ରିହାତି ପୂର୍ବରୁ ଚେକଆଉଟ୍ ରେ ପ୍ରୟୋଗ କରାଯାଏ | ମାଗଣା ବିତରଣ ସୀମା ଉପରେ କିମ୍ବା ତା’ଠାରୁ ଅଧିକ ଆଦେଶ କ delivery ଣସି ବିତରଣ ଶୁଳ୍କ ପ୍ରଦାନ କରେ ନାହିଁ |",
   "Applied to every farm without its own rate.": "ପ୍ରତ୍ୟେକ ହାରରେ ନିଜସ୍ୱ ହାର ବିନା ପ୍ରଯୁଜ୍ୟ |",
   "Applies to": "ପାଇଁ ପ୍ରଯୁଜ୍ୟ |",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "ଉଭୟ ବଟ୍ ପାଇଁ ପ୍ରଯୁଜ୍ୟ | ବଡ଼ ମୂଲ୍ୟ ସହକାରୀକୁ ଅଧିକ କାମ କରିବାକୁ ଦେଇଥାଏ ଏବଂ ଉତ୍ତର ପାଇଁ ଅଧିକ ମୂଲ୍ୟ ଦେଇଥାଏ |",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "ଉଭୟ ଚାଟ୍ ୱିଜେଟ୍ ପାଇଁ ପ୍ରଯୁଜ୍ୟ | ରଙ୍ଗ ଏବଂ ପ୍ରଭାବରୁ ସାଇଟ୍ ବ୍ରାଣ୍ଡ ରଙ୍ଗ ଅନୁସରଣ କରିବାକୁ ଏହାକୁ ସଫା କରନ୍ତୁ |",
   "Applies to every visitor Cloudflare resolves to":
     "ପ୍ରତ୍ୟେକ ପରିଦର୍ଶକ ପାଇଁ କ୍ଲାଉଡ୍ ଫ୍ଲେର୍ ସମାଧାନ କରେ |",
   Approve: "ଅନୁମୋଦନ କରନ୍ତୁ |",
@@ -290,6 +296,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "ଏହାକୁ ଚଲାଇବା ପାଇଁ ତାଲିକାରୁ ଏକ ରିପୋର୍ଟ ବାଛନ୍ତୁ |",
   "Choose up to": "ପର୍ଯ୍ୟନ୍ତ ବାଛନ୍ତୁ |",
   "City / town": "ସହର / ସହର",
+  Clear: "ସଫା",
   "Clearing...": "ସଫା କରିବା ...",
   "Click link": "ଲିଙ୍କ୍ କ୍ଲିକ୍ କରନ୍ତୁ |",
   Close: "ବନ୍ଦ",
@@ -328,6 +335,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ପ୍ରତ୍ୟେକ ଭୂମିକା କ’ଣ ଦର୍ଶନ, ସୃଷ୍ଟି, ସଂପାଦନ, ପ୍ରକାଶନ କିମ୍ବା ପରିଚାଳନା କରିପାରିବ ତାହା ନିୟନ୍ତ୍ରଣ କରନ୍ତୁ |",
   "Control whether each bot is available, and edit what it knows.":
     "ପ୍ରତ୍ୟେକ ବଟ୍ ଉପଲବ୍ଧ କି ନାହିଁ ନିୟନ୍ତ୍ରଣ କରନ୍ତୁ, ଏବଂ ଯାହା ଜାଣେ ତାହା ସଂପାଦନ କରନ୍ତୁ |",
+  "Conversation turns remembered": "ବାର୍ତ୍ତାଳାପ ସ୍ମରଣୀୟ ହୋଇଯାଏ |",
   Cook: "ରାନ୍ଧ |",
   "Cook minutes": "ମିନିଟ୍ ରାନ୍ଧ |",
   "Copy inside dark bands.": "ଡାର୍କ ବ୍ୟାଣ୍ଡ ଭିତରେ କପି କରନ୍ତୁ |",
@@ -594,10 +602,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ମୂଳପୃଷ୍ଠା SEO |",
   "Homepage Settings": "ମୂଳପୃଷ୍ଠା ସେଟିଂସମୂହ",
   "Homepage settings unavailable": "ମୂଳପୃଷ୍ଠା ସେଟିଂସମୂହ ଉପଲବ୍ଧ ନାହିଁ |",
+  "How many entries from the list below are given to the assistant as reference.":
+    "ନିମ୍ନ ତାଲିକାରୁ କେତେ ଏଣ୍ଟ୍ରି ସହାୟକଙ୍କୁ ରେଫରେନ୍ସ ଭାବରେ ଦିଆଯାଏ |",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "ଜଣେ ଅପରେଟର କେତେ ଉତ୍ପାଦ କିମ୍ବା ବର୍ଗ ସତେଜ ପ୍ରିୟ, ବ Features ଶିଷ୍ଟ୍ୟ ବର୍ଗ (ମୂଳପୃଷ୍ଠା ସେଟିଂସମୂହ) ଏବଂ ହାଇଲାଇଟ୍ ଉତ୍ପାଦ (ନିମ୍ନରେ) କୁ ନେଇପାରେ | ଏହାକୁ ବ ising ାଇବା ତୁରନ୍ତ ସଞ୍ଚୟ କରେ, କ dep ଣସି ନିୟୋଜନ ଆବଶ୍ୟକ ନାହିଁ; 50 ପର୍ଯ୍ୟନ୍ତ, ଛାତ ବ୍ଲକ୍ ଫର୍ମାଟ୍ ନିଜେ କାର୍ଯ୍ୟକାରୀ କରେ |",
   "How many products to show": "କେତେ ଉତ୍ପାଦ ଦେଖାଇବାକୁ |",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "ଷ୍ଟୋରଫ୍ରଣ୍ଟ ବଟ୍ର ସନ୍ଧାନ ପ୍ରତ୍ୟେକ ଥର ଯେତେବେଳେ କିଛି ଦେଖାଯାଏ, କେତେ ଉତ୍ପାଦ, ପ୍ରବନ୍ଧ କିମ୍ବା ରେସିପି |",
   "How many to show": "କେତେ ଦେଖାଇବାକୁ |",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "ପ୍ରତ୍ୟେକ ପ୍ରଶ୍ନ ସହିତ ସାମ୍ପ୍ରତିକ ଚାଟ୍ କେତେ ପଠାଯାଏ | 0 ପ୍ରତ୍ୟେକ ପ୍ରଶ୍ନକୁ ପୃଥକ ଭାବରେ ଉତ୍ତର ଦିଅନ୍ତି |",
   "How this password works": "ଏହି ପାସୱାର୍ଡ କିପରି କାମ କରେ |",
   "Hungarian (Magyar)": "ହଙ୍ଗେରୀ (ମାଗିର୍)",
   Icelandic: "ଆଇସଲ୍ୟାଣ୍ଡ୍",
@@ -655,6 +669,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "କୀ ଶବ୍ଦ |",
   Khmer: "ଖେମର",
   Kinyarwanda: "କିନ୍ନରୱାଣ୍ଡା |",
+  "Knowledge entries per answer": "ଉତ୍ତର ପ୍ରତି ଜ୍ଞାନ ପ୍ରବିଷ୍ଟ |",
   "Konkani (कोंकणी)": "କନକାନି (कोंकणी)",
   "Korean (한국어)": "କୋରିଆନ୍ (한국어)",
   Kyrgyz: "କିର୍ଗିଜ୍",
@@ -1256,6 +1271,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "ଉତ୍ପାଦ, ଅର୍ଡର, ଉପଭୋକ୍ତା, ବର୍ଗ ସନ୍ଧାନ…",
   "Search promotions": "ପଦୋନ୍ନତି ଖୋଜ |",
   "Search recipes": "ରେସିପି ଖୋଜ |",
+  "Search results per lookup": "ପ୍ରତି ସନ୍ଧାନ ଫଳାଫଳ ଖୋଜ |",
   "Search returns": "ସନ୍ଧାନ ଫେରସ୍ତ",
   "Search reviews": "ସମୀକ୍ଷା ସମୀକ୍ଷା କରନ୍ତୁ |",
   "Search submissions": "ଉପସ୍ଥାପନାଗୁଡିକ ସନ୍ଧାନ କରନ୍ତୁ |",
@@ -1521,6 +1537,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "ଉପଯୋଗକର୍ତ୍ତାଗଣ |",
   "Users & Roles": "ବ୍ୟବହାରକାରୀ ଏବଂ ଭୂମିକା",
   "Users unavailable": "ଉପଯୋଗକର୍ତ୍ତାଗଣ ଉପଲବ୍ଧ ନାହିଁ |",
+  "Using the site brand colour": "ସାଇଟ୍ ବ୍ରାଣ୍ଡ ରଙ୍ଗ ବ୍ୟବହାର କରିବା |",
   Uyghur: "ଉଇଗୁର୍",
   Uzbek: "ଉଜବେକିସ୍ତାନ",
   Variant: "ପ୍ରକାର",
@@ -1566,6 +1583,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "ପରିବର୍ତ୍ତନ କାହିଁକି ଆବଶ୍ୟକ, କିମ୍ବା ଏହା କାହିଁକି ପ୍ରତ୍ୟାଖ୍ୟାନ ହେଲା?",
   "Why is stock changing?": "ଷ୍ଟକ୍ କାହିଁକି ବଦଳୁଛି?",
+  "Widget colour": "ୱିଜେଟ୍ ରଙ୍ଗ |",
+  "Widget colour hex": "ୱିଜେଟ୍ ରଙ୍ଗ ହେକ୍ସ |",
   "Words the bot matches against a question to decide this entry is relevant.":
     "ଶବ୍ଦଗୁଡ଼ିକ ଏହି ପ୍ରବିଷ୍ଟ ସ୍ଥିର କରିବାକୁ ଏକ ପ୍ରଶ୍ନ ବିରୁଦ୍ଧରେ ମେଳ ଖାଏ |",
   "Working...": "କାର୍ଯ୍ୟ ...",

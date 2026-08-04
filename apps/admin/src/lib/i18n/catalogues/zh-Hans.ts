@@ -141,6 +141,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "公告横幅",
   "Announcements unavailable": "公告不可用",
   Answer: "回答",
+  "Answer tuning": "答案调整",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "任何登录的人都可以发表评论。仅开始新讨论受帐户年龄限制。",
   "API mode": "API 模式",
@@ -158,6 +159,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "在任何优惠券或促销折扣之前结账时申请。达到或超过免费送货门槛的订单无需支付送货费用。",
   "Applied to every farm without its own rate.": "适用于每个农场，没有自己的费率。",
   "Applies to": "适用于",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "适用于两个机器人。值越大，助理可以使用的次数越多，每个答案的成本也越高。",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "适用于两个聊天小部件。将其保留为清除状态，以遵循“颜色和效果”中的网站品牌颜色。",
   "Applies to every visitor Cloudflare resolves to": "适用于 Cloudflare 解析为的每位访客",
   Approve: "批准",
   "Approve & publish": "批准并发布",
@@ -273,6 +278,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "从列表中选择一个报告来运行它。",
   "Choose up to": "选择最多",
   "City / town": "城市/城镇",
+  Clear: "清除",
   "Clearing...": "正在清除...",
   "Click link": "点击链接",
   Close: "关闭",
@@ -311,6 +317,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "控制每个角色可以查看、创建、编辑、发布或管理的内容。",
   "Control whether each bot is available, and edit what it knows.":
     "控制每个机器人是否可用，并编辑它所知道的内容。",
+  "Conversation turns remembered": "记住对话",
   Cook: "烹饪",
   "Cook minutes": "烹饪分钟",
   "Copy inside dark bands.": "复制内部暗带。",
@@ -571,10 +578,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "主页SEO",
   "Homepage Settings": "主页设置",
   "Homepage settings unavailable": "主页设置不可用",
+  "How many entries from the list below are given to the assistant as reference.":
+    "下面列表中的多少条目将提供给助理作为参考。",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "运营商可以选择多少个产品或类别放入新鲜收藏、特色类别（主页）设置）和突出显示的产品（如下）。提高它会立即保存，无需部署；最多 50 个，这是块格式本身强制执行的上限。",
   "How many products to show": "要显示多少产品",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "店面机器人搜索了多少产品、文章或食谱每次查找内容时都会返回。",
   "How many to show": "要显示多少产品",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "每个问题都会发回当前聊天内容的多少。 0 单独回答每个问题。",
   "How this password works": "此密码的工作原理",
   "Hungarian (Magyar)": "匈牙利语 (Magyar)",
   Icelandic: "冰岛语",
@@ -631,6 +644,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "关键字",
   Khmer: "高棉语",
   Kinyarwanda: "基尼亚卢旺达语",
+  "Knowledge entries per answer": "每个答案的知识条目",
   "Konkani (कोंकणी)": "康卡尼语 (कोंकणी)",
   "Korean (한국어)": "韩语 (한국어)",
   Kyrgyz: "吉尔吉斯语",
@@ -1203,6 +1217,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "搜索产品、订单、用户、类别...",
   "Search promotions": "搜索促销活动",
   "Search recipes": "搜索食谱",
+  "Search results per lookup": "每次查找的搜索结果",
   "Search returns": "搜索返回",
   "Search reviews": "搜索评论",
   "Search submissions": "搜索提交内容",
@@ -1458,6 +1473,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "用户",
   "Users & Roles": "用户和角色",
   "Users unavailable": "用户不可用",
+  "Using the site brand colour": "使用网站品牌颜色",
   Uyghur: "维吾尔语",
   Uzbek: "乌兹别克语",
   Variant: "变体",
@@ -1502,6 +1518,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Whole site (default)": "整个网站（默认）",
   "Why are changes needed, or why was this declined?": "为什么需要更改，或者为什么被拒绝？",
   "Why is stock changing?": "为什么库存变化？",
+  "Widget colour": "小部件颜色",
+  "Widget colour hex": "小部件颜色十六进制",
   "Words the bot matches against a question to decide this entry is relevant.":
     "机器人根据问题匹配单词来确定此条目相关。",
   "Working...": "工作中...",

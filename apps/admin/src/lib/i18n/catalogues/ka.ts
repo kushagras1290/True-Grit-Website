@@ -146,6 +146,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "განცხადების ბანერი",
   "Announcements unavailable": "განცხადებები მიუწვდომელია",
   Answer: "პასუხი",
+  "Answer tuning": "პასუხის დარეგულირება",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "ნებისმიერმა, ვინც შესულია, შეუძლია კომენტარი გააკეთოს. მხოლოდ ახალი დისკუსიის დაწყებაა შეზღუდული ანგარიშის ასაკის მიხედვით.",
   "API mode": "API რეჟიმი",
@@ -163,6 +164,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "გამოიყენება ფასდაკლებისას ან ნებისმიერი თანამშრომლობის წინ. უფასო მიწოდების ზღურბლზე ან ზემოთ შეკვეთები არ იხდიან მიწოდების საფასურს.",
   "Applied to every farm without its own rate.": "მიმართავს ყველა ფერმას საკუთარი ტარიფის გარეშე.",
   "Applies to": "ვრცელდება",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "მიმართავს ორივე ბოტს. უფრო დიდი მნიშვნელობები ასისტენტს უფრო მეტ სამუშაოს აძლევს და თითო პასუხის ღირებულებას ძვირი უჯდება.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "იმართება ჩეთის ორივე ვიჯეტზე. დატოვეთ გასუფთავებული, რათა თვალი ადევნოთ საიტის ბრენდის ფერს ფერებიდან და ეფექტებიდან.",
   "Applies to every visitor Cloudflare resolves to":
     "მიმართავს ყველა ვიზიტორს Cloudflare გადაწყვეტს",
   Approve: "დამტკიცებას",
@@ -284,6 +289,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "აირჩიეთ სიიდან ანგარიში მის გასაშვებად.",
   "Choose up to": "აირჩიეთ მდე",
   "City / town": "ქალაქი / ქალაქი",
+  Clear: "გასუფთავება",
   "Clearing...": "გასუფთავება...",
   "Click link": "დააწკაპუნეთ ბმულზე",
   Close: "დახურვა",
@@ -322,6 +328,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "აკონტროლეთ, რა შეუძლია თითოეულ როლს ნახოს, შექმნას, რედაქტირება, გამოქვეყნება ან მართვა.",
   "Control whether each bot is available, and edit what it knows.":
     "აკონტროლეთ არის თუ არა თითოეული ბოტი ხელმისაწვდომი და დაარედაქტირეთ ის, რაც მან იცის.",
+  "Conversation turns remembered": "საუბრის მონაცვლეობა დამახსოვრება",
   Cook: "მზარეული",
   "Cook minutes": "წუთების მომზადება",
   "Copy inside dark bands.": "კოპირება მუქი ზოლებში.",
@@ -586,10 +593,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "მთავარი გვერდის SEO",
   "Homepage Settings": "მთავარი გვერდის პარამეტრები",
   "Homepage settings unavailable": "მთავარი გვერდის პარამეტრები მიუწვდომელია",
+  "How many entries from the list below are given to the assistant as reference.":
+    "ქვემოთ ჩამოთვლილი სიიდან რამდენი ჩანაწერი მიეცემა ასისტენტს მითითების სახით.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "რამდენი პროდუქტი ან კატეგორია შეიძლება შეარჩიოს ოპერატორმა ახალ რჩეულებში, გამორჩეულ კატეგორიებში (მთავარი გვერდის პარამეტრები) და მონიშნული პროდუქტები (ქვემოთ). მისი ამაღლება დაზოგავს დაუყოვნებლივ, არ არის საჭირო განლაგება; 50-მდე, ჭერს ბლოკის ფორმატი თავად ახორციელებს.",
   "How many products to show": "რამდენი პროდუქტის ჩვენება",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "რამდენ პროდუქტს, სტატიას ან რეცეპტს აბრუნებს მაღაზიის ბოტის ძებნა ყოველ ჯერზე, როცა რაიმეს ეძებს.",
   "How many to show": "რამდენი ჩვენება",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "მიმდინარე ჩეთის რამდენი იგზავნება უკან თითოეულ კითხვაზე. 0 პასუხობს ყველა კითხვას იზოლირებულად.",
   "How this password works": "როგორ მუშაობს ეს პაროლი",
   "Hungarian (Magyar)": "უნგრული (მაგიური)",
   Icelandic: "ისლანდიური",
@@ -647,6 +660,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "საკვანძო სიტყვები",
   Khmer: "ქმერული",
   Kinyarwanda: "კინიარვანდა",
+  "Knowledge entries per answer": "ცოდნის ჩანაწერები თითო პასუხზე",
   "Konkani (कोंकणी)": "კონკანი (कोंकणी)",
   "Korean (한국어)": "კორეული (한국어)",
   Kyrgyz: "ყირგიზული",
@@ -1247,6 +1261,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "მოძებნეთ პროდუქტები, შეკვეთები, მომხმარებლები, კატეგორიები…",
   "Search promotions": "მოძებნეთ აქციები",
   "Search recipes": "რეცეპტების ძებნა",
+  "Search results per lookup": "ძიების შედეგები თითო ძიებაზე",
   "Search returns": "ძიება აბრუნებს",
   "Search reviews": "მიმოხილვების ძიება",
   "Search submissions": "შეტყობინებების ძიება",
@@ -1508,6 +1523,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "მომხმარებლებისთვის",
   "Users & Roles": "მომხმარებლები და როლები",
   "Users unavailable": "მომხმარებლები მიუწვდომელია",
+  "Using the site brand colour": "საიტის ბრენდის ფერის გამოყენება",
   Uyghur: "უიღური",
   Uzbek: "უზბეკური",
   Variant: "ვარიანტი",
@@ -1553,6 +1569,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "რატომ არის საჭირო ცვლილებები ან რატომ იქნა ეს უარყოფილი?",
   "Why is stock changing?": "რატომ იცვლება მარაგი?",
+  "Widget colour": "ვიჯეტის ფერი",
+  "Widget colour hex": "ვიჯეტის ფერის თექვსმეტობითი",
   "Words the bot matches against a question to decide this entry is relevant.":
     "სიტყვები, რომლებიც ბოტი ემთხვევა კითხვას, რათა გადაწყვიტოს, რომ ეს ჩანაწერი რელევანტურია.",
   "Working...": "მუშაობს...",

@@ -145,6 +145,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Հայտարարության վահանակ",
   "Announcements unavailable": "Հայտարարություններն անհասանելի են",
   Answer: "Պատասխանում",
+  "Answer tuning": "Պատասխանների կարգավորում",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Բոլորը, ովքեր մուտք են գործել, կարող են մեկնաբանել: Միայն նոր քննարկում սկսելը սահմանափակվում է հաշվի տարիքով:",
   "API mode": "API ռեժիմ",
@@ -163,6 +164,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Կիրառվում է յուրաքանչյուր ֆերմայի համար՝ առանց սեփական սակագնի:",
   "Applies to": "Կիրառվում է",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Կիրառվում է երկու բոտերին: Ավելի մեծ արժեքները թույլ են տալիս օգնականին ավելի շատ աշխատել և ավելի թանկ արժե մեկ պատասխանի համար:",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Կիրառվում է զրույցի երկու վիջեթների համար: Թողեք այն մաքրված, որպեսզի հետևեք կայքի ապրանքանիշի գույնին Colors & Effects-ից:",
   "Applies to every visitor Cloudflare resolves to":
     "Կիրառվում է յուրաքանչյուր այցելուի վրա Cloudflare-ը որոշում է",
   Approve: "Հաստատել",
@@ -285,6 +290,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Ընտրեք զեկույց ցանկից այն գործարկելու համար:",
   "Choose up to": "Ընտրեք մինչև",
   "City / town": "Քաղաք / քաղաք",
+  Clear: "Մաքրել",
   "Clearing...": "Մաքրում...",
   "Click link": "Սեղմեք հղումը",
   Close: "Փակել",
@@ -324,6 +330,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Վերահսկեք, թե յուրաքանչյուր դերը ինչ կարող է դիտել, ստեղծել, խմբագրել, հրապարակել կամ կառավարել:",
   "Control whether each bot is available, and edit what it knows.":
     "Վերահսկել, արդյոք յուրաքանչյուր բոտը հասանելի է, և խմբագրել այն, ինչ նա գիտի:",
+  "Conversation turns remembered": "Խոսակցության հերթափոխերը հիշվում են",
   Cook: "Խոհարարություն",
   "Cook minutes": "Պատրաստման րոպեներ",
   "Copy inside dark bands.": "Պատճենել մուգ շերտերի ներսում:",
@@ -590,10 +597,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Գլխավոր էջի SEO",
   "Homepage Settings": "Գլխավոր էջի կարգավորումներ",
   "Homepage settings unavailable": "Գլխավոր էջի կարգավորումներն անհասանելի են",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Ստորև նշված ցանկից քանի գրառում է տրված օգնականին",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Որքան ապրանք կամ կատեգորիա կարող է ընտրել օպերատորը` ընտրելով թարմ ընտրյալներ, առանձնացված կատեգորիաներ (գլխային էջի կարգավորումներ) և ընդգծված ապրանքներ (ներքևում): Բարձրացնելով այն անմիջապես խնայում է, տեղակայման կարիք չկա; մինչև 50, առաստաղը բլոկի ձևաչափն ինքն է պարտադրում:",
   "How many products to show": "Քանի՞ ապրանք ցուցադրել",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Քանի՞ ապրանք, հոդված կամ բաղադրատոմս է վերադարձնում խանութի ցուցափեղկի բոտի որոնումը ամեն անգամ, երբ ինչ-որ բան է փնտրում:",
   "How many to show": "Քանի՞ ցուցադրել",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Ընթացիկ զրույցի որքա՞նն է ուղարկվում յուրաքանչյուր հարցի հետ: 0 պատասխանում է յուրաքանչյուր հարցին առանձին-առանձին:",
   "How this password works": "Ինչպես է աշխատում այս գաղտնաբառը",
   "Hungarian (Magyar)": "հունգարերեն (մագյարերեն)",
   Icelandic: "իսլանդերեն",
@@ -651,6 +664,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "Հիմնաբառեր",
   Khmer: "խմեր",
   Kinyarwanda: "կինյարվանդա",
+  "Knowledge entries per answer": "Գիտելիքի գրառումներ յուրաքանչյուր պատասխանի համար",
   "Konkani (कोंकणी)": "կոնկանի (कोंकणी)",
   "Korean (한국어)": "կորեերեն (한국어)",
   Kyrgyz: "Ղրղզստան",
@@ -1254,6 +1268,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Որոնել ապրանքներ, պատվերներ, օգտատերեր, կատեգորիաներ…",
   "Search promotions": "Որոնել գովազդներ",
   "Search recipes": "Որոնել բաղադրատոմսեր",
+  "Search results per lookup": "Որոնման արդյունքները ըստ որոնման",
   "Search returns": "Որոնումը վերադարձնում է",
   "Search reviews": "Որոնման ակնարկներ",
   "Search submissions": "Որոնել առաջարկները",
@@ -1516,6 +1531,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Օգտատերերի համար",
   "Users & Roles": "Օգտատերերի և դերերի",
   "Users unavailable": "Օգտվողներն անհասանելի են",
+  "Using the site brand colour": "Օգտագործելով կայքի ապրանքանիշի գույնը",
   Uyghur: "ույղուր",
   Uzbek: "ուզբեկերեն",
   Variant: "Տարբերակ",
@@ -1561,6 +1577,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Ինչո՞ւ են անհրաժեշտ փոփոխությունները կամ ինչո՞ւ մերժվեց:",
   "Why is stock changing?": "Ինչո՞ւ է փոխվում պահեստը:",
+  "Widget colour": "Վիդջեթի գույնը",
+  "Widget colour hex": "Վիդջեթի գույնը վեցանկյուն",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Բառերը, որոնք բոտը համընկնում են հարցի հետ, որոշելու համար, որ այս գրառումը տեղին է:",
   "Working...": "Աշխատում է...",

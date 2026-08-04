@@ -150,6 +150,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "घोषणा बॅनर",
   "Announcements unavailable": "घोषणा उपलब्ध ना",
   Answer: "जाप",
+  "Answer tuning": "जाप ट्यूनिंग",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "कोणूय सायन इन केल्लो कोणूय टिप्पणी करूंक शकता. फकत नवी चर्चा सुरू करप खातें पिराये प्रमाणें गेट केल्लें आसा.",
   "API mode": "API मोड",
@@ -167,6 +168,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "खंयच्याय कूपन वा प्रचार सवलती पयलीं चेकआउट वेळार लागू केल्ले. फुकट-वितरण थराचेर वा ताचे वयर ऑर्डर दिवप कसलीच वितरण शुल्क भरना.",
   "Applied to every farm without its own rate.": "दर एका शेतांत स्वताच्या दरान लागू जाता.",
   "Applies to": "दरेक भेट दिवप्याक लागू जाता",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "दोनूय बॉटांक लागू जाता. व्हड मोलां सहाय्यकाक काम करपाक चड दितात आनी दर जापेक चड खर्च येता.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "दोनूय गप्पा विजेटांक लागू जाता. Colors & Effects कडल्यान साइट ब्रँड रंगाचो पाळो दिवपाक तो निवळ सोडचो.",
   "Applies to every visitor Cloudflare resolves to":
     "दरेक भेटीदाराक लागू जाता Cloudflare चो निर्णय",
   Approve: "मंजुरी दिवप",
@@ -284,6 +289,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a reason": "कारण निवडात",
   "Choose a report from the list to run it.": "तो चालीक लावपाक वळेरेंतल्यान अहवाल निवडात.",
   "City / town": "शहर / शार",
+  Clear: "साफ करचो",
   "Clearing...": "साफ करप मेरेन निवडात...",
   "Click link": "क्लिक करात दुवो",
   Close: "बंद करचें",
@@ -322,6 +328,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "दरेक भुमिका कितें पळोवंक, तयार करूंक, संपादीत करूंक, प्रकाशीत करूंक वा वेवस्थापन करूंक शकता हाचेर नियंत्रण दवरचें.",
   "Control whether each bot is available, and edit what it knows.":
     "दरेक बॉट उपलब्ध आसा काय ना तें नियंत्रीत करात, आनी ताका खबर आसा तें संपादीत करात.",
+  "Conversation turns remembered": "संवाद याद जाता",
   Cook: "कुक",
   "Cook minutes": "कुक मिण्टां",
   "Copy inside dark bands.": "काळ्या पट्ट्यां भितर कॉपी करची.",
@@ -588,10 +595,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "मुखपान एसईओ",
   "Homepage Settings": "मुखपान मांडावळी",
   "Homepage settings unavailable": "मुखपान मांडावळी उपलब्ध ना",
+  "How many entries from the list below are given to the assistant as reference.":
+    "खाला दिल्ल्या वळेरेंतल्यान कितले नोंदी संदर्भ म्हणून सहाय्याक दिल्यात.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "एक ऑपरेटर ताजें आवडीचें, वैशिश्ट्यपूर्ण वर्गांत (होमपेज) कितले उत्पाद वा वर्ग घेवंक शकता मांडावळी) आनी हायलाइट केल्लीं उत्पादां (सकयल). तो वाडयल्यार रोखडेंच वाचता, उपयोजनाची गरज ना; 50 मेरेन, ब्लॉक स्वरूप स्वता लागू करपी कमाल.",
   "How many products to show": "कितले उत्पाद दाखोवचे",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "कितले उत्पाद, लेख वा... रेसिपी स्टोरफ्रंट बॉटाचो सोद दर खेपे कितेंय पळयतना परत दिता.",
   "How many to show": "कितले दाखोवचे",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "दर एका प्रस्ना वांगडा सद्याचे गप्पा कितले परत धाडटात. 0 दरेक प्रस्नाक एकांतांत जाप दिता.",
   "How this password works": "हो पासवर्ड कसो काम करता",
   "Hungarian (Magyar)": "हंगेरी (मग्यार)",
   Icelandic: "आयसलँड",
@@ -649,6 +662,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "मुखेल शब्द",
   Khmer: "ख्मेर",
   Kinyarwanda: "किनियारवांडा",
+  "Knowledge entries per answer": "दर जापांत गिन्यान नोंदी",
   "Konkani (कोंकणी)": "कोंकणी (कोंकणी)",
   "Korean (한국어)": "कोरियन (한국어)",
   Kyrgyz: "किर्गिझ",
@@ -1245,6 +1259,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "उत्पादन, ऑर्डर, वापरपी, श्रेणी सोद...",
   "Search promotions": "सोद प्रचार",
   "Search recipes": "सोद रेसिपी",
+  "Search results per lookup": "दर लुकअपाक सोद परिणाम",
   "Search returns": "सोद परत",
   "Search reviews": "सोद पुनरावलोकनां",
   "Search submissions": "सोद सादरीकरण",
@@ -1511,6 +1526,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "वापरप्यां खातीर वापरतात",
   "Users & Roles": "वापरप्यांक आनी भुमिका",
   "Users unavailable": "वापरपी उपलब्ध ना",
+  "Using the site brand colour": "साइट ब्रँड रंग वापरप",
   Uyghur: "उयघुर",
   Uzbek: "उझबेक",
   Variant: "वेरिएंट",
@@ -1556,6 +1572,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "बदल कित्याक जाय, वा हें कित्याक नाका म्हणलें?",
   "Why is stock changing?": "स्टॉक कित्याक बदलत आसा?",
+  "Widget colour": "विजेट रंग",
+  "Widget colour hex": "विजेट रंग हेक्स",
   "Words the bot matches against a question to decide this entry is relevant.":
     "बॉट प्रस्ना आड जुळपी शब्द ही नोंद संबंदीत आसा अशें थारावपाक.",
   "Working...": "काम...",

@@ -143,6 +143,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Spanduk Pengumuman",
   "Announcements unavailable": "Pengumuman ora kasedhiya",
   Answer: "Jawaban",
+  "Answer tuning": "Tuning jawaban",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Sapa wae sing mlebu bisa menehi komentar. Mung miwiti dhiskusi anyar sing digatekake miturut umur akun.",
   "API mode": "Mode API",
@@ -161,6 +162,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Ditrapake ing saben peternakan tanpa tarif dhewe.",
   "Applies to": "Ditrapake kanggo",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Ditrapake kanggo loro bot. Nilai sing luwih gedhe menehi asisten luwih akeh kanggo nggarap lan biaya luwih akeh saben jawaban.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Ditrapake kanggo loro widget chatting. Ninggalake kosong kanggo ngetutake warna merek situs saka Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "Ditrapake kanggo saben pengunjung Cloudflare mutusake kanggo",
   Approve: "Setuju",
@@ -275,6 +280,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Pilih laporan saka dhaptar kanggo mbukak.",
   "Choose up to": "Pilih nganti",
   "City / town": "Kutha / kutha",
+  Clear: "Busak",
   "Clearing...": "Mbusak...",
   "Click link": "Klik link",
   Close: "Tutup",
@@ -314,6 +320,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kontrol apa sing bisa dideleng, digawe, diowahi, diterbitake, utawa dikelola saben peran.",
   "Control whether each bot is available, and edit what it knows.":
     "Kontrol apa saben bot kasedhiya, lan sunting apa sing dingerteni.",
+  "Conversation turns remembered": "Obrolan dadi eling",
   Cook: "Masak",
   "Cook minutes": "Menit masak",
   "Copy inside dark bands.": "Salin ing jero pita peteng.",
@@ -567,10 +574,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO homepage",
   "Homepage Settings": "Setelan Homepage",
   "Homepage settings unavailable": "Setelan homepage ora kasedhiya",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Pinten entri saka dhaptar ing ngisor iki sing diwenehake marang asisten> minangka referensi.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Pinten produk utawa kategori sing bisa dipilih operator menyang Fresh Favorites, Featured Categories (Homepage Settings) lan Highlighted products (ing ngisor). Raising iku nyimpen langsung, ora nyebaraken needed; nganti 50, langit-langit format pemblokiran dhewe dileksanakake.",
   "How many products to show": "Pinten produk sing bakal dituduhake",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Pinten produk, artikel, utawa resep sing digoleki bot etalase saben katon katon.",
   "How many to show": "Pinten sing bakal dituduhake",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Pinten obrolan saiki sing dikirim maneh karo saben pitakonan. 0 mangsuli saben pitakonan kanthi mandiri.",
   "How this password works": "Carane tembung sandhi iki",
   "Hungarian (Magyar)": "Hungaria (Magyar)",
   Icelandic: "Islandia",
@@ -622,6 +635,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Tansah resik karya seni",
   "Keep typing to search…": "Terus ngetik kanggo nggoleki…",
   Keywords: "Tembung kunci",
+  "Knowledge entries per answer": "Entri kawruh saben jawaban",
   "Korean (한국어)": "Korea (한국어)",
   "Land under cultivation": "Tanah sing ditanduri",
   Language: "Basa",
@@ -1195,6 +1209,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "Telusuri produk, pesenan, pangguna, kategori...",
   "Search promotions": "Telusuri promosi",
   "Search recipes": "Telusuri resep",
+  "Search results per lookup": "Asil telusuran saben panelusuran",
   "Search returns": "Golek bali",
   "Search reviews": "Golek review",
   "Search submissions": "Golek kiriman",
@@ -1438,6 +1453,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Panganggo",
   "Users & Roles": "Panganggo & Peran",
   "Users unavailable": "Panganggo ora kasedhiya",
+  "Using the site brand colour": "Nganggo werna merek situs",
   Variant: "Varian",
   "Variant (SKU)": "Varian (SKU)",
   "Variant Name": "Jeneng Varian",
@@ -1481,6 +1497,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Napa perlu owah-owahan, utawa kenapa iki ditolak?",
   "Why is stock changing?": "Napa saham ganti?",
+  "Widget colour": "Warna widget",
+  "Widget colour hex": "Warna widget",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Tembung bot kasebut cocog karo pitakonan kanggo mutusake entri iki cocog.",
   "Working...": "Makarya...",

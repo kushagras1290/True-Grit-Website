@@ -139,6 +139,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "لافتة الإعلان",
   "Announcements unavailable": "الإعلانات غير متاحة",
   Answer: "الإجابة",
+  "Answer tuning": "ضبط الإجابة",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "يمكن لأي شخص قام بتسجيل الدخول التعليق. يتم تحديد بدء مناقشة جديدة فقط حسب عمر الحساب.",
   "API mode": "وضع واجهة برمجة التطبيقات",
@@ -156,6 +157,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "يتم تطبيقها عند الدفع قبل أي قسيمة أو خصم ترويجي. لا تدفع الطلبات عند حد التوصيل المجاني أو أعلى منه أي رسوم توصيل.",
   "Applied to every farm without its own rate.": "يُطبق على كل مزرعة دون السعر الخاص بها.",
   "Applies to": "ينطبق على",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "ينطبق على كلا الروبوتين. القيم الأكبر تمنح المساعد مزيدًا من العمل معه وتزيد تكلفة كل إجابة.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "ينطبق على كلا أداتي الدردشة. اتركه واضحًا لمتابعة لون العلامة التجارية للموقع من الألوان والتأثيرات.",
   "Applies to every visitor Cloudflare resolves to": "ينطبق على كل زائر تقرر Cloudflare",
   Approve: "الموافقة عليه",
   "Approve & publish": "الموافقة والنشر",
@@ -276,6 +281,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "اختر تقريرًا من القائمة لتشغيله.",
   "Choose up to": "اختر ما يصل إلى",
   "City / town": "المدينة / البلدة",
+  Clear: "مسح",
   "Clearing...": "مسح...",
   "Click link": "انقر على الرابط",
   Close: "إغلاق",
@@ -314,6 +320,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "التحكم في ما يمكن لكل دور عرضه أو إنشائه أو تعديله أو نشره أو إدارته.",
   "Control whether each bot is available, and edit what it knows.":
     "التحكم في ما إذا كان كل روبوت متاحًا أم لا، وتعديل ما يعرفه.",
+  "Conversation turns remembered": "تذكر دورات المحادثة",
   Cook: "الطهي",
   "Cook minutes": "دقائق الطهي",
   "Copy inside dark bands.": "انسخ داخل النطاقات الداكنة.",
@@ -577,10 +584,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "تحسين محركات البحث للصفحة الرئيسية",
   "Homepage Settings": "إعدادات الصفحة الرئيسية",
   "Homepage settings unavailable": "إعدادات الصفحة الرئيسية غير متاحة",
+  "How many entries from the list below are given to the assistant as reference.":
+    "عدد الإدخالات من القائمة أدناه التي يتم تقديمها إلى المساعد كمرجع.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "كم عدد المنتجات أو الفئات التي يمكن للمشغل اختيارها ضمن المفضلة الجديدة والفئات المميزة (إعدادات الصفحة الرئيسية) والمنتجات المميزة (أدناه). يؤدي رفعه إلى الحفظ على الفور، ولا حاجة للنشر؛ ما يصل إلى 50، وهو الحد الأقصى الذي يفرضه تنسيق الكتلة نفسه.",
   "How many products to show": "كم عدد المنتجات التي سيتم عرضها",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "كم عدد المنتجات أو المقالات أو الوصفات التي يعرضها بحث روبوت واجهة المتجر في كل مرة يبحث فيها عن شيء ما لأعلى.",
   "How many to show": "كم عدد المنتجات التي سيتم عرضها",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "كم من الدردشة الحالية يتم إرسالها مع كل سؤال. 0 إجابة لكل سؤال بشكل منفصل.",
   "How this password works": "كيفية عمل كلمة المرور هذه",
   "Hungarian (Magyar)": "المجرية (المجرية)",
   Icelandic: "الأيسلندية",
@@ -639,6 +652,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "الكلمات الرئيسية",
   Khmer: "اللغة الخميرية",
   Kinyarwanda: "الكينيارواندية",
+  "Knowledge entries per answer": "إدخالات المعرفة لكل إجابة",
   "Konkani (कोंकणी)": "الكونكانية (कोंकणी)",
   "Korean (한국어)": "الكورية (한국어)",
   Kyrgyz: "القرغيزية",
@@ -1233,6 +1247,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "البحث عن المنتجات والطلبات والمستخدمين والفئات…",
   "Search promotions": "الترويج للبحث",
   "Search recipes": "البحث عن الوصفات",
+  "Search results per lookup": "نتائج البحث لكل عملية بحث",
   "Search returns": "عوائد البحث",
   "Search reviews": "مراجعات البحث",
   "Search submissions": "البحث عمليات الإرسال",
@@ -1499,6 +1514,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "المستخدمين",
   "Users & Roles": "المستخدمين والأدوار",
   "Users unavailable": "المستخدمون غير متاحين",
+  "Using the site brand colour": "استخدام لون العلامة التجارية للموقع",
   Uyghur: "الأويغور",
   Uzbek: "الأوزبكية",
   Variant: "البديل",
@@ -1544,6 +1560,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "لماذا يلزم إجراء تغييرات، أو لماذا تم رفض هذا؟",
   "Why is stock changing?": "لماذا يتغير المخزون؟",
+  "Widget colour": "لون عنصر واجهة المستخدم",
+  "Widget colour hex": "نظام الألوان السداسي لعنصر واجهة المستخدم",
   "Words the bot matches against a question to decide this entry is relevant.":
     "الكلمات التي يطابقها الروبوت مع سؤال لتحديد أن هذا الإدخال ذو صلة.",
   "Working...": "جاري العمل...",

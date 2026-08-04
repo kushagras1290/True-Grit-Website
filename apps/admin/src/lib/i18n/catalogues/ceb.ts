@@ -139,6 +139,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Bandera sa pahibalo",
   "Announcements unavailable": "Mga anunsyo nga dili magamit",
   Answer: "Tubag",
+  "Answer tuning": "Tuning sa tubag",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Bisan kinsa nga naka-sign in mahimong magkomento. Ang pagsugod lang ug bag-ong diskusyon gi-gate sa edad sa account.",
   "Appearance unavailable": "Dili magamit ang panagway",
@@ -156,6 +157,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Gipadapat sa matag umahan nga walay kaugalingong rate.",
   "Applies to": "Aprobahan",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Magamit sa duha ka bot. Ang mas dagkong mga kantidad naghatag sa katabang og dugang nga pagtrabaho ug mas dako ang gasto kada tubag.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Magamit sa duha ka mga widget sa chat. Pasagdi kini nga ma-clear aron masundan ang kolor sa brand sa site gikan sa Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "Naaplikar sa matag bisita nga gisulbad sa Cloudflare sa",
   Approve: 'id="t0005">Aprobahan…',
@@ -501,10 +506,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage sections unavailable": "Dili magamit ang mga seksyon sa homepage",
   "Homepage Settings": "Mga Setting sa Homepage",
   "Homepage settings unavailable": "Dili magamit ang mga setting sa homepage",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Pila ka mga entry gikan sa listahan sa ubos ang gihatag ngadto sa assistant.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Pila ka mga produkto o kategorya ang mahimong pilion sa usa ka operator ngadto sa Bag-ong mga Paborito, Gipili nga mga Kategorya (Mga Setting sa Panimalay) ug Gipasiugda nga mga produkto (sa ubos). Ang pagpataas niini makaluwas dayon, wala'y gikinahanglan nga pag-deploy; hangtod sa 50, ang kisame nga gipatuman mismo sa block format.",
   "How many products to show": "Pila ka mga produkto ang ipakita",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Pila ka mga produkto, artikulo o resipe ang ibalik sa pagpangita sa bot sa storefront matag higayon nga mangita kini og butang.",
   "How many to show": "Pila ang ipakita",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Pila sa kasamtangan nga chat ang ibalik sa matag pangutana. 0 ang motubag sa matag pangutana nga nag-inusara.",
   "How this password works": "Giunsa pagbuhat niini nga password",
   "If that email has an account, a reset link is on its way.":
     "Kon kana nga email adunay account, ang link sa pag-reset anaa na.",
@@ -547,6 +558,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Hupti nga limpyo ang artwork",
   "Keep typing to search…": "Ipadayon ang pag-type aron pangitaon…",
   Keywords: "Mga Keyword",
+  "Knowledge entries per answer": "Mga entry sa kahibalo kada tubag",
   "Land under cultivation": "Yuta nga gitikad",
   Language: "Pinulongan",
   "Last activity": "Katapusang kalihokan",
@@ -1091,6 +1103,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pangitaa ang mga produkto, order, tiggamit, mga kategorya...",
   "Search promotions": "Mga promosyon sa pagpangita",
   "Search recipes": "Mga resipe sa pagpangita",
+  "Search results per lookup": "Resulta sa pagpangita kada pagpangita",
   "Search returns": 'id="t0010">Pagpangita mga review',
   "Search reviews": "Pangitaa ang mga review",
   "Search submissions": "Pangitaa ang mga gisumite",
@@ -1326,6 +1339,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Mga Gumagamit",
   "Users & Roles": "Mga Gumagamit ug Mga Papel",
   "Users unavailable": "Mga tiggamit dili magamit",
+  "Using the site brand colour": "Paggamit sa kolor sa brand sa site",
   Variant: "Bayi",
   "Variant (SKU)": "Bayidan (SKU)",
   "Variant Name": "Ngalan sa Variant",
@@ -1366,6 +1380,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Nganong gikinahanglan ang mga kausaban, o nganong gibalibaran kini?",
   "Why is stock changing?": "Nganong nagbag-o ang stock?",
+  "Widget colour": "Kolor sa widget",
+  "Widget colour hex": "Kolor sa widget hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Ang mga pulong nga gipares sa bot sa usa ka pangutana aron makadesisyon nga kini nga entry may kalabotan.",
   "Working...": "Nagtrabaho...",

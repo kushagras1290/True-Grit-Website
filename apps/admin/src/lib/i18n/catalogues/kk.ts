@@ -124,6 +124,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Ambient effect": "Қоршаған орта әсері",
   Amharic: "Амхар",
   "Analytics unavailable": "Analytics қолжетімсіз",
+  "Answer tuning": "Жауапты реттеу",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Anyone signed in may comment. Тек жаңа талқылауды бастау есептік жазбаның жасына байланысты.",
   "API mode": "API режимі",
@@ -141,6 +142,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Кез келген купон немесе жарнамалық жеңілдік алдында төлем кезінде қолданылады. Тегін жеткізу шегінен жоғары немесе одан жоғары тапсырыстар жеткізу ақысын төлемейді.",
   "Applied to every farm without its own rate.": "Өз тарифі жоқ әр фермаға қолданылады.",
   "Applies to": "Қолданылады",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Екі ботқа да қолданылады. Үлкен мәндер ассистентке көбірек жұмыс істеуге мүмкіндік береді және әр жауап үшін қымбатырақ тұрады.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Екі чат виджетіне де қолданылады. Leave it cleared to follow the site brand colour from Colours & Effects.",
   "Applies to every visitor Cloudflare resolves to": "Әр келушіге қолданылады Cloudflare шешеді",
   Approve: "Мақұлдау",
   "Approve & publish": "Мақұлдау және жариялау",
@@ -559,7 +564,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Оператор Жаңа таңдаулылар, Таңдаулы санаттар (Басты бет параметрлері) және Бөлектелген өнімдер (төменде) ішінен қанша өнім немесе санат таңдай алады. Оны көтеру бірден үнемдейді, орналастыру қажет емес; 50-ге дейін, блок пішімінің өзі орындайтын төбе.",
   "How many products to show": "Қанша өнімді көрсету керек",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Дүкен сөресі ботының іздеуі бірдеңені іздеген сайын қанша өнім, мақала немесе рецепт қайтарады.",
   "How many to show": "Қанша көрсету керек",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Әр сұраққа ағымдағы чаттың қанша бөлігі қайтарылады. 0 әр сұраққа оқшау жауап береді.",
   "How this password works": "Бұл құпия сөз қалай жұмыс істейді",
   "Hungarian (Magyar)": "Венгр (Мадьяр)",
   Icelandic: "Исландша",
@@ -617,6 +626,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "Кілтсөздер",
   Khmer: "Кхмер",
   Kinyarwanda: "Кинярванда",
+  "Knowledge entries per answer": "Әр жауапқа берілген ақпарат",
   "Konkani (कोंकणी)": "Конкани (कोंकणी)",
   "Korean (한국어)": "Корея (한국)",
   Kyrgyz: "Қырғыз",
@@ -1217,6 +1227,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Өнімдерді, тапсырыстарды, пайдаланушыларды, санаттарды іздеу...",
   "Search promotions": "Жарнамаларды іздеу",
   "Search recipes": "Рецепттерді іздеу",
+  "Search results per lookup": "Әрбір іздеудегі іздеу нәтижелері",
   "Search returns": "Пікірлерді іздеу",
   "Search reviews": "Пікірлерді іздеу",
   "Search submissions": "Жіберулерді іздеу",
@@ -1480,6 +1491,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Пайдаланушылар",
   "Users & Roles": "Пайдаланушылар және рөлдер",
   "Users unavailable": "Пайдаланушылар қолжетімсіз",
+  "Using the site brand colour": "Сайт брендінің түсін пайдалану",
   Uyghur: "Ұйғыр",
   Uzbek: "Өзбек",
   Variant: "Нұсқа",
@@ -1525,6 +1537,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Неге өзгертулер қажет немесе бұл неліктен қабылданбады?",
   "Why is stock changing?": "Қор неліктен өзгеруде?",
+  "Widget colour": "Виджет түсі",
+  "Widget colour hex": "Виджет түсі он алтылық",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Осы жазбаның маңыздылығын анықтау үшін бот сөздері сұраққа сәйкес келеді.",
   "Working...": "Жұмыс істеп жатыр...",

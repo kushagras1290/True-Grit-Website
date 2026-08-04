@@ -143,6 +143,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Announcer banner",
   "Announcements unavailable": "Avviżi mhux disponibbli",
   Answer: "Tweġiba",
+  "Answer tuning": "Irfinar tat-tweġibiet",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Kulħadd iffirmat jista’ jikkummenta. Il-bidu ta' diskussjoni ġdida biss huwa mqabbad mill-età tal-kont.",
   "API mode": "Modalità API",
@@ -161,6 +162,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Applikat għal kull razzett mingħajr ir-rata tiegħu stess.",
   "Applies to": "Japplika għal",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Japplika għaż-żewġ bots. Valuri akbar jagħtu lill-assistent aktar biex jaħdem u jiswew aktar għal kull tweġiba.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Japplika għaż-żewġ widgets taċ-chat. Ħalliha ċara biex issegwi l-kulur tad-ditta tas-sit minn Kuluri u Effetti.",
   "Applies to every visitor Cloudflare resolves to":
     "Japplika għal kull viżitatur Cloudflare jirrisolvi għal",
   Approve: 'id="t0010">Japprova u jippubblika',
@@ -274,6 +279,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Agħżel rapport mil-lista biex tmexxih.",
   "Choose up to": "Agħżel sa",
   "City / town": "Belt / belt",
+  Clear: "Ċara",
   "Clearing...": "Jikklerja...",
   "Click link": "Ikklikkja fuq il-link",
   Close: "Agħlaq",
@@ -313,6 +319,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ikkontrolla x'jista' jara, joħloq, jeditja, jippubblika jew jimmaniġġja kull rwol.",
   "Control whether each bot is available, and edit what it knows.":
     "Ikkontrolla jekk kull bot huwiex disponibbli, u editja dak li jaf.",
+  "Conversation turns remembered": "Konversazzjoni dawriet imfakkar",
   Cook: "Sajjar",
   "Cook minutes": "Sajjar il-minuti",
   "Copy inside dark bands.": "Ikkopja ġewwa meded skuri.",
@@ -559,10 +566,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage sections unavailable": "Sezzjonijiet tal-homepage mhux disponibbli",
   "Homepage Settings": "Settings tal-Homepage",
   "Homepage settings unavailable": "Settings tal-Homepage mhux disponibbli",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Kemm entrati mil-lista hawn taħt jingħataw lill-assistent bħala referenza.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Kemm prodotti jew kategoriji jista' jagħżel operatur f'Favourites Frisk, Kategoriji Dehru (Settings tal-Homepage) u Prodotti Enfasizzati (hawn taħt). Jgħolliha jiffranka immedjatament, l-ebda skjerament meħtieġ; sa 50, il-limitu massimu l-format tal-blokk innifsu jinforza.",
   "How many products to show": "Kemm prodotti biex juru",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Kemm prodotti, artikoli jew riċetti jirritorna t-tfittxija tal-bot tal-maħżen kull darba li jħares xi ħaġa.",
   "How many to show": "Kemm biex juru",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Kemm miċ-chat attwali jintbagħat lura ma' kull mistoqsija. 0 jwieġeb kull mistoqsija waħedha.",
   "How this password works": "Kif taħdem din il-password",
   "Hungarian (Magyar)": "Ungeriż (Magyar)",
   Icelandic: "Iżlandiż",
@@ -618,6 +631,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "Kliem ewlenin",
   Khmer: "Kmer",
   Kinyarwanda: "Kinjarwanda",
+  "Knowledge entries per answer": "Entrijiet ta' għarfien għal kull tweġiba",
   "Korean (한국어)": "Korejan (한국어)",
   Kyrgyz: "Kirgiż",
   Label: "Tikketta",
@@ -1206,6 +1220,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Fittex prodotti, ordnijiet, utenti, kategoriji...",
   "Search promotions": "Fittex promozzjonijiet",
   "Search recipes": "Fittex riċetti",
+  "Search results per lookup": "Riżultati tat-tfittxija għal kull tfittxija",
   "Search returns": "Fittex prospetti",
   "Search reviews": '1><1"ch="t0008">Fittex sottomissjonijiet',
   "Search submissions": "Fittex sottomissjonijiet",
@@ -1464,6 +1479,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Utenti",
   "Users & Roles": "Utenti u Rwoli",
   "Users unavailable": "Utenti mhux disponibbli",
+  "Using the site brand colour": "L-użu tal-kulur tad-ditta tas-sit",
   Uyghur: "Ujgur",
   Uzbek: "Użbek",
   Variant: "Varjant",
@@ -1508,6 +1524,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Għaliex huma meħtieġa bidliet, jew għaliex dan ġie mnaqqas?",
   "Why is stock changing?": "Għaliex qed jinbidel l-istokk?",
+  "Widget colour": "Kulur tal-widget",
+  "Widget colour hex": "Hex tal-kulur tal-widget",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Kliem li l-bot jaqbel ma' mistoqsija biex jiddeċiedi li din l-entrata hija rilevanti.",
   "Working...": "Taħdem...",

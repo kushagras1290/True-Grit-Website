@@ -9,7 +9,7 @@
  * navigation within a session but resets on reload — no server-side
  * conversation history exists for this bot, unlike staff messaging. */
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { HelpCircle, Loader2, Send, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -23,7 +23,7 @@ interface DisplayTurn extends SupportBotChatTurn {
   isError?: boolean;
 }
 
-function BotBubble({ turn }: { turn: DisplayTurn }) {
+function BotBubble({ turn, accent }: { turn: DisplayTurn; accent?: string }) {
   const isMine = turn.role === "user";
   return (
     <div className={`flex flex-col ${isMine ? "items-end" : "items-start"}`}>
@@ -35,6 +35,7 @@ function BotBubble({ turn }: { turn: DisplayTurn }) {
               ? "border border-danger/30 bg-danger/5 text-danger"
               : "border border-line bg-canvas text-ink"
         }`}
+        style={isMine && accent ? { backgroundColor: accent } : undefined}
       >
         {turn.content}
       </div>
@@ -47,6 +48,13 @@ export function SupportBotWidget() {
   const [draft, setDraft] = useState("");
   const [turns, setTurns] = useState<DisplayTurn[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  // Read from the public settings payload, not /support-bot/settings: that one
+  // needs `support_bot.manage`, and this widget is shown to every staff member.
+  const { data: accent } = useQuery({
+    queryKey: ["support-bot-widget-color"],
+    queryFn: api.supportBotWidgetColor,
+    staleTime: 5 * 60_000,
+  });
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
@@ -105,7 +113,7 @@ export function SupportBotWidget() {
                 </T>
               </p>
             ) : (
-              turns.map((turn, index) => <BotBubble key={index} turn={turn} />)
+              turns.map((turn, index) => <BotBubble key={index} turn={turn} accent={accent} />)
             )}
             {ask.isPending ? (
               <div className="flex items-center gap-2 text-sm text-ink-muted">
@@ -133,6 +141,7 @@ export function SupportBotWidget() {
                 type="button"
                 variant="primary"
                 className="min-h-9 px-2.5"
+                style={accent ? { backgroundColor: accent } : undefined}
                 onClick={send}
                 disabled={ask.isPending || !draft.trim()}
                 aria-label="Send"
@@ -149,6 +158,7 @@ export function SupportBotWidget() {
         aria-label={open ? "Close help assistant" : "Open help assistant"}
         aria-expanded={open}
         className="ml-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand text-ink-inverse shadow-overlay transition-opacity hover:opacity-90"
+        style={accent ? { backgroundColor: accent } : undefined}
       >
         {open ? <X size={20} /> : <HelpCircle size={20} />}
       </button>

@@ -137,6 +137,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "घोषणा बॅनर",
   "Announcements unavailable": "घोषणा अनुपलब्ध आहे",
   Answer: "उत्तर",
+  "Answer tuning": "उत्तर ट्यूनिंग",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "साइन इन केलेले कोणीही टिप्पणी करू शकते. केवळ नवीन चर्चा सुरू करणे खाते वयानुसार गेट केले जाते.",
   "API mode": "API मोड",
@@ -154,6 +155,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "कोणत्याही कूपन किंवा प्रमोशनपूर्वी चेकआउटवर अर्ज केला जातो. फ्री-डिलिव्हरी थ्रेशोल्डवर किंवा त्यावरील ऑर्डरसाठी कोणतेही डिलिव्हरी शुल्क भरावे लागत नाही.",
   "Applied to every farm without its own rate.": "स्वतःच्या दराशिवाय प्रत्येक शेतात लागू.",
   "Applies to": "याला लागू",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "दोन्ही बॉट्सना लागू होते. मोठ्या मूल्यांमुळे सहाय्यकाला काम करण्यासाठी अधिक आणि प्रति उत्तराची किंमत जास्त मिळते.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "दोन्ही चॅट विजेटवर लागू होते. Colors & Effects वरून साइट ब्रँड कलर फॉलो करण्यासाठी ते साफ सोडा.",
   "Applies to every visitor Cloudflare resolves to": "क्लाउडफ्लेअरचे निराकरण",
   Approve: "मंजुरी द्या",
   "Approve & publish": "मंजूर करा आणि प्रकाशित करा",
@@ -274,6 +279,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "तो चालवण्यासाठी सूचीमधून एक अहवाल निवडा.",
   "Choose up to": "पर्यंत निवडा",
   "City / town": "शहर / गाव",
+  Clear: "साफ करा स्टोअरफ्रंट बॉटचा शोध प्रत्येक वेळी काहीतरी दिसत असताना परत येतो.",
   "Clearing...": "0",
   "Click link": "लिंक क्लिक करा",
   Close: "बंद करा",
@@ -312,6 +318,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "प्रत्येक भूमिका काय पाहू, तयार, संपादित, प्रकाशित किंवा व्यवस्थापित करू शकते ते नियंत्रित करा.",
   "Control whether each bot is available, and edit what it knows.":
     "प्रत्येक बॉट उपलब्ध आहे की नाही हे नियंत्रित करा आणि त्याला काय माहित आहे ते संपादित करा.",
+  "Conversation turns remembered": "संभाषणाची वळणे लक्षात ठेवा",
   Cook: "कुक",
   "Cook minutes": "कुक मिनिटे",
   "Copy inside dark bands.": "गडद पट्ट्यांमध्ये कॉपी करा.",
@@ -576,10 +583,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "मुख्यपृष्ठ SEO",
   "Homepage Settings": "मुख्यपृष्ठ सेटिंग्ज",
   "Homepage settings unavailable": "मुख्यपृष्ठ सेटिंग्ज अनुपलब्ध",
+  "How many entries from the list below are given to the assistant as reference.":
+    "खालील सूचीमधून किती नोंदी सहाय्यकाला संदर्भ म्हणून दिल्या आहेत.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "ऑपरेटर ताज्या आवडी, वैशिष्ट्यीकृत श्रेणी (मुख्यपृष्ठ सेटिंग्ज) आणि हायलाइट केलेली उत्पादने (खाली) मध्ये किती उत्पादने किंवा श्रेणी निवडू शकतात. ते वाढवणे ताबडतोब बचत करते, उपयोजन आवश्यक नाही; 50 पर्यंत, सीलिंग ब्लॉक फॉरमॅट स्वतः लागू करते.",
   "How many products to show": "किती उत्पादने दाखवायची",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "स्टोअरफ्रंट बॉटचा शोध प्रत्येक वेळी काहीतरी दिसत असताना किती उत्पादने, लेख किंवा पाककृती देतो.",
   "How many to show": "किती दाखवायची",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "प्रत्येक प्रश्नासह वर्तमान चॅटपैकी किती परत पाठवले जातात. 0 प्रत्येक प्रश्नाला अलगावमध्ये उत्तर देते.",
   "How this password works": "हा पासवर्ड कसा काम करतो",
   "Hungarian (Magyar)": "हंगेरियन (मग्यार)",
   Icelandic: "आइसलँडिक",
@@ -636,6 +649,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "कीवर्ड",
   Khmer: "खमेर",
   Kinyarwanda: "कन्यारवांडा",
+  "Knowledge entries per answer": "प्रति उत्तर ज्ञान नोंदी",
   "Konkani (कोंकणी)": "कोंकणी (कोंकणी)",
   "Korean (한국어)": "कोरियन (한국어)",
   Kyrgyz: "किर्गिझ",
@@ -1224,6 +1238,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "उत्पादने, ऑर्डर, वापरकर्ते, श्रेण्या शोधा…",
   "Search promotions": "प्रचार शोधा",
   "Search recipes": "पाककृती शोधा",
+  "Search results per lookup": "प्रति लुकअप शोध परिणाम",
   "Search returns": "शोध रिटर्न",
   "Search reviews": "पुनरावलोकने शोधा",
   "Search submissions": "शोध सबमिशन",
@@ -1483,6 +1498,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "वापरकर्ते",
   "Users & Roles": "वापरकर्ते आणि भूमिका",
   "Users unavailable": "वापरकर्ते अनुपलब्ध",
+  "Using the site brand colour": "साइट ब्रँड रंग वापरणे",
   Uyghur: 'Variant id="t0006">व्हेरिएंट',
   Uzbek: "उझबेक",
   Variant: "व्हेरिएंट",
@@ -1528,6 +1544,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "बदलांची आवश्यकता का आहे, किंवा हे delin का होते?",
   "Why is stock changing?": "स्टॉक का बदलत आहे?",
+  "Widget colour hex": "विजेट रंग हेक्स",
   "Words the bot matches against a question to decide this entry is relevant.":
     "ही नोंद संबंधित आहे हे ठरवण्यासाठी बॉटचे शब्द प्रश्नाशी जुळतात.",
   "Working...": "काम करत आहे...",

@@ -159,6 +159,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Ana amfani da kowace gona ba tare da ƙimar ta ba.",
   "Applies to": "Ya shafi",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Ya shafi duka bots. Manyan dabi'u suna ba mataimaki fiye da yin aiki tare da ƙarin farashi akan kowane amsa.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Ya shafi duka widget din taɗi. A bar shi a share don bin launin alamar rukunin daga Launuka & Tasirin.",
   "Applies to every visitor Cloudflare resolves to":
     "Ya shafi kowane baƙo Cloudflare ya yanke shawara ga",
   Approve: "Abbaba",
@@ -299,6 +303,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Sarrafa abin da kowace rawa za ta iya gani, ƙirƙira, gyara, bugawa ko sarrafa.",
   "Control whether each bot is available, and edit what it knows.":
     "Sarrafa ko akwai kowane bot, sannan a gyara abin da ya sani.",
+  "Conversation turns remembered": "Tattaunawa tana juyawa",
   Cook: "Ku dafa",
   "Cook minutes": "Dafa mintuna",
   "Copy inside dark bands.": "Kwafi cikin duhun makada.",
@@ -543,10 +548,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Shafin Gida SEO",
   "Homepage Settings": "Saitunan Gidan Gida",
   "Homepage settings unavailable": "Ba a samun saitunan shafin gida",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Shigo nawa ne daga lissafin da ke ƙasa aka bai wa mataimaki a matsayin tunani.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Kayayyaki ko nau'ikan nawa ne mai aiki zai iya shiga cikin Sabbin Faifan da aka fi so, Fitattun Rukunoni (Saitunan Gidan Gida) da Fitattun samfuran (a ƙasa). Tada shi yana ajiyewa nan da nan, ba a buƙatar turawa; har zuwa 50, rufin tsarin toshe kansa yana aiwatar da shi.",
   "How many products to show": "Nawa samfuran da za a nuna",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Kayayyaki, labarai ko girke-girke nawa ne binciken gaban bot ke dawowa a duk lokacin da aka ga wani abu.",
   "How many to show": "Nawa ne za a nuna",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Nawa ne aka aika a baya tare da kowace tambaya. 0 yana amsa kowace tambaya a ware.",
   "How this password works": "Yadda wannan kalmar sirri ke aiki",
   Icelandic: "Iceland",
   "If that email has an account, a reset link is on its way.":
@@ -594,6 +605,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Kiyaye aikin zane mai tsabta",
   "Keep typing to search…": "Ci gaba da bugawa don bincika…",
   Keywords: "Mahimman kalmomi",
+  "Knowledge entries per answer": "Shigar da ilimi ta kowace amsa",
   "Land under cultivation": "Kasar dake karkashin noma",
   Language: "Harshe",
   "Last activity": "aikin karshe",
@@ -1154,6 +1166,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "Bincike samfura, umarni, masu amfani, nau'ikan…",
   "Search promotions": "Bincike talla",
   "Search recipes": "Binciken girke-girke",
+  "Search results per lookup": "Sakamakon bincike a kowane bincike",
   "Search returns": "Sakamakon bincike",
   "Search reviews": "Binciken bita",
   "Search submissions": "Bincike gabatarwa",
@@ -1398,6 +1411,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Masu amfani",
   "Users & Roles": "Masu amfani & Matsayin",
   "Users unavailable": "Babu ​​masu amfani",
+  "Using the site brand colour": "Amfani da alamar alamar rukunin yanar gizon",
   Variant: "Bambancin",
   "Variant (SKU)": "Bambancin (SKU)",
   "Variant Name": "Bambancin Suna",
@@ -1440,6 +1454,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Me yasa ake buƙatar canje-canje, ko me yasa aka ƙi wannan?",
   "Why is stock changing?": "Me yasa hannun jari ke canzawa?",
+  "Widget colour": "Layin Widget",
+  "Widget colour hex": "Widget launi hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Kalmomin bot sun yi daidai da tambaya don yanke shawarar wannan shigarwar ta dace.",
   "Working...": "Aiki...",

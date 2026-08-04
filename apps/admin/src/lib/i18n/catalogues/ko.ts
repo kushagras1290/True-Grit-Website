@@ -140,6 +140,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "공지 배너",
   "Announcements unavailable": "공지사항 사용 불가",
   Answer: "답변",
+  "Answer tuning": "응답 조정",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "로그인한 사람은 누구나 댓글을 달 수 있습니다. 새로운 토론 시작만 계정 연령에 따라 결정됩니다.",
   "API mode": "API 모드",
@@ -157,6 +158,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "쿠폰이나 프로모션 할인 전 결제 시 적용됩니다. 무료 배송 기준 이상의 주문에는 배송비가 부과되지 않습니다.",
   "Applied to every farm without its own rate.": "자체 요금 없이 모든 농장에 적용됩니다.",
   "Applies to": "적용 대상",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "두 봇 모두에 적용됩니다. 값이 클수록 어시스턴트의 작업량이 늘어나고 답변당 비용도 높아집니다.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "두 채팅 위젯 모두에 적용됩니다. 색상 및 효과의 사이트 브랜드 색상을 따르려면 이를 비워 둡니다.",
   "Applies to every visitor Cloudflare resolves to": "Cloudflare가 결정한 모든 방문자에게 적용",
   Approve: "승인",
   "Approve & publish": "승인 및 게시",
@@ -274,6 +279,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "목록에서 보고서를 선택하여 실행하세요.",
   "Choose up to": "최대 선택",
   "City / town": "도시/읍",
+  Clear: "지우기",
   "Clearing...": "삭제 중...",
   "Click link": "클릭 링크",
   Close: "닫기",
@@ -313,6 +319,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "각 역할이 보고, 만들고, 만들 수 있는 항목 제어 편집, 게시 또는 관리하세요.",
   "Control whether each bot is available, and edit what it knows.":
     "각 봇의 사용 가능 여부를 제어하고 편집하세요. 알고 있는 내용입니다.",
+  "Conversation turns remembered": "대화 내용이 기억됨",
   Cook: "요리",
   "Cook minutes": "요리 시간",
   "Copy inside dark bands.": "어두운 띠 안에 복사하세요.",
@@ -576,10 +583,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "홈페이지 SEO",
   "Homepage Settings": "홈페이지 설정",
   "Homepage settings unavailable": "홈페이지 설정을 사용할 수 없음",
+  "How many entries from the list below are given to the assistant as reference.":
+    "아래 목록에서 참조용으로 어시스턴트에 제공되는 항목 수.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "운영자가 새로운 즐겨찾기, 추천 카테고리(홈페이지 설정) 및 강조 표시된 제품(아래)에서 선택할 수 있는 제품 또는 카테고리 수. 올리면 즉시 저장되며 배포가 필요하지 않습니다. 최대 50개까지 표시할 수 있습니다.",
   "How many products to show": "표시할 제품 수",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "어떤 항목이 보일 때마다 매장 첫화면 봇의 검색에서 반환되는 제품, 기사 또는 레시피 수 up.",
   "How many to show": "표시할 제품 수",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "각 질문과 함께 현재 채팅이 얼마나 많이 다시 전송되는지입니다. 0은 모든 질문에 개별적으로 답변합니다.",
   "How this password works": "이 비밀번호 작동 방식",
   "Hungarian (Magyar)": "헝가리어(마자르어)",
   Icelandic: "아이슬란드어",
@@ -636,6 +649,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "키워드",
   Khmer: "크메르어",
   Kinyarwanda: "키냐르완다",
+  "Knowledge entries per answer": "답변당 지식 항목",
   "Konkani (कोंकणी)": "콘카니(konkणي)",
   "Korean (한국어)": "한국어(한국어)",
   Kyrgyz: "키르기스스탄",
@@ -1226,6 +1240,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "검색 제품, 주문, 사용자, 카테고리…",
   "Search promotions": "프로모션 검색",
   "Search recipes": "레시피 검색",
+  "Search results per lookup": "조회당 검색 결과",
   "Search returns": "반품 검색",
   "Search reviews": "리뷰 검색",
   "Search submissions": "제출물 검색",
@@ -1486,6 +1501,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "사용자",
   "Users & Roles": "사용자 및 역할",
   "Users unavailable": "사용자를 사용할 수 없음",
+  "Using the site brand colour": "사이트 브랜드 색상 사용",
   Uyghur: "위구르",
   Uzbek: "우즈베크어",
   Variant: "변형",
@@ -1531,6 +1547,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "변경이 필요한 이유 또는 변경이 거부된 이유는 무엇인가요?",
   "Why is stock changing?": "재고가 변경되는 이유는 무엇인가요?",
+  "Widget colour": "위젯 색상",
+  "Widget colour hex": "위젯 색상 16진수",
   "Words the bot matches against a question to decide this entry is relevant.":
     "이 항목이 관련성이 있는지 판단하기 위해 봇이 질문과 일치시키는 단어입니다.",
   "Working...": "작업 중...",

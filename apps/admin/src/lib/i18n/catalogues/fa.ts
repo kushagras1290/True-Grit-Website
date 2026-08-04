@@ -139,6 +139,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "برنمای اعلامیه",
   "Announcements unavailable": "اعلامیه ها در دسترس نیست",
   Answer: "پاسخ",
+  "Answer tuning": "تنظیم پاسخ",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "هرکسی که به سیستم وارد شده باشد می تواند نظر بدهد. فقط شروع یک بحث جدید بر اساس سن حساب محدود می شود.",
   "API mode": "حالت API",
@@ -156,6 +157,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "در هنگام تسویه‌حساب یا قبل از هر گونه تخفیف مشترک اعمال می‌شود. سفارش‌هایی که در آستانه تحویل رایگان یا بالاتر از آن هستند، هزینه ارسال ندارند.",
   "Applied to every farm without its own rate.": "برای هر مزرعه‌ای بدون نرخ خاص اعمال می‌شود.",
   "Applies to": "اعمال برای",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "برای هر دو ربات اعمال می شود. مقادیر بزرگتر کار دستیار را بیشتر می کند و برای هر پاسخ هزینه بیشتری می برد.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "برای هر دو ویجت گپ اعمال می شود. برای دنبال کردن رنگ مارک سایت از رنگ‌ها و جلوه‌ها، آن را پاک کنید.",
   "Applies to every visitor Cloudflare resolves to":
     "برای هر بازدیدکننده ای اعمال می شود Cloudflare تصمیم به",
   Approve: "تأیید",
@@ -274,6 +279,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "گزارشی را از لیست برای اجرای آن انتخاب کنید.",
   "Choose up to": "تا",
   "City / town": "شهر / شهرک",
+  Clear: "پاک کردن",
   "Clearing...": "پاکسازی...",
   "Click link": "روی پیوند کلیک کنید",
   Close: "بستن",
@@ -313,6 +319,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "کنترل کنید که هر نقش چه چیزی را می‌تواند مشاهده، ایجاد، ویرایش، انتشار یا مدیریت کند.",
   "Control whether each bot is available, and edit what it knows.":
     "در دسترس بودن هر ربات را کنترل کنید و آنچه را که می داند ویرایش کنید.",
+  "Conversation turns remembered": "نوبت‌های مکالمه به خاطر سپرده می‌شود",
   Cook: "آشپزی",
   "Cook minutes": "دقایق آشپزی",
   "Copy inside dark bands.": "در نوارهای تاریک کپی کنید.",
@@ -580,10 +587,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO صفحه اصلی",
   "Homepage Settings": "تنظیمات صفحه اصلی",
   "Homepage settings unavailable": "تنظیمات صفحه اصلی در دسترس نیست",
+  "How many entries from the list below are given to the assistant as reference.":
+    "چند ورودی از لیست زیر به عنوان مرجع به دستیار داده می‌شود",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "یک اپراتور می‌تواند چند محصول یا دسته را در موارد دلخواه جدید، دسته‌های ویژه (تنظیمات صفحه اصلی) و محصولات برجسته (زیر) انتخاب کند. بالا بردن آن بلافاصله باعث صرفه جویی می شود، بدون نیاز به استقرار. حداکثر تا 50، سقفی که خود قالب بلوک اعمال می کند.",
   "How many products to show": "چند محصول برای نمایش",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "جستجوی ربات ویترین فروشگاه چند محصول، مقاله یا دستور پخت را هر بار که چیزی پیدا می‌کند، برمی‌گرداند.",
   "How many to show": "چند محصول برای نمایش",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "چه مقدار از چت فعلی با هر سؤال ارسال می‌شود. 0 به هر سوال به صورت مجزا پاسخ می دهد.",
   "How this password works": "این رمز عبور چگونه کار می‌کند",
   "Hungarian (Magyar)": "مجارستانی (Magyar)",
   Icelandic: "ایسلندی",
@@ -641,6 +654,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "کلمات کلیدی",
   Khmer: "خمر",
   Kinyarwanda: "کینیارواندا",
+  "Knowledge entries per answer": "مدخل های دانش در هر پاسخ",
   "Konkani (कोंकणी)": "کونکانی (कोंकणी)",
   "Korean (한국어)": "کره ای (한국어)",
   Kyrgyz: "قرقیز",
@@ -1229,6 +1243,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "جستجوی محصولات، سفارش‌ها، کاربران، دسته‌ها…",
   "Search promotions": "جستجوی تبلیغات",
   "Search recipes": "جستجوی دستور العمل‌ها",
+  "Search results per lookup": "نتایج جستجو در هر جستجو",
   "Search returns": "جستجو برمی گردد",
   "Search reviews": "جستجوی نظرات",
   "Search submissions": "جستجوی ارسالی",
@@ -1488,6 +1503,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "کاربران",
   "Users & Roles": "کاربران و نقش‌ها",
   "Users unavailable": "کاربران در دسترس نیستند",
+  "Using the site brand colour": "استفاده از رنگ مارک سایت",
   Uyghur: "ایغور",
   Uzbek: "ازبکی",
   Variant: "نوع",
@@ -1533,6 +1549,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "چرا تغییرات لازم است یا چرا این مورد رد شد؟",
   "Why is stock changing?": "چرا موجودی در حال تغییر است؟",
+  "Widget colour": "رنگ ویجت",
+  "Widget colour hex": "هگز رنگ ویجت",
   "Words the bot matches against a question to decide this entry is relevant.":
     "کلماتی که ربات با یک سوال مطابقت دارد تا تصمیم بگیرد که این ورودی مرتبط است.",
   "Working...": "در حال کار...",

@@ -140,6 +140,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Banner de anunț",
   "Announcements unavailable": "Anunțuri indisponibile",
   Answer: "Răspuns",
+  "Answer tuning": "Reglarea răspunsurilor",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Oricine s-a conectat poate comenta. Numai începerea unei noi discuții este determinată de vârsta contului.",
   "API mode": "Modul API",
@@ -157,6 +158,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Aplicate la finalizarea comenzii înainte de orice reducere de cupon sau promoție. Comenzile la sau peste pragul de livrare gratuită nu plătesc nicio taxă de livrare.",
   "Applied to every farm without its own rate.": "Se aplică fiecărei ferme fără propriul tarif.",
   "Applies to": "Se aplică pentru",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Se aplică ambilor roboți. Valorile mai mari oferă asistentului mai mult cu care să lucreze și costă mai mult pe răspuns.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Se aplică ambelor widget-uri de chat. Lăsați-l golit pentru a urmări culoarea mărcii site-ului din Culori și efecte.",
   "Applies to every visitor Cloudflare resolves to":
     "Se aplică fiecărui vizitator Cloudflare rezolvă la",
   Approve: "Aproba",
@@ -269,6 +274,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Alegeți un raport din listă pentru a-l rula.",
   "Choose up to": "Alegeți până la",
   "City / town": "Oraș",
+  Clear: "Șterge",
   "Clearing...": "Se șterge...",
   "Click link": "Faceți clic pe link",
   Close: "Închideți",
@@ -308,6 +314,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Controlați ce poate vizualiza, crea, edita, publica sau gestiona fiecare rol.",
   "Control whether each bot is available, and edit what it knows.":
     "Controlați dacă fiecare bot este disponibil și editați ceea ce știe.",
+  "Conversation turns remembered": "Turnurile de conversație amintite",
   "Cook minutes": "Cook minute",
   "Copy inside dark bands.": "Copiați în benzi întunecate.",
   Correction: "Corectare",
@@ -560,10 +567,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO pentru pagina de pornire",
   "Homepage Settings": "Setări paginii de pornire",
   "Homepage settings unavailable": "Setările paginii de pornire indisponibile",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Câte intrări din lista de mai jos sunt date asistentului ca referință.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Câte produse sau categorii poate alege un operator în Preferințe noi, Categorii recomandate (Setări pentru pagina de pornire) și Produse evidențiate (mai jos). Creșterea acestuia salvează imediat, nu este necesară implementarea; până la 50, plafonul impus de formatul bloc în sine.",
   "How many products to show": "Câte produse trebuie afișate",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Câte produse, articole sau rețete returnează căutarea botului de vitrine de fiecare dată când caută ceva.",
   "How many to show": "Câte de afișat",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Cât de mult din chatul actual este trimis înapoi la fiecare întrebare. 0 răspunsuri izolate la fiecare întrebare.",
   "How this password works": "Cum funcționează această parolă",
   "Hungarian (Magyar)": "Maghiară (maghiară)",
   Icelandic: "Islandeză",
@@ -616,6 +629,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Păstrați opera de artă curată",
   "Keep typing to search…": "Continuați să tastați pentru a căuta...",
   Keywords: "Cuvinte cheie",
+  "Knowledge entries per answer": "Inregistrări de cunoștințe per răspuns",
   "Korean (한국어)": "coreeană (한국어)",
   Kyrgyz: "Kârgâză",
   Label: "Etichetă",
@@ -1204,6 +1218,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Căutați produse, comenzi, utilizatori, categorii...",
   "Search promotions": "Căutați promoții",
   "Search recipes": "Căutați rețete",
+  "Search results per lookup": "Rezultatele căutării per căutare",
   "Search returns": "Căutați rezultate",
   "Search reviews": '1>Căutare id="t0008">Căutați rețete trimiteri',
   "Search submissions": "Căutați trimiteri",
@@ -1461,6 +1476,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Utilizatori",
   "Users & Roles": "Utilizatori și roluri",
   "Users unavailable": "Utilizatori indisponibili",
+  "Using the site brand colour": "Utilizarea culorii mărcii site-ului",
   Variant: "Varianta",
   "Variant (SKU)": "Varianta (SKU)",
   "Variant Name": "Numele variantei",
@@ -1505,6 +1521,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "De ce sunt necesare modificări sau de ce a fost refuzat?",
   "Why is stock changing?": "De ce se modifică stocul?",
+  "Widget colour": "Culoarea widgetului",
+  "Widget colour hex": "Culoarea widgetului hexagonal",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Cuvintele pe care botul le potrivește cu o întrebare pentru a decide că această intrare este relevantă.",
   "Working...": "Funcționează...",

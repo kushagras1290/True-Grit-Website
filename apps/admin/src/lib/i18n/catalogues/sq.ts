@@ -143,6 +143,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Flamuri i njoftimit",
   "Announcements unavailable": "Njoftimet nuk disponohen",
   Answer: "Përgjigjet",
+  "Answer tuning": "Saktonizimi i përgjigjeve",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Çdokush i identifikuar mund të komentojë. Vetëm fillimi i një diskutimi të ri është i kufizuar sipas moshës së llogarisë.",
   "API mode": "Modaliteti API",
@@ -160,6 +161,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Zbatohet në përfundim të blerjes ose para çdo bashkëpromovimi. Porositë në ose mbi pragun e dorëzimit falas nuk paguajnë asnjë tarifë dërgese.",
   "Applied to every farm without its own rate.": "Zbatohet për çdo fermë pa tarifën e saj.",
   "Applies to": "Zbatohet për",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Zbatohet për të dy robotët. Vlerat më të mëdha i japin ndihmësit më shumë për të punuar dhe kushtojnë më shumë për përgjigje.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Zbatohet për të dy miniaplikacionet e bisedës. Lëreni të pastër për të ndjekur ngjyrën e markës së sajtit nga Ngjyrat dhe Efektet.",
   "Applies to every visitor Cloudflare resolves to":
     "Zbatohet për çdo vizitor Cloudflare vendos të",
   Approve: "Miratojë",
@@ -275,6 +280,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "Zgjidh një raport nga lista për ta ekzekutuar.",
   "Choose up to": "Zgjidh deri në",
   "City / town": "Qyteti / qyteza",
+  Clear: "Pastro",
   "Clearing...": "Po pastrohet...",
   "Click link": "Kliko lidhjen",
   Close: "Mbyll",
@@ -315,6 +321,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kontrollo se çfarë mund të shikojë, krijojë, modifikojë, publikojë ose menaxhojë secili rol.",
   "Control whether each bot is available, and edit what it knows.":
     "Kontrollo nëse çdo robot është i disponueshëm dhe modifiko atë që di.",
+  "Conversation turns remembered": "Kthehet e bisedës në kujtesë",
   Cook: '><span id="t0019">Cooksok',
   "Cook minutes": "Mutat e gatimit",
   "Copy inside dark bands.": "Kopjo brenda brezave të errët.",
@@ -574,10 +581,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO e faqes kryesore",
   "Homepage Settings": "Cilësimet e faqes kryesore",
   "Homepage settings unavailable": "Cilësimet e faqes kryesore të padisponueshme",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Sa hyrje nga lista më poshtë i jepen asistentit",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Sa produkte ose kategori mund të zgjedhë një operator në të preferuarat e freskëta, kategoritë e veçuara (Cilësimet e faqes kryesore) dhe produktet e theksuara (më poshtë). Ngritja e tij kursen menjëherë, nuk nevojitet vendosje; deri në 50, tavani që zbaton vetë formati i bllokut.",
   "How many products to show": "Sa produkte për të treguar",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Sa produkte, artikuj ose receta kthen kërkimi i robotit të vitrinës sa herë që duket diçka.",
   "How many to show": "Sa për të shfaqur",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Sa nga biseda aktuale dërgohet me secilën pyetje. 0 përgjigje për çdo pyetje të veçuar.",
   "How this password works": "Si funksionon ky fjalëkalim",
   "Hungarian (Magyar)": "Hungarisht (Magyarisht)",
   Icelandic: "Islandisht",
@@ -631,6 +644,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep artwork clean": "Mbaje vepra arti të pastra",
   "Keep typing to search…": "Vazhdo të shkruash për të kërkuar…",
   Keywords: "Fjalë kyçe",
+  "Knowledge entries per answer": "Hyrje njohurish për përgjigje",
   "Korean (한국어)": "Koreanisht (한국어)",
   Kyrgyz: "Kirgistan",
   Label: "Etiketa",
@@ -1223,6 +1237,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "Kërko produkte, porosi, përdorues, kategori…",
   "Search promotions": "Kërko promovime",
   "Search recipes": "Kërko receta",
+  "Search results per lookup": "Rezultatet e kërkimit sipas kërkimit",
   "Search returns": "Kërkimi kthehet",
   "Search reviews": "Kërko komentet",
   "Search submissions": "Kërko parashtresat",
@@ -1480,6 +1495,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Përdoruesit",
   "Users & Roles": "Përdorues dhe role",
   "Users unavailable": "Përdoruesit të padisponueshëm",
+  "Using the site brand colour": "Përdorimi i ngjyrës së markës së sajtit",
   Uyghur: "Ujgure",
   "Variant (SKU)": 'Variant id="t0005">Emri i variantit',
   "Variant Name": "Emri i variantit",
@@ -1524,6 +1540,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Pse nevojiten ndryshime, ose pse u refuzua?",
   "Why is stock changing?": "Pse po ndryshon stoku?",
+  "Widget colour": "Ngjyra e miniaplikacionit",
+  "Widget colour hex": "Ngjyra e miniaplikacionit hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Fjalët që roboti përputhet me një pyetje për të vendosur se kjo hyrje është e rëndësishme.",
   "Working...": "Po funksionon...",

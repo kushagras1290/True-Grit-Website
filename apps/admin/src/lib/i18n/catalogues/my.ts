@@ -144,6 +144,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "ကြေငြာချက်နဖူးစည်း",
   "Announcements unavailable": "ကြေငြာချက်များကို မရရှိနိုင်ပါ",
   Answer: "အဖြေ",
+  "Answer tuning": "အဖြေကို ချိန်ညှိခြင်း",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "လက်မှတ်ထိုးဝင်ထားသည့် မည်သူမဆို မှတ်ချက်ပေးနိုင်ပါသည်။ ဆွေးနွေးမှုအသစ်တစ်ခု စတင်မှသာ အကောင့်အသက်အလိုက် ကန့်သတ်ထားသည်။",
   "API mode": "API မုဒ်",
@@ -162,6 +163,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "၎င်း၏ကိုယ်ပိုင်နှုန်းထားမရှိဘဲ မွေးမြူရေးခြံတိုင်းတွင် အသုံးပြုပါသည်။",
   "Applies to": "သက်ဆိုင်သည်",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "ဘော့တ်နှစ်ခုလုံးတွင် သက်ရောက်မှုရှိသည်။ ပိုကြီးသောတန်ဖိုးများသည် assistant နှင့်အလုပ်လုပ်ရန်ပိုမိုပေးစွမ်းပြီး အဖြေတစ်ခုလျှင် ပိုကုန်ကျပါသည်။",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "ချတ်ဝစ်ဂျက်နှစ်ခုစလုံးတွင် အကျုံးဝင်ပါသည်။ Colors & Effects များမှ ဝဘ်ဆိုက်အမှတ်တံဆိပ်အရောင်ကို ရှင်းလင်းထားလိုက်ပါ။",
   "Applies to every visitor Cloudflare resolves to":
     "လာရောက်သူတိုင်းအတွက် Cloudflare မှ သက်ဆိုင်သည်",
   Approve: "အတည်ပြု",
@@ -276,6 +281,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "၎င်းကို လုပ်ဆောင်ရန် စာရင်းမှ အစီရင်ခံစာကို ရွေးချယ်ပါ။",
   "Choose up to": "အထိ ရွေးချယ်ပါ",
   "City / town": "မြို့/မြို့",
+  Clear: "ရှင်းရန်",
   "Clearing...": "ရှင်းလင်းနေသည်...",
   "Click link": "လင့်ခ်ကိုနှိပ်ပါ",
   Close: "ပိတ်",
@@ -315,6 +321,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "အခန်းကဏ္ဍတစ်ခုစီသည် ကြည့်ရှုနိုင်သည်၊ ဖန်တီးနိုင်သည်၊ တည်းဖြတ်နိုင်သည်၊ ထုတ်ဝေနိုင်သည် သို့မဟုတ် စီမံခန့်ခွဲနိုင်သည်များကို ထိန်းချုပ်ပါ။",
   "Control whether each bot is available, and edit what it knows.":
     "ဘော့တ်တစ်ခုစီကို ရနိုင်မရှိကို ထိန်းချုပ်ပြီး ၎င်းသိသောအရာကို တည်းဖြတ်ပါ။",
+  "Conversation turns remembered": "စကားဝိုင်းအလှည့်အပြောင်းများကို မှတ်သားထား",
   Cook: "ကွတ်",
   "Cook minutes": "ချက်ပြုတ်မိနစ်",
   "Copy inside dark bands.": "အမှောင်ဘောင်အတွင်းမှ ကော်ပီကူးပါ။",
@@ -576,10 +583,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "ပင်မစာမျက်နှာ SEO",
   "Homepage Settings": "ပင်မစာမျက်နှာ ဆက်တင်များ",
   "Homepage settings unavailable": "ပင်မစာမျက်နှာဆက်တင်များကို မရရှိနိုင်ပါ",
+  "How many entries from the list below are given to the assistant as reference.":
+    "အောက်ပါစာရင်းမှ ဝင်ရောက်မှု အရေအတွက်မည်မျှကို assistant အား ကိုးကားရန်အတွက် ပေးထားပါသည်။",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "အော်ပရေတာတစ်ခုသည် လတ်ဆတ်သောအနှစ်သက်ဆုံးများ၊ အထူးပြုအမျိုးအစားများ (ပင်မစာမျက်နှာဆက်တင်များ) နှင့် အသားပေးထားသော ထုတ်ကုန်များ (အောက်တွင်) မည်မျှထုတ်ကုန်များ သို့မဟုတ် အမျိုးအစားများကို ရွေးချယ်နိုင်ပါသည်။ ပြုစုပျိုးထောင်ခြင်းသည် ချက်ချင်းသက်သာသည်၊ ဖြန့်ကျက်ရန်မလိုအပ်ပါ။ 50 အထိ၊ ပိတ်ဆို့ဖော်မတ်ကို မျက်နှာကျက်က သူ့ဘာသာသူ ပြဌာန်းထားသည်။",
   "How many products to show": "ပြသရန် ထုတ်ကုန်မည်မျှ",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "စတိုးဆိုင်မျက်နှာစာ ဘော့တ်၏ ရှာဖွေမှုမှ ကုန်ပစ္စည်း မည်မျှ၊ ဆောင်းပါးများ သို့မဟုတ် ချက်ပြုတ်နည်းများ မည်မျှ ပေါ်လာသည်နှင့် တစ်ပြိုင်နက် ၎င်းသည် တစ်စုံတစ်ခု ပေါ်လာတိုင်း ပြန်ပို့သည်။",
   "How many to show": "ပြသရန် မည်မျှရှိသည်",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "မေးခွန်းတစ်ခုစီနှင့် လက်ရှိ ချတ်မည်မျှကို ပြန်လည်ပေးပို့သည်။ အထီးကျန်မှုတွင် မေးခွန်းတိုင်းကို 0 က ဖြေပေးသည်။",
   "How this password works": "ဤစကားဝှက် အလုပ်လုပ်ပုံ",
   "Hungarian (Magyar)": "ဟန်ဂေရီ (Magyar)",
   "If that email has an account, a reset link is on its way.":
@@ -633,6 +646,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Keep typing to search…": "ရှာဖွေရန် စာရိုက်ဆက်ထားပါ…",
   Keywords: "သော့ချက်စာလုံးများ",
   Khmer: "ခမာ",
+  "Knowledge entries per answer": "အဖြေတစ်ခုအတွက် ဗဟုသုတ ထည့်သွင်းမှုများ",
   "Korean (한국어)": "ကိုရီးယား (한국어)",
   Kyrgyz: "ခရူဂျစ်",
   Label: "တံဆိပ်",
@@ -1233,6 +1247,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ထုတ်ကုန်များ၊ မှာယူမှုများ၊ အသုံးပြုသူများ၊ အမျိုးအစားများ…",
   "Search promotions": "ပရိုမိုးရှင်းများကို ရှာဖွေပါ",
   "Search recipes": "ချက်ပြုတ်နည်းများကို ရှာဖွေပါ",
+  "Search results per lookup": "ရှာဖွေမှုအလိုက် ရှာဖွေမှုရလဒ်များ",
   "Search returns": "ရှာဖွေမှု ရလဒ်များ",
   "Search reviews": "ရှာဖွေမှု သုံးသပ်ချက်များ",
   "Search submissions": "ရှာဖွေမှု တင်ပြချက်များ",
@@ -1497,6 +1512,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "အသုံးပြုသူများ",
   "Users & Roles": "အသုံးပြုသူများနှင့် ရာထူးများ",
   "Users unavailable": "အသုံးပြုသူများ မရရှိနိုင်ပါ",
+  "Using the site brand colour": "ဆိုက်အမှတ်တံဆိပ်အရောင်ကို အသုံးပြုခြင်း",
   Variant: "မူကွဲ",
   "Variant (SKU)": "မူကွဲ (SKU)",
   "Variant Name": "မျိုးကွဲအမည်",
@@ -1540,6 +1556,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "ဘာကြောင့် အပြောင်းအလဲများ လိုအပ်သနည်း၊ သို့မဟုတ် အဘယ်ကြောင့် ငြင်းပယ်ခံခဲ့ရသနည်း။",
   "Why is stock changing?": "စတော့ရှယ်ယာ ဘာကြောင့်ပြောင်းနေရတာလဲ။",
+  "Widget colour": "ဝစ်ဂျက်အရောင်",
+  "Widget colour hex": "ဝစ်ဂျက်အရောင် hex",
   "Words the bot matches against a question to decide this entry is relevant.":
     "ဤထည့်သွင်းမှုသည် သက်ဆိုင်ရာမေးခွန်းနှင့် ကိုက်ညီသော ဘော့တ်စကားလုံးများနှင့် တိုက်ဆိုင်ပါသည်။",
   "Working...": "အလုပ်လုပ်နေသည်...",

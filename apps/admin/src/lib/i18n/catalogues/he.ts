@@ -133,6 +133,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "באנר הכרזה",
   "Announcements unavailable": "הודעות לא זמינות",
   Answer: "תשובה",
+  "Answer tuning": "כוונן תשובות",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "כל מי שנכנס לחשבון רשאי להגיב. רק התחלת דיון חדש מסודרת לפי גיל החשבון.",
   "API mode": "מצב API",
@@ -150,6 +151,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "מיושמים בקופה לפני כל הנחה על קופון או מבצע. הזמנות בעלות או מעל סף משלוח חינם אינן משלמות דמי משלוח.",
   "Applied to every farm without its own rate.": "מוחל על כל חווה ללא תעריף משלה.",
   "Applies to": "חל על",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "חל על שני הרובוטים. ערכים גדולים יותר נותנים לאסיסטנט יותר לעבוד איתו ועולות יותר לכל תשובה.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "חל על שני ווידג'טים של הצ'אט. השאר אותו נקי כדי לעקוב אחר צבע המותג של האתר מ-Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to": "חל על כל מבקר ש-Cloudflare מחליט על",
   Approve: "אשר",
   "Approve & publish": "אשר ופרסם",
@@ -258,6 +263,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Choose a report from the list to run it.": "בחר דוח מהרשימה כדי להפעיל אותו.",
   "Choose up to": "בחר עד",
   "City / town": "עיר / עיר",
+  Clear: "נקה",
   "Clearing...": "מנקה...",
   "Click link": "לחץ על קישור",
   Close: "סגור",
@@ -296,6 +302,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "שלוט במה שכל תפקיד יכול להציג, ליצור, לערוך, לפרסם או לנהל.",
   "Control whether each bot is available, and edit what it knows.":
     "שלוט אם כל בוט זמין, וערוך את מה שהוא יודע.",
+  "Conversation turns remembered": "תפניות שיחות זכורות",
   "Copy inside dark bands.": "העתק בתוך פסים כהים.",
   Correction: "תיקון",
   "Could not load archived records.": "לא ניתן לטעון רשומות בארכיון.",
@@ -542,10 +549,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "SEO של דף הבית",
   "Homepage Settings": "הגדרות דף הבית",
   "Homepage settings unavailable": "הגדרות דף הבית אינן זמינות",
+  "How many entries from the list below are given to the assistant as reference.":
+    "כמה ערכים מהרשימה למטה ניתנות לעוזר כעיון.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "כמה מוצרים או קטגוריות יכול מפעיל לבחור ב'מועדפים טריים', 'קטגוריות מוצגות' (הגדרות דף הבית) ומוצרים מודגשים (להלן). העלאתו חוסכת מיד, אין צורך בפריסה; עד 50, התקרה שפורמט הבלוק עצמו אוכף.",
   "How many products to show": "כמה מוצרים להציג",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "כמה מוצרים, מאמרים או מתכונים החיפוש של בוט החנות מחזיר בכל פעם שהוא מחפש משהו.",
   "How many to show": "כמה להראות",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "כמה מהצ'אט הנוכחי נשלח בחזרה עם כל שאלה. 0 עונה על כל שאלה בנפרד.",
   "How this password works": "איך הסיסמה הזו עובדת",
   "Hungarian (Magyar)": "הונגרית (מגירית)",
   Icelandic: "איסלנדית",
@@ -599,6 +612,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "מילות מפתח",
   Khmer: "חמר",
   Kinyarwanda: "קיניארואנדה",
+  "Knowledge entries per answer": "ערכי ידע לכל תשובה",
   "Konkani (कोंकणी)": "קונקני (कोंकणी)",
   "Korean (한국어)": "קוריאנית (한국어)",
   Kyrgyz: "קירגיזית",
@@ -1163,6 +1177,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "חפש מוצרים, הזמנות, משתמשים, קטגוריות...",
   "Search promotions": "חיפוש מבצעים",
   "Search recipes": "חפש מתכונים",
+  "Search results per lookup": "תוצאות חיפוש לכל חיפוש",
   "Search returns": "החזרות חיפוש",
   "Search reviews": "חיפוש ביקורות",
   "Search submissions": "הגשת חיפוש",
@@ -1412,6 +1427,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "משתמשים",
   "Users & Roles": "משתמשים ותפקידים",
   "Users unavailable": "משתמשים לא זמינים",
+  "Using the site brand colour": "שימוש בצבע המותג של האתר",
   Uyghur: "אויגורי",
   Uzbek: "אוזבקית",
   Variant: "וריאנט",
@@ -1456,6 +1472,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Whole site (default)": "כל האתר (ברירת מחדל)",
   "Why are changes needed, or why was this declined?": "מדוע נדרשים שינויים, או מדוע זה נדחה?",
   "Why is stock changing?": "למה משתנה המניה?",
+  "Widget colour": "צבע הווידג'ט",
+  "Widget colour hex": "הקסדה של צבע הווידג'ט",
   "Words the bot matches against a question to decide this entry is relevant.":
     "מילים שהבוט מתאים לשאלה כדי להחליט שהערך הזה רלוונטי.",
   "Working...": "עובד...",

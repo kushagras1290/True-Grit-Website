@@ -138,6 +138,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Баннери эълон",
   "Announcements unavailable": "Эълонҳо дастрас нестанд",
   Answer: "Ҷавоб",
+  "Answer tuning": "Танзими ҷавоб",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Ҳар касе, ки ворид шудааст, метавонад шарҳ диҳад. Танҳо оғози муҳокимаи нав аз синну соли ҳисоб вобаста аст.",
   "API mode": "Режими API",
@@ -156,6 +157,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Барои ҳар як хоҷагӣ бе меъёри худ татбиқ карда мешавад.",
   "Applies to": "Барои",
+  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
+    "Ба ҳарду ботҳо дахл дорад. Қиматҳои калонтар ба ёрдамчӣ бештар кор карданро фароҳам меоранд ва барои ҳар ҷавоб арзиши бештар доранд.",
+  "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
+    "Ба ҳарду виджетҳои чат дахл дорад. Онро холӣ гузоред, то ранги бренди сайтро аз Рангҳо ва эффектҳо пайгирӣ кунед.",
   "Applies to every visitor Cloudflare resolves to":
     "Муроҷиат мешавад Cloudflare тасмим мегирад, ба",
   Approve: 'id="t0010">Тасдиқ ва нашр кардан',
@@ -278,6 +283,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Барои иҷро кардани он гузоришеро аз рӯйхат интихоб кунед.",
   "Choose up to": "То",
   "City / town": 'интихоб кунед. id="t0010">Тоза карда мешавад...',
+  Clear: "Тоза кардан",
   "Clearing...": "Тоза карда мешавад...",
   "Click link": "Пайвандро клик кунед",
   Close: 'Пушидани id="t0016">Саҳифаҳои CMS дастнорас аст',
@@ -316,6 +322,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Назорат кунед, ки ҳар як нақш чиро дидан, эҷод кардан, таҳрир кардан, нашр кардан ё идора кардан мумкин аст.",
   "Control whether each bot is available, and edit what it knows.":
     "Назорат кунед, ки оё ҳар як бот дастрас аст ва он чизеро, ки медонад, таҳрир кунед.",
+  "Conversation turns remembered": "Навбати сӯҳбат дар хотир нигоҳ дошта мешавад",
   Cook: "Пухтан",
   "Cook minutes": "дақиқаҳои пухтупаз",
   "Copy inside dark bands.": "Дар дохили бандҳои торик нусхабардорӣ кунед.",
@@ -581,10 +588,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage SEO": "Саҳифаи SEO-и асосӣ",
   "Homepage Settings": "Танзимоти саҳифаи асосӣ",
   "Homepage settings unavailable": "Танзимоти саҳифаи асосӣ дастрас нест",
+  "How many entries from the list below are given to the assistant as reference.":
+    "Чанд адад аз рӯйхати дар поён овардашуда ба ёрдамчӣ ҳамчун истинод дода мешавад.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Чанд маҳсулот ё категорияи оператор метавонад ба дӯстдоштаҳои тару тоза, категорияҳои барҷаста (Танзимоти саҳифаи асосӣ) ва маҳсулоти барҷасташуда (дар зер) интихоб кунад. Баланд бардоштани он фавран сарфа мекунад, ҷойгиркунӣ лозим нест; то 50, шифт худи формати блокро иҷро мекунад.",
   "How many products to show": "Чанд маҳсулот бояд нишон дода шавад",
+  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
+    "Ҷустуҷӯи боти дӯкон ҳар дафъае, ки чизе ба назар мерасад, чанд маҳсулот, мақола ё рецептҳоро бармегардонад.",
   "How many to show": "Чанд қадар нишон дода шавад",
+  "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
+    "Чанд миқдори сӯҳбати ҷорӣ бо ҳар як савол бармегардад. 0 ба ҳар як савол дар алоҳидагӣ ҷавоб медиҳад.",
   "How this password works": "Чӣ гуна ин парол кор мекунад",
   "Hungarian (Magyar)": "Маҷорӣ (Маҷрия)",
   Icelandic: "Исландӣ",
@@ -641,6 +654,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Keywords: "Калидвожаҳо",
   Khmer: "Кхмер",
   Kinyarwanda: "Кинярванда",
+  "Knowledge entries per answer": "Вурудҳои дониш барои ҳар як ҷавоб",
   "Konkani (कोंकणी)": "Конканӣ (कोंकणी)",
   "Korean (한국어)": "Корея (Корея ()",
   Kyrgyz: "Kyrgyzy",
@@ -1244,6 +1258,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ҷустуҷӯи маҳсулот, фармоишҳо, корбарон, категорияҳо…",
   "Search promotions": "Тақвимҳои ҷустуҷӯ",
   "Search recipes": "Ҷустуҷӯи рецептҳо",
+  "Search results per lookup": "Натиҷаҳои ҷустуҷӯ барои ҳар як ҷустуҷӯ",
   "Search returns": "Бозгаштҳои ҷустуҷӯ",
   "Search reviews": "Баррасиҳои ҷустуҷӯ",
   "Search submissions": "Пешниҳодҳои ҷустуҷӯ",
@@ -1508,6 +1523,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Users: "Истифодабарандагон",
   "Users & Roles": "Истифодабарандагон ва Нақшҳо",
   "Users unavailable": "Истифодабарандагон дастрас нестанд",
+  "Using the site brand colour": "Истифодаи ранги бренди сайт",
   Uyghur: "Уйғур",
   Uzbek: "Узбек",
   "Variant Name": "Номи вариант",
@@ -1551,6 +1567,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Why are changes needed, or why was this declined?":
     "Чаро тағирот лозим аст ё чаро ин рад карда шуд?",
   "Why is stock changing?": "Чаро захираҳо тағйир меёбанд?",
+  "Widget colour": "Ранги виджет",
+  "Widget colour hex": "Ранги шонздаҳгонаи виджет",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Калимаҳои бот бо саволе мувофиқат мекунанд, то мувофиқ будани ин воридотро муайян кунанд.",
   "Working...": "Кор...",
