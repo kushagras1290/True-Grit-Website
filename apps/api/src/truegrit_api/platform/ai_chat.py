@@ -108,6 +108,36 @@ def _tool_to_wire(tool: ToolDefinition) -> dict[str, Any]:
     }
 
 
+def _message_to_wire(message: dict[str, Any]) -> dict[str, Any]:
+    """Workers AI's schema requires every message's `content` to be a string.
+
+    Callers follow the OpenAI convention of `content: None` on an assistant
+    turn that only carries `tool_calls`, which the binding rejects outright
+    (`AiError 5006: ... required properties at '/messages/N' are 'role,content'`).
+    Normalising it here keeps that provider quirk inside this adapter rather
+    than leaking into every caller's tool-calling loop.
+    """
+    if message.get("content") is None:
+        return {**message, "content": ""}
+    return message
+
+
+def _js_payload(payload: dict[str, Any]) -> Any:
+    """Convert the request into plain JS objects for the `AI` binding.
+
+    Pyodide's implicit conversion turns a nested Python dict into a JS `Map`,
+    which the binding's schema validator reads as the wrong type entirely
+    (`Type mismatch of '/messages/0/content', 'array' not in 'string'`) — so a
+    payload that is correct on the Python side is rejected before it reaches
+    the model. `Object.fromEntries` is the documented Workers pattern, and the
+    same one `worker.py`'s `_js_object` already uses for R2 and Response init.
+    """
+    from js import Object
+    from pyodide.ffi import to_js
+
+    return to_js(payload, dict_converter=Object.fromEntries)
+
+
 class WorkersAIChat:
     """Wraps the Worker `env.AI` binding for chat completion and tool calling."""
 
@@ -123,16 +153,16 @@ class WorkersAIChat:
         tools: list[ToolDefinition] | None = None,
     ) -> ChatCompletion:
         payload: dict[str, Any] = {
-            "messages": [{"role": "system", "content": system_prompt}, *messages]
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                *(_message_to_wire(message) for message in messages),
+            ]
         }
         if tools:
             payload["tools"] = [_tool_to_wire(tool) for tool in tools]
         try:
-            result = await self._ai.run(self._model, payload)
-        except Exception as exc:  # TEMPORARY: debug print, remove once root-caused
-            import traceback
-
-            print(f"ai_chat.run_failed: {type(exc).__name__}: {exc}\n{traceback.format_exc()}")
+            result = await self._ai.run(self._model, _js_payload(payload))
+        except Exception as exc:
             raise ChatUnavailableError(
                 "The support bot is temporarily unavailable. Try again shortly."
             ) from exc
