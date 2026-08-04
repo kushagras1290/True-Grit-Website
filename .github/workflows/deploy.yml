@@ -1,12 +1,20 @@
 name: Deploy dev
 
 # Auto-deploys the whole project to the Cloudflare dev environment on every push
-# to main/Testing (or manual dispatch). Requires one repository secret:
+# to `main` (or manual dispatch). Requires one repository secret:
 #   CLOUDFLARE_API_TOKEN — a token with Workers Scripts, D1, R2, KV, and Queues
 #   edit permissions on the target account.
+#
+# `main` only, deliberately: the dev Workers are the environment currently
+# serving real visitors, so anything that auto-deploys here is live. `testing`
+# is where unproven work lands and must never reach that environment on its
+# own — it runs the CI checks (ci.yml) and nothing else. Promotion is an
+# explicit merge of testing into main, which is what triggers this deploy.
+# When isolated production resources exist (SCAL-005) this workflow keeps dev,
+# and main moves to a separate production deploy.
 on:
   push:
-    branches: [main, Testing]
+    branches: [main]
   workflow_dispatch:
 
 permissions:

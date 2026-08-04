@@ -1,12 +1,12 @@
 name: CI
 
-# Testing is where work lands and is validated; main only receives what has
+# `testing` is where work lands and is validated; `main` only receives what has
 # already proven out there. Both need checks: gating main alone would mean
-# "it works on Testing" was never actually verified by anything.
+# "it works on testing" was never actually verified by anything.
 on:
   pull_request:
   push:
-    branches: [main, Testing]
+    branches: [main, testing]
 
 permissions:
   contents: read
