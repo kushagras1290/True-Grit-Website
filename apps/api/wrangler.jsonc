@@ -4,20 +4,29 @@
   "main": "src/worker.py",
   "compatibility_date": "2026-07-11",
   "compatibility_flags": ["python_workers"],
-  // DO NOT add a `limits` block here. This account is on the Workers Free
-  // plan, which rejects the deploy outright:
+  // This account moved to the Workers Paid plan (2026-08-04), which is what
+  // makes this `limits` block legal at all -- on the Free plan, deploying
+  // ANY `limits.cpu_ms` value is rejected outright:
   //   "CPU limits are not supported for the Free plan" [code: 100328]
-  // That is why commit 68eaf84 removed `limits.cpu_ms` — not because native
-  // crypto made it unnecessary. It has now been added and reverted twice.
+  // That rejection is why `limits.cpu_ms` was added and reverted twice
+  // before (see commit 68eaf84 and its history) -- not because native crypto
+  // made it unnecessary. The Free plan's real, non-configurable cap was
+  // 10 ms/request, and this whole FastAPI app runs in Pyodide, where
+  // marshalling payloads between JS and Python costs far more CPU than
+  // native JS -- PBKDF2 login/password verification and D1-heavy admin
+  // endpoints routinely blew that 10 ms ceiling, killed with outcome
+  // `exceededCpu`. Cloudflare's own error response for that carries no
+  // Access-Control-Allow-Origin header, which the browser reports as a CORS
+  // failure, masking the real cause.
   //
-  // The Free plan caps CPU at 10 ms per request, and this whole FastAPI app
-  // runs in Pyodide, where marshalling payloads between JS and Python costs
-  // far more CPU than native JS. Requests that blow the cap are killed with
-  // outcome `exceededCpu`, and Cloudflare's own error response carries no
-  // Access-Control-Allow-Origin header — which the browser reports as a CORS
-  // failure, masking the real cause. Raising the ceiling needs the Workers
-  // Paid plan; until then the only lever is doing less work per request (see
-  // the R2 direct-serve path for /media/* in src/worker.py).
+  // 60s gives headroom above the Paid plan's own 30s default for heavier
+  // admin operations (bulk writes, report queries) without reaching for the
+  // 5-minute ceiling. The R2 direct-serve path for /media/* in src/worker.py
+  // stays in place regardless -- streaming real image bytes through
+  // Pyodide's JS<->Python marshalling is wasteful at any CPU budget.
+  "limits": {
+    "cpu_ms": 60000
+  },
   "observability": {
     "enabled": false,
     "head_sampling_rate": 1,
