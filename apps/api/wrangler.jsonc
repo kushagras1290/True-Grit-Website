@@ -41,6 +41,16 @@
       "migrations_dir": "../../database/migrations"
     }
   ],
+  // Staff messaging (migration 0073, truegrit_api/realtime/chat_room.py). One
+  // ChatRoomDO per conversation, addressed by env.CHAT_ROOMS.get_by_name(id).
+  // SQLite-backed classes are available on the Workers Free plan; this DO
+  // does not use its own storage.sql at all (messages live in D1, see
+  // chat_room.py's module docstring) -- new_sqlite_classes is still the
+  // required migration shape even for a DO that only uses ctx.storage.put/get.
+  "durable_objects": {
+    "bindings": [{ "name": "CHAT_ROOMS", "class_name": "ChatRoomDO" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ChatRoomDO"] }],
   "r2_buckets": [
     { "binding": "MEDIA_BUCKET", "bucket_name": "truegrit-media-dev" },
     { "binding": "EXPORTS_BUCKET", "bucket_name": "truegrit-exports-dev" }

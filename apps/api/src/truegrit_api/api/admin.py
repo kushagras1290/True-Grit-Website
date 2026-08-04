@@ -16,6 +16,9 @@ from truegrit_api.auth.dependencies import (
     get_translator,
     require_permission,
 )
+from truegrit_api.auth.dependencies import (
+    require_owner as _require_owner,
+)
 from truegrit_api.auth.passwords import (
     hash_password,
     password_hash_iterations,
@@ -708,21 +711,6 @@ class ImageUploadRequest(_CamelModel):
     filename: str = Field(min_length=1, max_length=180)
     content_type: str = Field(min_length=1, max_length=80)
     data_base64: str = Field(min_length=1)
-
-
-async def _require_owner(db: Database, principal: Principal) -> None:
-    row = await db.fetch_one(
-        """
-        SELECT 1 AS ok
-        FROM user_roles ur
-        JOIN roles r ON r.id = ur.role_id
-        WHERE ur.user_id = ? AND r.key = 'super_admin'
-        LIMIT 1
-        """,
-        (principal.user_id,),
-    )
-    if row is None:
-        raise PermissionDeniedError("Only the owner can manage global site documents.")
 
 
 def _normalize_hero_slides(slides: Any) -> list[dict[str, Any]]:

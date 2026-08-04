@@ -25,9 +25,16 @@ from workers import WorkerEntrypoint
 
 from truegrit_api.config import Settings
 from truegrit_api.main import create_app
+from truegrit_api.platform.ai_chat import WorkersAIChat
 from truegrit_api.platform.d1 import D1Database
 from truegrit_api.platform.media_store import R2MediaStore
 from truegrit_api.platform.translation import WorkersAITranslator
+
+# Re-exported (not just imported): wrangler resolves Durable Object classes
+# by name on this entry module, so ChatRoomDO must be a top-level attribute
+# here even though nothing in this file calls it directly.
+from truegrit_api.realtime.chat_room import ChatRoomDO as ChatRoomDO
+from truegrit_api.util.cookies import cookie_value as _cookie_value
 
 # Build the FastAPI application once per isolate. The D1 binding is resolved
 # from ``env`` on first request (it is not available at module-import time) and
@@ -109,15 +116,6 @@ def _cors_headers(env: Any, request: Any) -> dict[str, str]:
             }
         )
     return headers
-
-
-def _cookie_value(request: Any, name: str) -> str | None:
-    cookie_header = request.headers.get("cookie") or ""
-    for item in cookie_header.split(";"):
-        key, separator, value = item.strip().partition("=")
-        if separator and key == name:
-            return value
-    return None
 
 
 async def _authorized_media_uploader(env: Any, token: str) -> str | None:
@@ -330,6 +328,16 @@ class Default(WorkerEntrypoint):
                 return await _upload_media_direct(self.env, request)
             if path.startswith("/media/") and method in {"GET", "HEAD", "OPTIONS"}:
                 return await _serve_media_direct(self.env, request, path)
+            if path.startswith("/v1/admin/messages/realtime/") and method == "GET":
+                # WebSocket upgrades cannot go through the FastAPI/ASGI bridge
+                # (asgi.fetch is request/response-shaped, not upgrade-aware) --
+                # forward straight to the conversation's Durable Object, which
+                # performs its own auth/membership check and accepts the
+                # upgrade itself. Same "bypass ASGI for non-request-shaped
+                # work" reasoning as the media helpers above.
+                conversation_id = path.rsplit("/", 1)[-1]
+                stub = self.env.CHAT_ROOMS.get_by_name(conversation_id)
+                return await stub.fetch(request)
             if _app is None:
                 _bridge_worker_env(self.env)
                 # `AI` is optional in wrangler.jsonc's binding list -- an
@@ -342,6 +350,7 @@ class Default(WorkerEntrypoint):
                     db=D1Database(self.env.DB),
                     media=R2MediaStore(self.env.MEDIA_BUCKET),
                     translator=WorkersAITranslator(ai_binding) if ai_binding is not None else None,
+                    chat=WorkersAIChat(ai_binding) if ai_binding is not None else None,
                 )
             return await asgi.fetch(_app, request, self.env)
         except Exception as exc:

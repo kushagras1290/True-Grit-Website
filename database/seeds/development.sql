@@ -87,7 +87,7 @@ WHERE key IN (
   'recipes.view', 'recipes.create', 'recipes.edit',
   'categories.view', 'categories.edit',
   'media.view', 'media.upload', 'media.edit', 'media.archive',
-  'submissions.view'
+  'submissions.view', 'messages.use'
 );
 
 -- Publisher: approves and publishes. Needs the view grants for the lists it
@@ -100,7 +100,7 @@ WHERE key IN (
   'articles.view', 'articles.approve', 'articles.publish',
   'recipes.view', 'recipes.approve', 'recipes.publish',
   'media.view',
-  'submissions.view', 'submissions.review'
+  'submissions.view', 'submissions.review', 'messages.use'
 );
 
 -- Product Manager: owns the catalogue end to end, and can see the stock that
@@ -112,7 +112,7 @@ WHERE key IN (
   'products.publish', 'products.archive',
   'categories.view', 'categories.edit',
   'media.view', 'media.upload', 'media.edit',
-  'inventory.view'
+  'inventory.view', 'messages.use'
 );
 
 -- Inventory Manager: adjusts stock; orders are what consume it.
@@ -120,7 +120,7 @@ INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
 SELECT 'rol_inventory_manager', id FROM permissions
 WHERE key IN (
   'inventory.view', 'inventory.adjust',
-  'products.view', 'categories.view', 'orders.view'
+  'products.view', 'categories.view', 'orders.view', 'messages.use'
 );
 
 -- Order Manager: fulfilment and post-delivery triage.
@@ -130,7 +130,7 @@ WHERE key IN (
   'orders.view', 'orders.cancel', 'customers.view',
   'products.view', 'inventory.view',
   'returns.view', 'returns.manage',
-  'reviews.view', 'reviews.moderate'
+  'reviews.view', 'reviews.moderate', 'messages.use'
 );
 
 -- Manager: runs the shop day to day — catalogue, content, stock, orders, and
@@ -160,7 +160,7 @@ WHERE key IN (
   'farm_requests.view', 'farm_requests.review',
   'reviews.view', 'reviews.moderate',
   'promotions.view', 'promotions.manage',
-  'bundles.view', 'bundles.manage'
+  'bundles.view', 'bundles.manage', 'messages.use'
 );
 
 -- Inventory: read-mostly monitoring sibling of Inventory Manager.
@@ -168,7 +168,7 @@ INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
 SELECT 'rol_inventory', id FROM permissions
 WHERE key IN (
   'inventory.view', 'inventory.adjust',
-  'products.view', 'categories.view', 'orders.view'
+  'products.view', 'categories.view', 'orders.view', 'messages.use'
 );
 
 -- Blogger / Chef: authoring roles that draft their own content type and help
@@ -178,7 +178,7 @@ SELECT 'rol_blogger', id FROM permissions
 WHERE key IN (
   'articles.view', 'articles.create', 'articles.edit',
   'media.view', 'media.upload',
-  'submissions.view', 'submissions.review', 'discussions.view'
+  'submissions.view', 'submissions.review', 'discussions.view', 'messages.use'
 );
 
 INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
@@ -186,7 +186,7 @@ SELECT 'rol_chef', id FROM permissions
 WHERE key IN (
   'recipes.view', 'recipes.create', 'recipes.edit',
   'media.view', 'media.upload',
-  'submissions.view', 'submissions.review', 'discussions.view'
+  'submissions.view', 'submissions.review', 'discussions.view', 'messages.use'
 );
 
 -- Accounts: payments and refunds only. audit.view is what the "Payments &
@@ -196,7 +196,7 @@ INSERT OR IGNORE INTO role_permissions (role_id, permission_id)
 SELECT 'rol_accounts', id FROM permissions
 WHERE key IN (
   'orders.view', 'orders.cancel', 'orders.refund',
-  'returns.view', 'customers.view', 'audit.view'
+  'returns.view', 'customers.view', 'audit.view', 'messages.use'
 );
 
 INSERT INTO user_roles (user_id, role_id, assigned_at, assigned_by) VALUES
@@ -222,7 +222,7 @@ WHERE key IN (
   'categories.view',
   'media.view', 'media.upload',
   'inventory.view', 'inventory.adjust',
-  'orders.view'
+  'orders.view', 'messages.use'
 );
 
 INSERT INTO users (id, email, display_name, user_type, status, email_verified_at, created_at, updated_at) VALUES
