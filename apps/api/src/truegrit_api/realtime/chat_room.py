@@ -1,7 +1,7 @@
 """ChatRoomDO — a Durable Object that fans a conversation's new messages out
 to every currently-connected admin, live.
 
-One instance per conversation (`env.CHAT_ROOMS.get_by_name(conversation_id)`
+One instance per conversation (`env.CHAT_ROOMS.getByName(conversation_id)`
 in `worker.py`), using the WebSocket Hibernation API
 (https://developers.cloudflare.com/durable-objects/best-practices/websockets/)
 so an idle connection does not hold the isolate — and its duration billing —
@@ -32,6 +32,7 @@ import json
 from typing import Any
 
 from js import WebSocketPair
+from pyodide.ffi import to_js
 from workers import DurableObject, Response
 
 from truegrit_api.platform.d1 import D1Database
@@ -41,6 +42,14 @@ from truegrit_api.util.timeutil import utc_now_iso
 
 _MAX_MESSAGE_LENGTH = 4_000
 _CONVERSATION_ID_KEY = "conversation_id"
+
+
+def _to_py(value: Any) -> Any:
+    """Same discipline as `platform.d1`: a Pyodide JsProxy (e.g. the Map
+    `deserializeAttachment()` hands back) exposes `.to_py()`; an already-native
+    Python value does not, so convert only when needed."""
+    to_py = getattr(value, "to_py", None)
+    return to_py() if callable(to_py) else value
 
 
 class ChatRoomDO(DurableObject):
@@ -69,13 +78,17 @@ class ChatRoomDO(DurableObject):
 
         client, server = WebSocketPair.new().object_values()
         # acceptWebSocket (not ws.accept()) is what allows this DO to
-        # hibernate between messages instead of staying billed-awake.
-        self.ctx.acceptWebSocket(server, [user_id])
-        server.serializeAttachment({"userId": user_id})
+        # hibernate between messages instead of staying billed-awake. Pyodide
+        # does not auto-marshal a Python list into a JS Array across this
+        # particular bound-method call (confirmed live: passing a raw list
+        # raises "parameter 2 is not of type 'Array'"), so tags and the
+        # attachment both go through to_js explicitly.
+        self.ctx.acceptWebSocket(server, to_js([user_id]))
+        server.serializeAttachment(to_js({"userId": user_id}))
         return Response(None, status=101, web_socket=client)
 
     async def webSocketMessage(self, ws: Any, message: Any) -> None:  # noqa: N802 -- runtime hook name
-        attachment = ws.deserializeAttachment() or {}
+        attachment = _to_py(ws.deserializeAttachment()) or {}
         user_id = attachment.get("userId") if isinstance(attachment, dict) else None
         conversation_id = await self.ctx.storage.get(_CONVERSATION_ID_KEY)
         if not user_id or not conversation_id:
