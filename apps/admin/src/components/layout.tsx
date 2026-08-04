@@ -23,6 +23,7 @@ import {
   LogOut,
   Mail,
   Menu,
+  MessageCircle,
   MessageSquare,
   Package,
   Palette,
@@ -52,6 +53,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router";
 import { Button } from "./ui";
 import { api, demoMode, type AdminNotification } from "../lib/api";
 import { useMe, usePermissions } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 const SIDEBAR_COLLAPSED_KEY = "truegrit.admin.sidebar-collapsed";
 
@@ -85,6 +87,13 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         label: "Analytics",
         icon: <LineChart size={16} />,
         permission: "analytics.view",
+      },
+      {
+        to: "/messages",
+        label: "Messages",
+        icon: <MessageCircle size={16} />,
+        permission: "messages.use",
+        badgeKey: "messagesUnread",
       },
     ],
   },
@@ -418,8 +427,12 @@ function NotificationPanel({
       {open ? (
         <div className="absolute right-0 z-50 mt-2 w-[min(24rem,calc(100vw-2rem))] rounded-md border border-line bg-surface p-2 shadow-overlay">
           <div className="border-b border-line px-2 py-2">
-            <p className="font-display text-base text-ink">Notifications</p>
-            <p className="text-xs text-ink-muted">Pending work for your role</p>
+            <p className="font-display text-base text-ink">
+              <T>Notifications</T>
+            </p>
+            <p className="text-xs text-ink-muted">
+              <T>Pending work for your role</T>
+            </p>
           </div>
           <div className="max-h-96 overflow-y-auto py-1">
             {items.length ? (
@@ -454,7 +467,9 @@ function NotificationPanel({
                 </button>
               ))
             ) : (
-              <p className="px-2 py-6 text-center text-sm text-ink-muted">Nothing pending.</p>
+              <p className="px-2 py-6 text-center text-sm text-ink-muted">
+                <T>Nothing pending.</T>
+              </p>
             )}
           </div>
         </div>
@@ -494,10 +509,22 @@ export function Shell() {
     enabled: permissions.has("reviews.view"),
     refetchInterval: 60_000,
   });
+  // No dedicated unread-count endpoint -- the conversation list already
+  // carries each conversation's unreadCount, so the sidebar badge just sums
+  // it client-side rather than adding a second endpoint for one number.
+  // React Query dedupes this against the same ["conversations"] query
+  // features/messages.tsx makes while the Messages page itself is open.
+  const { data: conversations } = useQuery({
+    queryKey: ["conversations"],
+    queryFn: api.listConversations,
+    enabled: permissions.has("messages.use"),
+    refetchInterval: 60_000,
+  });
   const badges = {
     submissionsPending: pendingSubmissions ?? 0,
     farmRequestsOpen: openFarmRequests ?? 0,
     reviewsPending: pendingReviews ?? 0,
+    messagesUnread: (conversations ?? []).reduce((sum, c) => sum + c.unreadCount, 0),
   };
   const { data: notifications } = useQuery({
     queryKey: ["admin-notifications"],
@@ -520,7 +547,7 @@ export function Shell() {
         href="#admin-content"
         className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-surface focus:px-3 focus:py-2"
       >
-        Skip to content
+        <T>Skip to content</T>
       </a>
 
       <aside
@@ -546,7 +573,7 @@ export function Shell() {
           onClick={() => setCollapsed((value) => !value)}
         >
           {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
-          {collapsed ? null : "Collapse"}
+          {collapsed ? null : <T>{"Collapse"}</T>}
         </button>
       </aside>
 
@@ -594,17 +621,22 @@ export function Shell() {
                 onClick={() => navigate(parentPath(location.pathname))}
               >
                 <ArrowLeft size={16} />
-                <span className="hidden sm:inline">Back</span>
+                <span className="hidden sm:inline">
+                  <T>Back</T>
+                </span>
               </button>
             ) : null}
             <div className="flex items-center gap-2 text-sm text-ink-muted">
               <ClipboardList size={16} aria-hidden className="hidden sm:block" />
               {demoMode ? (
                 <span>
-                  Demo mode — set <code className="text-xs">VITE_API_URL</code> to connect the API
+                  <T>Demo mode — set</T> <code className="text-xs">VITE_API_URL</code>{" "}
+                  <T>to connect the API</T>
                 </span>
               ) : (
-                <span>Connected</span>
+                <span>
+                  <T>Connected</T>
+                </span>
               )}
             </div>
           </div>
@@ -619,7 +651,9 @@ export function Shell() {
                 {me.displayName} <span className="text-ink-muted">· {me.email}</span>
               </span>
             ) : (
-              <span className="text-ink-muted">Signing in…</span>
+              <span className="text-ink-muted">
+                <T>Signing in…</T>
+              </span>
             )}
             <Button
               type="button"

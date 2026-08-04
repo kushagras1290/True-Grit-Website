@@ -22,6 +22,7 @@ import { DbBrowserPage } from "./features/db-browser";
 import { FarmRequestDetailPage, FarmRequestsListPage } from "./features/farm-requests";
 import { HomepageSettingsPage } from "./features/homepage-settings";
 import { ImageGuidePage } from "./features/image-guide";
+import { MessagesPage } from "./features/messages";
 import {
   AuditPage,
   ContactAttemptsPage,
@@ -71,6 +72,7 @@ createRoot(document.getElementById("root")!).render(
             >
               <Route index element={<DashboardPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
+              <Route path="messages" element={<MessagesPage />} />
               <Route path="products" element={<ProductListPage />} />
               <Route path="products/:id" element={<ProductEditorPage />} />
               <Route path="categories" element={<CategoryListPage />} />
