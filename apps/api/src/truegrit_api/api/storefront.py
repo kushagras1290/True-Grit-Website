@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from typing import Annotated, Any
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Request
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
@@ -25,7 +25,6 @@ from truegrit_api.services import addresses as address_service
 from truegrit_api.services import subscriptions as subscription_service
 from truegrit_api.services.checkout import CheckoutLine, place_order
 from truegrit_api.services.contact import contactable_email
-from truegrit_api.services.email import send_email
 from truegrit_api.services.email_templates import (
     render_farm_order_notification,
     render_order_confirmation,
@@ -34,6 +33,7 @@ from truegrit_api.services.feature_settings import (
     load_delivery_settings,
     promotions_enabled,
 )
+from truegrit_api.services.jobs import enqueue_email
 from truegrit_api.services.payments import (
     PaymentError,
     capture_paypal_order,
@@ -177,7 +177,6 @@ async def preview_discount(
 async def checkout(
     payload: CheckoutRequest,
     request: Request,
-    background: BackgroundTasks,
     customer: Annotated[Principal, Depends(get_current_customer)],
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
@@ -290,14 +289,13 @@ async def checkout(
         ),
     )
     result["payment"] = {"method": "cod"}
-    await _queue_order_emails(db, background, customer, result)
+    await _queue_order_emails(db, customer, result)
     return result
 
 
 @router.post("/payments/paypal/capture")
 async def capture_paypal_payment(
     payload: PaypalCaptureRequest,
-    background: BackgroundTasks,
     customer: Annotated[Principal, Depends(get_current_customer)],
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
@@ -356,14 +354,13 @@ async def capture_paypal_payment(
         "orderStatus": "confirmed",
         "paymentStatus": "paid",
     }
-    await _queue_order_emails(db, background, customer, result)
+    await _queue_order_emails(db, customer, result)
     return {"ok": True, **result}
 
 
 @router.post("/payments/razorpay/verify")
 async def verify_razorpay_payment(
     payload: RazorpayVerifyRequest,
-    background: BackgroundTasks,
     customer: Annotated[Principal, Depends(get_current_customer)],
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
@@ -425,18 +422,16 @@ async def verify_razorpay_payment(
         "orderStatus": "confirmed",
         "paymentStatus": "paid",
     }
-    await _queue_order_emails(db, background, customer, result)
+    await _queue_order_emails(db, customer, result)
     return {"ok": True, **result}
 
 
 async def _queue_order_emails(
     db: Database,
-    background: BackgroundTasks,
     customer: Principal,
     order: dict[str, Any],
 ) -> None:
-    """Notify the customer and the owner(s) of every farm in the order. Sent in
-    the background so email latency never delays the checkout response."""
+    """Persist durable customer and farm-owner notification jobs."""
     settings = get_settings()
     reference = order["reference"]
     total = f"{order['totalMinor'] / 100:.2f} {order['currencyCode']}"
@@ -447,14 +442,16 @@ async def _queue_order_emails(
     # separate (chargeable) piece of work.
     customer_email = contactable_email(customer.email)
     if customer_email is not None:
-        background.add_task(
-            send_email,
-            customer_email,
-            f"Order {reference} confirmed",
-            f"Hi {customer.display_name},\n\nYour order {reference} is confirmed. "
+        await enqueue_email(
+            db,
+            dedupe_key=f"order:{order['id']}:customer-confirmed",
+            to=customer_email,
+            subject=f"Order {reference} confirmed",
+            body=f"Hi {customer.display_name},\n\nYour order {reference} is confirmed. "
             f"Total {total} (cash on delivery). We'll let you know when it ships.\n\nThank you!",
-            settings,
-            render_order_confirmation(customer.display_name, reference, total),
+            html_body=render_order_confirmation(customer.display_name, reference, total),
+            aggregate_type="order",
+            aggregate_id=order["id"],
         )
     owners = await db.fetch_all(
         """
@@ -469,16 +466,18 @@ async def _queue_order_emails(
         (order["id"],),
     )
     for owner in owners:
-        background.add_task(
-            send_email,
-            owner["email"],
-            f"Order Received: {reference}",
-            f"Hi {owner['display_name']},\n\nAn order ({reference}) has been received for "
+        await enqueue_email(
+            db,
+            dedupe_key=f"order:{order['id']}:farm-owner:{owner['email']}:{owner['farm_name']}",
+            to=owner["email"],
+            subject=f"Order Received: {reference}",
+            body=f"Hi {owner['display_name']},\n\nAn order ({reference}) has been received for "
             f"{owner['farm_name']}. Please prepare it for fulfilment.",
-            settings,
-            render_farm_order_notification(
+            html_body=render_farm_order_notification(
                 owner["display_name"], owner["farm_name"], reference, settings.public_admin_url
             ),
+            aggregate_type="order",
+            aggregate_id=order["id"],
         )
 
 

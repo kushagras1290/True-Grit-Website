@@ -14,6 +14,7 @@ from truegrit_api.auth.principal import Principal
 from truegrit_api.auth.sessions import resolve_session
 from truegrit_api.config import get_settings
 from truegrit_api.errors import AuthenticationError, PermissionDeniedError
+from truegrit_api.middleware.cache_policy import public_cache_policy
 from truegrit_api.platform.ai_chat import ChatModel, UnavailableChat
 from truegrit_api.platform.database import Database
 from truegrit_api.platform.translation import Translator, UnavailableTranslator
@@ -29,6 +30,10 @@ async def get_database(request: Request) -> Database:
     db: Database | None = getattr(request.app.state, "db", None)
     if db is None:
         raise RuntimeError("Application database is not configured.")
+    new_session = getattr(db, "new_session", None)
+    if callable(new_session):
+        consistency = "first-unconstrained" if public_cache_policy(request) else "first-primary"
+        return new_session(consistency)
     return db
 
 

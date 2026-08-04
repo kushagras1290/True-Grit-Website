@@ -25,30 +25,30 @@
   // stays in place regardless -- streaming real image bytes through
   // Pyodide's JS<->Python marshalling is wasteful at any CPU budget.
   "limits": {
-    "cpu_ms": 60000
+    "cpu_ms": 60000,
   },
   "observability": {
-    "enabled": false,
+    "enabled": true,
     "head_sampling_rate": 1,
     "logs": {
       "enabled": true,
       "head_sampling_rate": 1,
       "persist": true,
-      "invocation_logs": true
+      "invocation_logs": true,
     },
     "traces": {
-      "enabled": false,
+      "enabled": true,
       "persist": true,
-      "head_sampling_rate": 1
-    }
+      "head_sampling_rate": 0.05,
+    },
   },
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "truegrit-dev",
       "database_id": "ca1cec13-5ec4-4e59-85ef-1115b365bb89",
-      "migrations_dir": "../../database/migrations"
-    }
+      "migrations_dir": "../../database/migrations",
+    },
   ],
   // Staff messaging (migration 0073, truegrit_api/realtime/chat_room.py). One
   // ChatRoomDO per conversation, addressed by env.CHAT_ROOMS.get_by_name(id).
@@ -57,12 +57,12 @@
   // chat_room.py's module docstring) -- new_sqlite_classes is still the
   // required migration shape even for a DO that only uses ctx.storage.put/get.
   "durable_objects": {
-    "bindings": [{ "name": "CHAT_ROOMS", "class_name": "ChatRoomDO" }]
+    "bindings": [{ "name": "CHAT_ROOMS", "class_name": "ChatRoomDO" }],
   },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ChatRoomDO"] }],
   "r2_buckets": [
     { "binding": "MEDIA_BUCKET", "bucket_name": "truegrit-media-dev" },
-    { "binding": "EXPORTS_BUCKET", "bucket_name": "truegrit-exports-dev" }
+    { "binding": "EXPORTS_BUCKET", "bucket_name": "truegrit-exports-dev" },
   ],
   "kv_namespaces": [{ "binding": "CACHE", "id": "c90a4639e7a748c89a9f81db6b19e75f" }],
   // Auto-translate for admin-authored page content (migration 0067,
@@ -72,17 +72,32 @@
   // covers it. No separate API key or account: bindings authenticate via
   // the Worker's own execution context.
   "ai": {
-    "binding": "AI"
+    "binding": "AI",
   },
   "queues": {
-    "producers": [{ "binding": "JOBS_QUEUE", "queue": "truegrit-jobs-dev" }]
+    "producers": [{ "binding": "JOBS_QUEUE", "queue": "truegrit-jobs-dev" }],
+    "consumers": [
+      {
+        "queue": "truegrit-jobs-dev",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5,
+        "max_retries": 5,
+        "dead_letter_queue": "truegrit-dlq-dev",
+      },
+      {
+        "queue": "truegrit-dlq-dev",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5,
+        "max_retries": 3,
+      },
+    ],
   },
   "triggers": {
     // Daily at 03:00 UTC (08:30 IST) -- before typical same-day dispatch
     // hours. Drives Subscribe & Save renewals (Default.scheduled in
     // worker.py); a no-op cost of one settings read on stores that have
     // never turned the feature on. See services/subscriptions.py.
-    "crons": ["0 3 * * *"]
+    "crons": ["* * * * *", "0 3 * * *"],
   },
   "vars": {
     "APP_ENV": "development",
@@ -136,8 +151,135 @@
     "PAYPAL_ENVIRONMENT": "sandbox",
     "PAYPAL_CLIENT_ID": "",
     "PAYPAL_CURRENCY": "USD",
-    "PAYPAL_INR_PER_UNIT": "0"
-  }
+    "PAYPAL_INR_PER_UNIT": "0",
+  },
+  "env": {
+    "staging": {
+      "name": "truegrit-api-staging",
+      "workers_dev": true,
+      "observability": {
+        "enabled": true,
+        "logs": { "enabled": true, "persist": true, "invocation_logs": true },
+        "traces": { "enabled": true, "persist": true, "head_sampling_rate": 0.1 },
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "truegrit-staging",
+          "database_id": "67cd4e24-f693-4f5a-8057-97371899b87e",
+          "migrations_dir": "../../database/migrations",
+        },
+      ],
+      "durable_objects": {
+        "bindings": [{ "name": "CHAT_ROOMS", "class_name": "ChatRoomDO" }],
+      },
+      "r2_buckets": [
+        { "binding": "MEDIA_BUCKET", "bucket_name": "truegrit-media-staging" },
+        { "binding": "EXPORTS_BUCKET", "bucket_name": "truegrit-exports-staging" },
+      ],
+      "kv_namespaces": [
+        { "binding": "CACHE", "id": "a9e022092d024f9fb7d977f11927c86d" },
+      ],
+      "ai": { "binding": "AI" },
+      "queues": {
+        "producers": [{ "binding": "JOBS_QUEUE", "queue": "truegrit-jobs-staging" }],
+        "consumers": [
+          {
+            "queue": "truegrit-jobs-staging",
+            "max_batch_size": 10,
+            "max_batch_timeout": 5,
+            "max_retries": 5,
+            "dead_letter_queue": "truegrit-dlq-staging",
+          },
+          { "queue": "truegrit-dlq-staging", "max_batch_size": 10, "max_batch_timeout": 5 },
+        ],
+      },
+      "triggers": { "crons": ["* * * * *", "0 3 * * *"] },
+      "vars": {
+        "APP_ENV": "staging",
+        "PUBLIC_STOREFRONT_URL": "https://truegrit-storefront-staging.kushagras1234890.workers.dev",
+        "PUBLIC_ADMIN_URL": "https://truegrit-admin-staging.kushagras1234890.workers.dev",
+        "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
+        "FACEBOOK_APP_ID": "",
+        "SESSION_COOKIE_SAMESITE": "none",
+        "PBKDF2_ITERATIONS": "600000",
+        "PBKDF2_VERIFY_MAX_ITERATIONS": "600000",
+        "PHONE_REQUIRED_AT_REGISTRATION": "false",
+        "PHONE_REQUIRED_AT_CHECKOUT": "false",
+        "PAYMENT_STRIPE_VISIBLE": "false",
+        "PAYMENT_PAYPAL_VISIBLE": "false",
+        "PAYPAL_ENVIRONMENT": "sandbox",
+        "PAYPAL_CLIENT_ID": "",
+        "PAYPAL_CURRENCY": "USD",
+        "PAYPAL_INR_PER_UNIT": "0",
+      },
+    },
+    "production": {
+      "name": "truegrit-api-prod",
+      "workers_dev": true,
+      "observability": {
+        "enabled": true,
+        "logs": {
+          "enabled": true,
+          "head_sampling_rate": 0.1,
+          "persist": true,
+          "invocation_logs": true,
+        },
+        "traces": { "enabled": true, "persist": true, "head_sampling_rate": 0.05 },
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "truegrit-prod",
+          "database_id": "a2356e42-0e8f-42cf-862f-ef88b6f1bb9e",
+          "migrations_dir": "../../database/migrations",
+        },
+      ],
+      "durable_objects": {
+        "bindings": [{ "name": "CHAT_ROOMS", "class_name": "ChatRoomDO" }],
+      },
+      "r2_buckets": [
+        { "binding": "MEDIA_BUCKET", "bucket_name": "truegrit-media-prod" },
+        { "binding": "EXPORTS_BUCKET", "bucket_name": "truegrit-exports-prod" },
+      ],
+      "kv_namespaces": [
+        { "binding": "CACHE", "id": "243528e809a44fa4bf28c2d37248f58b" },
+      ],
+      "ai": { "binding": "AI" },
+      "queues": {
+        "producers": [{ "binding": "JOBS_QUEUE", "queue": "truegrit-jobs-prod" }],
+        "consumers": [
+          {
+            "queue": "truegrit-jobs-prod",
+            "max_batch_size": 10,
+            "max_batch_timeout": 5,
+            "max_retries": 5,
+            "dead_letter_queue": "truegrit-dlq-prod",
+          },
+          { "queue": "truegrit-dlq-prod", "max_batch_size": 10, "max_batch_timeout": 5 },
+        ],
+      },
+      "triggers": { "crons": ["* * * * *", "0 3 * * *"] },
+      "vars": {
+        "APP_ENV": "production",
+        "PUBLIC_STOREFRONT_URL": "https://truegrit-storefront-prod.kushagras1234890.workers.dev",
+        "PUBLIC_ADMIN_URL": "https://truegrit-admin-prod.kushagras1234890.workers.dev",
+        "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
+        "FACEBOOK_APP_ID": "",
+        "SESSION_COOKIE_SAMESITE": "none",
+        "PBKDF2_ITERATIONS": "600000",
+        "PBKDF2_VERIFY_MAX_ITERATIONS": "600000",
+        "PHONE_REQUIRED_AT_REGISTRATION": "false",
+        "PHONE_REQUIRED_AT_CHECKOUT": "false",
+        "PAYMENT_STRIPE_VISIBLE": "false",
+        "PAYMENT_PAYPAL_VISIBLE": "false",
+        "PAYPAL_ENVIRONMENT": "live",
+        "PAYPAL_CLIENT_ID": "",
+        "PAYPAL_CURRENCY": "USD",
+        "PAYPAL_INR_PER_UNIT": "0",
+      },
+    },
+  },
   // NOTE: every value in `vars` must be a JSON *string*. worker.py's env bridge
   // copies only strings into os.environ, so a bare `false` or `0` here would be
   // silently dropped and the setting would quietly fall back to its default.

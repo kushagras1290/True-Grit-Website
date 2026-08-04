@@ -70,19 +70,29 @@ browsing, search, authentication, cart operations, checkout, payments, discussio
 
 ## Issue register
 
-| ID       | Priority | Status         | Issue                                                                                                          | Primary risk                                                    |
-| -------- | -------- | -------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| SCAL-001 | P0       | Open           | API is configured for Workers Free                                                                             | CPU termination and daily request exhaustion                    |
-| SCAL-002 | P0       | Open           | Public storefront responses are not broadly edge-cached                                                        | Every visitor reaches Workers and D1                            |
-| SCAL-004 | P0       | Open           | No repeatable load-test suite or capacity baseline                                                             | Capacity claims cannot be verified                              |
-| SCAL-005 | P0       | Open           | Production resources and production-specific configuration are not represented in the active API Wrangler file | Development resources can become a deployment dependency        |
-| SCAL-006 | P1       | Open           | One D1 primary handles public reads and transactional writes                                                   | Database saturation and overload errors                         |
-| SCAL-008 | P1       | Open           | Queue producer exists without a configured consumer or dead-letter queue                                       | Non-durable work and lost/repeated side effects                 |
-| SCAL-009 | P1       | Open           | Global rate limiter is isolate-local                                                                           | Inconsistent protection during distributed traffic              |
-| SCAL-010 | P1       | Open           | Tracing is disabled and operational success metrics are incomplete                                             | Slow detection and diagnosis of production failures             |
-| SCAL-011 | P2       | Not applicable | Large-list APIs use counts and offset pagination                                                               | Increasing query cost as tables grow                            |
-| SCAL-012 | P2       | Open           | No documented data partitioning or archival thresholds                                                         | Emergency migration after a storage or write ceiling is reached |
-| SCAL-013 | P2       | Open           | Python/Pyodide CPU cost has no production benchmark                                                            | Higher latency and compute cost than expected                   |
+| ID       | Priority | Status                                | Issue                                                                                        | Primary risk                                                    |
+| -------- | -------- | ------------------------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| SCAL-001 | P0       | Code complete; benchmark pending      | Paid CPU limit and production PBKDF2 policy are configured                                   | CPU termination and daily request exhaustion                    |
+| SCAL-002 | P0       | Code complete; edge rule pending      | Anonymous public API responses have a tested shared-cache policy and tags                    | Every visitor reaches Workers and D1                            |
+| SCAL-004 | P0       | Suite complete; baseline pending      | Guarded k6 browse and final-unit checkout workloads are versioned                            | Capacity claims cannot be verified                              |
+| SCAL-005 | P0       | Config complete; provisioning pending | Staging/production bindings and a protected deployment workflow are represented              | Development resources can become a deployment dependency        |
+| SCAL-006 | P1       | Code complete; replication pending    | Request-scoped D1 Sessions and query telemetry are implemented                               | Database saturation and overload errors                         |
+| SCAL-008 | P1       | Core path complete; expansion pending | Outbox dispatcher, idempotent consumer, retries, DLQ, and durable email jobs are implemented | Non-durable work and lost/repeated side effects                 |
+| SCAL-009 | P1       | Edge configuration pending            | WAF/rate-limit controls are documented; Turnstile setup requires account/domain confirmation | Inconsistent protection during distributed traffic              |
+| SCAL-010 | P1       | Code complete; alerts pending         | Logs/traces and D1/cache/queue correlation signals are configured                            | Slow detection and diagnosis of production failures             |
+| SCAL-011 | P2       | Not applicable                        | Large-list APIs use counts and offset pagination                                             | Increasing query cost as tables grow                            |
+| SCAL-012 | P2       | Resolved                              | Data tiers and measurable migration triggers are documented                                  | Emergency migration after a storage or write ceiling is reached |
+| SCAL-013 | P2       | Benchmark pending                     | A repeatable Python Worker workload exists; measured comparison still requires staging       | Higher latency and compute cost than expected                   |
+
+Implementation landed on 2026-08-04 in the API
+[Wrangler configuration](../../apps/api/wrangler.jsonc),
+[cache policy](../../apps/api/src/truegrit_api/middleware/cache_policy.py),
+[D1 adapter](../../apps/api/src/truegrit_api/platform/d1.py),
+[durable jobs service](../../apps/api/src/truegrit_api/services/jobs.py),
+[capacity suite](../../tests/load/README.md), and
+[capacity runbook](../runbooks/capacity.md). Account-side items remain explicitly pending until
+their staging evidence exists; a repository implementation is not treated as a production capacity
+claim.
 
 ## Detailed findings and recommendations
 

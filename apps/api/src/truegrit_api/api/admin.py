@@ -6,7 +6,7 @@ import hmac
 import json
 from typing import Annotated, Any
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Query, Request, Response
+from fastapi import APIRouter, Depends, Query, Request, Response
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic.alias_generators import to_camel
 
@@ -160,6 +160,7 @@ from truegrit_api.services.homepage_geo import (
 )
 from truegrit_api.services.homepage_geo import validate_country as validate_homepage_country
 from truegrit_api.services.inventory import adjust_inventory, clear_inventory_levels
+from truegrit_api.services.jobs import enqueue_email
 from truegrit_api.services.media import (
     delete_media,
     list_media,
@@ -2887,7 +2888,6 @@ async def decide_submission_endpoint(
     submission_id: str,
     payload: SubmissionDecisionRequest,
     request: Request,
-    background: BackgroundTasks,
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(require_permission("submissions.review"))],
 ) -> Any:
@@ -2905,44 +2905,50 @@ async def decide_submission_endpoint(
         kind_path = "blog" if row["content_type"] == "article" else "recipes"
         if payload.decision == "approved" and result.get("slug"):
             live_url = f"{settings.public_storefront_url}/{kind_path}/{result['slug']}"
-            background.add_task(
-                send_email,
-                row["contact_email"],
-                f"Your {'blog post' if row['content_type'] == 'article' else 'recipe'} "
+            await enqueue_email(
+                db,
+                dedupe_key=f"submission:{submission_id}:approved",
+                to=row["contact_email"],
+                subject=f"Your {'blog post' if row['content_type'] == 'article' else 'recipe'} "
                 "is live on True Grit",
-                f'Hi {row["contact_name"]}, your submission "{row["title"]}" has been '
+                body=f'Hi {row["contact_name"]}, your submission "{row["title"]}" has been '
                 f"approved and is now live: {live_url}",
-                settings,
-                render_submission_approved(
+                html_body=render_submission_approved(
                     row["contact_name"], row["content_type"], row["title"], live_url
                 ),
+                aggregate_type="content_submission",
+                aggregate_id=submission_id,
             )
         elif payload.decision == "changes_requested" and payload.note:
             edit_url = f"{settings.public_storefront_url}/account/submissions/{submission_id}/edit"
-            background.add_task(
-                send_email,
-                row["contact_email"],
-                f"Changes requested on your "
+            await enqueue_email(
+                db,
+                dedupe_key=f"submission:{submission_id}:changes:{payload.note}",
+                to=row["contact_email"],
+                subject=f"Changes requested on your "
                 f"{'blog post' if row['content_type'] == 'article' else 'recipe'} submission",
-                f'Hi {row["contact_name"]}, changes were requested on "{row["title"]}": '
+                body=f'Hi {row["contact_name"]}, changes were requested on "{row["title"]}": '
                 f"{payload.note}\nEdit and resubmit: {edit_url}",
-                settings,
-                render_submission_changes_requested(
+                html_body=render_submission_changes_requested(
                     row["contact_name"], row["content_type"], row["title"], payload.note, edit_url
                 ),
+                aggregate_type="content_submission",
+                aggregate_id=submission_id,
             )
         elif payload.decision == "rejected" and payload.note:
-            background.add_task(
-                send_email,
-                row["contact_email"],
-                f"About your "
+            await enqueue_email(
+                db,
+                dedupe_key=f"submission:{submission_id}:rejected:{payload.note}",
+                to=row["contact_email"],
+                subject=f"About your "
                 f"{'blog post' if row['content_type'] == 'article' else 'recipe'} submission",
-                f"Hi {row['contact_name']}, after review we will not be publishing "
+                body=f"Hi {row['contact_name']}, after review we will not be publishing "
                 f'"{row["title"]}": {payload.note}',
-                settings,
-                render_submission_rejected(
+                html_body=render_submission_rejected(
                     row["contact_name"], row["content_type"], row["title"], payload.note
                 ),
+                aggregate_type="content_submission",
+                aggregate_id=submission_id,
             )
     return result
 
@@ -3054,12 +3060,10 @@ async def decide_farm_request_endpoint(
     entry_id: str,
     payload: FarmRequestDecisionRequest,
     request: Request,
-    background: BackgroundTasks,
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(require_permission("farm_requests.review"))],
 ) -> Any:
     _assert_main_admin(principal)
-    settings = get_settings()
     result = await farm_partnership_service.decide_request(
         db,
         principal,
@@ -3077,30 +3081,38 @@ async def decide_farm_request_endpoint(
     if recipient is not None and payload.decision in ("approved", "rejected"):
         note = result["note"] or ""
         if payload.decision == "approved":
-            background.add_task(
-                send_email,
-                recipient,
-                "Your farm application has been accepted",
-                (
+            await enqueue_email(
+                db,
+                dedupe_key=f"farm-application:{entry_id}:approved",
+                to=recipient,
+                subject="Your farm application has been accepted",
+                body=(
                     f"Hi {result['contactName']}, we would like to work with"
                     f" {result['farmName']}. Our sourcing team will be in touch."
                     + (f"\n\n{note}" if note else "")
                 ),
-                settings,
-                render_farm_partnership_approved(result["contactName"], result["farmName"], note),
+                html_body=render_farm_partnership_approved(
+                    result["contactName"], result["farmName"], note
+                ),
+                aggregate_type="farm_partnership_request",
+                aggregate_id=entry_id,
             )
         else:
-            background.add_task(
-                send_email,
-                recipient,
-                "About your farm application",
-                (
+            await enqueue_email(
+                db,
+                dedupe_key=f"farm-application:{entry_id}:rejected:{note}",
+                to=recipient,
+                subject="About your farm application",
+                body=(
                     f"Hi {result['contactName']}, after reading your application for"
                     f" {result['farmName']} we are not able to take it further right"
                     f" now.\n\n{note}"
                 ),
-                settings,
-                render_farm_partnership_rejected(result["contactName"], result["farmName"], note),
+                html_body=render_farm_partnership_rejected(
+                    result["contactName"], result["farmName"], note
+                ),
+                aggregate_type="farm_partnership_request",
+                aggregate_id=entry_id,
             )
     return {"id": result["id"], "status": result["status"]}
 

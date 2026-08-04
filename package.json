@@ -21,7 +21,9 @@
     "test": "pnpm -r test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "db:validate": "python3 scripts/validate_migrations.py"
+    "db:validate": "python3 scripts/validate_migrations.py",
+    "load:public": "k6 run tests/load/public-browse.js",
+    "load:checkout-race": "k6 run tests/load/checkout-race.js"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

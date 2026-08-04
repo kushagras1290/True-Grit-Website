@@ -22,3 +22,26 @@
 - **Paid at provider, pending internally:** check webhook delivery, signature validation,
   provider event id uniqueness, queue retries. Corrections go through the reconciliation tool
   and are audited.
+
+## Queue backlog or dead letters
+
+Alert when oldest-message age exceeds 60 seconds for five minutes, consumer failures exceed 1%, or
+the dead-letter queue is non-empty. Correlate `idempotencyKey` with `outbox_events.id`, structured
+Worker logs, and `job_failures.event_id`. Fix the underlying provider/configuration error before
+replaying. Replays are safe only while `processed_queue_messages` is intact; never delete its row to
+force a financial or customer-communication side effect without an explicit reconciliation record.
+
+## D1 overload or latency
+
+Alert on overload errors immediately and on route-family/query p95 regressions for 10 minutes.
+Inspect `d1_query`/`d1_batch` events by query fingerprint, consistency, `served_by_primary`, rows read,
+and rows written. First reduce/cache public reads and stop analytical/admin scans. Do not route
+checkout, inventory, payment, or immediately-after-write reads to an unconstrained replica.
+
+## Cache leakage or stale content
+
+For suspected leakage, disable the API Cache Rule, purge `truegrit-public-api`, and preserve the
+request/response evidence. Any response with cookies, authorization, private-route prefixes,
+`Set-Cookie`, non-200 status, or a write method must report `x-cache-policy: bypass` and
+`Cache-Control: no-store`. For stale content, inspect the publishing outbox row, queue delivery,
+cache-version KV marker, and tag purge before reducing TTLs globally.

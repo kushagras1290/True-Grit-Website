@@ -7,7 +7,7 @@ import json
 import re
 from typing import Annotated, Any
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Query, Response
+from fastapi import APIRouter, Depends, Query, Response
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
@@ -50,7 +50,6 @@ from truegrit_api.schemas.public import (
 from truegrit_api.services import support_bot_settings
 from truegrit_api.services.announcements import resolve_announcement
 from truegrit_api.services.appearance import load_public_appearance
-from truegrit_api.services.email import send_email
 from truegrit_api.services.feature_settings import (
     load_curated_max_items,
     load_delivery_settings,
@@ -60,6 +59,7 @@ from truegrit_api.services.feature_settings import (
     recommendations_enabled,
 )
 from truegrit_api.services.homepage_geo import resolve_public_home
+from truegrit_api.services.jobs import enqueue_email
 from truegrit_api.services.site_documents import (
     SITE_DOCUMENT_TYPES,
     SITEMAP_GENERATORS,
@@ -306,7 +306,6 @@ async def sitemap_kind(kind: str, db: Annotated[Database, Depends(get_database)]
 @router.post("/contact")
 async def contact(
     payload: ContactRequest,
-    background: BackgroundTasks,
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
     email = payload.email.strip().lower()
@@ -336,15 +335,17 @@ async def contact(
     )
     settings = get_settings()
     to = settings.contact_recipient_email or settings.admin_login_email
-    background.add_task(
-        send_email,
-        to,
-        f"Contact form: {payload.subject.strip()}",
-        (
+    await enqueue_email(
+        db,
+        dedupe_key=f"contact:{message_id}:staff",
+        to=to,
+        subject=f"Contact form: {payload.subject.strip()}",
+        body=(
             f"Name: {payload.name.strip()}\nEmail: {email}\nPhone: {phone}\n\n"
             f"{payload.message.strip()}"
         ),
-        settings,
+        aggregate_type="contact_message",
+        aggregate_id=message_id,
     )
     return {"ok": True, "id": message_id}
 

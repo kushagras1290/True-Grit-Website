@@ -23,7 +23,7 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from typing import Annotated, Any, Final
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Request
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
@@ -40,9 +40,9 @@ from truegrit_api.domain.phone import normalize_phone
 from truegrit_api.errors import RateLimitError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.partnerships import FarmPartnershipRequestRepository
-from truegrit_api.services.email import send_email
 from truegrit_api.services.email_templates import render_farm_partnership_received
 from truegrit_api.services.farm_partnerships import create_request, is_enabled
+from truegrit_api.services.jobs import enqueue_email
 
 router = APIRouter(tags=["storefront-farm-partnerships"])
 
@@ -120,7 +120,6 @@ async def farm_partnership_settings(db: Annotated[Database, Depends(get_database
 async def submit_farm_partnership_request(
     payload: FarmPartnershipRequestPayload,
     request: Request,
-    background: BackgroundTasks,
     db: Annotated[Database, Depends(get_database)],
     customer: Annotated[Principal | None, Depends(get_optional_customer)],
 ) -> Any:
@@ -161,18 +160,18 @@ async def submit_farm_partnership_request(
         message=payload.message,
     )
 
-    # Both mails are backgrounded: an application must be recorded whether or
-    # not mail is configured, and the applicant should not wait on SMTP to see
-    # the confirmation screen.
+    # Both messages are durable queue jobs, so the applicant does not wait on
+    # the provider and retries cannot duplicate a delivered email.
     applicant_email = payload.contact_email.strip().lower()
     applicant_phone = normalize_phone(payload.contact_phone)
 
     to = settings.contact_recipient_email or settings.admin_login_email
-    background.add_task(
-        send_email,
-        to,
-        f"Farm application: {result['farmName']}",
-        (
+    await enqueue_email(
+        db,
+        dedupe_key=f"farm-application:{result['id']}:staff",
+        to=to,
+        subject=f"Farm application: {result['farmName']}",
+        body=(
             f"{result['contactName']} has applied to supply True Grit.\n\n"
             f"Farm: {result['farmName']}\n"
             f"Region: {payload.region.strip()}\n"
@@ -181,20 +180,23 @@ async def submit_farm_partnership_request(
             f"{payload.message.strip()}\n\n"
             f"Review it in the admin console under Farm requests."
         ),
-        settings,
+        aggregate_type="farm_partnership_request",
+        aggregate_id=result["id"],
     )
-    background.add_task(
-        send_email,
-        applicant_email,
-        "We have your farm application",
-        (
+    await enqueue_email(
+        db,
+        dedupe_key=f"farm-application:{result['id']}:applicant",
+        to=applicant_email,
+        subject="We have your farm application",
+        body=(
             f"Hi {result['contactName']},\n\n"
             f"Thank you for telling us about {result['farmName']}. Your application to"
             " supply True Grit has reached our sourcing team, and someone will call you"
             " on the number you gave us.\n\n"
             "The True Grit Team"
         ),
-        settings,
-        render_farm_partnership_received(result["contactName"], result["farmName"]),
+        html_body=render_farm_partnership_received(result["contactName"], result["farmName"]),
+        aggregate_type="farm_partnership_request",
+        aggregate_id=result["id"],
     )
     return {"id": result["id"], "status": result["status"]}

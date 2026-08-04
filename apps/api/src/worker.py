@@ -50,6 +50,14 @@ _IMAGE_TYPES = {
 }
 
 
+class _WorkersQueuePublisher:
+    def __init__(self, binding: Any) -> None:
+        self._binding = binding
+
+    async def send(self, message: dict[str, Any]) -> None:
+        await self._binding.send(message)
+
+
 def _to_py(value: Any) -> Any:
     to_py = getattr(value, "to_py", None)
     return to_py() if callable(to_py) else value
@@ -288,7 +296,7 @@ async def _serve_media_direct(env: Any, request: Any, path: str) -> Any:
 
 
 class Default(WorkerEntrypoint):
-    async def scheduled(self, controller: Any) -> None:
+    async def scheduled(self, controller: Any, env: Any = None, ctx: Any = None) -> None:
         """Cloudflare Cron Trigger entry point (see `triggers.crons` in
         wrangler.jsonc) -- places one renewal order for every Subscribe & Save
         subscription due today, via the identical code path the admin's
@@ -308,16 +316,103 @@ class Default(WorkerEntrypoint):
         not already retry on its own.
         """
         from truegrit_api.platform.d1 import D1Database
+        from truegrit_api.services.jobs import dispatch_pending_outbox
         from truegrit_api.services.subscriptions import run_due_renewals
         from truegrit_api.util.ids import new_request_id
 
         try:
             _bridge_worker_env(self.env)
             db = D1Database(self.env.DB)
-            result = await run_due_renewals(db, new_request_id())
-            print(f"subscriptions.scheduled: {result['succeeded']}/{result['processed']} renewed")
+            dispatched = await dispatch_pending_outbox(
+                db, _WorkersQueuePublisher(self.env.JOBS_QUEUE)
+            )
+            print(
+                "outbox.scheduled: "
+                f"{dispatched['published']}/{dispatched['selected']} published, "
+                f"{dispatched['failed']} failed"
+            )
+            if str(getattr(controller, "cron", "")) == "0 3 * * *":
+                result = await run_due_renewals(db, new_request_id())
+                print(
+                    f"subscriptions.scheduled: {result['succeeded']}/{result['processed']} renewed"
+                )
         except Exception as exc:
             print(f"subscriptions.scheduled crashed: {type(exc).__name__}: {exc}")
+
+    async def queue(self, batch: Any, env: Any = None, ctx: Any = None) -> None:
+        """Consume jobs idempotently and retain exhausted messages from the DLQ."""
+        import json
+
+        from truegrit_api.services.email import OutboundEmail
+        from truegrit_api.services.jobs import process_queue_job, retain_dead_letter
+
+        _bridge_worker_env(self.env)
+        db = D1Database(self.env.DB)
+        queue_name = str(getattr(batch, "queue", ""))
+        messages = batch.messages
+
+        async def invalidate_cache(aggregate_type: str, aggregate_id: str) -> None:
+            await self.env.CACHE.put(
+                f"cache-version:{aggregate_type}:{aggregate_id}",
+                datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            )
+
+        async def deliver_email(email: OutboundEmail, idempotency_key: str) -> bool:
+            settings = Settings()
+            if not settings.resend_api_key:
+                print("queue.email_unconfigured: RESEND_API_KEY is required")
+                return False
+            from js import fetch
+
+            payload: dict[str, Any] = {
+                "from": settings.email_from,
+                "to": [email.to],
+                "subject": email.subject,
+                "text": email.body,
+            }
+            if email.html_body:
+                payload["html"] = email.html_body
+            response = await fetch(
+                settings.resend_api_url,
+                _js_object(
+                    {
+                        "method": "POST",
+                        "headers": {
+                            "authorization": f"Bearer {settings.resend_api_key}",
+                            "content-type": "application/json",
+                            "idempotency-key": idempotency_key,
+                        },
+                        "body": json.dumps(payload),
+                    }
+                ),
+            )
+            return bool(response.ok)
+
+        for raw_message in messages:
+            message = raw_message
+            body = _to_py(message.body)
+            payload = dict(_to_py(body)) if body is not None else {}
+            try:
+                if "dlq" in queue_name.lower():
+                    await retain_dead_letter(db, payload, "Queue delivery retries exhausted.")
+                    message.ack()
+                    print(f"queue.dead_letter_retained: {payload.get('idempotencyKey', 'unknown')}")
+                    continue
+                outcome = await process_queue_job(
+                    db,
+                    payload,
+                    deliver_email=deliver_email,
+                    invalidate_cache=invalidate_cache,
+                )
+                message.ack()
+                print(f"queue.job_{outcome}: {payload.get('idempotencyKey', 'unknown')}")
+            except Exception as exc:
+                print(
+                    "queue.job_failed: "
+                    f"{payload.get('idempotencyKey', 'unknown')} "
+                    f"{type(exc).__name__}"
+                )
+                message.retry()
 
     async def fetch(self, request: Any) -> Any:
         global _app

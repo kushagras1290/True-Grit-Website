@@ -174,9 +174,8 @@ def send_email(
     primary action (order, reset) is never blocked by mail delivery.
 
     Returns True if the configured transport accepted the message, False if it
-    raised. Never raises itself -- callers that only want fire-and-forget
-    semantics (e.g. `BackgroundTasks.add_task(send_email, ...)`) can continue to
-    ignore the return value with no change in behaviour."""
+    raised. Never raises itself. Durable Worker delivery uses ``services.jobs``
+    so provider failures are retried instead of being swallowed."""
     resolved = settings or get_settings()
     try:
         get_email_sender(resolved).send(

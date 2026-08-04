@@ -1,0 +1,88 @@
+name: Deploy API environment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Isolated Cloudflare environment
+        required: true
+        type: choice
+        options: [staging, production]
+      confirmation:
+        description: Type DEPLOY staging or DEPLOY production
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-api-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: API (${{ inputs.environment }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ inputs.environment }}
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: "68185599d29e656475ecc2cabbf581b7"
+      TARGET_ENVIRONMENT: ${{ inputs.environment }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Assert deployment target
+        run: |
+          test "$CONFIRMATION" = "DEPLOY $TARGET_ENVIRONMENT"
+          test "$TARGET_ENVIRONMENT" = "staging" -o "$TARGET_ENVIRONMENT" = "production"
+          npx --yes wrangler@4.110.0 whoami
+
+      - name: Verify isolated resources exist
+        working-directory: apps/api
+        run: |
+          suffix="$TARGET_ENVIRONMENT"
+          if [ "$TARGET_ENVIRONMENT" = "production" ]; then suffix="prod"; fi
+          npx --yes wrangler@4.110.0 d1 info "truegrit-$suffix"
+          npx --yes wrangler@4.110.0 queues info "truegrit-jobs-$suffix"
+          npx --yes wrangler@4.110.0 queues info "truegrit-dlq-$suffix"
+          npx --yes wrangler@4.110.0 r2 bucket info "truegrit-media-$suffix"
+          npx --yes wrangler@4.110.0 r2 bucket info "truegrit-exports-$suffix"
+
+      - name: Validate code and configuration
+        working-directory: apps/api
+        run: |
+          uv sync --locked
+          uv run ruff check src tests
+          uv run pytest
+          npx --yes wrangler@4.110.0 deploy --dry-run --env "$TARGET_ENVIRONMENT"
+
+      - name: Apply D1 migrations one at a time
+        working-directory: apps/api
+        run: |
+          set -e
+          migrations_dir="../../database/migrations"
+          hold_dir="$(mktemp -d)"
+          mv "$migrations_dir"/*.sql "$hold_dir"/
+          for file in "$hold_dir"/*.sql; do
+            mv "$file" "$migrations_dir"/
+            npx --yes wrangler@4.110.0 d1 migrations apply DB \
+              --env "$TARGET_ENVIRONMENT" --remote
+          done
+
+      - name: Deploy Python Worker
+        working-directory: apps/api
+        run: uvx --from workers-py pywrangler deploy --env "$TARGET_ENVIRONMENT"
+
+      - name: Verify live endpoint
+        run: |
+          suffix="$TARGET_ENVIRONMENT"
+          if [ "$TARGET_ENVIRONMENT" = "production" ]; then suffix="prod"; fi
+          curl --fail --retry 5 --retry-all-errors \
+            "https://truegrit-api-$suffix.kushagras1234890.workers.dev/health/live"

@@ -17,6 +17,7 @@ from truegrit_api.api.submissions import router as submissions_router
 from truegrit_api.api.support_bot import router as support_bot_router
 from truegrit_api.api.support_bot_public import router as support_bot_public_router
 from truegrit_api.config import get_settings
+from truegrit_api.middleware.cache_policy import PublicCachePolicyMiddleware
 from truegrit_api.middleware.error_handler import install_error_handlers
 from truegrit_api.middleware.rate_limit import RateLimitMiddleware
 from truegrit_api.middleware.request_id import RequestIdMiddleware
@@ -49,6 +50,7 @@ def create_app(
     # x-request-id) and CORS. The request-id middleware wraps everything else.
     app.add_middleware(RateLimitMiddleware)
     app.add_middleware(SecurityHeadersMiddleware)
+    app.add_middleware(PublicCachePolicyMiddleware)
     app.add_middleware(RequestIdMiddleware)
     app.add_middleware(
         CORSMiddleware,

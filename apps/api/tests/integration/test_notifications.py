@@ -1,4 +1,4 @@
-"""Integration tests: admin-only farm-owner creation, order emails, and the
+"""Integration tests: admin-only farm-owner creation, durable email jobs, and the
 password-reset flows for the customer and staff portals."""
 
 from __future__ import annotations
@@ -33,6 +33,13 @@ def _fast_hashing(monkeypatch: pytest.MonkeyPatch):
 def _token_from(body: str) -> str | None:
     match = re.search(r"token=([A-Za-z0-9_\-]+)", body)
     return match.group(1) if match else None
+
+
+def _pending_emails(db: SQLiteDatabase) -> list[dict[str, object]]:
+    rows = db._conn.execute(
+        "SELECT payload_json FROM outbox_events WHERE event_type = 'notification.email.v1'"
+    ).fetchall()
+    return [json.loads(row["payload_json"]) for row in rows]
 
 
 # --- Farm-owner creation (admin panel only) ---------------------------------
@@ -80,14 +87,7 @@ def test_farm_owner_cannot_create_farm_owner(client: TestClient, db: SQLiteDatab
 # --- Order emails -----------------------------------------------------------
 
 
-def test_checkout_emails_customer_and_farm_owner(
-    client: TestClient, db: SQLiteDatabase, monkeypatch: pytest.MonkeyPatch
-):
-    sent: list[str] = []
-    monkeypatch.setattr(
-        "truegrit_api.api.storefront.send_email",
-        lambda to, subject, body, settings=None, html_body=None: sent.append(to),
-    )
+def test_checkout_queues_customer_and_farm_owner_emails(client: TestClient, db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_cust_riya"))
     response = client.post(
         "/v1/public/checkout",
@@ -97,20 +97,16 @@ def test_checkout_emails_customer_and_farm_owner(
         },
     )
     assert response.status_code == 200
-    assert "riya@example.test" in sent  # customer confirmation
-    assert "owner@devika.test" in sent  # owner of farm_devika (Alphonso)
+    recipients = {str(email["to"]) for email in _pending_emails(db)}
+    assert "riya@example.test" in recipients  # customer confirmation
+    assert "owner@devika.test" in recipients  # owner of farm_devika (Alphonso)
 
 
 def test_contact_form_records_message_and_sends_email(
     client: TestClient, db: SQLiteDatabase, monkeypatch: pytest.MonkeyPatch
 ):
-    sent: list[tuple[str, str]] = []
     monkeypatch.setenv("CONTACT_RECIPIENT_EMAIL", "support@truegrit.test")
     get_settings.cache_clear()
-    monkeypatch.setattr(
-        "truegrit_api.api.public.send_email",
-        lambda to, subject, body, settings=None, html_body=None: sent.append((to, subject)),
-    )
     response = client.post(
         "/v1/public/contact",
         json={
@@ -132,7 +128,10 @@ def test_contact_form_records_message_and_sends_email(
     assert row["phone_e164"] == "+919876543210"
     assert row["subject"] == "Order help"
     assert "latest order" in row["message"]
-    assert sent == [("support@truegrit.test", "Contact form: Order help")]
+    emails = _pending_emails(db)
+    assert [(email["to"], email["subject"]) for email in emails] == [
+        ("support@truegrit.test", "Contact form: Order help")
+    ]
 
 
 def test_contact_form_requires_a_reachable_phone_number(client: TestClient):
@@ -155,21 +154,14 @@ def test_contact_form_requires_a_reachable_phone_number(client: TestClient):
 # --- Customer password reset ------------------------------------------------
 
 
-def test_customer_password_reset_flow(
-    client: TestClient, db: SQLiteDatabase, monkeypatch: pytest.MonkeyPatch
-):
-    captured: dict[str, str] = {}
-    monkeypatch.setattr(
-        "truegrit_api.api.customer_auth.send_email",
-        lambda to, subject, body, settings=None, html_body=None: captured.update(body=body),
-    )
+def test_customer_password_reset_flow(client: TestClient, db: SQLiteDatabase):
     assert (
         client.post(
             "/v1/public/auth/password-reset", json={"email": "riya@example.test"}
         ).status_code
         == 200
     )
-    token = _token_from(captured["body"])
+    token = _token_from(str(_pending_emails(db)[0]["body"]))
     assert token is not None
 
     confirm = client.post(

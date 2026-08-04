@@ -29,7 +29,7 @@ import inspect
 import re
 from typing import Annotated, Any
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Request, Response
+from fastapi import APIRouter, Depends, Request, Response
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
@@ -54,12 +54,12 @@ from truegrit_api.errors import (
 )
 from truegrit_api.platform.database import Database
 from truegrit_api.services.contact import contactable_email
-from truegrit_api.services.email import send_email
 from truegrit_api.services.email_templates import render_customer_welcome
 from truegrit_api.services.feature_settings import (
     assert_sign_in_method_enabled,
     load_storefront_settings,
 )
+from truegrit_api.services.jobs import enqueue_email
 from truegrit_api.services.otp import (
     PURPOSE_REGISTER,
     PhoneVerificationRequiredError,
@@ -256,7 +256,6 @@ async def register(
     payload: RegisterRequest,
     request: Request,
     response: Response,
-    background: BackgroundTasks,
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
     settings = get_settings()
@@ -345,15 +344,14 @@ async def register(
     await start_session(
         db, response, user_id=user_id, settings=settings, user_agent_summary="customer-register"
     )
-    # Welcome mail is a background task for the same reason order confirmations
-    # are: `send_email` already swallows transport errors, and the account has
-    # been created either way — a mail outage must not turn a successful sign-up
-    # into a failed request.
-    background.add_task(
-        send_email,
-        email,
-        "Welcome to True Grit",
-        (
+    # Persist the welcome notification for the queue consumer; provider latency
+    # and outages never sit in the registration request path.
+    await enqueue_email(
+        db,
+        dedupe_key=f"customer:{user_id}:welcome",
+        to=email,
+        subject="Welcome to True Grit",
+        body=(
             f"Hi {name},\n\n"
             "Your True Grit account is ready. You can track orders, save delivery"
             " addresses and follow the farms behind everything you buy.\n\n"
@@ -361,8 +359,9 @@ async def register(
             "If you did not create this account, please contact us and we will close it.\n\n"
             "The True Grit Team"
         ),
-        settings,
-        render_customer_welcome(name, settings.public_storefront_url),
+        html_body=render_customer_welcome(name, settings.public_storefront_url),
+        aggregate_type="customer",
+        aggregate_id=user_id,
     )
     return {
         "ok": True,
@@ -537,7 +536,6 @@ class PasswordResetConfirm(_CamelModel):
 async def password_reset_request(
     payload: PasswordResetRequest,
     request: Request,
-    background: BackgroundTasks,
     db: Annotated[Database, Depends(get_database)],
 ) -> Any:
     settings = get_settings()
@@ -557,13 +555,15 @@ async def password_reset_request(
         settings=settings,
     )
     if email is not None:
-        background.add_task(
-            send_email,
-            email.to,
-            email.subject,
-            email.body,
-            settings,
-            email.html_body,
+        await enqueue_email(
+            db,
+            dedupe_key=f"customer-password-reset:{email.body}",
+            to=email.to,
+            subject=email.subject,
+            body=email.body,
+            html_body=email.html_body,
+            aggregate_type="customer_password_reset",
+            aggregate_id=email.to,
         )
     return {"ok": True}
 
