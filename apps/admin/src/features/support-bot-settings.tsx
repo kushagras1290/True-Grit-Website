@@ -115,8 +115,12 @@ function KnowledgeFormModal({
               setValues((v) => ({ ...v, scope: event.target.value as SupportBotScope }))
             }
           >
-            <option value="admin"><T>Admin panel bot</T></option>
-            <option value="storefront"><T>Storefront bot</T></option>
+            <option value="admin">
+              <T>Admin panel bot</T>
+            </option>
+            <option value="storefront">
+              <T>Storefront bot</T>
+            </option>
           </Select>
         </Field>
         <Field label="Title" htmlFor="sbk-title">
@@ -268,9 +272,15 @@ export function SupportBotSettingsPage() {
           onChange={(event) => setScopeFilter(event.target.value as SupportBotScope | "all")}
           className="w-auto"
         >
-          <option value="all"><T>All</T></option>
-          <option value="admin"><T>Admin panel bot</T></option>
-          <option value="storefront"><T>Storefront bot</T></option>
+          <option value="all">
+            <T>All</T>
+          </option>
+          <option value="admin">
+            <T>Admin panel bot</T>
+          </option>
+          <option value="storefront">
+            <T>Storefront bot</T>
+          </option>
         </Select>
       </div>
 
@@ -283,10 +293,18 @@ export function SupportBotSettingsPage() {
         <DataTableShell>
           <thead>
             <tr className="border-b border-line">
-              <Th><T>Title</T></Th>
-              <Th><T>Scope</T></Th>
-              <Th><T>Keywords</T></Th>
-              <Th><T>Updated</T></Th>
+              <Th>
+                <T>Title</T>
+              </Th>
+              <Th>
+                <T>Scope</T>
+              </Th>
+              <Th>
+                <T>Keywords</T>
+              </Th>
+              <Th>
+                <T>Updated</T>
+              </Th>
               <Th />
             </tr>
           </thead>

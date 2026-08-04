@@ -882,6 +882,4 @@ async def search(
     country: Annotated[str | None, Query(max_length=2)] = None,
     locale: Annotated[str | None, Query(max_length=10)] = None,
 ) -> Any:
-    return await SearchRepository(db).search(
-        q, country=_normalize_country(country), locale=locale
-    )
+    return await SearchRepository(db).search(q, country=_normalize_country(country), locale=locale)

@@ -323,9 +323,7 @@ class FarmRepository:
         translation = None
         if locale and locale != "en":
             translation = await EntityTranslationRepository(self._db).get("farm", row["id"], locale)
-        return await self._detail_from_row(
-            row, translation["fields"] if translation else None
-        )
+        return await self._detail_from_row(row, translation["fields"] if translation else None)
 
     async def _detail_from_row(
         self, row: dict[str, Any], fields: dict[str, Any] | None = None
