@@ -20,6 +20,7 @@ into the tool-calling loop itself.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from typing import Any, Protocol
 
@@ -178,14 +179,33 @@ class WorkersAIChat:
             raise ChatUnavailableError(
                 "The support bot is temporarily unavailable. Try again shortly."
             ) from exc
-        return _parse_completion(result)
+        completion = _parse_completion(result)
+        # TEMPORARY: diagnostics, remove once the tool loop is verified.
+        print(
+            "ai_chat.round: sent="
+            f"{len(payload['messages'])} text={'yes' if completion.text else 'no'} "
+            f"calls={[(c.name, c.arguments) for c in completion.tool_calls]}"
+        )
+        return completion
+
+
+def _to_py(value: Any) -> Any:
+    """Unwrap a Pyodide JsProxy into the equivalent Python value.
+
+    Everything the `AI` binding returns is a JsProxy, so plain `isinstance`
+    checks against `dict`/`list` are always False on it — a tool call's
+    `arguments` silently read as "no arguments" before this. Values that are
+    already native Python (the fake ChatModel used in tests) pass through.
+    """
+    to_py = getattr(value, "to_py", None)
+    return to_py() if callable(to_py) else value
 
 
 def _get(result: Any, key: str) -> Any:
     value = getattr(result, key, None)
     if value is None and isinstance(result, dict):
         value = result.get(key)
-    return value
+    return _to_py(value)
 
 
 def _parse_completion(result: Any) -> ChatCompletion:
@@ -194,6 +214,13 @@ def _parse_completion(result: Any) -> ChatCompletion:
     for index, raw_call in enumerate(raw_tool_calls):
         name = _get(raw_call, "name")
         arguments = _get(raw_call, "arguments")
+        # Workers AI sometimes returns the arguments as a JSON string rather
+        # than an object, and `_get` yields a plain dict for the object case.
+        if isinstance(arguments, str):
+            try:
+                arguments = json.loads(arguments)
+            except ValueError:
+                arguments = {}
         if not isinstance(arguments, dict):
             arguments = {}
         if not name:
