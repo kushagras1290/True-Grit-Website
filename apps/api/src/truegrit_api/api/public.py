@@ -19,7 +19,6 @@ from truegrit_api.errors import NotFoundError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.bundles import BundleRepository
 from truegrit_api.repositories.catalogue import CatalogueRepository
-from truegrit_api.repositories.entity_translations import EntityTranslationRepository
 from truegrit_api.repositories.content import (
     ArticleRepository,
     CategoryRepository,
@@ -32,6 +31,7 @@ from truegrit_api.repositories.content import (
     SearchRepository,
     SiteDocumentRepository,
 )
+from truegrit_api.repositories.entity_translations import EntityTranslationRepository
 from truegrit_api.repositories.promotions import PromotionRepository
 from truegrit_api.schemas.public import (
     ArticleDetail,
