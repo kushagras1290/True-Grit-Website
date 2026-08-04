@@ -162,7 +162,19 @@ class WorkersAIChat:
             payload["tools"] = [_tool_to_wire(tool) for tool in tools]
         try:
             result = await self._ai.run(self._model, _js_payload(payload))
-        except Exception as exc:
+        except Exception as exc:  # TEMPORARY: diagnostics, remove once root-caused
+            import json as _json
+
+            shape = [
+                {
+                    "role": m.get("role"),
+                    "content_type": type(m.get("content")).__name__,
+                    "keys": sorted(m.keys()),
+                }
+                for m in payload["messages"]
+            ]
+            print(f"ai_chat.run_failed: {type(exc).__name__}: {exc}")
+            print(f"ai_chat.payload_shape: has_tools={'tools' in payload} {_json.dumps(shape)}")
             raise ChatUnavailableError(
                 "The support bot is temporarily unavailable. Try again shortly."
             ) from exc
