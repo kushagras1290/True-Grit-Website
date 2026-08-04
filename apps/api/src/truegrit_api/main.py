@@ -14,6 +14,8 @@ from truegrit_api.api.phone_auth import router as phone_auth_router
 from truegrit_api.api.public import router as public_router
 from truegrit_api.api.storefront import router as storefront_router
 from truegrit_api.api.submissions import router as submissions_router
+from truegrit_api.api.support_bot import router as support_bot_router
+from truegrit_api.api.support_bot_public import router as support_bot_public_router
 from truegrit_api.config import get_settings
 from truegrit_api.middleware.error_handler import install_error_handlers
 from truegrit_api.middleware.rate_limit import RateLimitMiddleware
@@ -97,8 +99,10 @@ def create_app(
     app.include_router(submissions_router, prefix="/v1/public")
     app.include_router(community_router, prefix="/v1/public")
     app.include_router(farm_partnerships_router, prefix="/v1/public")
+    app.include_router(support_bot_public_router, prefix="/v1/public")
     app.include_router(admin_router, prefix="/v1/admin")
     app.include_router(messages_router, prefix="/v1/admin")
+    app.include_router(support_bot_router, prefix="/v1/admin")
 
     @app.get("/health/live", tags=["health"])
     async def live() -> dict[str, str]:

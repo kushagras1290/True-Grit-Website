@@ -1,0 +1,172 @@
+"""Admin support bot: available to any signed-in staff member (no extra
+permission -- it's a help tool, and every live-data tool it can call
+re-checks the caller's own permissions independently in
+`services.support_bot`).
+
+Also serves the knowledge-base management screen both bots' reference
+material is edited from (`support_bot.manage`) -- see
+`services.support_bot_knowledge`'s module docstring for why one screen
+covers both the admin and storefront bot's knowledge via a `scope` filter
+rather than two separate CRUD surfaces.
+"""
+
+from __future__ import annotations
+
+from typing import Annotated, Any
+
+from fastapi import APIRouter, Depends, Query, Request
+from pydantic import BaseModel, ConfigDict, Field
+from pydantic.alias_generators import to_camel
+
+from truegrit_api.auth.dependencies import (
+    get_chat_model,
+    get_current_staff,
+    get_database,
+    require_permission,
+)
+from truegrit_api.auth.principal import Principal
+from truegrit_api.platform.ai_chat import ChatModel
+from truegrit_api.platform.database import Database
+from truegrit_api.services import support_bot, support_bot_knowledge, support_bot_settings
+from truegrit_api.services.support_bot_knowledge import Scope
+from truegrit_api.services.support_bot_settings import BotScope
+
+router = APIRouter(tags=["admin-support-bot"])
+
+
+class _CamelModel(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+
+class ChatTurn(_CamelModel):
+    role: str = Field(pattern="^(user|assistant)$")
+    content: str = Field(min_length=1, max_length=4000)
+
+
+class SupportBotChatRequest(_CamelModel):
+    message: str = Field(min_length=1, max_length=2000)
+    history: list[ChatTurn] = Field(default_factory=list, max_length=20)
+
+
+class KnowledgeEntryRequest(_CamelModel):
+    scope: Scope
+    title: str = Field(min_length=1, max_length=120)
+    keywords: str = Field(min_length=1, max_length=500)
+    content: str = Field(min_length=1, max_length=2000)
+
+
+class KnowledgeEntryUpdateRequest(_CamelModel):
+    title: str = Field(min_length=1, max_length=120)
+    keywords: str = Field(min_length=1, max_length=500)
+    content: str = Field(min_length=1, max_length=2000)
+
+
+class BotToggleRequest(_CamelModel):
+    enabled: bool
+
+
+def _request_id(request: Request) -> str:
+    return getattr(request.state, "request_id", "unknown")
+
+
+@router.post("/support-bot/chat")
+async def support_bot_chat(
+    db: Annotated[Database, Depends(get_database)],
+    actor: Annotated[Principal, Depends(get_current_staff)],
+    chat: Annotated[ChatModel, Depends(get_chat_model)],
+    body: SupportBotChatRequest,
+) -> dict[str, Any]:
+    return await support_bot.ask(
+        db,
+        actor,
+        chat,
+        message=body.message,
+        history=[{"role": turn.role, "content": turn.content} for turn in body.history],
+    )
+
+
+# --- Knowledge base management (support_bot.manage) -------------------------
+# The bot itself (above) is read-only over this data and available to any
+# staff member; only these routes can change what either bot knows.
+
+_ManageActor = Annotated[Principal, Depends(require_permission("support_bot.manage"))]
+
+
+@router.get("/support-bot/knowledge")
+async def list_knowledge(
+    db: Annotated[Database, Depends(get_database)],
+    actor: _ManageActor,
+    scope: Annotated[Scope | None, Query()] = None,
+) -> list[dict[str, Any]]:
+    return await support_bot_knowledge.list_entries(db, scope=scope)
+
+
+@router.post("/support-bot/knowledge")
+async def create_knowledge(
+    db: Annotated[Database, Depends(get_database)],
+    actor: _ManageActor,
+    request: Request,
+    body: KnowledgeEntryRequest,
+) -> dict[str, Any]:
+    return await support_bot_knowledge.create_entry(
+        db,
+        actor,
+        _request_id(request),
+        scope=body.scope,
+        title=body.title,
+        keywords=body.keywords,
+        content=body.content,
+    )
+
+
+@router.patch("/support-bot/knowledge/{entry_id}")
+async def update_knowledge(
+    db: Annotated[Database, Depends(get_database)],
+    actor: _ManageActor,
+    request: Request,
+    entry_id: str,
+    body: KnowledgeEntryUpdateRequest,
+) -> dict[str, Any]:
+    return await support_bot_knowledge.update_entry(
+        db,
+        actor,
+        _request_id(request),
+        entry_id,
+        title=body.title,
+        keywords=body.keywords,
+        content=body.content,
+    )
+
+
+@router.delete("/support-bot/knowledge/{entry_id}")
+async def delete_knowledge(
+    db: Annotated[Database, Depends(get_database)],
+    actor: _ManageActor,
+    request: Request,
+    entry_id: str,
+) -> dict[str, str]:
+    await support_bot_knowledge.delete_entry(db, actor, _request_id(request), entry_id)
+    return {"id": entry_id}
+
+
+# --- On/off switches (support_bot.manage) -----------------------------------
+
+
+@router.get("/support-bot/settings")
+async def get_support_bot_settings(
+    db: Annotated[Database, Depends(get_database)], actor: _ManageActor
+) -> dict[str, bool]:
+    return await support_bot_settings.get_all(db)
+
+
+@router.patch("/support-bot/settings/{scope}")
+async def set_support_bot_enabled(
+    db: Annotated[Database, Depends(get_database)],
+    actor: _ManageActor,
+    request: Request,
+    scope: BotScope,
+    body: BotToggleRequest,
+) -> dict[str, Any]:
+    return await support_bot_settings.set_enabled(
+        db, actor, _request_id(request), scope, body.enabled
+    )

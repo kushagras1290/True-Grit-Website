@@ -160,7 +160,7 @@ WHERE key IN (
   'farm_requests.view', 'farm_requests.review',
   'reviews.view', 'reviews.moderate',
   'promotions.view', 'promotions.manage',
-  'bundles.view', 'bundles.manage', 'messages.use'
+  'bundles.view', 'bundles.manage', 'messages.use', 'support_bot.manage'
 );
 
 -- Inventory: read-mostly monitoring sibling of Inventory Manager.
