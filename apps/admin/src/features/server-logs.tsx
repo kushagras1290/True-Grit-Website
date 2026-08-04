@@ -13,6 +13,7 @@ import {
 } from "../components/ui";
 import { api } from "../lib/api";
 import { formatDateTime } from "../lib/format";
+import { T } from "../lib/i18n";
 
 const LEVEL_STYLES: Record<string, string> = {
   error: "bg-danger/10 text-danger",
@@ -55,10 +56,18 @@ export function AdminLogsPage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Time</Th>
-            <Th>Level</Th>
-            <Th>Event</Th>
-            <Th>Fields</Th>
+            <Th>
+              <T>Time</T>
+            </Th>
+            <Th>
+              <T>Level</T>
+            </Th>
+            <Th>
+              <T>Event</T>
+            </Th>
+            <Th>
+              <T>Fields</T>
+            </Th>
           </tr>
         </thead>
         {isLoading ? (

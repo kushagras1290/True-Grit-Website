@@ -43,6 +43,7 @@ import { COUNTRIES } from "../lib/countries";
 import { formatDate, formatMoney } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
 import { EntityTranslationsPanel } from "./entity-translations";
+import { T } from "../lib/i18n";
 
 const columnHelper = createColumnHelper<AdminProductRow>();
 
@@ -130,10 +131,10 @@ function CreateProductModal({ onClose }: { onClose: () => void }) {
         </Field>
         <div className="flex justify-end gap-2 pt-1">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button type="submit" variant="primary" disabled={mutation.isPending}>
-            {mutation.isPending ? "Creating…" : "Create draft"}
+            {mutation.isPending ? <T>{"Creating…"}</T> : <T>{"Create draft"}</T>}
           </Button>
         </div>
       </form>
@@ -247,7 +248,7 @@ export function ProductListPage() {
                     })
                   }
                 >
-                  {info.getValue() === "published" ? "Disable" : "Enable"}
+                  {info.getValue() === "published" ? <T>{"Disable"}</T> : <T>{"Enable"}</T>}
                 </Button>
               </PermissionGate>
             ) : null}
@@ -314,14 +315,16 @@ export function ProductListPage() {
                     onClick={() => bulkStatusMutation.mutate("published")}
                     disabled={bulkStatusMutation.isPending}
                   >
-                    Enable selected ({selectedProductIds.length})
+                    <T>Enable selected (</T>
+                    {selectedProductIds.length})
                   </Button>
                   <Button
                     variant="secondary"
                     onClick={() => bulkStatusMutation.mutate("unpublished")}
                     disabled={bulkStatusMutation.isPending}
                   >
-                    Disable selected ({selectedProductIds.length})
+                    <T>Disable selected (</T>
+                    {selectedProductIds.length})
                   </Button>
                 </>
               ) : null}
@@ -333,13 +336,14 @@ export function ProductListPage() {
                   onClick={() => setConfirmingDelete(true)}
                   disabled={deleteMutation.isPending}
                 >
-                  Delete selected ({selectedProductIds.length})
+                  <T>Delete selected (</T>
+                  {selectedProductIds.length})
                 </Button>
               ) : null}
             </PermissionGate>
             <PermissionGate permission="products.create">
               <Button variant="primary" onClick={() => setCreating(true)}>
-                New product
+                <T>New product</T>
               </Button>
             </PermissionGate>
           </div>
@@ -569,10 +573,10 @@ function VariantEditorModal({
         </div>
         <div className="flex justify-end gap-3 pt-4 border-t border-line">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button type="submit" variant="primary" disabled={mutation.isPending}>
-            {mutation.isPending ? "Saving..." : "Save Variant"}
+            {mutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save Variant"}</T>}
           </Button>
         </div>
       </form>
@@ -678,7 +682,12 @@ export function ProductEditorPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not delete."),
   });
 
-  if (isLoading) return <p className="text-sm text-ink-muted">Loading product…</p>;
+  if (isLoading)
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>Loading product…</T>
+      </p>
+    );
   if (isError || !product)
     return <EmptyState title="Product not found" hint="It may have been archived." />;
 
@@ -696,14 +705,14 @@ export function ProductEditorPage() {
                 onClick={() => setConfirmingDelete(true)}
                 disabled={deleteMutation.isPending}
               >
-                {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                {deleteMutation.isPending ? <T>{"Deleting..."}</T> : <T>{"Delete"}</T>}
               </Button>
             </PermissionGate>
             <PermissionGate
               permission="products.publish"
               fallback={
                 <Button disabled title="Requires products.publish">
-                  {product.status === "published" ? "Disable" : "Enable"}
+                  {product.status === "published" ? <T>{"Disable"}</T> : <T>{"Enable"}</T>}
                 </Button>
               }
             >
@@ -716,11 +725,13 @@ export function ProductEditorPage() {
                 }
                 disabled={statusMutation.isPending}
               >
-                {statusMutation.isPending
-                  ? "Updating…"
-                  : product.status === "published"
-                    ? "Disable"
-                    : "Enable"}
+                {statusMutation.isPending ? (
+                  <T>{"Updating…"}</T>
+                ) : product.status === "published" ? (
+                  <T>{"Disable"}</T>
+                ) : (
+                  <T>{"Enable"}</T>
+                )}
               </Button>
             </PermissionGate>
           </div>
@@ -779,27 +790,43 @@ export function ProductEditorPage() {
       {tab === "Variants" ? (
         <DataTableShell>
           <div className="flex items-center justify-between p-4 border-b border-line bg-canvas">
-            <h2 className="font-display text-lg text-ink">Variants</h2>
+            <h2 className="font-display text-lg text-ink">
+              <T>Variants</T>
+            </h2>
             <Button variant="secondary" onClick={() => setEditingVariant("new")}>
-              Add Variant
+              <T>Add Variant</T>
             </Button>
           </div>
           <table className="w-full text-left text-sm">
             <thead className="bg-canvas border-b border-line">
               <tr>
-                <Th>Variant</Th>
-                <Th>SKU</Th>
-                <Th>List price</Th>
-                <Th>Sale price</Th>
-                <Th>Available</Th>
-                <Th>Status</Th>
+                <Th>
+                  <T>Variant</T>
+                </Th>
+                <Th>
+                  <T>SKU</T>
+                </Th>
+                <Th>
+                  <T>List price</T>
+                </Th>
+                <Th>
+                  <T>Sale price</T>
+                </Th>
+                <Th>
+                  <T>Available</T>
+                </Th>
+                <Th>
+                  <T>Status</T>
+                </Th>
                 <Th></Th>
               </tr>
             </thead>
             <tbody>
               {product.variants.length === 0 ? (
                 <tr className="border-t border-line">
-                  <Td className="text-ink-muted">No variants yet.</Td>
+                  <Td className="text-ink-muted">
+                    <T>No variants yet.</T>
+                  </Td>
                   <Td /> <Td /> <Td /> <Td /> <Td /> <Td />
                 </tr>
               ) : (
@@ -815,7 +842,7 @@ export function ProductEditorPage() {
                     </Td>
                     <Td className="text-right">
                       <Button variant="secondary" onClick={() => setEditingVariant(variant)}>
-                        Edit
+                        <T>Edit</T>
                       </Button>
                     </Td>
                   </tr>
@@ -917,10 +944,14 @@ function AvailabilityTab({
     <div className="max-w-2xl space-y-8">
       <section className="space-y-3">
         <div>
-          <h2 className="font-display text-lg text-ink">Where this product is released</h2>
+          <h2 className="font-display text-lg text-ink">
+            <T>Where this product is released</T>
+          </h2>
           <p className="text-sm text-ink-muted">
-            Visitors outside the released countries will not see this product anywhere on the
-            storefront.
+            <T>
+              Visitors outside the released countries will not see this product anywhere on the
+              storefront.
+            </T>
           </p>
         </div>
         <label className="flex items-center gap-2 text-sm text-ink">
@@ -929,12 +960,12 @@ function AvailabilityTab({
             checked={globalRelease}
             onChange={(event) => setGlobalRelease(event.target.checked)}
           />
-          Release globally (all countries)
+          <T>Release globally (all countries)</T>
         </label>
         {!globalRelease ? (
           <fieldset className="rounded-md border border-line p-4">
             <legend className="px-1 text-xs font-medium text-ink-muted">
-              Release only in these countries
+              <T>Release only in these countries</T>
             </legend>
             <div className="grid max-h-64 grid-cols-2 gap-x-4 gap-y-1.5 overflow-y-auto sm:grid-cols-3">
               {COUNTRIES.map((country) => (
@@ -950,7 +981,7 @@ function AvailabilityTab({
             </div>
             {countries.length === 0 ? (
               <p className="mt-2 text-xs text-danger">
-                Pick at least one country, or release globally.
+                <T>Pick at least one country, or release globally.</T>
               </p>
             ) : null}
           </fieldset>
@@ -959,13 +990,17 @@ function AvailabilityTab({
 
       <section className="space-y-3">
         <div>
-          <h2 className="font-display text-lg text-ink">Ordering</h2>
+          <h2 className="font-display text-lg text-ink">
+            <T>Ordering</T>
+          </h2>
           <p className="text-sm text-ink-muted">
-            The same kill-switch as Site Control's "Accept orders and payments", scoped to just this
-            product. Uncheck it when this one item runs out or fails a quality check — the page
-            stays live and browsable, but "Add to basket" is replaced with a message and a contact
-            form until you switch it back on. This is independent of the site-wide switch: turning
-            ordering off here has no effect on any other product.
+            <T>
+              The same kill-switch as Site Control's "Accept orders and payments", scoped to just
+              this product. Uncheck it when this one item runs out or fails a quality check — the
+              page stays live and browsable, but "Add to basket" is replaced with a message and a
+              contact form until you switch it back on. This is independent of the site-wide switch:
+              turning ordering off here has no effect on any other product.
+            </T>
           </p>
         </div>
         <label className="flex items-center gap-2 text-sm text-ink">
@@ -974,18 +1009,22 @@ function AvailabilityTab({
             checked={acceptsOrders}
             onChange={(event) => setAcceptsOrders(event.target.checked)}
           />
-          Accept orders and payments for this product
+          <T>Accept orders and payments for this product</T>
         </label>
       </section>
 
       <section className="space-y-3">
         <div>
-          <h2 className="font-display text-lg text-ink">Payments override</h2>
+          <h2 className="font-display text-lg text-ink">
+            <T>Payments override</T>
+          </h2>
           <p className="text-sm text-ink-muted">
-            Site Control's "Accept orders and payments" switch is site-wide, but this product can
-            diverge from it in either direction: keep taking orders for this one item while payments
-            are off everywhere else, or block just this item while payments are on everywhere else.
-            Most products should stay on "Follow the site-wide switch."
+            <T>
+              Site Control's "Accept orders and payments" switch is site-wide, but this product can
+              diverge from it in either direction: keep taking orders for this one item while
+              payments are off everywhere else, or block just this item while payments are on
+              everywhere else. Most products should stay on "Follow the site-wide switch."
+            </T>
           </p>
         </div>
         <div className="space-y-2">
@@ -1027,11 +1066,15 @@ function AvailabilityTab({
 
       <section className="space-y-3">
         <div>
-          <h2 className="font-display text-lg text-ink">Returns</h2>
+          <h2 className="font-display text-lg text-ink">
+            <T>Returns</T>
+          </h2>
           <p className="text-sm text-ink-muted">
-            Uncheck this for products that genuinely cannot be returned (e.g. certain fresh
-            perishables). Customers won't be able to file a return request against an ineligible
-            product.
+            <T>
+              Uncheck this for products that genuinely cannot be returned (e.g. certain fresh
+              perishables). Customers won't be able to file a return request against an ineligible
+              product.
+            </T>
           </p>
         </div>
         <label className="flex items-center gap-2 text-sm text-ink">
@@ -1040,21 +1083,25 @@ function AvailabilityTab({
             checked={returnEligible}
             onChange={(event) => setReturnEligible(event.target.checked)}
           />
-          Eligible for return
+          <T>Eligible for return</T>
         </label>
       </section>
 
       <section className="space-y-3">
         <div>
-          <h2 className="font-display text-lg text-ink">Linked products</h2>
+          <h2 className="font-display text-lg text-ink">
+            <T>Linked products</T>
+          </h2>
           <p className="text-sm text-ink-muted">
-            Shown in the “Goes well with” slots on this product’s page, in this order. Leave empty
-            to let the storefront pick from the same category.
+            <T>
+              Shown in the “Goes well with” slots on this product’s page, in this order. Leave empty
+              to let the storefront pick from the same category.
+            </T>
           </p>
         </div>
         {links.length === 0 ? (
           <p className="rounded-md border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
-            No products linked yet.
+            <T>No products linked yet.</T>
           </p>
         ) : (
           <ul className="divide-y divide-line rounded-md border border-line">
@@ -1089,7 +1136,7 @@ function AvailabilityTab({
                     setLinks((current) => current.filter((link) => link.id !== entry.id))
                   }
                 >
-                  Remove
+                  <T>Remove</T>
                 </button>
               </li>
             ))}
@@ -1102,7 +1149,9 @@ function AvailabilityTab({
             onChange={(event) => setPendingLinkId(event.target.value)}
             className="flex-1"
           >
-            <option value="">Add a product…</option>
+            <option value="">
+              <T>Add a product…</T>
+            </option>
             {linkable.map((row) => (
               <option key={row.id} value={row.id}>
                 {row.name}
@@ -1123,7 +1172,7 @@ function AvailabilityTab({
               setPendingLinkId("");
             }}
           >
-            Link product
+            <T>Link product</T>
           </Button>
         </div>
       </section>
@@ -1143,7 +1192,7 @@ function AvailabilityTab({
           })
         }
       >
-        {saving ? "Saving…" : "Save availability & links"}
+        {saving ? <T>{"Saving…"}</T> : <T>{"Save availability & links"}</T>}
       </Button>
     </div>
   );
@@ -1229,7 +1278,9 @@ function GeneralTab({
           id="farmId"
           {...form.register("farmId", { setValueAs: (v) => (v === "" ? null : v) })}
         >
-          <option value="">No farm assigned</option>
+          <option value="">
+            <T>No farm assigned</T>
+          </option>
           {farms.map((f) => (
             <option key={f.id} value={f.id}>
               {f.name}
@@ -1312,7 +1363,7 @@ function GeneralTab({
         variant="primary"
         disabled={saving || uploadMutation.isPending || !form.formState.isDirty}
       >
-        {saving ? "Saving…" : "Save draft"}
+        {saving ? <T>{"Saving…"}</T> : <T>{"Save draft"}</T>}
       </Button>
       <ProductGallerySection productId={product.id} images={product.images} />
     </form>
@@ -1375,11 +1426,15 @@ function ProductGallerySection({
 
   return (
     <div className="border-t border-line pt-5">
-      <p className="text-sm font-medium text-ink">Gallery images</p>
+      <p className="text-sm font-medium text-ink">
+        <T>Gallery images</T>
+      </p>
       <p className="mt-1 text-xs text-ink-muted">
-        Extra photos shown as a thumbnail strip on the product page, the way most shops show
-        different angles of the same item. Up to 8. Saved immediately, no separate "Save draft"
-        needed.
+        <T>
+          Extra photos shown as a thumbnail strip on the product page, the way most shops show
+          different angles of the same item. Up to 8. Saved immediately, no separate "Save draft"
+          needed.
+        </T>
       </p>
 
       {gallery.length > 0 ? (
@@ -1409,7 +1464,7 @@ function ProductGallerySection({
                   onClick={() => remove(index)}
                   className="min-h-7 rounded-sm border border-line px-1.5 text-xs text-danger disabled:opacity-40"
                 >
-                  Remove
+                  <T>Remove</T>
                 </button>
                 <button
                   type="button"
@@ -1444,7 +1499,9 @@ function ProductGallerySection({
           }}
         />
       ) : (
-        <p className="mt-3 text-xs text-ink-muted">A product can hold at most 8 gallery images.</p>
+        <p className="mt-3 text-xs text-ink-muted">
+          <T>A product can hold at most 8 gallery images.</T>
+        </p>
       )}
     </div>
   );
@@ -1477,7 +1534,7 @@ function SeoTab({
         <Textarea id="seoDescription" {...form.register("seoDescription")} />
       </Field>
       <Button type="submit" variant="primary" disabled={saving || !form.formState.isDirty}>
-        {saving ? "Saving…" : "Save SEO"}
+        {saving ? <T>{"Saving…"}</T> : <T>{"Save SEO"}</T>}
       </Button>
     </form>
   );

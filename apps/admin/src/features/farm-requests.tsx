@@ -32,6 +32,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api } from "../lib/api";
 import { formatDateTime } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 const STATUS_LABELS: Record<string, string> = {
   submitted: "Submitted",
@@ -66,10 +67,14 @@ export function FarmRequestsListPage() {
     <div>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl text-ink">Farm Requests</h1>
+          <h1 className="font-display text-2xl text-ink">
+            <T>Farm Requests</T>
+          </h1>
           <p className="text-sm text-ink-muted">
-            Growers who applied at /farms/partner to supply the market. No account is required to
-            apply, so review here is the only gate.
+            <T>
+              Growers who applied at /farms/partner to supply the market. No account is required to
+              apply, so review here is the only gate.
+            </T>
           </p>
         </div>
         <Select
@@ -79,7 +84,9 @@ export function FarmRequestsListPage() {
             setPage(1);
           }}
         >
-          <option value="">All statuses</option>
+          <option value="">
+            <T>All statuses</T>
+          </option>
           {Object.entries(STATUS_LABELS).map(([value, label]) => (
             <option key={value} value={value}>
               {label}
@@ -109,11 +116,21 @@ export function FarmRequestsListPage() {
           <DataTableShell>
             <thead className="bg-canvas">
               <tr>
-                <Th>Farm</Th>
-                <Th>Region</Th>
-                <Th>Applicant</Th>
-                <Th>Status</Th>
-                <Th>Submitted</Th>
+                <Th>
+                  <T>Farm</T>
+                </Th>
+                <Th>
+                  <T>Region</T>
+                </Th>
+                <Th>
+                  <T>Applicant</T>
+                </Th>
+                <Th>
+                  <T>Status</T>
+                </Th>
+                <Th>
+                  <T>Submitted</T>
+                </Th>
               </tr>
             </thead>
             {isLoading ? (
@@ -230,7 +247,12 @@ export function FarmRequestDetailPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not delete."),
   });
 
-  if (isLoading) return <p className="text-sm text-ink-muted">Loading application…</p>;
+  if (isLoading)
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>Loading application…</T>
+      </p>
+    );
   if (isError || !entry) return <EmptyState title="Farm request not found" />;
 
   const isOpen = OPEN_STATUSES.has(entry.status);
@@ -243,7 +265,7 @@ export function FarmRequestDetailPage() {
           <h1 className="font-display text-2xl text-ink">{entry.farmName}</h1>
           <p className="text-sm text-ink-muted">
             {entry.region}
-            {entry.state ? `, ${entry.state}` : ""} · applied by {entry.contactName} (
+            {entry.state ? `, ${entry.state}` : ""} <T>· applied by</T> {entry.contactName} (
             {entry.contactPhone}, {entry.contactEmail})
           </p>
         </div>
@@ -253,34 +275,48 @@ export function FarmRequestDetailPage() {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-4">
           <div className="rounded-md border border-line bg-surface p-5">
-            <p className="text-ink-muted">Message from the applicant</p>
+            <p className="text-ink-muted">
+              <T>Message from the applicant</T>
+            </p>
             <p className="mt-1 whitespace-pre-wrap text-sm text-ink">{entry.message}</p>
           </div>
 
           <div className="rounded-md border border-line bg-surface p-5">
             <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
               <div>
-                <dt className="text-ink-muted">City / town</dt>
+                <dt className="text-ink-muted">
+                  <T>City / town</T>
+                </dt>
                 <dd className="font-medium text-ink">{entry.city || "—"}</dd>
               </div>
               <div>
-                <dt className="text-ink-muted">PIN code</dt>
+                <dt className="text-ink-muted">
+                  <T>PIN code</T>
+                </dt>
                 <dd className="font-medium text-ink">{entry.pincode || "—"}</dd>
               </div>
               <div>
-                <dt className="text-ink-muted">Established</dt>
+                <dt className="text-ink-muted">
+                  <T>Established</T>
+                </dt>
                 <dd className="font-medium text-ink">{entry.establishedYear ?? "—"}</dd>
               </div>
               <div>
-                <dt className="text-ink-muted">Land under cultivation</dt>
+                <dt className="text-ink-muted">
+                  <T>Land under cultivation</T>
+                </dt>
                 <dd className="font-medium text-ink">{entry.landAreaAcres || "—"}</dd>
               </div>
               <div>
-                <dt className="text-ink-muted">Certification</dt>
+                <dt className="text-ink-muted">
+                  <T>Certification</T>
+                </dt>
                 <dd className="font-medium text-ink">{entry.certification || "—"}</dd>
               </div>
               <div>
-                <dt className="text-ink-muted">Website</dt>
+                <dt className="text-ink-muted">
+                  <T>Website</T>
+                </dt>
                 <dd className="font-medium text-ink">
                   {entry.websiteUrl ? (
                     <a
@@ -299,13 +335,17 @@ export function FarmRequestDetailPage() {
             </dl>
             {entry.primaryProduce ? (
               <p className="mt-4 text-sm">
-                <span className="text-ink-muted">What they grow: </span>
+                <span className="text-ink-muted">
+                  <T>What they grow:</T>{" "}
+                </span>
                 <span className="text-ink">{entry.primaryProduce}</span>
               </p>
             ) : null}
             {entry.farmingPractices ? (
               <p className="mt-2 text-sm">
-                <span className="text-ink-muted">Farming practices: </span>
+                <span className="text-ink-muted">
+                  <T>Farming practices:</T>{" "}
+                </span>
                 <span className="text-ink">{entry.farmingPractices}</span>
               </p>
             ) : null}
@@ -314,7 +354,8 @@ export function FarmRequestDetailPage() {
           {entry.reviewerNotes ? (
             <div className="rounded-md border border-line bg-canvas p-5">
               <p className="text-ink-muted">
-                Reviewer note{entry.reviewerName ? ` — ${entry.reviewerName}` : ""}
+                <T>Reviewer note</T>
+                {entry.reviewerName ? ` — ${entry.reviewerName}` : ""}
               </p>
               <p className="mt-1 text-sm text-ink">{entry.reviewerNotes}</p>
             </div>
@@ -322,22 +363,26 @@ export function FarmRequestDetailPage() {
 
           {entry.submitterName ? (
             <p className="text-sm text-ink-muted">
-              Submitted while signed in as {entry.submitterName}.
+              <T>Submitted while signed in as</T> {entry.submitterName}.
             </p>
           ) : null}
 
           {entry.status === "approved" ? (
             <div className="rounded-md border border-line bg-surface p-5">
-              <p className="text-ink-muted">Farm record</p>
+              <p className="text-ink-muted">
+                <T>Farm record</T>
+              </p>
               {entry.linkedFarmName ? (
                 <p className="mt-1 text-sm text-ink">
-                  Linked to <span className="font-medium">{entry.linkedFarmName}</span>.
+                  <T>Linked to</T> <span className="font-medium">{entry.linkedFarmName}</span>.
                 </p>
               ) : (
                 <PermissionGate permission="farm_requests.review">
                   <p className="mt-1 text-sm text-ink-muted">
-                    Once you have created this grower's farm in the console, link the application to
-                    it here for provenance.
+                    <T>
+                      Once you have created this grower's farm in the console, link the application
+                      to it here for provenance.
+                    </T>
                   </p>
                   <div className="mt-3 flex gap-2">
                     <Input
@@ -350,7 +395,7 @@ export function FarmRequestDetailPage() {
                       disabled={!farmId.trim() || linkMutation.isPending}
                       onClick={() => linkMutation.mutate()}
                     >
-                      Link
+                      <T>Link</T>
                     </Button>
                   </div>
                 </PermissionGate>
@@ -361,7 +406,9 @@ export function FarmRequestDetailPage() {
 
         <PermissionGate permission="farm_requests.review">
           <aside className="h-fit space-y-3 rounded-md border border-line bg-surface p-5">
-            <h2 className="font-display text-base text-ink">Decision</h2>
+            <h2 className="font-display text-base text-ink">
+              <T>Decision</T>
+            </h2>
             {isOpen ? (
               <>
                 {entry.status === "submitted" ? (
@@ -371,7 +418,7 @@ export function FarmRequestDetailPage() {
                     onClick={() => decideMutation.mutate("under_review")}
                     disabled={decideMutation.isPending}
                   >
-                    Mark under review
+                    <T>Mark under review</T>
                   </Button>
                 ) : null}
                 {entry.status !== "contacted" ? (
@@ -381,7 +428,7 @@ export function FarmRequestDetailPage() {
                     onClick={() => decideMutation.mutate("contacted")}
                     disabled={decideMutation.isPending}
                   >
-                    Mark contacted
+                    <T>Mark contacted</T>
                   </Button>
                 ) : null}
                 <Field label="Note (required to decline)" htmlFor="farm-request-note">
@@ -399,7 +446,7 @@ export function FarmRequestDetailPage() {
                   onClick={() => decideMutation.mutate("approved")}
                   disabled={decideMutation.isPending}
                 >
-                  Approve
+                  <T>Approve</T>
                 </Button>
                 <Button
                   className="w-full"
@@ -407,13 +454,13 @@ export function FarmRequestDetailPage() {
                   onClick={() => decideMutation.mutate("rejected")}
                   disabled={decideMutation.isPending || (rejectNeedsNote && !note.trim())}
                 >
-                  Decline
+                  <T>Decline</T>
                 </Button>
               </>
             ) : (
               <p className="text-sm text-ink-muted">
-                This application is {STATUS_LABELS[entry.status]?.toLowerCase()} and cannot be
-                re-decided.
+                <T>This application is</T> {STATUS_LABELS[entry.status]?.toLowerCase()}{" "}
+                <T>and cannot be re-decided.</T>
               </p>
             )}
             <div className="border-t border-line pt-3">
@@ -429,7 +476,7 @@ export function FarmRequestDetailPage() {
                 }}
                 disabled={deleteMutation.isPending}
               >
-                Delete (spam)
+                <T>Delete (spam)</T>
               </Button>
             </div>
           </aside>

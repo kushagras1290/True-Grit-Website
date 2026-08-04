@@ -34,6 +34,7 @@ import {
   Select,
 } from "../components/ui";
 import { ApiError, api, type PriceAdjustmentRule } from "../lib/api";
+import { T } from "../lib/i18n";
 
 type Target = "all" | "product" | "category";
 
@@ -172,7 +173,12 @@ export function PriceAdjustmentsPage() {
     saveMutation.mutate(values);
   }
 
-  if (isLoading) return <p className="text-sm text-ink-muted">Loading price adjustments...</p>;
+  if (isLoading)
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>Loading price adjustments...</T>
+      </p>
+    );
   if (isError) {
     return (
       <EmptyState title="Price adjustments unavailable" hint="Requires owner settings access." />
@@ -195,7 +201,9 @@ export function PriceAdjustmentsPage() {
             <div className="min-w-56">
               <Field label="Applies to" htmlFor="pa-scope">
                 <Select id="pa-scope" {...form.register("scope")}>
-                  <option value="global">Whole site</option>
+                  <option value="global">
+                    <T>Whole site</T>
+                  </option>
                   {countryScopes.map((code) => (
                     <option key={code} value={code}>
                       {code}
@@ -221,12 +229,14 @@ export function PriceAdjustmentsPage() {
               disabled={!newCountry.trim()}
               onClick={addCountry}
             >
-              Add country
+              <T>Add country</T>
             </Button>
           </div>
 
           <fieldset>
-            <legend className="text-sm font-medium text-ink">Target</legend>
+            <legend className="text-sm font-medium text-ink">
+              <T>Target</T>
+            </legend>
             <div className="mt-2 flex flex-wrap gap-4">
               {(
                 [
@@ -246,7 +256,9 @@ export function PriceAdjustmentsPage() {
           {target === "product" ? (
             <Field label="Product" htmlFor="pa-product">
               <Select id="pa-product" {...form.register("productId")}>
-                <option value="">Choose a product…</option>
+                <option value="">
+                  <T>Choose a product…</T>
+                </option>
                 {(productOptions ?? []).map((product) => (
                   <option key={product.id} value={product.id}>
                     {product.name}
@@ -259,7 +271,9 @@ export function PriceAdjustmentsPage() {
           {target === "category" ? (
             <Field label="Category" htmlFor="pa-category">
               <Select id="pa-category" {...form.register("categoryId")}>
-                <option value="">Choose a category…</option>
+                <option value="">
+                  <T>Choose a category…</T>
+                </option>
                 {(categoryOptions ?? []).map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
@@ -286,20 +300,24 @@ export function PriceAdjustmentsPage() {
             </Field>
             <label className="flex items-center gap-2 self-end pb-2.5 text-sm text-ink">
               <input type="checkbox" {...form.register("active")} />
-              Active
+              <T>Active</T>
             </label>
           </div>
           <p className="text-xs text-ink-muted">
-            Positive raises the price (a markup, shown as the new price alone). Negative lowers it
-            (a discount, shown with the real price struck through). Between −90% and 500%. Saving a
-            rule for the same target and scope replaces it rather than adding a duplicate.
+            <T>
+              Positive raises the price (a markup, shown as the new price alone). Negative lowers it
+              (a discount, shown with the real price struck through). Between −90% and 500%. Saving
+              a rule for the same target and scope replaces it rather than adding a duplicate.
+            </T>
           </p>
         </div>
 
         <aside className="h-fit border-t border-line pt-5 xl:border-t-0 xl:pt-0">
-          <h2 className="font-display text-lg text-ink">Save</h2>
+          <h2 className="font-display text-lg text-ink">
+            <T>Save</T>
+          </h2>
           <p className="mt-1 text-sm text-ink-muted">
-            New and updated rules apply to the live storefront immediately.
+            <T>New and updated rules apply to the live storefront immediately.</T>
           </p>
           <Button
             type="submit"
@@ -307,13 +325,15 @@ export function PriceAdjustmentsPage() {
             className="mt-5 w-full"
             disabled={saveMutation.isPending}
           >
-            {saveMutation.isPending ? "Saving..." : "Save rule"}
+            {saveMutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save rule"}</T>}
           </Button>
         </aside>
       </form>
 
       <section className="mt-8 space-y-4 border-t border-line pt-5">
-        <h2 className="font-display text-lg text-ink">Active rules</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Active rules</T>
+        </h2>
         {rules.length === 0 ? (
           <EmptyState title="No price adjustments yet" hint="Add one above to get started." />
         ) : (
@@ -325,13 +345,14 @@ export function PriceAdjustmentsPage() {
               >
                 <div className="min-w-0">
                   <span className="block text-sm font-medium text-ink">
-                    {rule.scope === "global" ? "Whole site" : rule.scope} · {targetLabel(rule)}
+                    {rule.scope === "global" ? <T>{"Whole site"}</T> : rule.scope} ·{" "}
+                    {targetLabel(rule)}
                   </span>
                   <span
                     className={`block text-xs ${rule.percent < 0 ? "text-success" : rule.percent > 0 ? "text-accent" : "text-ink-muted"}`}
                   >
                     {percentLabel(rule.percent)}
-                    {rule.active ? "" : " · inactive"}
+                    {rule.active ? "" : <T>{" · inactive"}</T>}
                   </span>
                 </div>
                 <div className="flex shrink-0 items-center gap-1.5">
@@ -342,7 +363,7 @@ export function PriceAdjustmentsPage() {
                     disabled={toggleMutation.isPending}
                     onClick={() => toggleMutation.mutate(rule)}
                   >
-                    {rule.active ? "Deactivate" : "Activate"}
+                    {rule.active ? <T>{"Deactivate"}</T> : <T>{"Activate"}</T>}
                   </Button>
                   <Button
                     type="button"
@@ -350,7 +371,7 @@ export function PriceAdjustmentsPage() {
                     className="min-h-8 px-2.5 text-xs"
                     onClick={() => setConfirmDelete(rule)}
                   >
-                    Delete
+                    <T>Delete</T>
                   </Button>
                 </div>
               </li>

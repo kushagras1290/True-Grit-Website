@@ -20,6 +20,7 @@ import {
   type ContentComment,
 } from "../lib/content-comments";
 import { useLocaleContext } from "../lib/i18n/context";
+import { useLocalizeText } from "../lib/i18n/localized-text";
 
 const MAX_COMMENT_LENGTH = 4000;
 
@@ -30,6 +31,7 @@ export function ContentComments({
   contentType: CommentContentType;
   slug: string;
 }) {
+  const localize = useLocalizeText();
   const { t, locale } = useLocaleContext();
   const { customer } = useCustomer();
   const [comments, setComments] = useState<ContentComment[] | null>(null);
@@ -131,7 +133,7 @@ export function ContentComments({
           </label>
           {error ? (
             <p role="alert" className="text-sm text-danger">
-              {error}
+              {localize(error)}
             </p>
           ) : null}
           <button

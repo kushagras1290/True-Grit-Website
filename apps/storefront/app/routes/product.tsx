@@ -22,7 +22,7 @@ import { resolveLocale } from "../lib/i18n/resolve.server";
 import { productEffectivePrice, variantEffectivePrice } from "../lib/pricing";
 import { seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
-import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeFormat, useLocalizeText } from "../lib/i18n/localized-text";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const country = resolveCountry(request);
@@ -38,11 +38,12 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   return { product, related, reviews, alsoBought };
 }
 
-export function meta({ data: loaderData }: Route.MetaArgs) {
-  return seoMeta(loaderData?.product.seo);
+export function meta({ data: loaderData, matches }: Route.MetaArgs) {
+  return seoMeta(loaderData?.product.seo, matches);
 }
 
 export default function ProductPage({ loaderData }: Route.ComponentProps) {
+  const format = useLocalizeFormat();
   const localize = useLocalizeText();
   const { product, related, reviews, alsoBought } = loaderData;
   const { add } = useCart();
@@ -198,15 +199,17 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
               }}
               className="min-h-11 flex-1 rounded-sm bg-brand px-6 text-sm font-medium text-ink-inverse hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {purchasable
-                ? "Add to basket"
-                : product.acceptsOrders && paymentsAllowed
-                  ? "Out of stock"
-                  : "Not available to order"}
+              {purchasable ? (
+                <LocalizedText>{"Add to basket"}</LocalizedText>
+              ) : product.acceptsOrders && paymentsAllowed ? (
+                <LocalizedText>{"Out of stock"}</LocalizedText>
+              ) : (
+                <LocalizedText>{"Not available to order"}</LocalizedText>
+              )}
             </button>
           </div>
           <p role="status" className="mt-2 min-h-5 text-sm text-success">
-            {added ? "Added to your basket." : ""}
+            {added ? <LocalizedText>{"Added to your basket."}</LocalizedText> : ""}
           </p>
           {/* Either admin switch (acceptsOrders, or paymentsOverride diverging
               from the site-wide payments switch) takes priority over ordinary
@@ -256,9 +259,13 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
               <span className="font-medium text-ink">
                 <LocalizedText>Returns:</LocalizedText>{" "}
               </span>
-              {product.returnEligible
-                ? "Eligible for return — see our returns policy."
-                : "Not eligible for return due to the nature of this product."}
+              {product.returnEligible ? (
+                <LocalizedText>{"Eligible for return — see our returns policy."}</LocalizedText>
+              ) : (
+                <LocalizedText>
+                  {"Not eligible for return due to the nature of this product."}
+                </LocalizedText>
+              )}
             </p>
           </div>
 
@@ -282,8 +289,11 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
               <div className="mt-4">
                 <ContactForm
                   compact
-                  defaultSubject={`Interest: ${product.name}`}
-                  messagePlaceholder={`Let us know how much ${product.name} you would like and where it would be delivered.`}
+                  defaultSubject={format("Interest: {product}", { product: product.name })}
+                  messagePlaceholder={format(
+                    "Let us know how much {product} you would like and where it would be delivered.",
+                    { product: product.name },
+                  )}
                   submitLabel="Send enquiry"
                   successMessage="Thanks — we have your details and will be in touch as soon as this is back."
                 />
@@ -298,15 +308,23 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
           {product.traceability.map((step, index) => (
             <li key={step.label} className="relative">
               <span className="font-display text-2xl text-accent">{index + 1}</span>
-              <p className="mt-1 font-medium text-ink">{step.label}</p>
-              <p className="mt-1 text-sm text-ink-muted">{step.detail}</p>
+              {/* The API composes these from fixed English phrases, so they
+                  translate through the source catalogue like any other
+                  storefront copy. A detail that interpolates a farm name has
+                  no catalogue entry and falls through unchanged. */}
+              <p className="mt-1 font-medium text-ink">{localize(step.label)}</p>
+              <p className="mt-1 text-sm text-ink-muted">{localize(step.detail)}</p>
             </li>
           ))}
         </ol>
       </Section>
 
       <div id="reviews">
-        <Section eyebrow="Customer reviews" heading={`Reviews for ${product.name}`} tone="subtle">
+        <Section
+          eyebrow="Customer reviews"
+          heading={format("Reviews for {product}", { product: product.name })}
+          tone="subtle"
+        >
           <ProductReviews
             reviews={reviews}
             average={product.ratingAverage}

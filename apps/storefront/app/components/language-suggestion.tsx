@@ -19,19 +19,26 @@
  * the header at all (it lives in the mobile menu/footer instead), it falls
  * back to a plain bottom-of-screen card with no button to point at.
  *
- * Deliberately in English, always, regardless of which language it is
- * offering an escape from — the entire point is to be legible to someone who
- * may not read the language the page just switched to. This is the one piece
- * of storefront chrome that intentionally sits outside the `t()` catalogue
- * system rather than needing a translation in all fifty-five languages: a
- * translated version of "switch to English" would defeat its own purpose for
- * exactly the visitor who most needs it.
+ * Bilingual on purpose. The explanation and the "keep it" action are
+ * translated, because a visitor who *does* read the guessed language should not
+ * meet a stray patch of English. The escape route is not: "Switch to English"
+ * stays in English in every locale, because the one visitor it exists for is
+ * the one who cannot read the surrounding words, and a translated version of
+ * that button would be invisible to exactly them.
  */
 
 import { Globe } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { getLocale } from "../lib/i18n/locales";
+import { useLocalizeFormat, useLocalizeText } from "../lib/i18n/localized-text";
+
+/**
+ * Held in a constant rather than written inline so the JSX localizer cannot
+ * wrap it. This is the one label in the storefront that must never be
+ * translated: it is read by the visitor who cannot read the page.
+ */
+const ENGLISH_ESCAPE_LABEL = "Switch to English";
 
 const DISMISS_COOKIE = "tg_lang_prompt_seen";
 // A season, not forever: a guess an owner or visitor never acted on should be
@@ -65,6 +72,8 @@ export function LanguageSuggestionPrompt({
   // frame, which is a fair price for never fighting the visitor's own
   // dismissal on the very next repaint.
   const [open, setOpen] = useState(false);
+  const localize = useLocalizeText();
+  const format = useLocalizeFormat();
 
   useEffect(() => {
     if (active && locale !== "en" && !hasSeenPrompt()) setOpen(true);
@@ -105,10 +114,12 @@ export function LanguageSuggestionPrompt({
           </span>
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-2">
-              <p className="text-sm font-medium text-ink">We set your language to {languageName}</p>
+              <p className="text-sm font-medium text-ink">
+                {format("We set your language to {language}", { language: languageName })}
+              </p>
               <button
                 type="button"
-                aria-label="Dismiss"
+                aria-label={localize("Dismiss")}
                 className="-mt-1 -mr-1 shrink-0 rounded-sm p-1 text-ink-muted hover:text-ink"
                 onClick={dismiss}
               >
@@ -116,7 +127,9 @@ export function LanguageSuggestionPrompt({
               </button>
             </div>
             <p className="mt-1 text-xs text-ink-muted">
-              Based on your region — you can change it any time from the language button above.
+              {localize(
+                "Based on your region — you can change it any time from the language button above.",
+              )}
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               <button
@@ -124,7 +137,7 @@ export function LanguageSuggestionPrompt({
                 className="min-h-9 rounded-sm bg-brand px-3 text-xs font-medium text-ink-inverse hover:opacity-90"
                 onClick={dismiss}
               >
-                Keep {languageName}
+                {format("Keep {language}", { language: languageName })}
               </button>
               {/* A real form post, like the switcher itself — this still has to
                   work if the visitor has JavaScript but the click handler above
@@ -147,7 +160,7 @@ export function LanguageSuggestionPrompt({
                   className="min-h-9 rounded-sm border border-line px-3 text-xs font-medium text-ink hover:bg-subtle"
                   onClick={markSeen}
                 >
-                  Switch to English
+                  {ENGLISH_ESCAPE_LABEL}
                 </button>
               </form>
             </div>

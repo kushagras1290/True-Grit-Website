@@ -11,6 +11,7 @@ import type {
   TdHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
+import { T } from "../lib/i18n";
 
 export function Button({
   variant = "secondary",
@@ -149,10 +150,10 @@ export function ConfirmDialog({
           <p className="text-sm leading-6 text-ink-muted">{description}</p>
           <div className="mt-5 flex flex-wrap justify-end gap-2">
             <Button type="button" variant="secondary" onClick={onCancel} disabled={isPending}>
-              Cancel
+              <T>Cancel</T>
             </Button>
             <Button type="button" variant="destructive" onClick={onConfirm} disabled={isPending}>
-              {isPending ? (pendingLabel ?? "Working...") : confirmLabel}
+              {isPending ? (pendingLabel ?? <T>{"Working..."}</T>) : confirmLabel}
             </Button>
           </div>
         </div>
@@ -373,16 +374,18 @@ export function Pagination({
         disabled={page === 1}
         onClick={() => onPageChange(Math.max(1, page - 1))}
       >
-        Previous
+        <T>Previous</T>
       </Button>
-      <span className="text-sm font-medium text-ink-muted">Page {page}</span>
+      <span className="text-sm font-medium text-ink-muted">
+        <T>Page</T> {page}
+      </span>
       <Button
         type="button"
         variant="secondary"
         disabled={rowCount < limit}
         onClick={() => onPageChange(page + 1)}
       >
-        Next
+        <T>Next</T>
       </Button>
     </div>
   );

@@ -39,6 +39,7 @@ import {
 } from "../components/ui";
 import { useToast } from "../components/toast";
 import { ApiError, api, type AppearanceResponse } from "../lib/api";
+import { T } from "../lib/i18n";
 
 /** Label, one-line explanation, and the stock value each role falls back to.
  *  The stock values mirror `@truegrit/ui/tokens.css` — they are what the swatch
@@ -331,7 +332,12 @@ export function AppearancePage() {
     queryFn: api.appearance,
   });
 
-  if (isLoading) return <p className="text-sm text-ink-muted">Loading appearance...</p>;
+  if (isLoading)
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>Loading appearance...</T>
+      </p>
+    );
   if (isError || !data) {
     return (
       <div>
@@ -491,13 +497,17 @@ function ColoursSection({ data }: { data: AppearanceResponse }) {
   return (
     <section className="space-y-5 border-t border-line pt-5">
       <div>
-        <h2 className="font-display text-lg text-ink">Colours</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Colours</T>
+        </h2>
         <p className="max-w-3xl text-sm text-ink-muted">
-          Leave a colour blank to keep the one True Grit ships with — clearing a field is how you
-          undo. A page or country's colours start from the site colours and override only what you
-          change, so each is a short list, not a second palette to maintain. When both apply to the
-          same visitor, the page wins — an editorial page's design should not be undone by a geo
-          experiment.
+          <T>
+            Leave a colour blank to keep the one True Grit ships with — clearing a field is how you
+            undo. A page or country's colours start from the site colours and override only what you
+            change, so each is a short list, not a second palette to maintain. When both apply to
+            the same visitor, the page wins — an editorial page's design should not be undone by a
+            geo experiment.
+          </T>
         </p>
       </div>
 
@@ -509,7 +519,9 @@ function ColoursSection({ data }: { data: AppearanceResponse }) {
               value={scope}
               onChange={(event) => setScope(event.target.value)}
             >
-              <option value="global">Whole site</option>
+              <option value="global">
+                <T>Whole site</T>
+              </option>
               {countryScopes.length > 0 ? (
                 <optgroup label="Countries">
                   {countryScopes.map((countryScopeValue) => (
@@ -530,7 +542,7 @@ function ColoursSection({ data }: { data: AppearanceResponse }) {
               ) : null}
               {editingScope && !knownScopes.has(scope) ? (
                 <option value={scope}>
-                  {editingCountry ? countryCodeFromScope(scope) : scope} (unsaved)
+                  {editingCountry ? countryCodeFromScope(scope) : scope} <T>(unsaved)</T>
                 </option>
               ) : null}
             </Select>
@@ -547,7 +559,7 @@ function ColoursSection({ data }: { data: AppearanceResponse }) {
           </Field>
         </div>
         <Button type="button" variant="secondary" disabled={!newPath.trim()} onClick={addPage}>
-          Add page
+          <T>Add page</T>
         </Button>
         <div className="min-w-32">
           <Field label="Give one country its own colours" htmlFor="theme-new-country">
@@ -566,24 +578,29 @@ function ColoursSection({ data }: { data: AppearanceResponse }) {
           disabled={!newCountry.trim()}
           onClick={addCountry}
         >
-          Add country
+          <T>Add country</T>
         </Button>
         {editingScope && knownScopes.has(scope) ? (
           <Button type="button" variant="tertiary" onClick={() => setConfirmDelete(scope)}>
-            {editingCountry ? "Remove country colours" : "Remove page colours"}
+            {editingCountry ? <T>{"Remove country colours"}</T> : <T>{"Remove page colours"}</T>}
           </Button>
         ) : null}
       </div>
       {editingPage ? (
         <p className="text-xs text-ink-muted">
-          These colours also apply to pages beneath <code>{scope}</code> — an override on{" "}
-          <code>/blog</code> dresses every article under it, so you do not have to list them.
+          <T>These colours also apply to pages beneath</T> <code>{scope}</code>{" "}
+          <T>— an override on</T>{" "}
+          <code>
+            <T>/blog</T>
+          </code>{" "}
+          <T>dresses every article under it, so you do not have to list them.</T>
         </p>
       ) : null}
       {editingCountry ? (
         <p className="text-xs text-ink-muted">
-          Applies to every visitor Cloudflare resolves to <code>{countryCodeFromScope(scope)}</code>
-          , on every page that does not have its own colours.
+          <T>Applies to every visitor Cloudflare resolves to</T>{" "}
+          <code>{countryCodeFromScope(scope)}</code>
+          <T>, on every page that does not have its own colours.</T>
         </p>
       ) : null}
 
@@ -634,7 +651,7 @@ function ColoursSection({ data }: { data: AppearanceResponse }) {
                         disabled={!value}
                         onClick={() => update(key, "")}
                       >
-                        Reset
+                        <T>Reset</T>
                       </Button>
                     </li>
                   );
@@ -650,11 +667,13 @@ function ColoursSection({ data }: { data: AppearanceResponse }) {
               disabled={saveMutation.isPending || (!dirty && knownScopes.has(scope))}
               onClick={save}
             >
-              {saveMutation.isPending
-                ? "Saving..."
-                : scope === "global"
-                  ? "Save site colours"
-                  : `Save colours for ${editingCountry ? countryCodeFromScope(scope) : scope}`}
+              {saveMutation.isPending ? (
+                <T>{"Saving..."}</T>
+              ) : scope === "global" ? (
+                <T>{"Save site colours"}</T>
+              ) : (
+                `Save colours for ${editingCountry ? countryCodeFromScope(scope) : scope}`
+              )}
             </Button>
             <Button
               type="button"
@@ -662,12 +681,12 @@ function ColoursSection({ data }: { data: AppearanceResponse }) {
               disabled={!dirty}
               onClick={() => setDraft({ ...savedTokens })}
             >
-              Discard changes
+              <T>Discard changes</T>
             </Button>
             {invalid.length > 0 ? (
               <p className="text-sm text-danger">
-                {TOKEN_META[invalid[0]!].label} is not a valid colour. Use a hex value such as
-                #24483a.
+                {TOKEN_META[invalid[0]!].label}{" "}
+                <T>is not a valid colour. Use a hex value such as #24483a.</T>
               </p>
             ) : null}
           </div>
@@ -710,9 +729,11 @@ function ColoursSection({ data }: { data: AppearanceResponse }) {
 function ThemePreview({ tokens }: { tokens: ThemeTokens }) {
   return (
     <aside className="h-fit xl:sticky xl:top-6">
-      <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">Preview</h3>
+      <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
+        <T>Preview</T>
+      </h3>
       <p className="mt-1 mb-3 text-xs text-ink-muted">
-        Live, and to scale with the real storefront's own styles.
+        <T>Live, and to scale with the real storefront's own styles.</T>
       </p>
       <div
         style={styleFor(tokens)}
@@ -733,7 +754,7 @@ function ThemePreview({ tokens }: { tokens: ThemeTokens }) {
               TRUE GRIT
             </span>
             <span className="text-xs" style={{ color: "var(--color-text-secondary)" }}>
-              Shop · Farms · Journal
+              <T>Shop · Farms · Journal</T>
             </span>
           </div>
 
@@ -746,10 +767,10 @@ function ThemePreview({ tokens }: { tokens: ThemeTokens }) {
               className="text-[10px] font-semibold tracking-[0.14em] uppercase"
               style={{ color: "var(--color-brand-accent)" }}
             >
-              The market
+              <T>The market</T>
             </p>
             <p className="mt-1 font-display text-xl leading-tight">
-              Food grown the way nature intended.
+              <T>Food grown the way nature intended.</T>
             </p>
           </div>
 
@@ -765,7 +786,7 @@ function ThemePreview({ tokens }: { tokens: ThemeTokens }) {
               >
                 <p className="text-sm font-medium">{name}</p>
                 <p className="mt-0.5 text-xs" style={{ color: "var(--color-text-secondary)" }}>
-                  From a verified farm
+                  <T>From a verified farm</T>
                 </p>
                 <p
                   className="mt-2 text-sm font-medium"
@@ -779,7 +800,7 @@ function ThemePreview({ tokens }: { tokens: ThemeTokens }) {
 
           <div className="px-4 pb-4" style={{ background: "var(--color-bg-subtle)" }}>
             <p className="pt-4 text-xs" style={{ color: "var(--color-text-secondary)" }}>
-              A tinted band — check muted text is still readable here.
+              <T>A tinted band — check muted text is still readable here.</T>
             </p>
             <div className="mt-3 flex flex-wrap items-center gap-2 pb-1">
               <span
@@ -789,7 +810,7 @@ function ThemePreview({ tokens }: { tokens: ThemeTokens }) {
                   color: "var(--color-text-inverse)",
                 }}
               >
-                Add to basket
+                <T>Add to basket</T>
               </span>
               <span
                 className="inline-flex items-center rounded-sm px-3 py-1.5 text-xs font-medium"
@@ -798,14 +819,22 @@ function ThemePreview({ tokens }: { tokens: ThemeTokens }) {
                   color: "var(--color-text-primary)",
                 }}
               >
-                Save for later
+                <T>Save for later</T>
               </span>
             </div>
             <div className="mt-3 flex flex-wrap gap-2 pb-2 text-[11px] font-medium">
-              <span style={{ color: "var(--color-success)" }}>In stock</span>
-              <span style={{ color: "var(--color-warning)" }}>Low stock</span>
-              <span style={{ color: "var(--color-danger)" }}>Sold out</span>
-              <span style={{ color: "var(--color-brand-gold)" }}>Award winning</span>
+              <span style={{ color: "var(--color-success)" }}>
+                <T>In stock</T>
+              </span>
+              <span style={{ color: "var(--color-warning)" }}>
+                <T>Low stock</T>
+              </span>
+              <span style={{ color: "var(--color-danger)" }}>
+                <T>Sold out</T>
+              </span>
+              <span style={{ color: "var(--color-brand-gold)" }}>
+                <T>Award winning</T>
+              </span>
             </div>
           </div>
 
@@ -813,9 +842,11 @@ function ThemePreview({ tokens }: { tokens: ThemeTokens }) {
             className="px-4 py-5"
             style={{ background: "var(--color-bg-inverse)", color: "var(--color-text-inverse)" }}
           >
-            <p className="font-display text-sm">A slower, better way to eat.</p>
+            <p className="font-display text-sm">
+              <T>A slower, better way to eat.</T>
+            </p>
             <p className="mt-1 text-xs opacity-80">
-              One considered letter a month. Unsubscribe anytime.
+              <T>One considered letter a month. Unsubscribe anytime.</T>
             </p>
           </div>
         </div>
@@ -893,14 +924,18 @@ function EffectsSection({ data }: { data: AppearanceResponse }) {
   return (
     <section className="mt-10 space-y-5 border-t border-line pt-5">
       <div>
-        <h2 className="font-display text-lg text-ink">Effects & Trails</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Effects & Trails</T>
+        </h2>
         <p className="max-w-3xl text-sm text-ink-muted">
-          Decoration on top of the storefront: drifting particles behind the page, and a trail
-          following the pointer. Both are off by default, both are skipped entirely for visitors who
-          have asked their device for reduced motion, and neither ever appears on the payment window
-          — a snowfall over a card form is a distraction at exactly the wrong moment. A country's
-          effects replace the site-wide ones outright for its visitors rather than blending with
-          them — "some snow" is not a meaningful mix of snow and no effect.
+          <T>
+            Decoration on top of the storefront: drifting particles behind the page, and a trail
+            following the pointer. Both are off by default, both are skipped entirely for visitors
+            who have asked their device for reduced motion, and neither ever appears on the payment
+            window — a snowfall over a card form is a distraction at exactly the wrong moment. A
+            country's effects replace the site-wide ones outright for its visitors rather than
+            blending with them — "some snow" is not a meaningful mix of snow and no effect.
+          </T>
         </p>
       </div>
 
@@ -912,14 +947,18 @@ function EffectsSection({ data }: { data: AppearanceResponse }) {
               value={scope}
               onChange={(event) => setScope(event.target.value)}
             >
-              <option value="global">Whole site (default)</option>
+              <option value="global">
+                <T>Whole site (default)</T>
+              </option>
               {countryScopes.map((countryScopeValue) => (
                 <option key={countryScopeValue} value={countryScopeValue}>
                   {countryCodeFromScope(countryScopeValue)}
                 </option>
               ))}
               {editingCountry && !countryScopes.includes(scope) ? (
-                <option value={scope}>{countryCodeFromScope(scope)} (unsaved)</option>
+                <option value={scope}>
+                  {countryCodeFromScope(scope)} <T>(unsaved)</T>
+                </option>
               ) : null}
             </Select>
           </Field>
@@ -941,7 +980,7 @@ function EffectsSection({ data }: { data: AppearanceResponse }) {
           disabled={!newCountry.trim()}
           onClick={addCountry}
         >
-          Add country
+          <T>Add country</T>
         </Button>
         {hasOverride ? (
           <Button
@@ -950,24 +989,30 @@ function EffectsSection({ data }: { data: AppearanceResponse }) {
             disabled={clearMutation.isPending}
             onClick={() => clearMutation.mutate()}
           >
-            {clearMutation.isPending ? "Clearing..." : "Use site-wide effects instead"}
+            {clearMutation.isPending ? (
+              <T>{"Clearing..."}</T>
+            ) : (
+              <T>{"Use site-wide effects instead"}</T>
+            )}
           </Button>
         ) : null}
       </div>
       {editingCountry ? (
         <p className="text-xs text-ink-muted">
-          Applies to every visitor Cloudflare resolves to <code>{countryCodeFromScope(scope)}</code>
-          .
-          {hasOverride
-            ? " Currently its own effects."
-            : " Currently the site-wide effects — save below to give it its own."}
+          <T>Applies to every visitor Cloudflare resolves to</T>{" "}
+          <code>{countryCodeFromScope(scope)}</code>.
+          {hasOverride ? (
+            <T>{" Currently its own effects."}</T>
+          ) : (
+            <T>{" Currently the site-wide effects — save below to give it its own."}</T>
+          )}
         </p>
       ) : null}
 
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="space-y-4">
           <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
-            Ambient effect
+            <T>Ambient effect</T>
           </h3>
           <Field label="Effect" htmlFor="ambient-effect">
             <Select
@@ -1018,7 +1063,7 @@ function EffectsSection({ data }: { data: AppearanceResponse }) {
 
         <div className="space-y-4">
           <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
-            Cursor trail
+            <T>Cursor trail</T>
           </h3>
           <Field label="Trail" htmlFor="cursor-trail">
             <Select
@@ -1060,11 +1105,13 @@ function EffectsSection({ data }: { data: AppearanceResponse }) {
               }
             />
             <span>
-              Replace the pointer with the trail
+              <T>Replace the pointer with the trail</T>
               <span className="mt-0.5 block text-xs text-ink-muted">
-                Hides the system cursor so the trail is the cursor. Links, buttons and form fields
-                keep a real pointer regardless — losing the hit target on those is not a trade worth
-                making.
+                <T>
+                  Hides the system cursor so the trail is the cursor. Links, buttons and form fields
+                  keep a real pointer regardless — losing the hit target on those is not a trade
+                  worth making.
+                </T>
               </span>
             </span>
           </label>
@@ -1079,11 +1126,13 @@ function EffectsSection({ data }: { data: AppearanceResponse }) {
           disabled={mutation.isPending || !dirty}
           onClick={() => mutation.mutate(draft)}
         >
-          {mutation.isPending
-            ? "Saving..."
-            : scope === "global"
-              ? "Save effects"
-              : `Save effects for ${countryCodeFromScope(scope)}`}
+          {mutation.isPending ? (
+            <T>{"Saving..."}</T>
+          ) : scope === "global" ? (
+            <T>{"Save effects"}</T>
+          ) : (
+            `Save effects for ${countryCodeFromScope(scope)}`
+          )}
         </Button>
         <Button
           type="button"
@@ -1091,7 +1140,7 @@ function EffectsSection({ data }: { data: AppearanceResponse }) {
           disabled={!dirty}
           onClick={() => setDraft(savedEffects)}
         >
-          Discard changes
+          <T>Discard changes</T>
         </Button>
       </div>
     </section>
@@ -1234,14 +1283,16 @@ function EffectPreview({
   return (
     <div>
       <p className="mb-1.5 text-xs text-ink-muted">
-        {effect === "none"
-          ? "Nothing selected — the storefront stays exactly as it is."
-          : "An impression of the motion and colour, not a pixel-accurate rehearsal."}
+        {effect === "none" ? (
+          <T>{"Nothing selected — the storefront stays exactly as it is."}</T>
+        ) : (
+          <T>{"An impression of the motion and colour, not a pixel-accurate rehearsal."}</T>
+        )}
       </p>
       <div className="relative h-36 overflow-hidden rounded-md border border-line bg-inverse">
         <canvas ref={canvasRef} aria-hidden className="absolute inset-0 h-full w-full" />
         <p className="absolute bottom-2 left-3 text-xs text-ink-inverse/70">
-          {kind === "ambient" ? "Behind the page" : "Following the pointer"}
+          {kind === "ambient" ? <T>{"Behind the page"}</T> : <T>{"Following the pointer"}</T>}
         </p>
       </div>
     </div>

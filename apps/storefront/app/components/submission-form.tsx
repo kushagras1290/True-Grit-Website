@@ -15,7 +15,7 @@ import {
   type SubmissionDetail,
   type SubmissionIngredientInput,
 } from "../lib/submissions";
-import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeFormat, useLocalizeText } from "../lib/i18n/localized-text";
 
 const FIELD =
   "min-h-11 w-full rounded-sm border border-line bg-canvas px-3 text-sm text-ink" +
@@ -44,6 +44,7 @@ export function SubmissionForm({
 }) {
   const { t } = useLocaleContext();
   const localize = useLocalizeText();
+  const format = useLocalizeFormat();
   const [ingredients, setIngredients] = useState<SubmissionIngredientInput[]>(
     initial?.ingredients?.length ? initial.ingredients : [{ label: "", quantityText: "" }],
   );
@@ -94,7 +95,7 @@ export function SubmissionForm({
 
   return (
     <form className="max-w-2xl space-y-4" onSubmit={handleSubmit}>
-      {error ? <p className="text-sm text-danger">{error}</p> : null}
+      {error ? <p className="text-sm text-danger">{localize(error)}</p> : null}
 
       <label className="block space-y-1">
         <Label>
@@ -141,7 +142,13 @@ export function SubmissionForm({
       </div>
 
       <label className="block space-y-1">
-        <Label>{contentType === "article" ? "Post title" : "Recipe name"}</Label>
+        <Label>
+          {contentType === "article" ? (
+            <LocalizedText>{"Post title"}</LocalizedText>
+          ) : (
+            <LocalizedText>{"Recipe name"}</LocalizedText>
+          )}
+        </Label>
         <input
           name="title"
           required
@@ -251,7 +258,7 @@ export function SubmissionForm({
                   type="button"
                   onClick={() => setIngredients(ingredients.filter((_, i) => i !== index))}
                   className="text-xs text-ink-muted hover:text-danger"
-                  aria-label={`Remove ingredient ${index + 1}`}
+                  aria-label={format("Remove ingredient {number}", { number: index + 1 })}
                 >
                   <LocalizedText>Remove</LocalizedText>
                 </button>
@@ -287,7 +294,7 @@ export function SubmissionForm({
                   type="button"
                   onClick={() => setSteps(steps.filter((_, i) => i !== index))}
                   className="text-xs text-ink-muted hover:text-danger"
-                  aria-label={`Remove step ${index + 1}`}
+                  aria-label={format("Remove step {number}", { number: index + 1 })}
                 >
                   <LocalizedText>Remove</LocalizedText>
                 </button>
@@ -305,7 +312,13 @@ export function SubmissionForm({
       ) : null}
 
       <label className="block space-y-1">
-        <Label>{contentType === "article" ? "Your post" : "Story / intro"}</Label>
+        <Label>
+          {contentType === "article" ? (
+            <LocalizedText>{"Your post"}</LocalizedText>
+          ) : (
+            <LocalizedText>{"Story / intro"}</LocalizedText>
+          )}
+        </Label>
         <textarea
           name="body"
           required
@@ -322,7 +335,13 @@ export function SubmissionForm({
         disabled={submitting}
         className="inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90 disabled:opacity-50"
       >
-        {submitting ? "Saving..." : submissionId ? "Resubmit for review" : "Submit for review"}
+        {submitting ? (
+          <LocalizedText>{"Saving..."}</LocalizedText>
+        ) : submissionId ? (
+          <LocalizedText>{"Resubmit for review"}</LocalizedText>
+        ) : (
+          <LocalizedText>{"Submit for review"}</LocalizedText>
+        )}
       </button>
     </form>
   );

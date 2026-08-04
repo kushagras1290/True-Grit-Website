@@ -8,6 +8,7 @@ import {
   type ImageSpecification,
   type ImageSpecificationGroup,
 } from "../lib/image-specifications";
+import { T } from "../lib/i18n";
 
 const GROUPS: readonly ImageSpecificationGroup[] = ["Banners", "Catalogue", "Brand"];
 
@@ -28,7 +29,7 @@ function FrameDiagram({ specification }: { specification: ImageSpecification }) 
         style={{ width: safeWidth, height: safeHeight }}
       >
         <span className="text-xs font-semibold text-brand">
-          Safe area
+          <T>Safe area</T>
           <span className="mt-0.5 block whitespace-nowrap font-normal text-ink-muted">
             {safeAreaDimensions(specification)}
           </span>
@@ -59,11 +60,15 @@ function SpecificationCard({ specification }: { specification: ImageSpecificatio
 
       <dl className="mt-4 space-y-3 text-sm">
         <div>
-          <dt className="font-medium text-ink">Used for</dt>
+          <dt className="font-medium text-ink">
+            <T>Used for</T>
+          </dt>
           <dd className="mt-1 text-ink-muted">{specification.usedFor.join(" · ")}</dd>
         </div>
         <div>
-          <dt className="font-medium text-ink">Centred safe area</dt>
+          <dt className="font-medium text-ink">
+            <T>Centred safe area</T>
+          </dt>
           <dd className="mt-1 text-ink-muted">
             <span className="font-mono text-ink">{safeAreaDimensions(specification)}</span>
             {" — "}
@@ -71,11 +76,15 @@ function SpecificationCard({ specification }: { specification: ImageSpecificatio
           </dd>
         </div>
         <div>
-          <dt className="font-medium text-ink">Crop behavior</dt>
+          <dt className="font-medium text-ink">
+            <T>Crop behavior</T>
+          </dt>
           <dd className="mt-1 text-ink-muted">{specification.cropBehavior}</dd>
         </div>
         <div>
-          <dt className="font-medium text-ink">File target</dt>
+          <dt className="font-medium text-ink">
+            <T>File target</T>
+          </dt>
           <dd className="mt-1 text-ink-muted">{specification.targetFileSize}</dd>
         </div>
       </dl>
@@ -97,9 +106,11 @@ export function ImageGuidePage() {
             <Crop size={19} aria-hidden />
           </span>
           <div>
-            <h2 className="font-medium text-ink">Use the exact canvas</h2>
+            <h2 className="font-medium text-ink">
+              <T>Use the exact canvas</T>
+            </h2>
             <p className="mt-1 text-sm leading-6 text-ink-muted">
-              Export at the listed width and height. Do not upload a 16:9 photo for a banner.
+              <T>Export at the listed width and height. Do not upload a 16:9 photo for a banner.</T>
             </p>
           </div>
         </div>
@@ -108,10 +119,14 @@ export function ImageGuidePage() {
             <MoveHorizontal size={19} aria-hidden />
           </span>
           <div>
-            <h2 className="font-medium text-ink">Respect the safe area</h2>
+            <h2 className="font-medium text-ink">
+              <T>Respect the safe area</T>
+            </h2>
             <p className="mt-1 text-sm leading-6 text-ink-muted">
-              Put essential subjects inside the dashed centre. Responsive crops may remove the
-              edges.
+              <T>
+                Put essential subjects inside the dashed centre. Responsive crops may remove the
+                edges.
+              </T>
             </p>
           </div>
         </div>
@@ -120,9 +135,11 @@ export function ImageGuidePage() {
             <FileImage size={19} aria-hidden />
           </span>
           <div>
-            <h2 className="font-medium text-ink">Keep artwork clean</h2>
+            <h2 className="font-medium text-ink">
+              <T>Keep artwork clean</T>
+            </h2>
             <p className="mt-1 text-sm leading-6 text-ink-muted">
-              Use WebP unless PNG is specified. Do not bake text or logos into photographs.
+              <T>Use WebP unless PNG is specified. Do not bake text or logos into photographs.</T>
             </p>
           </div>
         </div>
@@ -150,18 +167,34 @@ export function ImageGuidePage() {
       </div>
 
       <section className="mt-10 rounded-md border border-line bg-surface p-5">
-        <h2 className="font-display text-lg text-ink">Upload checklist</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Upload checklist</T>
+        </h2>
         <ul className="mt-3 grid gap-2 text-sm text-ink-muted md:grid-cols-2">
-          <li>Canvas matches the exact pixel dimensions above.</li>
-          <li>Main subject stays inside the centred safe area.</li>
-          <li>No embedded True Grit logo, headline, button, or watermark.</li>
-          <li>Image is sRGB and at or below the listed file-size target.</li>
-          <li>Alt text describes the image rather than repeating the page title.</li>
-          <li>Preview is checked on both a narrow phone and a desktop screen.</li>
+          <li>
+            <T>Canvas matches the exact pixel dimensions above.</T>
+          </li>
+          <li>
+            <T>Main subject stays inside the centred safe area.</T>
+          </li>
+          <li>
+            <T>No embedded True Grit logo, headline, button, or watermark.</T>
+          </li>
+          <li>
+            <T>Image is sRGB and at or below the listed file-size target.</T>
+          </li>
+          <li>
+            <T>Alt text describes the image rather than repeating the page title.</T>
+          </li>
+          <li>
+            <T>Preview is checked on both a narrow phone and a desktop screen.</T>
+          </li>
         </ul>
         <p className="mt-4 text-xs text-ink-muted">
-          The upload API accepts JPG, PNG, WebP, and GIF files up to 5 MB. These stricter targets
-          keep storefront pages fast and visually predictable.
+          <T>
+            The upload API accepts JPG, PNG, WebP, and GIF files up to 5 MB. These stricter targets
+            keep storefront pages fast and visually predictable.
+          </T>
         </p>
       </section>
     </div>

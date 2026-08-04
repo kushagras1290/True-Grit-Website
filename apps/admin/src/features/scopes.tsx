@@ -18,6 +18,7 @@ import {
 } from "../components/ui";
 import { useToast } from "../components/toast";
 import { ApiError, api, type AdminPermission, type AdminRole } from "../lib/api";
+import { T } from "../lib/i18n";
 
 const GROUP_LABELS: Record<string, string> = {
   analytics: "Analytics",
@@ -114,18 +115,18 @@ export function CreateRoleModal({
           />
         </Field>
         <p className="text-xs text-ink-muted">
-          Starts with no permissions — you'll pick what it can do right after creating it.
+          <T>Starts with no permissions — you'll pick what it can do right after creating it.</T>
         </p>
         <div className="flex justify-end gap-2">
           <Button type="button" variant="secondary" onClick={onClose} disabled={mutation.isPending}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button
             type="submit"
             variant="primary"
             disabled={mutation.isPending || name.trim().length < 3}
           >
-            {mutation.isPending ? "Creating..." : "Create role"}
+            {mutation.isPending ? <T>{"Creating..."}</T> : <T>{"Create role"}</T>}
           </Button>
         </div>
       </form>
@@ -178,14 +179,14 @@ export function RenameRoleModal({ role, onClose }: { role: AdminRole; onClose: (
         </Field>
         <div className="flex justify-end gap-2">
           <Button type="button" variant="secondary" onClick={onClose} disabled={mutation.isPending}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button
             type="submit"
             variant="primary"
             disabled={mutation.isPending || name.trim().length < 3}
           >
-            {mutation.isPending ? "Saving..." : "Save"}
+            {mutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save"}</T>}
           </Button>
         </div>
       </form>
@@ -239,7 +240,7 @@ export function ManageRolesModal({ onClose }: { onClose: () => void }) {
 
       <div className="mb-3 flex justify-end">
         <Button type="button" variant="primary" onClick={() => setCreating(true)}>
-          Add role
+          <T>Add role</T>
         </Button>
       </div>
       <ul className="max-h-96 divide-y divide-line overflow-auto rounded-md border border-line">
@@ -257,10 +258,10 @@ export function ManageRolesModal({ onClose }: { onClose: () => void }) {
             ) : (
               <div className="flex shrink-0 gap-2">
                 <Button type="button" variant="secondary" onClick={() => setRenamingRole(role)}>
-                  Edit
+                  <T>Edit</T>
                 </Button>
                 <Button type="button" variant="destructive" onClick={() => setDeletingRole(role)}>
-                  Delete
+                  <T>Delete</T>
                 </Button>
               </div>
             )}
@@ -340,14 +341,14 @@ export function ScopeManagementPage() {
         actions={
           <>
             <Button variant="secondary" onClick={() => setCreating(true)}>
-              Add role
+              <T>Add role</T>
             </Button>
             <Button
               variant="primary"
               onClick={() => mutation.mutate()}
               disabled={!selectedRole || selectedRole.locked || mutation.isPending}
             >
-              {mutation.isPending ? "Saving..." : "Save scope"}
+              {mutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save scope"}</T>}
             </Button>
           </>
         }
@@ -384,8 +385,12 @@ export function ScopeManagementPage() {
           <DataTableShell>
             <thead className="bg-canvas">
               <tr>
-                <Th>Role</Th>
-                <Th>Permissions</Th>
+                <Th>
+                  <T>Role</T>
+                </Th>
+                <Th>
+                  <T>Permissions</T>
+                </Th>
               </tr>
             </thead>
             {roles.isLoading ? (
@@ -435,10 +440,10 @@ export function ScopeManagementPage() {
                     {!selectedRole.isSystem ? (
                       <div className="flex gap-2">
                         <Button variant="secondary" onClick={() => setRenaming(true)}>
-                          Edit
+                          <T>Edit</T>
                         </Button>
                         <Button variant="destructive" onClick={() => setDeleting(true)}>
-                          Delete
+                          <T>Delete</T>
                         </Button>
                       </div>
                     ) : null}
@@ -447,7 +452,9 @@ export function ScopeManagementPage() {
                 </div>
                 <div className="max-h-[calc(100vh-260px)] overflow-auto px-5 py-4">
                   {permissions.isLoading ? (
-                    <p className="text-sm text-ink-muted">Loading permissions...</p>
+                    <p className="text-sm text-ink-muted">
+                      <T>Loading permissions...</T>
+                    </p>
                   ) : permissionGroups.length === 0 ? (
                     <EmptyState title="No permissions" hint="Permissions have not been seeded." />
                   ) : (

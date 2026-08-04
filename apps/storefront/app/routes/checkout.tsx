@@ -31,13 +31,16 @@ import { seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
 import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Checkout",
-    description: "Confirm your order.",
-    canonicalPath: "/checkout",
-    indexing: "noindex",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Checkout",
+      description: "Confirm your order.",
+      canonicalPath: "/checkout",
+      indexing: "noindex",
+    },
+    matches,
+  );
 }
 
 // Shown until `getDeliverySettings` resolves -- matches the API's own shipped
@@ -388,7 +391,7 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
 
           {error ? (
             <p role="alert" className="text-sm text-danger">
-              {error}
+              {localize(error)}
             </p>
           ) : null}
         </div>
@@ -440,10 +443,16 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                     onClick={() => void handleApplyCoupon()}
                     className="min-h-9 shrink-0 rounded-sm border border-line px-3 text-sm font-medium text-ink hover:bg-canvas disabled:opacity-60"
                   >
-                    {couponChecking ? "Checking…" : "Apply"}
+                    {couponChecking ? (
+                      <LocalizedText>{"Checking…"}</LocalizedText>
+                    ) : (
+                      <LocalizedText>{"Apply"}</LocalizedText>
+                    )}
                   </button>
                 </div>
-                {couponError ? <p className="mt-1 text-xs text-danger">{couponError}</p> : null}
+                {couponError ? (
+                  <p className="mt-1 text-xs text-danger">{localize(couponError)}</p>
+                ) : null}
                 {appliedDiscount ? (
                   <p className="mt-1 text-xs text-success">
                     "{appliedDiscount.code}
@@ -473,7 +482,9 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
               <dt className="text-ink-muted">
                 <LocalizedText>Delivery</LocalizedText>
               </dt>
-              <dd className="text-ink">{delivery === 0 ? "Free" : formatPrice(delivery)}</dd>
+              <dd className="text-ink">
+                {delivery === 0 ? <LocalizedText>{"Free"}</LocalizedText> : formatPrice(delivery)}
+              </dd>
             </div>
             <div className="flex justify-between border-t border-line pt-1.5 font-medium">
               <dt>
@@ -524,7 +535,7 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                       want. */}
                   <span className="mt-0.5 block text-xs text-ink-muted">
                     <LocalizedText>Paying from outside India? Charged in</LocalizedText>{" "}
-                    {payment?.paypalCurrency || "USD"}{" "}
+                    {payment?.paypalCurrency || <LocalizedText>{"USD"}</LocalizedText>}{" "}
                     <LocalizedText>at today's rate.</LocalizedText>
                   </span>
                 </span>
@@ -565,7 +576,13 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
             disabled={pending}
             className="mt-4 min-h-11 w-full rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-95 disabled:opacity-60"
           >
-            {pending ? "Processing…" : method === "cod" ? "Place order" : "Pay & place order"}
+            {pending ? (
+              <LocalizedText>{"Processing…"}</LocalizedText>
+            ) : method === "cod" ? (
+              <LocalizedText>{"Place order"}</LocalizedText>
+            ) : (
+              <LocalizedText>{"Pay & place order"}</LocalizedText>
+            )}
           </button>
         </aside>
       </form>

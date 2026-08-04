@@ -21,19 +21,23 @@ import {
 import { useLocaleContext } from "../lib/i18n/context";
 import { commerceLive } from "../lib/commerce";
 import { seoMeta } from "../lib/seo";
+import { useLocalizeText } from "../lib/i18n/localized-text";
 
 const FIELD =
   "min-h-11 w-full rounded-sm border border-line bg-canvas px-3 text-sm text-ink" +
   " placeholder:text-ink-muted focus:border-brand focus:outline-none";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Partner with True Grit",
-    description:
-      "Organic growers and farming collectives: apply to supply the True Grit marketplace.",
-    canonicalPath: "/farms/partner",
-    indexing: "index",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Partner with True Grit",
+      description:
+        "Organic growers and farming collectives: apply to supply the True Grit marketplace.",
+      canonicalPath: "/farms/partner",
+      indexing: "index",
+    },
+    matches,
+  );
 }
 
 function Label({ children }: { children: React.ReactNode }) {
@@ -45,6 +49,7 @@ function Hint({ children }: { children: React.ReactNode }) {
 }
 
 export default function FarmPartnerPage(_props: Route.ComponentProps) {
+  const localize = useLocalizeText();
   const { t } = useLocaleContext();
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState<string | null>(null);
@@ -150,7 +155,7 @@ export default function FarmPartnerPage(_props: Route.ComponentProps) {
             ) : null}
             {error ? (
               <p role="alert" className="text-sm text-danger">
-                {error}
+                {localize(error)}
               </p>
             ) : null}
 

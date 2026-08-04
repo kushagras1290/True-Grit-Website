@@ -3,11 +3,12 @@
  * public API in the first place, so there is nothing to filter here. */
 
 import type { ProductReview } from "@truegrit/contracts";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeFormat, useLocalizePlural } from "../lib/i18n/localized-text";
 
 export function StarRating({ rating }: { rating: number }) {
+  const format = useLocalizeFormat();
   return (
-    <span aria-label={`${rating} out of 5 stars`} className="text-amber-500">
+    <span aria-label={format("{rating} out of 5 stars", { rating })} className="text-amber-500">
       {"★".repeat(rating)}
       <span className="text-line" aria-hidden>
         {"★".repeat(Math.max(0, 5 - rating))}
@@ -17,12 +18,12 @@ export function StarRating({ rating }: { rating: number }) {
 }
 
 export function RatingSummary({ average, count }: { average: number; count: number }) {
+  const plural = useLocalizePlural();
   return (
     <span className="inline-flex items-center gap-1.5">
       <StarRating rating={Math.round(average)} />
       <span>
-        {average.toFixed(1)} ({count} <LocalizedText>review</LocalizedText>
-        {count === 1 ? "" : "s"})
+        {average.toFixed(1)} ({plural("{count} review", "{count} reviews", count)})
       </span>
     </span>
   );
@@ -59,7 +60,11 @@ export function ProductReviews({
             <p className="mt-1.5 text-sm text-ink-muted">{review.body}</p>
             <p className="mt-2 text-xs text-ink-muted">
               <span className="font-medium text-ink">{review.authorName}</span>
-              {review.verifiedPurchase ? " · Verified purchase" : ""}
+              {review.verifiedPurchase ? (
+                <LocalizedText>{" · Verified purchase"}</LocalizedText>
+              ) : (
+                ""
+              )}
             </p>
           </li>
         ))}

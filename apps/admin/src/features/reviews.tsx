@@ -34,6 +34,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api } from "../lib/api";
 import { formatDateTime } from "../lib/format";
 import { usePermissions } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 function Stars({ rating }: { rating: number }) {
   return (
@@ -125,10 +126,10 @@ function EditReviewModal({
         </Field>
         <div className="flex justify-end gap-2 border-t border-line pt-3">
           <Button type="button" variant="secondary" onClick={onClose} disabled={mutation.isPending}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button type="submit" variant="primary" disabled={mutation.isPending}>
-            {mutation.isPending ? "Saving..." : "Save changes"}
+            {mutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save changes"}</T>}
           </Button>
         </div>
       </form>
@@ -196,11 +197,15 @@ export function ReviewsListPage() {
     <div>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl text-ink">Reviews</h1>
+          <h1 className="font-display text-2xl text-ink">
+            <T>Reviews</T>
+          </h1>
           <p className="text-sm text-ink-muted">
-            Customer ratings and reviews from verified purchases.
+            <T>Customer ratings and reviews from verified purchases.</T>
             {data && data.pending > 0 ? (
-              <span className="ml-1 text-ink">{data.pending} awaiting moderation.</span>
+              <span className="ml-1 text-ink">
+                {data.pending} <T>awaiting moderation.</T>
+              </span>
             ) : null}
           </p>
         </div>
@@ -213,12 +218,24 @@ export function ReviewsListPage() {
             }}
             aria-label="Filter by rating"
           >
-            <option value="">All ratings</option>
-            <option value="5">5 stars</option>
-            <option value="4">4 stars</option>
-            <option value="3">3 stars</option>
-            <option value="2">2 stars</option>
-            <option value="1">1 star</option>
+            <option value="">
+              <T>All ratings</T>
+            </option>
+            <option value="5">
+              <T>5 stars</T>
+            </option>
+            <option value="4">
+              <T>4 stars</T>
+            </option>
+            <option value="3">
+              <T>3 stars</T>
+            </option>
+            <option value="2">
+              <T>2 stars</T>
+            </option>
+            <option value="1">
+              <T>1 star</T>
+            </option>
           </Select>
           <Select
             value={statusFilter}
@@ -228,11 +245,21 @@ export function ReviewsListPage() {
             }}
             aria-label="Filter by status"
           >
-            <option value="">All statuses</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-            <option value="removed">Removed</option>
+            <option value="">
+              <T>All statuses</T>
+            </option>
+            <option value="pending">
+              <T>Pending</T>
+            </option>
+            <option value="approved">
+              <T>Approved</T>
+            </option>
+            <option value="rejected">
+              <T>Rejected</T>
+            </option>
+            <option value="removed">
+              <T>Removed</T>
+            </option>
           </Select>
         </div>
       </div>
@@ -252,13 +279,29 @@ export function ReviewsListPage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Review</Th>
-            <Th>Product</Th>
-            <Th>Rating</Th>
-            <Th>Author</Th>
-            <Th>Status</Th>
-            <Th>Posted</Th>
-            {canModerate ? <Th>Actions</Th> : null}
+            <Th>
+              <T>Review</T>
+            </Th>
+            <Th>
+              <T>Product</T>
+            </Th>
+            <Th>
+              <T>Rating</T>
+            </Th>
+            <Th>
+              <T>Author</T>
+            </Th>
+            <Th>
+              <T>Status</T>
+            </Th>
+            <Th>
+              <T>Posted</T>
+            </Th>
+            {canModerate ? (
+              <Th>
+                <T>Actions</T>
+              </Th>
+            ) : null}
           </tr>
         </thead>
         {isLoading ? (
@@ -282,7 +325,9 @@ export function ReviewsListPage() {
                   {entry.title ? <p className="font-medium text-ink">{entry.title}</p> : null}
                   <p className="line-clamp-2 text-ink-muted">{entry.body}</p>
                   {entry.moderationReason ? (
-                    <p className="mt-1 text-xs text-ink-muted">Reason: {entry.moderationReason}</p>
+                    <p className="mt-1 text-xs text-ink-muted">
+                      <T>Reason:</T> {entry.moderationReason}
+                    </p>
                   ) : null}
                 </Td>
                 <Td>
@@ -312,7 +357,7 @@ export function ReviewsListPage() {
                   <Td>
                     <div className="flex flex-wrap gap-2">
                       <Button variant="secondary" onClick={() => setEditingId(entry.id)}>
-                        Edit
+                        <T>Edit</T>
                       </Button>
                       {entry.status !== "approved" ? (
                         <Button
@@ -322,7 +367,7 @@ export function ReviewsListPage() {
                           }
                           disabled={moderateMutation.isPending}
                         >
-                          Approve
+                          <T>Approve</T>
                         </Button>
                       ) : null}
                       {entry.status !== "rejected" ? (
@@ -333,7 +378,7 @@ export function ReviewsListPage() {
                           }
                           disabled={moderateMutation.isPending}
                         >
-                          Reject
+                          <T>Reject</T>
                         </Button>
                       ) : null}
                       {entry.status !== "removed" ? (
@@ -344,7 +389,7 @@ export function ReviewsListPage() {
                           }
                           disabled={moderateMutation.isPending}
                         >
-                          Remove
+                          <T>Remove</T>
                         </Button>
                       ) : null}
                       <Button
@@ -356,7 +401,7 @@ export function ReviewsListPage() {
                         }}
                         disabled={deleteMutation.isPending}
                       >
-                        Delete
+                        <T>Delete</T>
                       </Button>
                     </div>
                   </Td>

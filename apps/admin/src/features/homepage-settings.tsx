@@ -40,6 +40,7 @@ import {
   type SiteControl,
 } from "../lib/api";
 import { usePermissions } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 /** Mirrors the identical helper in `site-control.tsx` / `appearance.tsx` — a
  *  scope here is always a two-letter country code, never `'global'`; the
@@ -277,7 +278,12 @@ export function HomepageSettingsPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not upload image."),
   });
 
-  if (isLoading) return <p className="text-sm text-ink-muted">Loading homepage settings...</p>;
+  if (isLoading)
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>Loading homepage settings...</T>
+      </p>
+    );
   if (isError) {
     return (
       <EmptyState title="Homepage settings unavailable" hint="Requires owner settings access." />
@@ -349,10 +355,14 @@ export function HomepageSettingsPage() {
         <div className="space-y-6">
           <section className="space-y-4 border-t border-line pt-5">
             <div>
-              <h2 className="font-display text-lg text-ink">Banner carousel</h2>
+              <h2 className="font-display text-lg text-ink">
+                <T>Banner carousel</T>
+              </h2>
               <p className="text-sm text-ink-muted">
-                The rotating banner at the top of the homepage, plus the fallback copy shown when no
-                slide has an image.
+                <T>
+                  The rotating banner at the top of the homepage, plus the fallback copy shown when
+                  no slide has an image.
+                </T>
               </p>
             </div>
             <Field label="Eyebrow" htmlFor="heroEyebrow">
@@ -417,19 +427,23 @@ export function HomepageSettingsPage() {
                 />
               </Field>
               <p className="mt-1.5 text-xs text-ink-muted">
-                Raise this to curate more than {FALLBACK_MAX_HERO_SLIDES} banners — it saves with
-                the rest of the homepage, no deploy needed. Up to {heroSlidesHardLimit}, which is
-                the ceiling the block format itself enforces. Lowering it never deletes slides you
-                have already saved; it only stops new ones being added.
+                <T>Raise this to curate more than</T> {FALLBACK_MAX_HERO_SLIDES}{" "}
+                <T>banners — it saves with the rest of the homepage, no deploy needed. Up to</T>{" "}
+                {heroSlidesHardLimit}
+                <T>
+                  , which is the ceiling the block format itself enforces. Lowering it never deletes
+                  slides you have already saved; it only stops new ones being added.
+                </T>
               </p>
             </div>
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-3">
                 <p className="text-sm font-medium text-ink">
-                  Carousel slides ({heroSlides.length} of {maxHeroSlides})
+                  <T>Carousel slides (</T>
+                  {heroSlides.length} of {maxHeroSlides})
                 </p>
                 <Button type="button" variant="secondary" onClick={addSlide}>
-                  Add slide
+                  <T>Add slide</T>
                 </Button>
               </div>
               <div className="space-y-3">
@@ -465,7 +479,7 @@ export function HomepageSettingsPage() {
                             updateSlide(index, { enabled: event.target.checked })
                           }
                         />
-                        Enabled
+                        <T>Enabled</T>
                       </label>
                       <Field label="Image URL" htmlFor={`slide-image-${index}`}>
                         <Input
@@ -497,7 +511,7 @@ export function HomepageSettingsPage() {
                       </Field>
                       <div className="flex justify-end md:col-span-2">
                         <Button type="button" variant="tertiary" onClick={() => removeSlide(index)}>
-                          Remove
+                          <T>Remove</T>
                         </Button>
                       </div>
                     </div>
@@ -545,9 +559,11 @@ export function HomepageSettingsPage() {
 
           <section className="space-y-4 border-t border-line pt-5">
             <div>
-              <h2 className="font-display text-lg text-ink">Homepage SEO</h2>
+              <h2 className="font-display text-lg text-ink">
+                <T>Homepage SEO</T>
+              </h2>
               <p className="text-sm text-ink-muted">
-                Metadata used by search engines and social previews for `/`.
+                <T>Metadata used by search engines and social previews for `/`.</T>
               </p>
             </div>
             <Field
@@ -567,10 +583,14 @@ export function HomepageSettingsPage() {
         </div>
 
         <aside className="h-fit border-t border-line pt-5">
-          <h2 className="font-display text-lg text-ink">Saving</h2>
+          <h2 className="font-display text-lg text-ink">
+            <T>Saving</T>
+          </h2>
           <p className="mt-1 text-sm text-ink-muted">
-            The banner, category row, product row and SEO fields save together. Section tickboxes,
-            ordering and custom section copy save on their own, as you change them.
+            <T>
+              The banner, category row, product row and SEO fields save together. Section tickboxes,
+              ordering and custom section copy save on their own, as you change them.
+            </T>
           </p>
           <Button
             type="submit"
@@ -578,7 +598,7 @@ export function HomepageSettingsPage() {
             className="mt-5 w-full"
             disabled={mutation.isPending}
           >
-            {mutation.isPending ? "Saving..." : "Save homepage"}
+            {mutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save homepage"}</T>}
           </Button>
         </aside>
       </form>
@@ -672,7 +692,11 @@ function HomepageSectionsSection() {
     propsMutation.isPending;
 
   if (isLoading) {
-    return <p className="text-sm text-ink-muted">Loading homepage sections...</p>;
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>Loading homepage sections...</T>
+      </p>
+    );
   }
   if (isError || !data) {
     return (
@@ -698,10 +722,14 @@ function HomepageSectionsSection() {
   return (
     <section className="space-y-4 border-t border-line pt-5">
       <div>
-        <h2 className="font-display text-lg text-ink">Homepage sections</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Homepage sections</T>
+        </h2>
         <p className="max-w-3xl text-sm text-ink-muted">
-          Untick a section to hide it from customers without losing its content, and use the arrows
-          to change the order they appear in. Changes here apply as soon as you make them.
+          <T>
+            Untick a section to hide it from customers without losing its content, and use the
+            arrows to change the order they appear in. Changes here apply as soon as you make them.
+          </T>
         </p>
       </div>
 
@@ -730,7 +758,7 @@ function HomepageSectionsSection() {
                       ) : null}
                     </span>
                     <span className="mt-0.5 block text-xs text-ink-muted">
-                      {section.summary || "No content yet"}
+                      {section.summary || <T>{"No content yet"}</T>}
                     </span>
                   </span>
                 </label>
@@ -763,7 +791,7 @@ function HomepageSectionsSection() {
                         setEditingId((current) => (current === section.id ? null : section.id))
                       }
                     >
-                      {editingId === section.id ? "Close" : "Edit content"}
+                      {editingId === section.id ? <T>{"Close"}</T> : <T>{"Edit content"}</T>}
                     </Button>
                   ) : null}
                   {section.removable ? (
@@ -774,7 +802,7 @@ function HomepageSectionsSection() {
                       disabled={busy}
                       onClick={() => setConfirmDelete(section)}
                     >
-                      Delete
+                      <T>Delete</T>
                     </Button>
                   ) : null}
                 </div>
@@ -801,7 +829,9 @@ function HomepageSectionsSection() {
           onChange={(event) => setPendingType(event.target.value)}
           className="flex-1"
         >
-          <option value="">Add a section…</option>
+          <option value="">
+            <T>Add a section…</T>
+          </option>
           {data.addableTypes.map((entry) => (
             <option key={entry.type} value={entry.type}>
               {entry.label}
@@ -814,13 +844,15 @@ function HomepageSectionsSection() {
           disabled={!pendingType || busy}
           onClick={() => addMutation.mutate(pendingType)}
         >
-          {addMutation.isPending ? "Adding..." : "Add section"}
+          {addMutation.isPending ? <T>{"Adding..."}</T> : <T>{"Add section"}</T>}
         </Button>
       </div>
       <p className="text-xs text-ink-muted">
-        New sections arrive switched off with placeholder copy, so nothing half-written reaches a
-        customer. The banner, category row and product row are edited in their own panels below and
-        cannot be deleted — untick them to hide them.
+        <T>
+          New sections arrive switched off with placeholder copy, so nothing half-written reaches a
+          customer. The banner, category row and product row are edited in their own panels below
+          and cannot be deleted — untick them to hide them.
+        </T>
       </p>
 
       {confirmDelete ? (
@@ -917,7 +949,9 @@ function HomepageCountryOverridesSection() {
   if (sectionsQuery.isLoading || overridesQuery.isLoading) {
     return (
       <section className="space-y-4 border-t border-line pt-5">
-        <p className="text-sm text-ink-muted">Loading country overrides...</p>
+        <p className="text-sm text-ink-muted">
+          <T>Loading country overrides...</T>
+        </p>
       </section>
     );
   }
@@ -935,11 +969,15 @@ function HomepageCountryOverridesSection() {
   return (
     <section className="space-y-4 border-t border-line pt-5">
       <div>
-        <h2 className="font-display text-lg text-ink">Homepage sections by country</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Homepage sections by country</T>
+        </h2>
         <p className="max-w-3xl text-sm text-ink-muted">
-          Force a section on or off for visitors in one country, without changing what everyone else
-          sees. Leave a section on "Inherit" and it just follows the tickbox in the section list
-          above.
+          <T>
+            Force a section on or off for visitors in one country, without changing what everyone
+            else sees. Leave a section on "Inherit" and it just follows the tickbox in the section
+            list above.
+          </T>
         </p>
       </div>
 
@@ -951,14 +989,20 @@ function HomepageCountryOverridesSection() {
               value={activeCountry ?? ""}
               onChange={(event) => setCountry(event.target.value || null)}
             >
-              {activeCountry ? null : <option value="">Add a country to begin…</option>}
+              {activeCountry ? null : (
+                <option value="">
+                  <T>Add a country to begin…</T>
+                </option>
+              )}
               {knownCountries.map((code) => (
                 <option key={code} value={code}>
                   {code}
                 </option>
               ))}
               {activeCountry && !knownCountries.includes(activeCountry) ? (
-                <option value={activeCountry}>{activeCountry} (new)</option>
+                <option value={activeCountry}>
+                  {activeCountry} <T>(new)</T>
+                </option>
               ) : null}
             </Select>
           </Field>
@@ -980,7 +1024,7 @@ function HomepageCountryOverridesSection() {
           disabled={!newCountry.trim()}
           onClick={addCountry}
         >
-          Add country
+          <T>Add country</T>
         </Button>
       </div>
 
@@ -996,7 +1040,7 @@ function HomepageCountryOverridesSection() {
                 <div className="min-w-0">
                   <span className="block text-sm font-medium text-ink">{section.label}</span>
                   <span className="block text-xs text-ink-muted">
-                    Site-wide default: {section.enabled ? "shown" : "hidden"}
+                    <T>Site-wide default:</T> {section.enabled ? "shown" : "hidden"}
                   </span>
                 </div>
                 <div
@@ -1034,7 +1078,9 @@ function HomepageCountryOverridesSection() {
         </ul>
       ) : (
         <p className="max-w-xl rounded-md border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
-          No country overrides yet. Add a country above to give it its own section visibility.
+          <T>
+            No country overrides yet. Add a country above to give it its own section visibility.
+          </T>
         </p>
       )}
     </section>
@@ -1113,7 +1159,7 @@ function SectionContentEditor({
     default:
       return (
         <p className="text-sm text-ink-muted">
-          This section is edited in its own panel further down the page.
+          <T>This section is edited in its own panel further down the page.</T>
         </p>
       );
   }
@@ -1124,7 +1170,7 @@ function SaveRow({ saving, hint }: { saving: boolean; hint?: string }) {
     <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-3">
       {hint ? <p className="text-xs text-ink-muted">{hint}</p> : <span />}
       <Button type="submit" variant="primary" disabled={saving}>
-        {saving ? "Saving..." : "Save section"}
+        {saving ? <T>{"Saving..."}</T> : <T>{"Save section"}</T>}
       </Button>
     </div>
   );
@@ -1228,7 +1274,7 @@ function PageLinksEditor({
                   checked={item.enabled}
                   onChange={(event) => update(index, { enabled: event.target.checked })}
                 />
-                Show this snippet
+                <T>Show this snippet</T>
               </label>
               <div className="flex items-center gap-1.5">
                 <button
@@ -1256,7 +1302,7 @@ function PageLinksEditor({
                     setItems((current) => current.filter((_, itemIndex) => itemIndex !== index))
                   }
                 >
-                  Remove
+                  <T>Remove</T>
                 </button>
               </div>
             </div>
@@ -1306,7 +1352,7 @@ function PageLinksEditor({
           ])
         }
       >
-        Add a snippet
+        <T>Add a snippet</T>
       </Button>
 
       <SaveRow
@@ -1440,7 +1486,7 @@ function FaqEditor({
                 setItems((current) => current.filter((_, itemIndex) => itemIndex !== index))
               }
             >
-              Remove
+              <T>Remove</T>
             </Button>
           </div>
         </div>
@@ -1451,7 +1497,7 @@ function FaqEditor({
         disabled={items.length >= 20}
         onClick={() => setItems((current) => [...current, { question: "", answer: "" }])}
       >
-        Add a question
+        <T>Add a question</T>
       </Button>
       <SaveRow saving={saving} hint={`${items.length} of 20 questions`} />
     </form>
@@ -1676,8 +1722,12 @@ function ReviewsShowcaseEditor({
           value={source}
           onChange={(event) => setSource(event.target.value === "manual" ? "manual" : "rule")}
         >
-          <option value="rule">Top-rated reviews (updates automatically)</option>
-          <option value="manual">Hand-picked testimonials</option>
+          <option value="rule">
+            <T>Top-rated reviews (updates automatically)</T>
+          </option>
+          <option value="manual">
+            <T>Hand-picked testimonials</T>
+          </option>
         </Select>
       </Field>
 
@@ -1691,7 +1741,8 @@ function ReviewsShowcaseEditor({
             >
               {[5, 4, 3, 2, 1].map((value) => (
                 <option key={value} value={value}>
-                  {value}+ stars
+                  {value}
+                  <T>+ stars</T>
                 </option>
               ))}
             </Select>
@@ -1710,11 +1761,15 @@ function ReviewsShowcaseEditor({
       ) : (
         <div className="space-y-3">
           {isLoading ? (
-            <p className="text-sm text-ink-muted">Loading approved reviews...</p>
+            <p className="text-sm text-ink-muted">
+              <T>Loading approved reviews...</T>
+            </p>
           ) : candidates.length === 0 ? (
             <p className="max-w-xl rounded-md border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
-              No approved reviews yet. Approve some from the Reviews page, then come back here to
-              feature them.
+              <T>
+                No approved reviews yet. Approve some from the Reviews page, then come back here to
+                feature them.
+              </T>
             </p>
           ) : (
             <ul className="divide-y divide-line rounded-md border border-line">
@@ -1836,22 +1891,30 @@ function PromotionBannerEditor({
           value={source}
           onChange={(event) => setSource(event.target.value === "manual" ? "manual" : "rule")}
         >
-          <option value="rule">Best active promotion (updates automatically)</option>
-          <option value="manual">One specific promotion</option>
+          <option value="rule">
+            <T>Best active promotion (updates automatically)</T>
+          </option>
+          <option value="manual">
+            <T>One specific promotion</T>
+          </option>
         </Select>
       </Field>
 
       {source === "manual" ? (
         !canPickPromotion ? (
           <p className="text-sm text-ink-muted">
-            You need the Coupons & Promotions permission to pick a specific promotion here.
+            <T>You need the Coupons & Promotions permission to pick a specific promotion here.</T>
           </p>
         ) : isLoading ? (
-          <p className="text-sm text-ink-muted">Loading active promotions...</p>
+          <p className="text-sm text-ink-muted">
+            <T>Loading active promotions...</T>
+          </p>
         ) : candidates.length === 0 ? (
           <p className="max-w-xl rounded-md border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
-            No active promotions yet. Create one from Coupons & Promotions, then come back here to
-            feature it.
+            <T>
+              No active promotions yet. Create one from Coupons & Promotions, then come back here to
+              feature it.
+            </T>
           </p>
         ) : (
           <div className="space-y-2 rounded-md border border-line p-3">
@@ -2005,17 +2068,24 @@ function FeaturedCategoriesSection({ form }: { form: ReturnType<typeof useForm<H
   return (
     <section className="space-y-4 border-t border-line pt-5">
       <div>
-        <h2 className="font-display text-lg text-ink">Category row</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Category row</T>
+        </h2>
         <p className="text-sm text-ink-muted">
-          Choose up to {maxCuratedSlots} published categories for the homepage slider. Customers see
-          four at a time on desktop, in this order. Raise the limit on Site Control.
+          <T>Choose up to</T> {maxCuratedSlots}{" "}
+          <T>
+            published categories for the homepage slider. Customers see four at a time on desktop,
+            in this order. Raise the limit on Site Control.
+          </T>
         </p>
       </div>
       {isLoading ? (
-        <p className="text-sm text-ink-muted">Loading categories...</p>
+        <p className="text-sm text-ink-muted">
+          <T>Loading categories...</T>
+        </p>
       ) : currentCategories.length === 0 ? (
         <p className="max-w-xl rounded-md border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
-          No homepage categories selected.
+          <T>No homepage categories selected.</T>
         </p>
       ) : (
         <ul className="max-w-xl divide-y divide-line rounded-md border border-line">
@@ -2054,7 +2124,7 @@ function FeaturedCategoriesSection({ form }: { form: ReturnType<typeof useForm<H
                   )
                 }
               >
-                Remove
+                <T>Remove</T>
               </button>
             </li>
           ))}
@@ -2067,7 +2137,9 @@ function FeaturedCategoriesSection({ form }: { form: ReturnType<typeof useForm<H
           onChange={(event) => setPendingId(event.target.value)}
           className="flex-1"
         >
-          <option value="">Add a category…</option>
+          <option value="">
+            <T>Add a category…</T>
+          </option>
           {addable.map((category) => (
             <option key={category.id} value={category.id}>
               {category.name}
@@ -2088,11 +2160,11 @@ function FeaturedCategoriesSection({ form }: { form: ReturnType<typeof useForm<H
             setPendingId("");
           }}
         >
-          Add category
+          <T>Add category</T>
         </Button>
       </div>
       <p className="text-xs text-ink-muted">
-        {currentSlugs.length} of {maxCuratedSlots} slots used
+        {currentSlugs.length} of {maxCuratedSlots} <T>slots used</T>
       </p>
     </section>
   );
@@ -2132,17 +2204,23 @@ function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<Home
   return (
     <section className="space-y-4 border-t border-line pt-5">
       <div>
-        <h2 className="font-display text-lg text-ink">Product row (Fresh favourites)</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Product row (Fresh favourites)</T>
+        </h2>
         <p className="text-sm text-ink-muted">
-          Shown in the Fresh favourites slider on the homepage. Only published products appear to
-          customers.
+          <T>
+            Shown in the Fresh favourites slider on the homepage. Only published products appear to
+            customers.
+          </T>
         </p>
       </div>
       {isLoading ? (
-        <p className="text-sm text-ink-muted">Loading products...</p>
+        <p className="text-sm text-ink-muted">
+          <T>Loading products...</T>
+        </p>
       ) : currentProducts.length === 0 ? (
         <p className="max-w-xl rounded-md border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
-          No fresh favourites yet. Add a few below.
+          <T>No fresh favourites yet. Add a few below.</T>
         </p>
       ) : (
         <ul className="max-w-xl divide-y divide-line rounded-md border border-line">
@@ -2182,7 +2260,7 @@ function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<Home
                   );
                 }}
               >
-                Remove
+                <T>Remove</T>
               </button>
             </li>
           ))}
@@ -2195,7 +2273,9 @@ function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<Home
           onChange={(event) => setPendingId(event.target.value)}
           className="flex-1"
         >
-          <option value="">Add a product…</option>
+          <option value="">
+            <T>Add a product…</T>
+          </option>
           {addable.map((row) => (
             <option key={row.id} value={row.id}>
               {row.name}
@@ -2217,11 +2297,11 @@ function FreshFavouritesSection({ form }: { form: ReturnType<typeof useForm<Home
             setPendingId("");
           }}
         >
-          Add to favourites
+          <T>Add to favourites</T>
         </Button>
       </div>
       <p className="text-xs text-ink-muted">
-        {currentSlugs.length} of {maxCuratedSlots} slots used
+        {currentSlugs.length} of {maxCuratedSlots} <T>slots used</T>
       </p>
     </section>
   );

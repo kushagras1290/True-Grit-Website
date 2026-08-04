@@ -10,13 +10,16 @@ import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 type PaymentState = "preparing" | "processing" | "paid" | "failed";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "PayPal payment",
-    description: "Complete your True Grit payment.",
-    canonicalPath: "/payment/paypal",
-    indexing: "noindex",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "PayPal payment",
+      description: "Complete your True Grit payment.",
+      canonicalPath: "/payment/paypal",
+      indexing: "noindex",
+    },
+    matches,
+  );
 }
 
 function notifyOpener(
@@ -146,13 +149,15 @@ export default function PaypalPaymentPage(_props: Route.ComponentProps) {
               <LocalizedText>Secure international payment</LocalizedText>
             </p>
             <h1 className="mt-2 font-display text-3xl leading-tight text-ink">
-              {state === "paid"
-                ? "Payment complete"
-                : state === "failed"
-                  ? "Payment needs attention"
-                  : "Pay with PayPal"}
+              {state === "paid" ? (
+                <LocalizedText>{"Payment complete"}</LocalizedText>
+              ) : state === "failed" ? (
+                <LocalizedText>{"Payment needs attention"}</LocalizedText>
+              ) : (
+                <LocalizedText>{"Pay with PayPal"}</LocalizedText>
+              )}
             </h1>
-            <p className="mt-3 text-sm leading-6 text-ink-muted">{message}</p>
+            <p className="mt-3 text-sm leading-6 text-ink-muted">{localize(message)}</p>
 
             {order ? (
               <div className="mt-5 space-y-2 rounded-sm border border-line bg-canvas px-3 py-3 text-sm">

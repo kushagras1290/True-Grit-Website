@@ -6,26 +6,25 @@ import { Section } from "../components/catalogue";
 import { useCustomer } from "../lib/customer-auth";
 import { listMySubmissions, type SubmissionDetail } from "../lib/submissions";
 import { seoMeta } from "../lib/seo";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
+import { useDateFormatter } from "../lib/i18n/dates";
+import { statusSource } from "../lib/i18n/status-labels";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Your submissions",
-    description: "Track the blog posts and recipes you have submitted.",
-    canonicalPath: "/account/submissions",
-    indexing: "noindex",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Your submissions",
+      description: "Track the blog posts and recipes you have submitted.",
+      canonicalPath: "/account/submissions",
+      indexing: "noindex",
+    },
+    matches,
+  );
 }
 
-const STATUS_LABELS: Record<string, string> = {
-  submitted: "Submitted",
-  under_review: "Under review",
-  changes_requested: "Changes requested",
-  approved: "Approved",
-  rejected: "Not published",
-};
-
 function SubmissionsList() {
+  const localize = useLocalizeText();
+  const formatDate = useDateFormatter();
   const [submissions, setSubmissions] = useState<SubmissionDetail[] | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -76,8 +75,12 @@ function SubmissionsList() {
           <div className="min-w-0">
             <p className="font-medium text-ink">{entry.title}</p>
             <p className="mt-0.5 text-xs text-ink-muted">
-              {entry.contentType === "article" ? "Blog post" : "Recipe"} ·{" "}
-              {new Date(entry.createdAt).toLocaleDateString()}
+              {entry.contentType === "article" ? (
+                <LocalizedText>{"Blog post"}</LocalizedText>
+              ) : (
+                <LocalizedText>{"Recipe"}</LocalizedText>
+              )}{" "}
+              · {formatDate(entry.createdAt)}
             </p>
             {entry.reviewerNotes ? (
               <p className="mt-1 text-xs text-ink-muted">
@@ -87,7 +90,7 @@ function SubmissionsList() {
           </div>
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center rounded-sm bg-canvas px-2 py-1 text-[11px] font-medium text-ink">
-              {STATUS_LABELS[entry.status] ?? entry.status}
+              {localize(statusSource("submissionStatus", entry.status))}
             </span>
             {entry.status === "changes_requested" ? (
               <Link

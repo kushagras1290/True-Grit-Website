@@ -33,6 +33,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api } from "../lib/api";
 import { formatDateTime } from "../lib/format";
 import { PermissionGate, usePermissions } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 const createSchema = z.object({
   title: z.string().min(3, "At least 3 characters").max(180),
@@ -94,10 +95,10 @@ function CreateRecipeModal({ onClose }: { onClose: () => void }) {
         </Field>
         <div className="flex justify-end gap-2 pt-1">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button type="submit" variant="primary" disabled={mutation.isPending}>
-            {mutation.isPending ? "Creating…" : "Create draft"}
+            {mutation.isPending ? <T>{"Creating…"}</T> : <T>{"Create draft"}</T>}
           </Button>
         </div>
       </form>
@@ -142,7 +143,7 @@ export function RecipeListPage() {
         actions={
           <PermissionGate permission="recipes.create">
             <Button variant="primary" onClick={() => setCreating(true)}>
-              New recipe
+              <T>New recipe</T>
             </Button>
           </PermissionGate>
         }
@@ -164,10 +165,18 @@ export function RecipeListPage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Title</Th>
-            <Th>Chef</Th>
-            <Th>Status</Th>
-            <Th>Updated</Th>
+            <Th>
+              <T>Title</T>
+            </Th>
+            <Th>
+              <T>Chef</T>
+            </Th>
+            <Th>
+              <T>Status</T>
+            </Th>
+            <Th>
+              <T>Updated</T>
+            </Th>
           </tr>
         </thead>
         {isLoading ? (
@@ -191,7 +200,10 @@ export function RecipeListPage() {
                   >
                     {recipe.title}
                   </Link>
-                  <span className="block text-xs text-ink-muted">/recipes/{recipe.slug}</span>
+                  <span className="block text-xs text-ink-muted">
+                    <T>/recipes/</T>
+                    {recipe.slug}
+                  </span>
                 </Td>
                 <Td className="text-ink-muted">{recipe.chefName}</Td>
                 <Td>
@@ -199,7 +211,7 @@ export function RecipeListPage() {
                     <StatusPill status={recipe.status} />
                     {recipe.hasDraftChanges ? (
                       <span className="rounded-full bg-warning/10 px-2 py-0.5 text-xs text-warning">
-                        Draft changes pending
+                        <T>Draft changes pending</T>
                       </span>
                     ) : null}
                     {recipe.status === "published" || recipe.status === "unpublished" ? (
@@ -214,7 +226,7 @@ export function RecipeListPage() {
                             })
                           }
                         >
-                          {recipe.status === "published" ? "Disable" : "Enable"}
+                          {recipe.status === "published" ? <T>{"Disable"}</T> : <T>{"Enable"}</T>}
                         </Button>
                       </PermissionGate>
                     ) : null}
@@ -314,7 +326,7 @@ function RequestChangesModal({
         </Field>
         <div className="flex justify-end gap-2">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button
             type="button"
@@ -322,7 +334,7 @@ function RequestChangesModal({
             disabled={isPending || note.trim().length === 0}
             onClick={() => onSubmit(note.trim())}
           >
-            {isPending ? "Sending…" : "Send back to draft"}
+            {isPending ? <T>{"Sending…"}</T> : <T>{"Send back to draft"}</T>}
           </Button>
         </div>
       </div>
@@ -385,7 +397,7 @@ function IngredientsEditor({
         </div>
       ))}
       <Button type="button" variant="secondary" onClick={add}>
-        <Plus size={14} /> Add ingredient
+        <Plus size={14} /> <T>Add ingredient</T>
       </Button>
     </div>
   );
@@ -544,7 +556,12 @@ export function RecipeEditorPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not upload the banner."),
   });
 
-  if (isLoading) return <p className="text-sm text-ink-muted">Loading recipe…</p>;
+  if (isLoading)
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>Loading recipe…</T>
+      </p>
+    );
   if (isError || !recipe) return <EmptyState title="Recipe not found" />;
 
   const canEdit = permissions.has("recipes.edit") || permissions.has("recipes.approve");
@@ -560,20 +577,20 @@ export function RecipeEditorPage() {
             {recipe.status === "draft" ? (
               <PermissionGate permission="recipes.edit">
                 <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending}>
-                  {submitMutation.isPending ? "Submitting…" : "Submit for review"}
+                  {submitMutation.isPending ? <T>{"Submitting…"}</T> : <T>{"Submit for review"}</T>}
                 </Button>
               </PermissionGate>
             ) : null}
             {recipe.status === "in_review" ? (
               <PermissionGate permission="recipes.approve">
                 <Button variant="secondary" onClick={() => setRequestingChanges(true)}>
-                  Request changes
+                  <T>Request changes</T>
                 </Button>
                 <Button
                   onClick={() => approveMutation.mutate()}
                   disabled={approveMutation.isPending}
                 >
-                  {approveMutation.isPending ? "Approving…" : "Approve"}
+                  {approveMutation.isPending ? <T>{"Approving…"}</T> : <T>{"Approve"}</T>}
                 </Button>
               </PermissionGate>
             ) : null}
@@ -584,7 +601,7 @@ export function RecipeEditorPage() {
                   onClick={() => unpublishMutation.mutate()}
                   disabled={unpublishMutation.isPending}
                 >
-                  {unpublishMutation.isPending ? "Unpublishing…" : "Unpublish"}
+                  {unpublishMutation.isPending ? <T>{"Unpublishing…"}</T> : <T>{"Unpublish"}</T>}
                 </Button>
               </PermissionGate>
             ) : null}
@@ -593,7 +610,7 @@ export function RecipeEditorPage() {
               fallback={
                 recipe.status === "published" ? null : (
                   <Button disabled title="Requires recipes.publish">
-                    Publish
+                    <T>Publish</T>
                   </Button>
                 )
               }
@@ -604,7 +621,7 @@ export function RecipeEditorPage() {
                   onClick={() => publishMutation.mutate()}
                   disabled={publishMutation.isPending}
                 >
-                  {publishMutation.isPending ? "Publishing…" : "Publish"}
+                  {publishMutation.isPending ? <T>{"Publishing…"}</T> : <T>{"Publish"}</T>}
                 </Button>
               )}
             </PermissionGate>
@@ -655,9 +672,11 @@ export function RecipeEditorPage() {
           </Field>
 
           <div className="border-t border-line pt-5">
-            <h2 className="font-display text-lg text-ink">Banner image</h2>
+            <h2 className="font-display text-lg text-ink">
+              <T>Banner image</T>
+            </h2>
             <p className="text-sm text-ink-muted">
-              Shown at the top of the recipe and as its thumbnail on the recipes listing.
+              <T>Shown at the top of the recipe and as its thumbnail on the recipes listing.</T>
             </p>
             <div className="mt-3 space-y-4">
               <Field
@@ -706,21 +725,27 @@ export function RecipeEditorPage() {
           </div>
 
           <div className="border-t border-line pt-5">
-            <h2 className="font-display text-lg text-ink">Ingredients</h2>
+            <h2 className="font-display text-lg text-ink">
+              <T>Ingredients</T>
+            </h2>
             <div className="mt-3">
               <IngredientsEditor ingredients={ingredients} onChange={setIngredients} />
             </div>
           </div>
 
           <div className="border-t border-line pt-5">
-            <h2 className="font-display text-lg text-ink">Method</h2>
+            <h2 className="font-display text-lg text-ink">
+              <T>Method</T>
+            </h2>
             <Field label="Steps (one per line)" htmlFor="rcp-e-steps">
               <Textarea id="rcp-e-steps" rows={8} {...form.register("stepsText")} />
             </Field>
           </div>
 
           <div className="border-t border-line pt-5">
-            <h2 className="font-display text-lg text-ink">SEO</h2>
+            <h2 className="font-display text-lg text-ink">
+              <T>SEO</T>
+            </h2>
             <div className="mt-3 grid gap-4 md:grid-cols-2">
               <Field label="SEO title" htmlFor="rcp-e-seo-title">
                 <Input id="rcp-e-seo-title" {...form.register("seoTitle")} />
@@ -737,8 +762,12 @@ export function RecipeEditorPage() {
               </Field>
               <Field label="Search indexing" htmlFor="rcp-e-indexing">
                 <Select id="rcp-e-indexing" {...form.register("indexingPolicy")}>
-                  <option value="index">Index</option>
-                  <option value="noindex">No index</option>
+                  <option value="index">
+                    <T>Index</T>
+                  </option>
+                  <option value="noindex">
+                    <T>No index</T>
+                  </option>
                 </Select>
               </Field>
             </div>
@@ -748,11 +777,20 @@ export function RecipeEditorPage() {
           </div>
 
           <div className="border-t border-line pt-5">
-            <h2 className="font-display text-lg text-ink">Intro / story blocks</h2>
+            <h2 className="font-display text-lg text-ink">
+              <T>Intro / story blocks</T>
+            </h2>
             <p className="text-sm text-ink-muted">
-              Optional content shown above the ingredients — supports the same blocks as blog posts,
-              including <code className="font-mono text-xs">[label](/path)</code> links and a
-              product_collection block to highlight the products used in this recipe.
+              <T>
+                Optional content shown above the ingredients — supports the same blocks as blog
+                posts, including
+              </T>{" "}
+              <code className="font-mono text-xs">
+                <T>[label](/path)</T>
+              </code>{" "}
+              <T>
+                links and a product_collection block to highlight the products used in this recipe.
+              </T>
             </p>
             <Field
               label="Blocks JSON"
@@ -770,10 +808,10 @@ export function RecipeEditorPage() {
 
           <div className="flex items-center justify-between">
             <p className="text-xs text-ink-muted">
-              Last updated {formatDateTime(recipe.updatedAt)}
+              <T>Last updated</T> {formatDateTime(recipe.updatedAt)}
             </p>
             <Button type="submit" variant="primary" disabled={saveMutation.isPending}>
-              {saveMutation.isPending ? "Saving…" : "Save"}
+              {saveMutation.isPending ? <T>{"Saving…"}</T> : <T>{"Save"}</T>}
             </Button>
           </div>
         </form>

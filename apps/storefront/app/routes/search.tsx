@@ -13,7 +13,8 @@ import {
 import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
-import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeFormat, useLocalizeText } from "../lib/i18n/localized-text";
+import { statusSource } from "../lib/i18n/status-labels";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const url = new URL(request.url);
@@ -23,7 +24,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const query = (url.searchParams.get("q") ?? "").slice(0, 120);
   const [results, highlights] = await Promise.all([
     query
-      ? runSearch(query, country, runtime)
+      ? runSearch(query, country, runtime, locale.code)
       : Promise.resolve<SearchGroups>({
           query: "",
           total: 0,
@@ -45,23 +46,21 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   return { results, productResults, highlights };
 }
 
-export function meta({ data }: Route.MetaArgs) {
+export function meta({ data, matches }: Route.MetaArgs) {
   const query = data?.results.query;
-  return seoMeta({
-    title: query ? `Search: ${query}` : "Search the market",
-    description: "Search products, farms, recipes and blog stories.",
-    canonicalPath: "/search",
-    indexing: "noindex",
-  });
+  return seoMeta(
+    {
+      title: query ? `Search: ${query}` : "Search the market",
+      description: "Search products, farms, recipes and blog stories.",
+      canonicalPath: "/search",
+      indexing: "noindex",
+    },
+    matches,
+  );
 }
 
-const GROUP_LABELS: Record<string, string> = {
-  farms: "Farms",
-  recipes: "Recipes",
-  articles: "Blog",
-};
-
 export default function SearchPage({ loaderData }: Route.ComponentProps) {
+  const format = useLocalizeFormat();
   const localize = useLocalizeText();
   const { results, productResults, highlights } = loaderData;
   const contentGroups = results.groups.filter((group) => group.group !== "products");
@@ -125,7 +124,7 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
           {contentGroups.map((group) => (
             <div key={group.group}>
               <h2 className="mb-2 text-xs font-semibold tracking-[0.14em] text-ink-muted uppercase">
-                {GROUP_LABELS[group.group] ?? group.group}
+                {localize(statusSource("searchGroup", group.group))}
               </h2>
               <ul className="divide-y divide-line rounded-md border border-line bg-surface">
                 {group.items.map((item) => (
@@ -163,7 +162,9 @@ export default function SearchPage({ loaderData }: Route.ComponentProps) {
           <div className="max-w-2xl">
             <ContactForm
               defaultSubject={
-                results.query ? `Product request: ${results.query}` : "Product request"
+                results.query
+                  ? format("Product request: {query}", { query: results.query })
+                  : "Product request"
               }
               messagePlaceholder="Which product, quantity and city should we look at?"
               submitLabel="Send request"

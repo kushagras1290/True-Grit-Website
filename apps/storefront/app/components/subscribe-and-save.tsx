@@ -311,7 +311,11 @@ export function SubscribeAndSave({
               onClick={handleAddAddress}
               className="min-h-9 rounded-sm border border-line-strong px-3 text-xs font-medium text-ink hover:bg-surface disabled:opacity-50"
             >
-              {saving ? "Saving..." : "Save address"}
+              {saving ? (
+                <LocalizedText>{"Saving..."}</LocalizedText>
+              ) : (
+                <LocalizedText>{"Save address"}</LocalizedText>
+              )}
             </button>
             {addresses && addresses.length > 0 ? (
               <button
@@ -326,7 +330,7 @@ export function SubscribeAndSave({
         </div>
       ) : null}
 
-      {error ? <p className="mt-2 text-xs text-danger">{error}</p> : null}
+      {error ? <p className="mt-2 text-xs text-danger">{localize(error)}</p> : null}
 
       {!addingAddress ? (
         <button
@@ -335,7 +339,11 @@ export function SubscribeAndSave({
           onClick={handleSubscribe}
           className="mt-3 min-h-10 rounded-sm border border-brand px-4 text-sm font-medium text-brand hover:bg-subtle disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {saving ? "Setting up..." : "Start subscription"}
+          {saving ? (
+            <LocalizedText>{"Setting up..."}</LocalizedText>
+          ) : (
+            <LocalizedText>{"Start subscription"}</LocalizedText>
+          )}
         </button>
       ) : null}
     </div>

@@ -27,6 +27,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api } from "../lib/api";
 import { formatDateTime } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 function CommunitySettingsPanel() {
   const toast = useToast();
@@ -67,10 +68,12 @@ function CommunitySettingsPanel() {
           disabled={mutation.isPending || months === ""}
           onClick={() => mutation.mutate(Math.max(0, Math.min(120, Number(months) || 0)))}
         >
-          {mutation.isPending ? "Saving..." : "Save"}
+          {mutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save"}</T>}
         </Button>
         <p className="w-full text-xs text-ink-muted">
-          Anyone signed in may comment. Only starting a new discussion is gated by account age.
+          <T>
+            Anyone signed in may comment. Only starting a new discussion is gated by account age.
+          </T>
         </p>
       </div>
     </PermissionGate>
@@ -99,8 +102,12 @@ export function DiscussionsListPage() {
     <div>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl text-ink">Community</h1>
-          <p className="text-sm text-ink-muted">Discussions and comments started by customers.</p>
+          <h1 className="font-display text-2xl text-ink">
+            <T>Community</T>
+          </h1>
+          <p className="text-sm text-ink-muted">
+            <T>Discussions and comments started by customers.</T>
+          </p>
         </div>
         <Select
           value={statusFilter}
@@ -109,11 +116,21 @@ export function DiscussionsListPage() {
             setPage(1);
           }}
         >
-          <option value="">All statuses</option>
-          <option value="visible">Visible</option>
-          <option value="hidden">Hidden</option>
-          <option value="archived">Archived</option>
-          <option value="removed">Removed</option>
+          <option value="">
+            <T>All statuses</T>
+          </option>
+          <option value="visible">
+            <T>Visible</T>
+          </option>
+          <option value="hidden">
+            <T>Hidden</T>
+          </option>
+          <option value="archived">
+            <T>Archived</T>
+          </option>
+          <option value="removed">
+            <T>Removed</T>
+          </option>
         </Select>
       </div>
 
@@ -133,11 +150,21 @@ export function DiscussionsListPage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Title</Th>
-            <Th>Author</Th>
-            <Th>Comments</Th>
-            <Th>Status</Th>
-            <Th>Last activity</Th>
+            <Th>
+              <T>Title</T>
+            </Th>
+            <Th>
+              <T>Author</T>
+            </Th>
+            <Th>
+              <T>Comments</T>
+            </Th>
+            <Th>
+              <T>Status</T>
+            </Th>
+            <Th>
+              <T>Last activity</T>
+            </Th>
           </tr>
         </thead>
         {isLoading ? (
@@ -245,7 +272,12 @@ export function DiscussionDetailPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not delete."),
   });
 
-  if (isLoading) return <p className="text-sm text-ink-muted">Loading discussion…</p>;
+  if (isLoading)
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>Loading discussion…</T>
+      </p>
+    );
   if (isError || !entry) return <EmptyState title="Discussion not found" />;
 
   return (
@@ -254,7 +286,8 @@ export function DiscussionDetailPage() {
         <div>
           <h1 className="font-display text-2xl text-ink">{entry.title}</h1>
           <p className="text-sm text-ink-muted">
-            {entry.authorName} ({entry.authorEmail}) · started {formatDateTime(entry.createdAt)}
+            {entry.authorName} ({entry.authorEmail}
+            <T>) · started</T> {formatDateTime(entry.createdAt)}
           </p>
         </div>
         <StatusPill status={entry.status} />
@@ -267,17 +300,22 @@ export function DiscussionDetailPage() {
           </div>
           {entry.moderationReason ? (
             <div className="rounded-md border border-line bg-canvas p-5">
-              <p className="text-ink-muted">Moderation reason</p>
+              <p className="text-ink-muted">
+                <T>Moderation reason</T>
+              </p>
               <p className="mt-1 text-sm text-ink">{entry.moderationReason}</p>
             </div>
           ) : null}
 
           <div>
             <h2 className="mb-2 font-display text-lg text-ink">
-              Comments ({entry.comments.length})
+              <T>Comments (</T>
+              {entry.comments.length})
             </h2>
             {entry.comments.length === 0 ? (
-              <p className="text-sm text-ink-muted">No comments yet.</p>
+              <p className="text-sm text-ink-muted">
+                <T>No comments yet.</T>
+              </p>
             ) : (
               <ul className="space-y-3">
                 {entry.comments.map((comment) => (
@@ -291,7 +329,7 @@ export function DiscussionDetailPage() {
                     <p className="mt-2 whitespace-pre-wrap text-sm text-ink">{comment.body}</p>
                     {comment.moderationReason ? (
                       <p className="mt-1 text-xs text-ink-muted">
-                        Reason: {comment.moderationReason}
+                        <T>Reason:</T> {comment.moderationReason}
                       </p>
                     ) : null}
                     <PermissionGate permission="discussions.moderate">
@@ -308,7 +346,7 @@ export function DiscussionDetailPage() {
                             }
                             disabled={moderateCommentMutation.isPending}
                           >
-                            Restore
+                            <T>Restore</T>
                           </Button>
                         ) : (
                           <Button
@@ -322,7 +360,7 @@ export function DiscussionDetailPage() {
                             }
                             disabled={moderateCommentMutation.isPending}
                           >
-                            Hide
+                            <T>Hide</T>
                           </Button>
                         )}
                         <Button
@@ -335,7 +373,7 @@ export function DiscussionDetailPage() {
                           }}
                           disabled={deleteCommentMutation.isPending}
                         >
-                          Delete
+                          <T>Delete</T>
                         </Button>
                       </div>
                     </PermissionGate>
@@ -348,7 +386,9 @@ export function DiscussionDetailPage() {
 
         <PermissionGate permission="discussions.moderate">
           <aside className="h-fit space-y-3 rounded-md border border-line bg-surface p-5">
-            <h2 className="font-display text-base text-ink">Moderate thread</h2>
+            <h2 className="font-display text-base text-ink">
+              <T>Moderate thread</T>
+            </h2>
             <Field label="Reason (optional)" htmlFor="moderation-reason">
               <Textarea
                 id="moderation-reason"
@@ -364,7 +404,7 @@ export function DiscussionDetailPage() {
                 onClick={() => moderateMutation.mutate("hide")}
                 disabled={moderateMutation.isPending}
               >
-                Hide
+                <T>Hide</T>
               </Button>
             ) : (
               <Button
@@ -373,7 +413,7 @@ export function DiscussionDetailPage() {
                 onClick={() => moderateMutation.mutate("restore")}
                 disabled={moderateMutation.isPending}
               >
-                Restore (make visible)
+                <T>Restore (make visible)</T>
               </Button>
             )}
             <Button
@@ -382,7 +422,7 @@ export function DiscussionDetailPage() {
               onClick={() => moderateMutation.mutate("archive")}
               disabled={moderateMutation.isPending || entry.status === "archived"}
             >
-              Archive
+              <T>Archive</T>
             </Button>
             <Button
               className="w-full"
@@ -390,7 +430,7 @@ export function DiscussionDetailPage() {
               onClick={() => moderateMutation.mutate("remove")}
               disabled={moderateMutation.isPending || entry.status === "removed"}
             >
-              Remove (soft)
+              <T>Remove (soft)</T>
             </Button>
             <Button
               className="w-full"
@@ -402,7 +442,7 @@ export function DiscussionDetailPage() {
               }}
               disabled={deleteMutation.isPending}
             >
-              Delete permanently
+              <T>Delete permanently</T>
             </Button>
           </aside>
         </PermissionGate>

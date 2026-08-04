@@ -228,15 +228,27 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   return (
     <div className="mx-auto max-w-xl px-4 py-24 text-center">
       <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-        {notFound ? "404" : "Something went wrong"}
+        {notFound ? "404" : <LocalizedText>{"Something went wrong"}</LocalizedText>}
       </p>
       <h1 className="mt-3 font-display text-3xl text-ink">
-        {notFound ? "This patch is empty." : "We hit a snag."}
+        {notFound ? (
+          <LocalizedText>{"This patch is empty."}</LocalizedText>
+        ) : (
+          <LocalizedText>{"We hit a snag."}</LocalizedText>
+        )}
       </h1>
       <p className="mt-3 text-sm text-ink-muted">
-        {notFound
-          ? "The page you are looking for may have moved with the season."
-          : "Please try again in a moment. If it persists, the request id in our logs will find it."}
+        {notFound ? (
+          <LocalizedText>
+            {"The page you are looking for may have moved with the season."}
+          </LocalizedText>
+        ) : (
+          <LocalizedText>
+            {
+              "Please try again in a moment. If it persists, the request id in our logs will find it."
+            }
+          </LocalizedText>
+        )}
       </p>
       <Link
         to="/"

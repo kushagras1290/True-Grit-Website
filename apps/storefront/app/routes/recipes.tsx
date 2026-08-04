@@ -8,7 +8,7 @@ import { catalogueRuntime, loadRecipes } from "../lib/catalogue.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizePlural } from "../lib/i18n/localized-text";
 
 const RECIPE_PAGE_SIZE = 12;
 
@@ -22,16 +22,20 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   };
 }
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Recipes",
-    description: "Seasonal recipes built around the market — add the ingredients in one step.",
-    canonicalPath: "/recipes",
-    indexing: "index",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Recipes",
+      description: "Seasonal recipes built around the market — add the ingredients in one step.",
+      canonicalPath: "/recipes",
+      indexing: "index",
+    },
+    matches,
+  );
 }
 
 export default function RecipesPage({ loaderData }: Route.ComponentProps) {
+  const plural = useLocalizePlural();
   return (
     <>
       <PageBanner
@@ -56,8 +60,7 @@ export default function RecipesPage({ loaderData }: Route.ComponentProps) {
           </Link>
         </div>
         <p className="mb-5 text-sm text-ink-muted" role="status">
-          {loaderData.recipes.total} <LocalizedText>recipe</LocalizedText>
-          {loaderData.recipes.total === 1 ? "" : "s"}
+          {plural("{count} recipe", "{count} recipes", loaderData.recipes.total)}
         </p>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {loaderData.recipes.items.map((recipe) => (

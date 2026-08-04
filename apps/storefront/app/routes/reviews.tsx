@@ -6,7 +6,7 @@ import { StarRating } from "../components/reviews";
 import { PageLinkPagination } from "../components/pagination";
 import { catalogueRuntime, loadAllReviews } from "../lib/catalogue.server";
 import { seoMeta } from "../lib/seo";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizePlural } from "../lib/i18n/localized-text";
 
 const REVIEWS_PAGE_SIZE = 12;
 
@@ -19,23 +19,30 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   };
 }
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Customer reviews",
-    description: "Real ratings and reviews from verified True Grit purchases.",
-    canonicalPath: "/reviews",
-    indexing: "index",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Customer reviews",
+      description: "Real ratings and reviews from verified True Grit purchases.",
+      canonicalPath: "/reviews",
+      indexing: "index",
+    },
+    matches,
+  );
 }
 
 export default function ReviewsPage({ loaderData }: Route.ComponentProps) {
+  const plural = useLocalizePlural();
   const { reviews, page, pageSize } = loaderData;
 
   return (
     <Section eyebrow="From our customers" heading="Customer reviews">
       <p className="mb-8 text-center text-sm text-ink-muted" role="status">
-        {reviews.total} <LocalizedText>review</LocalizedText>
-        {reviews.total === 1 ? "" : "s"} <LocalizedText>from verified purchases</LocalizedText>
+        {plural(
+          "{count} review from verified purchases",
+          "{count} reviews from verified purchases",
+          reviews.total,
+        )}
       </p>
 
       {reviews.items.length === 0 ? (
@@ -54,7 +61,11 @@ export default function ReviewsPage({ loaderData }: Route.ComponentProps) {
               <p className="mt-1.5 line-clamp-4 text-sm text-ink-muted">{review.body}</p>
               <p className="mt-3 text-xs text-ink-muted">
                 <span className="font-medium text-ink">{review.authorName}</span>
-                {review.verifiedPurchase ? " · Verified purchase" : ""}
+                {review.verifiedPurchase ? (
+                  <LocalizedText>{" · Verified purchase"}</LocalizedText>
+                ) : (
+                  ""
+                )}
               </p>
               <Link
                 to={`/product/${review.productSlug}`}

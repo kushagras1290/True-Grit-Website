@@ -10,21 +10,25 @@ import { commerceLive, getBestsellers } from "../lib/commerce";
 import { usePriceFormatter } from "../lib/currency";
 import { seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeFormat } from "../lib/i18n/localized-text";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Your basket",
-    description: "Review your basket before checkout.",
-    canonicalPath: "/cart",
-    indexing: "noindex",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Your basket",
+      description: "Review your basket before checkout.",
+      canonicalPath: "/cart",
+      indexing: "noindex",
+    },
+    matches,
+  );
 }
 
 export default function CartPage(_props: Route.ComponentProps) {
   const { lines, subtotalMinor, setQuantity, remove } = useCart();
   const { payments, recommendations } = useSiteSettings();
   const formatPrice = usePriceFormatter();
+  const format = useLocalizeFormat();
 
   // Client-side, not the server loader: the basket only exists in
   // localStorage, so only the browser knows which slugs to exclude. Re-fetches
@@ -76,7 +80,11 @@ export default function CartPage(_props: Route.ComponentProps) {
     <>
       <Section
         eyebrow="Your basket"
-        heading={`${lines.length} item${lines.length === 1 ? "" : "s"}`}
+        heading={
+          lines.length === 1
+            ? format("{count} item", { count: lines.length })
+            : format("{count} items", { count: lines.length })
+        }
       >
         <div className="grid gap-10 lg:grid-cols-[2fr_1fr]">
           <ul className="divide-y divide-line">
@@ -94,7 +102,9 @@ export default function CartPage(_props: Route.ComponentProps) {
                 <div className="flex items-center rounded-sm border border-line-strong">
                   <button
                     type="button"
-                    aria-label={`Decrease quantity of ${line.productName}`}
+                    aria-label={format("Decrease quantity of {product}", {
+                      product: line.productName,
+                    })}
                     className="min-h-11 min-w-11 text-lg"
                     onClick={() => setQuantity(line.variantId, line.quantity - 1)}
                   >
@@ -105,7 +115,9 @@ export default function CartPage(_props: Route.ComponentProps) {
                   </span>
                   <button
                     type="button"
-                    aria-label={`Increase quantity of ${line.productName}`}
+                    aria-label={format("Increase quantity of {product}", {
+                      product: line.productName,
+                    })}
                     className="min-h-11 min-w-11 text-lg"
                     onClick={() => setQuantity(line.variantId, line.quantity + 1)}
                   >

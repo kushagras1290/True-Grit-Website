@@ -16,8 +16,8 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   return loadCmsRoute("privacy", request, context);
 }
 
-export function meta({ data }: Route.MetaArgs) {
-  return seoMeta(data?.page?.seo ?? fallbackSeo);
+export function meta({ data, matches }: Route.MetaArgs) {
+  return seoMeta(data?.page?.seo ?? fallbackSeo, matches);
 }
 
 const PRIVACY_ITEMS = [

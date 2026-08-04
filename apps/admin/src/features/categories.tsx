@@ -52,6 +52,7 @@ import { formatDate } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
 import { blockTitle, reorderBlocks, toggleBlock, type BuilderState } from "./builder";
 import { EntityTranslationsPanel } from "./entity-translations";
+import { T } from "../lib/i18n";
 
 const createSchema = z.object({
   name: z.string().min(3, "At least 3 characters").max(140),
@@ -101,10 +102,10 @@ function CreateCategoryModal({ onClose }: { onClose: () => void }) {
         </Field>
         <div className="flex justify-end gap-2 pt-1">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button type="submit" variant="primary" disabled={mutation.isPending}>
-            {mutation.isPending ? "Creating…" : "Create draft"}
+            {mutation.isPending ? <T>{"Creating…"}</T> : <T>{"Create draft"}</T>}
           </Button>
         </div>
       </form>
@@ -206,14 +207,16 @@ export function CategoryListPage() {
                     onClick={() => bulkStatusMutation.mutate("published")}
                     disabled={bulkStatusMutation.isPending}
                   >
-                    Enable selected ({selectedCategoryIds.length})
+                    <T>Enable selected (</T>
+                    {selectedCategoryIds.length})
                   </Button>
                   <Button
                     variant="secondary"
                     onClick={() => bulkStatusMutation.mutate("unpublished")}
                     disabled={bulkStatusMutation.isPending}
                   >
-                    Disable selected ({selectedCategoryIds.length})
+                    <T>Disable selected (</T>
+                    {selectedCategoryIds.length})
                   </Button>
                 </>
               ) : null}
@@ -225,13 +228,14 @@ export function CategoryListPage() {
                   onClick={() => setConfirmingDelete(true)}
                   disabled={deleteMutation.isPending}
                 >
-                  Delete selected ({selectedCategoryIds.length})
+                  <T>Delete selected (</T>
+                  {selectedCategoryIds.length})
                 </Button>
               ) : null}
             </PermissionGate>
             <PermissionGate permission="categories.create">
               <Button variant="primary" onClick={() => setCreating(true)}>
-                New category
+                <T>New category</T>
               </Button>
             </PermissionGate>
           </div>
@@ -277,12 +281,24 @@ export function CategoryListPage() {
                 onChange={toggleAllCategories}
               />
             </Th>
-            <Th>Category</Th>
-            <Th>Slug</Th>
-            <Th>Products</Th>
-            <Th>Visibility</Th>
-            <Th>Status</Th>
-            <Th>Updated</Th>
+            <Th>
+              <T>Category</T>
+            </Th>
+            <Th>
+              <T>Slug</T>
+            </Th>
+            <Th>
+              <T>Products</T>
+            </Th>
+            <Th>
+              <T>Visibility</T>
+            </Th>
+            <Th>
+              <T>Status</T>
+            </Th>
+            <Th>
+              <T>Updated</T>
+            </Th>
           </tr>
         </thead>
         {isLoading ? (
@@ -331,7 +347,7 @@ export function CategoryListPage() {
                             })
                           }
                         >
-                          {category.status === "published" ? "Disable" : "Enable"}
+                          {category.status === "published" ? <T>{"Disable"}</T> : <T>{"Enable"}</T>}
                         </Button>
                       </PermissionGate>
                     ) : null}
@@ -632,13 +648,19 @@ function CategorySettingsForm({
       </Field>
       <Field label="Visibility" htmlFor="c-visibility">
         <Select id="c-visibility" {...form.register("visibility")}>
-          <option value="public">Public</option>
-          <option value="hidden">Hidden</option>
-          <option value="private">Private</option>
+          <option value="public">
+            <T>Public</T>
+          </option>
+          <option value="hidden">
+            <T>Hidden</T>
+          </option>
+          <option value="private">
+            <T>Private</T>
+          </option>
         </Select>
       </Field>
       <Button type="submit" variant="primary" disabled={saving || !form.formState.isDirty}>
-        {saving ? "Saving…" : "Save settings"}
+        {saving ? <T>{"Saving…"}</T> : <T>{"Save settings"}</T>}
       </Button>
     </form>
   );
@@ -669,10 +691,14 @@ function CategoryAvailabilityTab({
   return (
     <div className="max-w-2xl space-y-4">
       <div>
-        <h2 className="font-display text-lg text-ink">Where this category is released</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Where this category is released</T>
+        </h2>
         <p className="text-sm text-ink-muted">
-          Visitors outside the released countries will not see this category page at all — the same
-          per-country control already used for products.
+          <T>
+            Visitors outside the released countries will not see this category page at all — the
+            same per-country control already used for products.
+          </T>
         </p>
       </div>
       <label className="flex items-center gap-2 text-sm text-ink">
@@ -681,12 +707,12 @@ function CategoryAvailabilityTab({
           checked={globalRelease}
           onChange={(event) => setGlobalRelease(event.target.checked)}
         />
-        Release everywhere
+        <T>Release everywhere</T>
       </label>
       {!globalRelease ? (
         <fieldset className="rounded-md border border-line px-4 py-3">
           <legend className="px-1 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-            Release only in these countries
+            <T>Release only in these countries</T>
           </legend>
           <div className="grid max-h-64 grid-cols-2 gap-x-4 gap-y-1.5 overflow-y-auto sm:grid-cols-3">
             {COUNTRIES.map((country) => (
@@ -702,7 +728,7 @@ function CategoryAvailabilityTab({
           </div>
           {countries.length === 0 ? (
             <p className="mt-2 text-xs text-danger">
-              Pick at least one country, or release everywhere.
+              <T>Pick at least one country, or release everywhere.</T>
             </p>
           ) : null}
         </fieldset>
@@ -717,7 +743,7 @@ function CategoryAvailabilityTab({
           })
         }
       >
-        {saving ? "Saving…" : "Save availability"}
+        {saving ? <T>{"Saving…"}</T> : <T>{"Save availability"}</T>}
       </Button>
     </div>
   );
@@ -806,7 +832,12 @@ export function CategoryEditorPage() {
     }
   }
 
-  if (isLoading) return <p className="text-sm text-ink-muted">Loading category…</p>;
+  if (isLoading)
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>Loading category…</T>
+      </p>
+    );
   if (isError || !category) return <EmptyState title="Category not found" />;
 
   return (
@@ -823,14 +854,14 @@ export function CategoryEditorPage() {
                 onClick={() => setConfirmingDelete(true)}
                 disabled={deleteMutation.isPending}
               >
-                {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                {deleteMutation.isPending ? <T>{"Deleting..."}</T> : <T>{"Delete"}</T>}
               </Button>
             </PermissionGate>
             <PermissionGate
               permission="categories.publish"
               fallback={
                 <Button disabled title="Requires categories.publish">
-                  Publish
+                  <T>Publish</T>
                 </Button>
               }
             >
@@ -839,7 +870,7 @@ export function CategoryEditorPage() {
                 onClick={() => publishMutation.mutate()}
                 disabled={publishMutation.isPending}
               >
-                {publishMutation.isPending ? "Publishing…" : "Publish"}
+                {publishMutation.isPending ? <T>{"Publishing…"}</T> : <T>{"Publish"}</T>}
               </Button>
             </PermissionGate>
           </div>
@@ -907,7 +938,7 @@ export function CategoryEditorPage() {
         <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
           <section aria-label="Page outline">
             <h2 className="mb-2 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-              Layout — drag or use arrow keys
+              <T>Layout — drag or use arrow keys</T>
             </h2>
             <DndContext
               sensors={sensors}
@@ -937,7 +968,7 @@ export function CategoryEditorPage() {
 
           <section aria-label="Live preview">
             <h2 className="mb-2 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-              Live preview
+              <T>Live preview</T>
             </h2>
             <div className="overflow-hidden rounded-md border border-line bg-surface shadow-card">
               {state.blocks.filter((block) => block.enabled).length === 0 ? (

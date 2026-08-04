@@ -27,6 +27,7 @@ import {
 } from "../lib/api";
 import type { StorefrontSettings, StorefrontSettingsEffective } from "@truegrit/contracts";
 import { formatDateTime } from "../lib/format";
+import { T } from "../lib/i18n";
 
 /** Mirrors the identical helpers in `appearance.tsx` — a scope here is either
  *  `'global'` or a two-letter country code, never a page path. */
@@ -117,15 +118,21 @@ function CuratedListSizeSection() {
   return (
     <section className="mt-10 space-y-3 border-t border-line pt-5">
       <div>
-        <h2 className="font-display text-lg text-ink">Curated list size</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Curated list size</T>
+        </h2>
         <p className="max-w-2xl text-sm text-ink-muted">
-          How many products or categories an operator may pick into Fresh Favourites, Featured
-          Categories (Homepage Settings) and Highlighted products (below). Raising it saves
-          immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.
+          <T>
+            How many products or categories an operator may pick into Fresh Favourites, Featured
+            Categories (Homepage Settings) and Highlighted products (below). Raising it saves
+            immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.
+          </T>
         </p>
       </div>
       {isLoading ? (
-        <p className="text-sm text-ink-muted">Loading...</p>
+        <p className="text-sm text-ink-muted">
+          <T>Loading...</T>
+        </p>
       ) : (
         <div className="flex items-end gap-2">
           <Field label="Maximum items" htmlFor="curatedMaxItems">
@@ -146,7 +153,7 @@ function CuratedListSizeSection() {
             disabled={mutation.isPending || !isValid || parsed === data?.maxItems}
             onClick={() => mutation.mutate(parsed)}
           >
-            {mutation.isPending ? "Saving..." : "Save"}
+            {mutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save"}</T>}
           </Button>
         </div>
       )}
@@ -248,7 +255,9 @@ function AnnouncementSection() {
   if (isLoading) {
     return (
       <section className="space-y-4 border-t border-line pt-5">
-        <p className="text-sm text-ink-muted">Loading announcements...</p>
+        <p className="text-sm text-ink-muted">
+          <T>Loading announcements...</T>
+        </p>
       </section>
     );
   }
@@ -263,11 +272,15 @@ function AnnouncementSection() {
   return (
     <section className="space-y-4 border-t border-line pt-5">
       <div>
-        <h2 className="font-display text-lg text-ink">Announcement banner</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Announcement banner</T>
+        </h2>
         <p className="max-w-3xl text-sm text-ink-muted">
-          Appears above the customer storefront, on every page. A country's banner fully replaces
-          the site-wide one for its visitors when it is on — an owner silencing a market-specific
-          announcement does not have the general one reappear underneath it.
+          <T>
+            Appears above the customer storefront, on every page. A country's banner fully replaces
+            the site-wide one for its visitors when it is on — an owner silencing a market-specific
+            announcement does not have the general one reappear underneath it.
+          </T>
         </p>
       </div>
 
@@ -279,14 +292,18 @@ function AnnouncementSection() {
               value={scope}
               onChange={(event) => setScope(event.target.value)}
             >
-              <option value="global">Whole site</option>
+              <option value="global">
+                <T>Whole site</T>
+              </option>
               {countryScopes.map((countryScope) => (
                 <option key={countryScope} value={countryScope}>
                   {countryScope}
                 </option>
               ))}
               {isCountryScope(scope) && !countryScopes.includes(scope) ? (
-                <option value={scope}>{scope} (unsaved)</option>
+                <option value={scope}>
+                  {scope} <T>(unsaved)</T>
+                </option>
               ) : null}
             </Select>
           </Field>
@@ -308,11 +325,11 @@ function AnnouncementSection() {
           disabled={!newCountry.trim()}
           onClick={addCountry}
         >
-          Add country
+          <T>Add country</T>
         </Button>
         {isCountryScope(scope) && countryScopes.includes(scope) ? (
           <Button type="button" variant="tertiary" onClick={() => setConfirmDelete(scope)}>
-            Remove country banner
+            <T>Remove country banner</T>
           </Button>
         ) : null}
       </div>
@@ -324,7 +341,7 @@ function AnnouncementSection() {
         <div className="space-y-4">
           <label className="flex items-center gap-2 text-sm text-ink">
             <input type="checkbox" {...form.register("active")} />
-            Show announcement
+            <T>Show announcement</T>
           </label>
           <Field label="Banner message" htmlFor="announcementMessage">
             <Input id="announcementMessage" {...form.register("message")} />
@@ -345,11 +362,13 @@ function AnnouncementSection() {
             className="w-full"
             disabled={saveMutation.isPending}
           >
-            {saveMutation.isPending
-              ? "Saving..."
-              : scope === "global"
-                ? "Save announcement"
-                : `Save announcement for ${scope}`}
+            {saveMutation.isPending ? (
+              <T>{"Saving..."}</T>
+            ) : scope === "global" ? (
+              <T>{"Save announcement"}</T>
+            ) : (
+              `Save announcement for ${scope}`
+            )}
           </Button>
         </aside>
       </form>
@@ -470,7 +489,7 @@ function SwitchRow({
           (effective ? "bg-success/10 text-success" : "border border-line bg-canvas text-ink-muted")
         }
       >
-        {effective ? "Live" : "Off"}
+        {effective ? <T>{"Live"}</T> : <T>{"Off"}</T>}
       </span>
     </li>
   );
@@ -586,7 +605,9 @@ function StorefrontSwitchesSection() {
   if (isLoading) {
     return (
       <section className="mt-10 border-t border-line pt-5">
-        <p className="text-sm text-ink-muted">Loading storefront switches...</p>
+        <p className="text-sm text-ink-muted">
+          <T>Loading storefront switches...</T>
+        </p>
       </section>
     );
   }
@@ -611,24 +632,30 @@ function StorefrontSwitchesSection() {
   return (
     <section className="mt-10 space-y-8 border-t border-line pt-5">
       <div>
-        <h2 className="font-display text-lg text-ink">Storefront switches</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Storefront switches</T>
+        </h2>
         <p className="text-sm text-ink-muted">
-          Turn sign-in methods and ordering on or off without a deploy. The pill on the right is
-          what customers actually get: a switch can only ever take a feature away, never add one the
-          API is not configured for.
+          <T>
+            Turn sign-in methods and ordering on or off without a deploy. The pill on the right is
+            what customers actually get: a switch can only ever take a feature away, never add one
+            the API is not configured for.
+          </T>
         </p>
       </div>
 
       <div>
         <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
-          Sign-in methods
+          <T>Sign-in methods</T>
         </h3>
         {/* Locking every route out of a live storefront is a legitimate thing to
             want, but never a thing to do by accident. */}
         {!effective.anySignInAvailable ? (
           <p className="mt-3 rounded-md border border-danger/40 bg-danger/5 px-4 py-3 text-sm text-danger">
-            No sign-in method is available. Customers cannot sign in or reach their orders until at
-            least one is switched back on.
+            <T>
+              No sign-in method is available. Customers cannot sign in or reach their orders until
+              at least one is switched back on.
+            </T>
           </p>
         ) : null}
         <ul className="mt-3 max-w-3xl">
@@ -649,7 +676,7 @@ function StorefrontSwitchesSection() {
 
       <div>
         <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
-          Taking payments
+          <T>Taking payments</T>
         </h3>
         <ul className="mt-3 max-w-3xl">
           <SwitchRow
@@ -673,8 +700,10 @@ function StorefrontSwitchesSection() {
             />
           </Field>
           <p className="mt-1 text-xs text-ink-muted">
-            Appears above the contact form on checkout and in the basket summary. Up to 600
-            characters.
+            <T>
+              Appears above the contact form on checkout and in the basket summary. Up to 600
+              characters.
+            </T>
           </p>
           <Button
             type="button"
@@ -683,14 +712,14 @@ function StorefrontSwitchesSection() {
             disabled={mutation.isPending || noticeValue === settings.paymentsDisabledNotice}
             onClick={() => mutation.mutate({ paymentsDisabledNotice: noticeValue })}
           >
-            {mutation.isPending ? "Saving..." : "Save message"}
+            {mutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save message"}</T>}
           </Button>
         </div>
       </div>
 
       <div>
         <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
-          Coupons &amp; promotions
+          <T>Coupons &amp; promotions</T>
         </h3>
         <ul className="mt-3 max-w-3xl">
           <SwitchRow
@@ -707,7 +736,7 @@ function StorefrontSwitchesSection() {
 
       <div>
         <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
-          Recommendations
+          <T>Recommendations</T>
         </h3>
         <ul className="mt-3 max-w-3xl">
           <SwitchRow
@@ -724,7 +753,7 @@ function StorefrontSwitchesSection() {
 
       <div>
         <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
-          Subscribe &amp; Save
+          <T>Subscribe &amp; Save</T>
         </h3>
         <ul className="mt-3 max-w-3xl">
           <SwitchRow
@@ -762,18 +791,20 @@ function StorefrontSwitchesSection() {
             }
             onClick={() => subscriptionDiscountMutation.mutate(Number(subscriptionDiscount))}
           >
-            {subscriptionDiscountMutation.isPending ? "Saving..." : "Save"}
+            {subscriptionDiscountMutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save"}</T>}
           </Button>
         </div>
       </div>
 
       <div>
         <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
-          Delivery charges
+          <T>Delivery charges</T>
         </h3>
         <p className="mt-1 max-w-2xl text-sm text-ink-muted">
-          Applied at checkout before any coupon or promotion discount. Orders at or above the
-          free-delivery threshold pay no delivery fee.
+          <T>
+            Applied at checkout before any coupon or promotion discount. Orders at or above the
+            free-delivery threshold pay no delivery fee.
+          </T>
         </p>
         <DeliveryChargesForm
           feeMinor={delivery?.feeMinor}
@@ -791,11 +822,17 @@ function StorefrontSwitchesSection() {
 
       <div>
         <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
-          Blog banner
+          <T>Blog banner</T>
         </h3>
         <p className="mt-1 max-w-2xl text-sm text-ink-muted">
-          The banner across the top of <code>/blog</code>, rendered at the same size as the homepage
-          hero. Left blank, the shipped hero image is used so the space is never empty.
+          <T>The banner across the top of</T>{" "}
+          <code>
+            <T>/blog</T>
+          </code>
+          <T>
+            , rendered at the same size as the homepage hero. Left blank, the shipped hero image is
+            used so the space is never empty.
+          </T>
         </p>
         <div className="mt-4 grid max-w-3xl gap-4 md:grid-cols-[minmax(0,1fr)_16rem] md:items-start">
           <div className="space-y-4">
@@ -815,8 +852,10 @@ function StorefrontSwitchesSection() {
               />
             </Field>
             <p className="-mt-2 text-xs text-ink-muted">
-              Describe the image for screen readers. Leave blank if it is purely decorative — the
-              banner heading already carries the meaning.
+              <T>
+                Describe the image for screen readers. Leave blank if it is purely decorative — the
+                banner heading already carries the meaning.
+              </T>
             </p>
             <div className="flex flex-wrap items-center gap-2">
               <Button
@@ -834,10 +873,10 @@ function StorefrontSwitchesSection() {
                   })
                 }
               >
-                {mutation.isPending ? "Saving..." : "Save banner"}
+                {mutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save banner"}</T>}
               </Button>
               <label className="inline-flex min-h-9 cursor-pointer items-center rounded-sm border border-line px-3 text-sm text-ink hover:bg-canvas">
-                {uploadMutation.isPending ? "Uploading..." : "Upload image"}
+                {uploadMutation.isPending ? <T>{"Uploading..."}</T> : <T>{"Upload image"}</T>}
                 <input
                   type="file"
                   accept="image/*"
@@ -863,12 +902,18 @@ function StorefrontSwitchesSection() {
 
       <div>
         <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
-          Farms banner
+          <T>Farms banner</T>
         </h3>
         <p className="mt-1 max-w-2xl text-sm text-ink-muted">
-          The banner across the top of <code>/farms</code>, rendered at the same size as the
-          homepage hero. Left blank, the shipped hero image is used so the space is never empty.
-          Each individual farm page has its own banner image, set on that farm's edit page.
+          <T>The banner across the top of</T>{" "}
+          <code>
+            <T>/farms</T>
+          </code>
+          <T>
+            , rendered at the same size as the homepage hero. Left blank, the shipped hero image is
+            used so the space is never empty. Each individual farm page has its own banner image,
+            set on that farm's edit page.
+          </T>
         </p>
         <div className="mt-4 grid max-w-3xl gap-4 md:grid-cols-[minmax(0,1fr)_16rem] md:items-start">
           <div className="space-y-4">
@@ -888,8 +933,10 @@ function StorefrontSwitchesSection() {
               />
             </Field>
             <p className="-mt-2 text-xs text-ink-muted">
-              Describe the image for screen readers. Leave blank if it is purely decorative — the
-              banner heading already carries the meaning.
+              <T>
+                Describe the image for screen readers. Leave blank if it is purely decorative — the
+                banner heading already carries the meaning.
+              </T>
             </p>
             <div className="flex flex-wrap items-center gap-2">
               <Button
@@ -907,10 +954,10 @@ function StorefrontSwitchesSection() {
                   })
                 }
               >
-                {mutation.isPending ? "Saving..." : "Save banner"}
+                {mutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save banner"}</T>}
               </Button>
               <label className="inline-flex min-h-9 cursor-pointer items-center rounded-sm border border-line px-3 text-sm text-ink hover:bg-canvas">
-                {farmsUploadMutation.isPending ? "Uploading..." : "Upload image"}
+                {farmsUploadMutation.isPending ? <T>{"Uploading..."}</T> : <T>{"Upload image"}</T>}
                 <input
                   type="file"
                   accept="image/*"
@@ -967,7 +1014,11 @@ function DeliveryChargesForm({
   saving: boolean;
 }) {
   if (feeMinor === undefined || freeThresholdMinor === undefined) {
-    return <p className="mt-3 text-sm text-ink-muted">Loading delivery charges...</p>;
+    return (
+      <p className="mt-3 text-sm text-ink-muted">
+        <T>Loading delivery charges...</T>
+      </p>
+    );
   }
 
   const feeValue = feeDraft ?? minorToRupeeString(feeMinor);
@@ -1010,7 +1061,7 @@ function DeliveryChargesForm({
             }
           }}
         >
-          {saving ? "Saving..." : "Save delivery charges"}
+          {saving ? <T>{"Saving..."}</T> : <T>{"Save delivery charges"}</T>}
         </Button>
       </div>
     </div>
@@ -1093,10 +1144,14 @@ function CmsPagesSection() {
   return (
     <section className="mt-10 space-y-4 border-t border-line pt-5">
       <div>
-        <h2 className="font-display text-lg text-ink">CMS pages & SEO</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>CMS pages & SEO</T>
+        </h2>
         <p className="text-sm text-ink-muted">
-          Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here
-          too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.
+          <T>
+            Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here
+            too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.
+          </T>
         </p>
       </div>
       {pages.isError ? (
@@ -1108,7 +1163,9 @@ function CmsPagesSection() {
         <div className="grid gap-6 xl:grid-cols-[20rem_minmax(0,1fr)]">
           <div className="space-y-3">
             {pages.isLoading ? (
-              <p className="text-sm text-ink-muted">Loading CMS pages...</p>
+              <p className="text-sm text-ink-muted">
+                <T>Loading CMS pages...</T>
+              </p>
             ) : (pages.data ?? []).length === 0 ? (
               <EmptyState title="No CMS pages found" hint="No page records have been seeded." />
             ) : (
@@ -1135,7 +1192,9 @@ function CmsPagesSection() {
           </div>
 
           {selected.isLoading ? (
-            <p className="text-sm text-ink-muted">Loading selected page...</p>
+            <p className="text-sm text-ink-muted">
+              <T>Loading selected page...</T>
+            </p>
           ) : selected.isError ? (
             <EmptyState
               title="Page unavailable"
@@ -1164,16 +1223,28 @@ function CmsPagesSection() {
                   </Field>
                   <Field label="Status" htmlFor="cms-status">
                     <Select id="cms-status" {...form.register("status")}>
-                      <option value="draft">Draft</option>
-                      <option value="published">Published</option>
-                      <option value="unpublished">Unpublished</option>
-                      <option value="archived">Archived</option>
+                      <option value="draft">
+                        <T>Draft</T>
+                      </option>
+                      <option value="published">
+                        <T>Published</T>
+                      </option>
+                      <option value="unpublished">
+                        <T>Unpublished</T>
+                      </option>
+                      <option value="archived">
+                        <T>Archived</T>
+                      </option>
                     </Select>
                   </Field>
                   <Field label="Search indexing" htmlFor="cms-indexing">
                     <Select id="cms-indexing" {...form.register("indexingPolicy")}>
-                      <option value="index">Index</option>
-                      <option value="noindex">No index</option>
+                      <option value="index">
+                        <T>Index</T>
+                      </option>
+                      <option value="noindex">
+                        <T>No index</T>
+                      </option>
                     </Select>
                   </Field>
                 </div>
@@ -1217,10 +1288,10 @@ function CmsPagesSection() {
                 </Field>
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <p className="text-xs text-ink-muted">
-                    Last updated {formatDateTime(selected.data.updatedAt)}
+                    <T>Last updated</T> {formatDateTime(selected.data.updatedAt)}
                   </p>
                   <Button type="submit" variant="primary" disabled={mutation.isPending}>
-                    {mutation.isPending ? "Saving..." : "Save CMS page"}
+                    {mutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save CMS page"}</T>}
                   </Button>
                 </div>
               </form>
@@ -1422,12 +1493,16 @@ function PageTranslationsPanel({ pageId }: { pageId: string }) {
 
   return (
     <div className="border-t border-line pt-5">
-      <h3 className="font-display text-lg text-ink">Translations</h3>
+      <h3 className="font-display text-lg text-ink">
+        <T>Translations</T>
+      </h3>
       <p className="mt-1 text-sm text-ink-muted">
-        A parallel copy of this page's blocks for one language at a time. A locale with no saved
-        translation falls back to English on the storefront — nothing breaks by leaving one blank.
-        "Auto-translate" runs a real machine-translation model on the Worker's own AI binding (free,
-        but not perfect) and fills the box below for review, it does not save on its own.
+        <T>
+          A parallel copy of this page's blocks for one language at a time. A locale with no saved
+          translation falls back to English on the storefront — nothing breaks by leaving one blank.
+          "Auto-translate" runs a real machine-translation model on the Worker's own AI binding
+          (free, but not perfect) and fills the box below for review, it does not save on its own.
+        </T>
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -1450,13 +1525,13 @@ function PageTranslationsPanel({ pageId }: { pageId: string }) {
           disabled={busy}
           onClick={() => autoTranslateMutation.mutate()}
         >
-          {autoTranslateMutation.isPending ? "Translating..." : "Auto-translate"}
+          {autoTranslateMutation.isPending ? <T>{"Translating..."}</T> : <T>{"Auto-translate"}</T>}
         </Button>
       </div>
 
       {translation.data?.autoTranslated ? (
         <p className="mt-3 rounded-md border border-warning/40 bg-warning/5 px-4 py-2 text-sm text-warning">
-          Machine-translated, not yet reviewed by a person.
+          <T>Machine-translated, not yet reviewed by a person.</T>
         </p>
       ) : null}
 
@@ -1469,9 +1544,13 @@ function PageTranslationsPanel({ pageId }: { pageId: string }) {
 
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs text-ink-muted">
-          {translation.data?.updatedAt
-            ? `Last saved ${formatDateTime(translation.data.updatedAt)}`
-            : "No saved translation for this locale yet — showing English as a starting point."}
+          {translation.data?.updatedAt ? (
+            `Last saved ${formatDateTime(translation.data.updatedAt)}`
+          ) : (
+            <T>
+              {"No saved translation for this locale yet — showing English as a starting point."}
+            </T>
+          )}
         </p>
         <div className="flex gap-2">
           {translation.data?.updatedAt ? (
@@ -1481,7 +1560,7 @@ function PageTranslationsPanel({ pageId }: { pageId: string }) {
               disabled={busy}
               onClick={() => deleteMutation.mutate()}
             >
-              Remove translation
+              <T>Remove translation</T>
             </Button>
           ) : null}
           <Button
@@ -1490,7 +1569,7 @@ function PageTranslationsPanel({ pageId }: { pageId: string }) {
             disabled={busy}
             onClick={() => saveMutation.mutate()}
           >
-            {saveMutation.isPending ? "Saving..." : "Save translation"}
+            {saveMutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save translation"}</T>}
           </Button>
         </div>
       </div>
@@ -1597,13 +1676,17 @@ function NavigationLabelsSection() {
   return (
     <section className="mt-10 space-y-3 border-t border-line pt-5">
       <div>
-        <h2 className="font-display text-lg text-ink">Navigation labels</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Navigation labels</T>
+        </h2>
         <p className="max-w-2xl text-sm text-ink-muted">
-          The header and footer link labels every page shows, translated per language (migration
-          0068). A locale left blank falls back to English on the storefront. This is the same
-          control that fixes a header showing "Shop" / "Seasonal" in English while everything around
-          it has switched language — those labels come from here, not from the page content
-          translations above.
+          <T>
+            The header and footer link labels every page shows, translated per language (migration
+            0068). A locale left blank falls back to English on the storefront. This is the same
+            control that fixes a header showing "Shop" / "Seasonal" in English while everything
+            around it has switched language — those labels come from here, not from the page content
+            translations above.
+          </T>
         </p>
       </div>
 
@@ -1626,12 +1709,18 @@ function NavigationLabelsSection() {
           disabled={busy || loading}
           onClick={() => autoTranslateAllMutation.mutate()}
         >
-          {autoTranslateAllMutation.isPending ? "Translating..." : "Auto-translate all"}
+          {autoTranslateAllMutation.isPending ? (
+            <T>{"Translating..."}</T>
+          ) : (
+            <T>{"Auto-translate all"}</T>
+          )}
         </Button>
       </div>
 
       {loading ? (
-        <p className="text-sm text-ink-muted">Loading...</p>
+        <p className="text-sm text-ink-muted">
+          <T>Loading...</T>
+        </p>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {(["Header", "Footer"] as const).map((menu) => (
@@ -1662,7 +1751,7 @@ function NavigationLabelsSection() {
           disabled={busy || loading}
           onClick={() => saveAllMutation.mutate()}
         >
-          {saveAllMutation.isPending ? "Saving..." : "Save labels"}
+          {saveAllMutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save labels"}</T>}
         </Button>
       </div>
     </section>
@@ -1741,10 +1830,14 @@ function RouteSeoSection() {
   return (
     <section className="mt-10 space-y-4 border-t border-line pt-5">
       <div>
-        <h2 className="font-display text-lg text-ink">Page SEO</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Page SEO</T>
+        </h2>
         <p className="text-sm text-ink-muted">
-          Title, description, keywords and indexing for storefront routes that aren't backed by a
-          CMS page above. Leave a field blank to keep that route's built-in default.
+          <T>
+            Title, description, keywords and indexing for storefront routes that aren't backed by a
+            CMS page above. Leave a field blank to keep that route's built-in default.
+          </T>
         </p>
       </div>
       <div className="grid gap-6 xl:grid-cols-[16rem_minmax(0,1fr)]">
@@ -1767,7 +1860,9 @@ function RouteSeoSection() {
         </div>
 
         {isLoading ? (
-          <p className="text-sm text-ink-muted">Loading...</p>
+          <p className="text-sm text-ink-muted">
+            <T>Loading...</T>
+          </p>
         ) : (
           <form
             className="space-y-4"
@@ -1793,12 +1888,16 @@ function RouteSeoSection() {
             </Field>
             <Field label="Search indexing" htmlFor="route-seo-indexing">
               <Select id="route-seo-indexing" {...form.register("indexingPolicy")}>
-                <option value="index">Index</option>
-                <option value="noindex">No index</option>
+                <option value="index">
+                  <T>Index</T>
+                </option>
+                <option value="noindex">
+                  <T>No index</T>
+                </option>
               </Select>
             </Field>
             <Button type="submit" variant="primary" disabled={mutation.isPending}>
-              {mutation.isPending ? "Saving..." : "Save page SEO"}
+              {mutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save page SEO"}</T>}
             </Button>
           </form>
         )}
@@ -1842,7 +1941,12 @@ function SiteDocumentsSection() {
       toast.error(error instanceof ApiError ? error.message : "Could not save crawler files."),
   });
 
-  if (isLoading) return <p className="mt-10 text-sm text-ink-muted">Loading crawler files...</p>;
+  if (isLoading)
+    return (
+      <p className="mt-10 text-sm text-ink-muted">
+        <T>Loading crawler files...</T>
+      </p>
+    );
   if (isError) {
     return (
       <EmptyState
@@ -1855,9 +1959,11 @@ function SiteDocumentsSection() {
   return (
     <section className="mt-10 space-y-4 border-t border-line pt-5">
       <div>
-        <h2 className="font-display text-lg text-ink">Crawler files</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Crawler files</T>
+        </h2>
         <p className="text-sm text-ink-muted">
-          Owner-only controls for /sitemap.xml, /robots.txt and /llms.txt.
+          <T>Owner-only controls for /sitemap.xml, /robots.txt and /llms.txt.</T>
         </p>
       </div>
       <form
@@ -1887,7 +1993,7 @@ function SiteDocumentsSection() {
           className="w-fit"
           disabled={mutation.isPending || !form.formState.isDirty}
         >
-          {mutation.isPending ? "Saving..." : "Save crawler files"}
+          {mutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save crawler files"}</T>}
         </Button>
       </form>
     </section>
@@ -1950,17 +2056,23 @@ function HighlightsSection() {
   return (
     <section className="mt-10 space-y-4 border-t border-line pt-5">
       <div>
-        <h2 className="font-display text-lg text-ink">Highlighted products</h2>
+        <h2 className="font-display text-lg text-ink">
+          <T>Highlighted products</T>
+        </h2>
         <p className="text-sm text-ink-muted">
-          Shown in the highlights box on the storefront search page, in this order. Only published
-          products appear to customers.
+          <T>
+            Shown in the highlights box on the storefront search page, in this order. Only published
+            products appear to customers.
+          </T>
         </p>
       </div>
       {isLoading ? (
-        <p className="text-sm text-ink-muted">Loading highlights...</p>
+        <p className="text-sm text-ink-muted">
+          <T>Loading highlights...</T>
+        </p>
       ) : current.length === 0 ? (
         <p className="max-w-xl rounded-md border border-dashed border-line px-4 py-3 text-sm text-ink-muted">
-          No highlighted products yet. Add a few below.
+          <T>No highlighted products yet. Add a few below.</T>
         </p>
       ) : (
         <ul className="max-w-xl divide-y divide-line rounded-md border border-line">
@@ -1993,7 +2105,7 @@ function HighlightsSection() {
                 className="min-h-8 rounded-sm border border-line px-2 text-xs text-danger"
                 onClick={() => setItems(current.filter((item) => item.id !== entry.id))}
               >
-                Remove
+                <T>Remove</T>
               </button>
             </li>
           ))}
@@ -2006,7 +2118,9 @@ function HighlightsSection() {
           onChange={(event) => setPendingId(event.target.value)}
           className="flex-1"
         >
-          <option value="">Add a product…</option>
+          <option value="">
+            <T>Add a product…</T>
+          </option>
           {addable.map((row) => (
             <option key={row.id} value={row.id}>
               {row.name}
@@ -2024,7 +2138,7 @@ function HighlightsSection() {
             setPendingId("");
           }}
         >
-          Add to highlights
+          <T>Add to highlights</T>
         </Button>
       </div>
       <Button
@@ -2033,7 +2147,7 @@ function HighlightsSection() {
         disabled={mutation.isPending || !dirty}
         onClick={() => mutation.mutate(current.map((entry) => entry.id))}
       >
-        {mutation.isPending ? "Saving..." : "Save highlights"}
+        {mutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save highlights"}</T>}
       </Button>
     </section>
   );

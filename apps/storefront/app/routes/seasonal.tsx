@@ -45,9 +45,9 @@ const fallbackSeo = {
   indexing: "index",
 } as const;
 
-export function meta({ data }: Route.MetaArgs) {
+export function meta({ data, matches }: Route.MetaArgs) {
   const cms = data?.cms as CmsRouteData | undefined;
-  return seoMeta(cms?.page?.seo ?? fallbackSeo);
+  return seoMeta(cms?.page?.seo ?? fallbackSeo, matches);
 }
 
 export default function SeasonalPage({ loaderData }: Route.ComponentProps) {

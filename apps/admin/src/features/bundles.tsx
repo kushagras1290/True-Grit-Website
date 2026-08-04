@@ -28,6 +28,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api } from "../lib/api";
 import { formatMoney } from "../lib/format";
 import { usePermissions } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 const STATUS_OPTIONS = ["draft", "active", "ended", "archived"];
 
@@ -183,15 +184,17 @@ function CreateBundleModal({
         </div>
 
         <p className="text-xs text-ink-muted">
-          Add items (which variants, how many of each) after creating the bundle, from Manage.
+          <T>
+            Add items (which variants, how many of each) after creating the bundle, from Manage.
+          </T>
         </p>
 
         <div className="flex justify-end gap-2 border-t border-line pt-3">
           <Button type="button" variant="secondary" onClick={onClose} disabled={mutation.isPending}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button type="submit" variant="primary" disabled={mutation.isPending}>
-            {mutation.isPending ? "Creating..." : "Create bundle"}
+            {mutation.isPending ? <T>{"Creating..."}</T> : <T>{"Create bundle"}</T>}
           </Button>
         </div>
       </form>
@@ -224,7 +227,7 @@ function ItemPicker({
   return (
     <div className="rounded-md border border-line bg-canvas p-3">
       <label className="text-xs font-medium text-ink-muted" htmlFor="bndl-item-search">
-        Find a product to add
+        <T>Find a product to add</T>
       </label>
       <Input
         id="bndl-item-search"
@@ -239,9 +242,13 @@ function ItemPicker({
       {query.trim().length > 1 && !pickedProductId ? (
         <ul className="mt-2 max-h-40 divide-y divide-line overflow-y-auto rounded-sm border border-line bg-surface">
           {productSearch.isLoading ? (
-            <li className="px-3 py-2 text-sm text-ink-muted">Searching...</li>
+            <li className="px-3 py-2 text-sm text-ink-muted">
+              <T>Searching...</T>
+            </li>
           ) : (productSearch.data ?? []).length === 0 ? (
-            <li className="px-3 py-2 text-sm text-ink-muted">No products match.</li>
+            <li className="px-3 py-2 text-sm text-ink-muted">
+              <T>No products match.</T>
+            </li>
           ) : (
             (productSearch.data ?? []).map((product) => (
               <li key={product.id}>
@@ -262,7 +269,7 @@ function ItemPicker({
         <div className="mt-3 space-y-1.5">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium text-ink-muted">
-              Variants of {productDetail.data.name}
+              <T>Variants of</T> {productDetail.data.name}
             </p>
             <button
               type="button"
@@ -272,7 +279,7 @@ function ItemPicker({
                 setQuery("");
               }}
             >
-              Change product
+              <T>Change product</T>
             </button>
           </div>
           {productDetail.data.variants.map((variant) => {
@@ -299,7 +306,7 @@ function ItemPicker({
                     })
                   }
                 >
-                  {alreadyAdded ? "Added" : "Add"}
+                  {alreadyAdded ? <T>{"Added"}</T> : <T>{"Add"}</T>}
                 </Button>
               </div>
             );
@@ -348,26 +355,34 @@ function ManageBundleModal({
   return (
     <Modal title="Manage bundle" onClose={onClose}>
       {isLoading || !bundle ? (
-        <p className="text-sm text-ink-muted">Loading...</p>
+        <p className="text-sm text-ink-muted">
+          <T>Loading...</T>
+        </p>
       ) : (
         <div className="space-y-5">
           <div>
             <p className="font-display text-lg text-ink">{bundle.name}</p>
             <p className="text-xs text-ink-muted">
-              {formatMoney(bundle.bundlePriceMinor, "INR")} bundle price · items priced at{" "}
+              {formatMoney(bundle.bundlePriceMinor, "INR")} <T>bundle price · items priced at</T>{" "}
               {formatMoney(componentSumMinor, "INR")} separately
-              {savingsMinor > 0
-                ? ` · saves ${formatMoney(savingsMinor, "INR")}`
-                : " · no savings yet"}
+              {savingsMinor > 0 ? (
+                ` · saves ${formatMoney(savingsMinor, "INR")}`
+              ) : (
+                <T>{" · no savings yet"}</T>
+              )}
             </p>
           </div>
 
           <div>
-            <h3 className="text-sm font-medium text-ink">Items in this bundle</h3>
+            <h3 className="text-sm font-medium text-ink">
+              <T>Items in this bundle</T>
+            </h3>
             {bundle.items.length === 0 ? (
               <p className="mt-1 text-sm text-ink-muted">
-                No items yet — add at least one below. Checkout only applies this bundle's discount
-                when the basket has every item here, in at least these quantities.
+                <T>
+                  No items yet — add at least one below. Checkout only applies this bundle's
+                  discount when the basket has every item here, in at least these quantities.
+                </T>
               </p>
             ) : (
               <ul className="mt-2 divide-y divide-line rounded-md border border-line">
@@ -400,7 +415,7 @@ function ManageBundleModal({
                         )
                       }
                     >
-                      Remove
+                      <T>Remove</T>
                     </Button>
                   </li>
                 ))}
@@ -422,12 +437,14 @@ function ManageBundleModal({
               }
             />
           ) : (
-            <p className="text-xs text-ink-muted">A bundle can hold at most 12 items.</p>
+            <p className="text-xs text-ink-muted">
+              <T>A bundle can hold at most 12 items.</T>
+            </p>
           )}
 
           <div className="flex justify-end border-t border-line pt-3">
             <Button type="button" variant="secondary" onClick={onClose}>
-              Close
+              <T>Close</T>
             </Button>
           </div>
         </div>
@@ -474,15 +491,19 @@ export function BundlesListPage() {
     <div>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl text-ink">Bundles</h1>
+          <h1 className="font-display text-2xl text-ink">
+            <T>Bundles</T>
+          </h1>
           <p className="max-w-2xl text-sm text-ink-muted">
-            Curated sets of specific variants sold together at a flat price. Checkout applies the
-            saving automatically once a basket holds every item in a bundle.
+            <T>
+              Curated sets of specific variants sold together at a flat price. Checkout applies the
+              saving automatically once a basket holds every item in a bundle.
+            </T>
           </p>
         </div>
         {canManage ? (
           <Button variant="primary" onClick={() => setCreating(true)}>
-            New bundle
+            <T>New bundle</T>
           </Button>
         ) : null}
       </div>
@@ -496,7 +517,9 @@ export function BundlesListPage() {
           }}
           aria-label="Filter by status"
         >
-          <option value="">All statuses</option>
+          <option value="">
+            <T>All statuses</T>
+          </option>
           {STATUS_OPTIONS.map((option) => (
             <option key={option} value={option}>
               {option}
@@ -508,11 +531,23 @@ export function BundlesListPage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Bundle</Th>
-            <Th>Status</Th>
-            <Th>Items</Th>
-            <Th>Price</Th>
-            {canManage ? <Th>Actions</Th> : null}
+            <Th>
+              <T>Bundle</T>
+            </Th>
+            <Th>
+              <T>Status</T>
+            </Th>
+            <Th>
+              <T>Items</T>
+            </Th>
+            <Th>
+              <T>Price</T>
+            </Th>
+            {canManage ? (
+              <Th>
+                <T>Actions</T>
+              </Th>
+            ) : null}
           </tr>
         </thead>
         {isLoading ? (
@@ -547,13 +582,13 @@ export function BundlesListPage() {
                   <Td>
                     <div className="flex flex-wrap gap-2">
                       <Button variant="secondary" onClick={() => setManagingId(entry.id)}>
-                        Manage
+                        <T>Manage</T>
                       </Button>
                       <Button
                         variant="destructive"
                         onClick={() => setConfirmDelete({ id: entry.id, name: entry.name })}
                       >
-                        Delete
+                        <T>Delete</T>
                       </Button>
                     </div>
                   </Td>

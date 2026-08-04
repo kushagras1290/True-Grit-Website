@@ -29,13 +29,16 @@ export async function loader({ context, request }: Route.LoaderArgs) {
   };
 }
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Blog",
-    description: "Practical guides for buying, storing and cooking traceable organic food well.",
-    canonicalPath: "/blog",
-    indexing: "index",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Blog",
+      description: "Practical guides for buying, storing and cooking traceable organic food well.",
+      canonicalPath: "/blog",
+      indexing: "index",
+    },
+    matches,
+  );
 }
 
 export default function BlogPage({ loaderData }: Route.ComponentProps) {

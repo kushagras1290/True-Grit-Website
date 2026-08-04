@@ -20,6 +20,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api, type EntityTranslationType } from "../lib/api";
 import { formatDateTime } from "../lib/format";
 import { TRANSLATION_LOCALES } from "./site-control";
+import { T } from "../lib/i18n";
 
 export interface TranslatableField {
   /** Matches a key in `services.entity_translation.TRANSLATABLE_FIELDS` on
@@ -105,12 +106,16 @@ export function EntityTranslationsPanel({
 
   return (
     <div className="border-t border-line pt-5">
-      <h3 className="font-display text-lg text-ink">Translations</h3>
+      <h3 className="font-display text-lg text-ink">
+        <T>Translations</T>
+      </h3>
       <p className="mt-1 text-sm text-ink-muted">
-        A locale with no saved translation falls back to English on the storefront — nothing breaks
-        by leaving one blank. "Auto-translate" runs a real machine-translation model on the Worker's
-        own AI binding (free, but not perfect) and fills the fields below for review, it does not
-        save on its own.
+        <T>
+          A locale with no saved translation falls back to English on the storefront — nothing
+          breaks by leaving one blank. "Auto-translate" runs a real machine-translation model on the
+          Worker's own AI binding (free, but not perfect) and fills the fields below for review, it
+          does not save on its own.
+        </T>
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -133,13 +138,13 @@ export function EntityTranslationsPanel({
           disabled={busy}
           onClick={() => autoTranslateMutation.mutate()}
         >
-          {autoTranslateMutation.isPending ? "Translating..." : "Auto-translate"}
+          {autoTranslateMutation.isPending ? <T>{"Translating..."}</T> : <T>{"Auto-translate"}</T>}
         </Button>
       </div>
 
       {translation.data?.autoTranslated ? (
         <p className="mt-3 rounded-md border border-warning/40 bg-warning/5 px-4 py-2 text-sm text-warning">
-          Machine-translated, not yet reviewed by a person.
+          <T>Machine-translated, not yet reviewed by a person.</T>
         </p>
       ) : null}
 
@@ -170,9 +175,13 @@ export function EntityTranslationsPanel({
 
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs text-ink-muted">
-          {translation.data?.updatedAt
-            ? `Last saved ${formatDateTime(translation.data.updatedAt)}`
-            : "No saved translation for this locale yet — showing English as a starting point."}
+          {translation.data?.updatedAt ? (
+            `Last saved ${formatDateTime(translation.data.updatedAt)}`
+          ) : (
+            <T>
+              {"No saved translation for this locale yet — showing English as a starting point."}
+            </T>
+          )}
         </p>
         <div className="flex gap-2">
           {translation.data?.updatedAt ? (
@@ -182,7 +191,7 @@ export function EntityTranslationsPanel({
               disabled={busy}
               onClick={() => deleteMutation.mutate()}
             >
-              Remove translation
+              <T>Remove translation</T>
             </Button>
           ) : null}
           <Button
@@ -191,7 +200,7 @@ export function EntityTranslationsPanel({
             disabled={busy}
             onClick={() => saveMutation.mutate()}
           >
-            {saveMutation.isPending ? "Saving..." : "Save translation"}
+            {saveMutation.isPending ? <T>{"Saving..."}</T> : <T>{"Save translation"}</T>}
           </Button>
         </div>
       </div>

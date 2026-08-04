@@ -31,11 +31,21 @@ from truegrit_api.util.timeutil import utc_now_iso
 # storage side (fields_json) already accepts any shape (see 0068's docstring).
 TRANSLATABLE_FIELDS: Final[dict[str, tuple[str, ...]]] = {
     "navigation_item": ("label",),
-    "category": ("name", "short_description", "hero_eyebrow", "hero_title", "hero_description"),
-    "farm": ("name",),
+    "category": (
+        "name",
+        "short_description",
+        "hero_eyebrow",
+        "hero_title",
+        "hero_description",
+        "season_label",
+    ),
+    # `farmer_name` is deliberately absent: it is a person's name, and a machine
+    # translator asked for one returns a mistranslation, not a transliteration.
+    "farm": ("name", "region"),
     "product": ("name", "short_description"),
     "article": ("title", "excerpt"),
     "recipe": ("title", "excerpt"),
+    "bundle": ("name", "description"),
 }
 
 _SOURCE_TABLE: Final[dict[str, str]] = {
@@ -45,6 +55,7 @@ _SOURCE_TABLE: Final[dict[str, str]] = {
     "product": "products",
     "article": "articles",
     "recipe": "recipes",
+    "bundle": "bundles",
 }
 
 # A sanity ceiling on one auto-translate call's work, the same role

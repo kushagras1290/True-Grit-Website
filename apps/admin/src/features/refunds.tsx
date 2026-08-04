@@ -12,6 +12,7 @@ import {
 } from "../components/ui";
 import { api } from "../lib/api";
 import { formatDateTime, formatMoney } from "../lib/format";
+import { T } from "../lib/i18n";
 
 const LIMIT = 25;
 
@@ -40,12 +41,24 @@ export function RefundsOversightPage() {
           <DataTableShell>
             <thead className="bg-canvas">
               <tr>
-                <Th>Order</Th>
-                <Th>Refunded by</Th>
-                <Th>Amount</Th>
-                <Th>Reason</Th>
-                <Th>Provider ref</Th>
-                <Th>When</Th>
+                <Th>
+                  <T>Order</T>
+                </Th>
+                <Th>
+                  <T>Refunded by</T>
+                </Th>
+                <Th>
+                  <T>Amount</T>
+                </Th>
+                <Th>
+                  <T>Reason</T>
+                </Th>
+                <Th>
+                  <T>Provider ref</T>
+                </Th>
+                <Th>
+                  <T>When</T>
+                </Th>
               </tr>
             </thead>
             {isLoading ? (

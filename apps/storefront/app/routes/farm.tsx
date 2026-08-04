@@ -7,12 +7,12 @@ import { catalogueRuntime, loadFarm, loadProductsBySlugs } from "../lib/catalogu
 import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeFormat } from "../lib/i18n/localized-text";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
   const { locale } = resolveLocale(request);
-  const farm = await loadFarm(params.slug, runtime);
+  const farm = await loadFarm(params.slug, runtime, locale.code);
   if (!farm) throw data("Farm not found", { status: 404 });
   return {
     farm,
@@ -25,11 +25,12 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   };
 }
 
-export function meta({ data: loaderData }: Route.MetaArgs) {
-  return seoMeta(loaderData?.farm.seo);
+export function meta({ data: loaderData, matches }: Route.MetaArgs) {
+  return seoMeta(loaderData?.farm.seo, matches);
 }
 
 export default function FarmPage({ loaderData }: Route.ComponentProps) {
+  const format = useLocalizeFormat();
   const { farm, products } = loaderData;
   return (
     <>
@@ -46,9 +47,12 @@ export default function FarmPage({ loaderData }: Route.ComponentProps) {
       <PageBanner
         imageUrl={farm.heroImageUrl || "/banners/content/default-market-banner.png"}
         imageAlt={farm.heroImageAlt || farm.name}
-        eyebrow={`${farm.region} · since ${farm.establishedYear}`}
+        eyebrow={format("{region} · since {year}", {
+          region: farm.region,
+          year: farm.establishedYear,
+        })}
         heading={farm.name}
-        description={`Farmed by ${farm.farmerName}`}
+        description={format("Farmed by {farmer}", { farmer: farm.farmerName })}
       />
 
       <div className="mx-auto max-w-[80rem] px-4 pt-6 sm:px-6">

@@ -6,15 +6,18 @@ import { Section } from "../components/catalogue";
 import { useCustomer, AuthError } from "../lib/customer-auth";
 import { createDiscussion } from "../lib/community";
 import { seoMeta } from "../lib/seo";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Start a discussion",
-    description: "Start a new discussion with the True Grit community.",
-    canonicalPath: "/community/new",
-    indexing: "noindex",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Start a discussion",
+      description: "Start a new discussion with the True Grit community.",
+      canonicalPath: "/community/new",
+      indexing: "noindex",
+    },
+    matches,
+  );
 }
 
 const FIELD =
@@ -22,6 +25,7 @@ const FIELD =
   " placeholder:text-ink-muted focus:border-brand focus:outline-none";
 
 export default function NewDiscussionPage(_props: Route.ComponentProps) {
+  const localize = useLocalizeText();
   const { customer, status } = useCustomer();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
@@ -76,7 +80,7 @@ export default function NewDiscussionPage(_props: Route.ComponentProps) {
   return (
     <Section eyebrow="Community" heading="Start a discussion">
       <form className="max-w-2xl space-y-4" onSubmit={handleSubmit}>
-        {error ? <p className="text-sm text-danger">{error}</p> : null}
+        {error ? <p className="text-sm text-danger">{localize(error)}</p> : null}
         <label className="block space-y-1">
           <span className="text-xs font-medium text-ink-muted">
             <LocalizedText>Title</LocalizedText>
@@ -94,7 +98,11 @@ export default function NewDiscussionPage(_props: Route.ComponentProps) {
           disabled={submitting}
           className="inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90 disabled:opacity-50"
         >
-          {submitting ? "Starting..." : "Start discussion"}
+          {submitting ? (
+            <LocalizedText>{"Starting..."}</LocalizedText>
+          ) : (
+            <LocalizedText>{"Start discussion"}</LocalizedText>
+          )}
         </button>
       </form>
     </Section>

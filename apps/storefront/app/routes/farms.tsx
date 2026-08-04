@@ -12,13 +12,16 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { farms: await loadFarms(catalogueRuntime(context)) };
 }
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "The farmers",
-    description: "The verified farms and collectives that grow the True Grit market.",
-    canonicalPath: "/farms",
-    indexing: "index",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "The farmers",
+      description: "The verified farms and collectives that grow the True Grit market.",
+      canonicalPath: "/farms",
+      indexing: "index",
+    },
+    matches,
+  );
 }
 
 export default function FarmsPage({ loaderData }: Route.ComponentProps) {

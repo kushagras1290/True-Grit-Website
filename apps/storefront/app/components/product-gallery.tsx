@@ -16,7 +16,7 @@ import { useState } from "react";
 
 import { ProduceFrame } from "./catalogue";
 import { mediaUrl } from "../lib/media";
-import { useLocalizeText } from "../lib/i18n/localized-text";
+import { useLocalizeFormat, useLocalizeText } from "../lib/i18n/localized-text";
 
 export function ProductGallery({
   slug,
@@ -32,6 +32,7 @@ export function ProductGallery({
   className?: string;
 }) {
   const localize = useLocalizeText();
+  const format = useLocalizeFormat();
   const [selected, setSelected] = useState(0);
   const hasGallery = galleryImages.length > 0;
 
@@ -79,7 +80,7 @@ export function ProductGallery({
             <button
               key={image.id}
               type="button"
-              aria-label={`Show photo ${index + 2}`}
+              aria-label={format("Show photo {number}", { number: index + 2 })}
               aria-current={selected === index + 1}
               onClick={() => setSelected(index + 1)}
               className={`h-16 w-16 shrink-0 overflow-hidden rounded-sm border-2 bg-subtle ${

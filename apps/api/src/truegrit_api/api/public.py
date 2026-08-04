@@ -19,6 +19,7 @@ from truegrit_api.errors import NotFoundError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.bundles import BundleRepository
 from truegrit_api.repositories.catalogue import CatalogueRepository
+from truegrit_api.repositories.entity_translations import EntityTranslationRepository
 from truegrit_api.repositories.content import (
     ArticleRepository,
     CategoryRepository,
@@ -449,14 +450,21 @@ async def categories(
 
 
 @router.get("/farms", response_model=FarmListResponse)
-async def farms_list(db: Annotated[Database, Depends(get_database)]) -> Any:
-    return {"items": await FarmRepository(db).list_published()}
+async def farms_list(
+    db: Annotated[Database, Depends(get_database)],
+    locale: Annotated[str | None, Query(max_length=10)] = None,
+) -> Any:
+    return {"items": await FarmRepository(db).list_published(locale=locale)}
 
 
 @router.get("/farms/{slug}", response_model=FarmDetail)
-async def farm_detail(slug: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+async def farm_detail(
+    slug: str,
+    db: Annotated[Database, Depends(get_database)],
+    locale: Annotated[str | None, Query(max_length=10)] = None,
+) -> Any:
     validate_slug(slug)
-    farm = await FarmRepository(db).get_published_by_slug(slug)
+    farm = await FarmRepository(db).get_published_by_slug(slug, locale=locale)
     if farm is None:
         raise NotFoundError("Farm not found.")
     return farm
@@ -796,14 +804,25 @@ def _public_bundle_item_payload(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _public_bundle_payload(row: dict[str, Any], items: list[dict[str, Any]]) -> dict[str, Any]:
+def _public_bundle_payload(
+    row: dict[str, Any],
+    items: list[dict[str, Any]],
+    fields: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     item_payloads = [_public_bundle_item_payload(item) for item in items]
     component_sum_minor = sum(item["lineTotalMinor"] for item in item_payloads)
+
+    def translated(field: str, fallback: Any) -> Any:
+        if not fields:
+            return fallback
+        value = fields.get(field)
+        return value if isinstance(value, str) and value.strip() else fallback
+
     return {
         "id": row["id"],
-        "name": row["name"],
+        "name": translated("name", row["name"]),
         "slug": row["slug"],
-        "description": row["description"],
+        "description": translated("description", row["description"]),
         "bundlePriceMinor": row["bundle_price_minor"],
         "componentSumMinor": component_sum_minor,
         "savingsMinor": max(component_sum_minor - row["bundle_price_minor"], 0),
@@ -818,6 +837,7 @@ async def list_bundles(
     db: Annotated[Database, Depends(get_database)],
     limit: Annotated[int, Query(ge=1, le=50)] = 20,
     offset: Annotated[int, Query(ge=0)] = 0,
+    locale: Annotated[str | None, Query(max_length=10)] = None,
 ) -> Any:
     """Active, purchasable bundles for the shop -- each carries its own item
     list and the savings the checkout discount will actually apply, computed
@@ -825,22 +845,34 @@ async def list_bundles(
     number `resolve_bundle_discount` would not also grant."""
     repository = BundleRepository(db)
     rows = await repository.list_active(limit=limit, offset=offset)
+    fields_by_id: dict[str, dict[str, Any]] = {}
+    if locale and locale != "en" and rows:
+        fields_by_id = await EntityTranslationRepository(db).get_fields_map(
+            "bundle", [row["id"] for row in rows], locale
+        )
     payloads = []
     for row in rows:
         items = await repository.list_items(row["id"])
-        payloads.append(_public_bundle_payload(row, items))
+        payloads.append(_public_bundle_payload(row, items, fields_by_id.get(row["id"])))
     return {"items": payloads}
 
 
 @router.get("/bundles/{slug}")
-async def bundle_detail(slug: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+async def bundle_detail(
+    slug: str,
+    db: Annotated[Database, Depends(get_database)],
+    locale: Annotated[str | None, Query(max_length=10)] = None,
+) -> Any:
     validate_slug(slug)
     repository = BundleRepository(db)
     row = await repository.get_by_slug(slug)
     if row is None or row["status"] != "active":
         raise NotFoundError("Bundle not found.")
     items = await repository.list_items(row["id"])
-    return _public_bundle_payload(row, items)
+    translation = None
+    if locale and locale != "en":
+        translation = await EntityTranslationRepository(db).get("bundle", row["id"], locale)
+    return _public_bundle_payload(row, items, translation["fields"] if translation else None)
 
 
 @router.get("/search", response_model=SearchResponse)
@@ -848,5 +880,8 @@ async def search(
     db: Annotated[Database, Depends(get_database)],
     q: Annotated[str, Query(min_length=1, max_length=120)],
     country: Annotated[str | None, Query(max_length=2)] = None,
+    locale: Annotated[str | None, Query(max_length=10)] = None,
 ) -> Any:
-    return await SearchRepository(db).search(q, country=_normalize_country(country))
+    return await SearchRepository(db).search(
+        q, country=_normalize_country(country), locale=locale
+    )

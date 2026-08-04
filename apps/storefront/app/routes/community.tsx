@@ -10,7 +10,8 @@ import { listDiscussions, type DiscussionSummary } from "../lib/community";
 import { useCustomer } from "../lib/customer-auth";
 import { mediaUrl } from "../lib/media";
 import { mergeRouteSeo, seoMeta } from "../lib/seo";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizePlural } from "../lib/i18n/localized-text";
+import { useDateFormatter } from "../lib/i18n/dates";
 
 const DISCUSSIONS_PAGE_SIZE = 12;
 const fallbackSeo = {
@@ -24,11 +25,13 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { seoOverride: await loadRouteSeo("/community", catalogueRuntime(context)) };
 }
 
-export function meta({ data }: Route.MetaArgs) {
-  return seoMeta(mergeRouteSeo(data?.seoOverride, fallbackSeo));
+export function meta({ data, matches }: Route.MetaArgs) {
+  return seoMeta(mergeRouteSeo(data?.seoOverride, fallbackSeo), matches);
 }
 
 export default function CommunityPage(_props: Route.ComponentProps) {
+  const plural = useLocalizePlural();
+  const formatDate = useDateFormatter();
   const { status } = useCustomer();
   const [searchParams] = useSearchParams();
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
@@ -97,8 +100,7 @@ export default function CommunityPage(_props: Route.ComponentProps) {
         ) : (
           <div>
             <p className="mb-4 text-sm text-ink-muted" role="status">
-              {total} <LocalizedText>discussion</LocalizedText>
-              {total === 1 ? "" : "s"}
+              {plural("{count} discussion", "{count} discussions", total)}
             </p>
             {/* Three across at a normal desktop width, and the count follows the
               space actually available: `auto-fill` recomputes on resize *and*
@@ -128,10 +130,9 @@ export default function CommunityPage(_props: Route.ComponentProps) {
                       {/* Pushed to the bottom so the meta line sits flush across a
                         row of cards whose titles differ in length. */}
                       <span className="mt-auto pt-3 text-xs text-ink-muted">
-                        {entry.authorName} · {entry.commentCount}{" "}
-                        <LocalizedText>comment</LocalizedText>
-                        {entry.commentCount === 1 ? "" : "s"} ·{" "}
-                        {new Date(entry.lastActivityAt).toLocaleDateString()}
+                        {entry.authorName} ·{" "}
+                        {plural("{count} comment", "{count} comments", entry.commentCount)} ·{" "}
+                        {formatDate(entry.lastActivityAt)}
                       </span>
                     </span>
                   </Link>

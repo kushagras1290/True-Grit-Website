@@ -23,7 +23,12 @@ import { Link, useSearchParams } from "react-router";
 
 import { CategoryChip, CategoryTile } from "./catalogue";
 import { Slider } from "./slider";
-import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
+import {
+  LocalizedText,
+  useLocalizeFormat,
+  useLocalizePlural,
+  useLocalizeText,
+} from "../lib/i18n/localized-text";
 
 export const DEPARTMENTS_ANCHOR = "departments";
 export const PRODUCTS_ANCHOR = "products";
@@ -97,6 +102,7 @@ export function ShopSectionBar({
   onOpenIndex: () => void;
   showDepartments: boolean;
 }) {
+  const plural = useLocalizePlural();
   const localize = useLocalizeText();
   const [activeAnchor, setActiveAnchor] = useState<string>(
     showDepartments ? DEPARTMENTS_ANCHOR : PRODUCTS_ANCHOR,
@@ -147,8 +153,7 @@ export function ShopSectionBar({
         <div className="flex items-center gap-3">
           <p className="hidden text-sm text-ink-muted sm:block" role="status">
             {activeFilter ? `${activeFilter.name} · ` : ""}
-            {productTotal} <LocalizedText>product</LocalizedText>
-            {productTotal === 1 ? "" : "s"}
+            {plural("{count} product", "{count} products", productTotal)}
           </p>
           <button
             type="button"
@@ -156,7 +161,7 @@ export function ShopSectionBar({
             className="flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong px-3.5 text-sm font-medium text-ink hover:bg-canvas lg:hidden"
           >
             <SlidersHorizontal size={15} aria-hidden />
-            {activeFilter ? activeFilter.name : "All categories"}
+            {activeFilter ? activeFilter.name : <LocalizedText>{"All categories"}</LocalizedText>}
           </button>
         </div>
       </div>
@@ -223,6 +228,7 @@ function CategoryIndexNav({
   onNavigate?: () => void;
 }) {
   const localize = useLocalizeText();
+  const format = useLocalizeFormat();
   const [searchParams] = useSearchParams();
   return (
     <nav aria-label={localize("Categories")}>
@@ -266,7 +272,9 @@ function CategoryIndexNav({
                 <ul className="mt-0.5 mb-1 ml-2 space-y-0.5 border-l border-line pl-1">
                   <li>
                     <IndexLink
-                      label={`All ${node.department.name.toLowerCase()}`}
+                      label={format("All {category}", {
+                        category: node.department.name.toLowerCase(),
+                      })}
                       count={node.totalProductCount}
                       href={filterHref(searchParams, node.department.slug)}
                       active={departmentActive}

@@ -11,6 +11,7 @@ import { useState, type FormEvent } from "react";
 
 import { commerceLive, sendContactMessage } from "../lib/commerce";
 import { useLocaleContext } from "../lib/i18n/context";
+import { useLocalizeText } from "../lib/i18n/localized-text";
 
 const FIELD =
   "min-h-11 w-full rounded-sm border border-line bg-canvas px-3 text-sm text-ink" +
@@ -38,6 +39,10 @@ export function ContactForm({
   compact = false,
 }: ContactFormProps) {
   const { t } = useLocaleContext();
+  // Callers pass these as English source text — the same contract as every
+  // other prose prop in the storefront — so they are translated here rather
+  // than at each of the four call sites.
+  const localize = useLocalizeText();
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -78,12 +83,12 @@ export function ContactForm({
           role="status"
           className="rounded-sm border border-line bg-subtle px-4 py-3 text-sm text-brand"
         >
-          {successMessage ?? t("contact.sent")}
+          {successMessage ? localize(successMessage) : t("contact.sent")}
         </p>
       ) : null}
       {error ? (
         <p role="alert" className="text-sm text-danger">
-          {error}
+          {localize(error)}
         </p>
       ) : null}
 
@@ -118,7 +123,7 @@ export function ContactForm({
           name="subject"
           required
           minLength={3}
-          defaultValue={defaultSubject}
+          defaultValue={defaultSubject ? localize(defaultSubject) : ""}
           className={FIELD}
         />
       </label>
@@ -129,7 +134,7 @@ export function ContactForm({
           required
           minLength={10}
           rows={compact ? 4 : 7}
-          placeholder={messagePlaceholder}
+          placeholder={messagePlaceholder ? localize(messagePlaceholder) : undefined}
           className={`${FIELD} py-3`}
         />
       </label>
@@ -138,7 +143,11 @@ export function ContactForm({
         disabled={status === "sending"}
         className="inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90 disabled:opacity-50"
       >
-        {status === "sending" ? t("contact.sending") : (submitLabel ?? t("contact.send"))}
+        {status === "sending"
+          ? t("contact.sending")
+          : submitLabel
+            ? localize(submitLabel)
+            : t("contact.send")}
       </button>
     </form>
   );

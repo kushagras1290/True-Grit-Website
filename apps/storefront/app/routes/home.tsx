@@ -75,8 +75,8 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   };
 }
 
-export function meta({ data }: Route.MetaArgs) {
-  return seoMeta(data?.page.seo);
+export function meta({ data, matches }: Route.MetaArgs) {
+  return seoMeta(data?.page.seo, matches);
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {

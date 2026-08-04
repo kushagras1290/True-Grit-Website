@@ -44,14 +44,6 @@ _MAX_MESSAGE_LENGTH = 4_000
 _CONVERSATION_ID_KEY = "conversation_id"
 
 
-def _to_py(value: Any) -> Any:
-    """Same discipline as `platform.d1`: a Pyodide JsProxy (e.g. the Map
-    `deserializeAttachment()` hands back) exposes `.to_py()`; an already-native
-    Python value does not, so convert only when needed."""
-    to_py = getattr(value, "to_py", None)
-    return to_py() if callable(to_py) else value
-
-
 class ChatRoomDO(DurableObject):
     def __init__(self, state: Any, env: Any):
         super().__init__(state, env)
@@ -81,15 +73,19 @@ class ChatRoomDO(DurableObject):
         # hibernate between messages instead of staying billed-awake. Pyodide
         # does not auto-marshal a Python list into a JS Array across this
         # particular bound-method call (confirmed live: passing a raw list
-        # raises "parameter 2 is not of type 'Array'"), so tags and the
-        # attachment both go through to_js explicitly.
+        # raises "parameter 2 is not of type 'Array'"), so the tag goes
+        # through to_js explicitly. The attachment is the plain user_id
+        # string, not a dict -- a to_js'd dict becomes a JS Map, and
+        # serializeAttachment structured-clones its argument, which rejected
+        # that Map live ("DataCloneError: [object Object] could not be
+        # cloned"); a plain string needs no conversion and has nothing to
+        # clone-fail on.
         self.ctx.acceptWebSocket(server, to_js([user_id]))
-        server.serializeAttachment(to_js({"userId": user_id}))
+        server.serializeAttachment(user_id)
         return Response(None, status=101, web_socket=client)
 
     async def webSocketMessage(self, ws: Any, message: Any) -> None:  # noqa: N802 -- runtime hook name
-        attachment = _to_py(ws.deserializeAttachment()) or {}
-        user_id = attachment.get("userId") if isinstance(attachment, dict) else None
+        user_id = ws.deserializeAttachment()
         conversation_id = await self.ctx.storage.get(_CONVERSATION_ID_KEY)
         if not user_id or not conversation_id:
             return

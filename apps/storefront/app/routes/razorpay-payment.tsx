@@ -6,17 +6,20 @@ import type { Route } from "./+types/razorpay-payment";
 import { payWithRazorpay, readRazorpayWindowPayload, type PlacedOrder } from "../lib/commerce";
 import { AuthError } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
 type PaymentState = "preparing" | "processing" | "paid" | "failed";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Razorpay payment",
-    description: "Complete your True Grit payment.",
-    canonicalPath: "/payment/razorpay",
-    indexing: "noindex",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Razorpay payment",
+      description: "Complete your True Grit payment.",
+      canonicalPath: "/payment/razorpay",
+      indexing: "noindex",
+    },
+    matches,
+  );
 }
 
 function notifyOpener(
@@ -37,6 +40,7 @@ function notifyOpener(
 }
 
 export default function RazorpayPaymentPage(_props: Route.ComponentProps) {
+  const localize = useLocalizeText();
   const [params] = useSearchParams();
   const token = params.get("token");
   const status = params.get("status");
@@ -130,13 +134,15 @@ export default function RazorpayPaymentPage(_props: Route.ComponentProps) {
               <LocalizedText>Secure payment</LocalizedText>
             </p>
             <h1 className="mt-2 font-display text-3xl leading-tight text-ink">
-              {state === "paid"
-                ? "Payment complete"
-                : state === "failed"
-                  ? "Payment needs attention"
-                  : "Opening Razorpay"}
+              {state === "paid" ? (
+                <LocalizedText>{"Payment complete"}</LocalizedText>
+              ) : state === "failed" ? (
+                <LocalizedText>{"Payment needs attention"}</LocalizedText>
+              ) : (
+                <LocalizedText>{"Opening Razorpay"}</LocalizedText>
+              )}
             </h1>
-            <p className="mt-3 text-sm leading-6 text-ink-muted">{message}</p>
+            <p className="mt-3 text-sm leading-6 text-ink-muted">{localize(message)}</p>
             {reference ? (
               <p className="mt-5 rounded-sm border border-line bg-canvas px-3 py-2 text-sm text-ink">
                 <LocalizedText>Order</LocalizedText>{" "}

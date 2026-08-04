@@ -27,6 +27,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api } from "../lib/api";
 import { formatDateTime } from "../lib/format";
 import { usePermissions } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 const CONTENT_TYPE_LABELS: Record<string, string> = {
   article: "Blog post",
@@ -97,12 +98,14 @@ export function ContentCommentsPage() {
     <div>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl text-ink">Post Comments</h1>
+          <h1 className="font-display text-2xl text-ink">
+            <T>Post Comments</T>
+          </h1>
           <p className="text-sm text-ink-muted">
-            Reader comments on blog posts and recipes.
+            <T>Reader comments on blog posts and recipes.</T>
             {data && !data.enabled ? (
               <span className="ml-1 text-danger">
-                Commenting is currently switched off site-wide.
+                <T>Commenting is currently switched off site-wide.</T>
               </span>
             ) : null}
           </p>
@@ -115,9 +118,15 @@ export function ContentCommentsPage() {
               setPage(1);
             }}
           >
-            <option value="">All types</option>
-            <option value="article">Blog posts</option>
-            <option value="recipe">Recipes</option>
+            <option value="">
+              <T>All types</T>
+            </option>
+            <option value="article">
+              <T>Blog posts</T>
+            </option>
+            <option value="recipe">
+              <T>Recipes</T>
+            </option>
           </Select>
           <Select
             value={statusFilter}
@@ -126,10 +135,18 @@ export function ContentCommentsPage() {
               setPage(1);
             }}
           >
-            <option value="">All statuses</option>
-            <option value="visible">Visible</option>
-            <option value="hidden">Hidden</option>
-            <option value="removed">Removed</option>
+            <option value="">
+              <T>All statuses</T>
+            </option>
+            <option value="visible">
+              <T>Visible</T>
+            </option>
+            <option value="hidden">
+              <T>Hidden</T>
+            </option>
+            <option value="removed">
+              <T>Removed</T>
+            </option>
           </Select>
         </div>
       </div>
@@ -149,12 +166,26 @@ export function ContentCommentsPage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Comment</Th>
-            <Th>On</Th>
-            <Th>Author</Th>
-            <Th>Status</Th>
-            <Th>Posted</Th>
-            {canModerate ? <Th>Actions</Th> : null}
+            <Th>
+              <T>Comment</T>
+            </Th>
+            <Th>
+              <T>On</T>
+            </Th>
+            <Th>
+              <T>Author</T>
+            </Th>
+            <Th>
+              <T>Status</T>
+            </Th>
+            <Th>
+              <T>Posted</T>
+            </Th>
+            {canModerate ? (
+              <Th>
+                <T>Actions</T>
+              </Th>
+            ) : null}
           </tr>
         </thead>
         {isLoading ? (
@@ -177,7 +208,9 @@ export function ContentCommentsPage() {
                 <Td className="max-w-sm">
                   <p className="line-clamp-2 text-ink">{entry.body}</p>
                   {entry.moderationReason ? (
-                    <p className="mt-1 text-xs text-ink-muted">Reason: {entry.moderationReason}</p>
+                    <p className="mt-1 text-xs text-ink-muted">
+                      <T>Reason:</T> {entry.moderationReason}
+                    </p>
                   ) : null}
                 </Td>
                 <Td>
@@ -214,7 +247,7 @@ export function ContentCommentsPage() {
                           }
                           disabled={moderateMutation.isPending}
                         >
-                          Restore
+                          <T>Restore</T>
                         </Button>
                       ) : (
                         <Button
@@ -222,7 +255,7 @@ export function ContentCommentsPage() {
                           onClick={() => moderateMutation.mutate({ id: entry.id, action: "hide" })}
                           disabled={moderateMutation.isPending}
                         >
-                          Hide
+                          <T>Hide</T>
                         </Button>
                       )}
                       <Button
@@ -234,7 +267,7 @@ export function ContentCommentsPage() {
                         }}
                         disabled={deleteMutation.isPending}
                       >
-                        Delete
+                        <T>Delete</T>
                       </Button>
                     </div>
                   </Td>

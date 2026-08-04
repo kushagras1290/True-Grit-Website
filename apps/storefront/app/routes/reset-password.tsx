@@ -7,13 +7,16 @@ import { AuthError, confirmPasswordReset } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
 import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Reset password",
-    description: "Set a new password for your account.",
-    canonicalPath: "/reset-password",
-    indexing: "noindex",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Reset password",
+      description: "Set a new password for your account.",
+      canonicalPath: "/reset-password",
+      indexing: "noindex",
+    },
+    matches,
+  );
 }
 
 const FIELD =
@@ -90,7 +93,7 @@ export default function ResetPasswordPage(_props: Route.ComponentProps) {
         </label>
         {error ? (
           <p role="alert" className="text-sm text-danger">
-            {error}
+            {localize(error)}
           </p>
         ) : null}
         <button
@@ -98,7 +101,11 @@ export default function ResetPasswordPage(_props: Route.ComponentProps) {
           disabled={pending}
           className="min-h-11 w-full rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-95 disabled:opacity-60"
         >
-          {pending ? "Saving…" : "Reset password"}
+          {pending ? (
+            <LocalizedText>{"Saving…"}</LocalizedText>
+          ) : (
+            <LocalizedText>{"Reset password"}</LocalizedText>
+          )}
         </button>
       </form>
     </Section>

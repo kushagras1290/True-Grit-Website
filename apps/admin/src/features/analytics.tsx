@@ -14,6 +14,7 @@ import { useMemo, useState } from "react";
 import { EmptyState, PageHeader } from "../components/ui";
 import { api } from "../lib/api";
 import { formatMoney } from "../lib/format";
+import { T } from "../lib/i18n";
 
 type RangePreset = 7 | 30 | 90;
 
@@ -43,7 +44,11 @@ function RevenueChart({
   points: { date: string; revenueMinor: number; orderCount: number }[];
 }) {
   if (points.length === 0) {
-    return <p className="text-sm text-ink-muted">No orders in this range.</p>;
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>No orders in this range.</T>
+      </p>
+    );
   }
 
   const width = 720;
@@ -86,7 +91,12 @@ function RevenueChart({
 
 function StatusBreakdown({ rows }: { rows: { status: string; orderCount: number }[] }) {
   const total = rows.reduce((sum, row) => sum + row.orderCount, 0);
-  if (total === 0) return <p className="text-sm text-ink-muted">No orders in this range.</p>;
+  if (total === 0)
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>No orders in this range.</T>
+      </p>
+    );
   return (
     <ul className="space-y-2">
       {rows.map((row) => {
@@ -147,7 +157,9 @@ export function AnalyticsPage() {
       />
 
       {isLoading ? (
-        <p className="text-sm text-ink-muted">Loading analytics...</p>
+        <p className="text-sm text-ink-muted">
+          <T>Loading analytics...</T>
+        </p>
       ) : isError || !data ? (
         <EmptyState title="Analytics unavailable" hint="Requires the analytics.view permission." />
       ) : (
@@ -163,7 +175,9 @@ export function AnalyticsPage() {
           </div>
 
           <div className="rounded-md border border-line bg-surface p-5">
-            <h2 className="font-display text-lg text-ink">Revenue by day</h2>
+            <h2 className="font-display text-lg text-ink">
+              <T>Revenue by day</T>
+            </h2>
             <div className="mt-4">
               <RevenueChart points={data.revenueByDay} />
             </div>
@@ -171,9 +185,13 @@ export function AnalyticsPage() {
 
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="rounded-md border border-line bg-surface p-5">
-              <h2 className="font-display text-lg text-ink">Top products</h2>
+              <h2 className="font-display text-lg text-ink">
+                <T>Top products</T>
+              </h2>
               {data.topProducts.length === 0 ? (
-                <p className="mt-2 text-sm text-ink-muted">No orders in this range.</p>
+                <p className="mt-2 text-sm text-ink-muted">
+                  <T>No orders in this range.</T>
+                </p>
               ) : (
                 <ol className="mt-3 divide-y divide-line">
                   {data.topProducts.map((product, index) => (
@@ -185,7 +203,9 @@ export function AnalyticsPage() {
                         <p className="truncate text-sm text-ink">
                           <span className="text-ink-muted">{index + 1}.</span> {product.productName}
                         </p>
-                        <p className="text-xs text-ink-muted">{product.unitsSold} units sold</p>
+                        <p className="text-xs text-ink-muted">
+                          {product.unitsSold} <T>units sold</T>
+                        </p>
                       </div>
                       <span className="shrink-0 text-sm font-medium text-ink">
                         {formatMoney(product.revenueMinor, "INR")}
@@ -197,7 +217,9 @@ export function AnalyticsPage() {
             </div>
 
             <div className="rounded-md border border-line bg-surface p-5">
-              <h2 className="font-display text-lg text-ink">Order status mix</h2>
+              <h2 className="font-display text-lg text-ink">
+                <T>Order status mix</T>
+              </h2>
               <div className="mt-3">
                 <StatusBreakdown rows={data.statusBreakdown} />
               </div>

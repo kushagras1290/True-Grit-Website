@@ -92,7 +92,7 @@ export function PageBanner({
         // Decorative: the heading below carries the meaning, so an empty alt
         // avoids a screen reader announcing the same words twice. A caller
         // that supplies real alt text gets it used.
-        alt={imageAlt || ""}
+        alt={imageAlt ? localize(imageAlt) : ""}
         className="absolute inset-0 h-full w-full object-contain"
         fetchPriority={loading === "eager" ? "high" : "auto"}
         loading={loading}

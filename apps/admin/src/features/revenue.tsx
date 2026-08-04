@@ -45,6 +45,7 @@ import {
 } from "../lib/api";
 import { formatDate, formatDateTime, formatMoney } from "../lib/format";
 import { usePermissions } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 const REVENUE_KEY = ["admin-revenue"];
 
@@ -130,7 +131,7 @@ function CommissionEditor({
             onClick={open}
             className="text-xs font-medium text-brand underline-offset-2 hover:underline"
           >
-            Edit
+            <T>Edit</T>
           </button>
         ) : null}
       </div>
@@ -154,15 +155,17 @@ function CommissionEditor({
           }}
         />
         <Button variant="primary" onClick={commit} disabled={isPending}>
-          {isPending ? "…" : "Save"}
+          {isPending ? "…" : <T>{"Save"}</T>}
         </Button>
         <Button variant="secondary" onClick={() => setEditing(false)} disabled={isPending}>
-          Cancel
+          <T>Cancel</T>
         </Button>
       </div>
       {error ? <p className="text-xs font-medium text-danger">{error}</p> : null}
       {allowClear ? (
-        <p className="text-xs text-ink-muted">Leave blank to use the default.</p>
+        <p className="text-xs text-ink-muted">
+          <T>Leave blank to use the default.</T>
+        </p>
       ) : null}
     </div>
   );
@@ -220,7 +223,9 @@ function IssuePaymentDialog({ farm, onClose }: { farm: FarmRevenueRow; onClose: 
             value={`− ${formatMoney(farm.outstandingCommissionMinor, farm.currencyCode)}`}
           />
           <div className="mt-2 flex justify-between border-t border-line pt-2 font-semibold text-ink">
-            <dt>Payable to farm</dt>
+            <dt>
+              <T>Payable to farm</T>
+            </dt>
             <dd className="tabular-nums">
               {formatMoney(farm.outstandingPayoutMinor, farm.currencyCode)}
             </dd>
@@ -228,10 +233,12 @@ function IssuePaymentDialog({ farm, onClose }: { farm: FarmRevenueRow; onClose: 
         </dl>
 
         <p className="text-xs leading-5 text-ink-muted">
-          This records the payout against {farm.outstandingItemCount} order line
-          {farm.outstandingItemCount === 1 ? "" : "s"} and marks them settled, so they can never be
-          paid twice. It does <strong>not</strong> transfer money — make the transfer to{" "}
-          {farm.ownerName || farm.farmerName || "the farm owner"} and file the reference below.
+          <T>This records the payout against</T> {farm.outstandingItemCount} <T>order line</T>
+          {farm.outstandingItemCount === 1 ? "" : "s"}{" "}
+          <T>and marks them settled, so they can never be paid twice. It does</T>{" "}
+          <strong>not</strong> <T>transfer money — make the transfer to</T>{" "}
+          {farm.ownerName || farm.farmerName || <T>{"the farm owner"}</T>}{" "}
+          <T>and file the reference below.</T>
         </p>
 
         <Field label="Transfer reference (UPI / bank / cheque)" htmlFor="payout-reference">
@@ -254,14 +261,14 @@ function IssuePaymentDialog({ farm, onClose }: { farm: FarmRevenueRow; onClose: 
 
         <div className="flex justify-end gap-2">
           <Button variant="secondary" onClick={onClose} disabled={mutation.isPending}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button
             variant="primary"
             onClick={() => mutation.mutate()}
             disabled={mutation.isPending || farm.outstandingPayoutMinor <= 0}
           >
-            {mutation.isPending ? "Recording…" : "Record payment"}
+            {mutation.isPending ? <T>{"Recording…"}</T> : <T>{"Record payment"}</T>}
           </Button>
         </div>
       </div>
@@ -363,8 +370,12 @@ export function RevenuePage() {
       {data ? (
         <div className="mb-6 flex flex-wrap items-center gap-3 rounded-md border border-line bg-surface p-4">
           <div className="min-w-0">
-            <p className="text-sm font-medium text-ink">Default commission</p>
-            <p className="text-xs text-ink-muted">Applied to every farm without its own rate.</p>
+            <p className="text-sm font-medium text-ink">
+              <T>Default commission</T>
+            </p>
+            <p className="text-xs text-ink-muted">
+              <T>Applied to every farm without its own rate.</T>
+            </p>
           </div>
           <div className="ml-auto">
             <CommissionEditor
@@ -383,13 +394,27 @@ export function RevenuePage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Farm</Th>
-            <Th>Net revenue</Th>
-            <Th>Cut</Th>
-            <Th>Platform earns</Th>
-            <Th>Paid out</Th>
-            <Th>Outstanding</Th>
-            <Th className="text-right">Actions</Th>
+            <Th>
+              <T>Farm</T>
+            </Th>
+            <Th>
+              <T>Net revenue</T>
+            </Th>
+            <Th>
+              <T>Cut</T>
+            </Th>
+            <Th>
+              <T>Platform earns</T>
+            </Th>
+            <Th>
+              <T>Paid out</T>
+            </Th>
+            <Th>
+              <T>Outstanding</T>
+            </Th>
+            <Th className="text-right">
+              <T>Actions</T>
+            </Th>
           </tr>
         </thead>
         {isLoading ? (
@@ -412,7 +437,7 @@ export function RevenuePage() {
                 <Td>
                   <span className="block font-medium text-ink">{farm.farmName}</span>
                   <span className="block text-xs text-ink-muted">
-                    {farm.ownerName || farm.farmerName || "No owner linked"}
+                    {farm.ownerName || farm.farmerName || <T>{"No owner linked"}</T>}
                     {farm.region ? ` · ${farm.region}` : ""}
                   </span>
                 </Td>
@@ -458,7 +483,7 @@ export function RevenuePage() {
                       to={`/revenue/${farm.farmId}`}
                       className="inline-flex items-center rounded-sm border border-line px-2.5 py-1.5 text-xs font-medium text-ink hover:bg-subtle/50"
                     >
-                      Detailed revenue
+                      <T>Detailed revenue</T>
                     </Link>
                     {canManage ? (
                       <Button
@@ -471,7 +496,7 @@ export function RevenuePage() {
                         }
                         onClick={() => setPayingFarm(farm)}
                       >
-                        Issue payment
+                        <T>Issue payment</T>
                       </Button>
                     ) : null}
                   </div>
@@ -517,7 +542,9 @@ export function FarmRevenueDetailPage() {
     return (
       <div>
         <PageHeader title="Farm revenue" />
-        <p className="text-sm text-ink-muted">Loading revenue…</p>
+        <p className="text-sm text-ink-muted">
+          <T>Loading revenue…</T>
+        </p>
       </div>
     );
   }
@@ -534,7 +561,7 @@ export function FarmRevenueDetailPage() {
 
       <div className="mb-4">
         <Link to="/revenue" className="text-sm text-brand underline-offset-2 hover:underline">
-          ← All farms
+          <T>← All farms</T>
         </Link>
       </div>
 
@@ -563,22 +590,39 @@ export function FarmRevenueDetailPage() {
       {canManage && summary.outstandingPayoutMinor > 0 ? (
         <div className="mb-6">
           <Button variant="primary" onClick={() => setPaying(true)}>
-            Issue payment ({formatMoney(summary.outstandingPayoutMinor, summary.currencyCode)})
+            <T>Issue payment (</T>
+            {formatMoney(summary.outstandingPayoutMinor, summary.currencyCode)})
           </Button>
         </div>
       ) : null}
 
-      <h2 className="mb-2 text-sm font-semibold text-ink">Order lines</h2>
+      <h2 className="mb-2 text-sm font-semibold text-ink">
+        <T>Order lines</T>
+      </h2>
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Order</Th>
-            <Th>Item</Th>
-            <Th>Qty</Th>
-            <Th>Gross</Th>
-            <Th>Refunded</Th>
-            <Th>Net</Th>
-            <Th>Status</Th>
+            <Th>
+              <T>Order</T>
+            </Th>
+            <Th>
+              <T>Item</T>
+            </Th>
+            <Th>
+              <T>Qty</T>
+            </Th>
+            <Th>
+              <T>Gross</T>
+            </Th>
+            <Th>
+              <T>Refunded</T>
+            </Th>
+            <Th>
+              <T>Net</T>
+            </Th>
+            <Th>
+              <T>Status</T>
+            </Th>
           </tr>
         </thead>
         {lines.length === 0 ? (
@@ -627,7 +671,9 @@ export function FarmRevenueDetailPage() {
         )}
       </DataTableShell>
 
-      <h2 className="mb-2 mt-8 text-sm font-semibold text-ink">Payment history</h2>
+      <h2 className="mb-2 mt-8 text-sm font-semibold text-ink">
+        <T>Payment history</T>
+      </h2>
       <PayoutTable payouts={payouts} />
 
       {paying ? <IssuePaymentDialog farm={summary} onClose={() => setPaying(false)} /> : null}
@@ -640,13 +686,27 @@ function PayoutTable({ payouts }: { payouts: FarmPayout[] }) {
     <DataTableShell>
       <thead className="bg-canvas">
         <tr>
-          <Th>When</Th>
-          <Th>Net revenue</Th>
-          <Th>Cut</Th>
-          <Th>Paid</Th>
-          <Th>Lines</Th>
-          <Th>Reference</Th>
-          <Th>Recorded by</Th>
+          <Th>
+            <T>When</T>
+          </Th>
+          <Th>
+            <T>Net revenue</T>
+          </Th>
+          <Th>
+            <T>Cut</T>
+          </Th>
+          <Th>
+            <T>Paid</T>
+          </Th>
+          <Th>
+            <T>Lines</T>
+          </Th>
+          <Th>
+            <T>Reference</T>
+          </Th>
+          <Th>
+            <T>Recorded by</T>
+          </Th>
         </tr>
       </thead>
       {payouts.length === 0 ? (

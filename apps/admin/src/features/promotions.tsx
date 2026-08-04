@@ -29,6 +29,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api } from "../lib/api";
 import { formatDateTime, formatMoney } from "../lib/format";
 import { usePermissions } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 const STATUS_OPTIONS = ["draft", "scheduled", "active", "paused", "ended", "archived"];
 const ACTION_LABELS: Record<string, string> = {
@@ -315,10 +316,10 @@ function CreatePromotionModal({
 
         <div className="flex justify-end gap-2 border-t border-line pt-3">
           <Button type="button" variant="secondary" onClick={onClose} disabled={mutation.isPending}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button type="submit" variant="primary" disabled={mutation.isPending}>
-            {mutation.isPending ? "Creating..." : "Create promotion"}
+            {mutation.isPending ? <T>{"Creating..."}</T> : <T>{"Create promotion"}</T>}
           </Button>
         </div>
       </form>
@@ -370,7 +371,9 @@ function ManagePromotionModal({
   return (
     <Modal title="Manage promotion" onClose={onClose}>
       {isLoading || !promotion ? (
-        <p className="text-sm text-ink-muted">Loading...</p>
+        <p className="text-sm text-ink-muted">
+          <T>Loading...</T>
+        </p>
       ) : (
         <div className="space-y-5">
           <div>
@@ -379,9 +382,11 @@ function ManagePromotionModal({
               <p className="text-sm text-ink-muted">{promotion.headline}</p>
             ) : null}
             <p className="mt-1 text-xs text-ink-muted">
-              {promotion.action
-                ? ACTION_LABELS[promotion.action.actionType]
-                : "No action configured"}
+              {promotion.action ? (
+                ACTION_LABELS[promotion.action.actionType]
+              ) : (
+                <T>{"No action configured"}</T>
+              )}
               {promotion.action?.actionType === "percentage_discount"
                 ? ` — ${((promotion.action.valueBasisPoints ?? 0) / 100).toFixed(2)}%`
                 : null}
@@ -392,10 +397,12 @@ function ManagePromotionModal({
           </div>
 
           <div>
-            <h3 className="text-sm font-medium text-ink">Coupon codes</h3>
+            <h3 className="text-sm font-medium text-ink">
+              <T>Coupon codes</T>
+            </h3>
             {promotion.coupons.length === 0 ? (
               <p className="mt-1 text-sm text-ink-muted">
-                No codes yet — this promotion applies automatically to every eligible cart.
+                <T>No codes yet — this promotion applies automatically to every eligible cart.</T>
               </p>
             ) : (
               <ul className="mt-2 divide-y divide-line rounded-md border border-line">
@@ -419,7 +426,7 @@ function ManagePromotionModal({
                         disabled={deleteCoupon.isPending}
                         onClick={() => deleteCoupon.mutate(coupon.id)}
                       >
-                        Remove
+                        <T>Remove</T>
                       </Button>
                     </div>
                   </li>
@@ -444,14 +451,14 @@ function ManagePromotionModal({
                 className="flex-1"
               />
               <Button type="submit" variant="secondary" disabled={addCoupon.isPending}>
-                Add code
+                <T>Add code</T>
               </Button>
             </form>
           </div>
 
           <div className="flex justify-end border-t border-line pt-3">
             <Button type="button" variant="secondary" onClick={onClose}>
-              Close
+              <T>Close</T>
             </Button>
           </div>
         </div>
@@ -507,16 +514,20 @@ export function PromotionsListPage() {
     <div>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl text-ink">Coupons & Promotions</h1>
+          <h1 className="font-display text-2xl text-ink">
+            <T>Coupons & Promotions</T>
+          </h1>
           <p className="max-w-2xl text-sm text-ink-muted">
-            A promotion with no coupon codes applies automatically to every eligible cart. Add one
-            or more codes to make it code-gated instead. The sitewide on/off switch is on Site
-            Settings, next to the other storefront switches.
+            <T>
+              A promotion with no coupon codes applies automatically to every eligible cart. Add one
+              or more codes to make it code-gated instead. The sitewide on/off switch is on Site
+              Settings, next to the other storefront switches.
+            </T>
           </p>
         </div>
         {canManage ? (
           <Button variant="primary" onClick={() => setCreating(true)}>
-            New promotion
+            <T>New promotion</T>
           </Button>
         ) : null}
       </div>
@@ -541,7 +552,9 @@ export function PromotionsListPage() {
           }}
           aria-label="Filter by status"
         >
-          <option value="">All statuses</option>
+          <option value="">
+            <T>All statuses</T>
+          </option>
           {STATUS_OPTIONS.map((option) => (
             <option key={option} value={option}>
               {option}
@@ -553,12 +566,26 @@ export function PromotionsListPage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Promotion</Th>
-            <Th>Status</Th>
-            <Th>Codes</Th>
-            <Th>Redemptions</Th>
-            <Th>Priority</Th>
-            {canManage ? <Th>Actions</Th> : null}
+            <Th>
+              <T>Promotion</T>
+            </Th>
+            <Th>
+              <T>Status</T>
+            </Th>
+            <Th>
+              <T>Codes</T>
+            </Th>
+            <Th>
+              <T>Redemptions</T>
+            </Th>
+            <Th>
+              <T>Priority</T>
+            </Th>
+            {canManage ? (
+              <Th>
+                <T>Actions</T>
+              </Th>
+            ) : null}
           </tr>
         </thead>
         {isLoading ? (
@@ -594,13 +621,13 @@ export function PromotionsListPage() {
                   <Td>
                     <div className="flex flex-wrap gap-2">
                       <Button variant="secondary" onClick={() => setManagingId(entry.id)}>
-                        Manage
+                        <T>Manage</T>
                       </Button>
                       <Button
                         variant="destructive"
                         onClick={() => setConfirmDelete({ id: entry.id, name: entry.name })}
                       >
-                        Delete
+                        <T>Delete</T>
                       </Button>
                     </div>
                   </Td>

@@ -14,24 +14,26 @@ import {
 } from "../lib/commerce";
 import { useCustomer } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeFormat, useLocalizeText } from "../lib/i18n/localized-text";
+import { useDateFormatter } from "../lib/i18n/dates";
+import { statusSource } from "../lib/i18n/status-labels";
 
-const FREQUENCY_LABELS: Record<string, string> = {
-  weekly: "Every week",
-  biweekly: "Every 2 weeks",
-  monthly: "Every month",
-};
-
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Your account",
-    description: "Manage your True Grit account.",
-    canonicalPath: "/account",
-    indexing: "noindex",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Your account",
+      description: "Manage your True Grit account.",
+      canonicalPath: "/account",
+      indexing: "noindex",
+    },
+    matches,
+  );
 }
 
 function OrderHistory() {
+  const formatDate = useDateFormatter();
+  const format = useLocalizeFormat();
+  const localize = useLocalizeText();
   const [orders, setOrders] = useState<OrderSummary[] | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -83,18 +85,20 @@ function OrderHistory() {
               {order.reference}
             </Link>
             <p className="mt-0.5 text-xs text-ink-muted">
-              {new Date(order.placedAt).toLocaleDateString()} · {order.itemCount}{" "}
-              <LocalizedText>item</LocalizedText>
-              {order.itemCount === 1 ? "" : "s"} ·{" "}
-              <span className="capitalize">{order.orderStatus.replaceAll("_", " ")}</span>
+              {formatDate(order.placedAt)} ·{" "}
+              {order.itemCount === 1
+                ? format("{count} item", { count: order.itemCount })
+                : format("{count} items", { count: order.itemCount })}{" "}
+              · <span>{localize(statusSource("orderStatus", order.orderStatus))}</span>
             </p>
             <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-ink-muted">
-              <span className="inline-flex items-center rounded-sm bg-canvas px-1.5 py-0.5 capitalize">
-                <LocalizedText>Payment:</LocalizedText> {order.paymentStatus.replaceAll("_", " ")}
+              <span className="inline-flex items-center rounded-sm bg-canvas px-1.5 py-0.5">
+                <LocalizedText>Payment:</LocalizedText>{" "}
+                {localize(statusSource("paymentStatus", order.paymentStatus))}
               </span>
-              <span className="inline-flex items-center rounded-sm bg-canvas px-1.5 py-0.5 capitalize">
+              <span className="inline-flex items-center rounded-sm bg-canvas px-1.5 py-0.5">
                 <LocalizedText>Fulfilment:</LocalizedText>{" "}
-                {order.fulfilmentStatus.replaceAll("_", " ")}
+                {localize(statusSource("fulfilmentStatus", order.fulfilmentStatus))}
               </span>
             </div>
           </div>
@@ -108,6 +112,9 @@ function OrderHistory() {
 }
 
 function MySubscriptions() {
+  const formatDate = useDateFormatter();
+  const format = useLocalizeFormat();
+  const localize = useLocalizeText();
   const [subscriptions, setSubscriptions] = useState<SubscriptionRow[] | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
 
@@ -167,10 +174,10 @@ function MySubscriptions() {
               {entry.quantity} × {entry.productName} — {entry.variantName}
             </p>
             <p className="mt-0.5 text-xs text-ink-muted">
-              {FREQUENCY_LABELS[entry.frequency] ?? entry.frequency} ·{" "}
-              <span className="capitalize">{entry.status}</span>
+              {localize(statusSource("subscriptionFrequency", entry.frequency))} ·{" "}
+              <span>{localize(statusSource("subscriptionStatus", entry.status))}</span>
               {entry.status !== "cancelled"
-                ? ` · next delivery ${new Date(entry.nextOrderDate).toLocaleDateString()}`
+                ? format(" · next delivery {date}", { date: formatDate(entry.nextOrderDate) })
                 : ""}
             </p>
           </div>
@@ -213,6 +220,7 @@ function MySubscriptions() {
 }
 
 export default function AccountPage(_props: Route.ComponentProps) {
+  const format = useLocalizeFormat();
   const { customer, status, logout } = useCustomer();
   const navigate = useNavigate();
   const [signingOut, setSigningOut] = useState(false);
@@ -254,7 +262,7 @@ export default function AccountPage(_props: Route.ComponentProps) {
   }
 
   return (
-    <Section eyebrow="Account" heading={`Hello, ${customer.displayName}`}>
+    <Section eyebrow="Account" heading={format("Hello, {name}", { name: customer.displayName })}>
       <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
         <div className="space-y-6">
           <dl className="divide-y divide-line rounded-md border border-line bg-surface">
@@ -328,7 +336,11 @@ export default function AccountPage(_props: Route.ComponentProps) {
             disabled={signingOut}
             className="min-h-11 w-full rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-95 disabled:opacity-60"
           >
-            {signingOut ? "Signing out…" : "Sign out"}
+            {signingOut ? (
+              <LocalizedText>{"Signing out…"}</LocalizedText>
+            ) : (
+              <LocalizedText>{"Sign out"}</LocalizedText>
+            )}
           </button>
         </aside>
       </div>

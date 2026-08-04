@@ -15,6 +15,7 @@ import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { mediaUrl } from "../lib/media";
 import { articleJsonLd, seoMeta } from "../lib/seo";
+import { useLocalizeFormat } from "../lib/i18n/localized-text";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
@@ -31,10 +32,10 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   return { article, products, farms };
 }
 
-export function meta({ data: loaderData }: Route.MetaArgs) {
-  if (!loaderData) return seoMeta(null);
+export function meta({ data: loaderData, matches }: Route.MetaArgs) {
+  if (!loaderData) return seoMeta(null, matches);
   return [
-    ...seoMeta(loaderData.article.seo),
+    ...seoMeta(loaderData.article.seo, matches),
     articleJsonLd({
       title: loaderData.article.title,
       excerpt: loaderData.article.excerpt,
@@ -47,6 +48,7 @@ export function meta({ data: loaderData }: Route.MetaArgs) {
 }
 
 export default function ArticlePage({ loaderData }: Route.ComponentProps) {
+  const format = useLocalizeFormat();
   const { article, products, farms } = loaderData;
   const blockData: BlockData = {
     productsBySlug: new Map(products.map((product) => [product.slug, product])),
@@ -76,7 +78,10 @@ export default function ArticlePage({ loaderData }: Route.ComponentProps) {
       <PageBanner
         imageUrl={article.heroImageUrl || "/content/default-blog.webp"}
         imageAlt={article.heroImageAlt}
-        eyebrow={`${article.authorName} · ${article.readingMinutes} min read`}
+        eyebrow={format("{author} · {minutes} min read", {
+          author: article.authorName,
+          minutes: article.readingMinutes,
+        })}
         heading={article.title}
         description={article.excerpt}
       />

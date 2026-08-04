@@ -26,6 +26,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api } from "../lib/api";
 import { formatDateTime } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 const CONTENT_TYPE_LABELS: Record<string, string> = {
   article: "Blog post",
@@ -80,11 +81,21 @@ export function SubmissionsListPage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Title</Th>
-            <Th>Type</Th>
-            <Th>Submitted by</Th>
-            <Th>Status</Th>
-            <Th>Submitted</Th>
+            <Th>
+              <T>Title</T>
+            </Th>
+            <Th>
+              <T>Type</T>
+            </Th>
+            <Th>
+              <T>Submitted by</T>
+            </Th>
+            <Th>
+              <T>Status</T>
+            </Th>
+            <Th>
+              <T>Submitted</T>
+            </Th>
           </tr>
         </thead>
         {isLoading ? (
@@ -147,9 +158,11 @@ function PageHeaderWithFilters({
   return (
     <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
       <div>
-        <h1 className="font-display text-2xl text-ink">Submissions</h1>
+        <h1 className="font-display text-2xl text-ink">
+          <T>Submissions</T>
+        </h1>
         <p className="text-sm text-ink-muted">
-          Blog posts and recipes pitched by the community, awaiting review.
+          <T>Blog posts and recipes pitched by the community, awaiting review.</T>
         </p>
       </div>
       <div className="flex gap-2">
@@ -157,17 +170,35 @@ function PageHeaderWithFilters({
           value={contentTypeFilter}
           onChange={(event) => setContentTypeFilter(event.target.value)}
         >
-          <option value="">All types</option>
-          <option value="article">Blog posts</option>
-          <option value="recipe">Recipes</option>
+          <option value="">
+            <T>All types</T>
+          </option>
+          <option value="article">
+            <T>Blog posts</T>
+          </option>
+          <option value="recipe">
+            <T>Recipes</T>
+          </option>
         </Select>
         <Select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-          <option value="">All statuses</option>
-          <option value="submitted">Submitted</option>
-          <option value="under_review">Under review</option>
-          <option value="changes_requested">Changes requested</option>
-          <option value="approved">Approved</option>
-          <option value="rejected">Rejected</option>
+          <option value="">
+            <T>All statuses</T>
+          </option>
+          <option value="submitted">
+            <T>Submitted</T>
+          </option>
+          <option value="under_review">
+            <T>Under review</T>
+          </option>
+          <option value="changes_requested">
+            <T>Changes requested</T>
+          </option>
+          <option value="approved">
+            <T>Approved</T>
+          </option>
+          <option value="rejected">
+            <T>Rejected</T>
+          </option>
         </Select>
       </div>
     </div>
@@ -211,7 +242,12 @@ export function SubmissionDetailPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not update."),
   });
 
-  if (isLoading) return <p className="text-sm text-ink-muted">Loading submission…</p>;
+  if (isLoading)
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>Loading submission…</T>
+      </p>
+    );
   if (isError || !entry) return <EmptyState title="Submission not found" />;
 
   const needsNote = true; // reject/changes both need a note; enforced server-side too
@@ -223,7 +259,7 @@ export function SubmissionDetailPage() {
         <div>
           <h1 className="font-display text-2xl text-ink">{entry.title}</h1>
           <p className="text-sm text-ink-muted">
-            {CONTENT_TYPE_LABELS[entry.contentType] ?? entry.contentType} · submitted by{" "}
+            {CONTENT_TYPE_LABELS[entry.contentType] ?? entry.contentType} <T>· submitted by</T>{" "}
             {entry.contactName} ({entry.contactEmail}
             {entry.contactPhone ? `, ${entry.contactPhone}` : ""})
           </p>
@@ -235,13 +271,17 @@ export function SubmissionDetailPage() {
         <div className="space-y-4">
           {entry.excerpt ? (
             <div className="rounded-md border border-line bg-surface p-5">
-              <p className="text-ink-muted">Excerpt</p>
+              <p className="text-ink-muted">
+                <T>Excerpt</T>
+              </p>
               <p className="mt-1 text-sm text-ink">{entry.excerpt}</p>
             </div>
           ) : null}
 
           <div className="rounded-md border border-line bg-surface p-5">
-            <p className="text-ink-muted">Body</p>
+            <p className="text-ink-muted">
+              <T>Body</T>
+            </p>
             <p className="mt-1 whitespace-pre-wrap text-sm text-ink">{entry.body}</p>
           </div>
 
@@ -249,23 +289,33 @@ export function SubmissionDetailPage() {
             <div className="rounded-md border border-line bg-surface p-5">
               <dl className="grid grid-cols-3 gap-4 text-sm">
                 <div>
-                  <dt className="text-ink-muted">Prep</dt>
+                  <dt className="text-ink-muted">
+                    <T>Prep</T>
+                  </dt>
                   <dd className="font-medium text-ink">{entry.prepMinutes ?? "—"} min</dd>
                 </div>
                 <div>
-                  <dt className="text-ink-muted">Cook</dt>
+                  <dt className="text-ink-muted">
+                    <T>Cook</T>
+                  </dt>
                   <dd className="font-medium text-ink">{entry.cookMinutes ?? "—"} min</dd>
                 </div>
                 <div>
-                  <dt className="text-ink-muted">Servings</dt>
+                  <dt className="text-ink-muted">
+                    <T>Servings</T>
+                  </dt>
                   <dd className="font-medium text-ink">{entry.servings ?? "—"}</dd>
                 </div>
               </dl>
               {entry.dietaryTags.length > 0 ? (
-                <p className="mt-3 text-xs text-ink-muted">Tags: {entry.dietaryTags.join(", ")}</p>
+                <p className="mt-3 text-xs text-ink-muted">
+                  <T>Tags:</T> {entry.dietaryTags.join(", ")}
+                </p>
               ) : null}
               <div className="mt-4">
-                <p className="text-ink-muted">Ingredients</p>
+                <p className="text-ink-muted">
+                  <T>Ingredients</T>
+                </p>
                 <ul className="mt-1 list-inside list-disc text-sm text-ink">
                   {entry.ingredients.map((ingredient, index) => (
                     <li key={index}>
@@ -276,7 +326,9 @@ export function SubmissionDetailPage() {
                 </ul>
               </div>
               <div className="mt-4">
-                <p className="text-ink-muted">Steps</p>
+                <p className="text-ink-muted">
+                  <T>Steps</T>
+                </p>
                 <ol className="mt-1 list-inside list-decimal text-sm text-ink">
                   {entry.steps.map((step, index) => (
                     <li key={index}>{step}</li>
@@ -288,19 +340,21 @@ export function SubmissionDetailPage() {
 
           {entry.reviewerNotes ? (
             <div className="rounded-md border border-line bg-canvas p-5">
-              <p className="text-ink-muted">Last reviewer note</p>
+              <p className="text-ink-muted">
+                <T>Last reviewer note</T>
+              </p>
               <p className="mt-1 text-sm text-ink">{entry.reviewerNotes}</p>
             </div>
           ) : null}
 
           {entry.status === "approved" ? (
             <p className="text-sm text-ink-muted">
-              Published as{" "}
+              <T>Published as</T>{" "}
               <Link
                 to={entry.contentType === "article" ? "/blog" : "/recipes"}
                 className="text-brand hover:underline"
               >
-                a live {CONTENT_TYPE_LABELS[entry.contentType]?.toLowerCase()}
+                <T>a live</T> {CONTENT_TYPE_LABELS[entry.contentType]?.toLowerCase()}
               </Link>
               .
             </p>
@@ -310,7 +364,9 @@ export function SubmissionDetailPage() {
         <PermissionGate permission="submissions.review">
           {isOpen ? (
             <aside className="h-fit space-y-3 rounded-md border border-line bg-surface p-5">
-              <h2 className="font-display text-base text-ink">Decision</h2>
+              <h2 className="font-display text-base text-ink">
+                <T>Decision</T>
+              </h2>
               {entry.status === "submitted" ? (
                 <Button
                   className="w-full"
@@ -318,7 +374,7 @@ export function SubmissionDetailPage() {
                   onClick={() => decideMutation.mutate("under_review")}
                   disabled={decideMutation.isPending}
                 >
-                  Mark under review
+                  <T>Mark under review</T>
                 </Button>
               ) : null}
               <Field label="Note (required to request changes or reject)" htmlFor="submission-note">
@@ -336,7 +392,7 @@ export function SubmissionDetailPage() {
                 onClick={() => decideMutation.mutate("approved")}
                 disabled={decideMutation.isPending}
               >
-                Approve &amp; publish
+                <T>Approve &amp; publish</T>
               </Button>
               <Button
                 className="w-full"
@@ -344,7 +400,7 @@ export function SubmissionDetailPage() {
                 onClick={() => decideMutation.mutate("changes_requested")}
                 disabled={decideMutation.isPending || (needsNote && !note.trim())}
               >
-                Request changes
+                <T>Request changes</T>
               </Button>
               <Button
                 className="w-full"
@@ -352,7 +408,7 @@ export function SubmissionDetailPage() {
                 onClick={() => decideMutation.mutate("rejected")}
                 disabled={decideMutation.isPending || (needsNote && !note.trim())}
               >
-                Reject
+                <T>Reject</T>
               </Button>
             </aside>
           ) : null}

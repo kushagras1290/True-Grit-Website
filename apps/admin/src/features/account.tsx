@@ -14,6 +14,7 @@ import { useToast } from "../components/toast";
 import { Button, Field, Input, PageHeader } from "../components/ui";
 import { ApiError, api, demoMode } from "../lib/api";
 import { useMe } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 // Mirrors the API's PASSWORD_MIN_LENGTH. The API is the enforcement point; this
 // only saves a round trip.
@@ -71,17 +72,27 @@ export function AccountPage() {
           onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
         >
           <section className="space-y-1 border-t border-line pt-5">
-            <h2 className="font-display text-lg text-ink">Signed in as</h2>
+            <h2 className="font-display text-lg text-ink">
+              <T>Signed in as</T>
+            </h2>
             <p className="text-sm text-ink">{me?.displayName ?? "—"}</p>
             <p className="text-sm text-ink-muted">{me?.email ?? "—"}</p>
-            {me?.farmName ? <p className="text-sm text-ink-muted">Farm · {me.farmName}</p> : null}
+            {me?.farmName ? (
+              <p className="text-sm text-ink-muted">
+                <T>Farm ·</T> {me.farmName}
+              </p>
+            ) : null}
           </section>
 
           <section className="space-y-4 border-t border-line pt-5">
             <div>
-              <h2 className="font-display text-lg text-ink">Change password</h2>
+              <h2 className="font-display text-lg text-ink">
+                <T>Change password</T>
+              </h2>
               <p className="text-sm text-ink-muted">
-                Your current password is required, and every other signed-in session is ended.
+                <T>
+                  Your current password is required, and every other signed-in session is ended.
+                </T>
               </p>
             </div>
 
@@ -125,28 +136,51 @@ export function AccountPage() {
             </Field>
 
             <Button type="submit" variant="primary" disabled={mutation.isPending}>
-              {mutation.isPending ? "Saving…" : "Change password"}
+              {mutation.isPending ? <T>{"Saving…"}</T> : <T>{"Change password"}</T>}
             </Button>
           </section>
         </form>
 
         <aside className="space-y-3 border-t border-line pt-5 text-sm text-ink-muted">
-          <h2 className="font-display text-lg text-ink">How this password works</h2>
+          <h2 className="font-display text-lg text-ink">
+            <T>How this password works</T>
+          </h2>
           <p>
-            The owner login starts from <code className="text-xs">ADMIN_LOGIN_EMAIL</code> and{" "}
-            <code className="text-xs">ADMIN_LOGIN_PASSWORD</code> in the API's{" "}
-            <code className="text-xs">.env</code>, but only until you sign in once. After that this
-            account owns its password, and editing <code className="text-xs">.env</code> no longer
-            changes the login — so a password you set here really does replace the old one.
+            <T>The owner login starts from</T>{" "}
+            <code className="text-xs">
+              <T>ADMIN_LOGIN_EMAIL</T>
+            </code>{" "}
+            and{" "}
+            <code className="text-xs">
+              <T>ADMIN_LOGIN_PASSWORD</T>
+            </code>{" "}
+            <T>in the API's</T>{" "}
+            <code className="text-xs">
+              <T>.env</T>
+            </code>
+            <T>
+              , but only until you sign in once. After that this account owns its password, and
+              editing
+            </T>{" "}
+            <code className="text-xs">
+              <T>.env</T>
+            </code>{" "}
+            <T>
+              no longer changes the login — so a password you set here really does replace the old
+              one.
+            </T>
           </p>
           <p>
-            Locked out? Use <span className="text-ink">Forgot password?</span> on the sign-in page.
-            The reset link goes to the address above.
+            <T>Locked out? Use</T>{" "}
+            <span className="text-ink">
+              <T>Forgot password?</T>
+            </span>{" "}
+            <T>on the sign-in page. The reset link goes to the address above.</T>
           </p>
           {demoMode ? (
             <p className="text-warning">
-              Demo mode has no API, so a password change cannot be saved. Set{" "}
-              <code className="text-xs">VITE_API_URL</code> to connect.
+              <T>Demo mode has no API, so a password change cannot be saved. Set</T>{" "}
+              <code className="text-xs">VITE_API_URL</code> <T>to connect.</T>
             </p>
           ) : null}
         </aside>

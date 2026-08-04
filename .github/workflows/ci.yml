@@ -35,6 +35,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm format:check
       - run: pnpm typecheck
+      # Fails when storefront copy is added without being routed through the
+      # translation catalogue, which is how the site ended up part-translated.
+      - run: pnpm i18n:audit
       - run: pnpm test
       - run: pnpm build
 

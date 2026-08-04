@@ -26,6 +26,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api } from "../lib/api";
 import { formatDateTime, formatMoney } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 const REASON_LABELS: Record<string, string> = {
   damaged: "Damaged",
@@ -67,14 +68,30 @@ export function ReturnsListPage() {
               setPage(1);
             }}
           >
-            <option value="">All statuses</option>
-            <option value="requested">Requested</option>
-            <option value="under_review">Under review</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-            <option value="refunded">Refunded</option>
-            <option value="replaced">Replaced</option>
-            <option value="completed">Completed</option>
+            <option value="">
+              <T>All statuses</T>
+            </option>
+            <option value="requested">
+              <T>Requested</T>
+            </option>
+            <option value="under_review">
+              <T>Under review</T>
+            </option>
+            <option value="approved">
+              <T>Approved</T>
+            </option>
+            <option value="rejected">
+              <T>Rejected</T>
+            </option>
+            <option value="refunded">
+              <T>Refunded</T>
+            </option>
+            <option value="replaced">
+              <T>Replaced</T>
+            </option>
+            <option value="completed">
+              <T>Completed</T>
+            </option>
           </Select>
         }
       />
@@ -92,11 +109,21 @@ export function ReturnsListPage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Order</Th>
-            <Th>Customer</Th>
-            <Th>Reason</Th>
-            <Th>Status</Th>
-            <Th>Requested</Th>
+            <Th>
+              <T>Order</T>
+            </Th>
+            <Th>
+              <T>Customer</T>
+            </Th>
+            <Th>
+              <T>Reason</T>
+            </Th>
+            <Th>
+              <T>Status</T>
+            </Th>
+            <Th>
+              <T>Requested</T>
+            </Th>
           </tr>
         </thead>
         {isLoading ? (
@@ -195,7 +222,12 @@ export function ReturnDetailPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not resolve."),
   });
 
-  if (isLoading) return <p className="text-sm text-ink-muted">Loading return request…</p>;
+  if (isLoading)
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>Loading return request…</T>
+      </p>
+    );
   if (isError || !entry) return <EmptyState title="Return request not found" />;
 
   return (
@@ -211,23 +243,33 @@ export function ReturnDetailPage() {
           <div className="rounded-md border border-line bg-surface p-5">
             <dl className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <dt className="text-ink-muted">Reason</dt>
+                <dt className="text-ink-muted">
+                  <T>Reason</T>
+                </dt>
                 <dd className="font-medium text-ink">
                   {REASON_LABELS[entry.reasonCode] ?? entry.reasonCode}
                 </dd>
               </div>
               <div>
-                <dt className="text-ink-muted">Product</dt>
-                <dd className="font-medium text-ink">{entry.productName ?? "Whole order"}</dd>
+                <dt className="text-ink-muted">
+                  <T>Product</T>
+                </dt>
+                <dd className="font-medium text-ink">
+                  {entry.productName ?? <T>{"Whole order"}</T>}
+                </dd>
               </div>
               <div>
-                <dt className="text-ink-muted">Order total</dt>
+                <dt className="text-ink-muted">
+                  <T>Order total</T>
+                </dt>
                 <dd className="font-medium text-ink">
                   {formatMoney(entry.orderTotalMinor, entry.currencyCode)}
                 </dd>
               </div>
               <div>
-                <dt className="text-ink-muted">Requested refund</dt>
+                <dt className="text-ink-muted">
+                  <T>Requested refund</T>
+                </dt>
                 <dd className="font-medium text-ink">
                   {entry.requestedRefundAmountMinor != null
                     ? formatMoney(entry.requestedRefundAmountMinor, entry.currencyCode)
@@ -236,21 +278,29 @@ export function ReturnDetailPage() {
               </div>
             </dl>
             <div className="mt-4">
-              <p className="text-ink-muted">Description</p>
+              <p className="text-ink-muted">
+                <T>Description</T>
+              </p>
               <p className="mt-1 text-sm text-ink">{entry.description}</p>
             </div>
           </div>
 
           {(["refunded", "replaced", "completed"] as string[]).includes(entry.status) ? (
             <div className="rounded-md border border-line bg-surface p-5">
-              <h2 className="font-display text-lg text-ink">Resolution</h2>
+              <h2 className="font-display text-lg text-ink">
+                <T>Resolution</T>
+              </h2>
               <dl className="mt-3 grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <dt className="text-ink-muted">Type</dt>
+                  <dt className="text-ink-muted">
+                    <T>Type</T>
+                  </dt>
                   <dd className="font-medium text-ink">{entry.resolutionType ?? "—"}</dd>
                 </div>
                 <div>
-                  <dt className="text-ink-muted">Amount</dt>
+                  <dt className="text-ink-muted">
+                    <T>Amount</T>
+                  </dt>
                   <dd className="font-medium text-ink">
                     {entry.resolutionAmountMinor != null
                       ? formatMoney(entry.resolutionAmountMinor, entry.currencyCode)
@@ -269,14 +319,16 @@ export function ReturnDetailPage() {
           <aside className="space-y-4 rounded-md border border-line bg-surface p-5">
             {entry.status === "requested" || entry.status === "under_review" ? (
               <div className="space-y-2">
-                <h2 className="font-display text-base text-ink">Triage</h2>
+                <h2 className="font-display text-base text-ink">
+                  <T>Triage</T>
+                </h2>
                 {entry.status === "requested" ? (
                   <Button
                     className="w-full"
                     onClick={() => decideMutation.mutate("under_review")}
                     disabled={decideMutation.isPending}
                   >
-                    Mark under review
+                    <T>Mark under review</T>
                   </Button>
                 ) : null}
                 <Button
@@ -285,7 +337,7 @@ export function ReturnDetailPage() {
                   onClick={() => decideMutation.mutate("approved")}
                   disabled={decideMutation.isPending}
                 >
-                  Approve
+                  <T>Approve</T>
                 </Button>
                 <Button
                   className="w-full"
@@ -293,14 +345,16 @@ export function ReturnDetailPage() {
                   onClick={() => decideMutation.mutate("rejected")}
                   disabled={decideMutation.isPending}
                 >
-                  Reject
+                  <T>Reject</T>
                 </Button>
               </div>
             ) : null}
 
             {entry.status === "approved" ? (
               <div className="space-y-3">
-                <h2 className="font-display text-base text-ink">Resolve</h2>
+                <h2 className="font-display text-base text-ink">
+                  <T>Resolve</T>
+                </h2>
                 <Field label="Resolution" htmlFor="ret-resolution-type">
                   <Select
                     id="ret-resolution-type"
@@ -309,10 +363,18 @@ export function ReturnDetailPage() {
                       setResolutionType(event.target.value as typeof resolutionType)
                     }
                   >
-                    <option value="refund">Refund</option>
-                    <option value="replacement">Replacement</option>
-                    <option value="store_credit">Store credit</option>
-                    <option value="none">No action</option>
+                    <option value="refund">
+                      <T>Refund</T>
+                    </option>
+                    <option value="replacement">
+                      <T>Replacement</T>
+                    </option>
+                    <option value="store_credit">
+                      <T>Store credit</T>
+                    </option>
+                    <option value="none">
+                      <T>No action</T>
+                    </option>
                   </Select>
                 </Field>
                 {resolutionType === "refund" ? (
@@ -341,7 +403,7 @@ export function ReturnDetailPage() {
                   disabled={resolveMutation.isPending}
                   onClick={() => resolveMutation.mutate()}
                 >
-                  {resolveMutation.isPending ? "Resolving…" : "Resolve return"}
+                  {resolveMutation.isPending ? <T>{"Resolving…"}</T> : <T>{"Resolve return"}</T>}
                 </Button>
               </div>
             ) : null}

@@ -19,7 +19,7 @@ import { PromotionBanner } from "./promotion-banner";
 import { RecommendedProducts } from "./recommendations";
 import { StarRating } from "./reviews";
 import { Slider } from "./slider";
-import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeFormat, useLocalizeText } from "../lib/i18n/localized-text";
 
 export interface BlockData {
   productsBySlug: Map<string, ProductSummary>;
@@ -96,6 +96,7 @@ function renderRichTextParagraph(paragraph: string) {
 }
 
 function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "hero" }> }) {
+  const format = useLocalizeFormat();
   const slides = (block.props.slides ?? []).filter(
     (slide) => slide.enabled !== false && slide.imageUrl,
   );
@@ -170,7 +171,7 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
                   "h-1.5 rounded-full transition-all " +
                   (index === activeIndex ? "w-5 bg-white" : "w-1.5 bg-white/70")
                 }
-                aria-label={`Show ${slide.label}`}
+                aria-label={format("Show {label}", { label: slide.label })}
               />
             ))}
           </div>

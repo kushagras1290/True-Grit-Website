@@ -17,6 +17,7 @@ import {
 import { useToast } from "../components/toast";
 import { ApiError, api, type ArchiveKind, type ArchiveRow } from "../lib/api";
 import { formatDateTime } from "../lib/format";
+import { T } from "../lib/i18n";
 
 const FILTERS: Array<{ id: "all" | ArchiveKind; label: string }> = [
   { id: "all", label: "All" },
@@ -114,12 +115,24 @@ export function ArchivePage() {
         <DataTableShell>
           <thead>
             <tr>
-              <Th>Item</Th>
-              <Th>Type</Th>
-              <Th>Status</Th>
-              <Th>Archived</Th>
-              <Th>Updated by</Th>
-              <Th>Actions</Th>
+              <Th>
+                <T>Item</T>
+              </Th>
+              <Th>
+                <T>Type</T>
+              </Th>
+              <Th>
+                <T>Status</T>
+              </Th>
+              <Th>
+                <T>Archived</T>
+              </Th>
+              <Th>
+                <T>Updated by</T>
+              </Th>
+              <Th>
+                <T>Actions</T>
+              </Th>
             </tr>
           </thead>
           <LoadingRows columns={6} />
@@ -139,12 +152,24 @@ export function ArchivePage() {
         <DataTableShell>
           <thead>
             <tr>
-              <Th>Item</Th>
-              <Th>Type</Th>
-              <Th>Status</Th>
-              <Th>Archived</Th>
-              <Th>Updated by</Th>
-              <Th>Actions</Th>
+              <Th>
+                <T>Item</T>
+              </Th>
+              <Th>
+                <T>Type</T>
+              </Th>
+              <Th>
+                <T>Status</T>
+              </Th>
+              <Th>
+                <T>Archived</T>
+              </Th>
+              <Th>
+                <T>Updated by</T>
+              </Th>
+              <Th>
+                <T>Actions</T>
+              </Th>
             </tr>
           </thead>
           <tbody>
@@ -171,7 +196,7 @@ export function ArchivePage() {
                     disabled={restore.isPending}
                   >
                     <ArchiveRestore size={15} aria-hidden />
-                    Restore
+                    <T>Restore</T>
                   </Button>
                 </Td>
               </tr>

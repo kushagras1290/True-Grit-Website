@@ -25,7 +25,7 @@ import { buildCategoryTree, findCategoryBranch } from "../lib/category-tree";
 import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizePlural } from "../lib/i18n/localized-text";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
@@ -69,17 +69,21 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   };
 }
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Shop the market",
-    description:
-      "Every product in the True Grit market — certified organic, traced to a verified farm.",
-    canonicalPath: "/shop",
-    indexing: "index",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Shop the market",
+      description:
+        "Every product in the True Grit market — certified organic, traced to a verified farm.",
+      canonicalPath: "/shop",
+      indexing: "index",
+    },
+    matches,
+  );
 }
 
 export default function Shop({ loaderData }: Route.ComponentProps) {
+  const plural = useLocalizePlural();
   const {
     tree,
     productPage,
@@ -120,10 +124,8 @@ export default function Shop({ loaderData }: Route.ComponentProps) {
               </p>
             </div>
             <p className="text-sm text-ink-muted">
-              {tree.length} <LocalizedText>department</LocalizedText>
-              {tree.length === 1 ? "" : "s"} · {productPage.total}{" "}
-              <LocalizedText>product</LocalizedText>
-              {productPage.total === 1 ? "" : "s"}
+              {plural("{count} department", "{count} departments", tree.length)} ·{" "}
+              {plural("{count} product", "{count} products", productPage.total)}
             </p>
           </div>
           <Link
@@ -172,11 +174,18 @@ export default function Shop({ loaderData }: Route.ComponentProps) {
           <div>
             <div className="mb-6">
               <h2 className="font-display text-2xl leading-tight text-ink">
-                {activeCategory ? activeCategory.name : "All products"}
+                {activeCategory ? (
+                  activeCategory.name
+                ) : (
+                  <LocalizedText>{"All products"}</LocalizedText>
+                )}
               </h2>
               <p className="mt-1 text-sm text-ink-muted">
-                {activeCategory?.shortDescription ??
-                  "Every published product in the market, newest first."}
+                {activeCategory?.shortDescription ?? (
+                  <LocalizedText>
+                    {"Every published product in the market, newest first."}
+                  </LocalizedText>
+                )}
               </p>
             </div>
 

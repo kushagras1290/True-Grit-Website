@@ -33,6 +33,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api } from "../lib/api";
 import { formatDateTime } from "../lib/format";
 import { PermissionGate, usePermissions } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 const createSchema = z.object({
   title: z.string().min(3, "At least 3 characters").max(180),
@@ -98,10 +99,10 @@ function CreateArticleModal({ onClose }: { onClose: () => void }) {
         </Field>
         <div className="flex justify-end gap-2 pt-1">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button type="submit" variant="primary" disabled={mutation.isPending}>
-            {mutation.isPending ? "Creating…" : "Create draft"}
+            {mutation.isPending ? <T>{"Creating…"}</T> : <T>{"Create draft"}</T>}
           </Button>
         </div>
       </form>
@@ -147,7 +148,7 @@ export function ArticleListPage() {
         actions={
           <PermissionGate permission="articles.create">
             <Button variant="primary" onClick={() => setCreating(true)}>
-              New post
+              <T>New post</T>
             </Button>
           </PermissionGate>
         }
@@ -169,10 +170,18 @@ export function ArticleListPage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Title</Th>
-            <Th>Author</Th>
-            <Th>Status</Th>
-            <Th>Updated</Th>
+            <Th>
+              <T>Title</T>
+            </Th>
+            <Th>
+              <T>Author</T>
+            </Th>
+            <Th>
+              <T>Status</T>
+            </Th>
+            <Th>
+              <T>Updated</T>
+            </Th>
           </tr>
         </thead>
         {isLoading ? (
@@ -199,7 +208,10 @@ export function ArticleListPage() {
                   >
                     {article.title}
                   </Link>
-                  <span className="block text-xs text-ink-muted">/blog/{article.slug}</span>
+                  <span className="block text-xs text-ink-muted">
+                    <T>/blog/</T>
+                    {article.slug}
+                  </span>
                 </Td>
                 <Td className="text-ink-muted">{article.authorName}</Td>
                 <Td>
@@ -207,7 +219,7 @@ export function ArticleListPage() {
                     <StatusPill status={article.status} />
                     {article.hasDraftChanges ? (
                       <span className="rounded-full bg-warning/10 px-2 py-0.5 text-xs text-warning">
-                        Draft changes pending
+                        <T>Draft changes pending</T>
                       </span>
                     ) : null}
                     {article.status === "published" || article.status === "unpublished" ? (
@@ -222,7 +234,7 @@ export function ArticleListPage() {
                             })
                           }
                         >
-                          {article.status === "published" ? "Disable" : "Enable"}
+                          {article.status === "published" ? <T>{"Disable"}</T> : <T>{"Enable"}</T>}
                         </Button>
                       </PermissionGate>
                     ) : null}
@@ -316,7 +328,7 @@ function RequestChangesModal({
         </Field>
         <div className="flex justify-end gap-2">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button
             type="button"
@@ -324,7 +336,7 @@ function RequestChangesModal({
             disabled={isPending || note.trim().length === 0}
             onClick={() => onSubmit(note.trim())}
           >
-            {isPending ? "Sending…" : "Send back to draft"}
+            {isPending ? <T>{"Sending…"}</T> : <T>{"Send back to draft"}</T>}
           </Button>
         </div>
       </div>
@@ -463,7 +475,12 @@ export function ArticleEditorPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not upload the banner."),
   });
 
-  if (isLoading) return <p className="text-sm text-ink-muted">Loading article…</p>;
+  if (isLoading)
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>Loading article…</T>
+      </p>
+    );
   if (isError || !article) return <EmptyState title="Article not found" />;
 
   const canEdit = permissions.has("articles.edit") || permissions.has("articles.approve");
@@ -479,20 +496,20 @@ export function ArticleEditorPage() {
             {article.status === "draft" ? (
               <PermissionGate permission="articles.edit">
                 <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending}>
-                  {submitMutation.isPending ? "Submitting…" : "Submit for review"}
+                  {submitMutation.isPending ? <T>{"Submitting…"}</T> : <T>{"Submit for review"}</T>}
                 </Button>
               </PermissionGate>
             ) : null}
             {article.status === "in_review" ? (
               <PermissionGate permission="articles.approve">
                 <Button variant="secondary" onClick={() => setRequestingChanges(true)}>
-                  Request changes
+                  <T>Request changes</T>
                 </Button>
                 <Button
                   onClick={() => approveMutation.mutate()}
                   disabled={approveMutation.isPending}
                 >
-                  {approveMutation.isPending ? "Approving…" : "Approve"}
+                  {approveMutation.isPending ? <T>{"Approving…"}</T> : <T>{"Approve"}</T>}
                 </Button>
               </PermissionGate>
             ) : null}
@@ -503,7 +520,7 @@ export function ArticleEditorPage() {
                   onClick={() => unpublishMutation.mutate()}
                   disabled={unpublishMutation.isPending}
                 >
-                  {unpublishMutation.isPending ? "Unpublishing…" : "Unpublish"}
+                  {unpublishMutation.isPending ? <T>{"Unpublishing…"}</T> : <T>{"Unpublish"}</T>}
                 </Button>
               </PermissionGate>
             ) : null}
@@ -512,7 +529,7 @@ export function ArticleEditorPage() {
               fallback={
                 article.status === "published" ? null : (
                   <Button disabled title="Requires articles.publish">
-                    Publish
+                    <T>Publish</T>
                   </Button>
                 )
               }
@@ -523,7 +540,7 @@ export function ArticleEditorPage() {
                   onClick={() => publishMutation.mutate()}
                   disabled={publishMutation.isPending}
                 >
-                  {publishMutation.isPending ? "Publishing…" : "Publish"}
+                  {publishMutation.isPending ? <T>{"Publishing…"}</T> : <T>{"Publish"}</T>}
                 </Button>
               )}
             </PermissionGate>
@@ -570,9 +587,11 @@ export function ArticleEditorPage() {
           </div>
 
           <div className="border-t border-line pt-5">
-            <h2 className="font-display text-lg text-ink">Banner image</h2>
+            <h2 className="font-display text-lg text-ink">
+              <T>Banner image</T>
+            </h2>
             <p className="text-sm text-ink-muted">
-              Shown at the top of the post and as its thumbnail on the blog listing.
+              <T>Shown at the top of the post and as its thumbnail on the blog listing.</T>
             </p>
             <div className="mt-3 space-y-4">
               <Field
@@ -621,7 +640,9 @@ export function ArticleEditorPage() {
           </div>
 
           <div className="border-t border-line pt-5">
-            <h2 className="font-display text-lg text-ink">SEO</h2>
+            <h2 className="font-display text-lg text-ink">
+              <T>SEO</T>
+            </h2>
             <div className="mt-3 grid gap-4 md:grid-cols-2">
               <Field label="SEO title" htmlFor="art-e-seo-title">
                 <Input id="art-e-seo-title" {...form.register("seoTitle")} />
@@ -638,8 +659,12 @@ export function ArticleEditorPage() {
               </Field>
               <Field label="Search indexing" htmlFor="art-e-indexing">
                 <Select id="art-e-indexing" {...form.register("indexingPolicy")}>
-                  <option value="index">Index</option>
-                  <option value="noindex">No index</option>
+                  <option value="index">
+                    <T>Index</T>
+                  </option>
+                  <option value="noindex">
+                    <T>No index</T>
+                  </option>
                 </Select>
               </Field>
             </div>
@@ -649,11 +674,18 @@ export function ArticleEditorPage() {
           </div>
 
           <div className="border-t border-line pt-5">
-            <h2 className="font-display text-lg text-ink">Body</h2>
+            <h2 className="font-display text-lg text-ink">
+              <T>Body</T>
+            </h2>
             <p className="text-sm text-ink-muted">
-              A list of content blocks (rich_text, product_collection, farmer_story, faq). Inside a
-              rich_text paragraph, write <code className="font-mono text-xs">[label](/path)</code>{" "}
-              to add a link — plain text and internal/external URLs only, never raw HTML.
+              <T>
+                A list of content blocks (rich_text, product_collection, farmer_story, faq). Inside
+                a rich_text paragraph, write
+              </T>{" "}
+              <code className="font-mono text-xs">
+                <T>[label](/path)</T>
+              </code>{" "}
+              <T>to add a link — plain text and internal/external URLs only, never raw HTML.</T>
             </p>
             <Field
               label="Blocks JSON"
@@ -671,10 +703,10 @@ export function ArticleEditorPage() {
 
           <div className="flex items-center justify-between">
             <p className="text-xs text-ink-muted">
-              Last updated {formatDateTime(article.updatedAt)}
+              <T>Last updated</T> {formatDateTime(article.updatedAt)}
             </p>
             <Button type="submit" variant="primary" disabled={saveMutation.isPending}>
-              {saveMutation.isPending ? "Saving…" : "Save"}
+              {saveMutation.isPending ? <T>{"Saving…"}</T> : <T>{"Save"}</T>}
             </Button>
           </div>
         </form>

@@ -4,13 +4,17 @@ import { ContactForm } from "../components/contact-form";
 import { seoMeta } from "../lib/seo";
 import { LocalizedText } from "../lib/i18n/localized-text";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Contact us",
-    description: "Contact True Grit support by email for orders, farms, products and partnerships.",
-    canonicalPath: "/contact",
-    indexing: "index",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Contact us",
+      description:
+        "Contact True Grit support by email for orders, farms, products and partnerships.",
+      canonicalPath: "/contact",
+      indexing: "index",
+    },
+    matches,
+  );
 }
 
 export default function ContactPage(_props: Route.ComponentProps) {

@@ -24,7 +24,7 @@ import {
   type PhoneVerification,
 } from "../lib/customer-auth";
 import { useSiteSettings } from "../lib/site-settings";
-import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeFormat, useLocalizeText } from "../lib/i18n/localized-text";
 
 const FIELD_CLASS =
   "min-h-11 w-full rounded-sm border border-line bg-canvas px-3 text-sm text-ink" +
@@ -70,6 +70,7 @@ export function PhoneVerifier({
   hint?: string;
 }) {
   const localize = useLocalizeText();
+  const format = useLocalizeFormat();
   const [challenge, setChallenge] = useState<PhoneChallenge | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -141,7 +142,7 @@ export function PhoneVerifier({
     return (
       <form className="space-y-3" onSubmit={handlePhoneSubmit}>
         {heading ? <p className="text-sm font-medium text-ink">{localize(heading)}</p> : null}
-        {hint ? <p className="text-xs text-ink-muted">{hint}</p> : null}
+        {hint ? <p className="text-xs text-ink-muted">{localize(hint)}</p> : null}
         <label className="block space-y-1">
           <span className="text-xs font-medium text-ink-muted">
             <LocalizedText>Mobile number</LocalizedText>
@@ -163,12 +164,16 @@ export function PhoneVerifier({
 
         {error ? (
           <p role="alert" className="text-sm text-danger">
-            {error}
+            {localize(error)}
           </p>
         ) : null}
 
         <button type="submit" className={PRIMARY_BUTTON_CLASS} disabled={pending}>
-          {pending ? "Sending code…" : "Send code"}
+          {pending ? (
+            <LocalizedText>{"Sending code…"}</LocalizedText>
+          ) : (
+            <LocalizedText>{"Send code"}</LocalizedText>
+          )}
         </button>
         {onCancel ? (
           <button
@@ -224,12 +229,16 @@ export function PhoneVerifier({
 
       {error ? (
         <p role="alert" className="text-sm text-danger">
-          {error}
+          {localize(error)}
         </p>
       ) : null}
 
       <button type="submit" className={PRIMARY_BUTTON_CLASS} disabled={pending}>
-        {pending ? "Checking…" : "Verify"}
+        {pending ? (
+          <LocalizedText>{"Checking…"}</LocalizedText>
+        ) : (
+          <LocalizedText>{"Verify"}</LocalizedText>
+        )}
       </button>
 
       <div className="flex items-center justify-between text-xs">
@@ -249,11 +258,13 @@ export function PhoneVerifier({
           disabled={pending || cooldown > 0 || challenge.resendsRemaining <= 0}
           className="text-brand underline-offset-4 hover:underline disabled:text-ink-muted disabled:no-underline"
         >
-          {challenge.resendsRemaining <= 0
-            ? "No resends left"
-            : cooldown > 0
-              ? `Resend in ${cooldown}s`
-              : "Resend code"}
+          {challenge.resendsRemaining <= 0 ? (
+            <LocalizedText>{"No resends left"}</LocalizedText>
+          ) : cooldown > 0 ? (
+            format("Resend in {seconds}s", { seconds: cooldown })
+          ) : (
+            <LocalizedText>{"Resend code"}</LocalizedText>
+          )}
         </button>
       </div>
     </form>
@@ -335,11 +346,15 @@ export function PhoneAuthPanel({ onDone }: { onDone: () => void }) {
         </label>
         {error ? (
           <p role="alert" className="text-sm text-danger">
-            {error}
+            {localize(error)}
           </p>
         ) : null}
         <button type="submit" className={PRIMARY_BUTTON_CLASS} disabled={pending}>
-          {pending ? "Creating account…" : "Create account"}
+          {pending ? (
+            <LocalizedText>{"Creating account…"}</LocalizedText>
+          ) : (
+            <LocalizedText>{"Create account"}</LocalizedText>
+          )}
         </button>
       </form>
     );
@@ -354,7 +369,7 @@ export function PhoneAuthPanel({ onDone }: { onDone: () => void }) {
       />
       {error ? (
         <p role="alert" className="text-sm text-danger">
-          {error}
+          {localize(error)}
         </p>
       ) : null}
     </div>
@@ -369,6 +384,7 @@ export function PhoneAuthPanel({ onDone }: { onDone: () => void }) {
  * reachable number actually matters — asks again regardless.
  */
 export function AddPhonePrompt({ onDone }: { onDone?: () => void }) {
+  const localize = useLocalizeText();
   const { customer, attachPhone } = useCustomer();
   const { auth } = useSiteSettings();
   const [dismissed, setDismissed] = useState(() => readPhonePromptDismissed());
@@ -437,7 +453,7 @@ export function AddPhonePrompt({ onDone }: { onDone?: () => void }) {
       />
       {error ? (
         <p role="alert" className="text-sm text-danger">
-          {error}
+          {localize(error)}
         </p>
       ) : null}
     </div>

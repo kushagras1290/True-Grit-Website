@@ -18,6 +18,7 @@ import {
 } from "../components/ui";
 import { useToast } from "../components/toast";
 import { ApiError, api } from "../lib/api";
+import { T } from "../lib/i18n";
 
 export function ReportsPage() {
   const { data, isLoading } = useQuery({ queryKey: ["admin-reports"], queryFn: api.reports });
@@ -46,7 +47,9 @@ export function ReportsPage() {
         description="Pick a report, set optional filters, and run it. No free-text SQL ever reaches the database."
       />
       {isLoading ? (
-        <p className="text-sm text-ink-muted">Loading report library…</p>
+        <p className="text-sm text-ink-muted">
+          <T>Loading report library…</T>
+        </p>
       ) : reports.length === 0 ? (
         <EmptyState title="No reports available" hint="Requires the reports.query permission." />
       ) : (
@@ -102,7 +105,7 @@ export function ReportsPage() {
                   disabled={runMutation.isPending}
                   onClick={() => runMutation.mutate()}
                 >
-                  {runMutation.isPending ? "Running…" : "Run report"}
+                  {runMutation.isPending ? <T>{"Running…"}</T> : <T>{"Run report"}</T>}
                 </Button>
 
                 {runMutation.data ? (

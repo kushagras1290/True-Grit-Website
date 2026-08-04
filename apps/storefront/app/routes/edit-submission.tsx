@@ -9,13 +9,16 @@ import { getMySubmission, type SubmissionDetail } from "../lib/submissions";
 import { seoMeta } from "../lib/seo";
 import { LocalizedText } from "../lib/i18n/localized-text";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Edit your submission",
-    description: "Revise a blog post or recipe submission after requested changes.",
-    canonicalPath: "/account/submissions",
-    indexing: "noindex",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Edit your submission",
+      description: "Revise a blog post or recipe submission after requested changes.",
+      canonicalPath: "/account/submissions",
+      indexing: "noindex",
+    },
+    matches,
+  );
 }
 
 export default function EditSubmissionPage(_props: Route.ComponentProps) {

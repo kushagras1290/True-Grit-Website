@@ -444,9 +444,10 @@ export async function loadBundles(
   page: number,
   pageSize: number,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<PaginatedContent<PublicBundle>> {
   return paginatedFromApi<PublicBundle>(
-    "/v1/public/bundles",
+    withLocale("/v1/public/bundles", locale),
     publicBundles,
     pageSize,
     (Math.max(page, 1) - 1) * pageSize,
@@ -457,9 +458,13 @@ export async function loadBundles(
 export async function loadBundle(
   slug: string,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<PublicBundle | null> {
   if (apiUrl(runtime)) {
-    return fromApi<PublicBundle>(`/v1/public/bundles/${encodeURIComponent(slug)}`, runtime);
+    return fromApi<PublicBundle>(
+      withLocale(`/v1/public/bundles/${encodeURIComponent(slug)}`, locale),
+      runtime,
+    );
   }
   return publicBundles.find((bundle) => bundle.slug === slug) ?? null;
 }
@@ -555,9 +560,13 @@ export async function loadFarms(runtime?: CatalogueRuntime): Promise<FarmDetail[
 export async function loadFarm(
   slug: string,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<FarmDetail | null> {
   if (apiUrl(runtime)) {
-    return fromApi<FarmDetail>(`/v1/public/farms/${encodeURIComponent(slug)}`, runtime);
+    return fromApi<FarmDetail>(
+      withLocale(`/v1/public/farms/${encodeURIComponent(slug)}`, locale),
+      runtime,
+    );
   }
   return farms.find((farm) => farm.slug === slug) ?? null;
 }
@@ -702,10 +711,11 @@ export async function runSearch(
   query: string,
   country?: string,
   runtime?: CatalogueRuntime,
+  locale?: string,
 ): Promise<SearchGroups> {
   if (apiUrl(runtime)) {
     const result = await fromApi<SearchGroups>(
-      withCountry(`/v1/public/search?q=${encodeURIComponent(query)}`, country),
+      withLocale(withCountry(`/v1/public/search?q=${encodeURIComponent(query)}`, country), locale),
       runtime,
     );
     return result ?? { query, total: 0, groups: [] };

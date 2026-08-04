@@ -18,7 +18,7 @@ import { resolveLocale } from "../lib/i18n/resolve.server";
 import { mediaUrl } from "../lib/media";
 import { productEffectivePrice } from "../lib/pricing";
 import { recipeJsonLd, seoMeta } from "../lib/seo";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeFormat } from "../lib/i18n/localized-text";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
@@ -41,10 +41,10 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   return { recipe, ingredientProducts, blockProducts, farms };
 }
 
-export function meta({ data: loaderData }: Route.MetaArgs) {
-  if (!loaderData) return seoMeta(null);
+export function meta({ data: loaderData, matches }: Route.MetaArgs) {
+  if (!loaderData) return seoMeta(null, matches);
   return [
-    ...seoMeta(loaderData.recipe.seo),
+    ...seoMeta(loaderData.recipe.seo, matches),
     recipeJsonLd({
       title: loaderData.recipe.title,
       excerpt: loaderData.recipe.excerpt,
@@ -60,6 +60,7 @@ export function meta({ data: loaderData }: Route.MetaArgs) {
 }
 
 export default function RecipePage({ loaderData }: Route.ComponentProps) {
+  const format = useLocalizeFormat();
   const { recipe, ingredientProducts, blockProducts, farms } = loaderData;
   const { add } = useCart();
   const [addedAll, setAddedAll] = useState(false);
@@ -90,7 +91,11 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
       <PageBanner
         imageUrl={recipe.heroImageUrl || "/banners/content/recipes-cook-with-purpose.webp"}
         imageAlt={recipe.heroImageAlt || recipe.title}
-        eyebrow={`Prep ${recipe.prepMinutes} min - cook ${recipe.cookMinutes} min - serves ${recipe.servings}`}
+        eyebrow={format("Prep {prep} min - cook {cook} min - serves {servings}", {
+          prep: recipe.prepMinutes,
+          cook: recipe.cookMinutes,
+          servings: recipe.servings,
+        })}
         heading={recipe.title}
         description={recipe.excerpt}
       />
@@ -149,7 +154,9 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
                   <LocalizedText>Add available ingredients to basket</LocalizedText>
                 </button>
                 <p role="status" className="mt-2 min-h-5 text-sm text-success">
-                  {addedAll ? `${availableProducts.length} ingredients added.` : ""}
+                  {addedAll
+                    ? format("{count} ingredients added.", { count: availableProducts.length })
+                    : ""}
                 </p>
               </>
             ) : null}

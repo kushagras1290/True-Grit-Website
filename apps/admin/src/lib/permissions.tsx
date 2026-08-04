@@ -11,6 +11,7 @@ import { Navigate } from "react-router";
 
 import { api } from "./api";
 import { EmptyState } from "../components/ui";
+import { T } from "./i18n";
 
 export function useMe() {
   return useQuery({ queryKey: ["me"], queryFn: api.me, staleTime: 5 * 60_000 });
@@ -36,7 +37,12 @@ export function PermissionGate({
 
 export function RequireSuperAdmin({ children }: { children: ReactNode }) {
   const { data: me, isLoading, isError } = useMe();
-  if (isLoading) return <p className="text-sm text-ink-muted">Checking access…</p>;
+  if (isLoading)
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>Checking access…</T>
+      </p>
+    );
   if (isError) return <Navigate to="/login" replace />;
   if (!me?.isSuperAdmin) {
     return (

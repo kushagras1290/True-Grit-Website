@@ -25,6 +25,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api } from "../lib/api";
 import { formatDate, formatMoney } from "../lib/format";
 import { usePermissions } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 const STATUS_OPTIONS = ["active", "paused", "cancelled"];
 const FREQUENCY_LABELS: Record<string, string> = {
@@ -111,7 +112,7 @@ export function SubscriptionsListPage() {
               disabled={runRenewalsMutation.isPending}
               onClick={() => runRenewalsMutation.mutate()}
             >
-              {runRenewalsMutation.isPending ? "Running..." : "Run renewals now"}
+              {runRenewalsMutation.isPending ? <T>{"Running..."}</T> : <T>{"Run renewals now"}</T>}
             </Button>
           ) : undefined
         }
@@ -126,7 +127,9 @@ export function SubscriptionsListPage() {
           }}
           aria-label="Filter by status"
         >
-          <option value="">All statuses</option>
+          <option value="">
+            <T>All statuses</T>
+          </option>
           {STATUS_OPTIONS.map((option) => (
             <option key={option} value={option}>
               {option}
@@ -138,12 +141,26 @@ export function SubscriptionsListPage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Product</Th>
-            <Th>Customer</Th>
-            <Th>Frequency</Th>
-            <Th>Status</Th>
-            <Th>Next delivery</Th>
-            {canManage ? <Th>Actions</Th> : null}
+            <Th>
+              <T>Product</T>
+            </Th>
+            <Th>
+              <T>Customer</T>
+            </Th>
+            <Th>
+              <T>Frequency</T>
+            </Th>
+            <Th>
+              <T>Status</T>
+            </Th>
+            <Th>
+              <T>Next delivery</T>
+            </Th>
+            {canManage ? (
+              <Th>
+                <T>Actions</T>
+              </Th>
+            ) : null}
           </tr>
         </thead>
         {isLoading ? (
@@ -190,7 +207,7 @@ export function SubscriptionsListPage() {
                           disabled={busy}
                           onClick={() => pauseMutation.mutate(entry.id)}
                         >
-                          Pause
+                          <T>Pause</T>
                         </Button>
                       ) : null}
                       {entry.status === "paused" ? (
@@ -199,7 +216,7 @@ export function SubscriptionsListPage() {
                           disabled={busy}
                           onClick={() => resumeMutation.mutate(entry.id)}
                         >
-                          Resume
+                          <T>Resume</T>
                         </Button>
                       ) : null}
                       {entry.status !== "cancelled" ? (
@@ -208,7 +225,7 @@ export function SubscriptionsListPage() {
                           disabled={busy}
                           onClick={() => cancelMutation.mutate(entry.id)}
                         >
-                          Cancel
+                          <T>Cancel</T>
                         </Button>
                       ) : null}
                     </div>

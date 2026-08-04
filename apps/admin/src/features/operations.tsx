@@ -44,6 +44,7 @@ import {
 import { formatDateTime, formatMoney } from "../lib/format";
 import { PermissionGate } from "../lib/permissions";
 import { ManageRolesModal } from "./scopes";
+import { T } from "../lib/i18n";
 
 // ---------------------------------------------------------------------------
 // Inventory
@@ -172,7 +173,8 @@ export function InventoryPage() {
                 disabled={clearMutation.isPending}
                 onClick={() => setConfirmingClear(true)}
               >
-                Delete selected ({selectedVariantIds.length})
+                <T>Delete selected (</T>
+                {selectedVariantIds.length})
               </Button>
             </PermissionGate>
           ) : null
@@ -217,12 +219,24 @@ export function InventoryPage() {
                     onChange={toggleAllInventoryRows}
                   />
                 </Th>
-                <Th>Variant</Th>
-                <Th>SKU</Th>
-                <Th>On hand</Th>
-                <Th>Reserved</Th>
-                <Th>Available</Th>
-                <Th>Stock Status</Th>
+                <Th>
+                  <T>Variant</T>
+                </Th>
+                <Th>
+                  <T>SKU</T>
+                </Th>
+                <Th>
+                  <T>On hand</T>
+                </Th>
+                <Th>
+                  <T>Reserved</T>
+                </Th>
+                <Th>
+                  <T>Available</T>
+                </Th>
+                <Th>
+                  <T>Stock Status</T>
+                </Th>
               </tr>
             </thead>
             {isLoading ? (
@@ -273,7 +287,11 @@ export function InventoryPage() {
                                       });
                                   }}
                                 >
-                                  {group.productStatus === "published" ? "Disable" : "Enable"}
+                                  {group.productStatus === "published" ? (
+                                    <T>{"Disable"}</T>
+                                  ) : (
+                                    <T>{"Enable"}</T>
+                                  )}
                                 </Button>
                               </PermissionGate>
                             </div>
@@ -332,10 +350,14 @@ export function InventoryPage() {
             className="h-fit space-y-4 rounded-md border border-line bg-surface p-4 shadow-card"
             onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
           >
-            <h2 className="font-display text-lg text-ink">Record adjustment</h2>
+            <h2 className="font-display text-lg text-ink">
+              <T>Record adjustment</T>
+            </h2>
             <Field label="Variant (SKU)" htmlFor="sku" error={form.formState.errors.sku?.message}>
               <Select id="sku" {...form.register("sku")}>
-                <option value="">Select a variant…</option>
+                <option value="">
+                  <T>Select a variant…</T>
+                </option>
                 {flatRows.map((row) => (
                   <option key={row.variantId} value={row.sku}>
                     {row.sku} — {row.productName} ({row.variantName})
@@ -356,10 +378,18 @@ export function InventoryPage() {
               error={form.formState.errors.reasonCode?.message}
             >
               <Select id="reasonCode" {...form.register("reasonCode")}>
-                <option value="receipt">Receipt</option>
-                <option value="manual_adjustment">Manual adjustment</option>
-                <option value="write_off">Write off</option>
-                <option value="correction">Correction</option>
+                <option value="receipt">
+                  <T>Receipt</T>
+                </option>
+                <option value="manual_adjustment">
+                  <T>Manual adjustment</T>
+                </option>
+                <option value="write_off">
+                  <T>Write off</T>
+                </option>
+                <option value="correction">
+                  <T>Correction</T>
+                </option>
               </Select>
             </Field>
             <Field
@@ -375,7 +405,7 @@ export function InventoryPage() {
               className="w-full"
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? "Recording…" : "Record movement"}
+              {mutation.isPending ? <T>{"Recording…"}</T> : <T>{"Record movement"}</T>}
             </Button>
           </form>
         </PermissionGate>
@@ -503,9 +533,15 @@ function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void
           </Field>
           <Field label="Status" htmlFor="farm-status">
             <Select id="farm-status" {...form.register("status")}>
-              <option value="published">Published</option>
-              <option value="draft">Draft</option>
-              <option value="unpublished">Unpublished</option>
+              <option value="published">
+                <T>Published</T>
+              </option>
+              <option value="draft">
+                <T>Draft</T>
+              </option>
+              <option value="unpublished">
+                <T>Unpublished</T>
+              </option>
             </Select>
           </Field>
         </div>
@@ -541,7 +577,7 @@ function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void
               <Input id="farm-hero-alt" {...form.register("heroImageAlt")} />
             </Field>
             <label className="inline-flex min-h-9 cursor-pointer items-center rounded-sm border border-line px-3 text-sm text-ink hover:bg-canvas">
-              {uploadMutation.isPending ? "Uploading..." : "Upload image"}
+              {uploadMutation.isPending ? <T>{"Uploading..."}</T> : <T>{"Upload image"}</T>}
               <input
                 type="file"
                 accept="image/*"
@@ -564,10 +600,16 @@ function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void
         </div>
         <div className="flex justify-end gap-2 pt-1">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button type="submit" variant="primary" disabled={mutation.isPending}>
-            {mutation.isPending ? "Saving..." : farm ? "Save farm" : "Create farm"}
+            {mutation.isPending ? (
+              <T>{"Saving..."}</T>
+            ) : farm ? (
+              <T>{"Save farm"}</T>
+            ) : (
+              <T>{"Create farm"}</T>
+            )}
           </Button>
         </div>
       </form>
@@ -613,7 +655,7 @@ export function FarmsPage() {
         actions={
           <PermissionGate permission="users.invite">
             <Button variant="primary" onClick={() => setCreating(true)}>
-              New farm
+              <T>New farm</T>
             </Button>
           </PermissionGate>
         }
@@ -651,13 +693,27 @@ export function FarmsPage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Farm</Th>
-            <Th>Slug</Th>
-            <Th>Region</Th>
-            <Th>Products</Th>
-            <Th>Status</Th>
-            <Th>Updated</Th>
-            <Th>Actions</Th>
+            <Th>
+              <T>Farm</T>
+            </Th>
+            <Th>
+              <T>Slug</T>
+            </Th>
+            <Th>
+              <T>Region</T>
+            </Th>
+            <Th>
+              <T>Products</T>
+            </Th>
+            <Th>
+              <T>Status</T>
+            </Th>
+            <Th>
+              <T>Updated</T>
+            </Th>
+            <Th>
+              <T>Actions</T>
+            </Th>
           </tr>
         </thead>
         {isLoading ? (
@@ -669,7 +725,7 @@ export function FarmsPage() {
                 <Td>
                   <div className="font-medium text-ink">{farm.name}</div>
                   <div className="text-xs text-ink-muted">
-                    {farm.farmerName || "No farmer name"}
+                    {farm.farmerName || <T>{"No farmer name"}</T>}
                   </div>
                 </Td>
                 <Td className="text-ink-muted">/{farm.slug}</Td>
@@ -683,7 +739,7 @@ export function FarmsPage() {
                   <PermissionGate permission="users.invite">
                     <div className="flex flex-wrap gap-2">
                       <Button type="button" variant="secondary" onClick={() => setEditing(farm)}>
-                        Alter
+                        <T>Alter</T>
                       </Button>
                       <Button
                         type="button"
@@ -691,7 +747,7 @@ export function FarmsPage() {
                         onClick={() => setConfirmingDelete(farm)}
                         disabled={deleteMutation.isPending}
                       >
-                        Delete
+                        <T>Delete</T>
                       </Button>
                     </div>
                   </PermissionGate>
@@ -740,13 +796,27 @@ export function OrdersPage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Reference</Th>
-            <Th>Customer</Th>
-            <Th>Total</Th>
-            <Th>Order</Th>
-            <Th>Payment</Th>
-            <Th>Fulfilment</Th>
-            <Th>Placed</Th>
+            <Th>
+              <T>Reference</T>
+            </Th>
+            <Th>
+              <T>Customer</T>
+            </Th>
+            <Th>
+              <T>Total</T>
+            </Th>
+            <Th>
+              <T>Order</T>
+            </Th>
+            <Th>
+              <T>Payment</T>
+            </Th>
+            <Th>
+              <T>Fulfilment</T>
+            </Th>
+            <Th>
+              <T>Placed</T>
+            </Th>
           </tr>
         </thead>
         {isLoading ? (
@@ -839,8 +909,8 @@ function RefundModal({ order, onClose }: { order: AdminOrderDetail; onClose: () 
     <Modal title="Issue refund" onClose={onClose}>
       <form className="space-y-4" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
         <p className="text-sm text-ink-muted">
-          Up to {formatMoney(remainingMinor, order.currencyCode)} remains unrefunded on this{" "}
-          {order.payment?.provider} payment.
+          <T>Up to</T> {formatMoney(remainingMinor, order.currencyCode)}{" "}
+          <T>remains unrefunded on this</T> {order.payment?.provider} <T>payment.</T>
         </p>
         <Field
           label={`Refund amount (${order.currencyCode})`}
@@ -854,10 +924,10 @@ function RefundModal({ order, onClose }: { order: AdminOrderDetail; onClose: () 
         </Field>
         <div className="flex justify-end gap-2">
           <Button type="button" variant="secondary" onClick={onClose} disabled={mutation.isPending}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button type="submit" variant="destructive" disabled={mutation.isPending}>
-            {mutation.isPending ? "Refunding..." : "Issue refund"}
+            {mutation.isPending ? <T>{"Refunding..."}</T> : <T>{"Issue refund"}</T>}
           </Button>
         </div>
       </form>
@@ -893,7 +963,12 @@ export function OrderDetailPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not update the order."),
   });
 
-  if (isLoading) return <p className="text-sm text-ink-muted">Loading order…</p>;
+  if (isLoading)
+    return (
+      <p className="text-sm text-ink-muted">
+        <T>Loading order…</T>
+      </p>
+    );
   if (isError || !order) return <EmptyState title="Order not found" />;
 
   const nextStates = ORDER_TRANSITIONS[order.orderStatus] ?? [];
@@ -910,17 +985,29 @@ export function OrderDetailPage() {
         <DataTableShell>
           <thead className="bg-canvas">
             <tr>
-              <Th>Item</Th>
-              <Th>SKU</Th>
-              <Th>Qty</Th>
-              <Th>Unit</Th>
-              <Th>Line total</Th>
+              <Th>
+                <T>Item</T>
+              </Th>
+              <Th>
+                <T>SKU</T>
+              </Th>
+              <Th>
+                <T>Qty</T>
+              </Th>
+              <Th>
+                <T>Unit</T>
+              </Th>
+              <Th>
+                <T>Line total</T>
+              </Th>
             </tr>
           </thead>
           <tbody>
             {order.items.length === 0 ? (
               <tr className="border-t border-line">
-                <Td className="text-ink-muted">No line items recorded.</Td>
+                <Td className="text-ink-muted">
+                  <T>No line items recorded.</T>
+                </Td>
                 <Td /> <Td /> <Td /> <Td />
               </tr>
             ) : (
@@ -944,35 +1031,45 @@ export function OrderDetailPage() {
 
         <aside className="h-fit space-y-4 rounded-md border border-line bg-surface p-4 shadow-card">
           <div>
-            <h2 className="font-display text-lg text-ink">Summary</h2>
+            <h2 className="font-display text-lg text-ink">
+              <T>Summary</T>
+            </h2>
             <dl className="mt-3 space-y-1.5 text-sm">
               <Row label="Subtotal" value={formatMoney(order.subtotalMinor, order.currencyCode)} />
               <Row label="Delivery" value={formatMoney(order.deliveryMinor, order.currencyCode)} />
               <Row label="Discount" value={formatMoney(order.discountMinor, order.currencyCode)} />
               <Row label="Tax" value={formatMoney(order.taxMinor, order.currencyCode)} />
               <div className="flex justify-between border-t border-line pt-1.5 font-medium">
-                <dt>Total</dt>
+                <dt>
+                  <T>Total</T>
+                </dt>
                 <dd>{formatMoney(order.totalMinor, order.currencyCode)}</dd>
               </div>
             </dl>
           </div>
           <div className="space-y-1.5 text-sm">
             <div className="flex items-center justify-between">
-              <span className="text-ink-muted">Payment</span>
+              <span className="text-ink-muted">
+                <T>Payment</T>
+              </span>
               <StatusPill status={order.paymentStatus} />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-ink-muted">Fulfilment</span>
+              <span className="text-ink-muted">
+                <T>Fulfilment</T>
+              </span>
               <StatusPill status={order.fulfilmentStatus} />
             </div>
           </div>
           <PermissionGate permission="orders.view">
             <div className="border-t border-line pt-3">
               <p className="mb-2 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-                Move order to
+                <T>Move order to</T>
               </p>
               {nextStates.length === 0 ? (
-                <p className="text-sm text-ink-muted">This order is in a final state.</p>
+                <p className="text-sm text-ink-muted">
+                  <T>This order is in a final state.</T>
+                </p>
               ) : (
                 <div className="flex flex-wrap gap-2">
                   {nextStates.map((status) => (
@@ -996,15 +1093,15 @@ export function OrderDetailPage() {
             <PermissionGate permission="orders.refund">
               <div className="border-t border-line pt-3">
                 <p className="mb-2 text-xs font-semibold tracking-wide text-ink-muted uppercase">
-                  Payment
+                  <T>Payment</T>
                 </p>
                 <p className="mb-2 text-sm text-ink-muted">
-                  {formatMoney(order.payment.refundedMinor, order.currencyCode)} refunded of{" "}
-                  {formatMoney(order.payment.amountMinor, order.currencyCode)} paid via{" "}
+                  {formatMoney(order.payment.refundedMinor, order.currencyCode)} <T>refunded of</T>{" "}
+                  {formatMoney(order.payment.amountMinor, order.currencyCode)} <T>paid via</T>{" "}
                   {order.payment.provider}.
                 </p>
                 <Button variant="destructive" onClick={() => setRefunding(true)}>
-                  Issue refund
+                  <T>Issue refund</T>
                 </Button>
               </div>
             </PermissionGate>
@@ -1077,7 +1174,7 @@ function EditMediaModal({ asset, onClose }: { asset: AdminMediaAssetRow; onClose
         </Field>
         <div className="flex justify-end gap-2">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button
             type="button"
@@ -1085,7 +1182,7 @@ function EditMediaModal({ asset, onClose }: { asset: AdminMediaAssetRow; onClose
             disabled={mutation.isPending}
             onClick={() => mutation.mutate()}
           >
-            {mutation.isPending ? "Saving…" : "Save"}
+            {mutation.isPending ? <T>{"Saving…"}</T> : <T>{"Save"}</T>}
           </Button>
         </div>
       </div>
@@ -1149,7 +1246,7 @@ export function MediaPage() {
                   (event.currentTarget.nextElementSibling as HTMLInputElement)?.click()
                 }
               >
-                {uploadMutation.isPending ? "Uploading…" : "Upload image"}
+                {uploadMutation.isPending ? <T>{"Uploading…"}</T> : <T>{"Upload image"}</T>}
               </Button>
               <input
                 type="file"
@@ -1192,7 +1289,9 @@ export function MediaPage() {
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-ink-muted">Loading media…</p>
+        <p className="text-sm text-ink-muted">
+          <T>Loading media…</T>
+        </p>
       ) : assets.length === 0 ? (
         <EmptyState title="No media uploaded yet" hint="Upload an image to get started." />
       ) : (
@@ -1211,7 +1310,7 @@ export function MediaPage() {
               <div className="px-3 py-2.5">
                 <p className="truncate text-sm font-medium text-ink">{asset.originalFilename}</p>
                 <p className="truncate text-xs text-ink-muted" title={asset.altText}>
-                  alt: {asset.altText || "—"}
+                  <T>alt:</T> {asset.altText || "—"}
                 </p>
                 <p className="mt-1 text-xs text-ink-muted">
                   {formatBytes(asset.sizeBytes)}
@@ -1220,12 +1319,12 @@ export function MediaPage() {
                 <div className="mt-2 flex gap-2">
                   <PermissionGate permission="media.edit">
                     <Button variant="secondary" onClick={() => setEditing(asset)}>
-                      Edit
+                      <T>Edit</T>
                     </Button>
                   </PermissionGate>
                   <PermissionGate permission="media.delete">
                     <Button variant="destructive" onClick={() => setDeletingId(asset.id)}>
-                      Delete
+                      <T>Delete</T>
                     </Button>
                   </PermissionGate>
                 </div>
@@ -1242,15 +1341,17 @@ export function MediaPage() {
             disabled={page === 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
           >
-            Previous
+            <T>Previous</T>
           </Button>
-          <span className="text-sm font-medium text-ink-muted">Page {page}</span>
+          <span className="text-sm font-medium text-ink-muted">
+            <T>Page</T> {page}
+          </span>
           <Button
             variant="secondary"
             disabled={assets.length < limit}
             onClick={() => setPage((p) => p + 1)}
           >
-            Next
+            <T>Next</T>
           </Button>
         </div>
       ) : null}
@@ -1326,7 +1427,9 @@ function RoleDropdown({
           className="absolute z-[110] mt-1 max-h-56 w-full overflow-y-auto rounded-sm border border-line bg-surface p-1.5 shadow-overlay"
         >
           {roles.length === 0 ? (
-            <p className="px-2 py-2 text-sm text-ink-muted">No roles available.</p>
+            <p className="px-2 py-2 text-sm text-ink-muted">
+              <T>No roles available.</T>
+            </p>
           ) : (
             roles.map((role) => {
               const isSelected = selected.includes(role.id);
@@ -1353,7 +1456,7 @@ function RoleDropdown({
                         : "shrink-0 rounded-sm border border-line px-2 py-0.5 text-xs font-medium text-ink-muted"
                     }
                   >
-                    {isSelected ? "Selected" : "Add"}
+                    {isSelected ? <T>{"Selected"}</T> : <T>{"Add"}</T>}
                   </span>
                 </button>
               );
@@ -1429,10 +1532,10 @@ function InviteUserModal({ onClose }: { onClose: () => void }) {
         </Field>
         <div className="flex justify-end gap-2 pt-1">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button type="submit" variant="primary" disabled={mutation.isPending}>
-            {mutation.isPending ? "Inviting…" : "Send invite"}
+            {mutation.isPending ? <T>{"Inviting…"}</T> : <T>{"Send invite"}</T>}
           </Button>
         </div>
       </form>
@@ -1500,10 +1603,10 @@ function AddUserModal({ onClose }: { onClose: () => void }) {
         </Field>
         <div className="flex justify-end gap-2 pt-1">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button type="submit" variant="primary" disabled={mutation.isPending}>
-            {mutation.isPending ? "Creating..." : "Add user"}
+            {mutation.isPending ? <T>{"Creating..."}</T> : <T>{"Add user"}</T>}
           </Button>
         </div>
       </form>
@@ -1542,7 +1645,7 @@ function EditRolesModal({ user, onClose }: { user: AdminUserRow; onClose: () => 
       </Field>
       <div className="mt-4 flex justify-end gap-2">
         <Button type="button" variant="secondary" onClick={onClose}>
-          Cancel
+          <T>Cancel</T>
         </Button>
         <Button
           type="button"
@@ -1550,7 +1653,7 @@ function EditRolesModal({ user, onClose }: { user: AdminUserRow; onClose: () => 
           onClick={() => mutation.mutate()}
           disabled={mutation.isPending}
         >
-          {mutation.isPending ? "Saving…" : "Save roles"}
+          {mutation.isPending ? <T>{"Saving…"}</T> : <T>{"Save roles"}</T>}
         </Button>
       </div>
     </Modal>
@@ -1588,24 +1691,26 @@ function ResetUserPasswordModal({ user, onClose }: { user: AdminUserRow; onClose
       {result ? (
         <div className="space-y-4">
           <p className="text-sm text-ink-muted">
-            A password reset link has been sent to {result.email}. They can use it to set a new
-            password.
+            <T>A password reset link has been sent to</T> {result.email}
+            <T>. They can use it to set a new password.</T>
           </p>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="primary" onClick={onClose}>
-              Done
+              <T>Done</T>
             </Button>
           </div>
         </div>
       ) : (
         <div className="space-y-4">
           <p className="text-sm text-ink-muted">
-            Send a secure password reset link to this user. They will set their new password from
-            the admin reset page.
+            <T>
+              Send a secure password reset link to this user. They will set their new password from
+              the admin reset page.
+            </T>
           </p>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="secondary" onClick={onClose}>
-              Cancel
+              <T>Cancel</T>
             </Button>
             <Button
               type="button"
@@ -1613,7 +1718,7 @@ function ResetUserPasswordModal({ user, onClose }: { user: AdminUserRow; onClose
               onClick={() => mutation.mutate()}
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? "Sending..." : "Send reset email"}
+              {mutation.isPending ? <T>{"Sending..."}</T> : <T>{"Send reset email"}</T>}
             </Button>
           </div>
         </div>
@@ -1654,12 +1759,16 @@ function AddFarmOwnerModal({ onClose }: { onClose: () => void }) {
   return (
     <Modal title="Add farm owner" onClose={onClose}>
       <p className="mb-4 text-sm text-ink-muted">
-        A farm owner is a sub-admin who can only manage their own farm&apos;s products and stock.
+        <T>
+          A farm owner is a sub-admin who can only manage their own farm&apos;s products and stock.
+        </T>
       </p>
       <form className="space-y-4" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
         <Field label="Farm" htmlFor="fo-farm" error={form.formState.errors.farmId?.message}>
           <Select id="fo-farm" {...form.register("farmId")}>
-            <option value="">Select a farm…</option>
+            <option value="">
+              <T>Select a farm…</T>
+            </option>
             {(farms.data ?? []).map((farm) => (
               <option key={farm.id} value={farm.id}>
                 {farm.name}
@@ -1682,10 +1791,10 @@ function AddFarmOwnerModal({ onClose }: { onClose: () => void }) {
         </Field>
         <div className="flex justify-end gap-2 pt-1">
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            <T>Cancel</T>
           </Button>
           <Button type="submit" variant="primary" disabled={mutation.isPending}>
-            {mutation.isPending ? "Creating…" : "Create farm owner"}
+            {mutation.isPending ? <T>{"Creating…"}</T> : <T>{"Create farm owner"}</T>}
           </Button>
         </div>
       </form>
@@ -1773,7 +1882,7 @@ export function UsersPage() {
           <div className="flex gap-2">
             <PermissionGate permission="users.manage_roles">
               <Button variant="secondary" onClick={() => setManagingRoles(true)}>
-                Add / edit roles
+                <T>Add / edit roles</T>
               </Button>
             </PermissionGate>
             <PermissionGate permission="users.invite">
@@ -1784,17 +1893,18 @@ export function UsersPage() {
                     onClick={() => setConfirmingDelete(selectedUsers)}
                     disabled={deleteMutation.isPending}
                   >
-                    Delete selected ({selectedUserIds.length})
+                    <T>Delete selected (</T>
+                    {selectedUserIds.length})
                   </Button>
                 ) : null}
                 <Button variant="secondary" onClick={() => setAddingOwner(true)}>
-                  Add farm owner
+                  <T>Add farm owner</T>
                 </Button>
                 <Button variant="secondary" onClick={() => setAddingUser(true)}>
-                  Add user
+                  <T>Add user</T>
                 </Button>
                 <Button variant="primary" onClick={() => setInviting(true)}>
-                  Invite user
+                  <T>Invite user</T>
                 </Button>
               </div>
             </PermissionGate>
@@ -1867,12 +1977,24 @@ export function UsersPage() {
                   onChange={toggleAllUsers}
                 />
               </Th>
-              <Th>Name</Th>
-              <Th>Email</Th>
-              <Th>Status</Th>
-              <Th>Roles</Th>
-              <Th>Last sign-in</Th>
-              <Th>Actions</Th>
+              <Th>
+                <T>Name</T>
+              </Th>
+              <Th>
+                <T>Email</T>
+              </Th>
+              <Th>
+                <T>Status</T>
+              </Th>
+              <Th>
+                <T>Roles</T>
+              </Th>
+              <Th>
+                <T>Last sign-in</T>
+              </Th>
+              <Th>
+                <T>Actions</T>
+              </Th>
             </tr>
           </thead>
           {isLoading ? (
@@ -1905,7 +2027,9 @@ export function UsersPage() {
                       <StatusPill status={user.status} />
                     </Td>
                     <Td>{user.roles.join(", ") || "—"}</Td>
-                    <Td>{user.lastSignInAt ? formatDateTime(user.lastSignInAt) : "Never"}</Td>
+                    <Td>
+                      {user.lastSignInAt ? formatDateTime(user.lastSignInAt) : <T>{"Never"}</T>}
+                    </Td>
                     <Td>
                       <PermissionGate
                         permission="users.manage_roles"
@@ -1921,7 +2045,9 @@ export function UsersPage() {
                             }
                             className="min-w-44"
                           >
-                            <option value="">No role</option>
+                            <option value="">
+                              <T>No role</T>
+                            </option>
                             {(roles.data ?? []).map((role) => (
                               <option key={role.id} value={role.id}>
                                 {role.name}
@@ -1933,7 +2059,7 @@ export function UsersPage() {
                             className="text-sm text-brand underline-offset-4 hover:underline"
                             onClick={() => setEditingRoles(user)}
                           >
-                            Roles
+                            <T>Roles</T>
                           </button>
                           <button
                             type="button"
@@ -1941,7 +2067,7 @@ export function UsersPage() {
                             onClick={() => setConfirmingDelete([user])}
                             disabled={deleteMutation.isPending}
                           >
-                            Delete
+                            <T>Delete</T>
                           </button>
                           <button
                             type="button"
@@ -1954,14 +2080,14 @@ export function UsersPage() {
                             }
                             disabled={statusMutation.isPending}
                           >
-                            {user.status === "disabled" ? "Enable" : "Disable"}
+                            {user.status === "disabled" ? <T>{"Enable"}</T> : <T>{"Disable"}</T>}
                           </button>
                           <button
                             type="button"
                             className="text-sm text-ink-muted underline-offset-4 hover:text-brand hover:underline"
                             onClick={() => setResettingPassword(user)}
                           >
-                            Password
+                            <T>Password</T>
                           </button>
                         </div>
                       </PermissionGate>
@@ -1979,13 +2105,17 @@ export function UsersPage() {
 
       <section className="mt-8 space-y-3 border-t border-line pt-5">
         <div>
-          <h2 className="font-display text-lg text-ink">Role catalogue</h2>
+          <h2 className="font-display text-lg text-ink">
+            <T>Role catalogue</T>
+          </h2>
           <p className="text-sm text-ink-muted">
-            These roles define the permission sets available when inviting or editing users.
+            <T>These roles define the permission sets available when inviting or editing users.</T>
           </p>
         </div>
         {roles.isLoading ? (
-          <p className="text-sm text-ink-muted">Loading roles...</p>
+          <p className="text-sm text-ink-muted">
+            <T>Loading roles...</T>
+          </p>
         ) : roles.isError ? (
           <EmptyState
             title="Roles unavailable"
@@ -2133,11 +2263,21 @@ export function AuditPage() {
       <DataTableShell>
         <thead className="bg-canvas">
           <tr>
-            <Th>Actor</Th>
-            <Th>Action</Th>
-            <Th>Entity</Th>
-            <Th>Request ID</Th>
-            <Th>Time</Th>
+            <Th>
+              <T>Actor</T>
+            </Th>
+            <Th>
+              <T>Action</T>
+            </Th>
+            <Th>
+              <T>Entity</T>
+            </Th>
+            <Th>
+              <T>Request ID</T>
+            </Th>
+            <Th>
+              <T>Time</T>
+            </Th>
           </tr>
         </thead>
         {isLoading ? (

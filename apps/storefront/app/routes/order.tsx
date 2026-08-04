@@ -25,7 +25,9 @@ import {
 import { useCustomer } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
-import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizePlural, useLocalizeText } from "../lib/i18n/localized-text";
+import { useDateFormatter } from "../lib/i18n/dates";
+import { statusSource } from "../lib/i18n/status-labels";
 
 const REASON_OPTIONS: Array<{ value: ReturnReasonCode; label: string }> = [
   { value: "damaged", label: "Arrived damaged" },
@@ -39,6 +41,7 @@ const REASON_OPTIONS: Array<{ value: ReturnReasonCode; label: string }> = [
 const RETURN_ELIGIBLE_ORDER_STATUSES = new Set(["confirmed", "processing", "completed"]);
 
 function ReturnRequestSection({ order, reference }: { order: OrderDetail; reference: string }) {
+  const formatDate = useDateFormatter();
   const localize = useLocalizeText();
   const [requests, setRequests] = useState<ReturnRequestSummary[] | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -92,13 +95,12 @@ function ReturnRequestSection({ order, reference }: { order: OrderDetail; refere
         <div className="mt-2 text-sm text-ink-muted">
           <p>
             <LocalizedText>Return request status:</LocalizedText>{" "}
-            <span className="font-medium text-ink capitalize">
-              {openRequest.status.replaceAll("_", " ")}
+            <span className="font-medium text-ink">
+              {localize(statusSource("returnRequestStatus", openRequest.status))}
             </span>
           </p>
           <p className="mt-1">
-            <LocalizedText>Requested</LocalizedText>{" "}
-            {new Date(openRequest.requestedAt).toLocaleDateString()}
+            <LocalizedText>Requested</LocalizedText> {formatDate(openRequest.requestedAt)}
           </p>
         </div>
       ) : showForm ? (
@@ -114,7 +116,7 @@ function ReturnRequestSection({ order, reference }: { order: OrderDetail; refere
             >
               {REASON_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {localize(option.label)}
                 </option>
               ))}
             </select>
@@ -130,7 +132,7 @@ function ReturnRequestSection({ order, reference }: { order: OrderDetail; refere
               placeholder={localize("Include what's wrong and any details that will help support.")}
             />
           </label>
-          {error ? <p className="text-sm text-danger">{error}</p> : null}
+          {error ? <p className="text-sm text-danger">{localize(error)}</p> : null}
           <div className="flex gap-2">
             <button
               type="button"
@@ -138,7 +140,11 @@ function ReturnRequestSection({ order, reference }: { order: OrderDetail; refere
               disabled={submitting}
               className="min-h-9 rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90 disabled:opacity-50"
             >
-              {submitting ? "Submitting…" : "Submit request"}
+              {submitting ? (
+                <LocalizedText>{"Submitting…"}</LocalizedText>
+              ) : (
+                <LocalizedText>{"Submit request"}</LocalizedText>
+              )}
             </button>
             <button
               type="button"
@@ -175,6 +181,7 @@ function ReviewLineForm({
   onCancel: () => void;
   onSubmitted: () => Promise<void>;
 }) {
+  const plural = useLocalizePlural();
   const localize = useLocalizeText();
   const [rating, setRating] = useState(5);
   const [title, setTitle] = useState("");
@@ -216,8 +223,7 @@ function ReviewLineForm({
         >
           {RATING_OPTIONS.map((value) => (
             <option key={value} value={value}>
-              {value} <LocalizedText>star</LocalizedText>
-              {value === 1 ? "" : "s"}
+              {plural("{count} star", "{count} stars", value)}
             </option>
           ))}
         </select>
@@ -244,7 +250,7 @@ function ReviewLineForm({
           placeholder={localize("What did you think of this product?")}
         />
       </label>
-      {error ? <p className="text-sm text-danger">{error}</p> : null}
+      {error ? <p className="text-sm text-danger">{localize(error)}</p> : null}
       <div className="flex gap-2">
         <button
           type="button"
@@ -252,7 +258,11 @@ function ReviewLineForm({
           disabled={submitting}
           className="min-h-9 rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90 disabled:opacity-50"
         >
-          {submitting ? "Submitting…" : "Submit review"}
+          {submitting ? (
+            <LocalizedText>{"Submitting…"}</LocalizedText>
+          ) : (
+            <LocalizedText>{"Submit review"}</LocalizedText>
+          )}
         </button>
         <button
           type="button"
@@ -318,11 +328,13 @@ function ReviewSection({ order, reference }: { order: OrderDetail; reference: st
                 <div className="mt-1.5 flex items-center gap-2 text-sm">
                   <StarRating rating={existing.rating} />
                   <span className="text-ink-muted">
-                    {existing.status === "pending"
-                      ? "Awaiting moderation"
-                      : existing.status === "approved"
-                        ? "Published"
-                        : existing.status}
+                    {existing.status === "pending" ? (
+                      <LocalizedText>{"Awaiting moderation"}</LocalizedText>
+                    ) : existing.status === "approved" ? (
+                      <LocalizedText>{"Published"}</LocalizedText>
+                    ) : (
+                      existing.status
+                    )}
                   </span>
                 </div>
               ) : openProductId === item.productId ? (
@@ -352,13 +364,16 @@ function ReviewSection({ order, reference }: { order: OrderDetail; reference: st
   );
 }
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Track your order",
-    description: "Order details and delivery progress.",
-    canonicalPath: "/account",
-    indexing: "noindex",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Track your order",
+      description: "Order details and delivery progress.",
+      canonicalPath: "/account",
+      indexing: "noindex",
+    },
+    matches,
+  );
 }
 
 type State =
@@ -441,6 +456,7 @@ function TrackingTimeline({ order }: { order: OrderDetail }) {
 }
 
 export default function OrderPage(_props: Route.ComponentProps) {
+  const localize = useLocalizeText();
   const { reference = "" } = useParams();
   const { status } = useCustomer();
   const { recommendations } = useSiteSettings();
@@ -506,7 +522,7 @@ export default function OrderPage(_props: Route.ComponentProps) {
   if (state.kind === "error") {
     return (
       <Section eyebrow="Order" heading="Order not found">
-        <p className="text-sm text-ink-muted">{state.message}</p>
+        <p className="text-sm text-ink-muted">{localize(state.message)}</p>
         <Link
           to="/account"
           className="mt-4 inline-flex text-sm text-brand underline-offset-4 hover:underline"
@@ -525,13 +541,14 @@ export default function OrderPage(_props: Route.ComponentProps) {
       <Section eyebrow="Track your order" heading={order.reference}>
         <div className="mb-6 flex flex-wrap items-center gap-2 rounded-sm border border-brand/30 bg-subtle/40 px-4 py-3 text-sm text-ink">
           <CheckCircle2 size={18} className="text-brand" aria-hidden />
-          <span className="capitalize">
-            <LocalizedText>Status:</LocalizedText> {order.orderStatus.replaceAll("_", " ")}
+          <span>
+            <LocalizedText>Status:</LocalizedText>{" "}
+            {localize(statusSource("orderStatus", order.orderStatus))}
           </span>
           <span className="text-ink-muted">·</span>
           <span>
             <LocalizedText>Payment:</LocalizedText>{" "}
-            {paid ? "Paid" : order.paymentStatus.replaceAll("_", " ")}
+            {localize(statusSource("paymentStatus", order.paymentStatus))}
           </span>
         </div>
 
@@ -599,9 +616,11 @@ export default function OrderPage(_props: Route.ComponentProps) {
                   <LocalizedText>Delivery</LocalizedText>
                 </dt>
                 <dd>
-                  {order.deliveryMinor === 0
-                    ? "Free"
-                    : formatMoney(order.deliveryMinor, order.currencyCode)}
+                  {order.deliveryMinor === 0 ? (
+                    <LocalizedText>{"Free"}</LocalizedText>
+                  ) : (
+                    formatMoney(order.deliveryMinor, order.currencyCode)
+                  )}
                 </dd>
               </div>
               <div className="flex justify-between border-t border-line pt-1.5 font-medium">

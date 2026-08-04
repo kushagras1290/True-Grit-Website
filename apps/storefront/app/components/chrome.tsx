@@ -79,7 +79,7 @@ function ForgotPassword() {
         disabled={pending}
         className="min-h-9 rounded-sm border border-line px-3 text-xs font-medium text-ink hover:bg-canvas disabled:opacity-60"
       >
-        {pending ? "…" : "Send"}
+        {pending ? "…" : <LocalizedText>{"Send"}</LocalizedText>}
       </button>
     </form>
   );
@@ -310,7 +310,7 @@ function CustomerPortal() {
       <button
         type="button"
         className="flex min-h-11 min-w-11 items-center justify-center text-ink hover:text-brand"
-        aria-label={signedIn ? "Open account" : "Sign in"}
+        aria-label={signedIn ? localize("Open account") : localize("Sign in")}
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
@@ -325,10 +325,17 @@ function CustomerPortal() {
         >
           <div className="flex items-center justify-between border-b border-line px-4 py-3">
             <div>
-              <p className="font-medium text-ink">{signedIn ? "Account" : "Welcome"}</p>
+              <p className="font-medium text-ink">
+                {signedIn ? (
+                  <LocalizedText>{"Account"}</LocalizedText>
+                ) : (
+                  <LocalizedText>{"Welcome"}</LocalizedText>
+                )}
+              </p>
               <p className="text-xs text-ink-muted">
                 {signedIn
-                  ? (customer.email ?? customer.phone ?? "Signed in")
+                  ? (customer.email ??
+                    customer.phone ?? <LocalizedText>{"Signed in"}</LocalizedText>)
                   : signInSubtitle(auth)}
               </p>
             </div>
@@ -409,7 +416,7 @@ function CustomerPortal() {
                       aria-pressed={mode === value}
                       onClick={() => switchMode(value)}
                     >
-                      {AUTH_MODE_LABELS[value]}
+                      {localize(AUTH_MODE_LABELS[value])}
                     </button>
                   ))}
                 </div>
@@ -481,13 +488,17 @@ function CustomerPortal() {
                       required
                       minLength={mode === "register" ? 10 : undefined}
                       className={FIELD_CLASS}
-                      placeholder={mode === "register" ? "At least 10 characters" : "Your password"}
+                      placeholder={
+                        mode === "register"
+                          ? localize("At least 10 characters")
+                          : localize("Your password")
+                      }
                     />
                   </label>
 
                   {error ? (
                     <p role="alert" className="text-sm text-danger">
-                      {error}
+                      {localize(error)}
                     </p>
                   ) : null}
 
@@ -496,7 +507,13 @@ function CustomerPortal() {
                     className="min-h-11 w-full rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-95 disabled:opacity-60"
                     disabled={pending}
                   >
-                    {pending ? "Please wait…" : mode === "register" ? "Create account" : "Sign in"}
+                    {pending ? (
+                      <LocalizedText>{"Please wait…"}</LocalizedText>
+                    ) : mode === "register" ? (
+                      <LocalizedText>{"Create account"}</LocalizedText>
+                    ) : (
+                      <LocalizedText>{"Sign in"}</LocalizedText>
+                    )}
                   </button>
                 </form>
               ) : null}
@@ -554,7 +571,7 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
         <div className="bg-brand px-4 py-2 text-center text-sm text-ink-inverse">
           {bootstrap.announcement.path ? (
             <Link to={bootstrap.announcement.path} className="hover:underline">
-              {bootstrap.announcement.message}
+              {localize(bootstrap.announcement.message)}
             </Link>
           ) : (
             bootstrap.announcement.message

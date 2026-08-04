@@ -258,7 +258,7 @@ class FarmRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def list_published(self) -> list[dict[str, Any]]:
+    async def list_published(self, *, locale: str | None = None) -> list[dict[str, Any]]:
         rows = await self._db.fetch_all(
             """
             SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.story_json,
@@ -277,7 +277,14 @@ class FarmRepository:
             ORDER BY f.name
             """
         )
-        return [await self._detail_from_row(row) for row in rows]
+        # One batched lookup for the whole list (migration 0068), matching
+        # `RecipeRepository.list_published`.
+        fields_by_id: dict[str, dict[str, Any]] = {}
+        if locale and locale != "en" and rows:
+            fields_by_id = await EntityTranslationRepository(self._db).get_fields_map(
+                "farm", [row["id"] for row in rows], locale
+            )
+        return [await self._detail_from_row(row, fields_by_id.get(row["id"])) for row in rows]
 
     async def list_slugs_for_sitemap(
         self, *, limit: int = SITEMAP_MAX_URLS
@@ -290,7 +297,9 @@ class FarmRepository:
             (limit,),
         )
 
-    async def get_published_by_slug(self, slug: str) -> dict[str, Any] | None:
+    async def get_published_by_slug(
+        self, slug: str, *, locale: str | None = None
+    ) -> dict[str, Any] | None:
         row = await self._db.fetch_one(
             """
             SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.story_json,
@@ -311,9 +320,16 @@ class FarmRepository:
         )
         if row is None:
             return None
-        return await self._detail_from_row(row)
+        translation = None
+        if locale and locale != "en":
+            translation = await EntityTranslationRepository(self._db).get("farm", row["id"], locale)
+        return await self._detail_from_row(
+            row, translation["fields"] if translation else None
+        )
 
-    async def _detail_from_row(self, row: dict[str, Any]) -> dict[str, Any]:
+    async def _detail_from_row(
+        self, row: dict[str, Any], fields: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         story = json.loads(row["story_json"] or "{}")
         if not isinstance(story, dict):
             story = {}
@@ -324,23 +340,39 @@ class FarmRepository:
             "SELECT slug FROM products WHERE farm_id = ? AND status = 'published' ORDER BY name",
             (row["id"],),
         )
+
+        def translated(field: str, fallback: Any) -> Any:
+            """A saved translation wins; a blank one is treated as absent so a
+            half-filled record never blanks a farm's name on the page."""
+            if not fields:
+                return fallback
+            value = fields.get(field)
+            return value if isinstance(value, str) and value.strip() else fallback
+
+        localized_summary = translated("summary", summary)
+        localized_name = translated("name", row["name"])
         return {
             "id": row["id"],
-            "name": row["name"],
+            "name": localized_name,
             "slug": row["slug"],
-            "farmer_name": row["farmer_name"] or "",
-            "region": row["region"] or "",
-            "summary": summary,
-            "certification": row["certification"] or "Verified farm",
+            "farmer_name": translated("farmer_name", row["farmer_name"] or ""),
+            "region": translated("region", row["region"] or ""),
+            "summary": localized_summary,
+            "certification": translated("certification", row["certification"] or "Verified farm"),
             "established_year": int(row["established_year"] or 0),
-            "story": body,
+            "story": translated("story", body),
             "methods": [str(method) for method in methods] if isinstance(methods, list) else [],
             "product_slugs": [entry["slug"] for entry in product_rows],
             "hero_image_url": row["hero_image_url"] or None,
             "hero_image_alt": row["hero_image_alt"] or None,
             "seo": {
-                "title": row["seo_title"] or row["name"],
-                "description": row["seo_description"] or summary,
+                # Falls back to the *translated* name, so a farm with no saved
+                # SEO override still gets a localized browser title rather than
+                # an English one sitting above a translated page.
+                "title": translated("seo_title", row["seo_title"] or localized_name),
+                "description": translated(
+                    "seo_description", row["seo_description"] or localized_summary
+                ),
                 "canonical_path": f"/farms/{row['slug']}",
                 "indexing": "index",
             },
@@ -937,7 +969,12 @@ class SearchRepository:
         return sorted(ranked.items(), key=lambda entry: (entry[1], entry[0]))
 
     async def search(
-        self, query: str, limit: int = 20, country: str | None = None
+        self,
+        query: str,
+        limit: int = 20,
+        country: str | None = None,
+        *,
+        locale: str | None = None,
     ) -> dict[str, Any]:
         terms = await self._expand_terms(query)
         if not terms:
@@ -989,15 +1026,35 @@ class SearchRepository:
             (match, limit),
         )
 
+        # Matching runs against English -- the FTS index and the LIKE clauses
+        # above both read the source columns -- but the *result list* is read by
+        # the visitor, so the names shown are swapped for saved translations
+        # (migration 0068). One batched lookup per entity type.
+        translations = EntityTranslationRepository(self._db)
+
+        async def names_for(entity_type: str, ids: list[str]) -> dict[str, dict[str, Any]]:
+            if not locale or locale == "en" or not ids:
+                return {}
+            return await translations.get_fields_map(entity_type, ids, locale)
+
+        def localized_name(fields: dict[str, Any] | None, field: str, fallback: str) -> str:
+            if not fields:
+                return fallback
+            value = fields.get(field)
+            return value if isinstance(value, str) and value.strip() else fallback
+
         groups: list[dict[str, Any]] = []
         if product_rows:
+            product_fields = await names_for("product", [row["id"] for row in product_rows])
             groups.append(
                 {
                     "group": "products",
                     "items": [
                         {
                             "id": row["id"],
-                            "name": row["name"],
+                            "name": localized_name(
+                                product_fields.get(row["id"]), "name", row["name"]
+                            ),
                             "slug": row["slug"],
                             "path": f"/product/{row['slug']}",
                         }
@@ -1006,14 +1063,27 @@ class SearchRepository:
                 }
             )
         content_paths = {"article": "/journal/", "recipe": "/recipes/", "farm": "/farms/"}
+        # Articles and recipes carry their display name in `title`; a farm in
+        # `name`. The search shadow table flattens all three into `name`, so the
+        # translated field has to be looked up under the entity's own key.
+        translated_field = {"article": "title", "recipe": "title", "farm": "name"}
         for entity_type, base_path in content_paths.items():
             matched = [row for row in content_rows if row["entity_type"] == entity_type]
             if matched:
+                fields_by_id = await names_for(entity_type, [row["id"] for row in matched])
                 groups.append(
                     {
                         "group": f"{entity_type}s",
                         "items": [
-                            {"id": row["id"], "name": row["name"], "path": base_path + row["slug"]}
+                            {
+                                "id": row["id"],
+                                "name": localized_name(
+                                    fields_by_id.get(row["id"]),
+                                    translated_field[entity_type],
+                                    row["name"],
+                                ),
+                                "path": base_path + row["slug"],
+                            }
                             for row in matched
                         ],
                     }

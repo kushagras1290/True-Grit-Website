@@ -54,6 +54,7 @@ import { Button } from "./ui";
 import { api, demoMode, type AdminNotification } from "../lib/api";
 import { useMe, usePermissions } from "../lib/permissions";
 import { T } from "../lib/i18n";
+import { LanguageSwitcher } from "./language-switcher";
 
 const SIDEBAR_COLLAPSED_KEY = "truegrit.admin.sidebar-collapsed";
 
@@ -641,6 +642,7 @@ export function Shell() {
             </div>
           </div>
           <div className="flex items-center gap-3 text-sm text-ink">
+            <LanguageSwitcher />
             <NotificationPanel
               items={notifications?.items ?? []}
               total={notifications?.total ?? 0}

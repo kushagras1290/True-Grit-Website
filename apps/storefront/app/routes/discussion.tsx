@@ -7,15 +7,19 @@ import { PageBanner } from "../components/page-banner";
 import { AuthError, useCustomer } from "../lib/customer-auth";
 import { createComment, getDiscussion, type DiscussionDetail } from "../lib/community";
 import { seoMeta } from "../lib/seo";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizePlural, useLocalizeText } from "../lib/i18n/localized-text";
+import { useDateFormatter } from "../lib/i18n/dates";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Discussion",
-    description: "A discussion in the True Grit community.",
-    canonicalPath: "/community",
-    indexing: "index",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Discussion",
+      description: "A discussion in the True Grit community.",
+      canonicalPath: "/community",
+      indexing: "index",
+    },
+    matches,
+  );
 }
 
 const FIELD =
@@ -23,6 +27,9 @@ const FIELD =
   " placeholder:text-ink-muted focus:border-brand focus:outline-none";
 
 export default function DiscussionPage(_props: Route.ComponentProps) {
+  const plural = useLocalizePlural();
+  const localize = useLocalizeText();
+  const formatDate = useDateFormatter();
   const { id = "" } = useParams();
   const { customer, status } = useCustomer();
   const [discussion, setDiscussion] = useState<DiscussionDetail | null>(null);
@@ -92,7 +99,7 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
         imageAlt={discussion.imageAlt || discussion.title}
         eyebrow="Community discussion"
         heading={discussion.title}
-        description={`${discussion.authorName} - ${new Date(discussion.createdAt).toLocaleDateString()}`}
+        description={`${discussion.authorName} - ${formatDate(discussion.createdAt)}`}
       />
       <Section>
         <div className="mx-auto max-w-2xl space-y-8">
@@ -100,8 +107,7 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
 
           <div>
             <h2 className="mb-3 font-display text-lg text-ink">
-              {discussion.comments.length} <LocalizedText>comment</LocalizedText>
-              {discussion.comments.length === 1 ? "" : "s"}
+              {plural("{count} comment", "{count} comments", discussion.comments.length)}
             </h2>
             {discussion.comments.length === 0 ? (
               <p className="text-sm text-ink-muted">
@@ -112,7 +118,7 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
                 {discussion.comments.map((comment) => (
                   <li key={comment.id} className="border-t border-line pt-4">
                     <p className="text-xs text-ink-muted">
-                      {comment.authorName} · {new Date(comment.createdAt).toLocaleDateString()}
+                      {comment.authorName} · {formatDate(comment.createdAt)}
                     </p>
                     <p className="mt-1 whitespace-pre-wrap text-sm text-ink">{comment.body}</p>
                   </li>
@@ -123,7 +129,7 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
 
           {status === "authenticated" && customer ? (
             <form className="space-y-3 border-t border-line pt-6" onSubmit={handleComment}>
-              {error ? <p className="text-sm text-danger">{error}</p> : null}
+              {error ? <p className="text-sm text-danger">{localize(error)}</p> : null}
               <label className="block space-y-1">
                 <span className="text-xs font-medium text-ink-muted">
                   <LocalizedText>Add a comment</LocalizedText>
@@ -142,7 +148,11 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
                 disabled={submitting}
                 className="inline-flex min-h-11 items-center rounded-sm bg-brand px-5 text-sm font-medium text-ink-inverse hover:opacity-90 disabled:opacity-50"
               >
-                {submitting ? "Posting..." : "Post comment"}
+                {submitting ? (
+                  <LocalizedText>{"Posting..."}</LocalizedText>
+                ) : (
+                  <LocalizedText>{"Post comment"}</LocalizedText>
+                )}
               </button>
             </form>
           ) : (

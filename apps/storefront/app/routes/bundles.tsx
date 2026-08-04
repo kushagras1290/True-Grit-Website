@@ -8,29 +8,35 @@ import { PageLinkPagination } from "../components/pagination";
 import { catalogueRuntime, loadBundles } from "../lib/catalogue.server";
 import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizePlural } from "../lib/i18n/localized-text";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 
 const BUNDLE_PAGE_SIZE = 12;
 
 export async function loader({ context, request }: Route.LoaderArgs) {
   const page = Math.max(1, Number(new URL(request.url).searchParams.get("page")) || 1);
+  const { locale } = resolveLocale(request);
   return {
     page,
     pageSize: BUNDLE_PAGE_SIZE,
-    bundles: await loadBundles(page, BUNDLE_PAGE_SIZE, catalogueRuntime(context)),
+    bundles: await loadBundles(page, BUNDLE_PAGE_SIZE, catalogueRuntime(context), locale.code),
   };
 }
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Bundles",
-    description: "Curated sets of market favourites, bought together at a set price.",
-    canonicalPath: "/bundles",
-    indexing: "index",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Bundles",
+      description: "Curated sets of market favourites, bought together at a set price.",
+      canonicalPath: "/bundles",
+      indexing: "index",
+    },
+    matches,
+  );
 }
 
 export default function BundlesPage({ loaderData }: Route.ComponentProps) {
+  const plural = useLocalizePlural();
   const { bundles } = loaderData;
   return (
     <>
@@ -49,8 +55,7 @@ export default function BundlesPage({ loaderData }: Route.ComponentProps) {
         ) : (
           <>
             <p className="mb-5 text-sm text-ink-muted" role="status">
-              {bundles.total} <LocalizedText>bundle</LocalizedText>
-              {bundles.total === 1 ? "" : "s"}
+              {plural("{count} bundle", "{count} bundles", bundles.total)}
             </p>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {bundles.items.map((bundle) => (
@@ -74,8 +79,7 @@ export default function BundlesPage({ loaderData }: Route.ComponentProps) {
                     <p className="mt-2 text-sm text-ink-muted">{bundle.description}</p>
                   ) : null}
                   <p className="mt-3 text-xs text-ink-muted">
-                    {bundle.items.length} <LocalizedText>item</LocalizedText>
-                    {bundle.items.length === 1 ? "" : "s"}
+                    {plural("{count} item", "{count} items", bundle.items.length)}
                   </p>
                   <p className="mt-3 flex items-baseline gap-2">
                     <span className="font-display text-lg text-ink">

@@ -16,21 +16,28 @@ import type { Route } from "./+types/receipt";
 import { getMyOrder, type OrderDetail } from "../lib/commerce";
 import { useCustomer } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
+import { useDateFormatter } from "../lib/i18n/dates";
+import { statusSource } from "../lib/i18n/status-labels";
 
-export function meta(_args: Route.MetaArgs) {
-  return seoMeta({
-    title: "Order receipt",
-    description: "Printable receipt for a True Grit order.",
-    canonicalPath: "/account",
-    indexing: "noindex",
-  });
+export function meta({ matches }: Route.MetaArgs) {
+  return seoMeta(
+    {
+      title: "Order receipt",
+      description: "Printable receipt for a True Grit order.",
+      canonicalPath: "/account",
+      indexing: "noindex",
+    },
+    matches,
+  );
 }
 
 type State =
   { kind: "loading" } | { kind: "loaded"; order: OrderDetail } | { kind: "error"; message: string };
 
 export default function ReceiptPage(_props: Route.ComponentProps) {
+  const localize = useLocalizeText();
+  const formatDate = useDateFormatter();
   const { reference = "" } = useParams();
   const { status } = useCustomer();
   const [state, setState] = useState<State>({ kind: "loading" });
@@ -67,7 +74,7 @@ export default function ReceiptPage(_props: Route.ComponentProps) {
   if (state.kind === "error") {
     return (
       <div className="mx-auto max-w-2xl px-4 py-14">
-        <p className="text-sm text-ink-muted">{state.message}</p>
+        <p className="text-sm text-ink-muted">{localize(state.message)}</p>
         <Link to="/account" className="mt-4 inline-flex text-sm text-brand hover:underline">
           <LocalizedText>Your account</LocalizedText>
         </Link>
@@ -114,7 +121,7 @@ export default function ReceiptPage(_props: Route.ComponentProps) {
           </div>
           <div className="text-right text-sm">
             <p className="font-medium text-ink">{order.reference}</p>
-            <p className="text-ink-muted">{new Date(order.placedAt).toLocaleDateString()}</p>
+            <p className="text-ink-muted">{formatDate(order.placedAt)}</p>
           </div>
         </div>
 
@@ -144,11 +151,12 @@ export default function ReceiptPage(_props: Route.ComponentProps) {
             <p className="text-xs font-semibold tracking-[0.08em] text-ink-muted uppercase">
               <LocalizedText>Status</LocalizedText>
             </p>
-            <p className="mt-1.5 text-sm text-ink capitalize">
-              {order.orderStatus.replaceAll("_", " ")}
+            <p className="mt-1.5 text-sm text-ink">
+              {localize(statusSource("orderStatus", order.orderStatus))}
             </p>
-            <p className="text-sm text-ink-muted capitalize">
-              <LocalizedText>Payment:</LocalizedText> {order.paymentStatus.replaceAll("_", " ")}
+            <p className="text-sm text-ink-muted">
+              <LocalizedText>Payment:</LocalizedText>{" "}
+              {localize(statusSource("paymentStatus", order.paymentStatus))}
             </p>
           </div>
         </div>
@@ -212,9 +220,11 @@ export default function ReceiptPage(_props: Route.ComponentProps) {
                 <LocalizedText>Delivery</LocalizedText>
               </dt>
               <dd className="text-ink">
-                {order.deliveryMinor > 0
-                  ? formatMoney(order.deliveryMinor, order.currencyCode)
-                  : "Free"}
+                {order.deliveryMinor > 0 ? (
+                  formatMoney(order.deliveryMinor, order.currencyCode)
+                ) : (
+                  <LocalizedText>{"Free"}</LocalizedText>
+                )}
               </dd>
             </div>
             {order.taxMinor > 0 ? (

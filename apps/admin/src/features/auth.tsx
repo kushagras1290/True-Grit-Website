@@ -12,6 +12,7 @@ import {
   describeRateLimitError,
 } from "../lib/api";
 import { useMe } from "../lib/permissions";
+import { T } from "../lib/i18n";
 
 function isUnauthorizedError(error: unknown) {
   if (error instanceof ApiError) return error.status === 401;
@@ -39,14 +40,14 @@ function ForgotPassword() {
         className="text-sm text-brand underline-offset-4 hover:underline"
         onClick={() => setOpen(true)}
       >
-        Forgot password?
+        <T>Forgot password?</T>
       </button>
     );
   }
   if (done) {
     return (
       <p className="text-sm text-ink-muted">
-        If that email has an account, a reset link is on its way.
+        <T>If that email has an account, a reset link is on its way.</T>
       </p>
     );
   }
@@ -67,7 +68,7 @@ function ForgotPassword() {
         </p>
       ) : null}
       <Button type="submit" variant="secondary" disabled={mutation.isPending}>
-        {mutation.isPending ? "Sending…" : "Send reset link"}
+        {mutation.isPending ? <T>{"Sending…"}</T> : <T>{"Send reset link"}</T>}
       </Button>
     </form>
   );
@@ -87,9 +88,13 @@ export function AdminResetPasswordPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-canvas px-6">
       <div className="w-full max-w-sm">
-        <h1 className="font-display text-2xl text-ink">Set a new password</h1>
+        <h1 className="font-display text-2xl text-ink">
+          <T>Set a new password</T>
+        </h1>
         {!token ? (
-          <p className="mt-3 text-sm text-danger">This reset link is missing its token.</p>
+          <p className="mt-3 text-sm text-danger">
+            <T>This reset link is missing its token.</T>
+          </p>
         ) : (
           <form
             className="mt-5 space-y-4"
@@ -119,13 +124,13 @@ export function AdminResetPasswordPage() {
               className="w-full"
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? "Saving…" : "Reset password"}
+              {mutation.isPending ? <T>{"Saving…"}</T> : <T>{"Reset password"}</T>}
             </Button>
             <Link
               to="/login"
               className="block text-sm text-brand underline-offset-4 hover:underline"
             >
-              Back to sign in
+              <T>Back to sign in</T>
             </Link>
           </form>
         )}
@@ -167,14 +172,17 @@ export function AdminLoginPage() {
               className="h-10 w-10 rounded-full object-cover"
             />
             <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-75">
-              True Grit Admin
+              <T>True Grit Admin</T>
             </p>
           </div>
           <h1 className="mt-4 font-display text-4xl leading-tight lg:text-5xl">
-            Live marketplace control room.
+            <T>Live marketplace control room.</T>
           </h1>
           <p className="mt-4 max-w-md text-sm opacity-80">
-            Catalogue, inventory, content, orders, users and audit events in one operating surface.
+            <T>
+              Catalogue, inventory, content, orders, users and audit events in one operating
+              surface.
+            </T>
           </p>
         </div>
       </section>
@@ -186,9 +194,11 @@ export function AdminLoginPage() {
               <ShieldCheck size={20} />
             </span>
             <div>
-              <h2 className="font-display text-2xl text-ink">Staff sign in</h2>
+              <h2 className="font-display text-2xl text-ink">
+                <T>Staff sign in</T>
+              </h2>
               <p className="text-sm text-ink-muted">
-                {demoMode ? "Demo console access" : "Connected API session"}
+                {demoMode ? <T>{"Demo console access"}</T> : <T>{"Connected API session"}</T>}
               </p>
             </div>
           </div>
@@ -235,7 +245,7 @@ export function AdminLoginPage() {
               className="w-full"
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? "Signing in" : "Sign in"}
+              {mutation.isPending ? <T>{"Signing in"}</T> : <T>{"Sign in"}</T>}
             </Button>
           </form>
 
@@ -267,7 +277,9 @@ export function RequireAdminAuth({ children }: { children: ReactNode }) {
   if (me.isLoading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-canvas px-6">
-        <div className="text-sm text-ink-muted">Checking session</div>
+        <div className="text-sm text-ink-muted">
+          <T>Checking session</T>
+        </div>
       </main>
     );
   }
@@ -280,18 +292,22 @@ export function RequireAdminAuth({ children }: { children: ReactNode }) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-canvas px-6 text-center">
         <div>
-          <p className="font-medium text-ink">Admin API is unavailable</p>
-          <p className="mt-1 text-sm text-ink-muted">Refresh once the API is back online.</p>
+          <p className="font-medium text-ink">
+            <T>Admin API is unavailable</T>
+          </p>
+          <p className="mt-1 text-sm text-ink-muted">
+            <T>Refresh once the API is back online.</T>
+          </p>
           <div className="mt-4 flex justify-center gap-2">
             <Button type="button" variant="secondary" onClick={() => void me.refetch()}>
-              Retry
+              <T>Retry</T>
             </Button>
             <Button
               type="button"
               variant="primary"
               onClick={() => navigate("/login", { replace: true, state: { from: location } })}
             >
-              Sign in
+              <T>Sign in</T>
             </Button>
           </div>
         </div>

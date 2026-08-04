@@ -14,7 +14,7 @@ import {
 import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
-import { LocalizedText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeFormat, useLocalizePlural } from "../lib/i18n/localized-text";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const pageNumber = Math.max(1, Number(new URL(request.url).searchParams.get("page")) || 1);
@@ -32,11 +32,13 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   return { page, pageNumber, pageSize: CATALOGUE_PAGE_SIZE, popular };
 }
 
-export function meta({ data: loaderData }: Route.MetaArgs) {
-  return seoMeta(loaderData?.page.seo);
+export function meta({ data: loaderData, matches }: Route.MetaArgs) {
+  return seoMeta(loaderData?.page.seo, matches);
 }
 
 export default function CategoryPage({ loaderData }: Route.ComponentProps) {
+  const plural = useLocalizePlural();
+  const format = useLocalizeFormat();
   const { page, pageNumber, pageSize, popular } = loaderData;
   return (
     <>
@@ -76,8 +78,7 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
         ) : null}
 
         <p className="mb-5 text-sm text-ink-muted" role="status">
-          {page.productsTotal} <LocalizedText>product</LocalizedText>
-          {page.productsTotal === 1 ? "" : "s"}
+          {plural("{count} product", "{count} products", page.productsTotal)}
         </p>
         <ProductGrid products={page.products} />
         <PageLinkPagination page={pageNumber} pageSize={pageSize} total={page.productsTotal} />
@@ -98,7 +99,7 @@ export default function CategoryPage({ loaderData }: Route.ComponentProps) {
 
       <RecommendedProducts
         eyebrow="Popular right now"
-        heading={`Best sellers in ${page.name}`}
+        heading={format("Best sellers in {category}", { category: page.name })}
         products={popular}
       />
     </>

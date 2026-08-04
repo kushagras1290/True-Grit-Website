@@ -10,21 +10,27 @@ import { useCart } from "../lib/cart";
 import { mediaUrl } from "../lib/media";
 import { seoMeta } from "../lib/seo";
 import { LocalizedText } from "../lib/i18n/localized-text";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 
-export async function loader({ params, context }: Route.LoaderArgs) {
-  const bundle = await loadBundle(params.slug, catalogueRuntime(context));
+export async function loader({ params, request, context }: Route.LoaderArgs) {
+  const { locale } = resolveLocale(request);
+  const bundle = await loadBundle(params.slug, catalogueRuntime(context), locale.code);
   if (!bundle) throw data("Bundle not found", { status: 404 });
   return { bundle };
 }
 
-export function meta({ data: loaderData }: Route.MetaArgs) {
-  if (!loaderData) return seoMeta(null);
-  return seoMeta({
-    title: loaderData.bundle.name,
-    description: loaderData.bundle.description || `${loaderData.bundle.name} — a True Grit bundle.`,
-    canonicalPath: `/bundles/${loaderData.bundle.slug}`,
-    indexing: "index",
-  });
+export function meta({ data: loaderData, matches }: Route.MetaArgs) {
+  if (!loaderData) return seoMeta(null, matches);
+  return seoMeta(
+    {
+      title: loaderData.bundle.name,
+      description:
+        loaderData.bundle.description || `${loaderData.bundle.name} — a True Grit bundle.`,
+      canonicalPath: `/bundles/${loaderData.bundle.slug}`,
+      indexing: "index",
+    },
+    matches,
+  );
 }
 
 export default function BundlePage({ loaderData }: Route.ComponentProps) {
@@ -118,7 +124,11 @@ export default function BundlePage({ loaderData }: Route.ComponentProps) {
                 setAdded(true);
               }}
             >
-              {added ? "Added to basket" : "Add bundle to basket"}
+              {added ? (
+                <LocalizedText>{"Added to basket"}</LocalizedText>
+              ) : (
+                <LocalizedText>{"Add bundle to basket"}</LocalizedText>
+              )}
             </button>
             <p className="mt-2 text-xs text-ink-muted">
               <LocalizedText>

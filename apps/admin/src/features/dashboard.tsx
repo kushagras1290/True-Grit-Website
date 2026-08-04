@@ -8,6 +8,7 @@ import { Link } from "react-router";
 import { Button, EmptyState, PageHeader, SearchBox, StatusPill } from "../components/ui";
 import { api, demoMode } from "../lib/api";
 import { formatDateTime, formatMoney } from "../lib/format";
+import { T } from "../lib/i18n";
 
 const SEARCH_MIN_QUERY_LENGTH = 2;
 
@@ -182,14 +183,14 @@ export function DashboardPage() {
         actions={
           <Button type="button" variant="secondary" onClick={refreshAll}>
             <RefreshCw size={15} className={fetching ? "animate-spin" : ""} />
-            Refresh
+            <T>Refresh</T>
           </Button>
         }
       />
 
       <section className="mb-6" aria-labelledby="global-search-heading">
         <h2 id="global-search-heading" className="sr-only">
-          Search products, orders, users and categories
+          <T>Search products, orders, users and categories</T>
         </h2>
         <SearchBox
           value={searchQuery}
@@ -200,9 +201,13 @@ export function DashboardPage() {
         {trimmedSearchQuery.length > 0 && (
           <div className="mt-3 rounded-md border border-line bg-surface shadow-card">
             {!searchActive ? (
-              <p className="px-4 py-3 text-sm text-ink-muted">Keep typing to search…</p>
+              <p className="px-4 py-3 text-sm text-ink-muted">
+                <T>Keep typing to search…</T>
+              </p>
             ) : search.isFetching ? (
-              <p className="px-4 py-3 text-sm text-ink-muted">Searching…</p>
+              <p className="px-4 py-3 text-sm text-ink-muted">
+                <T>Searching…</T>
+              </p>
             ) : searchResultGroups.length === 0 ? (
               <EmptyState title="No matches" hint={`Nothing found for "${trimmedSearchQuery}".`} />
             ) : (
@@ -239,15 +244,17 @@ export function DashboardPage() {
             <Activity size={17} />
           </span>
           <div>
-            <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">API mode</p>
+            <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
+              <T>API mode</T>
+            </p>
             <p className="text-sm font-medium text-ink">
-              {demoMode ? "Demo data" : "Live connected"}
+              {demoMode ? <T>{"Demo data"}</T> : <T>{"Live connected"}</T>}
             </p>
           </div>
         </div>
         <div>
           <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
-            Published products
+            <T>Published products</T>
           </p>
           <p className="text-lg font-medium text-ink">
             {publishedProducts.length}/{products.data?.length ?? 0}
@@ -255,14 +262,16 @@ export function DashboardPage() {
         </div>
         <div>
           <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
-            Public categories
+            <T>Public categories</T>
           </p>
           <p className="text-lg font-medium text-ink">
             {publicCategories.length}/{categories.data?.length ?? 0}
           </p>
         </div>
         <div>
-          <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">Last sync</p>
+          <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
+            <T>Last sync</T>
+          </p>
           <p className="text-lg font-medium text-ink">{lastUpdatedLabel}</p>
         </div>
       </section>
@@ -287,30 +296,36 @@ export function DashboardPage() {
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <section aria-labelledby="website-heading">
           <h2 id="website-heading" className="mb-3 font-display text-lg text-ink">
-            Website publishing surface
+            <T>Website publishing surface</T>
           </h2>
           <div className="rounded-md border border-line bg-surface shadow-card">
             <div className="grid divide-y divide-line md:grid-cols-3 md:divide-x md:divide-y-0">
               <Link to="/products" className="px-4 py-4 hover:bg-canvas">
                 <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
-                  Catalogue
+                  <T>Catalogue</T>
                 </p>
                 <p className="mt-1 text-2xl font-medium text-ink">{publishedProducts.length}</p>
-                <p className="text-xs text-ink-muted">items visible on storefront</p>
+                <p className="text-xs text-ink-muted">
+                  <T>items visible on storefront</T>
+                </p>
               </Link>
               <Link to="/categories" className="px-4 py-4 hover:bg-canvas">
                 <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
-                  Navigation
+                  <T>Navigation</T>
                 </p>
                 <p className="mt-1 text-2xl font-medium text-ink">{publicCategories.length}</p>
-                <p className="text-xs text-ink-muted">public collections</p>
+                <p className="text-xs text-ink-muted">
+                  <T>public collections</T>
+                </p>
               </Link>
               <Link to="/categories" className="px-4 py-4 hover:bg-canvas">
                 <p className="text-xs font-semibold tracking-wide text-ink-muted uppercase">
-                  Homepage
+                  <T>Homepage</T>
                 </p>
                 <p className="mt-1 text-2xl font-medium text-ink">{activeHomeBlocks.length}</p>
-                <p className="text-xs text-ink-muted">active CMS blocks</p>
+                <p className="text-xs text-ink-muted">
+                  <T>active CMS blocks</T>
+                </p>
               </Link>
             </div>
           </div>
@@ -318,7 +333,7 @@ export function DashboardPage() {
 
         <section aria-labelledby="attention-heading">
           <h2 id="attention-heading" className="mb-3 font-display text-lg text-ink">
-            Needs attention
+            <T>Needs attention</T>
           </h2>
           {lowStock.length === 0 ? (
             <EmptyState title="Nothing urgent" hint="Low-stock and exception queues are clear." />
@@ -340,7 +355,8 @@ export function DashboardPage() {
                       status={row.onHand - row.reserved <= 0 ? "out_of_stock" : "low_stock"}
                     />
                     <p className="mt-1 text-xs text-ink-muted">
-                      {row.onHand - row.reserved} available · reorder at {row.reorderThreshold}
+                      {row.onHand - row.reserved} <T>available · reorder at</T>{" "}
+                      {row.reorderThreshold}
                     </p>
                   </div>
                 </li>
@@ -351,7 +367,7 @@ export function DashboardPage() {
 
         <section aria-labelledby="activity-heading">
           <h2 id="activity-heading" className="mb-3 font-display text-lg text-ink">
-            Recent administrative activity
+            <T>Recent administrative activity</T>
           </h2>
           <ul className="divide-y divide-line rounded-md border border-line bg-surface shadow-card">
             {(audit.data ?? []).slice(0, 6).map((entry) => (

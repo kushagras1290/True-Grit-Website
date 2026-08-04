@@ -677,7 +677,11 @@ export function FacebookSignInButton({
       disabled={loading}
     >
       <span className="text-base font-bold">f</span>
-      {loading ? "Connecting..." : "Continue with Facebook"}
+      {loading ? (
+        <LocalizedText>{"Connecting..."}</LocalizedText>
+      ) : (
+        <LocalizedText>{"Continue with Facebook"}</LocalizedText>
+      )}
     </button>
   );
 }

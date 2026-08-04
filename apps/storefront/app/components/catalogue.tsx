@@ -14,7 +14,7 @@ import { mediaUrl } from "../lib/media";
 import { productEffectivePrice } from "../lib/pricing";
 import { getPublicApiUrl } from "../lib/public-env";
 import { StarRating } from "./reviews";
-import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizePlural, useLocalizeText } from "../lib/i18n/localized-text";
 
 const PRODUCE_GLYPHS: Record<string, string> = {
   "organic-alphonso-mangoes": "M",
@@ -212,6 +212,7 @@ export function CategoryTile({
   variant?: CategoryTileVariant;
   productCount?: number;
 }) {
+  const plural = useLocalizePlural();
   const imageUrl = mediaUrl(category.imageUrl);
   return (
     <Link
@@ -251,8 +252,7 @@ export function CategoryTile({
         ) : null}
         <span className="block font-display text-xl leading-tight">{category.name}</span>
         <span className="mt-1 block text-sm opacity-80">
-          {productCount} <LocalizedText>product</LocalizedText>
-          {productCount === 1 ? "" : "s"}
+          {plural("{count} product", "{count} products", productCount)}
         </span>
       </span>
     </Link>

@@ -20,8 +20,8 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { seoOverride: await loadRouteSeo("/recipes/submit", catalogueRuntime(context)) };
 }
 
-export function meta({ data }: Route.MetaArgs) {
-  return seoMeta(mergeRouteSeo(data?.seoOverride, fallbackSeo));
+export function meta({ data, matches }: Route.MetaArgs) {
+  return seoMeta(mergeRouteSeo(data?.seoOverride, fallbackSeo), matches);
 }
 
 export default function SubmitRecipePage(_props: Route.ComponentProps) {

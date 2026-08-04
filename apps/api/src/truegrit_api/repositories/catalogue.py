@@ -601,7 +601,11 @@ class CatalogueRepository:
                 "related_slugs": [entry["slug"] for entry in related],
                 "return_eligible": bool(row["return_eligible"]),
                 "seo": {
-                    "title": row["seo_title"] or row["name"],
+                    # `summary["name"]` carries the saved translation; `row`
+                    # is the raw English record, so reading the name from it
+                    # here left a translated product page under an English
+                    # browser title.
+                    "title": row["seo_title"] or summary["name"],
                     "description": row["seo_description"] or summary["_short_description"],
                     "canonical_path": f"/product/{row['slug']}",
                     "indexing": "index",
