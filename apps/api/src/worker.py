@@ -336,8 +336,25 @@ class Default(WorkerEntrypoint):
                 # upgrade itself. Same "bypass ASGI for non-request-shaped
                 # work" reasoning as the media helpers above.
                 conversation_id = path.rsplit("/", 1)[-1]
-                stub = self.env.CHAT_ROOMS.get_by_name(conversation_id)
-                return await stub.fetch(request)
+                # CHAT_ROOMS is a raw JS DurableObjectNamespace binding
+                # (Pyodide interop, like env.DB/env.MEDIA_BUCKET elsewhere in
+                # this file) -- its methods keep their native JS camelCase
+                # names; there is no Python-side getByName -> get_by_name
+                # rewrite the way DurableObjectState's own helper methods get.
+                try:
+                    stub = self.env.CHAT_ROOMS.getByName(conversation_id)
+                    return await stub.fetch(request)
+                except Exception:  # TEMPORARY: remove once verified live
+                    import json
+                    import traceback
+
+                    detail = traceback.format_exc()
+                    print(f"chat realtime routing crashed: {detail}")
+                    return _json_response(
+                        json.dumps({"error": {"code": "internal_error", "detail": detail}}),
+                        500,
+                        _cors_headers(self.env, request),
+                    )
             if _app is None:
                 _bridge_worker_env(self.env)
                 # `AI` is optional in wrangler.jsonc's binding list -- an
