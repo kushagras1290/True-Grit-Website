@@ -495,6 +495,36 @@ export interface AdminNotification {
   severity: "warning" | "danger" | "info";
 }
 
+export interface ConversationParticipant {
+  userId: string;
+  displayName: string;
+}
+
+export interface ConversationSummary {
+  id: string;
+  type: "group" | "direct";
+  name: string | null;
+  createdAt: string;
+  lastMessageBody: string | null;
+  lastMessageAt: string | null;
+  unreadCount: number;
+  participants: ConversationParticipant[];
+}
+
+export interface ChatMessage {
+  id: string;
+  senderId: string;
+  senderName: string;
+  body: string;
+  createdAt: string;
+}
+
+export interface ConversationHistory {
+  conversationId: string;
+  messages: ChatMessage[];
+  limit: number;
+}
+
 export interface SiteControl {
   heroEyebrow: string;
   heroHeading: string;
@@ -3288,6 +3318,77 @@ export const api = {
           releaseScope: input.releaseScope,
           releaseCountries: input.releaseCountries,
         }),
+
+  // --- Staff messaging -----------------------------------------------------
+  // Reads/writes here are ordinary REST; a just-sent message itself is
+  // delivered live over the WebSocket from conversationSocketUrl (below), not
+  // through this object. See truegrit_api/realtime/chat_room.py.
+
+  listConversations: (): Promise<ConversationSummary[]> =>
+    demoMode ? demo([]) : get<ConversationSummary[]>("/v1/admin/messages/conversations"),
+
+  conversationHistory: (
+    conversationId: string,
+    { limit = 50, offset = 0 }: { limit?: number; offset?: number } = {},
+  ): Promise<ConversationHistory> =>
+    demoMode
+      ? demo({ conversationId, messages: [], limit })
+      : get(
+          `/v1/admin/messages/conversations/${conversationId}/history?limit=${limit}&offset=${offset}`,
+        ),
+
+  markConversationRead: (
+    conversationId: string,
+    lastReadMessageId: string | null,
+  ): Promise<{ conversationId: string; lastReadAt: string }> =>
+    demoMode
+      ? demo({ conversationId, lastReadAt: new Date().toISOString() })
+      : post(`/v1/admin/messages/conversations/${conversationId}/read`, { lastReadMessageId }),
+
+  // Membership management (create/rename/add/remove) is owner-only at the API
+  // (auth.dependencies.require_owner) — these calls 403 for anyone else, which
+  // the UI avoids by only offering them behind isSuperAdmin.
+
+  createConversation: (input: {
+    type: "group" | "direct";
+    name?: string | null;
+    participantUserIds: string[];
+  }): Promise<{ id: string; type: "group" | "direct"; name: string | null; reused: boolean }> =>
+    demoMode
+      ? Promise.reject(new ApiError("Messaging needs the live API.", 501, "not_supported_in_demo"))
+      : post("/v1/admin/messages/conversations", input),
+
+  renameConversation: (
+    conversationId: string,
+    name: string,
+  ): Promise<{ id: string; name: string }> =>
+    demoMode
+      ? Promise.reject(new ApiError("Messaging needs the live API.", 501, "not_supported_in_demo"))
+      : patch(`/v1/admin/messages/conversations/${conversationId}`, { name }),
+
+  addConversationParticipants: (
+    conversationId: string,
+    userIds: string[],
+  ): Promise<{ id: string; addedUserIds: string[] }> =>
+    demoMode
+      ? Promise.reject(new ApiError("Messaging needs the live API.", 501, "not_supported_in_demo"))
+      : post(`/v1/admin/messages/conversations/${conversationId}/participants`, { userIds }),
+
+  removeConversationParticipant: (
+    conversationId: string,
+    userId: string,
+  ): Promise<{ id: string; removedUserId: string }> =>
+    demoMode
+      ? Promise.reject(new ApiError("Messaging needs the live API.", 501, "not_supported_in_demo"))
+      : del(`/v1/admin/messages/conversations/${conversationId}/participants/${userId}`),
 };
+
+/** `wss://…/v1/admin/messages/realtime/{conversationId}` — the session cookie
+ * rides along automatically (same-origin WebSocket handshake), same as every
+ * other admin request. Only meaningful when `!demoMode`; callers gate on that. */
+export function conversationSocketUrl(conversationId: string): string {
+  const wsOrigin = (API_URL ?? "").replace(/^http/, "ws");
+  return `${wsOrigin}/v1/admin/messages/realtime/${conversationId}`;
+}
 
 export type { ContentBlock };
