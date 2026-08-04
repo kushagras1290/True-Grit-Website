@@ -129,7 +129,10 @@ class WorkersAIChat:
             payload["tools"] = [_tool_to_wire(tool) for tool in tools]
         try:
             result = await self._ai.run(self._model, payload)
-        except Exception as exc:
+        except Exception as exc:  # TEMPORARY: debug print, remove once root-caused
+            import traceback
+
+            print(f"ai_chat.run_failed: {type(exc).__name__}: {exc}\n{traceback.format_exc()}")
             raise ChatUnavailableError(
                 "The support bot is temporarily unavailable. Try again shortly."
             ) from exc
