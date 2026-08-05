@@ -1,4 +1,4 @@
-import { formatMoney, type SubscriptionRow } from "@truegrit/contracts";
+import { formatMoney, type SubscriptionRow, type WishlistItem } from "@truegrit/contracts";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
@@ -8,10 +8,14 @@ import {
   cancelSubscription,
   listMyOrders,
   listMySubscriptions,
+  listMyWishlist,
   pauseSubscription,
+  removeFromWishlist,
   resumeSubscription,
   type OrderSummary,
 } from "../lib/commerce";
+import { useCart } from "../lib/cart";
+import { usePriceFormatter } from "../lib/currency";
 import { useCustomer } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
 import { LocalizedText, useLocalizeFormat, useLocalizeText } from "../lib/i18n/localized-text";
@@ -219,6 +223,112 @@ function MySubscriptions() {
   );
 }
 
+function MyWishlist() {
+  const price = usePriceFormatter();
+  const { add } = useCart();
+  const [items, setItems] = useState<WishlistItem[] | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [addedId, setAddedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    listMyWishlist()
+      .then((rows) => active && setItems(rows))
+      .catch(() => active && setItems([]));
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function handleRemove(productId: string) {
+    setBusyId(productId);
+    try {
+      await removeFromWishlist(productId);
+      setItems((current) => (current ?? []).filter((entry) => entry.productId !== productId));
+    } catch {
+      // Leave the list as-is on failure rather than showing a stale removal.
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  function handleAddToCart(item: WishlistItem) {
+    if (!item.variantId || item.unitPriceMinor === null) return;
+    add({
+      productSlug: item.productSlug,
+      productName: item.productName,
+      variantId: item.variantId,
+      variantName: item.variantName ?? item.productName,
+      unitMinor: item.unitPriceMinor,
+    });
+    setAddedId(item.productId);
+    setTimeout(() => setAddedId(null), 2000);
+  }
+
+  if (items === null) {
+    return (
+      <p className="text-sm text-ink-muted">
+        <LocalizedText>Loading your wishlist…</LocalizedText>
+      </p>
+    );
+  }
+  if (items.length === 0) {
+    return (
+      <p className="text-sm text-ink-muted">
+        <LocalizedText>
+          Nothing saved yet. Tap the heart on any product to save it here for later.
+        </LocalizedText>
+      </p>
+    );
+  }
+
+  return (
+    <ul className="divide-y divide-line rounded-md border border-line bg-surface">
+      {items.map((item) => (
+        <li key={item.productId} className="flex items-center justify-between gap-3 px-5 py-4">
+          <div className="min-w-0">
+            <Link
+              to={`/product/${item.productSlug}`}
+              className="font-medium text-ink hover:text-brand"
+            >
+              {item.productName}
+            </Link>
+            <p className="mt-0.5 text-xs text-ink-muted">
+              {item.unitPriceMinor !== null && item.currencyCode
+                ? price(item.unitPriceMinor)
+                : null}
+            </p>
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            {addedId === item.productId ? (
+              <span className="text-xs font-medium text-success">
+                <LocalizedText>Added</LocalizedText>
+              </span>
+            ) : (
+              <button
+                type="button"
+                disabled={!item.variantId}
+                onClick={() => handleAddToCart(item)}
+                className="min-h-9 rounded-sm border border-line-strong px-3 text-xs font-medium text-ink hover:bg-canvas disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <LocalizedText>Add to basket</LocalizedText>
+              </button>
+            )}
+            <button
+              type="button"
+              disabled={busyId === item.productId}
+              onClick={() => handleRemove(item.productId)}
+              className="min-h-9 rounded-sm border border-danger/40 px-3 text-xs font-medium text-danger hover:bg-danger/5 disabled:opacity-50"
+            >
+              <LocalizedText>Remove</LocalizedText>
+            </button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function AccountPage(_props: Route.ComponentProps) {
   const format = useLocalizeFormat();
   const { customer, status, logout } = useCustomer();
@@ -308,6 +418,13 @@ export default function AccountPage(_props: Route.ComponentProps) {
               <LocalizedText>Subscriptions</LocalizedText>
             </h2>
             <MySubscriptions />
+          </div>
+
+          <div>
+            <h2 className="mb-2 font-display text-lg text-ink">
+              <LocalizedText>Wishlist</LocalizedText>
+            </h2>
+            <MyWishlist />
           </div>
         </div>
 

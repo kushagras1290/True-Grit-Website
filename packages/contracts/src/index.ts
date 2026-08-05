@@ -967,6 +967,29 @@ export interface SubscriptionRow {
 }
 
 // ---------------------------------------------------------------------------
+// Wishlist -- a signed-in customer saving a product for later. Product-level
+// (one wishlist entry per product, not per variant) to match the storefront's
+// product-card UI. No status machine, no financial commitment -- the
+// simplest customer-owned resource in the contract, deliberately smaller
+// than SubscriptionRow above. `variantId`/`variantName`/`sku`/`unitPriceMinor`
+// describe the product's first active variant, for display only -- adding
+// the saved product to cart still goes through the normal variant picker.
+// ---------------------------------------------------------------------------
+
+export interface WishlistItem {
+  productId: string;
+  productName: string;
+  productSlug: string;
+  imageUrl: string | null;
+  variantId: string | null;
+  variantName: string | null;
+  sku: string | null;
+  unitPriceMinor: number | null;
+  currencyCode: string | null;
+  addedAt: string;
+}
+
+// ---------------------------------------------------------------------------
 // Analytics -- a visual dashboard over a date range, computed live from
 // orders/order_items. Distinct from the Owner Reports library (curated
 // named queries, no charts): this is "how is the store doing".

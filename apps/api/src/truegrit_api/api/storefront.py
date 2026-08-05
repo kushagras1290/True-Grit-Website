@@ -23,6 +23,7 @@ from truegrit_api.platform.database import Database
 from truegrit_api.repositories.content import ReturnRequestRepository
 from truegrit_api.services import addresses as address_service
 from truegrit_api.services import subscriptions as subscription_service
+from truegrit_api.services import wishlist as wishlist_service
 from truegrit_api.services.checkout import CheckoutLine, place_order
 from truegrit_api.services.contact import contactable_email
 from truegrit_api.services.email_templates import (
@@ -880,3 +881,48 @@ async def cancel_my_subscription_endpoint(
     return await subscription_service.cancel_subscription(
         db, customer, _request_id(request), subscription_id
     )
+
+
+class WishlistCreate(_CamelModel):
+    product_id: str = Field(min_length=1, max_length=64)
+
+
+@router.get("/wishlist")
+async def list_my_wishlist_endpoint(
+    customer: Annotated[Principal, Depends(get_current_customer)],
+    db: Annotated[Database, Depends(get_database)],
+) -> Any:
+    return {"items": await wishlist_service.list_my_wishlist(db, customer)}
+
+
+@router.get("/wishlist/product-ids")
+async def list_my_wishlist_product_ids_endpoint(
+    customer: Annotated[Principal, Depends(get_current_customer)],
+    db: Annotated[Database, Depends(get_database)],
+) -> Any:
+    return {"productIds": await wishlist_service.list_wishlist_product_ids(db, customer)}
+
+
+@router.post("/wishlist")
+async def add_to_my_wishlist_endpoint(
+    payload: WishlistCreate,
+    request: Request,
+    customer: Annotated[Principal, Depends(get_current_customer)],
+    db: Annotated[Database, Depends(get_database)],
+) -> Any:
+    return await wishlist_service.add_to_wishlist(
+        db, customer, _request_id(request), product_id=payload.product_id
+    )
+
+
+@router.delete("/wishlist/{product_id}")
+async def remove_from_my_wishlist_endpoint(
+    product_id: str,
+    request: Request,
+    customer: Annotated[Principal, Depends(get_current_customer)],
+    db: Annotated[Database, Depends(get_database)],
+) -> Any:
+    await wishlist_service.remove_from_wishlist(
+        db, customer, _request_id(request), product_id=product_id
+    )
+    return {"productId": product_id, "removed": True}

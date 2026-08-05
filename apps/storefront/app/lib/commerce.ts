@@ -11,6 +11,7 @@ import type {
   ProductSummary,
   SubscriptionFrequency,
   SubscriptionRow,
+  WishlistItem,
 } from "@truegrit/contracts";
 
 import { AuthError } from "./customer-auth";
@@ -903,6 +904,35 @@ export function cancelSubscription(subscriptionId: string): Promise<Subscription
   return request<SubscriptionRow>(
     `/v1/public/subscriptions/${encodeURIComponent(subscriptionId)}/cancel`,
     { method: "POST" },
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Wishlist -- a signed-in customer saving a product for later. Product-level,
+// not variant-level: one entry per product, matching the shop grid's cards.
+// ---------------------------------------------------------------------------
+
+export function listMyWishlist(): Promise<WishlistItem[]> {
+  return request<{ items: WishlistItem[] }>("/v1/public/wishlist").then((body) => body.items);
+}
+
+export function listWishlistProductIds(): Promise<string[]> {
+  return request<{ productIds: string[] }>("/v1/public/wishlist/product-ids").then(
+    (body) => body.productIds,
+  );
+}
+
+export function addToWishlist(productId: string): Promise<WishlistItem> {
+  return request<WishlistItem>("/v1/public/wishlist", {
+    method: "POST",
+    body: JSON.stringify({ productId }),
+  });
+}
+
+export function removeFromWishlist(productId: string): Promise<{ removed: boolean }> {
+  return request<{ productId: string; removed: boolean }>(
+    `/v1/public/wishlist/${encodeURIComponent(productId)}`,
+    { method: "DELETE" },
   );
 }
 

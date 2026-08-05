@@ -8,6 +8,7 @@ import { ProductGallery } from "../components/product-gallery";
 import { ProductReviews, RatingSummary } from "../components/reviews";
 import { RecommendedProducts } from "../components/recommendations";
 import { SubscribeAndSave } from "../components/subscribe-and-save";
+import { WishlistButton } from "../components/wishlist-button";
 import {
   catalogueRuntime,
   loadAlsoBought,
@@ -207,6 +208,10 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
                 <LocalizedText>{"Not available to order"}</LocalizedText>
               )}
             </button>
+            <WishlistButton
+              productId={product.id}
+              className="static h-11 w-11 border border-line-strong bg-transparent shadow-none"
+            />
           </div>
           <p role="status" className="mt-2 min-h-5 text-sm text-success">
             {added ? <LocalizedText>{"Added to your basket."}</LocalizedText> : ""}

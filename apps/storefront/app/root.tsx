@@ -30,6 +30,7 @@ import { resolveLocale } from "./lib/i18n/resolve.server";
 import { DEFAULT_SITE_SETTINGS, SiteSettingsProvider } from "./lib/site-settings";
 import { resolveThemeTokens, themeStyleSheet } from "./lib/theme";
 import { LocalizedText } from "./lib/i18n/localized-text";
+import { WishlistProvider } from "./lib/wishlist";
 
 export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.png", type: "image/png" },
@@ -169,40 +170,42 @@ export default function App() {
       <LocaleProvider locale={locale} messages={messages}>
         <SiteSettingsProvider settings={siteSettings}>
           <CustomerProvider>
-            <CartProvider>
-              <CurrencyProvider country={country}>
-                {isPaymentWindow ? (
-                  <main id="content">
-                    <Outlet />
-                  </main>
-                ) : (
-                  <>
-                    <SkipLink />
-                    <Header bootstrap={bootstrap} />
+            <WishlistProvider>
+              <CartProvider>
+                <CurrencyProvider country={country}>
+                  {isPaymentWindow ? (
                     <main id="content">
                       <Outlet />
                     </main>
-                    <Footer bootstrap={bootstrap} />
-                    {/* Decoration only, and never on the payment window: a
-                        snowfall over a card form is a distraction at exactly
-                        the wrong moment. Both layers no-op for a visitor who
-                        asked for reduced motion. */}
-                    <AmbientEffect
-                      effect={siteSettings.effects.ambient.effect}
-                      color={siteSettings.effects.ambient.color}
-                      intensity={siteSettings.effects.ambient.intensity}
-                    />
-                    <CursorTrail
-                      trail={siteSettings.effects.cursor.trail}
-                      color={siteSettings.effects.cursor.color}
-                      hideNativeCursor={siteSettings.effects.cursor.hideNativeCursor}
-                    />
-                    <LanguageSuggestionPrompt locale={locale} active={localeSource === "geo"} />
-                    <SupportBotWidget country={country} />
-                  </>
-                )}
-              </CurrencyProvider>
-            </CartProvider>
+                  ) : (
+                    <>
+                      <SkipLink />
+                      <Header bootstrap={bootstrap} />
+                      <main id="content">
+                        <Outlet />
+                      </main>
+                      <Footer bootstrap={bootstrap} />
+                      {/* Decoration only, and never on the payment window: a
+                          snowfall over a card form is a distraction at exactly
+                          the wrong moment. Both layers no-op for a visitor who
+                          asked for reduced motion. */}
+                      <AmbientEffect
+                        effect={siteSettings.effects.ambient.effect}
+                        color={siteSettings.effects.ambient.color}
+                        intensity={siteSettings.effects.ambient.intensity}
+                      />
+                      <CursorTrail
+                        trail={siteSettings.effects.cursor.trail}
+                        color={siteSettings.effects.cursor.color}
+                        hideNativeCursor={siteSettings.effects.cursor.hideNativeCursor}
+                      />
+                      <LanguageSuggestionPrompt locale={locale} active={localeSource === "geo"} />
+                      <SupportBotWidget country={country} />
+                    </>
+                  )}
+                </CurrencyProvider>
+              </CartProvider>
+            </WishlistProvider>
           </CustomerProvider>
         </SiteSettingsProvider>
       </LocaleProvider>

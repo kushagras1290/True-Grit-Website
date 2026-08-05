@@ -14,6 +14,7 @@ import { mediaUrl } from "../lib/media";
 import { productEffectivePrice } from "../lib/pricing";
 import { getPublicApiUrl } from "../lib/public-env";
 import { StarRating } from "./reviews";
+import { WishlistButton } from "./wishlist-button";
 import { LocalizedText, useLocalizePlural, useLocalizeText } from "../lib/i18n/localized-text";
 
 const PRODUCE_GLYPHS: Record<string, string> = {
@@ -110,7 +111,8 @@ export function ProductCard({ product }: { product: ProductSummary }) {
   const price = usePriceFormatter();
   const effective = productEffectivePrice(product);
   return (
-    <article className="group">
+    <article className="group relative">
+      <WishlistButton productId={product.id} className="absolute top-2 right-2 z-10" />
       <Link to={`/product/${product.slug}`} className="block">
         <ProduceFrame
           slug={product.slug}
