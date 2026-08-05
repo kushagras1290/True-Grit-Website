@@ -713,6 +713,99 @@ def test_completed_order_consumes_reserved_inventory(client: TestClient, db: SQL
     assert after_complete["reserved"] == before["reserved"]
 
 
+def test_farm_owner_sees_only_own_farm_orders_in_list(client: TestClient, db: SQLiteDatabase):
+    # ord_1001/ord_1002 are entirely prd_alphonso (farm_devika, usr_farmowner's
+    # farm); ord_1003-1007 belong to other farms and must never appear.
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    items = client.get("/v1/admin/orders").json()["items"]
+    references = {item["publicReference"] for item in items}
+    assert references == {"TG-1001", "TG-1002"}
+    by_reference = {item["publicReference"]: item for item in items}
+    assert by_reference["TG-1001"]["totalMinor"] == 89900
+    assert by_reference["TG-1002"]["totalMinor"] == 149900
+
+
+def test_farm_owner_gets_full_detail_for_own_farm_order(client: TestClient, db: SQLiteDatabase):
+    _seed_paid_razorpay_payment(db, "ord_1001", 94800)
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    detail = client.get("/v1/admin/orders/ord_1001")
+    assert detail.status_code == 200
+    body = detail.json()
+    assert len(body["items"]) == 1
+    assert body["totalMinor"] == 89900
+    assert body["subtotalMinor"] == 89900
+    # Whole-order payment figures are hidden from a farm-scoped read (94800
+    # includes delivery, which isn't this farm's revenue) -- provider/status
+    # stay visible since fulfilment needs to know "is this paid".
+    assert body["payment"]["provider"] == "razorpay"
+    assert body["payment"]["amountMinor"] is None
+    assert body["payment"]["refundedMinor"] is None
+
+
+def test_farm_owner_gets_404_for_another_farms_order(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    assert client.get("/v1/admin/orders/ord_1003").status_code == 404
+
+
+def test_farm_owner_can_transition_own_farm_order(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    moved = client.patch("/v1/admin/orders/ord_1002/status", json={"status": "confirmed"})
+    assert moved.status_code == 200
+    assert moved.json()["orderStatus"] == "confirmed"
+
+
+def test_farm_owner_cannot_transition_another_farms_order(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    response = client.patch("/v1/admin/orders/ord_1003/status", json={"status": "cancelled"})
+    assert response.status_code == 403
+
+
+def test_regular_admin_still_sees_every_farms_orders(client: TestClient, db: SQLiteDatabase):
+    # farm scoping must not affect a global staff member (farm_id is None).
+    as_admin(client, db)
+    items = client.get("/v1/admin/orders").json()["items"]
+    references = {item["publicReference"] for item in items}
+    assert {"TG-1001", "TG-1002", "TG-1003", "TG-1007"} <= references
+    detail = client.get("/v1/admin/orders/ord_1003")
+    assert detail.status_code == 200
+    assert detail.json()["totalMinor"] == 18700  # the real, whole-order total
+
+
+def test_farm_owner_search_results_scoped_to_own_farm(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    results = client.get("/v1/admin/search", params={"q": "TG-10"}).json()
+    references = {row["publicReference"] for row in results["orders"]}
+    assert "TG-1001" in references
+    assert "TG-1003" not in references
+
+
+def test_farm_owner_with_refund_permission_cannot_refund_anothers_order(
+    client: TestClient, db: SQLiteDatabase
+):
+    # orders.refund is not normally farm-holdable (Scope Management blocks
+    # granting it), but the ownership guard in `issue_refund` must hold even
+    # if that ever changes -- exercised here via a direct grant, matching how
+    # `test_farm_owner_cannot_manage_appearance`'s sibling tests isolate a
+    # single check from the broader "can this role even hold this permission"
+    # rule.
+    as_admin(client, db)
+    permission_ids = {
+        permission["key"]: permission["id"]
+        for permission in client.get("/v1/admin/permissions").json()["items"]
+    }
+    db._conn.execute(
+        "INSERT INTO role_permissions (role_id, permission_id) VALUES ('rol_farm_owner', ?)",
+        (permission_ids["orders.refund"],),
+    )
+    db._conn.commit()
+
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
+    response = client.post(
+        "/v1/admin/orders/ord_1003/refund", json={"reason": "Testing the ownership guard"}
+    )
+    assert response.status_code == 403
+
+
 def _seed_paid_razorpay_payment(db: SQLiteDatabase, order_id: str, amount_minor: int) -> None:
     now = "2026-07-15T00:00:00Z"
     db._conn.execute(

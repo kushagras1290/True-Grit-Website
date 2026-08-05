@@ -14,9 +14,25 @@ class BundleRepository:
         self._db = db
 
     async def list_admin(
-        self, *, limit: int = 50, offset: int = 0, status: str | None = None
+        self,
+        *,
+        limit: int = 50,
+        offset: int = 0,
+        status: str | None = None,
+        farm_id: str | None = None,
     ) -> list[dict[str, Any]]:
-        where = "WHERE (? IS NULL OR b.status = ?)"
+        """`farm_id` is dormant today -- no seeded role holds `bundles.manage`
+        and a `farm_id` at once -- but if one ever does, this scopes them to
+        bundles that include at least one of their own farm's products."""
+        where = (
+            "WHERE (? IS NULL OR b.status = ?)"
+            " AND (? IS NULL OR EXISTS ("
+            "   SELECT 1 FROM bundle_items bi"
+            "   JOIN product_variants v ON v.id = bi.variant_id"
+            "   JOIN products p ON p.id = v.product_id"
+            "   WHERE bi.bundle_id = b.id AND p.farm_id = ?"
+            " ))"
+        )
         rows = await self._db.fetch_all(
             f"""
             SELECT b.id, b.name, b.slug, b.description, b.status, b.bundle_price_minor,
@@ -27,14 +43,23 @@ class BundleRepository:
             ORDER BY b.name
             LIMIT ? OFFSET ?
             """,
-            (status, status, limit, max(offset, 0)),
+            (status, status, farm_id, farm_id, limit, max(offset, 0)),
         )
         return rows
 
-    async def count_admin(self, *, status: str | None = None) -> int:
+    async def count_admin(self, *, status: str | None = None, farm_id: str | None = None) -> int:
         row = await self._db.fetch_one(
-            "SELECT COUNT(*) AS total FROM bundles WHERE (? IS NULL OR status = ?)",
-            (status, status),
+            """
+            SELECT COUNT(*) AS total FROM bundles b
+            WHERE (? IS NULL OR b.status = ?)
+              AND (? IS NULL OR EXISTS (
+                SELECT 1 FROM bundle_items bi
+                JOIN product_variants v ON v.id = bi.variant_id
+                JOIN products p ON p.id = v.product_id
+                WHERE bi.bundle_id = b.id AND p.farm_id = ?
+              ))
+            """,
+            (status, status, farm_id, farm_id),
         )
         return int(row["total"]) if row else 0
 
@@ -67,6 +92,7 @@ class BundleRepository:
             SELECT bi.id, bi.variant_id, bi.quantity, bi.sort_order,
                    v.name AS variant_name, v.sku,
                    p.id AS product_id, p.name AS product_name, p.slug AS product_slug,
+                   p.farm_id AS product_farm_id,
                    COALESCE(
                      '/media/' || m.object_key,
                      NULLIF(p.image_url, '')

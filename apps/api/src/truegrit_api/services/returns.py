@@ -150,6 +150,26 @@ async def create_return_request(
     return {"id": return_id, "status": "requested"}
 
 
+async def _assert_farm_owns_return(db: Database, actor: Principal, return_id: str) -> None:
+    """Dormant today -- no seeded role holds `returns.manage` and a `farm_id`
+    at once -- but kept correct in case that combination is ever granted. A
+    return with no linked order_item has nothing to attribute to a farm, so
+    it is treated as not this farm's to act on, same as the list/detail
+    reads in `repositories.content.ReturnRequestRepository`."""
+    if actor.farm_id is None:
+        return
+    row = await db.fetch_one(
+        """
+        SELECT oi.farm_id FROM return_requests rr
+        LEFT JOIN order_items oi ON oi.id = rr.order_item_id
+        WHERE rr.id = ?
+        """,
+        (return_id,),
+    )
+    if row is None or row["farm_id"] != actor.farm_id:
+        raise PermissionDeniedError("This return is not for one of your farm's products.")
+
+
 async def decide_return_request(
     db: Database, actor: Principal, request_id: str, return_id: str, *, decision: str
 ) -> dict[str, Any]:
@@ -158,6 +178,7 @@ async def decide_return_request(
     current = await db.fetch_one("SELECT * FROM return_requests WHERE id = ?", (return_id,))
     if current is None:
         raise NotFoundError("Return request not found.")
+    await _assert_farm_owns_return(db, actor, return_id)
     if current["status"] not in _OPEN_STATUSES:
         raise ConflictError(f"Cannot move a '{current['status']}' return request to '{decision}'.")
 
@@ -206,6 +227,7 @@ async def resolve_return_request(
     current = await db.fetch_one("SELECT * FROM return_requests WHERE id = ?", (return_id,))
     if current is None:
         raise NotFoundError("Return request not found.")
+    await _assert_farm_owns_return(db, actor, return_id)
     if current["status"] != "approved":
         raise ConflictError("Only an approved return request can be resolved.")
 

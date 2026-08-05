@@ -559,9 +559,9 @@ INSERT INTO orders (id, public_reference, customer_user_id, customer_email, curr
   ('ord_1001', 'TG-1001', 'usr_cust_riya', 'riya@example.test', 'INR', 89900, 0, 4900, 0, 94800, 'confirmed', 'paid', 'unfulfilled', 'not_ready', '2026-07-10T09:00:00Z', '2026-07-10T09:00:00Z', '2026-07-10T09:00:00Z'),
   ('ord_1002', 'TG-1002', 'usr_cust_riya', 'riya@example.test', 'INR', 149900, 0, 0, 0, 149900, 'pending_payment', 'pending', 'unfulfilled', 'not_ready', '2026-07-12T14:30:00Z', '2026-07-12T14:30:00Z', '2026-07-12T14:30:00Z');
 
-INSERT INTO order_items (id, order_id, product_id, variant_id, product_name, variant_name, sku, quantity, unit_list_amount_minor, unit_effective_amount_minor, discount_minor, tax_minor, line_total_minor) VALUES
-  ('oit_1001', 'ord_1001', 'prd_alphonso', 'var_alphonso_1kg', 'Organic Alphonso Mangoes', '1 kg box (3-4 mangoes)', 'TRG-MNG-1KG', 1, 89900, 89900, 0, 0, 89900),
-  ('oit_1002', 'ord_1002', 'prd_alphonso', 'var_alphonso_2kg', 'Organic Alphonso Mangoes', '2 kg box (7-8 mangoes)', 'TRG-MNG-2KG', 1, 149900, 149900, 0, 0, 149900);
+INSERT INTO order_items (id, order_id, product_id, variant_id, product_name, variant_name, sku, quantity, unit_list_amount_minor, unit_effective_amount_minor, discount_minor, tax_minor, line_total_minor, farm_id) VALUES
+  ('oit_1001', 'ord_1001', 'prd_alphonso', 'var_alphonso_1kg', 'Organic Alphonso Mangoes', '1 kg box (3-4 mangoes)', 'TRG-MNG-1KG', 1, 89900, 89900, 0, 0, 89900, 'farm_devika'),
+  ('oit_1002', 'ord_1002', 'prd_alphonso', 'var_alphonso_2kg', 'Organic Alphonso Mangoes', '2 kg box (7-8 mangoes)', 'TRG-MNG-2KG', 1, 149900, 149900, 0, 0, 149900, 'farm_devika');
 
 -- Two more customers, purely so reviews below have more than one voice.
 INSERT INTO users (id, email, display_name, user_type, status, email_verified_at, phone_e164, phone_verified_at, created_at, updated_at) VALUES
@@ -588,12 +588,12 @@ INSERT INTO orders (id, public_reference, customer_user_id, customer_email, curr
   ('ord_1006', 'TG-1006', 'usr_cust_riya', 'riya@example.test', 'INR', 12900, 0, 4900, 0, 17800, 'completed', 'paid', 'fulfilled', 'delivered', '2026-07-18T09:00:00Z', '2026-07-18T09:00:00Z', '2026-07-20T09:00:00Z'),
   ('ord_1007', 'TG-1007', 'usr_cust_arjun', 'arjun@example.test', 'INR', 32900, 0, 4900, 0, 37800, 'completed', 'paid', 'fulfilled', 'delivered', '2026-07-19T09:00:00Z', '2026-07-19T09:00:00Z', '2026-07-21T09:00:00Z');
 
-INSERT INTO order_items (id, order_id, product_id, variant_id, product_name, variant_name, sku, quantity, unit_list_amount_minor, unit_effective_amount_minor, discount_minor, tax_minor, line_total_minor) VALUES
-  ('oit_1003', 'ord_1003', 'prd_spinach', 'var_spinach_250g', 'Organic Baby Spinach', '250 g bunch', 'TRG-SPN-250', 2, 6900, 6900, 0, 0, 13800),
-  ('oit_1004', 'ord_1004', 'prd_ragi', 'var_ragi_500g', 'Sprouted Ragi Flour', '500 g pack', 'TRG-RGI-500', 1, 14500, 14500, 0, 0, 14500),
-  ('oit_1005', 'ord_1005', 'prd_spinach', 'var_spinach_250g', 'Organic Baby Spinach', '250 g bunch', 'TRG-SPN-250', 1, 6900, 6900, 0, 0, 6900),
-  ('oit_1006', 'ord_1006', 'prd_rajma', 'var_rajma_500g', 'Himalayan Rajma', '500 g pack', 'TRG-RJM-500', 1, 12900, 12900, 0, 0, 12900),
-  ('oit_1007', 'ord_1007', 'prd_groundnut_oil', 'var_oil_1l', 'Wood-Pressed Groundnut Oil', '1 L glass bottle', 'TRG-GNO-1L', 1, 32900, 32900, 0, 0, 32900);
+INSERT INTO order_items (id, order_id, product_id, variant_id, product_name, variant_name, sku, quantity, unit_list_amount_minor, unit_effective_amount_minor, discount_minor, tax_minor, line_total_minor, farm_id) VALUES
+  ('oit_1003', 'ord_1003', 'prd_spinach', 'var_spinach_250g', 'Organic Baby Spinach', '250 g bunch', 'TRG-SPN-250', 2, 6900, 6900, 0, 0, 13800, 'farm_anandvan'),
+  ('oit_1004', 'ord_1004', 'prd_ragi', 'var_ragi_500g', 'Sprouted Ragi Flour', '500 g pack', 'TRG-RGI-500', 1, 14500, 14500, 0, 0, 14500, 'farm_anandvan'),
+  ('oit_1005', 'ord_1005', 'prd_spinach', 'var_spinach_250g', 'Organic Baby Spinach', '250 g bunch', 'TRG-SPN-250', 1, 6900, 6900, 0, 0, 6900, 'farm_anandvan'),
+  ('oit_1006', 'ord_1006', 'prd_rajma', 'var_rajma_500g', 'Himalayan Rajma', '500 g pack', 'TRG-RJM-500', 1, 12900, 12900, 0, 0, 12900, 'farm_himgiri'),
+  ('oit_1007', 'ord_1007', 'prd_groundnut_oil', 'var_oil_1l', 'Wood-Pressed Groundnut Oil', '1 L glass bottle', 'TRG-GNO-1L', 1, 32900, 32900, 0, 0, 32900, 'farm_anandvan');
 
 -- Product reviews (migration 0057). Four approved so the product pages and the
 -- rule-based homepage showcase (minRating 4) have real content to render; one

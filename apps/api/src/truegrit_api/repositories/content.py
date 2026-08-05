@@ -1102,9 +1102,15 @@ class ReturnRequestRepository:
         limit: int = 50,
         offset: int = 0,
         search: str | None = None,
+        farm_id: str | None = None,
     ) -> list[dict[str, Any]]:
+        """`farm_id` is dormant today -- no seeded role holds `returns.view`
+        and a `farm_id` at once -- but if one ever does, this scopes them to
+        returns against their own farm's products. A return with no linked
+        order_item (order-level, not one specific item) has no farm to
+        attribute it to, so it's hidden rather than shown to every farm."""
         search_clause = ""
-        params: list[Any] = [status, status]
+        params: list[Any] = [status, status, farm_id, farm_id]
         if search:
             search_clause = "AND (o.public_reference LIKE ? OR oi.product_name LIKE ?)"
             params.extend([f"%{search}%", f"%{search}%"])
@@ -1121,6 +1127,7 @@ class ReturnRequestRepository:
             LEFT JOIN users u ON u.id = rr.customer_user_id
             LEFT JOIN order_items oi ON oi.id = rr.order_item_id
             WHERE (? IS NULL OR rr.status = ?)
+              AND (? IS NULL OR oi.farm_id = ?)
             {search_clause}
             ORDER BY rr.requested_at DESC
             LIMIT ? OFFSET ?
@@ -1128,7 +1135,9 @@ class ReturnRequestRepository:
             tuple(params),
         )
 
-    async def get_admin_detail(self, return_id: str) -> dict[str, Any] | None:
+    async def get_admin_detail(
+        self, return_id: str, farm_id: str | None = None
+    ) -> dict[str, Any] | None:
         return await self._db.fetch_one(
             """
             SELECT rr.*, o.public_reference, o.total_minor AS order_total_minor,
@@ -1138,9 +1147,9 @@ class ReturnRequestRepository:
             JOIN orders o ON o.id = rr.order_id
             LEFT JOIN users u ON u.id = rr.customer_user_id
             LEFT JOIN order_items oi ON oi.id = rr.order_item_id
-            WHERE rr.id = ?
+            WHERE rr.id = ? AND (? IS NULL OR oi.farm_id = ?)
             """,
-            (return_id,),
+            (return_id, farm_id, farm_id),
         )
 
     async def list_for_customer(self, customer_user_id: str) -> list[dict[str, Any]]:
@@ -1546,11 +1555,17 @@ class ReviewRepository:
         search: str | None = None,
         limit: int = 50,
         offset: int = 0,
+        farm_id: str | None = None,
     ) -> list[dict[str, Any]]:
         """Every review, newest first, with the product and author attached so
-        a moderator never needs a second round trip to decide."""
+        a moderator never needs a second round trip to decide.
+
+        `farm_id` is dormant today -- no seeded role holds `reviews.moderate`
+        and a `farm_id` at once -- but if one ever does, this scopes them to
+        reviews of their own farm's products rather than the whole catalogue.
+        """
         search_clause = ""
-        params: list[Any] = [status, status, rating, rating]
+        params: list[Any] = [status, status, rating, rating, farm_id, farm_id]
         if search:
             search_clause = "AND (r.title LIKE ? OR r.body LIKE ? OR u.display_name LIKE ?)"
             pattern = f"%{search}%"
@@ -1567,6 +1582,7 @@ class ReviewRepository:
             JOIN products p ON p.id = r.product_id
             WHERE (? IS NULL OR r.status = ?)
               AND (? IS NULL OR r.rating = ?)
+              AND (? IS NULL OR p.farm_id = ?)
             {search_clause}
             ORDER BY r.created_at DESC
             LIMIT ? OFFSET ?
@@ -1575,10 +1591,15 @@ class ReviewRepository:
         )
 
     async def count_admin(
-        self, *, status: str | None = None, rating: int | None = None, search: str | None = None
+        self,
+        *,
+        status: str | None = None,
+        rating: int | None = None,
+        search: str | None = None,
+        farm_id: str | None = None,
     ) -> int:
         search_clause = ""
-        params: list[Any] = [status, status, rating, rating]
+        params: list[Any] = [status, status, rating, rating, farm_id, farm_id]
         if search:
             search_clause = "AND (r.title LIKE ? OR r.body LIKE ? OR u.display_name LIKE ?)"
             pattern = f"%{search}%"
@@ -1588,8 +1609,10 @@ class ReviewRepository:
             SELECT COUNT(*) AS total
             FROM reviews r
             JOIN users u ON u.id = r.customer_user_id
+            JOIN products p ON p.id = r.product_id
             WHERE (? IS NULL OR r.status = ?)
               AND (? IS NULL OR r.rating = ?)
+              AND (? IS NULL OR p.farm_id = ?)
             {search_clause}
             """,
             tuple(params),

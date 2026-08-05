@@ -42,6 +42,33 @@ def allowed_order_transitions(current: str) -> frozenset[str]:
     return _ORDER_TRANSITIONS.get(current, frozenset())
 
 
+async def _assert_farm_owns_order(db: Database, actor: Principal, order_id: str) -> None:
+    """A farm-scoped principal may act on an order only when every item in it
+    is theirs.
+
+    Order status has no per-farm sub-state -- it is a single value for the
+    whole order -- so a farm-owner sub-admin cannot be allowed to move a
+    mixed-farm order forward (or refund it): either action would affect
+    another farm's items too. A global staff member (`actor.farm_id is None`)
+    is unaffected.
+    """
+    if actor.farm_id is None:
+        return
+    owned = await db.fetch_one(
+        """
+        SELECT NOT EXISTS (
+          SELECT 1 FROM order_items
+          WHERE order_id = ? AND (farm_id IS NULL OR farm_id != ?)
+        ) AS fully_owned
+        """,
+        (order_id, actor.farm_id),
+    )
+    if owned is None or not owned["fully_owned"]:
+        raise PermissionDeniedError(
+            "This order includes items from another farm; only an administrator can change it."
+        )
+
+
 async def update_order_status(
     db: Database,
     actor: Principal,
@@ -53,6 +80,7 @@ async def update_order_status(
     current = await db.fetch_one("SELECT id, order_status FROM orders WHERE id = ?", (order_id,))
     if current is None:
         raise NotFoundError("Order not found.")
+    await _assert_farm_owns_order(db, actor, order_id)
 
     from_status = current["order_status"]
     if target_status not in allowed_order_transitions(from_status):
@@ -204,6 +232,7 @@ async def issue_refund(
     order = await db.fetch_one("SELECT id, payment_status FROM orders WHERE id = ?", (order_id,))
     if order is None:
         raise NotFoundError("Order not found.")
+    await _assert_farm_owns_order(db, actor, order_id)
 
     payment = await db.fetch_one(
         """

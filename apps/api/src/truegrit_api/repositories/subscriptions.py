@@ -14,7 +14,7 @@ _SUMMARY_COLUMNS = """
   s.address_id, s.next_order_date, s.last_order_id, s.created_at, s.updated_at,
   s.cancelled_at,
   v.name AS variant_name, v.sku,
-  p.id AS product_id, p.name AS product_name, p.slug AS product_slug,
+  p.id AS product_id, p.name AS product_name, p.slug AS product_slug, p.farm_id,
   COALESCE('/media/' || m.object_key, NULLIF(p.image_url, '')) AS image_url,
   (
     SELECT vp.list_amount_minor FROM variant_prices vp
@@ -71,23 +71,39 @@ class SubscriptionRepository:
         )
 
     async def list_admin(
-        self, *, limit: int = 50, offset: int = 0, status: str | None = None
+        self,
+        *,
+        limit: int = 50,
+        offset: int = 0,
+        status: str | None = None,
+        farm_id: str | None = None,
     ) -> list[dict[str, Any]]:
+        """`farm_id` is dormant today -- no seeded role holds
+        `subscriptions.manage` and a `farm_id` at once -- but if one ever
+        does, this scopes them to subscriptions for their own farm's
+        products."""
         return await self._db.fetch_all(
             f"""
             SELECT {_SUMMARY_COLUMNS}
             {_SUMMARY_JOINS}
             WHERE (? IS NULL OR s.status = ?)
+              AND (? IS NULL OR p.farm_id = ?)
             ORDER BY s.next_order_date, s.created_at DESC
             LIMIT ? OFFSET ?
             """,
-            (status, status, limit, max(offset, 0)),
+            (status, status, farm_id, farm_id, limit, max(offset, 0)),
         )
 
-    async def count_admin(self, *, status: str | None = None) -> int:
+    async def count_admin(self, *, status: str | None = None, farm_id: str | None = None) -> int:
         row = await self._db.fetch_one(
-            "SELECT COUNT(*) AS total FROM subscriptions WHERE (? IS NULL OR status = ?)",
-            (status, status),
+            """
+            SELECT COUNT(*) AS total FROM subscriptions s
+            JOIN product_variants v ON v.id = s.variant_id
+            JOIN products p ON p.id = v.product_id
+            WHERE (? IS NULL OR s.status = ?)
+              AND (? IS NULL OR p.farm_id = ?)
+            """,
+            (status, status, farm_id, farm_id),
         )
         return int(row["total"]) if row else 0
 

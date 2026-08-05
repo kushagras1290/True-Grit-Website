@@ -16,7 +16,12 @@ from __future__ import annotations
 from typing import Any, Final
 
 from truegrit_api.auth.principal import Principal
-from truegrit_api.errors import ConflictError, NotFoundError, ValidationAppError
+from truegrit_api.errors import (
+    ConflictError,
+    NotFoundError,
+    PermissionDeniedError,
+    ValidationAppError,
+)
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
 from truegrit_api.util.ids import new_id
@@ -119,6 +124,21 @@ async def create_review(
     return {"id": review_id, "status": "pending"}
 
 
+async def _assert_farm_owns_review(db: Database, actor: Principal, review_id: str) -> None:
+    """Dormant today -- no seeded role holds `reviews.moderate` and a
+    `farm_id` at once -- but kept correct in case that combination is ever
+    granted, so a farm-scoped moderator could only act on reviews of their
+    own farm's products."""
+    if actor.farm_id is None:
+        return
+    row = await db.fetch_one(
+        "SELECT p.farm_id FROM reviews r JOIN products p ON p.id = r.product_id WHERE r.id = ?",
+        (review_id,),
+    )
+    if row is None or row["farm_id"] != actor.farm_id:
+        raise PermissionDeniedError("This review is not for one of your farm's products.")
+
+
 async def moderate_review(
     db: Database,
     actor: Principal,
@@ -136,6 +156,7 @@ async def moderate_review(
     current = await db.fetch_one("SELECT * FROM reviews WHERE id = ?", (review_id,))
     if current is None:
         raise NotFoundError("Review not found.")
+    await _assert_farm_owns_review(db, actor, review_id)
     if current["status"] == target:
         raise ConflictError(f"This review is already {target}.")
     clean_reason = (reason or "").strip()[:_MAX_REASON] or None
@@ -175,6 +196,7 @@ async def edit_review(
     current = await db.fetch_one("SELECT * FROM reviews WHERE id = ?", (review_id,))
     if current is None:
         raise NotFoundError("Review not found.")
+    await _assert_farm_owns_review(db, actor, review_id)
 
     rating = current["rating"]
     if "rating" in fields:
@@ -229,6 +251,7 @@ async def delete_review(
     current = await db.fetch_one("SELECT id FROM reviews WHERE id = ?", (review_id,))
     if current is None:
         raise NotFoundError("Review not found.")
+    await _assert_farm_owns_review(db, actor, review_id)
     now = utc_now_iso()
     await db.batch(
         [

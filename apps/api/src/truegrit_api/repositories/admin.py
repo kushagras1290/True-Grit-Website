@@ -355,28 +355,52 @@ class AdminRepository:
         )
 
     async def list_orders(
-        self, limit: int = 50, offset: int = 0, search: str | None = None
+        self,
+        limit: int = 50,
+        offset: int = 0,
+        search: str | None = None,
+        farm_id: str | None = None,
     ) -> list[dict[str, Any]]:
         limit = min(max(limit, 1), MAX_PAGE_SIZE)
-        where_clause = ""
-        params: list[Any] = []
+        # A farm-scoped caller (`orders.view` held by a farm-owner sub-admin)
+        # only sees orders that include at least one of their own farm's
+        # items, and `total_minor` becomes their own line items' total rather
+        # than the whole order's -- an order that spans farms must never show
+        # one farm the revenue attributable to another farm's items in it.
+        where_clauses = [
+            "(? IS NULL OR EXISTS ("
+            "SELECT 1 FROM order_items oi WHERE oi.order_id = o.id AND oi.farm_id = ?"
+            "))"
+        ]
+        params: list[Any] = [farm_id, farm_id]
         if search:
-            where_clause = "WHERE public_reference LIKE ? OR customer_email LIKE ?"
+            where_clauses.append("(o.public_reference LIKE ? OR o.customer_email LIKE ?)")
             params.extend([f"%{search}%", f"%{search}%"])
-        params.extend([limit, max(offset, 0)])
+        select_params: list[Any] = [farm_id, farm_id]
+        params = select_params + params + [limit, max(offset, 0)]
         return await self._db.fetch_all(
             f"""
-            SELECT id, public_reference, customer_email, currency_code, total_minor,
-                   order_status, payment_status, fulfilment_status, placed_at, created_at
-            FROM orders
-            {where_clause}
-            ORDER BY COALESCE(placed_at, created_at) DESC
+            SELECT o.id, o.public_reference, o.customer_email, o.currency_code,
+                   CASE WHEN ? IS NULL THEN o.total_minor
+                        ELSE COALESCE(
+                          (SELECT SUM(oi2.line_total_minor) FROM order_items oi2
+                            WHERE oi2.order_id = o.id AND oi2.farm_id = ?),
+                          0
+                        )
+                   END AS total_minor,
+                   o.order_status, o.payment_status, o.fulfilment_status,
+                   o.placed_at, o.created_at
+            FROM orders o
+            WHERE {" AND ".join(where_clauses)}
+            ORDER BY COALESCE(o.placed_at, o.created_at) DESC
             LIMIT ? OFFSET ?
             """,
             tuple(params),
         )
 
-    async def get_order_detail(self, order_id: str) -> dict[str, Any] | None:
+    async def get_order_detail(
+        self, order_id: str, farm_id: str | None = None
+    ) -> dict[str, Any] | None:
         order = await self._db.fetch_one(
             """
             SELECT id, public_reference, customer_email, customer_phone_e164, currency_code,
@@ -393,10 +417,24 @@ class AdminRepository:
             """
             SELECT id, product_name, variant_name, sku, quantity,
                    unit_effective_amount_minor, line_total_minor
-            FROM order_items WHERE order_id = ? ORDER BY product_name
+            FROM order_items
+            WHERE order_id = ? AND (? IS NULL OR farm_id = ?)
+            ORDER BY product_name
             """,
-            (order_id,),
+            (order_id, farm_id, farm_id),
         )
+        if farm_id is not None:
+            # No items of theirs in this order -- the caller treats this the
+            # same as "order not found" rather than confirming an order
+            # exists that has nothing to do with this farm.
+            if not order["items"]:
+                return None
+            farm_total = sum(item["line_total_minor"] for item in order["items"])
+            order["subtotal_minor"] = farm_total
+            order["total_minor"] = farm_total
+            order["discount_minor"] = 0
+            order["delivery_minor"] = 0
+            order["tax_minor"] = 0
         payment = await self._db.fetch_one(
             """
             SELECT id, provider, amount_minor, currency_code, status,
@@ -409,6 +447,13 @@ class AdminRepository:
             """,
             (order_id,),
         )
+        if payment is not None and farm_id is not None:
+            # Whole-order payment figures, same reasoning as the order totals
+            # above -- provider/status stay visible (an operator needs to know
+            # "is this paid, is it COD" to fulfil their own items), but the
+            # amounts would otherwise reveal another farm's share of the order.
+            payment["amount_minor"] = None
+            payment["refunded_minor"] = None
         order["payment"] = payment
         return order
 
@@ -439,18 +484,29 @@ class AdminRepository:
         )
 
     async def search_orders(
-        self, term: str, *, limit: int = DEFAULT_SEARCH_LIMIT
+        self, term: str, *, limit: int = DEFAULT_SEARCH_LIMIT, farm_id: str | None = None
     ) -> list[dict[str, Any]]:
         pattern = _like_term(term)
         return await self._db.fetch_all(
             """
-            SELECT id, public_reference, customer_email, order_status, total_minor, currency_code
-            FROM orders
-            WHERE public_reference LIKE ? ESCAPE '!' OR customer_email LIKE ? ESCAPE '!'
-            ORDER BY COALESCE(placed_at, created_at) DESC
+            SELECT o.id, o.public_reference, o.customer_email, o.order_status,
+                   CASE WHEN ? IS NULL THEN o.total_minor
+                        ELSE COALESCE(
+                          (SELECT SUM(oi.line_total_minor) FROM order_items oi
+                            WHERE oi.order_id = o.id AND oi.farm_id = ?),
+                          0
+                        )
+                   END AS total_minor,
+                   o.currency_code
+            FROM orders o
+            WHERE (o.public_reference LIKE ? ESCAPE '!' OR o.customer_email LIKE ? ESCAPE '!')
+              AND (? IS NULL OR EXISTS (
+                SELECT 1 FROM order_items oi2 WHERE oi2.order_id = o.id AND oi2.farm_id = ?
+              ))
+            ORDER BY COALESCE(o.placed_at, o.created_at) DESC
             LIMIT ?
             """,
-            (pattern, pattern, limit),
+            (farm_id, farm_id, pattern, pattern, farm_id, farm_id, limit),
         )
 
     async def search_users(

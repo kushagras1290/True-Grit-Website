@@ -73,7 +73,7 @@ async def _resolve_line(
         """
         SELECT v.id AS variant_id, v.sku, v.name AS variant_name,
                p.id AS product_id, p.name AS product_name, p.status,
-               p.accepts_orders, p.payments_override
+               p.accepts_orders, p.payments_override, p.farm_id
         FROM product_variants v
         JOIN products p ON p.id = v.product_id
         WHERE v.id = ? AND v.status = 'active'
@@ -435,8 +435,8 @@ async def place_order(
                 INSERT INTO order_items (
                   id, order_id, product_id, variant_id, product_name, variant_name, sku,
                   quantity, unit_list_amount_minor, unit_effective_amount_minor,
-                  discount_minor, tax_minor, line_total_minor
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?)
+                  discount_minor, tax_minor, line_total_minor, farm_id
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?, ?)
                 """,
                 (
                     new_id("oit"),
@@ -450,6 +450,7 @@ async def place_order(
                     item["unit_list_minor"],
                     item["unit_effective_minor"],
                     item["line_total_minor"],
+                    variant["farm_id"],
                 ),
             )
         )

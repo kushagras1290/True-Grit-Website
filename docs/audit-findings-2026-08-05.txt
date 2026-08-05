@@ -1,0 +1,605 @@
+TRUE GRIT — DEEP CODEBASE AUDIT FINDINGS
+Generated: 2026-08-05
+Scope: apps/api (backend), apps/storefront, apps/admin, packages/contracts, database/migrations, database/seeds
+Method: four parallel deep-read audits, most severe finding verified independently by direct code inspection.
+
+================================================================================
+0. CONTEXT — the bug that triggered this audit
+================================================================================
+apps/api/src/truegrit_api/services/appearance.py hand-maintained a Python-side
+duplicate of two constant lists (AMBIENT_EFFECT_KEYS, CURSOR_TRAIL_KEYS) meant
+to mirror packages/contracts/src/index.ts. The TS side and both frontends were
+expanded from 15 to 50 options each; the Python copy was never updated, so the
+backend silently rejected the 35 newest options with "Unknown ambient effect"
+even though the admin UI offered them and looked fully wired end-to-end.
+
+FIXED: both Python tuples now contain the same 50 entries, in the same order,
+as the TS contracts source. Verified by direct diff. Committed as 35ebfc7 and
+pushed to both `testing` and `main` (fast-forward, both branches now identical
+at that commit).
+
+This audit specifically hunted for more instances of that failure class
+(duplicated constants/validation drifting silently out of sync) in addition
+to a general security/correctness/reliability pass.
+
+================================================================================
+1. CRITICAL — Cross-tenant IDOR on admin order endpoints
+================================================================================
+NOTE ON INTENT (confirmed with the site owner, 2026-08-05): farm owners are
+*supposed* to see orders containing their own farm's products — that's the
+documented, intended feature (see the seed comment quoted below). This is
+NOT a "remove all order access from farm owners" bug. It's a missing
+SCOPING filter: right now they see every farm's orders, when they should
+only see orders that include at least one of their own farm's products.
+
+Files:
+  apps/api/src/truegrit_api/api/admin.py:5929-6040
+    (list_orders_endpoint, get_order_endpoint, update_order_status_endpoint,
+     refund_order_endpoint)
+  apps/api/src/truegrit_api/api/admin.py:4481-4489
+    (global admin search endpoint — the "orders" section of search results,
+     a second call site with the identical gap)
+  apps/api/src/truegrit_api/repositories/admin.py:357-413
+    (AdminRepository.list_orders, .get_order_detail)
+  apps/api/src/truegrit_api/repositories/admin.py:441-452
+    (AdminRepository.search_orders — same missing farm filter)
+  apps/api/src/truegrit_api/services/orders.py:45 (update_order_status),
+  apps/api/src/truegrit_api/services/orders.py:184 (issue_refund)
+
+Defect: these endpoints are gated only by require_permission("orders.view"
+/ "orders.cancel" / "orders.refund"), which checks the permission NAME only
+(apps/api/src/truegrit_api/auth/dependencies.py:107-115). Neither the
+endpoints, the repository queries, nor the service functions ever filter or
+check against principal.farm_id — no WHERE clause, no post-fetch check. This
+is inconsistent with ~25 other admin.py endpoints (products, categories,
+media search) that do apply `if principal.farm_id is not None: ...` scoping.
+
+Confirmed exploitable: database/seeds/development.sql:213-225 grants
+rol_farm_owner the orders.view permission, and the seed's own comment at
+line 215-216 states: "Scoping to a single farm is enforced in the API (via
+farm_members), not by these rows: orders.view here means 'orders for my
+farm', not every order." That enforcement does not exist in the code I read.
+
+I personally verified this by reading:
+  - admin.py:5929-6040 (all four endpoints, no farm_id anywhere)
+  - repositories/admin.py:357-413 (queries have no farm filter; compare to
+    search_products() at line 415 in the same file, which DOES take a
+    farm_id parameter — establishing this repo's own pattern for how farm
+    scoping is supposed to be threaded through)
+  - auth/dependencies.py:107-115 (require_permission is a pure permission-
+    name check, no scope logic)
+  - services/orders.py:45-183 and :184+ (update_order_status / issue_refund
+    check actor.has("orders.cancel"/"orders.refund") but never actor.farm_id
+    against the order's owning farm)
+  - database/seeds/development.sql:213-225 (rol_farm_owner really is granted
+    orders.view)
+
+CORRECTION (after a deeper trace of the actual permission model): the
+original write-up above said a farm-owner "can cancel or refund any order."
+That overstated it. `update_order_status`'s cancel path independently checks
+`actor.has("orders.cancel")`, and `issue_refund` independently checks
+`actor.has("orders.refund")` — farm-owner holds neither (confirmed against
+database/seeds/development.sql, and covered by the existing test
+`test_refund_requires_orders_refund_permission_even_with_orders_view`), so
+cancel and refund were never actually reachable by a farm-scoped principal.
+
+The real exploitable surface was narrower but still serious:
+
+Failure scenario: A farm-owner sub-admin (e.g. usr_farmowner in the dev seed)
+signs in and calls GET /admin/orders or GET /admin/orders/{id}. They receive
+every order in the marketplace — competitors' customer emails, phone numbers,
+delivery addresses, totals — not just orders touching their own farm's
+products (this part of the original write-up was accurate). They could also
+call PATCH /admin/orders/{id}/status to push ANY order forward through its
+lifecycle (confirmed → processing → completed), since that route only
+requires orders.view, not a farm-ownership check — and reaching `completed`
+consumes real inventory (services/orders.py:123-161), so a farm-owner could
+force a competitor's order to consume that competitor's stock.
+
+HOW TO FIX (concrete, verified against the real schema):
+  - `orders` has NO farm_id column (checked database/migrations/0005_commerce.sql
+    — the orders/order_items tables). A single order CAN legitimately contain
+    products from multiple farms (multi-vendor cart) — order_items.product_id
+    -> products.id -> products.farm_id (nullable) is the only path from an
+    order to a farm. There is no per-farm sub-order split anywhere in the schema.
+  - Reads (list_orders / get_order_detail / search_orders): add an
+    `farm_id: str | None = None` parameter to each repository method, same
+    shape as `search_products`, and filter with:
+      WHERE (:farm_id IS NULL OR EXISTS (
+        SELECT 1 FROM order_items oi JOIN products p ON p.id = oi.product_id
+        WHERE oi.order_id = o.id AND p.farm_id = :farm_id
+      ))
+    (EXISTS avoids row duplication from a direct JOIN, and mirrors the
+    `(? IS NULL OR p.farm_id = ?)` idiom already used in search_products —
+    stay consistent with that rather than inventing a new pattern.)
+    Pass `principal.farm_id` in from the three endpoints in admin.py and the
+    search endpoint at line 4481-4489.
+  - Writes (update_order_status / issue_refund in services/orders.py): before
+    acting, run the same EXISTS check for `actor.farm_id` (when not None) and
+    raise PermissionDeniedError/NotFoundError if the order has no line item
+    belonging to that farm.
+  - OPEN DESIGN QUESTION — needs a product decision before implementing,
+    not just an engineering one: when an order contains items from BOTH the
+    farm-owner's farm and another farm (multi-vendor cart), should the
+    farm-owner see the WHOLE order (customer info, other farms' line items
+    and prices) or only THEIR OWN line items within it? And should they be
+    allowed to cancel/refund an order that includes another farm's items, or
+    only their own farm's portion? The current schema has no per-farm
+    sub-order/fulfilment split, so "refund only my farm's portion" would need
+    new schema work; "see the whole order, act on the whole order" is the
+    cheap fix but leaks other farms' data into a multi-vendor order; "see the
+    whole order but can only cancel/refund when 100% of it is their own farm's
+    items" is a middle ground. Pick one before implementing.
+
+STATUS: FIXED (2026-08-05, commit follows this write-up). The owner chose
+line-item-level scoping: a farm-owner sees only their own line items within
+a mixed-farm order (never another farm's items or the order's true total),
+and may only change an order's status when 100% of its items are theirs.
+
+What shipped:
+  - Migration 0078_order_item_farm_scope.sql: denormalized `order_items.
+    farm_id`, matching the existing product_name/variant_name/sku snapshot
+    pattern on that table (so a later product/farm reassignment can never
+    rewrite an already-placed order's history). Populated going forward in
+    services/checkout.py's `_resolve_line`/order-insert; backfilled for
+    existing rows from products.farm_id (best-effort, documented caveat in
+    the migration's own comment).
+  - list_orders/get_order_detail/search_orders (repositories/admin.py) now
+    take `farm_id`, filtering to orders with ≥1 matching line item and
+    reporting a farm-scoped subtotal/total instead of the whole order's.
+    get_order_detail also nulls out payment.amountMinor/refundedMinor for a
+    farm-scoped read (those are whole-order figures) while keeping
+    provider/status visible (needed to know "is this paid").
+  - update_order_status/issue_refund (services/orders.py) gained a shared
+    `_assert_farm_owns_order` guard: a farm-scoped actor may only act on an
+    order when every item in it is theirs, else PermissionDeniedError.
+
+A follow-up sweep (below, appended to this file) checked every other
+admin.py resource family for the same missing-farm_id shape. Result: no
+other LIVE gap — orders was the only one reachable by a seeded role. Several
+other resources (reviews, bundles, subscriptions, returns, revenue/payouts)
+share the identical missing-check shape but are dormant (no seeded role
+holds both the relevant permission and a farm_id) — these were hardened
+proactively per the owner's decision, at no behavior change for any role
+that exists today (see the addendum).
+
+================================================================================
+2. HIGH — Coupon usage-limit race condition (TOCTOU)
+================================================================================
+File: apps/api/src/truegrit_api/services/promotions.py:420-429
+       apps/api/src/truegrit_api/services/checkout.py:474-510
+
+resolve_checkout_discount checks usage_limit_total / usage_limit_per_customer
+via a plain SELECT COUNT(*) against coupon_redemptions. The actual INSERT
+happens later, inside place_order's single db.batch(statements), with no
+conditional write guarding it — contrast the inventory reservation two lines
+above in the same function, which correctly uses a conditional
+`UPDATE ... WHERE (on_hand - reserved) >= ?` to close exactly this race.
+
+Failure scenario: a usage_limit_total=1 coupon is hit by two concurrent
+checkout requests (two tabs, or a bot). Both read count==0 before either
+inserts, both pass validation, both commit — the coupon is redeemed twice
+with nothing stopping it.
+
+================================================================================
+3. HIGH — Inventory adjustment lost-update race; version column unused
+================================================================================
+File: apps/api/src/truegrit_api/services/inventory.py:47-69, 130-143
+
+adjust_inventory (and clear_inventory_levels) reads on_hand/reserved,
+computes the new on_hand in Python, then writes it back with an UNCONDITIONAL
+UPDATE (no WHERE on the value/version just read). The `version` column is
+incremented on every write here and in services/orders.py:92,130, but is
+NEVER referenced in any WHERE clause anywhere in the codebase — a half-built
+optimistic-concurrency mechanism providing no actual protection. Opposite of
+checkout.py's correctly-conditional reservation UPDATE.
+
+Failure scenario: two admin staff act on the same variant near-simultaneously
+(e.g. +100 stock receipt and -20 write-off both read on_hand=50). Both
+compute independently (150 and 30); the later UPDATE silently overwrites the
+earlier one. inventory_movements records both deltas, but resulting on_hand
+matches neither — stock count silently diverges from its own audit trail.
+
+================================================================================
+4. MEDIUM-HIGH — Checkout's COD-blocked fallback ignores whether Razorpay is enabled
+================================================================================
+File: apps/storefront/app/routes/checkout.tsx:277
+
+  const chosen = method === "cod" && !codAllowed ? "razorpay" : method;
+
+Hardcodes "razorpay" as the escape hatch whenever COD is blocked, without
+checking razorpayAllowed. The auto-correction effect that would otherwise
+move the selection off "cod" only fires `if (razorpayAllowed)` (lines
+151-153), so the fallback can select a payment method the merchant never
+configured.
+
+Failure scenario: a merchant enables cod + paypal but not razorpay; a
+customer's cart exceeds payment.codMaxMinor. The UI shows a disabled-but-
+checked COD radio with nothing else selected. If they submit anyway, `chosen`
+evaluates to "razorpay" regardless, opening a Razorpay payment window and
+POSTing paymentMethod: "razorpay" to a merchant account with no Razorpay
+configured — a broken checkout with a confusing failure.
+
+================================================================================
+5. MEDIUM — No timeout on outbound fetch calls actually used in production
+================================================================================
+File: apps/api/src/truegrit_api/platform/http.py:44-63, 77-108
+
+get_json_async / _post_async only apply a timeout
+(_DEFAULT_TIMEOUT_SECONDS=5.0) on the urllib-based LOCAL/DEV fallback path.
+The `await js_fetch(url, options)` path that actually runs on the deployed
+Cloudflare Worker has no AbortController / timeout at all.
+
+Failure scenario: services/payments.py (PayPal token/order/capture, Razorpay
+order creation/refund) and services/sms.py route through this. If PayPal,
+Razorpay, or the SMS provider stalls, the fetch hangs with no
+application-level bound instead of failing fast into the existing
+HttpError/PaymentError handling — stalls order confirmation for the customer
+instead of degrading gracefully.
+
+================================================================================
+6. MEDIUM — Debug print() leaks chat tool-call payloads outside structured logging
+================================================================================
+File: apps/api/src/truegrit_api/platform/ai_chat.py:195-217
+
+Statements marked "TEMPORARY: diagnostics, remove once root-caused" /
+"remove once the tool loop is verified" are still present. On any binding
+exception: print(f"ai_chat.run_failed: ...") and a payload-shape dump. On
+every successful round: print("ai_chat.round: ... calls=[(c.name,
+c.arguments) ...]") dumps every tool call's full arguments straight to
+Worker console output via print() — bypassing truegrit_api.logging's
+structured/redacted logger entirely (violates this repo's own "never
+print() in non-CLI code" standard).
+
+Failure scenario: a customer asks the support bot to look up their order;
+tool-call arguments (order references, emails, phone numbers depending on
+the tool schema) land in plaintext in Cloudflare's console logs / any
+configured log drain, with none of the redaction the rest of the logging
+pipeline applies.
+
+================================================================================
+7. MEDIUM — Every admin toast notification bypasses translation (systemic)
+================================================================================
+File: apps/admin/src/components/toast.tsx:72
+
+Renders `{toast.message}` as a raw string with no translation. The admin
+app's imperative-translation hook useT() (apps/admin/src/lib/i18n/index.tsx:41)
+is used exactly ONCE in the whole admin source tree (language-switcher.tsx:25).
+Meanwhile toast.success(...)/toast.error(...) are called ~299 times across
+every feature file, every one a hardcoded English literal.
+
+Failure scenario: an operator switches the console to Hindi (every <T>-
+wrapped label translates correctly). They save a product/category/setting;
+regardless of success or failure, the ONLY feedback — the toast — renders in
+English. For a non-English-fluent operator this is functionally silent on
+every single save flow in the app.
+
+================================================================================
+8. MEDIUM — Checkout's main order-failure message (+7 sibling flows) isn't translated
+================================================================================
+File: apps/storefront/app/routes/checkout.tsx:318
+
+  setError(caught instanceof AuthError ? caught.message : "Could not place your order.");
+
+No matching entry in raw-messages.ts / messages.ts (verified by grep across
+both catalogue files). Its sibling on the same page, "Could not apply this
+code." (line 165), IS translated. Same gap confirmed missing for:
+  "Could not save the address."
+  "Could not set up the subscription."   (subscribe-and-save.tsx)
+  "Could not save your submission."      (submission-form.tsx)
+  "Could not submit the return request." (order.tsx)
+  "Could not submit the review."         (order.tsx)
+  "Could not start the discussion."      (new-discussion.tsx)
+  "Could not reset your password."       (reset-password.tsx)
+
+Failure scenario: a non-English customer's order fails (declined payment,
+invalid address, stock conflict) and sees the one message telling them what
+happened rendered in English while the rest of the page is in their language.
+
+================================================================================
+9. MEDIUM — Product enable/disable toggle has no double-submit guard
+================================================================================
+File: apps/admin/src/features/operations.tsx:268-296
+
+The Disable/Enable button calls api.updateProductStatus(...).then().catch()
+directly instead of going through useMutation, and the button has no
+disabled prop tied to a pending state — unlike every other mutating control
+in this file and elsewhere (operations.tsx:1141-1186, 1220-1231,
+subscriptions.tsx:110-116, revenue.tsx:266-272), all of which disable on
+mutation.isPending.
+
+Failure scenario: an operator double-clicks Disable before the first PATCH
+resolves. Two identical requests fire; the success toast and cache
+invalidation each fire twice; if the requests race a concurrent change from
+another tab/admin, the final state is whichever landed last with no
+explanation to either operator.
+
+================================================================================
+10. LOW-MEDIUM — Payment confirmation has a narrow double-write race
+================================================================================
+File: apps/api/src/truegrit_api/api/storefront.py:309-348 (PayPal),
+       apps/api/src/truegrit_api/api/storefront.py:369-416 (Razorpay)
+
+Both handlers SELECT with a Python-side payment_status check, call the
+provider, then UPDATE unconditionally on id + customer_user_id — no
+`AND payment_status != 'paid'` guard. Two near-simultaneous requests can
+both pass the initial read before either write lands.
+
+Failure scenario: a double-click or client retry after a dropped response
+sends two confirm requests; both proceed to queue order-confirmation
+emails, sending a duplicate to the customer. Actual double-capture is
+unlikely (PayPal/Razorpay should reject a second capture/duplicate
+signature), but the DB write and email dispatch have no guard of their own.
+
+================================================================================
+11. LOW-MEDIUM — CMS link renderer has no client-side URL-scheme check
+================================================================================
+File: apps/storefront/app/components/blocks.tsx:43-85
+
+Builds a target="_blank" anchor for any href not recognized as an internal
+path (isInternalHref just checks for a leading "/" and not "//"), relying
+entirely on a code comment's claim that domain/blocks.py already restricts
+hrefs server-side to /, https://, http://, mailto:. No
+dangerouslySetInnerHTML is used (text nodes are React-escaped), so this
+isn't independently exploitable today — it's a single point of failure with
+no second gate on the frontend.
+
+Failure scenario: if the backend's URL allow-list is ever loosened or has a
+bypass (e.g. a javascript: URI slips through), this component renders it
+into a clickable anchor with nothing on the frontend to catch it.
+
+================================================================================
+12. LOW-MEDIUM — Password-reset confirm endpoint has no rate limit
+================================================================================
+File: apps/api/src/truegrit_api/api/admin.py:6466-6479
+
+POST /v1/admin/auth/password-reset/confirm calls confirm_password_reset with
+no enforce_rate_limit call, unlike the request endpoint immediately above it,
+login, and change-password — every other credential-bearing admin endpoint.
+Practical exploitability is LOW today: reset tokens are
+secrets.token_urlsafe(32) (256 bits of entropy) per
+services/password_reset.py:54, making brute-force infeasible.
+
+Failure scenario: purely defense-in-depth — if token length/randomness ever
+regresses in a future change, this endpoint has no rate-limit backstop the
+way every comparable endpoint does.
+
+================================================================================
+13. LOW — Support-bot color uses a duplicated hand-rolled validator
+================================================================================
+File: apps/storefront/app/lib/site-settings.tsx:141
+
+supportBotColor is validated with an inline
+`/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/` regex instead of calling
+isValidThemeColor from lib/theme.tsx — the codebase's designated
+safe-for-style-attribute validator, already reused by normalizeThemeTokens,
+themeStyleSheet, and effects.tsx's safeColor. Currently safe (this regex is
+strictly narrower, rejecting alpha-hex / rgb() / hsl() / color-mix() forms
+isValidThemeColor allows) — but it's the same "two independently-maintained
+validators" pattern that caused the ambient-effects bug (finding #0).
+
+Failure scenario: if isValidThemeColor is ever extended and this inline
+regex isn't updated alongside it, a value valid everywhere else in the theme
+system is silently rejected here (or the reverse, if this regex is loosened
+independently without matching isValidThemeColor's actual safety guarantees).
+
+================================================================================
+14. LOW — ThemeKey union hand-duplicated a third time, silent fallback on drift
+================================================================================
+File: packages/ui/src/index.ts:8
+
+  export type ThemeKey = "forest" | "sage" | "terracotta" | "charcoal" | "gold";
+
+Hand-written instead of importing CategoryTheme from packages/contracts (the
+pattern correctly followed elsewhere for THEME_TOKEN_KEYS / AMBIENT_EFFECT_KEYS
+/ CURSOR_TRAIL_KEYS, all of which ARE properly imported in
+apps/admin/src/lib/api.ts, apps/admin/src/features/appearance.tsx,
+apps/storefront/app/lib/theme.tsx). themeVars() (packages/ui/src/index.ts:44-47)
+silently falls back to the default "forest" theme for any key it doesn't
+recognize.
+
+Failure scenario: if CategoryTheme gains a 6th value in contracts (the same
+kind of expansion that broke appearance.py), a category using the new theme
+renders silently as default "forest" everywhere this package is used — no
+error, no log, just a category that mysteriously doesn't look right. Quieter
+than the appearance.py failure (which at least threw a validation error) —
+this one just looks wrong with no signal why.
+
+================================================================================
+15. LOW — categories.status CHECK is missing 'discontinued'
+================================================================================
+File: database/migrations/0002_catalogue.sql:120-122 (categories.status CHECK)
+       compare: database/migrations/0002_catalogue.sql:194-196 (products.status CHECK)
+       compare: packages/contracts/src/index.ts:475-483 (EntityStatus, full 8 values)
+
+categories.status CHECK allows 7 of 8 EntityStatus values (missing
+'discontinued', which products.status DOES include), even though
+AdminCategoryRow.status is typed as the full EntityStatus in contracts.
+Currently dormant: services/catalogue.py:766 and :947 only ever write the
+literal 'archived' directly for both products and categories — no generic
+status-setter exists yet that could hit this gap.
+
+Failure scenario: if a future admin feature generically reuses a single
+"set entity status" function across products and categories (plausible,
+since they already share domain/workflow.py's assert_transition), setting a
+category to 'discontinued' succeeds at the application layer but throws an
+opaque DB-level "CHECK constraint failed" — an unexplained 500 in the admin
+console with no application-level validation message.
+
+================================================================================
+16. LOW — farms.status CHECK is narrower than every sibling workflow table
+================================================================================
+File: database/migrations/0002_catalogue.sql:63-65 (farms.status CHECK,
+       5 values only)
+       compare: same file, categories (120-122), products (194-196);
+       database/migrations/0003_cms.sql: pages (12-14), articles (63-65),
+       recipes (106-108) — all allow the fuller 7-8 value set.
+
+farms.status is constrained to ('draft', 'in_review', 'published',
+'unpublished', 'archived') only. No FarmSummary/FarmDetail type in
+packages/contracts/src/index.ts (lines 228-249) even exposes a status field,
+and no current Python code path writes to farms.status at all — confirmed
+no services/farms.py, no "UPDATE farms SET status" anywhere in apps/api/src.
+Fully dormant today.
+
+Failure scenario: the natural next feature — exposing farm status editing
+through the same shared workflow endpoints every other entity already uses
+— would hit a DB-level CHECK constraint failed the first time someone tries
+to move a farm to 'approved' or 'scheduled', since farms already has the
+in_review-style columns suggesting it follows the same pattern as
+categories/products/pages/articles/recipes.
+
+================================================================================
+17. LOW — Gallery-image removal has no confirmation dialog
+================================================================================
+File: apps/admin/src/features/products.tsx:1421-1468
+       (ProductGallerySection.remove())
+
+Calls saveMutation.mutate(...) immediately on click with no ConfirmDialog —
+unlike every other delete action in the admin app: category delete
+(categories.tsx:245-258, 879-888), product bulk-delete (products.tsx),
+homepage-section delete (homepage-settings.tsx:666-675), price-adjustment
+delete (price-adjustments.tsx:135-144), media-asset delete
+(operations.tsx:1220-1231) — all gate behind a confirmation step.
+
+Failure scenario: an operator reordering gallery photos with the arrow
+buttons misclicks Remove instead; the photo is deleted immediately with no
+undo, inconsistent with the confirm-first pattern used for every comparably
+reversible-but-annoying action elsewhere in the same file.
+
+================================================================================
+AREAS EXPLICITLY CHECKED AND FOUND SOUND (worth recording, not findings)
+================================================================================
+- Constant-drift check (the exact bug class that started this audit):
+  THEME_TOKEN_KEYS, AMBIENT_EFFECT_KEYS, CURSOR_TRAIL_KEYS all now exact-match
+  between packages/contracts/src/index.ts and the Python backend (51/51,
+  51/51, 16/16 respectively, including "none"), and the storefront's use of
+  Record<Exclude<Key,"none">, Spec> means any FUTURE drift there would be a
+  TypeScript compile error, not a silent runtime failure. Also checked and
+  in sync: PublicPageBlock union, PaymentsOverride, WorkflowState,
+  ReturnReasonCode, ReviewStatus, PromotionStatus/StackingPolicy/ActionType,
+  BundleStatus, SubscriptionFrequency/Status, ReturnStatus/
+  ReturnResolutionType, SubmissionContentType/Status, DiscussionStatus/
+  DiscussionCommentStatus, ContentCommentContentType/Status,
+  FarmRequestStatus, AdminUserRow.status.
+- Admin login timing leak: properly fixed — unknown-email login still runs
+  verify_password_async against a lazily-computed dummy hash rather than
+  short-circuiting.
+- Session lifecycle: tokens are opaque, only SHA-256 hashes stored;
+  password change / reset both correctly revoke all other live sessions.
+- Farm-owner permission scoping (which PERMISSIONS a farm-owner role can
+  hold): correctly enforced both client-side (scopes.tsx) and server-side
+  (services/access.py's _FARM_OWNER_PERMISSION_PREFIXES) — a farm-owner
+  cannot be granted permissions outside products/inventory/media. This is a
+  DIFFERENT check from finding #1 above: the role-permission gate works
+  correctly, but once a farm-owner legitimately holds orders.view, the data
+  returned for that permission isn't scoped to their farm.
+- Client-trusted financial values: payout dialog sends expectedPayoutMinor
+  but the endpoint recomputes and refuses on mismatch; price-adjustment
+  rules send only a percent, never a computed final price; checkout's
+  placeOrder() payload has no client-computed total/price field at all.
+- Open redirect: safeRedirectPath rejects "//"-prefixed and non-"/"-leading
+  targets; Razorpay/PayPal popup postMessage handlers check event.origin.
+  effects.tsx particle-spec data tables: all 50 ambient effects and 50
+  cursor trails checked for internally inconsistent size/life/opacity
+  ranges and speed-sign mismatches — all consistent; particle counts always
+  capped via Math.min(MAX_PARTICLES, ...); animation-frame/listener cleanup
+  correct on unmount.
+- Migration safety: every ADD COLUMN ... NOT NULL across all 77 migrations
+  carries a DEFAULT; the three table-rebuild migrations correctly follow
+  create-new/copy/drop-old/rename with foreign_keys OFF/ON bracketing; no
+  destructive DROP COLUMN or unsafe RENAME COLUMN found anywhere.
+- Seeds vs. schema: database/seeds/development.sql has no references to
+  renamed/removed columns; catalogue.generated.json is one commit behind
+  the seed file but that commit only added a permission row, not
+  catalogue/category/product data — not actually stale.
+
+================================================================================
+PRIORITY RECOMMENDATION
+================================================================================
+Fix #1 (cross-tenant order IDOR) immediately — it was live on production
+(main), exposed customer PII across tenants, and let a farm-owner force any
+order forward through fulfilment (inventory-consuming). FIXED as of this
+writing — see the addendum below. Everything else in this file is real but
+lower urgency and can be scheduled normally.
+
+================================================================================
+ADDENDUM (2026-08-05) — broader farm-scoping sweep
+================================================================================
+After fixing #1, a dedicated sweep checked every OTHER admin.py resource
+family for the same missing-farm_id shape, since #1 was found by a targeted
+check on orders specifically, not an exhaustive pass. Method: for every
+permission `rol_farm_owner` (or any farm-scoped role) actually holds per
+database/seeds/development.sql — products.*, categories.view, media.view/
+upload, inventory.*, orders.view, messages.use — trace the endpoint through
+its repository/service query and confirm whether `principal.farm_id` is
+actually checked.
+
+RESULT: orders was the only LIVE gap. Every other farm-holdable resource was
+already correctly scoped:
+  - Products, inventory, archive/restore (product branch), search (product
+    branch): all correctly filter by farm_id (`_assert_product_scope`/
+    `_assert_variant_scope`, `(? IS NULL OR p.farm_id = ?)`).
+  - Categories, media: correctly UNSCOPED — these tables have no `farm_id`
+    column at all (shared/global resources, not tenant-owned data), so
+    there's nothing to scope by. Not a bug.
+  - Farms CRUD, user/role admin: explicitly blocked for any farm-scoped
+    principal (`if principal.farm_id is not None: raise PermissionDenied`).
+  - Messages: scoped by conversation_participants membership, orthogonal to
+    farms, correctly enforced.
+
+A user question raised during this audit — "shouldn't blogs/recipes/pages
+be scoped so an author only sees their own?" — turned out to already be
+correctly implemented and is a DIFFERENT scoping dimension (author identity,
+not farm tenancy): articles.author_user_id / recipes.chef_user_id are
+enforced both in the repository list filter and via a second
+`assert_owns_or_reviews` check (services/articles.py, services/recipes.py)
+that 404s rather than confirms another author's post exists. No action
+needed there.
+
+DORMANT GAPS, HARDENED PROACTIVELY (owner's decision — not exploitable by
+any role that exists today, but the same missing-check shape as orders):
+  - Reviews (repositories/content.py ReviewRepository + services/reviews.py):
+    list/count/moderate/edit/delete now check farm_id via
+    reviews.product_id -> products.farm_id.
+  - Bundles (repositories/bundles.py + services/bundles.py): list/detail/
+    update/delete/replace-items now check farm_id via bundle_items.variant_id
+    -> product_variants -> products.farm_id (all-or-nothing rule, same as
+    orders, since one bundle can span farms); replace-items additionally
+    rejects smuggling another farm's variant into a bundle you own.
+  - Subscriptions (repositories/subscriptions.py + services/subscriptions.py):
+    the shared `_get_owned_or_staff` choke-point (backs update/pause/resume/
+    cancel) and both list/get endpoints now check farm_id via
+    subscriptions.variant_id -> products.farm_id.
+  - Returns (repositories/content.py ReturnRequestRepository + services/
+    returns.py): list/detail/decide/resolve now check farm_id via
+    return_requests.order_item_id -> order_items.farm_id (reusing the column
+    added for #1); a return with no linked item is hidden rather than shown
+    to every farm.
+  - Revenue/payouts (services/revenue.py): summary/detail/payouts-list now
+    scope to the caller's own farm when farm-scoped; commission-setting
+    (both default and per-farm) is blocked outright for any farm-scoped
+    principal (a farm setting its own commission is a conflict of interest
+    regardless of "own farm only"); issuing a payout is restricted to a
+    farm-scoped principal's own farm_id.
+
+NOT touched, with reasons verified by reading the schema/migration comments
+(no farm concept exists to guard, adding one would be inventing a feature
+nobody asked for):
+  - Coupons/promotions: 0060_coupons_and_promotions.sql's own comment says
+    promotions.manage/.view are deliberately "never a role scoped to one
+    operational area" — a discount campaign is a whole-marketplace decision.
+  - Community discussions/content comments: customer-authored content with
+    no product/farm relationship anywhere in the schema — correctly global
+    moderation queues.
+
+Verification: the full backend test suite (apps/api/tests/) stays green
+with zero existing assertions changed, plus 8 new tests in
+test_admin_management.py covering the orders fix specifically (farm-owner
+sees only own-farm orders with correct scoped totals, gets 404 for another
+farm's order, can transition their own order but gets 403 on another farm's,
+a regular admin is unaffected, global search results are scoped, and the
+refund ownership guard holds even when orders.refund is granted directly).
+The dormant-gap hardening has no dedicated tests since no seeded role can
+exercise the new farm_id parameter — the existing suite staying green with
+no changes needed is the proof those guards are true no-ops today.

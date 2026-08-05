@@ -38,7 +38,12 @@ from truegrit_api.domain.revenue import (
     split_revenue,
     validate_commission_bps,
 )
-from truegrit_api.errors import ConflictError, NotFoundError, ValidationAppError
+from truegrit_api.errors import (
+    ConflictError,
+    NotFoundError,
+    PermissionDeniedError,
+    ValidationAppError,
+)
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.revenue import RevenueRepository
 from truegrit_api.services.audit import audit_statement
@@ -198,10 +203,15 @@ def _farm_row(
     }
 
 
-async def farm_revenue_summary(db: Database) -> dict[str, Any]:
+async def farm_revenue_summary(db: Database, actor: Principal | None = None) -> dict[str, Any]:
+    """`actor` is dormant today -- no seeded role holds `revenue.view` and a
+    `farm_id` at once -- but if one ever does, a farm-scoped actor sees only
+    their own farm's row rather than every farm's revenue."""
     repository = RevenueRepository(db)
     default_bps = await load_default_commission_bps(db)
     farms = await repository.list_farms()
+    if actor is not None and actor.farm_id is not None:
+        farms = [farm for farm in farms if str(farm["id"]) == actor.farm_id]
     tallies, _ = await _tallies_by_farm(repository)
     paid_by_farm = await repository.payout_totals_by_farm()
 
@@ -230,7 +240,11 @@ async def farm_revenue_summary(db: Database) -> dict[str, Any]:
     }
 
 
-async def farm_revenue_detail(db: Database, farm_id: str) -> dict[str, Any]:
+async def farm_revenue_detail(
+    db: Database, farm_id: str, actor: Principal | None = None
+) -> dict[str, Any]:
+    if actor is not None and actor.farm_id is not None and actor.farm_id != farm_id:
+        raise PermissionDeniedError("You can only view your own farm's revenue.")
     repository = RevenueRepository(db)
     farm = await repository.get_farm(farm_id)
     if farm is None:
@@ -290,8 +304,11 @@ def _payout_row(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-async def list_payouts(db: Database, limit: int = 100) -> dict[str, Any]:
-    rows = await RevenueRepository(db).payouts(limit=limit)
+async def list_payouts(
+    db: Database, limit: int = 100, actor: Principal | None = None
+) -> dict[str, Any]:
+    farm_id = actor.farm_id if actor is not None else None
+    rows = await RevenueRepository(db).payouts(farm_id=farm_id, limit=limit)
     return {"items": [_payout_row(row) for row in rows]}
 
 
@@ -299,6 +316,10 @@ async def set_default_commission(
     db: Database, principal: Principal, request_id: str, *, percent: float
 ) -> dict[str, Any]:
     """Set the house commission rate applied to farms without an override."""
+    if principal.farm_id is not None:
+        # A whole-marketplace default, never one farm's to set -- dormant
+        # today since no farm-scoped role holds `revenue.manage`.
+        raise PermissionDeniedError("Only an administrator can set the default commission rate.")
     basis_points = parse_commission_percent(percent)
     now = utc_now_iso()
     previous = await load_default_commission_bps(db)
@@ -339,6 +360,11 @@ async def set_farm_commission(
     default. That is distinct from `percent=0`, which charges the farm nothing
     — collapsing the two would make "no special terms" unexpressable.
     """
+    if principal.farm_id is not None:
+        # A farm setting its own commission rate is a conflict of interest,
+        # own farm or not -- dormant today since no farm-scoped role holds
+        # `revenue.manage`.
+        raise PermissionDeniedError("Only an administrator can set a farm's commission.")
     repository = RevenueRepository(db)
     farm = await repository.get_farm(farm_id)
     if farm is None:
@@ -399,6 +425,8 @@ async def issue_farm_payout(
     itself. Two concurrent clicks cannot both succeed, because the second
     batch violates that key and rolls back whole.
     """
+    if principal.farm_id is not None and principal.farm_id != farm_id:
+        raise PermissionDeniedError("You can only record a payout for your own farm.")
     repository = RevenueRepository(db)
     farm = await repository.get_farm(farm_id)
     if farm is None:

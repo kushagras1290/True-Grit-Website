@@ -870,13 +870,15 @@ async def update_site_control(
             " Raise the limit in Homepage Settings to add more."
         )
 
-    content = json.loads(page["content_json"])
-    blocks = content.setdefault("blocks", [])
-    hero = next((block for block in blocks if block.get("type") == "hero"), None)
+    content: dict[str, Any] = json.loads(page["content_json"])
+    blocks: list[dict[str, Any]] = content.setdefault("blocks", [])
+    hero: dict[str, Any] | None = next(
+        (block for block in blocks if block.get("type") == "hero"), None
+    )
     if hero is None:
         hero = {"id": "blk_hero", "type": "hero", "version": 1, "enabled": True, "props": {}}
         blocks.insert(0, hero)
-    props = hero.setdefault("props", {})
+    props: dict[str, Any] = hero.setdefault("props", {})
 
     fields = payload.model_dump(exclude_unset=True)
     for source, target in (
@@ -2721,14 +2723,14 @@ def _return_request_admin_row(row: dict[str, Any]) -> dict[str, Any]:
 @router.get("/returns")
 async def list_returns_endpoint(
     db: Annotated[Database, Depends(get_database)],
-    _principal: Annotated[Principal, Depends(require_permission("returns.view"))],
+    principal: Annotated[Principal, Depends(require_permission("returns.view"))],
     status: Annotated[str | None, Query(max_length=20)] = None,
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
     search: str | None = None,
 ) -> Any:
     rows = await ReturnRequestRepository(db).list_admin(
-        status=status, limit=limit, offset=offset, search=search
+        status=status, limit=limit, offset=offset, search=search, farm_id=principal.farm_id
     )
     return {
         "items": [_return_request_admin_row(row) for row in rows],
@@ -2741,9 +2743,9 @@ async def list_returns_endpoint(
 async def get_return_endpoint(
     return_id: str,
     db: Annotated[Database, Depends(get_database)],
-    _principal: Annotated[Principal, Depends(require_permission("returns.view"))],
+    principal: Annotated[Principal, Depends(require_permission("returns.view"))],
 ) -> Any:
-    row = await ReturnRequestRepository(db).get_admin_detail(return_id)
+    row = await ReturnRequestRepository(db).get_admin_detail(return_id, farm_id=principal.farm_id)
     if row is None:
         raise NotFoundError("Return request not found.")
     return {
@@ -3262,7 +3264,7 @@ def _admin_review_payload(row: dict[str, Any]) -> dict[str, Any]:
 @router.get("/reviews")
 async def list_reviews_endpoint(
     db: Annotated[Database, Depends(get_database)],
-    _principal: Annotated[Principal, Depends(require_permission("reviews.view"))],
+    principal: Annotated[Principal, Depends(require_permission("reviews.view"))],
     status: Annotated[str | None, Query(max_length=20)] = None,
     rating: Annotated[int | None, Query(ge=1, le=5)] = None,
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
@@ -3271,11 +3273,18 @@ async def list_reviews_endpoint(
 ) -> Any:
     repository = ReviewRepository(db)
     rows = await repository.list_admin(
-        status=status, rating=rating, search=search, limit=limit, offset=offset
+        status=status,
+        rating=rating,
+        search=search,
+        limit=limit,
+        offset=offset,
+        farm_id=principal.farm_id,
     )
     return {
         "items": [_admin_review_payload(row) for row in rows],
-        "total": await repository.count_admin(status=status, rating=rating, search=search),
+        "total": await repository.count_admin(
+            status=status, rating=rating, search=search, farm_id=principal.farm_id
+        ),
         "pending": await repository.count_pending(),
         "limit": limit,
         "offset": offset,
@@ -3922,16 +3931,18 @@ def _admin_bundle_item_payload(row: dict[str, Any]) -> dict[str, Any]:
 @router.get("/bundles")
 async def list_bundles_endpoint(
     db: Annotated[Database, Depends(get_database)],
-    _principal: Annotated[Principal, Depends(require_permission("bundles.view"))],
+    principal: Annotated[Principal, Depends(require_permission("bundles.view"))],
     status: Annotated[str | None, Query(max_length=20)] = None,
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> Any:
     repository = BundleRepository(db)
-    rows = await repository.list_admin(status=status, limit=limit, offset=offset)
+    rows = await repository.list_admin(
+        status=status, limit=limit, offset=offset, farm_id=principal.farm_id
+    )
     return {
         "items": [_admin_bundle_payload(row) for row in rows],
-        "total": await repository.count_admin(status=status),
+        "total": await repository.count_admin(status=status, farm_id=principal.farm_id),
     }
 
 
@@ -3939,13 +3950,17 @@ async def list_bundles_endpoint(
 async def get_bundle_endpoint(
     bundle_id: str,
     db: Annotated[Database, Depends(get_database)],
-    _principal: Annotated[Principal, Depends(require_permission("bundles.view"))],
+    principal: Annotated[Principal, Depends(require_permission("bundles.view"))],
 ) -> Any:
     repository = BundleRepository(db)
     bundle = await repository.get_by_id(bundle_id)
     if bundle is None:
         raise NotFoundError("Bundle not found.")
     items = await repository.list_items(bundle_id)
+    if principal.farm_id is not None and not any(
+        item["product_farm_id"] == principal.farm_id for item in items
+    ):
+        raise NotFoundError("Bundle not found.")
     payload = _admin_bundle_payload({**bundle, "item_count": len(items)})
     payload["items"] = [_admin_bundle_item_payload(row) for row in items]
     return payload
@@ -4058,13 +4073,13 @@ async def update_subscription_settings_endpoint(
 @router.get("/subscriptions")
 async def list_subscriptions_endpoint(
     db: Annotated[Database, Depends(get_database)],
-    _principal: Annotated[Principal, Depends(require_permission("subscriptions.view"))],
+    principal: Annotated[Principal, Depends(require_permission("subscriptions.view"))],
     status: Annotated[str | None, Query(max_length=20)] = None,
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> Any:
     items, total = await subscription_service.list_admin_subscriptions(
-        db, limit=limit, offset=offset, status=status
+        db, limit=limit, offset=offset, status=status, farm_id=principal.farm_id
     )
     return {"items": items, "total": total}
 
@@ -4073,10 +4088,10 @@ async def list_subscriptions_endpoint(
 async def get_subscription_admin_endpoint(
     subscription_id: str,
     db: Annotated[Database, Depends(get_database)],
-    _principal: Annotated[Principal, Depends(require_permission("subscriptions.view"))],
+    principal: Annotated[Principal, Depends(require_permission("subscriptions.view"))],
 ) -> Any:
     row = await SubscriptionRepository(db).get_by_id(subscription_id)
-    if row is None:
+    if row is None or (principal.farm_id is not None and row["farm_id"] != principal.farm_id):
         raise NotFoundError("Subscription not found.")
     return subscription_service.serialize_subscription(row)
 
@@ -4479,7 +4494,7 @@ async def global_search_endpoint(
         ]
 
     if principal.has("orders.view"):
-        rows = await repo.search_orders(term, limit=SEARCH_RESULT_LIMIT)
+        rows = await repo.search_orders(term, limit=SEARCH_RESULT_LIMIT, farm_id=principal.farm_id)
         empty["orders"] = [
             {
                 "id": row["id"],
@@ -5929,12 +5944,14 @@ class OrderRefundRequest(_CamelModel):
 @router.get("/orders")
 async def list_orders_endpoint(
     db: Annotated[Database, Depends(get_database)],
-    _principal: Annotated[Principal, Depends(require_permission("orders.view"))],
+    principal: Annotated[Principal, Depends(require_permission("orders.view"))],
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
     search: str | None = None,
 ) -> Any:
-    rows = await AdminRepository(db).list_orders(limit=limit, offset=offset, search=search)
+    rows = await AdminRepository(db).list_orders(
+        limit=limit, offset=offset, search=search, farm_id=principal.farm_id
+    )
     return {
         "items": [
             {
@@ -5962,9 +5979,9 @@ async def list_orders_endpoint(
 async def get_order_endpoint(
     order_id: str,
     db: Annotated[Database, Depends(get_database)],
-    _principal: Annotated[Principal, Depends(require_permission("orders.view"))],
+    principal: Annotated[Principal, Depends(require_permission("orders.view"))],
 ) -> Any:
-    order = await AdminRepository(db).get_order_detail(order_id)
+    order = await AdminRepository(db).get_order_detail(order_id, farm_id=principal.farm_id)
     if order is None:
         raise NotFoundError("Order not found.")
     return {
@@ -6510,27 +6527,27 @@ class FarmPayoutRequest(_CamelModel):
 @router.get("/revenue")
 async def farm_revenue_endpoint(
     db: Annotated[Database, Depends(get_database)],
-    _principal: Annotated[Principal, Depends(require_permission("revenue.view"))],
+    principal: Annotated[Principal, Depends(require_permission("revenue.view"))],
 ) -> Any:
-    return await farm_revenue_summary(db)
+    return await farm_revenue_summary(db, actor=principal)
 
 
 @router.get("/revenue/payouts")
 async def farm_payouts_endpoint(
     db: Annotated[Database, Depends(get_database)],
-    _principal: Annotated[Principal, Depends(require_permission("revenue.view"))],
+    principal: Annotated[Principal, Depends(require_permission("revenue.view"))],
     limit: Annotated[int, Query(ge=1, le=200)] = 100,
 ) -> Any:
-    return await list_payouts(db, limit=limit)
+    return await list_payouts(db, limit=limit, actor=principal)
 
 
 @router.get("/revenue/farms/{farm_id}")
 async def farm_revenue_detail_endpoint(
     farm_id: str,
     db: Annotated[Database, Depends(get_database)],
-    _principal: Annotated[Principal, Depends(require_permission("revenue.view"))],
+    principal: Annotated[Principal, Depends(require_permission("revenue.view"))],
 ) -> Any:
-    return await farm_revenue_detail(db, farm_id)
+    return await farm_revenue_detail(db, farm_id, actor=principal)
 
 
 @router.patch("/revenue/commission")

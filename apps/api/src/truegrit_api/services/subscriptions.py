@@ -175,11 +175,16 @@ async def list_my_subscriptions(
 
 
 async def list_admin_subscriptions(
-    db: Database, *, limit: int = 50, offset: int = 0, status: str | None = None
+    db: Database,
+    *,
+    limit: int = 50,
+    offset: int = 0,
+    status: str | None = None,
+    farm_id: str | None = None,
 ) -> tuple[list[dict[str, Any]], int]:
     repository = SubscriptionRepository(db)
-    rows = await repository.list_admin(limit=limit, offset=offset, status=status)
-    total = await repository.count_admin(status=status)
+    rows = await repository.list_admin(limit=limit, offset=offset, status=status, farm_id=farm_id)
+    total = await repository.count_admin(status=status, farm_id=farm_id)
     return [serialize_subscription(row) for row in rows], total
 
 
@@ -188,12 +193,14 @@ async def _get_owned_or_staff(
 ) -> dict[str, Any]:
     """Customers may only reach their own subscription; staff with
     `subscriptions.manage` may reach any (support: pause/cancel on a
-    customer's behalf). The route layer decides which case applies by
-    whether the actor has that permission -- mirrors how every other
-    ownership-or-staff service function in this codebase draws the line."""
+    customer's behalf) -- except a farm-scoped staff member, who may only
+    reach a subscription for their own farm's product. Dormant today: no
+    seeded role holds `subscriptions.manage` and a `farm_id` at once."""
     repository = SubscriptionRepository(db)
     if actor.has("subscriptions.manage"):
         row = await repository.get_by_id(subscription_id)
+        if row is not None and actor.farm_id is not None and row["farm_id"] != actor.farm_id:
+            row = None
     else:
         row = await repository.get_owned(subscription_id, actor.user_id)
     if row is None:

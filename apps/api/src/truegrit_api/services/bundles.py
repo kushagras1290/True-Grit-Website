@@ -21,7 +21,12 @@ from typing import Any, Final
 
 from truegrit_api.auth.principal import Principal
 from truegrit_api.domain.slugs import slugify, validate_slug
-from truegrit_api.errors import ConflictError, NotFoundError, ValidationAppError
+from truegrit_api.errors import (
+    ConflictError,
+    NotFoundError,
+    PermissionDeniedError,
+    ValidationAppError,
+)
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.bundles import BundleRepository
 from truegrit_api.services.audit import audit_statement
@@ -39,6 +44,31 @@ def _clean_name(name: str) -> str:
     if not cleaned or len(cleaned) > _MAX_NAME:
         raise ValidationAppError(f"Name must be 1-{_MAX_NAME} characters.")
     return cleaned
+
+
+async def _assert_farm_owns_bundle(db: Database, actor: Principal, bundle_id: str) -> None:
+    """Dormant today -- no seeded role holds `bundles.manage` and a `farm_id`
+    at once -- but kept correct in case that combination is ever granted. A
+    bundle can span farms (via its items' products), so a farm-scoped
+    principal may only touch one that is entirely their own, the same
+    all-or-nothing rule `services.orders._assert_farm_owns_order` uses."""
+    if actor.farm_id is None:
+        return
+    owned = await db.fetch_one(
+        """
+        SELECT NOT EXISTS (
+          SELECT 1 FROM bundle_items bi
+          JOIN product_variants v ON v.id = bi.variant_id
+          JOIN products p ON p.id = v.product_id
+          WHERE bi.bundle_id = ? AND (p.farm_id IS NULL OR p.farm_id != ?)
+        ) AS fully_owned
+        """,
+        (bundle_id, actor.farm_id),
+    )
+    if owned is None or not owned["fully_owned"]:
+        raise PermissionDeniedError(
+            "This bundle includes another farm's products; only an administrator can change it."
+        )
 
 
 async def create_bundle(
@@ -110,6 +140,7 @@ async def update_bundle(
     current = await db.fetch_one("SELECT * FROM bundles WHERE id = ?", (bundle_id,))
     if current is None:
         raise NotFoundError("Bundle not found.")
+    await _assert_farm_owns_bundle(db, actor, bundle_id)
 
     updates: dict[str, Any] = {}
     if "name" in fields:
@@ -168,6 +199,7 @@ async def delete_bundle(db: Database, actor: Principal, request_id: str, bundle_
     current = await db.fetch_one("SELECT id FROM bundles WHERE id = ?", (bundle_id,))
     if current is None:
         raise NotFoundError("Bundle not found.")
+    await _assert_farm_owns_bundle(db, actor, bundle_id)
     now = utc_now_iso()
     await db.batch(
         [
@@ -199,6 +231,7 @@ async def replace_bundle_items(
     bundle = await db.fetch_one("SELECT id FROM bundles WHERE id = ?", (bundle_id,))
     if bundle is None:
         raise NotFoundError("Bundle not found.")
+    await _assert_farm_owns_bundle(db, actor, bundle_id)
     if len(items) > _MAX_ITEMS:
         raise ValidationAppError(f"A bundle can hold at most {_MAX_ITEMS} items.")
     if not items:
@@ -219,13 +252,26 @@ async def replace_bundle_items(
         cleaned.append({"variant_id": variant_id, "quantity": quantity, "sort_order": index})
 
     variant_rows = await db.fetch_all(
-        f"SELECT id FROM product_variants WHERE id IN ({', '.join('?' for _ in cleaned)})",
+        f"""
+        SELECT v.id, p.farm_id FROM product_variants v
+        JOIN products p ON p.id = v.product_id
+        WHERE v.id IN ({", ".join("?" for _ in cleaned)})
+        """,
         tuple(item["variant_id"] for item in cleaned),
     )
     found_ids = {row["id"] for row in variant_rows}
     missing = [item["variant_id"] for item in cleaned if item["variant_id"] not in found_ids]
     if missing:
         raise ValidationAppError(f"Unknown variant id(s): {', '.join(missing)}.")
+    # A farm-scoped principal cannot smuggle another farm's variant into a
+    # bundle they otherwise own -- same posture as `services.catalogue`
+    # refusing to let a product be reassigned off a farm-owner's own farm.
+    if actor.farm_id is not None:
+        foreign = [row["id"] for row in variant_rows if row["farm_id"] != actor.farm_id]
+        if foreign:
+            raise PermissionDeniedError(
+                "A bundle you manage can only contain your own farm's products."
+            )
 
     now = utc_now_iso()
     statements: list[tuple[str, Any]] = [
