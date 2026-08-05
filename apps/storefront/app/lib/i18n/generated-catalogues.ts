@@ -6193,6 +6193,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "बंद करना",
     "literal.4244e822a06c": "कुछ गलत हो गया। पुनः प्रयास करें।",
     "literal.a60d9c9c5390": "सोच…",
+    "literal.b68734c25910": "जोड़ा",
+    "literal.f29efb2b4a33": "आपकी इच्छा सूची लोड हो रही है...",
+    "literal.45052b440a91":
+      "अभी तक कुछ भी नहीं बचाया गया. किसी भी उत्पाद को बाद के लिए यहां सहेजने के लिए उस पर हृदय टैप करें।",
+    "literal.6ff33102b1c6": "इच्छा-सूची",
   },
   bn: {
     "literal.87df31bb89b3": "— পুনরাবৃত্ত ডেলিভারি সেট আপ করতে অ্যাকাউন্ট মেনু থেকে সাইন ইন করুন",
@@ -7098,6 +7103,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "বন্ধ",
     "literal.4244e822a06c": "কিছু ভুল হয়েছে আবার চেষ্টা করুন",
     "literal.a60d9c9c5390": "ভাবছেন…",
+    "literal.b68734c25910": "যোগ করা হয়েছে",
+    "literal.f29efb2b4a33": "আপনার ইচ্ছা তালিকা লোড হচ্ছে...",
+    "literal.45052b440a91":
+      "কিছুই এখনও সংরক্ষিত. যেকোন পণ্যের হার্টে ট্যাপ করে সেটিকে এখানে সংরক্ষণ করুন।",
+    "literal.6ff33102b1c6": "ইচ্ছা তালিকা",
   },
   mr: {
     "literal.87df31bb89b3": "— आवर्ती वितरण सेट करण्यासाठी खाते मेनूमधून साइन इन करा",
@@ -8006,6 +8016,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "बंद करा",
     "literal.4244e822a06c": "काहीतरी चूक झाली. पुन्हा प्रयत्न करा.",
     "literal.a60d9c9c5390": "विचार करत आहे…",
+    "literal.b68734c25910": "जोडले",
+    "literal.f29efb2b4a33": "तुमची विशलिस्ट लोड करत आहे...",
+    "literal.45052b440a91":
+      "अद्याप काहीही जतन केले नाही. कोणत्याही उत्पादनावर हृदय टॅप करा ते नंतरसाठी येथे जतन करा.",
+    "literal.6ff33102b1c6": "विशलिस्ट",
   },
   te: {
     "literal.87df31bb89b3": "— పునరావృత డెలివరీని సెటప్ చేయడానికి ఖాతా మెను నుండి సైన్ ఇన్ చేయండి",
@@ -8922,6 +8937,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "మూసివేయి",
     "literal.4244e822a06c": "ఏదో తప్పు జరిగింది. మళ్లీ ప్రయత్నించండి.",
     "literal.a60d9c9c5390": "ఆలోచిస్తూ...",
+    "literal.b68734c25910": "చేర్చబడింది",
+    "literal.f29efb2b4a33": "మీ కోరికల జాబితాను లోడ్ చేస్తోంది...",
+    "literal.45052b440a91":
+      "ఇంకా ఏదీ సేవ్ కాలేదు. ఏదైనా ఉత్పత్తిని తర్వాత కోసం ఇక్కడ సేవ్ చేయడానికి దానిపై హృదయాన్ని నొక్కండి.",
+    "literal.6ff33102b1c6": "కోరికల జాబితా",
   },
   ta: {
     "literal.87df31bb89b3": "— தொடர்ச்சியான விநியோகத்தை அமைக்க கணக்கு மெனுவிலிருந்து உள்நுழைக",
@@ -9853,6 +9873,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "மூடு",
     "literal.4244e822a06c": "ஏதோ தவறாகிவிட்டது. மீண்டும் முயற்சிக்கவும்.",
     "literal.a60d9c9c5390": "சிந்திக்கிறது…",
+    "literal.b68734c25910": "சேர்க்கப்பட்டது",
+    "literal.f29efb2b4a33": "உங்கள் விருப்பப்பட்டியலை ஏற்றுகிறது…",
+    "literal.45052b440a91":
+      "இதுவரை எதுவும் சேமிக்கப்படவில்லை. எந்தவொரு தயாரிப்பையும் பின்னர் இங்கே சேமிக்க, இதயத்தைத் தட்டவும்.",
+    "literal.6ff33102b1c6": "விருப்பப்பட்டியல்",
   },
   gu: {
     "literal.87df31bb89b3": "— રિકરિંગ ડિલિવરી સેટ કરવા માટે એકાઉન્ટ મેનૂમાંથી સાઇન ઇન કરો",
@@ -10761,6 +10786,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "બંધ કરો",
     "literal.4244e822a06c": "કંઈક ખોટું થયું. ફરી પ્રયાસ કરો.",
     "literal.a60d9c9c5390": "વિચારી રહ્યા છીએ…",
+    "literal.b68734c25910": "ઉમેર્યું",
+    "literal.f29efb2b4a33": "તમારી વિશલિસ્ટ લોડ કરી રહ્યું છે...",
+    "literal.45052b440a91":
+      "હજુ સુધી કંઈ સાચવ્યું નથી. કોઈપણ ઉત્પાદન પર હૃદયને પછીથી સાચવવા માટે તેને ટેપ કરો.",
+    "literal.6ff33102b1c6": "વિશલિસ્ટ",
   },
   ur: {
     "literal.87df31bb89b3": "—",
@@ -11672,6 +11702,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "بند",
     "literal.4244e822a06c": "کچھ غلط ہو گیا۔ دوبارہ کوشش کریں۔",
     "literal.a60d9c9c5390": "سوچ رہا ہے…",
+    "literal.b68734c25910": "شامل کیا گیا۔",
+    "literal.f29efb2b4a33": "آپ کی خواہش کی فہرست لوڈ ہو رہی ہے…",
+    "literal.45052b440a91":
+      "ابھی تک کچھ بھی محفوظ نہیں ہوا۔ کسی بھی پروڈکٹ کو بعد میں یہاں محفوظ کرنے کے لیے اس پر ہارٹ کو تھپتھپائیں۔",
+    "literal.6ff33102b1c6": "خواہش کی فہرست",
   },
   kn: {
     "literal.87df31bb89b3": "— ಮರುಕಳಿಸುವ ವಿತರಣೆಯನ್ನು ಹೊಂದಿಸಲು ಖಾತೆ ಮೆನುವಿನಿಂದ ಸೈನ್ ಇನ್ ಮಾಡಿ",
@@ -12591,6 +12626,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "ಮುಚ್ಚಿ",
     "literal.4244e822a06c": "ಏನೋ ತಪ್ಪಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
     "literal.a60d9c9c5390": "ಯೋಚಿಸುತ್ತಿದೆ...",
+    "literal.b68734c25910": "ಸೇರಿಸಲಾಗಿದೆ",
+    "literal.f29efb2b4a33": "ನಿಮ್ಮ ಇಚ್ಛೆಯ ಪಟ್ಟಿಯನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
+    "literal.45052b440a91":
+      "ಇನ್ನೂ ಏನನ್ನೂ ಉಳಿಸಲಾಗಿಲ್ಲ. ಯಾವುದೇ ಉತ್ಪನ್ನವನ್ನು ನಂತರ ಇಲ್ಲಿ ಉಳಿಸಲು ಅದರ ಮೇಲೆ ಹೃದಯವನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ.",
+    "literal.6ff33102b1c6": "ಇಚ್ಛೆಪಟ್ಟಿ",
   },
   or: {
     "literal.87df31bb89b3": "- ବାରମ୍ବାର ବିତରଣର ସେଟ୍ ଅପ୍ କରିବାକୁ ଆକାଉଣ୍ଟ୍ ମେନୁରୁ ସାଇନ୍ ଇନ୍ କରନ୍ତୁ |",
@@ -13508,6 +13548,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "ବନ୍ଦ",
     "literal.4244e822a06c": "କିଛି ଭୁଲ୍ ହୋଇଗଲା | ପୁନର୍ବାର ଚେଷ୍ଟା କରନ୍ତୁ |",
     "literal.a60d9c9c5390": "ଭାବୁଛି…",
+    "literal.b68734c25910": "ଯୋଡା ଯାଇଛି |",
+    "literal.f29efb2b4a33": "ଆପଣଙ୍କର ଇଚ୍ଛା ତାଲିକା ଲୋଡ୍ କରୁଛି…",
+    "literal.45052b440a91":
+      "ଏପର୍ଯ୍ୟନ୍ତ କିଛି ସଞ୍ଚୟ ହୋଇନାହିଁ | ପରବର୍ତ୍ତୀ ସମୟରେ ଏହାକୁ ସଂରକ୍ଷଣ କରିବା ପାଇଁ ଯେକ product ଣସି ଦ୍ରବ୍ୟ ଉପରେ ହୃଦୟକୁ ଟ୍ୟାପ୍ କରନ୍ତୁ |",
+    "literal.6ff33102b1c6": "ଇଚ୍ଛା ତାଲିକା |",
   },
   ml: {
     "literal.87df31bb89b3":
@@ -14443,6 +14488,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "അടയ്ക്കുക",
     "literal.4244e822a06c": "എന്തോ കുഴപ്പം സംഭവിച്ചു. വീണ്ടും ശ്രമിക്കുക.",
     "literal.a60d9c9c5390": "ചിന്തിക്കുന്നു...",
+    "literal.b68734c25910": "ചേർത്തു",
+    "literal.f29efb2b4a33": "നിങ്ങളുടെ വിഷ്‌ലിസ്റ്റ് ലോഡ് ചെയ്യുന്നു...",
+    "literal.45052b440a91":
+      "ഇതുവരെ ഒന്നും സംരക്ഷിച്ചിട്ടില്ല. പിന്നീട് ഇവിടെ സംരക്ഷിക്കാൻ ഏതെങ്കിലും ഉൽപ്പന്നത്തിൽ ഹൃദയത്തിൽ ടാപ്പ് ചെയ്യുക.",
+    "literal.6ff33102b1c6": "വിഷ്‌ലിസ്റ്റ്",
   },
   pa: {
     "literal.87df31bb89b3": "— ਦੀ ਆਵਰਤੀ ਡਿਲੀਵਰੀ ਸੈਟ ਅਪ ਕਰਨ ਲਈ ਖਾਤਾ ਮੀਨੂ ਤੋਂ ਸਾਈਨ ਇਨ ਕਰੋ",
@@ -15347,6 +15397,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "ਬੰਦ ਕਰੋ",
     "literal.4244e822a06c": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਫਿਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ.",
     "literal.a60d9c9c5390": "ਸੋਚ ਰਿਹਾ ਹੈ...",
+    "literal.b68734c25910": "ਜੋੜਿਆ ਗਿਆ",
+    "literal.f29efb2b4a33": "ਤੁਹਾਡੀ ਵਿਸ਼ਲਿਸਟ ਲੋਡ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ...",
+    "literal.45052b440a91":
+      "ਅਜੇ ਤੱਕ ਕੁਝ ਵੀ ਸੁਰੱਖਿਅਤ ਨਹੀਂ ਕੀਤਾ ਗਿਆ। ਕਿਸੇ ਵੀ ਉਤਪਾਦ ਨੂੰ ਬਾਅਦ ਵਿੱਚ ਇੱਥੇ ਸੁਰੱਖਿਅਤ ਕਰਨ ਲਈ ਉਸ 'ਤੇ ਦਿਲ ਨੂੰ ਟੈਪ ਕਰੋ।",
+    "literal.6ff33102b1c6": "ਇੱਛਾ-ਸੂਚੀ",
   },
   as: {
     "literal.87df31bb89b3": "— প্ৰয়োগ কৰা",
@@ -16254,6 +16309,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "বন্ধ",
     "literal.4244e822a06c": "কিবা এটা ভুল হ’ল। আকৌ এবাৰ চেষ্টা কৰক।",
     "literal.a60d9c9c5390": "চিন্তা...",
+    "literal.b68734c25910": "যোগ কৰা হৈছে",
+    "literal.f29efb2b4a33": "আপোনাৰ ইচ্ছা তালিকা লোড কৰি আছে...",
+    "literal.45052b440a91":
+      "এতিয়াও একো ৰক্ষা কৰা হোৱা নাই। যিকোনো প্ৰডাক্টৰ ওপৰত হৃদয় টেপ কৰক যাতে ইয়াত পিছৰ বাবে সংৰক্ষণ কৰিব পাৰে।",
+    "literal.6ff33102b1c6": "ইচ্ছা তালিকা",
   },
   mai: {
     "literal.87df31bb89b3": "— कें आवर्ती वितरण कें सेटअप करय कें लेल खाता मेनू सं साइन इन करूं",
@@ -17158,6 +17218,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "बंद",
     "literal.4244e822a06c": "किछु गड़बड़ भ’ गेलै। फेर कोशिश करू।",
     "literal.a60d9c9c5390": "सोचि रहल छी...",
+    "literal.b68734c25910": "जोड़ा गेल",
+    "literal.f29efb2b4a33": "अपन इच्छा सूची लोड भ रहल अछि...",
+    "literal.45052b440a91":
+      "एखन धरि किछु नहि बचाओल गेल। कोनो उत्पाद पर दिल टैप करू जे बाद मे एतय सेव करू।",
+    "literal.6ff33102b1c6": "इच्छा सूची",
   },
   sat: {
     "literal.87df31bb89b3": "— ᱮᱠᱟᱣᱩᱱᱴ ᱢᱮᱱᱩ ᱠᱷᱚᱱ ᱥᱟᱭᱤᱱ ᱤᱱ ᱢᱮ ᱫᱚᱦᱲᱟ ᱰᱮᱞᱤᱵᱷᱟᱨᱤ ᱥᱮᱴ ᱟᱯ ᱞᱟᱹᱜᱤᱫ",
@@ -18069,6 +18134,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "ᱵᱚᱱᱫᱚ",
     "literal.4244e822a06c": "ᱡᱟᱦᱟᱱᱟᱜ ᱜᱮ ᱵᱟᱹᱲᱤᱡ ᱪᱟᱞᱟᱣ ᱮᱱᱟ ᱾ ᱫᱚᱦᱲᱟ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ ᱢᱮ᱾",
     "literal.a60d9c9c5390": "ᱩᱭᱦᱟᱹᱨ...",
+    "literal.b68734c25910": "ᱥᱮᱞᱮᱫ ᱮᱱᱟ",
+    "literal.f29efb2b4a33": "ᱟᱢᱟᱜ ᱤᱪᱷᱟ ᱛᱟᱞᱠᱟ ᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ...",
+    "literal.45052b440a91":
+      "ᱱᱤᱛ ᱦᱚᱸ ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱝ ᱵᱟᱧᱪᱟᱣ ᱟᱠᱟᱱᱟ ᱾ ᱛᱟᱭᱚᱢ ᱞᱟᱹᱜᱤᱫ ᱱᱚᱸᱰᱮ ᱥᱟᱧᱪᱟᱣ ᱞᱟᱹᱜᱤᱫ ᱡᱟᱦᱟᱱ ᱡᱤᱱᱤᱥ ᱨᱮ ᱨᱤᱫᱟᱹᱭ ᱴᱮᱯ ᱢᱮ ᱾",
+    "literal.6ff33102b1c6": "ᱤᱪᱷᱟ ᱛᱟᱞᱠᱟ",
   },
   ks: {
     "literal.87df31bb89b3": "—",
@@ -18980,6 +19050,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "بند",
     "literal.4244e822a06c": "کچھ غلط ہو گیا۔ دوبارہ کوشش کریں۔",
     "literal.a60d9c9c5390": "سوچ رہا ہے…",
+    "literal.b68734c25910": "شامل کیا گیا۔",
+    "literal.f29efb2b4a33": "آپ کی خواہش کی فہرست لوڈ ہو رہی ہے…",
+    "literal.45052b440a91":
+      "ابھی تک کچھ بھی محفوظ نہیں ہوا۔ کسی بھی پروڈکٹ کو بعد میں یہاں محفوظ کرنے کے لیے اس پر ہارٹ کو تھپتھپائیں۔",
+    "literal.6ff33102b1c6": "خواہش کی فہرست",
   },
   ne: {
     "literal.87df31bb89b3": "—",
@@ -19889,6 +19964,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "बन्द गर्नुहोस्",
     "literal.4244e822a06c": "केही गडबड भयो। पुन: प्रयास गर्नुहोस्।",
     "literal.a60d9c9c5390": "सोच्दै…",
+    "literal.b68734c25910": "थपियो",
+    "literal.f29efb2b4a33": "तपाईंको इच्छा सूची लोड गर्दै...",
+    "literal.45052b440a91":
+      "अझै केही पनि सुरक्षित गरिएको छैन। पछिको लागि यहाँ सुरक्षित गर्न कुनै पनि उत्पादनमा मुटुमा ट्याप गर्नुहोस्।",
+    "literal.6ff33102b1c6": "इच्छा सूची",
   },
   sd: {
     "literal.87df31bb89b3": "—",
@@ -20789,6 +20869,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "بند",
     "literal.4244e822a06c": "ڪجهه غلط ٿي ويو. ٻيهر ڪوشش ڪريو.",
     "literal.a60d9c9c5390": "سوچڻ…",
+    "literal.b68734c25910": "شامل ڪيو ويو",
+    "literal.f29efb2b4a33": "توهان جي خواهش جي فهرست لوڊ ٿي رهي آهي…",
+    "literal.45052b440a91":
+      "اڃان ڪجھ به نه بچيو آهي. ڪنهن به پراڊڪٽ تي دل کي ٽيپ ڪريو ان کي هتي محفوظ ڪرڻ لاءِ بعد ۾.",
+    "literal.6ff33102b1c6": "خواهش جي فهرست",
   },
   kok: {
     "literal.87df31bb89b3": "— ची परत परत वितरण सेट करपाक खातें मेनूंतल्यान सायन इन करात",
@@ -21693,6 +21778,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "धांपप",
     "literal.4244e822a06c": "कितें तरी चुकलें. परतून यत्न करात.",
     "literal.a60d9c9c5390": "विचार करून...",
+    "literal.b68734c25910": "जोडले",
+    "literal.f29efb2b4a33": "तुमची विशलिस्ट लोड करतना...",
+    "literal.45052b440a91":
+      "अजून कांयच वाचयल्लें ना. खंयच्याय उत्पादनाचेर काळजाक टॅप करून फुडें खातीर हांगा जतनाय घेयात.",
+    "literal.6ff33102b1c6": "विशलिस्ट",
   },
   doi: {
     "literal.87df31bb89b3": "— दी आवर्ती डिलीवरी गी सेट करने लेई खाता मेनू थमां साइन इन करो",
@@ -22602,6 +22692,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "बंद",
     "literal.4244e822a06c": "कुछ गड़बड़ हो गया। दोबारा कोशिश करो।",
     "literal.a60d9c9c5390": "सोचदे होई...",
+    "literal.b68734c25910": "जोड़ा गया",
+    "literal.f29efb2b4a33": "अपनी इच्छा सूची लोड हो रहा है...",
+    "literal.45052b440a91":
+      "अजे तक कुछ भी नहीं बचाया। किसी भी प्रोडक्ट पर दिल टैप करो तां जे बाद च इत्थें सेव करो।",
+    "literal.6ff33102b1c6": "इच्छा सूची",
   },
   mni: {
     "literal.87df31bb89b3": "— পুনরাবৃত্ত ডেলিভারি সেট আপ করতে অ্যাকাউন্ট মেনু থেকে সাইন ইন করুন",
@@ -23507,6 +23602,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "বন্ধ",
     "literal.4244e822a06c": "কিছু ভুল হয়েছে আবার চেষ্টা করুন",
     "literal.a60d9c9c5390": "ভাবছেন…",
+    "literal.b68734c25910": "যোগ করা হয়েছে",
+    "literal.f29efb2b4a33": "আপনার ইচ্ছা তালিকা লোড হচ্ছে...",
+    "literal.45052b440a91":
+      "কিছুই এখনও সংরক্ষিত. যেকোন পণ্যের হার্টে ট্যাপ করে সেটিকে এখানে সংরক্ষণ করুন।",
+    "literal.6ff33102b1c6": "ইচ্ছা তালিকা",
   },
   brx: {
     "literal.87df31bb89b3": "- आवर्ती डिलीवरी सेट करने के लिए खाता मेनू से साइन इन करें",
@@ -24419,6 +24519,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "बंद करना",
     "literal.4244e822a06c": "कुछ गलत हो गया। पुनः प्रयास करें।",
     "literal.a60d9c9c5390": "सोच…",
+    "literal.b68734c25910": "जोड़ा",
+    "literal.f29efb2b4a33": "आपकी इच्छा सूची लोड हो रही है...",
+    "literal.45052b440a91":
+      "अभी तक कुछ भी नहीं बचाया गया. किसी भी उत्पाद को बाद के लिए यहां सहेजने के लिए उस पर हृदय टैप करें।",
+    "literal.6ff33102b1c6": "इच्छा-सूची",
   },
   sa: {
     "literal.87df31bb89b3": "— पुनरावर्तनीयवितरणं स्थापयितुं खातामेनूतः प्रवेशं कुर्वन्तु",
@@ -25334,6 +25439,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "पिधानं करोतु",
     "literal.4244e822a06c": "किमपि भ्रष्टं जातम्। पुनः प्रयासं कुरुत।",
     "literal.a60d9c9c5390": "चिन्तयन्...",
+    "literal.b68734c25910": "योजितम्",
+    "literal.f29efb2b4a33": "भवतः इच्छासूचीं लोड् कुर्वन्...",
+    "literal.45052b440a91":
+      "अद्यापि किमपि न रक्षितम्। पश्चात् कृते अत्र रक्षितुं कस्यापि उत्पादस्य उपरि हृदयं ट्याप् कुर्वन्तु।",
+    "literal.6ff33102b1c6": "इच्छासूची",
   },
   "zh-Hans": {
     "literal.87df31bb89b3": "— 从帐户菜单登录，设置定期配送",
@@ -26173,6 +26283,10 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "关闭",
     "literal.4244e822a06c": "出了点问题。再试一次。",
     "literal.a60d9c9c5390": "思维…",
+    "literal.b68734c25910": "额外",
+    "literal.f29efb2b4a33": "正在加载您的愿望清单...",
+    "literal.45052b440a91": "尚未保存任何内容。点击任何产品上的心形即可将其保存在此处供以后使用。",
+    "literal.6ff33102b1c6": "愿望清单",
   },
   es: {
     "literal.87df31bb89b3":
@@ -27100,6 +27214,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Cerca",
     "literal.4244e822a06c": "Algo salió mal. Intentar otra vez.",
     "literal.a60d9c9c5390": "Pensamiento…",
+    "literal.b68734c25910": "Agregado",
+    "literal.f29efb2b4a33": "Cargando tu lista de deseos…",
+    "literal.45052b440a91":
+      "Nada guardado todavía. Toca el corazón de cualquier producto para guardarlo aquí para más tarde.",
+    "literal.6ff33102b1c6": "Lista de deseos",
   },
   ar: {
     "literal.87df31bb89b3": "— قم بتسجيل الدخول من قائمة الحساب لإعداد التسليم المتكرر",
@@ -27986,6 +28105,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "يغلق",
     "literal.4244e822a06c": "حدث خطأ ما. حاول ثانية.",
     "literal.a60d9c9c5390": "التفكير…",
+    "literal.b68734c25910": "تمت الإضافة",
+    "literal.f29efb2b4a33": "جارٍ تحميل قائمة الرغبات…",
+    "literal.45052b440a91":
+      "لم يتم حفظ أي شيء حتى الآن. اضغط على القلب على أي منتج لحفظه هنا لوقت لاحق.",
+    "literal.6ff33102b1c6": "قائمة الرغبات",
   },
   pt: {
     "literal.87df31bb89b3": "— faça login no menu da conta para configurar a entrega recorrente de",
@@ -28903,6 +29027,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Fechar",
     "literal.4244e822a06c": "Algo deu errado. Tente novamente.",
     "literal.a60d9c9c5390": "Pensamento…",
+    "literal.b68734c25910": "Adicionado",
+    "literal.f29efb2b4a33": "Carregando sua lista de desejos…",
+    "literal.45052b440a91":
+      "Nada salvo ainda. Toque no coração de qualquer produto para salvá-lo aqui para mais tarde.",
+    "literal.6ff33102b1c6": "Lista de desejos",
   },
   fr: {
     "literal.87df31bb89b3":
@@ -29832,6 +29961,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Fermer",
     "literal.4244e822a06c": "Quelque chose s'est mal passé. Essayer à nouveau.",
     "literal.a60d9c9c5390": "Pensée…",
+    "literal.b68734c25910": "Ajouté",
+    "literal.f29efb2b4a33": "Chargement de votre liste de souhaits…",
+    "literal.45052b440a91":
+      "Rien n'a encore été enregistré. Appuyez sur le cœur de n'importe quel produit pour l'enregistrer ici pour plus tard.",
+    "literal.6ff33102b1c6": "Liste de souhaits",
   },
   ru: {
     "literal.87df31bb89b3":
@@ -30749,6 +30883,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Закрывать",
     "literal.4244e822a06c": "Что-то пошло не так. Попробуйте еще раз.",
     "literal.a60d9c9c5390": "Думая…",
+    "literal.b68734c25910": "Добавлен",
+    "literal.f29efb2b4a33": "Загрузка списка желаний…",
+    "literal.45052b440a91":
+      "Еще ничего не сохранилось. Коснитесь сердечка на любом продукте, чтобы сохранить его здесь на будущее.",
+    "literal.6ff33102b1c6": "Список желаний",
   },
   id: {
     "literal.87df31bb89b3": "— masuk dari menu akun untuk menyiapkan pengiriman berulang dari",
@@ -31672,6 +31811,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Menutup",
     "literal.4244e822a06c": "Ada yang tidak beres. Coba lagi.",
     "literal.a60d9c9c5390": "Pemikiran…",
+    "literal.b68734c25910": "Ditambahkan",
+    "literal.f29efb2b4a33": "Memuat daftar keinginan Anda…",
+    "literal.45052b440a91":
+      "Belum ada yang disimpan. Ketuk hati pada produk apa pun untuk menyimpannya di sini untuk nanti.",
+    "literal.6ff33102b1c6": "Daftar Keinginan",
   },
   de: {
     "literal.87df31bb89b3":
@@ -32603,6 +32747,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Schließen",
     "literal.4244e822a06c": "Etwas ist schief gelaufen. Versuchen Sie es erneut.",
     "literal.a60d9c9c5390": "Denken…",
+    "literal.b68734c25910": "Hinzugefügt",
+    "literal.f29efb2b4a33": "Ihre Wunschliste wird geladen…",
+    "literal.45052b440a91":
+      "Noch nichts gespeichert. Tippen Sie auf das Herz eines beliebigen Produkts, um es hier für später zu speichern.",
+    "literal.6ff33102b1c6": "Wunschliste",
   },
   ja: {
     "literal.87df31bb89b3": "— アカウント メニューからサインインして、",
@@ -33502,6 +33651,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "近い",
     "literal.4244e822a06c": "何か問題が発生しました。もう一度やり直してください。",
     "literal.a60d9c9c5390": "考え…",
+    "literal.b68734c25910": "追加した",
+    "literal.f29efb2b4a33": "ウィッシュリストを読み込んでいます…",
+    "literal.45052b440a91":
+      "まだ何も保存されていません。製品のハートをタップして、後で使用できるようにここに保存します。",
+    "literal.6ff33102b1c6": "ウィッシュリスト",
   },
   tr: {
     "literal.87df31bb89b3": "— uygulanan",
@@ -34424,6 +34578,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Kapalı",
     "literal.4244e822a06c": "Bir şeyler ters gitti. Tekrar deneyin.",
     "literal.a60d9c9c5390": "Düşünüyorum…",
+    "literal.b68734c25910": "Eklendi",
+    "literal.f29efb2b4a33": "İstek listeniz yükleniyor…",
+    "literal.45052b440a91":
+      "Henüz hiçbir şey kaydedilmedi. Daha sonra kullanmak üzere buraya kaydetmek için herhangi bir ürünün üzerindeki kalbe dokunun.",
+    "literal.6ff33102b1c6": "İstek listesi",
   },
   vi: {
     "literal.87df31bb89b3": "— đăng nhập từ menu tài khoản để thiết lập việc phân phối định kỳ",
@@ -35345,6 +35504,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Đóng",
     "literal.4244e822a06c": "Đã xảy ra lỗi. Hãy thử lại.",
     "literal.a60d9c9c5390": "Đang suy nghĩ…",
+    "literal.b68734c25910": "Đã thêm",
+    "literal.f29efb2b4a33": "Đang tải danh sách yêu thích của bạn…",
+    "literal.45052b440a91":
+      "Chưa có gì được lưu. Nhấn vào trái tim trên bất kỳ sản phẩm nào để lưu nó ở đây để sử dụng sau.",
+    "literal.6ff33102b1c6": "Danh sách yêu thích",
   },
   ko: {
     "literal.87df31bb89b3": "— 계정 메뉴에서 로그인하여 반복 배송을 설정하세요",
@@ -36233,6 +36397,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "닫다",
     "literal.4244e822a06c": "문제가 발생했습니다. 다시 시도해 보세요.",
     "literal.a60d9c9c5390": "생각…",
+    "literal.b68734c25910": "추가됨",
+    "literal.f29efb2b4a33": "위시리스트 로드 중…",
+    "literal.45052b440a91":
+      "아직 저장된 내용이 없습니다. 나중에 사용할 수 있도록 제품에 하트를 탭하여 여기에 저장하세요.",
+    "literal.6ff33102b1c6": "위시리스트",
   },
   it: {
     "literal.87df31bb89b3": "— accedi dal menu account per impostare la consegna ricorrente di",
@@ -37155,6 +37324,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Vicino",
     "literal.4244e822a06c": "Qualcosa è andato storto. Riprova.",
     "literal.a60d9c9c5390": "Pensiero…",
+    "literal.b68734c25910": "Aggiunto",
+    "literal.f29efb2b4a33": "Caricamento della tua lista dei desideri...",
+    "literal.45052b440a91":
+      "Niente ancora salvato. Tocca il cuore su qualsiasi prodotto per salvarlo qui per dopo.",
+    "literal.6ff33102b1c6": "Lista dei desideri",
   },
   fa: {
     "literal.87df31bb89b3": "— از منوی حساب وارد شوید تا تحویل تکرار شونده را تنظیم کنید",
@@ -38054,6 +38228,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "بستن",
     "literal.4244e822a06c": "مشکلی پیش آمد. دوباره امتحان کنید.",
     "literal.a60d9c9c5390": "فکر کردن…",
+    "literal.b68734c25910": "اضافه شد",
+    "literal.f29efb2b4a33": "در حال بارگیری لیست خواسته های شما…",
+    "literal.45052b440a91":
+      "هنوز چیزی ذخیره نشده است. روی قلب هر محصولی ضربه بزنید تا برای بعداً در اینجا ذخیره شود.",
+    "literal.6ff33102b1c6": "لیست آرزوها",
   },
   "zh-Hant": {
     "literal.87df31bb89b3": "— 從帳戶選單登錄，設定定期交付",
@@ -38893,6 +39072,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "關閉",
     "literal.4244e822a06c": "出了點問題。再試一次。",
     "literal.a60d9c9c5390": "思維…",
+    "literal.b68734c25910": "額外",
+    "literal.f29efb2b4a33": "正在加載您的願望清單...",
+    "literal.45052b440a91":
+      "尚未保存任何內容。點擊任何產品上的心形即可將其保存在此處以供以後使用。",
+    "literal.6ff33102b1c6": "願望清單",
   },
   th: {
     "literal.87df31bb89b3": "— ลงชื่อเข้าใช้จากเมนูบัญชีเพื่อตั้งค่าการจัดส่งแบบประจำของ",
@@ -39785,6 +39969,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "ปิด",
     "literal.4244e822a06c": "มีบางอย่างผิดพลาด ลองอีกครั้ง",
     "literal.a60d9c9c5390": "กำลังคิด...",
+    "literal.b68734c25910": "เพิ่มแล้ว",
+    "literal.f29efb2b4a33": "กำลังโหลดสิ่งที่อยากได้ของคุณ...",
+    "literal.45052b440a91":
+      "ยังไม่ได้บันทึกอะไรเลย แตะหัวใจบนผลิตภัณฑ์ใดๆ เพื่อบันทึกไว้ที่นี่เพื่อใช้ในภายหลัง",
+    "literal.6ff33102b1c6": "สิ่งที่ปรารถนา",
   },
   pl: {
     "literal.87df31bb89b3": "— zaloguj się z menu konta, aby ustawić powtarzającą się dostawę",
@@ -40700,6 +40889,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Zamknąć",
     "literal.4244e822a06c": "Coś poszło nie tak. Spróbuj ponownie.",
     "literal.a60d9c9c5390": "Myślący…",
+    "literal.b68734c25910": "W dodatku",
+    "literal.f29efb2b4a33": "Ładowanie Twojej listy życzeń…",
+    "literal.45052b440a91":
+      "Nic jeszcze nie zostało zapisane. Kliknij serce na dowolnym produkcie, aby zapisać je tutaj na później.",
+    "literal.6ff33102b1c6": "Lista życzeń",
   },
   uk: {
     "literal.87df31bb89b3":
@@ -41613,6 +41807,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Закрити",
     "literal.4244e822a06c": "Щось пішло не так. Спробуйте знову.",
     "literal.a60d9c9c5390": "Думаючи…",
+    "literal.b68734c25910": "Додано",
+    "literal.f29efb2b4a33": "Завантаження списку бажань…",
+    "literal.45052b440a91":
+      "Ще нічого не збережено. Торкніться сердечка на будь-якому продукті, щоб зберегти його тут на потім.",
+    "literal.6ff33102b1c6": "Список бажань",
   },
   nl: {
     "literal.87df31bb89b3":
@@ -42528,6 +42727,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Dichtbij",
     "literal.4244e822a06c": "Er is iets misgegaan. Probeer het opnieuw.",
     "literal.a60d9c9c5390": "Denken…",
+    "literal.b68734c25910": "Toegevoegd",
+    "literal.f29efb2b4a33": "Uw verlanglijst laden…",
+    "literal.45052b440a91":
+      "Nog niets opgeslagen. Tik op het hart op een product om het hier op te slaan voor later.",
+    "literal.6ff33102b1c6": "Verlanglijst",
   },
   fil: {
     "literal.87df31bb89b3":
@@ -43459,6 +43663,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Isara",
     "literal.4244e822a06c": "Nagkaproblema. Subukan muli.",
     "literal.a60d9c9c5390": "Iniisip…",
+    "literal.b68734c25910": "Idinagdag",
+    "literal.f29efb2b4a33": "Nilo-load ang iyong wishlist…",
+    "literal.45052b440a91":
+      "Wala pang na-save. I-tap ang puso sa anumang produkto para i-save ito dito para sa ibang pagkakataon.",
+    "literal.6ff33102b1c6": "Wishlist",
   },
   sw: {
     "literal.87df31bb89b3":
@@ -44369,6 +44578,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Funga",
     "literal.4244e822a06c": "Hitilafu fulani imetokea. Jaribu tena.",
     "literal.a60d9c9c5390": "Kufikiri...",
+    "literal.b68734c25910": "Imeongezwa",
+    "literal.f29efb2b4a33": "Inapakia orodha yako ya matamanio...",
+    "literal.45052b440a91":
+      "Hakuna kilichohifadhiwa bado. Gusa moyo kwenye bidhaa yoyote ili uihifadhi hapa baadaye.",
+    "literal.6ff33102b1c6": "Orodha ya matamanio",
   },
   he: {
     "literal.87df31bb89b3": "— היכנס מתפריט החשבון כדי להגדיר מסירה חוזרת של",
@@ -45231,6 +45445,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "לִסְגוֹר",
     "literal.4244e822a06c": "משהו השתבש. נסה שוב.",
     "literal.a60d9c9c5390": "חֲשִׁיבָה…",
+    "literal.b68734c25910": "נוסף",
+    "literal.f29efb2b4a33": "טוען את רשימת המשאלות שלך...",
+    "literal.45052b440a91":
+      "שום דבר עדיין לא נשמר. הקש על הלב על כל מוצר כדי לשמור אותו כאן למועד מאוחר יותר.",
+    "literal.6ff33102b1c6": "רשימת משאלות",
   },
   sv: {
     "literal.87df31bb89b3": "— logga in från kontomenyn för att ställa in återkommande leverans av",
@@ -46138,6 +46357,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Nära",
     "literal.4244e822a06c": "Något gick fel. Försök igen.",
     "literal.a60d9c9c5390": "Tänkande…",
+    "literal.b68734c25910": "Tillagd",
+    "literal.f29efb2b4a33": "Laddar din önskelista...",
+    "literal.45052b440a91":
+      "Inget sparat ännu. Tryck på hjärtat på valfri produkt för att spara den här för senare.",
+    "literal.6ff33102b1c6": "önskelista",
   },
   nb: {
     "literal.87df31bb89b3": "— logg på fra kontomenyen for å konfigurere gjentakende levering av",
@@ -47043,6 +47267,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Lukke",
     "literal.4244e822a06c": "Noe gikk galt. Prøv igjen.",
     "literal.a60d9c9c5390": "Tenker...",
+    "literal.b68734c25910": "Lagt til",
+    "literal.f29efb2b4a33": "Laster inn ønskelisten din …",
+    "literal.45052b440a91":
+      "Ingenting er lagret ennå. Trykk på hjertet på et produkt for å lagre det her til senere.",
+    "literal.6ff33102b1c6": "Ønskeliste",
   },
   da: {
     "literal.87df31bb89b3":
@@ -47956,6 +48185,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Tæt",
     "literal.4244e822a06c": "Noget gik galt. Prøv igen.",
     "literal.a60d9c9c5390": "Tænker...",
+    "literal.b68734c25910": "Tilføjet",
+    "literal.f29efb2b4a33": "Indlæser din ønskeliste...",
+    "literal.45052b440a91":
+      "Intet er gemt endnu. Tryk på hjertet på ethvert produkt for at gemme det her til senere.",
+    "literal.6ff33102b1c6": "Ønskeliste",
   },
   fi: {
     "literal.87df31bb89b3": "— kirjaudu sisään tilivalikosta ja määritä toistuva toimitus",
@@ -48872,6 +49106,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Lähellä",
     "literal.4244e822a06c": "Jotain meni pieleen. Yritä uudelleen.",
     "literal.a60d9c9c5390": "Ajattelu…",
+    "literal.b68734c25910": "Lisätty",
+    "literal.f29efb2b4a33": "Ladataan toivelistaasi…",
+    "literal.45052b440a91":
+      "Mitään ei ole vielä tallennettu. Napauta minkä tahansa tuotteen sydäntä tallentaaksesi sen tähän myöhempää käyttöä varten.",
+    "literal.6ff33102b1c6": "Toivelista",
   },
   el: {
     "literal.87df31bb89b3":
@@ -49800,6 +50039,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Κοντά",
     "literal.4244e822a06c": "Κάτι πήγε στραβά. Προσπαθήστε ξανά.",
     "literal.a60d9c9c5390": "Σκέψη…",
+    "literal.b68734c25910": "Προστέθηκε",
+    "literal.f29efb2b4a33": "Φόρτωση της λίστας επιθυμιών σας…",
+    "literal.45052b440a91":
+      "Δεν έχει αποθηκευτεί τίποτα ακόμα. Πατήστε την καρδιά σε οποιοδήποτε προϊόν για να το αποθηκεύσετε εδώ για αργότερα.",
+    "literal.6ff33102b1c6": "Λίστα επιθυμιών",
   },
   cs: {
     "literal.87df31bb89b3": "— přihlaste se z nabídky účtu a nastavte opakující se doručování",
@@ -50710,6 +50954,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Blízko",
     "literal.4244e822a06c": "Něco se pokazilo. Zkuste to znovu.",
     "literal.a60d9c9c5390": "Myslící…",
+    "literal.b68734c25910": "Přidáno",
+    "literal.f29efb2b4a33": "Načítání seznamu přání…",
+    "literal.45052b440a91":
+      "Zatím není nic uloženo. Klepnutím na srdíčko na libovolném produktu jej zde uložíte na později.",
+    "literal.6ff33102b1c6": "Seznam přání",
   },
   hu: {
     "literal.87df31bb89b3": "— jelentkezzen be a fiókmenüből az ismétlődő kézbesítés beállításához",
@@ -51626,6 +51875,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Közeli",
     "literal.4244e822a06c": "Valami elromlott. Próbáld újra.",
     "literal.a60d9c9c5390": "Gondolkodás…",
+    "literal.b68734c25910": "Hozzáadva",
+    "literal.f29efb2b4a33": "Kívánságlista betöltése…",
+    "literal.45052b440a91":
+      "Még nincs mentve semmi. Koppintson a szívre bármely terméken, hogy elmentse ide későbbre.",
+    "literal.6ff33102b1c6": "Kívánságlista",
   },
   ro: {
     "literal.87df31bb89b3":
@@ -52550,6 +52804,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Aproape",
     "literal.4244e822a06c": "Ceva a mers prost. Încearcă din nou.",
     "literal.a60d9c9c5390": "Gândire…",
+    "literal.b68734c25910": "Adăugat",
+    "literal.f29efb2b4a33": "Se încarcă lista de dorințe…",
+    "literal.45052b440a91":
+      "Nimic salvat încă. Atingeți inima pe orice produs pentru a-l salva aici pentru mai târziu.",
+    "literal.6ff33102b1c6": "Lista de dorințe",
   },
   sk: {
     "literal.87df31bb89b3": "— prihláste sa z ponuky účtu a nastavte si opakované doručovanie",
@@ -53463,6 +53722,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Zavrieť",
     "literal.4244e822a06c": "Niečo sa pokazilo. Skúste to znova.",
     "literal.a60d9c9c5390": "Premýšľanie…",
+    "literal.b68734c25910": "Pridané",
+    "literal.f29efb2b4a33": "Načítava sa váš zoznam želaní…",
+    "literal.45052b440a91":
+      "Zatiaľ nie je nič uložené. Klepnutím na srdiečko na ľubovoľnom produkte ho tu uložíte na neskôr.",
+    "literal.6ff33102b1c6": "Zoznam želaní",
   },
   bg: {
     "literal.87df31bb89b3": "— влезте от менюто на акаунта, за да настроите периодична доставка на",
@@ -54379,6 +54643,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "затвори",
     "literal.4244e822a06c": "Нещо се обърка. Опитайте отново.",
     "literal.a60d9c9c5390": "мислене...",
+    "literal.b68734c25910": "Добавено",
+    "literal.f29efb2b4a33": "Вашият списък с желания се зарежда...",
+    "literal.45052b440a91":
+      "Все още нищо не е запазено. Докоснете сърцето върху всеки продукт, за да го запазите тук за по-късно.",
+    "literal.6ff33102b1c6": "Списък с желания",
   },
   af: {
     "literal.87df31bb89b3": "— meld aan vanaf die rekeningkieslys om herhalende aflewering van",
@@ -55295,6 +55564,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Maak toe",
     "literal.4244e822a06c": "Iets het verkeerd geloop. Probeer weer.",
     "literal.a60d9c9c5390": "Dink…",
+    "literal.b68734c25910": "Bygevoeg",
+    "literal.f29efb2b4a33": "Laai tans jou wenslys …",
+    "literal.45052b440a91":
+      "Niks is nog gestoor nie. Tik die hart op enige produk om dit hier te stoor vir later.",
+    "literal.6ff33102b1c6": "Wenslys",
   },
   sq: {
     "literal.87df31bb89b3":
@@ -56211,6 +56485,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Mbylle",
     "literal.4244e822a06c": "Diçka shkoi keq. Provo sërish.",
     "literal.a60d9c9c5390": "Duke menduar…",
+    "literal.b68734c25910": "Shtuar",
+    "literal.f29efb2b4a33": "Lista juaj e dëshirave po ngarkohet…",
+    "literal.45052b440a91":
+      "Asgjë nuk është ruajtur ende. Prekni zemrën në çdo produkt për ta ruajtur këtu për më vonë.",
+    "literal.6ff33102b1c6": "Lista e dëshirave",
   },
   am: {
     "literal.87df31bb89b3": "— ተደጋጋሚ ማድረሻን ለማዘጋጀት ከመለያው ሜኑ ይግቡ",
@@ -57059,6 +57338,10 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "ገጠመ",
     "literal.4244e822a06c": "የሆነ ችግር ተፈጥሯል። እንደገና ይሞክሩ።",
     "literal.a60d9c9c5390": "በማሰብ…",
+    "literal.b68734c25910": "ታክሏል።",
+    "literal.f29efb2b4a33": "የምኞት ዝርዝርዎን በመጫን ላይ…",
+    "literal.45052b440a91": "እስካሁን ምንም አልተቀመጠም። ለበኋላ እዚህ ለማስቀመጥ በማንኛውም ምርት ላይ ልብን ይንኩ።",
+    "literal.6ff33102b1c6": "የምኞት ዝርዝር",
   },
   hy: {
     "literal.87df31bb89b3": "— մուտք գործեք հաշվի ընտրացանկից՝ կարգավորելու",
@@ -57974,6 +58257,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Փակել",
     "literal.4244e822a06c": "Սխալ առաջացավ։ Կրկին փորձեք:",
     "literal.a60d9c9c5390": "Մտածում…",
+    "literal.b68734c25910": "Ավելացված է",
+    "literal.f29efb2b4a33": "Ձեր ցանկությունների ցանկը բեռնվում է…",
+    "literal.45052b440a91":
+      "Դեռ ոչինչ չի պահպանվել։ Հպեք սրտին ցանկացած ապրանքի վրա՝ այն ավելի ուշ պահելու համար:",
+    "literal.6ff33102b1c6": "Ցանկությունների ցուցակ",
   },
   az: {
     "literal.87df31bb89b3":
@@ -58895,6 +59183,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Bağlayın",
     "literal.4244e822a06c": "Nəsə xəta baş verdi. Yenidən cəhd edin.",
     "literal.a60d9c9c5390": "Düşünür...",
+    "literal.b68734c25910": "Əlavə edilib",
+    "literal.f29efb2b4a33": "İstək siyahınız yüklənir...",
+    "literal.45052b440a91":
+      "Hələ heç nə saxlanmayıb. İstənilən məhsulu daha sonra burada saxlamaq üçün onun üzərinə toxunun.",
+    "literal.6ff33102b1c6": "İstək siyahısı",
   },
   eu: {
     "literal.87df31bb89b3": "— hasi saioa kontuaren menutik",
@@ -59813,6 +60106,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Itxi",
     "literal.4244e822a06c": "Zerbait gaizki joan da. Saiatu berriro.",
     "literal.a60d9c9c5390": "Pentsatzen…",
+    "literal.b68734c25910": "Gehituta",
+    "literal.f29efb2b4a33": "Zure nahien zerrenda kargatzen…",
+    "literal.45052b440a91":
+      "Oraindik ez da ezer gorde. Sakatu edozein produkturen bihotza hemen gordetzeko geroago.",
+    "literal.6ff33102b1c6": "Desioen zerrenda",
   },
   be: {
     "literal.87df31bb89b3":
@@ -60731,6 +61029,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Блізка",
     "literal.4244e822a06c": "Нешта пайшло не так. Паспрабуйце яшчэ раз.",
     "literal.a60d9c9c5390": "Думаючы…",
+    "literal.b68734c25910": "Дададзена",
+    "literal.f29efb2b4a33": "Загрузка вашага спісу пажаданняў…",
+    "literal.45052b440a91":
+      "Пакуль нічога не захавана. Націсніце сэрца на любы прадукт, каб захаваць яго тут на потым.",
+    "literal.6ff33102b1c6": "Спіс пажаданняў",
   },
   bs: {
     "literal.87df31bb89b3": "— prijavite se iz menija računa da postavite ponavljajuću isporuku",
@@ -61641,6 +61944,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Zatvori",
     "literal.4244e822a06c": "Nešto je pošlo po zlu. Pokušajte ponovo.",
     "literal.a60d9c9c5390": "Razmišljajući…",
+    "literal.b68734c25910": "Dodano",
+    "literal.f29efb2b4a33": "Učitavanje vaše liste želja…",
+    "literal.45052b440a91":
+      "Još ništa nije sačuvano. Dodirnite srce na bilo kojem proizvodu da ga sačuvate ovdje za kasnije.",
+    "literal.6ff33102b1c6": "Lista želja",
   },
   ca: {
     "literal.87df31bb89b3":
@@ -62571,6 +62879,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Tancar",
     "literal.4244e822a06c": "Alguna cosa va fallar. Torna-ho a provar.",
     "literal.a60d9c9c5390": "Pensant…",
+    "literal.b68734c25910": "Afegit",
+    "literal.f29efb2b4a33": "S'està carregant la teva llista de desitjos…",
+    "literal.45052b440a91":
+      "Encara no s'ha guardat res. Toqueu el cor de qualsevol producte per desar-lo aquí per més endavant.",
+    "literal.6ff33102b1c6": "Llista de desitjos",
   },
   hr: {
     "literal.87df31bb89b3":
@@ -63481,6 +63794,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Zatvoriti",
     "literal.4244e822a06c": "Nešto nije u redu. Pokušajte ponovno.",
     "literal.a60d9c9c5390": "razmišljanje...",
+    "literal.b68734c25910": "Dodano",
+    "literal.f29efb2b4a33": "Učitavanje vaše liste želja…",
+    "literal.45052b440a91":
+      "Još ništa nije spremljeno. Dodirnite srce na bilo kojem proizvodu da biste ga spremili ovdje za kasnije.",
+    "literal.6ff33102b1c6": "Popis želja",
   },
   et: {
     "literal.87df31bb89b3": "— logige sisse kontomenüüst, et seadistada korduv tarne",
@@ -64386,6 +64704,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Sule",
     "literal.4244e822a06c": "Midagi läks valesti. Proovi uuesti.",
     "literal.a60d9c9c5390": "Mõeldes…",
+    "literal.b68734c25910": "Lisatud",
+    "literal.f29efb2b4a33": "Teie soovinimekirja laadimine…",
+    "literal.45052b440a91":
+      "Midagi pole veel salvestatud. Puudutage mis tahes toote südant, et see hilisemaks siia salvestada.",
+    "literal.6ff33102b1c6": "Soovinimekiri",
   },
   gl: {
     "literal.87df31bb89b3":
@@ -65307,6 +65630,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Pechar",
     "literal.4244e822a06c": "Algo saíu mal. Téntao de novo.",
     "literal.a60d9c9c5390": "Pensando…",
+    "literal.b68734c25910": "Engadido",
+    "literal.f29efb2b4a33": "Cargando a túa lista de desexos...",
+    "literal.45052b440a91":
+      "Aínda non se gardou nada. Toca o corazón en calquera produto para gardalo aquí para máis tarde.",
+    "literal.6ff33102b1c6": "Lista de desexos",
   },
   ka: {
     "literal.87df31bb89b3": "— შედით ანგარიშის მენიუდან, რათა დააყენოთ",
@@ -66218,6 +66546,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "დახურვა",
     "literal.4244e822a06c": "რაღაც შეფერხდა. სცადეთ ხელახლა.",
     "literal.a60d9c9c5390": "ფიქრი…",
+    "literal.b68734c25910": "დამატებულია",
+    "literal.f29efb2b4a33": "თქვენი სურვილების სიის ჩატვირთვა…",
+    "literal.45052b440a91":
+      "ჯერ არაფერია შენახული. შეეხეთ გულს ნებისმიერ პროდუქტს, რომ შეინახოთ იგი აქ მოგვიანებით.",
+    "literal.6ff33102b1c6": "სურვილების სია",
   },
   ha: {
     "literal.87df31bb89b3": "- shiga daga menu na asusun don saita isar da akai-akai na",
@@ -67127,6 +67460,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Kusa",
     "literal.4244e822a06c": "Wani abu ya faru. Gwada kuma.",
     "literal.a60d9c9c5390": "Tunani…",
+    "literal.b68734c25910": "Kara",
+    "literal.f29efb2b4a33": "Ana loda lissafin fatan ku…",
+    "literal.45052b440a91":
+      "Babu wani abu da aka ajiye tukuna. Matsa zuciya akan kowane samfur don adana shi anan na gaba.",
+    "literal.6ff33102b1c6": "Jerin buri",
   },
   is: {
     "literal.87df31bb89b3":
@@ -68039,6 +68377,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Loka",
     "literal.4244e822a06c": "Eitthvað fór úrskeiðis. Reyndu aftur.",
     "literal.a60d9c9c5390": "Er að hugsa…",
+    "literal.b68734c25910": "Bætt við",
+    "literal.f29efb2b4a33": "Hleður óskalistanum...",
+    "literal.45052b440a91":
+      "Ekkert vistað ennþá. Bankaðu á hjartað á hvaða vöru sem er til að vista hana hér til síðar.",
+    "literal.6ff33102b1c6": "Óskalisti",
   },
   ga: {
     "literal.87df31bb89b3":
@@ -68964,6 +69307,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Dún",
     "literal.4244e822a06c": "Chuaigh rud éigin mícheart. Bain triail eile as.",
     "literal.a60d9c9c5390": "Ag smaoineamh…",
+    "literal.b68734c25910": "Curtha leis",
+    "literal.f29efb2b4a33": "Do liosta mianta á lódáil…",
+    "literal.45052b440a91":
+      "Ní dhéanfaidh aon ní a shábháil fós. Tapáil an croí ar aon táirge chun é a shábháil anseo ar ball.",
+    "literal.6ff33102b1c6": "Liosta Mianta",
   },
   jv: {
     "literal.87df31bb89b3": "— mlebu saka menu akun kanggo nyiyapake pangiriman bola-bali",
@@ -69874,6 +70222,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Nutup",
     "literal.4244e822a06c": "Ana sing salah. Coba maneh.",
     "literal.a60d9c9c5390": "Mikir…",
+    "literal.b68734c25910": "Ditambahake",
+    "literal.f29efb2b4a33": "Memuat wishlist…",
+    "literal.45052b440a91":
+      "Durung disimpen. Tutul jantung ing produk apa wae kanggo nyimpen ing kene kanggo mengko.",
+    "literal.6ff33102b1c6": "Wishlist",
   },
   kk: {
     "literal.87df31bb89b3": "— қайталанатын жеткізуді орнату үшін есептік жазба мәзірінен кіріңіз",
@@ -70792,6 +71145,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Жабу",
     "literal.4244e822a06c": "Бірдеңе дұрыс болмады. Қайтадан байқап көріңіз.",
     "literal.a60d9c9c5390": "Ойлану…",
+    "literal.b68734c25910": "Қосылды",
+    "literal.f29efb2b4a33": "Қалаулар тізіміңіз жүктелуде…",
+    "literal.45052b440a91":
+      "Әлі ештеңе сақталмады. Кез келген өнімді осында сақтау үшін оның жүрегін түртіңіз.",
+    "literal.6ff33102b1c6": "Қалаулар тізімі",
   },
   km: {
     "literal.87df31bb89b3": "— ចូល​ពី​ម៉ឺនុយ​គណនី ដើម្បី​រៀបចំ​ការ​ចែកចាយ​ដដែលៗ​នៃ",
@@ -71701,6 +72059,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "បិទ",
     "literal.4244e822a06c": "មានអ្វីមួយខុសប្រក្រតី។ ព្យាយាមម្តងទៀត។",
     "literal.a60d9c9c5390": "កំពុងគិត…",
+    "literal.b68734c25910": "បន្ថែម",
+    "literal.f29efb2b4a33": "កំពុងផ្ទុកបញ្ជីប្រាថ្នារបស់អ្នក...",
+    "literal.45052b440a91":
+      "គ្មានអ្វីត្រូវបានរក្សាទុកនៅឡើយទេ។ ចុចលើបេះដូងលើផលិតផលណាមួយ ដើម្បីរក្សាទុកវានៅទីនេះសម្រាប់ពេលក្រោយ។",
+    "literal.6ff33102b1c6": "បញ្ជីប្រាថ្នា",
   },
   lo: {
     "literal.87df31bb89b3": "— ເຂົ້າສູ່ລະບົບຈາກເມນູບັນຊີເພື່ອຕັ້ງຄ່າການຈັດສົ່ງແບບເກີດຂຶ້ນຊ້ຳໆຂອງ",
@@ -72596,6 +72959,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "ປິດ",
     "literal.4244e822a06c": "ມີບາງຢ່າງຜິດພາດ. ລອງອີກຄັ້ງ.",
     "literal.a60d9c9c5390": "ຄິດ...",
+    "literal.b68734c25910": "ເພີ່ມແລ້ວ",
+    "literal.f29efb2b4a33": "ກຳລັງໂຫຼດລາຍການທີ່ຢາກໄດ້ຂອງເຈົ້າ...",
+    "literal.45052b440a91":
+      "ບໍ່ໄດ້ບັນທຶກຫຍັງເທື່ອ. ແຕະຫົວໃຈໃສ່ຜະລິດຕະພັນໃດກໍໄດ້ເພື່ອບັນທຶກມັນໄວ້ບ່ອນນີ້ໃນພາຍຫຼັງ.",
+    "literal.6ff33102b1c6": "ລາຍການທີ່ຢາກໄດ້",
   },
   lv: {
     "literal.87df31bb89b3": "— pierakstieties no konta izvēlnes, lai iestatītu periodisku piegādi",
@@ -73510,6 +73878,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Aizvērt",
     "literal.4244e822a06c": "Kaut kas nogāja greizi. Mēģiniet vēlreiz.",
     "literal.a60d9c9c5390": "Domājot…",
+    "literal.b68734c25910": "Pievienots",
+    "literal.f29efb2b4a33": "Notiek vēlmju saraksta ielāde…",
+    "literal.45052b440a91":
+      "Vēl nekas nav saglabāts. Pieskarieties jebkura produkta sirdij, lai saglabātu to šeit vēlākam laikam.",
+    "literal.6ff33102b1c6": "Vēlmju saraksts",
   },
   lt: {
     "literal.87df31bb89b3":
@@ -74420,6 +74793,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Uždaryti",
     "literal.4244e822a06c": "Kažkas nutiko. Bandykite dar kartą.",
     "literal.a60d9c9c5390": "Galvoju…",
+    "literal.b68734c25910": "Pridėta",
+    "literal.f29efb2b4a33": "Įkeliamas pageidavimų sąrašas…",
+    "literal.45052b440a91":
+      "Dar nieko neišsaugota. Bakstelėkite bet kurio gaminio širdį, kad išsaugotumėte jį vėlesniam naudojimui.",
+    "literal.6ff33102b1c6": "Norų sąrašas",
   },
   mk: {
     "literal.87df31bb89b3":
@@ -75327,6 +75705,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Затвори",
     "literal.4244e822a06c": "Нешто тргна наопаку. Обидете се повторно.",
     "literal.a60d9c9c5390": "Размислувајќи…",
+    "literal.b68734c25910": "Додадено",
+    "literal.f29efb2b4a33": "Се вчитува вашата листа со желби…",
+    "literal.45052b440a91":
+      "Сè уште ништо не е зачувано. Допрете го срцето на кој било производ за да го зачувате овде за подоцна.",
+    "literal.6ff33102b1c6": "Листа на желби",
   },
   ms: {
     "literal.87df31bb89b3":
@@ -76252,6 +76635,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "tutup",
     "literal.4244e822a06c": "Sesuatu telah berlaku. Cuba lagi.",
     "literal.a60d9c9c5390": "Berfikir…",
+    "literal.b68734c25910": "Ditambah",
+    "literal.f29efb2b4a33": "Memuatkan senarai hajat anda…",
+    "literal.45052b440a91":
+      "Tiada apa yang disimpan lagi. Ketik hati pada mana-mana produk untuk menyimpannya di sini untuk kemudian.",
+    "literal.6ff33102b1c6": "Senarai hajat",
   },
   mn: {
     "literal.87df31bb89b3": "—",
@@ -77166,6 +77554,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Хаах",
     "literal.4244e822a06c": "Ямар нэг зүйл буруу болсон. Дахин оролдоно уу.",
     "literal.a60d9c9c5390": "Бодож байна…",
+    "literal.b68734c25910": "Нэмсэн",
+    "literal.f29efb2b4a33": "Таны хүслийн жагсаалтыг ачаалж байна...",
+    "literal.45052b440a91":
+      "Одоогоор юу ч хадгалагдаагүй байна. Дурын бүтээгдэхүүний зүрхэн дээр дарж, дараа нь энд хадгалах боломжтой.",
+    "literal.6ff33102b1c6": "Хүслийн жагсаалт",
   },
   my: {
     "literal.87df31bb89b3": "— ထပ်တလဲလဲ ပေးပို့ခြင်းကို စနစ်ထည့်သွင်းရန်",
@@ -78096,6 +78489,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "ပိတ်လိုက်",
     "literal.4244e822a06c": "တစ်ခုခုမှားသွားသည်။ ထပ်ကြိုးစားပါ။",
     "literal.a60d9c9c5390": "စဉ်းစားနေသည်...",
+    "literal.b68734c25910": "ထပ်ပြောပါသည်။",
+    "literal.f29efb2b4a33": "သင့်ဆန္ဒစာရင်းကို ဖွင့်နေသည်…",
+    "literal.45052b440a91":
+      "ဘာမှမသိမ်းဆည်းရသေးပါ။ နောင်တွင် ဤနေရာတွင် သိမ်းဆည်းရန် မည်သည့်ထုတ်ကုန်ကိုမဆို နှလုံးသားကို တို့ပါ။",
+    "literal.6ff33102b1c6": "ဆန္ဒစာရင်း",
   },
   ps: {
     "literal.87df31bb89b3": "— د حساب له مینو څخه ننوتئ ترڅو د تکراري تحویل تنظیم کړئ د",
@@ -78998,6 +79396,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "تړل",
     "literal.4244e822a06c": "یو څه غلط شو. بیا هڅه وکړئ.",
     "literal.a60d9c9c5390": "فکر…",
+    "literal.b68734c25910": "زیاته کړه",
+    "literal.f29efb2b4a33": "ستاسو د خوښې لیست پورته کول…",
+    "literal.45052b440a91":
+      "تراوسه هیڅ شی نه دی خوندي شوی. په هر محصول باندې زړه ټایپ کړئ ترڅو دلته یې د وروسته لپاره خوندي کړئ.",
+    "literal.6ff33102b1c6": "د خوښې لیست",
   },
   sr: {
     "literal.87df31bb89b3": "— пријавите се из менија налога да бисте подесили периодичну испоруку",
@@ -79905,6 +80308,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Затвори",
     "literal.4244e822a06c": "Нешто је пошло по злу. Покушајте поново.",
     "literal.a60d9c9c5390": "Размишљајући…",
+    "literal.b68734c25910": "Додато",
+    "literal.f29efb2b4a33": "Учитавање ваше листе жеља…",
+    "literal.45052b440a91":
+      "Још ништа није сачувано. Додирните срце на било ком производу да бисте га сачували овде за касније.",
+    "literal.6ff33102b1c6": "Листа жеља",
   },
   sl: {
     "literal.87df31bb89b3": "— prijavite se v meniju računa, da nastavite ponavljajočo se dostavo",
@@ -80813,6 +81221,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Zapri",
     "literal.4244e822a06c": "Nekaj ​​je šlo narobe. poskusi ponovno",
     "literal.a60d9c9c5390": "Razmišljam ...",
+    "literal.b68734c25910": "Dodano",
+    "literal.f29efb2b4a33": "Nalaganje seznama želja ...",
+    "literal.45052b440a91":
+      "Nič še ni shranjenega. Dotaknite se srca na katerem koli izdelku, da ga shranite tukaj za pozneje.",
+    "literal.6ff33102b1c6": "Seznam želja",
   },
   so: {
     "literal.87df31bb89b3":
@@ -81733,6 +82146,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Xir",
     "literal.4244e822a06c": "Wax baa khaldamay Isku day mar kale",
     "literal.a60d9c9c5390": "Fikirka…",
+    "literal.b68734c25910": "Lagu daray",
+    "literal.f29efb2b4a33": "Raraya liiskaaga rabitaan…",
+    "literal.45052b440a91":
+      "Weli waxba ma kaydsan. Ku dhufo wadnaha badeecad kasta si aad ugu kaydiso halkan hadhow.",
+    "literal.6ff33102b1c6": "Liiska rajada",
   },
   zu: {
     "literal.87df31bb89b3":
@@ -82654,6 +83072,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Vala",
     "literal.4244e822a06c": "Kukhona into engahambanga kahle. Zama futhi.",
     "literal.a60d9c9c5390": "Iyacabanga...",
+    "literal.b68734c25910": "Kwengeziwe",
+    "literal.f29efb2b4a33": "Ilayisha uhlu lwakho lwezifiso...",
+    "literal.45052b440a91":
+      "Akukho okulondoloziwe okwamanje. Thepha inhliziyo kunoma yimuphi umkhiqizo ukuze uwulondoloze lapha ukuze uthole kamuva.",
+    "literal.6ff33102b1c6": "Uhlu lwezifiso",
   },
   xh: {
     "literal.87df31bb89b3": "— ngena kwi-akhawunti yemenyu ukuseta unikezelo oluqhubekayo lwe",
@@ -83570,6 +83993,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Vala",
     "literal.4244e822a06c": "Into ayihamba kakuhle. Zama kwakhona.",
     "literal.a60d9c9c5390": "Ukucinga...",
+    "literal.b68734c25910": "Yongeziwe",
+    "literal.f29efb2b4a33": "Ilayisha uluhlu lwakho lweminqweno...",
+    "literal.45052b440a91":
+      "Akukho nto igciniweyo okwangoku. Cofa intliziyo kuyo nayiphi na imveliso ukuyigcina apha ukwenzela kamva.",
+    "literal.6ff33102b1c6": "Uluhlu lweminqweno",
   },
   yo: {
     "literal.87df31bb89b3": "— wole lati inu akoto akoto lati seto ifijiṣẹ loorekoore ti",
@@ -84463,6 +84891,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Sunmọ",
     "literal.4244e822a06c": "Nkankan ti ko tọ. Gbiyanju lẹẹkansi.",
     "literal.a60d9c9c5390": "N ronu…",
+    "literal.b68734c25910": "Fi kun",
+    "literal.f29efb2b4a33": "Nkojọpọ atokọ ifẹ rẹ…",
+    "literal.45052b440a91":
+      "Ko si ohun ti o fipamọ sibẹsibẹ. Fọwọ ba ọkan lori ọja eyikeyi lati fipamọ si ibi fun nigbamii.",
+    "literal.6ff33102b1c6": "Akojọ ifẹ",
   },
   ig: {
     "literal.87df31bb89b3": "— banye na menu akaụntụ ka hazie nnyefe ugboro ugboro nke",
@@ -85356,6 +85789,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Mechie",
     "literal.4244e822a06c": "Ọ nwere ihe adịghị mma. Nwaa ọzọ.",
     "literal.a60d9c9c5390": "Na-eche…",
+    "literal.b68734c25910": "agbakwunyere",
+    "literal.f29efb2b4a33": "Na-ebugo ndepụta ọchịchọ gị…",
+    "literal.45052b440a91":
+      "Ọnweghị ihe echekwara. Kpatụ obi na ngwaahịa ọ bụla iji chekwaa ya ebe a ma emechaa.",
+    "literal.6ff33102b1c6": "Ndepụta ọchịchọ",
   },
   uz: {
     "literal.87df31bb89b3": "— takroriy yetkazib berishni sozlash uchun hisob menyusiga kiring",
@@ -86277,6 +86715,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Yopish",
     "literal.4244e822a06c": "Nimadir xato ketdi. Qayta urinib ko'ring.",
     "literal.a60d9c9c5390": "O‘ylash…",
+    "literal.b68734c25910": "Qo'shilgan",
+    "literal.f29efb2b4a33": "Istaklaringiz roʻyxati yuklanmoqda…",
+    "literal.45052b440a91":
+      "Hali hech narsa saqlanmadi. Bu yerda keyinroq saqlash uchun istalgan mahsulotning yurak belgisini bosing.",
+    "literal.6ff33102b1c6": "Istaklar roʻyxati",
   },
   tk: {
     "literal.87df31bb89b3": "- gaýtalanýan eltip bermek üçin hasap menýusyndan giriň",
@@ -87185,6 +87628,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": ".Akyn",
     "literal.4244e822a06c": "Bir zat nädogry boldy. Gaýtadan synanyşyň.",
     "literal.a60d9c9c5390": "Oýlanmak…",
+    "literal.b68734c25910": "Goşuldy",
+    "literal.f29efb2b4a33": "Arzuw sanawyňyzy ýüklemek…",
+    "literal.45052b440a91":
+      "Entek hiç zat saklanmady. Bu ýerde soňrak saklamak üçin islendik önüme ýüregi basyň.",
+    "literal.6ff33102b1c6": "Arzuw sanawy",
   },
   ky: {
     "literal.87df31bb89b3": "— кайталануучу жеткирүүнү орнотуу үчүн эсеп менюсуна кириңиз",
@@ -88100,6 +88548,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Жабуу",
     "literal.4244e822a06c": "Бир жерден ката кетти. Кайра аракет кыл.",
     "literal.a60d9c9c5390": "Ойлоо…",
+    "literal.b68734c25910": "Кошулган",
+    "literal.f29efb2b4a33": "Каалоо тизмеңиз жүктөлүүдө…",
+    "literal.45052b440a91":
+      "Азырынча эч нерсе сакталган жок. Каалаган продуктунун жүрөгүн таптап, аны кийинчерээк бул жерге сактап коюңуз.",
+    "literal.6ff33102b1c6": "Каалоо тизмеси",
   },
   tg: {
     "literal.87df31bb89b3": "— аз менюи ҳисоб ворид шавед, то интиқоли такрории",
@@ -89019,6 +89472,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Пӯшед",
     "literal.4244e822a06c": "Чизе хато рафт. Як бори дигар санҷед.",
     "literal.a60d9c9c5390": "Фикр кардан…",
+    "literal.b68734c25910": "Илова карда шуд",
+    "literal.f29efb2b4a33": "Рӯйхати хоҳишҳои шумо бор карда мешавад…",
+    "literal.45052b440a91":
+      "Ҳеҷ чиз ҳанӯз захира нашудааст. Дар ягон маҳсулот дилро клик кунед, то онро дар ин ҷо барои дертар захира кунед.",
+    "literal.6ff33102b1c6": "Рӯйхати хоҳишҳо",
   },
   ceb: {
     "literal.87df31bb89b3":
@@ -89949,6 +90407,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Duol",
     "literal.4244e822a06c": "Naay nahitabo. Sulayi pag-usab.",
     "literal.a60d9c9c5390": "Naghunahuna…",
+    "literal.b68734c25910": "Gidugang",
+    "literal.f29efb2b4a33": "Nagkarga sa imong wishlist…",
+    "literal.45052b440a91":
+      "Wala pa naluwas. I-tap ang kasingkasing sa bisan unsang produkto aron matipigan kini dinhi sa ulahi.",
+    "literal.6ff33102b1c6": "Wishlist",
   },
   cy: {
     "literal.87df31bb89b3": "— mewngofnodwch o ddewislen y cyfrif i sefydlu dosbarthiad cylchol",
@@ -90867,6 +91330,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Cau",
     "literal.4244e822a06c": "Aeth rhywbeth o'i le. Ceisiwch eto.",
     "literal.a60d9c9c5390": "Meddwl…",
+    "literal.b68734c25910": "Ychwanegwyd",
+    "literal.f29efb2b4a33": "Wrthi'n llwytho eich rhestr dymuniadau…",
+    "literal.45052b440a91":
+      "Dim byd wedi'i arbed eto. Tapiwch y galon ar unrhyw gynnyrch i'w gadw yma yn nes ymlaen.",
+    "literal.6ff33102b1c6": "Rhestr dymuniadau",
   },
   mt: {
     "literal.87df31bb89b3": "— idħol mill-menu tal-kont biex twaqqaf konsenja rikorrenti ta",
@@ -91783,6 +92251,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Agħlaq",
     "literal.4244e822a06c": "Xi ħaġa marret ħażin. Erġa' pprova.",
     "literal.a60d9c9c5390": "Taħseb...",
+    "literal.b68734c25910": "Miżjud",
+    "literal.f29efb2b4a33": "Qiegħed ittella' l-lista tax-xewqat tiegħek...",
+    "literal.45052b440a91":
+      "S'issa xejn ma ġie salvat. Tektek il-qalb fuq kwalunkwe prodott biex issalvaha hawn għal aktar tard.",
+    "literal.6ff33102b1c6": "Wishlist",
   },
   lb: {
     "literal.87df31bb89b3": "— mellt Iech aus dem Kontomenü un fir widderhuelend Liwwerung vu",
@@ -92696,6 +93169,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Zoumaachen",
     "literal.4244e822a06c": "Eppes ass falsch gaangen. Probéiert nach eng Kéier.",
     "literal.a60d9c9c5390": "Denken…",
+    "literal.b68734c25910": "Dobäigesat",
+    "literal.f29efb2b4a33": "Luet Är Wonschlëscht ...",
+    "literal.45052b440a91":
+      "Nach näischt gespuert. Tippen op d'Häerz op all Produkt fir et hei fir spéider ze späicheren.",
+    "literal.6ff33102b1c6": "Wonsch",
   },
   rw: {
     "literal.87df31bb89b3": "- injira muri konte ya menu kugirango ushireho itangwa rya",
@@ -93597,6 +94075,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Funga",
     "literal.4244e822a06c": "Ikintu kitagenze neza. Ongera ugerageze.",
     "literal.a60d9c9c5390": "Gutekereza…",
+    "literal.b68734c25910": "Yongeyeho",
+    "literal.f29efb2b4a33": "Gupakira urutonde rwawe…",
+    "literal.45052b440a91":
+      "Nta kintu na kimwe cyakijijwe. Kanda umutima kubicuruzwa byose kugirango ubike hano nyuma.",
+    "literal.6ff33102b1c6": "Urutonde",
   },
   ny: {
     "literal.87df31bb89b3": "— lowani muakaunti yanu kuti mukhazikitse",
@@ -94500,6 +94983,11 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "Tsekani",
     "literal.4244e822a06c": "Chinachake chalakwika. Yesaninso.",
     "literal.a60d9c9c5390": "Kuganiza…",
+    "literal.b68734c25910": "Zowonjezedwa",
+    "literal.f29efb2b4a33": "Kutsegula mndandanda wazomwe mukufuna…",
+    "literal.45052b440a91":
+      "Palibe chomwe chasungidwa. Dinani pamtima pachinthu chilichonse kuti musunge apa kuti mudzagwiritsenso ntchito mtsogolo.",
+    "literal.6ff33102b1c6": "Zofuna",
   },
   ug: {
     "literal.87df31bb89b3": "- ھېسابات تىزىملىكىدىن كىرىپ قايتا-قايتا يەتكۈزۈشنى تەڭشەڭ",
@@ -95414,5 +95902,10 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.bbfa773e5a63": "تاقاش",
     "literal.4244e822a06c": "چاتاق چىقتى. قايتا سىناڭ.",
     "literal.a60d9c9c5390": "تەپەككۇر…",
+    "literal.b68734c25910": "قوشۇلدى",
+    "literal.f29efb2b4a33": "ئارزۇ تىزىملىكىڭىزنى يۈكلەۋاتىسىز…",
+    "literal.45052b440a91":
+      "ھازىرچە ھېچقانداق نەرسە ساقلانمىدى. ھەر قانداق مەھسۇلاتقا يۈرەكنى چېكىپ كېيىن بۇ يەردە ساقلاڭ.",
+    "literal.6ff33102b1c6": "ئارزۇ تىزىملىكى",
   },
 };
