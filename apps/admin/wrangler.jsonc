@@ -12,4 +12,16 @@
     "directory": "./dist",
     "not_found_handling": "single-page-application",
   },
+  "env": {
+    // Deployed by .github/workflows/deploy-staging.yml on every push to the
+    // `staging` branch. VITE_API_URL is set at build time in that workflow
+    // (this is an assets-only Worker — no server-side vars to set here).
+    "staging": {
+      "name": "truegrit-admin-staging",
+      "assets": {
+        "directory": "./dist",
+        "not_found_handling": "single-page-application",
+      },
+    },
+  },
 }

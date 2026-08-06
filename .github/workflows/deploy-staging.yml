@@ -1,0 +1,114 @@
+name: Deploy staging
+
+# Auto-deploys the whole project to the isolated Cloudflare staging
+# environment on every push to `staging`. This is the middle rung of the
+# promotion ladder: `testing` (CI only, ci.yml) -> `staging` (this workflow)
+# -> `main` (live dev environment, deploy.yml). Requires one repository
+# secret, the same one deploy.yml and deploy-api-environment.yml already
+# use:
+#   CLOUDFLARE_API_TOKEN — a token with Workers Scripts, D1, R2, KV, and
+#   Queues edit permissions on the target account.
+#
+# The isolated staging D1/R2/Queues/KV resources (truegrit-staging,
+# truegrit-media-staging, truegrit-jobs-staging, etc.) already exist — see
+# apps/api/wrangler.jsonc's env.staging block. The "Verify isolated
+# resources exist" step below re-checks that at deploy time so a resource
+# getting deleted out from under this fails with a clear message instead of
+# a cryptic wrangler error mid-deploy.
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Serialize staging deploys so concurrent pushes never race the same Workers.
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: "68185599d29e656475ecc2cabbf581b7"
+
+jobs:
+  api:
+    name: API (Python Worker)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Verify isolated resources exist
+        working-directory: apps/api
+        run: |
+          npx --yes wrangler@4.110.0 whoami
+          npx --yes wrangler@4.110.0 d1 info truegrit-staging
+          npx --yes wrangler@4.110.0 queues info truegrit-jobs-staging
+          npx --yes wrangler@4.110.0 queues info truegrit-dlq-staging
+          npx --yes wrangler@4.110.0 r2 bucket info truegrit-media-staging
+          npx --yes wrangler@4.110.0 r2 bucket info truegrit-exports-staging
+
+      # Idempotent, one migration file per invocation — see deploy.yml's
+      # matching step for why (remote D1 rejects large compound-SELECT
+      # migration batches even though each file applies cleanly alone).
+      - name: Apply D1 migrations
+        working-directory: apps/api
+        run: |
+          set -e
+          migrations_dir="../../database/migrations"
+          hold_dir="$(mktemp -d)"
+          mv "$migrations_dir"/*.sql "$hold_dir"/
+          for file in "$hold_dir"/*.sql; do
+            mv "$file" "$migrations_dir"/
+            npx --yes wrangler@4.110.0 d1 migrations apply DB --env staging --remote
+          done
+
+      - name: Deploy API
+        working-directory: apps/api
+        run: uvx --from workers-py pywrangler deploy --env staging
+
+  web:
+    name: Storefront + Admin
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: staging
+    env:
+      VITE_API_URL: "https://truegrit-api-staging.kushagras1234890.workers.dev"
+      VITE_GOOGLE_CLIENT_ID: "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # @cloudflare/vite-plugin selects its wrangler.jsonc "env" block at BUILD
+      # time via CLOUDFLARE_ENV, not at deploy time -- `wrangler deploy --env`
+      # is a no-op here because the build already flattened one environment's
+      # config into dist/server/wrangler.json. Confirmed empirically: without
+      # this, the build silently keeps the top-level (dev) name/vars/service
+      # binding even when the deploy step below passes --env staging.
+      # https://developers.cloudflare.com/workers/vite-plugin/reference/cloudflare-environments/
+      - name: Build storefront (Cloudflare Workers)
+        working-directory: apps/storefront
+        env:
+          CLOUDFLARE_ENV: staging
+        run: pnpm build
+      - name: Deploy storefront
+        working-directory: apps/storefront
+        run: pnpm exec wrangler deploy --env staging
+      - name: Build admin
+        working-directory: apps/admin
+        run: pnpm build
+      - name: Deploy admin
+        working-directory: apps/admin
+        run: pnpm exec wrangler deploy --env staging
