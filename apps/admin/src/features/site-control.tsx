@@ -798,6 +798,40 @@ function StorefrontSwitchesSection() {
 
       <div>
         <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
+          <T>Dietary &amp; certification filters</T>
+        </h3>
+        <ul className="mt-3 max-w-3xl">
+          <SwitchRow
+            label="Show dietary and certification filters on the shop page"
+            description="Lets customers narrow the shop grid by dietary tag (Vegan, Gluten Free, ...) and certification. Reads tags and certifications already assigned to products in the product editor — off just hides the filter checkboxes, nothing assigned is lost."
+            checked={settings.dietCertFilters}
+            effective={effective.dietCertFilters}
+            unavailableHint=""
+            disabled={mutation.isPending}
+            onChange={(next) => mutation.mutate({ dietCertFilters: next })}
+          />
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
+          <T>Gift cards</T>
+        </h3>
+        <ul className="mt-3 max-w-3xl">
+          <SwitchRow
+            label="Enable gift card redemption at checkout"
+            description="Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off."
+            checked={settings.giftCards}
+            effective={effective.giftCards}
+            unavailableHint=""
+            disabled={mutation.isPending}
+            onChange={(next) => mutation.mutate({ giftCards: next })}
+          />
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
           <T>Delivery charges</T>
         </h3>
         <p className="mt-1 max-w-2xl text-sm text-ink-muted">

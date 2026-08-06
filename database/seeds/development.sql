@@ -380,10 +380,39 @@ INSERT OR IGNORE INTO product_tags (product_id, tag_id) VALUES
   ('prd_ragi', 'tag_gluten_free'),
   ('prd_ragi', 'tag_traditional'),
   ('prd_rajma', 'tag_high_protein'),
-  ('prd_rajma', 'tag_plant_based');
+  ('prd_rajma', 'tag_plant_based'),
+  -- Migration 0081's expanded diet vocabulary: prd_alphonso, prd_spinach,
+  -- prd_ragi, prd_rajma and prd_groundnut_oil are fruit/vegetable/grain/
+  -- legume/oil products with no animal or dairy ingredients. Groundnut
+  -- (peanut) oil is left off nut-free -- peanuts are commonly bucketed
+  -- under "nut" in everyday allergen labelling even though they are
+  -- botanically a legume.
+  ('prd_alphonso', 'tag_vegan'),
+  ('prd_alphonso', 'tag_vegetarian'),
+  ('prd_alphonso', 'tag_dairy_free'),
+  ('prd_alphonso', 'tag_nut_free'),
+  ('prd_spinach', 'tag_vegan'),
+  ('prd_spinach', 'tag_vegetarian'),
+  ('prd_spinach', 'tag_dairy_free'),
+  ('prd_spinach', 'tag_nut_free'),
+  ('prd_ragi', 'tag_vegan'),
+  ('prd_ragi', 'tag_vegetarian'),
+  ('prd_ragi', 'tag_dairy_free'),
+  ('prd_ragi', 'tag_nut_free'),
+  ('prd_rajma', 'tag_vegan'),
+  ('prd_rajma', 'tag_vegetarian'),
+  ('prd_rajma', 'tag_dairy_free'),
+  ('prd_rajma', 'tag_nut_free'),
+  ('prd_groundnut_oil', 'tag_vegan'),
+  ('prd_groundnut_oil', 'tag_vegetarian'),
+  ('prd_groundnut_oil', 'tag_dairy_free');
 
 INSERT OR IGNORE INTO product_certifications (product_id, certification_id, claim_review_state) VALUES
   ('prd_alphonso', 'cert_india_organic', 'approved'),
+  -- Second approved certification on the same product -- regression
+  -- coverage for the _certifications_for() bug (0081) that used to
+  -- collapse every product down to a single certification.
+  ('prd_alphonso', 'cert_pgs_india', 'approved'),
   ('prd_spinach', 'cert_pgs_india', 'approved'),
   ('prd_ragi', 'cert_pgs_india', 'approved'),
   ('prd_groundnut_oil', 'cert_pgs_india', 'approved'),

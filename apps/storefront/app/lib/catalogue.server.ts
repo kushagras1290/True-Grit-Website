@@ -13,6 +13,7 @@ import type {
   FeaturedPromotion,
   FeaturedReview,
   ProductDetail,
+  ProductFilters,
   ProductReview,
   ProductSummary,
   PublicBootstrap,
@@ -287,13 +288,45 @@ export async function loadAllProducts(
   );
 }
 
+/** Fixture vocabulary for the dietary/certification filters, mirroring
+ * `database/seeds/development.sql` / migration 0081 -- used both as the
+ * `/v1/public/filters` fallback and to best-effort filter the fixture
+ * catalogue itself in demo mode (see `loadProductPage`). */
+const DEMO_PRODUCT_FILTERS: ProductFilters = {
+  dietTags: [
+    { key: "vegan", label: "Vegan" },
+    { key: "vegetarian", label: "Vegetarian" },
+    { key: "gluten-free", label: "Gluten Free" },
+    { key: "dairy-free", label: "Dairy Free" },
+    { key: "nut-free", label: "Nut Free" },
+    { key: "plant-based", label: "Plant Based" },
+  ],
+  certifications: [
+    { slug: "india-organic", name: "India Organic (NPOP)" },
+    { slug: "jaivik-bharat", name: "Jaivik Bharat" },
+    { slug: "pgs-india", name: "PGS-India Green" },
+  ],
+};
+
+/** The full dietary-tag and certification vocabulary for the shop grid's
+ * filter checkboxes. */
+export async function loadFilterFacets(runtime?: CatalogueRuntime): Promise<ProductFilters> {
+  if (!apiUrl(runtime)) return DEMO_PRODUCT_FILTERS;
+  const body = await fromApi<ProductFilters>("/v1/public/filters", runtime);
+  return body ?? DEMO_PRODUCT_FILTERS;
+}
+
 /**
- * One page of the shop grid, optionally narrowed to a single category.
+ * One page of the shop grid, optionally narrowed to a single category and/or
+ * dietary tags / certifications.
  *
  * `categorySlug` is the shop page's in-place sidebar filter. The API resolves
  * an unknown or unpublished slug to an empty page rather than the full
  * catalogue, so a stale bookmark shows an empty state instead of silently
- * ignoring the filter — fixture mode matches that behaviour.
+ * ignoring the filter — fixture mode matches that behaviour. `dietKeys`/
+ * `certificationSlugs` are OR-within-facet (either match), AND-across-facets
+ * (combined with `categorySlug` and with each other) — see
+ * `tag_filter_clause`/`certification_filter_clause` in the API repository.
  */
 export async function loadProductPage(
   page: number,
@@ -301,13 +334,42 @@ export async function loadProductPage(
   runtime?: CatalogueRuntime,
   categorySlug?: string | null,
   locale?: string,
+  dietKeys?: string[],
+  certificationSlugs?: string[],
 ): Promise<PaginatedContent<ProductSummary>> {
-  const path = categorySlug
-    ? `/v1/public/products?category=${encodeURIComponent(categorySlug)}`
-    : "/v1/public/products";
-  const fallback = categorySlug
+  const params = new URLSearchParams();
+  if (categorySlug) params.set("category", categorySlug);
+  if (dietKeys?.length) params.set("diet", dietKeys.join(","));
+  if (certificationSlugs?.length) params.set("certification", certificationSlugs.join(","));
+  const query = params.toString();
+  const path = query ? `/v1/public/products?${query}` : "/v1/public/products";
+
+  let fallback = categorySlug
     ? products.filter((product) => productSlugsForCategory(categorySlug).includes(product.slug))
     : products;
+  // Fixture products carry tag/certification *labels*, not the keys/slugs
+  // this function takes -- translate through the same fixed vocabulary
+  // `/v1/public/filters` itself falls back to, so demo mode narrows results
+  // too rather than silently ignoring these two filters.
+  if (dietKeys?.length) {
+    const wantedLabels = new Set(
+      DEMO_PRODUCT_FILTERS.dietTags
+        .filter((tag) => dietKeys.includes(tag.key))
+        .map((tag) => tag.label),
+    );
+    fallback = fallback.filter((product) => product.tags.some((tag) => wantedLabels.has(tag)));
+  }
+  if (certificationSlugs?.length) {
+    const wantedNames = new Set(
+      DEMO_PRODUCT_FILTERS.certifications
+        .filter((cert) => certificationSlugs.includes(cert.slug))
+        .map((cert) => cert.name),
+    );
+    fallback = fallback.filter((product) =>
+      product.certifications.some((name) => wantedNames.has(name)),
+    );
+  }
+
   return paginatedFromApi<ProductSummary>(
     withLocale(withCountry(path, country), locale),
     fallback,

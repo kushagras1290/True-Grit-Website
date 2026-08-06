@@ -77,7 +77,7 @@ export interface ProductSummary {
   slug: string;
   farmName: string;
   region: string;
-  certification: string;
+  certifications: string[];
   priceMinor: number;
   saleMinor: number | null;
   /** Set only when an active price-adjustment rule changes what this visitor
@@ -173,6 +173,28 @@ export interface CategorySummary {
   parentId: string | null;
   /** Depth in the category tree: `0` for departments, `1` for subcategories. */
   level: number;
+}
+
+/** One selectable option in the shop grid's dietary filter — `key` is the
+ * `tags.key` value (`?diet=` query param), `label` the checkbox text. */
+export interface DietTagOption {
+  key: string;
+  label: string;
+}
+
+/** One selectable option in the shop grid's certification filter — `slug` is
+ * the `certifications.slug` value (`?certification=` query param). */
+export interface CertificationOption {
+  slug: string;
+  name: string;
+}
+
+/** The full vocabulary behind the shop grid's dietary/certification filter
+ * checkboxes (`GET /v1/public/filters`) — every option, not just ones
+ * currently assigned to a published product. */
+export interface ProductFilters {
+  dietTags: DietTagOption[];
+  certifications: CertificationOption[];
 }
 
 /** A department with its subcategories resolved — the shape the shop sidebar
@@ -1197,6 +1219,8 @@ export interface StorefrontSettings {
   promotions: boolean;
   recommendations: boolean;
   subscriptions: boolean;
+  dietCertFilters: boolean;
+  giftCards: boolean;
   blogBannerImageUrl: string;
   blogBannerImageAlt: string;
   farmsBannerImageUrl: string;
@@ -1213,6 +1237,8 @@ export interface StorefrontSettingsEffective {
   promotions: boolean;
   recommendations: boolean;
   subscriptions: boolean;
+  dietCertFilters: boolean;
+  giftCards: boolean;
   anySignInAvailable: boolean;
 }
 

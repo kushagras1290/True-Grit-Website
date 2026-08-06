@@ -38,7 +38,9 @@ from truegrit_api.schemas.public import (
     ArticleListResponse,
     FarmDetail,
     FarmListResponse,
+    GiftCardBalanceResponse,
     ProductDetail,
+    ProductFiltersResponse,
     ProductListResponse,
     PublicBootstrap,
     PublicCategoryPage,
@@ -51,6 +53,7 @@ from truegrit_api.services import support_bot_settings
 from truegrit_api.services.announcements import resolve_announcement
 from truegrit_api.services.appearance import load_public_appearance
 from truegrit_api.services.feature_settings import (
+    gift_cards_enabled,
     load_curated_max_items,
     load_delivery_settings,
     load_public_settings,
@@ -58,6 +61,7 @@ from truegrit_api.services.feature_settings import (
     promotions_enabled,
     recommendations_enabled,
 )
+from truegrit_api.services.gift_cards import get_balance_by_code
 from truegrit_api.services.homepage_geo import resolve_public_home
 from truegrit_api.services.jobs import enqueue_email
 from truegrit_api.services.site_documents import (
@@ -537,11 +541,32 @@ async def article_detail(
     return article
 
 
+@router.get("/filters", response_model=ProductFiltersResponse)
+async def product_filters(db: Annotated[Database, Depends(get_database)]) -> Any:
+    """The full dietary-tag and certification vocabulary for the shop grid's
+    filter checkboxes -- see `?diet=`/`?certification=` on `/products`."""
+    return await CatalogueRepository(db).list_filter_facets()
+
+
+@router.get("/gift-cards/{code}", response_model=GiftCardBalanceResponse)
+async def gift_card_balance(code: str, db: Annotated[Database, Depends(get_database)]) -> Any:
+    """Balance lookup for a code a customer already holds -- no sign-in
+    required, since a gift card can be issued to someone with no account yet.
+    Returns balanceMinor: 0 for a cancelled/expired card rather than the
+    stale value it had while active, so a spent-out or dead card never
+    displays money that is not actually redeemable."""
+    if not await gift_cards_enabled(db):
+        raise ValidationAppError("Gift cards are not available right now.")
+    return await get_balance_by_code(db, code)
+
+
 @router.get("/products", response_model=ProductListResponse)
 async def products_list(
     db: Annotated[Database, Depends(get_database)],
     slugs: Annotated[str | None, Query(max_length=4000)] = None,
     category: Annotated[str | None, Query(max_length=MAX_SLUG_LENGTH)] = None,
+    diet: Annotated[str | None, Query(max_length=500)] = None,
+    certification: Annotated[str | None, Query(max_length=500)] = None,
     country: Annotated[str | None, Query(max_length=2)] = None,
     locale: Annotated[str | None, Query(max_length=10)] = None,
     limit: Annotated[int, Query(ge=1, le=MAX_PAGE_SIZE)] = DEFAULT_PAGE_SIZE,
@@ -561,11 +586,18 @@ async def products_list(
     catalogue, so a filter can never silently widen what is visible. `slugs`
     takes precedence — it is already an exact set.
 
+    `?diet=vegan,gluten-free` and `?certification=india-organic,pgs-india`
+    each narrow further, OR-within-facet (either tag/cert matches) and
+    AND-across-facets (combined with `category` and with each other) —
+    ignored entirely when `slugs` is set, same as `category`.
+
     `?country=XX` hides products not released in that country. Declared before
     `/products/{slug}` so the literal path wins.
     """
     visitor_country = _normalize_country(country)
     catalogue = CatalogueRepository(db)
+    diet_keys = [key.strip() for key in (diet or "").split(",") if key.strip()][:50]
+    cert_slugs = [slug.strip() for slug in (certification or "").split(",") if slug.strip()][:50]
     if slugs is not None:
         wanted = [slug.strip() for slug in slugs.split(",") if slug.strip()][:200]
         items = (
@@ -582,11 +614,22 @@ async def products_list(
         if category_id is None:
             return {"items": [], "total": 0}
         items, total = await catalogue.list_published_by_category(
-            category_id, country=visitor_country, limit=limit, offset=offset, locale=locale
+            category_id,
+            country=visitor_country,
+            limit=limit,
+            offset=offset,
+            locale=locale,
+            diet_keys=diet_keys,
+            certification_slugs=cert_slugs,
         )
     else:
         items, total = await catalogue.list_all_published(
-            limit=limit, offset=offset, country=visitor_country, locale=locale
+            limit=limit,
+            offset=offset,
+            country=visitor_country,
+            locale=locale,
+            diet_keys=diet_keys,
+            certification_slugs=cert_slugs,
         )
     return {"items": items, "total": total}
 

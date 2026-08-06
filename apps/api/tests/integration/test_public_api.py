@@ -187,7 +187,7 @@ def test_category_page_resolves_dynamic_rule(client: TestClient):
     product = body["products"][0]
     assert product["priceMinor"] == 89900
     assert product["availability"] == "in_stock"
-    assert product["certification"] == "India Organic (NPOP)"
+    assert product["certifications"] == ["India Organic (NPOP)", "PGS-India Green"]
 
 
 def test_category_page_grains_includes_buyable_rajma(client: TestClient):
@@ -327,6 +327,77 @@ def test_products_list_category_filter_paginates(client: TestClient):
     assert not {p["slug"] for p in first["items"]} & {p["slug"] for p in second["items"]}
 
 
+def test_products_list_filters_by_diet_tag(client: TestClient):
+    body = client.get("/v1/public/products", params={"diet": "vegan"}).json()
+    slugs = {product["slug"] for product in body["items"]}
+    assert slugs == {
+        "organic-alphonso-mangoes",
+        "organic-baby-spinach",
+        "sprouted-ragi-flour",
+        "himalayan-red-rajma",
+        "wood-pressed-groundnut-oil",
+    }
+    assert body["total"] == 5
+
+
+def test_products_list_diet_filter_is_or_within_facet(client: TestClient):
+    """Selecting two diet tags matches products carrying *either* one, not
+    both -- a shopper ticking Gluten Free and Nut Free wants more results,
+    not fewer."""
+    only_gluten_free = client.get("/v1/public/products", params={"diet": "gluten-free"}).json()
+    only_nut_free = client.get("/v1/public/products", params={"diet": "nut-free"}).json()
+    combined = client.get(
+        "/v1/public/products", params={"diet": "gluten-free,nut-free"}
+    ).json()
+    assert combined["total"] == len(
+        {p["slug"] for p in only_gluten_free["items"]} | {p["slug"] for p in only_nut_free["items"]}
+    )
+
+
+def test_products_list_filters_by_certification(client: TestClient):
+    # The bulk-generated catalogue also carries pgs-india certifications
+    # (see catalogue.generated.json), so this only asserts the hand-authored
+    # products are included, not that the result is exactly these four.
+    body = client.get("/v1/public/products", params={"certification": "pgs-india"}).json()
+    slugs = {product["slug"] for product in body["items"]}
+    assert {
+        "organic-alphonso-mangoes",
+        "organic-baby-spinach",
+        "sprouted-ragi-flour",
+        "wood-pressed-groundnut-oil",
+    } <= slugs
+    assert "himalayan-red-rajma" not in slugs, "only carries india-organic, not pgs-india"
+
+
+def test_products_list_combines_diet_and_certification_filters(client: TestClient):
+    """Diet and certification are AND-ed together: only products matching
+    both facets survive."""
+    body = client.get(
+        "/v1/public/products", params={"diet": "vegan", "certification": "india-organic"}
+    ).json()
+    slugs = {product["slug"] for product in body["items"]}
+    assert slugs == {"organic-alphonso-mangoes", "himalayan-red-rajma"}
+
+
+def test_products_list_diet_filter_combines_with_category(client: TestClient):
+    body = client.get(
+        "/v1/public/products", params={"category": "grains-and-millets", "diet": "vegan"}
+    ).json()
+    slugs = {product["slug"] for product in body["items"]}
+    assert "himalayan-red-rajma" in slugs
+    assert "organic-alphonso-mangoes" not in slugs, "not in this category"
+
+
+def test_filters_endpoint_returns_full_vocabulary(client: TestClient):
+    body = client.get("/v1/public/filters").json()
+    diet_keys = {tag["key"] for tag in body["dietTags"]}
+    assert {"vegan", "vegetarian", "dairy-free", "nut-free", "gluten-free", "plant-based"} <= (
+        diet_keys
+    )
+    certification_slugs = {cert["slug"] for cert in body["certifications"]}
+    assert {"india-organic", "pgs-india", "jaivik-bharat"} <= certification_slugs
+
+
 def test_unknown_category_filter_returns_empty_not_everything(client: TestClient):
     """A stale bookmark must not silently widen into the full catalogue."""
     body = client.get("/v1/public/products", params={"category": "not-a-category"}).json()
@@ -379,7 +450,7 @@ def test_products_list_returns_published_summaries(client: TestClient):
     assert "himalayan-red-rajma" in slugs
     sample = next(p for p in body["items"] if p["slug"] == "organic-alphonso-mangoes")
     assert sample["priceMinor"] == 89900
-    assert sample["certification"] == "India Organic (NPOP)"
+    assert sample["certifications"] == ["India Organic (NPOP)", "PGS-India Green"]
     # A batched summary carries enough to add the lead variant to a cart --
     # no separate per-slug detail request needed (see SCAL-007 in the
     # scalability assessment: this is what lets recipe.tsx's shoppable

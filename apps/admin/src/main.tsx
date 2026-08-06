@@ -21,6 +21,7 @@ import { ContentCommentsPage } from "./features/content-comments";
 import { DashboardPage } from "./features/dashboard";
 import { DbBrowserPage } from "./features/db-browser";
 import { FarmRequestDetailPage, FarmRequestsListPage } from "./features/farm-requests";
+import { GiftCardsListPage } from "./features/gift-cards";
 import { HomepageSettingsPage } from "./features/homepage-settings";
 import { ImageGuidePage } from "./features/image-guide";
 import { MessagesPage } from "./features/messages";
@@ -82,6 +83,7 @@ createRoot(document.getElementById("root")!).render(
                 <Route path="categories/:id" element={<CategoryEditorPage />} />
                 <Route path="price-adjustments" element={<PriceAdjustmentsPage />} />
                 <Route path="promotions" element={<PromotionsListPage />} />
+                <Route path="gift-cards" element={<GiftCardsListPage />} />
                 <Route path="bundles" element={<BundlesListPage />} />
                 <Route path="subscriptions" element={<SubscriptionsListPage />} />
                 <Route path="inventory" element={<InventoryPage />} />

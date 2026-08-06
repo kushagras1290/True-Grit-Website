@@ -31,9 +31,11 @@ from truegrit_api.services.email_templates import (
     render_order_confirmation,
 )
 from truegrit_api.services.feature_settings import (
+    gift_cards_enabled,
     load_delivery_settings,
     promotions_enabled,
 )
+from truegrit_api.services.gift_cards import resolve_checkout_redemption
 from truegrit_api.services.jobs import enqueue_email
 from truegrit_api.services.payments import (
     PaymentError,
@@ -90,11 +92,20 @@ class CheckoutRequest(_CamelModel):
     # checks out normally, just without retry protection.
     idempotency_key: str | None = Field(default=None, max_length=80)
     coupon_code: str | None = Field(default=None, max_length=32)
+    gift_card_code: str | None = Field(default=None, max_length=24)
 
 
 class DiscountPreviewRequest(_CamelModel):
     coupon_code: str = Field(min_length=1, max_length=32)
     subtotal_minor: int = Field(ge=0, le=MAX_AMOUNT_MINOR)
+
+
+class GiftCardPreviewRequest(_CamelModel):
+    gift_card_code: str = Field(min_length=1, max_length=24)
+    # What the gift card would be applied against -- the checkout page's
+    # current subtotal + delivery - other discounts, exactly what
+    # `place_order` itself resolves the redemption against.
+    amount_needed_minor: int = Field(ge=0, le=MAX_AMOUNT_MINOR)
 
 
 class PaypalCaptureRequest(_CamelModel):
@@ -174,6 +185,32 @@ async def preview_discount(
     }
 
 
+@router.post("/checkout/preview-gift-card")
+async def preview_gift_card(
+    payload: GiftCardPreviewRequest,
+    _customer: Annotated[Principal, Depends(get_current_customer)],
+    db: Annotated[Database, Depends(get_database)],
+) -> Any:
+    """What a gift card code would cover toward `amountNeededMinor`, without
+    placing an order or recording a redemption -- the gift-card equivalent of
+    `preview_discount`, same reasoning: uses the exact `resolve_checkout_
+    redemption` function `place_order` calls, so the preview can never
+    promise an amount checkout would then refuse to honour."""
+    if not await gift_cards_enabled(db):
+        raise ValidationAppError("Gift cards are not available right now.")
+    applied = await resolve_checkout_redemption(
+        db, code=payload.gift_card_code, amount_needed_minor=payload.amount_needed_minor
+    )
+    if applied is None:
+        raise ValidationAppError("This code is not valid.")
+    return {
+        "code": applied["code"],
+        "appliedMinor": applied["applied_minor"],
+        "balanceMinor": applied["balance_minor"],
+        "remainingAfterMinor": applied["remaining_after_minor"],
+    }
+
+
 @router.post("/checkout")
 async def checkout(
     payload: CheckoutRequest,
@@ -205,6 +242,7 @@ async def checkout(
         payment_method=method,
         idempotency_key=payload.idempotency_key,
         coupon_code=payload.coupon_code,
+        gift_card_code=payload.gift_card_code,
     )
     now = utc_now_iso()
 

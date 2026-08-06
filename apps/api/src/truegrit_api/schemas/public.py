@@ -51,7 +51,7 @@ class ProductSummary(PublicModel):
     slug: str
     farm_name: str
     region: str
-    certification: str
+    certifications: list[str]
     price_minor: int
     sale_minor: int | None = None
     # Set only when an active price-adjustment rule (`services.price_adjustments`)
@@ -93,6 +93,29 @@ class ProductSummary(PublicModel):
 class ProductListResponse(PublicModel):
     items: list[ProductSummary]
     total: int
+
+
+class DietTagOption(PublicModel):
+    key: str
+    label: str
+
+
+class CertificationOption(PublicModel):
+    slug: str
+    name: str
+
+
+class ProductFiltersResponse(PublicModel):
+    diet_tags: list[DietTagOption]
+    certifications: list[CertificationOption]
+
+
+class GiftCardBalanceResponse(PublicModel):
+    code: str
+    status: str
+    balance_minor: int
+    currency_code: str
+    expires_at: str | None = None
 
 
 class VariantSummary(PublicModel):

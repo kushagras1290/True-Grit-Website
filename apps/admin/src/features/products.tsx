@@ -459,6 +459,8 @@ const generalSchema = z.object({
   imageAlt: z.string().max(200),
   farmId: z.string().nullable().optional(),
   categoryIds: z.array(z.string()).default([]),
+  dietTagIds: z.array(z.string()).default([]),
+  certificationIds: z.array(z.string()).default([]),
   sku: z.string().optional(),
   listPrice: z.coerce.number().min(0).optional(),
 });
@@ -1224,6 +1226,8 @@ function GeneralTab({
       imageAlt: product.imageAlt,
       farmId: product.farmId || "",
       categoryIds: product.categoryIds || [],
+      dietTagIds: product.dietTagIds || [],
+      certificationIds: product.certificationIds || [],
       sku: product.variants?.[0]?.sku || "",
       listPrice: product.variants?.[0]?.listMinor ? product.variants[0].listMinor / 100 : undefined,
     },
@@ -1233,6 +1237,14 @@ function GeneralTab({
   const { data: categories = [] } = useQuery({
     queryKey: ["categories"],
     queryFn: () => api.categories(),
+  });
+  const { data: dietTags = [] } = useQuery({
+    queryKey: ["diet-tags"],
+    queryFn: () => api.dietTags(),
+  });
+  const { data: certificationOptions = [] } = useQuery({
+    queryKey: ["certifications"],
+    queryFn: () => api.certifications(),
   });
 
   const watchedImageUrl = form.watch("imageUrl");
@@ -1352,6 +1364,44 @@ function GeneralTab({
           {...form.register("storageGuidance")}
           placeholder="e.g. Refrigerate and use within 5 days"
         />
+      </Field>
+      <Field
+        label="Dietary tags"
+        htmlFor="dietTagIds"
+        error={form.formState.errors.dietTagIds?.message}
+      >
+        <div className="flex flex-col gap-2 max-h-48 overflow-y-auto border border-line rounded-md p-3">
+          {dietTags.map((tag) => (
+            <label key={tag.id} className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                value={tag.id}
+                {...form.register("dietTagIds")}
+                className="w-4 h-4 text-primary rounded border-line focus:ring-primary"
+              />
+              <span className="text-sm">{tag.label}</span>
+            </label>
+          ))}
+        </div>
+      </Field>
+      <Field
+        label="Certifications"
+        htmlFor="certificationIds"
+        error={form.formState.errors.certificationIds?.message}
+      >
+        <div className="flex flex-col gap-2 max-h-48 overflow-y-auto border border-line rounded-md p-3">
+          {certificationOptions.map((certification) => (
+            <label key={certification.id} className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                value={certification.id}
+                {...form.register("certificationIds")}
+                className="w-4 h-4 text-primary rounded border-line focus:ring-primary"
+              />
+              <span className="text-sm">{certification.name}</span>
+            </label>
+          ))}
+        </div>
       </Field>
       <Field
         label="Customer image URL"

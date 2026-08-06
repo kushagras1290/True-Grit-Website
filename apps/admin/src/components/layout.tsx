@@ -13,6 +13,7 @@ import {
   ClipboardList,
   Database,
   FolderTree,
+  Gift,
   HandHeart,
   Home,
   Image,
@@ -132,6 +133,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         label: "Bundles",
         icon: <Boxes size={16} />,
         permission: "bundles.view",
+      },
+      {
+        to: "/gift-cards",
+        label: "Gift Cards",
+        icon: <Gift size={16} />,
+        permission: "gift_cards.view",
       },
       {
         to: "/subscriptions",

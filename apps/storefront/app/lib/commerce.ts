@@ -58,6 +58,8 @@ export interface PlacedOrder {
   orderStatus: string;
   paymentStatus: string;
   couponCode: string | null;
+  giftCardCode: string | null;
+  giftCardAppliedMinor: number;
   payment?: OrderPayment;
 }
 
@@ -250,16 +252,58 @@ export function previewDiscount(
   });
 }
 
+export interface GiftCardPreview {
+  code: string;
+  appliedMinor: number;
+  balanceMinor: number;
+  remainingAfterMinor: number;
+}
+
+/** What a gift card code would cover toward `amountNeededMinor`, without
+ *  placing an order or recording a redemption -- the gift-card equivalent of
+ *  `previewDiscount`. */
+export function previewGiftCard(
+  giftCardCode: string,
+  amountNeededMinor: number,
+): Promise<GiftCardPreview> {
+  return request<GiftCardPreview>("/v1/public/checkout/preview-gift-card", {
+    method: "POST",
+    body: JSON.stringify({ giftCardCode, amountNeededMinor }),
+  });
+}
+
+export interface GiftCardBalance {
+  code: string;
+  status: string;
+  balanceMinor: number;
+  currencyCode: string;
+  expiresAt: string | null;
+}
+
+/** Balance lookup for a code a customer already holds -- no sign-in
+ *  required, so it works for a gift recipient with no account yet. */
+export function getGiftCardBalance(code: string): Promise<GiftCardBalance> {
+  return request<GiftCardBalance>(`/v1/public/gift-cards/${encodeURIComponent(code)}`);
+}
+
 export function placeOrder(
   items: CheckoutItem[],
   deliveryAddress: DeliveryAddress,
   paymentMethod: string = "cod",
   idempotencyKey?: string,
   couponCode?: string,
+  giftCardCode?: string,
 ): Promise<PlacedOrder> {
   return request<PlacedOrder>("/v1/public/checkout", {
     method: "POST",
-    body: JSON.stringify({ items, deliveryAddress, paymentMethod, idempotencyKey, couponCode }),
+    body: JSON.stringify({
+      items,
+      deliveryAddress,
+      paymentMethod,
+      idempotencyKey,
+      couponCode,
+      giftCardCode,
+    }),
   });
 }
 

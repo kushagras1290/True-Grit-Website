@@ -66,6 +66,36 @@ def geo_release_clause(
     )
 
 
+def tag_filter_clause(tag_keys: list[str], alias: str = "p") -> tuple[str, list[Any]]:
+    """SQL fragment narrowing rows to products carrying ANY of `tag_keys`
+    (e.g. dietary filters: "Vegan" OR "Gluten Free" both count as a match,
+    matching how a shopper picking either checkbox expects broader results,
+    not a product carrying every selected diet at once)."""
+    if not tag_keys:
+        return "", []
+    placeholders = ", ".join("?" for _ in tag_keys)
+    return (
+        f" AND {alias}.id IN (SELECT pt.product_id FROM product_tags pt"
+        f" JOIN tags t ON t.id = pt.tag_id WHERE t.key IN ({placeholders}))",
+        list(tag_keys),
+    )
+
+
+def certification_filter_clause(cert_slugs: list[str], alias: str = "p") -> tuple[str, list[Any]]:
+    """SQL fragment narrowing rows to products carrying ANY of `cert_slugs`
+    among their *approved* certifications -- same OR-within-facet semantics
+    as `tag_filter_clause`."""
+    if not cert_slugs:
+        return "", []
+    placeholders = ", ".join("?" for _ in cert_slugs)
+    return (
+        f" AND {alias}.id IN (SELECT pc.product_id FROM product_certifications pc"
+        f" JOIN certifications c ON c.id = pc.certification_id"
+        f" WHERE pc.claim_review_state = 'approved' AND c.slug IN ({placeholders}))",
+        list(cert_slugs),
+    )
+
+
 class CatalogueRepository:
     def __init__(self, db: Database):
         self._db = db
@@ -96,7 +126,7 @@ class CatalogueRepository:
             grouped.setdefault(row["product_id"], []).append(row)
         return grouped
 
-    async def _certifications_for(self, product_ids: list[str]) -> dict[str, str]:
+    async def _certifications_for(self, product_ids: list[str]) -> dict[str, list[str]]:
         if not product_ids:
             return {}
         placeholders = ", ".join("?" for _ in product_ids)
@@ -110,9 +140,9 @@ class CatalogueRepository:
             """,
             product_ids,
         )
-        certifications: dict[str, str] = {}
+        certifications: dict[str, list[str]] = {}
         for row in rows:
-            certifications.setdefault(row["product_id"], row["name"])
+            certifications.setdefault(row["product_id"], []).append(row["name"])
         return certifications
 
     async def _ratings_for(self, product_ids: list[str]) -> dict[str, dict[str, Any]]:
@@ -171,7 +201,7 @@ class CatalogueRepository:
         self,
         row: dict[str, Any],
         variants: list[dict[str, Any]],
-        certification: str,
+        certifications: list[str],
         tags: list[str],
         percent: int,
         rating: dict[str, Any] | None = None,
@@ -191,7 +221,7 @@ class CatalogueRepository:
             "slug": row["slug"],
             "farm_name": row["farm_name"] or "",
             "region": row["farm_region"] or "",
-            "certification": certification,
+            "certifications": certifications,
             "price_minor": lead["list_minor"] if lead else 0,
             "sale_minor": lead["sale_minor"] if lead else None,
             "adjusted_minor": lead["adjusted_minor"] if lead else None,
@@ -228,7 +258,7 @@ class CatalogueRepository:
             self._summarize(
                 row,
                 variants.get(row["id"], []),
-                certifications.get(row["id"], ""),
+                certifications.get(row["id"], []),
                 tags.get(row["id"], []),
                 adjustments.get(row["id"], 0),
                 ratings.get(row["id"]),
@@ -311,20 +341,26 @@ class CatalogueRepository:
         offset: int = 0,
         country: str | None = None,
         locale: str | None = None,
+        diet_keys: list[str] | None = None,
+        certification_slugs: list[str] | None = None,
     ) -> tuple[list[dict[str, Any]], int]:
         """Every published product, newest first, one page at a time. Backs
         the storefront's shop grid, so it reflects admin publishes without any
         per-category rule. Returns `(page_of_products, total_published)`."""
         geo_sql, geo_params = geo_release_clause(country)
+        diet_sql, diet_params = tag_filter_clause(diet_keys or [])
+        cert_sql, cert_params = certification_filter_clause(certification_slugs or [])
+        extra_sql = geo_sql + diet_sql + cert_sql
+        extra_params = [*geo_params, *diet_params, *cert_params]
         count_row = await self._db.fetch_one(
-            f"SELECT COUNT(*) AS cnt FROM products p WHERE p.status = 'published'{geo_sql}",
-            geo_params,
+            f"SELECT COUNT(*) AS cnt FROM products p WHERE p.status = 'published'{extra_sql}",
+            extra_params,
         )
         total = int(count_row["cnt"]) if count_row else 0
         rows = await self._db.fetch_all(
-            f"{_PRODUCT_BASE_SQL} WHERE p.status = 'published'{geo_sql}"
+            f"{_PRODUCT_BASE_SQL} WHERE p.status = 'published'{extra_sql}"
             " ORDER BY p.updated_at DESC, p.name LIMIT ? OFFSET ?",
-            (*geo_params, max(limit, 1), max(offset, 0)),
+            (*extra_params, max(limit, 1), max(offset, 0)),
         )
         return await self._assemble(rows, country, locale=locale), total
 
@@ -357,19 +393,25 @@ class CatalogueRepository:
         limit: int = 24,
         offset: int = 0,
         locale: str | None = None,
+        diet_keys: list[str] | None = None,
+        certification_slugs: list[str] | None = None,
     ) -> tuple[list[dict[str, Any]], int]:
         """Products statically assigned to a category, one page at a time.
         Returns `(page_of_products, total_eligible)`, `total_eligible` clamped
         to `_STATIC_CATEGORY_POOL_LIMIT` for parity with the rule-based path."""
         geo_sql, geo_params = geo_release_clause(country)
+        diet_sql, diet_params = tag_filter_clause(diet_keys or [])
+        cert_sql, cert_params = certification_filter_clause(certification_slugs or [])
+        extra_sql = geo_sql + diet_sql + cert_sql
+        extra_params = [*geo_params, *diet_params, *cert_params]
         count_row = await self._db.fetch_one(
             f"""
             SELECT COUNT(*) AS cnt
             FROM products p
             JOIN product_categories pc ON pc.product_id = p.id
-            WHERE pc.category_id = ? AND p.status = 'published'{geo_sql}
+            WHERE pc.category_id = ? AND p.status = 'published'{extra_sql}
             """,
-            (category_id, *geo_params),
+            (category_id, *extra_params),
         )
         matched = int(count_row["cnt"]) if count_row else 0
         total = min(matched, _STATIC_CATEGORY_POOL_LIMIT)
@@ -381,13 +423,27 @@ class CatalogueRepository:
             f"""
             {_PRODUCT_BASE_SQL}
             JOIN product_categories pc ON pc.product_id = p.id
-            WHERE pc.category_id = ? AND p.status = 'published'{geo_sql}
+            WHERE pc.category_id = ? AND p.status = 'published'{extra_sql}
             ORDER BY pc.sort_order, p.name
             LIMIT ? OFFSET ?
             """,
-            (category_id, *geo_params, page_limit, safe_offset),
+            (category_id, *extra_params, page_limit, safe_offset),
         )
         return await self._assemble(rows, country, locale=locale), total
+
+    async def list_filter_facets(self) -> dict[str, list[dict[str, Any]]]:
+        """The full vocabulary for the shop grid's dietary/certification
+        filters -- every `tag_group = 'diet'` tag and every certification,
+        not just ones currently assigned to a published product, so a
+        just-added diet tag with no products yet still shows up as a
+        selectable (if momentarily empty) filter option."""
+        diet_rows = await self._db.fetch_all(
+            "SELECT key, label FROM tags WHERE tag_group = 'diet' ORDER BY label"
+        )
+        certification_rows = await self._db.fetch_all(
+            "SELECT slug, name FROM certifications ORDER BY name"
+        )
+        return {"diet_tags": diet_rows, "certifications": certification_rows}
 
     async def list_published_by_slugs(
         self, slugs: list[str], country: str | None = None, *, locale: str | None = None
@@ -591,7 +647,10 @@ class CatalogueRepository:
                 "variants": summary["_variants"],
                 "traceability": [
                     {"label": "Farm", "detail": f"{farm_name} — {summary['region']}"},
-                    {"label": "Certification", "detail": summary["certification"] or "In review"},
+                    {
+                        "label": "Certification",
+                        "detail": ", ".join(summary["certifications"]) or "In review",
+                    },
                     {
                         "label": "Quality check",
                         "detail": "Checked at the fulfilment centre before dispatch",

@@ -74,6 +74,7 @@ from truegrit_api.services import content_comments as content_comment_service
 from truegrit_api.services import discussions as discussion_service
 from truegrit_api.services import entity_translation as entity_translation_service
 from truegrit_api.services import farm_partnerships as farm_partnership_service
+from truegrit_api.services import gift_cards as gift_card_service
 from truegrit_api.services import promotions as promotion_service
 from truegrit_api.services import recipes as recipe_service
 from truegrit_api.services import reviews as review_service
@@ -3365,6 +3366,8 @@ class StorefrontSettingsUpdateRequest(_CamelModel):
     promotions: bool | None = None
     recommendations: bool | None = None
     subscriptions: bool | None = None
+    diet_cert_filters: bool | None = None
+    gift_cards: bool | None = None
     payments_disabled_notice: str | None = Field(default=None, max_length=600)
     blog_banner_image_url: str | None = Field(default=None, max_length=1000)
     blog_banner_image_alt: str | None = Field(default=None, max_length=200)
@@ -3548,6 +3551,8 @@ def _storefront_settings_response(
             "promotions": effective.promotions,
             "recommendations": effective.recommendations,
             "subscriptions": effective.subscriptions,
+            "dietCertFilters": effective.diet_cert_filters,
+            "giftCards": effective.gift_cards,
             "anySignInAvailable": effective.any_sign_in_available,
         },
     }
@@ -3856,6 +3861,140 @@ async def delete_coupon_endpoint(
     principal: Annotated[Principal, Depends(require_permission("promotions.manage"))],
 ) -> Any:
     return await promotion_service.delete_coupon(db, principal, _request_id(request), coupon_id)
+
+
+# ---------------------------------------------------------------------------
+# Gift cards (migration 0082): issuable, purchasable stored-value codes
+# redeemable at checkout. Balance is derived from gift_card_redemptions, not
+# stored -- see services.gift_cards' module docstring.
+# ---------------------------------------------------------------------------
+
+
+class GiftCardIssueRequest(_CamelModel):
+    balance_minor: int = Field(ge=0)
+    issued_to_email: str | None = Field(default=None, max_length=254)
+    note: str | None = Field(default=None, max_length=300)
+    expires_at: str | None = Field(default=None, max_length=32)
+    code: str | None = Field(default=None, max_length=24)
+
+
+def _gift_card_row(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": row["id"],
+        "code": row["code"],
+        "initialBalanceMinor": row["initial_balance_minor"],
+        "balanceMinor": row["balance_minor"],
+        "currencyCode": row["currency_code"],
+        "status": row["status"],
+        "issuedToEmail": row["issued_to_email"],
+        "note": row["note"],
+        "expiresAt": row["expires_at"],
+        "createdAt": row["created_at"],
+    }
+
+
+@router.get("/gift-cards")
+async def list_gift_cards_endpoint(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("gift_cards.view"))],
+    search: Annotated[str | None, Query(max_length=200)] = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    offset: Annotated[int, Query(ge=0)] = 0,
+) -> Any:
+    clean_search = f"%{search.strip()}%" if search and search.strip() else None
+    where = " WHERE code LIKE ? OR issued_to_email LIKE ?" if clean_search else ""
+    params: tuple[Any, ...] = (clean_search, clean_search) if clean_search else ()
+    total_row = await db.fetch_one(
+        f"SELECT COUNT(*) AS cnt FROM gift_cards{where}", params
+    )
+    rows = await db.fetch_all(
+        f"""
+        SELECT gc.*, gc.initial_balance_minor
+          - COALESCE((SELECT SUM(amount_minor) FROM gift_card_redemptions
+                      WHERE gift_card_id = gc.id), 0) AS balance_minor
+        FROM gift_cards gc
+        {where}
+        ORDER BY gc.created_at DESC
+        LIMIT ? OFFSET ?
+        """,
+        (*params, limit, offset),
+    )
+    return {
+        "items": [_gift_card_row(row) for row in rows],
+        "total": int(total_row["cnt"]) if total_row else 0,
+        "limit": limit,
+        "offset": offset,
+    }
+
+
+@router.get("/gift-cards/{gift_card_id}")
+async def get_gift_card_endpoint(
+    gift_card_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("gift_cards.view"))],
+) -> Any:
+    row = await db.fetch_one(
+        """
+        SELECT gc.*, gc.initial_balance_minor
+          - COALESCE((SELECT SUM(amount_minor) FROM gift_card_redemptions
+                      WHERE gift_card_id = gc.id), 0) AS balance_minor
+        FROM gift_cards gc WHERE gc.id = ?
+        """,
+        (gift_card_id,),
+    )
+    if row is None:
+        raise NotFoundError("Gift card not found.")
+    redemptions = await db.fetch_all(
+        """
+        SELECT r.id, r.order_id, o.public_reference, r.amount_minor, r.redeemed_at
+        FROM gift_card_redemptions r
+        JOIN orders o ON o.id = r.order_id
+        WHERE r.gift_card_id = ?
+        ORDER BY r.redeemed_at DESC
+        """,
+        (gift_card_id,),
+    )
+    detail = _gift_card_row(row)
+    detail["redemptions"] = [
+        {
+            "orderId": entry["order_id"],
+            "orderReference": entry["public_reference"],
+            "amountMinor": entry["amount_minor"],
+            "redeemedAt": entry["redeemed_at"],
+        }
+        for entry in redemptions
+    ]
+    return detail
+
+
+@router.post("/gift-cards")
+async def issue_gift_card_endpoint(
+    payload: GiftCardIssueRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("gift_cards.manage"))],
+) -> Any:
+    return await gift_card_service.issue_gift_card(
+        db,
+        principal,
+        _request_id(request),
+        balance_minor=payload.balance_minor,
+        issued_to_email=payload.issued_to_email,
+        note=payload.note,
+        expires_at=payload.expires_at,
+        code=payload.code,
+    )
+
+
+@router.post("/gift-cards/{gift_card_id}/cancel")
+async def cancel_gift_card_endpoint(
+    gift_card_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("gift_cards.manage"))],
+) -> Any:
+    await gift_card_service.cancel_gift_card(db, principal, _request_id(request), gift_card_id)
+    return {"id": gift_card_id, "status": "cancelled"}
 
 
 # ---------------------------------------------------------------------------
@@ -4748,6 +4887,31 @@ async def list_categories(
     }
 
 
+@router.get("/diet-tags")
+async def list_diet_tags(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("products.view"))],
+) -> Any:
+    """Full 'diet' tag_group vocabulary for the product editor's checkbox
+    list -- small and fixed (a handful of rows), so unlike /categories this
+    is neither paginated nor searchable."""
+    rows = await db.fetch_all(
+        "SELECT id, label FROM tags WHERE tag_group = 'diet' ORDER BY label"
+    )
+    return {"items": [{"id": row["id"], "label": row["label"]} for row in rows]}
+
+
+@router.get("/certifications")
+async def list_certifications(
+    db: Annotated[Database, Depends(get_database)],
+    _principal: Annotated[Principal, Depends(require_permission("products.view"))],
+) -> Any:
+    """Full certification master list for the product editor's checkbox
+    list -- same small/fixed shape as /diet-tags."""
+    rows = await db.fetch_all("SELECT id, name FROM certifications ORDER BY name")
+    return {"items": [{"id": row["id"], "name": row["name"]} for row in rows]}
+
+
 @router.post("/categories/{category_id}/publish")
 async def publish_category_endpoint(
     category_id: str,
@@ -4969,6 +5133,11 @@ class ProductUpdateRequest(_CamelModel):
     payments_override: str | None = Field(default=None, max_length=20)
     farm_id: str | None = Field(default=None)
     category_ids: list[str] | None = Field(default=None)
+    # Dietary tags (tag_group = 'diet') and certifications the admin has
+    # verified for this product -- see services.catalogue.update_product's
+    # diet_tag_ids/certification_ids handling.
+    diet_tag_ids: list[str] | None = Field(default=None)
+    certification_ids: list[str] | None = Field(default=None)
 
 
 class ProductBulkDeleteRequest(_CamelModel):
@@ -5022,6 +5191,8 @@ async def get_product_endpoint(
         "farmName": detail["farm_name"],
         "farmId": detail.get("farm_id"),
         "categoryIds": detail.get("category_ids", []),
+        "dietTagIds": detail.get("diet_tag_ids", []),
+        "certificationIds": detail.get("certification_ids", []),
         "seoTitle": detail["seo_title"] or "",
         "seoDescription": detail["seo_description"] or "",
         "imageUrl": detail["image_url"] or "",
@@ -6004,6 +6175,8 @@ async def get_order_endpoint(
         "deliveryMinor": order["delivery_minor"],
         "taxMinor": order["tax_minor"],
         "totalMinor": order["total_minor"],
+        "giftCardAppliedMinor": order["gift_card_applied_minor"],
+        "giftCardCode": order["gift_card_code"],
         "orderStatus": order["order_status"],
         "paymentStatus": order["payment_status"],
         "fulfilmentStatus": order["fulfilment_status"],

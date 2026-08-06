@@ -10,6 +10,7 @@ import {
   CategorySidebar,
   DEPARTMENTS_ANCHOR,
   DepartmentRail,
+  DietCertificationFilter,
   PRODUCTS_ANCHOR,
   ShopSectionBar,
   SubcategoryChips,
@@ -19,12 +20,14 @@ import {
   catalogueRuntime,
   loadBestsellers,
   loadCategories,
+  loadFilterFacets,
   loadProductPage,
 } from "../lib/catalogue.server";
 import { buildCategoryTree, findCategoryBranch } from "../lib/category-tree";
 import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
+import { useSiteSettings } from "../lib/site-settings";
 import { LocalizedText, useLocalizePlural } from "../lib/i18n/localized-text";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
@@ -36,14 +39,29 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const requestedPage = Number(url.searchParams.get("page") ?? "1");
   const pageNumber = Number.isInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   const categorySlug = url.searchParams.get("category")?.trim() || null;
+  const dietKeys = (url.searchParams.get("diet") ?? "").split(",").filter(Boolean);
+  const certificationSlugs = (url.searchParams.get("certification") ?? "")
+    .split(",")
+    .filter(Boolean);
+  const filtered = dietKeys.length > 0 || certificationSlugs.length > 0;
 
-  const [categories, productPage, trending] = await Promise.all([
+  const [categories, productPage, facets, trending] = await Promise.all([
     loadCategories(country, runtime, locale.code),
-    loadProductPage(pageNumber, country, runtime, categorySlug, locale.code),
+    loadProductPage(
+      pageNumber,
+      country,
+      runtime,
+      categorySlug,
+      locale.code,
+      dietKeys,
+      certificationSlugs,
+    ),
+    loadFilterFacets(runtime),
     // Only worth showing on the unfiltered "All products" view -- a specific
-    // department already has its own browsing grid, and a sitewide trending
-    // row there would just compete with it.
-    categorySlug
+    // department or dietary/certification filter already has its own
+    // browsing grid, and a sitewide trending row there would just compete
+    // with it.
+    categorySlug || filtered
       ? Promise.resolve([])
       : loadBestsellers({ limit: 8 }, country, runtime, locale.code),
   ]);
@@ -56,6 +74,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   return {
     tree,
     productPage,
+    facets,
     pageNumber,
     pageSize: CATALOGUE_PAGE_SIZE,
     // A slug that matches nothing published resolves to no branch; the grid is
@@ -84,9 +103,11 @@ export function meta({ matches }: Route.MetaArgs) {
 
 export default function Shop({ loaderData }: Route.ComponentProps) {
   const plural = useLocalizePlural();
+  const { dietCertFilters } = useSiteSettings();
   const {
     tree,
     productPage,
+    facets,
     pageNumber,
     pageSize,
     activeSlug,
@@ -165,13 +186,21 @@ export default function Shop({ loaderData }: Route.ComponentProps) {
 
       <section id={PRODUCTS_ANCHOR} className="scroll-mt-32 bg-surface">
         <div className="mx-auto grid max-w-[80rem] gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[16rem_minmax(0,1fr)] lg:py-14">
-          <CategorySidebar
-            tree={tree}
-            activeSlug={activeSlug}
-            activeDepartmentId={activeDepartment?.id ?? null}
-          />
+          <div className="hidden lg:block">
+            <CategorySidebar
+              tree={tree}
+              activeSlug={activeSlug}
+              activeDepartmentId={activeDepartment?.id ?? null}
+            />
+            {dietCertFilters.enabled ? <DietCertificationFilter facets={facets} /> : null}
+          </div>
 
           <div>
+            {dietCertFilters.enabled ? (
+              <div className="mb-6 lg:hidden">
+                <DietCertificationFilter facets={facets} />
+              </div>
+            ) : null}
             <div className="mb-6">
               <h2 className="font-display text-2xl leading-tight text-ink">
                 {activeCategory ? (

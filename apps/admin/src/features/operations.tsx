@@ -1038,6 +1038,12 @@ export function OrderDetailPage() {
               <Row label="Subtotal" value={formatMoney(order.subtotalMinor, order.currencyCode)} />
               <Row label="Delivery" value={formatMoney(order.deliveryMinor, order.currencyCode)} />
               <Row label="Discount" value={formatMoney(order.discountMinor, order.currencyCode)} />
+              {order.giftCardAppliedMinor > 0 ? (
+                <Row
+                  label={`Gift card${order.giftCardCode ? ` (${order.giftCardCode})` : ""}`}
+                  value={formatMoney(order.giftCardAppliedMinor, order.currencyCode)}
+                />
+              ) : null}
               <Row label="Tax" value={formatMoney(order.taxMinor, order.currencyCode)} />
               <div className="flex justify-between border-t border-line pt-1.5 font-medium">
                 <dt>

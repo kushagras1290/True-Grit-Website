@@ -40,6 +40,12 @@ export interface SiteSettings {
   subscriptions: {
     enabled: boolean;
   };
+  dietCertFilters: {
+    enabled: boolean;
+  };
+  giftCards: {
+    enabled: boolean;
+  };
   banners: {
     blogImageUrl: string;
     blogImageAlt: string;
@@ -72,6 +78,12 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   // Off by default (matches migration 0064) -- not needed at launch, an
   // owner switches it on deliberately, the same reasoning as `promotions`.
   subscriptions: { enabled: false },
+  // On by default, same reasoning as `recommendations` -- reads tags/
+  // certifications already assigned in the product editor, no setup needed.
+  dietCertFilters: { enabled: true },
+  // Off by default (matches migration 0082) -- real stored value an owner
+  // issues deliberately, same reasoning as `promotions`.
+  giftCards: { enabled: false },
   banners: { blogImageUrl: "", blogImageAlt: "", farmsImageUrl: "", farmsImageAlt: "" },
   theme: DEFAULT_THEME,
   effects: DEFAULT_EFFECTS,
@@ -90,6 +102,8 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
     promotions: Partial<SiteSettings["promotions"]>;
     recommendations: Partial<SiteSettings["recommendations"]>;
     subscriptions: Partial<SiteSettings["subscriptions"]>;
+    dietCertFilters: Partial<SiteSettings["dietCertFilters"]>;
+    giftCards: Partial<SiteSettings["giftCards"]>;
     banners: Partial<SiteSettings["banners"]>;
     theme: unknown;
     effects: unknown;
@@ -100,6 +114,8 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
   const promotions = source.promotions ?? {};
   const recommendations = source.recommendations ?? {};
   const subscriptions = source.subscriptions ?? {};
+  const dietCertFilters = source.dietCertFilters ?? {};
+  const giftCards = source.giftCards ?? {};
   const banners = source.banners ?? {};
 
   const bool = (value: unknown, fallback: boolean): boolean =>
@@ -127,6 +143,12 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
     },
     subscriptions: {
       enabled: bool(subscriptions.enabled, DEFAULT_SITE_SETTINGS.subscriptions.enabled),
+    },
+    dietCertFilters: {
+      enabled: bool(dietCertFilters.enabled, DEFAULT_SITE_SETTINGS.dietCertFilters.enabled),
+    },
+    giftCards: {
+      enabled: bool(giftCards.enabled, DEFAULT_SITE_SETTINGS.giftCards.enabled),
     },
     banners: {
       blogImageUrl: text(banners.blogImageUrl, ""),

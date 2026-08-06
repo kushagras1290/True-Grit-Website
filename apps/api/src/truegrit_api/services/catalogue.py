@@ -213,7 +213,8 @@ async def update_product(
         updates["slug"] = validate_slug(str(updates["slug"]).strip())
         if await _slug_taken(db, "products", updates["slug"], exclude_id=product_id):
             raise ConflictError("A product with this slug already exists.")
-    if not updates and "category_ids" not in fields:
+    relational_fields = ("category_ids", "diet_tag_ids", "certification_ids")
+    if not updates and not any(field in fields for field in relational_fields):
         return {"id": product_id, "status": current["status"], "changed": False}
 
     if updates:
@@ -244,6 +245,50 @@ async def update_product(
                     " (product_id, category_id, is_primary, sort_order, assigned_at, assigned_by)"
                     " VALUES (?, ?, ?, ?, ?, ?)",
                     (product_id, cat_id, 1 if idx == 0 else 0, idx, now, actor.user_id),
+                )
+            )
+        await db.batch(statements)
+
+    if "diet_tag_ids" in fields:
+        diet_tag_ids = fields["diet_tag_ids"]
+        if not isinstance(diet_tag_ids, list):
+            diet_tag_ids = []
+        # Scoped to tag_group = 'diet' tags only -- a blanket delete of every
+        # product_tags row would also wipe out any intention/attribute/
+        # general tags the product carries, which this field never touches.
+        statements: list[tuple[str, Any]] = [
+            (
+                "DELETE FROM product_tags WHERE product_id = ? AND tag_id IN"
+                " (SELECT id FROM tags WHERE tag_group = 'diet')",
+                (product_id,),
+            ),
+        ]
+        for tag_id in diet_tag_ids:
+            statements.append(
+                (
+                    "INSERT INTO product_tags (product_id, tag_id) VALUES (?, ?)",
+                    (product_id, tag_id),
+                )
+            )
+        await db.batch(statements)
+
+    if "certification_ids" in fields:
+        certification_ids = fields["certification_ids"]
+        if not isinstance(certification_ids, list):
+            certification_ids = []
+        # An admin assigning a certification here is an authoritative action
+        # (they verified the paperwork), not a farmer's own claim awaiting
+        # review, so this writes 'approved' directly rather than 'pending'.
+        statements: list[tuple[str, Any]] = [
+            ("DELETE FROM product_certifications WHERE product_id = ?", (product_id,)),
+        ]
+        for certification_id in certification_ids:
+            statements.append(
+                (
+                    "INSERT INTO product_certifications"
+                    " (product_id, certification_id, claim_review_state)"
+                    " VALUES (?, ?, 'approved')",
+                    (product_id, certification_id),
                 )
             )
         await db.batch(statements)

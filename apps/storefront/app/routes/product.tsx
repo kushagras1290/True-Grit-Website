@@ -109,9 +109,14 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
           </p>
           <h1 className="mt-1.5 font-display text-3xl leading-tight text-ink">{product.name}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-2.5">
-            <p className="inline-flex items-center gap-1.5 rounded-full bg-subtle px-3 py-1 text-xs font-medium text-brand">
-              <span aria-hidden>✓</span> {product.certification}
-            </p>
+            {product.certifications.map((certification) => (
+              <p
+                key={certification}
+                className="inline-flex items-center gap-1.5 rounded-full bg-subtle px-3 py-1 text-xs font-medium text-brand"
+              >
+                <span aria-hidden>✓</span> {certification}
+              </p>
+            ))}
             {product.ratingCount > 0 ? (
               <a href="#reviews" className="text-sm text-ink hover:underline">
                 <RatingSummary average={product.ratingAverage} count={product.ratingCount} />

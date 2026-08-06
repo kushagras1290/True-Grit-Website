@@ -26,10 +26,12 @@ from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
 from truegrit_api.services.bundles import resolve_bundle_discount
 from truegrit_api.services.feature_settings import (
+    gift_cards_enabled,
     load_delivery_settings,
     load_storefront_settings,
     promotions_enabled,
 )
+from truegrit_api.services.gift_cards import resolve_checkout_redemption
 from truegrit_api.services.promotions import resolve_checkout_discount
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
@@ -153,6 +155,8 @@ def _order_result(row: dict[str, Any]) -> dict[str, Any]:
         "totalMinor": row["total_minor"],
         "orderStatus": row["order_status"],
         "paymentStatus": row["payment_status"],
+        "giftCardCode": row["gift_card_code"],
+        "giftCardAppliedMinor": row["gift_card_applied_minor"],
     }
 
 
@@ -162,7 +166,8 @@ async def _find_by_idempotency_key(
     return await db.fetch_one(
         """
         SELECT id, public_reference, currency_code, subtotal_minor, discount_minor,
-               delivery_minor, total_minor, order_status, payment_status
+               delivery_minor, total_minor, order_status, payment_status,
+               gift_card_code, gift_card_applied_minor
         FROM orders
         WHERE customer_user_id = ? AND idempotency_key = ?
         """,
@@ -196,6 +201,7 @@ async def place_order(
     coupon_code: str | None = None,
     subscription_id: str | None = None,
     subscription_discount_percent: int | None = None,
+    gift_card_code: str | None = None,
 ) -> dict[str, Any]:
     # A retried submission (double-click, network timeout-and-resend, back
     # button) returns the order that request already placed instead of a
@@ -303,7 +309,25 @@ async def place_order(
     )
 
     total_discount = discount + bundle_discount + subscription_discount
-    total = max(subtotal + delivery - total_discount, 0)
+    pre_gift_card_total = max(subtotal + delivery - total_discount, 0)
+
+    # A gift card is applied last, against whatever is left after every
+    # other discount -- it consumes real stored value, not a marketing
+    # discount, so it always spends against the smallest amount possible
+    # rather than being computed off the pre-discount subtotal.
+    clean_gift_card_code = (gift_card_code or "").strip() or None
+    gift_cards_are_enabled = await gift_cards_enabled(db)
+    if clean_gift_card_code and not gift_cards_are_enabled:
+        raise ValidationAppError("Gift cards are not available right now.")
+    applied_gift_card = (
+        await resolve_checkout_redemption(
+            db, code=clean_gift_card_code, amount_needed_minor=pre_gift_card_total
+        )
+        if gift_cards_are_enabled
+        else None
+    )
+    gift_card_applied = applied_gift_card["applied_minor"] if applied_gift_card is not None else 0
+    total = pre_gift_card_total - gift_card_applied
 
     if payment_method == "cod":
         if total > settings.payment_cod_max_minor:
@@ -394,10 +418,11 @@ async def place_order(
               id, public_reference, customer_user_id, customer_email, customer_phone_e164,
               currency_code,
               subtotal_minor, discount_minor, delivery_minor, tax_minor, total_minor,
+              gift_card_applied_minor, gift_card_code,
               order_status, payment_status, fulfilment_status, delivery_status,
               delivery_address_json, promotion_snapshot_json,
               idempotency_key, subscription_id, placed_at, created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?,
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?,
                       ?, 'pending', 'unfulfilled', 'not_ready', ?, ?, ?, ?, ?, ?, ?)
             """,
             (
@@ -415,6 +440,8 @@ async def place_order(
                 total_discount,
                 delivery,
                 total,
+                gift_card_applied,
+                applied_gift_card["code"] if applied_gift_card is not None else None,
                 order_status,
                 json.dumps(address),
                 promotion_snapshot,
@@ -510,6 +537,26 @@ async def place_order(
                 )
             )
 
+    if applied_gift_card is not None:
+        # Lands in the same batch as the order -- a gift card balance can
+        # never be spent without an order behind it, the same invariant
+        # coupon_redemptions holds for coupons.
+        statements.append(
+            (
+                "INSERT INTO gift_card_redemptions"
+                " (id, gift_card_id, order_id, customer_user_id, amount_minor, redeemed_at)"
+                " VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    new_id("gcrd"),
+                    applied_gift_card["gift_card_id"],
+                    order_id,
+                    customer.user_id,
+                    gift_card_applied,
+                    now,
+                ),
+            )
+        )
+
     if applied_bundle is not None:
         # Reuses the 'promotion' adjustment type -- see the WHY note in
         # migration 0062 for why this doesn't get its own enum value.
@@ -567,6 +614,8 @@ async def place_order(
                 "coupon_code": applied_promotion["code"] if applied_promotion else None,
                 "subscription_id": subscription_id,
                 "subscription_discount_minor": subscription_discount,
+                "gift_card_code": applied_gift_card["code"] if applied_gift_card else None,
+                "gift_card_applied_minor": gift_card_applied,
             },
         )
     )
@@ -603,4 +652,6 @@ async def place_order(
         "orderStatus": order_status,
         "paymentStatus": "pending",
         "couponCode": applied_promotion["code"] if applied_promotion else None,
+        "giftCardCode": applied_gift_card["code"] if applied_gift_card else None,
+        "giftCardAppliedMinor": gift_card_applied,
     }

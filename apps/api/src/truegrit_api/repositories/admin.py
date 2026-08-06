@@ -238,6 +238,19 @@ class AdminRepository:
             (product_id,),
         )
         product["category_ids"] = [row["category_id"] for row in category_rows]
+        diet_tag_rows = await self._db.fetch_all(
+            "SELECT pt.tag_id FROM product_tags pt JOIN tags t ON t.id = pt.tag_id"
+            " WHERE pt.product_id = ? AND t.tag_group = 'diet' ORDER BY t.label",
+            (product_id,),
+        )
+        product["diet_tag_ids"] = [row["tag_id"] for row in diet_tag_rows]
+        certification_rows = await self._db.fetch_all(
+            "SELECT pc.certification_id FROM product_certifications pc"
+            " JOIN certifications c ON c.id = pc.certification_id"
+            " WHERE pc.product_id = ? AND pc.claim_review_state = 'approved' ORDER BY c.name",
+            (product_id,),
+        )
+        product["certification_ids"] = [row["certification_id"] for row in certification_rows]
         product["linked_products"] = await self._db.fetch_all(
             """
             SELECT p.id, p.name, p.slug, p.status
@@ -406,6 +419,7 @@ class AdminRepository:
             """
             SELECT id, public_reference, customer_email, customer_phone_e164, currency_code,
                    subtotal_minor, discount_minor, delivery_minor, tax_minor, total_minor,
+                   gift_card_applied_minor, gift_card_code,
                    order_status, payment_status, fulfilment_status, delivery_status,
                    delivery_address_json, placed_at, created_at
             FROM orders WHERE id = ?
@@ -436,6 +450,8 @@ class AdminRepository:
             order["discount_minor"] = 0
             order["delivery_minor"] = 0
             order["tax_minor"] = 0
+            order["gift_card_applied_minor"] = 0
+            order["gift_card_code"] = None
         payment = await self._db.fetch_one(
             """
             SELECT id, provider, amount_minor, currency_code, status,

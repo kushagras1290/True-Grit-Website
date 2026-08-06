@@ -45,6 +45,8 @@ KEY_PROMOTIONS: Final = "commerce.promotions.enabled"
 KEY_RECOMMENDATIONS: Final = "commerce.recommendations.enabled"
 KEY_SUBSCRIPTIONS: Final = "commerce.subscriptions.enabled"
 KEY_SUBSCRIPTION_DISCOUNT_PERCENT: Final = "commerce.subscriptions.discount_percent"
+KEY_DIET_CERT_FILTERS: Final = "commerce.diet_cert_filters.enabled"
+KEY_GIFT_CARDS: Final = "commerce.gift_cards.enabled"
 KEY_DELIVERY_FEE_MINOR: Final = "commerce.delivery_fee_minor"
 KEY_FREE_DELIVERY_THRESHOLD_MINOR: Final = "commerce.free_delivery_threshold_minor"
 KEY_BLOG_BANNER_URL: Final = "banner.blog.image_url"
@@ -80,6 +82,15 @@ _BOOLEAN_DEFAULTS: Final[dict[str, bool]] = {
     # launch (user's explicit call), but built for real and switchable the
     # moment it is wanted, rather than a stub.
     KEY_SUBSCRIPTIONS: False,
+    # On by default, same reasoning as KEY_RECOMMENDATIONS -- the filters
+    # read real product data (tags/certifications an admin already assigned),
+    # need no separate setup, and are pure narrowing of what is already
+    # public, so there is no reason to ship them off.
+    KEY_DIET_CERT_FILTERS: True,
+    # Off by default, same reasoning as KEY_PROMOTIONS -- real stored value
+    # an owner issues deliberately once they want to offer it, not a
+    # permissive fallback for a corrupted row (migration 0082).
+    KEY_GIFT_CARDS: False,
 }
 
 DEFAULT_SUBSCRIPTION_DISCOUNT_PERCENT: Final = 5
@@ -120,6 +131,8 @@ class StorefrontSettings:
     promotions: bool
     recommendations: bool
     subscriptions: bool
+    diet_cert_filters: bool
+    gift_cards: bool
     blog_banner_image_url: str
     blog_banner_image_alt: str
     farms_banner_image_url: str
@@ -137,6 +150,8 @@ class StorefrontSettings:
             "promotions": self.promotions,
             "recommendations": self.recommendations,
             "subscriptions": self.subscriptions,
+            "dietCertFilters": self.diet_cert_filters,
+            "giftCards": self.gift_cards,
             "blogBannerImageUrl": self.blog_banner_image_url,
             "blogBannerImageAlt": self.blog_banner_image_alt,
             "farmsBannerImageUrl": self.farms_banner_image_url,
@@ -416,6 +431,12 @@ async def load_storefront_settings(db: Database) -> StorefrontSettings:
         subscriptions=_parse_bool(
             values.get(KEY_SUBSCRIPTIONS), default=_BOOLEAN_DEFAULTS[KEY_SUBSCRIPTIONS]
         ),
+        diet_cert_filters=_parse_bool(
+            values.get(KEY_DIET_CERT_FILTERS), default=_BOOLEAN_DEFAULTS[KEY_DIET_CERT_FILTERS]
+        ),
+        gift_cards=_parse_bool(
+            values.get(KEY_GIFT_CARDS), default=_BOOLEAN_DEFAULTS[KEY_GIFT_CARDS]
+        ),
         blog_banner_image_url=(values.get(KEY_BLOG_BANNER_URL) or "").strip(),
         blog_banner_image_alt=(values.get(KEY_BLOG_BANNER_ALT) or "").strip(),
         farms_banner_image_url=(values.get(KEY_FARMS_BANNER_URL) or "").strip(),
@@ -442,6 +463,8 @@ class PublicStorefrontSettings:
     promotions: bool
     recommendations: bool
     subscriptions: bool
+    diet_cert_filters: bool
+    gift_cards: bool
     blog_banner_image_url: str
     blog_banner_image_alt: str
     farms_banner_image_url: str
@@ -477,6 +500,12 @@ class PublicStorefrontSettings:
             },
             "subscriptions": {
                 "enabled": self.subscriptions,
+            },
+            "dietCertFilters": {
+                "enabled": self.diet_cert_filters,
+            },
+            "giftCards": {
+                "enabled": self.gift_cards,
             },
             "banners": {
                 "blogImageUrl": self.blog_banner_image_url,
@@ -517,6 +546,13 @@ def resolve_public_settings(
         # Same reasoning again: no server configuration gates COD (it is
         # always available), so the stored switch is the whole answer.
         subscriptions=stored.subscriptions,
+        # No server configuration gates this either -- it reads tags/
+        # certifications an admin already assigned through the ordinary
+        # product editor.
+        diet_cert_filters=stored.diet_cert_filters,
+        # No server configuration gates this either -- unlike a payment
+        # gateway, issuing/redeeming a gift card needs no external API key.
+        gift_cards=stored.gift_cards,
         blog_banner_image_url=stored.blog_banner_image_url,
         blog_banner_image_alt=stored.blog_banner_image_alt,
         farms_banner_image_url=stored.farms_banner_image_url,
@@ -579,6 +615,16 @@ async def subscriptions_enabled(db: Database) -> bool:
     disabled feature simply lets no one subscribe and renews nothing, it
     never blocks ordinary checkout."""
     return (await load_storefront_settings(db)).subscriptions
+
+
+async def gift_cards_enabled(db: Database) -> bool:
+    """Whether the sitewide gift-cards feature is switched on -- checked
+    before honouring a gift card code at checkout, the same gate
+    `promotions_enabled` is for coupons. Off by default: a disabled feature
+    simply refuses a gift card code (a customer trying one gets a clear
+    "not available" error, the same as a coupon code while promotions are
+    off), it never blocks ordinary checkout."""
+    return (await load_storefront_settings(db)).gift_cards
 
 
 async def load_subscription_discount_percent(db: Database) -> int:
@@ -644,6 +690,8 @@ async def update_storefront_settings(
         "promotions": KEY_PROMOTIONS,
         "recommendations": KEY_RECOMMENDATIONS,
         "subscriptions": KEY_SUBSCRIPTIONS,
+        "diet_cert_filters": KEY_DIET_CERT_FILTERS,
+        "gift_cards": KEY_GIFT_CARDS,
     }
 
     now = utc_now_iso()

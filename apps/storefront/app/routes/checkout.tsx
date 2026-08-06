@@ -19,10 +19,12 @@ import {
   payWithRazorpayWindow,
   placeOrder,
   previewDiscount,
+  previewGiftCard,
   type DeliveryAddress,
   type DeliverySettingsInfo,
   type DiscountPreview,
   type FeaturedPromotionInfo,
+  type GiftCardPreview,
   type PaymentMethodsInfo,
 } from "../lib/commerce";
 import { usePriceFormatter, useDisplayCurrency } from "../lib/currency";
@@ -60,7 +62,7 @@ const FIELD =
 export default function CheckoutPage(_props: Route.ComponentProps) {
   const localize = useLocalizeText();
   const { customer, status } = useCustomer();
-  const { payments, promotions } = useSiteSettings();
+  const { payments, promotions, giftCards } = useSiteSettings();
   const { lines, subtotalMinor, clear } = useCart();
   const formatPrice = usePriceFormatter();
   const displayCurrency = useDisplayCurrency();
@@ -75,6 +77,10 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
   const [appliedDiscount, setAppliedDiscount] = useState<DiscountPreview | null>(null);
   const [couponChecking, setCouponChecking] = useState(false);
   const [couponError, setCouponError] = useState<string | null>(null);
+  const [giftCardInput, setGiftCardInput] = useState("");
+  const [appliedGiftCard, setAppliedGiftCard] = useState<GiftCardPreview | null>(null);
+  const [giftCardChecking, setGiftCardChecking] = useState(false);
+  const [giftCardError, setGiftCardError] = useState<string | null>(null);
   // Stable for the life of this page: every retry of the same submission
   // (a double-click, a timeout-and-resend) reuses it, so the server returns
   // the order that attempt already placed instead of placing a second one.
@@ -91,7 +97,11 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
   // whether this preview ran.
   const discount = appliedDiscount?.discountMinor ?? 0;
   const delivery = appliedDiscount?.freeDelivery ? 0 : baseDelivery;
-  const total = Math.max(subtotalMinor + delivery - discount, 0);
+  const preGiftCardTotal = Math.max(subtotalMinor + delivery - discount, 0);
+  // Same "confirmed preview, server is the final authority" rule as the
+  // coupon discount above -- see the comment there.
+  const giftCardApplied = appliedGiftCard?.appliedMinor ?? 0;
+  const total = Math.max(preGiftCardTotal - giftCardApplied, 0);
 
   const codAllowed =
     payment !== null && payment.methods.includes("cod") && total <= payment.codMaxMinor;
@@ -147,6 +157,15 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
     setCouponError(null);
   }, [subtotalMinor]);
 
+  // A gift card preview is only true for the amount it was computed against
+  // -- a quantity change or a coupon being applied/removed changes what is
+  // left to cover, so the stale preview is dropped rather than kept on
+  // screen.
+  useEffect(() => {
+    setAppliedGiftCard(null);
+    setGiftCardError(null);
+  }, [subtotalMinor, discount, delivery]);
+
   // Cart total past the COD ceiling => force online payment.
   useEffect(() => {
     if (method === "cod" && !codAllowed && razorpayAllowed) setMethod("razorpay");
@@ -165,6 +184,24 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
       setCouponError(caught instanceof AuthError ? caught.message : "Could not apply this code.");
     } finally {
       setCouponChecking(false);
+    }
+  }
+
+  async function handleApplyGiftCard() {
+    const code = giftCardInput.trim();
+    if (!code) return;
+    setGiftCardChecking(true);
+    setGiftCardError(null);
+    try {
+      const result = await previewGiftCard(code, preGiftCardTotal);
+      setAppliedGiftCard(result);
+    } catch (caught) {
+      setAppliedGiftCard(null);
+      setGiftCardError(
+        caught instanceof AuthError ? caught.message : "Could not apply this gift card.",
+      );
+    } finally {
+      setGiftCardChecking(false);
     }
   }
 
@@ -292,6 +329,7 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
         chosen,
         idempotencyKey,
         couponInput.trim() || undefined,
+        giftCardInput.trim() || undefined,
       );
       // Online orders open a gateway window; only clear the cart once the
       // payment is settled server-side. COD orders are already confirmed.
@@ -463,6 +501,56 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
             </div>
           ) : null}
 
+          {giftCards.enabled && commerceLive ? (
+            <div className="mt-3">
+              <label htmlFor="giftCardCode" className="text-xs font-medium text-ink-muted">
+                <LocalizedText>Gift card code</LocalizedText>
+              </label>
+              <div className="mt-1 flex gap-2">
+                <input
+                  id="giftCardCode"
+                  className={`${FIELD} min-h-9`}
+                  placeholder={localize("e.g. DIWALI500")}
+                  value={giftCardInput}
+                  onChange={(event) => {
+                    setGiftCardInput(event.target.value);
+                    setAppliedGiftCard(null);
+                    setGiftCardError(null);
+                  }}
+                />
+                <button
+                  type="button"
+                  disabled={!giftCardInput.trim() || giftCardChecking}
+                  onClick={() => void handleApplyGiftCard()}
+                  className="min-h-9 shrink-0 rounded-sm border border-line px-3 text-sm font-medium text-ink hover:bg-canvas disabled:opacity-60"
+                >
+                  {giftCardChecking ? (
+                    <LocalizedText>{"Checking…"}</LocalizedText>
+                  ) : (
+                    <LocalizedText>{"Apply"}</LocalizedText>
+                  )}
+                </button>
+              </div>
+              {giftCardError ? (
+                <p className="mt-1 text-xs text-danger">{localize(giftCardError)}</p>
+              ) : null}
+              {appliedGiftCard ? (
+                <p className="mt-1 text-xs text-success">
+                  "{appliedGiftCard.code}
+                  <LocalizedText>" applied —</LocalizedText>{" "}
+                  {formatPrice(appliedGiftCard.appliedMinor)}{" "}
+                  <LocalizedText>toward this order</LocalizedText>
+                  {appliedGiftCard.remainingAfterMinor > 0 ? (
+                    <>
+                      , {formatPrice(appliedGiftCard.remainingAfterMinor)}{" "}
+                      <LocalizedText>left on the card</LocalizedText>
+                    </>
+                  ) : null}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+
           <dl className="mt-3 space-y-1.5 border-t border-line pt-3 text-sm">
             <div className="flex justify-between">
               <dt className="text-ink-muted">
@@ -486,6 +574,14 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                 {delivery === 0 ? <LocalizedText>{"Free"}</LocalizedText> : formatPrice(delivery)}
               </dd>
             </div>
+            {giftCardApplied > 0 ? (
+              <div className="flex justify-between">
+                <dt className="text-ink-muted">
+                  <LocalizedText>Gift card</LocalizedText>
+                </dt>
+                <dd className="text-success">−{formatPrice(giftCardApplied)}</dd>
+              </div>
+            ) : null}
             <div className="flex justify-between border-t border-line pt-1.5 font-medium">
               <dt>
                 <LocalizedText>Total</LocalizedText>

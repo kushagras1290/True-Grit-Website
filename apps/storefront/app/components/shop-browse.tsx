@@ -16,7 +16,7 @@
  * exactly like `PageLinkPagination`.
  */
 
-import type { CategorySummary, CategoryTreeNode } from "@truegrit/contracts";
+import type { CategorySummary, CategoryTreeNode, ProductFilters } from "@truegrit/contracts";
 import { SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router";
@@ -40,6 +40,22 @@ function filterHref(searchParams: URLSearchParams, slug: string | null): string 
   next.delete("page");
   if (slug) next.set("category", slug);
   else next.delete("category");
+  const query = next.toString();
+  return query ? `?${query}` : "?";
+}
+
+/** Toggles one value in and out of a comma-joined multi-select filter param
+ * (`?diet=vegan,gluten-free`), the same "reset pagination on change" rule as
+ * `filterHref`. Generalizes `filterHref`'s single-value shape to a facet
+ * where more than one option can be active at once. */
+function toggleListParam(searchParams: URLSearchParams, paramName: string, value: string): string {
+  const next = new URLSearchParams(searchParams);
+  const current = new Set((searchParams.get(paramName) ?? "").split(",").filter(Boolean));
+  if (current.has(value)) current.delete(value);
+  else current.add(value);
+  next.delete("page");
+  if (current.size > 0) next.set(paramName, [...current].join(","));
+  else next.delete(paramName);
   const query = next.toString();
   return query ? `?${query}` : "?";
 }
@@ -328,6 +344,78 @@ export function CategorySidebar({
         />
       </div>
     </aside>
+  );
+}
+
+/**
+ * Checkbox filters for dietary tags and certifications, narrowing the shop
+ * grid via `?diet=`/`?certification=` alongside `?category=`. Unlike
+ * `CategorySidebar` this renders on every breakpoint (not `hidden lg:block`)
+ * -- the vocabulary is small (a handful of options each), so it needs no
+ * drawer the way the full category tree does.
+ */
+export function DietCertificationFilter({ facets }: { facets: ProductFilters }) {
+  const [searchParams] = useSearchParams();
+  const activeDiet = new Set((searchParams.get("diet") ?? "").split(",").filter(Boolean));
+  const activeCertifications = new Set(
+    (searchParams.get("certification") ?? "").split(",").filter(Boolean),
+  );
+  if (facets.dietTags.length === 0 && facets.certifications.length === 0) return null;
+  return (
+    <div className="flex flex-col gap-5 border-t border-line pt-5 lg:mt-5">
+      {facets.dietTags.length > 0 ? (
+        <div>
+          <p className="mb-2 px-2 text-xs font-semibold tracking-[0.14em] text-accent uppercase">
+            <LocalizedText>Dietary</LocalizedText>
+          </p>
+          <ul className="flex flex-col gap-1 px-2">
+            {facets.dietTags.map((tag) => (
+              <li key={tag.key}>
+                <Link
+                  to={toggleListParam(searchParams, "diet", tag.key)}
+                  className="flex items-center gap-2 rounded-sm px-1 py-1 text-sm text-ink hover:text-brand"
+                  aria-pressed={activeDiet.has(tag.key)}
+                >
+                  <input
+                    type="checkbox"
+                    readOnly
+                    checked={activeDiet.has(tag.key)}
+                    className="h-4 w-4 rounded border-line-strong text-brand focus:ring-brand"
+                  />
+                  {tag.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      {facets.certifications.length > 0 ? (
+        <div>
+          <p className="mb-2 px-2 text-xs font-semibold tracking-[0.14em] text-accent uppercase">
+            <LocalizedText>Certification</LocalizedText>
+          </p>
+          <ul className="flex flex-col gap-1 px-2">
+            {facets.certifications.map((certification) => (
+              <li key={certification.slug}>
+                <Link
+                  to={toggleListParam(searchParams, "certification", certification.slug)}
+                  className="flex items-center gap-2 rounded-sm px-1 py-1 text-sm text-ink hover:text-brand"
+                  aria-pressed={activeCertifications.has(certification.slug)}
+                >
+                  <input
+                    type="checkbox"
+                    readOnly
+                    checked={activeCertifications.has(certification.slug)}
+                    className="h-4 w-4 rounded border-line-strong text-brand focus:ring-brand"
+                  />
+                  {certification.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </div>
   );
 }
 

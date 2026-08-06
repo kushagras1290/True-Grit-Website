@@ -262,6 +262,21 @@ def test_admin_can_read_and_flip_switches(client: TestClient, db: SQLiteDatabase
     assert client.get("/v1/public/settings").json()["payments"]["enabled"] is False
 
 
+def test_diet_cert_filters_switch_defaults_on_and_is_editable(
+    client: TestClient, db: SQLiteDatabase
+):
+    cookies = owner_cookies(db)
+    initial = client.get(SETTINGS_PATH, cookies=cookies).json()
+    assert initial["settings"]["dietCertFilters"] is True
+    assert initial["effective"]["dietCertFilters"] is True
+
+    patched = client.patch(SETTINGS_PATH, json={"dietCertFilters": False}, cookies=cookies)
+    assert patched.status_code == 200, patched.text
+    assert patched.json()["settings"]["dietCertFilters"] is False
+    assert patched.json()["effective"]["dietCertFilters"] is False
+    assert client.get("/v1/public/settings").json()["dietCertFilters"]["enabled"] is False
+
+
 def test_patch_only_touches_the_fields_it_was_sent(client: TestClient, db: SQLiteDatabase):
     """A PATCH that flips one switch must not overwrite the others with whatever
     the client last rendered."""

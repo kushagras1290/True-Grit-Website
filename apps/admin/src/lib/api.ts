@@ -93,6 +93,54 @@ export const demoMode = !API_URL;
  */
 export type EmailTransport = "resend" | "smtp" | "console";
 
+/** Mirrors migration 0002/0081's seeded 'diet' tag_group rows so the
+ *  product editor's checkbox list is reviewable without an API. */
+const DEMO_DIET_TAGS: AdminDietTagOption[] = [
+  { id: "tag_dairy_free", label: "Dairy Free" },
+  { id: "tag_gluten_free", label: "Gluten Free" },
+  { id: "tag_nut_free", label: "Nut Free" },
+  { id: "tag_plant_based", label: "Plant Based" },
+  { id: "tag_vegan", label: "Vegan" },
+  { id: "tag_vegetarian", label: "Vegetarian" },
+];
+
+/** Mirrors database/seeds/development.sql's seeded certifications. */
+const DEMO_CERTIFICATIONS: AdminCertificationOption[] = [
+  { id: "cert_india_organic", name: "India Organic (NPOP)" },
+  { id: "cert_jaivik_bharat", name: "Jaivik Bharat" },
+  { id: "cert_pgs_india", name: "PGS-India Green" },
+];
+
+/** A couple of representative rows so the Gift Cards page is reviewable
+ *  without an API -- gift cards are issued at runtime, not seeded, so there
+ *  is no shared fixtures-package entry to reuse here. */
+const DEMO_GIFT_CARDS: AdminGiftCardRow[] = [
+  {
+    id: "gft_demo_diwali",
+    code: "DIWALI500",
+    initialBalanceMinor: 50_000,
+    balanceMinor: 32_500,
+    currencyCode: "INR",
+    status: "active",
+    issuedToEmail: "priya@example.test",
+    note: "Diwali gift for a repeat customer",
+    expiresAt: null,
+    createdAt: "2026-07-01T00:00:00Z",
+  },
+  {
+    id: "gft_demo_spent",
+    code: "WELCOME200",
+    initialBalanceMinor: 20_000,
+    balanceMinor: 0,
+    currencyCode: "INR",
+    status: "active",
+    issuedToEmail: null,
+    note: null,
+    expiresAt: null,
+    createdAt: "2026-06-15T00:00:00Z",
+  },
+];
+
 /** Mirrors the shipped defaults in migration 0040 so the switches page is
  *  reviewable without an API. */
 const DEMO_STOREFRONT_SETTINGS: StorefrontSettingsResponse = {
@@ -114,6 +162,11 @@ const DEMO_STOREFRONT_SETTINGS: StorefrontSettingsResponse = {
     // Off by default (migration 0064) -- not needed at launch, matching the
     // real shipped default.
     subscriptions: false,
+    // On by default, same reasoning as recommendations -- no setup needed.
+    dietCertFilters: true,
+    // Off by default (migration 0082) -- real stored value, same reasoning
+    // as promotions.
+    giftCards: false,
     blogBannerImageUrl: "",
     blogBannerImageAlt: "",
     farmsBannerImageUrl: "",
@@ -129,6 +182,8 @@ const DEMO_STOREFRONT_SETTINGS: StorefrontSettingsResponse = {
     promotions: false,
     recommendations: true,
     subscriptions: false,
+    dietCertFilters: true,
+    giftCards: false,
     anySignInAvailable: true,
   },
 };
@@ -267,6 +322,38 @@ export interface AdminProductImage {
   imageAlt: string | null;
 }
 
+export interface AdminDietTagOption {
+  id: string;
+  label: string;
+}
+
+export interface AdminCertificationOption {
+  id: string;
+  name: string;
+}
+
+export interface AdminGiftCardRow {
+  id: string;
+  code: string;
+  initialBalanceMinor: number;
+  balanceMinor: number;
+  currencyCode: string;
+  status: "active" | "cancelled" | "expired";
+  issuedToEmail: string | null;
+  note: string | null;
+  expiresAt: string | null;
+  createdAt: string;
+}
+
+export interface AdminGiftCardDetail extends AdminGiftCardRow {
+  redemptions: Array<{
+    orderId: string;
+    orderReference: string;
+    amountMinor: number;
+    redeemedAt: string;
+  }>;
+}
+
 export interface AdminProductDetail {
   id: string;
   name: string;
@@ -282,6 +369,10 @@ export interface AdminProductDetail {
   farmName: string;
   farmId: string | null;
   categoryIds: string[];
+  /** tag_group = 'diet' tag ids (migration 0081) and approved certification
+   *  ids (migration 0002/0081) currently assigned to this product. */
+  dietTagIds: string[];
+  certificationIds: string[];
   seoTitle: string;
   seoDescription: string;
   imageUrl: string;
@@ -408,6 +499,8 @@ export interface AdminOrderDetail {
   deliveryMinor: number;
   taxMinor: number;
   totalMinor: number;
+  giftCardAppliedMinor: number;
+  giftCardCode: string | null;
   orderStatus: string;
   paymentStatus: string;
   fulfilmentStatus: string;
@@ -1379,6 +1472,8 @@ export const api = {
       farmName: product.farmName,
       farmId: null,
       categoryIds: [],
+      dietTagIds: [],
+      certificationIds: [],
       seoTitle: product.seo.title,
       seoDescription: product.seo.description,
       imageUrl: product.imageUrl ?? "",
@@ -1506,6 +1601,22 @@ export const api = {
           `/v1/admin/categories?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
         ).then((body) => body.items),
 
+  // Small, fixed vocabularies (a handful of rows each) -- unlike categories()
+  // these are never paginated or searched, and demo mode falls back to a
+  // literal list matching migration 0002/0081's seeded labels rather than
+  // pulling in a whole fixtures-package entry for four rows.
+  dietTags: (): Promise<AdminDietTagOption[]> =>
+    demoMode
+      ? demo(DEMO_DIET_TAGS)
+      : get<{ items: AdminDietTagOption[] }>("/v1/admin/diet-tags").then((body) => body.items),
+
+  certifications: (): Promise<AdminCertificationOption[]> =>
+    demoMode
+      ? demo(DEMO_CERTIFICATIONS)
+      : get<{ items: AdminCertificationOption[] }>("/v1/admin/certifications").then(
+          (body) => body.items,
+        ),
+
   getCategory: (id: string): Promise<AdminCategoryDetail> => {
     if (!demoMode) return get<AdminCategoryDetail>(`/v1/admin/categories/${id}`);
     const category = adminCategories.find((entry) => entry.id === id);
@@ -1629,6 +1740,8 @@ export const api = {
       deliveryMinor: 0,
       taxMinor: 0,
       totalMinor: order.totalMinor,
+      giftCardAppliedMinor: 0,
+      giftCardCode: null,
       orderStatus: order.orderStatus,
       paymentStatus: order.paymentStatus,
       fulfilmentStatus: order.fulfilmentStatus,
@@ -2931,6 +3044,54 @@ export const api = {
 
   deleteCoupon: (couponId: string): Promise<{ id: string; deleted: boolean }> =>
     demoMode ? demo({ id: couponId, deleted: true }) : del(`/v1/admin/coupons/${couponId}`),
+
+  // --- Gift cards --------------------------------------------------------
+  //
+  // Balance is derived from gift_card_redemptions, never stored -- see
+  // services.gift_cards' module docstring. The sitewide on/off switch is on
+  // Site Settings, next to the other storefront switches, same pattern as
+  // promotions above.
+
+  giftCards: ({
+    search,
+    limit = 25,
+    offset = 0,
+  }: { search?: string; limit?: number; offset?: number } = {}): Promise<{
+    items: AdminGiftCardRow[];
+    total: number;
+  }> =>
+    demoMode
+      ? demo({ items: DEMO_GIFT_CARDS, total: DEMO_GIFT_CARDS.length })
+      : get<{ items: AdminGiftCardRow[]; total: number }>(
+          `/v1/admin/gift-cards?limit=${limit}&offset=${offset}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+        ),
+
+  getGiftCard: (giftCardId: string): Promise<AdminGiftCardDetail> => {
+    if (!demoMode) return get<AdminGiftCardDetail>(`/v1/admin/gift-cards/${giftCardId}`);
+    const card = DEMO_GIFT_CARDS.find((entry) => entry.id === giftCardId);
+    if (!card) throw new ApiError("Gift card not found.", 404, "not_found");
+    return demo<AdminGiftCardDetail>({ ...card, redemptions: [] });
+  },
+
+  issueGiftCard: (input: {
+    balanceMinor: number;
+    issuedToEmail?: string | null;
+    note?: string | null;
+    expiresAt?: string | null;
+    code?: string | null;
+  }): Promise<{ id: string; code: string; balanceMinor: number }> =>
+    demoMode
+      ? demo({
+          id: `gft_demo_${Date.now().toString(36)}`,
+          code: input.code?.toUpperCase() || `DEMO${Date.now().toString(36).toUpperCase()}`,
+          balanceMinor: input.balanceMinor,
+        })
+      : post(`/v1/admin/gift-cards`, input),
+
+  cancelGiftCard: (giftCardId: string): Promise<{ id: string; status: string }> =>
+    demoMode
+      ? demo({ id: giftCardId, status: "cancelled" })
+      : post(`/v1/admin/gift-cards/${giftCardId}/cancel`, {}),
 
   // --- Bundles ---------------------------------------------------------
   //

@@ -62,6 +62,8 @@ def test_product_create_edit_publish_archive(client: TestClient, db: SQLiteDatab
             # this must not be written into a column with a foreign key to
             # farms(id) (see services/catalogue.py's update_product).
             "farmId": "",
+            "dietTagIds": ["tag_vegan", "tag_gluten_free"],
+            "certificationIds": ["cert_india_organic", "cert_pgs_india"],
         },
     )
     assert updated.status_code == 200
@@ -78,6 +80,8 @@ def test_product_create_edit_publish_archive(client: TestClient, db: SQLiteDatab
     assert product["harvestNote"] == "Harvested the week of 3 March 2026"
     assert product["growingMethod"] == "Rain-fed, no synthetic pesticides"
     assert product["storageGuidance"] == "Store in a cool, dry place"
+    assert set(product["dietTagIds"]) == {"tag_vegan", "tag_gluten_free"}
+    assert set(product["certificationIds"]) == {"cert_india_organic", "cert_pgs_india"}
     list_items = client.get("/v1/admin/products", params={"search": "Test Turmeric Powder"}).json()[
         "items"
     ]
@@ -89,10 +93,34 @@ def test_product_create_edit_publish_archive(client: TestClient, db: SQLiteDatab
     assert public_product["harvestNote"] == "Harvested the week of 3 March 2026"
     assert public_product["growingMethod"] == "Rain-fed, no synthetic pesticides"
     assert public_product["storageGuidance"] == "Store in a cool, dry place"
+    # A regular product editor's own certification assignment is authoritative
+    # (an admin verifying paperwork), unlike a farmer's own claim -- written
+    # straight to 'approved', so it surfaces on the public page immediately.
+    assert set(public_product["certifications"]) == {"India Organic (NPOP)", "PGS-India Green"}
 
     archived = client.post(f"/v1/admin/products/{product_id}/archive")
     assert archived.status_code == 200
     assert client.get(f"/v1/admin/products/{product_id}").status_code == 404
+
+
+def test_diet_tag_update_does_not_wipe_non_diet_tags(client: TestClient, db: SQLiteDatabase):
+    """prd_ragi seeds with several diet tags *and* a non-diet one
+    (traditional-indian, tag_group='intention') -- patching dietTagIds must
+    only replace the diet ones, not blanket-delete every product_tags row."""
+    as_admin(client, db)
+    before = client.get("/v1/admin/products/prd_ragi").json()
+    assert "tag_gluten_free" in before["dietTagIds"]
+
+    updated = client.patch(
+        "/v1/admin/products/prd_ragi", json={"dietTagIds": ["tag_vegan", "tag_dairy_free"]}
+    )
+    assert updated.status_code == 200
+
+    after = client.get("/v1/admin/products/prd_ragi").json()
+    assert set(after["dietTagIds"]) == {"tag_vegan", "tag_dairy_free"}
+    public_product = client.get("/v1/public/products/sprouted-ragi-flour").json()
+    assert "Traditional Indian" in public_product["tags"], "non-diet tag must survive"
+    assert "Gluten Free" not in public_product["tags"], "replaced, not merged"
 
 
 def test_archive_lists_and_restores_products(client: TestClient, db: SQLiteDatabase):
