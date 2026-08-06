@@ -160,6 +160,15 @@ async def update_product(
     )
     if current is None:
         raise NotFoundError("Product not found.")
+    # The admin "Unassigned" farm option can only round-trip as "" -- a native
+    # <select> has no way to hold null -- so every save of an unassigned
+    # product resubmits farm_id: "". Without this, that "" would go straight
+    # into an UPDATE against a column with FOREIGN KEY ... REFERENCES farms(id)
+    # (migration 0002), which SQLite rejects outright: not a validation error,
+    # a raw constraint failure that 500s before any response middleware (incl.
+    # CORS) runs, which the browser then reports as an opaque CORS failure.
+    if fields.get("farm_id") == "":
+        fields["farm_id"] = None
     # A farm-owner sub-admin's edit rights stop at their own farm's roster --
     # reassigning `farm_id` would hand the product to (or detach it from) a
     # farm they may not even see, which is a scope change, not a content edit.

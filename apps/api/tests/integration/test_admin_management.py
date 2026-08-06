@@ -57,9 +57,15 @@ def test_product_create_edit_publish_archive(client: TestClient, db: SQLiteDatab
             "harvestNote": "Harvested the week of 3 March 2026",
             "growingMethod": "Rain-fed, no synthetic pesticides",
             "storageGuidance": "Store in a cool, dry place",
+            # The admin form's "Unassigned" farm option has no way to submit
+            # null through a native <select>, so it always resubmits "" --
+            # this must not be written into a column with a foreign key to
+            # farms(id) (see services/catalogue.py's update_product).
+            "farmId": "",
         },
     )
     assert updated.status_code == 200
+    assert updated.json()["id"] == product_id
 
     published = client.post(f"/v1/admin/products/{product_id}/publish", json={})
     assert published.status_code == 200
