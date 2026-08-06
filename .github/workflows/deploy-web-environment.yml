@@ -1,0 +1,99 @@
+name: Deploy web environment
+
+# Manually deploys the storefront + admin SPA to an isolated Cloudflare
+# environment. Staging already auto-deploys on every push to `staging`
+# (deploy-staging.yml); this workflow exists for production, which is never
+# automatic -- same reasoning and the same typed-confirmation gate as
+# deploy-api-environment.yml. Deploy the API to the target environment
+# first (via that workflow): the storefront's service binding (API_WORKER)
+# targets the environment's API Worker by name, and Cloudflare rejects the
+# binding if that Worker has never been deployed.
+#
+# Requires the same repository secret every other deploy workflow uses:
+#   CLOUDFLARE_API_TOKEN — a token with Workers Scripts edit permission on
+#   the target account.
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Isolated Cloudflare environment
+        required: true
+        type: choice
+        options: [staging, production]
+      confirmation:
+        description: Type DEPLOY staging or DEPLOY production
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-web-${{ inputs.environment }}
+  cancel-in-progress: false
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: "68185599d29e656475ecc2cabbf581b7"
+  TARGET_ENVIRONMENT: ${{ inputs.environment }}
+  CONFIRMATION: ${{ inputs.confirmation }}
+
+jobs:
+  web:
+    name: Storefront + Admin (${{ inputs.environment }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Assert deployment target
+        run: |
+          test "$CONFIRMATION" = "DEPLOY $TARGET_ENVIRONMENT"
+          test "$TARGET_ENVIRONMENT" = "staging" -o "$TARGET_ENVIRONMENT" = "production"
+
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      # @cloudflare/vite-plugin selects its wrangler.jsonc "env" block at BUILD
+      # time via CLOUDFLARE_ENV, not at deploy time -- see deploy-staging.yml's
+      # matching step for the full explanation.
+      - name: Build storefront (Cloudflare Workers)
+        working-directory: apps/storefront
+        env:
+          CLOUDFLARE_ENV: ${{ inputs.environment }}
+        run: pnpm build
+      - name: Deploy storefront
+        working-directory: apps/storefront
+        run: pnpm exec wrangler deploy --env "$TARGET_ENVIRONMENT"
+
+      - name: Build admin
+        working-directory: apps/admin
+        env:
+          VITE_GOOGLE_CLIENT_ID: "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com"
+        run: |
+          if [ "$TARGET_ENVIRONMENT" = "production" ]; then
+            export VITE_API_URL="https://api.truegritin.com"
+          else
+            export VITE_API_URL="https://truegrit-api-$TARGET_ENVIRONMENT.kushagras1234890.workers.dev"
+          fi
+          pnpm build
+      - name: Deploy admin
+        working-directory: apps/admin
+        run: pnpm exec wrangler deploy --env "$TARGET_ENVIRONMENT"
+
+      - name: Verify live endpoints
+        run: |
+          if [ "$TARGET_ENVIRONMENT" = "production" ]; then
+            storefront_url="https://truegritin.com"
+            admin_url="https://admin.truegritin.com"
+          else
+            storefront_url="https://truegrit-storefront-$TARGET_ENVIRONMENT.kushagras1234890.workers.dev"
+            admin_url="https://truegrit-admin-$TARGET_ENVIRONMENT.kushagras1234890.workers.dev"
+          fi
+          curl --fail --retry 5 --retry-all-errors "$storefront_url"
+          curl --fail --retry 5 --retry-all-errors "$admin_url"

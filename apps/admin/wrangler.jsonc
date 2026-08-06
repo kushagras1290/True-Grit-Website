@@ -23,5 +23,18 @@
         "not_found_handling": "single-page-application",
       },
     },
+    // Deployed manually via .github/workflows/deploy-web-environment.yml
+    // (typed-confirmation gate, same pattern as deploy-api-environment.yml) --
+    // never automatically on push. VITE_API_URL is set at build time in that
+    // workflow, pointing at the isolated truegrit-api-prod Worker.
+    "production": {
+      "name": "truegrit-admin-prod",
+      "workers_dev": true,
+      "routes": [{ "pattern": "admin.truegritin.com", "custom_domain": true }],
+      "assets": {
+        "directory": "./dist",
+        "not_found_handling": "single-page-application",
+      },
+    },
   },
 }

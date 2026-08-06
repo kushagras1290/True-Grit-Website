@@ -39,5 +39,27 @@
         "PUBLIC_FACEBOOK_APP_ID": "",
       },
     },
+    // Deployed manually via .github/workflows/deploy-web-environment.yml
+    // (typed-confirmation gate, same pattern as deploy-api-environment.yml) --
+    // never automatically on push. Talks to the isolated truegrit-api-prod
+    // Worker/D1/R2/Queues (apps/api/wrangler.jsonc's own env.production).
+    // Both routes point at this one Worker; workers/app.ts 301-redirects
+    // www -> the canonical apex domain before rendering anything.
+    "production": {
+      "name": "truegrit-storefront-prod",
+      "workers_dev": true,
+      "observability": { "enabled": true },
+      "upload_source_maps": true,
+      "routes": [
+        { "pattern": "truegritin.com", "custom_domain": true },
+        { "pattern": "www.truegritin.com", "custom_domain": true },
+      ],
+      "services": [{ "binding": "API_WORKER", "service": "truegrit-api-prod" }],
+      "vars": {
+        "PUBLIC_API_URL": "https://api.truegritin.com",
+        "PUBLIC_FACEBOOK_APP_ID": "",
+        "CANONICAL_HOST": "truegritin.com",
+      },
+    },
   },
 }
