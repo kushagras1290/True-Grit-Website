@@ -217,6 +217,7 @@
     "production": {
       "name": "truegrit-api-prod",
       "workers_dev": true,
+      "routes": [{ "pattern": "api.truegritin.com", "custom_domain": true }],
       "observability": {
         "enabled": true,
         "logs": {
@@ -262,8 +263,8 @@
       "triggers": { "crons": ["* * * * *", "0 3 * * *"] },
       "vars": {
         "APP_ENV": "production",
-        "PUBLIC_STOREFRONT_URL": "https://truegrit-storefront-prod.kushagras1234890.workers.dev",
-        "PUBLIC_ADMIN_URL": "https://truegrit-admin-prod.kushagras1234890.workers.dev",
+        "PUBLIC_STOREFRONT_URL": "https://truegritin.com",
+        "PUBLIC_ADMIN_URL": "https://admin.truegritin.com",
         "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
         "FACEBOOK_APP_ID": "",
         "SESSION_COOKIE_SAMESITE": "none",
