@@ -80,6 +80,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: staging
+    # The storefront's service binding (API_WORKER) targets truegrit-api-staging
+    # by name, which Cloudflare validates at deploy time -- if that Worker has
+    # never been deployed before, the binding fails with "Worker ... was not
+    # found" even though this job's own build has nothing to do with the API.
+    # deploy.yml (main/dev) doesn't need this because truegrit-api-dev has
+    # existed for months; this ordering only matters for an environment's
+    # very first deploy. Confirmed by hitting exactly this failure on
+    # staging's first run (2026-08-06).
+    needs: api
     env:
       VITE_API_URL: "https://truegrit-api-staging.kushagras1234890.workers.dev"
       VITE_GOOGLE_CLIENT_ID: "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com"
