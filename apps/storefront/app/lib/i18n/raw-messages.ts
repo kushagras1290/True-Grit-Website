@@ -293,6 +293,7 @@ const RAW_EN_MESSAGES = {
     "Got a recipe worth sharing? Pitch it to the community and our editors will review it.",
   "literal.ddfbcf5040f4":
     "Greens are cut early, chilled quickly and prioritised for short-route delivery slots.",
+  "literal.cb3185c0a552": "Growing method:",
   "literal.20f41fd9573c": "Handpicked",
   "literal.c192c2e5957c": "Harvest-led delivery, planned around freshness.",
   "literal.fd25edf497e5": "Harvest:",
@@ -606,6 +607,7 @@ const RAW_EN_MESSAGES = {
   "literal.c08b67b29bc1": "Save address",
   "literal.ae7e887517b0": "Saving...",
   "literal.56a2285c5b11": "Saving…",
+  "literal.7e5e94ba4f1e": "Scan to open this product on your phone",
   "literal.15e739917704": "Scroll back",
   "literal.1e97c55b56cf": "Scroll forward",
   "literal.bce06414177f": "Search",

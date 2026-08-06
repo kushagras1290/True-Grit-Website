@@ -421,7 +421,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dutch (Nederlands)": "Голланд (Нидерланды)",
   "e.g. 500g Pack": "e. 500 г қаптама",
   "e.g. Accounts": "мыс. Есептік жазбалар",
+  "e.g. Harvested the week of 3 March 2026": "мыс. 2026 жылдың 3 наурызында жиналған апта",
   "e.g. Ops Room": "мыс. Ops Room",
+  "e.g. Rain-fed, no synthetic pesticides":
+    "мыс. Жаңбырмен қоректенетін, синтетикалық пестицидтер жоқ",
+  "e.g. Refrigerate and use within 5 days":
+    "мыс. Тоңазытқышта сақтаңыз және 5 күн ішінде пайдаланыңыз",
   "e.g. TO-HONEY-500": "мыс. TO-БАЛ-500",
   "e.g. UTR 123456789012": "мыс. UTR 123456789012",
   Edit: "Өңдеу",
@@ -534,9 +539,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Group name": "Топтың атауы",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "Нарықты жеткізу үшін /farms/partner компаниясына өтініш берген өсірушілер. Өтініш беру үшін есептік жазба талап етілмейді, сондықтан тек осы жерден қарап шығу мүмкіндігі бар.",
+  "Growing method": "Өсіру әдісі",
   "Gujarati (ગુજરાતી)": "Гужарати (ગુજરાતી)",
   "Hairline border": "Шаш сызығының жиегі",
   "Hand-picked testimonials": "Өз қолымен таңдалған куәліктер",
+  "Harvest note": "Егін жинау ескертпесі",
   Hausa: "Хауса",
   Heading: "Тақырып",
   "Headings and copy.": "Тақырыптар және көшірме.",
@@ -1350,6 +1357,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Steps: "Қадамдар",
   "Steps (one per line)": "Қадамдар (әр жолға бір)",
   "Stock Status": "Қордың күйі",
+  "Storage guidance": "Сақтау нұсқаулығы",
   "Store credit": 'id="t0005">Қатты шекара',
   Storefront: "Дүкен сөресі",
   "Storefront bot": "Дүкен боты",

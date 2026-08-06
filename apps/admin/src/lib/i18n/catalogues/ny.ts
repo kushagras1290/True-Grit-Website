@@ -404,7 +404,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "dresses every article under it, so you do not have to list them.":
     "amavala nkhani iliyonse yomwe ili pansi pake, kuti musamalembe.",
   "e.g. Accounts": "mwachitsanzo. Maakaunti",
+  "e.g. Harvested the week of 3 March 2026": "mwachitsanzo. Idakololedwa sabata la 3 Marichi 2026",
   "e.g. Ops Room": "e.g. Chipinda cha Ops",
+  "e.g. Rain-fed, no synthetic pesticides":
+    "mwachitsanzo. Wodyedwa ndi mvula, wopanda mankhwala ophera tizilombo",
+  "e.g. Refrigerate and use within 5 days":
+    "mwachitsanzo. Ikani mufiriji ndikugwiritsa ntchito mkati mwa masiku 5",
   "e.g. TO-HONEY-500": "mwachitsanzo. TO-HONEY-500",
   "e.g. UTR 123456789012": "mwachitsanzo. UTR 123456789012",
   Edit: "Sinthani",
@@ -510,8 +515,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Group name": "Dzina lagulu",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "Alimi omwe adafunsira ku /farms/partner kuti apereke msika. Palibe akaunti yofunikira kuti mulembetse, ndiye pendani apa ndiye khomo lokhalo.",
+  "Growing method": "Njira yokulira",
   "Hairline border": "Malire a mzere watsitsi",
   "Hand-picked testimonials": "Umboni wosankhidwa ndi manja",
+  "Harvest note": "Zindikirani zokolola",
   Heading: "Mutu",
   "Headings and copy.": "Mitu ndi kukopera.",
   Headline: "Mutu",
@@ -1279,6 +1286,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Steps: "Masitepe",
   "Steps (one per line)": "Masitepe (chimodzi pamzere uliwonse)",
   "Stock Status": "Mkhalidwe wa Sstock",
+  "Storage guidance": "Malangizo osungira",
   "Store credit": "ngongole ya sitolo",
   Storefront: "Kutsogolo",
   "Storefront bot": "Boti yapasitolo",

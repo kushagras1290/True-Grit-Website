@@ -433,7 +433,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dutch (Nederlands)": "Olandese (Nederlands)",
   "e.g. 500g Pack": "ad es. Confezione da 500 g",
   "e.g. Accounts": "ad es. Account",
+  "e.g. Harvested the week of 3 March 2026": "ad es. Raccolto la settimana del 3 marzo 2026",
   "e.g. Ops Room": "ad es. Ops Room",
+  "e.g. Rain-fed, no synthetic pesticides":
+    "ad es. Alimentato con acqua piovana, senza pesticidi sintetici",
+  "e.g. Refrigerate and use within 5 days":
+    "ad es. Conservare in frigorifero e utilizzare entro 5 giorni",
   "e.g. TO-HONEY-500": "ad es. TO-HONEY-500",
   "e.g. UTR 123456789012": "ad es. UTR 123456789012",
   Edit: "Modifica",
@@ -551,8 +556,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Group name": "Nome del gruppo",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "Coltivatori che hanno presentato domanda a /farms/partner per rifornire il mercato. Per fare domanda non è richiesto alcun account, quindi la verifica qui è l'unico accesso.",
+  "Growing method": "Metodo di coltivazione",
   "Hairline border": "Confine sottile",
   "Hand-picked testimonials": "Testimonianze selezionate",
+  "Harvest note": "Nota sulla raccolta",
   Heading: "Intestazione",
   "Headings and copy.": "Intestazioni e testo.",
   Headline: "Titolo",
@@ -1344,6 +1351,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Steps: "Passaggi",
   "Steps (one per line)": "Passi (uno per riga)",
   "Stock Status": "Stato disponibilità",
+  "Storage guidance": "Guida alla conservazione",
   "Store credit": "Credito negozio",
   Storefront: "Vetrina",
   "Storefront bot": "Bot della vetrina",

@@ -435,7 +435,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dutch (Nederlands)": "Ollainnis (An Ísiltír)",
   "e.g. 500g Pack": "e.g. Pacáiste 500g",
   "e.g. Accounts": "m.sh. Cuntais",
+  "e.g. Harvested the week of 3 March 2026": "e.g. A bhuain seachtain an 3 Márta 2026",
   "e.g. Ops Room": "m.sh. Seomra OPs",
+  "e.g. Rain-fed, no synthetic pesticides":
+    "e.g. Cothaithe de bháisteach, gan aon lotnaidicídí sintéiseacha",
+  "e.g. Refrigerate and use within 5 days": "e.g. Cuisnigh agus úsáid laistigh de 5 lá",
   Edit: "Cuir in eagar",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Cuir meiteashonraí leathanaigh CMS, innéacsú agus bloic amha leathanaigh in eagar. Tá taifead an leathanaigh baile liostaithe anseo freisin, ach is é Socruithe an Leathanaigh Baile an bealach is sábháilte chun é a athrú - glacann an t-eagarthóir seo JSON amh.",
@@ -552,8 +556,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Group name": "Ainm an ghrúpa",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "Saothróirí a rinne iarratas ag /farms/comhpháirtí chun an margadh a sholáthar. Níl aon chuntas ag teastáil chun cur i bhfeidhm, mar sin is é an t-aon gheata amháin a athbhreithnigh.",
+  "Growing method": "Modh fáis",
   "Hairline border": "Teorainn gruaige",
   "Hand-picked testimonials": "Teistiméireachtaí a roghnaíodh de láimh",
+  "Harvest note": "Nóta buainte",
   Heading: "Ceannteideal",
   "Headings and copy.": "Ceannteidil agus cóip.",
   Headline: "Ceannlíne",
@@ -1348,6 +1354,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Steps: "Céimeanna",
   "Steps (one per line)": "Céimeanna (ceann in aghaidh an líne)",
   "Stock Status": "Stádas Stoc",
+  "Storage guidance": "Treoir stórála",
   "Store credit": "Creidmheas siopa",
   "Storefront bot": "Bot Storefront",
   "Storefront switches": "Lasca aghaidh an tsiopa",

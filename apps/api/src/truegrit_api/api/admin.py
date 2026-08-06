@@ -4945,6 +4945,12 @@ class ProductUpdateRequest(_CamelModel):
     name: str | None = Field(default=None, max_length=140)
     slug: str | None = Field(default=None, max_length=96)
     short_description: str | None = Field(default=None, max_length=300)
+    # Traceability copy (migration 0080), shown on the public product page
+    # when set -- free text, not a structured date, so "harvested the week
+    # of 3 March" is expressible alongside a plain date.
+    harvest_note: str | None = Field(default=None, max_length=300)
+    growing_method: str | None = Field(default=None, max_length=300)
+    storage_guidance: str | None = Field(default=None, max_length=300)
     seo_title: str | None = Field(default=None, max_length=160)
     seo_description: str | None = Field(default=None, max_length=320)
     image_url: str | None = Field(default=None, max_length=1000)
@@ -5008,6 +5014,9 @@ async def get_product_endpoint(
         "name": detail["name"],
         "slug": detail["slug"],
         "shortDescription": detail["short_description"] or "",
+        "harvestNote": detail["harvest_note"] or "",
+        "growingMethod": detail["growing_method"] or "",
+        "storageGuidance": detail["storage_guidance"] or "",
         "productType": detail["product_type"],
         "status": detail["status"],
         "farmName": detail["farm_name"],

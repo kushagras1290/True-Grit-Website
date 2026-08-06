@@ -455,7 +455,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dutch (Nederlands)": "ᱰᱟᱪ (ᱱᱮᱰᱟᱨᱞᱮᱱᱰᱥ)",
   "e.g. 500g Pack": "ᱡᱮᱞᱠᱟ ᱕᱐᱐g ᱯᱮᱠ",
   "e.g. Accounts": "ᱡᱮᱞᱠᱟ ᱮᱠᱟᱣᱩᱱᱴ",
+  "e.g. Harvested the week of 3 March 2026": "ᱡᱮᱞᱠᱟ ᱓ ᱢᱟᱨᱪ ᱒᱐᱒᱖ ᱨᱮᱭᱟᱜ ᱦᱟᱯᱛᱟ ᱨᱮ ᱦᱟᱨᱣᱮᱥᱴ ᱦᱩᱭᱮᱱᱟ",
   "e.g. Ops Room": "ᱡᱮᱞᱠᱟ. ᱚᱯᱥ ᱨᱩᱢ",
+  "e.g. Rain-fed, no synthetic pesticides":
+    "ᱡᱮᱞᱠᱟ ᱡᱟᱹᱯᱩᱫ ᱛᱮ ᱡᱚᱢ ᱚᱪᱚ, ᱥᱤᱱᱛᱷᱮᱴᱤᱠ ᱠᱤᱥᱟᱹᱜ ᱨᱟᱱ ᱵᱟᱹᱱᱩᱜᱼᱟ",
+  "e.g. Refrigerate and use within 5 days":
+    "ᱡᱮᱞᱠᱟ ᱨᱮᱯᱷᱨᱤᱡᱟᱨ ᱨᱮ ᱫᱚᱦᱚ ᱠᱟᱛᱮ ᱕ ᱫᱤᱱ ᱵᱷᱤᱛᱨᱤ ᱨᱮ ᱵᱮᱵᱷᱟᱨ ᱢᱮ",
   "e.g. TO-HONEY-500": "ᱡᱮᱞᱠᱟ ᱴᱳ-ᱦᱟᱱᱤ-᱕᱐᱐",
   "e.g. UTR 123456789012": "ᱡᱮᱞᱠᱟ ᱭᱩᱴᱤᱟᱨ ᱑᱒᱓᱔᱕᱖᱗᱘᱙᱐᱑᱒",
   Edit: "ᱥᱟᱯᱲᱟᱣ",
@@ -573,9 +578,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Group name": "ᱜᱟᱫᱮᱞ ᱧᱩᱛᱩᱢ",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "ᱵᱟᱡᱟᱨ ᱨᱮ ᱥᱟᱯᱞᱟᱭ ᱞᱟᱹᱜᱤᱫ /ᱯᱷᱟᱨᱢᱥ/ᱯᱟᱨᱴᱱᱟᱨ ᱨᱮ ᱟᱹᱨᱡᱤ ᱞᱮᱫᱟᱭ ᱾ ᱞᱟᱹᱜᱩᱜ ᱞᱟᱹᱜᱤᱫ ᱪᱮᱫ ᱮᱠᱟᱣᱩᱱᱴ ᱞᱟᱹᱠᱛᱤ ᱵᱟᱹᱱᱩᱜᱼᱟ, ᱚᱱᱟᱛᱮ ᱱᱚᱸᱰᱮ ᱧᱮᱞ ᱫᱚ ᱮᱠᱮᱱ ᱜᱮᱴ ᱠᱟᱱᱟ᱾",
+  "Growing method": "ᱵᱟᱲᱦᱟᱣ ᱯᱚᱫᱷᱤ",
   "Gujarati (ગુજરાતી)": "ᱜᱩᱡᱟᱨᱟᱴᱤ (ગુજરાતી)",
   "Hairline border": "ᱩᱵ ᱨᱮᱭᱟᱜ ᱞᱟᱹᱭᱤᱱ ᱥᱤᱢᱟᱹ",
   "Hand-picked testimonials": "ᱛᱤ ᱛᱮ ᱵᱟᱪᱷᱟᱣ ᱟᱠᱟᱱ ᱴᱮᱥᱴᱤᱢᱚᱱᱤᱭᱟᱞ",
+  "Harvest note": "ᱦᱟᱨᱣᱮᱥᱴ ᱱᱚᱴ",
   Hausa: "ᱦᱟᱣᱥᱟ",
   Heading: "ᱵᱚᱦᱚᱜ",
   "Headings and copy.": "ᱵᱚᱦᱚᱜ ᱠᱚ ᱟᱨ ᱱᱚᱠᱚᱞ᱾",
@@ -1392,6 +1399,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Steps: "ᱫᱷᱟᱯ",
   "Steps (one per line)": "ᱫᱟᱲᱮ (ᱢᱤᱫ ᱞᱟᱭᱤᱱ)",
   "Stock Status": "ᱥᱴᱚᱠ ᱥᱴᱟᱴᱟᱥ",
+  "Storage guidance": "ᱫᱚᱦᱚ ᱫᱤᱥᱦᱩᱫᱤᱥ",
   "Store credit": "ᱥᱴᱚᱨ ᱠᱨᱮᱰᱤᱴ",
   Storefront: "ᱥᱴᱚᱨᱯᱷᱨᱚᱱᱴ",
   "Storefront bot": "ᱥᱴᱚᱨᱯᱷᱨᱚᱱᱴ ᱵᱚᱴ",

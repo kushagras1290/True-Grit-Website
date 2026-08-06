@@ -5,6 +5,7 @@ import type { Route } from "./+types/product";
 import { AvailabilityNote, Breadcrumbs, ProductGrid, Section } from "../components/catalogue";
 import { ContactForm } from "../components/contact-form";
 import { ProductGallery } from "../components/product-gallery";
+import { ProductQrCode } from "../components/product-qr-code";
 import { ProductReviews, RatingSummary } from "../components/reviews";
 import { RecommendedProducts } from "../components/recommendations";
 import { SubscribeAndSave } from "../components/subscribe-and-save";
@@ -36,7 +37,13 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
     loadProductReviews(product.slug, runtime),
     loadAlsoBought(product.slug, 6, country, runtime, locale.code),
   ]);
-  return { product, related, reviews, alsoBought };
+  // Absolute, not root-relative: a QR code has to resolve on whatever device
+  // scans it, unlike the canonical <link> tag which the browser/crawler
+  // already resolves against the current page. Derived from the actual
+  // incoming request rather than a config constant so it's automatically
+  // correct on a custom domain, a preview URL, or local dev alike.
+  const origin = new URL(request.url).origin;
+  return { product, related, reviews, alsoBought, origin };
 }
 
 export function meta({ data: loaderData, matches }: Route.MetaArgs) {
@@ -46,7 +53,7 @@ export function meta({ data: loaderData, matches }: Route.MetaArgs) {
 export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const format = useLocalizeFormat();
   const localize = useLocalizeText();
-  const { product, related, reviews, alsoBought } = loaderData;
+  const { product, related, reviews, alsoBought, origin } = loaderData;
   const { add } = useCart();
   const formatPrice = usePriceFormatter();
   const { payments } = useSiteSettings();
@@ -252,6 +259,14 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
                 {product.harvestNote}
               </p>
             ) : null}
+            {product.growingMethod ? (
+              <p className="text-ink-muted">
+                <span className="font-medium text-ink">
+                  <LocalizedText>Growing method:</LocalizedText>{" "}
+                </span>
+                {product.growingMethod}
+              </p>
+            ) : null}
             {product.storageGuidance ? (
               <p className="text-ink-muted">
                 <span className="font-medium text-ink">
@@ -309,19 +324,22 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
       </div>
 
       <Section eyebrow="Trace your food" heading="From the farm to your door" tone="subtle">
-        <ol className="mx-auto grid max-w-4xl gap-6 sm:grid-cols-2 lg:grid-cols-5">
-          {product.traceability.map((step, index) => (
-            <li key={step.label} className="relative">
-              <span className="font-display text-2xl text-accent">{index + 1}</span>
-              {/* The API composes these from fixed English phrases, so they
-                  translate through the source catalogue like any other
-                  storefront copy. A detail that interpolates a farm name has
-                  no catalogue entry and falls through unchanged. */}
-              <p className="mt-1 font-medium text-ink">{localize(step.label)}</p>
-              <p className="mt-1 text-sm text-ink-muted">{localize(step.detail)}</p>
-            </li>
-          ))}
-        </ol>
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 lg:flex-row lg:items-start lg:justify-between">
+          <ol className="grid flex-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
+            {product.traceability.map((step, index) => (
+              <li key={step.label} className="relative">
+                <span className="font-display text-2xl text-accent">{index + 1}</span>
+                {/* The API composes these from fixed English phrases, so they
+                    translate through the source catalogue like any other
+                    storefront copy. A detail that interpolates a farm name has
+                    no catalogue entry and falls through unchanged. */}
+                <p className="mt-1 font-medium text-ink">{localize(step.label)}</p>
+                <p className="mt-1 text-sm text-ink-muted">{localize(step.detail)}</p>
+              </li>
+            ))}
+          </ol>
+          <ProductQrCode url={`${origin}/product/${product.slug}`} />
+        </div>
       </Section>
 
       <div id="reviews">

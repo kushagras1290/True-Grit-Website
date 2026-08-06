@@ -427,7 +427,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dutch (Nederlands)": "هالنډ (نیدرلینډ)",
   "e.g. 500g Pack": "e. 500g پیک",
   "e.g. Accounts": "لکه. حسابونه",
+  "e.g. Harvested the week of 3 March 2026":
+    "د مثال په توګه د 2026 کال د مارچ د 3 په اونۍ کې حاصل شوی",
   "e.g. Ops Room": "د مثال په توګه. د عملیاتو خونه",
+  "e.g. Rain-fed, no synthetic pesticides":
+    "د مثال په توګه باران تغذیه شوی، هیڅ مصنوعي آفت وژونکي نشته",
+  "e.g. Refrigerate and use within 5 days": "د مثال په توګه یخچال کړئ او په 5 ورځو کې وکاروئ",
   "e.g. TO-HONEY-500": "لکه. TO-HONEY-500",
   "e.g. UTR 123456789012": "لکه. UTR 123456789012",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
@@ -536,9 +541,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Group name": "د ګروپ نوم",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "کروندګر چې په /farms/partner کې یې د بازار عرضه کولو لپاره غوښتنه کړې. د درخواست کولو لپاره هیڅ حساب ته اړتیا نشته، نو دلته بیاکتنه یوازینۍ دروازه ده.",
+  "Growing method": "د کرنې طریقه",
   "Gujarati (ગુજરાતી)": "ګوجراتي (ગુજરાતી)",
   "Hairline border": "د ویښتو سرحد",
   "Hand-picked testimonials": "د لاس په لاس ټاکل شوي تعریفونه",
+  "Harvest note": "د حاصلاتو یادښت",
   Hausa: "Housa",
   Heading: "سرلیک",
   "Headings and copy.": "سرلیکونه او کاپي.",
@@ -1318,6 +1325,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Status: "حالت",
   Steps: "ګامونه",
   "Steps (one per line)": "قدمونه (په هره کرښه کې یو)",
+  "Storage guidance": "د ذخیره کولو لارښود",
   "Store credit": "د ذخیره کریډیټ",
   "Storefront switches": "د پلورنځي سویچونه",
   "Storefront switches unavailable": "د پلورنځي سویچونه شتون نلري",

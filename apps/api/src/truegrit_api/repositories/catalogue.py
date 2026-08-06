@@ -26,7 +26,7 @@ _PRODUCT_BASE_SQL = """
 SELECT
   p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
   p.seo_title, p.seo_description, p.return_eligible, p.accepts_orders,
-  p.payments_override,
+  p.payments_override, p.harvest_note, p.growing_method, p.storage_guidance,
   COALESCE(
     '/media/' || m.object_key,
     NULLIF(p.image_url, '')
@@ -585,9 +585,9 @@ class CatalogueRepository:
                 "short_description": summary["_short_description"],
                 "overview": summary["_short_description"],
                 "farm_slug": summary["_farm_slug"],
-                "storage_guidance": "",
-                "harvest_note": "",
-                "growing_method": "",
+                "storage_guidance": row["storage_guidance"] or "",
+                "harvest_note": row["harvest_note"] or "",
+                "growing_method": row["growing_method"] or "",
                 "variants": summary["_variants"],
                 "traceability": [
                     {"label": "Farm", "detail": f"{farm_name} — {summary['region']}"},

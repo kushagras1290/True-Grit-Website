@@ -384,7 +384,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "dresses every article under it, so you do not have to list them.":
     "nagsul-ob sa matag artikulo ubos niini, aron dili nimo kinahanglan nga ilista sila.",
   "e.g. Accounts": "eg. Mga account",
+  "e.g. Harvested the week of 3 March 2026": "e.g. Naani sa semana sa 3 Marso 2026",
   "e.g. Ops Room": "eg. Ops Room",
+  "e.g. Rain-fed, no synthetic pesticides": "e.g. Gipakaon sa ulan, walay sintetikong pestisidyo",
+  "e.g. Refrigerate and use within 5 days": "eg. Pag-refrigerate ug gamita sulod sa 5 ka adlaw",
   "e.g. UTR 123456789012": "eg. UTR 123456789012",
   Edit: "I-edit",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
@@ -483,8 +486,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Group name": "Ngalan sa grupo",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "Mga grower/partner nga mi-apply sa /umahan. Walay account nga gikinahanglan aron magamit, mao nga ang pagrepaso dinhi mao lamang ang ganghaan.",
+  "Growing method": "Paagi sa pagtubo",
   "Hairline border": "Butang sa buhok",
   "Hand-picked testimonials": "Gipili nga mga testimonial",
+  "Harvest note": "Nota sa pag-ani",
   Heading: "Ulohan",
   "Headings and copy.": "Mga ulohan ug kopya.",
   Headline: "Ulohan",
@@ -1214,6 +1219,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Steps: "Mga Lakang",
   "Steps (one per line)": "Mga lakang (usa matag linya)",
   "Stock Status": "Status sa Stock",
+  "Storage guidance": "Giya sa pagtipig",
   "Store credit": "Kredito sa tindahan",
   "Storefront switches": "Mga switch sa storefront",
   "Storefront switches unavailable": "Dili magamit ang mga switch sa storefront",

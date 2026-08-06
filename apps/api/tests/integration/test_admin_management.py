@@ -54,6 +54,9 @@ def test_product_create_edit_publish_archive(client: TestClient, db: SQLiteDatab
             "shortDescription": "Single-origin turmeric root.",
             "imageUrl": "https://images.example.test/turmeric.jpg",
             "imageAlt": "Fresh turmeric roots on a table",
+            "harvestNote": "Harvested the week of 3 March 2026",
+            "growingMethod": "Rain-fed, no synthetic pesticides",
+            "storageGuidance": "Store in a cool, dry place",
         },
     )
     assert updated.status_code == 200
@@ -66,6 +69,9 @@ def test_product_create_edit_publish_archive(client: TestClient, db: SQLiteDatab
     product = client.get(f"/v1/admin/products/{product_id}").json()
     assert product["name"] == "Test Turmeric Powder"
     assert product["imageUrl"] == "https://images.example.test/turmeric.jpg"
+    assert product["harvestNote"] == "Harvested the week of 3 March 2026"
+    assert product["growingMethod"] == "Rain-fed, no synthetic pesticides"
+    assert product["storageGuidance"] == "Store in a cool, dry place"
     list_items = client.get("/v1/admin/products", params={"search": "Test Turmeric Powder"}).json()[
         "items"
     ]
@@ -74,6 +80,9 @@ def test_product_create_edit_publish_archive(client: TestClient, db: SQLiteDatab
     assert list_product["imageAlt"] == "Fresh turmeric roots on a table"
     public_product = client.get(f"/v1/public/products/{product['slug']}").json()
     assert public_product["imageUrl"] == "https://images.example.test/turmeric.jpg"
+    assert public_product["harvestNote"] == "Harvested the week of 3 March 2026"
+    assert public_product["growingMethod"] == "Rain-fed, no synthetic pesticides"
+    assert public_product["storageGuidance"] == "Store in a cool, dry place"
 
     archived = client.post(f"/v1/admin/products/{product_id}/archive")
     assert archived.status_code == 200

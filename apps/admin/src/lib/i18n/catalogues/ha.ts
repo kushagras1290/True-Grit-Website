@@ -411,7 +411,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dutch (Nederlands)": "Yaren mutanen Holland (Nederlands)",
   "e.g. 500g Pack": "misali. Kunshin 500g",
   "e.g. Accounts": "misali. Accounts",
+  "e.g. Harvested the week of 3 March 2026": "misali. An girbe satin 3 ga Maris 2026",
   "e.g. Ops Room": "misali. Dakin Ops",
+  "e.g. Rain-fed, no synthetic pesticides":
+    "misali. Ana ciyar da ruwan sama, babu magungunan kashe qwari na roba",
+  "e.g. Refrigerate and use within 5 days":
+    "misali. Ajiye kuma a yi amfani da shi a cikin kwanaki 5",
   "e.g. TO-HONEY-500": "misali. TO-ZUMA-500",
   "e.g. UTR 123456789012": "misali. UTR 123456789012",
   Edit: "gyara",
@@ -523,8 +528,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Group name": "Sunan rukuni",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "Manoman da suka nemi a / gonaki/abokin tarayya don samar da kasuwa. Babu wani asusu da ake buƙata don amfani, don haka bita anan ita ce ƙofar kaɗai.",
+  "Growing method": "Hanyar girma",
   "Hairline border": "Idin gashin gashi",
   "Hand-picked testimonials": "Shaida da aka zabo da hannu",
+  "Harvest note": "bayanin kula",
   Heading: "Kasa",
   "Headings and copy.": "Babban labarai da kwafi.",
   "Hebrew (עברית)": "Ibrananci (עברית)",
@@ -1279,6 +1286,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Steps: "Mataki",
   "Steps (one per line)": "Mataki (daya akan layi)",
   "Stock Status": "Halin jari",
+  "Storage guidance": "Jagorancin ajiya",
   "Store credit": "Kiredit Store",
   Storefront: "front Store",
   "Storefront bot": "Gogon kantunan bot",

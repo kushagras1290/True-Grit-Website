@@ -26,6 +26,9 @@ _PRODUCT_EDITABLE = (
     "name",
     "slug",
     "short_description",
+    "harvest_note",
+    "growing_method",
+    "storage_guidance",
     "seo_title",
     "seo_description",
     "image_url",
@@ -148,7 +151,8 @@ async def update_product(
     fields: dict[str, Any],
 ) -> dict[str, Any]:
     current = await db.fetch_one(
-        "SELECT id, name, slug, short_description, seo_title, seo_description,"
+        "SELECT id, name, slug, short_description, harvest_note, growing_method,"
+        " storage_guidance, seo_title, seo_description,"
         " image_url, image_alt, status, return_eligible, accepts_orders,"
         " payments_override, farm_id, primary_media_id"
         " FROM products WHERE id = ? AND archived_at IS NULL",

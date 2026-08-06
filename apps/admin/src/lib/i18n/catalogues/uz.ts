@@ -436,7 +436,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dutch (Nederlands)": "Gollandiya (Niderlandiya)",
   "e.g. 500g Pack": "e. 500 g paket",
   "e.g. Accounts": "masalan, Hisoblar",
+  "e.g. Harvested the week of 3 March 2026": "m-n. Hosil 2026-yil 3-mart haftasi",
   "e.g. Ops Room": "m-n. Operatsiya xonasi",
+  "e.g. Rain-fed, no synthetic pesticides":
+    "m-n. Yomg'ir bilan oziqlangan, sintetik pestitsidlarsiz",
+  "e.g. Refrigerate and use within 5 days":
+    "masalan. Sovutgichda saqlang va 5 kun ichida foydalaning",
   "e.g. TO-HONEY-500": "m-n. TO-HONEY-500",
   "e.g. UTR 123456789012": "masalan. UTR 123456789012",
   Edit: "Tahrirlash",
@@ -555,9 +560,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Group name": "Guruh nomi",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "Bozorni yetkazib berish uchun /farms/partner kompaniyasiga murojaat qilgan paxtakorlar. Murojaat qilish uchun hech qanday hisob talab qilinmaydi, shuning uchun bu yerda koʻrib chiqish yagona eshikdir.",
+  "Growing method": "O‘stirish usuli",
   "Gujarati (ગુજરાતી)": "Gujarati (ગુજરતી)",
   "Hairline border": "Soch chizig'i chegarasi",
   "Hand-picked testimonials": "Qo'lda tanlangan guvohliklar",
+  "Harvest note": "Hosilni yig‘ish bo‘yicha eslatma",
   Heading: "Sarlavha",
   "Headings and copy.": "Sarlavhalar va nusxa.",
   Headline: "Sarlavha",
@@ -1341,6 +1348,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Steps: "Qadamlar",
   "Steps (one per line)": "Qadamlar (har bir satrda bitta)",
   "Stock Status": "Aksiya holati",
+  "Storage guidance": "Saqlash bo‘yicha ko‘rsatmalar",
   "Store credit": "Do‘kon krediti",
   "Storefront switches": "Magazin kommutatorlari",
   "Storefront switches unavailable": "Doʻkon kommutatorlari mavjud emas",

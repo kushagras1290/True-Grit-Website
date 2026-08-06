@@ -452,6 +452,9 @@ const generalSchema = z.object({
     .string()
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers and single hyphens only"),
   shortDescription: z.string().min(10, "Give customers at least one honest sentence").max(300),
+  harvestNote: z.string().max(300).optional(),
+  growingMethod: z.string().max(300).optional(),
+  storageGuidance: z.string().max(300).optional(),
   imageUrl: imageUrlSchema,
   imageAlt: z.string().max(200),
   farmId: z.string().nullable().optional(),
@@ -1214,6 +1217,9 @@ function GeneralTab({
       name: product.name,
       slug: product.slug,
       shortDescription: product.shortDescription,
+      harvestNote: product.harvestNote,
+      growingMethod: product.growingMethod,
+      storageGuidance: product.storageGuidance,
       imageUrl: product.imageUrl,
       imageAlt: product.imageAlt,
       farmId: product.farmId || "",
@@ -1313,6 +1319,39 @@ function GeneralTab({
         error={form.formState.errors.shortDescription?.message}
       >
         <Textarea id="shortDescription" {...form.register("shortDescription")} />
+      </Field>
+      <Field
+        label="Harvest note"
+        htmlFor="harvestNote"
+        error={form.formState.errors.harvestNote?.message}
+      >
+        <Textarea
+          id="harvestNote"
+          {...form.register("harvestNote")}
+          placeholder="e.g. Harvested the week of 3 March 2026"
+        />
+      </Field>
+      <Field
+        label="Growing method"
+        htmlFor="growingMethod"
+        error={form.formState.errors.growingMethod?.message}
+      >
+        <Textarea
+          id="growingMethod"
+          {...form.register("growingMethod")}
+          placeholder="e.g. Rain-fed, no synthetic pesticides"
+        />
+      </Field>
+      <Field
+        label="Storage guidance"
+        htmlFor="storageGuidance"
+        error={form.formState.errors.storageGuidance?.message}
+      >
+        <Textarea
+          id="storageGuidance"
+          {...form.register("storageGuidance")}
+          placeholder="e.g. Refrigerate and use within 5 days"
+        />
       </Field>
       <Field
         label="Customer image URL"

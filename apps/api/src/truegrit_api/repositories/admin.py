@@ -197,6 +197,7 @@ class AdminRepository:
             """
             SELECT p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
                    p.seo_title, p.seo_description, p.farm_id,
+                   p.harvest_note, p.growing_method, p.storage_guidance,
                    COALESCE(
                      '/media/' || m.object_key,
                      NULLIF(p.image_url, ''),

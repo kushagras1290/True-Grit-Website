@@ -420,7 +420,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dutch (Nederlands)": "IsiDashi (Nederlands)",
   "e.g. 500g Pack": "isb. 500g Pack",
   "e.g. Accounts": "isb. Ama-akhawunti",
+  "e.g. Harvested the week of 3 March 2026": "isb. Ivunwe iviki langomhla zi-3 kuNdasa 2026",
   "e.g. Ops Room": "isb. Igumbi le-Ops",
+  "e.g. Rain-fed, no synthetic pesticides":
+    "isb. Idla imvula, azikho izibulala-zinambuzane zokwenziwa",
+  "e.g. Refrigerate and use within 5 days":
+    "isb. Faka efrijini futhi usebenzise phakathi kwezinsuku ezingu-5",
   "e.g. TO-HONEY-500": "isb. TO-HONEY-500",
   "e.g. UTR 123456789012": "isb. UTR 123456789012",
   Edit: "Hlela",
@@ -533,8 +538,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Group name": "Igama leqembu",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "Abalimi abafake izicelo e-/farms/partner ukuze bahlinzeke imakethe. Ayikho i-akhawunti edingekayo ukuze ufake isicelo, ngakho-ke buyekeza nali isango kuphela.",
+  "Growing method": "Indlela yokukhulisa",
   "Hairline border": "Umngcele wezinwele",
   "Hand-picked testimonials": "Ubufakazi obukhethwe ngesandla",
+  "Harvest note": "Inothi lokuvuna",
   Heading: "Isihloko",
   "Headings and copy.": "Izihloko namakhophi.",
   Headline: "Isihlokwana",
@@ -1307,6 +1314,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Steps: "Izinyathelo",
   "Steps (one per line)": "Izinyathelo (esisodwa ngomugqa ngamunye)",
   "Stock Status": "Isimo Sesitoko",
+  "Storage guidance": "Isiqondiso sesitoreji",
   "Store credit": "Ikhredithi yesitolo",
   Storefront: "Ngaphambi kwesitolo",
   "Storefront bot": "I-bot yangaphambili kwesitolo",

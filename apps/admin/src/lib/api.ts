@@ -272,6 +272,11 @@ export interface AdminProductDetail {
   name: string;
   slug: string;
   shortDescription: string;
+  /** Traceability copy (migration 0080), shown on the public product page
+   *  when set -- free text, not a structured date. */
+  harvestNote: string;
+  growingMethod: string;
+  storageGuidance: string;
   productType: string;
   status: string;
   farmName: string;
@@ -1366,6 +1371,9 @@ export const api = {
       name: product.name,
       slug: product.slug,
       shortDescription: product.shortDescription,
+      harvestNote: "",
+      growingMethod: "",
+      storageGuidance: "",
       productType: "general",
       status: "published",
       farmName: product.farmName,
