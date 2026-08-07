@@ -121,3 +121,11 @@ jobs:
       - name: Deploy admin
         working-directory: apps/admin
         run: pnpm exec wrangler deploy --env staging
+      - name: Build release process
+        working-directory: apps/process
+        env:
+          VITE_API_URL: "https://truegrit-api-staging.kushagras1234890.workers.dev"
+        run: pnpm build
+      - name: Deploy release process
+        working-directory: apps/process
+        run: pnpm exec wrangler deploy --env staging

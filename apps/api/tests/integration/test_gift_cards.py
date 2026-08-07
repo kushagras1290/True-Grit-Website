@@ -175,10 +175,7 @@ def test_gift_card_stacks_with_a_coupon(client, db):
     body = response.json()
     assert body["discountMinor"] == 10_000
     assert body["giftCardAppliedMinor"] == 30_000
-    assert (
-        body["totalMinor"]
-        == body["subtotalMinor"] + body["deliveryMinor"] - 10_000 - 30_000
-    )
+    assert body["totalMinor"] == body["subtotalMinor"] + body["deliveryMinor"] - 10_000 - 30_000
 
 
 def test_unknown_gift_card_code_is_rejected(client, db):
@@ -249,6 +246,7 @@ def test_gift_card_detail_lists_redemption_history(client, db):
     as_admin(client, db)
     detail = client.get(f"/v1/admin/gift-cards/{card['id']}").json()
     assert len(detail["redemptions"]) == 1
-    assert detail["redemptions"][0]["amountMinor"] == detail["initialBalanceMinor"] - detail[
-        "balanceMinor"
-    ]
+    assert (
+        detail["redemptions"][0]["amountMinor"]
+        == detail["initialBalanceMinor"] - detail["balanceMinor"]
+    )

@@ -3983,9 +3983,7 @@ async def list_gift_cards_endpoint(
     clean_search = f"%{search.strip()}%" if search and search.strip() else None
     where = " WHERE code LIKE ? OR issued_to_email LIKE ?" if clean_search else ""
     params: tuple[Any, ...] = (clean_search, clean_search) if clean_search else ()
-    total_row = await db.fetch_one(
-        f"SELECT COUNT(*) AS cnt FROM gift_cards{where}", params
-    )
+    total_row = await db.fetch_one(f"SELECT COUNT(*) AS cnt FROM gift_cards{where}", params)
     rows = await db.fetch_all(
         f"""
         SELECT gc.*, gc.initial_balance_minor
@@ -5167,9 +5165,7 @@ async def list_diet_tags(
     """Full 'diet' tag_group vocabulary for the product editor's checkbox
     list -- small and fixed (a handful of rows), so unlike /categories this
     is neither paginated nor searchable."""
-    rows = await db.fetch_all(
-        "SELECT id, label FROM tags WHERE tag_group = 'diet' ORDER BY label"
-    )
+    rows = await db.fetch_all("SELECT id, label FROM tags WHERE tag_group = 'diet' ORDER BY label")
     return {"items": [{"id": row["id"], "label": row["label"]} for row in rows]}
 
 

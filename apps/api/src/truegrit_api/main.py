@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from truegrit_api.api.admin import router as admin_router
 from truegrit_api.api.community import router as community_router
 from truegrit_api.api.customer_auth import router as customer_auth_router
+from truegrit_api.api.deployments import router as deployments_router
 from truegrit_api.api.farm_partnerships import router as farm_partnerships_router
 from truegrit_api.api.messages import router as messages_router
 from truegrit_api.api.phone_auth import router as phone_auth_router
@@ -24,8 +25,10 @@ from truegrit_api.middleware.request_id import RequestIdMiddleware
 from truegrit_api.middleware.security_headers import SecurityHeadersMiddleware
 from truegrit_api.platform.ai_chat import ChatModel
 from truegrit_api.platform.database import Database, build_local_database
+from truegrit_api.platform.github import GitHubClient
 from truegrit_api.platform.media_store import LocalMediaStore, MediaStore
 from truegrit_api.platform.translation import Translator
+from truegrit_api.services.deployments import DeploymentService
 from truegrit_api.services.media import media_root
 
 
@@ -60,7 +63,7 @@ def create_app(
         # cookie and read the JSON response (orders, account data, admin
         # data) back through CORS. `allowed_origins` is exactly the
         # storefront/admin origins this deployment actually serves
-        # (`PUBLIC_STOREFRONT_URL`/`PUBLIC_ADMIN_URL`, plus their
+        # (`PUBLIC_STOREFRONT_URL`/`PUBLIC_ADMIN_URL`/`PUBLIC_PROCESS_URL`, plus their
         # localhost/127.0.0.1 sibling for local dev) -- never a wildcard.
         allow_origins=settings.allowed_origins,
         allow_credentials=True,
@@ -81,6 +84,16 @@ def create_app(
     # Same story as translator: None outside Workers, get_chat_model falls
     # back to UnavailableChat.
     app.state.chat = chat
+    app.state.deployments = DeploymentService(
+        GitHubClient(
+            settings.github_repository,
+            settings.github_token,
+            settings.github_api_version,
+        ),
+        testing_url=settings.deployment_testing_url,
+        staging_url=settings.deployment_staging_url,
+        main_url=settings.deployment_main_url,
+    )
 
     @app.get("/media/{key:path}", include_in_schema=False)
     async def serve_media(key: str) -> Response:
@@ -103,6 +116,7 @@ def create_app(
     app.include_router(farm_partnerships_router, prefix="/v1/public")
     app.include_router(support_bot_public_router, prefix="/v1/public")
     app.include_router(admin_router, prefix="/v1/admin")
+    app.include_router(deployments_router, prefix="/v1/admin")
     app.include_router(messages_router, prefix="/v1/admin")
     app.include_router(support_bot_router, prefix="/v1/admin")
 

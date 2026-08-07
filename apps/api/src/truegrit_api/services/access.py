@@ -372,7 +372,7 @@ async def create_user(
 
     user_id = new_id("usr")
     now = utc_now_iso()
-    password_hash = hash_password(password, iterations=settings.pbkdf2_iterations)
+    password_hash = hash_password(password, iterations=settings.pbkdf2_write_iterations)
     statements: list[Any] = [
         (
             "INSERT INTO users (id, email, display_name, user_type, status,"
@@ -481,7 +481,7 @@ async def create_farm_owner(
 
     user_id = new_id("usr")
     now = utc_now_iso()
-    password_hash = hash_password(password, iterations=settings.pbkdf2_iterations)
+    password_hash = hash_password(password, iterations=settings.pbkdf2_write_iterations)
     await db.batch(
         [
             (
@@ -669,7 +669,7 @@ async def adopt_bootstrap_owner(
         )
 
     now = utc_now_iso()
-    password_hash = hash_password(password, iterations=settings.pbkdf2_iterations)
+    password_hash = hash_password(password, iterations=settings.pbkdf2_write_iterations)
     await db.batch(
         [
             ("UPDATE users SET email = ?, updated_at = ? WHERE id = ?", (email, now, user_id)),
@@ -737,7 +737,7 @@ async def change_own_password(
         raise AuthenticationError("Current password is incorrect.")
 
     now = utc_now_iso()
-    password_hash = hash_password(new_password, iterations=settings.pbkdf2_iterations)
+    password_hash = hash_password(new_password, iterations=settings.pbkdf2_write_iterations)
     await db.batch(
         [
             (
@@ -798,7 +798,7 @@ async def reset_farm_owner_password(
 
     settings = get_settings()
     temporary_password = _temporary_password(max(settings.password_min_length + 8, 18))
-    password_hash = hash_password(temporary_password, iterations=settings.pbkdf2_iterations)
+    password_hash = hash_password(temporary_password, iterations=settings.pbkdf2_write_iterations)
     now = utc_now_iso()
     await db.batch(
         [

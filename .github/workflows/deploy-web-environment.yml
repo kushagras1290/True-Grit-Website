@@ -41,7 +41,7 @@ env:
 
 jobs:
   web:
-    name: Storefront + Admin (${{ inputs.environment }})
+    name: Storefront + Admin + Process (${{ inputs.environment }})
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: ${{ inputs.environment }}
@@ -86,14 +86,30 @@ jobs:
         working-directory: apps/admin
         run: pnpm exec wrangler deploy --env "$TARGET_ENVIRONMENT"
 
+      - name: Build release process
+        working-directory: apps/process
+        run: |
+          if [ "$TARGET_ENVIRONMENT" = "production" ]; then
+            export VITE_API_URL="https://api.truegritin.com"
+          else
+            export VITE_API_URL="https://truegrit-api-$TARGET_ENVIRONMENT.kushagras1234890.workers.dev"
+          fi
+          pnpm build
+      - name: Deploy release process
+        working-directory: apps/process
+        run: pnpm exec wrangler deploy --env "$TARGET_ENVIRONMENT"
+
       - name: Verify live endpoints
         run: |
           if [ "$TARGET_ENVIRONMENT" = "production" ]; then
             storefront_url="https://truegritin.com"
             admin_url="https://admin.truegritin.com"
+            process_url="https://process.truegritin.com"
           else
             storefront_url="https://truegrit-storefront-$TARGET_ENVIRONMENT.kushagras1234890.workers.dev"
             admin_url="https://truegrit-admin-$TARGET_ENVIRONMENT.kushagras1234890.workers.dev"
+            process_url="https://truegrit-process-$TARGET_ENVIRONMENT.kushagras1234890.workers.dev"
           fi
           curl --fail --retry 5 --retry-all-errors "$storefront_url"
           curl --fail --retry 5 --retry-all-errors "$admin_url"
+          curl --fail --retry 5 --retry-all-errors "$process_url"

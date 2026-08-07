@@ -106,6 +106,7 @@
     // when the Worker names/subdomain change.
     "PUBLIC_STOREFRONT_URL": "https://truegrit-storefront-dev.kushagras1234890.workers.dev",
     "PUBLIC_ADMIN_URL": "https://truegrit-admin-dev.kushagras1234890.workers.dev",
+    "PUBLIC_PROCESS_URL": "https://truegrit-process-dev.kushagras1234890.workers.dev",
     // Public Google OAuth client id (not a secret) — enables server-side
     // verification of "Sign in with Google" ID tokens.
     "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
@@ -199,6 +200,7 @@
         "APP_ENV": "staging",
         "PUBLIC_STOREFRONT_URL": "https://truegrit-storefront-staging.kushagras1234890.workers.dev",
         "PUBLIC_ADMIN_URL": "https://truegrit-admin-staging.kushagras1234890.workers.dev",
+        "PUBLIC_PROCESS_URL": "https://truegrit-process-staging.kushagras1234890.workers.dev",
         "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
         "FACEBOOK_APP_ID": "",
         "SESSION_COOKIE_SAMESITE": "none",
@@ -265,6 +267,7 @@
         "APP_ENV": "production",
         "PUBLIC_STOREFRONT_URL": "https://truegritin.com",
         "PUBLIC_ADMIN_URL": "https://admin.truegritin.com",
+        "PUBLIC_PROCESS_URL": "https://process.truegritin.com",
         "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
         "FACEBOOK_APP_ID": "",
         "SESSION_COOKIE_SAMESITE": "none",

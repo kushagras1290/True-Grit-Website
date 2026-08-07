@@ -1,0 +1,75 @@
+name: Approve testing commit
+
+# Codex, Claude, or another authorized review agent runs this after reviewing
+# the exact testing head. The resulting commit status is the machine-readable
+# gate consumed by process.truegritin.com.
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: Full 40-character testing commit SHA
+        required: true
+        type: string
+      agent:
+        description: Reviewing agent name (for example codex or claude)
+        required: true
+        type: string
+      evidence:
+        description: Short review summary
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  checks: read
+  statuses: write
+
+concurrency:
+  group: approve-testing-${{ inputs.sha }}
+  cancel-in-progress: false
+
+jobs:
+  approve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      REVIEW_SHA: ${{ inputs.sha }}
+      REVIEW_AGENT: ${{ inputs.agent }}
+      REVIEW_EVIDENCE: ${{ inputs.evidence }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Validate exact testing head and successful checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$REVIEW_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$REVIEW_AGENT" =~ ^[A-Za-z0-9._-]{2,32}$ ]]
+          test "${#REVIEW_EVIDENCE}" -ge 3
+          test "${#REVIEW_EVIDENCE}" -le 90
+
+          testing_head="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/testing" --jq '.object.sha')"
+          test "$testing_head" = "$REVIEW_SHA"
+
+          checks_json="$(gh api \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "repos/${GITHUB_REPOSITORY}/commits/${REVIEW_SHA}/check-runs?filter=latest&per_page=100")"
+          check_count="$(jq '.total_count' <<<"$checks_json")"
+          failures="$(jq '[.check_runs[] | select(.status != "completed" or ((.conclusion == "success" or .conclusion == "neutral" or .conclusion == "skipped") | not))] | length' <<<"$checks_json")"
+          test "$check_count" -gt 0
+          test "$failures" = "0"
+
+      - name: Record agent approval on the commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          description="Approved by ${REVIEW_AGENT}: ${REVIEW_EVIDENCE}"
+          jq -n \
+            --arg state success \
+            --arg context "truegrit/agent-approval" \
+            --arg description "${description:0:140}" \
+            '{state: $state, context: $context, description: $description}' \
+            | gh api \
+                --method POST \
+                -H "X-GitHub-Api-Version: 2026-03-10" \
+                "repos/${GITHUB_REPOSITORY}/statuses/${REVIEW_SHA}" \
+                --input -

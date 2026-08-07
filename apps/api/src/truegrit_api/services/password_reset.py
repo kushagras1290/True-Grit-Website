@@ -199,7 +199,7 @@ async def confirm_password_reset(
     if row is None or row["used_at"] is not None or row["expires_at"] <= now:
         raise ValidationAppError("This reset link is invalid or has expired.")
 
-    password_hash = hash_password(new_password, iterations=settings.pbkdf2_iterations)
+    password_hash = hash_password(new_password, iterations=settings.pbkdf2_write_iterations)
     await db.batch(
         [
             (
