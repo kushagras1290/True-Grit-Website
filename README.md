@@ -4,15 +4,46 @@ Production implementation of the True Grit marketplace, CMS, admin console, and 
 platform. True Grit connects customers with traceable organic food, verified farms,
 responsible brands, seasonal harvests, and useful food knowledge.
 
+## Environment URLs
+
+| Layer      | Storefront                                         | Admin                                                  | API                                                      | Release process                                                                                                         |
+| ---------- | -------------------------------------------------- | ------------------------------------------------------ | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Testing    | [test.truegritin.com](https://test.truegritin.com) | [adtest.truegritin.com](https://adtest.truegritin.com) | [apitest.truegritin.com](https://apitest.truegritin.com) | Internal preview: [truegrit-process-dev workers.dev](https://truegrit-process-dev.kushagras1234890.workers.dev)         |
+| Staging    | [stag.truegritin.com](https://stag.truegritin.com) | [adstag.truegritin.com](https://adstag.truegritin.com) | [apistag.truegritin.com](https://apistag.truegritin.com) | Internal preview: [truegrit-process-staging workers.dev](https://truegrit-process-staging.kushagras1234890.workers.dev) |
+| Production | [truegritin.com](https://truegritin.com)           | [admin.truegritin.com](https://admin.truegritin.com)   | [api.truegritin.com](https://api.truegritin.com)         | [process.truegritin.com](https://process.truegritin.com)                                                                |
+
+The public release control plane is `process.truegritin.com`. The testing and staging
+Process Workers exist only to validate changes to the cockpit itself; normal release
+promotion is always operated from the production control plane.
+
+### Current public DNS
+
+Checked against Cloudflare DNS (`1.1.1.1`) on 2026-08-07. These are proxied Cloudflare
+anycast addresses, not fixed origin-server IPs, so they can change without a deployment.
+
+| Environment | Role            | Hostname                 | Current IPv4 addresses            |
+| ----------- | --------------- | ------------------------ | --------------------------------- |
+| Testing     | Storefront      | `test.truegritin.com`    | `104.21.43.126`, `172.67.179.134` |
+| Testing     | Admin panel     | `adtest.truegritin.com`  | `104.21.43.126`, `172.67.179.134` |
+| Testing     | API             | `apitest.truegritin.com` | `104.21.43.126`, `172.67.179.134` |
+| Staging     | Storefront      | `stag.truegritin.com`    | Pending staging deployment        |
+| Staging     | Admin panel     | `adstag.truegritin.com`  | Pending staging deployment        |
+| Staging     | API             | `apistag.truegritin.com` | Pending staging deployment        |
+| Production  | Storefront      | `truegritin.com`         | `104.21.43.126`, `172.67.179.134` |
+| Production  | Admin panel     | `admin.truegritin.com`   | `104.21.43.126`, `172.67.179.134` |
+| Production  | API             | `api.truegritin.com`     | `104.21.43.126`, `172.67.179.134` |
+| Production  | Release process | `process.truegritin.com` | `104.21.43.126`, `172.67.179.134` |
+
 ## Architecture
 
-A pnpm monorepo with three independently deployable applications targeting Cloudflare:
+A pnpm monorepo with four independently deployable applications targeting Cloudflare:
 
 | App               | Stack                                                         | Deploys to                |
 | ----------------- | ------------------------------------------------------------- | ------------------------- |
 | `apps/storefront` | React 19 + React Router framework mode (SSR) + Tailwind CSS 4 | Cloudflare Workers        |
 | `apps/admin`      | React 19 SPA + TanStack Query/Table + RHF + Zod + dnd-kit     | Cloudflare Workers        |
 | `apps/api`        | Python FastAPI + Pydantic v2                                  | Cloudflare Python Workers |
+| `apps/process`    | React release-control cockpit                                 | Cloudflare Workers        |
 
 Shared code lives in `packages/` (design tokens, API contracts, config, test utils). The
 relational source of truth is Cloudflare D1 (`database/migrations`), object storage is R2, and
@@ -23,7 +54,8 @@ true-grit-marketplace/
 ├── apps/
 │   ├── storefront/     # Public React storefront, SSR-capable
 │   ├── admin/          # Private custom React admin application
-│   └── api/            # Python FastAPI API for Cloudflare Workers
+│   ├── api/            # Python FastAPI API for Cloudflare Workers
+│   └── process/        # Release-control cockpit
 ├── packages/
 │   ├── ui/             # Shared design tokens and primitives
 │   ├── contracts/      # TypeScript API contracts (mirrors Pydantic schemas)

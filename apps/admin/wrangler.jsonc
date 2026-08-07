@@ -8,6 +8,10 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "truegrit-admin-dev",
   "compatibility_date": "2026-07-11",
+  // The top-level Worker is deployed from `testing`; reviewers use a stable
+  // domain while the Worker retains its existing dev resource bindings.
+  "workers_dev": true,
+  "routes": [{ "pattern": "adtest.truegritin.com", "custom_domain": true }],
   "assets": {
     "directory": "./dist",
     "not_found_handling": "single-page-application",
@@ -18,6 +22,8 @@
     // (this is an assets-only Worker — no server-side vars to set here).
     "staging": {
       "name": "truegrit-admin-staging",
+      "workers_dev": true,
+      "routes": [{ "pattern": "adstag.truegritin.com", "custom_domain": true }],
       "assets": {
         "directory": "./dist",
         "not_found_handling": "single-page-application",

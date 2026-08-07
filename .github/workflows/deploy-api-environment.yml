@@ -82,7 +82,9 @@ jobs:
 
       - name: Verify live endpoint
         run: |
-          suffix="$TARGET_ENVIRONMENT"
-          if [ "$TARGET_ENVIRONMENT" = "production" ]; then suffix="prod"; fi
-          curl --fail --retry 5 --retry-all-errors \
-            "https://truegrit-api-$suffix.kushagras1234890.workers.dev/health/live"
+          if [ "$TARGET_ENVIRONMENT" = "production" ]; then
+            api_url="https://api.truegritin.com"
+          else
+            api_url="https://apistag.truegritin.com"
+          fi
+          curl --fail --retry 5 --retry-all-errors "$api_url/health/live"

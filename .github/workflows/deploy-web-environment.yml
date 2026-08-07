@@ -79,7 +79,7 @@ jobs:
           if [ "$TARGET_ENVIRONMENT" = "production" ]; then
             export VITE_API_URL="https://api.truegritin.com"
           else
-            export VITE_API_URL="https://truegrit-api-$TARGET_ENVIRONMENT.kushagras1234890.workers.dev"
+            export VITE_API_URL="https://apistag.truegritin.com"
           fi
           pnpm build
       - name: Deploy admin
@@ -92,7 +92,7 @@ jobs:
           if [ "$TARGET_ENVIRONMENT" = "production" ]; then
             export VITE_API_URL="https://api.truegritin.com"
           else
-            export VITE_API_URL="https://truegrit-api-$TARGET_ENVIRONMENT.kushagras1234890.workers.dev"
+            export VITE_API_URL="https://apistag.truegritin.com"
           fi
           pnpm build
       - name: Deploy release process
@@ -106,10 +106,12 @@ jobs:
             admin_url="https://admin.truegritin.com"
             process_url="https://process.truegritin.com"
           else
-            storefront_url="https://truegrit-storefront-$TARGET_ENVIRONMENT.kushagras1234890.workers.dev"
-            admin_url="https://truegrit-admin-$TARGET_ENVIRONMENT.kushagras1234890.workers.dev"
-            process_url="https://truegrit-process-$TARGET_ENVIRONMENT.kushagras1234890.workers.dev"
+            storefront_url="https://stag.truegritin.com"
+            admin_url="https://adstag.truegritin.com"
+            process_url=""
           fi
           curl --fail --retry 5 --retry-all-errors "$storefront_url"
           curl --fail --retry 5 --retry-all-errors "$admin_url"
-          curl --fail --retry 5 --retry-all-errors "$process_url"
+          if [ -n "$process_url" ]; then
+            curl --fail --retry 5 --retry-all-errors "$process_url"
+          fi
