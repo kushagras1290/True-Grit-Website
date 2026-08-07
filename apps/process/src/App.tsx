@@ -46,6 +46,25 @@ const BRANCH_META = {
   main: { number: "03", label: "Main / Live", target: null, color: "success" },
 } as const;
 
+const ENVIRONMENT_LINKS: Record<ReleaseBranch["name"], Array<{ label: string; url: string }>> = {
+  testing: [
+    { label: "Storefront", url: "https://test.truegritin.com" },
+    { label: "Admin", url: "https://adtest.truegritin.com" },
+    { label: "API", url: "https://apitest.truegritin.com/health/live" },
+  ],
+  staging: [
+    { label: "Storefront", url: "https://stag.truegritin.com" },
+    { label: "Admin", url: "https://adstag.truegritin.com" },
+    { label: "API", url: "https://apistag.truegritin.com/health/live" },
+  ],
+  main: [
+    { label: "Storefront", url: "https://truegritin.com" },
+    { label: "Admin", url: "https://admin.truegritin.com" },
+    { label: "API", url: "https://api.truegritin.com/health/live" },
+    { label: "Process", url: "https://process.truegritin.com" },
+  ],
+};
+
 const NAV_ITEMS: Array<{ key: TabKey; label: string; icon: ReactNode; superOnly?: boolean }> = [
   { key: "testing", label: "Testing", icon: <GitBranch size={16} /> },
   { key: "staging", label: "Staging", icon: <Monitor size={16} /> },
@@ -227,9 +246,13 @@ function Login({ onAuthenticated }: { onAuthenticated: (user: StaffUser) => void
       <section className="flex min-h-[18rem] items-end bg-brand px-6 py-10 text-ink-inverse lg:min-h-screen lg:px-12">
         <div className="max-w-xl">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 font-display text-sm font-semibold">
-              TG
-            </span>
+            <img
+              src="/brand/true-grit-mark.webp"
+              alt=""
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full object-cover"
+            />
             <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-75">
               True Grit Process
             </p>
@@ -397,6 +420,7 @@ function BranchDetail({
   onVerify: () => void;
 }) {
   const meta = BRANCH_META[branch.name];
+  const environmentLinks = ENVIRONMENT_LINKS[branch.name];
   const canVerify =
     branch.name === "staging" && branch.ciState === "success" && branch.gate.state !== "success";
 
@@ -447,6 +471,32 @@ function BranchDetail({
               {branch.name === "testing" ? "Agent approval" : "Manual verification"}
             </StatusPill>
           )}
+        </div>
+      </div>
+
+      {/* Environment shortcuts */}
+      <div className="rounded-md border border-line bg-surface p-4 shadow-card">
+        <p className="mb-3 text-xs font-semibold tracking-[0.14em] text-ink-muted uppercase">
+          Environment URLs
+        </p>
+        <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+          {environmentLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.url}
+              target="_blank"
+              rel="noreferrer"
+              className="flex min-w-0 items-center justify-between gap-3 rounded-sm border border-line px-3 py-2.5 text-sm hover:border-line-strong hover:bg-subtle/40"
+            >
+              <span className="min-w-0">
+                <span className="block font-medium text-ink">{link.label}</span>
+                <span className="block truncate text-xs text-ink-muted">
+                  {new URL(link.url).hostname}
+                </span>
+              </span>
+              <ExternalLink size={14} className="shrink-0 text-brand" />
+            </a>
+          ))}
         </div>
       </div>
 
@@ -914,9 +964,13 @@ function Cockpit({ user, onLogout }: { user: StaffUser; onLogout: () => void }) 
           {/* Brand */}
           <div className="border-b border-line px-5 py-5">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line-strong font-display text-xs font-semibold text-accent">
-                TG
-              </span>
+              <img
+                src="/brand/true-grit-mark.webp"
+                alt=""
+                width={32}
+                height={32}
+                className="h-8 w-8 shrink-0 rounded-full object-cover"
+              />
               <p className="font-display text-lg tracking-tight text-brand">TRUE GRIT</p>
             </div>
             <p className="mt-1.5 text-xs text-ink-muted">Release cockpit</p>
