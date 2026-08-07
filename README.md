@@ -16,6 +16,24 @@ The public release control plane is `process.truegritin.com`. The testing and st
 Process Workers exist only to validate changes to the cockpit itself; normal release
 promotion is always operated from the production control plane.
 
+### Current public DNS
+
+Checked against Cloudflare DNS (`1.1.1.1`) on 2026-08-07. These are proxied Cloudflare
+anycast addresses, not fixed origin-server IPs, so they can change without a deployment.
+
+| Environment | Role            | Hostname                 | Current IPv4 addresses            |
+| ----------- | --------------- | ------------------------ | --------------------------------- |
+| Testing     | Storefront      | `test.truegritin.com`    | `104.21.43.126`, `172.67.179.134` |
+| Testing     | Admin panel     | `adtest.truegritin.com`  | `104.21.43.126`, `172.67.179.134` |
+| Testing     | API             | `apitest.truegritin.com` | `104.21.43.126`, `172.67.179.134` |
+| Staging     | Storefront      | `stag.truegritin.com`    | Pending staging deployment        |
+| Staging     | Admin panel     | `adstag.truegritin.com`  | Pending staging deployment        |
+| Staging     | API             | `apistag.truegritin.com` | Pending staging deployment        |
+| Production  | Storefront      | `truegritin.com`         | `104.21.43.126`, `172.67.179.134` |
+| Production  | Admin panel     | `admin.truegritin.com`   | `104.21.43.126`, `172.67.179.134` |
+| Production  | API             | `api.truegritin.com`     | `104.21.43.126`, `172.67.179.134` |
+| Production  | Release process | `process.truegritin.com` | `104.21.43.126`, `172.67.179.134` |
+
 ## Architecture
 
 A pnpm monorepo with four independently deployable applications targeting Cloudflare:
