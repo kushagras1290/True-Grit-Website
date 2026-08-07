@@ -2062,12 +2062,8 @@ def test_article_delete_and_bulk_delete_archive_instead_of_removing_the_row(
     client: TestClient, db: SQLiteDatabase
 ):
     as_admin(client, db)
-    first_id = client.post(
-        "/v1/admin/articles", json={"title": "Delete-me post one"}
-    ).json()["id"]
-    second_id = client.post(
-        "/v1/admin/articles", json={"title": "Delete-me post two"}
-    ).json()["id"]
+    first_id = client.post("/v1/admin/articles", json={"title": "Delete-me post one"}).json()["id"]
+    second_id = client.post("/v1/admin/articles", json={"title": "Delete-me post two"}).json()["id"]
 
     deleted = client.delete(f"/v1/admin/articles/{first_id}")
     assert deleted.status_code == 200
@@ -2105,7 +2101,9 @@ def test_recipe_delete_and_bulk_delete_archive_instead_of_removing_the_row(
 ):
     as_admin(client, db)
     first_id = client.post("/v1/admin/recipes", json={"title": "Delete-me recipe one"}).json()["id"]
-    second_id = client.post("/v1/admin/recipes", json={"title": "Delete-me recipe two"}).json()["id"]
+    second_id = client.post("/v1/admin/recipes", json={"title": "Delete-me recipe two"}).json()[
+        "id"
+    ]
 
     deleted = client.delete(f"/v1/admin/recipes/{first_id}")
     assert deleted.status_code == 200
@@ -2137,7 +2135,9 @@ def test_article_delete_requires_articles_edit_permission(client: TestClient, db
         "id"
     ]
 
-    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_pm"))  # product manager, no articles.*
+    client.cookies.set(
+        SESSION_COOKIE, create_session(db, "usr_pm")
+    )  # product manager, no articles.*
     response = client.delete(f"/v1/admin/articles/{article_id}")
     assert response.status_code == 403
 
@@ -2145,9 +2145,7 @@ def test_article_delete_requires_articles_edit_permission(client: TestClient, db
 # --- Discussions: bulk-delete (hard delete, matches single-delete semantics) -
 
 
-def test_discussion_bulk_delete_removes_threads_permanently(
-    client: TestClient, db: SQLiteDatabase
-):
+def test_discussion_bulk_delete_removes_threads_permanently(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
     seeded = client.get("/v1/admin/discussions", params={"limit": 2}).json()["items"]
     assert len(seeded) == 2

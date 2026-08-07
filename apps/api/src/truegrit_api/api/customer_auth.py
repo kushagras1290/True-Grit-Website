@@ -312,7 +312,7 @@ async def register(
 
     user_id = new_id("usr")
     now = utc_now_iso()
-    password_hash = hash_password(payload.password, iterations=settings.pbkdf2_iterations)
+    password_hash = hash_password(payload.password, iterations=settings.pbkdf2_write_iterations)
     await db.batch(
         [
             (

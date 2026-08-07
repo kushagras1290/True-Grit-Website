@@ -46,6 +46,30 @@ def main() -> int:
         print(f"integrity_check failed: {integrity}", file=sys.stderr)
         return 1
 
+    # Cloud environments apply migrations without development.sql. They must
+    # still have an owner for ADMIN_LOGIN_* to adopt, and that owner must hold
+    # every permission that existed before the super-admin role was created.
+    owner_count = conn.execute(
+        "SELECT COUNT(*) FROM users u"
+        " JOIN user_roles ur ON ur.user_id = u.id"
+        " JOIN roles r ON r.id = ur.role_id"
+        " WHERE u.user_type = 'staff' AND u.status = 'active'"
+        " AND r.key = 'super_admin'"
+    ).fetchone()[0]
+    permission_count = conn.execute("SELECT COUNT(*) FROM permissions").fetchone()[0]
+    owner_grant_count = conn.execute(
+        "SELECT COUNT(*) FROM role_permissions rp"
+        " JOIN roles r ON r.id = rp.role_id"
+        " WHERE r.key = 'super_admin'"
+    ).fetchone()[0]
+    if owner_count < 1 or owner_grant_count != permission_count:
+        print(
+            "migration-only database must contain an active, fully granted super admin: "
+            f"owners={owner_count}, grants={owner_grant_count}, permissions={permission_count}",
+            file=sys.stderr,
+        )
+        return 1
+
     # The preferred image-backed catalogue is production data now, not a
     # fixture-only fallback. Prove the requested public count exists before
     # development.sql runs so a deployment cannot silently ship an empty shop.

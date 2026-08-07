@@ -346,9 +346,7 @@ def test_products_list_diet_filter_is_or_within_facet(client: TestClient):
     not fewer."""
     only_gluten_free = client.get("/v1/public/products", params={"diet": "gluten-free"}).json()
     only_nut_free = client.get("/v1/public/products", params={"diet": "nut-free"}).json()
-    combined = client.get(
-        "/v1/public/products", params={"diet": "gluten-free,nut-free"}
-    ).json()
+    combined = client.get("/v1/public/products", params={"diet": "gluten-free,nut-free"}).json()
     assert combined["total"] == len(
         {p["slug"] for p in only_gluten_free["items"]} | {p["slug"] for p in only_nut_free["items"]}
     )

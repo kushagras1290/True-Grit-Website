@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     app_env: Literal["development", "test", "staging", "production"] = "development"
     public_storefront_url: str = "http://localhost:5173"
     public_admin_url: str = "http://localhost:5174"
+    public_process_url: str = "http://localhost:5175"
     default_market: str = "IN"
     default_currency: str = "INR"
     session_cookie_name: str = "tg_session"
@@ -28,6 +29,15 @@ class Settings(BaseSettings):
     preview_token_lifetime_minutes: int = 30
     admin_login_email: str = "admin@truegrit.test"
     admin_login_password: str = "admin123"
+
+    # Release cockpit. GITHUB_TOKEN is a server-side secret with repository
+    # Contents (read/write), Commit statuses (read/write), and Actions (read).
+    github_repository: str = "kushagras1290/True-Grit-Website"
+    github_token: str = ""
+    github_api_version: str = "2026-03-10"
+    deployment_testing_url: str = ""
+    deployment_staging_url: str = "https://truegrit-storefront-staging.kushagras1234890.workers.dev"
+    deployment_main_url: str = "https://truegritin.com"
 
     # Session cookie cross-site policy. Use "lax" when the storefront/admin and
     # API share a registrable domain (subdomains are same-site). Use "none" when
@@ -47,6 +57,17 @@ class Settings(BaseSettings):
     pbkdf2_verify_max_iterations: int = 50_000
     # Minimum customer password length enforced at registration.
     password_min_length: int = 10
+
+    @property
+    def pbkdf2_write_iterations(self) -> int:
+        """Never create a password hash that this runtime refuses to verify.
+
+        The verification ceiling protects the Worker from an unexpectedly
+        expensive stored hash. A stale, higher PBKDF2_ITERATIONS environment
+        value must therefore be capped for new writes, not produce accounts
+        that fail their very first login.
+        """
+        return min(self.pbkdf2_iterations, self.pbkdf2_verify_max_iterations)
 
     # Authentication rate limiting (fixed window, DB-backed). Set
     # rate_limit_enabled=false only for controlled test environments.
@@ -273,7 +294,7 @@ class Settings(BaseSettings):
         # hitting one while the app is configured for the other does not trip
         # CORS in local development. Real domains are unaffected.
         origins: list[str] = []
-        for url in (self.public_storefront_url, self.public_admin_url):
+        for url in (self.public_storefront_url, self.public_admin_url, self.public_process_url):
             origins.append(url)
             if "127.0.0.1" in url:
                 origins.append(url.replace("127.0.0.1", "localhost"))
