@@ -14,7 +14,6 @@ https://developers.cloudflare.com/workers/languages/python/packages/fastapi/.
 """
 
 import hashlib
-import os
 import secrets
 from datetime import UTC, datetime
 from typing import Any
@@ -29,6 +28,7 @@ from truegrit_api.platform.ai_chat import WorkersAIChat
 from truegrit_api.platform.d1 import D1Database
 from truegrit_api.platform.media_store import R2MediaStore
 from truegrit_api.platform.translation import WorkersAITranslator
+from truegrit_api.platform.worker_env import bridge_worker_env as _bridge_worker_env
 
 # Re-exported (not just imported): wrangler resolves Durable Object classes
 # by name on this entry module, so ChatRoomDO must be a top-level attribute
@@ -61,26 +61,6 @@ class _WorkersQueuePublisher:
 def _to_py(value: Any) -> Any:
     to_py = getattr(value, "to_py", None)
     return to_py() if callable(to_py) else value
-
-
-def _bridge_worker_env(env: Any) -> None:
-    """Expose Worker ``vars``/secrets to pydantic settings.
-
-    On Cloudflare Python Workers, configuration values live on the ``env``
-    object, not the process environment — but ``Settings`` (pydantic-settings)
-    reads ``os.environ``. Without this bridge every setting would silently fall
-    back to its default (localhost CORS origins, Google sign-in disabled, etc.).
-    Each Settings field is matched to an upper-cased Worker var; only string
-    values are copied, so bindings (DB, R2, KV, Queues) are ignored.
-    """
-    for field_name in Settings.model_fields:
-        key = field_name.upper()
-        try:
-            value = getattr(env, key)
-        except AttributeError:
-            continue
-        if isinstance(value, str):
-            os.environ[key] = value
 
 
 def _js_object(value: Any) -> Any:
@@ -438,8 +418,11 @@ class Default(WorkerEntrypoint):
                 # rewrite the way DurableObjectState's own helper methods get.
                 stub = self.env.CHAT_ROOMS.getByName(conversation_id)
                 return await stub.fetch(request)
+            # Binding-only deployments may reuse this isolate. Refresh text
+            # vars/secrets for every ASGI request so rotated credentials do not
+            # remain trapped in pydantic's process-global settings cache.
+            _bridge_worker_env(self.env)
             if _app is None:
-                _bridge_worker_env(self.env)
                 # `AI` is optional in wrangler.jsonc's binding list -- an
                 # older deploy that predates auto-translate (migration 0067)
                 # simply has no `env.AI`, and getattr(..., None) degrades to
