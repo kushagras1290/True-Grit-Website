@@ -204,8 +204,11 @@
         "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
         "FACEBOOK_APP_ID": "",
         "SESSION_COOKIE_SAMESITE": "none",
-        "PBKDF2_ITERATIONS": "600000",
-        "PBKDF2_VERIFY_MAX_ITERATIONS": "600000",
+        // Pyodide cannot reliably complete 600k PBKDF2 rounds inside a Worker
+        // request. Keep every deployed environment at the verified CPU-safe
+        // budget; over-budget legacy owner hashes are repaired by admin login.
+        "PBKDF2_ITERATIONS": "50000",
+        "PBKDF2_VERIFY_MAX_ITERATIONS": "50000",
         "PHONE_REQUIRED_AT_REGISTRATION": "false",
         "PHONE_REQUIRED_AT_CHECKOUT": "false",
         "PAYMENT_STRIPE_VISIBLE": "false",
@@ -271,8 +274,11 @@
         "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
         "FACEBOOK_APP_ID": "",
         "SESSION_COOKIE_SAMESITE": "none",
-        "PBKDF2_ITERATIONS": "600000",
-        "PBKDF2_VERIFY_MAX_ITERATIONS": "600000",
+        // Must match staging: production previously exceeded the Worker CPU
+        // budget during owner login and surfaced as a misleading browser CORS
+        // error because Cloudflare's crash response had no application headers.
+        "PBKDF2_ITERATIONS": "50000",
+        "PBKDF2_VERIFY_MAX_ITERATIONS": "50000",
         "PHONE_REQUIRED_AT_REGISTRATION": "false",
         "PHONE_REQUIRED_AT_CHECKOUT": "false",
         "PAYMENT_STRIPE_VISIBLE": "false",

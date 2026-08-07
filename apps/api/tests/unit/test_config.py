@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
+import re
+from pathlib import Path
+
 from truegrit_api.config import Settings
+
+WRANGLER_CONFIG = Path(__file__).parents[2] / "wrangler.jsonc"
 
 
 def test_allowed_origins_includes_loopback_siblings():
@@ -54,3 +59,13 @@ def test_cookie_secure_follows_environment_for_lax():
 def test_password_writes_never_exceed_verification_budget():
     settings = Settings(pbkdf2_iterations=600_000, pbkdf2_verify_max_iterations=50_000)
     assert settings.pbkdf2_write_iterations == 50_000
+
+
+def test_every_worker_environment_uses_cpu_safe_password_budget():
+    config = WRANGLER_CONFIG.read_text(encoding="utf-8")
+    for variable in ("PBKDF2_ITERATIONS", "PBKDF2_VERIFY_MAX_ITERATIONS"):
+        values = [int(value) for value in re.findall(rf'"{variable}":\s*"(\d+)"', config)]
+        assert values, f"{variable} is missing from wrangler.jsonc"
+        assert all(value <= 50_000 for value in values), (
+            f"{variable} exceeds the Python Worker CPU budget: {values}"
+        )
