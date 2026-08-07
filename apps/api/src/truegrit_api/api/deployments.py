@@ -2,17 +2,21 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field
 
 from truegrit_api.auth.dependencies import get_current_staff, get_database, require_owner
+from truegrit_api.auth.passwords import hash_password
 from truegrit_api.auth.principal import Principal
-from truegrit_api.errors import PermissionDeniedError
+from truegrit_api.config import get_settings
+from truegrit_api.errors import NotFoundError, PermissionDeniedError, ValidationAppError
 from truegrit_api.platform.database import Database
-from truegrit_api.services.access import create_user
+from truegrit_api.services.access import create_user, delete_users, set_user_status
+from truegrit_api.services.audit import audit_statement
 from truegrit_api.services.deployments import DeploymentService
+from truegrit_api.util.timeutil import utc_now_iso
 
 router = APIRouter(tags=["deployments"])
 
@@ -31,6 +35,14 @@ class PromoteBody(BaseModel):
 class ReleaseUserBody(BaseModel):
     email: str = Field(min_length=3, max_length=254)
     display_name: str = Field(min_length=2, max_length=120)
+    password: str = Field(min_length=10, max_length=256)
+
+
+class ReleaseUserStatusBody(BaseModel):
+    status: Literal["active", "disabled"]
+
+
+class ReleaseUserPasswordBody(BaseModel):
     password: str = Field(min_length=10, max_length=256)
 
 
@@ -66,6 +78,30 @@ async def require_release_owner(
 ) -> Principal:
     await require_owner(db, principal)
     return principal
+
+
+async def require_release_manager_target(db: Database, user_id: str) -> None:
+    """Keep cockpit user mutations scoped to release-manager accounts.
+
+    The owner-facing route must not become a second, less visible way to alter
+    arbitrary staff or owner accounts by supplying a hand-crafted user id.
+    """
+    user = await db.fetch_one(
+        """
+        SELECT u.id
+        FROM users u
+        JOIN user_roles ur ON ur.user_id = u.id
+        JOIN roles r ON r.id = ur.role_id
+        WHERE u.id = ?
+          AND u.user_type = 'staff'
+          AND u.deleted_at IS NULL
+          AND r.key = 'release_manager'
+        LIMIT 1
+        """,
+        (user_id,),
+    )
+    if user is None:
+        raise NotFoundError("Release user not found.")
 
 
 @router.get("/deployments")
@@ -140,3 +176,83 @@ async def add_release_user(
         password=body.password,
     )
     return {**result, "role": "release_manager"}
+
+
+@router.delete("/deployments/users/{user_id}")
+async def delete_release_user(
+    user_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_release_owner)],
+) -> dict[str, Any]:
+    await require_release_manager_target(db, user_id)
+    await delete_users(
+        db,
+        principal,
+        getattr(request.state, "request_id", "unknown"),
+        [user_id],
+    )
+    return {"ok": True}
+
+
+@router.put("/deployments/users/{user_id}/status")
+async def update_release_user_status(
+    user_id: str,
+    body: ReleaseUserStatusBody,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_release_owner)],
+) -> dict[str, Any]:
+    await require_release_manager_target(db, user_id)
+    result = await set_user_status(
+        db,
+        principal,
+        getattr(request.state, "request_id", "unknown"),
+        user_id,
+        status=body.status,
+    )
+    return {"ok": True, "status": result["status"]}
+
+
+@router.put("/deployments/users/{user_id}/password")
+async def reset_release_user_password(
+    user_id: str,
+    body: ReleaseUserPasswordBody,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_release_owner)],
+) -> dict[str, Any]:
+    await require_release_manager_target(db, user_id)
+    settings = get_settings()
+    if len(body.password) < settings.password_min_length:
+        raise ValidationAppError(
+            f"Password must be at least {settings.password_min_length} characters."
+        )
+
+    now = utc_now_iso()
+    password_hash = hash_password(body.password, iterations=settings.pbkdf2_write_iterations)
+    await db.batch(
+        [
+            (
+                "INSERT INTO user_credentials (user_id, password_hash, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?)"
+                " ON CONFLICT(user_id) DO UPDATE SET password_hash = excluded.password_hash,"
+                " updated_at = excluded.updated_at",
+                (user_id, password_hash, now, now),
+            ),
+            (
+                "UPDATE sessions SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL",
+                (now, user_id),
+            ),
+            audit_statement(
+                action="release_user.password_reset",
+                entity_type="user",
+                entity_id=user_id,
+                actor_id=principal.user_id,
+                request_id=getattr(request.state, "request_id", "unknown"),
+                created_at=now,
+                after={"passwordStored": False, "sessionsRevoked": True},
+            ),
+        ]
+    )
+    return {"ok": True}

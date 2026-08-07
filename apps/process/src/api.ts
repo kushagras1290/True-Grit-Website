@@ -110,4 +110,18 @@ export const releaseApi = {
       method: "POST",
       body: JSON.stringify({ email, display_name: displayName, password }),
     }),
+  deleteUser: (id: string) =>
+    request<{ ok: boolean }>(`/v1/admin/deployments/users/${id}`, {
+      method: "DELETE",
+    }),
+  setUserStatus: (id: string, status: string) =>
+    request<{ ok: boolean }>(`/v1/admin/deployments/users/${id}/status`, {
+      method: "PUT",
+      body: JSON.stringify({ status }),
+    }),
+  resetUserPassword: (id: string, password: string) =>
+    request<{ ok: boolean }>(`/v1/admin/deployments/users/${id}/password`, {
+      method: "PUT",
+      body: JSON.stringify({ password }),
+    }),
 };
