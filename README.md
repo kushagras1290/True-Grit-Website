@@ -4,15 +4,28 @@ Production implementation of the True Grit marketplace, CMS, admin console, and 
 platform. True Grit connects customers with traceable organic food, verified farms,
 responsible brands, seasonal harvests, and useful food knowledge.
 
+## Environment URLs
+
+| Layer      | Storefront                                         | Admin                                                  | API                                                                                           | Release process                                                                                                         |
+| ---------- | -------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Testing    | [test.truegritin.com](https://test.truegritin.com) | [adtest.truegritin.com](https://adtest.truegritin.com) | [truegrit-api-dev workers.dev](https://truegrit-api-dev.kushagras1234890.workers.dev)         | Internal preview: [truegrit-process-dev workers.dev](https://truegrit-process-dev.kushagras1234890.workers.dev)         |
+| Staging    | [stag.truegritin.com](https://stag.truegritin.com) | [adstag.truegritin.com](https://adstag.truegritin.com) | [truegrit-api-staging workers.dev](https://truegrit-api-staging.kushagras1234890.workers.dev) | Internal preview: [truegrit-process-staging workers.dev](https://truegrit-process-staging.kushagras1234890.workers.dev) |
+| Production | [truegritin.com](https://truegritin.com)           | [admin.truegritin.com](https://admin.truegritin.com)   | [api.truegritin.com](https://api.truegritin.com)                                              | [process.truegritin.com](https://process.truegritin.com)                                                                |
+
+The public release control plane is `process.truegritin.com`. The testing and staging
+Process Workers exist only to validate changes to the cockpit itself; normal release
+promotion is always operated from the production control plane.
+
 ## Architecture
 
-A pnpm monorepo with three independently deployable applications targeting Cloudflare:
+A pnpm monorepo with four independently deployable applications targeting Cloudflare:
 
 | App               | Stack                                                         | Deploys to                |
 | ----------------- | ------------------------------------------------------------- | ------------------------- |
 | `apps/storefront` | React 19 + React Router framework mode (SSR) + Tailwind CSS 4 | Cloudflare Workers        |
 | `apps/admin`      | React 19 SPA + TanStack Query/Table + RHF + Zod + dnd-kit     | Cloudflare Workers        |
 | `apps/api`        | Python FastAPI + Pydantic v2                                  | Cloudflare Python Workers |
+| `apps/process`    | React release-control cockpit                                 | Cloudflare Workers        |
 
 Shared code lives in `packages/` (design tokens, API contracts, config, test utils). The
 relational source of truth is Cloudflare D1 (`database/migrations`), object storage is R2, and
@@ -23,7 +36,8 @@ true-grit-marketplace/
 ├── apps/
 │   ├── storefront/     # Public React storefront, SSR-capable
 │   ├── admin/          # Private custom React admin application
-│   └── api/            # Python FastAPI API for Cloudflare Workers
+│   ├── api/            # Python FastAPI API for Cloudflare Workers
+│   └── process/        # Release-control cockpit
 ├── packages/
 │   ├── ui/             # Shared design tokens and primitives
 │   ├── contracts/      # TypeScript API contracts (mirrors Pydantic schemas)

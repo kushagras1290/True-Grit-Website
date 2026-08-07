@@ -2,8 +2,8 @@ name: Deploy staging
 
 # Auto-deploys the whole project to the isolated Cloudflare staging
 # environment on every push to `staging`. This is the middle rung of the
-# promotion ladder: `testing` (CI only, ci.yml) -> `staging` (this workflow)
-# -> `main` (live dev environment, deploy.yml). Requires one repository
+# promotion ladder: `testing` (CI + testing deploy) -> `staging` (this workflow)
+# -> `main` (production deploys remain manually gated). Requires one repository
 # secret, the same one deploy.yml and deploy-api-environment.yml already
 # use:
 #   CLOUDFLARE_API_TOKEN — a token with Workers Scripts, D1, R2, KV, and
@@ -129,3 +129,7 @@ jobs:
       - name: Deploy release process
         working-directory: apps/process
         run: pnpm exec wrangler deploy --env staging
+      - name: Verify staging domains
+        run: |
+          curl --fail --retry 5 --retry-all-errors https://stag.truegritin.com
+          curl --fail --retry 5 --retry-all-errors https://adstag.truegritin.com

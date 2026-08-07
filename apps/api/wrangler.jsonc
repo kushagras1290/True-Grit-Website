@@ -104,8 +104,8 @@
     // Deployed origins so the API's CORS allow-list accepts the live storefront
     // and admin (read by config.py via the worker.py env bridge). Update these
     // when the Worker names/subdomain change.
-    "PUBLIC_STOREFRONT_URL": "https://truegrit-storefront-dev.kushagras1234890.workers.dev",
-    "PUBLIC_ADMIN_URL": "https://truegrit-admin-dev.kushagras1234890.workers.dev",
+    "PUBLIC_STOREFRONT_URL": "https://test.truegritin.com",
+    "PUBLIC_ADMIN_URL": "https://adtest.truegritin.com",
     "PUBLIC_PROCESS_URL": "https://truegrit-process-dev.kushagras1234890.workers.dev",
     // Public Google OAuth client id (not a secret) — enables server-side
     // verification of "Sign in with Google" ID tokens.
@@ -198,8 +198,8 @@
       "triggers": { "crons": ["* * * * *", "0 3 * * *"] },
       "vars": {
         "APP_ENV": "staging",
-        "PUBLIC_STOREFRONT_URL": "https://truegrit-storefront-staging.kushagras1234890.workers.dev",
-        "PUBLIC_ADMIN_URL": "https://truegrit-admin-staging.kushagras1234890.workers.dev",
+        "PUBLIC_STOREFRONT_URL": "https://stag.truegritin.com",
+        "PUBLIC_ADMIN_URL": "https://adstag.truegritin.com",
         "PUBLIC_PROCESS_URL": "https://truegrit-process-staging.kushagras1234890.workers.dev",
         "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
         "FACEBOOK_APP_ID": "",

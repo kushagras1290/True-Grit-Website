@@ -11,6 +11,10 @@
   // nodejs_compat also populates `process.env` from the vars/secrets below, which
   // is how the SSR loaders read PUBLIC_API_URL (app/lib/catalogue.server.ts).
   "compatibility_flags": ["nodejs_compat"],
+  // The top-level Worker is the testing environment. It intentionally keeps
+  // the existing dev resource bindings, but reviewers use a stable domain.
+  "workers_dev": true,
+  "routes": [{ "pattern": "test.truegritin.com", "custom_domain": true }],
   "observability": { "enabled": true },
   "upload_source_maps": true,
   "services": [{ "binding": "API_WORKER", "service": "truegrit-api-dev" }],
@@ -25,12 +29,13 @@
   },
   "env": {
     // Deployed by .github/workflows/deploy-staging.yml on every push to the
-    // `staging` branch — the middle rung between `testing` (CI only) and
-    // `main` (live, deploy.yml). Talks to the isolated truegrit-api-staging
+    // `staging` branch — the middle rung between the testing and production
+    // deployments. Talks to the isolated truegrit-api-staging
     // Worker/D1/R2/Queues (apps/api/wrangler.jsonc's own env.staging).
     "staging": {
       "name": "truegrit-storefront-staging",
       "workers_dev": true,
+      "routes": [{ "pattern": "stag.truegritin.com", "custom_domain": true }],
       "observability": { "enabled": true },
       "upload_source_maps": true,
       "services": [{ "binding": "API_WORKER", "service": "truegrit-api-staging" }],

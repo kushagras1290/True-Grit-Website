@@ -35,8 +35,8 @@ class Settings(BaseSettings):
     github_repository: str = "kushagras1290/True-Grit-Website"
     github_token: str = ""
     github_api_version: str = "2026-03-10"
-    deployment_testing_url: str = ""
-    deployment_staging_url: str = "https://truegrit-storefront-staging.kushagras1234890.workers.dev"
+    deployment_testing_url: str = "https://test.truegritin.com"
+    deployment_staging_url: str = "https://stag.truegritin.com"
     deployment_main_url: str = "https://truegritin.com"
 
     # Session cookie cross-site policy. Use "lax" when the storefront/admin and

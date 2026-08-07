@@ -1,28 +1,25 @@
-name: Deploy dev
+name: Deploy testing
 
-# Auto-deploys the whole project to the Cloudflare dev environment on every push
-# to `main` (or manual dispatch). Requires one repository secret:
+# Auto-deploys the whole project to the Cloudflare testing environment on every
+# push to `testing` (or manual dispatch). The existing top-level dev resources
+# form the testing data plane, while reviewers use test.truegritin.com and
+# adtest.truegritin.com instead of workers.dev URLs. Requires one repository secret:
 #   CLOUDFLARE_API_TOKEN — a token with Workers Scripts, D1, R2, KV, and Queues
 #   edit permissions on the target account.
 #
-# `main` only, deliberately: the dev Workers are the environment currently
-# serving real visitors, so anything that auto-deploys here is live. `testing`
-# is where unproven work lands and must never reach that environment on its
-# own — it runs the CI checks (ci.yml) and nothing else. Promotion is an
-# explicit merge of testing into main, which is what triggers this deploy.
-# When isolated production resources exist (SCAL-005) this workflow keeps dev,
-# and main moves to a separate production deploy.
+# Production remains behind the typed-confirmation deploy workflows after the
+# testing -> staging -> main promotion path.
 on:
   push:
-    branches: [main]
+    branches: [testing]
   workflow_dispatch:
 
 permissions:
   contents: read
 
-# Serialize dev deploys so concurrent pushes never race the same Workers.
+# Serialize testing deploys so concurrent pushes never race the same Workers.
 concurrency:
-  group: deploy-dev
+  group: deploy-testing
   cancel-in-progress: false
 
 env:
@@ -90,6 +87,7 @@ jobs:
     name: Storefront + Admin
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    needs: api
     env:
       # Public build-time config. VITE_API_URL points the SSR/browser code at
       # the deployed API (not localhost); VITE_GOOGLE_CLIENT_ID enables the
@@ -122,3 +120,7 @@ jobs:
       - name: Deploy release process
         working-directory: apps/process
         run: pnpm exec wrangler deploy
+      - name: Verify testing domains
+        run: |
+          curl --fail --retry 5 --retry-all-errors https://test.truegritin.com
+          curl --fail --retry 5 --retry-all-errors https://adtest.truegritin.com
