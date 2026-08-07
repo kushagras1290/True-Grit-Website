@@ -4,6 +4,10 @@
   "main": "src/worker.py",
   "compatibility_date": "2026-07-11",
   "compatibility_flags": ["python_workers"],
+  // The top-level Worker is the testing API. Keep workers.dev available for
+  // diagnostics, but use the stable custom domain in application config.
+  "workers_dev": true,
+  "routes": [{ "pattern": "apitest.truegritin.com", "custom_domain": true }],
   // This account moved to the Workers Paid plan (2026-08-04), which is what
   // makes this `limits` block legal at all -- on the Free plan, deploying
   // ANY `limits.cpu_ms` value is rejected outright:
@@ -158,6 +162,7 @@
     "staging": {
       "name": "truegrit-api-staging",
       "workers_dev": true,
+      "routes": [{ "pattern": "apistag.truegritin.com", "custom_domain": true }],
       "observability": {
         "enabled": true,
         "logs": { "enabled": true, "persist": true, "invocation_logs": true },
