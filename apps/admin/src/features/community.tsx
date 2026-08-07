@@ -10,6 +10,7 @@ import { Link, useParams } from "react-router";
 
 import {
   Button,
+  ConfirmDialog,
   DataTableShell,
   EmptyState,
   Field,
@@ -81,6 +82,8 @@ function CommunitySettingsPanel() {
 }
 
 export function DiscussionsListPage() {
+  const toast = useToast();
+  const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
@@ -97,6 +100,35 @@ export function DiscussionsListPage() {
       }),
   });
   const discussions = data ?? [];
+  const [selectedDiscussionIds, setSelectedDiscussionIds] = useState<string[]>([]);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const allSelected =
+    discussions.length > 0 &&
+    discussions.every((discussion) => selectedDiscussionIds.includes(discussion.id));
+
+  const deleteMutation = useMutation({
+    mutationFn: (discussionIds: string[]) => api.deleteDiscussions(discussionIds),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-discussions"] });
+      setSelectedDiscussionIds([]);
+      setConfirmingDelete(false);
+      toast.success(`${result.count} discussion${result.count === 1 ? "" : "s"} deleted.`);
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not delete the discussions."),
+  });
+
+  function toggleDiscussion(discussionId: string) {
+    setSelectedDiscussionIds((current) =>
+      current.includes(discussionId)
+        ? current.filter((id) => id !== discussionId)
+        : [...current, discussionId],
+    );
+  }
+
+  function toggleAllDiscussions() {
+    setSelectedDiscussionIds(allSelected ? [] : discussions.map((discussion) => discussion.id));
+  }
 
   return (
     <div>
@@ -109,30 +141,61 @@ export function DiscussionsListPage() {
             <T>Discussions and comments started by customers.</T>
           </p>
         </div>
-        <Select
-          value={statusFilter}
-          onChange={(event) => {
-            setStatusFilter(event.target.value);
-            setPage(1);
-          }}
-        >
-          <option value="">
-            <T>All statuses</T>
-          </option>
-          <option value="visible">
-            <T>Visible</T>
-          </option>
-          <option value="hidden">
-            <T>Hidden</T>
-          </option>
-          <option value="archived">
-            <T>Archived</T>
-          </option>
-          <option value="removed">
-            <T>Removed</T>
-          </option>
-        </Select>
+        <div className="flex items-center gap-2">
+          <PermissionGate permission="discussions.moderate">
+            {selectedDiscussionIds.length > 0 ? (
+              <Button
+                variant="destructive"
+                onClick={() => setConfirmingDelete(true)}
+                disabled={deleteMutation.isPending}
+              >
+                <T>Delete selected (</T>
+                {selectedDiscussionIds.length})
+              </Button>
+            ) : null}
+          </PermissionGate>
+          <Select
+            value={statusFilter}
+            onChange={(event) => {
+              setStatusFilter(event.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="">
+              <T>All statuses</T>
+            </option>
+            <option value="visible">
+              <T>Visible</T>
+            </option>
+            <option value="hidden">
+              <T>Hidden</T>
+            </option>
+            <option value="archived">
+              <T>Archived</T>
+            </option>
+            <option value="removed">
+              <T>Removed</T>
+            </option>
+          </Select>
+        </div>
       </div>
+      {confirmingDelete ? (
+        <ConfirmDialog
+          title={
+            selectedDiscussionIds.length === 1
+              ? "Delete discussion"
+              : `Delete ${selectedDiscussionIds.length} discussions`
+          }
+          description="Selected discussions and all their comments will be permanently deleted. This cannot be undone."
+          confirmLabel={
+            selectedDiscussionIds.length === 1 ? "Delete discussion" : "Delete discussions"
+          }
+          pendingLabel="Deleting..."
+          isPending={deleteMutation.isPending}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={() => deleteMutation.mutate(selectedDiscussionIds)}
+        />
+      ) : null}
 
       <CommunitySettingsPanel />
 
@@ -151,6 +214,14 @@ export function DiscussionsListPage() {
         <thead className="bg-canvas">
           <tr>
             <Th>
+              <input
+                type="checkbox"
+                aria-label="Select all discussions"
+                checked={allSelected}
+                onChange={toggleAllDiscussions}
+              />
+            </Th>
+            <Th>
               <T>Title</T>
             </Th>
             <Th>
@@ -168,11 +239,11 @@ export function DiscussionsListPage() {
           </tr>
         </thead>
         {isLoading ? (
-          <LoadingRows columns={5} />
+          <LoadingRows columns={6} />
         ) : discussions.length === 0 ? (
           <tbody>
             <tr>
-              <td colSpan={5} className="px-3 py-8">
+              <td colSpan={6} className="px-3 py-8">
                 <EmptyState
                   title="No discussions"
                   hint="Threads started from the storefront appear here."
@@ -184,6 +255,14 @@ export function DiscussionsListPage() {
           <tbody>
             {discussions.map((entry) => (
               <tr key={entry.id} className="border-t border-line hover:bg-canvas/60">
+                <Td>
+                  <input
+                    type="checkbox"
+                    aria-label={`Select ${entry.title}`}
+                    checked={selectedDiscussionIds.includes(entry.id)}
+                    onChange={() => toggleDiscussion(entry.id)}
+                  />
+                </Td>
                 <Td>
                   <Link
                     to={`/community/${entry.id}`}

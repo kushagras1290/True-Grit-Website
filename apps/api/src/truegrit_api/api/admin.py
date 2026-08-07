@@ -42,6 +42,7 @@ from truegrit_api.domain.blocks import (
 from truegrit_api.domain.slugs import slugify, validate_slug
 from truegrit_api.errors import (
     AuthenticationError,
+    ConflictError,
     NotFoundError,
     PermissionDeniedError,
     ValidationAppError,
@@ -688,6 +689,8 @@ ARCHIVE_VIEW_PERMISSIONS = {
     "categories.view",
     "users.view",
     "pages.view",
+    "articles.view",
+    "recipes.view",
 }
 
 
@@ -2481,6 +2484,34 @@ async def unpublish_article_endpoint(
     return await article_service.unpublish_article(db, principal, _request_id(request), article_id)
 
 
+class ArticleBulkDeleteRequest(_CamelModel):
+    article_ids: list[str] = Field(min_length=1, max_length=100)
+
+
+@router.delete("/articles/{article_id}")
+async def delete_article_endpoint(
+    article_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("articles.edit"))],
+) -> Any:
+    return await article_service.archive_article(db, principal, _request_id(request), article_id)
+
+
+@router.post("/articles/bulk-delete")
+async def bulk_delete_articles_endpoint(
+    payload: ArticleBulkDeleteRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("articles.edit"))],
+) -> Any:
+    deleted: list[str] = []
+    for article_id in payload.article_ids:
+        await article_service.archive_article(db, principal, _request_id(request), article_id)
+        deleted.append(article_id)
+    return {"deletedIds": deleted, "count": len(deleted)}
+
+
 # ---------------------------------------------------------------------------
 # Recipes — authored by `chef`, reviewed/published by `recipes.approve`/`.publish`
 # ---------------------------------------------------------------------------
@@ -2689,6 +2720,34 @@ async def unpublish_recipe_endpoint(
     principal: Annotated[Principal, Depends(require_permission("recipes.publish"))],
 ) -> Any:
     return await recipe_service.unpublish_recipe(db, principal, _request_id(request), recipe_id)
+
+
+class RecipeBulkDeleteRequest(_CamelModel):
+    recipe_ids: list[str] = Field(min_length=1, max_length=100)
+
+
+@router.delete("/recipes/{recipe_id}")
+async def delete_recipe_endpoint(
+    recipe_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("recipes.edit"))],
+) -> Any:
+    return await recipe_service.archive_recipe(db, principal, _request_id(request), recipe_id)
+
+
+@router.post("/recipes/bulk-delete")
+async def bulk_delete_recipes_endpoint(
+    payload: RecipeBulkDeleteRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("recipes.edit"))],
+) -> Any:
+    deleted: list[str] = []
+    for recipe_id in payload.recipe_ids:
+        await recipe_service.archive_recipe(db, principal, _request_id(request), recipe_id)
+        deleted.append(recipe_id)
+    return {"deletedIds": deleted, "count": len(deleted)}
 
 
 # ---------------------------------------------------------------------------
@@ -3470,6 +3529,26 @@ async def delete_discussion_endpoint(
     return await discussion_service.delete_discussion(
         db, principal, _request_id(request), discussion_id
     )
+
+
+class DiscussionBulkDeleteRequest(_CamelModel):
+    discussion_ids: list[str] = Field(min_length=1, max_length=100)
+
+
+@router.post("/discussions/bulk-delete")
+async def bulk_delete_discussions_endpoint(
+    payload: DiscussionBulkDeleteRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("discussions.moderate"))],
+) -> Any:
+    deleted: list[str] = []
+    for discussion_id in payload.discussion_ids:
+        await discussion_service.delete_discussion(
+            db, principal, _request_id(request), discussion_id
+        )
+        deleted.append(discussion_id)
+    return {"deletedIds": deleted, "count": len(deleted)}
 
 
 @router.post("/discussions/comments/{comment_id}/moderate")
@@ -4441,6 +4520,42 @@ async def list_archive_endpoint(
         )
         items.extend(_archive_row("page", row) for row in page_rows)
 
+    if principal.farm_id is None and principal.has("articles.view"):
+        article_rows = await db.fetch_all(
+            """
+            SELECT a.id, a.title AS name, a.slug, a.status, a.archived_at, a.updated_at,
+                   u.display_name AS updated_by,
+                   COALESCE(author.display_name, '') AS detail
+            FROM articles a
+            LEFT JOIN users u ON u.id = a.updated_by
+            LEFT JOIN users author ON author.id = a.author_user_id
+            WHERE (a.archived_at IS NOT NULL OR a.status = 'archived')
+              AND (? IS NULL OR a.title LIKE ? OR a.slug LIKE ?)
+            ORDER BY COALESCE(a.archived_at, a.updated_at) DESC, a.title
+            LIMIT ?
+            """,
+            (like, like, like, fetch_cap),
+        )
+        items.extend(_archive_row("article", row) for row in article_rows)
+
+    if principal.farm_id is None and principal.has("recipes.view"):
+        recipe_rows = await db.fetch_all(
+            """
+            SELECT r.id, r.title AS name, r.slug, r.status, r.archived_at, r.updated_at,
+                   u.display_name AS updated_by,
+                   COALESCE(chef.display_name, '') AS detail
+            FROM recipes r
+            LEFT JOIN users u ON u.id = r.updated_by
+            LEFT JOIN users chef ON chef.id = r.chef_user_id
+            WHERE (r.archived_at IS NOT NULL OR r.status = 'archived')
+              AND (? IS NULL OR r.title LIKE ? OR r.slug LIKE ?)
+            ORDER BY COALESCE(r.archived_at, r.updated_at) DESC, r.title
+            LIMIT ?
+            """,
+            (like, like, like, fetch_cap),
+        )
+        items.extend(_archive_row("recipe", row) for row in recipe_rows)
+
     items.sort(key=lambda item: item["archivedAt"], reverse=True)
     page = items[offset : offset + limit]
     return {"items": page, "limit": limit, "offset": offset}
@@ -4459,6 +4574,8 @@ async def restore_archive_item_endpoint(
         "category": "categories.edit",
         "farm": "users.invite",
         "page": "pages.edit",
+        "article": "articles.edit",
+        "recipe": "recipes.edit",
     }
     permission = permissions.get(kind)
     if permission is None:
@@ -4558,6 +4675,64 @@ async def restore_archive_item_endpoint(
         )
         return {"id": item_id, "kind": kind, "status": "draft"}
 
+    if kind == "article":
+        current = await db.fetch_one(
+            "SELECT id, status FROM articles WHERE id = ?"
+            " AND (archived_at IS NOT NULL OR status = 'archived')",
+            (item_id,),
+        )
+        if current is None:
+            raise NotFoundError("Archived article not found.")
+        await db.batch(
+            [
+                (
+                    "UPDATE articles SET status = 'draft', archived_at = NULL,"
+                    " updated_at = ?, updated_by = ? WHERE id = ?",
+                    (now, principal.user_id, item_id),
+                ),
+                audit_statement(
+                    action="article.restored",
+                    entity_type="article",
+                    entity_id=item_id,
+                    actor_id=principal.user_id,
+                    request_id=request_id,
+                    created_at=now,
+                    before={"status": current["status"]},
+                    after={"status": "draft"},
+                ),
+            ]
+        )
+        return {"id": item_id, "kind": kind, "status": "draft"}
+
+    if kind == "recipe":
+        current = await db.fetch_one(
+            "SELECT id, status FROM recipes WHERE id = ?"
+            " AND (archived_at IS NOT NULL OR status = 'archived')",
+            (item_id,),
+        )
+        if current is None:
+            raise NotFoundError("Archived recipe not found.")
+        await db.batch(
+            [
+                (
+                    "UPDATE recipes SET status = 'draft', archived_at = NULL,"
+                    " updated_at = ?, updated_by = ? WHERE id = ?",
+                    (now, principal.user_id, item_id),
+                ),
+                audit_statement(
+                    action="recipe.restored",
+                    entity_type="recipe",
+                    entity_id=item_id,
+                    actor_id=principal.user_id,
+                    request_id=request_id,
+                    created_at=now,
+                    before={"status": current["status"]},
+                    after={"status": "draft"},
+                ),
+            ]
+        )
+        return {"id": item_id, "kind": kind, "status": "draft"}
+
     current = await db.fetch_one(
         "SELECT id, status FROM pages WHERE id = ?"
         " AND (archived_at IS NOT NULL OR status = 'archived')",
@@ -4585,6 +4760,103 @@ async def restore_archive_item_endpoint(
         ]
     )
     return {"id": item_id, "kind": kind, "status": "draft"}
+
+
+_ARCHIVE_PURGE_PERMISSIONS = {
+    "product": "products.edit",
+    "category": "categories.edit",
+    "farm": "users.invite",
+    "page": "pages.edit",
+    "article": "articles.edit",
+    "recipe": "recipes.edit",
+}
+
+_ARCHIVE_PURGE_TABLES = {
+    "product": "products",
+    "category": "categories",
+    "farm": "farms",
+    "page": "pages",
+    "article": "articles",
+    "recipe": "recipes",
+}
+
+
+async def _purge_archive_item(
+    db: Database, actor: Principal, request_id: str, kind: str, item_id: str
+) -> None:
+    """Permanently removes an already-archived row. Unlike restore/archive,
+    this is a real SQL DELETE with no way back — only reachable for rows the
+    per-kind query above already confirmed are archived. Foreign-key
+    RESTRICT constraints (e.g. a product whose variants still have order or
+    inventory history) surface as a clear ConflictError instead of a raw
+    database error, since D1 and the local SQLite adapter both raise on the
+    same "FOREIGN KEY constraint failed" wording."""
+    table = _ARCHIVE_PURGE_TABLES[kind]
+    archived_clause = (
+        "status = 'archived'"
+        if kind == "farm"
+        else "(archived_at IS NOT NULL OR status = 'archived')"
+    )
+    current = await db.fetch_one(
+        f"SELECT id FROM {table} WHERE id = ? AND {archived_clause}", (item_id,)
+    )
+    if current is None:
+        raise NotFoundError("Archived item not found.")
+    now = utc_now_iso()
+    try:
+        await db.batch(
+            [
+                (f"DELETE FROM {table} WHERE id = ?", (item_id,)),
+                audit_statement(
+                    action=f"{kind}.purged",
+                    entity_type=kind,
+                    entity_id=item_id,
+                    actor_id=actor.user_id,
+                    request_id=request_id,
+                    created_at=now,
+                ),
+            ]
+        )
+    except Exception as exc:
+        if "foreign key constraint" in str(exc).lower():
+            raise ConflictError(
+                "Can't permanently delete this item — other records (such as orders or "
+                "inventory history) still depend on it."
+            ) from exc
+        raise
+
+
+class ArchivePurgeItem(_CamelModel):
+    kind: str = Field(max_length=20)
+    id: str = Field(max_length=64)
+
+
+class ArchiveBulkDeleteRequest(_CamelModel):
+    items: list[ArchivePurgeItem] = Field(min_length=1, max_length=100)
+
+
+@router.post("/archive/bulk-delete")
+async def bulk_delete_archive_endpoint(
+    payload: ArchiveBulkDeleteRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(get_current_staff)],
+) -> Any:
+    request_id = _request_id(request)
+    deleted: list[dict[str, str]] = []
+    for item in payload.items:
+        permission = _ARCHIVE_PURGE_PERMISSIONS.get(item.kind)
+        if permission is None:
+            raise NotFoundError("Archived item not found.")
+        if not principal.has(permission):
+            raise PermissionDeniedError()
+        if item.kind != "product" and principal.farm_id is not None:
+            raise PermissionDeniedError()
+        if item.kind == "product":
+            await _assert_product_scope(db, item.id, principal)
+        await _purge_archive_item(db, principal, request_id, item.kind, item.id)
+        deleted.append({"kind": item.kind, "id": item.id})
+    return {"deleted": deleted, "count": len(deleted)}
 
 
 # ---------------------------------------------------------------------------

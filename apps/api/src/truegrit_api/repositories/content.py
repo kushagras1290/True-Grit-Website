@@ -535,7 +535,8 @@ class RecipeRepository:
                      AS published_version_number
             FROM recipes r
             LEFT JOIN users u ON u.id = r.chef_user_id
-            WHERE (? IS NULL OR r.chef_user_id = ?)
+            WHERE r.archived_at IS NULL
+              AND (? IS NULL OR r.chef_user_id = ?)
               AND (? IS NULL OR r.title LIKE ? OR r.slug LIKE ? OR r.excerpt LIKE ?)
             ORDER BY r.updated_at DESC
             LIMIT ? OFFSET ?
@@ -768,7 +769,8 @@ class ArticleRepository:
                      AS published_version_number
             FROM articles a
             LEFT JOIN users u ON u.id = a.author_user_id
-            WHERE (? IS NULL OR a.author_user_id = ?)
+            WHERE a.archived_at IS NULL
+              AND (? IS NULL OR a.author_user_id = ?)
               AND (? IS NULL OR a.title LIKE ? OR a.slug LIKE ? OR a.excerpt LIKE ?)
             ORDER BY a.updated_at DESC
             LIMIT ? OFFSET ?

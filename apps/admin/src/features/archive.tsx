@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import {
   Button,
+  ConfirmDialog,
   DataTableShell,
   EmptyState,
   LoadingRows,
@@ -23,6 +24,8 @@ const FILTERS: Array<{ id: "all" | ArchiveKind; label: string }> = [
   { id: "all", label: "All" },
   { id: "product", label: "Products" },
   { id: "category", label: "Categories" },
+  { id: "article", label: "Blog posts" },
+  { id: "recipe", label: "Recipes" },
   { id: "farm", label: "Farms" },
   { id: "page", label: "CMS pages" },
 ];
@@ -30,12 +33,15 @@ const FILTERS: Array<{ id: "all" | ArchiveKind; label: string }> = [
 const INVALIDATE_BY_KIND: Record<ArchiveKind, string[]> = {
   product: ["admin-products", "inventory"],
   category: ["admin-categories"],
+  article: ["admin-articles"],
+  recipe: ["admin-recipes"],
   farm: ["farms"],
   page: ["cms-pages"],
 };
 
 function kindLabel(kind: ArchiveKind) {
   if (kind === "page") return "CMS page";
+  if (kind === "article") return "Blog post";
   return kind;
 }
 
@@ -74,12 +80,80 @@ export function ArchivePage() {
     return filter === "all" ? items : items.filter((item) => item.kind === filter);
   }, [archive.data, filter]);
 
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const allSelected =
+    rows.length > 0 && rows.every((row) => selectedKeys.includes(`${row.kind}:${row.id}`));
+  const selectedItems = rows.filter((row) => selectedKeys.includes(`${row.kind}:${row.id}`));
+
+  const purgeMutation = useMutation({
+    mutationFn: (items: Array<{ kind: ArchiveKind; id: string }>) => api.purgeArchiveItems(items),
+    onSuccess: async (result) => {
+      const kindsTouched = new Set(result.deleted.map((item) => item.kind));
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["archive"] }),
+        ...[...kindsTouched].flatMap((kind) =>
+          INVALIDATE_BY_KIND[kind].map((key) => queryClient.invalidateQueries({ queryKey: [key] })),
+        ),
+      ]);
+      setSelectedKeys([]);
+      setConfirmingDelete(false);
+      toast.success(`${result.count} item${result.count === 1 ? "" : "s"} permanently deleted.`);
+    },
+    onError: (error) => {
+      toast.error(
+        error instanceof ApiError
+          ? error.message
+          : "Could not permanently delete the selected items.",
+      );
+    },
+  });
+
+  function toggleRow(key: string) {
+    setSelectedKeys((current) =>
+      current.includes(key) ? current.filter((entry) => entry !== key) : [...current, key],
+    );
+  }
+
+  function toggleAllRows() {
+    setSelectedKeys(allSelected ? [] : rows.map((row) => `${row.kind}:${row.id}`));
+  }
+
   return (
     <section>
       <PageHeader
         title="Archive"
         description="Recover hidden products, categories, farms and CMS pages."
+        actions={
+          selectedKeys.length > 0 ? (
+            <Button
+              variant="destructive"
+              onClick={() => setConfirmingDelete(true)}
+              disabled={purgeMutation.isPending}
+            >
+              <T>Delete selected (</T>
+              {selectedKeys.length})
+            </Button>
+          ) : undefined
+        }
       />
+      {confirmingDelete ? (
+        <ConfirmDialog
+          title={
+            selectedKeys.length === 1
+              ? "Permanently delete item"
+              : `Permanently delete ${selectedKeys.length} items`
+          }
+          description="This removes the selected items for good — they can no longer be restored. Items still referenced by orders or other records (for example a product with order history) will be skipped with an error."
+          confirmLabel={selectedKeys.length === 1 ? "Delete forever" : "Delete forever"}
+          pendingLabel="Deleting..."
+          isPending={purgeMutation.isPending}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={() =>
+            purgeMutation.mutate(selectedItems.map((row) => ({ kind: row.kind, id: row.id })))
+          }
+        />
+      ) : null}
 
       <div className="mb-4 flex flex-wrap gap-2">
         {FILTERS.map((entry) => (
@@ -135,7 +209,7 @@ export function ArchivePage() {
               </Th>
             </tr>
           </thead>
-          <LoadingRows columns={6} />
+          <LoadingRows columns={7} />
         </DataTableShell>
       ) : archive.isError ? (
         <EmptyState
@@ -152,6 +226,14 @@ export function ArchivePage() {
         <DataTableShell>
           <thead>
             <tr>
+              <Th>
+                <input
+                  type="checkbox"
+                  aria-label="Select all archived items"
+                  checked={allSelected}
+                  onChange={toggleAllRows}
+                />
+              </Th>
               <Th>
                 <T>Item</T>
               </Th>
@@ -173,34 +255,45 @@ export function ArchivePage() {
             </tr>
           </thead>
           <tbody>
-            {rows.map((row) => (
-              <tr key={`${row.kind}:${row.id}`} className="border-t border-line">
-                <Td>
-                  <div className="font-medium text-ink">{row.name}</div>
-                  <div className="text-xs text-ink-muted">
-                    /{row.slug}
-                    {row.detail ? ` - ${row.detail}` : ""}
-                  </div>
-                </Td>
-                <Td className="capitalize">{kindLabel(row.kind)}</Td>
-                <Td>
-                  <StatusPill status={row.status} />
-                </Td>
-                <Td>{formatDateTime(row.archivedAt)}</Td>
-                <Td>{row.updatedBy}</Td>
-                <Td>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => restore.mutate(row)}
-                    disabled={restore.isPending}
-                  >
-                    <ArchiveRestore size={15} aria-hidden />
-                    <T>Restore</T>
-                  </Button>
-                </Td>
-              </tr>
-            ))}
+            {rows.map((row) => {
+              const key = `${row.kind}:${row.id}`;
+              return (
+                <tr key={key} className="border-t border-line">
+                  <Td>
+                    <input
+                      type="checkbox"
+                      aria-label={`Select ${row.name}`}
+                      checked={selectedKeys.includes(key)}
+                      onChange={() => toggleRow(key)}
+                    />
+                  </Td>
+                  <Td>
+                    <div className="font-medium text-ink">{row.name}</div>
+                    <div className="text-xs text-ink-muted">
+                      /{row.slug}
+                      {row.detail ? ` - ${row.detail}` : ""}
+                    </div>
+                  </Td>
+                  <Td className="capitalize">{kindLabel(row.kind)}</Td>
+                  <Td>
+                    <StatusPill status={row.status} />
+                  </Td>
+                  <Td>{formatDateTime(row.archivedAt)}</Td>
+                  <Td>{row.updatedBy}</Td>
+                  <Td>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => restore.mutate(row)}
+                      disabled={restore.isPending}
+                    >
+                      <ArchiveRestore size={15} aria-hidden />
+                      <T>Restore</T>
+                    </Button>
+                  </Td>
+                </tr>
+              );
+            })}
           </tbody>
         </DataTableShell>
       )}

@@ -342,3 +342,39 @@ async def unpublish_article(
         ]
     )
     return {"id": article_id, "status": "unpublished"}
+
+
+async def archive_article(
+    db: Database, actor: Principal, request_id: str, article_id: str
+) -> dict[str, Any]:
+    """Soft-delete, mirroring `services.catalogue.archive_product` — flips
+    status to 'archived' and stamps archived_at rather than issuing a SQL
+    DELETE, so the post stays recoverable from /archive."""
+    current = await db.fetch_one(
+        "SELECT id, status, author_user_id FROM articles WHERE id = ? AND archived_at IS NULL",
+        (article_id,),
+    )
+    if current is None:
+        raise NotFoundError("Article not found.")
+    assert_owns_or_reviews(current, actor)
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                "UPDATE articles SET status = 'archived', archived_at = ?, updated_at = ?,"
+                " updated_by = ? WHERE id = ?",
+                (now, now, actor.user_id, article_id),
+            ),
+            audit_statement(
+                action="article.archived",
+                entity_type="article",
+                entity_id=article_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                before={"status": current["status"]},
+                after={"status": "archived"},
+            ),
+        ]
+    )
+    return {"id": article_id, "status": "archived"}

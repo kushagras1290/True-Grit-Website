@@ -13,6 +13,7 @@ import { z } from "zod";
 
 import {
   Button,
+  ConfirmDialog,
   DataTableShell,
   EmptyState,
   Field,
@@ -121,6 +122,10 @@ export function RecipeListPage() {
   });
   const [creating, setCreating] = useState(false);
   const recipes = data ?? [];
+  const [selectedRecipeIds, setSelectedRecipeIds] = useState<string[]>([]);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const allSelected =
+    recipes.length > 0 && recipes.every((recipe) => selectedRecipeIds.includes(recipe.id));
 
   // One-click enable/disable — a disabled recipe drops off /recipes via the
   // public API immediately (mirrors the blog list toggle).
@@ -135,20 +140,71 @@ export function RecipeListPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not update the recipe."),
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: (recipeIds: string[]) => api.deleteRecipes(recipeIds),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-recipes"] });
+      setSelectedRecipeIds([]);
+      setConfirmingDelete(false);
+      toast.success(`${result.count} recipe${result.count === 1 ? "" : "s"} deleted.`);
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not delete the recipes."),
+  });
+
+  function toggleRecipe(recipeId: string) {
+    setSelectedRecipeIds((current) =>
+      current.includes(recipeId) ? current.filter((id) => id !== recipeId) : [...current, recipeId],
+    );
+  }
+
+  function toggleAllRecipes() {
+    setSelectedRecipeIds(allSelected ? [] : recipes.map((recipe) => recipe.id));
+  }
+
   return (
     <div>
       <PageHeader
         title="Recipes"
         description="Chefs draft and submit recipes here; reviewers approve and publish."
         actions={
-          <PermissionGate permission="recipes.create">
-            <Button variant="primary" onClick={() => setCreating(true)}>
-              <T>New recipe</T>
-            </Button>
-          </PermissionGate>
+          <div className="flex gap-2">
+            <PermissionGate permission="recipes.edit">
+              {selectedRecipeIds.length > 0 ? (
+                <Button
+                  variant="destructive"
+                  onClick={() => setConfirmingDelete(true)}
+                  disabled={deleteMutation.isPending}
+                >
+                  <T>Delete selected (</T>
+                  {selectedRecipeIds.length})
+                </Button>
+              ) : null}
+            </PermissionGate>
+            <PermissionGate permission="recipes.create">
+              <Button variant="primary" onClick={() => setCreating(true)}>
+                <T>New recipe</T>
+              </Button>
+            </PermissionGate>
+          </div>
         }
       />
       {creating ? <CreateRecipeModal onClose={() => setCreating(false)} /> : null}
+      {confirmingDelete ? (
+        <ConfirmDialog
+          title={
+            selectedRecipeIds.length === 1
+              ? "Delete recipe"
+              : `Delete ${selectedRecipeIds.length} recipes`
+          }
+          description="Selected recipes will be removed from the recipes list and hidden from the admin list."
+          confirmLabel={selectedRecipeIds.length === 1 ? "Delete recipe" : "Delete recipes"}
+          pendingLabel="Deleting..."
+          isPending={deleteMutation.isPending}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={() => deleteMutation.mutate(selectedRecipeIds)}
+        />
+      ) : null}
 
       <div className="mb-4 max-w-sm">
         <SearchBox
@@ -166,6 +222,14 @@ export function RecipeListPage() {
         <thead className="bg-canvas">
           <tr>
             <Th>
+              <input
+                type="checkbox"
+                aria-label="Select all recipes"
+                checked={allSelected}
+                onChange={toggleAllRecipes}
+              />
+            </Th>
+            <Th>
               <T>Title</T>
             </Th>
             <Th>
@@ -180,11 +244,11 @@ export function RecipeListPage() {
           </tr>
         </thead>
         {isLoading ? (
-          <LoadingRows columns={4} />
+          <LoadingRows columns={5} />
         ) : recipes.length === 0 ? (
           <tbody>
             <tr>
-              <td colSpan={4} className="px-3 py-8">
+              <td colSpan={5} className="px-3 py-8">
                 <EmptyState title="No recipes yet" hint="Create the first draft to get started." />
               </td>
             </tr>
@@ -193,6 +257,14 @@ export function RecipeListPage() {
           <tbody>
             {recipes.map((recipe) => (
               <tr key={recipe.id} className="border-t border-line hover:bg-canvas/60">
+                <Td>
+                  <input
+                    type="checkbox"
+                    aria-label={`Select ${recipe.title}`}
+                    checked={selectedRecipeIds.includes(recipe.id)}
+                    onChange={() => toggleRecipe(recipe.id)}
+                  />
+                </Td>
                 <Td>
                   <Link
                     to={`/recipes/${recipe.id}`}
@@ -405,10 +477,12 @@ function IngredientsEditor({
 
 export function RecipeEditorPage() {
   const { id = "" } = useParams();
+  const navigate = useNavigate();
   const toast = useToast();
   const queryClient = useQueryClient();
   const permissions = usePermissions();
   const [requestingChanges, setRequestingChanges] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [ingredients, setIngredients] = useState<AdminRecipeIngredient[]>([]);
 
   const {
@@ -540,6 +614,17 @@ export function RecipeEditorPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not unpublish."),
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: () => api.deleteRecipe(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-recipes"] });
+      toast.success("Recipe deleted.");
+      navigate("/recipes");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not delete."),
+  });
+
   const bannerUploadMutation = useMutation({
     mutationFn: (file: File) => api.uploadImage(file),
     onSuccess: (result) => {
@@ -574,6 +659,15 @@ export function RecipeEditorPage() {
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <StatusPill status={recipe.status} />
+            <PermissionGate permission="recipes.edit">
+              <Button
+                variant="secondary"
+                onClick={() => setConfirmingDelete(true)}
+                disabled={deleteMutation.isPending}
+              >
+                {deleteMutation.isPending ? <T>{"Deleting..."}</T> : <T>{"Delete"}</T>}
+              </Button>
+            </PermissionGate>
             {recipe.status === "draft" ? (
               <PermissionGate permission="recipes.edit">
                 <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending}>
@@ -633,6 +727,17 @@ export function RecipeEditorPage() {
           onClose={() => setRequestingChanges(false)}
           onSubmit={(note) => requestChangesMutation.mutate(note)}
           isPending={requestChangesMutation.isPending}
+        />
+      ) : null}
+      {confirmingDelete ? (
+        <ConfirmDialog
+          title="Delete recipe"
+          description={`${recipe.title} will be removed from the recipes list and hidden from the admin list.`}
+          confirmLabel="Delete recipe"
+          pendingLabel="Deleting..."
+          isPending={deleteMutation.isPending}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={() => deleteMutation.mutate()}
         />
       ) : null}
 

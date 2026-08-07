@@ -2053,3 +2053,169 @@ def test_only_owner_can_view_server_logs_or_db_browser_even_with_audit_view_gran
     assert client.get("/v1/admin/server-logs").status_code == 403
     assert client.get("/v1/admin/db-browser/tables").status_code == 403
     assert client.get("/v1/admin/db-browser/tables/products").status_code == 403
+
+
+# --- Articles / Recipes: delete, bulk-delete, archive, restore, purge -------
+
+
+def test_article_delete_and_bulk_delete_archive_instead_of_removing_the_row(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    first_id = client.post(
+        "/v1/admin/articles", json={"title": "Delete-me post one"}
+    ).json()["id"]
+    second_id = client.post(
+        "/v1/admin/articles", json={"title": "Delete-me post two"}
+    ).json()["id"]
+
+    deleted = client.delete(f"/v1/admin/articles/{first_id}")
+    assert deleted.status_code == 200
+    assert deleted.json()["status"] == "archived"
+
+    bulk = client.post("/v1/admin/articles/bulk-delete", json={"articleIds": [second_id]})
+    assert bulk.status_code == 200
+    assert bulk.json() == {"deletedIds": [second_id], "count": 1}
+
+    # Archived posts drop out of the normal admin list...
+    list_ids = {row["id"] for row in client.get("/v1/admin/articles").json()["items"]}
+    assert first_id not in list_ids
+    assert second_id not in list_ids
+
+    # ...but the row survives (soft-delete) and shows up in the Archive.
+    archive_rows = client.get("/v1/admin/archive", params={"search": "Delete-me"}).json()["items"]
+    archived_ids = {row["id"]: row for row in archive_rows}
+    assert archived_ids[first_id]["kind"] == "article"
+    assert archived_ids[first_id]["status"] == "archived"
+    assert archived_ids[second_id]["kind"] == "article"
+
+    restored = client.post(f"/v1/admin/archive/article/{first_id}/restore")
+    assert restored.status_code == 200
+    assert restored.json()["status"] == "draft"
+    restored_list_ids = {row["id"] for row in client.get("/v1/admin/articles").json()["items"]}
+    assert first_id in restored_list_ids
+
+    actions = [row["action"] for row in client.get("/v1/admin/audit").json()["items"]]
+    assert "article.archived" in actions
+    assert "article.restored" in actions
+
+
+def test_recipe_delete_and_bulk_delete_archive_instead_of_removing_the_row(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    first_id = client.post("/v1/admin/recipes", json={"title": "Delete-me recipe one"}).json()["id"]
+    second_id = client.post("/v1/admin/recipes", json={"title": "Delete-me recipe two"}).json()["id"]
+
+    deleted = client.delete(f"/v1/admin/recipes/{first_id}")
+    assert deleted.status_code == 200
+    assert deleted.json()["status"] == "archived"
+
+    bulk = client.post("/v1/admin/recipes/bulk-delete", json={"recipeIds": [second_id]})
+    assert bulk.status_code == 200
+    assert bulk.json() == {"deletedIds": [second_id], "count": 1}
+
+    list_ids = {row["id"] for row in client.get("/v1/admin/recipes").json()["items"]}
+    assert first_id not in list_ids
+    assert second_id not in list_ids
+
+    archive_rows = client.get("/v1/admin/archive", params={"search": "Delete-me"}).json()["items"]
+    archived_ids = {row["id"]: row for row in archive_rows}
+    assert archived_ids[first_id]["kind"] == "recipe"
+    assert archived_ids[second_id]["kind"] == "recipe"
+
+    restored = client.post(f"/v1/admin/archive/recipe/{first_id}/restore")
+    assert restored.status_code == 200
+    assert restored.json()["status"] == "draft"
+    restored_list_ids = {row["id"] for row in client.get("/v1/admin/recipes").json()["items"]}
+    assert first_id in restored_list_ids
+
+
+def test_article_delete_requires_articles_edit_permission(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    article_id = client.post("/v1/admin/articles", json={"title": "Permission check post"}).json()[
+        "id"
+    ]
+
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_pm"))  # product manager, no articles.*
+    response = client.delete(f"/v1/admin/articles/{article_id}")
+    assert response.status_code == 403
+
+
+# --- Discussions: bulk-delete (hard delete, matches single-delete semantics) -
+
+
+def test_discussion_bulk_delete_removes_threads_permanently(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    seeded = client.get("/v1/admin/discussions", params={"limit": 2}).json()["items"]
+    assert len(seeded) == 2
+    target_ids = [row["id"] for row in seeded]
+
+    bulk = client.post("/v1/admin/discussions/bulk-delete", json={"discussionIds": target_ids})
+    assert bulk.status_code == 200
+    assert bulk.json() == {"deletedIds": target_ids, "count": 2}
+
+    for discussion_id in target_ids:
+        assert client.get(f"/v1/admin/discussions/{discussion_id}").status_code == 404
+
+    actions = [row["action"] for row in client.get("/v1/admin/audit").json()["items"]]
+    assert "discussion.deleted" in actions
+
+
+# --- Archive: bulk purge (permanent delete of already-archived rows) --------
+
+
+def test_archive_bulk_purge_permanently_removes_archived_rows(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    article_id = client.post("/v1/admin/articles", json={"title": "Purge-me post"}).json()["id"]
+    assert client.delete(f"/v1/admin/articles/{article_id}").status_code == 200
+
+    purge = client.post(
+        "/v1/admin/archive/bulk-delete", json={"items": [{"kind": "article", "id": article_id}]}
+    )
+    assert purge.status_code == 200
+    assert purge.json() == {"deleted": [{"kind": "article", "id": article_id}], "count": 1}
+
+    # Gone for good: not editable, and no longer even in the Archive list.
+    assert client.get(f"/v1/admin/articles/{article_id}").status_code == 404
+    archive_rows = client.get("/v1/admin/archive", params={"search": "Purge-me"}).json()["items"]
+    assert article_id not in {row["id"] for row in archive_rows}
+
+    actions = [row["action"] for row in client.get("/v1/admin/audit").json()["items"]]
+    assert "article.purged" in actions
+
+
+def test_archive_bulk_purge_of_unarchived_item_is_404(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    # prd_alphonso is never archived in this test's own DB state.
+    response = client.post(
+        "/v1/admin/archive/bulk-delete",
+        json={"items": [{"kind": "product", "id": "prd_alphonso"}]},
+    )
+    assert response.status_code == 404
+
+
+def test_archive_bulk_purge_blocked_by_order_history_returns_conflict(
+    client: TestClient, db: SQLiteDatabase
+):
+    """prd_alphonso's variants are referenced by seeded order_items (ON DELETE
+    RESTRICT) -- purging it must fail loudly with a clear, safe error instead
+    of corrupting order history or leaking a raw database error."""
+    as_admin(client, db)
+    assert client.post("/v1/admin/products/prd_alphonso/archive").status_code == 200
+
+    purge = client.post(
+        "/v1/admin/archive/bulk-delete",
+        json={"items": [{"kind": "product", "id": "prd_alphonso"}]},
+    )
+    assert purge.status_code == 409
+    assert "still depend on it" in purge.json()["error"]["message"]
+
+    # The product must still exist, untouched, after the failed purge.
+    assert client.get("/v1/admin/products/prd_alphonso").status_code == 404  # archived, not gone
+    archive_rows = client.get("/v1/admin/archive", params={"search": "Alphonso"}).json()["items"]
+    assert any(row["id"] == "prd_alphonso" for row in archive_rows)

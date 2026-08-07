@@ -388,3 +388,39 @@ async def unpublish_recipe(
         ]
     )
     return {"id": recipe_id, "status": "unpublished"}
+
+
+async def archive_recipe(
+    db: Database, actor: Principal, request_id: str, recipe_id: str
+) -> dict[str, Any]:
+    """Soft-delete, mirroring `services.catalogue.archive_product` — flips
+    status to 'archived' and stamps archived_at rather than issuing a SQL
+    DELETE, so the recipe stays recoverable from /archive."""
+    current = await db.fetch_one(
+        "SELECT id, status, chef_user_id FROM recipes WHERE id = ? AND archived_at IS NULL",
+        (recipe_id,),
+    )
+    if current is None:
+        raise NotFoundError("Recipe not found.")
+    assert_owns_or_reviews(current, actor)
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                "UPDATE recipes SET status = 'archived', archived_at = ?, updated_at = ?,"
+                " updated_by = ? WHERE id = ?",
+                (now, now, actor.user_id, recipe_id),
+            ),
+            audit_statement(
+                action="recipe.archived",
+                entity_type="recipe",
+                entity_id=recipe_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                before={"status": current["status"]},
+                after={"status": "archived"},
+            ),
+        ]
+    )
+    return {"id": recipe_id, "status": "archived"}

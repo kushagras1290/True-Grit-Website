@@ -13,6 +13,7 @@ import { z } from "zod";
 
 import {
   Button,
+  ConfirmDialog,
   DataTableShell,
   EmptyState,
   Field,
@@ -125,6 +126,10 @@ export function ArticleListPage() {
   });
   const [creating, setCreating] = useState(false);
   const articles = data ?? [];
+  const [selectedArticleIds, setSelectedArticleIds] = useState<string[]>([]);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const allSelected =
+    articles.length > 0 && articles.every((article) => selectedArticleIds.includes(article.id));
 
   // One-click enable/disable. The public API only serves published articles,
   // so a disabled post drops off /blog (and anywhere else it is linked)
@@ -140,20 +145,73 @@ export function ArticleListPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not update the article."),
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: (articleIds: string[]) => api.deleteArticles(articleIds),
+    onSuccess: async (result) => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
+      setSelectedArticleIds([]);
+      setConfirmingDelete(false);
+      toast.success(`${result.count} post${result.count === 1 ? "" : "s"} deleted.`);
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not delete the posts."),
+  });
+
+  function toggleArticle(articleId: string) {
+    setSelectedArticleIds((current) =>
+      current.includes(articleId)
+        ? current.filter((id) => id !== articleId)
+        : [...current, articleId],
+    );
+  }
+
+  function toggleAllArticles() {
+    setSelectedArticleIds(allSelected ? [] : articles.map((article) => article.id));
+  }
+
   return (
     <div>
       <PageHeader
         title="Blog"
         description="Bloggers draft and submit posts here; reviewers approve and publish."
         actions={
-          <PermissionGate permission="articles.create">
-            <Button variant="primary" onClick={() => setCreating(true)}>
-              <T>New post</T>
-            </Button>
-          </PermissionGate>
+          <div className="flex gap-2">
+            <PermissionGate permission="articles.edit">
+              {selectedArticleIds.length > 0 ? (
+                <Button
+                  variant="destructive"
+                  onClick={() => setConfirmingDelete(true)}
+                  disabled={deleteMutation.isPending}
+                >
+                  <T>Delete selected (</T>
+                  {selectedArticleIds.length})
+                </Button>
+              ) : null}
+            </PermissionGate>
+            <PermissionGate permission="articles.create">
+              <Button variant="primary" onClick={() => setCreating(true)}>
+                <T>New post</T>
+              </Button>
+            </PermissionGate>
+          </div>
         }
       />
       {creating ? <CreateArticleModal onClose={() => setCreating(false)} /> : null}
+      {confirmingDelete ? (
+        <ConfirmDialog
+          title={
+            selectedArticleIds.length === 1
+              ? "Delete blog post"
+              : `Delete ${selectedArticleIds.length} blog posts`
+          }
+          description="Selected posts will be removed from the blog and hidden from the admin list."
+          confirmLabel={selectedArticleIds.length === 1 ? "Delete post" : "Delete posts"}
+          pendingLabel="Deleting..."
+          isPending={deleteMutation.isPending}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={() => deleteMutation.mutate(selectedArticleIds)}
+        />
+      ) : null}
 
       <div className="mb-4 max-w-sm">
         <SearchBox
@@ -171,6 +229,14 @@ export function ArticleListPage() {
         <thead className="bg-canvas">
           <tr>
             <Th>
+              <input
+                type="checkbox"
+                aria-label="Select all blog posts"
+                checked={allSelected}
+                onChange={toggleAllArticles}
+              />
+            </Th>
+            <Th>
               <T>Title</T>
             </Th>
             <Th>
@@ -185,11 +251,11 @@ export function ArticleListPage() {
           </tr>
         </thead>
         {isLoading ? (
-          <LoadingRows columns={4} />
+          <LoadingRows columns={5} />
         ) : articles.length === 0 ? (
           <tbody>
             <tr>
-              <td colSpan={4} className="px-3 py-8">
+              <td colSpan={5} className="px-3 py-8">
                 <EmptyState
                   title="No blog posts yet"
                   hint="Create the first draft to get started."
@@ -201,6 +267,14 @@ export function ArticleListPage() {
           <tbody>
             {articles.map((article) => (
               <tr key={article.id} className="border-t border-line hover:bg-canvas/60">
+                <Td>
+                  <input
+                    type="checkbox"
+                    aria-label={`Select ${article.title}`}
+                    checked={selectedArticleIds.includes(article.id)}
+                    onChange={() => toggleArticle(article.id)}
+                  />
+                </Td>
                 <Td>
                   <Link
                     to={`/blog/${article.id}`}
@@ -346,10 +420,12 @@ function RequestChangesModal({
 
 export function ArticleEditorPage() {
   const { id = "" } = useParams();
+  const navigate = useNavigate();
   const toast = useToast();
   const queryClient = useQueryClient();
   const permissions = usePermissions();
   const [requestingChanges, setRequestingChanges] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const {
     data: article,
@@ -459,6 +535,17 @@ export function ArticleEditorPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not unpublish."),
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: () => api.deleteArticle(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
+      toast.success("Blog post deleted.");
+      navigate("/blog");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not delete."),
+  });
+
   const bannerUploadMutation = useMutation({
     mutationFn: (file: File) => api.uploadImage(file),
     onSuccess: (result) => {
@@ -493,6 +580,15 @@ export function ArticleEditorPage() {
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <StatusPill status={article.status} />
+            <PermissionGate permission="articles.edit">
+              <Button
+                variant="secondary"
+                onClick={() => setConfirmingDelete(true)}
+                disabled={deleteMutation.isPending}
+              >
+                {deleteMutation.isPending ? <T>{"Deleting..."}</T> : <T>{"Delete"}</T>}
+              </Button>
+            </PermissionGate>
             {article.status === "draft" ? (
               <PermissionGate permission="articles.edit">
                 <Button onClick={() => submitMutation.mutate()} disabled={submitMutation.isPending}>
@@ -552,6 +648,17 @@ export function ArticleEditorPage() {
           onClose={() => setRequestingChanges(false)}
           onSubmit={(note) => requestChangesMutation.mutate(note)}
           isPending={requestChangesMutation.isPending}
+        />
+      ) : null}
+      {confirmingDelete ? (
+        <ConfirmDialog
+          title="Delete blog post"
+          description={`${article.title} will be removed from the blog and hidden from the admin list.`}
+          confirmLabel="Delete post"
+          pendingLabel="Deleting..."
+          isPending={deleteMutation.isPending}
+          onCancel={() => setConfirmingDelete(false)}
+          onConfirm={() => deleteMutation.mutate()}
         />
       ) : null}
 

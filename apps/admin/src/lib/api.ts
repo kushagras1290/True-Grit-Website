@@ -475,7 +475,7 @@ export interface AdminContactMessageRow {
   handledAt: string | null;
 }
 
-export type ArchiveKind = "product" | "category" | "farm" | "page";
+export type ArchiveKind = "product" | "category" | "farm" | "page" | "article" | "recipe";
 
 export interface ArchiveRow {
   id: string;
@@ -1590,6 +1590,13 @@ export const api = {
       ? demo({ id, kind, status: "draft" })
       : post(`/v1/admin/archive/${kind}/${id}/restore`),
 
+  purgeArchiveItems: (
+    items: Array<{ kind: ArchiveKind; id: string }>,
+  ): Promise<{ deleted: Array<{ kind: ArchiveKind; id: string }>; count: number }> =>
+    demoMode
+      ? demo({ deleted: items, count: items.length })
+      : post("/v1/admin/archive/bulk-delete", { items }),
+
   categories: ({
     limit = 25,
     offset = 0,
@@ -2626,6 +2633,14 @@ export const api = {
   unpublishArticle: (id: string): Promise<{ id: string; status: string }> =>
     demoMode ? demo({ id, status: "unpublished" }) : post(`/v1/admin/articles/${id}/unpublish`),
 
+  deleteArticle: (id: string): Promise<{ id: string; status: string }> =>
+    demoMode ? demo({ id, status: "archived" }) : del(`/v1/admin/articles/${id}`),
+
+  deleteArticles: (articleIds: string[]): Promise<{ deletedIds: string[]; count: number }> =>
+    demoMode
+      ? demo({ deletedIds: articleIds, count: articleIds.length })
+      : post("/v1/admin/articles/bulk-delete", { articleIds }),
+
   // --- Recipes -----------------------------------------------------------
 
   recipes: ({
@@ -2714,6 +2729,14 @@ export const api = {
 
   unpublishRecipe: (id: string): Promise<{ id: string; status: string }> =>
     demoMode ? demo({ id, status: "unpublished" }) : post(`/v1/admin/recipes/${id}/unpublish`),
+
+  deleteRecipe: (id: string): Promise<{ id: string; status: string }> =>
+    demoMode ? demo({ id, status: "archived" }) : del(`/v1/admin/recipes/${id}`),
+
+  deleteRecipes: (recipeIds: string[]): Promise<{ deletedIds: string[]; count: number }> =>
+    demoMode
+      ? demo({ deletedIds: recipeIds, count: recipeIds.length })
+      : post("/v1/admin/recipes/bulk-delete", { recipeIds }),
 
   // --- Return requests -----------------------------------------------------
 
@@ -2829,6 +2852,11 @@ export const api = {
 
   deleteDiscussion: (id: string): Promise<{ id: string; deleted: boolean }> =>
     demoMode ? demo({ id, deleted: true }) : del(`/v1/admin/discussions/${id}`),
+
+  deleteDiscussions: (discussionIds: string[]): Promise<{ deletedIds: string[]; count: number }> =>
+    demoMode
+      ? demo({ deletedIds: discussionIds, count: discussionIds.length })
+      : post("/v1/admin/discussions/bulk-delete", { discussionIds }),
 
   moderateComment: (
     commentId: string,
