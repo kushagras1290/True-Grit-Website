@@ -149,9 +149,7 @@ class GitHubClient:
         fields the cockpit needs (name, status, conclusion, and URL) through the
         available ``Actions: read`` permission instead.
         """
-        response = await self.request(
-            "GET", f"/actions/runs?head_sha={sha}&per_page=100"
-        )
+        response = await self.request("GET", f"/actions/runs?head_sha={sha}&per_page=100")
         body = response.body if isinstance(response.body, dict) else {}
         runs = body.get("workflow_runs", [])
         return runs if isinstance(runs, list) else []
