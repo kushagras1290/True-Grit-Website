@@ -141,12 +141,19 @@ class GitHubClient:
         response = await self.request("GET", f"/commits/{sha}/statuses?per_page=100")
         return response.body if isinstance(response.body, list) else []
 
-    async def check_runs(self, sha: str) -> list[dict[str, Any]]:
+    async def workflow_runs(self, sha: str) -> list[dict[str, Any]]:
+        """Return Actions runs for a commit without requiring Checks permission.
+
+        GitHub currently does not offer the ``Checks`` repository permission in
+        the fine-grained personal-access-token UI.  Workflow runs expose the CI
+        fields the cockpit needs (name, status, conclusion, and URL) through the
+        available ``Actions: read`` permission instead.
+        """
         response = await self.request(
-            "GET", f"/commits/{sha}/check-runs?filter=latest&per_page=100"
+            "GET", f"/actions/runs?head_sha={sha}&per_page=100"
         )
         body = response.body if isinstance(response.body, dict) else {}
-        runs = body.get("check_runs", [])
+        runs = body.get("workflow_runs", [])
         return runs if isinstance(runs, list) else []
 
     async def create_status(self, sha: str, context: str, description: str) -> None:

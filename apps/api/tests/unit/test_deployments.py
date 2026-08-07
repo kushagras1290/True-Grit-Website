@@ -54,7 +54,7 @@ class FakeGitHub:
     async def statuses(self, sha: str) -> list[dict[str, object]]:
         return self.status_by_sha[sha]
 
-    async def check_runs(self, _sha: str) -> list[dict[str, object]]:
+    async def workflow_runs(self, _sha: str) -> list[dict[str, object]]:
         return [
             {
                 "name": "CI",
@@ -119,10 +119,10 @@ def test_branch_advance_invalidates_reviewed_sha() -> None:
 def test_failed_check_locks_promotion() -> None:
     github = FakeGitHub()
 
-    async def failed_checks(_sha: str) -> list[dict[str, object]]:
+    async def failed_workflows(_sha: str) -> list[dict[str, object]]:
         return [{"name": "CI", "status": "completed", "conclusion": "failure"}]
 
-    github.check_runs = failed_checks  # type: ignore[method-assign]
+    github.workflow_runs = failed_workflows  # type: ignore[method-assign]
 
     with pytest.raises(ConflictError, match="checks must pass"):
         asyncio.run(service(github).promote("testing", "staging", TESTING_SHA, "Owner"))

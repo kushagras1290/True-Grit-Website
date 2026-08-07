@@ -78,13 +78,13 @@ class DeploymentService:
         if not commits:
             raise ConflictError(f"GitHub returned no commits for {branch}.")
         head_sha = str(commits[0].get("sha", ""))
-        statuses, check_runs = await asyncio.gather(
+        statuses, workflow_runs = await asyncio.gather(
             self._github_call(self.github.statuses(head_sha)),
-            self._github_call(self.github.check_runs(head_sha)),
+            self._github_call(self.github.workflow_runs(head_sha)),
         )
         gate_context = self._gate_context(branch)
         gate = self._latest_status(statuses, gate_context)
-        ci_state, checks = self._check_state(check_runs)
+        ci_state, checks = self._check_state(workflow_runs)
         blocked_reason = self._blocked_reason(branch, ci_state, gate)
         return {
             "name": branch,
@@ -131,9 +131,9 @@ class DeploymentService:
         return {"context": context, "state": "pending", "description": None, "actor": None}
 
     @staticmethod
-    def _check_state(check_runs: list[dict[str, Any]]) -> tuple[str, list[dict[str, Any]]]:
+    def _check_state(workflow_runs: list[dict[str, Any]]) -> tuple[str, list[dict[str, Any]]]:
         latest: dict[str, dict[str, Any]] = {}
-        for run in check_runs:
+        for run in workflow_runs:
             name = str(run.get("name", "Unnamed check"))
             latest.setdefault(name, run)
         checks = [

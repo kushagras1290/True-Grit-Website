@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     admin_login_password: str = "admin123"
 
     # Release cockpit. GITHUB_TOKEN is a server-side secret with repository
-    # Contents (read/write), Commit statuses (read/write), and Checks (read).
+    # Contents (read/write), Commit statuses (read/write), and Actions (read).
     github_repository: str = "kushagras1290/True-Grit-Website"
     github_token: str = ""
     github_api_version: str = "2026-03-10"
