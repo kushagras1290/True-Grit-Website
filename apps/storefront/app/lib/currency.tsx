@@ -28,7 +28,7 @@ export const INR: DisplayCurrency = { code: "INR", locale: "en-IN", ratePerInr: 
 // Approximate mid-2026 rates. Display only — replace with a live converter.
 // Locales stay English-based so numbers match the (English) storefront copy;
 // Intl still applies each currency's own symbol and decimal conventions.
-const CURRENCIES: Record<string, DisplayCurrency> = {
+const FALLBACK_CURRENCIES: Record<string, DisplayCurrency> = {
   USD: { code: "USD", locale: "en-US", ratePerInr: 0.0115 },
   EUR: { code: "EUR", locale: "en-IE", ratePerInr: 0.0105 },
   GBP: { code: "GBP", locale: "en-GB", ratePerInr: 0.009 },
@@ -134,10 +134,14 @@ const COUNTRY_TO_CURRENCY: Record<string, string> = {
 
 /** The display currency for a visitor country; INR for India and any country
  * we do not have a rough rate for. */
-export function currencyForCountry(country: string): DisplayCurrency {
+export function currencyForCountry(
+  country: string,
+  rates?: readonly DisplayCurrency[] | null,
+): DisplayCurrency {
   const code = COUNTRY_TO_CURRENCY[country.toUpperCase()];
   if (!code || code === "INR") return INR;
-  return CURRENCIES[code] ?? INR;
+  if (rates) return rates.find((rate) => rate.code === code) ?? INR;
+  return FALLBACK_CURRENCIES[code] ?? INR;
 }
 
 /** Format INR minor units in the given display currency. INR keeps the exact
@@ -154,8 +158,16 @@ export function formatDisplayMoney(amountMinorInr: number, currency: DisplayCurr
 
 const CurrencyContext = createContext<DisplayCurrency>(INR);
 
-export function CurrencyProvider({ country, children }: { country: string; children: ReactNode }) {
-  const currency = useMemo(() => currencyForCountry(country), [country]);
+export function CurrencyProvider({
+  country,
+  rates,
+  children,
+}: {
+  country: string;
+  rates?: readonly DisplayCurrency[] | null;
+  children: ReactNode;
+}) {
+  const currency = useMemo(() => currencyForCountry(country, rates), [country, rates]);
   return <CurrencyContext.Provider value={currency}>{children}</CurrencyContext.Provider>;
 }
 

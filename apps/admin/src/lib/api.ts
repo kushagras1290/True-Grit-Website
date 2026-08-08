@@ -76,6 +76,7 @@ import {
 } from "@truegrit/contracts/fixtures";
 
 const API_URL: string | undefined = import.meta.env.VITE_API_URL as string | undefined;
+export const adminApiBaseUrl = (API_URL ?? "").replace(/\/+$/, "");
 const DEMO_AUTH_KEY = "truegrit.admin.session";
 const DEMO_EMAIL = "admin@truegrit.test";
 const DEMO_PASSWORD = "admin123";
@@ -775,6 +776,20 @@ export interface PriceAdjustmentRule {
 
 export interface PriceAdjustmentsResponse {
   rules: PriceAdjustmentRule[];
+}
+
+export interface CurrencyRate {
+  currencyCode: string;
+  locale: string;
+  /** Decimal string: units of this currency displayed for one INR. */
+  ratePerInr: string;
+  active: boolean;
+  updatedAt: string;
+}
+
+export interface CurrencyRatesResponse {
+  baseCurrency: "INR";
+  rates: CurrencyRate[];
 }
 
 /** One themed scope: the site-wide palette (`global`), a single page (`/shop`),
@@ -2326,6 +2341,52 @@ export const api = {
     demoMode
       ? demo(demoPriceAdjustments())
       : get<PriceAdjustmentsResponse>("/v1/admin/price-adjustments"),
+
+  currencyRates: (): Promise<CurrencyRatesResponse> =>
+    demoMode
+      ? demo({
+          baseCurrency: "INR" as const,
+          rates: [
+            {
+              currencyCode: "INR",
+              locale: "en-IN",
+              ratePerInr: "1",
+              active: true,
+              updatedAt: new Date().toISOString(),
+            },
+            {
+              currencyCode: "USD",
+              locale: "en-US",
+              ratePerInr: "0.0115",
+              active: true,
+              updatedAt: new Date().toISOString(),
+            },
+            {
+              currencyCode: "EUR",
+              locale: "en-IE",
+              ratePerInr: "0.0105",
+              active: true,
+              updatedAt: new Date().toISOString(),
+            },
+          ],
+        })
+      : get<CurrencyRatesResponse>("/v1/admin/currency-rates"),
+
+  saveCurrencyRate: (input: {
+    currencyCode: string;
+    locale: string;
+    ratePerInr: string;
+    active: boolean;
+  }): Promise<{ rate: CurrencyRate }> =>
+    demoMode
+      ? demo({
+          rate: {
+            ...input,
+            currencyCode: input.currencyCode.toUpperCase(),
+            updatedAt: new Date().toISOString(),
+          },
+        })
+      : put(`/v1/admin/currency-rates/${encodeURIComponent(input.currencyCode)}`, input),
 
   savePriceAdjustment: (input: {
     scope: string;

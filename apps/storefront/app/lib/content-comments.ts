@@ -61,8 +61,11 @@ function threadPath(contentType: CommentContentType, slug: string): string {
 export function listContentComments(
   contentType: CommentContentType,
   slug: string,
+  locale: string,
 ): Promise<ContentCommentThread> {
-  return request<ContentCommentThread>(threadPath(contentType, slug));
+  return request<ContentCommentThread>(
+    `${threadPath(contentType, slug)}?locale=${encodeURIComponent(locale)}`,
+  );
 }
 
 export function postContentComment(

@@ -16,6 +16,15 @@ describe("currencyForCountry", () => {
     expect(currencyForCountry("SG").code).toBe("SGD");
   });
 
+  it("prefers an operator-managed value over the fail-safe snapshot", () => {
+    const usd = currencyForCountry("US", [{ code: "USD", locale: "en-US", ratePerInr: 0.02 }]);
+    expect(usd.ratePerInr).toBe(0.02);
+  });
+
+  it("falls back to INR when the operator disables a configured currency", () => {
+    expect(currencyForCountry("US", []).code).toBe("INR");
+  });
+
   it("maps every eurozone country to EUR", () => {
     for (const country of ["DE", "FR", "IT", "ES", "NL", "IE", "PT", "FI"]) {
       expect(currencyForCountry(country).code).toBe("EUR");

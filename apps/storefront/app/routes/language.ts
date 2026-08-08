@@ -16,13 +16,24 @@ import { redirect } from "react-router";
 import type { Route } from "./+types/language";
 import { LOCALE_QUERY_PARAM, localeCookie, safeRedirectPath } from "../lib/i18n/resolve.server";
 import { DEFAULT_LOCALE, getLocale } from "../lib/i18n/locales";
+import { LOCALES } from "../lib/i18n/locales";
+import { catalogueRuntime, loadCustomLocales } from "../lib/catalogue.server";
 
-export async function action({ request }: Route.ActionArgs) {
+export async function action({ request, context }: Route.ActionArgs) {
   const form = await request.formData();
   const requested = String(form.get("locale") ?? "");
   // Unknown codes fall back to the default rather than 400: a stale bookmark or
   // a retired locale should land somebody on a readable page, not an error.
-  const locale = getLocale(requested)?.code ?? DEFAULT_LOCALE;
+  const customLocales = await loadCustomLocales(catalogueRuntime(context));
+  const locales = Array.from(
+    new Map(
+      [...LOCALES, ...customLocales].map((entry) => [entry.code.toLowerCase(), entry]),
+    ).values(),
+  );
+  const locale =
+    locales.find((entry) => entry.code.toLowerCase() === requested.trim().toLowerCase())?.code ??
+    getLocale(requested)?.code ??
+    DEFAULT_LOCALE;
 
   const target = safeRedirectPath(form.get("redirectTo"));
   // Strip any `?lang=` already on the path being returned to. It outranks the
@@ -34,7 +45,7 @@ export async function action({ request }: Route.ActionArgs) {
 
   return redirect(cleaned, {
     status: 303,
-    headers: { "set-cookie": localeCookie(locale) },
+    headers: { "set-cookie": localeCookie(locale, locales) },
   });
 }
 

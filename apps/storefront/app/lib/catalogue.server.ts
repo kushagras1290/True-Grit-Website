@@ -23,6 +23,7 @@ import type {
   PublicPageBlock,
   RecipeDetail,
 } from "@truegrit/contracts";
+import type { LocaleDefinition } from "@truegrit/i18n";
 import {
   articles,
   bootstrap,
@@ -41,6 +42,7 @@ import {
 } from "@truegrit/contracts/fixtures";
 
 import { DEFAULT_SITE_SETTINGS, normalizeSiteSettings, type SiteSettings } from "./site-settings";
+import type { DisplayCurrency } from "./currency";
 
 export interface CatalogueRuntime {
   apiUrl?: string;
@@ -119,6 +121,63 @@ async function listFromApi<T>(
 export interface PaginatedContent<T> {
   items: T[];
   total: number;
+}
+
+/** Runtime languages added from lang.truegritin.com. The shipped 100-language
+ * list is merged with these in the root loader, so an API outage never removes
+ * a language a visitor already uses. */
+export async function loadCustomLocales(runtime?: CatalogueRuntime): Promise<LocaleDefinition[]> {
+  if (!apiUrl(runtime)) return [];
+  const body = await fromApi<{
+    items: Array<{
+      code: string;
+      nativeName: string;
+      englishName: string;
+      direction: "ltr" | "rtl";
+      groupName: "indian" | "world";
+    }>;
+  }>("/v1/public/locales/custom", runtime);
+  return (body?.items ?? []).map((entry) => ({
+    code: entry.code,
+    nativeName: entry.nativeName,
+    englishName: entry.englishName,
+    dir: entry.direction,
+    group: entry.groupName,
+  }));
+}
+
+/** Reviewed/machine runtime corrections for the storefront's own UI
+ * catalogue. They overlay the generated files and therefore take effect on
+ * the next request without a storefront rebuild. */
+export async function loadInterfaceTranslations(
+  locale: string,
+  runtime?: CatalogueRuntime,
+): Promise<Record<string, string>> {
+  if (!apiUrl(runtime) || locale === "en") return {};
+  const body = await fromApi<{ messages: Record<string, string> }>(
+    `/v1/public/translations/interface?locale=${encodeURIComponent(locale)}`,
+    runtime,
+  );
+  return body?.messages ?? {};
+}
+
+/** Active operator-managed display rates. Product and order values remain
+ * canonical INR; these values only format geo-selected storefront prices. */
+export async function loadCurrencyRates(
+  runtime?: CatalogueRuntime,
+): Promise<DisplayCurrency[] | null> {
+  if (!apiUrl(runtime)) return null;
+  const body = await fromApi<{
+    rates: Array<{ currencyCode: string; locale: string; ratePerInr: string }>;
+  }>("/v1/public/currency-rates", runtime);
+  if (!body) return null;
+  return body.rates
+    .map((entry) => ({
+      code: entry.currencyCode,
+      locale: entry.locale,
+      ratePerInr: Number(entry.ratePerInr),
+    }))
+    .filter((entry) => Number.isFinite(entry.ratePerInr) && entry.ratePerInr > 0);
 }
 
 async function paginatedFromApi<T>(

@@ -141,7 +141,7 @@ async def bootstrap(
     return {
         "navigation": await navigation.menu("header", locale=locale),
         "footer_navigation": await navigation.menu("footer", locale=locale),
-        "announcement": await resolve_announcement(db, country),
+        "announcement": await resolve_announcement(db, country, locale=locale),
     }
 
 

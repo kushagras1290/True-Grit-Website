@@ -80,9 +80,10 @@ async def list_discussions(
     db: Annotated[Database, Depends(get_database)],
     limit: Annotated[int, Query(ge=1, le=100)] = 30,
     offset: Annotated[int, Query(ge=0)] = 0,
+    locale: Annotated[str | None, Query(max_length=35)] = None,
 ) -> Any:
     repository = DiscussionRepository(db)
-    rows = await repository.list_public(limit=limit, offset=offset)
+    rows = await repository.list_public(limit=limit, offset=offset, locale=locale)
     return {
         "items": [_discussion_summary(row) for row in rows],
         "total": await repository.count_public(),
@@ -93,13 +94,15 @@ async def list_discussions(
 
 @router.get("/community/discussions/{discussion_id}")
 async def discussion_detail(
-    discussion_id: str, db: Annotated[Database, Depends(get_database)]
+    discussion_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    locale: Annotated[str | None, Query(max_length=35)] = None,
 ) -> Any:
     repo = DiscussionRepository(db)
-    row = await repo.get_public_detail(discussion_id)
+    row = await repo.get_public_detail(discussion_id, locale=locale)
     if row is None:
         raise NotFoundError("Discussion not found.")
-    comments = await repo.list_comments_public(discussion_id)
+    comments = await repo.list_comments_public(discussion_id, locale=locale)
     return {
         "id": row["id"],
         "title": row["title"],
@@ -152,6 +155,7 @@ async def list_content_comments_endpoint(
     content_type: str,
     slug: str,
     db: Annotated[Database, Depends(get_database)],
+    locale: Annotated[str | None, Query(max_length=35)] = None,
 ) -> Any:
     """The visible comment thread on a published article or recipe.
 
@@ -159,7 +163,7 @@ async def list_content_comments_endpoint(
     existing thread read-only when the owner has closed commenting, rather than
     hiding a conversation that already happened.
     """
-    items = await content_comments.list_public_comments(db, content_type, slug)
+    items = await content_comments.list_public_comments(db, content_type, slug, locale=locale)
     return {
         "items": items,
         "total": len(items),

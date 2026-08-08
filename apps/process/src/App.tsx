@@ -10,6 +10,7 @@ import {
   GitBranch,
   GitCommitHorizontal,
   Key,
+  Languages,
   Loader2,
   LockKeyhole,
   LogOut,
@@ -38,7 +39,7 @@ import {
 
 /* ─── Constants ────────────────────────────────────────────────────── */
 
-type TabKey = "testing" | "staging" | "main" | "users";
+type TabKey = "testing" | "staging" | "main" | "users" | "translations";
 
 const BRANCH_META = {
   testing: { number: "01", label: "Testing", target: "staging", color: "warning" },
@@ -62,6 +63,7 @@ const ENVIRONMENT_LINKS: Record<ReleaseBranch["name"], Array<{ label: string; ur
     { label: "Admin", url: "https://admin.truegritin.com" },
     { label: "API", url: "https://api.truegritin.com/health/live" },
     { label: "Process", url: "https://process.truegritin.com" },
+    { label: "Language Studio", url: "https://lang.truegritin.com" },
   ],
 };
 
@@ -69,6 +71,7 @@ const NAV_ITEMS: Array<{ key: TabKey; label: string; icon: ReactNode; superOnly?
   { key: "testing", label: "Testing", icon: <GitBranch size={16} /> },
   { key: "staging", label: "Staging", icon: <Monitor size={16} /> },
   { key: "main", label: "Main / Live", icon: <Rocket size={16} /> },
+  { key: "translations", label: "Language Studio", icon: <Languages size={16} /> },
   { key: "users", label: "Process Users", icon: <Users size={16} />, superOnly: true },
 ];
 
@@ -984,7 +987,7 @@ function Cockpit({ user, onLogout }: { user: StaffUser; onLogout: () => void }) 
             {visibleNav.map((item) => {
               // Show status indicator for branch tabs
               const branch =
-                item.key !== "users"
+                item.key !== "users" && item.key !== "translations"
                   ? dashboard.data?.branches.find((branch) => branch.name === item.key)
                   : null;
               const statusColor = branch
@@ -1134,6 +1137,29 @@ function Cockpit({ user, onLogout }: { user: StaffUser; onLogout: () => void }) 
           {/* Main content per tab */}
           {activeTab === "users" ? (
             <UsersTab onNotice={setNotice} />
+          ) : activeTab === "translations" ? (
+            <section className="mx-auto max-w-3xl rounded-md border border-line bg-surface p-6 shadow-card sm:p-8">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-subtle text-brand">
+                <Languages size={23} />
+              </div>
+              <p className="mt-5 text-xs font-semibold tracking-[0.14em] text-accent uppercase">
+                Translation operations
+              </p>
+              <h2 className="mt-2 font-display text-3xl text-ink">True Grit Language Studio</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-muted">
+                Translate and review storefront and admin interface text, pages, products, blogs,
+                recipes, discussions and comments. Manage the live language registry from the same
+                workspace.
+              </p>
+              <a
+                href="https://lang.truegritin.com"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-6 inline-flex min-h-10 items-center gap-2 rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90"
+              >
+                Open Language Studio <ExternalLink size={15} />
+              </a>
+            </section>
           ) : dashboard.isError ? (
             <div className="py-20 text-center">
               <XCircle size={28} className="mx-auto text-danger" />

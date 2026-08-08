@@ -2,4 +2,5 @@ packages:
   - apps/storefront
   - apps/admin
   - apps/process
+  - apps/lang
   - packages/*

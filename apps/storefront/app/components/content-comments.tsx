@@ -42,7 +42,7 @@ export function ContentComments({
 
   const load = useCallback(async () => {
     try {
-      const thread = await listContentComments(contentType, slug);
+      const thread = await listContentComments(contentType, slug, locale);
       setComments(thread.items);
       setEnabled(thread.enabled);
     } catch {
@@ -51,7 +51,7 @@ export function ContentComments({
       // widget must not make it look broken.
       setComments([]);
     }
-  }, [contentType, slug]);
+  }, [contentType, locale, slug]);
 
   useEffect(() => {
     void load();

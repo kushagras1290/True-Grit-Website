@@ -18,13 +18,20 @@ import { AmbientEffect, CursorTrail } from "./components/effects";
 import { LanguageSuggestionPrompt } from "./components/language-suggestion";
 import { SupportBotWidget } from "./components/support-bot-widget";
 import { NavigationProgress } from "./components/navigation-progress";
-import { catalogueRuntime, loadBootstrap, loadSiteSettings } from "./lib/catalogue.server";
+import {
+  catalogueRuntime,
+  loadBootstrap,
+  loadCurrencyRates,
+  loadCustomLocales,
+  loadInterfaceTranslations,
+  loadSiteSettings,
+} from "./lib/catalogue.server";
 import { CartProvider } from "./lib/cart";
 import { CurrencyProvider } from "./lib/currency";
 import { CustomerProvider } from "./lib/customer-auth";
 import { resolveCountry } from "./lib/geo.server";
 import { LocaleProvider, useLocaleContext } from "./lib/i18n/context";
-import { DEFAULT_LOCALE, localeDirection } from "./lib/i18n/locales";
+import { DEFAULT_LOCALE, LOCALES, localeDirection } from "./lib/i18n/locales";
 import { messagesFor } from "./lib/i18n/messages.server";
 import { resolveLocale } from "./lib/i18n/resolve.server";
 import { DEFAULT_SITE_SETTINGS, SiteSettingsProvider } from "./lib/site-settings";
@@ -65,12 +72,20 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   // language on the very first round trip -- the same reasoning `loadPage`
   // and `loadHome` already follow for CMS content (migration 0067), now
   // extended to database-sourced nav labels (migration 0068).
-  const resolved = resolveLocale(request);
+  const customLocales = await loadCustomLocales(runtime);
+  const locales = Array.from(
+    new Map(
+      [...LOCALES, ...customLocales].map((entry) => [entry.code.toLowerCase(), entry]),
+    ).values(),
+  );
+  const resolved = resolveLocale(request, locales);
   // Both in one round trip: the header needs the sign-in switches on first
   // paint, or it flashes a button the API would refuse.
-  const [bootstrap, siteSettings] = await Promise.all([
+  const [bootstrap, siteSettings, interfaceTranslations, currencyRates] = await Promise.all([
     loadBootstrap(country, runtime, resolved.locale.code),
     loadSiteSettings(country, runtime),
+    loadInterfaceTranslations(resolved.locale.code, runtime),
+    loadCurrencyRates(runtime),
   ]);
   // Resolved here so the first byte of HTML is already in the visitor's
   // language: switching client-side would paint English, hydrate, then repaint,
@@ -83,12 +98,14 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     country,
     locale: resolved.locale.code,
     dir: resolved.locale.dir,
+    locales,
     // Only ever "geo" when it matters: whether this language was guessed from
     // the visitor's country rather than something they told us (a cookie, a
     // link, or their own browser). `LanguageSuggestionPrompt` reads this to
     // decide whether to offer a way back to English.
     localeSource: resolved.source,
-    messages: messagesFor(resolved.locale.code),
+    messages: { ...messagesFor(resolved.locale.code), ...interfaceTranslations },
+    currencyRates,
     publicEnv: {
       PUBLIC_API_URL: runtime.apiUrl || process.env.PUBLIC_API_URL || "",
       PUBLIC_FACEBOOK_APP_ID:
@@ -152,8 +169,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { bootstrap, siteSettings, country, locale, localeSource, messages, publicEnv } =
-    useLoaderData<typeof loader>();
+  const {
+    bootstrap,
+    siteSettings,
+    country,
+    locale,
+    locales,
+    localeSource,
+    messages,
+    currencyRates,
+    publicEnv,
+  } = useLoaderData<typeof loader>();
   const location = useLocation();
   const isPaymentWindow = location.pathname === "/payment/razorpay";
   return (
@@ -167,12 +193,12 @@ export default function App() {
         }}
       />
       <NavigationProgress />
-      <LocaleProvider locale={locale} messages={messages}>
+      <LocaleProvider locale={locale} messages={messages} locales={locales}>
         <SiteSettingsProvider settings={siteSettings}>
           <CustomerProvider>
             <WishlistProvider>
               <CartProvider>
-                <CurrencyProvider country={country}>
+                <CurrencyProvider country={country} rates={currencyRates}>
                   {isPaymentWindow ? (
                     <main id="content">
                       <Outlet />

@@ -16,6 +16,7 @@ import { AnalyticsPage } from "./features/analytics";
 import { AdminLoginPage, AdminResetPasswordPage, RequireAdminAuth } from "./features/auth";
 import { BundlesListPage } from "./features/bundles";
 import { CategoryEditorPage, CategoryListPage } from "./features/categories";
+import { CurrencyRatesPage } from "./features/currency-rates";
 import { DiscussionDetailPage, DiscussionsListPage } from "./features/community";
 import { ContentCommentsPage } from "./features/content-comments";
 import { DashboardPage } from "./features/dashboard";
@@ -83,6 +84,7 @@ createRoot(document.getElementById("root")!).render(
                 <Route path="categories" element={<CategoryListPage />} />
                 <Route path="categories/:id" element={<CategoryEditorPage />} />
                 <Route path="price-adjustments" element={<PriceAdjustmentsPage />} />
+                <Route path="currency-rates" element={<CurrencyRatesPage />} />
                 <Route path="promotions" element={<PromotionsListPage />} />
                 <Route path="gift-cards" element={<GiftCardsListPage />} />
                 <Route path="bundles" element={<BundlesListPage />} />
