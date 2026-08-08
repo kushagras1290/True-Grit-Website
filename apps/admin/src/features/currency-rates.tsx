@@ -58,7 +58,7 @@ function RateRow({ rate, canEdit }: { rate: CurrencyRate; canEdit: boolean }) {
     <tr className="border-t border-line align-top">
       <td className="px-3 py-3">
         <span className="font-semibold text-ink">{rate.currencyCode}</span>
-        <p className="mt-1 text-xs text-ink-muted">1 INR → {draft.ratePerInr || "—"}</p>
+        <p className="mt-1 text-xs text-ink-muted"><T>1 INR →</T> {draft.ratePerInr || "—"}</p>
       </td>
       <td className="px-3 py-3">
         <Input
@@ -96,7 +96,7 @@ function RateRow({ rate, canEdit }: { rate: CurrencyRate; canEdit: boolean }) {
           disabled={!canEdit || !changed || mutation.isPending}
           onClick={() => mutation.mutate()}
         >
-          {mutation.isPending ? "Saving…" : "Save"}
+          {mutation.isPending ? <T>{"Saving…"}</T> : <T>{"Save"}</T>}
         </Button>
       </td>
     </tr>
@@ -162,16 +162,14 @@ export function CurrencyRatesPage() {
           canEdit ? (
             <Button type="button" variant="primary" onClick={() => setAdding((value) => !value)}>
               <Plus size={16} />
-              Add currency
+              <T>Add currency</T>
             </Button>
           ) : undefined
         }
       />
 
       <div className="mb-5 rounded-md border border-line bg-subtle/40 px-4 py-3 text-sm text-ink-muted">
-        <strong className="text-ink">Safe geo-lock:</strong> a visitor’s country selects a currency,
-        this table supplies its display value, and the original INR price remains unchanged.
-        Disabled currencies fall back to INR-safe defaults.
+        <strong className="text-ink"><T>Safe geo-lock:</T></strong> <T>a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.</T>
       </div>
 
       {adding ? (
@@ -218,7 +216,7 @@ export function CurrencyRatesPage() {
             />
           </Field>
           <Button type="submit" variant="primary" disabled={addMutation.isPending}>
-            {addMutation.isPending ? "Adding…" : "Add"}
+            {addMutation.isPending ? <T>{"Adding…"}</T> : <T>{"Add"}</T>}
           </Button>
         </form>
       ) : null}
@@ -227,13 +225,13 @@ export function CurrencyRatesPage() {
         <table className="w-full min-w-[850px] border-collapse text-left">
           <thead className="bg-subtle/60 text-xs font-semibold tracking-wide text-ink-muted uppercase">
             <tr>
-              <th className="px-3 py-3">Currency</th>
-              <th className="px-3 py-3">Value per INR</th>
-              <th className="px-3 py-3">Formatting locale</th>
-              <th className="px-3 py-3">₹1,000 preview</th>
-              <th className="px-3 py-3">Storefront</th>
+              <th className="px-3 py-3"><T>Currency</T></th>
+              <th className="px-3 py-3"><T>Value per INR</T></th>
+              <th className="px-3 py-3"><T>Formatting locale</T></th>
+              <th className="px-3 py-3"><T>₹1,000 preview</T></th>
+              <th className="px-3 py-3"><T>Storefront</T></th>
               <th className="px-3 py-3">
-                <span className="sr-only">Actions</span>
+                <span className="sr-only"><T>Actions</T></span>
               </th>
             </tr>
           </thead>

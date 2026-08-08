@@ -68,9 +68,7 @@ def test_hub_translation_is_applied_to_public_discussion(
     discussion_id = str(discussion["id"])
     as_owner(client, db)
 
-    detail = client.get(
-        f"/v1/admin/translation-hub/resources/discussion/{discussion_id}?locale=hi"
-    )
+    detail = client.get(f"/v1/admin/translation-hub/resources/discussion/{discussion_id}?locale=hi")
     assert detail.status_code == 200, detail.text
     assert {field["key"] for field in detail.json()["fields"]} >= {"title", "body"}
 
@@ -109,9 +107,7 @@ def test_custom_language_can_be_added_without_a_deployment(
     assert any(locale["code"] == "eo" for locale in public.json()["items"])
 
 
-def test_announcement_translation_reaches_bootstrap(
-    client: TestClient, db: SQLiteDatabase
-) -> None:
+def test_announcement_translation_reaches_bootstrap(client: TestClient, db: SQLiteDatabase) -> None:
     announcement = db._conn.execute(
         "SELECT id FROM announcements WHERE country = 'global' LIMIT 1"
     ).fetchone()

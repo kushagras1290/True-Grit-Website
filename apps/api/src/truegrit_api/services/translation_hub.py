@@ -112,12 +112,8 @@ RESOURCE_SPECS: Final[dict[str, ResourceSpec]] = {
         ("title", "excerpt", "seo_title", "seo_description", "hero_image_alt"),
     ),
     "bundle": ResourceSpec("bundles", "name", ("name", "description")),
-    "discussion": ResourceSpec(
-        "discussions", "title", ("title", "body", "image_alt"), None
-    ),
-    "discussion_comment": ResourceSpec(
-        "discussion_comments", "body", ("body",), None
-    ),
+    "discussion": ResourceSpec("discussions", "title", ("title", "body", "image_alt"), None),
+    "discussion_comment": ResourceSpec("discussion_comments", "body", ("body",), None),
     "content_comment": ResourceSpec("content_comments", "body", ("body",), None),
     "review": ResourceSpec("reviews", "title", ("title", "body"), "status", "created_at"),
     "promotion": ResourceSpec(
@@ -467,8 +463,7 @@ def apply_path_overrides(document: Any, overrides: dict[str, str], *, prefix: st
         if not key.startswith(marker):
             continue
         parts = [
-            part.replace("~1", "/").replace("~0", "~")
-            for part in key[len(marker) :].split("/")
+            part.replace("~1", "/").replace("~0", "~") for part in key[len(marker) :].split("/")
         ]
         target = copied
         try:
