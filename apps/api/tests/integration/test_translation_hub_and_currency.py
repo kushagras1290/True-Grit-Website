@@ -308,3 +308,55 @@ def test_bulk_batch_translates_selected_interface_text_to_every_requested_langua
         assert public.json()["messages"] == {
             key: f"{locale}:{entry['source']}" for key, entry in entries.items()
         }
+
+
+def test_select_all_interface_batch_is_materialized_with_backpressure(
+    client: TestClient, db: SQLiteDatabase
+) -> None:
+    as_owner(client, db)
+    entries = {
+        f"literal.select_all_{index:04d}": {
+            "source": f"Interface source string {index}",
+            "translation": "",
+        }
+        for index in range(926)
+    }
+    locales = [f"qaa-{index:02d}" for index in range(99)]
+    created = client.post(
+        "/v1/admin/translation-hub/batches/interface",
+        json={
+            "target": "storefront",
+            "entries": entries,
+            "locales": locales,
+            "overwriteExisting": False,
+        },
+    )
+    assert created.status_code == 202, created.text
+    batch = created.json()
+    assert batch["totalTasks"] == 9_207
+    assert batch["pendingTasks"] == 9_207
+    assert (
+        db._conn.execute(
+            "SELECT COUNT(*) FROM translation_batch_tasks WHERE batch_id = ?", (batch["id"],)
+        ).fetchone()[0]
+        == 0
+    )
+
+    assert asyncio.run(enqueue_pending_tasks(db)) == 40
+    state = db._conn.execute(
+        "SELECT generation_cursor, generation_complete FROM translation_batches WHERE id = ?",
+        (batch["id"],),
+    ).fetchone()
+    assert tuple(state) == (40, 0)
+    assert (
+        db._conn.execute(
+            "SELECT COUNT(*) FROM translation_batch_tasks WHERE batch_id = ?", (batch["id"],)
+        ).fetchone()[0]
+        == 40
+    )
+    assert (
+        db._conn.execute(
+            "SELECT COUNT(*) FROM outbox_events WHERE aggregate_id = ?", (batch["id"],)
+        ).fetchone()[0]
+        == 40
+    )

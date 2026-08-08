@@ -19,9 +19,11 @@ from truegrit_api.util.timeutil import utc_now_iso
 TRANSLATION_TASK_EVENT: Final = "translation.batch-task.v1"
 MAX_LANGUAGES: Final = 150
 MAX_CONTENT_RESOURCES: Final = 25
-MAX_INTERFACE_ENTRIES: Final = 100
-MAX_BATCH_TASKS: Final = 2_500
+MAX_INTERFACE_ENTRIES: Final = 2_000
+MAX_CONTENT_TASKS: Final = 2_500
+MAX_BATCH_TASKS: Final = 25_000
 _FIELDS_PER_TASK: Final = 10
+_ROWS_PER_INSERT: Final = 10  # 10 columns x 10 rows = D1's 100-bind maximum.
 
 
 def _validated_locales(locales: Sequence[str]) -> list[str]:
@@ -45,6 +47,8 @@ def _chunks(values: Sequence[str], size: int = _FIELDS_PER_TASK) -> list[list[st
 
 
 def _task_insert_statement(rows: Sequence[tuple[Any, ...]]) -> tuple[str, Sequence[Any]]:
+    if len(rows) > _ROWS_PER_INSERT:
+        raise ValueError("A translation task insert would exceed D1's bind limit.")
     placeholders = ",".join("(?,?,?,?,?,?,?,?,?,?)" for _ in rows)
     params: list[Any] = []
     for row in rows:
@@ -91,7 +95,7 @@ async def create_content_batch(
         normalized.append((resource_id, field_keys))
 
     task_count = sum(len(_chunks(keys)) for _, keys in normalized) * len(target_locales)
-    if task_count > MAX_BATCH_TASKS:
+    if task_count > MAX_CONTENT_TASKS:
         raise ValidationAppError(
             "That selection is too large for one safe run. Select fewer content items or fields."
         )
@@ -188,41 +192,27 @@ async def create_interface_batch(
 
     batch_id = new_id("trb")
     now = utc_now_iso()
-    task_rows = [
-        (
-            new_id("trt"),
-            batch_id,
-            locale,
-            "interface",
-            target,
-            json.dumps({"fieldKeys": keys}, separators=(",", ":")),
-            "pending",
-            0,
-            now,
-            now,
-        )
-        for locale in target_locales
-        for keys in key_chunks
-    ]
     statements: list[tuple[str, Sequence[Any]]] = [
         (
             "INSERT INTO translation_batches"
             " (id, mode, resource_type, target, payload_json, overwrite_existing, total_tasks,"
-            " status, created_by, created_at, updated_at)"
-            " VALUES (?, 'interface', 'interface', ?, ?, ?, ?, 'queued', ?, ?, ?)",
+            " status, created_by, created_at, updated_at, generation_cursor,"
+            " generation_complete)"
+            " VALUES (?, 'interface', 'interface', ?, ?, ?, ?, 'queued', ?, ?, ?, 0, 0)",
             (
                 batch_id,
                 target,
-                json.dumps({"entries": normalized}, separators=(",", ":")),
+                json.dumps(
+                    {"entries": normalized, "locales": target_locales}, separators=(",", ":")
+                ),
                 int(overwrite_existing),
-                len(task_rows),
+                task_count,
                 actor.user_id,
                 now,
                 now,
             ),
         )
     ]
-    statements.extend(_task_insert_statement(chunk) for chunk in _row_chunks(task_rows))
     statements.append(
         audit_statement(
             action="translation_hub.batch_created",
@@ -236,7 +226,7 @@ async def create_interface_batch(
                 "target": target,
                 "strings": len(normalized),
                 "languages": len(target_locales),
-                "tasks": len(task_rows),
+                "tasks": task_count,
                 "overwriteExisting": overwrite_existing,
             },
         )
@@ -246,40 +236,52 @@ async def create_interface_batch(
 
 
 def _row_chunks(rows: Sequence[tuple[Any, ...]]) -> list[Sequence[tuple[Any, ...]]]:
-    return [rows[index : index + 40] for index in range(0, len(rows), 40)]
+    return [
+        rows[index : index + _ROWS_PER_INSERT] for index in range(0, len(rows), _ROWS_PER_INSERT)
+    ]
+
+
+def _generated_task_id(batch_id: str, cursor: int) -> str:
+    digest = hashlib.sha256(f"{batch_id}:{cursor}".encode()).hexdigest()[:32]
+    return f"trt_{digest}"
+
+
+def _outbox_insert(task_id: str, batch_id: str, now: str) -> tuple[str, Sequence[Any]]:
+    digest = hashlib.sha256(f"translation:{task_id}".encode()).hexdigest()[:32]
+    return (
+        "INSERT OR IGNORE INTO outbox_events"
+        " (id, event_type, event_version, aggregate_type, aggregate_id, payload_json,"
+        " status, available_at, created_at)"
+        " VALUES (?, ?, 1, 'translation_batch', ?, ?, 'pending', ?, ?)",
+        (
+            f"evt_{digest}",
+            TRANSLATION_TASK_EVENT,
+            batch_id,
+            json.dumps({"taskId": task_id}, separators=(",", ":")),
+            now,
+            now,
+        ),
+    )
 
 
 async def enqueue_pending_tasks(db: Database, *, limit: int = 50) -> int:
+    # Forty tasks keeps this D1 transaction below 100 prepared statements even
+    # when every task must be materialized and paired with an outbox event.
+    bounded_limit = max(1, min(limit, 40))
     rows = await db.fetch_all(
         "SELECT t.id, t.batch_id FROM translation_batch_tasks t"
         " JOIN translation_batches b ON b.id = t.batch_id"
         " WHERE t.status = 'pending' AND b.status IN ('queued', 'running')"
         " ORDER BY t.created_at, t.id LIMIT ?",
-        (max(1, min(limit, 50)),),
+        (bounded_limit,),
     )
-    if not rows:
-        return 0
     now = utc_now_iso()
     statements: list[tuple[str, Sequence[Any]]] = []
     for row in rows:
         task_id = str(row["id"])
-        digest = hashlib.sha256(f"translation:{task_id}".encode()).hexdigest()[:32]
         statements.extend(
             [
-                (
-                    "INSERT OR IGNORE INTO outbox_events"
-                    " (id, event_type, event_version, aggregate_type, aggregate_id, payload_json,"
-                    " status, available_at, created_at)"
-                    " VALUES (?, ?, 1, 'translation_batch', ?, ?, 'pending', ?, ?)",
-                    (
-                        f"evt_{digest}",
-                        TRANSLATION_TASK_EVENT,
-                        row["batch_id"],
-                        json.dumps({"taskId": task_id}, separators=(",", ":")),
-                        now,
-                        now,
-                    ),
-                ),
+                _outbox_insert(task_id, str(row["batch_id"]), now),
                 (
                     "UPDATE translation_batch_tasks SET status = 'queued', updated_at = ?"
                     " WHERE id = ? AND status = 'pending'",
@@ -287,8 +289,91 @@ async def enqueue_pending_tasks(db: Database, *, limit: int = 50) -> int:
                 ),
             ]
         )
+    queued_count = len(rows)
+
+    remaining = bounded_limit - queued_count
+    if remaining:
+        batches = await db.fetch_all(
+            "SELECT id, target, payload_json, generation_cursor, total_tasks, created_at"
+            " FROM translation_batches"
+            " WHERE generation_complete = 0 AND mode = 'interface'"
+            " AND status IN ('queued', 'running')"
+            " ORDER BY created_at, id LIMIT 10"
+        )
+        for batch in batches:
+            if remaining <= 0:
+                break
+            payload = json.loads(batch["payload_json"] or "{}")
+            entries = payload.get("entries") or {}
+            locales = [str(locale) for locale in payload.get("locales") or []]
+            key_chunks = _chunks(list(entries))
+            chunks_per_locale = len(key_chunks)
+            cursor = int(batch["generation_cursor"] or 0)
+            total_tasks = int(batch["total_tasks"])
+            expected_tasks = len(locales) * chunks_per_locale
+            if expected_tasks != total_tasks:
+                statements.append(
+                    (
+                        "UPDATE translation_batches SET status = 'failed',"
+                        " generation_complete = 1, updated_at = ? WHERE id = ?",
+                        (now, batch["id"]),
+                    )
+                )
+                continue
+            if not locales or not key_chunks or cursor >= total_tasks:
+                statements.append(
+                    (
+                        "UPDATE translation_batches SET generation_complete = 1, updated_at = ?"
+                        " WHERE id = ? AND generation_cursor = ?",
+                        (now, batch["id"], cursor),
+                    )
+                )
+                continue
+
+            generate_count = min(remaining, total_tasks - cursor)
+            batch_id = str(batch["id"])
+            for task_cursor in range(cursor, cursor + generate_count):
+                locale_index, chunk_index = divmod(task_cursor, chunks_per_locale)
+                task_id = _generated_task_id(batch_id, task_cursor)
+                statements.extend(
+                    [
+                        (
+                            "INSERT OR IGNORE INTO translation_batch_tasks"
+                            " (id, batch_id, locale, resource_type, resource_id, payload_json,"
+                            " status, translated_count, created_at, updated_at)"
+                            " VALUES (?, ?, ?, 'interface', ?, ?, 'queued', 0, ?, ?)",
+                            (
+                                task_id,
+                                batch_id,
+                                locales[locale_index],
+                                batch["target"],
+                                json.dumps(
+                                    {"fieldKeys": key_chunks[chunk_index]},
+                                    separators=(",", ":"),
+                                ),
+                                now,
+                                now,
+                            ),
+                        ),
+                        _outbox_insert(task_id, batch_id, now),
+                    ]
+                )
+            next_cursor = cursor + generate_count
+            statements.append(
+                (
+                    "UPDATE translation_batches SET generation_cursor = ?,"
+                    " generation_complete = ?, updated_at = ?"
+                    " WHERE id = ? AND generation_cursor = ?",
+                    (next_cursor, int(next_cursor >= total_tasks), now, batch_id, cursor),
+                )
+            )
+            queued_count += generate_count
+            remaining -= generate_count
+
+    if not statements:
+        return 0
     await db.batch(statements)
-    return len(rows)
+    return queued_count
 
 
 async def batch_detail(db: Database, batch_id: str) -> dict[str, Any]:
@@ -337,14 +422,18 @@ async def batch_detail(db: Database, batch_id: str) -> dict[str, Any]:
 
 
 async def _refresh_batch_status(db: Database, batch_id: str) -> None:
+    batch = await db.fetch_one(
+        "SELECT total_tasks FROM translation_batches WHERE id = ?", (batch_id,)
+    )
+    if batch is None:
+        raise NotFoundError("Translation batch not found.")
     counts = await db.fetch_one(
-        "SELECT COUNT(*) AS total,"
-        " SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed,"
+        "SELECT SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed,"
         " SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) AS failed"
         " FROM translation_batch_tasks WHERE batch_id = ?",
         (batch_id,),
     )
-    total = int((counts or {}).get("total") or 0)
+    total = int(batch["total_tasks"])
     completed = int((counts or {}).get("completed") or 0)
     failed = int((counts or {}).get("failed") or 0)
     if completed + failed < total:

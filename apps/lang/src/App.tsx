@@ -281,7 +281,7 @@ function BatchProgress({ batch }: { batch: TranslationBatch }) {
     <div className="border-b border-line bg-accent/5 px-4 py-3 sm:px-5">
       <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
         <p className="font-medium text-ink">
-          All-language run: {batch.status} · {finished}/{batch.totalTasks} tasks
+          Translation run: {batch.status} · {finished}/{batch.totalTasks} tasks
         </p>
         <p className="text-xs text-ink-muted">
           {batch.translatedStrings} strings translated
@@ -898,6 +898,7 @@ function InterfaceWorkspace({
   const allLanguageCodes = locales
     .filter((entry) => entry.code !== "en")
     .map((entry) => entry.code);
+  const currentLanguage = locales.find((entry) => entry.code === locale);
   const selectedEntries = Object.fromEntries(
     sources
       .filter(([key]) => selectedKeys.has(key))
@@ -913,18 +914,13 @@ function InterfaceWorkspace({
     },
   });
   const bulk = useMutation({
-    mutationFn: () =>
-      languageApi.createInterfaceBatch(
-        target,
-        selectedEntries,
-        allLanguageCodes,
-        overwriteExisting,
-      ),
-    onSuccess: (created) => {
+    mutationFn: (languageCodes: string[]) =>
+      languageApi.createInterfaceBatch(target, selectedEntries, languageCodes, overwriteExisting),
+    onSuccess: (created, languageCodes) => {
       setBatchId(created.id);
       setNotice({
         kind: "ok",
-        text: `Queued ${selectedKeys.size} selected texts across ${allLanguageCodes.length} languages.`,
+        text: `Queued ${selectedKeys.size} selected texts across ${languageCodes.length} language${languageCodes.length === 1 ? "" : "s"}.`,
       });
     },
     onError: (error) =>
@@ -945,10 +941,10 @@ function InterfaceWorkspace({
             New website and admin strings are included automatically with every release.
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap justify-end gap-2">
           <Button
             disabled={bulk.isPending || auto.isPending || save.isPending || !selectedKeys.size}
-            onClick={() => bulk.mutate()}
+            onClick={() => bulk.mutate(allLanguageCodes)}
           >
             {bulk.isPending ? (
               <Loader2 size={15} className="animate-spin" />
@@ -956,6 +952,17 @@ function InterfaceWorkspace({
               <Languages size={15} />
             )}
             Selected → all {allLanguageCodes.length}
+          </Button>
+          <Button
+            disabled={bulk.isPending || auto.isPending || save.isPending || !selectedKeys.size}
+            onClick={() => bulk.mutate([locale])}
+          >
+            {bulk.isPending ? (
+              <Loader2 size={15} className="animate-spin" />
+            ) : (
+              <Languages size={15} />
+            )}
+            Selected → {currentLanguage?.englishName ?? locale}
           </Button>
           <Button disabled={auto.isPending || save.isPending} onClick={() => auto.mutate()}>
             <Sparkles size={15} /> Translate visible 50
@@ -1019,9 +1026,10 @@ function InterfaceWorkspace({
           <button
             type="button"
             className="font-medium text-brand hover:underline"
-            onClick={() => setSelectedKeys(new Set(filtered.slice(0, 100).map(([key]) => key)))}
+            disabled={!filtered.length}
+            onClick={() => setSelectedKeys(new Set(filtered.map(([key]) => key)))}
           >
-            Select first {Math.min(100, filtered.length)} results
+            Select all {filtered.length} results
           </button>
           <button
             type="button"
@@ -1031,7 +1039,9 @@ function InterfaceWorkspace({
             Clear
           </button>
         </div>
-        <span className="text-ink-muted">{selectedKeys.size}/100 selected</span>
+        <span className="text-ink-muted">
+          {selectedKeys.size}/{filtered.length} selected
+        </span>
         <label className="flex items-center gap-2 text-ink-muted">
           <input
             type="checkbox"
@@ -1060,7 +1070,7 @@ function InterfaceWorkspace({
                   setSelectedKeys((current) => {
                     const next = new Set(current);
                     if (event.target.checked) {
-                      if (next.size < 100) next.add(key);
+                      next.add(key);
                     } else next.delete(key);
                     return next;
                   })

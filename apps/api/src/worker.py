@@ -29,6 +29,7 @@ from truegrit_api.platform.d1 import D1Database
 from truegrit_api.platform.media_store import R2MediaStore
 from truegrit_api.platform.translation import WorkersAITranslator
 from truegrit_api.platform.worker_env import bridge_worker_env as _bridge_worker_env
+from truegrit_api.platform.worker_env import public_worker_origins as _public_worker_origins
 
 # Re-exported (not just imported): wrangler resolves Durable Object classes
 # by name on this entry module, so ChatRoomDO must be a top-level attribute
@@ -91,10 +92,7 @@ def _json_response(body: str, status: int, headers: dict[str, str]) -> Any:
 
 def _cors_headers(env: Any, request: Any) -> dict[str, str]:
     origin = str(request.headers.get("origin") or "")
-    allowed = {
-        getattr(env, "PUBLIC_ADMIN_URL", ""),
-        getattr(env, "PUBLIC_STOREFRONT_URL", ""),
-    }
+    allowed = _public_worker_origins(env)
     headers = {"vary": "Origin"}
     if origin in allowed:
         headers.update(

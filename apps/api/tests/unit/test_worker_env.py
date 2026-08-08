@@ -1,12 +1,25 @@
 from __future__ import annotations
 
 from truegrit_api.config import get_settings
-from truegrit_api.platform.worker_env import bridge_worker_env
+from truegrit_api.platform.worker_env import bridge_worker_env, public_worker_origins
 
 
 class WorkerEnv:
     ADMIN_LOGIN_EMAIL = "first-owner@example.test"
     ADMIN_LOGIN_PASSWORD = "first-password"
+    PUBLIC_STOREFRONT_URL = "https://truegritin.com"
+    PUBLIC_ADMIN_URL = "https://admin.truegritin.com"
+    PUBLIC_PROCESS_URL = "https://process.truegritin.com"
+    PUBLIC_LANGUAGE_URL = "https://lang.truegritin.com"
+
+
+def test_emergency_cors_includes_every_first_party_surface():
+    assert public_worker_origins(WorkerEnv()) == {
+        "https://truegritin.com",
+        "https://admin.truegritin.com",
+        "https://process.truegritin.com",
+        "https://lang.truegritin.com",
+    }
 
 
 def test_rotated_worker_secrets_replace_cached_settings(monkeypatch):
