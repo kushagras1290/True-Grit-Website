@@ -24,6 +24,7 @@ from truegrit_api.repositories.content import ReturnRequestRepository
 from truegrit_api.services import addresses as address_service
 from truegrit_api.services import subscriptions as subscription_service
 from truegrit_api.services import wishlist as wishlist_service
+from truegrit_api.services.b2b import create_invoice
 from truegrit_api.services.checkout import CheckoutLine, place_order
 from truegrit_api.services.contact import contactable_email
 from truegrit_api.services.email_templates import (
@@ -67,6 +68,7 @@ class _CamelModel(BaseModel):
 class CheckoutItem(_CamelModel):
     variant_id: str = Field(max_length=64)
     quantity: int = Field(ge=1, le=99)
+    preorder: bool = False
 
 
 class CheckoutAddress(_CamelModel):
@@ -93,6 +95,11 @@ class CheckoutRequest(_CamelModel):
     idempotency_key: str | None = Field(default=None, max_length=80)
     coupon_code: str | None = Field(default=None, max_length=32)
     gift_card_code: str | None = Field(default=None, max_length=24)
+    loyalty_points: int = Field(default=0, ge=0, le=1_000_000)
+    delivery_method: str = Field(default="delivery", max_length=16)
+    pickup_point_id: str | None = Field(default=None, max_length=64)
+    delivery_slot_id: str | None = Field(default=None, max_length=64)
+    delivery_date: str | None = Field(default=None, max_length=10)
 
 
 class DiscountPreviewRequest(_CamelModel):
@@ -227,7 +234,8 @@ async def checkout(
     # browser cart.
     method = (
         payload.payment_method
-        if payload.payment_method in settings.enabled_payment_methods
+        if payload.payment_method == "invoice"
+        or payload.payment_method in settings.enabled_payment_methods
         else "cod"
     )
     result = await place_order(
@@ -235,7 +243,11 @@ async def checkout(
         customer,
         _request_id(request),
         items=[
-            CheckoutLine(variant_id=item.variant_id, quantity=item.quantity)
+            CheckoutLine(
+                variant_id=item.variant_id,
+                quantity=item.quantity,
+                preorder=item.preorder,
+            )
             for item in payload.items
         ],
         delivery_address=payload.delivery_address.model_dump(exclude_none=True),
@@ -243,6 +255,11 @@ async def checkout(
         idempotency_key=payload.idempotency_key,
         coupon_code=payload.coupon_code,
         gift_card_code=payload.gift_card_code,
+        loyalty_points=payload.loyalty_points,
+        delivery_method=payload.delivery_method,
+        pickup_point_id=payload.pickup_point_id,
+        delivery_slot_id=payload.delivery_slot_id,
+        delivery_date=payload.delivery_date,
     )
     now = utc_now_iso()
 
@@ -310,6 +327,32 @@ async def checkout(
             "amountMinor": paypal["chargeMinor"],
             "currency": paypal["chargeCurrency"],
         }
+        return result
+
+    if method == "invoice":
+        invoice = await create_invoice(
+            db,
+            result["id"],
+            result["b2bAccountId"],
+            result["totalMinor"],
+            result["b2bPaymentTermsDays"],
+        )
+        await db.execute(
+            _PAYMENT_INSERT_SQL,
+            (
+                new_id("pay"),
+                result["id"],
+                "invoice",
+                invoice["invoiceNumber"],
+                result["totalMinor"],
+                result["currencyCode"],
+                "pending",
+                now,
+                now,
+            ),
+        )
+        result["payment"] = {"method": "invoice", "invoice": invoice}
+        await _queue_order_emails(db, customer, result)
         return result
 
     # Cash on delivery: record the pending payment; the order is already confirmed.
@@ -565,6 +608,8 @@ async def my_order_detail(
         SELECT id, public_reference, currency_code, subtotal_minor, discount_minor,
                delivery_minor, tax_minor, total_minor, order_status, payment_status,
                fulfilment_status, delivery_status, delivery_address_json, placed_at, created_at
+               , delivery_method, pickup_point_id, delivery_zone_id, delivery_slot_id,
+               delivery_date, order_type, loyalty_points_redeemed, loyalty_applied_minor
         FROM orders
         WHERE public_reference = ? AND customer_user_id = ?
         """,
@@ -596,6 +641,14 @@ async def my_order_detail(
         "fulfilmentStatus": order["fulfilment_status"],
         "placedAt": order["placed_at"] or order["created_at"],
         "deliveryAddress": _camel_address(order["delivery_address_json"]),
+        "deliveryMethod": order["delivery_method"],
+        "pickupPointId": order["pickup_point_id"],
+        "deliveryZoneId": order["delivery_zone_id"],
+        "deliverySlotId": order["delivery_slot_id"],
+        "deliveryDate": order["delivery_date"],
+        "orderType": order["order_type"],
+        "loyaltyPointsRedeemed": order["loyalty_points_redeemed"],
+        "loyaltyAppliedMinor": order["loyalty_applied_minor"],
         "items": [
             {
                 "id": item["id"],

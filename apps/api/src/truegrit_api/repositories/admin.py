@@ -420,6 +420,9 @@ class AdminRepository:
             SELECT id, public_reference, customer_email, customer_phone_e164, currency_code,
                    subtotal_minor, discount_minor, delivery_minor, tax_minor, total_minor,
                    gift_card_applied_minor, gift_card_code,
+                   loyalty_points_redeemed, loyalty_applied_minor,
+                   delivery_method, pickup_point_id, delivery_zone_id,
+                   delivery_slot_id, delivery_date, order_type,
                    order_status, payment_status, fulfilment_status, delivery_status,
                    delivery_address_json, placed_at, created_at
             FROM orders WHERE id = ?
@@ -452,6 +455,8 @@ class AdminRepository:
             order["tax_minor"] = 0
             order["gift_card_applied_minor"] = 0
             order["gift_card_code"] = None
+            order["loyalty_points_redeemed"] = 0
+            order["loyalty_applied_minor"] = 0
         payment = await self._db.fetch_one(
             """
             SELECT id, provider, amount_minor, currency_code, status,
