@@ -3427,6 +3427,11 @@ class StorefrontSettingsUpdateRequest(_CamelModel):
     subscriptions: bool | None = None
     diet_cert_filters: bool | None = None
     gift_cards: bool | None = None
+    loyalty: bool | None = None
+    pickup: bool | None = None
+    preorders: bool | None = None
+    delivery_zones: bool | None = None
+    b2b: bool | None = None
     payments_disabled_notice: str | None = Field(default=None, max_length=600)
     blog_banner_image_url: str | None = Field(default=None, max_length=1000)
     blog_banner_image_alt: str | None = Field(default=None, max_length=200)
@@ -3632,6 +3637,11 @@ def _storefront_settings_response(
             "subscriptions": effective.subscriptions,
             "dietCertFilters": effective.diet_cert_filters,
             "giftCards": effective.gift_cards,
+            "loyalty": effective.loyalty,
+            "pickup": effective.pickup,
+            "preorders": effective.preorders,
+            "deliveryZones": effective.delivery_zones,
+            "b2b": effective.b2b,
             "anySignInAvailable": effective.any_sign_in_available,
         },
     }
@@ -6445,6 +6455,14 @@ async def get_order_endpoint(
         "totalMinor": order["total_minor"],
         "giftCardAppliedMinor": order["gift_card_applied_minor"],
         "giftCardCode": order["gift_card_code"],
+        "loyaltyPointsRedeemed": order["loyalty_points_redeemed"],
+        "loyaltyAppliedMinor": order["loyalty_applied_minor"],
+        "deliveryMethod": order["delivery_method"],
+        "pickupPointId": order["pickup_point_id"],
+        "deliveryZoneId": order["delivery_zone_id"],
+        "deliverySlotId": order["delivery_slot_id"],
+        "deliveryDate": order["delivery_date"],
+        "orderType": order["order_type"],
         "orderStatus": order["order_status"],
         "paymentStatus": order["payment_status"],
         "fulfilmentStatus": order["fulfilment_status"],

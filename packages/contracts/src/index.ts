@@ -1221,6 +1221,11 @@ export interface StorefrontSettings {
   subscriptions: boolean;
   dietCertFilters: boolean;
   giftCards: boolean;
+  loyalty: boolean;
+  pickup: boolean;
+  preorders: boolean;
+  deliveryZones: boolean;
+  b2b: boolean;
   blogBannerImageUrl: string;
   blogBannerImageAlt: string;
   farmsBannerImageUrl: string;
@@ -1239,6 +1244,11 @@ export interface StorefrontSettingsEffective {
   subscriptions: boolean;
   dietCertFilters: boolean;
   giftCards: boolean;
+  loyalty: boolean;
+  pickup: boolean;
+  preorders: boolean;
+  deliveryZones: boolean;
+  b2b: boolean;
   anySignInAvailable: boolean;
 }
 

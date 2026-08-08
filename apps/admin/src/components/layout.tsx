@@ -147,6 +147,18 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         permission: "subscriptions.view",
       },
       {
+        to: "/expanded-commerce",
+        label: "Expanded Commerce",
+        icon: <ClipboardList size={16} />,
+        permission: [
+          "loyalty.view",
+          "pickup_points.view",
+          "preorders.view",
+          "delivery_zones.view",
+          "b2b.view",
+        ],
+      },
+      {
         to: "/inventory",
         label: "Inventory",
         icon: <Warehouse size={16} />,

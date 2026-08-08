@@ -167,6 +167,11 @@ const DEMO_STOREFRONT_SETTINGS: StorefrontSettingsResponse = {
     // Off by default (migration 0082) -- real stored value, same reasoning
     // as promotions.
     giftCards: false,
+    loyalty: false,
+    pickup: false,
+    preorders: false,
+    deliveryZones: false,
+    b2b: false,
     blogBannerImageUrl: "",
     blogBannerImageAlt: "",
     farmsBannerImageUrl: "",
@@ -184,6 +189,11 @@ const DEMO_STOREFRONT_SETTINGS: StorefrontSettingsResponse = {
     subscriptions: false,
     dietCertFilters: true,
     giftCards: false,
+    loyalty: false,
+    pickup: false,
+    preorders: false,
+    deliveryZones: false,
+    b2b: false,
     anySignInAvailable: true,
   },
 };
@@ -1357,6 +1367,87 @@ function setDemoSession(active: boolean): void {
   } else {
     window.localStorage.removeItem(DEMO_AUTH_KEY);
   }
+}
+
+export interface LoyaltyAccountRow {
+  id: string;
+  customerUserId: string;
+  customerEmail: string;
+  customerName: string;
+  referralCode: string;
+  balance: number;
+  status: string;
+}
+
+export interface PickupPointRow {
+  id: string;
+  name: string;
+  address: Record<string, unknown>;
+  hours: string | null;
+  phone: string | null;
+  status: "active" | "inactive";
+}
+
+export interface HarvestWindowRow {
+  id: string;
+  productId: string;
+  productName: string | null;
+  title: string | null;
+  expectedStart: string;
+  expectedEnd: string;
+  maxPreorders: number | null;
+  currentPreorders: number;
+  status: string;
+}
+
+export interface PreorderRow {
+  id: string;
+  orderId: string;
+  orderReference: string | null;
+  harvestWindowId: string;
+  productId: string;
+  productName: string | null;
+  variantId: string;
+  quantity: number;
+  status: "reserved" | "ready" | "fulfilled" | "cancelled";
+  createdAt: string;
+  fulfilledAt: string | null;
+}
+
+export interface DeliveryZoneRow {
+  id: string;
+  name: string;
+  postalCodes: string[];
+  feeOverrideMinor: number | null;
+  freeThresholdOverrideMinor: number | null;
+  leadTimeHours: number;
+  status: "active" | "inactive";
+}
+
+export interface B2BAccountRow {
+  id: string;
+  companyName: string;
+  gstNumber: string | null;
+  contactEmail: string | null;
+  creditLimitMinor: number;
+  paymentTermsDays: number;
+  status: "pending" | "active" | "suspended";
+}
+
+export interface B2BInvoiceRow {
+  id: string;
+  orderId: string;
+  orderReference: string | null;
+  b2bAccountId: string;
+  companyName: string | null;
+  invoiceNumber: string;
+  amountMinor: number;
+  currencyCode: string;
+  dueDate: string;
+  status: "issued" | "paid" | "overdue" | "cancelled";
+  paymentReference: string | null;
+  issuedAt: string;
+  paidAt: string | null;
 }
 
 export const api = {
@@ -3372,6 +3463,129 @@ export const api = {
           effective: DEMO_STOREFRONT_SETTINGS.effective,
         })
       : patch(`/v1/admin/storefront-settings`, input),
+
+  loyaltyAccounts: (): Promise<{ items: LoyaltyAccountRow[]; total: number }> =>
+    demoMode
+      ? demo({ items: [], total: 0 })
+      : get<{ items: LoyaltyAccountRow[]; total: number }>("/v1/admin/loyalty/accounts"),
+  adjustLoyalty: (input: {
+    customerUserId: string;
+    points: number;
+    reason: string;
+  }): Promise<{ balance: number }> =>
+    demoMode ? demo({ balance: input.points }) : post("/v1/admin/loyalty/adjustments", input),
+
+  pickupPoints: (): Promise<{ items: PickupPointRow[]; total: number }> =>
+    demoMode
+      ? demo({ items: [], total: 0 })
+      : get<{ items: PickupPointRow[]; total: number }>("/v1/admin/pickup-points"),
+  createPickupPoint: (input: {
+    name: string;
+    address: Record<string, string>;
+    hours?: string;
+  }): Promise<PickupPointRow> =>
+    demoMode
+      ? demo({
+          id: crypto.randomUUID(),
+          name: input.name,
+          address: input.address,
+          hours: input.hours ?? null,
+          phone: null,
+          status: "active",
+        })
+      : post("/v1/admin/pickup-points", input),
+  updatePickupPoint: (id: string, input: Partial<PickupPointRow>): Promise<PickupPointRow> =>
+    demoMode
+      ? demo({ ...(input as PickupPointRow), id })
+      : patch(`/v1/admin/pickup-points/${id}`, input),
+
+  harvestWindows: (): Promise<{ items: HarvestWindowRow[]; total: number }> =>
+    demoMode
+      ? demo({ items: [], total: 0 })
+      : get<{ items: HarvestWindowRow[]; total: number }>("/v1/admin/harvest-windows"),
+  createHarvestWindow: (input: {
+    productId: string;
+    expectedStart: string;
+    expectedEnd: string;
+    title?: string;
+    maxPreorders?: number;
+  }): Promise<HarvestWindowRow> =>
+    demoMode
+      ? Promise.reject(new ApiError("Unavailable in demo mode.", 503, "demo_mode"))
+      : post("/v1/admin/harvest-windows", input),
+  updateHarvestWindow: (id: string, input: Partial<HarvestWindowRow>): Promise<HarvestWindowRow> =>
+    demoMode
+      ? demo({ ...(input as HarvestWindowRow), id })
+      : patch(`/v1/admin/harvest-windows/${id}`, input),
+  preorders: (): Promise<{ items: PreorderRow[]; total: number }> =>
+    demoMode
+      ? demo({ items: [], total: 0 })
+      : get<{ items: PreorderRow[]; total: number }>("/v1/admin/preorders"),
+  markHarvestReady: (windowId: string): Promise<{ updated: number }> =>
+    demoMode ? demo({ updated: 0 }) : post(`/v1/admin/harvest-windows/${windowId}/ready`, {}),
+  fulfillPreorder: (preorderId: string): Promise<PreorderRow> =>
+    demoMode
+      ? Promise.reject(new ApiError("Unavailable in demo mode.", 503, "demo_mode"))
+      : post(`/v1/admin/preorders/${preorderId}/fulfill`, {}),
+
+  deliveryZones: (): Promise<{ items: DeliveryZoneRow[]; total: number }> =>
+    demoMode
+      ? demo({ items: [], total: 0 })
+      : get<{ items: DeliveryZoneRow[]; total: number }>("/v1/admin/delivery-zones"),
+  createDeliveryZone: (input: {
+    name: string;
+    postalCodes: string[];
+    feeOverrideMinor?: number;
+    leadTimeHours: number;
+  }): Promise<DeliveryZoneRow> =>
+    demoMode
+      ? Promise.reject(new ApiError("Unavailable in demo mode.", 503, "demo_mode"))
+      : post("/v1/admin/delivery-zones", input),
+  updateDeliveryZone: (id: string, input: Partial<DeliveryZoneRow>): Promise<DeliveryZoneRow> =>
+    demoMode
+      ? demo({ ...(input as DeliveryZoneRow), id })
+      : patch(`/v1/admin/delivery-zones/${id}`, input),
+  createDeliverySlot: (
+    zoneId: string,
+    input: { dayOfWeek: number; startTime: string; endTime: string; maxOrders: number },
+  ): Promise<unknown> =>
+    demoMode ? demo({}) : post(`/v1/admin/delivery-zones/${zoneId}/slots`, input),
+
+  b2bAccounts: (): Promise<{ items: B2BAccountRow[]; total: number }> =>
+    demoMode
+      ? demo({ items: [], total: 0 })
+      : get<{ items: B2BAccountRow[]; total: number }>("/v1/admin/b2b/accounts"),
+  createB2BAccount: (input: {
+    companyName: string;
+    gstNumber?: string;
+    contactEmail?: string;
+    creditLimitMinor: number;
+    paymentTermsDays: number;
+  }): Promise<B2BAccountRow> =>
+    demoMode
+      ? Promise.reject(new ApiError("Unavailable in demo mode.", 503, "demo_mode"))
+      : post("/v1/admin/b2b/accounts", input),
+  updateB2BAccount: (id: string, input: Partial<B2BAccountRow>): Promise<B2BAccountRow> =>
+    demoMode
+      ? demo({ ...(input as B2BAccountRow), id })
+      : patch(`/v1/admin/b2b/accounts/${id}`, input),
+  createB2BPriceBreak: (input: {
+    variantId: string;
+    minQuantity: number;
+    priceMinor: number;
+  }): Promise<unknown> => (demoMode ? demo({}) : post("/v1/admin/b2b/price-breaks", input)),
+  linkB2BUser: (accountId: string, userId: string): Promise<{ linked: boolean }> =>
+    demoMode
+      ? demo({ linked: true })
+      : post(`/v1/admin/b2b/accounts/${accountId}/users`, { userId }),
+  b2bInvoices: (): Promise<{ items: B2BInvoiceRow[]; total: number }> =>
+    demoMode
+      ? demo({ items: [], total: 0 })
+      : get<{ items: B2BInvoiceRow[]; total: number }>("/v1/admin/b2b/invoices"),
+  markB2BInvoicePaid: (invoiceId: string, paymentReference?: string): Promise<B2BInvoiceRow> =>
+    demoMode
+      ? Promise.reject(new ApiError("Unavailable in demo mode.", 503, "demo_mode"))
+      : post(`/v1/admin/b2b/invoices/${invoiceId}/paid`, { paymentReference }),
 
   // --- Route SEO overrides ---------------------------------------------
 

@@ -19,6 +19,7 @@ export interface CartLine {
   variantId: string;
   variantName: string;
   unitMinor: number;
+  preorder?: boolean;
   quantity: number;
 }
 
@@ -27,8 +28,8 @@ interface CartContextValue {
   count: number;
   subtotalMinor: number;
   add: (line: Omit<CartLine, "quantity">, quantity?: number) => void;
-  setQuantity: (variantId: string, quantity: number) => void;
-  remove: (variantId: string) => void;
+  setQuantity: (variantId: string, quantity: number, preorder?: boolean) => void;
+  remove: (variantId: string, preorder?: boolean) => void;
   clear: () => void;
 }
 
@@ -62,10 +63,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const add = useCallback((line: Omit<CartLine, "quantity">, quantity = 1) => {
     setLines((current) => {
-      const existing = current.find((entry) => entry.variantId === line.variantId);
+      const existing = current.find(
+        (entry) =>
+          entry.variantId === line.variantId && Boolean(entry.preorder) === Boolean(line.preorder),
+      );
       if (existing) {
         return current.map((entry) =>
-          entry.variantId === line.variantId
+          entry.variantId === line.variantId && Boolean(entry.preorder) === Boolean(line.preorder)
             ? { ...entry, quantity: Math.min(entry.quantity + quantity, MAX_QUANTITY) }
             : entry,
         );
@@ -74,20 +78,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const setQuantity = useCallback((variantId: string, quantity: number) => {
+  const setQuantity = useCallback((variantId: string, quantity: number, preorder = false) => {
     setLines((current) =>
       quantity <= 0
-        ? current.filter((entry) => entry.variantId !== variantId)
+        ? current.filter(
+            (entry) =>
+              entry.variantId !== variantId || Boolean(entry.preorder) !== Boolean(preorder),
+          )
         : current.map((entry) =>
-            entry.variantId === variantId
+            entry.variantId === variantId && Boolean(entry.preorder) === Boolean(preorder)
               ? { ...entry, quantity: Math.min(quantity, MAX_QUANTITY) }
               : entry,
           ),
     );
   }, []);
 
-  const remove = useCallback((variantId: string) => {
-    setLines((current) => current.filter((entry) => entry.variantId !== variantId));
+  const remove = useCallback((variantId: string, preorder = false) => {
+    setLines((current) =>
+      current.filter(
+        (entry) => entry.variantId !== variantId || Boolean(entry.preorder) !== Boolean(preorder),
+      ),
+    );
   }, []);
 
   const clear = useCallback(() => setLines([]), []);
