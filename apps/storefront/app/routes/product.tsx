@@ -258,7 +258,8 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
             <ul className="mt-3 flex flex-wrap gap-2 text-xs text-ink-muted">
               {bulkPrices.map((price) => (
                 <li key={price.id} className="rounded-full border border-line px-3 py-1">
-                  {price.minQuantity}<LocalizedText>+ at</LocalizedText> {formatPrice(price.priceMinor)} each
+                  {price.minQuantity}
+                  <LocalizedText>+ at</LocalizedText> {formatPrice(price.priceMinor)} each
                 </li>
               ))}
             </ul>
@@ -268,7 +269,10 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
           </p>
           {preorderRequested ? (
             <p className="mt-1 rounded-sm border border-accent/30 bg-accent/5 px-3 py-2 text-sm text-ink-muted">
-              <LocalizedText>This is a seasonal pre-order. Payment is taken now and fulfilment begins when the harvest arrives.</LocalizedText>
+              <LocalizedText>
+                This is a seasonal pre-order. Payment is taken now and fulfilment begins when the
+                harvest arrives.
+              </LocalizedText>
             </p>
           ) : null}
           {/* Either admin switch (acceptsOrders, or paymentsOverride diverging

@@ -223,10 +223,18 @@ export function ExpandedCommercePage() {
   return (
     <div className="space-y-6">
       <header>
-        <p className="text-xs font-semibold tracking-[0.12em] text-brand uppercase"><T>Commerce</T></p>
-        <h1 className="mt-1 font-display text-3xl text-ink"><T>Expanded commerce</T></h1>
+        <p className="text-xs font-semibold tracking-[0.12em] text-brand uppercase">
+          <T>Commerce</T>
+        </p>
+        <h1 className="mt-1 font-display text-3xl text-ink">
+          <T>Expanded commerce</T>
+        </h1>
         <p className="mt-2 max-w-3xl text-sm text-ink-muted">
-          <T>Configure loyalty, pickup, harvest reservations, delivery logistics and wholesale accounts. Customer access is controlled independently by the five checkboxes in Site Control.</T>
+          <T>
+            Configure loyalty, pickup, harvest reservations, delivery logistics and wholesale
+            accounts. Customer access is controlled independently by the five checkboxes in Site
+            Control.
+          </T>
         </p>
       </header>
 
@@ -303,7 +311,9 @@ export function ExpandedCommercePage() {
             </li>
           ))}
           {loyalty.data?.items.length === 0 ? (
-            <li className="py-3 text-sm text-ink-muted"><T>No loyalty accounts yet.</T></li>
+            <li className="py-3 text-sm text-ink-muted">
+              <T>No loyalty accounts yet.</T>
+            </li>
           ) : null}
         </ul>
       </Panel>
@@ -516,7 +526,9 @@ export function ExpandedCommercePage() {
             </li>
           ))}
           {preorderRows.data?.items.length === 0 ? (
-            <li className="py-3 text-sm text-ink-muted"><T>No pre-orders yet.</T></li>
+            <li className="py-3 text-sm text-ink-muted">
+              <T>No pre-orders yet.</T>
+            </li>
           ) : null}
         </ul>
       </Panel>
@@ -667,8 +679,13 @@ export function ExpandedCommercePage() {
                 <span className="ml-2 text-ink-muted">{item.postalCodes.join(", ")}</span>
               </span>
               <span>
-                {item.feeOverrideMinor == null ? <T>{"Default fee"}</T> : formatMoney(item.feeOverrideMinor)}{" "}
-                · {item.leadTimeHours}<T>h lead</T>
+                {item.feeOverrideMinor == null ? (
+                  <T>{"Default fee"}</T>
+                ) : (
+                  formatMoney(item.feeOverrideMinor)
+                )}{" "}
+                · {item.leadTimeHours}
+                <T>h lead</T>
               </span>
             </li>
           ))}
@@ -838,7 +855,8 @@ export function ExpandedCommercePage() {
                 <span className="ml-2 text-ink-muted">{account.contactEmail}</span>
               </span>
               <span>
-                {account.paymentTermsDays}<T>-day terms ·</T> <StatusPill status={account.status} />
+                {account.paymentTermsDays}
+                <T>-day terms ·</T> <StatusPill status={account.status} />
               </span>
             </li>
           ))}
@@ -872,7 +890,9 @@ export function ExpandedCommercePage() {
             </li>
           ))}
           {b2bInvoices.data?.items.length === 0 ? (
-            <li className="py-3 text-sm text-ink-muted"><T>No B2B invoices yet.</T></li>
+            <li className="py-3 text-sm text-ink-muted">
+              <T>No B2B invoices yet.</T>
+            </li>
           ) : null}
         </ul>
       </Panel>

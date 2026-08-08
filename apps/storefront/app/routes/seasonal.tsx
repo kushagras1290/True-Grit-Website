@@ -118,9 +118,11 @@ export default function SeasonalPage({ loaderData }: Route.ComponentProps) {
                   {window.title || window.productName}
                 </h3>
                 <p className="mt-2 text-sm text-ink-muted">
-                  {window.maxPreorders
-                    ? `${window.currentPreorders} of ${window.maxPreorders} reservations taken`
-                    : <LocalizedText>{"Reservations are open"}</LocalizedText>}
+                  {window.maxPreorders ? (
+                    `${window.currentPreorders} of ${window.maxPreorders} reservations taken`
+                  ) : (
+                    <LocalizedText>{"Reservations are open"}</LocalizedText>
+                  )}
                 </p>
                 <Link
                   to={`/product/${window.productSlug}?preorder=1`}

@@ -77,8 +77,13 @@ def _generate_invoice_number() -> str:
 
 # ── B2B Accounts ───────────────────────────────────────────────────────────
 
+
 async def list_b2b_accounts(
-    db: Database, *, search: str | None = None, limit: int = 50, offset: int = 0,
+    db: Database,
+    *,
+    search: str | None = None,
+    limit: int = 50,
+    offset: int = 0,
 ) -> dict[str, Any]:
     clean_search = f"%{search.strip()}%" if search and search.strip() else None
     where = (
@@ -88,7 +93,8 @@ async def list_b2b_accounts(
     )
     params: tuple[Any, ...] = (clean_search, clean_search, clean_search) if clean_search else ()
     total_row = await db.fetch_one(
-        f"SELECT COUNT(*) AS cnt FROM b2b_accounts{where}", params,
+        f"SELECT COUNT(*) AS cnt FROM b2b_accounts{where}",
+        params,
     )
     rows = await db.fetch_all(
         f"SELECT * FROM b2b_accounts{where} ORDER BY created_at DESC LIMIT ? OFFSET ?",
@@ -110,11 +116,17 @@ async def get_b2b_account(db: Database, account_id: str) -> dict[str, Any]:
 
 
 async def create_b2b_account(
-    db: Database, actor: Principal, request_id: str,
-    *, company_name: str, gst_number: str | None = None,
-    contact_name: str | None = None, contact_email: str | None = None,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    company_name: str,
+    gst_number: str | None = None,
+    contact_name: str | None = None,
+    contact_email: str | None = None,
     contact_phone: str | None = None,
-    credit_limit_minor: int = 0, payment_terms_days: int = 30,
+    credit_limit_minor: int = 0,
+    payment_terms_days: int = 30,
     notes: str | None = None,
 ) -> dict[str, Any]:
     clean_name = company_name.strip()
@@ -122,43 +134,53 @@ async def create_b2b_account(
         raise ValidationAppError("Company name is required.")
     account_id = new_id("b2b")
     now = utc_now_iso()
-    await db.batch([
-        (
-            "INSERT INTO b2b_accounts"
-            " (id, company_name, gst_number, contact_name, contact_email,"
-            "  contact_phone, credit_limit_minor, payment_terms_days,"
-            "  status, notes, created_at, updated_at)"
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
+    await db.batch(
+        [
             (
-                account_id, clean_name,
-                (gst_number or "").strip() or None,
-                (contact_name or "").strip() or None,
-                (contact_email or "").strip() or None,
-                (contact_phone or "").strip() or None,
-                credit_limit_minor, payment_terms_days,
-                (notes or "").strip() or None,
-                now, now,
+                "INSERT INTO b2b_accounts"
+                " (id, company_name, gst_number, contact_name, contact_email,"
+                "  contact_phone, credit_limit_minor, payment_terms_days,"
+                "  status, notes, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
+                (
+                    account_id,
+                    clean_name,
+                    (gst_number or "").strip() or None,
+                    (contact_name or "").strip() or None,
+                    (contact_email or "").strip() or None,
+                    (contact_phone or "").strip() or None,
+                    credit_limit_minor,
+                    payment_terms_days,
+                    (notes or "").strip() or None,
+                    now,
+                    now,
+                ),
             ),
-        ),
-        audit_statement(
-            action="b2b_account.created",
-            entity_type="b2b_account",
-            entity_id=account_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after={"companyName": clean_name},
-        ),
-    ])
+            audit_statement(
+                action="b2b_account.created",
+                entity_type="b2b_account",
+                entity_id=account_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"companyName": clean_name},
+            ),
+        ]
+    )
     return await get_b2b_account(db, account_id)
 
 
 async def update_b2b_account(
-    db: Database, actor: Principal, request_id: str,
-    account_id: str, *, updates: dict[str, Any],
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    account_id: str,
+    *,
+    updates: dict[str, Any],
 ) -> dict[str, Any]:
     existing = await db.fetch_one(
-        "SELECT * FROM b2b_accounts WHERE id = ?", (account_id,),
+        "SELECT * FROM b2b_accounts WHERE id = ?",
+        (account_id,),
     )
     if existing is None:
         raise NotFoundError("B2B account not found.")
@@ -168,13 +190,16 @@ async def update_b2b_account(
     changed: dict[str, Any] = {}
 
     field_map = {
-        "companyName": "company_name", "gstNumber": "gst_number",
-        "contactName": "contact_name", "contactEmail": "contact_email",
-        "contactPhone": "contact_phone", "notes": "notes",
+        "companyName": "company_name",
+        "gstNumber": "gst_number",
+        "contactName": "contact_name",
+        "contactEmail": "contact_email",
+        "contactPhone": "contact_phone",
+        "notes": "notes",
     }
     for camel, snake in field_map.items():
         if camel in updates:
-            val = (str(updates[camel]).strip() if updates[camel] else None)
+            val = str(updates[camel]).strip() if updates[camel] else None
             sets.append(f"{snake} = ?")
             params.append(val)
             changed[camel] = val
@@ -205,28 +230,35 @@ async def update_b2b_account(
     params.append(now)
     params.append(account_id)
 
-    await db.batch([
-        (f"UPDATE b2b_accounts SET {', '.join(sets)} WHERE id = ?", tuple(params)),
-        audit_statement(
-            action="b2b_account.updated",
-            entity_type="b2b_account",
-            entity_id=account_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after=changed,
-        ),
-    ])
+    await db.batch(
+        [
+            (f"UPDATE b2b_accounts SET {', '.join(sets)} WHERE id = ?", tuple(params)),
+            audit_statement(
+                action="b2b_account.updated",
+                entity_type="b2b_account",
+                entity_id=account_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after=changed,
+            ),
+        ]
+    )
     return await get_b2b_account(db, account_id)
 
 
 async def link_user_to_b2b(
-    db: Database, actor: Principal, request_id: str,
-    *, user_id: str, b2b_account_id: str,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    user_id: str,
+    b2b_account_id: str,
 ) -> None:
     """Link a user to a B2B account."""
     account = await db.fetch_one(
-        "SELECT id FROM b2b_accounts WHERE id = ?", (b2b_account_id,),
+        "SELECT id FROM b2b_accounts WHERE id = ?",
+        (b2b_account_id,),
     )
     if account is None:
         raise NotFoundError("B2B account not found.")
@@ -268,13 +300,19 @@ async def is_b2b_customer(db: Database, user_id: str) -> dict[str, Any] | None:
 
 # ── Price Breaks ───────────────────────────────────────────────────────────
 
+
 async def list_price_breaks(
-    db: Database, *, variant_id: str | None = None, limit: int = 100, offset: int = 0,
+    db: Database,
+    *,
+    variant_id: str | None = None,
+    limit: int = 100,
+    offset: int = 0,
 ) -> dict[str, Any]:
     where = " WHERE pb.variant_id = ?" if variant_id else ""
     params: tuple[Any, ...] = (variant_id,) if variant_id else ()
     total_row = await db.fetch_one(
-        f"SELECT COUNT(*) AS cnt FROM b2b_price_breaks pb{where}", params,
+        f"SELECT COUNT(*) AS cnt FROM b2b_price_breaks pb{where}",
+        params,
     )
     rows = await db.fetch_all(
         f"""
@@ -297,15 +335,21 @@ async def list_price_breaks(
 
 
 async def create_price_break(
-    db: Database, actor: Principal, request_id: str,
-    *, variant_id: str, min_quantity: int, price_minor: int,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    variant_id: str,
+    min_quantity: int,
+    price_minor: int,
 ) -> dict[str, Any]:
     if min_quantity < 1:
         raise ValidationAppError("Minimum quantity must be at least 1.")
     if price_minor < 0:
         raise ValidationAppError("Price must be non-negative.")
     variant = await db.fetch_one(
-        "SELECT id FROM product_variants WHERE id = ?", (variant_id,),
+        "SELECT id FROM product_variants WHERE id = ?",
+        (variant_id,),
     )
     if variant is None:
         raise NotFoundError("Variant not found.")
@@ -317,24 +361,29 @@ async def create_price_break(
         raise ConflictError("A price break for this quantity already exists.")
     break_id = new_id("bpb")
     now = utc_now_iso()
-    await db.batch([
-        (
-            "INSERT INTO b2b_price_breaks"
-            " (id, variant_id, min_quantity, price_minor, status, created_at, updated_at)"
-            " VALUES (?, ?, ?, ?, 'active', ?, ?)",
-            (break_id, variant_id, min_quantity, price_minor, now, now),
-        ),
-        audit_statement(
-            action="b2b_price_break.created",
-            entity_type="b2b_price_break",
-            entity_id=break_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after={"variantId": variant_id, "minQuantity": min_quantity,
-                   "priceMinor": price_minor},
-        ),
-    ])
+    await db.batch(
+        [
+            (
+                "INSERT INTO b2b_price_breaks"
+                " (id, variant_id, min_quantity, price_minor, status, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?, 'active', ?, ?)",
+                (break_id, variant_id, min_quantity, price_minor, now, now),
+            ),
+            audit_statement(
+                action="b2b_price_break.created",
+                entity_type="b2b_price_break",
+                entity_id=break_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={
+                    "variantId": variant_id,
+                    "minQuantity": min_quantity,
+                    "priceMinor": price_minor,
+                },
+            ),
+        ]
+    )
     row = await db.fetch_one(
         """
         SELECT pb.*, v.name AS variant_name, p.name AS product_name
@@ -349,30 +398,38 @@ async def create_price_break(
 
 
 async def delete_price_break(
-    db: Database, actor: Principal, request_id: str, break_id: str,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    break_id: str,
 ) -> None:
     existing = await db.fetch_one(
-        "SELECT id FROM b2b_price_breaks WHERE id = ?", (break_id,),
+        "SELECT id FROM b2b_price_breaks WHERE id = ?",
+        (break_id,),
     )
     if existing is None:
         raise NotFoundError("Price break not found.")
     now = utc_now_iso()
-    await db.batch([
-        ("DELETE FROM b2b_price_breaks WHERE id = ?", (break_id,)),
-        audit_statement(
-            action="b2b_price_break.deleted",
-            entity_type="b2b_price_break",
-            entity_id=break_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after={"deleted": True},
-        ),
-    ])
+    await db.batch(
+        [
+            ("DELETE FROM b2b_price_breaks WHERE id = ?", (break_id,)),
+            audit_statement(
+                action="b2b_price_break.deleted",
+                entity_type="b2b_price_break",
+                entity_id=break_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"deleted": True},
+            ),
+        ]
+    )
 
 
 async def resolve_b2b_price(
-    db: Database, variant_id: str, quantity: int,
+    db: Database,
+    variant_id: str,
+    quantity: int,
 ) -> int | None:
     """Resolve the B2B tier price for a variant at a given quantity.
     Returns the price_minor, or None if no matching price break."""
@@ -390,9 +447,14 @@ async def resolve_b2b_price(
 
 # ── Invoices ───────────────────────────────────────────────────────────────
 
+
 async def list_invoices(
-    db: Database, *, b2b_account_id: str | None = None,
-    status: str | None = None, limit: int = 50, offset: int = 0,
+    db: Database,
+    *,
+    b2b_account_id: str | None = None,
+    status: str | None = None,
+    limit: int = 50,
+    offset: int = 0,
 ) -> dict[str, Any]:
     conditions: list[str] = []
     params: list[Any] = []
@@ -405,7 +467,8 @@ async def list_invoices(
     where = (" WHERE " + " AND ".join(conditions)) if conditions else ""
 
     total_row = await db.fetch_one(
-        f"SELECT COUNT(*) AS cnt FROM b2b_invoices bi{where}", tuple(params),
+        f"SELECT COUNT(*) AS cnt FROM b2b_invoices bi{where}",
+        tuple(params),
     )
     rows = await db.fetch_all(
         f"""
@@ -428,11 +491,15 @@ async def list_invoices(
 
 
 async def create_invoice(
-    db: Database, order_id: str, b2b_account_id: str,
-    amount_minor: int, payment_terms_days: int,
+    db: Database,
+    order_id: str,
+    b2b_account_id: str,
+    amount_minor: int,
+    payment_terms_days: int,
 ) -> dict[str, Any]:
     """Create an invoice for a B2B order.  Called at checkout."""
     import datetime
+
     invoice_id = new_id("inv")
     invoice_number = _generate_invoice_number()
     now = utc_now_iso()
@@ -445,8 +512,17 @@ async def create_invoice(
         " (id, order_id, b2b_account_id, invoice_number, amount_minor,"
         "  currency_code, due_date, status, issued_at, created_at, updated_at)"
         " VALUES (?, ?, ?, ?, ?, 'INR', ?, 'issued', ?, ?, ?)",
-        (invoice_id, order_id, b2b_account_id, invoice_number,
-         amount_minor, due_date, now, now, now),
+        (
+            invoice_id,
+            order_id,
+            b2b_account_id,
+            invoice_number,
+            amount_minor,
+            due_date,
+            now,
+            now,
+            now,
+        ),
     )
     row = await db.fetch_one(
         """
@@ -462,11 +538,16 @@ async def create_invoice(
 
 
 async def mark_invoice_paid(
-    db: Database, actor: Principal, request_id: str,
-    invoice_id: str, *, payment_reference: str | None = None,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    invoice_id: str,
+    *,
+    payment_reference: str | None = None,
 ) -> dict[str, Any]:
     invoice = await db.fetch_one(
-        "SELECT * FROM b2b_invoices WHERE id = ?", (invoice_id,),
+        "SELECT * FROM b2b_invoices WHERE id = ?",
+        (invoice_id,),
     )
     if invoice is None:
         raise NotFoundError("Invoice not found.")
@@ -475,30 +556,32 @@ async def mark_invoice_paid(
     if invoice["status"] == "cancelled":
         raise ConflictError("Cannot mark a cancelled invoice as paid.")
     now = utc_now_iso()
-    await db.batch([
-        (
-            "UPDATE b2b_invoices SET status = 'paid', paid_at = ?,"
-            " payment_reference = ?, updated_at = ? WHERE id = ?",
-            (now, (payment_reference or "").strip() or None, now, invoice_id),
-        ),
-        (
-            "UPDATE orders SET payment_status = 'paid' WHERE id = ?",
-            (invoice["order_id"],),
-        ),
-        (
-            "UPDATE payments SET status = 'paid' WHERE order_id = ? AND provider = 'invoice'",
-            (invoice["order_id"],),
-        ),
-        audit_statement(
-            action="b2b_invoice.paid",
-            entity_type="b2b_invoice",
-            entity_id=invoice_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after={"status": "paid", "paymentReference": payment_reference},
-        ),
-    ])
+    await db.batch(
+        [
+            (
+                "UPDATE b2b_invoices SET status = 'paid', paid_at = ?,"
+                " payment_reference = ?, updated_at = ? WHERE id = ?",
+                (now, (payment_reference or "").strip() or None, now, invoice_id),
+            ),
+            (
+                "UPDATE orders SET payment_status = 'paid' WHERE id = ?",
+                (invoice["order_id"],),
+            ),
+            (
+                "UPDATE payments SET status = 'paid' WHERE order_id = ? AND provider = 'invoice'",
+                (invoice["order_id"],),
+            ),
+            audit_statement(
+                action="b2b_invoice.paid",
+                entity_type="b2b_invoice",
+                entity_id=invoice_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"status": "paid", "paymentReference": payment_reference},
+            ),
+        ]
+    )
     row = await db.fetch_one(
         """
         SELECT bi.*, o.public_reference, ba.company_name
@@ -513,7 +596,9 @@ async def mark_invoice_paid(
 
 
 async def check_credit_limit(
-    db: Database, b2b_account_id: str, new_amount_minor: int,
+    db: Database,
+    b2b_account_id: str,
+    new_amount_minor: int,
 ) -> bool:
     """Check if a B2B account has enough credit for a new order."""
     account = await db.fetch_one(

@@ -205,9 +205,7 @@ async def update_order_status(
                 "SELECT id FROM loyalty_accounts WHERE customer_user_id = ?",
                 (customer_user_id,),
             )
-            points = (
-                int(current["total_minor"]) // 10_000
-            ) * loyalty_settings.points_per_100
+            points = (int(current["total_minor"]) // 10_000) * loyalty_settings.points_per_100
             if loyalty_account is not None and points > 0:
                 statements.append(
                     (

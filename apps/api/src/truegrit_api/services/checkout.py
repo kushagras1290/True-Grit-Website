@@ -148,15 +148,19 @@ async def _resolve_line(
         if harvest_window is None:
             raise ConflictError(f"{variant['product_name']} is not open for pre-order.")
 
-    level = None if line.preorder else await db.fetch_one(
-        """
+    level = (
+        None
+        if line.preorder
+        else await db.fetch_one(
+            """
         SELECT location_id, on_hand, reserved
         FROM inventory_levels
         WHERE variant_id = ? AND (on_hand - reserved) >= ?
         ORDER BY (on_hand - reserved) DESC
         LIMIT 1
         """,
-        (line.variant_id, line.quantity),
+            (line.variant_id, line.quantity),
+        )
     )
     if level is None and not line.preorder:
         raise ConflictError(f"Not enough stock for {variant['product_name']}.")
@@ -300,9 +304,7 @@ async def place_order(
     # layers each product's own override (migration 0069) on top of it.
     feature_settings = await load_storefront_settings(db)
     payments_enabled = feature_settings.payments
-    b2b_account = (
-        await is_b2b_customer(db, customer.user_id) if feature_settings.b2b else None
-    )
+    b2b_account = await is_b2b_customer(db, customer.user_id) if feature_settings.b2b else None
     resolved = [
         await _resolve_line(
             db,
@@ -831,9 +833,7 @@ async def place_order(
                 "loyalty_points_redeemed": loyalty_points_redeemed,
                 "loyalty_applied_minor": loyalty_applied,
                 "delivery_method": clean_delivery_method,
-                "pickup_point_id": selected_pickup_point["id"]
-                if selected_pickup_point
-                else None,
+                "pickup_point_id": selected_pickup_point["id"] if selected_pickup_point else None,
                 "delivery_zone_id": selected_zone["id"] if selected_zone else None,
                 "delivery_slot_id": selected_slot["id"] if selected_slot else None,
             },

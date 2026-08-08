@@ -102,7 +102,9 @@ export default function CartPage(_props: Route.ComponentProps) {
                   </Link>
                   <p className="text-sm text-ink-muted">{line.variantName}</p>
                   {line.preorder ? (
-                    <p className="mt-1 text-xs font-medium text-accent"><LocalizedText>Harvest pre-order</LocalizedText></p>
+                    <p className="mt-1 text-xs font-medium text-accent">
+                      <LocalizedText>Harvest pre-order</LocalizedText>
+                    </p>
                   ) : null}
                 </div>
                 <div className="flex items-center rounded-sm border border-line-strong">

@@ -214,9 +214,7 @@ async def list_preorders(
     db: Annotated[Database, Depends(get_database)],
     _principal: Annotated[Principal, Depends(require_permission("preorders.view"))],
     status: Annotated[str | None, Query(max_length=20)] = None,
-    harvest_window_id: Annotated[
-        str | None, Query(alias="harvestWindowId", max_length=64)
-    ] = None,
+    harvest_window_id: Annotated[str | None, Query(alias="harvestWindowId", max_length=64)] = None,
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> Any:
@@ -236,9 +234,7 @@ async def mark_harvest_ready(
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(require_permission("preorders.manage"))],
 ) -> Any:
-    count = await preorders.mark_preorders_ready(
-        db, principal, _request_id(request), window_id
-    )
+    count = await preorders.mark_preorders_ready(db, principal, _request_id(request), window_id)
     return {"updated": count}
 
 
@@ -249,9 +245,7 @@ async def fulfill_preorder(
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(require_permission("preorders.manage"))],
 ) -> Any:
-    return await preorders.fulfill_preorder(
-        db, principal, _request_id(request), preorder_id
-    )
+    return await preorders.fulfill_preorder(db, principal, _request_id(request), preorder_id)
 
 
 class DeliveryZoneCreateRequest(_CamelModel):
@@ -435,9 +429,7 @@ async def create_b2b_account(
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(require_permission("b2b.manage"))],
 ) -> Any:
-    return await b2b.create_b2b_account(
-        db, principal, _request_id(request), **payload.model_dump()
-    )
+    return await b2b.create_b2b_account(db, principal, _request_id(request), **payload.model_dump())
 
 
 @router.patch("/b2b/accounts/{account_id}")
@@ -479,9 +471,7 @@ async def list_b2b_price_breaks(
     limit: Annotated[int, Query(ge=1, le=100)] = 100,
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> Any:
-    return await b2b.list_price_breaks(
-        db, variant_id=variant_id, limit=limit, offset=offset
-    )
+    return await b2b.list_price_breaks(db, variant_id=variant_id, limit=limit, offset=offset)
 
 
 @router.post("/b2b/price-breaks")
@@ -491,9 +481,7 @@ async def create_b2b_price_break(
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(require_permission("b2b.manage"))],
 ) -> Any:
-    return await b2b.create_price_break(
-        db, principal, _request_id(request), **payload.model_dump()
-    )
+    return await b2b.create_price_break(db, principal, _request_id(request), **payload.model_dump())
 
 
 @router.delete("/b2b/price-breaks/{break_id}")

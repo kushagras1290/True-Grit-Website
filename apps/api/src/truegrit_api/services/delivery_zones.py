@@ -56,6 +56,7 @@ def _slot_row(row: dict[str, Any]) -> dict[str, Any]:
 
 # ── Zone matching ──────────────────────────────────────────────────────────
 
+
 def _matches_pattern(postal_code: str, pattern: str) -> bool:
     """Simple wildcard match: '560*' matches '560001', exact match otherwise."""
     clean_code = postal_code.strip().upper()
@@ -66,7 +67,8 @@ def _matches_pattern(postal_code: str, pattern: str) -> bool:
 
 
 async def find_zone_for_postal_code(
-    db: Database, postal_code: str,
+    db: Database,
+    postal_code: str,
 ) -> dict[str, Any] | None:
     """Find the matching delivery zone for a postal code, or None."""
     zones = await db.fetch_all(
@@ -85,7 +87,8 @@ async def find_zone_for_postal_code(
 
 
 async def check_delivery(
-    db: Database, postal_code: str,
+    db: Database,
+    postal_code: str,
 ) -> dict[str, Any]:
     """Public delivery check: returns zone info + available slots."""
     zone = await find_zone_for_postal_code(db, postal_code)
@@ -108,7 +111,9 @@ async def check_delivery(
 
 
 async def get_available_slots(
-    db: Database, zone_id: str, delivery_date: str,
+    db: Database,
+    zone_id: str,
+    delivery_date: str,
 ) -> list[dict[str, Any]]:
     """Available slots for a zone on a given date, with capacity check."""
     # Parse the date to find day of week (0=Sunday)
@@ -141,7 +146,10 @@ async def get_available_slots(
 
 
 async def book_delivery_slot(
-    db: Database, order_id: str, slot_id: str, delivery_date: str,
+    db: Database,
+    order_id: str,
+    slot_id: str,
+    delivery_date: str,
 ) -> str:
     """Book a delivery slot for an order. Returns the booking ID."""
     slot = await db.fetch_one(
@@ -201,9 +209,7 @@ async def validate_slot_selection(
         start_time = datetime.time.fromisoformat(str(slot["start_time"]))
     except ValueError as exc:
         raise ValidationAppError("That delivery slot is configured incorrectly.") from exc
-    selected_start = datetime.datetime.combine(
-        selected_date, start_time, tzinfo=datetime.UTC
-    )
+    selected_start = datetime.datetime.combine(selected_date, start_time, tzinfo=datetime.UTC)
     earliest = datetime.datetime.now(datetime.UTC) + datetime.timedelta(
         hours=int(slot["lead_time_hours"])
     )
@@ -221,13 +227,16 @@ async def validate_slot_selection(
 
 # ── Admin CRUD ─────────────────────────────────────────────────────────────
 
+
 async def list_zones(
-    db: Database, *, limit: int = 50, offset: int = 0,
+    db: Database,
+    *,
+    limit: int = 50,
+    offset: int = 0,
 ) -> dict[str, Any]:
     total_row = await db.fetch_one("SELECT COUNT(*) AS cnt FROM delivery_zones")
     rows = await db.fetch_all(
-        "SELECT * FROM delivery_zones ORDER BY sort_order ASC, created_at DESC"
-        " LIMIT ? OFFSET ?",
+        "SELECT * FROM delivery_zones ORDER BY sort_order ASC, created_at DESC LIMIT ? OFFSET ?",
         (limit, offset),
     )
     return {
@@ -246,50 +255,67 @@ async def get_zone(db: Database, zone_id: str) -> dict[str, Any]:
 
 
 async def create_zone(
-    db: Database, actor: Principal, request_id: str,
-    *, name: str, postal_codes: list[str] | None = None,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    name: str,
+    postal_codes: list[str] | None = None,
     fee_override_minor: int | None = None,
     free_threshold_override_minor: int | None = None,
-    lead_time_hours: int = 24, sort_order: int = 0,
+    lead_time_hours: int = 24,
+    sort_order: int = 0,
 ) -> dict[str, Any]:
     clean_name = name.strip()
     if not clean_name:
         raise ValidationAppError("Zone name is required.")
     zone_id = new_id("dz")
     now = utc_now_iso()
-    await db.batch([
-        (
-            "INSERT INTO delivery_zones"
-            " (id, name, postal_codes_json, fee_override_minor,"
-            "  free_threshold_override_minor, lead_time_hours,"
-            "  status, sort_order, created_at, updated_at)"
-            " VALUES (?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
+    await db.batch(
+        [
             (
-                zone_id, clean_name,
-                json.dumps(postal_codes or []),
-                fee_override_minor, free_threshold_override_minor,
-                lead_time_hours, sort_order, now, now,
+                "INSERT INTO delivery_zones"
+                " (id, name, postal_codes_json, fee_override_minor,"
+                "  free_threshold_override_minor, lead_time_hours,"
+                "  status, sort_order, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
+                (
+                    zone_id,
+                    clean_name,
+                    json.dumps(postal_codes or []),
+                    fee_override_minor,
+                    free_threshold_override_minor,
+                    lead_time_hours,
+                    sort_order,
+                    now,
+                    now,
+                ),
             ),
-        ),
-        audit_statement(
-            action="delivery_zone.created",
-            entity_type="delivery_zone",
-            entity_id=zone_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after={"name": clean_name},
-        ),
-    ])
+            audit_statement(
+                action="delivery_zone.created",
+                entity_type="delivery_zone",
+                entity_id=zone_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"name": clean_name},
+            ),
+        ]
+    )
     return await get_zone(db, zone_id)
 
 
 async def update_zone(
-    db: Database, actor: Principal, request_id: str,
-    zone_id: str, *, updates: dict[str, Any],
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    zone_id: str,
+    *,
+    updates: dict[str, Any],
 ) -> dict[str, Any]:
     existing = await db.fetch_one(
-        "SELECT * FROM delivery_zones WHERE id = ?", (zone_id,),
+        "SELECT * FROM delivery_zones WHERE id = ?",
+        (zone_id,),
     )
     if existing is None:
         raise NotFoundError("Delivery zone not found.")
@@ -347,62 +373,77 @@ async def update_zone(
     params.append(now)
     params.append(zone_id)
 
-    await db.batch([
-        (f"UPDATE delivery_zones SET {', '.join(sets)} WHERE id = ?", tuple(params)),
-        audit_statement(
-            action="delivery_zone.updated",
-            entity_type="delivery_zone",
-            entity_id=zone_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after=changed,
-        ),
-    ])
+    await db.batch(
+        [
+            (f"UPDATE delivery_zones SET {', '.join(sets)} WHERE id = ?", tuple(params)),
+            audit_statement(
+                action="delivery_zone.updated",
+                entity_type="delivery_zone",
+                entity_id=zone_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after=changed,
+            ),
+        ]
+    )
     return await get_zone(db, zone_id)
 
 
 async def delete_zone(
-    db: Database, actor: Principal, request_id: str, zone_id: str,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    zone_id: str,
 ) -> None:
     existing = await db.fetch_one(
-        "SELECT id FROM delivery_zones WHERE id = ?", (zone_id,),
+        "SELECT id FROM delivery_zones WHERE id = ?",
+        (zone_id,),
     )
     if existing is None:
         raise NotFoundError("Delivery zone not found.")
     now = utc_now_iso()
-    await db.batch([
-        ("DELETE FROM delivery_zones WHERE id = ?", (zone_id,)),
-        audit_statement(
-            action="delivery_zone.deleted",
-            entity_type="delivery_zone",
-            entity_id=zone_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after={"deleted": True},
-        ),
-    ])
+    await db.batch(
+        [
+            ("DELETE FROM delivery_zones WHERE id = ?", (zone_id,)),
+            audit_statement(
+                action="delivery_zone.deleted",
+                entity_type="delivery_zone",
+                entity_id=zone_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"deleted": True},
+            ),
+        ]
+    )
 
 
 # ── Slot CRUD ──────────────────────────────────────────────────────────────
 
+
 async def list_slots(db: Database, zone_id: str) -> list[dict[str, Any]]:
     rows = await db.fetch_all(
-        "SELECT * FROM delivery_slots WHERE zone_id = ?"
-        " ORDER BY day_of_week ASC, start_time ASC",
+        "SELECT * FROM delivery_slots WHERE zone_id = ? ORDER BY day_of_week ASC, start_time ASC",
         (zone_id,),
     )
     return [_slot_row(row) for row in rows]
 
 
 async def create_slot(
-    db: Database, actor: Principal, request_id: str,
-    *, zone_id: str, day_of_week: int, start_time: str,
-    end_time: str, max_orders: int = 20,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    zone_id: str,
+    day_of_week: int,
+    start_time: str,
+    end_time: str,
+    max_orders: int = 20,
 ) -> dict[str, Any]:
     zone = await db.fetch_one(
-        "SELECT id FROM delivery_zones WHERE id = ?", (zone_id,),
+        "SELECT id FROM delivery_zones WHERE id = ?",
+        (zone_id,),
     )
     if zone is None:
         raise NotFoundError("Delivery zone not found.")
@@ -414,34 +455,45 @@ async def create_slot(
         raise ValidationAppError("Delivery slot capacity must be at least one order.")
     slot_id = new_id("ds")
     now = utc_now_iso()
-    await db.batch([
-        (
-            "INSERT INTO delivery_slots"
-            " (id, zone_id, day_of_week, start_time, end_time, max_orders, status)"
-            " VALUES (?, ?, ?, ?, ?, ?, 'active')",
-            (slot_id, zone_id, day_of_week, start_time, end_time, max_orders),
-        ),
-        audit_statement(
-            action="delivery_slot.created",
-            entity_type="delivery_slot",
-            entity_id=slot_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after={"zoneId": zone_id, "dayOfWeek": day_of_week,
-                   "startTime": start_time, "endTime": end_time},
-        ),
-    ])
+    await db.batch(
+        [
+            (
+                "INSERT INTO delivery_slots"
+                " (id, zone_id, day_of_week, start_time, end_time, max_orders, status)"
+                " VALUES (?, ?, ?, ?, ?, ?, 'active')",
+                (slot_id, zone_id, day_of_week, start_time, end_time, max_orders),
+            ),
+            audit_statement(
+                action="delivery_slot.created",
+                entity_type="delivery_slot",
+                entity_id=slot_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={
+                    "zoneId": zone_id,
+                    "dayOfWeek": day_of_week,
+                    "startTime": start_time,
+                    "endTime": end_time,
+                },
+            ),
+        ]
+    )
     row = await db.fetch_one("SELECT * FROM delivery_slots WHERE id = ?", (slot_id,))
     return _slot_row(row)  # type: ignore[arg-type]
 
 
 async def update_slot(
-    db: Database, actor: Principal, request_id: str,
-    slot_id: str, *, updates: dict[str, Any],
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    slot_id: str,
+    *,
+    updates: dict[str, Any],
 ) -> dict[str, Any]:
     existing = await db.fetch_one(
-        "SELECT * FROM delivery_slots WHERE id = ?", (slot_id,),
+        "SELECT * FROM delivery_slots WHERE id = ?",
+        (slot_id,),
     )
     if existing is None:
         raise NotFoundError("Delivery slot not found.")
@@ -489,23 +541,29 @@ async def update_slot(
 
 
 async def delete_slot(
-    db: Database, actor: Principal, request_id: str, slot_id: str,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    slot_id: str,
 ) -> None:
     existing = await db.fetch_one(
-        "SELECT id FROM delivery_slots WHERE id = ?", (slot_id,),
+        "SELECT id FROM delivery_slots WHERE id = ?",
+        (slot_id,),
     )
     if existing is None:
         raise NotFoundError("Delivery slot not found.")
     now = utc_now_iso()
-    await db.batch([
-        ("DELETE FROM delivery_slots WHERE id = ?", (slot_id,)),
-        audit_statement(
-            action="delivery_slot.deleted",
-            entity_type="delivery_slot",
-            entity_id=slot_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after={"deleted": True},
-        ),
-    ])
+    await db.batch(
+        [
+            ("DELETE FROM delivery_slots WHERE id = ?", (slot_id,)),
+            audit_statement(
+                action="delivery_slot.deleted",
+                entity_type="delivery_slot",
+                entity_id=slot_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"deleted": True},
+            ),
+        ]
+    )

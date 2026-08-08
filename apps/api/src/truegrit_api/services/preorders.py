@@ -63,9 +63,14 @@ def _preorder_row(row: dict[str, Any]) -> dict[str, Any]:
 
 # ── Harvest Windows ────────────────────────────────────────────────────────
 
+
 async def list_harvest_windows(
-    db: Database, *, product_id: str | None = None,
-    status: str | None = None, limit: int = 50, offset: int = 0,
+    db: Database,
+    *,
+    product_id: str | None = None,
+    status: str | None = None,
+    limit: int = 50,
+    offset: int = 0,
 ) -> dict[str, Any]:
     conditions: list[str] = []
     params: list[Any] = []
@@ -78,7 +83,8 @@ async def list_harvest_windows(
     where = (" WHERE " + " AND ".join(conditions)) if conditions else ""
 
     total_row = await db.fetch_one(
-        f"SELECT COUNT(*) AS cnt FROM harvest_windows hw{where}", tuple(params),
+        f"SELECT COUNT(*) AS cnt FROM harvest_windows hw{where}",
+        tuple(params),
     )
     rows = await db.fetch_all(
         f"""
@@ -121,9 +127,15 @@ async def get_harvest_window(db: Database, window_id: str) -> dict[str, Any]:
 
 
 async def create_harvest_window(
-    db: Database, actor: Principal, request_id: str,
-    *, product_id: str, expected_start: str, expected_end: str,
-    title: str | None = None, max_preorders: int | None = None,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    product_id: str,
+    expected_start: str,
+    expected_end: str,
+    title: str | None = None,
+    max_preorders: int | None = None,
     notes: str | None = None,
 ) -> dict[str, Any]:
     product = await db.fetch_one("SELECT id FROM products WHERE id = ?", (product_id,))
@@ -135,40 +147,54 @@ async def create_harvest_window(
         raise ValidationAppError("Expected start must be before expected end.")
     window_id = new_id("hw")
     now = utc_now_iso()
-    await db.batch([
-        (
-            "INSERT INTO harvest_windows"
-            " (id, product_id, title, expected_start, expected_end,"
-            "  max_preorders, notes, status, created_at, updated_at)"
-            " VALUES (?, ?, ?, ?, ?, ?, ?, 'upcoming', ?, ?)",
+    await db.batch(
+        [
             (
-                window_id, product_id,
-                (title or "").strip() or None,
-                expected_start, expected_end,
-                max_preorders, (notes or "").strip() or None,
-                now, now,
+                "INSERT INTO harvest_windows"
+                " (id, product_id, title, expected_start, expected_end,"
+                "  max_preorders, notes, status, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, 'upcoming', ?, ?)",
+                (
+                    window_id,
+                    product_id,
+                    (title or "").strip() or None,
+                    expected_start,
+                    expected_end,
+                    max_preorders,
+                    (notes or "").strip() or None,
+                    now,
+                    now,
+                ),
             ),
-        ),
-        audit_statement(
-            action="harvest_window.created",
-            entity_type="harvest_window",
-            entity_id=window_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after={"productId": product_id, "expectedStart": expected_start,
-                   "expectedEnd": expected_end},
-        ),
-    ])
+            audit_statement(
+                action="harvest_window.created",
+                entity_type="harvest_window",
+                entity_id=window_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={
+                    "productId": product_id,
+                    "expectedStart": expected_start,
+                    "expectedEnd": expected_end,
+                },
+            ),
+        ]
+    )
     return await get_harvest_window(db, window_id)
 
 
 async def update_harvest_window(
-    db: Database, actor: Principal, request_id: str,
-    window_id: str, *, updates: dict[str, Any],
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    window_id: str,
+    *,
+    updates: dict[str, Any],
 ) -> dict[str, Any]:
     existing = await db.fetch_one(
-        "SELECT * FROM harvest_windows WHERE id = ?", (window_id,),
+        "SELECT * FROM harvest_windows WHERE id = ?",
+        (window_id,),
     )
     if existing is None:
         raise NotFoundError("Harvest window not found.")
@@ -194,13 +220,16 @@ async def update_harvest_window(
     changed: dict[str, Any] = {}
 
     for field, col in [
-        ("title", "title"), ("expectedStart", "expected_start"),
-        ("expectedEnd", "expected_end"), ("actualStart", "actual_start"),
-        ("actualEnd", "actual_end"), ("notes", "notes"),
+        ("title", "title"),
+        ("expectedStart", "expected_start"),
+        ("expectedEnd", "expected_end"),
+        ("actualStart", "actual_start"),
+        ("actualEnd", "actual_end"),
+        ("notes", "notes"),
     ]:
         if field in updates:
             sets.append(f"{col} = ?")
-            val = (str(updates[field]).strip() if updates[field] else None)
+            val = str(updates[field]).strip() if updates[field] else None
             params.append(val)
             changed[field] = val
 
@@ -237,26 +266,32 @@ async def update_harvest_window(
     params.append(now)
     params.append(window_id)
 
-    await db.batch([
-        (f"UPDATE harvest_windows SET {', '.join(sets)} WHERE id = ?", tuple(params)),
-        audit_statement(
-            action="harvest_window.updated",
-            entity_type="harvest_window",
-            entity_id=window_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after=changed,
-        ),
-    ])
+    await db.batch(
+        [
+            (f"UPDATE harvest_windows SET {', '.join(sets)} WHERE id = ?", tuple(params)),
+            audit_statement(
+                action="harvest_window.updated",
+                entity_type="harvest_window",
+                entity_id=window_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after=changed,
+            ),
+        ]
+    )
     return await get_harvest_window(db, window_id)
 
 
 async def delete_harvest_window(
-    db: Database, actor: Principal, request_id: str, window_id: str,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    window_id: str,
 ) -> None:
     existing = await db.fetch_one(
-        "SELECT id FROM harvest_windows WHERE id = ?", (window_id,),
+        "SELECT id FROM harvest_windows WHERE id = ?",
+        (window_id,),
     )
     if existing is None:
         raise NotFoundError("Harvest window not found.")
@@ -268,24 +303,30 @@ async def delete_harvest_window(
     if active_preorders and int(active_preorders["cnt"]) > 0:
         raise ConflictError("Cannot delete a harvest window with active pre-orders.")
     now = utc_now_iso()
-    await db.batch([
-        ("DELETE FROM harvest_windows WHERE id = ?", (window_id,)),
-        audit_statement(
-            action="harvest_window.deleted",
-            entity_type="harvest_window",
-            entity_id=window_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after={"deleted": True},
-        ),
-    ])
+    await db.batch(
+        [
+            ("DELETE FROM harvest_windows WHERE id = ?", (window_id,)),
+            audit_statement(
+                action="harvest_window.deleted",
+                entity_type="harvest_window",
+                entity_id=window_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"deleted": True},
+            ),
+        ]
+    )
 
 
 # ── Pre-orders ─────────────────────────────────────────────────────────────
 
+
 async def get_active_harvest_window_for_product(
-    db: Database, product_id: str, *, quantity: int = 1,
+    db: Database,
+    product_id: str,
+    *,
+    quantity: int = 1,
 ) -> dict[str, Any] | None:
     """Return the currently active/upcoming harvest window for a product,
     if any.  Used at checkout to detect pre-order eligible products."""
@@ -313,8 +354,12 @@ async def get_active_harvest_window_for_product(
 
 
 async def create_preorder(
-    db: Database, order_id: str, harvest_window_id: str,
-    product_id: str, variant_id: str, quantity: int,
+    db: Database,
+    order_id: str,
+    harvest_window_id: str,
+    product_id: str,
+    variant_id: str,
+    quantity: int,
 ) -> str:
     preorder_id = new_id("po")
     now = utc_now_iso()
@@ -329,9 +374,12 @@ async def create_preorder(
 
 
 async def list_preorders(
-    db: Database, *, status: str | None = None,
+    db: Database,
+    *,
+    status: str | None = None,
     harvest_window_id: str | None = None,
-    limit: int = 50, offset: int = 0,
+    limit: int = 50,
+    offset: int = 0,
 ) -> dict[str, Any]:
     conditions: list[str] = []
     params: list[Any] = []
@@ -344,7 +392,8 @@ async def list_preorders(
     where = (" WHERE " + " AND ".join(conditions)) if conditions else ""
 
     total_row = await db.fetch_one(
-        f"SELECT COUNT(*) AS cnt FROM preorders po{where}", tuple(params),
+        f"SELECT COUNT(*) AS cnt FROM preorders po{where}",
+        tuple(params),
     )
     rows = await db.fetch_all(
         f"""
@@ -367,7 +416,10 @@ async def list_preorders(
 
 
 async def fulfill_preorder(
-    db: Database, actor: Principal, request_id: str, preorder_id: str,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    preorder_id: str,
 ) -> dict[str, Any]:
     row = await db.fetch_one("SELECT * FROM preorders WHERE id = ?", (preorder_id,))
     if row is None:
@@ -375,21 +427,23 @@ async def fulfill_preorder(
     if row["status"] not in ("reserved", "ready"):
         raise ConflictError(f"Pre-order is {row['status']}, cannot fulfill.")
     now = utc_now_iso()
-    await db.batch([
-        (
-            "UPDATE preorders SET status = 'fulfilled', fulfilled_at = ? WHERE id = ?",
-            (now, preorder_id),
-        ),
-        audit_statement(
-            action="preorder.fulfilled",
-            entity_type="preorder",
-            entity_id=preorder_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after={"status": "fulfilled"},
-        ),
-    ])
+    await db.batch(
+        [
+            (
+                "UPDATE preorders SET status = 'fulfilled', fulfilled_at = ? WHERE id = ?",
+                (now, preorder_id),
+            ),
+            audit_statement(
+                action="preorder.fulfilled",
+                entity_type="preorder",
+                entity_id=preorder_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"status": "fulfilled"},
+            ),
+        ]
+    )
     updated = await db.fetch_one(
         """
         SELECT po.*, o.public_reference, p.name AS product_name
@@ -404,13 +458,15 @@ async def fulfill_preorder(
 
 
 async def mark_preorders_ready(
-    db: Database, actor: Principal, request_id: str, harvest_window_id: str,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    harvest_window_id: str,
 ) -> int:
     """Mark all reserved preorders for a harvest window as ready for fulfillment."""
     now = utc_now_iso()
     result = await db.execute(
-        "UPDATE preorders SET status = 'ready'"
-        " WHERE harvest_window_id = ? AND status = 'reserved'",
+        "UPDATE preorders SET status = 'ready' WHERE harvest_window_id = ? AND status = 'reserved'",
         (harvest_window_id,),
     )
     if result > 0:

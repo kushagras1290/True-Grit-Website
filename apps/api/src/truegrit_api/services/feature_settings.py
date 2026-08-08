@@ -495,9 +495,7 @@ async def load_storefront_settings(db: Database) -> StorefrontSettings:
         ),
         loyalty=_parse_bool(values.get(KEY_LOYALTY), default=_BOOLEAN_DEFAULTS[KEY_LOYALTY]),
         pickup=_parse_bool(values.get(KEY_PICKUP), default=_BOOLEAN_DEFAULTS[KEY_PICKUP]),
-        preorders=_parse_bool(
-            values.get(KEY_PREORDERS), default=_BOOLEAN_DEFAULTS[KEY_PREORDERS]
-        ),
+        preorders=_parse_bool(values.get(KEY_PREORDERS), default=_BOOLEAN_DEFAULTS[KEY_PREORDERS]),
         delivery_zones=_parse_bool(
             values.get(KEY_DELIVERY_ZONES), default=_BOOLEAN_DEFAULTS[KEY_DELIVERY_ZONES]
         ),

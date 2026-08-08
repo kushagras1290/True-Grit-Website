@@ -503,7 +503,9 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
         <div className="space-y-4">
           {pickup.enabled && pickupPoints.length > 0 ? (
             <fieldset className="space-y-2">
-              <legend className="text-xs font-medium text-ink-muted"><LocalizedText>Fulfilment method</LocalizedText></legend>
+              <legend className="text-xs font-medium text-ink-muted">
+                <LocalizedText>Fulfilment method</LocalizedText>
+              </legend>
               <div className="grid gap-2 sm:grid-cols-2">
                 <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-sm border border-line px-3 text-sm text-ink">
                   <input
@@ -524,7 +526,9 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
               </div>
               {deliveryMethod === "pickup" ? (
                 <label className="block space-y-1">
-                  <span className="text-xs font-medium text-ink-muted"><LocalizedText>Pickup point</LocalizedText></span>
+                  <span className="text-xs font-medium text-ink-muted">
+                    <LocalizedText>Pickup point</LocalizedText>
+                  </span>
                   <select
                     className={FIELD}
                     value={pickupPointId}
@@ -610,16 +614,22 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
           {deliveryZones.enabled && deliveryMethod === "delivery" && postalCode.trim() ? (
             <div className="rounded-sm border border-line bg-subtle/30 px-3 py-3 text-sm">
               {deliveryCheck?.serviceable ? (
-                <p className="text-success"><LocalizedText>Delivery available in</LocalizedText> {deliveryCheck.zone?.name}.</p>
+                <p className="text-success">
+                  <LocalizedText>Delivery available in</LocalizedText> {deliveryCheck.zone?.name}.
+                </p>
               ) : deliveryCheck ? (
                 <p className="text-danger">{deliveryCheck.message}</p>
               ) : (
-                <p className="text-ink-muted"><LocalizedText>Checking delivery availability…</LocalizedText></p>
+                <p className="text-ink-muted">
+                  <LocalizedText>Checking delivery availability…</LocalizedText>
+                </p>
               )}
               {deliveryCheck?.serviceable && (deliveryCheck.slots?.length ?? 0) > 0 ? (
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
                   <label className="block space-y-1">
-                    <span className="text-xs font-medium text-ink-muted"><LocalizedText>Delivery date</LocalizedText></span>
+                    <span className="text-xs font-medium text-ink-muted">
+                      <LocalizedText>Delivery date</LocalizedText>
+                    </span>
                     <input
                       type="date"
                       className={FIELD}
@@ -629,7 +639,9 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                     />
                   </label>
                   <label className="block space-y-1">
-                    <span className="text-xs font-medium text-ink-muted"><LocalizedText>Time slot</LocalizedText></span>
+                    <span className="text-xs font-medium text-ink-muted">
+                      <LocalizedText>Time slot</LocalizedText>
+                    </span>
                     <select
                       className={FIELD}
                       required
@@ -637,11 +649,17 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                       disabled={!deliveryDate}
                       onChange={(event) => setDeliverySlotId(event.target.value)}
                     >
-                      <option value=""><LocalizedText>Choose a slot</LocalizedText></option>
+                      <option value="">
+                        <LocalizedText>Choose a slot</LocalizedText>
+                      </option>
                       {deliverySlots.map((slot) => (
                         <option key={slot.id} value={slot.id} disabled={slot.available === false}>
                           {slot.startTime}–{slot.endTime}
-                          {slot.available === false ? <LocalizedText>{" · full"}</LocalizedText> : ""}
+                          {slot.available === false ? (
+                            <LocalizedText>{" · full"}</LocalizedText>
+                          ) : (
+                            ""
+                          )}
                         </option>
                       ))}
                     </select>
@@ -782,7 +800,8 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
           {loyalty.enabled && loyaltyAccount ? (
             <div className="mt-3">
               <label htmlFor="loyaltyPoints" className="text-xs font-medium text-ink-muted">
-                <LocalizedText>Loyalty points (</LocalizedText>{loyaltyAccount.balance} <LocalizedText>available)</LocalizedText>
+                <LocalizedText>Loyalty points (</LocalizedText>
+                {loyaltyAccount.balance} <LocalizedText>available)</LocalizedText>
               </label>
               <input
                 id="loyaltyPoints"
@@ -802,7 +821,8 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                 }
               />
               <p className="mt-1 text-xs text-ink-muted">
-                <LocalizedText>Referral code:</LocalizedText> <code>{loyaltyAccount.referralCode}</code>
+                <LocalizedText>Referral code:</LocalizedText>{" "}
+                <code>{loyaltyAccount.referralCode}</code>
               </p>
               <div className="mt-2 flex gap-2">
                 <input
@@ -860,7 +880,9 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
             ) : null}
             {loyaltyApplied > 0 ? (
               <div className="flex justify-between">
-                <dt className="text-ink-muted"><LocalizedText>Loyalty points</LocalizedText></dt>
+                <dt className="text-ink-muted">
+                  <LocalizedText>Loyalty points</LocalizedText>
+                </dt>
                 <dd className="text-success">−{formatPrice(loyaltyApplied)}</dd>
               </div>
             ) : null}
@@ -929,7 +951,8 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                   onChange={() => setMethod("invoice")}
                 />
                 <span className="text-ink">
-                  <LocalizedText>Invoice ·</LocalizedText> {b2bAccount?.paymentTermsDays}<LocalizedText>-day terms for</LocalizedText> {b2bAccount?.companyName}
+                  <LocalizedText>Invoice ·</LocalizedText> {b2bAccount?.paymentTermsDays}
+                  <LocalizedText>-day terms for</LocalizedText> {b2bAccount?.companyName}
                 </span>
               </label>
             ) : null}

@@ -99,7 +99,10 @@ async def get_customer_loyalty(db: Database, customer_user_id: str) -> dict[str,
 
 
 async def earn_points_for_order(
-    db: Database, customer_user_id: str, order_id: str, order_total_minor: int,
+    db: Database,
+    customer_user_id: str,
+    order_id: str,
+    order_total_minor: int,
     points_per_100: int,
 ) -> int:
     """Credit points for a completed order.  Points = floor(total / 100) * rate."""
@@ -129,8 +132,12 @@ async def earn_points_for_order(
 
 
 async def resolve_checkout_redemption(
-    db: Database, *, customer_user_id: str, points_to_redeem: int,
-    points_value_minor: int, amount_needed_minor: int,
+    db: Database,
+    *,
+    customer_user_id: str,
+    points_to_redeem: int,
+    points_value_minor: int,
+    amount_needed_minor: int,
 ) -> dict[str, Any] | None:
     """What redeeming `points_to_redeem` loyalty points would cover.
     Returns None if nothing to redeem.  Raises for insufficient balance."""
@@ -160,7 +167,10 @@ async def resolve_checkout_redemption(
 
 
 async def record_checkout_redemption(
-    db: Database, customer_user_id: str, order_id: str, points: int,
+    db: Database,
+    customer_user_id: str,
+    order_id: str,
+    points: int,
 ) -> None:
     """Record the actual loyalty point spend for an order.  Called in the
     same batch as the order creation."""
@@ -188,7 +198,9 @@ async def record_checkout_redemption(
 
 
 async def apply_referral_code(
-    db: Database, referred_user_id: str, referral_code: str,
+    db: Database,
+    referred_user_id: str,
+    referral_code: str,
 ) -> dict[str, Any] | None:
     """Record that a customer was referred.  Returns the referral or None
     if the code is invalid / self-referral / already used."""
@@ -210,8 +222,7 @@ async def apply_referral_code(
     if existing is not None:
         raise ConflictError("You have already used a referral code.")
     prior_order = await db.fetch_one(
-        "SELECT id FROM orders WHERE customer_user_id = ?"
-        " AND order_status != 'cancelled' LIMIT 1",
+        "SELECT id FROM orders WHERE customer_user_id = ? AND order_status != 'cancelled' LIMIT 1",
         (referred_user_id,),
     )
     if prior_order is not None:
@@ -228,13 +239,15 @@ async def apply_referral_code(
 
 
 async def complete_referral(
-    db: Database, referred_user_id: str, order_id: str,
-    referrer_points: int, referred_points: int,
+    db: Database,
+    referred_user_id: str,
+    order_id: str,
+    referrer_points: int,
+    referred_points: int,
 ) -> None:
     """Award both parties when the referred customer's first order completes."""
     redemption = await db.fetch_one(
-        "SELECT * FROM referral_redemptions"
-        " WHERE referred_user_id = ? AND status = 'pending'",
+        "SELECT * FROM referral_redemptions WHERE referred_user_id = ? AND status = 'pending'",
         (referred_user_id,),
     )
     if redemption is None:
@@ -250,42 +263,51 @@ async def complete_referral(
         ),
     ]
     if referrer_points > 0:
-        statements.append((
-            "INSERT OR IGNORE INTO loyalty_transactions"
-            " (id, loyalty_account_id, points, transaction_type, reference_id,"
-            "  description, created_at)"
-            " VALUES (?, ?, ?, 'referral_reward', ?, ?, ?)",
+        statements.append(
             (
-                new_id("ltx"),
-                redemption["referrer_account_id"],
-                referrer_points,
-                redemption["id"],
-                "Referral reward — your friend placed their first order",
-                now,
-            ),
-        ))
+                "INSERT OR IGNORE INTO loyalty_transactions"
+                " (id, loyalty_account_id, points, transaction_type, reference_id,"
+                "  description, created_at)"
+                " VALUES (?, ?, ?, 'referral_reward', ?, ?, ?)",
+                (
+                    new_id("ltx"),
+                    redemption["referrer_account_id"],
+                    referrer_points,
+                    redemption["id"],
+                    "Referral reward — your friend placed their first order",
+                    now,
+                ),
+            )
+        )
     if referred_points > 0:
         referred_account = await _ensure_account(db, referred_user_id)
-        statements.append((
-            "INSERT OR IGNORE INTO loyalty_transactions"
-            " (id, loyalty_account_id, points, transaction_type, reference_id,"
-            "  description, created_at)"
-            " VALUES (?, ?, ?, 'referral_reward', ?, ?, ?)",
+        statements.append(
             (
-                new_id("ltx"),
-                referred_account["id"],
-                referred_points,
-                redemption["id"],
-                "Welcome reward — thanks for being referred",
-                now,
-            ),
-        ))
+                "INSERT OR IGNORE INTO loyalty_transactions"
+                " (id, loyalty_account_id, points, transaction_type, reference_id,"
+                "  description, created_at)"
+                " VALUES (?, ?, ?, 'referral_reward', ?, ?, ?)",
+                (
+                    new_id("ltx"),
+                    referred_account["id"],
+                    referred_points,
+                    redemption["id"],
+                    "Welcome reward — thanks for being referred",
+                    now,
+                ),
+            )
+        )
     await db.batch(statements)
 
 
 async def admin_adjust_points(
-    db: Database, actor: Principal, request_id: str,
-    *, customer_user_id: str, points: int, reason: str,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    customer_user_id: str,
+    points: int,
+    reason: str,
 ) -> dict[str, Any]:
     """Manual admin credit/debit for goodwill gestures or corrections."""
     if points == 0:
@@ -297,30 +319,40 @@ async def admin_adjust_points(
     tx_type = "admin_credit" if points > 0 else "admin_debit"
     now = utc_now_iso()
     tx_id = new_id("ltx")
-    await db.batch([
-        (
-            "INSERT INTO loyalty_transactions"
-            " (id, loyalty_account_id, points, transaction_type, reference_id,"
-            "  description, created_at, created_by)"
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            (tx_id, account["id"], points, tx_type, None, reason[:300], now, actor.user_id),
-        ),
-        audit_statement(
-            action=f"loyalty.{tx_type}",
-            entity_type="loyalty_account",
-            entity_id=account["id"],
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after={"points": points, "reason": reason[:300], "customerUserId": customer_user_id},
-        ),
-    ])
+    await db.batch(
+        [
+            (
+                "INSERT INTO loyalty_transactions"
+                " (id, loyalty_account_id, points, transaction_type, reference_id,"
+                "  description, created_at, created_by)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (tx_id, account["id"], points, tx_type, None, reason[:300], now, actor.user_id),
+            ),
+            audit_statement(
+                action=f"loyalty.{tx_type}",
+                entity_type="loyalty_account",
+                entity_id=account["id"],
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={
+                    "points": points,
+                    "reason": reason[:300],
+                    "customerUserId": customer_user_id,
+                },
+            ),
+        ]
+    )
     balance = await get_balance(db, customer_user_id)
     return {"accountId": account["id"], "points": points, "balance": balance}
 
 
 async def list_loyalty_accounts(
-    db: Database, *, search: str | None = None, limit: int = 50, offset: int = 0,
+    db: Database,
+    *,
+    search: str | None = None,
+    limit: int = 50,
+    offset: int = 0,
 ) -> dict[str, Any]:
     """Admin list of all loyalty accounts with derived balances."""
     clean_search = f"%{search.strip()}%" if search and search.strip() else None
@@ -334,7 +366,8 @@ async def list_loyalty_accounts(
         params = (clean_search, clean_search, clean_search)
 
     total_row = await db.fetch_one(
-        f"SELECT COUNT(*) AS cnt FROM loyalty_accounts la{where}", params,
+        f"SELECT COUNT(*) AS cnt FROM loyalty_accounts la{where}",
+        params,
     )
     rows = await db.fetch_all(
         f"""
@@ -344,7 +377,7 @@ async def list_loyalty_accounts(
                u.email, u.name AS customer_name
         FROM loyalty_accounts la
         JOIN users u ON u.id = la.customer_user_id
-        {where.replace('JOIN users u ON u.id = la.customer_user_id', '') if clean_search else ''}
+        {where.replace("JOIN users u ON u.id = la.customer_user_id", "") if clean_search else ""}
         ORDER BY la.created_at DESC
         LIMIT ? OFFSET ?
         """,
@@ -371,7 +404,10 @@ async def list_loyalty_accounts(
 
 
 async def list_referrals(
-    db: Database, *, limit: int = 50, offset: int = 0,
+    db: Database,
+    *,
+    limit: int = 50,
+    offset: int = 0,
 ) -> dict[str, Any]:
     """Admin list of all referral redemptions."""
     total_row = await db.fetch_one("SELECT COUNT(*) AS cnt FROM referral_redemptions")
@@ -411,7 +447,11 @@ async def list_referrals(
 
 
 async def get_transaction_history(
-    db: Database, customer_user_id: str, *, limit: int = 50, offset: int = 0,
+    db: Database,
+    customer_user_id: str,
+    *,
+    limit: int = 50,
+    offset: int = 0,
 ) -> dict[str, Any]:
     """Transaction history for a single customer."""
     account = await db.fetch_one(

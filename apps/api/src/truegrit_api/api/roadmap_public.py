@@ -84,9 +84,7 @@ async def list_public_delivery_slots(
     delivery_date: Annotated[str, Query(alias="deliveryDate", min_length=10, max_length=10)],
 ) -> Any:
     await _require_enabled(db, await delivery_zones_enabled(db), "Delivery zones")
-    return {
-        "items": await delivery_zones.get_available_slots(db, zone_id, delivery_date)
-    }
+    return {"items": await delivery_zones.get_available_slots(db, zone_id, delivery_date)}
 
 
 @router.get("/seasonal-calendar")

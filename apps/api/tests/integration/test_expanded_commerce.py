@@ -51,8 +51,7 @@ def test_all_expanded_features_are_independently_disabled_by_default(client, db)
     as_admin(client, db)
     settings = client.get("/v1/admin/storefront-settings").json()["settings"]
     assert {
-        key: settings[key]
-        for key in ("loyalty", "pickup", "preorders", "deliveryZones", "b2b")
+        key: settings[key] for key in ("loyalty", "pickup", "preorders", "deliveryZones", "b2b")
     } == {
         "loyalty": False,
         "pickup": False,
@@ -241,12 +240,18 @@ def test_loyalty_points_redeem_and_earn_on_completion(client, db):
     assert body["loyaltyAppliedMinor"] == 10_000
 
     as_admin(client, db)
-    assert client.patch(
-        f"/v1/admin/orders/{body['id']}/status", json={"status": "processing"}
-    ).status_code == 200
-    assert client.patch(
-        f"/v1/admin/orders/{body['id']}/status", json={"status": "completed"}
-    ).status_code == 200
+    assert (
+        client.patch(
+            f"/v1/admin/orders/{body['id']}/status", json={"status": "processing"}
+        ).status_code
+        == 200
+    )
+    assert (
+        client.patch(
+            f"/v1/admin/orders/{body['id']}/status", json={"status": "completed"}
+        ).status_code
+        == 200
+    )
 
     as_customer(client, db)
     account = client.get("/v1/public/loyalty").json()

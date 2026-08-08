@@ -39,7 +39,11 @@ def _row_to_dict(row: dict[str, Any]) -> dict[str, Any]:
 
 
 async def list_pickup_points(
-    db: Database, *, active_only: bool = False, limit: int = 50, offset: int = 0,
+    db: Database,
+    *,
+    active_only: bool = False,
+    limit: int = 50,
+    offset: int = 0,
 ) -> dict[str, Any]:
     where = " WHERE status = 'active'" if active_only else ""
     total_row = await db.fetch_one(
@@ -69,10 +73,16 @@ async def get_pickup_point(db: Database, point_id: str) -> dict[str, Any]:
 
 
 async def create_pickup_point(
-    db: Database, actor: Principal, request_id: str,
-    *, name: str, address: dict[str, Any] | None = None,
-    hours: str | None = None, phone: str | None = None,
-    latitude: float | None = None, longitude: float | None = None,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    name: str,
+    address: dict[str, Any] | None = None,
+    hours: str | None = None,
+    phone: str | None = None,
+    latitude: float | None = None,
+    longitude: float | None = None,
     sort_order: int = 0,
 ) -> dict[str, Any]:
     clean_name = name.strip()
@@ -81,35 +91,47 @@ async def create_pickup_point(
     point_id = new_id("pup")
     now = utc_now_iso()
     address_json = json.dumps(address or {})
-    await db.batch([
-        (
-            "INSERT INTO pickup_points"
-            " (id, name, address_json, hours, phone, latitude, longitude,"
-            "  status, sort_order, created_at, updated_at)"
-            " VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
+    await db.batch(
+        [
             (
-                point_id, clean_name, address_json,
-                (hours or "").strip() or None,
-                (phone or "").strip() or None,
-                latitude, longitude, sort_order, now, now,
+                "INSERT INTO pickup_points"
+                " (id, name, address_json, hours, phone, latitude, longitude,"
+                "  status, sort_order, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?, ?, ?)",
+                (
+                    point_id,
+                    clean_name,
+                    address_json,
+                    (hours or "").strip() or None,
+                    (phone or "").strip() or None,
+                    latitude,
+                    longitude,
+                    sort_order,
+                    now,
+                    now,
+                ),
             ),
-        ),
-        audit_statement(
-            action="pickup_point.created",
-            entity_type="pickup_point",
-            entity_id=point_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after={"name": clean_name},
-        ),
-    ])
+            audit_statement(
+                action="pickup_point.created",
+                entity_type="pickup_point",
+                entity_id=point_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"name": clean_name},
+            ),
+        ]
+    )
     return await get_pickup_point(db, point_id)
 
 
 async def update_pickup_point(
-    db: Database, actor: Principal, request_id: str,
-    point_id: str, *, updates: dict[str, Any],
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    point_id: str,
+    *,
+    updates: dict[str, Any],
 ) -> dict[str, Any]:
     existing = await db.fetch_one("SELECT * FROM pickup_points WHERE id = ?", (point_id,))
     if existing is None:
@@ -169,37 +191,44 @@ async def update_pickup_point(
     params.append(now)
     params.append(point_id)
 
-    await db.batch([
-        (f"UPDATE pickup_points SET {', '.join(sets)} WHERE id = ?", tuple(params)),
-        audit_statement(
-            action="pickup_point.updated",
-            entity_type="pickup_point",
-            entity_id=point_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after=changed,
-        ),
-    ])
+    await db.batch(
+        [
+            (f"UPDATE pickup_points SET {', '.join(sets)} WHERE id = ?", tuple(params)),
+            audit_statement(
+                action="pickup_point.updated",
+                entity_type="pickup_point",
+                entity_id=point_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after=changed,
+            ),
+        ]
+    )
     return await get_pickup_point(db, point_id)
 
 
 async def delete_pickup_point(
-    db: Database, actor: Principal, request_id: str, point_id: str,
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    point_id: str,
 ) -> None:
     existing = await db.fetch_one("SELECT id FROM pickup_points WHERE id = ?", (point_id,))
     if existing is None:
         raise NotFoundError("Pickup point not found.")
     now = utc_now_iso()
-    await db.batch([
-        ("DELETE FROM pickup_points WHERE id = ?", (point_id,)),
-        audit_statement(
-            action="pickup_point.deleted",
-            entity_type="pickup_point",
-            entity_id=point_id,
-            actor_id=actor.user_id,
-            request_id=request_id,
-            created_at=now,
-            after={"deleted": True},
-        ),
-    ])
+    await db.batch(
+        [
+            ("DELETE FROM pickup_points WHERE id = ?", (point_id,)),
+            audit_statement(
+                action="pickup_point.deleted",
+                entity_type="pickup_point",
+                entity_id=point_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"deleted": True},
+            ),
+        ]
+    )
