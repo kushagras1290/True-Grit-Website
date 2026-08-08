@@ -46,6 +46,11 @@ export interface SiteSettings {
   giftCards: {
     enabled: boolean;
   };
+  loyalty: { enabled: boolean };
+  pickup: { enabled: boolean };
+  preorders: { enabled: boolean };
+  deliveryZones: { enabled: boolean };
+  b2b: { enabled: boolean };
   banners: {
     blogImageUrl: string;
     blogImageAlt: string;
@@ -84,6 +89,11 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   // Off by default (matches migration 0082) -- real stored value an owner
   // issues deliberately, same reasoning as `promotions`.
   giftCards: { enabled: false },
+  loyalty: { enabled: false },
+  pickup: { enabled: false },
+  preorders: { enabled: false },
+  deliveryZones: { enabled: false },
+  b2b: { enabled: false },
   banners: { blogImageUrl: "", blogImageAlt: "", farmsImageUrl: "", farmsImageAlt: "" },
   theme: DEFAULT_THEME,
   effects: DEFAULT_EFFECTS,
@@ -104,6 +114,11 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
     subscriptions: Partial<SiteSettings["subscriptions"]>;
     dietCertFilters: Partial<SiteSettings["dietCertFilters"]>;
     giftCards: Partial<SiteSettings["giftCards"]>;
+    loyalty: Partial<SiteSettings["loyalty"]>;
+    pickup: Partial<SiteSettings["pickup"]>;
+    preorders: Partial<SiteSettings["preorders"]>;
+    deliveryZones: Partial<SiteSettings["deliveryZones"]>;
+    b2b: Partial<SiteSettings["b2b"]>;
     banners: Partial<SiteSettings["banners"]>;
     theme: unknown;
     effects: unknown;
@@ -116,6 +131,11 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
   const subscriptions = source.subscriptions ?? {};
   const dietCertFilters = source.dietCertFilters ?? {};
   const giftCards = source.giftCards ?? {};
+  const loyalty = source.loyalty ?? {};
+  const pickup = source.pickup ?? {};
+  const preorders = source.preorders ?? {};
+  const deliveryZones = source.deliveryZones ?? {};
+  const b2b = source.b2b ?? {};
   const banners = source.banners ?? {};
 
   const bool = (value: unknown, fallback: boolean): boolean =>
@@ -150,6 +170,13 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
     giftCards: {
       enabled: bool(giftCards.enabled, DEFAULT_SITE_SETTINGS.giftCards.enabled),
     },
+    loyalty: { enabled: bool(loyalty.enabled, DEFAULT_SITE_SETTINGS.loyalty.enabled) },
+    pickup: { enabled: bool(pickup.enabled, DEFAULT_SITE_SETTINGS.pickup.enabled) },
+    preorders: { enabled: bool(preorders.enabled, DEFAULT_SITE_SETTINGS.preorders.enabled) },
+    deliveryZones: {
+      enabled: bool(deliveryZones.enabled, DEFAULT_SITE_SETTINGS.deliveryZones.enabled),
+    },
+    b2b: { enabled: bool(b2b.enabled, DEFAULT_SITE_SETTINGS.b2b.enabled) },
     banners: {
       blogImageUrl: text(banners.blogImageUrl, ""),
       blogImageAlt: text(banners.blogImageAlt, ""),

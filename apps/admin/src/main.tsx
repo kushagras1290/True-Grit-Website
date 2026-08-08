@@ -21,6 +21,7 @@ import { ContentCommentsPage } from "./features/content-comments";
 import { DashboardPage } from "./features/dashboard";
 import { DbBrowserPage } from "./features/db-browser";
 import { FarmRequestDetailPage, FarmRequestsListPage } from "./features/farm-requests";
+import { ExpandedCommercePage } from "./features/expanded-commerce";
 import { GiftCardsListPage } from "./features/gift-cards";
 import { HomepageSettingsPage } from "./features/homepage-settings";
 import { ImageGuidePage } from "./features/image-guide";
@@ -86,6 +87,7 @@ createRoot(document.getElementById("root")!).render(
                 <Route path="gift-cards" element={<GiftCardsListPage />} />
                 <Route path="bundles" element={<BundlesListPage />} />
                 <Route path="subscriptions" element={<SubscriptionsListPage />} />
+                <Route path="expanded-commerce" element={<ExpandedCommercePage />} />
                 <Route path="inventory" element={<InventoryPage />} />
                 <Route path="farms" element={<FarmsPage />} />
                 <Route path="farm-requests" element={<FarmRequestsListPage />} />

@@ -25,6 +25,8 @@ from truegrit_api.errors import (
 )
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
+from truegrit_api.services.feature_settings import load_loyalty_settings, loyalty_enabled
+from truegrit_api.services.loyalty import get_customer_loyalty
 from truegrit_api.services.payments import refund_paypal_capture, refund_razorpay_payment
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
@@ -77,7 +79,11 @@ async def update_order_status(
     *,
     target_status: str,
 ) -> dict[str, Any]:
-    current = await db.fetch_one("SELECT id, order_status FROM orders WHERE id = ?", (order_id,))
+    current = await db.fetch_one(
+        "SELECT id, order_status, customer_user_id, total_minor, delivery_method"
+        " FROM orders WHERE id = ?",
+        (order_id,),
+    )
     if current is None:
         raise NotFoundError("Order not found.")
     await _assert_farm_owns_order(db, actor, order_id)
@@ -94,13 +100,17 @@ async def update_order_status(
         if target_status == "cancelled"
         else "fulfilled"
         if target_status == "completed"
+        else "packed"
+        if target_status == "processing" and current.get("delivery_method") == "pickup"
         else None
     )
+    delivery_status = "delivered" if target_status == "completed" else None
     statements: list[tuple[str, Any]] = [
         (
             "UPDATE orders SET order_status = ?,"
-            " fulfilment_status = COALESCE(?, fulfilment_status), updated_at = ? WHERE id = ?",
-            (target_status, fulfilment_status, now, order_id),
+            " fulfilment_status = COALESCE(?, fulfilment_status),"
+            " delivery_status = COALESCE(?, delivery_status), updated_at = ? WHERE id = ?",
+            (target_status, fulfilment_status, delivery_status, now, order_id),
         )
     ]
     reservations = await db.fetch_all(
@@ -187,6 +197,79 @@ async def update_order_status(
                     ),
                 ]
             )
+        customer_user_id = current.get("customer_user_id")
+        if customer_user_id and await loyalty_enabled(db):
+            loyalty_settings = await load_loyalty_settings(db)
+            await get_customer_loyalty(db, customer_user_id)
+            loyalty_account = await db.fetch_one(
+                "SELECT id FROM loyalty_accounts WHERE customer_user_id = ?",
+                (customer_user_id,),
+            )
+            points = (
+                int(current["total_minor"]) // 10_000
+            ) * loyalty_settings.points_per_100
+            if loyalty_account is not None and points > 0:
+                statements.append(
+                    (
+                        "INSERT OR IGNORE INTO loyalty_transactions"
+                        " (id, loyalty_account_id, points, transaction_type, reference_id,"
+                        "  description, created_at)"
+                        " VALUES (?, ?, ?, 'earn_order', ?, ?, ?)",
+                        (
+                            new_id("ltx"),
+                            loyalty_account["id"],
+                            points,
+                            order_id,
+                            "Points earned on completed order",
+                            now,
+                        ),
+                    )
+                )
+            referral = await db.fetch_one(
+                "SELECT * FROM referral_redemptions"
+                " WHERE referred_user_id = ? AND status = 'pending'",
+                (customer_user_id,),
+            )
+            if referral is not None and loyalty_account is not None:
+                reward = loyalty_settings.referral_reward_points
+                statements.extend(
+                    [
+                        (
+                            "UPDATE referral_redemptions SET status = 'completed',"
+                            " referred_order_id = ?, referrer_points = ?, referred_points = ?,"
+                            " completed_at = ? WHERE id = ? AND status = 'pending'",
+                            (order_id, reward, reward, now, referral["id"]),
+                        ),
+                        (
+                            "INSERT OR IGNORE INTO loyalty_transactions"
+                            " (id, loyalty_account_id, points, transaction_type, reference_id,"
+                            "  description, created_at)"
+                            " VALUES (?, ?, ?, 'referral_reward', ?, ?, ?)",
+                            (
+                                new_id("ltx"),
+                                referral["referrer_account_id"],
+                                reward,
+                                referral["id"],
+                                "Referral reward",
+                                now,
+                            ),
+                        ),
+                        (
+                            "INSERT OR IGNORE INTO loyalty_transactions"
+                            " (id, loyalty_account_id, points, transaction_type, reference_id,"
+                            "  description, created_at)"
+                            " VALUES (?, ?, ?, 'referral_reward', ?, ?, ?)",
+                            (
+                                new_id("ltx"),
+                                loyalty_account["id"],
+                                reward,
+                                referral["id"],
+                                "Welcome referral reward",
+                                now,
+                            ),
+                        ),
+                    ]
+                )
     statements.append(
         audit_statement(
             action="order.status_changed",

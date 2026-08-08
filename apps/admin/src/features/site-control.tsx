@@ -832,6 +832,59 @@ function StorefrontSwitchesSection() {
 
       <div>
         <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
+          <T>Expanded commerce</T>
+        </h3>
+        <ul className="mt-3 max-w-3xl">
+          <SwitchRow
+            label="Enable loyalty points and referrals"
+            description="Customers can earn and redeem points and share referral codes. Accounts and ledger history are retained while disabled."
+            checked={settings.loyalty}
+            effective={effective.loyalty}
+            unavailableHint=""
+            disabled={mutation.isPending}
+            onChange={(next) => mutation.mutate({ loyalty: next })}
+          />
+          <SwitchRow
+            label="Enable local pickup"
+            description="Customers can choose an active pickup point at checkout and pay no delivery fee."
+            checked={settings.pickup}
+            effective={effective.pickup}
+            unavailableHint=""
+            disabled={mutation.isPending}
+            onChange={(next) => mutation.mutate({ pickup: next })}
+          />
+          <SwitchRow
+            label="Enable seasonal pre-orders"
+            description="Customers can reserve products against active harvest windows instead of current stock."
+            checked={settings.preorders}
+            effective={effective.preorders}
+            unavailableHint=""
+            disabled={mutation.isPending}
+            onChange={(next) => mutation.mutate({ preorders: next })}
+          />
+          <SwitchRow
+            label="Enforce delivery zones and slots"
+            description="Checkout validates serviceable PIN codes, zone fees, lead times, slot dates and capacity."
+            checked={settings.deliveryZones}
+            effective={effective.deliveryZones}
+            unavailableHint=""
+            disabled={mutation.isPending}
+            onChange={(next) => mutation.mutate({ deliveryZones: next })}
+          />
+          <SwitchRow
+            label="Enable B2B and bulk ordering"
+            description="Linked business accounts receive quantity price breaks and may use approved invoice terms."
+            checked={settings.b2b}
+            effective={effective.b2b}
+            unavailableHint=""
+            disabled={mutation.isPending}
+            onChange={(next) => mutation.mutate({ b2b: next })}
+          />
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
           <T>Delivery charges</T>
         </h3>
         <p className="mt-1 max-w-2xl text-sm text-ink-muted">

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { data, Link } from "react-router";
+import { useEffect, useState } from "react";
+import { data, Link, useSearchParams } from "react-router";
 
 import type { Route } from "./+types/product";
 import { AvailabilityNote, Breadcrumbs, ProductGrid, Section } from "../components/catalogue";
@@ -18,6 +18,7 @@ import {
   loadProductsBySlugs,
 } from "../lib/catalogue.server";
 import { useCart } from "../lib/cart";
+import { commerceLive, getB2BPriceBreaks, type B2BPriceBreakInfo } from "../lib/commerce";
 import { usePriceFormatter } from "../lib/currency";
 import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
@@ -56,13 +57,38 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const { product, related, reviews, alsoBought, origin } = loaderData;
   const { add } = useCart();
   const formatPrice = usePriceFormatter();
-  const { payments } = useSiteSettings();
+  const { payments, preorders, b2b } = useSiteSettings();
+  const [searchParams] = useSearchParams();
+  const preorderRequested = preorders.enabled && searchParams.get("preorder") === "1";
   const [variantId, setVariantId] = useState(product.variants[0]?.id ?? "");
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [bulkPrices, setBulkPrices] = useState<B2BPriceBreakInfo[]>([]);
 
   const variant = product.variants.find((entry) => entry.id === variantId) ?? product.variants[0];
   const effective = variant ? variantEffectivePrice(variant) : productEffectivePrice(product);
+  const applicableBulkPrice = [...bulkPrices]
+    .filter((price) => price.minQuantity <= quantity)
+    .sort((left, right) => right.minQuantity - left.minQuantity)[0];
+  const unitMinor = applicableBulkPrice
+    ? Math.min(effective.amountMinor, applicableBulkPrice.priceMinor)
+    : effective.amountMinor;
+
+  useEffect(() => {
+    if (!commerceLive || !b2b.enabled || !variant?.id) {
+      setBulkPrices([]);
+      return;
+    }
+    let active = true;
+    getB2BPriceBreaks(variant.id)
+      .then((prices) => {
+        if (active) setBulkPrices(prices);
+      })
+      .catch(() => setBulkPrices([]));
+    return () => {
+      active = false;
+    };
+  }, [b2b.enabled, variant?.id]);
   // Three independent gates on purchasability, all re-checked server-side at
   // checkout (this is UX, not the enforcement):
   // - out of stock: a variant-level, usually-temporary state.
@@ -79,7 +105,7 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const purchasable =
     product.acceptsOrders &&
     paymentsAllowed &&
-    (variant ? variant.availability !== "out_of_stock" : false);
+    (preorderRequested || (variant ? variant.availability !== "out_of_stock" : false));
 
   return (
     <>
@@ -125,7 +151,7 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
           </div>
 
           <p className="mt-5 text-2xl font-semibold text-ink">
-            {formatPrice(effective.amountMinor)}{" "}
+            {formatPrice(unitMinor)}{" "}
             {effective.originalMinor !== null ? (
               <s className="text-base font-normal text-ink-muted">
                 {formatPrice(effective.originalMinor)}
@@ -203,7 +229,8 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
                     productName: product.name,
                     variantId: variant.id,
                     variantName: variant.name,
-                    unitMinor: variantEffectivePrice(variant).amountMinor,
+                    unitMinor,
+                    preorder: preorderRequested,
                   },
                   quantity,
                 );
@@ -213,7 +240,9 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
               className="min-h-11 flex-1 rounded-sm bg-brand px-6 text-sm font-medium text-ink-inverse hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {purchasable ? (
-                <LocalizedText>{"Add to basket"}</LocalizedText>
+                <LocalizedText>
+                  {preorderRequested ? "Reserve harvest" : "Add to basket"}
+                </LocalizedText>
               ) : product.acceptsOrders && paymentsAllowed ? (
                 <LocalizedText>{"Out of stock"}</LocalizedText>
               ) : (
@@ -225,9 +254,23 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
               className="static h-11 w-11 border border-line-strong bg-transparent shadow-none"
             />
           </div>
+          {bulkPrices.length > 0 ? (
+            <ul className="mt-3 flex flex-wrap gap-2 text-xs text-ink-muted">
+              {bulkPrices.map((price) => (
+                <li key={price.id} className="rounded-full border border-line px-3 py-1">
+                  {price.minQuantity}<LocalizedText>+ at</LocalizedText> {formatPrice(price.priceMinor)} each
+                </li>
+              ))}
+            </ul>
+          ) : null}
           <p role="status" className="mt-2 min-h-5 text-sm text-success">
             {added ? <LocalizedText>{"Added to your basket."}</LocalizedText> : ""}
           </p>
+          {preorderRequested ? (
+            <p className="mt-1 rounded-sm border border-accent/30 bg-accent/5 px-3 py-2 text-sm text-ink-muted">
+              <LocalizedText>This is a seasonal pre-order. Payment is taken now and fulfilment begins when the harvest arrives.</LocalizedText>
+            </p>
+          ) : null}
           {/* Either admin switch (acceptsOrders, or paymentsOverride diverging
               from the site-wide payments switch) takes priority over ordinary
               stock status in the wording: an admin turned ordering off

@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { useEffect, useState } from "react";
 
 import type { Route } from "./+types/seasonal";
 import { CmsPage } from "../components/cms-page";
@@ -10,6 +11,8 @@ import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
 import { LocalizedText } from "../lib/i18n/localized-text";
+import { commerceLive, getSeasonalCalendar, type SeasonalWindowInfo } from "../lib/commerce";
+import { useSiteSettings } from "../lib/site-settings";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
@@ -51,8 +54,49 @@ export function meta({ data, matches }: Route.MetaArgs) {
 }
 
 export default function SeasonalPage({ loaderData }: Route.ComponentProps) {
+  const { preorders } = useSiteSettings();
+  const [calendar, setCalendar] = useState<SeasonalWindowInfo[]>([]);
+  useEffect(() => {
+    if (!commerceLive || !preorders.enabled) return;
+    let active = true;
+    getSeasonalCalendar()
+      .then((items) => {
+        if (active) setCalendar(items);
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, [preorders.enabled]);
+
   if (loaderData.cms.page) {
-    return <CmsPage page={loaderData.cms.page} data={loaderData.cms.blockData} />;
+    return (
+      <>
+        <CmsPage page={loaderData.cms.page} data={loaderData.cms.blockData} />
+        {preorders.enabled && calendar.length > 0 ? (
+          <Section eyebrow="Reserve the next harvest" heading="Harvest calendar">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {calendar.map((window) => (
+                <article key={window.id} className="rounded-md border border-line bg-surface p-5">
+                  <p className="text-xs font-semibold tracking-[0.12em] text-accent uppercase">
+                    {window.expectedStart} – {window.expectedEnd}
+                  </p>
+                  <h3 className="mt-2 font-display text-xl text-ink">
+                    {window.title || window.productName}
+                  </h3>
+                  <Link
+                    to={`/product/${window.productSlug}?preorder=1`}
+                    className="mt-5 inline-flex min-h-11 items-center rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90"
+                  >
+                    <LocalizedText>Reserve this harvest</LocalizedText>
+                  </Link>
+                </article>
+              ))}
+            </div>
+          </Section>
+        ) : null}
+      </>
+    );
   }
   return (
     <>
@@ -61,6 +105,34 @@ export default function SeasonalPage({ loaderData }: Route.ComponentProps) {
         title="What is good right now, not what can sit forever."
         description="Seasonal drops follow harvest windows, weekly packing rhythms and routes that protect freshness from farm to doorstep."
       />
+
+      {preorders.enabled && calendar.length > 0 ? (
+        <Section eyebrow="Reserve the next harvest" heading="Harvest calendar">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {calendar.map((window) => (
+              <article key={window.id} className="rounded-md border border-line bg-surface p-5">
+                <p className="text-xs font-semibold tracking-[0.12em] text-accent uppercase">
+                  {window.expectedStart} – {window.expectedEnd}
+                </p>
+                <h3 className="mt-2 font-display text-xl text-ink">
+                  {window.title || window.productName}
+                </h3>
+                <p className="mt-2 text-sm text-ink-muted">
+                  {window.maxPreorders
+                    ? `${window.currentPreorders} of ${window.maxPreorders} reservations taken`
+                    : <LocalizedText>{"Reservations are open"}</LocalizedText>}
+                </p>
+                <Link
+                  to={`/product/${window.productSlug}?preorder=1`}
+                  className="mt-5 inline-flex min-h-11 items-center rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-90"
+                >
+                  <LocalizedText>Reserve this harvest</LocalizedText>
+                </Link>
+              </article>
+            ))}
+          </div>
+        </Section>
+      ) : null}
 
       <Section eyebrow="In season now" heading="Current harvests">
         {loaderData.seasonalProducts.length > 0 ? (

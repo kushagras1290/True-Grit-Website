@@ -89,7 +89,10 @@ export default function CartPage(_props: Route.ComponentProps) {
         <div className="grid gap-10 lg:grid-cols-[2fr_1fr]">
           <ul className="divide-y divide-line">
             {lines.map((line) => (
-              <li key={line.variantId} className="flex flex-wrap items-center gap-4 py-5">
+              <li
+                key={`${line.variantId}:${line.preorder ? "preorder" : "standard"}`}
+                className="flex flex-wrap items-center gap-4 py-5"
+              >
                 <div className="min-w-0 flex-1">
                   <Link
                     to={`/product/${line.productSlug}`}
@@ -98,6 +101,9 @@ export default function CartPage(_props: Route.ComponentProps) {
                     {line.productName}
                   </Link>
                   <p className="text-sm text-ink-muted">{line.variantName}</p>
+                  {line.preorder ? (
+                    <p className="mt-1 text-xs font-medium text-accent"><LocalizedText>Harvest pre-order</LocalizedText></p>
+                  ) : null}
                 </div>
                 <div className="flex items-center rounded-sm border border-line-strong">
                   <button
@@ -106,7 +112,7 @@ export default function CartPage(_props: Route.ComponentProps) {
                       product: line.productName,
                     })}
                     className="min-h-11 min-w-11 text-lg"
-                    onClick={() => setQuantity(line.variantId, line.quantity - 1)}
+                    onClick={() => setQuantity(line.variantId, line.quantity - 1, line.preorder)}
                   >
                     −
                   </button>
@@ -119,7 +125,7 @@ export default function CartPage(_props: Route.ComponentProps) {
                       product: line.productName,
                     })}
                     className="min-h-11 min-w-11 text-lg"
-                    onClick={() => setQuantity(line.variantId, line.quantity + 1)}
+                    onClick={() => setQuantity(line.variantId, line.quantity + 1, line.preorder)}
                   >
                     +
                   </button>
@@ -129,7 +135,7 @@ export default function CartPage(_props: Route.ComponentProps) {
                 </p>
                 <button
                   type="button"
-                  onClick={() => remove(line.variantId)}
+                  onClick={() => remove(line.variantId, line.preorder)}
                   className="text-sm text-ink-muted underline-offset-4 hover:text-danger hover:underline"
                 >
                   <LocalizedText>Remove</LocalizedText>

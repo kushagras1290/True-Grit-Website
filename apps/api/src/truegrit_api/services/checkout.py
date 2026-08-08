@@ -24,14 +24,26 @@ from truegrit_api.domain.money import basis_points_discount
 from truegrit_api.errors import ConflictError, PhoneRequiredError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
+from truegrit_api.services.b2b import (
+    check_credit_limit,
+    is_b2b_customer,
+    resolve_b2b_price,
+)
 from truegrit_api.services.bundles import resolve_bundle_discount
+from truegrit_api.services.delivery_zones import (
+    find_zone_for_postal_code,
+    list_slots,
+    validate_slot_selection,
+)
 from truegrit_api.services.feature_settings import (
-    gift_cards_enabled,
     load_delivery_settings,
+    load_loyalty_settings,
     load_storefront_settings,
     promotions_enabled,
 )
 from truegrit_api.services.gift_cards import resolve_checkout_redemption
+from truegrit_api.services.loyalty import resolve_checkout_redemption as resolve_loyalty_redemption
+from truegrit_api.services.preorders import get_active_harvest_window_for_product
 from truegrit_api.services.promotions import resolve_checkout_discount
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
@@ -45,6 +57,7 @@ _ADDRESS_REQUIRED = ("recipient_name", "line1", "city", "state", "postal_code")
 class CheckoutLine:
     variant_id: str
     quantity: int
+    preorder: bool = False
 
 
 def _reference() -> str:
@@ -67,7 +80,13 @@ def _validate_address(address: dict[str, Any]) -> dict[str, Any]:
 
 
 async def _resolve_line(
-    db: Database, line: CheckoutLine, now: str, *, payments_enabled: bool
+    db: Database,
+    line: CheckoutLine,
+    now: str,
+    *,
+    payments_enabled: bool,
+    preorders_enabled: bool,
+    b2b_pricing_enabled: bool,
 ) -> dict[str, Any]:
     if line.quantity < 1 or line.quantity > _MAX_QUANTITY_PER_LINE:
         raise ValidationAppError(f"Quantity for each item must be 1-{_MAX_QUANTITY_PER_LINE}.")
@@ -119,7 +138,17 @@ async def _resolve_line(
     if price is None:
         raise ConflictError(f"{variant['product_name']} is not currently priced for sale.")
 
-    level = await db.fetch_one(
+    harvest_window = None
+    if line.preorder:
+        if not preorders_enabled:
+            raise ValidationAppError("Seasonal pre-orders are not available right now.")
+        harvest_window = await get_active_harvest_window_for_product(
+            db, variant["product_id"], quantity=line.quantity
+        )
+        if harvest_window is None:
+            raise ConflictError(f"{variant['product_name']} is not open for pre-order.")
+
+    level = None if line.preorder else await db.fetch_one(
         """
         SELECT location_id, on_hand, reserved
         FROM inventory_levels
@@ -129,13 +158,22 @@ async def _resolve_line(
         """,
         (line.variant_id, line.quantity),
     )
-    if level is None:
+    if level is None and not line.preorder:
         raise ConflictError(f"Not enough stock for {variant['product_name']}.")
 
-    unit = price["sale_amount_minor"] or price["list_amount_minor"]
+    unit = (
+        price["sale_amount_minor"]
+        if price["sale_amount_minor"] is not None
+        else price["list_amount_minor"]
+    )
+    if b2b_pricing_enabled:
+        tier_price = await resolve_b2b_price(db, line.variant_id, line.quantity)
+        if tier_price is not None:
+            unit = min(unit, tier_price)
     return {
         "variant": variant,
-        "location_id": level["location_id"],
+        "location_id": level["location_id"] if level is not None else None,
+        "harvest_window_id": harvest_window["id"] if harvest_window is not None else None,
         "unit_list_minor": price["list_amount_minor"],
         "unit_effective_minor": unit,
         "currency_code": price["currency_code"],
@@ -157,6 +195,14 @@ def _order_result(row: dict[str, Any]) -> dict[str, Any]:
         "paymentStatus": row["payment_status"],
         "giftCardCode": row["gift_card_code"],
         "giftCardAppliedMinor": row["gift_card_applied_minor"],
+        "loyaltyPointsRedeemed": row.get("loyalty_points_redeemed", 0),
+        "loyaltyAppliedMinor": row.get("loyalty_applied_minor", 0),
+        "deliveryMethod": row.get("delivery_method", "delivery"),
+        "pickupPointId": row.get("pickup_point_id"),
+        "deliveryZoneId": row.get("delivery_zone_id"),
+        "deliverySlotId": row.get("delivery_slot_id"),
+        "deliveryDate": row.get("delivery_date"),
+        "orderType": row.get("order_type", "standard"),
     }
 
 
@@ -167,7 +213,10 @@ async def _find_by_idempotency_key(
         """
         SELECT id, public_reference, currency_code, subtotal_minor, discount_minor,
                delivery_minor, total_minor, order_status, payment_status,
-               gift_card_code, gift_card_applied_minor
+               gift_card_code, gift_card_applied_minor,
+               loyalty_points_redeemed, loyalty_applied_minor,
+               delivery_method, pickup_point_id, delivery_zone_id,
+               delivery_slot_id, delivery_date, order_type
         FROM orders
         WHERE customer_user_id = ? AND idempotency_key = ?
         """,
@@ -202,6 +251,11 @@ async def place_order(
     subscription_id: str | None = None,
     subscription_discount_percent: int | None = None,
     gift_card_code: str | None = None,
+    loyalty_points: int = 0,
+    delivery_method: str = "delivery",
+    pickup_point_id: str | None = None,
+    delivery_slot_id: str | None = None,
+    delivery_date: str | None = None,
 ) -> dict[str, Any]:
     # A retried submission (double-click, network timeout-and-resend, back
     # button) returns the order that request already placed instead of a
@@ -218,10 +272,14 @@ async def place_order(
     if len(items) > _MAX_LINES:
         raise ValidationAppError("Too many items in one order.")
     # Collapse duplicate variant lines defensively.
-    merged: dict[str, int] = {}
+    merged: dict[tuple[str, bool], int] = {}
     for line in items:
-        merged[line.variant_id] = merged.get(line.variant_id, 0) + line.quantity
-    lines = [CheckoutLine(variant_id=v, quantity=q) for v, q in merged.items()]
+        key = (line.variant_id, line.preorder)
+        merged[key] = merged.get(key, 0) + line.quantity
+    lines = [
+        CheckoutLine(variant_id=variant_id, quantity=quantity, preorder=is_preorder)
+        for (variant_id, is_preorder), quantity in merged.items()
+    ]
 
     address = _validate_address(delivery_address)
     settings = get_settings()
@@ -240,17 +298,71 @@ async def place_order(
     # Resolved once per order, not once per line: every line in the same
     # checkout sees the same site-wide switch state, and `_resolve_line`
     # layers each product's own override (migration 0069) on top of it.
-    payments_enabled = (await load_storefront_settings(db)).payments
+    feature_settings = await load_storefront_settings(db)
+    payments_enabled = feature_settings.payments
+    b2b_account = (
+        await is_b2b_customer(db, customer.user_id) if feature_settings.b2b else None
+    )
     resolved = [
-        await _resolve_line(db, line, now, payments_enabled=payments_enabled) for line in lines
+        await _resolve_line(
+            db,
+            line,
+            now,
+            payments_enabled=payments_enabled,
+            preorders_enabled=feature_settings.preorders,
+            b2b_pricing_enabled=b2b_account is not None,
+        )
+        for line in lines
     ]
 
     currency = resolved[0]["currency_code"]
     subtotal = sum(item["line_total_minor"] for item in resolved)
     delivery_settings = await load_delivery_settings(db)
-    delivery = (
-        0 if subtotal >= delivery_settings.free_threshold_minor else delivery_settings.fee_minor
-    )
+    clean_delivery_method = delivery_method.strip().lower()
+    if clean_delivery_method not in {"delivery", "pickup"}:
+        raise ValidationAppError("Delivery method must be delivery or pickup.")
+    selected_pickup_point: dict[str, Any] | None = None
+    selected_zone: dict[str, Any] | None = None
+    selected_slot: dict[str, Any] | None = None
+    if clean_delivery_method == "pickup":
+        if not feature_settings.pickup:
+            raise ValidationAppError("Local pickup is not available right now.")
+        selected_pickup_point = await db.fetch_one(
+            "SELECT * FROM pickup_points WHERE id = ? AND status = 'active'",
+            ((pickup_point_id or "").strip(),),
+        )
+        if selected_pickup_point is None:
+            raise ValidationAppError("Please choose an available pickup point.")
+        delivery = 0
+    else:
+        fee_minor = delivery_settings.fee_minor
+        threshold_minor = delivery_settings.free_threshold_minor
+        if feature_settings.delivery_zones:
+            selected_zone = await find_zone_for_postal_code(db, address["postal_code"])
+            if selected_zone is None:
+                raise ValidationAppError("Sorry, we don't deliver to this area yet.")
+            fee_minor = (
+                selected_zone["feeOverrideMinor"]
+                if selected_zone["feeOverrideMinor"] is not None
+                else fee_minor
+            )
+            threshold_minor = (
+                selected_zone["freeThresholdOverrideMinor"]
+                if selected_zone["freeThresholdOverrideMinor"] is not None
+                else threshold_minor
+            )
+            configured_slots = await list_slots(db, selected_zone["id"])
+            active_slots = [slot for slot in configured_slots if slot["status"] == "active"]
+            if active_slots:
+                if not delivery_slot_id or not delivery_date:
+                    raise ValidationAppError("Please choose a delivery date and time slot.")
+                selected_slot = await validate_slot_selection(
+                    db,
+                    zone_id=selected_zone["id"],
+                    slot_id=delivery_slot_id,
+                    delivery_date=delivery_date,
+                )
+        delivery = 0 if subtotal >= threshold_minor else fee_minor
 
     # A coupon code is only ever honoured while the sitewide switch is on; an
     # automatic (no-code) promotion is resolved the same gated way, so this
@@ -316,7 +428,7 @@ async def place_order(
     # discount, so it always spends against the smallest amount possible
     # rather than being computed off the pre-discount subtotal.
     clean_gift_card_code = (gift_card_code or "").strip() or None
-    gift_cards_are_enabled = await gift_cards_enabled(db)
+    gift_cards_are_enabled = feature_settings.gift_cards
     if clean_gift_card_code and not gift_cards_are_enabled:
         raise ValidationAppError("Gift cards are not available right now.")
     applied_gift_card = (
@@ -327,7 +439,42 @@ async def place_order(
         else None
     )
     gift_card_applied = applied_gift_card["applied_minor"] if applied_gift_card is not None else 0
-    total = pre_gift_card_total - gift_card_applied
+    pre_loyalty_total = pre_gift_card_total - gift_card_applied
+
+    requested_loyalty_points = max(int(loyalty_points), 0)
+    if requested_loyalty_points and not feature_settings.loyalty:
+        raise ValidationAppError("Loyalty rewards are not available right now.")
+    loyalty_settings = await load_loyalty_settings(db)
+    applied_loyalty = (
+        await resolve_loyalty_redemption(
+            db,
+            customer_user_id=customer.user_id,
+            points_to_redeem=requested_loyalty_points,
+            points_value_minor=loyalty_settings.point_value_minor,
+            amount_needed_minor=pre_loyalty_total,
+        )
+        if feature_settings.loyalty
+        else None
+    )
+    loyalty_applied = applied_loyalty["applied_minor"] if applied_loyalty else 0
+    loyalty_points_redeemed = applied_loyalty["points_redeemed"] if applied_loyalty else 0
+    loyalty_account = None
+    if applied_loyalty is not None:
+        loyalty_account = await db.fetch_one(
+            "SELECT id FROM loyalty_accounts WHERE customer_user_id = ?",
+            (customer.user_id,),
+        )
+        if loyalty_account is None:
+            raise ValidationAppError("Your loyalty account is not available.")
+    total = pre_loyalty_total - loyalty_applied
+
+    if payment_method == "invoice":
+        if not feature_settings.b2b or b2b_account is None:
+            raise ValidationAppError(
+                "Invoice payment is only available to active business accounts."
+            )
+        if not await check_credit_limit(db, b2b_account["id"], total):
+            raise ValidationAppError("This order would exceed the business account credit limit.")
 
     if payment_method == "cod":
         if total > settings.payment_cod_max_minor:
@@ -366,6 +513,8 @@ async def place_order(
     try:
         for item in resolved:
             variant = item["variant"]
+            if item["harvest_window_id"] is not None:
+                continue
             changed = await db.execute(
                 "UPDATE inventory_levels SET reserved = reserved + ?, updated_at = ?"
                 " WHERE variant_id = ? AND location_id = ? AND (on_hand - reserved) >= ?",
@@ -393,7 +542,7 @@ async def place_order(
     # Cash-on-delivery orders are confirmed immediately (paid on delivery). Online
     # payments open as pending_payment and are confirmed once the gateway result
     # is verified, so unpaid orders never enter fulfilment.
-    order_status = "confirmed" if payment_method == "cod" else "pending_payment"
+    order_status = "confirmed" if payment_method in {"cod", "invoice"} else "pending_payment"
     # Frozen at order time, the same reasoning `order_items.product_snapshot_json`
     # already uses for catalogue data: a promotion edited or archived after this
     # order shipped must never retroactively change what this order's history says.
@@ -419,11 +568,16 @@ async def place_order(
               currency_code,
               subtotal_minor, discount_minor, delivery_minor, tax_minor, total_minor,
               gift_card_applied_minor, gift_card_code,
+              loyalty_points_redeemed, loyalty_applied_minor,
               order_status, payment_status, fulfilment_status, delivery_status,
               delivery_address_json, promotion_snapshot_json,
-              idempotency_key, subscription_id, placed_at, created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?,
-                      ?, 'pending', 'unfulfilled', 'not_ready', ?, ?, ?, ?, ?, ?, ?)
+              idempotency_key, subscription_id,
+              delivery_method, pickup_point_id, order_type,
+              delivery_zone_id, delivery_slot_id, delivery_date,
+              placed_at, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?,
+                      ?, 'pending', 'unfulfilled', 'not_ready', ?, ?, ?, ?,
+                      ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 order_id,
@@ -442,11 +596,21 @@ async def place_order(
                 total,
                 gift_card_applied,
                 applied_gift_card["code"] if applied_gift_card is not None else None,
+                loyalty_points_redeemed,
+                loyalty_applied,
                 order_status,
                 json.dumps(address),
                 promotion_snapshot,
                 idempotency_key,
                 subscription_id,
+                clean_delivery_method,
+                selected_pickup_point["id"] if selected_pickup_point else None,
+                "preorder"
+                if any(item["harvest_window_id"] is not None for item in resolved)
+                else "standard",
+                selected_zone["id"] if selected_zone else None,
+                selected_slot["id"] if selected_slot else None,
+                delivery_date if selected_slot else None,
                 now,
                 now,
                 now,
@@ -481,23 +645,42 @@ async def place_order(
                 ),
             )
         )
-        statements.append(
-            (
-                "INSERT INTO inventory_reservations"
-                " (id, variant_id, location_id, quantity, reference_type, reference_id,"
-                "  status, created_at, updated_at)"
-                " VALUES (?, ?, ?, ?, 'order', ?, 'held', ?, ?)",
+        if item["harvest_window_id"] is None:
+            statements.append(
                 (
-                    new_id("rsv"),
-                    variant["variant_id"],
-                    item["location_id"],
-                    item["quantity"],
-                    order_id,
-                    now,
-                    now,
-                ),
+                    "INSERT INTO inventory_reservations"
+                    " (id, variant_id, location_id, quantity, reference_type, reference_id,"
+                    "  status, created_at, updated_at)"
+                    " VALUES (?, ?, ?, ?, 'order', ?, 'held', ?, ?)",
+                    (
+                        new_id("rsv"),
+                        variant["variant_id"],
+                        item["location_id"],
+                        item["quantity"],
+                        order_id,
+                        now,
+                        now,
+                    ),
+                )
             )
-        )
+        else:
+            statements.append(
+                (
+                    "INSERT INTO preorders"
+                    " (id, order_id, harvest_window_id, product_id, variant_id,"
+                    "  quantity, status, created_at)"
+                    " VALUES (?, ?, ?, ?, ?, ?, 'reserved', ?)",
+                    (
+                        new_id("po"),
+                        order_id,
+                        item["harvest_window_id"],
+                        variant["product_id"],
+                        variant["variant_id"],
+                        item["quantity"],
+                        now,
+                    ),
+                )
+            )
 
     if applied_promotion is not None:
         # One ledger row for the discount actually granted -- 'coupon' when a
@@ -554,6 +737,35 @@ async def place_order(
                     gift_card_applied,
                     now,
                 ),
+            )
+        )
+
+    if applied_loyalty is not None:
+        assert loyalty_account is not None
+        statements.append(
+            (
+                "INSERT INTO loyalty_transactions"
+                " (id, loyalty_account_id, points, transaction_type, reference_id,"
+                "  description, created_at)"
+                " VALUES (?, ?, ?, 'redeem_checkout', ?, ?, ?)",
+                (
+                    new_id("ltx"),
+                    loyalty_account["id"],
+                    -loyalty_points_redeemed,
+                    order_id,
+                    "Points redeemed at checkout",
+                    now,
+                ),
+            )
+        )
+
+    if selected_slot is not None and delivery_date is not None:
+        statements.append(
+            (
+                "INSERT INTO delivery_slot_bookings"
+                " (id, order_id, slot_id, delivery_date, created_at)"
+                " VALUES (?, ?, ?, ?, ?)",
+                (new_id("dsb"), order_id, selected_slot["id"], delivery_date, now),
             )
         )
 
@@ -616,6 +828,14 @@ async def place_order(
                 "subscription_discount_minor": subscription_discount,
                 "gift_card_code": applied_gift_card["code"] if applied_gift_card else None,
                 "gift_card_applied_minor": gift_card_applied,
+                "loyalty_points_redeemed": loyalty_points_redeemed,
+                "loyalty_applied_minor": loyalty_applied,
+                "delivery_method": clean_delivery_method,
+                "pickup_point_id": selected_pickup_point["id"]
+                if selected_pickup_point
+                else None,
+                "delivery_zone_id": selected_zone["id"] if selected_zone else None,
+                "delivery_slot_id": selected_slot["id"] if selected_slot else None,
             },
         )
     )
@@ -626,6 +846,8 @@ async def place_order(
         # The order never landed, so the stock this attempt reserved for it
         # must go back -- otherwise it is held forever against nothing.
         for item in resolved:
+            if item["harvest_window_id"] is not None:
+                continue
             variant = item["variant"]
             await _release_reservation(
                 db, variant["variant_id"], item["location_id"], item["quantity"]
@@ -654,4 +876,16 @@ async def place_order(
         "couponCode": applied_promotion["code"] if applied_promotion else None,
         "giftCardCode": applied_gift_card["code"] if applied_gift_card else None,
         "giftCardAppliedMinor": gift_card_applied,
+        "loyaltyPointsRedeemed": loyalty_points_redeemed,
+        "loyaltyAppliedMinor": loyalty_applied,
+        "deliveryMethod": clean_delivery_method,
+        "pickupPointId": selected_pickup_point["id"] if selected_pickup_point else None,
+        "deliveryZoneId": selected_zone["id"] if selected_zone else None,
+        "deliverySlotId": selected_slot["id"] if selected_slot else None,
+        "deliveryDate": delivery_date if selected_slot else None,
+        "orderType": "preorder"
+        if any(item["harvest_window_id"] is not None for item in resolved)
+        else "standard",
+        "b2bAccountId": b2b_account["id"] if b2b_account else None,
+        "b2bPaymentTermsDays": b2b_account["paymentTermsDays"] if b2b_account else None,
     }

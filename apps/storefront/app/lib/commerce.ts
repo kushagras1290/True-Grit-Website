@@ -22,6 +22,7 @@ export const commerceLive = hasPublicApiUrl();
 export interface CheckoutItem {
   variantId: string;
   quantity: number;
+  preorder?: boolean;
 }
 
 export interface DeliveryAddress {
@@ -60,6 +61,14 @@ export interface PlacedOrder {
   couponCode: string | null;
   giftCardCode: string | null;
   giftCardAppliedMinor: number;
+  loyaltyPointsRedeemed: number;
+  loyaltyAppliedMinor: number;
+  deliveryMethod: "delivery" | "pickup";
+  pickupPointId: string | null;
+  deliveryZoneId: string | null;
+  deliverySlotId: string | null;
+  deliveryDate: string | null;
+  orderType: "standard" | "preorder";
   payment?: OrderPayment;
 }
 
@@ -113,6 +122,14 @@ export interface OrderDetail {
   fulfilmentStatus: string;
   placedAt: string;
   deliveryAddress: DeliveryAddress | null;
+  deliveryMethod: "delivery" | "pickup";
+  pickupPointId: string | null;
+  deliveryZoneId: string | null;
+  deliverySlotId: string | null;
+  deliveryDate: string | null;
+  orderType: "standard" | "preorder";
+  loyaltyPointsRedeemed: number;
+  loyaltyAppliedMinor: number;
   items: OrderLine[];
 }
 
@@ -185,6 +202,129 @@ export function supportBotChat(input: {
 export interface DeliverySettingsInfo {
   feeMinor: number;
   freeThresholdMinor: number;
+}
+
+export interface LoyaltyAccountInfo {
+  balance: number;
+  referralCode: string;
+  status: string;
+  transactions: Array<{
+    id: string;
+    points: number;
+    transactionType: string;
+    description: string | null;
+    createdAt: string;
+  }>;
+}
+
+export interface PickupPointInfo {
+  id: string;
+  name: string;
+  address: Record<string, string>;
+  hours: string | null;
+  phone: string | null;
+}
+
+export interface DeliverySlotInfo {
+  id: string;
+  zoneId: string;
+  dayOfWeek: number;
+  dayName: string;
+  startTime: string;
+  endTime: string;
+  maxOrders: number;
+  available?: boolean;
+}
+
+export interface DeliveryCheckInfo {
+  serviceable: boolean;
+  message?: string;
+  zone: {
+    id: string;
+    name: string;
+    leadTimeHours: number;
+    feeOverrideMinor: number | null;
+    freeThresholdOverrideMinor: number | null;
+  } | null;
+  slots?: DeliverySlotInfo[];
+}
+
+export interface B2BAccountInfo {
+  id: string;
+  companyName: string;
+  paymentTermsDays: number;
+  status: string;
+}
+
+export interface B2BPriceBreakInfo {
+  id: string;
+  variantId: string;
+  minQuantity: number;
+  priceMinor: number;
+  status: string;
+}
+
+export interface SeasonalWindowInfo {
+  id: string;
+  productId: string;
+  productName: string;
+  productSlug: string;
+  title: string | null;
+  expectedStart: string;
+  expectedEnd: string;
+  maxPreorders: number | null;
+  currentPreorders: number;
+  available: boolean;
+}
+
+export function getLoyaltyAccount(): Promise<LoyaltyAccountInfo> {
+  return request<LoyaltyAccountInfo>("/v1/public/loyalty");
+}
+
+export function applyReferralCode(referralCode: string): Promise<{ referralCode: string }> {
+  return request<{ referralCode: string }>("/v1/public/loyalty/referral", {
+    method: "POST",
+    body: JSON.stringify({ referralCode }),
+  });
+}
+
+export function getPickupPoints(): Promise<PickupPointInfo[]> {
+  return request<{ items: PickupPointInfo[] }>("/v1/public/pickup-points").then(
+    (body) => body.items,
+  );
+}
+
+export function checkDeliveryPostalCode(postalCode: string): Promise<DeliveryCheckInfo> {
+  return request<DeliveryCheckInfo>(
+    `/v1/public/delivery/check?postalCode=${encodeURIComponent(postalCode)}`,
+  );
+}
+
+export function getDeliverySlots(
+  zoneId: string,
+  deliveryDate: string,
+): Promise<DeliverySlotInfo[]> {
+  return request<{ items: DeliverySlotInfo[] }>(
+    `/v1/public/delivery/zones/${encodeURIComponent(zoneId)}/slots?deliveryDate=${encodeURIComponent(deliveryDate)}`,
+  ).then((body) => body.items);
+}
+
+export function getB2BAccount(): Promise<B2BAccountInfo | null> {
+  return request<{ account: B2BAccountInfo | null }>("/v1/public/b2b/account").then(
+    (body) => body.account,
+  );
+}
+
+export function getB2BPriceBreaks(variantId: string): Promise<B2BPriceBreakInfo[]> {
+  return request<{ items: B2BPriceBreakInfo[] }>(
+    `/v1/public/b2b/price-breaks?variantId=${encodeURIComponent(variantId)}`,
+  ).then((body) => body.items);
+}
+
+export function getSeasonalCalendar(): Promise<SeasonalWindowInfo[]> {
+  return request<{ items: SeasonalWindowInfo[] }>("/v1/public/seasonal-calendar").then(
+    (body) => body.items,
+  );
 }
 
 export function getDeliverySettings(): Promise<DeliverySettingsInfo> {
@@ -289,20 +429,24 @@ export function getGiftCardBalance(code: string): Promise<GiftCardBalance> {
 export function placeOrder(
   items: CheckoutItem[],
   deliveryAddress: DeliveryAddress,
-  paymentMethod: string = "cod",
-  idempotencyKey?: string,
-  couponCode?: string,
-  giftCardCode?: string,
+  options: {
+    paymentMethod?: string;
+    idempotencyKey?: string;
+    couponCode?: string;
+    giftCardCode?: string;
+    loyaltyPoints?: number;
+    deliveryMethod?: "delivery" | "pickup";
+    pickupPointId?: string;
+    deliverySlotId?: string;
+    deliveryDate?: string;
+  } = {},
 ): Promise<PlacedOrder> {
   return request<PlacedOrder>("/v1/public/checkout", {
     method: "POST",
     body: JSON.stringify({
       items,
       deliveryAddress,
-      paymentMethod,
-      idempotencyKey,
-      couponCode,
-      giftCardCode,
+      ...options,
     }),
   });
 }

@@ -9,9 +9,15 @@ import { PromotionBanner } from "../components/promotion-banner";
 import { useCart } from "../lib/cart";
 import {
   commerceLive,
+  applyReferralCode,
+  checkDeliveryPostalCode,
+  getB2BAccount,
   getDeliverySettings,
+  getDeliverySlots,
   getFeaturedPromotion,
+  getLoyaltyAccount,
   getPaymentMethods,
+  getPickupPoints,
   newCheckoutIdempotencyKey,
   openPaypalPaymentWindow,
   openRazorpayPaymentWindow,
@@ -21,11 +27,16 @@ import {
   previewDiscount,
   previewGiftCard,
   type DeliveryAddress,
+  type DeliveryCheckInfo,
   type DeliverySettingsInfo,
+  type DeliverySlotInfo,
   type DiscountPreview,
   type FeaturedPromotionInfo,
   type GiftCardPreview,
   type PaymentMethodsInfo,
+  type PickupPointInfo,
+  type LoyaltyAccountInfo,
+  type B2BAccountInfo,
 } from "../lib/commerce";
 import { usePriceFormatter, useDisplayCurrency } from "../lib/currency";
 import { AuthError, useCustomer } from "../lib/customer-auth";
@@ -62,7 +73,8 @@ const FIELD =
 export default function CheckoutPage(_props: Route.ComponentProps) {
   const localize = useLocalizeText();
   const { customer, status } = useCustomer();
-  const { payments, promotions, giftCards } = useSiteSettings();
+  const { payments, promotions, giftCards, loyalty, pickup, deliveryZones, b2b } =
+    useSiteSettings();
   const { lines, subtotalMinor, clear } = useCart();
   const formatPrice = usePriceFormatter();
   const displayCurrency = useDisplayCurrency();
@@ -81,15 +93,31 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
   const [appliedGiftCard, setAppliedGiftCard] = useState<GiftCardPreview | null>(null);
   const [giftCardChecking, setGiftCardChecking] = useState(false);
   const [giftCardError, setGiftCardError] = useState<string | null>(null);
+  const [loyaltyAccount, setLoyaltyAccount] = useState<LoyaltyAccountInfo | null>(null);
+  const [loyaltyPoints, setLoyaltyPoints] = useState(0);
+  const [referralCode, setReferralCode] = useState("");
+  const [referralMessage, setReferralMessage] = useState<string | null>(null);
+  const [deliveryMethod, setDeliveryMethod] = useState<"delivery" | "pickup">("delivery");
+  const [pickupPoints, setPickupPoints] = useState<PickupPointInfo[]>([]);
+  const [pickupPointId, setPickupPointId] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [deliveryCheck, setDeliveryCheck] = useState<DeliveryCheckInfo | null>(null);
+  const [deliveryDate, setDeliveryDate] = useState("");
+  const [deliverySlots, setDeliverySlots] = useState<DeliverySlotInfo[]>([]);
+  const [deliverySlotId, setDeliverySlotId] = useState("");
+  const [b2bAccount, setB2BAccount] = useState<B2BAccountInfo | null>(null);
   // Stable for the life of this page: every retry of the same submission
   // (a double-click, a timeout-and-resend) reuses it, so the server returns
   // the order that attempt already placed instead of placing a second one.
   const [idempotencyKey] = useState(newCheckoutIdempotencyKey);
 
+  const resolvedDeliveryFee = deliveryCheck?.zone?.feeOverrideMinor ?? deliverySettings.feeMinor;
+  const resolvedFreeThreshold =
+    deliveryCheck?.zone?.freeThresholdOverrideMinor ?? deliverySettings.freeThresholdMinor;
   const baseDelivery =
-    subtotalMinor >= deliverySettings.freeThresholdMinor || subtotalMinor === 0
+    deliveryMethod === "pickup" || subtotalMinor >= resolvedFreeThreshold || subtotalMinor === 0
       ? 0
-      : deliverySettings.feeMinor;
+      : resolvedDeliveryFee;
   // A confirmed preview from `previewDiscount`, not merely a typed code — the
   // total shown here must never promise a discount the server has not itself
   // verified. Submitting still sends whatever code is in the box either way
@@ -101,12 +129,22 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
   // Same "confirmed preview, server is the final authority" rule as the
   // coupon discount above -- see the comment there.
   const giftCardApplied = appliedGiftCard?.appliedMinor ?? 0;
-  const total = Math.max(preGiftCardTotal - giftCardApplied, 0);
+  const preLoyaltyTotal = Math.max(preGiftCardTotal - giftCardApplied, 0);
+  const loyaltyApplied = Math.min(loyaltyPoints * 100, preLoyaltyTotal);
+  const total = Math.max(preLoyaltyTotal - loyaltyApplied, 0);
 
   const codAllowed =
     payment !== null && payment.methods.includes("cod") && total <= payment.codMaxMinor;
   const razorpayAllowed = payment !== null && payment.methods.includes("razorpay");
   const paypalAllowed = payment !== null && payment.methods.includes("paypal");
+  const invoiceAllowed = b2b.enabled && b2bAccount !== null;
+  const deliveryReady =
+    deliveryMethod === "pickup"
+      ? Boolean(pickupPointId)
+      : !deliveryZones.enabled ||
+        (deliveryCheck?.serviceable === true &&
+          ((deliveryCheck.slots?.length ?? 0) === 0 ||
+            (Boolean(deliveryDate) && Boolean(deliverySlotId))));
 
   useEffect(() => {
     if (!commerceLive || !payments.enabled) return;
@@ -148,6 +186,74 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
       active = false;
     };
   }, [payments.enabled, promotions.enabled]);
+
+  useEffect(() => {
+    if (!commerceLive || !payments.enabled) return;
+    let active = true;
+    if (loyalty.enabled) {
+      getLoyaltyAccount()
+        .then((account) => {
+          if (active) setLoyaltyAccount(account);
+        })
+        .catch(() => undefined);
+    }
+    if (pickup.enabled) {
+      getPickupPoints()
+        .then((points) => {
+          if (!active) return;
+          setPickupPoints(points);
+          setPickupPointId((current) => current || points[0]?.id || "");
+        })
+        .catch(() => undefined);
+    }
+    if (b2b.enabled) {
+      getB2BAccount()
+        .then((account) => {
+          if (active) setB2BAccount(account);
+        })
+        .catch(() => undefined);
+    }
+    return () => {
+      active = false;
+    };
+  }, [payments.enabled, loyalty.enabled, pickup.enabled, b2b.enabled]);
+
+  useEffect(() => {
+    if (!deliveryZones.enabled || deliveryMethod !== "delivery" || postalCode.trim().length < 4) {
+      setDeliveryCheck(null);
+      setDeliverySlots([]);
+      setDeliverySlotId("");
+      return;
+    }
+    const timeout = window.setTimeout(() => {
+      void checkDeliveryPostalCode(postalCode.trim())
+        .then(setDeliveryCheck)
+        .catch(() => setDeliveryCheck(null));
+    }, 350);
+    return () => window.clearTimeout(timeout);
+  }, [deliveryZones.enabled, deliveryMethod, postalCode]);
+
+  useEffect(() => {
+    const zoneId = deliveryCheck?.zone?.id;
+    if (!zoneId || !deliveryDate) {
+      setDeliverySlots([]);
+      setDeliverySlotId("");
+      return;
+    }
+    void getDeliverySlots(zoneId, deliveryDate)
+      .then((slots) => {
+        setDeliverySlots(slots);
+        setDeliverySlotId((current) =>
+          slots.some((slot) => slot.id === current && slot.available !== false)
+            ? current
+            : slots.find((slot) => slot.available !== false)?.id || "",
+        );
+      })
+      .catch(() => {
+        setDeliverySlots([]);
+        setDeliverySlotId("");
+      });
+  }, [deliveryCheck?.zone?.id, deliveryDate]);
 
   // A discount preview is only true for the basket it was computed against —
   // a quantity change afterwards invalidates it rather than silently keeping
@@ -202,6 +308,21 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
       );
     } finally {
       setGiftCardChecking(false);
+    }
+  }
+
+  async function handleApplyReferral() {
+    const code = referralCode.trim();
+    if (!code) return;
+    setReferralMessage(null);
+    try {
+      await applyReferralCode(code);
+      setReferralMessage("Referral saved. Rewards unlock after your first order is completed.");
+      setReferralCode("");
+    } catch (caught) {
+      setReferralMessage(
+        caught instanceof AuthError ? caught.message : "Could not apply this referral code.",
+      );
     }
   }
 
@@ -309,7 +430,7 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
       line2: String(form.get("line2") ?? "") || undefined,
       city: String(form.get("city") ?? ""),
       state: String(form.get("state") ?? ""),
-      postalCode: String(form.get("postalCode") ?? ""),
+      postalCode,
     };
     const chosen = method === "cod" && !codAllowed ? "razorpay" : method;
     // Open the popup synchronously, before any await: a window opened after an
@@ -324,12 +445,23 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
     setPending(true);
     try {
       const order = await placeOrder(
-        lines.map((line) => ({ variantId: line.variantId, quantity: line.quantity })),
+        lines.map((line) => ({
+          variantId: line.variantId,
+          quantity: line.quantity,
+          preorder: Boolean(line.preorder),
+        })),
         address,
-        chosen,
-        idempotencyKey,
-        couponInput.trim() || undefined,
-        giftCardInput.trim() || undefined,
+        {
+          paymentMethod: chosen,
+          idempotencyKey,
+          couponCode: couponInput.trim() || undefined,
+          giftCardCode: giftCardInput.trim() || undefined,
+          loyaltyPoints: loyaltyPoints || undefined,
+          deliveryMethod,
+          pickupPointId: deliveryMethod === "pickup" ? pickupPointId : undefined,
+          deliveryDate: deliveryMethod === "delivery" ? deliveryDate || undefined : undefined,
+          deliverySlotId: deliveryMethod === "delivery" ? deliverySlotId || undefined : undefined,
+        },
       );
       // Online orders open a gateway window; only clear the cart once the
       // payment is settled server-side. COD orders are already confirmed.
@@ -369,8 +501,50 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
       ) : null}
       <form className="grid gap-10 lg:grid-cols-[1.4fr_1fr]" onSubmit={handleSubmit}>
         <div className="space-y-4">
+          {pickup.enabled && pickupPoints.length > 0 ? (
+            <fieldset className="space-y-2">
+              <legend className="text-xs font-medium text-ink-muted"><LocalizedText>Fulfilment method</LocalizedText></legend>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-sm border border-line px-3 text-sm text-ink">
+                  <input
+                    type="radio"
+                    checked={deliveryMethod === "delivery"}
+                    onChange={() => setDeliveryMethod("delivery")}
+                  />
+                  <LocalizedText>Home delivery</LocalizedText>
+                </label>
+                <label className="flex min-h-11 cursor-pointer items-center gap-2 rounded-sm border border-line px-3 text-sm text-ink">
+                  <input
+                    type="radio"
+                    checked={deliveryMethod === "pickup"}
+                    onChange={() => setDeliveryMethod("pickup")}
+                  />
+                  <LocalizedText>Free local pickup</LocalizedText>
+                </label>
+              </div>
+              {deliveryMethod === "pickup" ? (
+                <label className="block space-y-1">
+                  <span className="text-xs font-medium text-ink-muted"><LocalizedText>Pickup point</LocalizedText></span>
+                  <select
+                    className={FIELD}
+                    value={pickupPointId}
+                    onChange={(event) => setPickupPointId(event.target.value)}
+                  >
+                    {pickupPoints.map((point) => (
+                      <option key={point.id} value={point.id}>
+                        {point.name}
+                        {point.hours ? ` · ${point.hours}` : ""}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
+            </fieldset>
+          ) : null}
           <h2 className="font-display text-lg text-ink">
-            <LocalizedText>Delivery address</LocalizedText>
+            <LocalizedText>
+              {deliveryMethod === "pickup" ? "Contact address" : "Delivery address"}
+            </LocalizedText>
           </h2>
           <label className="block space-y-1">
             <span className="text-xs font-medium text-ink-muted">
@@ -423,9 +597,59 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
               <span className="text-xs font-medium text-ink-muted">
                 <LocalizedText>PIN code</LocalizedText>
               </span>
-              <input name="postalCode" required className={FIELD} />
+              <input
+                name="postalCode"
+                required
+                className={FIELD}
+                value={postalCode}
+                onChange={(event) => setPostalCode(event.target.value)}
+              />
             </label>
           </div>
+
+          {deliveryZones.enabled && deliveryMethod === "delivery" && postalCode.trim() ? (
+            <div className="rounded-sm border border-line bg-subtle/30 px-3 py-3 text-sm">
+              {deliveryCheck?.serviceable ? (
+                <p className="text-success"><LocalizedText>Delivery available in</LocalizedText> {deliveryCheck.zone?.name}.</p>
+              ) : deliveryCheck ? (
+                <p className="text-danger">{deliveryCheck.message}</p>
+              ) : (
+                <p className="text-ink-muted"><LocalizedText>Checking delivery availability…</LocalizedText></p>
+              )}
+              {deliveryCheck?.serviceable && (deliveryCheck.slots?.length ?? 0) > 0 ? (
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <label className="block space-y-1">
+                    <span className="text-xs font-medium text-ink-muted"><LocalizedText>Delivery date</LocalizedText></span>
+                    <input
+                      type="date"
+                      className={FIELD}
+                      required
+                      value={deliveryDate}
+                      onChange={(event) => setDeliveryDate(event.target.value)}
+                    />
+                  </label>
+                  <label className="block space-y-1">
+                    <span className="text-xs font-medium text-ink-muted"><LocalizedText>Time slot</LocalizedText></span>
+                    <select
+                      className={FIELD}
+                      required
+                      value={deliverySlotId}
+                      disabled={!deliveryDate}
+                      onChange={(event) => setDeliverySlotId(event.target.value)}
+                    >
+                      <option value=""><LocalizedText>Choose a slot</LocalizedText></option>
+                      {deliverySlots.map((slot) => (
+                        <option key={slot.id} value={slot.id} disabled={slot.available === false}>
+                          {slot.startTime}–{slot.endTime}
+                          {slot.available === false ? <LocalizedText>{" · full"}</LocalizedText> : ""}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
 
           {error ? (
             <p role="alert" className="text-sm text-danger">
@@ -440,11 +664,15 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
           </h2>
           <ul className="mt-3 divide-y divide-line text-sm">
             {lines.map((line) => (
-              <li key={line.variantId} className="flex justify-between gap-3 py-2">
+              <li
+                key={`${line.variantId}:${line.preorder ? "preorder" : "standard"}`}
+                className="flex justify-between gap-3 py-2"
+              >
                 <span className="min-w-0">
                   <span className="block truncate text-ink">{line.productName}</span>
                   <span className="text-xs text-ink-muted">
                     {line.variantName} × {line.quantity}
+                    {line.preorder ? <LocalizedText>{" · harvest pre-order"}</LocalizedText> : ""}
                   </span>
                 </span>
                 <span className="whitespace-nowrap text-ink">
@@ -551,6 +779,54 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
             </div>
           ) : null}
 
+          {loyalty.enabled && loyaltyAccount ? (
+            <div className="mt-3">
+              <label htmlFor="loyaltyPoints" className="text-xs font-medium text-ink-muted">
+                <LocalizedText>Loyalty points (</LocalizedText>{loyaltyAccount.balance} <LocalizedText>available)</LocalizedText>
+              </label>
+              <input
+                id="loyaltyPoints"
+                type="number"
+                min={0}
+                max={loyaltyAccount.balance}
+                step={1}
+                className={`${FIELD} mt-1 min-h-9`}
+                value={loyaltyPoints}
+                onChange={(event) =>
+                  setLoyaltyPoints(
+                    Math.min(
+                      loyaltyAccount.balance,
+                      Math.max(0, Math.floor(Number(event.target.value) || 0)),
+                    ),
+                  )
+                }
+              />
+              <p className="mt-1 text-xs text-ink-muted">
+                <LocalizedText>Referral code:</LocalizedText> <code>{loyaltyAccount.referralCode}</code>
+              </p>
+              <div className="mt-2 flex gap-2">
+                <input
+                  aria-label="Referral code from a friend"
+                  className={`${FIELD} min-h-9`}
+                  placeholder="Referral code from a friend"
+                  value={referralCode}
+                  onChange={(event) => setReferralCode(event.target.value)}
+                />
+                <button
+                  type="button"
+                  className="min-h-9 shrink-0 rounded-sm border border-line px-3 text-sm font-medium text-ink hover:bg-canvas"
+                  disabled={!referralCode.trim()}
+                  onClick={() => void handleApplyReferral()}
+                >
+                  <LocalizedText>Save referral</LocalizedText>
+                </button>
+              </div>
+              {referralMessage ? (
+                <p className="mt-1 text-xs text-ink-muted">{referralMessage}</p>
+              ) : null}
+            </div>
+          ) : null}
+
           <dl className="mt-3 space-y-1.5 border-t border-line pt-3 text-sm">
             <div className="flex justify-between">
               <dt className="text-ink-muted">
@@ -580,6 +856,12 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                   <LocalizedText>Gift card</LocalizedText>
                 </dt>
                 <dd className="text-success">−{formatPrice(giftCardApplied)}</dd>
+              </div>
+            ) : null}
+            {loyaltyApplied > 0 ? (
+              <div className="flex justify-between">
+                <dt className="text-ink-muted"><LocalizedText>Loyalty points</LocalizedText></dt>
+                <dd className="text-success">−{formatPrice(loyaltyApplied)}</dd>
               </div>
             ) : null}
             <div className="flex justify-between border-t border-line pt-1.5 font-medium">
@@ -637,6 +919,20 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
                 </span>
               </label>
             ) : null}
+            {invoiceAllowed ? (
+              <label className="flex cursor-pointer items-start gap-2 rounded-sm border border-line px-3 py-2 text-sm">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  className="mt-0.5"
+                  checked={method === "invoice"}
+                  onChange={() => setMethod("invoice")}
+                />
+                <span className="text-ink">
+                  <LocalizedText>Invoice ·</LocalizedText> {b2bAccount?.paymentTermsDays}<LocalizedText>-day terms for</LocalizedText> {b2bAccount?.companyName}
+                </span>
+              </label>
+            ) : null}
             <label
               className={`flex items-start gap-2 rounded-sm border border-line px-3 py-2 text-sm ${
                 codAllowed ? "cursor-pointer" : "opacity-60"
@@ -669,12 +965,12 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
           </p>
           <button
             type="submit"
-            disabled={pending}
+            disabled={pending || !deliveryReady}
             className="mt-4 min-h-11 w-full rounded-sm bg-brand px-4 text-sm font-medium text-ink-inverse hover:opacity-95 disabled:opacity-60"
           >
             {pending ? (
               <LocalizedText>{"Processing…"}</LocalizedText>
-            ) : method === "cod" ? (
+            ) : method === "cod" || method === "invoice" ? (
               <LocalizedText>{"Place order"}</LocalizedText>
             ) : (
               <LocalizedText>{"Pay & place order"}</LocalizedText>

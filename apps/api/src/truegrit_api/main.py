@@ -13,6 +13,8 @@ from truegrit_api.api.farm_partnerships import router as farm_partnerships_route
 from truegrit_api.api.messages import router as messages_router
 from truegrit_api.api.phone_auth import router as phone_auth_router
 from truegrit_api.api.public import router as public_router
+from truegrit_api.api.roadmap_admin import router as roadmap_admin_router
+from truegrit_api.api.roadmap_public import router as roadmap_public_router
 from truegrit_api.api.storefront import router as storefront_router
 from truegrit_api.api.submissions import router as submissions_router
 from truegrit_api.api.support_bot import router as support_bot_router
@@ -111,11 +113,13 @@ def create_app(
     app.include_router(customer_auth_router, prefix="/v1/public/auth")
     app.include_router(phone_auth_router, prefix="/v1/public/auth")
     app.include_router(storefront_router, prefix="/v1/public")
+    app.include_router(roadmap_public_router, prefix="/v1/public")
     app.include_router(submissions_router, prefix="/v1/public")
     app.include_router(community_router, prefix="/v1/public")
     app.include_router(farm_partnerships_router, prefix="/v1/public")
     app.include_router(support_bot_public_router, prefix="/v1/public")
     app.include_router(admin_router, prefix="/v1/admin")
+    app.include_router(roadmap_admin_router, prefix="/v1/admin")
     app.include_router(deployments_router, prefix="/v1/admin")
     app.include_router(messages_router, prefix="/v1/admin")
     app.include_router(support_bot_router, prefix="/v1/admin")

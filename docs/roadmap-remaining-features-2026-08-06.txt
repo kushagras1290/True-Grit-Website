@@ -1,0 +1,84 @@
+True Grit catalogue-expansion roadmap — remaining features
+Status as of 2026-08-06/07
+
+COMPLETED 2026-08-08:
+  Features 5-9 are now implemented across database migrations, API services,
+  admin management, storefront/checkout flows, and integration tests.
+
+  Every feature is independently controlled by a checkbox in Admin > Site
+  Control and defaults to disabled:
+    - commerce.loyalty.enabled
+    - commerce.pickup.enabled
+    - commerce.preorders.enabled
+    - commerce.delivery_zones.enabled
+    - commerce.b2b.enabled
+
+  Disabling a feature hides/rejects its customer-facing flows and prevents its
+  checkout behavior, while leaving admin setup data intact for later re-enable.
+
+SHIPPED (this session, on testing + main):
+  1. Wishlist / saved-for-later
+  2. Farm traceability (harvest note, growing method, storage guidance, QR code)
+  3. Dietary / certification search filters
+  4. Gift cards
+
+Also shipped alongside the roadmap work (not roadmap items themselves):
+  - Cross-tenant orders IDOR fix + dormant-feature farm-scoping hardening
+  - appearance.py ambient-effect/cursor-trail key list drift fix
+  - Unassigned-product save crash fix (CORS-masked 500)
+  - Staging deploy pipeline (testing -> staging -> main)
+  - Production domain wiring (truegritin.com) -- done by a separate concurrent
+    session, reconciled into this session's history via a clean merge
+
+ORIGINAL REMAINING SCOPE (completed 2026-08-08):
+
+  5. Loyalty / referral program
+     - Points or credit earned per order, redeemable like a gift card
+       (natural reuse of the gift_cards ledger pattern from Feature 4).
+     - Referral codes: existing customer refers a new one, both get a
+       reward once the referred customer's first order ships.
+     - Needs its own admin on/off switch (commerce.loyalty.enabled), same
+       10-step feature-toggle checklist used for Features 3 and 4.
+
+  6. Local pickup points
+     - Alternative to home delivery: customer selects a pickup location at
+       checkout instead of paying a delivery fee.
+     - Needs a `pickup_points` table (name, address, hours) an admin
+       manages, a checkout-time selector, and order fulfilment changes
+       (delivery_status semantics for a pickup order vs a shipped one).
+     - Needs its own admin on/off switch.
+
+  7. Seasonal pre-order / harvest calendar
+     - Customers reserve a not-yet-harvested product ahead of its expected
+       harvest window; charged (or authorized) at order time, fulfilled
+       when the harvest actually comes in.
+     - Touches inventory (a pre-order reserves against a future harvest,
+       not current on_hand stock) and needs an admin harvest-calendar
+       editor (expected windows per product).
+     - Needs its own admin on/off switch.
+
+  8. Delivery logistics (slots/zones)
+     - Real delivery slot selection (day + time window) at checkout, and
+       serviceable-zone enforcement (some postal codes/regions cannot be
+       delivered to, or have different fees/lead times).
+     - Bigger lift than the others: touches checkout validation, the
+       delivery-fee calculation already in services/checkout.py, and
+       needs an admin zones/slots management page.
+     - Needs its own admin on/off switch.
+
+  9. B2B / bulk ordering
+     - A wholesale/bulk pricing tier for business customers -- quantity
+       price breaks, a separate account type or flag, possibly invoicing
+       instead of pay-at-checkout.
+     - Largest unknown of the remaining five -- touches pricing,
+       potentially the customer/account model, and possibly a different
+       checkout flow entirely (net-terms invoicing vs immediate payment).
+     - Needs its own admin on/off switch.
+
+Suggested build order if/when resumed: 5 and 6 are the most self-contained
+and closest in shape to what already exists (5 reuses the gift-card ledger
+pattern directly; 6 is a small new table + a checkout selector, similar
+scope to Feature 4). 7 and 8 both touch checkout/inventory more deeply and
+should come after those two are proven out. 9 is the least well-specified
+and the biggest architectural unknown -- worth a dedicated scoping
+conversation with the user before starting, not just a research pass.

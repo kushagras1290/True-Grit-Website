@@ -47,6 +47,14 @@ KEY_SUBSCRIPTIONS: Final = "commerce.subscriptions.enabled"
 KEY_SUBSCRIPTION_DISCOUNT_PERCENT: Final = "commerce.subscriptions.discount_percent"
 KEY_DIET_CERT_FILTERS: Final = "commerce.diet_cert_filters.enabled"
 KEY_GIFT_CARDS: Final = "commerce.gift_cards.enabled"
+KEY_LOYALTY: Final = "commerce.loyalty.enabled"
+KEY_LOYALTY_POINTS_PER_100: Final = "commerce.loyalty.points_per_100"
+KEY_LOYALTY_REFERRAL_REWARD: Final = "commerce.loyalty.referral_reward_points"
+KEY_LOYALTY_POINT_VALUE_MINOR: Final = "commerce.loyalty.points_value_minor"
+KEY_PICKUP: Final = "commerce.pickup.enabled"
+KEY_PREORDERS: Final = "commerce.preorders.enabled"
+KEY_DELIVERY_ZONES: Final = "commerce.delivery_zones.enabled"
+KEY_B2B: Final = "commerce.b2b.enabled"
 KEY_DELIVERY_FEE_MINOR: Final = "commerce.delivery_fee_minor"
 KEY_FREE_DELIVERY_THRESHOLD_MINOR: Final = "commerce.free_delivery_threshold_minor"
 KEY_BLOG_BANNER_URL: Final = "banner.blog.image_url"
@@ -91,6 +99,11 @@ _BOOLEAN_DEFAULTS: Final[dict[str, bool]] = {
     # an owner issues deliberately once they want to offer it, not a
     # permissive fallback for a corrupted row (migration 0082).
     KEY_GIFT_CARDS: False,
+    KEY_LOYALTY: False,
+    KEY_PICKUP: False,
+    KEY_PREORDERS: False,
+    KEY_DELIVERY_ZONES: False,
+    KEY_B2B: False,
 }
 
 DEFAULT_SUBSCRIPTION_DISCOUNT_PERCENT: Final = 5
@@ -133,6 +146,11 @@ class StorefrontSettings:
     subscriptions: bool
     diet_cert_filters: bool
     gift_cards: bool
+    loyalty: bool
+    pickup: bool
+    preorders: bool
+    delivery_zones: bool
+    b2b: bool
     blog_banner_image_url: str
     blog_banner_image_alt: str
     farms_banner_image_url: str
@@ -152,6 +170,11 @@ class StorefrontSettings:
             "subscriptions": self.subscriptions,
             "dietCertFilters": self.diet_cert_filters,
             "giftCards": self.gift_cards,
+            "loyalty": self.loyalty,
+            "pickup": self.pickup,
+            "preorders": self.preorders,
+            "deliveryZones": self.delivery_zones,
+            "b2b": self.b2b,
             "blogBannerImageUrl": self.blog_banner_image_url,
             "blogBannerImageAlt": self.blog_banner_image_alt,
             "farmsBannerImageUrl": self.farms_banner_image_url,
@@ -336,6 +359,39 @@ class DeliverySettings:
     free_threshold_minor: int
 
 
+@dataclass(frozen=True)
+class LoyaltySettings:
+    points_per_100: int
+    referral_reward_points: int
+    point_value_minor: int
+
+
+def _parse_non_negative_int(raw: str | None, *, default: int, maximum: int) -> int:
+    try:
+        value = int(str(raw).strip())
+    except (TypeError, ValueError):
+        return default
+    return value if 0 <= value <= maximum else default
+
+
+async def load_loyalty_settings(db: Database) -> LoyaltySettings:
+    values = await _read_values(db)
+    return LoyaltySettings(
+        points_per_100=_parse_non_negative_int(
+            values.get(KEY_LOYALTY_POINTS_PER_100), default=10, maximum=10_000
+        ),
+        referral_reward_points=_parse_non_negative_int(
+            values.get(KEY_LOYALTY_REFERRAL_REWARD), default=100, maximum=1_000_000
+        ),
+        point_value_minor=max(
+            1,
+            _parse_non_negative_int(
+                values.get(KEY_LOYALTY_POINT_VALUE_MINOR), default=100, maximum=1_000_000
+            ),
+        ),
+    )
+
+
 def _parse_delivery_amount(raw: str | None, *, default: int) -> int:
     try:
         value = int(str(raw).strip())
@@ -437,6 +493,15 @@ async def load_storefront_settings(db: Database) -> StorefrontSettings:
         gift_cards=_parse_bool(
             values.get(KEY_GIFT_CARDS), default=_BOOLEAN_DEFAULTS[KEY_GIFT_CARDS]
         ),
+        loyalty=_parse_bool(values.get(KEY_LOYALTY), default=_BOOLEAN_DEFAULTS[KEY_LOYALTY]),
+        pickup=_parse_bool(values.get(KEY_PICKUP), default=_BOOLEAN_DEFAULTS[KEY_PICKUP]),
+        preorders=_parse_bool(
+            values.get(KEY_PREORDERS), default=_BOOLEAN_DEFAULTS[KEY_PREORDERS]
+        ),
+        delivery_zones=_parse_bool(
+            values.get(KEY_DELIVERY_ZONES), default=_BOOLEAN_DEFAULTS[KEY_DELIVERY_ZONES]
+        ),
+        b2b=_parse_bool(values.get(KEY_B2B), default=_BOOLEAN_DEFAULTS[KEY_B2B]),
         blog_banner_image_url=(values.get(KEY_BLOG_BANNER_URL) or "").strip(),
         blog_banner_image_alt=(values.get(KEY_BLOG_BANNER_ALT) or "").strip(),
         farms_banner_image_url=(values.get(KEY_FARMS_BANNER_URL) or "").strip(),
@@ -465,6 +530,11 @@ class PublicStorefrontSettings:
     subscriptions: bool
     diet_cert_filters: bool
     gift_cards: bool
+    loyalty: bool
+    pickup: bool
+    preorders: bool
+    delivery_zones: bool
+    b2b: bool
     blog_banner_image_url: str
     blog_banner_image_alt: str
     farms_banner_image_url: str
@@ -507,6 +577,11 @@ class PublicStorefrontSettings:
             "giftCards": {
                 "enabled": self.gift_cards,
             },
+            "loyalty": {"enabled": self.loyalty},
+            "pickup": {"enabled": self.pickup},
+            "preorders": {"enabled": self.preorders},
+            "deliveryZones": {"enabled": self.delivery_zones},
+            "b2b": {"enabled": self.b2b},
             "banners": {
                 "blogImageUrl": self.blog_banner_image_url,
                 "blogImageAlt": self.blog_banner_image_alt,
@@ -553,6 +628,11 @@ def resolve_public_settings(
         # No server configuration gates this either -- unlike a payment
         # gateway, issuing/redeeming a gift card needs no external API key.
         gift_cards=stored.gift_cards,
+        loyalty=stored.loyalty,
+        pickup=stored.pickup,
+        preorders=stored.preorders,
+        delivery_zones=stored.delivery_zones,
+        b2b=stored.b2b,
         blog_banner_image_url=stored.blog_banner_image_url,
         blog_banner_image_alt=stored.blog_banner_image_alt,
         farms_banner_image_url=stored.farms_banner_image_url,
@@ -627,6 +707,26 @@ async def gift_cards_enabled(db: Database) -> bool:
     return (await load_storefront_settings(db)).gift_cards
 
 
+async def loyalty_enabled(db: Database) -> bool:
+    return (await load_storefront_settings(db)).loyalty
+
+
+async def pickup_enabled(db: Database) -> bool:
+    return (await load_storefront_settings(db)).pickup
+
+
+async def preorders_enabled(db: Database) -> bool:
+    return (await load_storefront_settings(db)).preorders
+
+
+async def delivery_zones_enabled(db: Database) -> bool:
+    return (await load_storefront_settings(db)).delivery_zones
+
+
+async def b2b_enabled(db: Database) -> bool:
+    return (await load_storefront_settings(db)).b2b
+
+
 async def load_subscription_discount_percent(db: Database) -> int:
     """The percent-off applied to every subscription renewal order -- the
     incentive that makes "Subscribe & Save" a saving, not just a schedule.
@@ -692,6 +792,11 @@ async def update_storefront_settings(
         "subscriptions": KEY_SUBSCRIPTIONS,
         "diet_cert_filters": KEY_DIET_CERT_FILTERS,
         "gift_cards": KEY_GIFT_CARDS,
+        "loyalty": KEY_LOYALTY,
+        "pickup": KEY_PICKUP,
+        "preorders": KEY_PREORDERS,
+        "delivery_zones": KEY_DELIVERY_ZONES,
+        "b2b": KEY_B2B,
     }
 
     now = utc_now_iso()
