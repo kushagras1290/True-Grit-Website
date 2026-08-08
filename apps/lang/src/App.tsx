@@ -28,6 +28,7 @@ import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "re
 
 import { EN_MESSAGES } from "../../storefront/app/lib/i18n/messages";
 import ADMIN_SOURCE_STRINGS from "../../admin/src/lib/i18n/source-strings";
+import TRUE_GRIT_MARK from "../../storefront/public/brand/true-grit-mark.webp";
 import {
   ApiError,
   languageApi,
@@ -129,9 +130,13 @@ function Login({ onDone }: { onDone: () => void }) {
     <main className="grid min-h-screen bg-canvas lg:grid-cols-[1.05fr_.95fr]">
       <section className="hidden overflow-hidden bg-inverse px-12 py-14 text-ink-inverse lg:flex lg:flex-col">
         <div className="flex items-center gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-full border border-white/20 font-display text-lg">
-            TG
-          </span>
+          <img
+            src={TRUE_GRIT_MARK}
+            alt="True Grit"
+            width={40}
+            height={40}
+            className="h-10 w-10 rounded-full object-cover"
+          />
           <div>
             <p className="font-display text-xl">TRUE GRIT</p>
             <p className="text-xs text-white/60">Language studio</p>
@@ -162,9 +167,18 @@ function Login({ onDone }: { onDone: () => void }) {
             login.mutate();
           }}
         >
-          <div className="mb-7 lg:hidden">
-            <p className="font-display text-xl text-brand">TRUE GRIT</p>
-            <p className="text-xs text-ink-muted">Language studio</p>
+          <div className="mb-7 flex items-center gap-3 lg:hidden">
+            <img
+              src={TRUE_GRIT_MARK}
+              alt="True Grit"
+              width={38}
+              height={38}
+              className="h-10 w-10 rounded-full object-cover"
+            />
+            <div>
+              <p className="font-display text-xl text-brand">TRUE GRIT</p>
+              <p className="text-xs text-ink-muted">Language studio</p>
+            </div>
           </div>
           <p className="text-xs font-semibold tracking-[.14em] text-accent uppercase">
             Staff access
@@ -324,6 +338,7 @@ function ContentWorkspace({
   const resources = useQuery({
     queryKey: ["resources", resourceType, locale, debouncedSearch, offset],
     queryFn: () => languageApi.resources(resourceType, locale, debouncedSearch, offset),
+    refetchInterval: 30_000,
   });
   const detail = useQuery({
     queryKey: ["resource", resourceType, selectedId, locale],
@@ -418,6 +433,9 @@ function ContentWorkspace({
     <div className="grid min-h-[calc(100vh-12.5rem)] overflow-hidden rounded-md border border-line bg-surface shadow-card lg:grid-cols-[23rem_minmax(0,1fr)]">
       <section className={cn("border-line lg:border-r", selectedId ? "hidden lg:block" : "block")}>
         <div className="space-y-3 border-b border-line p-4">
+          <p className="text-xs leading-5 text-ink-muted">
+            Live inventory · new content appears automatically within 30 seconds.
+          </p>
           <select
             className={controlClass}
             value={resourceType}
@@ -922,6 +940,9 @@ function InterfaceWorkspace({
           </h2>
           <p className="mt-1 text-xs text-ink-muted">
             Buttons, forms, headings, messages and states · {sources.length} source strings
+          </p>
+          <p className="mt-1 text-xs text-ink-muted">
+            New website and admin strings are included automatically with every release.
           </p>
         </div>
         <div className="flex gap-2">
@@ -1658,9 +1679,13 @@ function Brand() {
   return (
     <div className="border-b border-line px-5 py-5">
       <div className="flex items-center gap-3">
-        <span className="grid h-9 w-9 place-items-center rounded-full bg-brand font-display text-sm text-ink-inverse">
-          TG
-        </span>
+        <img
+          src={TRUE_GRIT_MARK}
+          alt="True Grit"
+          width={36}
+          height={36}
+          className="h-9 w-9 rounded-full object-cover"
+        />
         <div>
           <p className="font-display text-lg text-brand">TRUE GRIT</p>
           <p className="text-xs text-ink-muted">Language studio</p>

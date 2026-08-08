@@ -85,7 +85,14 @@ RESOURCE_SPECS: Final[dict[str, ResourceSpec]] = {
     "farm": ResourceSpec(
         "farms",
         "name",
-        ("name", "region", "seo_title", "seo_description", "hero_image_alt"),
+        (
+            "name",
+            "farmer_name",
+            "region",
+            "seo_title",
+            "seo_description",
+            "hero_image_alt",
+        ),
     ),
     "product": ResourceSpec(
         "products",
@@ -220,8 +227,12 @@ async def get_source_fields(
             if str(ingredient.get("quantity_text") or "").strip():
                 fields[f"ingredient/{token}/quantity_text"] = str(ingredient["quantity_text"])
     elif resource_type == "farm":
-        story = json.loads(row.get("story_json") or "{}")
-        fields.update(_flatten_strings(story, prefix="story"))
+        for column, prefix in (
+            ("story_json", "story"),
+            ("methods_json", "methods"),
+            ("seasonal_calendar_json", "seasonal_calendar"),
+        ):
+            fields.update(_flatten_strings(json.loads(row.get(column) or "{}"), prefix=prefix))
 
     if len(fields) > MAX_FIELDS_PER_RESOURCE:
         raise ValidationAppError(

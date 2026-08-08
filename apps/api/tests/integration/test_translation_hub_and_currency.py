@@ -144,6 +144,80 @@ def test_announcement_translation_reaches_bootstrap(client: TestClient, db: SQLi
     assert bootstrap.json()["announcement"]["message"] == "आज खेत से ताज़ा उपज उपलब्ध है।"
 
 
+def test_new_recipes_discussions_and_farms_appear_without_a_sync_job(
+    client: TestClient, db: SQLiteDatabase
+) -> None:
+    now = "2099-01-01T00:00:00Z"
+    db._conn.execute(
+        "INSERT INTO farms"
+        " (id, name, slug, farmer_name, region, country_code, story_json, methods_json,"
+        " seasonal_calendar_json, status, created_at, created_by, updated_at, updated_by)"
+        " VALUES (?, ?, ?, ?, ?, 'IN', ?, ?, ?, 'published', ?, 'usr_admin', ?, 'usr_admin')",
+        (
+            "farm_language_live",
+            "Live language farm",
+            "live-language-farm",
+            "Mira Rao",
+            "Karnataka",
+            '{"headline":"A farm story added today"}',
+            '{"soil":"Regenerative soil care"}',
+            '{"monsoon":"Greens and herbs"}',
+            now,
+            now,
+        ),
+    )
+    db._conn.execute(
+        "INSERT INTO recipes"
+        " (id, internal_name, title, slug, excerpt, status, created_at, created_by, updated_at,"
+        " updated_by) VALUES (?, ?, ?, ?, ?, 'published', ?, 'usr_admin', ?, 'usr_admin')",
+        (
+            "recipe_language_live",
+            "live-language-recipe",
+            "A newly published recipe",
+            "newly-published-language-recipe",
+            "New recipe copy should be visible immediately.",
+            now,
+            now,
+        ),
+    )
+    db._conn.execute(
+        "INSERT INTO discussions"
+        " (id, author_user_id, title, body, status, last_activity_at, created_at, updated_at)"
+        " VALUES (?, 'usr_admin', ?, ?, 'visible', ?, ?, ?)",
+        (
+            "discussion_language_live",
+            "A newly opened discussion",
+            "New community content should be visible immediately.",
+            now,
+            now,
+            now,
+        ),
+    )
+    db._conn.commit()
+    as_owner(client, db)
+
+    expected = {
+        "farm": "farm_language_live",
+        "recipe": "recipe_language_live",
+        "discussion": "discussion_language_live",
+    }
+    for resource_type, resource_id in expected.items():
+        listing = client.get(
+            f"/v1/admin/translation-hub/resources?type={resource_type}&locale=hi&limit=50"
+        )
+        assert listing.status_code == 200, listing.text
+        assert resource_id in {item["id"] for item in listing.json()["items"]}
+
+    farm = client.get("/v1/admin/translation-hub/resources/farm/farm_language_live?locale=hi")
+    assert farm.status_code == 200, farm.text
+    assert {field["key"] for field in farm.json()["fields"]} >= {
+        "farmer_name",
+        "story/headline",
+        "methods/soil",
+        "seasonal_calendar/monsoon",
+    }
+
+
 def test_bulk_batch_translates_selected_text_to_every_requested_language(
     client: TestClient, db: SQLiteDatabase
 ) -> None:
