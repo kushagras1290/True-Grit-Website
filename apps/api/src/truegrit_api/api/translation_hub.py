@@ -12,7 +12,7 @@ from truegrit_api.auth.dependencies import get_database, get_translator, require
 from truegrit_api.auth.principal import Principal
 from truegrit_api.platform.database import Database
 from truegrit_api.platform.translation import Translator
-from truegrit_api.services import translation_hub
+from truegrit_api.services import translation_batches, translation_hub
 
 admin_router = APIRouter(tags=["translation-hub"])
 public_router = APIRouter(tags=["storefront-translations"])
@@ -44,6 +44,31 @@ class LocaleSaveRequest(_CamelModel):
     direction: Literal["ltr", "rtl"] = "ltr"
     group_name: Literal["indian", "world"] = "world"
     active: bool = True
+
+
+class ContentBatchResource(_CamelModel):
+    resource_id: str = Field(min_length=1, max_length=120)
+    field_keys: list[str] = Field(
+        default_factory=list, max_length=translation_hub.MAX_FIELDS_PER_RESOURCE
+    )
+
+
+class ContentBatchRequest(_CamelModel):
+    resource_type: str = Field(min_length=1, max_length=40)
+    resources: list[ContentBatchResource] = Field(
+        min_length=1, max_length=translation_batches.MAX_CONTENT_RESOURCES
+    )
+    locales: list[str] = Field(min_length=1, max_length=translation_batches.MAX_LANGUAGES)
+    overwrite_existing: bool = False
+
+
+class InterfaceBatchRequest(_CamelModel):
+    target: Literal["storefront", "admin"] = "storefront"
+    entries: dict[str, InterfaceEntry] = Field(
+        min_length=1, max_length=translation_batches.MAX_INTERFACE_ENTRIES
+    )
+    locales: list[str] = Field(min_length=1, max_length=translation_batches.MAX_LANGUAGES)
+    overwrite_existing: bool = False
 
 
 def _request_id(request: Request) -> str:
@@ -212,6 +237,51 @@ async def auto_translate_interface(
         target=target,
     )
     return {"locale": locale, "messages": messages}
+
+
+@admin_router.post("/translation-hub/batches/content", status_code=202)
+async def create_content_translation_batch(
+    payload: ContentBatchRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    actor: _TranslationActor,
+) -> Any:
+    return await translation_batches.create_content_batch(
+        db,
+        actor,
+        _request_id(request),
+        resource_type=payload.resource_type,
+        resources=[item.model_dump(by_alias=True) for item in payload.resources],
+        locales=payload.locales,
+        overwrite_existing=payload.overwrite_existing,
+    )
+
+
+@admin_router.post("/translation-hub/batches/interface", status_code=202)
+async def create_interface_translation_batch(
+    payload: InterfaceBatchRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    actor: _TranslationActor,
+) -> Any:
+    return await translation_batches.create_interface_batch(
+        db,
+        actor,
+        _request_id(request),
+        target=payload.target,
+        entries={key: item.model_dump() for key, item in payload.entries.items()},
+        locales=payload.locales,
+        overwrite_existing=payload.overwrite_existing,
+    )
+
+
+@admin_router.get("/translation-hub/batches/{batch_id}")
+async def translation_batch_detail(
+    batch_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    _actor: _TranslationActor,
+) -> Any:
+    return await translation_batches.batch_detail(db, batch_id)
 
 
 @admin_router.get("/translation-hub/locales")

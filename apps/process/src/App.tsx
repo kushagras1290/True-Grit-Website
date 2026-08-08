@@ -22,6 +22,7 @@ import {
   ShieldCheck,
   Trash2,
   UserPlus,
+  UserCircle,
   Users,
   X,
   XCircle,
@@ -39,7 +40,7 @@ import {
 
 /* ─── Constants ────────────────────────────────────────────────────── */
 
-type TabKey = "testing" | "staging" | "main" | "users" | "translations";
+type TabKey = "testing" | "staging" | "main" | "users" | "translations" | "account";
 
 const BRANCH_META = {
   testing: { number: "01", label: "Testing", target: "staging", color: "warning" },
@@ -73,6 +74,7 @@ const NAV_ITEMS: Array<{ key: TabKey; label: string; icon: ReactNode; superOnly?
   { key: "main", label: "Main / Live", icon: <Rocket size={16} /> },
   { key: "translations", label: "Language Studio", icon: <Languages size={16} /> },
   { key: "users", label: "Process Users", icon: <Users size={16} />, superOnly: true },
+  { key: "account", label: "Your Account", icon: <UserCircle size={16} /> },
 ];
 
 /* ─── Helpers ──────────────────────────────────────────────────────── */
@@ -911,6 +913,111 @@ function UsersTab({
 
 /* ─── Cockpit Shell ────────────────────────────────────────────────── */
 
+function AccountTab({
+  user,
+  onNotice,
+}: {
+  user: StaffUser;
+  onNotice: (notice: { kind: "success" | "error"; text: string }) => void;
+}) {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const change = useMutation({
+    mutationFn: () => releaseApi.changePassword(currentPassword, newPassword),
+    onSuccess: () => {
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      onNotice({
+        kind: "success",
+        text: "Password changed. Every other active session was signed out.",
+      });
+    },
+    onError: (error) =>
+      onNotice({ kind: "error", text: errorMessage(error, "Could not change your password.") }),
+  });
+  return (
+    <section className="mx-auto max-w-3xl overflow-hidden rounded-md border border-line bg-surface shadow-card">
+      <header className="border-b border-line p-5 sm:p-6">
+        <h2 className="font-display text-2xl text-ink">Your Account</h2>
+        <p className="mt-1 text-sm text-ink-muted">
+          Password-protected access to the release process.
+        </p>
+      </header>
+      <div className="grid gap-8 p-5 sm:p-6 md:grid-cols-[1fr_1.25fr]">
+        <div>
+          <p className="text-xs font-semibold tracking-[0.12em] text-ink-muted uppercase">
+            Signed in as
+          </p>
+          <p className="mt-3 font-medium text-ink">{user.displayName}</p>
+          <p className="mt-1 text-sm text-ink-muted">{user.email}</p>
+          <p className="mt-4 text-xs leading-5 text-ink-muted">
+            Your current password is required. This session stays open while all other sessions are
+            revoked.
+          </p>
+        </div>
+        <form
+          className="space-y-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (newPassword.length < 10) {
+              onNotice({ kind: "error", text: "Use at least 10 characters for the new password." });
+              return;
+            }
+            if (newPassword !== confirmPassword) {
+              onNotice({ kind: "error", text: "The two new passwords do not match." });
+              return;
+            }
+            change.mutate();
+          }}
+        >
+          <Field label="Current password" htmlFor="process-current-password">
+            <Input
+              id="process-current-password"
+              type="password"
+              autoComplete="current-password"
+              required
+              value={currentPassword}
+              onChange={(event) => setCurrentPassword(event.target.value)}
+            />
+          </Field>
+          <Field label="New password" htmlFor="process-new-password">
+            <Input
+              id="process-new-password"
+              type="password"
+              autoComplete="new-password"
+              minLength={10}
+              maxLength={256}
+              required
+              value={newPassword}
+              onChange={(event) => setNewPassword(event.target.value)}
+            />
+          </Field>
+          <Field label="Confirm new password" htmlFor="process-confirm-password">
+            <Input
+              id="process-confirm-password"
+              type="password"
+              autoComplete="new-password"
+              required
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+            />
+          </Field>
+          <Button type="submit" variant="primary" disabled={change.isPending}>
+            {change.isPending ? (
+              <Loader2 size={16} className="animate-spin-slow" />
+            ) : (
+              <Key size={16} />
+            )}
+            Change password
+          </Button>
+        </form>
+      </div>
+    </section>
+  );
+}
+
 function Cockpit({ user, onLogout }: { user: StaffUser; onLogout: () => void }) {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<TabKey>("testing");
@@ -1137,6 +1244,8 @@ function Cockpit({ user, onLogout }: { user: StaffUser; onLogout: () => void }) 
           {/* Main content per tab */}
           {activeTab === "users" ? (
             <UsersTab onNotice={setNotice} />
+          ) : activeTab === "account" ? (
+            <AccountTab user={user} onNotice={setNotice} />
           ) : activeTab === "translations" ? (
             <section className="mx-auto max-w-3xl rounded-md border border-line bg-surface p-6 shadow-card sm:p-8">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-subtle text-brand">

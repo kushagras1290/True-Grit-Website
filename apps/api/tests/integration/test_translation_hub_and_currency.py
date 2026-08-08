@@ -2,10 +2,27 @@
 
 from __future__ import annotations
 
+import asyncio
+
 from fastapi.testclient import TestClient
 
 from tests.integration.conftest import SESSION_COOKIE, create_session
 from truegrit_api.platform.database import SQLiteDatabase
+from truegrit_api.services.jobs import dispatch_pending_outbox, process_queue_job
+from truegrit_api.services.translation_batches import enqueue_pending_tasks, process_task
+
+
+class _RecordingPublisher:
+    def __init__(self) -> None:
+        self.messages: list[dict[str, object]] = []
+
+    async def send(self, message: dict[str, object]) -> None:
+        self.messages.append(message)
+
+
+class _PrefixTranslator:
+    async def translate(self, text: str, *, target_lang: str, source_lang: str = "en") -> str:
+        return f"{target_lang}:{text}"
 
 
 def as_owner(client: TestClient, db: SQLiteDatabase) -> None:
@@ -125,3 +142,95 @@ def test_announcement_translation_reaches_bootstrap(client: TestClient, db: SQLi
     bootstrap = client.get("/v1/public/bootstrap?country=ZZ&locale=hi")
     assert bootstrap.status_code == 200, bootstrap.text
     assert bootstrap.json()["announcement"]["message"] == "आज खेत से ताज़ा उपज उपलब्ध है।"
+
+
+def test_bulk_batch_translates_selected_text_to_every_requested_language(
+    client: TestClient, db: SQLiteDatabase
+) -> None:
+    discussion = db._conn.execute(
+        "SELECT id, title FROM discussions WHERE status = 'visible' LIMIT 1"
+    ).fetchone()
+    assert discussion is not None
+    as_owner(client, db)
+    created = client.post(
+        "/v1/admin/translation-hub/batches/content",
+        json={
+            "resourceType": "discussion",
+            "resources": [{"resourceId": discussion["id"], "fieldKeys": ["title"]}],
+            "locales": ["hi", "fr"],
+            "overwriteExisting": False,
+        },
+    )
+    assert created.status_code == 202, created.text
+    batch = created.json()
+    assert batch["totalTasks"] == 2
+
+    async def run_queue() -> None:
+        publisher = _RecordingPublisher()
+        assert await enqueue_pending_tasks(db) == 2
+        dispatched = await dispatch_pending_outbox(db, publisher)
+        assert dispatched["published"] == 2
+        translator = _PrefixTranslator()
+        for message in publisher.messages:
+            await process_queue_job(
+                db,
+                message,
+                translate_task=lambda task_id: process_task(db, translator, task_id),
+            )
+
+    asyncio.run(run_queue())
+    finished = client.get(f"/v1/admin/translation-hub/batches/{batch['id']}")
+    assert finished.status_code == 200, finished.text
+    assert finished.json()["status"] == "completed"
+    assert finished.json()["translatedStrings"] == 2
+    for locale in ("hi", "fr"):
+        public = client.get(f"/v1/public/community/discussions/{discussion['id']}?locale={locale}")
+        assert public.status_code == 200, public.text
+        assert public.json()["title"] == f"{locale}:{discussion['title']}"
+
+
+def test_bulk_batch_translates_selected_interface_text_to_every_requested_language(
+    client: TestClient, db: SQLiteDatabase
+) -> None:
+    as_owner(client, db)
+    entries = {
+        "nav.shop": {"source": "Shop", "translation": ""},
+        "nav.blog": {"source": "Blog", "translation": ""},
+    }
+    created = client.post(
+        "/v1/admin/translation-hub/batches/interface",
+        json={
+            "target": "storefront",
+            "entries": entries,
+            "locales": ["hi", "fr"],
+            "overwriteExisting": False,
+        },
+    )
+    assert created.status_code == 202, created.text
+    batch = created.json()
+    assert batch["totalTasks"] == 2
+
+    async def run_queue() -> None:
+        publisher = _RecordingPublisher()
+        assert await enqueue_pending_tasks(db) == 2
+        dispatched = await dispatch_pending_outbox(db, publisher)
+        assert dispatched["published"] == 2
+        translator = _PrefixTranslator()
+        for message in publisher.messages:
+            await process_queue_job(
+                db,
+                message,
+                translate_task=lambda task_id: process_task(db, translator, task_id),
+            )
+
+    asyncio.run(run_queue())
+    finished = client.get(f"/v1/admin/translation-hub/batches/{batch['id']}")
+    assert finished.status_code == 200, finished.text
+    assert finished.json()["status"] == "completed"
+    assert finished.json()["translatedStrings"] == 4
+    for locale in ("hi", "fr"):
+        public = client.get(f"/v1/public/translations/interface?locale={locale}&target=storefront")
+        assert public.status_code == 200, public.text
+        assert public.json()["messages"] == {
+            key: f"{locale}:{entry['source']}" for key, entry in entries.items()
+        }

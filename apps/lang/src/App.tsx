@@ -21,6 +21,7 @@ import {
   Search,
   Sparkles,
   Trash2,
+  UserCircle,
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
@@ -33,10 +34,11 @@ import {
   type CustomLocale,
   type StaffUser,
   type TranslationField,
+  type TranslationBatch,
   type TranslationResourceRow,
 } from "./api";
 
-type Tab = "content" | "interface" | "languages";
+type Tab = "content" | "interface" | "languages" | "account";
 
 const RESOURCE_TYPES = [
   ["announcement", "Announcements"],
@@ -59,6 +61,7 @@ const TAB_ITEMS: Array<{ key: Tab; label: string; icon: ReactNode }> = [
   { key: "content", label: "Content", icon: <BookOpenText size={17} /> },
   { key: "interface", label: "Interface text", icon: <FileText size={17} /> },
   { key: "languages", label: "Languages", icon: <Globe2 size={17} /> },
+  { key: "account", label: "Your account", icon: <UserCircle size={17} /> },
 ];
 
 function errorText(error: unknown, fallback: string) {
@@ -257,13 +260,54 @@ function Coverage({ row }: { row: TranslationResourceRow }) {
   );
 }
 
-function ContentWorkspace({ locale }: { locale: string }) {
+function BatchProgress({ batch }: { batch: TranslationBatch }) {
+  const finished = batch.completedTasks + batch.failedTasks;
+  const percent = batch.totalTasks ? Math.round((finished / batch.totalTasks) * 100) : 0;
+  return (
+    <div className="border-b border-line bg-accent/5 px-4 py-3 sm:px-5">
+      <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
+        <p className="font-medium text-ink">
+          All-language run: {batch.status} · {finished}/{batch.totalTasks} tasks
+        </p>
+        <p className="text-xs text-ink-muted">
+          {batch.translatedStrings} strings translated
+          {batch.failedTasks ? ` · ${batch.failedTasks} failed` : ""}
+        </p>
+      </div>
+      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-subtle">
+        <div
+          className="h-full rounded-full bg-accent transition-all"
+          style={{ width: `${percent}%` }}
+        />
+      </div>
+      {batch.failures.length ? (
+        <p className="mt-2 text-xs text-danger">
+          {batch.failures.map((failure) => failure.locale).join(", ")} could not be translated.
+          Existing English fallbacks remain safe.
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function ContentWorkspace({
+  locale,
+  locales,
+}: {
+  locale: string;
+  locales: readonly LocaleDefinition[];
+}) {
   const queryClient = useQueryClient();
   const [resourceType, setResourceType] = useState("article");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [offset, setOffset] = useState(0);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedResources, setSelectedResources] = useState<Set<string>>(new Set());
+  const [selectedFields, setSelectedFields] = useState<Set<string>>(new Set());
+  const [fieldFilter, setFieldFilter] = useState<"all" | "missing" | "translated" | "stale">("all");
+  const [overwriteExisting, setOverwriteExisting] = useState(false);
+  const [batchId, setBatchId] = useState<string | null>(null);
   const [values, setValues] = useState<Record<string, string>>({});
   const [notice, setNotice] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
 
@@ -274,6 +318,7 @@ function ContentWorkspace({ locale }: { locale: string }) {
   useEffect(() => {
     setOffset(0);
     setSelectedId(null);
+    setSelectedResources(new Set());
   }, [locale, resourceType, debouncedSearch]);
 
   const resources = useQuery({
@@ -290,8 +335,18 @@ function ContentWorkspace({ locale }: { locale: string }) {
       setValues(
         Object.fromEntries(detail.data.fields.map((field) => [field.key, field.translation])),
       );
+      setSelectedFields(new Set(detail.data.fields.map((field) => field.key)));
     }
   }, [detail.data]);
+  const batch = useQuery({
+    queryKey: ["translation-batch", batchId],
+    queryFn: () => languageApi.batch(batchId!),
+    enabled: Boolean(batchId),
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      return status && ["completed", "partial", "failed"].includes(status) ? false : 2_000;
+    },
+  });
 
   const refresh = async () => {
     await Promise.all([
@@ -335,7 +390,29 @@ function ContentWorkspace({ locale }: { locale: string }) {
     onError: (error) =>
       setNotice({ kind: "error", text: errorText(error, "Could not remove translations.") }),
   });
-  const busy = save.isPending || auto.isPending || remove.isPending;
+  const allLanguageCodes = locales
+    .filter((entry) => entry.code !== "en")
+    .map((entry) => entry.code);
+  const bulk = useMutation({
+    mutationFn: (resources: Array<{ resourceId: string; fieldKeys?: string[] }>) =>
+      languageApi.createContentBatch(resourceType, resources, allLanguageCodes, overwriteExisting),
+    onSuccess: (created) => {
+      setBatchId(created.id);
+      setNotice({
+        kind: "ok",
+        text: `Queued ${created.totalTasks} safe translation tasks across ${allLanguageCodes.length} languages.`,
+      });
+    },
+    onError: (error) =>
+      setNotice({ kind: "error", text: errorText(error, "Could not start bulk translation.") }),
+  });
+  const busy = save.isPending || auto.isPending || remove.isPending || bulk.isPending;
+  const visibleFields = (detail.data?.fields ?? []).filter((field) => {
+    if (fieldFilter === "missing") return !field.translation.trim();
+    if (fieldFilter === "translated") return Boolean(field.translation.trim());
+    if (fieldFilter === "stale") return field.stale;
+    return true;
+  });
 
   return (
     <div className="grid min-h-[calc(100vh-12.5rem)] overflow-hidden rounded-md border border-line bg-surface shadow-card lg:grid-cols-[23rem_minmax(0,1fr)]">
@@ -361,7 +438,52 @@ function ContentWorkspace({ locale }: { locale: string }) {
               onChange={(event) => setSearch(event.target.value)}
             />
           </label>
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+            <button
+              type="button"
+              className="font-medium text-brand hover:underline"
+              disabled={!resources.data?.items.length}
+              onClick={() =>
+                setSelectedResources(new Set(resources.data?.items.map((row) => row.id) ?? []))
+              }
+            >
+              Select visible
+            </button>
+            <button
+              type="button"
+              className="text-ink-muted hover:text-ink"
+              onClick={() => setSelectedResources(new Set())}
+            >
+              Clear · {selectedResources.size} selected
+            </button>
+          </div>
+          <Button
+            variant="primary"
+            className="w-full"
+            disabled={!selectedResources.size || busy}
+            onClick={() =>
+              bulk.mutate([...selectedResources].map((resourceId) => ({ resourceId })))
+            }
+          >
+            {bulk.isPending ? (
+              <Loader2 size={15} className="animate-spin" />
+            ) : (
+              <Sparkles size={15} />
+            )}
+            Translate selected to all {allLanguageCodes.length} languages
+          </Button>
+          <label className="flex items-start gap-2 text-xs leading-5 text-ink-muted">
+            <input
+              type="checkbox"
+              className="mt-1 accent-[var(--brand)]"
+              checked={overwriteExisting}
+              onChange={(event) => setOverwriteExisting(event.target.checked)}
+            />
+            Replace existing reviewed translations. Leave off to translate only missing or stale
+            text.
+          </label>
         </div>
+        {batch.data && !selectedId ? <BatchProgress batch={batch.data} /> : null}
         <div className="max-h-[calc(100vh-21rem)] overflow-y-auto">
           {resources.isLoading ? (
             <Loading label="Loading content…" />
@@ -370,11 +492,27 @@ function ContentWorkspace({ locale }: { locale: string }) {
           ) : resources.data?.items.length ? (
             <ul>
               {resources.data.items.map((row) => (
-                <li key={row.id}>
+                <li key={row.id} className="flex border-b border-line hover:bg-canvas">
+                  <label className="flex w-11 shrink-0 items-start justify-center pt-5">
+                    <input
+                      type="checkbox"
+                      aria-label={`Select ${row.title}`}
+                      className="accent-[var(--brand)]"
+                      checked={selectedResources.has(row.id)}
+                      onChange={(event) =>
+                        setSelectedResources((current) => {
+                          const next = new Set(current);
+                          if (event.target.checked) next.add(row.id);
+                          else next.delete(row.id);
+                          return next;
+                        })
+                      }
+                    />
+                  </label>
                   <button
                     type="button"
                     className={cn(
-                      "w-full border-b border-line px-4 py-4 text-left hover:bg-canvas",
+                      "min-w-0 flex-1 px-1 py-4 pr-4 text-left",
                       selectedId === row.id && "bg-subtle",
                     )}
                     onClick={() => setSelectedId(row.id)}
@@ -463,7 +601,21 @@ function ContentWorkspace({ locale }: { locale: string }) {
                   ) : (
                     <Sparkles size={15} />
                   )}{" "}
-                  Translate all
+                  Translate current language
+                </Button>
+                <Button
+                  variant="secondary"
+                  disabled={busy || !selectedFields.size}
+                  onClick={() =>
+                    bulk.mutate([{ resourceId: selectedId, fieldKeys: [...selectedFields] }])
+                  }
+                >
+                  {bulk.isPending ? (
+                    <Loader2 size={15} className="animate-spin" />
+                  ) : (
+                    <Languages size={15} />
+                  )}
+                  Selected → all {allLanguageCodes.length}
                 </Button>
                 <Button variant="primary" disabled={busy} onClick={() => save.mutate()}>
                   {save.isPending ? (
@@ -476,13 +628,60 @@ function ContentWorkspace({ locale }: { locale: string }) {
               </div>
             </header>
             {notice ? <Notice notice={notice} onClose={() => setNotice(null)} /> : null}
+            {batch.data ? <BatchProgress batch={batch.data} /> : null}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-6">
+              <div className="flex flex-wrap gap-2">
+                {(["all", "missing", "translated", "stale"] as const).map((filter) => (
+                  <button
+                    key={filter}
+                    type="button"
+                    className={cn(
+                      "rounded-full border px-3 py-1 text-xs capitalize",
+                      fieldFilter === filter
+                        ? "border-brand bg-brand text-ink-inverse"
+                        : "border-line-strong text-ink-muted",
+                    )}
+                    onClick={() => setFieldFilter(filter)}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center gap-3 text-xs">
+                <button
+                  type="button"
+                  className="font-medium text-brand hover:underline"
+                  onClick={() =>
+                    setSelectedFields(new Set(visibleFields.map((field) => field.key)))
+                  }
+                >
+                  Select shown
+                </button>
+                <button
+                  type="button"
+                  className="text-ink-muted hover:text-ink"
+                  onClick={() => setSelectedFields(new Set())}
+                >
+                  Clear · {selectedFields.size} selected
+                </button>
+              </div>
+            </div>
             <div className="space-y-4 p-4 sm:p-6">
-              {detail.data.fields.map((field) => (
+              {visibleFields.map((field) => (
                 <TranslationEditor
                   key={field.key}
                   field={field}
                   value={values[field.key] ?? ""}
                   locale={locale}
+                  selected={selectedFields.has(field.key)}
+                  onSelected={(checked) =>
+                    setSelectedFields((current) => {
+                      const next = new Set(current);
+                      if (checked) next.add(field.key);
+                      else next.delete(field.key);
+                      return next;
+                    })
+                  }
                   onChange={(value) => setValues((current) => ({ ...current, [field.key]: value }))}
                 />
               ))}
@@ -514,11 +713,15 @@ function TranslationEditor({
   field,
   value,
   locale,
+  selected,
+  onSelected,
   onChange,
 }: {
   field: TranslationField;
   value: string;
   locale: string;
+  selected: boolean;
+  onSelected: (checked: boolean) => void;
   onChange: (value: string) => void;
 }) {
   const multiline = field.source.length > 100 || field.source.includes("\n");
@@ -530,7 +733,15 @@ function TranslationEditor({
       )}
     >
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <code className="max-w-full truncate text-[11px] text-ink-muted">{field.key}</code>
+        <label className="flex min-w-0 items-center gap-2">
+          <input
+            type="checkbox"
+            className="accent-[var(--brand)]"
+            checked={selected}
+            onChange={(event) => onSelected(event.target.checked)}
+          />
+          <code className="max-w-full truncate text-[11px] text-ink-muted">{field.key}</code>
+        </label>
         <div className="flex items-center gap-2">
           {field.stale ? (
             <span className="inline-flex items-center gap-1 rounded-full bg-warning/10 px-2 py-1 text-[10px] font-semibold text-warning">
@@ -586,7 +797,13 @@ function TranslationEditor({
   );
 }
 
-function InterfaceWorkspace({ locale }: { locale: string }) {
+function InterfaceWorkspace({
+  locale,
+  locales,
+}: {
+  locale: string;
+  locales: readonly LocaleDefinition[];
+}) {
   const queryClient = useQueryClient();
   const [target, setTarget] = useState<"storefront" | "admin">("storefront");
   const sources = useMemo<Array<[string, string]>>(
@@ -598,6 +815,10 @@ function InterfaceWorkspace({ locale }: { locale: string }) {
   );
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
+  const [statusFilter, setStatusFilter] = useState<"all" | "missing" | "translated">("all");
+  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
+  const [overwriteExisting, setOverwriteExisting] = useState(false);
+  const [batchId, setBatchId] = useState<string | null>(null);
   const [values, setValues] = useState<Record<string, string>>({});
   const [notice, setNotice] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
   const saved = useQuery({
@@ -614,10 +835,19 @@ function InterfaceWorkspace({ locale }: { locale: string }) {
           ),
     );
   }, [saved.data, sources, target]);
-  useEffect(() => setPage(0), [locale, search, target]);
-  const filtered = sources.filter(([key, source]) =>
-    `${key} ${source}`.toLowerCase().includes(search.trim().toLowerCase()),
-  );
+  useEffect(() => {
+    setPage(0);
+    setSelectedKeys(new Set());
+  }, [locale, search, target, statusFilter]);
+  const filtered = sources.filter(([key, source]) => {
+    const matchesSearch = `${key} ${source}`.toLowerCase().includes(search.trim().toLowerCase());
+    const translated = Boolean(values[key]?.trim());
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "translated" && translated) ||
+      (statusFilter === "missing" && !translated);
+    return matchesSearch && matchesStatus;
+  });
   const visible = filtered.slice(page * 50, page * 50 + 50);
   const entries = Object.fromEntries(
     visible.map(([key, source]) => [key, { source, translation: values[key] ?? "" }]),
@@ -647,6 +877,41 @@ function InterfaceWorkspace({ locale }: { locale: string }) {
         text: errorText(error, "Could not machine translate this page."),
       }),
   });
+  const allLanguageCodes = locales
+    .filter((entry) => entry.code !== "en")
+    .map((entry) => entry.code);
+  const selectedEntries = Object.fromEntries(
+    sources
+      .filter(([key]) => selectedKeys.has(key))
+      .map(([key, source]) => [key, { source, translation: values[key] ?? "" }]),
+  );
+  const batch = useQuery({
+    queryKey: ["translation-batch", batchId],
+    queryFn: () => languageApi.batch(batchId!),
+    enabled: Boolean(batchId),
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      return status && ["completed", "partial", "failed"].includes(status) ? false : 2_000;
+    },
+  });
+  const bulk = useMutation({
+    mutationFn: () =>
+      languageApi.createInterfaceBatch(
+        target,
+        selectedEntries,
+        allLanguageCodes,
+        overwriteExisting,
+      ),
+    onSuccess: (created) => {
+      setBatchId(created.id);
+      setNotice({
+        kind: "ok",
+        text: `Queued ${selectedKeys.size} selected texts across ${allLanguageCodes.length} languages.`,
+      });
+    },
+    onError: (error) =>
+      setNotice({ kind: "error", text: errorText(error, "Could not start bulk translation.") }),
+  });
 
   return (
     <section className="overflow-hidden rounded-md border border-line bg-surface shadow-card">
@@ -660,6 +925,17 @@ function InterfaceWorkspace({ locale }: { locale: string }) {
           </p>
         </div>
         <div className="flex gap-2">
+          <Button
+            disabled={bulk.isPending || auto.isPending || save.isPending || !selectedKeys.size}
+            onClick={() => bulk.mutate()}
+          >
+            {bulk.isPending ? (
+              <Loader2 size={15} className="animate-spin" />
+            ) : (
+              <Languages size={15} />
+            )}
+            Selected → all {allLanguageCodes.length}
+          </Button>
           <Button disabled={auto.isPending || save.isPending} onClick={() => auto.mutate()}>
             <Sparkles size={15} /> Translate visible 50
           </Button>
@@ -673,6 +949,7 @@ function InterfaceWorkspace({ locale }: { locale: string }) {
         </div>
       </header>
       {notice ? <Notice notice={notice} onClose={() => setNotice(null)} /> : null}
+      {batch.data ? <BatchProgress batch={batch.data} /> : null}
       <div className="flex flex-wrap gap-3 border-b border-line p-4">
         <select
           className={`${controlClass} max-w-52`}
@@ -691,6 +968,58 @@ function InterfaceWorkspace({ locale }: { locale: string }) {
             onChange={(event) => setSearch(event.target.value)}
           />
         </label>
+        <div className="flex flex-wrap items-center gap-2">
+          {(["all", "missing", "translated"] as const).map((filter) => (
+            <button
+              key={filter}
+              type="button"
+              className={cn(
+                "rounded-full border px-3 py-2 text-xs capitalize",
+                statusFilter === filter
+                  ? "border-brand bg-brand text-ink-inverse"
+                  : "border-line-strong text-ink-muted",
+              )}
+              onClick={() => setStatusFilter(filter)}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3 text-xs sm:px-5">
+        <div className="flex gap-3">
+          <button
+            type="button"
+            className="font-medium text-brand hover:underline"
+            onClick={() => setSelectedKeys(new Set(visible.map(([key]) => key)))}
+          >
+            Select visible 50
+          </button>
+          <button
+            type="button"
+            className="font-medium text-brand hover:underline"
+            onClick={() => setSelectedKeys(new Set(filtered.slice(0, 100).map(([key]) => key)))}
+          >
+            Select first {Math.min(100, filtered.length)} results
+          </button>
+          <button
+            type="button"
+            className="text-ink-muted hover:text-ink"
+            onClick={() => setSelectedKeys(new Set())}
+          >
+            Clear
+          </button>
+        </div>
+        <span className="text-ink-muted">{selectedKeys.size}/100 selected</span>
+        <label className="flex items-center gap-2 text-ink-muted">
+          <input
+            type="checkbox"
+            className="accent-[var(--brand)]"
+            checked={overwriteExisting}
+            onChange={(event) => setOverwriteExisting(event.target.checked)}
+          />
+          Replace existing reviewed translations
+        </label>
       </div>
       {saved.isLoading ? (
         <Loading label="Loading runtime corrections…" />
@@ -699,10 +1028,37 @@ function InterfaceWorkspace({ locale }: { locale: string }) {
           {visible.map(([key, source]) => (
             <div
               key={key}
-              className="grid gap-3 p-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:p-5"
+              className="grid gap-3 p-4 lg:grid-cols-[2rem_minmax(0,1fr)_minmax(0,1fr)] sm:p-5"
             >
+              <input
+                type="checkbox"
+                aria-label={`Select ${source}`}
+                className="mt-1 accent-[var(--brand)]"
+                checked={selectedKeys.has(key)}
+                onChange={(event) =>
+                  setSelectedKeys((current) => {
+                    const next = new Set(current);
+                    if (event.target.checked) {
+                      if (next.size < 100) next.add(key);
+                    } else next.delete(key);
+                    return next;
+                  })
+                }
+              />
               <div>
-                <code className="text-[11px] text-ink-muted">{key}</code>
+                <div className="flex flex-wrap items-center gap-2">
+                  <code className="text-[11px] text-ink-muted">{key}</code>
+                  <span
+                    className={cn(
+                      "rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                      values[key]?.trim()
+                        ? "bg-success/10 text-success"
+                        : "bg-subtle text-ink-muted",
+                    )}
+                  >
+                    {values[key]?.trim() ? "translated" : "missing"}
+                  </span>
+                </div>
                 <p className="mt-2 text-sm leading-6 text-ink">{source}</p>
               </div>
               <textarea
@@ -1046,6 +1402,109 @@ function Empty({ title, body, icon }: { title: string; body: string; icon?: Reac
   );
 }
 
+function AccountWorkspace({ user }: { user: StaffUser }) {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [notice, setNotice] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
+  const change = useMutation({
+    mutationFn: () => languageApi.changePassword(currentPassword, newPassword),
+    onSuccess: () => {
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setNotice({ kind: "ok", text: "Password changed. Every other session was signed out." });
+    },
+    onError: (error) =>
+      setNotice({ kind: "error", text: errorText(error, "Could not change your password.") }),
+  });
+  return (
+    <section className="mx-auto max-w-3xl overflow-hidden rounded-md border border-line bg-surface shadow-card">
+      <header className="border-b border-line p-5 sm:p-6">
+        <h2 className="font-display text-2xl text-ink">Your account</h2>
+        <p className="mt-1 text-sm text-ink-muted">
+          Password-protected staff identity for Language Studio.
+        </p>
+      </header>
+      {notice ? <Notice notice={notice} onClose={() => setNotice(null)} /> : null}
+      <div className="grid gap-8 p-5 sm:p-6 md:grid-cols-[1fr_1.25fr]">
+        <div>
+          <p className="text-xs font-semibold tracking-[.12em] text-ink-muted uppercase">
+            Signed in as
+          </p>
+          <p className="mt-3 font-medium text-ink">{user.displayName}</p>
+          <p className="mt-1 text-sm text-ink-muted">{user.email}</p>
+          <p className="mt-4 text-xs leading-5 text-ink-muted">
+            Changing your password keeps this session open and revokes every other active session.
+          </p>
+        </div>
+        <form
+          className="space-y-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (newPassword.length < 10) {
+              setNotice({
+                kind: "error",
+                text: "Use at least 10 characters for the new password.",
+              });
+              return;
+            }
+            if (newPassword !== confirmPassword) {
+              setNotice({ kind: "error", text: "The two new passwords do not match." });
+              return;
+            }
+            change.mutate();
+          }}
+        >
+          <label className="block text-sm font-medium text-ink">
+            Current password
+            <input
+              className={`${controlClass} mt-1.5`}
+              type="password"
+              autoComplete="current-password"
+              required
+              value={currentPassword}
+              onChange={(event) => setCurrentPassword(event.target.value)}
+            />
+          </label>
+          <label className="block text-sm font-medium text-ink">
+            New password
+            <input
+              className={`${controlClass} mt-1.5`}
+              type="password"
+              autoComplete="new-password"
+              required
+              minLength={10}
+              maxLength={256}
+              value={newPassword}
+              onChange={(event) => setNewPassword(event.target.value)}
+            />
+          </label>
+          <label className="block text-sm font-medium text-ink">
+            Confirm new password
+            <input
+              className={`${controlClass} mt-1.5`}
+              type="password"
+              autoComplete="new-password"
+              required
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+            />
+          </label>
+          <Button variant="primary" type="submit" disabled={change.isPending}>
+            {change.isPending ? (
+              <Loader2 size={15} className="animate-spin" />
+            ) : (
+              <Check size={15} />
+            )}
+            Change password
+          </Button>
+        </form>
+      </div>
+    </section>
+  );
+}
+
 function Studio({ user }: { user: StaffUser }) {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<Tab>("content");
@@ -1151,7 +1610,11 @@ function Studio({ user }: { user: StaffUser }) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <div className={tab === "languages" ? "hidden" : "hidden min-w-56 sm:block"}>
+            <div
+              className={
+                tab === "languages" || tab === "account" ? "hidden" : "hidden min-w-56 sm:block"
+              }
+            >
               <LocaleSelect locales={allLocales} value={locale} onChange={setLocale} />
             </div>
             <Button variant="ghost" title="Refresh" onClick={() => queryClient.invalidateQueries()}>
@@ -1168,20 +1631,22 @@ function Studio({ user }: { user: StaffUser }) {
           </div>
         </header>
         <main className="p-4 sm:p-6">
-          {tab !== "languages" ? (
+          {tab !== "languages" && tab !== "account" ? (
             <div className="mb-4 sm:hidden">
               <LocaleSelect locales={allLocales} value={locale} onChange={setLocale} />
             </div>
           ) : null}
           {tab === "content" ? (
-            <ContentWorkspace locale={locale} />
+            <ContentWorkspace locale={locale} locales={allLocales} />
           ) : tab === "interface" ? (
-            <InterfaceWorkspace locale={locale} />
-          ) : (
+            <InterfaceWorkspace locale={locale} locales={allLocales} />
+          ) : tab === "languages" ? (
             <LanguagesWorkspace
               customLocales={custom.data?.items ?? []}
               onChanged={() => queryClient.invalidateQueries({ queryKey: ["locales"] })}
             />
+          ) : (
+            <AccountWorkspace user={user} />
           )}
         </main>
       </div>

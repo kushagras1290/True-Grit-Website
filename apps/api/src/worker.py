@@ -298,18 +298,20 @@ class Default(WorkerEntrypoint):
         from truegrit_api.platform.d1 import D1Database
         from truegrit_api.services.jobs import dispatch_pending_outbox
         from truegrit_api.services.subscriptions import run_due_renewals
+        from truegrit_api.services.translation_batches import enqueue_pending_tasks
         from truegrit_api.util.ids import new_request_id
 
         try:
             _bridge_worker_env(self.env)
             db = D1Database(self.env.DB)
+            queued_translations = await enqueue_pending_tasks(db)
             dispatched = await dispatch_pending_outbox(
                 db, _WorkersQueuePublisher(self.env.JOBS_QUEUE)
             )
             print(
                 "outbox.scheduled: "
                 f"{dispatched['published']}/{dispatched['selected']} published, "
-                f"{dispatched['failed']} failed"
+                f"{dispatched['failed']} failed, {queued_translations} translation tasks queued"
             )
             if str(getattr(controller, "cron", "")) == "0 3 * * *":
                 result = await run_due_renewals(db, new_request_id())
@@ -323,8 +325,10 @@ class Default(WorkerEntrypoint):
         """Consume jobs idempotently and retain exhausted messages from the DLQ."""
         import json
 
+        from truegrit_api.platform.translation import WorkersAITranslator
         from truegrit_api.services.email import OutboundEmail
         from truegrit_api.services.jobs import process_queue_job, retain_dead_letter
+        from truegrit_api.services.translation_batches import process_task
 
         _bridge_worker_env(self.env)
         db = D1Database(self.env.DB)
@@ -368,6 +372,11 @@ class Default(WorkerEntrypoint):
             )
             return bool(response.ok)
 
+        translator = WorkersAITranslator(self.env.AI)
+
+        async def translate_batch_task(task_id: str) -> None:
+            await process_task(db, translator, task_id)
+
         for raw_message in messages:
             message = raw_message
             body = _to_py(message.body)
@@ -383,6 +392,7 @@ class Default(WorkerEntrypoint):
                     payload,
                     deliver_email=deliver_email,
                     invalidate_cache=invalidate_cache,
+                    translate_task=translate_batch_task,
                 )
                 message.ack()
                 print(f"queue.job_{outcome}: {payload.get('idempotencyKey', 'unknown')}")
