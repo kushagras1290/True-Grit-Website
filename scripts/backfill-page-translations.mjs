@@ -37,6 +37,8 @@ const LOCALES_FILE = path.resolve("packages/i18n/src/locales.ts");
 const TRANSLATION_CONCURRENCY = 8;
 const BATCH_CHARACTER_BUDGET = 1200;
 const CLOUDFLARE_BATCH_POLL_MS = Number(process.env.TG_CF_BATCH_POLL_MS ?? 10_000);
+const CLOUDFLARE_SYNC_CONCURRENCY = Number(process.env.TG_CF_SYNC_CONCURRENCY ?? 12);
+const CLOUDFLARE_TRANSLATION_MODE = process.env.TG_CF_TRANSLATION_MODE ?? "sync";
 const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID ?? "";
 let cloudflareApiToken = process.env.CLOUDFLARE_API_TOKEN ?? "";
 const CLOUDFLARE_TRANSLATION_MODEL = "@cf/meta/m2m100-1.2b";
@@ -330,6 +332,63 @@ async function cloudflareRequest(model, input, attempt = 1) {
   return payload.result;
 }
 
+async function cloudflareSyncRequest(model, input, attempt = 1) {
+  if (!CLOUDFLARE_ACCOUNT_ID || !cloudflareApiToken) {
+    throw new Error(
+      "Cloudflare translation requires CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN",
+    );
+  }
+  try {
+    const response = await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/ai/run/${model}`,
+      {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          authorization: `Bearer ${cloudflareApiToken}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(input),
+        signal: AbortSignal.timeout(30_000),
+      },
+    );
+    const payload = await response.json();
+    if (response.status === 401 && attempt <= 2) {
+      refreshCloudflareToken();
+      return cloudflareSyncRequest(model, input, attempt + 1);
+    }
+    if ((!response.ok || !payload.success) && attempt < 6 && (response.status === 429 || response.status >= 500)) {
+      await wait(500 * 2 ** attempt);
+      return cloudflareSyncRequest(model, input, attempt + 1);
+    }
+    if (!response.ok || !payload.success) {
+      throw new Error(
+        `Cloudflare AI ${response.status}: ${JSON.stringify(payload.errors ?? payload).slice(0, 800)}`,
+      );
+    }
+    return payload.result;
+  } catch (error) {
+    if (attempt >= 6) throw error;
+    await wait(500 * 2 ** attempt);
+    return cloudflareSyncRequest(model, input, attempt + 1);
+  }
+}
+
+async function mapConcurrent(values, concurrency, visit) {
+  const result = new Array(values.length);
+  let next = 0;
+  const workers = Array.from({ length: Math.min(concurrency, values.length) }, async () => {
+    for (;;) {
+      const index = next;
+      next += 1;
+      if (index >= values.length) return;
+      result[index] = await visit(values[index], index);
+    }
+  });
+  await Promise.all(workers);
+  return result;
+}
+
 async function cloudflareBatch(model, requests, locale) {
   const queued = await cloudflareRequest(model, { requests });
   if (!queued.request_id) throw new Error(`${locale}: Cloudflare AI returned no request_id`);
@@ -384,7 +443,7 @@ function llmBatches(values) {
 }
 
 function parseLlmTranslations(response, expected, locale, index) {
-  const text = response?.result?.response;
+  const text = response?.result?.response ?? response?.response;
   const match = typeof text === "string" ? /\{[\s\S]*\}/.exec(text) : null;
   if (!match) throw new Error(`${locale}: LLM batch ${index} returned no JSON object`);
   const parsed = JSON.parse(match[0]);
@@ -404,6 +463,23 @@ function parseLlmTranslations(response, expected, locale, index) {
 async function translateCloudflare(locale, pending, cache) {
   const language = CLOUDFLARE_LLM_LOCALES.get(locale);
   if (!language) {
+    if (CLOUDFLARE_TRANSLATION_MODE === "sync") {
+      const results = await mapConcurrent(pending, CLOUDFLARE_SYNC_CONCURRENCY, (english) =>
+        cloudflareSyncRequest(CLOUDFLARE_TRANSLATION_MODEL, {
+          text: shield(english),
+          source_lang: "en",
+          target_lang: CLOUDFLARE_LOCALE.get(locale) ?? locale,
+        }),
+      );
+      pending.forEach((english, index) => {
+        const translated = results[index]?.translated_text;
+        if (typeof translated !== "string" || !translated.trim()) {
+          throw new Error(`${locale}: Cloudflare translation returned an empty string`);
+        }
+        cache[hash(english)] = unshield(translated);
+      });
+      return cache;
+    }
     const responses = await cloudflareBatches(
       CLOUDFLARE_TRANSLATION_MODEL,
       pending.map((english) => ({
@@ -426,6 +502,32 @@ async function translateCloudflare(locale, pending, cache) {
   }
 
   const batches = llmBatches(pending);
+  if (CLOUDFLARE_TRANSLATION_MODE === "sync") {
+    const results = await mapConcurrent(batches, Math.min(6, CLOUDFLARE_SYNC_CONCURRENCY), (batch) =>
+      cloudflareSyncRequest(CLOUDFLARE_LLM_MODEL, {
+        messages: [
+          {
+            role: "user",
+            content:
+              `Translate every string in this JSON array from English into ${language}. ` +
+              "Preserve array length and order. Return only a JSON object with one key, " +
+              "translations, whose value is the translated string array. Do not translate " +
+              "True Grit or Vikas Farms. Input: " +
+              JSON.stringify(batch.map(shield)),
+          },
+        ],
+        temperature: 0,
+        max_tokens: 4096,
+      }),
+    );
+    for (let index = 0; index < batches.length; index += 1) {
+      const translations = parseLlmTranslations(results[index], batches[index].length, locale, index);
+      batches[index].forEach((english, entryIndex) => {
+        cache[hash(english)] = translations[entryIndex];
+      });
+    }
+    return cache;
+  }
   const responses = await cloudflareBatches(
     CLOUDFLARE_LLM_MODEL,
     batches.map((batch, index) => ({
