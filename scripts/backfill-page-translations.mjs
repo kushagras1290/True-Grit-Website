@@ -37,7 +37,7 @@ const LOCALES_FILE = path.resolve("packages/i18n/src/locales.ts");
 const TRANSLATION_CONCURRENCY = 8;
 const BATCH_CHARACTER_BUDGET = 1200;
 const CLOUDFLARE_BATCH_POLL_MS = Number(process.env.TG_CF_BATCH_POLL_MS ?? 10_000);
-const CLOUDFLARE_SYNC_CONCURRENCY = Number(process.env.TG_CF_SYNC_CONCURRENCY ?? 12);
+const CLOUDFLARE_SYNC_CONCURRENCY = Number(process.env.TG_CF_SYNC_CONCURRENCY ?? 4);
 const CLOUDFLARE_TRANSLATION_MODE = process.env.TG_CF_TRANSLATION_MODE ?? "sync";
 const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID ?? "";
 let cloudflareApiToken = process.env.CLOUDFLARE_API_TOKEN ?? "";
@@ -338,39 +338,41 @@ async function cloudflareSyncRequest(model, input, attempt = 1) {
       "Cloudflare translation requires CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN",
     );
   }
-  try {
-    const response = await fetch(
-      `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/ai/run/${model}`,
-      {
-        method: "POST",
-        headers: {
-          accept: "application/json",
-          authorization: `Bearer ${cloudflareApiToken}`,
-          "content-type": "application/json",
+  for (let currentAttempt = attempt; ; currentAttempt += 1) {
+    try {
+      const response = await fetch(
+        `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/ai/run/${model}`,
+        {
+          method: "POST",
+          headers: {
+            accept: "application/json",
+            authorization: `Bearer ${cloudflareApiToken}`,
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(input),
+          signal: AbortSignal.timeout(30_000),
         },
-        body: JSON.stringify(input),
-        signal: AbortSignal.timeout(30_000),
-      },
-    );
-    const payload = await response.json();
-    if (response.status === 401 && attempt <= 2) {
-      refreshCloudflareToken();
-      return cloudflareSyncRequest(model, input, attempt + 1);
-    }
-    if ((!response.ok || !payload.success) && attempt < 6 && (response.status === 429 || response.status >= 500)) {
-      await wait(500 * 2 ** attempt);
-      return cloudflareSyncRequest(model, input, attempt + 1);
-    }
-    if (!response.ok || !payload.success) {
-      throw new Error(
-        `Cloudflare AI ${response.status}: ${JSON.stringify(payload.errors ?? payload).slice(0, 800)}`,
       );
+      const payload = await response.json();
+      if (response.status === 401) {
+        refreshCloudflareToken();
+        continue;
+      }
+      if (!response.ok || !payload.success) {
+        if (response.status === 429 || response.status >= 500) {
+          await wait(Math.min(30_000, 750 * 2 ** Math.min(currentAttempt, 5)) + Math.random() * 500);
+          continue;
+        }
+        throw new Error(
+          `Cloudflare AI ${response.status}: ${JSON.stringify(payload.errors ?? payload).slice(0, 800)}`,
+        );
+      }
+      return payload.result;
+    } catch (error) {
+      if (String(error).includes("Cloudflare AI ")) throw error;
+      if (currentAttempt >= 20) throw error;
+      await wait(Math.min(30_000, 750 * 2 ** Math.min(currentAttempt, 5)) + Math.random() * 500);
     }
-    return payload.result;
-  } catch (error) {
-    if (attempt >= 6) throw error;
-    await wait(500 * 2 ** attempt);
-    return cloudflareSyncRequest(model, input, attempt + 1);
   }
 }
 
@@ -619,9 +621,7 @@ async function main() {
         cache = {};
       }
     }
-    const pending = [...sources].filter(
-      (text) => options.translator === "cloudflare" || !(hash(text) in cache),
-    );
+    const pending = [...sources].filter((text) => !(hash(text) in cache));
     if (pending.length > 0) {
       if (options.translator === "cloudflare") {
         cache = await translateCloudflare(locale, pending, cache);
