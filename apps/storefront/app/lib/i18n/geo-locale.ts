@@ -111,12 +111,14 @@ export function matchCountryLocale(country: string | null | undefined): LocaleDe
  * (`cf.regionCode`, e.g. "IN-PB") in `INDIA_REGION_CODE_TO_LOCALE` — whichever
  * the edge actually populates, see `resolveRegion` (geo.server.ts).
  *
- * A state left out on purpose (Nagaland, Mizoram, Meghalaya) has no clearly
- * dominant language among the 22 this storefront ships. Those visitors use
- * the country-level Hindi default and can change it from the visible selector.
+ * Where a state does not have a matching language in the shipped catalogue,
+ * use English (an official language there) instead of incorrectly assuming
+ * Hindi. This keeps every Indian subdivision deterministic without claiming a
+ * language the storefront cannot actually render.
  */
 const INDIA_STATE_TO_LOCALE: Readonly<Record<string, string>> = {
   "ANDHRA PRADESH": "te",
+  "ARUNACHAL PRADESH": "en",
   ASSAM: "as",
   BIHAR: "hi",
   CHHATTISGARH: "hi",
@@ -131,6 +133,9 @@ const INDIA_STATE_TO_LOCALE: Readonly<Record<string, string>> = {
   "MADHYA PRADESH": "hi",
   MAHARASHTRA: "mr",
   MANIPUR: "mni",
+  MEGHALAYA: "en",
+  MIZORAM: "en",
+  NAGALAND: "en",
   ODISHA: "or",
   ORISSA: "or",
   PUNJAB: "pa",
@@ -155,8 +160,10 @@ const INDIA_STATE_TO_LOCALE: Readonly<Record<string, string>> = {
 
 const INDIA_REGION_CODE_TO_LOCALE: Readonly<Record<string, string>> = {
   AP: "te",
+  AR: "en",
   AS: "as",
   BR: "hi",
+  CG: "hi",
   CT: "hi",
   GA: "kok",
   GJ: "gu",
@@ -169,6 +176,9 @@ const INDIA_REGION_CODE_TO_LOCALE: Readonly<Record<string, string>> = {
   MP: "hi",
   MH: "mr",
   MN: "mni",
+  ML: "en",
+  MZ: "en",
+  NL: "en",
   OR: "or",
   PB: "pa",
   RJ: "hi",

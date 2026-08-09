@@ -54,6 +54,11 @@ class CategoryRepository:
             "hero_eyebrow": fields.get("hero_eyebrow") or row["hero_eyebrow"],
             "hero_title": fields.get("hero_title") or row["hero_title"],
             "hero_description": fields.get("hero_description") or row["hero_description"],
+            "hero_image_alt": fields.get("hero_image_alt") or row["hero_image_alt"],
+            "thumbnail_image_alt": fields.get("thumbnail_image_alt")
+            or row["thumbnail_image_alt"],
+            "seo_title": fields.get("seo_title") or row["seo_title"],
+            "seo_description": fields.get("seo_description") or row["seo_description"],
         }
 
     async def _translate_rows(
@@ -350,6 +355,8 @@ class FarmRepository:
         story = json.loads(row["story_json"] or "{}")
         if not isinstance(story, dict):
             story = {}
+        if fields and isinstance(fields.get("story_content"), dict):
+            story = fields["story_content"]
         runtime_fields = (
             await override_map(self._db, "farm", row["id"], locale)
             if locale and locale != "en"
@@ -359,6 +366,8 @@ class FarmRepository:
         summary = str(story.get("summary") or "")
         body = str(story.get("body") or summary)
         methods = story.get("methods")
+        if fields and isinstance(fields.get("methods"), list):
+            methods = fields["methods"]
         product_rows = await self._db.fetch_all(
             "SELECT slug FROM products WHERE farm_id = ? AND status = 'published' ORDER BY name",
             (row["id"],),
@@ -499,6 +508,8 @@ class RecipeRepository:
                 (row["published_version_id"],),
             )
         content = json.loads(version["content_json"]) if version else {}
+        if translated_fields and isinstance(translated_fields.get("content"), dict):
+            content = translated_fields["content"]
         runtime_fields = (
             await override_map(self._db, "recipe", row["id"], locale)
             if locale and locale != "en"
@@ -516,6 +527,16 @@ class RecipeRepository:
         )
         tags = json.loads(row["dietary_tags_json"] or "[]")
         translated_fields = translated_fields or {}
+        translated_ingredients = translated_fields.get("ingredients")
+        if isinstance(translated_ingredients, dict):
+            for entry in ingredients:
+                translated_entry = translated_ingredients.get(str(entry.get("id") or ""))
+                if not isinstance(translated_entry, dict):
+                    continue
+                entry["label"] = translated_entry.get("label") or entry["label"]
+                entry["quantity_text"] = (
+                    translated_entry.get("quantity_text") or entry["quantity_text"]
+                )
         if runtime_fields:
             content = apply_path_overrides(content, runtime_fields, prefix="content")
             for entry in ingredients:
@@ -782,6 +803,8 @@ class ArticleRepository:
             )
         content = json.loads(version["content_json"]) if version else {}
         translated_fields = translated_fields or {}
+        if isinstance(translated_fields.get("content"), dict):
+            content = translated_fields["content"]
         if locale and locale != "en":
             runtime_fields = await override_map(self._db, "article", row["id"], locale)
             content = apply_path_overrides(content, runtime_fields, prefix="content")

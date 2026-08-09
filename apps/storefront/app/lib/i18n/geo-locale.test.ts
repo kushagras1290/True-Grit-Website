@@ -54,8 +54,12 @@ describe("matchIndiaRegionLocale", () => {
     expect(matchIndiaRegionLocale("Karnataka", "IN-PB")?.code).toBe("kn");
   });
 
-  it("returns null for a state with no single dominant language in this catalogue", () => {
-    expect(matchIndiaRegionLocale("Nagaland", "IN-NL")).toBeNull();
+  it("uses a correct supported fallback for states whose local language is not shipped", () => {
+    expect(matchIndiaRegionLocale("Nagaland", "IN-NL")?.code).toBe("en");
+    expect(matchIndiaRegionLocale("Arunachal Pradesh", "IN-AR")?.code).toBe("en");
+    expect(matchIndiaRegionLocale("Meghalaya", "IN-ML")?.code).toBe("en");
+    expect(matchIndiaRegionLocale("Mizoram", "IN-MZ")?.code).toBe("en");
+    expect(matchIndiaRegionLocale("Chhattisgarh", "IN-CG")?.code).toBe("hi");
   });
 
   it("returns null when neither region nor regionCode is known", () => {

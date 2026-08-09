@@ -28,14 +28,12 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-const DATABASE = "truegrit-dev";
 const WRANGLER = path.resolve("node_modules/wrangler/bin/wrangler.js");
 const CACHE_DIR = path.resolve("node_modules/.cache/truegrit-page-i18n");
 const SQL_DIR = path.resolve("node_modules/.cache/truegrit-page-sql");
 // The definitive language list; the storefront's own locales.ts is a
 // re-export shim with no literal definitions of its own.
 const LOCALES_FILE = path.resolve("packages/i18n/src/locales.ts");
-const UPDATED_BY = "usr_admin";
 const TRANSLATION_CONCURRENCY = 8;
 const BATCH_CHARACTER_BUDGET = 1200;
 
@@ -70,10 +68,23 @@ const GOOGLE_LOCALE = new Map([
 ]);
 
 function parseArguments(argv) {
-  const options = { locales: "all", dryRun: false };
+  const options = {
+    locales: "all",
+    dryRun: false,
+    database: "truegrit-dev",
+    env: "",
+    config: "apps/api/wrangler.jsonc",
+    refreshAuto: false,
+    updatedBy: "usr_admin",
+  };
   for (const argument of argv) {
     const [flag, value = ""] = argument.split("=");
     if (flag === "--locales") options.locales = value;
+    else if (flag === "--database") options.database = value;
+    else if (flag === "--env") options.env = value;
+    else if (flag === "--config") options.config = value;
+    else if (flag === "--refresh-auto") options.refreshAuto = true;
+    else if (flag === "--updated-by") options.updatedBy = value;
     else if (flag === "--dry-run") options.dryRun = true;
     else throw new Error(`Unknown argument: ${argument}`);
   }
@@ -98,8 +109,22 @@ function wrangler(args, maxBuffer = 128 * 1024 * 1024) {
   return execFileSync(process.execPath, [WRANGLER, ...args], { encoding: "utf8", maxBuffer });
 }
 
+let runtimeOptions;
+
+function d1Args() {
+  return [
+    "d1",
+    "execute",
+    runtimeOptions.database,
+    "--remote",
+    "--config",
+    runtimeOptions.config,
+    ...(runtimeOptions.env ? ["--env", runtimeOptions.env] : []),
+  ];
+}
+
 function d1Query(sql) {
-  const output = wrangler(["d1", "execute", DATABASE, "--remote", "--json", "--command", sql]);
+  const output = wrangler([...d1Args(), "--json", "--command", sql]);
   const start = output.indexOf("[");
   if (start < 0) throw new Error(`Unexpected wrangler output:\n${output.slice(0, 400)}`);
   return JSON.parse(output.slice(start))[0]?.results ?? [];
@@ -128,8 +153,10 @@ function walkCopy(node, visit, key = null) {
   return node;
 }
 
-const shield = (source) => source.replaceAll("True Grit", "__TGBRAND__");
-const unshield = (source) => source.replaceAll("__TGBRAND__", "True Grit").trim();
+const shield = (source) =>
+  source.replaceAll("True Grit", "__TGBRAND__").replaceAll("Vikas Farms", "__VIKASFARMS__");
+const unshield = (source) =>
+  source.replaceAll("__TGBRAND__", "True Grit").replaceAll("__VIKASFARMS__", "Vikas Farms").trim();
 const escapeHtml = (source) =>
   source
     .replaceAll("&", "&amp;")
@@ -222,6 +249,7 @@ function batched(values) {
 
 async function main() {
   const options = parseArguments(process.argv.slice(2));
+  runtimeOptions = options;
   const locales = localeCodes(options.locales);
   fs.mkdirSync(CACHE_DIR, { recursive: true });
   fs.mkdirSync(SQL_DIR, { recursive: true });
@@ -249,17 +277,20 @@ async function main() {
     `${parsed.length} published pages, ${sources.size} distinct strings of copy\n`,
   );
 
-  const existing = new Set(
-    d1Query("SELECT page_id || '|' || locale AS pair FROM page_content_translations").map(
-      (row) => row.pair,
-    ),
+  const existing = new Map(
+    d1Query(
+      "SELECT page_id || '|' || locale AS pair, auto_translated FROM page_content_translations",
+    ).map((row) => [row.pair, Number(row.auto_translated)]),
   );
 
   const now = new Date().toISOString();
   let written = 0;
 
   for (const locale of locales) {
-    const todo = parsed.filter((page) => !existing.has(`${page.pageId}|${locale}`));
+    const todo = parsed.filter((page) => {
+      const state = existing.get(`${page.pageId}|${locale}`);
+      return state === undefined || (options.refreshAuto && state === 1);
+    });
     if (todo.length === 0) {
       process.stdout.write(`${locale}: already complete\n`);
       continue;
@@ -293,7 +324,7 @@ async function main() {
       const translated = walkCopy(page.content, (text) => cache[hash(text)] ?? text);
       return (
         `(${sqlText(page.pageId)}, ${sqlText(locale)}, ${sqlText(JSON.stringify(translated))},` +
-        ` 1, ${sqlText(now)}, ${sqlText(UPDATED_BY)})`
+        ` 1, ${sqlText(now)}, ${sqlText(options.updatedBy)})`
       );
     });
 
@@ -310,7 +341,7 @@ async function main() {
         "  (page_id, locale, content_json, auto_translated, updated_at, updated_by)\n" +
         `VALUES\n${values.join(",\n")};\n`,
     );
-    wrangler(["d1", "execute", DATABASE, "--remote", "--yes", "--file", file]);
+    wrangler([...d1Args(), "--yes", "--file", file]);
     fs.rmSync(file, { force: true });
     written += values.length;
     process.stdout.write(`${locale}: wrote ${values.length} pages\n`);

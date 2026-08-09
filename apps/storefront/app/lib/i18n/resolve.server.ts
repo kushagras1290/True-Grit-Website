@@ -128,7 +128,7 @@ export function resolveLocale(
   if (country === "IN") {
     const { region, regionCode } = resolveRegion(request);
     const fromRegion = matchIndiaRegionLocale(region, regionCode);
-    if (fromRegion && matchFrom(locales, fromRegion.code) && fromRegion.code !== DEFAULT_LOCALE) {
+    if (fromRegion && matchFrom(locales, fromRegion.code)) {
       return { locale: fromRegion, source: "geo" };
     }
   }

@@ -307,10 +307,12 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
         return;
       }
       try {
-        const me = await apiRequest<CustomerAccount>("/v1/public/auth/me");
+        const { customer: me } = await apiRequest<{ customer: CustomerAccount | null }>(
+          "/v1/public/auth/session",
+        );
         if (active) {
           setCustomer(me);
-          setStatus("authenticated");
+          setStatus(me ? "authenticated" : "anonymous");
         }
       } catch {
         if (active) {

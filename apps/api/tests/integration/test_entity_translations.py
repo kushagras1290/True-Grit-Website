@@ -143,17 +143,18 @@ def test_bootstrap_serves_translated_nav_labels_with_english_fallback(client, db
 
 
 def test_category_endpoints_serve_translated_fields_with_english_fallback(client, db):
+    category_id = "cat_catalogue_01"
     as_admin(client, db)
     client.put(
-        "/v1/admin/translations/category/cat_fresh_fruits/hi",
+        f"/v1/admin/translations/category/{category_id}/hi",
         json={"fields": {"name": "ताज़े फल", "shortDescription": "मौसमी फल"}},
     )
 
     listed = client.get("/v1/public/categories?locale=hi").json()["items"]
-    translated = next(item for item in listed if item["id"] == "cat_fresh_fruits")
+    translated = next(item for item in listed if item["id"] == category_id)
     assert translated["name"] == "ताज़े फल"
     assert translated["shortDescription"] == "मौसमी फल"
 
     listed_en = client.get("/v1/public/categories").json()["items"]
-    original = next(item for item in listed_en if item["id"] == "cat_fresh_fruits")
+    original = next(item for item in listed_en if item["id"] == category_id)
     assert original["name"] != "ताज़े फल"

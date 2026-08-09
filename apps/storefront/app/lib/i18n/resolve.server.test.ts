@@ -82,5 +82,14 @@ describe("resolveLocale", () => {
         }),
       ),
     ).toMatchObject({ locale: { code: "kn" }, source: "geo" });
+
+    expect(
+      resolveLocale(
+        request({
+          headers: { "accept-language": "hi-IN" },
+          cf: { country: "IN", region: "Nagaland", regionCode: "IN-NL" },
+        }),
+      ),
+    ).toMatchObject({ locale: { code: "en" }, source: "geo" });
   });
 });

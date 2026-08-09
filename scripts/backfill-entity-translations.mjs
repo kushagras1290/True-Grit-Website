@@ -31,13 +31,11 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-const DATABASE = "truegrit-dev";
 const CACHE_DIR = path.resolve("node_modules/.cache/truegrit-entity-i18n");
 const SQL_DIR = path.resolve("node_modules/.cache/truegrit-entity-sql");
 // The definitive language list; the storefront's own locales.ts is a
 // re-export shim with no literal definitions of its own.
 const LOCALES_FILE = path.resolve("packages/i18n/src/locales.ts");
-const UPDATED_BY = "usr_admin";
 /**
  * Byte budget for a single INSERT.
  *
@@ -67,20 +65,93 @@ const BATCH_CHARACTER_BUDGET = 1200;
  */
 const ENTITY_SPECS = {
   product: {
-    table: "products",
-    fields: ["name", "short_description"],
-    where: "status = 'published'",
+    query: `SELECT p.id, p.name, p.short_description, p.storage_guidance,
+      p.harvest_note, p.growing_method, p.seo_title, p.seo_description,
+      p.image_alt, f.name AS farm_name, f.region
+      FROM products p LEFT JOIN farms f ON f.id = p.farm_id
+      WHERE p.status = 'published'`,
+    fields: [
+      "name",
+      "short_description",
+      "storage_guidance",
+      "harvest_note",
+      "growing_method",
+      "seo_title",
+      "seo_description",
+      "image_alt",
+      "farm_name",
+      "region",
+    ],
   },
   category: {
-    table: "categories",
-    fields: ["name", "short_description", "hero_eyebrow", "hero_title", "hero_description"],
-    where: "status = 'published'",
+    query: `SELECT id, name, short_description, hero_eyebrow, hero_title, hero_description,
+      hero_image_alt, thumbnail_image_alt, seo_title, seo_description
+      FROM categories WHERE status = 'published'`,
+    fields: [
+      "name",
+      "short_description",
+      "hero_eyebrow",
+      "hero_title",
+      "hero_description",
+      "hero_image_alt",
+      "thumbnail_image_alt",
+      "seo_title",
+      "seo_description",
+    ],
   },
-  article: { table: "articles", fields: ["title", "excerpt"], where: "status = 'published'" },
-  recipe: { table: "recipes", fields: ["title", "excerpt"], where: "status = 'published'" },
-  farm: { table: "farms", fields: ["name", "region"], where: "status = 'published'" },
-  bundle: { table: "bundles", fields: ["name", "description"], where: "status = 'active'" },
+  article: {
+    query: `SELECT a.id, a.title, a.excerpt, a.hero_image_alt, a.seo_title, a.seo_description,
+      v.content_json FROM articles a JOIN article_versions v ON v.id = a.published_version_id
+      WHERE a.status = 'published'`,
+    fields: ["title", "excerpt", "hero_image_alt", "seo_title", "seo_description", "content_json"],
+  },
+  recipe: {
+    query: `SELECT r.id, r.title, r.excerpt, r.hero_image_alt, r.seo_title, r.seo_description,
+      v.content_json FROM recipes r JOIN recipe_versions v ON v.id = r.published_version_id
+      WHERE r.status = 'published'`,
+    fields: ["title", "excerpt", "hero_image_alt", "seo_title", "seo_description", "content_json"],
+  },
+  farm: {
+    query: `SELECT id, name, farmer_name, region, story_json, methods_json, hero_image_alt,
+      seo_title, seo_description FROM farms WHERE status = 'published'`,
+    fields: [
+      "name",
+      "farmer_name",
+      "region",
+      "story_json",
+      "methods_json",
+      "hero_image_alt",
+      "seo_title",
+      "seo_description",
+    ],
+  },
+  bundle: {
+    query: "SELECT id, name, description FROM bundles WHERE status = 'active'",
+    fields: ["name", "description"],
+  },
 };
+
+const TRANSLATABLE_KEYS = new Set([
+  "heading",
+  "subheading",
+  "text",
+  "title",
+  "label",
+  "description",
+  "question",
+  "answer",
+  "quote",
+  "attribution",
+  "intro",
+  "eyebrow",
+  "consentText",
+  "imageAlt",
+  "message",
+  "summary",
+  "body",
+  "pullQuote",
+]);
+const TRANSLATABLE_STRING_LIST_KEYS = new Set(["paragraphs", "steps", "methods"]);
 
 const GOOGLE_LOCALE = new Map([
   ["zh-Hans", "zh-CN"],
@@ -97,12 +168,22 @@ function parseArguments(argv) {
     types: Object.keys(ENTITY_SPECS).join(","),
     maxRows: 90_000,
     dryRun: false,
+    database: "truegrit-dev",
+    env: "",
+    config: "apps/api/wrangler.jsonc",
+    refreshAuto: false,
+    updatedBy: "usr_admin",
   };
   for (const argument of argv) {
     const [flag, value = ""] = argument.split("=");
     if (flag === "--locales") options.locales = value;
     else if (flag === "--types") options.types = value;
     else if (flag === "--max-rows") options.maxRows = Number(value);
+    else if (flag === "--database") options.database = value;
+    else if (flag === "--env") options.env = value;
+    else if (flag === "--config") options.config = value;
+    else if (flag === "--refresh-auto") options.refreshAuto = true;
+    else if (flag === "--updated-by") options.updatedBy = value;
     else if (flag === "--dry-run") options.dryRun = true;
     else throw new Error(`Unknown argument: ${argument}`);
   }
@@ -153,11 +234,22 @@ function wrangler(args, maxBuffer) {
   return execFileSync(process.execPath, [WRANGLER, ...args], { encoding: "utf8", maxBuffer });
 }
 
+let runtimeOptions;
+
+function d1Args() {
+  return [
+    "d1",
+    "execute",
+    runtimeOptions.database,
+    "--remote",
+    "--config",
+    runtimeOptions.config,
+    ...(runtimeOptions.env ? ["--env", runtimeOptions.env] : []),
+  ];
+}
+
 function d1Query(sql) {
-  const output = wrangler(
-    ["d1", "execute", DATABASE, "--remote", "--json", "--command", sql],
-    256 * 1024 * 1024,
-  );
+  const output = wrangler([...d1Args(), "--json", "--command", sql], 256 * 1024 * 1024);
   // wrangler prefixes the JSON with banner lines on some versions; take the
   // payload from the first bracket so both shapes parse.
   const start = output.indexOf("[");
@@ -167,17 +259,28 @@ function d1Query(sql) {
 }
 
 function d1ExecuteFile(file) {
-  wrangler(["d1", "execute", DATABASE, "--remote", "--yes", "--file", file], 64 * 1024 * 1024);
+  wrangler([...d1Args(), "--yes", "--file", file], 64 * 1024 * 1024);
 }
 
 const sqlText = (value) => `'${String(value).replaceAll("'", "''")}'`;
 
 function shield(source) {
-  return source.replaceAll("True Grit", "__TGBRAND__");
+  return source
+    .replaceAll("True Grit", "__TGBRAND__")
+    .replaceAll("Vikas Farms", "__VIKASFARMS__")
+    .replaceAll("Kathiya", "__KATHIYA__")
+    .replaceAll("Banshi", "__BANSHI__")
+    .replaceAll("Paigambari", "__PAIGAMBARI__");
 }
 
 function unshield(source) {
-  return source.replaceAll("__TGBRAND__", "True Grit").trim();
+  return source
+    .replaceAll("__TGBRAND__", "True Grit")
+    .replaceAll("__VIKASFARMS__", "Vikas Farms")
+    .replaceAll("__KATHIYA__", "Kathiya")
+    .replaceAll("__BANSHI__", "Banshi")
+    .replaceAll("__PAIGAMBARI__", "Paigambari")
+    .trim();
 }
 
 const escapeHtml = (source) =>
@@ -318,9 +421,75 @@ async function translateAll(locale, sources, cache) {
 }
 
 const hash = (text) => crypto.createHash("sha1").update(text).digest("hex").slice(0, 16);
+const isCopy = (value) => typeof value === "string" && /\p{L}/u.test(value) && value.trim() !== "";
+
+function walkCopy(node, visit, key = null) {
+  if (Array.isArray(node)) {
+    if (key && TRANSLATABLE_STRING_LIST_KEYS.has(key)) {
+      return node.map((entry) => (isCopy(entry) ? visit(entry) : entry));
+    }
+    return node.map((entry) => walkCopy(entry, visit));
+  }
+  if (node && typeof node === "object") {
+    const result = {};
+    for (const [childKey, value] of Object.entries(node)) {
+      if (TRANSLATABLE_KEYS.has(childKey) && isCopy(value)) result[childKey] = visit(value);
+      else result[childKey] = walkCopy(value, visit, childKey);
+    }
+    return result;
+  }
+  return node;
+}
+
+function entitySources(fields) {
+  const sources = [];
+  for (const [field, value] of Object.entries(fields)) {
+    if (typeof value === "string" && isCopy(value)) sources.push(value);
+    else if (field === "content" || field === "story_content") {
+      walkCopy(value, (text) => (sources.push(text), text));
+    } else if (Array.isArray(value)) {
+      value.forEach((entry) => {
+        if (isCopy(entry)) sources.push(entry);
+      });
+    } else if (field === "ingredients" && value && typeof value === "object") {
+      for (const ingredient of Object.values(value)) {
+        if (!ingredient || typeof ingredient !== "object") continue;
+        for (const text of Object.values(ingredient)) if (isCopy(text)) sources.push(text);
+      }
+    }
+  }
+  return sources;
+}
+
+function translatedEntityFields(fields, cache) {
+  const translate = (text) => cache[hash(text)] ?? text;
+  const translated = {};
+  for (const [field, value] of Object.entries(fields)) {
+    if (typeof value === "string") translated[field] = isCopy(value) ? translate(value) : value;
+    else if (field === "content" || field === "story_content") {
+      translated[field] = walkCopy(value, translate);
+    } else if (Array.isArray(value)) {
+      translated[field] = value.map((entry) => (isCopy(entry) ? translate(entry) : entry));
+    } else if (field === "ingredients" && value && typeof value === "object") {
+      translated[field] = Object.fromEntries(
+        Object.entries(value).map(([id, ingredient]) => [
+          id,
+          Object.fromEntries(
+            Object.entries(ingredient).map(([key, text]) => [
+              key,
+              isCopy(text) ? translate(text) : text,
+            ]),
+          ),
+        ]),
+      );
+    } else translated[field] = value;
+  }
+  return translated;
+}
 
 async function main() {
   const options = parseArguments(process.argv.slice(2));
+  runtimeOptions = options;
   const locales = resolveLocales(options.locales);
   const types = options.types
     .split(",")
@@ -335,17 +504,40 @@ async function main() {
   const entities = [];
   for (const type of types) {
     const spec = ENTITY_SPECS[type];
-    const columns = ["id", ...spec.fields].join(", ");
-    const rows = d1Query(`SELECT ${columns} FROM ${spec.table} WHERE ${spec.where}`);
+    const rows = d1Query(spec.query);
     for (const row of rows) {
       const fields = {};
       for (const field of spec.fields) {
         const value = row[field];
-        if (typeof value === "string" && value.trim()) fields[field] = value.trim();
+        if (field === "content_json" && typeof value === "string") {
+          fields.content = JSON.parse(value);
+        } else if (field === "story_json" && typeof value === "string") {
+          fields.story_content = JSON.parse(value);
+        } else if (field === "methods_json" && typeof value === "string") {
+          fields.methods = JSON.parse(value);
+        } else if (typeof value === "string" && value.trim()) fields[field] = value.trim();
       }
       if (Object.keys(fields).length > 0) entities.push({ type, id: row.id, fields });
     }
     process.stdout.write(`${type}: ${rows.length} published rows\n`);
+  }
+  if (types.includes("recipe")) {
+    const ingredients = d1Query(
+      "SELECT ri.recipe_id, ri.id, ri.label, ri.quantity_text FROM recipe_ingredients ri" +
+        " JOIN recipes r ON r.id = ri.recipe_id WHERE r.status = 'published'",
+    );
+    const recipes = new Map(
+      entities.filter((entity) => entity.type === "recipe").map((entity) => [entity.id, entity]),
+    );
+    for (const ingredient of ingredients) {
+      const recipe = recipes.get(ingredient.recipe_id);
+      if (!recipe) continue;
+      recipe.fields.ingredients ??= {};
+      recipe.fields.ingredients[ingredient.id] = {
+        label: ingredient.label,
+        quantity_text: ingredient.quantity_text || "",
+      };
+    }
   }
   if (entities.length === 0) {
     process.stdout.write("Nothing to translate.\n");
@@ -353,22 +545,23 @@ async function main() {
   }
 
   // 2. Skip pairs already stored, so a resumed run costs nothing for them.
-  const existing = new Set(
+  const existing = new Map(
     d1Query(
-      `SELECT entity_type || '|' || entity_id || '|' || locale AS pair FROM entity_translations` +
+      `SELECT entity_type || '|' || entity_id || '|' || locale AS pair, auto_translated FROM entity_translations` +
         ` WHERE entity_type IN (${types.map((type) => `'${type}'`).join(", ")})`,
-    ).map((row) => row.pair),
+    ).map((row) => [row.pair, Number(row.auto_translated)]),
   );
   process.stdout.write(`${existing.size} entity/locale pairs already stored\n`);
 
-  const allSources = entities.flatMap((entity) => Object.values(entity.fields));
+  const allSources = entities.flatMap((entity) => entitySources(entity.fields));
   let written = 0;
   const now = new Date().toISOString();
 
   for (const locale of locales) {
-    const todo = entities.filter(
-      (entity) => !existing.has(`${entity.type}|${entity.id}|${locale}`),
-    );
+    const todo = entities.filter((entity) => {
+      const state = existing.get(`${entity.type}|${entity.id}|${locale}`);
+      return state === undefined || (options.refreshAuto && state === 1);
+    });
     if (todo.length === 0) {
       process.stdout.write(`${locale}: already complete\n`);
       continue;
@@ -386,13 +579,10 @@ async function main() {
     const cache = await translateAll(locale, allSources, loadCache(locale));
 
     const values = todo.map((entity) => {
-      const translated = {};
-      for (const [field, english] of Object.entries(entity.fields)) {
-        translated[field] = cache[hash(english)] ?? english;
-      }
+      const translated = translatedEntityFields(entity.fields, cache);
       return (
         `(${sqlText(entity.type)}, ${sqlText(entity.id)}, ${sqlText(locale)},` +
-        ` ${sqlText(JSON.stringify(translated))}, 1, ${sqlText(now)}, ${sqlText(UPDATED_BY)})`
+        ` ${sqlText(JSON.stringify(translated))}, 1, ${sqlText(now)}, ${sqlText(options.updatedBy)})`
       );
     });
 
