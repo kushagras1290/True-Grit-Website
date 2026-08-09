@@ -36,3 +36,7 @@ uv.lock.tmp
 # sessions — debugging output, never referenced by the app or its tests.
 .playwright-cli/
 .playwright-mcp/
+
+# Local deployment environments, production backups, and visual-review
+# artifacts are consolidated here and must never enter version control.
+/local-artifacts/
