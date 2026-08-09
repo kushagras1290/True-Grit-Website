@@ -214,6 +214,9 @@ function parseArguments(argv) {
     refreshAuto: false,
     updatedBy: "usr_admin",
     translator: "google",
+    sourceFile: "",
+    dumpSource: "",
+    cacheOnly: false,
   };
   for (const argument of argv) {
     const [flag, value = ""] = argument.split("=");
@@ -226,6 +229,9 @@ function parseArguments(argv) {
     else if (flag === "--refresh-auto") options.refreshAuto = true;
     else if (flag === "--updated-by") options.updatedBy = value;
     else if (flag === "--translator") options.translator = value;
+    else if (flag === "--source-file") options.sourceFile = value;
+    else if (flag === "--dump-source") options.dumpSource = value;
+    else if (flag === "--cache-only") options.cacheOnly = true;
     else if (flag === "--dry-run") options.dryRun = true;
     else throw new Error(`Unknown argument: ${argument}`);
   }
@@ -520,7 +526,6 @@ async function cloudflareSyncRequest(model, input, attempt = 1) {
       return payload.result;
     } catch (error) {
       if (String(error).includes("Cloudflare AI ")) throw error;
-      if (currentAttempt >= 20) throw error;
       await wait(Math.min(30_000, 750 * 2 ** Math.min(currentAttempt, 5)) + Math.random() * 500);
     }
   }
@@ -845,56 +850,70 @@ async function main() {
   fs.mkdirSync(SQL_DIR, { recursive: true });
 
   // 1. Read the English source rows once; they are the same for every locale.
-  const entities = [];
-  for (const type of types) {
-    const spec = ENTITY_SPECS[type];
-    const rows = d1Query(spec.query);
-    for (const row of rows) {
-      const fields = {};
-      for (const field of spec.fields) {
-        const value = row[field];
-        if (field === "content_json" && typeof value === "string") {
-          fields.content = JSON.parse(value);
-        } else if (field === "story_json" && typeof value === "string") {
-          fields.story_content = JSON.parse(value);
-        } else if (field === "methods_json" && typeof value === "string") {
-          fields.methods = JSON.parse(value);
-        } else if (typeof value === "string" && value.trim()) fields[field] = value.trim();
+  let entities = [];
+  if (options.sourceFile) {
+    entities = JSON.parse(fs.readFileSync(path.resolve(options.sourceFile), "utf8"));
+    process.stdout.write(`Loaded ${entities.length} entities from ${options.sourceFile}\n`);
+  } else {
+    for (const type of types) {
+      const spec = ENTITY_SPECS[type];
+      const rows = d1Query(spec.query);
+      for (const row of rows) {
+        const fields = {};
+        for (const field of spec.fields) {
+          const value = row[field];
+          if (field === "content_json" && typeof value === "string") {
+            fields.content = JSON.parse(value);
+          } else if (field === "story_json" && typeof value === "string") {
+            fields.story_content = JSON.parse(value);
+          } else if (field === "methods_json" && typeof value === "string") {
+            fields.methods = JSON.parse(value);
+          } else if (typeof value === "string" && value.trim()) fields[field] = value.trim();
+        }
+        if (Object.keys(fields).length > 0) entities.push({ type, id: row.id, fields });
       }
-      if (Object.keys(fields).length > 0) entities.push({ type, id: row.id, fields });
+      process.stdout.write(`${type}: ${rows.length} published rows\n`);
     }
-    process.stdout.write(`${type}: ${rows.length} published rows\n`);
-  }
-  if (types.includes("recipe")) {
-    const ingredients = d1Query(
-      "SELECT ri.recipe_id, ri.id, ri.label, ri.quantity_text FROM recipe_ingredients ri" +
-        " JOIN recipes r ON r.id = ri.recipe_id WHERE r.status = 'published'",
-    );
-    const recipes = new Map(
-      entities.filter((entity) => entity.type === "recipe").map((entity) => [entity.id, entity]),
-    );
-    for (const ingredient of ingredients) {
-      const recipe = recipes.get(ingredient.recipe_id);
-      if (!recipe) continue;
-      recipe.fields.ingredients ??= {};
-      recipe.fields.ingredients[ingredient.id] = {
-        label: ingredient.label,
-        quantity_text: ingredient.quantity_text || "",
-      };
+    if (types.includes("recipe")) {
+      const ingredients = d1Query(
+        "SELECT ri.recipe_id, ri.id, ri.label, ri.quantity_text FROM recipe_ingredients ri" +
+          " JOIN recipes r ON r.id = ri.recipe_id WHERE r.status = 'published'",
+      );
+      const recipes = new Map(
+        entities.filter((entity) => entity.type === "recipe").map((entity) => [entity.id, entity]),
+      );
+      for (const ingredient of ingredients) {
+        const recipe = recipes.get(ingredient.recipe_id);
+        if (!recipe) continue;
+        recipe.fields.ingredients ??= {};
+        recipe.fields.ingredients[ingredient.id] = {
+          label: ingredient.label,
+          quantity_text: ingredient.quantity_text || "",
+        };
+      }
     }
   }
   if (entities.length === 0) {
     process.stdout.write("Nothing to translate.\n");
     return;
   }
+  if (options.dumpSource) {
+    const file = path.resolve(options.dumpSource);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify(entities));
+    process.stdout.write(`Wrote source snapshot to ${file}\n`);
+    return;
+  }
 
   // 2. Skip pairs already stored, so a resumed run costs nothing for them.
-  const existing = new Map(
-    d1Query(
-      `SELECT entity_type || '|' || entity_id || '|' || locale AS pair, auto_translated FROM entity_translations` +
-        ` WHERE entity_type IN (${types.map((type) => `'${type}'`).join(", ")})`,
-    ).map((row) => [row.pair, Number(row.auto_translated)]),
-  );
+  const existing = options.cacheOnly
+    ? new Map()
+    : new Map(
+        d1Query(
+          `SELECT entity_type || '|' || entity_id || '|' || locale AS pair, auto_translated FROM entity_translations` +
+            ` WHERE entity_type IN (${types.map((type) => `'${type}'`).join(", ")})`,
+        ).map((row) => [row.pair, Number(row.auto_translated)]),
+      );
   process.stdout.write(`${existing.size} entity/locale pairs already stored\n`);
 
   const allSources = entities.flatMap((entity) => entitySources(entity.fields));
@@ -921,6 +940,11 @@ async function main() {
     }
 
     const cache = await translateAll(locale, allSources, loadCache(locale));
+
+    if (options.cacheOnly) {
+      process.stdout.write(`${locale}: cached ${Object.keys(cache).length} strings\n`);
+      continue;
+    }
 
     const values = todo.map((entity) => {
       const translated = translatedEntityFields(entity.fields, cache);

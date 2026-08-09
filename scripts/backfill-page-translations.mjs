@@ -370,7 +370,6 @@ async function cloudflareSyncRequest(model, input, attempt = 1) {
       return payload.result;
     } catch (error) {
       if (String(error).includes("Cloudflare AI ")) throw error;
-      if (currentAttempt >= 20) throw error;
       await wait(Math.min(30_000, 750 * 2 ** Math.min(currentAttempt, 5)) + Math.random() * 500);
     }
   }
