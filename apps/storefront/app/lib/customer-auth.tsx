@@ -8,7 +8,8 @@
  *
  * Google sign-in uses Google Identity Services: the browser obtains a signed
  * ID token and posts it to the API, which verifies it server-side. Only the
- * public `VITE_GOOGLE_CLIENT_ID` is needed here — never a client secret.
+ * public Google client id is delivered through the Worker's runtime bindings
+ * (with `VITE_GOOGLE_CLIENT_ID` as a local-build fallback) — never a secret.
  */
 
 import {
@@ -22,10 +23,14 @@ import {
   type ReactNode,
 } from "react";
 
-import { getPublicApiUrl, getPublicFacebookAppId, hasPublicApiUrl } from "./public-env";
+import {
+  getPublicApiUrl,
+  getPublicFacebookAppId,
+  getPublicGoogleClientId,
+  hasPublicApiUrl,
+} from "./public-env";
 import { LocalizedText } from "./i18n/localized-text";
 
-export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
 export const authDemoMode = !hasPublicApiUrl();
 
 const DEMO_SESSION_KEY = "truegrit.customer.session";
@@ -529,15 +534,16 @@ export function GoogleSignInButton({
   onError?: (message: string) => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const googleClientId = getPublicGoogleClientId();
 
   useEffect(() => {
-    if (!GOOGLE_CLIENT_ID) return;
+    if (!googleClientId) return;
     let cancelled = false;
     loadGoogleIdentityServices()
       .then(() => {
         if (cancelled || !containerRef.current || !window.google) return;
         window.google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
+          client_id: googleClientId,
           callback: (response) => onCredential(response.credential),
         });
         window.google.accounts.id.renderButton(containerRef.current, {
@@ -551,9 +557,9 @@ export function GoogleSignInButton({
     return () => {
       cancelled = true;
     };
-  }, [onCredential, onError]);
+  }, [googleClientId, onCredential, onError]);
 
-  if (GOOGLE_CLIENT_ID) {
+  if (googleClientId) {
     return <div ref={containerRef} className="flex min-h-11 justify-center" />;
   }
 

@@ -1,10 +1,11 @@
 /**
  * Visitor country resolution for route loaders.
  *
- * On Cloudflare Workers the `CF-IPCountry` header carries the visitor's
- * ISO-3166 alpha-2 country. A `tg_country` cookie overrides it (useful for a
- * future manual country switcher and for local testing); local dev without
- * either falls back to `GEO_DEFAULT_COUNTRY`, then India.
+ * On Cloudflare Workers `request.cf.country` carries the visitor's ISO-3166
+ * alpha-2 country. `CF-IPCountry` remains a compatibility fallback for proxied
+ * requests and tests. A `tg_country` cookie overrides both (useful for a future
+ * manual country switcher and local testing); local dev without any signal
+ * falls back to `GEO_DEFAULT_COUNTRY`, then India.
  */
 
 const COUNTRY_PATTERN = /^[A-Za-z]{2}$/;
@@ -16,7 +17,14 @@ export function resolveCountry(request: Request): string {
   const cookieCountry = COUNTRY_COOKIE_PATTERN.exec(cookieHeader)?.[1];
   if (cookieCountry) return cookieCountry.toUpperCase();
 
-  // "XX" (unknown) and "T1" (Tor) are Cloudflare sentinels, not countries.
+  // `request.cf` is Cloudflare Workers' canonical geolocation source. The
+  // header is retained as a fallback because it can exist on proxied requests.
+  // "XX" (unknown) and "T1" (Tor) are sentinels, not countries.
+  const cfCountry = (
+    request as unknown as { cf?: CloudflareGeoProperties }
+  ).cf?.country?.toUpperCase();
+  if (cfCountry && COUNTRY_PATTERN.test(cfCountry) && cfCountry !== "XX") return cfCountry;
+
   const header = (request.headers.get("cf-ipcountry") ?? "").toUpperCase();
   if (COUNTRY_PATTERN.test(header) && header !== "XX") return header;
 
@@ -29,8 +37,9 @@ export function resolveCountry(request: Request): string {
  *  Not part of the standard `Request` type (it is Workers-runtime-only, set
  *  by the edge before the request ever reaches this code), so it is typed
  *  narrowly here rather than pulling in the full `@cloudflare/workers-types`
- *  ambient surface for two fields. */
+ *  ambient surface for three fields. */
 interface CloudflareGeoProperties {
+  country?: string;
   region?: string;
   regionCode?: string;
 }

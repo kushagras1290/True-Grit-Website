@@ -66,6 +66,7 @@ jobs:
         working-directory: apps/storefront
         env:
           CLOUDFLARE_ENV: ${{ inputs.environment }}
+          VITE_GOOGLE_CLIENT_ID: "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com"
         run: pnpm build
       - name: Deploy storefront
         working-directory: apps/storefront

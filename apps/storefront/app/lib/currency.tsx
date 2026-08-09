@@ -12,6 +12,7 @@
  */
 
 import { formatMoney } from "@truegrit/contracts";
+import countryToCurrency from "country-to-currency";
 import { createContext, useCallback, useContext, useMemo, type ReactNode } from "react";
 
 export interface DisplayCurrency {
@@ -68,77 +69,14 @@ const FALLBACK_CURRENCIES: Record<string, DisplayCurrency> = {
   NGN: { code: "NGN", locale: "en-NG", ratePerInr: 17.5 },
 };
 
-const EUROZONE = [
-  "AT",
-  "BE",
-  "HR",
-  "CY",
-  "EE",
-  "FI",
-  "FR",
-  "DE",
-  "GR",
-  "IE",
-  "IT",
-  "LV",
-  "LT",
-  "LU",
-  "MT",
-  "NL",
-  "PT",
-  "SK",
-  "SI",
-  "ES",
-];
-
-const COUNTRY_TO_CURRENCY: Record<string, string> = {
-  IN: "INR",
-  US: "USD",
-  GB: "GBP",
-  AE: "AED",
-  SA: "SAR",
-  QA: "QAR",
-  KW: "KWD",
-  BH: "BHD",
-  OM: "OMR",
-  SG: "SGD",
-  MY: "MYR",
-  TH: "THB",
-  JP: "JPY",
-  KR: "KRW",
-  CN: "CNY",
-  HK: "HKD",
-  AU: "AUD",
-  NZ: "NZD",
-  CA: "CAD",
-  CH: "CHF",
-  SE: "SEK",
-  NO: "NOK",
-  DK: "DKK",
-  ZA: "ZAR",
-  LK: "LKR",
-  BD: "BDT",
-  NP: "NPR",
-  ID: "IDR",
-  PH: "PHP",
-  VN: "VND",
-  BR: "BRL",
-  MX: "MXN",
-  TR: "TRY",
-  IL: "ILS",
-  EG: "EGP",
-  KE: "KES",
-  NG: "NGN",
-  ...Object.fromEntries(EUROZONE.map((country) => [country, "EUR"])),
-};
-
-/** The display currency for a visitor country; INR for India and any country
- * we do not have a rough rate for. */
+/** The display currency for any ISO country. INR remains the fail-safe for an
+ * invalid country or a currency rate deliberately disabled by an operator. */
 export function currencyForCountry(
   country: string,
   rates?: readonly DisplayCurrency[] | null,
 ): DisplayCurrency {
-  const code = COUNTRY_TO_CURRENCY[country.toUpperCase()];
+  const countryCode = country.trim().toUpperCase() as keyof typeof countryToCurrency;
+  const code = countryToCurrency[countryCode];
   if (!code || code === "INR") return INR;
   if (rates) return rates.find((rate) => rate.code === code) ?? INR;
   return FALLBACK_CURRENCIES[code] ?? INR;

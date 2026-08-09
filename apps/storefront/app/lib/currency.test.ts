@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
+import countryToCurrency from "country-to-currency";
 
 import { currencyForCountry, formatDisplayMoney, INR } from "./currency";
 
 describe("currencyForCountry", () => {
-  it("maps India and unknown countries to INR", () => {
+  it("maps India and invalid countries to INR", () => {
     expect(currencyForCountry("IN").code).toBe("INR");
-    expect(currencyForCountry("AQ").code).toBe("INR");
+    expect(currencyForCountry("ZZ").code).toBe("INR");
     expect(currencyForCountry("").code).toBe("INR");
   });
 
@@ -28,6 +29,17 @@ describe("currencyForCountry", () => {
   it("maps every eurozone country to EUR", () => {
     for (const country of ["DE", "FR", "IT", "ES", "NL", "IE", "PT", "FI"]) {
       expect(currencyForCountry(country).code).toBe("EUR");
+    }
+  });
+
+  it("resolves every ISO country currency when its operator rate is active", () => {
+    const rates = Object.values(countryToCurrency).map((code) => ({
+      code,
+      locale: "en",
+      ratePerInr: 1,
+    }));
+    for (const [country, code] of Object.entries(countryToCurrency)) {
+      expect(currencyForCountry(country, rates).code, country).toBe(code);
     }
   });
 });

@@ -58,6 +58,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
       cloudflare?: {
         env?: {
           PUBLIC_API_URL?: string;
+          PUBLIC_GOOGLE_CLIENT_ID?: string;
           PUBLIC_FACEBOOK_APP_ID?: string;
         };
       };
@@ -108,6 +109,8 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     currencyRates,
     publicEnv: {
       PUBLIC_API_URL: runtime.apiUrl || process.env.PUBLIC_API_URL || "",
+      PUBLIC_GOOGLE_CLIENT_ID:
+        env?.PUBLIC_GOOGLE_CLIENT_ID || process.env.PUBLIC_GOOGLE_CLIENT_ID || "",
       PUBLIC_FACEBOOK_APP_ID:
         env?.PUBLIC_FACEBOOK_APP_ID || process.env.PUBLIC_FACEBOOK_APP_ID || "",
     },
