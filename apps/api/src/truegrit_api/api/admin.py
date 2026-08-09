@@ -5760,8 +5760,17 @@ class CategoryUpdateRequest(_CamelModel):
     seo_description: str | None = Field(default=None, max_length=320)
     hero_image_url: str | None = Field(default=None, max_length=1000)
     hero_image_alt: str | None = Field(default=None, max_length=200)
+    thumbnail_image_url: str | None = Field(default=None, max_length=1000)
+    thumbnail_image_alt: str | None = Field(default=None, max_length=200)
     release_scope: str | None = Field(default=None, max_length=16)
     release_countries: list[str] | None = Field(default=None, max_length=100)
+
+    @field_validator("hero_image_url", "thumbnail_image_url")
+    @classmethod
+    def _safe_category_image_url(cls, value: str | None) -> str | None:
+        if value is None or value == "":
+            return value
+        return _validate_image_url(value)
 
 
 class CategoryBulkDeleteRequest(_CamelModel):
@@ -5812,6 +5821,8 @@ async def get_category_endpoint(
         "seoDescription": detail["seo_description"] or "",
         "heroImageUrl": detail["hero_image_url"] or "",
         "heroImageAlt": detail["hero_image_alt"] or detail["name"],
+        "thumbnailImageUrl": detail["thumbnail_image_url"] or "",
+        "thumbnailImageAlt": detail["thumbnail_image_alt"] or detail["name"],
         "productAssignmentMode": detail["product_assignment_mode"],
         "releaseScope": detail["release_scope"],
         "releaseCountries": detail["release_countries"],

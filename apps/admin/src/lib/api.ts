@@ -432,6 +432,8 @@ export interface AdminCategoryDetail {
   seoDescription: string;
   heroImageUrl: string;
   heroImageAlt: string;
+  thumbnailImageUrl: string;
+  thumbnailImageAlt: string;
   productAssignmentMode: string;
   releaseScope: "global" | "selected";
   releaseCountries: string[];
@@ -1750,6 +1752,8 @@ export const api = {
       seoDescription: "",
       heroImageUrl: "",
       heroImageAlt: category.name,
+      thumbnailImageUrl: "",
+      thumbnailImageAlt: category.name,
       productAssignmentMode: "manual",
       releaseScope: "global",
       releaseCountries: [],

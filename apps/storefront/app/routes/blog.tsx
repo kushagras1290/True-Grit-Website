@@ -86,7 +86,7 @@ export default function BlogPage({ loaderData }: Route.ComponentProps) {
                     src={mediaUrl(article.heroImageUrl)}
                     alt={article.heroImageAlt || ""}
                     loading="lazy"
-                    className="aspect-[16/9] w-full rounded-md bg-subtle object-contain"
+                    className="aspect-[16/9] w-full rounded-md bg-subtle object-cover"
                   />
                 ) : (
                   <span aria-hidden className="aspect-[16/9] w-full rounded-md bg-subtle" />

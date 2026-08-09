@@ -30,7 +30,8 @@ class CategoryRepository:
             SELECT c.id, c.name, c.slug, c.short_description, c.hero_eyebrow, c.hero_title,
                    c.hero_description, c.theme_key, c.season_label, c.product_assignment_mode,
                    c.product_rule_json, c.seo_title, c.seo_description, c.hero_image_url,
-                   c.hero_image_alt, c.updated_at, c.parent_id,
+                   c.hero_image_alt, c.thumbnail_image_url, c.thumbnail_image_alt,
+                   c.updated_at, c.parent_id,
                    parent.name AS parent_name, parent.slug AS parent_slug
             FROM categories c
             LEFT JOIN categories parent
@@ -106,7 +107,8 @@ class CategoryRepository:
         rows = await self._db.fetch_all(
             f"""
             SELECT c.id, c.name, c.slug, c.short_description, c.theme_key, c.season_label,
-                   c.hero_image_url, c.parent_id, c.level,
+                   COALESCE(c.thumbnail_image_url, c.hero_image_url) AS hero_image_url,
+                   c.parent_id, c.level,
                    (SELECT COUNT(*) FROM product_categories pc
                      JOIN products p ON p.id = pc.product_id
                     WHERE pc.category_id = c.id AND p.status = 'published') AS product_count
@@ -149,7 +151,8 @@ class CategoryRepository:
         rows = await self._db.fetch_all(
             f"""
             SELECT c.id, c.name, c.slug, c.short_description, c.theme_key, c.season_label,
-                   c.hero_image_url, c.parent_id, c.level,
+                   COALESCE(c.thumbnail_image_url, c.hero_image_url) AS hero_image_url,
+                   c.parent_id, c.level,
                    (SELECT COUNT(*) FROM product_categories pc
                      JOIN products p ON p.id = pc.product_id
                     WHERE pc.category_id = c.id AND p.status = 'published') AS product_count

@@ -139,7 +139,8 @@ admin console repeats this reference at **Image Size Guide** and visualises each
 | Image type                            | Exact canvas     | Centred safe area | Where it is used                                                                 |
 | ------------------------------------- | ---------------- | ----------------- | -------------------------------------------------------------------------------- |
 | Homepage and landing-page banner      | `1672 × 464 px`  | `440 × 400 px`    | Homepage carousel plus the Blog, Recipes, and Community landing pages            |
-| Category image                        | `1672 × 464 px`  | `360 × 400 px`    | Category page banner plus 3:2 rail and 4:5 feature tiles                         |
+| Category page banner                  | `1672 × 464 px`  | `440 × 400 px`    | Category detail page banner                                                       |
+| Category thumbnail                    | `1200 × 1200 px` | `800 × 800 px`    | Category 3:2 rail, 4:5 feature tile, and admin list                               |
 | Article, recipe, and discussion image | `1672 × 464 px`  | `440 × 400 px`    | Detail-page banner plus 16:9 listing cards                                       |
 | Product image                         | `1200 × 1200 px` | `1080 × 1080 px`  | Product cards, product detail, and related-product grids                         |
 | True Grit brand mark                  | `256 × 256 px`   | `224 × 224 px`    | Storefront/admin navigation, authentication screens, and the banner brand lockup |
@@ -149,10 +150,12 @@ The canvas is the file's required outer size. The safe area is the centred regio
 the essential subject. `object-cover` removes the edges on narrow screens and on reused card/tile
 surfaces; anything outside the safe area is expendable background.
 
-- Export photographs as WebP; keep banners at or below 250 KB and product images at or below
-  300 KB. Use PNG only for the favicon or when transparency is genuinely required.
+- Export photographs as WebP; keep banners at or below 250 KB and square catalogue images at or
+  below 300 KB. Use PNG only for the favicon or when transparency is genuinely required.
 - Do not upload a 16:9 image for a website banner. Banner files must be `1672 × 464 px` before
   upload, not merely cropped by CSS after upload.
+- Give each category a separate square thumbnail and wide page banner. Never reuse one crop for
+  both roles.
 - Do not bake the True Grit name, logo, headings, buttons, or watermarks into photographs. The
   interface adds the brand lockup and copy, and embedded text will be cropped on mobile.
 - Use sRGB, write useful alt text, and check the result at phone and desktop widths before

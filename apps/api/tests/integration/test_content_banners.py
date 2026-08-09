@@ -16,11 +16,10 @@ from fastapi.testclient import TestClient
 from tests.integration.conftest import SESSION_COOKIE, create_session
 from truegrit_api.platform.database import SQLiteDatabase
 
-# Migration 0046 retired the generated demo posts (including the millet
-# article these tests used to name) and published a small curated library in
-# their place. Point at one of those instead of a slug that no longer exists.
-ARTICLE_SLUG = "choose-ragi-jowar-bajra-little-millet"
-RECIPE_SLUG = "crisp-sprouted-ragi-dosa"
+# Migration 0095 deliberately replaces the former editorial library with the
+# owner-supplied True Grit topic catalogue.
+ARTICLE_SLUG = "what-is-kathiya-wheat-origin-taste-texture-and-uses"
+RECIPE_SLUG = "vegetable-daliya"
 BANNER_URL = "/media/images/img_banner_test.webp"
 BANNER_ALT = "Millet fields at harvest"
 
@@ -141,24 +140,57 @@ def test_category_status_toggle_hides_from_public(client: TestClient, db: SQLite
         items = client.get("/v1/public/categories").json()["items"]
         return {item["slug"] for item in items}
 
-    assert "fresh-fruits" in public_slugs()
+    assert "wheat-flour" in public_slugs()
 
     disabled = client.patch(
-        "/v1/admin/categories/cat_fresh_fruits/status", json={"status": "unpublished"}
+        "/v1/admin/categories/cat_catalogue_01/status", json={"status": "unpublished"}
     )
     assert disabled.status_code == 200, disabled.text
-    assert disabled.json() == {"id": "cat_fresh_fruits", "status": "unpublished", "changed": True}
-    assert "fresh-fruits" not in public_slugs()
+    assert disabled.json() == {
+        "id": "cat_catalogue_01",
+        "status": "unpublished",
+        "changed": True,
+    }
+    assert "wheat-flour" not in public_slugs()
 
     enabled = client.patch(
-        "/v1/admin/categories/cat_fresh_fruits/status", json={"status": "published"}
+        "/v1/admin/categories/cat_catalogue_01/status", json={"status": "published"}
     )
     assert enabled.status_code == 200
-    assert "fresh-fruits" in public_slugs()
+    assert "wheat-flour" in public_slugs()
 
     # Toggling to the current status is a no-op, not an error.
     repeat = client.patch(
-        "/v1/admin/categories/cat_fresh_fruits/status", json={"status": "published"}
+        "/v1/admin/categories/cat_catalogue_01/status", json={"status": "published"}
     )
     assert repeat.status_code == 200
     assert repeat.json()["changed"] is False
+
+
+def test_category_thumbnail_is_distinct_from_page_banner(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    banner = "/catalogue/categories/banners/wheat-flour.webp"
+    thumbnail = "/catalogue/categories/thumbnails/wheat-flour.webp"
+
+    updated = client.patch(
+        "/v1/admin/categories/cat_catalogue_01",
+        json={
+            "heroImageUrl": banner,
+            "heroImageAlt": "Wide wheat flour banner",
+            "thumbnailImageUrl": thumbnail,
+            "thumbnailImageAlt": "Square wheat flour thumbnail",
+        },
+    )
+    assert updated.status_code == 200, updated.text
+
+    admin_detail = client.get("/v1/admin/categories/cat_catalogue_01").json()
+    assert admin_detail["heroImageUrl"] == banner
+    assert admin_detail["thumbnailImageUrl"] == thumbnail
+
+    public_detail = client.get("/v1/public/categories/wheat-flour").json()
+    assert public_detail["hero"]["imageUrl"] == banner
+    public_list = client.get("/v1/public/categories").json()["items"]
+    listed = next(item for item in public_list if item["slug"] == "wheat-flour")
+    assert listed["imageUrl"] == thumbnail
