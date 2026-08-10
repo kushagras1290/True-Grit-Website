@@ -127,8 +127,15 @@ jobs:
         working-directory: apps/lang
         run: pnpm exec wrangler deploy
       - name: Verify testing domains
+        # A bare curl User-Agent trips Cloudflare Bot Fight Mode's heuristics
+        # (no browser fingerprint), which returns 403 before the request ever
+        # reaches the Worker -- Bot Fight Mode runs outside the Ruleset Engine,
+        # so no WAF Skip rule can except a path from it, only a plan upgrade to
+        # Super Bot Fight Mode can. A realistic User-Agent is the correct,
+        # zero-risk fix: it doesn't touch site security posture at all.
         run: |
-          curl --fail --retry 5 --retry-all-errors https://apitest.truegritin.com/health/live
-          curl --fail --retry 5 --retry-all-errors https://test.truegritin.com
-          curl --fail --retry 5 --retry-all-errors https://adtest.truegritin.com
-          curl --fail --retry 5 --retry-all-errors https://langtest.truegritin.com
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+          curl --fail --retry 5 --retry-all-errors -A "$UA" https://apitest.truegritin.com/health/live
+          curl --fail --retry 5 --retry-all-errors -A "$UA" https://test.truegritin.com
+          curl --fail --retry 5 --retry-all-errors -A "$UA" https://adtest.truegritin.com
+          curl --fail --retry 5 --retry-all-errors -A "$UA" https://langtest.truegritin.com
