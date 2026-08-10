@@ -54,14 +54,9 @@ const TRANSLATION_CONCURRENCY = 8;
 /** Google's endpoint truncates long payloads; this is the batch budget the
  *  storefront catalogue generator already proved out. */
 const BATCH_CHARACTER_BUDGET = 1200;
-const CLOUDFLARE_BATCH_POLL_MS = Number(
-  process.env.TG_CF_BATCH_POLL_MS ?? 10_000,
-);
-const CLOUDFLARE_SYNC_CONCURRENCY = Number(
-  process.env.TG_CF_SYNC_CONCURRENCY ?? 4,
-);
-const CLOUDFLARE_TRANSLATION_MODE =
-  process.env.TG_CF_TRANSLATION_MODE ?? "sync";
+const CLOUDFLARE_BATCH_POLL_MS = Number(process.env.TG_CF_BATCH_POLL_MS ?? 10_000);
+const CLOUDFLARE_SYNC_CONCURRENCY = Number(process.env.TG_CF_SYNC_CONCURRENCY ?? 4);
+const CLOUDFLARE_TRANSLATION_MODE = process.env.TG_CF_TRANSLATION_MODE ?? "sync";
 const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID ?? "";
 let cloudflareApiToken = process.env.CLOUDFLARE_API_TOKEN ?? "";
 const CLOUDFLARE_TRANSLATION_MODEL = "@cf/meta/m2m100-1.2b";
@@ -148,27 +143,13 @@ const ENTITY_SPECS = {
     query: `SELECT a.id, a.title, a.excerpt, a.hero_image_alt, a.seo_title, a.seo_description,
       v.content_json FROM articles a JOIN article_versions v ON v.id = a.published_version_id
       WHERE a.status = 'published'`,
-    fields: [
-      "title",
-      "excerpt",
-      "hero_image_alt",
-      "seo_title",
-      "seo_description",
-      "content_json",
-    ],
+    fields: ["title", "excerpt", "hero_image_alt", "seo_title", "seo_description", "content_json"],
   },
   recipe: {
     query: `SELECT r.id, r.title, r.excerpt, r.hero_image_alt, r.seo_title, r.seo_description,
       v.content_json FROM recipes r JOIN recipe_versions v ON v.id = r.published_version_id
       WHERE r.status = 'published'`,
-    fields: [
-      "title",
-      "excerpt",
-      "hero_image_alt",
-      "seo_title",
-      "seo_description",
-      "content_json",
-    ],
+    fields: ["title", "excerpt", "hero_image_alt", "seo_title", "seo_description", "content_json"],
   },
   farm: {
     query: `SELECT id, name, farmer_name, region, story_json, methods_json, hero_image_alt,
@@ -210,11 +191,7 @@ const TRANSLATABLE_KEYS = new Set([
   "body",
   "pullQuote",
 ]);
-const TRANSLATABLE_STRING_LIST_KEYS = new Set([
-  "paragraphs",
-  "steps",
-  "methods",
-]);
+const TRANSLATABLE_STRING_LIST_KEYS = new Set(["paragraphs", "steps", "methods"]);
 
 const GOOGLE_LOCALE = new Map([
   ["zh-Hans", "zh-CN"],
@@ -271,20 +248,16 @@ function parseArguments(argv) {
  *  the language list from drifting into a second hand-maintained copy. */
 function localeDefinitions() {
   const source = fs.readFileSync(LOCALES_FILE, "utf8");
-  return [
-    ...source.matchAll(
-      /\{\s*code:\s*"([^"]+)"[^}]*?group:\s*"(indian|world)"/gs,
-    ),
-  ].map((match) => ({ code: match[1], group: match[2] }));
+  return [...source.matchAll(/\{\s*code:\s*"([^"]+)"[^}]*?group:\s*"(indian|world)"/gs)].map(
+    (match) => ({ code: match[1], group: match[2] }),
+  );
 }
 
 function resolveLocales(selector) {
   const all = localeDefinitions().filter((locale) => locale.code !== "en");
   if (selector === "all") return all.map((locale) => locale.code);
   if (selector === "indian" || selector === "world") {
-    return all
-      .filter((locale) => locale.group === selector)
-      .map((locale) => locale.code);
+    return all.filter((locale) => locale.group === selector).map((locale) => locale.code);
   }
   const wanted = new Set(
     selector
@@ -293,8 +266,7 @@ function resolveLocales(selector) {
       .filter(Boolean),
   );
   const known = new Set(all.map((locale) => locale.code));
-  for (const code of wanted)
-    if (!known.has(code)) throw new Error(`Unknown locale: ${code}`);
+  for (const code of wanted) if (!known.has(code)) throw new Error(`Unknown locale: ${code}`);
   return [...wanted];
 }
 
@@ -331,15 +303,11 @@ function d1Args() {
 }
 
 function d1Query(sql) {
-  const output = wrangler(
-    [...d1Args(), "--json", "--command", sql],
-    256 * 1024 * 1024,
-  );
+  const output = wrangler([...d1Args(), "--json", "--command", sql], 256 * 1024 * 1024);
   // wrangler prefixes the JSON with banner lines on some versions; take the
   // payload from the first bracket so both shapes parse.
   const start = output.indexOf("[");
-  if (start < 0)
-    throw new Error(`Unexpected wrangler output:\n${output.slice(0, 400)}`);
+  if (start < 0) throw new Error(`Unexpected wrangler output:\n${output.slice(0, 400)}`);
   const parsed = JSON.parse(output.slice(start));
   return parsed[0]?.results ?? [];
 }
@@ -418,15 +386,11 @@ async function requestBatch(target, batch, attempt = 1) {
       headers: { accept: "application/json" },
       signal: AbortSignal.timeout(15_000),
     });
-    if (!response.ok)
-      throw new Error(`${response.status} ${response.statusText}`);
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
     const payload = await response.json();
     const combined = payload[0].map((segment) => segment[0]).join("");
-    const matches = [
-      ...combined.matchAll(/<span id=['"]t(\d{4})['"]>([\s\S]*?)<\/span>/g),
-    ];
-    if (matches.length !== batch.length)
-      throw new Error("marker count mismatch");
+    const matches = [...combined.matchAll(/<span id=['"]t(\d{4})['"]>([\s\S]*?)<\/span>/g)];
+    if (matches.length !== batch.length) throw new Error("marker count mismatch");
     const result = new Array(batch.length);
     for (const match of matches) {
       const index = Number(match[1]);
@@ -483,8 +447,7 @@ function loadCache(locale) {
   }
 }
 
-const wait = (milliseconds) =>
-  new Promise((resolve) => setTimeout(resolve, milliseconds));
+const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 function refreshCloudflareToken() {
   const output = execFileSync(process.execPath, [WRANGLER, "auth", "token"], {
@@ -495,8 +458,7 @@ function refreshCloudflareToken() {
     .split(/\r?\n/)
     .map((line) => line.trim())
     .findLast((line) => /^[A-Za-z0-9_.-]{40,}$/.test(line));
-  if (!token)
-    throw new Error("Wrangler did not return a refreshed Cloudflare token");
+  if (!token) throw new Error("Wrangler did not return a refreshed Cloudflare token");
   cloudflareApiToken = token;
 }
 
@@ -558,8 +520,7 @@ async function cloudflareSyncRequest(model, input, attempt = 1) {
       if (!response.ok || !payload.success) {
         if (response.status === 429 || response.status >= 500) {
           await wait(
-            Math.min(30_000, 750 * 2 ** Math.min(currentAttempt, 5)) +
-              Math.random() * 500,
+            Math.min(30_000, 750 * 2 ** Math.min(currentAttempt, 5)) + Math.random() * 500,
           );
           continue;
         }
@@ -570,10 +531,7 @@ async function cloudflareSyncRequest(model, input, attempt = 1) {
       return payload.result;
     } catch (error) {
       if (String(error).includes("Cloudflare AI ")) throw error;
-      await wait(
-        Math.min(30_000, 750 * 2 ** Math.min(currentAttempt, 5)) +
-          Math.random() * 500,
-      );
+      await wait(Math.min(30_000, 750 * 2 ** Math.min(currentAttempt, 5)) + Math.random() * 500);
     }
   }
 }
@@ -581,28 +539,22 @@ async function cloudflareSyncRequest(model, input, attempt = 1) {
 async function mapConcurrent(values, concurrency, visit) {
   const result = new Array(values.length);
   let next = 0;
-  const workers = Array.from(
-    { length: Math.min(concurrency, values.length) },
-    async () => {
-      for (;;) {
-        const index = next;
-        next += 1;
-        if (index >= values.length) return;
-        result[index] = await visit(values[index], index);
-      }
-    },
-  );
+  const workers = Array.from({ length: Math.min(concurrency, values.length) }, async () => {
+    for (;;) {
+      const index = next;
+      next += 1;
+      if (index >= values.length) return;
+      result[index] = await visit(values[index], index);
+    }
+  });
   await Promise.all(workers);
   return result;
 }
 
 async function cloudflareBatch(model, requests, locale) {
   const queued = await cloudflareRequest(model, { requests });
-  if (!queued.request_id)
-    throw new Error(`${locale}: Cloudflare AI returned no request_id`);
-  process.stdout.write(
-    `${locale}: queued Cloudflare batch ${queued.request_id}\n`,
-  );
+  if (!queued.request_id) throw new Error(`${locale}: Cloudflare AI returned no request_id`);
+  process.stdout.write(`${locale}: queued Cloudflare batch ${queued.request_id}\n`);
   for (;;) {
     await wait(CLOUDFLARE_BATCH_POLL_MS);
     const result = await cloudflareRequest(model, {
@@ -617,9 +569,7 @@ async function cloudflareBatch(model, requests, locale) {
       }));
     }
     if (!new Set(["queued", "running"]).has(result.status)) {
-      throw new Error(
-        `${locale}: unexpected Cloudflare batch status ${JSON.stringify(result)}`,
-      );
+      throw new Error(`${locale}: unexpected Cloudflare batch status ${JSON.stringify(result)}`);
     }
     process.stdout.write(`\r  ${locale}: Cloudflare batch ${result.status}   `);
   }
@@ -662,22 +612,16 @@ function parseLlmTranslations(response, expected, locale, index) {
     throw new Error(`${locale}: LLM batch ${index} returned no text`);
   }
   const match = /\{[\s\S]*\}/.exec(text);
-  if (!match)
-    throw new Error(`${locale}: LLM batch ${index} returned no JSON object`);
+  if (!match) throw new Error(`${locale}: LLM batch ${index} returned no JSON object`);
   const parsed = JSON.parse(match[0]);
-  if (
-    !Array.isArray(parsed.translations) ||
-    parsed.translations.length !== expected
-  ) {
+  if (!Array.isArray(parsed.translations) || parsed.translations.length !== expected) {
     throw new Error(
       `${locale}: LLM batch ${index} returned ${parsed.translations?.length ?? 0}/${expected} strings`,
     );
   }
   return parsed.translations.map((translation) => {
     if (typeof translation !== "string" || !translation.trim()) {
-      throw new Error(
-        `${locale}: LLM batch ${index} returned an empty translation`,
-      );
+      throw new Error(`${locale}: LLM batch ${index} returned an empty translation`);
     }
     return unshield(translation);
   });
@@ -689,34 +633,25 @@ async function translateAllCloudflare(locale, pending, cache) {
   if (!language) {
     if (CLOUDFLARE_TRANSLATION_MODE === "sync") {
       let completed = 0;
-      await mapConcurrent(
-        pending,
-        CLOUDFLARE_SYNC_CONCURRENCY,
-        async (english) => {
-          const result = await cloudflareSyncRequest(
-            CLOUDFLARE_TRANSLATION_MODEL,
-            {
-              text: shield(english),
-              source_lang: "en",
-              target_lang: CLOUDFLARE_LOCALE.get(locale) ?? locale,
-            },
+      await mapConcurrent(pending, CLOUDFLARE_SYNC_CONCURRENCY, async (english) => {
+        const result = await cloudflareSyncRequest(CLOUDFLARE_TRANSLATION_MODEL, {
+          text: shield(english),
+          source_lang: "en",
+          target_lang: CLOUDFLARE_LOCALE.get(locale) ?? locale,
+        });
+        const translated = result?.translated_text;
+        if (typeof translated !== "string" || !translated.trim()) {
+          throw new Error(`${locale}: Cloudflare translation returned an empty string`);
+        }
+        cache[hash(english)] = unshield(translated);
+        completed += 1;
+        if (completed % 100 === 0 || completed === pending.length) {
+          fs.writeFileSync(cacheFileFor(locale), JSON.stringify(cache));
+          process.stdout.write(
+            `\r  ${locale}: synchronously translated ${completed}/${pending.length}   `,
           );
-          const translated = result?.translated_text;
-          if (typeof translated !== "string" || !translated.trim()) {
-            throw new Error(
-              `${locale}: Cloudflare translation returned an empty string`,
-            );
-          }
-          cache[hash(english)] = unshield(translated);
-          completed += 1;
-          if (completed % 100 === 0 || completed === pending.length) {
-            fs.writeFileSync(cacheFileFor(locale), JSON.stringify(cache));
-            process.stdout.write(
-              `\r  ${locale}: synchronously translated ${completed}/${pending.length}   `,
-            );
-          }
-        },
-      );
+        }
+      });
       fs.writeFileSync(cacheFileFor(locale), JSON.stringify(cache));
       process.stdout.write("\n");
       return cache;
@@ -734,11 +669,7 @@ async function translateAllCloudflare(locale, pending, cache) {
     );
     for (const response of responses) {
       const translated = response?.result?.translated_text;
-      if (
-        !response.success ||
-        typeof translated !== "string" ||
-        !translated.trim()
-      ) {
+      if (!response.success || typeof translated !== "string" || !translated.trim()) {
         throw new Error(
           `${locale}: Cloudflare translation failed for ${response.external_reference}`,
         );
@@ -768,12 +699,7 @@ async function translateAllCloudflare(locale, pending, cache) {
             temperature: 0,
             max_tokens: 4096,
           });
-          const translations = parseLlmTranslations(
-            result,
-            batch.length,
-            locale,
-            index,
-          );
+          const translations = parseLlmTranslations(result, batch.length, locale, index);
           batch.forEach((english, entryIndex) => {
             cache[hash(english)] = translations[entryIndex];
           });
@@ -812,21 +738,12 @@ async function translateAllCloudflare(locale, pending, cache) {
       50,
     );
     const byIndex = new Map(
-      responses.map((response) => [
-        Number(response.external_reference),
-        response,
-      ]),
+      responses.map((response) => [Number(response.external_reference), response]),
     );
     for (let index = 0; index < batches.length; index += 1) {
       const response = byIndex.get(index);
-      if (!response?.success)
-        throw new Error(`${locale}: LLM batch ${index} failed`);
-      const translations = parseLlmTranslations(
-        response,
-        batches[index].length,
-        locale,
-        index,
-      );
+      if (!response?.success) throw new Error(`${locale}: LLM batch ${index} failed`);
+      const translations = parseLlmTranslations(response, batches[index].length, locale, index);
       batches[index].forEach((english, entryIndex) => {
         cache[hash(english)] = translations[entryIndex];
       });
@@ -846,24 +763,16 @@ async function translateAllCloudflare(locale, pending, cache) {
  * name appearing on two records costs one call and two catalogue reads.
  */
 async function translateAll(locale, sources, cache) {
-  const pending = [...new Set(sources)].filter(
-    (text) => !(hash(text) in cache),
-  );
+  const pending = [...new Set(sources)].filter((text) => !(hash(text) in cache));
   if (pending.length === 0) return cache;
   if (runtimeOptions.translator === "cloudflare") {
     return translateAllCloudflare(locale, pending, cache);
   }
   const batches = batched(pending);
   let done = 0;
-  for (
-    let index = 0;
-    index < batches.length;
-    index += TRANSLATION_CONCURRENCY
-  ) {
+  for (let index = 0; index < batches.length; index += TRANSLATION_CONCURRENCY) {
     const slice = batches.slice(index, index + TRANSLATION_CONCURRENCY);
-    const results = await Promise.all(
-      slice.map((batch) => requestBatch(locale, batch)),
-    );
+    const results = await Promise.all(slice.map((batch) => requestBatch(locale, batch)));
     slice.forEach((batch, batchIndex) => {
       batch.forEach((english, entryIndex) => {
         cache[hash(english)] = results[batchIndex][entryIndex];
@@ -871,18 +780,14 @@ async function translateAll(locale, sources, cache) {
     });
     done += slice.reduce((total, batch) => total + batch.length, 0);
     fs.writeFileSync(cacheFileFor(locale), JSON.stringify(cache));
-    process.stdout.write(
-      `\r  ${locale}: translated ${done}/${pending.length} new strings   `,
-    );
+    process.stdout.write(`\r  ${locale}: translated ${done}/${pending.length} new strings   `);
   }
   process.stdout.write("\n");
   return cache;
 }
 
-const hash = (text) =>
-  crypto.createHash("sha1").update(text).digest("hex").slice(0, 16);
-const isCopy = (value) =>
-  typeof value === "string" && /\p{L}/u.test(value) && value.trim() !== "";
+const hash = (text) => crypto.createHash("sha1").update(text).digest("hex").slice(0, 16);
+const isCopy = (value) => typeof value === "string" && /\p{L}/u.test(value) && value.trim() !== "";
 
 function walkCopy(node, visit, key = null) {
   if (Array.isArray(node)) {
@@ -894,8 +799,7 @@ function walkCopy(node, visit, key = null) {
   if (node && typeof node === "object") {
     const result = {};
     for (const [childKey, value] of Object.entries(node)) {
-      if (TRANSLATABLE_KEYS.has(childKey) && isCopy(value))
-        result[childKey] = visit(value);
+      if (TRANSLATABLE_KEYS.has(childKey) && isCopy(value)) result[childKey] = visit(value);
       else result[childKey] = walkCopy(value, visit, childKey);
     }
     return result;
@@ -916,8 +820,7 @@ function entitySources(fields) {
     } else if (field === "ingredients" && value && typeof value === "object") {
       for (const ingredient of Object.values(value)) {
         if (!ingredient || typeof ingredient !== "object") continue;
-        for (const text of Object.values(ingredient))
-          if (isCopy(text)) sources.push(text);
+        for (const text of Object.values(ingredient)) if (isCopy(text)) sources.push(text);
       }
     }
   }
@@ -928,14 +831,11 @@ function translatedEntityFields(fields, cache) {
   const translate = (text) => cache[hash(text)] ?? text;
   const translated = {};
   for (const [field, value] of Object.entries(fields)) {
-    if (typeof value === "string")
-      translated[field] = isCopy(value) ? translate(value) : value;
+    if (typeof value === "string") translated[field] = isCopy(value) ? translate(value) : value;
     else if (field === "content" || field === "story_content") {
       translated[field] = walkCopy(value, translate);
     } else if (Array.isArray(value)) {
-      translated[field] = value.map((entry) =>
-        isCopy(entry) ? translate(entry) : entry,
-      );
+      translated[field] = value.map((entry) => (isCopy(entry) ? translate(entry) : entry));
     } else if (field === "ingredients" && value && typeof value === "object") {
       translated[field] = Object.fromEntries(
         Object.entries(value).map(([id, ingredient]) => [
@@ -961,8 +861,7 @@ async function main() {
     .split(",")
     .map((type) => type.trim())
     .filter(Boolean);
-  for (const type of types)
-    if (!ENTITY_SPECS[type]) throw new Error(`Unknown type: ${type}`);
+  for (const type of types) if (!ENTITY_SPECS[type]) throw new Error(`Unknown type: ${type}`);
 
   fs.mkdirSync(CACHE_DIR, { recursive: true });
   fs.mkdirSync(SQL_DIR, { recursive: true });
@@ -970,12 +869,8 @@ async function main() {
   // 1. Read the English source rows once; they are the same for every locale.
   let entities = [];
   if (options.sourceFile) {
-    entities = JSON.parse(
-      fs.readFileSync(path.resolve(options.sourceFile), "utf8"),
-    );
-    process.stdout.write(
-      `Loaded ${entities.length} entities from ${options.sourceFile}\n`,
-    );
+    entities = JSON.parse(fs.readFileSync(path.resolve(options.sourceFile), "utf8"));
+    process.stdout.write(`Loaded ${entities.length} entities from ${options.sourceFile}\n`);
   } else {
     for (const type of types) {
       const spec = ENTITY_SPECS[type];
@@ -990,11 +885,9 @@ async function main() {
             fields.story_content = JSON.parse(value);
           } else if (field === "methods_json" && typeof value === "string") {
             fields.methods = JSON.parse(value);
-          } else if (typeof value === "string" && value.trim())
-            fields[field] = value.trim();
+          } else if (typeof value === "string" && value.trim()) fields[field] = value.trim();
         }
-        if (Object.keys(fields).length > 0)
-          entities.push({ type, id: row.id, fields });
+        if (Object.keys(fields).length > 0) entities.push({ type, id: row.id, fields });
       }
       process.stdout.write(`${type}: ${rows.length} published rows\n`);
     }
@@ -1004,9 +897,7 @@ async function main() {
           " JOIN recipes r ON r.id = ri.recipe_id WHERE r.status = 'published'",
       );
       const recipes = new Map(
-        entities
-          .filter((entity) => entity.type === "recipe")
-          .map((entity) => [entity.id, entity]),
+        entities.filter((entity) => entity.type === "recipe").map((entity) => [entity.id, entity]),
       );
       for (const ingredient of ingredients) {
         const recipe = recipes.get(ingredient.recipe_id);
@@ -1068,9 +959,7 @@ async function main() {
     const cache = await translateAll(locale, allSources, loadCache(locale));
 
     if (options.cacheOnly) {
-      process.stdout.write(
-        `${locale}: cached ${Object.keys(cache).length} strings\n`,
-      );
+      process.stdout.write(`${locale}: cached ${Object.keys(cache).length} strings\n`);
       continue;
     }
 
@@ -1083,9 +972,7 @@ async function main() {
     });
 
     if (options.dryRun) {
-      process.stdout.write(
-        `${locale}: would write ${values.length} rows (dry run)\n`,
-      );
+      process.stdout.write(`${locale}: would write ${values.length} rows (dry run)\n`);
       written += values.length;
       continue;
     }
@@ -1104,18 +991,13 @@ async function main() {
       chunkBytes = 0;
     };
     for (const value of values) {
-      if (chunk.length > 0 && chunkBytes + value.length > STATEMENT_BYTE_BUDGET)
-        flushChunk();
+      if (chunk.length > 0 && chunkBytes + value.length > STATEMENT_BYTE_BUDGET) flushChunk();
       chunk.push(value);
       chunkBytes += value.length + 2;
     }
     flushChunk();
 
-    for (
-      let index = 0;
-      index < statements.length;
-      index += STATEMENTS_PER_FILE
-    ) {
+    for (let index = 0; index < statements.length; index += STATEMENTS_PER_FILE) {
       const slice = statements.slice(index, index + STATEMENTS_PER_FILE);
       const file = path.join(SQL_DIR, `${locale}-${index}.sql`);
       fs.writeFileSync(file, `${slice.join("\n")}\n`);
