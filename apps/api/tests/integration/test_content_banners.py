@@ -167,9 +167,7 @@ def test_category_status_toggle_hides_from_public(client: TestClient, db: SQLite
     assert repeat.json()["changed"] is False
 
 
-def test_category_thumbnail_is_distinct_from_page_banner(
-    client: TestClient, db: SQLiteDatabase
-):
+def test_category_thumbnail_is_distinct_from_page_banner(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
     banner = "/catalogue/categories/banners/wheat-flour.webp"
     thumbnail = "/catalogue/categories/thumbnails/wheat-flour.webp"

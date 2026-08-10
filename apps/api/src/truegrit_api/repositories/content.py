@@ -55,8 +55,7 @@ class CategoryRepository:
             "hero_title": fields.get("hero_title") or row["hero_title"],
             "hero_description": fields.get("hero_description") or row["hero_description"],
             "hero_image_alt": fields.get("hero_image_alt") or row["hero_image_alt"],
-            "thumbnail_image_alt": fields.get("thumbnail_image_alt")
-            or row["thumbnail_image_alt"],
+            "thumbnail_image_alt": fields.get("thumbnail_image_alt") or row["thumbnail_image_alt"],
             "seo_title": fields.get("seo_title") or row["seo_title"],
             "seo_description": fields.get("seo_description") or row["seo_description"],
         }

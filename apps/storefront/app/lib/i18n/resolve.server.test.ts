@@ -64,9 +64,10 @@ describe("resolveLocale", () => {
   });
 
   it("distinguishes Traditional and Simplified Chinese explicit choices", () => {
-    expect(
-      resolveLocale(request({ path: "/shop?lang=zh-TW" })),
-    ).toMatchObject({ locale: { code: "zh-Hant" }, source: "query" });
+    expect(resolveLocale(request({ path: "/shop?lang=zh-TW" }))).toMatchObject({
+      locale: { code: "zh-Hant" },
+      source: "query",
+    });
     expect(resolveLocale(request({ path: "/shop?lang=zh-CN" }))).toMatchObject({
       locale: { code: "zh-Hans" },
       source: "query",

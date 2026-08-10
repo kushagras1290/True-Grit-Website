@@ -1,14 +1,17 @@
 """Subscribe & Save (migration 0064), end to end: creation, ownership, admin
 support actions, and the renewal engine against real checkout.
 
-Uses the seeded catalogue (`var_alphonso_1kg` at 89900) the same way
-test_bundles.py does.
+Seeds its own purchasable product (`var_sub_test_1kg` at 89900) rather than
+depending on the demo catalogue: migration 0095 retires that catalogue from
+every database it touches (the live site must not keep any trace of it), so
+tests cannot rely on it surviving either.
 """
 
 from __future__ import annotations
 
 from typing import Any
 
+import pytest
 from fastapi.testclient import TestClient
 
 from tests.integration.conftest import SESSION_COOKIE, create_session
@@ -31,6 +34,30 @@ def as_admin(client: TestClient, db: SQLiteDatabase) -> None:
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
 
 
+@pytest.fixture(autouse=True)
+def _subscribable_product(db: SQLiteDatabase) -> None:
+    db._conn.executescript(
+        """
+        INSERT INTO products (id, internal_name, name, slug, product_type, status,
+          accepts_orders, created_at, created_by, updated_at, updated_by)
+        VALUES ('prd_sub_test', 'Subscription Test Product', 'Subscription Test Product',
+          'subscription-test-product', 'simple', 'published', 1,
+          '2026-07-01T00:00:00Z', 'usr_admin', '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO product_variants (id, product_id, sku, name, status, created_at, updated_at)
+        VALUES ('var_sub_test_1kg', 'prd_sub_test', 'SUB-TEST-1KG', '1 kg', 'active',
+          '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
+        INSERT INTO variant_prices (id, variant_id, market_code, currency_code,
+          list_amount_minor, status, created_at, created_by)
+        VALUES ('vpr_sub_test_1kg', 'var_sub_test_1kg', 'IN', 'INR', 89900, 'active',
+          '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO inventory_levels (variant_id, location_id, on_hand, reserved,
+          reorder_threshold, version, updated_at)
+        VALUES ('var_sub_test_1kg', 'loc_mumbai', 500, 0, 20, 1, '2026-07-01T00:00:00Z');
+        """
+    )
+    db._conn.commit()
+
+
 def enable_subscriptions(client: TestClient, db: SQLiteDatabase) -> None:
     as_admin(client, db)
     response = client.patch("/v1/admin/storefront-settings", json={"subscriptions": True})
@@ -47,7 +74,7 @@ def create_my_subscription(
     client: TestClient,
     db: SQLiteDatabase,
     *,
-    variant_id: str = "var_alphonso_1kg",
+    variant_id: str = "var_sub_test_1kg",
     quantity: int = 1,
     frequency: str = "weekly",
     user_id: str = "usr_cust_riya",
@@ -74,7 +101,7 @@ def test_creating_a_subscription_is_refused_while_the_feature_is_off(client, db)
     response = client.post(
         "/v1/public/subscriptions",
         json={
-            "variantId": "var_alphonso_1kg",
+            "variantId": "var_sub_test_1kg",
             "quantity": 1,
             "frequency": "weekly",
             "addressId": address_id,

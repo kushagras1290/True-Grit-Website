@@ -679,8 +679,10 @@ function CategorySettingsForm({
         error={form.formState.errors.thumbnailImageUrl?.message}
       >
         <p className="mb-2 text-xs text-ink-muted">
-          Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not
-          reuse the wide hero banner.
+          <T>
+            Use a separate 1200 × 1200 image. This square image is cropped for category cards; do
+            not reuse the wide hero banner.
+          </T>
         </p>
         <Input
           id="c-thumbnail-image-upload"

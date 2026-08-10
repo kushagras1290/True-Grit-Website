@@ -139,8 +139,8 @@ admin console repeats this reference at **Image Size Guide** and visualises each
 | Image type                            | Exact canvas     | Centred safe area | Where it is used                                                                 |
 | ------------------------------------- | ---------------- | ----------------- | -------------------------------------------------------------------------------- |
 | Homepage and landing-page banner      | `1672 × 464 px`  | `440 × 400 px`    | Homepage carousel plus the Blog, Recipes, and Community landing pages            |
-| Category page banner                  | `1672 × 464 px`  | `440 × 400 px`    | Category detail page banner                                                       |
-| Category thumbnail                    | `1200 × 1200 px` | `800 × 800 px`    | Category 3:2 rail, 4:5 feature tile, and admin list                               |
+| Category page banner                  | `1672 × 464 px`  | `440 × 400 px`    | Category detail page banner                                                      |
+| Category thumbnail                    | `1200 × 1200 px` | `800 × 800 px`    | Category 3:2 rail, 4:5 feature tile, and admin list                              |
 | Article, recipe, and discussion image | `1672 × 464 px`  | `440 × 400 px`    | Detail-page banner plus 16:9 listing cards                                       |
 | Product image                         | `1200 × 1200 px` | `1080 × 1080 px`  | Product cards, product detail, and related-product grids                         |
 | True Grit brand mark                  | `256 × 256 px`   | `224 × 224 px`    | Storefront/admin navigation, authentication screens, and the banner brand lockup |

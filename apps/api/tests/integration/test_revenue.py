@@ -14,9 +14,13 @@ from fastapi.testclient import TestClient
 from tests.integration.conftest import SESSION_COOKIE, create_session
 from truegrit_api.platform.database import SQLiteDatabase
 
-# Seeded facts this module builds on: ord_1001 is paid (₹899 of prd_alphonso,
-# which belongs to farm_devika); ord_1002 is pending_payment and must never
-# show up as revenue. Default commission is 15% (migration 0042).
+# Baseline facts this module builds on: ord_rev_1 is paid (₹899 of prd_alphonso,
+# which belongs to farm_devika); ord_rev_2 is pending_payment and must never
+# show up as revenue. Default commission is 15% (migration 0042). These used to
+# come from the demo catalogue seed; migration 0095 retires that catalogue from
+# every database it touches (the live site must not keep any trace of it), so
+# this module seeds its own copy via `_revenue_baseline` below instead of
+# depending on catalogue content that will keep moving out from under it.
 PAID_LINE_MINOR = 89_900
 DEFAULT_BPS = 1500
 
@@ -30,6 +34,17 @@ def devika(payload: dict) -> dict:
     return next(farm for farm in payload["farms"] if farm["farmId"] == "farm_devika")
 
 
+def add_farm(db: SQLiteDatabase, farm_id: str, name: str) -> None:
+    db._conn.execute(
+        "INSERT OR IGNORE INTO farms (id, name, slug, country_code, status, created_at,"
+        " created_by, updated_at, updated_by)"
+        " VALUES (?, ?, ?, 'IN', 'published', '2026-07-01T00:00:00Z', 'usr_admin',"
+        " '2026-07-01T00:00:00Z', 'usr_admin')",
+        (farm_id, name, farm_id.replace("_", "-")),
+    )
+    db._conn.commit()
+
+
 def add_paid_order(
     db: SQLiteDatabase,
     order_id: str,
@@ -38,6 +53,7 @@ def add_paid_order(
     refund_minor: int = 0,
     payment_status: str = "paid",
     order_status: str = "confirmed",
+    public_reference: str | None = None,
 ) -> None:
     """Insert a paid order carrying `(item_id, product_id, line_total)` lines."""
     total = sum(line_total for _, _, line_total in items)
@@ -49,7 +65,14 @@ def add_paid_order(
         " VALUES (?, ?, 'usr_cust_riya', 'riya@example.test', 'INR', ?, 0, 0, 0, ?,"
         " ?, ?, 'unfulfilled', 'not_ready',"
         " '2026-07-20T09:00:00Z', '2026-07-20T09:00:00Z', '2026-07-20T09:00:00Z')",
-        (order_id, order_id.upper(), total, total, order_status, payment_status),
+        (
+            order_id,
+            public_reference or order_id.upper(),
+            total,
+            total,
+            order_status,
+            payment_status,
+        ),
     )
     for item_id, product_id, line_total in items:
         db._conn.execute(
@@ -80,6 +103,31 @@ def add_product(db: SQLiteDatabase, product_id: str, farm_id: str) -> None:
     db._conn.commit()
 
 
+@pytest.fixture(autouse=True)
+def _revenue_baseline(db: SQLiteDatabase) -> None:
+    """Every test in this module reads its numbers off ord_rev_1/ord_rev_2
+    against farm_devika -- see the module docstring above."""
+    add_farm(db, "farm_devika", "Devika Organics")
+    add_farm(db, "farm_anandvan", "Anandvan Collective")
+    # A fresh id, not "prd_alphonso": migration 0059 still inserts that row (now
+    # archived by 0095, not deleted), so reusing it would collide.
+    add_product(db, "prd_revenue_baseline", "farm_devika")
+    add_paid_order(
+        db,
+        "ord_rev_1",
+        items=[("oit_rev_1", "prd_revenue_baseline", PAID_LINE_MINOR)],
+        public_reference="TG-REV-1",
+    )
+    add_paid_order(
+        db,
+        "ord_rev_2",
+        items=[("oit_rev_2", "prd_revenue_baseline", 149_900)],
+        order_status="pending_payment",
+        payment_status="pending",
+        public_reference="TG-REV-2",
+    )
+
+
 class TestSummary:
     def test_reports_seeded_revenue_at_the_default_rate(
         self, client: TestClient, db: SQLiteDatabase
@@ -97,7 +145,7 @@ class TestSummary:
         assert farm["outstandingPayoutMinor"] == 76_415
 
     def test_unpaid_orders_are_not_revenue(self, client: TestClient, db: SQLiteDatabase) -> None:
-        """ord_1002 is `pending_payment`. Counting an abandoned checkout as a
+        """ord_rev_2 is `pending_payment`. Counting an abandoned checkout as a
         farm's earnings would have the platform pay out money it never took."""
         farm = devika(as_owner(client, db).get("/v1/admin/revenue").json())
         assert farm["grossMinor"] == PAID_LINE_MINOR  # not 89_900 + 149_900
@@ -106,7 +154,7 @@ class TestSummary:
         add_paid_order(
             db,
             "ord_cancelled",
-            items=[("oit_cancelled", "prd_alphonso", 50_000)],
+            items=[("oit_cancelled", "prd_revenue_baseline", 50_000)],
             order_status="cancelled",
         )
         farm = devika(as_owner(client, db).get("/v1/admin/revenue").json())
@@ -118,7 +166,7 @@ class TestSummary:
         add_paid_order(
             db,
             "ord_refunded",
-            items=[("oit_refunded", "prd_alphonso", 100_000)],
+            items=[("oit_refunded", "prd_revenue_baseline", 100_000)],
             refund_minor=40_000,
         )
         farm = devika(as_owner(client, db).get("/v1/admin/revenue").json())
@@ -137,7 +185,7 @@ class TestSummary:
             db,
             "ord_mixed",
             items=[
-                ("oit_mixed_a", "prd_alphonso", 40_000),
+                ("oit_mixed_a", "prd_revenue_baseline", 40_000),
                 ("oit_mixed_b", "prd_anand_test", 60_000),
             ],
             refund_minor=10_000,
@@ -269,7 +317,7 @@ class TestPayouts:
         owner = as_owner(client, db)
         owner.post("/v1/admin/revenue/farms/farm_devika/payouts", json={})
 
-        add_paid_order(db, "ord_later", items=[("oit_later", "prd_alphonso", 100_000)])
+        add_paid_order(db, "ord_later", items=[("oit_later", "prd_revenue_baseline", 100_000)])
         farm = devika(owner.get("/v1/admin/revenue").json())
         assert farm["outstandingPayoutMinor"] == 85_000  # ₹1000 less 15%
         assert farm["paidOutMinor"] == 76_415
@@ -321,7 +369,7 @@ class TestDetail:
         body = as_owner(client, db).get("/v1/admin/revenue/farms/farm_devika").json()
         assert body["summary"]["farmId"] == "farm_devika"
         references = [line["orderReference"] for line in body["lines"]]
-        assert references == ["TG-1001"]  # the paid order only
+        assert references == ["TG-REV-1"]  # the paid order only
         assert body["lines"][0]["settled"] is False
 
     def test_lines_are_marked_settled_after_a_payout(

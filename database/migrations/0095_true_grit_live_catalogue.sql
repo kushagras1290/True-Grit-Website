@@ -6,6 +6,10 @@ ALTER TABLE categories ADD COLUMN thumbnail_image_url TEXT;
 ALTER TABLE categories ADD COLUMN thumbnail_image_alt TEXT;
 
 -- The former editorial library and farms were explicitly retired by the owner.
+-- No demo-catalogue carve-out here on purpose: the live site must not keep any
+-- trace of the old demo dataset. The integration test suite's dependency on
+-- those rows is a test-fixture problem, fixed in the tests themselves rather
+-- than by preserving retired data.
 DELETE FROM search_content WHERE entity_type IN ('article', 'recipe');
 DELETE FROM entity_translations WHERE entity_type IN ('article', 'recipe');
 DELETE FROM articles;
