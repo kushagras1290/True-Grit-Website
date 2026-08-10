@@ -11,7 +11,9 @@ import {
   Bot,
   Boxes,
   ClipboardList,
+  CircleDollarSign,
   Database,
+  ExternalLink,
   FolderTree,
   Gift,
   HandHeart,
@@ -22,6 +24,7 @@ import {
   KeyRound,
   LayoutDashboard,
   LineChart,
+  Languages,
   LogOut,
   Mail,
   Menu,
@@ -79,6 +82,7 @@ interface NavEntry {
    * pill next to the label (e.g. pending submissions awaiting review). */
   badgeKey?: string;
   superAdminOnly?: boolean;
+  external?: boolean;
 }
 
 const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
@@ -184,6 +188,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         permission: "orders.view",
       },
       {
+        to: "/currency-rates",
+        label: "Currency Converter",
+        icon: <CircleDollarSign size={16} />,
+        permission: "settings.view",
+      },
+      {
         to: "/returns",
         label: "Returns",
         icon: <RotateCcw size={16} />,
@@ -236,6 +246,13 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         label: "Site Settings",
         icon: <Settings size={16} />,
         permission: "settings.view",
+      },
+      {
+        to: "https://lang.truegritin.com",
+        label: "Language Studio",
+        icon: <Languages size={16} />,
+        permission: "translations.manage",
+        external: true,
       },
       { to: "/blog", label: "Blog", icon: <BookOpen size={16} />, permission: "articles.view" },
       {
@@ -387,34 +404,57 @@ function SidebarNav({
               <ul className="space-y-0.5">
                 {visible.map((entry) => (
                   <li key={entry.to}>
-                    <NavLink
-                      to={entry.to}
-                      end={entry.to === "/"}
-                      onClick={onNavigate}
-                      title={collapsed ? entry.label : undefined}
-                      aria-label={collapsed ? entry.label : undefined}
-                      className={({ isActive }) =>
-                        cn(
-                          "flex min-h-9 items-center gap-2.5 rounded-sm px-2 text-sm",
+                    {entry.external ? (
+                      <a
+                        href={entry.to}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={onNavigate}
+                        title={collapsed ? entry.label : undefined}
+                        aria-label={collapsed ? entry.label : undefined}
+                        className={cn(
+                          "flex min-h-9 items-center gap-2.5 rounded-sm px-2 text-sm text-ink hover:bg-canvas",
                           collapsed && "justify-center px-0",
-                          isActive
-                            ? "bg-subtle font-medium text-brand"
-                            : "text-ink hover:bg-canvas",
-                        )
-                      }
-                    >
-                      {entry.icon}
-                      {collapsed ? null : (
-                        <span className="flex flex-1 items-center justify-between gap-2">
-                          {entry.label}
-                          {entry.badgeKey && badges[entry.badgeKey] ? (
-                            <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-brand px-1.5 py-0.5 text-[11px] font-semibold leading-none text-ink-inverse">
-                              {badges[entry.badgeKey]}
-                            </span>
-                          ) : null}
-                        </span>
-                      )}
-                    </NavLink>
+                        )}
+                      >
+                        {entry.icon}
+                        {collapsed ? null : (
+                          <span className="flex flex-1 items-center justify-between gap-2">
+                            {entry.label}
+                            <ExternalLink size={13} className="text-ink-muted" />
+                          </span>
+                        )}
+                      </a>
+                    ) : (
+                      <NavLink
+                        to={entry.to}
+                        end={entry.to === "/"}
+                        onClick={onNavigate}
+                        title={collapsed ? entry.label : undefined}
+                        aria-label={collapsed ? entry.label : undefined}
+                        className={({ isActive }) =>
+                          cn(
+                            "flex min-h-9 items-center gap-2.5 rounded-sm px-2 text-sm",
+                            collapsed && "justify-center px-0",
+                            isActive
+                              ? "bg-subtle font-medium text-brand"
+                              : "text-ink hover:bg-canvas",
+                          )
+                        }
+                      >
+                        {entry.icon}
+                        {collapsed ? null : (
+                          <span className="flex flex-1 items-center justify-between gap-2">
+                            {entry.label}
+                            {entry.badgeKey && badges[entry.badgeKey] ? (
+                              <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-brand px-1.5 py-0.5 text-[11px] font-semibold leading-none text-ink-inverse">
+                                {badges[entry.badgeKey]}
+                              </span>
+                            ) : null}
+                          </span>
+                        )}
+                      </NavLink>
+                    )}
                   </li>
                 ))}
               </ul>

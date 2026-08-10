@@ -81,10 +81,17 @@ jobs:
         run: uvx --from workers-py pywrangler deploy --env "$TARGET_ENVIRONMENT"
 
       - name: Verify live endpoint
+        # A bare curl User-Agent trips Cloudflare Bot Fight Mode's heuristics
+        # (no browser fingerprint), which returns 403 before the request ever
+        # reaches the Worker -- Bot Fight Mode runs outside the Ruleset Engine,
+        # so no WAF Skip rule can except a path from it, only a plan upgrade to
+        # Super Bot Fight Mode can. A realistic User-Agent is the correct,
+        # zero-risk fix: it doesn't touch site security posture at all.
         run: |
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
           if [ "$TARGET_ENVIRONMENT" = "production" ]; then
             api_url="https://api.truegritin.com"
           else
             api_url="https://apistag.truegritin.com"
           fi
-          curl --fail --retry 5 --retry-all-errors "$api_url/health/live"
+          curl --fail --retry 5 --retry-all-errors -A "$UA" "$api_url/health/live"

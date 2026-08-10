@@ -37,14 +37,33 @@ TRANSLATABLE_FIELDS: Final[dict[str, tuple[str, ...]]] = {
         "hero_eyebrow",
         "hero_title",
         "hero_description",
+        "hero_image_alt",
+        "thumbnail_image_alt",
         "season_label",
+        "seo_title",
+        "seo_description",
     ),
     # `farmer_name` is deliberately absent: it is a person's name, and a machine
     # translator asked for one returns a mistranslation, not a transliteration.
-    "farm": ("name", "region"),
-    "product": ("name", "short_description"),
-    "article": ("title", "excerpt"),
-    "recipe": ("title", "excerpt"),
+    "farm": (
+        "name",
+        "region",
+        "hero_image_alt",
+        "seo_title",
+        "seo_description",
+    ),
+    "product": (
+        "name",
+        "short_description",
+        "storage_guidance",
+        "harvest_note",
+        "growing_method",
+        "image_alt",
+        "seo_title",
+        "seo_description",
+    ),
+    "article": ("title", "excerpt", "hero_image_alt", "seo_title", "seo_description"),
+    "recipe": ("title", "excerpt", "hero_image_alt", "seo_title", "seo_description"),
     "bundle": ("name", "description"),
 }
 

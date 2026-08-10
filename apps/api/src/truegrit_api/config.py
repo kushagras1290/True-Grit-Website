@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     public_storefront_url: str = "http://localhost:5173"
     public_admin_url: str = "http://localhost:5174"
     public_process_url: str = "http://localhost:5175"
+    public_language_url: str = "http://localhost:5176"
     default_market: str = "IN"
     default_currency: str = "INR"
     session_cookie_name: str = "tg_session"
@@ -294,7 +295,12 @@ class Settings(BaseSettings):
         # hitting one while the app is configured for the other does not trip
         # CORS in local development. Real domains are unaffected.
         origins: list[str] = []
-        for url in (self.public_storefront_url, self.public_admin_url, self.public_process_url):
+        for url in (
+            self.public_storefront_url,
+            self.public_admin_url,
+            self.public_process_url,
+            self.public_language_url,
+        ):
             origins.append(url)
             if "127.0.0.1" in url:
                 origins.append(url.replace("127.0.0.1", "localhost"))

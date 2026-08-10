@@ -528,6 +528,17 @@ const settingsSchema = z.object({
       "Enter a valid image URL",
     ),
   heroImageAlt: z.string().max(200),
+  thumbnailImageUrl: z
+    .string()
+    .max(1000)
+    .refine(
+      (value) =>
+        value === "" ||
+        (value.startsWith("/") && !value.startsWith("//")) ||
+        z.string().url().safeParse(value).success,
+      "Enter a valid image URL",
+    ),
+  thumbnailImageAlt: z.string().max(200),
 });
 
 type SettingsForm = z.infer<typeof settingsSchema>;
@@ -557,11 +568,15 @@ function CategorySettingsForm({
         : "public") as SettingsForm["visibility"],
       heroImageUrl: category.heroImageUrl,
       heroImageAlt: category.heroImageAlt,
+      thumbnailImageUrl: category.thumbnailImageUrl,
+      thumbnailImageAlt: category.thumbnailImageAlt,
     },
   });
   const watchedHeroImageUrl = form.watch("heroImageUrl");
   const watchedHeroImageAlt = form.watch("heroImageAlt");
-  const uploadMutation = useMutation({
+  const watchedThumbnailImageUrl = form.watch("thumbnailImageUrl");
+  const watchedThumbnailImageAlt = form.watch("thumbnailImageAlt");
+  const heroUploadMutation = useMutation({
     mutationFn: (file: File) => api.uploadImage(file),
     onSuccess: (result) => {
       const heroImageAlt = form.getValues("heroImageAlt") || category.name;
@@ -569,7 +584,30 @@ function CategorySettingsForm({
       form.setValue("heroImageUrl", result.url, { shouldDirty: true, shouldValidate: true });
       form.setValue("heroImageAlt", heroImageAlt, { shouldDirty: true, shouldValidate: true });
       onSave(nextValues);
-      toast.success("Hero image uploaded; saving thumbnail.");
+      toast.success("Hero banner uploaded and saved.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not upload image."),
+  });
+  const thumbnailUploadMutation = useMutation({
+    mutationFn: (file: File) => api.uploadImage(file),
+    onSuccess: (result) => {
+      const thumbnailImageAlt = form.getValues("thumbnailImageAlt") || category.name;
+      const nextValues = {
+        ...form.getValues(),
+        thumbnailImageUrl: result.url,
+        thumbnailImageAlt,
+      };
+      form.setValue("thumbnailImageUrl", result.url, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      form.setValue("thumbnailImageAlt", thumbnailImageAlt, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      onSave(nextValues);
+      toast.success("Category thumbnail uploaded and saved.");
     },
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not upload image."),
@@ -612,16 +650,16 @@ function CategorySettingsForm({
           type="file"
           accept="image/jpeg,image/png,image/webp,image/gif"
           className="mb-2"
-          disabled={uploadMutation.isPending || saving}
+          disabled={heroUploadMutation.isPending || saving}
           onChange={(event) => {
             const file = event.currentTarget.files?.[0];
-            if (file) uploadMutation.mutate(file);
+            if (file) heroUploadMutation.mutate(file);
             event.currentTarget.value = "";
           }}
         />
         <Input
           id="c-hero-image"
-          placeholder={uploadMutation.isPending ? "Uploading image..." : "Hero image URL"}
+          placeholder={heroUploadMutation.isPending ? "Uploading image..." : "Hero image URL"}
           {...form.register("heroImageUrl")}
         />
         {watchedHeroImageUrl ? (
@@ -634,6 +672,58 @@ function CategorySettingsForm({
             />
           </div>
         ) : null}
+      </Field>
+      <Field
+        label="Category thumbnail URL"
+        htmlFor="c-thumbnail-image"
+        error={form.formState.errors.thumbnailImageUrl?.message}
+      >
+        <p className="mb-2 text-xs text-ink-muted">
+          <T>
+            Use a separate 1200 × 1200 image. This square image is cropped for category cards; do
+            not reuse the wide hero banner.
+          </T>
+        </p>
+        <Input
+          id="c-thumbnail-image-upload"
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          className="mb-2"
+          disabled={thumbnailUploadMutation.isPending || saving}
+          onChange={(event) => {
+            const file = event.currentTarget.files?.[0];
+            if (file) thumbnailUploadMutation.mutate(file);
+            event.currentTarget.value = "";
+          }}
+        />
+        <Input
+          id="c-thumbnail-image"
+          placeholder={
+            thumbnailUploadMutation.isPending ? "Uploading thumbnail..." : "Thumbnail image URL"
+          }
+          {...form.register("thumbnailImageUrl")}
+        />
+        {watchedThumbnailImageUrl ? (
+          <div className="mt-3">
+            <ImagePreview
+              src={watchedThumbnailImageUrl}
+              alt={watchedThumbnailImageAlt}
+              label={category.name}
+              className="h-32 w-32"
+            />
+          </div>
+        ) : null}
+      </Field>
+      <Field
+        label="Category thumbnail alt text"
+        htmlFor="c-thumbnail-image-alt"
+        error={form.formState.errors.thumbnailImageAlt?.message}
+      >
+        <Input
+          id="c-thumbnail-image-alt"
+          placeholder="Organic wheat flour in a wooden bowl"
+          {...form.register("thumbnailImageAlt")}
+        />
       </Field>
       <Field
         label="Hero image alt text"

@@ -74,7 +74,7 @@ export default function RecipesPage({ loaderData }: Route.ComponentProps) {
                   src={mediaUrl(recipe.heroImageUrl)}
                   alt={recipe.heroImageAlt || ""}
                   loading="lazy"
-                  className="-mx-6 -mt-6 mb-5 aspect-[16/9] w-[calc(100%+3rem)] max-w-none bg-subtle object-contain"
+                  className="-mx-6 -mt-6 mb-5 aspect-[16/9] w-[calc(100%+3rem)] max-w-none bg-subtle object-cover"
                 />
               ) : null}
               <p className="text-xs text-ink-muted">

@@ -8,6 +8,21 @@ from typing import Any
 from truegrit_api.config import Settings, get_settings
 
 
+def public_worker_origins(env: Any) -> set[str]:
+    """Origins that may receive credentialed emergency Worker responses."""
+
+    return {
+        value
+        for value in (
+            getattr(env, "PUBLIC_ADMIN_URL", ""),
+            getattr(env, "PUBLIC_STOREFRONT_URL", ""),
+            getattr(env, "PUBLIC_PROCESS_URL", ""),
+            getattr(env, "PUBLIC_LANGUAGE_URL", ""),
+        )
+        if value
+    }
+
+
 def bridge_worker_env(env: Any) -> None:
     """Refresh text bindings for the current request.
 

@@ -1,14 +1,17 @@
 """Gift cards (migration 0082), end to end against checkout.
 
-Uses the seeded catalogue (`var_alphonso_1kg`, priced at 89900) the same way
-test_promotions.py does, since a redemption's effect is only meaningful
-against a real cart total.
+Seeds its own purchasable product (`var_giftcard_fixture` at 89900) rather
+than depending on the demo catalogue: migration 0095 retires that catalogue
+from every database it touches (the live site must not keep any trace of
+it), so tests cannot rely on it surviving either. A redemption's effect is
+only meaningful against a real cart total.
 """
 
 from __future__ import annotations
 
 from typing import Any
 
+import pytest
 from fastapi.testclient import TestClient
 from httpx import Response
 
@@ -22,6 +25,35 @@ ADDRESS = {
     "state": "Maharashtra",
     "postalCode": "400001",
 }
+
+
+@pytest.fixture(autouse=True)
+def _giftcard_fixture_product(db: SQLiteDatabase) -> None:
+    """The one synthetic purchasable product every test in this module carts
+    -- see the module docstring above for why this is not the old demo
+    catalogue's `var_alphonso_1kg`."""
+    db._conn.executescript(
+        """
+        INSERT INTO products (id, internal_name, name, slug, product_type, status,
+          accepts_orders, created_at, created_by, updated_at, updated_by)
+        VALUES ('prd_giftcard_fixture', 'Gift Card Fixture Product',
+          'Gift Card Fixture Product', 'gift-card-fixture-product', 'simple',
+          'published', 1, '2026-07-01T00:00:00Z', 'usr_admin',
+          '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO product_variants (id, product_id, sku, name, status, sort_order,
+          created_at, updated_at)
+        VALUES ('var_giftcard_fixture', 'prd_giftcard_fixture', 'GIFTCARD-FIXTURE-1KG',
+          '1 kg', 'active', 1, '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
+        INSERT INTO variant_prices (id, variant_id, market_code, currency_code,
+          list_amount_minor, status, created_at, created_by)
+        VALUES ('vpr_giftcard_fixture', 'var_giftcard_fixture', 'IN', 'INR', 89900,
+          'active', '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO inventory_levels (variant_id, location_id, on_hand, reserved,
+          reorder_threshold, version, updated_at)
+        VALUES ('var_giftcard_fixture', 'loc_mumbai', 500, 0, 20, 1, '2026-07-01T00:00:00Z');
+        """
+    )
+    db._conn.commit()
 
 
 def as_customer(client: TestClient, db: SQLiteDatabase) -> None:
@@ -51,7 +83,7 @@ def checkout(
     client: TestClient, *, gift_card_code: str | None = None, coupon_code: str | None = None
 ) -> Response:
     payload: dict[str, Any] = {
-        "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+        "items": [{"variantId": "var_giftcard_fixture", "quantity": 1}],
         "deliveryAddress": ADDRESS,
     }
     if gift_card_code is not None:

@@ -138,14 +138,8 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
           >
             <img
               src={mediaUrl(activeSlide.imageUrl)}
-              alt=""
-              aria-hidden
-              className="absolute inset-0 h-full w-full scale-105 object-cover opacity-45 blur-md"
-            />
-            <img
-              src={mediaUrl(activeSlide.imageUrl)}
               alt={activeSlide.imageAlt || activeSlide.label}
-              className="absolute inset-0 h-full w-full object-contain"
+              className="absolute inset-0 h-full w-full object-cover"
               fetchPriority="high"
               loading="eager"
             />

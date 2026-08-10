@@ -10,6 +10,7 @@ from truegrit_api.domain.sitemap import SITEMAP_MAX_URLS
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.catalogue import geo_release_clause
 from truegrit_api.repositories.entity_translations import EntityTranslationRepository
+from truegrit_api.services.translation_hub import apply_path_overrides, override_map
 
 
 class CategoryRepository:
@@ -29,7 +30,8 @@ class CategoryRepository:
             SELECT c.id, c.name, c.slug, c.short_description, c.hero_eyebrow, c.hero_title,
                    c.hero_description, c.theme_key, c.season_label, c.product_assignment_mode,
                    c.product_rule_json, c.seo_title, c.seo_description, c.hero_image_url,
-                   c.hero_image_alt, c.updated_at, c.parent_id,
+                   c.hero_image_alt, c.thumbnail_image_url, c.thumbnail_image_alt,
+                   c.updated_at, c.parent_id,
                    parent.name AS parent_name, parent.slug AS parent_slug
             FROM categories c
             LEFT JOIN categories parent
@@ -52,6 +54,10 @@ class CategoryRepository:
             "hero_eyebrow": fields.get("hero_eyebrow") or row["hero_eyebrow"],
             "hero_title": fields.get("hero_title") or row["hero_title"],
             "hero_description": fields.get("hero_description") or row["hero_description"],
+            "hero_image_alt": fields.get("hero_image_alt") or row["hero_image_alt"],
+            "thumbnail_image_alt": fields.get("thumbnail_image_alt") or row["thumbnail_image_alt"],
+            "seo_title": fields.get("seo_title") or row["seo_title"],
+            "seo_description": fields.get("seo_description") or row["seo_description"],
         }
 
     async def _translate_rows(
@@ -105,7 +111,8 @@ class CategoryRepository:
         rows = await self._db.fetch_all(
             f"""
             SELECT c.id, c.name, c.slug, c.short_description, c.theme_key, c.season_label,
-                   c.hero_image_url, c.parent_id, c.level,
+                   COALESCE(c.thumbnail_image_url, c.hero_image_url) AS hero_image_url,
+                   c.parent_id, c.level,
                    (SELECT COUNT(*) FROM product_categories pc
                      JOIN products p ON p.id = pc.product_id
                     WHERE pc.category_id = c.id AND p.status = 'published') AS product_count
@@ -148,7 +155,8 @@ class CategoryRepository:
         rows = await self._db.fetch_all(
             f"""
             SELECT c.id, c.name, c.slug, c.short_description, c.theme_key, c.season_label,
-                   c.hero_image_url, c.parent_id, c.level,
+                   COALESCE(c.thumbnail_image_url, c.hero_image_url) AS hero_image_url,
+                   c.parent_id, c.level,
                    (SELECT COUNT(*) FROM product_categories pc
                      JOIN products p ON p.id = pc.product_id
                     WHERE pc.category_id = c.id AND p.status = 'published') AS product_count
@@ -225,14 +233,20 @@ class PageRepository:
             if translation is not None:
                 content_json = translation["content_json"]
         content = json.loads(content_json)
+        runtime_fields: dict[str, str] = {}
+        if locale and locale != "en":
+            runtime_fields = await override_map(self._db, "page", page["id"], locale)
+            content = apply_path_overrides(content, runtime_fields, prefix="content")
         return {
             "id": page["id"],
             "slug": page["slug"],
-            "title": page["title"],
+            "title": runtime_fields.get("title") or page["title"],
             "blocks": [block for block in content.get("blocks", []) if block.get("enabled", True)],
             "seo": {
-                "title": page["seo_title"] or page["title"],
-                "description": page["seo_description"] or "",
+                "title": runtime_fields.get("seo_title") or page["seo_title"] or page["title"],
+                "description": runtime_fields.get("seo_description")
+                or page["seo_description"]
+                or "",
                 "keywords": page["seo_keywords"],
                 "canonical_path": "/" if page["slug"] == "home" else f"/{page['slug']}",
                 "indexing": page["indexing_policy"],
@@ -284,7 +298,10 @@ class FarmRepository:
             fields_by_id = await EntityTranslationRepository(self._db).get_fields_map(
                 "farm", [row["id"] for row in rows], locale
             )
-        return [await self._detail_from_row(row, fields_by_id.get(row["id"])) for row in rows]
+        return [
+            await self._detail_from_row(row, fields_by_id.get(row["id"]), locale=locale)
+            for row in rows
+        ]
 
     async def list_slugs_for_sitemap(
         self, *, limit: int = SITEMAP_MAX_URLS
@@ -323,17 +340,33 @@ class FarmRepository:
         translation = None
         if locale and locale != "en":
             translation = await EntityTranslationRepository(self._db).get("farm", row["id"], locale)
-        return await self._detail_from_row(row, translation["fields"] if translation else None)
+        return await self._detail_from_row(
+            row, translation["fields"] if translation else None, locale=locale
+        )
 
     async def _detail_from_row(
-        self, row: dict[str, Any], fields: dict[str, Any] | None = None
+        self,
+        row: dict[str, Any],
+        fields: dict[str, Any] | None = None,
+        *,
+        locale: str | None = None,
     ) -> dict[str, Any]:
         story = json.loads(row["story_json"] or "{}")
         if not isinstance(story, dict):
             story = {}
+        if fields and isinstance(fields.get("story_content"), dict):
+            story = fields["story_content"]
+        runtime_fields = (
+            await override_map(self._db, "farm", row["id"], locale)
+            if locale and locale != "en"
+            else {}
+        )
+        story = apply_path_overrides(story, runtime_fields, prefix="story")
         summary = str(story.get("summary") or "")
         body = str(story.get("body") or summary)
         methods = story.get("methods")
+        if fields and isinstance(fields.get("methods"), list):
+            methods = fields["methods"]
         product_rows = await self._db.fetch_all(
             "SELECT slug FROM products WHERE farm_id = ? AND status = 'published' ORDER BY name",
             (row["id"],),
@@ -362,7 +395,7 @@ class FarmRepository:
             "methods": [str(method) for method in methods] if isinstance(methods, list) else [],
             "product_slugs": [entry["slug"] for entry in product_rows],
             "hero_image_url": row["hero_image_url"] or None,
-            "hero_image_alt": row["hero_image_alt"] or None,
+            "hero_image_alt": translated("hero_image_alt", row["hero_image_alt"] or "") or None,
             "seo": {
                 # Falls back to the *translated* name, so a farm with no saved
                 # SEO override still gets a localized browser title rather than
@@ -409,7 +442,10 @@ class RecipeRepository:
             fields_by_id = await EntityTranslationRepository(self._db).get_fields_map(
                 "recipe", [row["id"] for row in rows], locale
             )
-        return [await self._detail_from_row(row, fields_by_id.get(row["id"])) for row in rows]
+        return [
+            await self._detail_from_row(row, fields_by_id.get(row["id"]), locale=locale)
+            for row in rows
+        ]
 
     async def count_published(self) -> int:
         row = await self._db.fetch_one(
@@ -453,10 +489,16 @@ class RecipeRepository:
             translation = await EntityTranslationRepository(self._db).get(
                 "recipe", row["id"], locale
             )
-        return await self._detail_from_row(row, translation["fields"] if translation else None)
+        return await self._detail_from_row(
+            row, translation["fields"] if translation else None, locale=locale
+        )
 
     async def _detail_from_row(
-        self, row: dict[str, Any], translated_fields: dict[str, Any] | None = None
+        self,
+        row: dict[str, Any],
+        translated_fields: dict[str, Any] | None = None,
+        *,
+        locale: str | None = None,
     ) -> dict[str, Any]:
         version = None
         if row["published_version_id"]:
@@ -465,9 +507,16 @@ class RecipeRepository:
                 (row["published_version_id"],),
             )
         content = json.loads(version["content_json"]) if version else {}
+        if translated_fields and isinstance(translated_fields.get("content"), dict):
+            content = translated_fields["content"]
+        runtime_fields = (
+            await override_map(self._db, "recipe", row["id"], locale)
+            if locale and locale != "en"
+            else {}
+        )
         ingredients = await self._db.fetch_all(
             """
-            SELECT ri.label, ri.quantity_text, p.slug AS product_slug
+            SELECT ri.id, ri.label, ri.quantity_text, p.slug AS product_slug
             FROM recipe_ingredients ri
             LEFT JOIN products p ON p.id = ri.product_id
             WHERE ri.recipe_id = ?
@@ -476,9 +525,28 @@ class RecipeRepository:
             (row["id"],),
         )
         tags = json.loads(row["dietary_tags_json"] or "[]")
+        translated_fields = translated_fields or {}
+        translated_ingredients = translated_fields.get("ingredients")
+        if isinstance(translated_ingredients, dict):
+            for entry in ingredients:
+                translated_entry = translated_ingredients.get(str(entry.get("id") or ""))
+                if not isinstance(translated_entry, dict):
+                    continue
+                entry["label"] = translated_entry.get("label") or entry["label"]
+                entry["quantity_text"] = (
+                    translated_entry.get("quantity_text") or entry["quantity_text"]
+                )
+        if runtime_fields:
+            content = apply_path_overrides(content, runtime_fields, prefix="content")
+            for entry in ingredients:
+                token = str(entry.get("id") or "").replace("~", "~0").replace("/", "~1")
+                entry["label"] = runtime_fields.get(f"ingredient/{token}/label") or entry["label"]
+                entry["quantity_text"] = (
+                    runtime_fields.get(f"ingredient/{token}/quantity_text")
+                    or entry["quantity_text"]
+                )
         steps = content.get("steps") if isinstance(content, dict) else []
         blocks = content.get("blocks") if isinstance(content, dict) else []
-        translated_fields = translated_fields or {}
         title = translated_fields.get("title") or row["title"]
         excerpt = translated_fields.get("excerpt") or row["excerpt"] or ""
         return {
@@ -491,7 +559,9 @@ class RecipeRepository:
             "servings": int(row["servings"] or 0),
             "dietary_tags": [str(tag) for tag in tags] if isinstance(tags, list) else [],
             "hero_image_url": row["hero_image_url"] or None,
-            "hero_image_alt": row["hero_image_alt"] or None,
+            "hero_image_alt": translated_fields.get("hero_image_alt")
+            or row["hero_image_alt"]
+            or None,
             "ingredients": [
                 {
                     "label": entry["label"],
@@ -505,8 +575,10 @@ class RecipeRepository:
             else [],
             "steps": [str(step) for step in steps] if isinstance(steps, list) else [],
             "seo": {
-                "title": row["seo_title"] or title,
-                "description": row["seo_description"] or excerpt,
+                "title": translated_fields.get("seo_title") or row["seo_title"] or title,
+                "description": translated_fields.get("seo_description")
+                or row["seo_description"]
+                or excerpt,
                 "keywords": row["seo_keywords"],
                 "canonical_path": row["canonical_url"] or f"/recipes/{row['slug']}",
                 "indexing": row["indexing_policy"],
@@ -668,7 +740,10 @@ class ArticleRepository:
             fields_by_id = await EntityTranslationRepository(self._db).get_fields_map(
                 "article", [row["id"] for row in rows], locale
             )
-        return [await self._detail_from_row(row, fields_by_id.get(row["id"])) for row in rows]
+        return [
+            await self._detail_from_row(row, fields_by_id.get(row["id"]), locale=locale)
+            for row in rows
+        ]
 
     async def count_published(self) -> int:
         row = await self._db.fetch_one(
@@ -708,10 +783,16 @@ class ArticleRepository:
             translation = await EntityTranslationRepository(self._db).get(
                 "article", row["id"], locale
             )
-        return await self._detail_from_row(row, translation["fields"] if translation else None)
+        return await self._detail_from_row(
+            row, translation["fields"] if translation else None, locale=locale
+        )
 
     async def _detail_from_row(
-        self, row: dict[str, Any], translated_fields: dict[str, Any] | None = None
+        self,
+        row: dict[str, Any],
+        translated_fields: dict[str, Any] | None = None,
+        *,
+        locale: str | None = None,
     ) -> dict[str, Any]:
         version = None
         if row["published_version_id"]:
@@ -720,8 +801,13 @@ class ArticleRepository:
                 (row["published_version_id"],),
             )
         content = json.loads(version["content_json"]) if version else {}
-        blocks = content.get("blocks") if isinstance(content, dict) else []
         translated_fields = translated_fields or {}
+        if isinstance(translated_fields.get("content"), dict):
+            content = translated_fields["content"]
+        if locale and locale != "en":
+            runtime_fields = await override_map(self._db, "article", row["id"], locale)
+            content = apply_path_overrides(content, runtime_fields, prefix="content")
+        blocks = content.get("blocks") if isinstance(content, dict) else []
         title = translated_fields.get("title") or row["title"]
         excerpt = translated_fields.get("excerpt") or row["excerpt"] or ""
         return {
@@ -733,14 +819,18 @@ class ArticleRepository:
             "published_at": row["published_at"] or "",
             "reading_minutes": int(row["reading_minutes"] or 1),
             "hero_image_url": row["hero_image_url"] or None,
-            "hero_image_alt": row["hero_image_alt"] or None,
+            "hero_image_alt": translated_fields.get("hero_image_alt")
+            or row["hero_image_alt"]
+            or None,
             "blocks": [b for b in blocks if isinstance(b, dict) and b.get("enabled", True)]
             if isinstance(blocks, list)
             else [],
             "pull_quote": content.get("pullQuote") if isinstance(content, dict) else None,
             "seo": {
-                "title": row["seo_title"] or title,
-                "description": row["seo_description"] or excerpt,
+                "title": translated_fields.get("seo_title") or row["seo_title"] or title,
+                "description": translated_fields.get("seo_description")
+                or row["seo_description"]
+                or excerpt,
                 "keywords": row["seo_keywords"],
                 "canonical_path": row["canonical_url"] or f"/blog/{row['slug']}",
                 "indexing": row["indexing_policy"],
@@ -1249,8 +1339,10 @@ class DiscussionRepository:
     def __init__(self, db: Database):
         self._db = db
 
-    async def list_public(self, *, limit: int = 30, offset: int = 0) -> list[dict[str, Any]]:
-        return await self._db.fetch_all(
+    async def list_public(
+        self, *, limit: int = 30, offset: int = 0, locale: str | None = None
+    ) -> list[dict[str, Any]]:
+        rows = await self._db.fetch_all(
             """
             SELECT d.id, d.title, d.body, d.image_url, d.image_alt,
                    d.comment_count, d.last_activity_at, d.created_at,
@@ -1263,6 +1355,20 @@ class DiscussionRepository:
             """,
             (min(max(limit, 1), 100), max(offset, 0)),
         )
+        if not locale or locale == "en":
+            return rows
+        translated = []
+        for row in rows:
+            fields = await override_map(self._db, "discussion", row["id"], locale)
+            translated.append(
+                {
+                    **row,
+                    "title": fields.get("title") or row["title"],
+                    "body": fields.get("body") or row["body"],
+                    "image_alt": fields.get("image_alt") or row["image_alt"],
+                }
+            )
+        return translated
 
     async def count_public(self) -> int:
         row = await self._db.fetch_one(
@@ -1270,8 +1376,10 @@ class DiscussionRepository:
         )
         return int(row["total"]) if row else 0
 
-    async def get_public_detail(self, discussion_id: str) -> dict[str, Any] | None:
-        return await self._db.fetch_one(
+    async def get_public_detail(
+        self, discussion_id: str, *, locale: str | None = None
+    ) -> dict[str, Any] | None:
+        row = await self._db.fetch_one(
             """
             SELECT d.id, d.title, d.body, d.image_url, d.image_alt,
                    d.comment_count, d.last_activity_at, d.created_at,
@@ -1282,9 +1390,20 @@ class DiscussionRepository:
             """,
             (discussion_id,),
         )
+        if row is None or not locale or locale == "en":
+            return row
+        fields = await override_map(self._db, "discussion", discussion_id, locale)
+        return {
+            **row,
+            "title": fields.get("title") or row["title"],
+            "body": fields.get("body") or row["body"],
+            "image_alt": fields.get("image_alt") or row["image_alt"],
+        }
 
-    async def list_comments_public(self, discussion_id: str) -> list[dict[str, Any]]:
-        return await self._db.fetch_all(
+    async def list_comments_public(
+        self, discussion_id: str, *, locale: str | None = None
+    ) -> list[dict[str, Any]]:
+        rows = await self._db.fetch_all(
             """
             SELECT c.id, c.body, c.created_at, u.display_name AS author_name
             FROM discussion_comments c
@@ -1294,6 +1413,12 @@ class DiscussionRepository:
             """,
             (discussion_id,),
         )
+        if not locale or locale == "en":
+            return rows
+        for row in rows:
+            fields = await override_map(self._db, "discussion_comment", row["id"], locale)
+            row["body"] = fields.get("body") or row["body"]
+        return rows
 
     async def list_admin(
         self,

@@ -15,7 +15,13 @@
 
 import { createContext, useContext, useMemo, type ReactNode } from "react";
 
-import { DEFAULT_LOCALE, localeDirection, type TextDirection } from "./locales";
+import {
+  DEFAULT_LOCALE,
+  LOCALES,
+  localeDirection,
+  type LocaleDefinition,
+  type TextDirection,
+} from "./locales";
 import {
   EN_MESSAGES,
   translate,
@@ -28,6 +34,7 @@ export interface LocaleContextValue {
   locale: string;
   dir: TextDirection;
   messages: ResolvedMessages;
+  locales: readonly LocaleDefinition[];
   /** Look up a string, substituting `{placeholder}` values. */
   t: (key: MessageKey, values?: Readonly<Record<string, string | number>>) => string;
 }
@@ -36,6 +43,7 @@ const FALLBACK: LocaleContextValue = {
   locale: DEFAULT_LOCALE,
   dir: "ltr",
   messages: EN_MESSAGES,
+  locales: LOCALES,
   t: (key, values) => translate(EN_MESSAGES, key, values),
 };
 
@@ -44,22 +52,27 @@ const LocaleContext = createContext<LocaleContextValue>(FALLBACK);
 export function LocaleProvider({
   locale,
   messages,
+  locales = LOCALES,
   children,
 }: {
   locale: string;
   /** The locale's own entries. English fills the gaps here, not upstream. */
   messages: LocaleMessages;
+  locales?: readonly LocaleDefinition[];
   children: ReactNode;
 }) {
   const value = useMemo<LocaleContextValue>(() => {
     const resolved: ResolvedMessages = { ...EN_MESSAGES, ...stripBlanks(messages) };
     return {
       locale,
-      dir: localeDirection(locale),
+      dir:
+        locales.find((entry) => entry.code.toLowerCase() === locale.toLowerCase())?.dir ??
+        localeDirection(locale),
       messages: resolved,
+      locales,
       t: (key, values) => translate(resolved, key, values),
     };
-  }, [locale, messages]);
+  }, [locale, locales, messages]);
 
   return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
 }

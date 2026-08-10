@@ -28,16 +28,47 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-const DATABASE = "truegrit-dev";
 const WRANGLER = path.resolve("node_modules/wrangler/bin/wrangler.js");
 const CACHE_DIR = path.resolve("node_modules/.cache/truegrit-page-i18n");
 const SQL_DIR = path.resolve("node_modules/.cache/truegrit-page-sql");
 // The definitive language list; the storefront's own locales.ts is a
 // re-export shim with no literal definitions of its own.
 const LOCALES_FILE = path.resolve("packages/i18n/src/locales.ts");
-const UPDATED_BY = "usr_admin";
 const TRANSLATION_CONCURRENCY = 8;
 const BATCH_CHARACTER_BUDGET = 1200;
+const CLOUDFLARE_BATCH_POLL_MS = Number(process.env.TG_CF_BATCH_POLL_MS ?? 10_000);
+const CLOUDFLARE_SYNC_CONCURRENCY = Number(process.env.TG_CF_SYNC_CONCURRENCY ?? 4);
+const CLOUDFLARE_TRANSLATION_MODE = process.env.TG_CF_TRANSLATION_MODE ?? "sync";
+const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID ?? "";
+let cloudflareApiToken = process.env.CLOUDFLARE_API_TOKEN ?? "";
+const CLOUDFLARE_TRANSLATION_MODEL = "@cf/meta/m2m100-1.2b";
+const CLOUDFLARE_LLM_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+const CLOUDFLARE_LLM_LOCALES = new Map([
+  ["as", "Assamese"],
+  ["kok", "Konkani"],
+  ["sat", "Santali (Ol Chiki script)"],
+  ["ks", "Kashmiri"],
+  ["eu", "Basque"],
+  ["doi", "Dogri"],
+  ["mai", "Maithili"],
+  ["sa", "Sanskrit"],
+  ["brx", "Bodo"],
+  ["te", "Telugu"],
+  ["tk", "Turkmen"],
+  ["mni", "Manipuri (Meitei Mayek script)"],
+  ["ky", "Kyrgyz"],
+  ["tg", "Tajik"],
+  ["mt", "Maltese"],
+  ["rw", "Kinyarwanda"],
+  ["ny", "Chichewa"],
+  ["ug", "Uyghur"],
+]);
+const CLOUDFLARE_LOCALE = new Map([
+  ["zh-Hans", "zh"],
+  ["zh-Hant", "zh"],
+  ["nb", "no"],
+  ["fil", "tl"],
+]);
 
 /** Mirrors `_TRANSLATABLE_KEYS` in the API's translation service. */
 const TRANSLATABLE_KEYS = new Set([
@@ -70,12 +101,30 @@ const GOOGLE_LOCALE = new Map([
 ]);
 
 function parseArguments(argv) {
-  const options = { locales: "all", dryRun: false };
+  const options = {
+    locales: "all",
+    dryRun: false,
+    database: "truegrit-dev",
+    env: "",
+    config: "apps/api/wrangler.jsonc",
+    refreshAuto: false,
+    updatedBy: "usr_admin",
+    translator: "google",
+  };
   for (const argument of argv) {
     const [flag, value = ""] = argument.split("=");
     if (flag === "--locales") options.locales = value;
+    else if (flag === "--database") options.database = value;
+    else if (flag === "--env") options.env = value;
+    else if (flag === "--config") options.config = value;
+    else if (flag === "--refresh-auto") options.refreshAuto = true;
+    else if (flag === "--updated-by") options.updatedBy = value;
+    else if (flag === "--translator") options.translator = value;
     else if (flag === "--dry-run") options.dryRun = true;
     else throw new Error(`Unknown argument: ${argument}`);
+  }
+  if (!new Set(["google", "cloudflare"]).has(options.translator)) {
+    throw new Error("--translator must be google or cloudflare");
   }
   return options;
 }
@@ -95,11 +144,28 @@ function localeCodes(selector) {
 }
 
 function wrangler(args, maxBuffer = 128 * 1024 * 1024) {
-  return execFileSync(process.execPath, [WRANGLER, ...args], { encoding: "utf8", maxBuffer });
+  return execFileSync(process.execPath, [WRANGLER, ...args], {
+    encoding: "utf8",
+    maxBuffer,
+  });
+}
+
+let runtimeOptions;
+
+function d1Args() {
+  return [
+    "d1",
+    "execute",
+    runtimeOptions.database,
+    "--remote",
+    "--config",
+    runtimeOptions.config,
+    ...(runtimeOptions.env ? ["--env", runtimeOptions.env] : []),
+  ];
 }
 
 function d1Query(sql) {
-  const output = wrangler(["d1", "execute", DATABASE, "--remote", "--json", "--command", sql]);
+  const output = wrangler([...d1Args(), "--json", "--command", sql]);
   const start = output.indexOf("[");
   if (start < 0) throw new Error(`Unexpected wrangler output:\n${output.slice(0, 400)}`);
   return JSON.parse(output.slice(start))[0]?.results ?? [];
@@ -128,8 +194,10 @@ function walkCopy(node, visit, key = null) {
   return node;
 }
 
-const shield = (source) => source.replaceAll("True Grit", "__TGBRAND__");
-const unshield = (source) => source.replaceAll("__TGBRAND__", "True Grit").trim();
+const shield = (source) =>
+  source.replaceAll("True Grit", "__TGBRAND__").replaceAll("Vikas Farms", "__VIKASFARMS__");
+const unshield = (source) =>
+  source.replaceAll("__TGBRAND__", "True Grit").replaceAll("__VIKASFARMS__", "Vikas Farms").trim();
 const escapeHtml = (source) =>
   source
     .replaceAll("&", "&amp;")
@@ -220,8 +288,302 @@ function batched(values) {
   return batches;
 }
 
+const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+function refreshCloudflareToken() {
+  const output = execFileSync(process.execPath, [WRANGLER, "auth", "token"], {
+    encoding: "utf8",
+    maxBuffer: 1024 * 1024,
+  });
+  const token = output
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .findLast((line) => /^[A-Za-z0-9_.-]{40,}$/.test(line));
+  if (!token) throw new Error("Wrangler did not return a refreshed Cloudflare token");
+  cloudflareApiToken = token;
+}
+
+async function cloudflareRequest(model, input, attempt = 1) {
+  if (!CLOUDFLARE_ACCOUNT_ID || !cloudflareApiToken) {
+    throw new Error(
+      "Cloudflare translation requires CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN",
+    );
+  }
+  const response = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/ai/run/${model}?queueRequest=true`,
+    {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        authorization: `Bearer ${cloudflareApiToken}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(input),
+      signal: AbortSignal.timeout(30_000),
+    },
+  );
+  const payload = await response.json();
+  if (response.status === 401 && attempt === 1) {
+    refreshCloudflareToken();
+    return cloudflareRequest(model, input, attempt + 1);
+  }
+  if (!response.ok || !payload.success) {
+    throw new Error(
+      `Cloudflare AI ${response.status}: ${JSON.stringify(payload.errors ?? payload).slice(0, 800)}`,
+    );
+  }
+  return payload.result;
+}
+
+async function cloudflareSyncRequest(model, input, attempt = 1) {
+  if (!CLOUDFLARE_ACCOUNT_ID || !cloudflareApiToken) {
+    throw new Error(
+      "Cloudflare translation requires CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN",
+    );
+  }
+  for (let currentAttempt = attempt; ; currentAttempt += 1) {
+    try {
+      const response = await fetch(
+        `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/ai/run/${model}`,
+        {
+          method: "POST",
+          headers: {
+            accept: "application/json",
+            authorization: `Bearer ${cloudflareApiToken}`,
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(input),
+          signal: AbortSignal.timeout(30_000),
+        },
+      );
+      const payload = await response.json();
+      if (response.status === 401) {
+        refreshCloudflareToken();
+        continue;
+      }
+      if (!response.ok || !payload.success) {
+        if (response.status === 429 || response.status >= 500) {
+          await wait(
+            Math.min(30_000, 750 * 2 ** Math.min(currentAttempt, 5)) + Math.random() * 500,
+          );
+          continue;
+        }
+        throw new Error(
+          `Cloudflare AI ${response.status}: ${JSON.stringify(payload.errors ?? payload).slice(0, 800)}`,
+        );
+      }
+      return payload.result;
+    } catch (error) {
+      if (String(error).includes("Cloudflare AI ")) throw error;
+      await wait(Math.min(30_000, 750 * 2 ** Math.min(currentAttempt, 5)) + Math.random() * 500);
+    }
+  }
+}
+
+async function mapConcurrent(values, concurrency, visit) {
+  const result = new Array(values.length);
+  let next = 0;
+  const workers = Array.from({ length: Math.min(concurrency, values.length) }, async () => {
+    for (;;) {
+      const index = next;
+      next += 1;
+      if (index >= values.length) return;
+      result[index] = await visit(values[index], index);
+    }
+  });
+  await Promise.all(workers);
+  return result;
+}
+
+async function cloudflareBatch(model, requests, locale) {
+  const queued = await cloudflareRequest(model, { requests });
+  if (!queued.request_id) throw new Error(`${locale}: Cloudflare AI returned no request_id`);
+  process.stdout.write(`${locale}: queued Cloudflare batch ${queued.request_id}\n`);
+  for (;;) {
+    await wait(CLOUDFLARE_BATCH_POLL_MS);
+    const result = await cloudflareRequest(model, {
+      request_id: queued.request_id,
+    });
+    if (Array.isArray(result.responses)) return result.responses;
+    if (Array.isArray(result.results)) {
+      return result.results.map((entry) => ({
+        success: entry.success,
+        external_reference: entry.external_reference,
+        result: entry.result,
+      }));
+    }
+    if (!new Set(["queued", "running"]).has(result.status)) {
+      throw new Error(`${locale}: unexpected Cloudflare batch status ${JSON.stringify(result)}`);
+    }
+  }
+}
+
+async function cloudflareBatches(model, requests, locale, requestsPerBatch) {
+  const chunks = [];
+  for (let index = 0; index < requests.length; index += requestsPerBatch) {
+    chunks.push(requests.slice(index, index + requestsPerBatch));
+  }
+  return (
+    await Promise.all(
+      chunks.map((chunk, index) =>
+        cloudflareBatch(model, chunk, `${locale} ${index + 1}/${chunks.length}`),
+      ),
+    )
+  ).flat();
+}
+
+function llmBatches(values) {
+  const batches = [];
+  let current = [];
+  let size = 0;
+  for (const value of values) {
+    const cost = value.length + 8;
+    if (current.length > 0 && (current.length >= 20 || size + cost > 3_500)) {
+      batches.push(current);
+      current = [];
+      size = 0;
+    }
+    current.push(value);
+    size += cost;
+  }
+  if (current.length > 0) batches.push(current);
+  return batches;
+}
+
+function parseLlmTranslations(response, expected, locale, index) {
+  const text = response?.result?.response ?? response?.response;
+  const match = typeof text === "string" ? /\{[\s\S]*\}/.exec(text) : null;
+  if (!match) throw new Error(`${locale}: LLM batch ${index} returned no JSON object`);
+  const parsed = JSON.parse(match[0]);
+  if (!Array.isArray(parsed.translations) || parsed.translations.length !== expected) {
+    throw new Error(
+      `${locale}: LLM batch ${index} returned ${parsed.translations?.length ?? 0}/${expected} strings`,
+    );
+  }
+  return parsed.translations.map((translation) => {
+    if (typeof translation !== "string" || !translation.trim()) {
+      throw new Error(`${locale}: LLM batch ${index} returned an empty translation`);
+    }
+    return unshield(translation);
+  });
+}
+
+async function translateCloudflare(locale, pending, cache) {
+  const language = CLOUDFLARE_LLM_LOCALES.get(locale);
+  if (!language) {
+    if (CLOUDFLARE_TRANSLATION_MODE === "sync") {
+      const results = await mapConcurrent(pending, CLOUDFLARE_SYNC_CONCURRENCY, (english) =>
+        cloudflareSyncRequest(CLOUDFLARE_TRANSLATION_MODEL, {
+          text: shield(english),
+          source_lang: "en",
+          target_lang: CLOUDFLARE_LOCALE.get(locale) ?? locale,
+        }),
+      );
+      pending.forEach((english, index) => {
+        const translated = results[index]?.translated_text;
+        if (typeof translated !== "string" || !translated.trim()) {
+          throw new Error(`${locale}: Cloudflare translation returned an empty string`);
+        }
+        cache[hash(english)] = unshield(translated);
+      });
+      return cache;
+    }
+    const responses = await cloudflareBatches(
+      CLOUDFLARE_TRANSLATION_MODEL,
+      pending.map((english) => ({
+        text: shield(english),
+        source_lang: "en",
+        target_lang: CLOUDFLARE_LOCALE.get(locale) ?? locale,
+        external_reference: hash(english),
+      })),
+      locale,
+      50,
+    );
+    for (const response of responses) {
+      const translated = response?.result?.translated_text;
+      if (!response.success || typeof translated !== "string" || !translated.trim()) {
+        throw new Error(
+          `${locale}: Cloudflare translation failed for ${response.external_reference}`,
+        );
+      }
+      cache[response.external_reference] = unshield(translated);
+    }
+    return cache;
+  }
+
+  const batches = llmBatches(pending);
+  if (CLOUDFLARE_TRANSLATION_MODE === "sync") {
+    const results = await mapConcurrent(
+      batches,
+      Math.min(6, CLOUDFLARE_SYNC_CONCURRENCY),
+      (batch) =>
+        cloudflareSyncRequest(CLOUDFLARE_LLM_MODEL, {
+          messages: [
+            {
+              role: "user",
+              content:
+                `Translate every string in this JSON array from English into ${language}. ` +
+                "Preserve array length and order. Return only a JSON object with one key, " +
+                "translations, whose value is the translated string array. Do not translate " +
+                "True Grit or Vikas Farms. Input: " +
+                JSON.stringify(batch.map(shield)),
+            },
+          ],
+          temperature: 0,
+          max_tokens: 4096,
+        }),
+    );
+    for (let index = 0; index < batches.length; index += 1) {
+      const translations = parseLlmTranslations(
+        results[index],
+        batches[index].length,
+        locale,
+        index,
+      );
+      batches[index].forEach((english, entryIndex) => {
+        cache[hash(english)] = translations[entryIndex];
+      });
+    }
+    return cache;
+  }
+  const responses = await cloudflareBatches(
+    CLOUDFLARE_LLM_MODEL,
+    batches.map((batch, index) => ({
+      messages: [
+        {
+          role: "user",
+          content:
+            `Translate every string in this JSON array from English into ${language}. ` +
+            "Preserve array length and order. Return only a JSON object with one key, " +
+            "translations, whose value is the translated string array. Do not translate " +
+            "True Grit or Vikas Farms. Input: " +
+            JSON.stringify(batch.map(shield)),
+        },
+      ],
+      temperature: 0,
+      max_tokens: 4096,
+      external_reference: String(index),
+    })),
+    locale,
+    50,
+  );
+  const byIndex = new Map(
+    responses.map((response) => [Number(response.external_reference), response]),
+  );
+  for (let index = 0; index < batches.length; index += 1) {
+    const response = byIndex.get(index);
+    if (!response?.success) throw new Error(`${locale}: LLM batch ${index} failed`);
+    const translations = parseLlmTranslations(response, batches[index].length, locale, index);
+    batches[index].forEach((english, entryIndex) => {
+      cache[hash(english)] = translations[entryIndex];
+    });
+  }
+  return cache;
+}
+
 async function main() {
   const options = parseArguments(process.argv.slice(2));
+  runtimeOptions = options;
   const locales = localeCodes(options.locales);
   fs.mkdirSync(CACHE_DIR, { recursive: true });
   fs.mkdirSync(SQL_DIR, { recursive: true });
@@ -249,17 +611,20 @@ async function main() {
     `${parsed.length} published pages, ${sources.size} distinct strings of copy\n`,
   );
 
-  const existing = new Set(
-    d1Query("SELECT page_id || '|' || locale AS pair FROM page_content_translations").map(
-      (row) => row.pair,
-    ),
+  const existing = new Map(
+    d1Query(
+      "SELECT page_id || '|' || locale AS pair, auto_translated FROM page_content_translations",
+    ).map((row) => [row.pair, Number(row.auto_translated)]),
   );
 
   const now = new Date().toISOString();
   let written = 0;
 
   for (const locale of locales) {
-    const todo = parsed.filter((page) => !existing.has(`${page.pageId}|${locale}`));
+    const todo = parsed.filter((page) => {
+      const state = existing.get(`${page.pageId}|${locale}`);
+      return state === undefined || (options.refreshAuto && state === 1);
+    });
     if (todo.length === 0) {
       process.stdout.write(`${locale}: already complete\n`);
       continue;
@@ -276,16 +641,21 @@ async function main() {
     }
     const pending = [...sources].filter((text) => !(hash(text) in cache));
     if (pending.length > 0) {
-      const batches = batched(pending);
-      for (let index = 0; index < batches.length; index += TRANSLATION_CONCURRENCY) {
-        const slice = batches.slice(index, index + TRANSLATION_CONCURRENCY);
-        const results = await Promise.all(slice.map((batch) => requestBatch(locale, batch)));
-        slice.forEach((batch, batchIndex) => {
-          batch.forEach((english, entryIndex) => {
-            cache[hash(english)] = results[batchIndex][entryIndex];
-          });
-        });
+      if (options.translator === "cloudflare") {
+        cache = await translateCloudflare(locale, pending, cache);
         fs.writeFileSync(cacheFile, JSON.stringify(cache));
+      } else {
+        const batches = batched(pending);
+        for (let index = 0; index < batches.length; index += TRANSLATION_CONCURRENCY) {
+          const slice = batches.slice(index, index + TRANSLATION_CONCURRENCY);
+          const results = await Promise.all(slice.map((batch) => requestBatch(locale, batch)));
+          slice.forEach((batch, batchIndex) => {
+            batch.forEach((english, entryIndex) => {
+              cache[hash(english)] = results[batchIndex][entryIndex];
+            });
+          });
+          fs.writeFileSync(cacheFile, JSON.stringify(cache));
+        }
       }
     }
 
@@ -293,7 +663,7 @@ async function main() {
       const translated = walkCopy(page.content, (text) => cache[hash(text)] ?? text);
       return (
         `(${sqlText(page.pageId)}, ${sqlText(locale)}, ${sqlText(JSON.stringify(translated))},` +
-        ` 1, ${sqlText(now)}, ${sqlText(UPDATED_BY)})`
+        ` 1, ${sqlText(now)}, ${sqlText(options.updatedBy)})`
       );
     });
 
@@ -310,7 +680,7 @@ async function main() {
         "  (page_id, locale, content_json, auto_translated, updated_at, updated_by)\n" +
         `VALUES\n${values.join(",\n")};\n`,
     );
-    wrangler(["d1", "execute", DATABASE, "--remote", "--yes", "--file", file]);
+    wrangler([...d1Args(), "--yes", "--file", file]);
     fs.rmSync(file, { force: true });
     written += values.length;
     process.stdout.write(`${locale}: wrote ${values.length} pages\n`);

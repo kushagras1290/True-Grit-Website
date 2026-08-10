@@ -48,14 +48,16 @@ export default function FarmsPage({ loaderData }: Route.ComponentProps) {
               to={`/farms/${farm.slug}`}
               className="group rounded-md border border-line bg-surface p-6 shadow-card transition-transform duration-200 hover:-translate-y-0.5"
             >
-              <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-                {t("farms.since", { year: farm.establishedYear })}
-              </p>
+              {farm.establishedYear ? (
+                <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
+                  {t("farms.since", { year: farm.establishedYear })}
+                </p>
+              ) : null}
               <h2 className="mt-2 font-display text-xl text-ink group-hover:text-brand">
                 {farm.name}
               </h2>
               <p className="mt-1 text-sm text-ink-muted">
-                {farm.farmerName} · {farm.region}
+                {[farm.farmerName, farm.region].filter(Boolean).join(" · ")}
               </p>
               <p className="mt-3 text-sm text-ink">{farm.summary}</p>
               <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-subtle px-3 py-1 text-xs font-medium text-brand">

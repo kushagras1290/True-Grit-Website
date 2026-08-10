@@ -232,7 +232,7 @@ export function CategoryTile({
             src={imageUrl}
             alt=""
             loading="lazy"
-            className="absolute inset-0 h-full w-full object-contain"
+            className="absolute inset-0 h-full w-full object-cover"
           />
           <span aria-hidden className="absolute inset-0 bg-black/35" />
         </>

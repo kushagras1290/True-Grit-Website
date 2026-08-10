@@ -56,6 +56,8 @@ _CATEGORY_EDITABLE = (
     "seo_description",
     "hero_image_url",
     "hero_image_alt",
+    "thumbnail_image_url",
+    "thumbnail_image_alt",
 )
 
 
@@ -917,7 +919,7 @@ async def update_category(
     current = await db.fetch_one(
         "SELECT id, name, slug, path, parent_id, short_description, hero_eyebrow, hero_title,"
         " hero_description, season_label, theme_key, visibility, seo_title, seo_description,"
-        " hero_image_url, hero_image_alt, status"
+        " hero_image_url, hero_image_alt, thumbnail_image_url, thumbnail_image_alt, status"
         " FROM categories WHERE id = ? AND archived_at IS NULL",
         (category_id,),
     )

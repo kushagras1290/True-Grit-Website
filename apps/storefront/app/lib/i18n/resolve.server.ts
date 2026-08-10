@@ -11,13 +11,49 @@ import { resolveCountry, resolveRegion } from "../geo.server";
 import { matchCountryLocale, matchIndiaRegionLocale } from "./geo-locale";
 import {
   DEFAULT_LOCALE,
+  LOCALES,
   LOCALE_COOKIE_MAX_AGE_SECONDS,
   LOCALE_COOKIE_NAME,
   getLocale,
-  matchAcceptLanguage,
-  matchLocale,
   type LocaleDefinition,
 } from "./locales";
+
+function matchFrom(locales: readonly LocaleDefinition[], code: string | null | undefined) {
+  if (!code) return null;
+  const normalized = code.trim().toLowerCase();
+  if (!normalized) return null;
+  const exact = locales.find((entry) => entry.code.toLowerCase() === normalized);
+  if (exact) return exact;
+  const base = normalized.split("-")[0]!;
+  if (base === "zh") {
+    const subtags = new Set(normalized.split("-").slice(1));
+    const traditional = ["hant", "tw", "hk", "mo"].some((subtag) => subtags.has(subtag));
+    return (
+      locales.find((entry) => entry.code.toLowerCase() === (traditional ? "zh-hant" : "zh-hans")) ??
+      null
+    );
+  }
+  return locales.find((entry) => entry.code.split("-")[0]!.toLowerCase() === base) ?? null;
+}
+
+function matchHeader(locales: readonly LocaleDefinition[], header: string | null) {
+  if (!header) return null;
+  const candidates = header
+    .split(",")
+    .map((part, index) => {
+      const [code, ...parameters] = part.trim().split(";");
+      const qRaw = parameters.find((parameter) => parameter.trim().startsWith("q="));
+      const q = qRaw ? Number(qRaw.trim().slice(2)) : 1;
+      return { code, q: Number.isFinite(q) ? q : 0, index };
+    })
+    .filter((entry) => entry.code && entry.code !== "*" && entry.q > 0)
+    .sort((left, right) => right.q - left.q || left.index - right.index);
+  for (const candidate of candidates) {
+    const match = matchFrom(locales, candidate.code);
+    if (match) return match;
+  }
+  return null;
+}
 
 /** Query parameter that overrides everything, for links that must land in a
  *  known language (a campaign, a QR code on a Hindi leaflet). */
@@ -58,53 +94,58 @@ export interface ResolvedLocale {
  *
  *   1. `?lang=` — an explicit link, and the switcher's no-JavaScript path.
  *   2. The cookie — what this visitor chose last time.
- *   3. `Accept-Language`, when it names a real language — q-values honoured.
- *   4. The visitor's Indian state (Cloudflare's edge geo region, when the
+ *   3. The visitor's Indian state (Cloudflare's edge geo region, when the
  *      account tier and the request both carry it) for a visitor in India —
- *      a Punjab visitor and a Tamil Nadu visitor get different guesses even
- *      though both are country "IN", where step 5 alone could not tell them
+ *      a Punjab visitor and a Tamil Nadu visitor get different defaults even
+ *      though both are country "IN", where step 4 alone could not tell them
  *      apart. Falls through silently when region data is unavailable.
- *   5. The visitor's country (Cloudflare's edge geo), when `Accept-Language`
- *      resolved to nothing better than English.
+ *   4. The visitor's country (Cloudflare's edge geo), when that country has a
+ *      clear mapped language. This deliberately matches automatic currency:
+ *      a new visitor in Germany receives German and EUR together.
+ *   5. `Accept-Language`, when geography has no safe mapping — q-values honoured.
  *   6. English.
  *
- * The browser is consulted *before* geo whenever it names something other than
- * English: an explicit non-English preference has to survive a country guess
- * that disagrees with it, which is the common case for a Tamil speaker on an
- * English-configured phone in Chennai. But a bare `en` from that header is
- * ambiguous — a huge share of devices ship with English as their factory
- * default regardless of who owns them or where — so it is treated as *no*
- * signal and geo gets a turn before falling back to English for real. Step 4
- * is why the switch is announced rather than silent: a guess from an IP
- * address is still a guess, not a preference the visitor stated.
+ * A saved cookie is the visitor's explicit preference and always survives a
+ * country change. Browser language is only an automatic fallback: many devices
+ * retain an English factory default, while the market's intended first-visit
+ * behavior is to keep country language and country currency aligned.
  */
-export function resolveLocale(request: Request): ResolvedLocale {
+export function resolveLocale(
+  request: Request,
+  locales: readonly LocaleDefinition[] = LOCALES,
+): ResolvedLocale {
   const url = new URL(request.url);
-  const fromQuery = matchLocale(url.searchParams.get(LOCALE_QUERY_PARAM));
+  const fromQuery = matchFrom(locales, url.searchParams.get(LOCALE_QUERY_PARAM));
   if (fromQuery) return { locale: fromQuery, source: "query" };
 
-  const fromCookie = matchLocale(readCookie(request.headers.get("cookie"), LOCALE_COOKIE_NAME));
+  const fromCookie = matchFrom(
+    locales,
+    readCookie(request.headers.get("cookie"), LOCALE_COOKIE_NAME),
+  );
   if (fromCookie) return { locale: fromCookie, source: "cookie" };
-
-  const fromHeader = matchAcceptLanguage(request.headers.get("accept-language"));
-  if (fromHeader) return { locale: fromHeader, source: "header" };
 
   const country = resolveCountry(request);
   if (country === "IN") {
     const { region, regionCode } = resolveRegion(request);
     const fromRegion = matchIndiaRegionLocale(region, regionCode);
-    if (fromRegion && fromRegion.code !== DEFAULT_LOCALE) {
+    if (fromRegion && matchFrom(locales, fromRegion.code)) {
       return { locale: fromRegion, source: "geo" };
     }
   }
 
   const fromGeo = matchCountryLocale(country);
-  if (fromGeo && fromGeo.code !== DEFAULT_LOCALE) {
+  if (fromGeo && matchFrom(locales, fromGeo.code)) {
     return { locale: fromGeo, source: "geo" };
   }
 
+  const fromHeader = matchHeader(locales, request.headers.get("accept-language"));
+  if (fromHeader) return { locale: fromHeader, source: "header" };
+
   // Non-null: DEFAULT_LOCALE is always a registered locale.
-  return { locale: getLocale(DEFAULT_LOCALE)!, source: "default" };
+  return {
+    locale: matchFrom(locales, DEFAULT_LOCALE) ?? getLocale(DEFAULT_LOCALE)!,
+    source: "default",
+  };
 }
 
 /**
@@ -118,8 +159,11 @@ export function resolveLocale(request: Request): ResolvedLocale {
  * fails to set there is a confusing thing to debug; there is nothing here worth
  * protecting from a network observer who can already read the rendered page.
  */
-export function localeCookie(locale: string): string {
-  const safe = getLocale(locale)?.code ?? DEFAULT_LOCALE;
+export function localeCookie(
+  locale: string,
+  locales: readonly LocaleDefinition[] = LOCALES,
+): string {
+  const safe = matchFrom(locales, locale)?.code ?? DEFAULT_LOCALE;
   return [
     `${LOCALE_COOKIE_NAME}=${encodeURIComponent(safe)}`,
     "Path=/",

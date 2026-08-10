@@ -26,7 +26,7 @@ import { useRef } from "react";
 import { useLocation } from "react-router";
 
 import { useLocaleContext } from "../lib/i18n/context";
-import { LOCALES, type LocaleGroup } from "../lib/i18n/locales";
+import type { LocaleDefinition, LocaleGroup } from "../lib/i18n/locales";
 import type { MessageKey } from "../lib/i18n/messages";
 
 const GROUP_ORDER: readonly LocaleGroup[] = ["indian", "world"];
@@ -40,7 +40,13 @@ const OPTGROUP_STYLE = {
   fontWeight: 600,
 };
 
-function LocaleOptions({ t }: { t: (key: MessageKey) => string }) {
+function LocaleOptions({
+  t,
+  locales,
+}: {
+  t: (key: MessageKey) => string;
+  locales: readonly LocaleDefinition[];
+}) {
   return (
     <>
       {GROUP_ORDER.map((group) => (
@@ -49,14 +55,16 @@ function LocaleOptions({ t }: { t: (key: MessageKey) => string }) {
           label={group === "indian" ? t("language.indian") : t("language.world")}
           style={OPTGROUP_STYLE}
         >
-          {LOCALES.filter((entry) => entry.group === group).map((entry) => (
-            // `lang` on the option so a screen reader pronounces each name in
-            // its own language rather than reading Devanagari as English.
-            <option key={entry.code} value={entry.code} lang={entry.code} style={OPTION_STYLE}>
-              {entry.nativeName}
-              {entry.nativeName === entry.englishName ? "" : ` — ${entry.englishName}`}
-            </option>
-          ))}
+          {locales
+            .filter((entry) => entry.group === group)
+            .map((entry) => (
+              // `lang` on the option so a screen reader pronounces each name in
+              // its own language rather than reading Devanagari as English.
+              <option key={entry.code} value={entry.code} lang={entry.code} style={OPTION_STYLE}>
+                {entry.nativeName}
+                {entry.nativeName === entry.englishName ? "" : ` — ${entry.englishName}`}
+              </option>
+            ))}
         </optgroup>
       ))}
     </>
@@ -72,7 +80,7 @@ export function LanguageSwitcher({
   tone?: "light" | "dark";
   className?: string;
 }) {
-  const { locale, t } = useLocaleContext();
+  const { locale, locales, t } = useLocaleContext();
   const location = useLocation();
 
   // Where to send the visitor back to. Rebuilt from the router's own location
@@ -101,7 +109,7 @@ export function LanguageSwitcher({
         // in the page's language.
         aria-label={t("language.change")}
       >
-        <LocaleOptions t={t} />
+        <LocaleOptions t={t} locales={locales} />
       </select>
       {/* Replaced by the onChange handler once JavaScript runs. `noscript`
           cannot wrap interactive content reliably inside React's tree, so the
@@ -134,7 +142,7 @@ export function LanguageSwitcher({
  * component would have to keep in sync.
  */
 export function HeaderLanguageSwitcher({ className = "" }: { className?: string }) {
-  const { locale, t } = useLocaleContext();
+  const { locale, locales, t } = useLocaleContext();
   const location = useLocation();
   const formRef = useRef<HTMLFormElement>(null);
   const redirectTo = `${location.pathname}${location.search}`;
@@ -167,7 +175,7 @@ export function HeaderLanguageSwitcher({ className = "" }: { className?: string 
         // is purely decorative labelling for it.
         className="absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0"
       >
-        <LocaleOptions t={t} />
+        <LocaleOptions t={t} locales={locales} />
       </select>
       {/* No visible fallback button here on purpose: this control is a
           convenience duplicate of the fully accessible switcher that is always

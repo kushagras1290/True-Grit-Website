@@ -1,7 +1,15 @@
-"""Integration tests for customer checkout and order history."""
+"""Integration tests for customer checkout and order history.
+
+Seeds its own two purchasable products (`var_checkout_fixture_a` at 89900,
+`var_checkout_fixture_b` at 19900) rather than depending on the demo
+catalogue: migration 0095 retires that catalogue from every database it
+touches (the live site must not keep any trace of it), so tests cannot rely
+on it surviving either.
+"""
 
 from __future__ import annotations
 
+import pytest
 from fastapi.testclient import TestClient
 
 from tests.integration.conftest import SESSION_COOKIE, create_session
@@ -14,6 +22,53 @@ ADDRESS = {
     "state": "Maharashtra",
     "postalCode": "400001",
 }
+
+
+@pytest.fixture(autouse=True)
+def _checkout_fixture_products(db: SQLiteDatabase) -> None:
+    """Two synthetic purchasable products every test in this module builds
+    its basket from -- see the module docstring above for why these are not
+    the old demo catalogue's `var_alphonso_1kg` / `var_rajma_500g`."""
+    db._conn.executescript(
+        """
+        INSERT INTO products (id, internal_name, name, slug, product_type, status,
+          accepts_orders, created_at, created_by, updated_at, updated_by)
+        VALUES ('prd_checkout_fixture_a', 'Checkout Fixture Product A',
+          'Checkout Fixture Product A', 'checkout-fixture-product-a', 'simple',
+          'published', 1, '2026-07-01T00:00:00Z', 'usr_admin',
+          '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO product_variants (id, product_id, sku, name, status, sort_order,
+          created_at, updated_at)
+        VALUES ('var_checkout_fixture_a', 'prd_checkout_fixture_a', 'CHK-FIXTURE-A-1KG',
+          '1 kg', 'active', 1, '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
+        INSERT INTO variant_prices (id, variant_id, market_code, currency_code,
+          list_amount_minor, status, created_at, created_by)
+        VALUES ('vpr_checkout_fixture_a', 'var_checkout_fixture_a', 'IN', 'INR', 89900,
+          'active', '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO inventory_levels (variant_id, location_id, on_hand, reserved,
+          reorder_threshold, version, updated_at)
+        VALUES ('var_checkout_fixture_a', 'loc_mumbai', 500, 0, 20, 1, '2026-07-01T00:00:00Z');
+
+        INSERT INTO products (id, internal_name, name, slug, product_type, status,
+          accepts_orders, created_at, created_by, updated_at, updated_by)
+        VALUES ('prd_checkout_fixture_b', 'Checkout Fixture Product B',
+          'Checkout Fixture Product B', 'checkout-fixture-product-b', 'simple',
+          'published', 1, '2026-07-01T00:00:00Z', 'usr_admin',
+          '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO product_variants (id, product_id, sku, name, status, sort_order,
+          created_at, updated_at)
+        VALUES ('var_checkout_fixture_b', 'prd_checkout_fixture_b', 'CHK-FIXTURE-B-500G',
+          '500 g', 'active', 1, '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
+        INSERT INTO variant_prices (id, variant_id, market_code, currency_code,
+          list_amount_minor, status, created_at, created_by)
+        VALUES ('vpr_checkout_fixture_b', 'var_checkout_fixture_b', 'IN', 'INR', 19900,
+          'active', '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO inventory_levels (variant_id, location_id, on_hand, reserved,
+          reorder_threshold, version, updated_at)
+        VALUES ('var_checkout_fixture_b', 'loc_mumbai', 500, 0, 20, 1, '2026-07-01T00:00:00Z');
+        """
+    )
+    db._conn.commit()
 
 
 def as_customer(client: TestClient, db: SQLiteDatabase) -> None:
@@ -33,7 +88,7 @@ def test_checkout_requires_a_verified_mobile(client: TestClient, db: SQLiteDatab
     response = client.post(
         "/v1/public/checkout",
         json={
-            "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+            "items": [{"variantId": "var_checkout_fixture_a", "quantity": 1}],
             "deliveryAddress": ADDRESS,
         },
     )
@@ -46,7 +101,7 @@ def test_checkout_records_the_customers_verified_mobile(client: TestClient, db: 
     response = client.post(
         "/v1/public/checkout",
         json={
-            "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+            "items": [{"variantId": "var_checkout_fixture_a", "quantity": 1}],
             "deliveryAddress": ADDRESS,
         },
     )
@@ -62,13 +117,13 @@ def test_checkout_records_the_customers_verified_mobile(client: TestClient, db: 
 def test_checkout_creates_order_and_reserves_stock(client: TestClient, db: SQLiteDatabase):
     as_customer(client, db)
     before = db._conn.execute(
-        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_checkout_fixture_a'"
     ).fetchone()[0]
 
     response = client.post(
         "/v1/public/checkout",
         json={
-            "items": [{"variantId": "var_alphonso_1kg", "quantity": 2}],
+            "items": [{"variantId": "var_checkout_fixture_a", "quantity": 2}],
             "deliveryAddress": ADDRESS,
         },
     )
@@ -79,7 +134,7 @@ def test_checkout_creates_order_and_reserves_stock(client: TestClient, db: SQLit
     assert body["orderStatus"] == "confirmed"
 
     after = db._conn.execute(
-        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_checkout_fixture_a'"
     ).fetchone()[0]
     assert after == before + 2
 
@@ -88,7 +143,7 @@ def test_checkout_creates_order_and_reserves_stock(client: TestClient, db: SQLit
 
     detail = client.get(f"/v1/public/orders/{body['reference']}")
     assert detail.status_code == 200
-    assert detail.json()["items"][0]["sku"] == "TRG-MNG-1KG"
+    assert detail.json()["items"][0]["sku"] == "CHK-FIXTURE-A-1KG"
     # The e-receipt needs the delivery address -- stored as the snake_case
     # keys CheckoutAddress posts, translated to camelCase on the way out like
     # every other response shape.
@@ -100,7 +155,7 @@ def test_checkout_requires_authentication(client: TestClient):
     response = client.post(
         "/v1/public/checkout",
         json={
-            "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+            "items": [{"variantId": "var_checkout_fixture_a", "quantity": 1}],
             "deliveryAddress": ADDRESS,
         },
     )
@@ -112,14 +167,15 @@ def test_checkout_rejects_insufficient_stock(client: TestClient, db: SQLiteDatab
     # Pinned rather than trusting the seed's current quantity, which is free
     # to change independently of what this test needs: fewer than 10 on hand.
     db._conn.execute(
-        "UPDATE inventory_levels SET on_hand = 5, reserved = 0 WHERE variant_id = 'var_rajma_500g'"
+        "UPDATE inventory_levels SET on_hand = 5, reserved = 0"
+        " WHERE variant_id = 'var_checkout_fixture_b'"
     )
     db._conn.commit()
 
     response = client.post(
         "/v1/public/checkout",
         json={
-            "items": [{"variantId": "var_rajma_500g", "quantity": 10}],
+            "items": [{"variantId": "var_checkout_fixture_b", "quantity": 10}],
             "deliveryAddress": ADDRESS,
         },
     )
@@ -133,20 +189,21 @@ def test_checkout_rejects_insufficient_stock_and_releases_earlier_lines(
     already-reserved lines holding stock for an order that never exists."""
     as_customer(client, db)
     db._conn.execute(
-        "UPDATE inventory_levels SET on_hand = 5, reserved = 0 WHERE variant_id = 'var_rajma_500g'"
+        "UPDATE inventory_levels SET on_hand = 5, reserved = 0"
+        " WHERE variant_id = 'var_checkout_fixture_b'"
     )
     db._conn.commit()
     before = db._conn.execute(
-        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_checkout_fixture_a'"
     ).fetchone()[0]
 
     response = client.post(
         "/v1/public/checkout",
         json={
             "items": [
-                {"variantId": "var_alphonso_1kg", "quantity": 1},
+                {"variantId": "var_checkout_fixture_a", "quantity": 1},
                 # Pinned above to 5 on hand; 10 exceeds free stock.
-                {"variantId": "var_rajma_500g", "quantity": 10},
+                {"variantId": "var_checkout_fixture_b", "quantity": 10},
             ],
             "deliveryAddress": ADDRESS,
         },
@@ -154,9 +211,9 @@ def test_checkout_rejects_insufficient_stock_and_releases_earlier_lines(
     assert response.status_code == 409
 
     after = db._conn.execute(
-        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_checkout_fixture_a'"
     ).fetchone()[0]
-    assert after == before, "the mango reservation must be released when rajma's line fails"
+    assert after == before, "fixture A's reservation must be released when fixture B's line fails"
 
 
 def test_checkout_second_line_cannot_oversell_the_last_unit(client: TestClient, db: SQLiteDatabase):
@@ -165,14 +222,15 @@ def test_checkout_second_line_cannot_oversell_the_last_unit(client: TestClient, 
     cannot both succeed."""
     as_customer(client, db)
     db._conn.execute(
-        "UPDATE inventory_levels SET on_hand = 5, reserved = 4 WHERE variant_id = 'var_rajma_500g'"
+        "UPDATE inventory_levels SET on_hand = 5, reserved = 4"
+        " WHERE variant_id = 'var_checkout_fixture_b'"
     )
     db._conn.commit()
 
     first = client.post(
         "/v1/public/checkout",
         json={
-            "items": [{"variantId": "var_rajma_500g", "quantity": 1}],
+            "items": [{"variantId": "var_checkout_fixture_b", "quantity": 1}],
             "deliveryAddress": ADDRESS,
         },
     )
@@ -181,14 +239,14 @@ def test_checkout_second_line_cannot_oversell_the_last_unit(client: TestClient, 
     second = client.post(
         "/v1/public/checkout",
         json={
-            "items": [{"variantId": "var_rajma_500g", "quantity": 1}],
+            "items": [{"variantId": "var_checkout_fixture_b", "quantity": 1}],
             "deliveryAddress": ADDRESS,
         },
     )
     assert second.status_code == 409
 
     reserved = db._conn.execute(
-        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_rajma_500g'"
+        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_checkout_fixture_b'"
     ).fetchone()[0]
     assert reserved == 5  # the last unit is held by exactly one order, not oversold
 
@@ -198,11 +256,11 @@ def test_checkout_idempotency_key_returns_the_original_order_on_retry(
 ):
     as_customer(client, db)
     before = db._conn.execute(
-        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_checkout_fixture_a'"
     ).fetchone()[0]
 
     payload = {
-        "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+        "items": [{"variantId": "var_checkout_fixture_a", "quantity": 1}],
         "deliveryAddress": ADDRESS,
         "idempotencyKey": "retry-key-riya-1",
     }
@@ -215,7 +273,7 @@ def test_checkout_idempotency_key_returns_the_original_order_on_retry(
     assert retried.json()["id"] == first.json()["id"]
 
     after = db._conn.execute(
-        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+        "SELECT reserved FROM inventory_levels WHERE variant_id = 'var_checkout_fixture_a'"
     ).fetchone()[0]
     assert after == before + 1, "a retried request must not reserve stock a second time"
 
@@ -238,7 +296,7 @@ def test_checkout_idempotency_key_is_scoped_per_customer(client: TestClient, db:
     db._conn.commit()
 
     payload = {
-        "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+        "items": [{"variantId": "var_checkout_fixture_a", "quantity": 1}],
         "deliveryAddress": ADDRESS,
         "idempotencyKey": "shared-key",
     }
@@ -395,7 +453,7 @@ def test_checkout_requires_address_fields(client: TestClient, db: SQLiteDatabase
     response = client.post(
         "/v1/public/checkout",
         json={
-            "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+            "items": [{"variantId": "var_checkout_fixture_a", "quantity": 1}],
             "deliveryAddress": {
                 "recipientName": "Riya",
                 "line1": "12 Palm Grove",

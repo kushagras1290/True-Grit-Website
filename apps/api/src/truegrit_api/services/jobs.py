@@ -147,6 +147,7 @@ async def process_queue_job(
     *,
     deliver_email: Callable[[OutboundEmail, str], bool | Awaitable[bool]] | None = None,
     invalidate_cache: Callable[[str, str], Awaitable[None]] | None = None,
+    translate_task: Callable[[str], Awaitable[None]] | None = None,
 ) -> str:
     """Process one at-least-once queue delivery exactly once by idempotency key."""
     idempotency_key = _required_string(message, "idempotencyKey")
@@ -189,6 +190,10 @@ async def process_queue_job(
                 str(message.get("aggregateType") or "content"),
                 str(message.get("aggregateId") or "all"),
             )
+    elif event_type == "translation.batch-task.v1":
+        if translate_task is None:
+            raise RetryableJobError("Translation worker is not configured.")
+        await translate_task(_required_string(payload, "taskId"))
     else:
         raise ValueError(f"Unsupported queue event type: {event_type}")
 

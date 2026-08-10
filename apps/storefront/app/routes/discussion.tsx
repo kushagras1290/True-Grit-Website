@@ -9,6 +9,7 @@ import { createComment, getDiscussion, type DiscussionDetail } from "../lib/comm
 import { seoMeta } from "../lib/seo";
 import { LocalizedText, useLocalizePlural, useLocalizeText } from "../lib/i18n/localized-text";
 import { useDateFormatter } from "../lib/i18n/dates";
+import { useLocaleContext } from "../lib/i18n/context";
 
 export function meta({ matches }: Route.MetaArgs) {
   return seoMeta(
@@ -30,6 +31,7 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
   const plural = useLocalizePlural();
   const localize = useLocalizeText();
   const formatDate = useDateFormatter();
+  const { locale } = useLocaleContext();
   const { id = "" } = useParams();
   const { customer, status } = useCustomer();
   const [discussion, setDiscussion] = useState<DiscussionDetail | null>(null);
@@ -39,20 +41,20 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
   const [error, setError] = useState<string | null>(null);
 
   function reload() {
-    return getDiscussion(id)
+    return getDiscussion(id, locale)
       .then((entry) => setDiscussion(entry))
       .catch(() => setFailed(true));
   }
 
   useEffect(() => {
     let active = true;
-    getDiscussion(id)
+    getDiscussion(id, locale)
       .then((entry) => active && setDiscussion(entry))
       .catch(() => active && setFailed(true));
     return () => {
       active = false;
     };
-  }, [id]);
+  }, [id, locale]);
 
   async function handleComment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

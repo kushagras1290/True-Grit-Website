@@ -2,30 +2,24 @@
  * Country → default-language guesses, for visitors whose browser gives no
  * useful signal.
  *
- * `Accept-Language` is the better source when it names a real language — it is
- * what the visitor actually configured. But a large share of browsers are left
- * on a device-wide "English" default regardless of who is using them or where,
- * which makes a bare `en` from that header ambiguous: is it a genuine
- * preference, or just what the OS shipped with? Country, from Cloudflare's
- * edge (`resolveCountry`), disambiguates that case — see the priority order in
- * `resolveLocale`.
+ * Country is the first-visit default so language and currency change together:
+ * a visitor in Germany receives German and EUR even if the device retained an
+ * English factory default. A language the visitor deliberately chooses is
+ * stored in a cookie and outranks this mapping; `Accept-Language` remains the
+ * fallback only when a request has no valid country signal.
  *
  * This is deliberately a guess, not a claim of nationality or fluency, and it
  * is why `resolveLocale` always pairs a geo-selected locale with a visible way
- * back to English (`LanguageSuggestionPrompt`). Only the country's clearly
- * dominant official/majority language is listed; a country with no single
- * obvious answer (the U.S., Canada, most of India) is left out on purpose
- * rather than guessed at.
- *
- * India is absent for the same reason the accept-language step already ranks
- * above this one: the storefront is India-first across 22 languages with no
- * single "the" language, so guessing one from country alone would be wrong far
- * more often than it would help.
+ * back to English (`LanguageSuggestionPrompt`). The ISO locale dataset covers
+ * every country; explicit overrides preserve the strongest national language
+ * choices and provide a supported fallback where that language is not shipped.
  */
+
+import countryLocaleMap from "country-locale-map";
 
 import { matchLocale, type LocaleDefinition } from "./locales";
 
-const COUNTRY_TO_LOCALE: Readonly<Record<string, string>> = {
+const COUNTRY_LOCALE_OVERRIDES: Readonly<Record<string, string>> = {
   // Europe
   DE: "de",
   AT: "de",
@@ -78,37 +72,53 @@ const COUNTRY_TO_LOCALE: Readonly<Record<string, string>> = {
   VN: "vi",
   ID: "id",
   PH: "fil",
+  // ISO defaults whose primary language is not yet in the storefront.
+  BT: "en",
+  BV: "nb",
+  CV: "pt",
+  ER: "en",
+  FO: "da",
+  GH: "en",
+  GL: "da",
+  MV: "en",
+  PK: "ur",
+  WS: "en",
+  LK: "en",
+  SJ: "nb",
+  TO: "en",
+  VU: "en",
+  ZM: "en",
 } as const;
 
 /**
- * The locale a country most plausibly reads, or `null` when the country is
- * unmapped or the mapped language was never shipped with a catalogue.
+ * The locale a country most plausibly reads, or `null` for an invalid country.
  */
 export function matchCountryLocale(country: string | null | undefined): LocaleDefinition | null {
   if (!country) return null;
-  const code = COUNTRY_TO_LOCALE[country.trim().toUpperCase()];
-  return code ? matchLocale(code) : null;
+  const countryCode = country.trim().toUpperCase();
+  if (!countryCode) return null;
+  const code =
+    COUNTRY_LOCALE_OVERRIDES[countryCode] ?? countryLocaleMap.getLocaleByAlpha2(countryCode);
+  return code ? matchLocale(code.replaceAll("_", "-")) : null;
 }
 
 /**
- * Indian state/UT → locale, the refinement `COUNTRY_TO_LOCALE` above
- * explicitly declines to make at the country level (see this file's header
- * comment: India has no single dominant language, so guessing wrong would be
- * common). State is a real signal a country never was — a Punjab visitor and
+ * Indian state/UT → locale, a more precise refinement than the country-level
+ * Hindi default. State is a real signal a country never was — a Punjab visitor and
  * a Tamil Nadu visitor should not get the same guess just because both are
  * "IN". Keyed by full state name (what Cloudflare's `cf.region` typically
  * carries) in `INDIA_STATE_TO_LOCALE`, and by ISO-3166-2 subdivision code
  * (`cf.regionCode`, e.g. "IN-PB") in `INDIA_REGION_CODE_TO_LOCALE` — whichever
  * the edge actually populates, see `resolveRegion` (geo.server.ts).
  *
- * A state left out on purpose (Nagaland, Mizoram, Meghalaya) has no clearly
- * dominant language among the 22 this storefront ships — the same "leave it
- * out rather than guess wrong" rule `COUNTRY_TO_LOCALE` already applies to
- * India as a whole. Those visitors still get the country-level fallback (or
- * `Accept-Language`), never a forced wrong guess.
+ * Where a state does not have a matching language in the shipped catalogue,
+ * use English (an official language there) instead of incorrectly assuming
+ * Hindi. This keeps every Indian subdivision deterministic without claiming a
+ * language the storefront cannot actually render.
  */
 const INDIA_STATE_TO_LOCALE: Readonly<Record<string, string>> = {
   "ANDHRA PRADESH": "te",
+  "ARUNACHAL PRADESH": "en",
   ASSAM: "as",
   BIHAR: "hi",
   CHHATTISGARH: "hi",
@@ -123,6 +133,9 @@ const INDIA_STATE_TO_LOCALE: Readonly<Record<string, string>> = {
   "MADHYA PRADESH": "hi",
   MAHARASHTRA: "mr",
   MANIPUR: "mni",
+  MEGHALAYA: "en",
+  MIZORAM: "en",
+  NAGALAND: "en",
   ODISHA: "or",
   ORISSA: "or",
   PUNJAB: "pa",
@@ -147,8 +160,10 @@ const INDIA_STATE_TO_LOCALE: Readonly<Record<string, string>> = {
 
 const INDIA_REGION_CODE_TO_LOCALE: Readonly<Record<string, string>> = {
   AP: "te",
+  AR: "en",
   AS: "as",
   BR: "hi",
+  CG: "hi",
   CT: "hi",
   GA: "kok",
   GJ: "gu",
@@ -161,6 +176,9 @@ const INDIA_REGION_CODE_TO_LOCALE: Readonly<Record<string, string>> = {
   MP: "hi",
   MH: "mr",
   MN: "mni",
+  ML: "en",
+  MZ: "en",
+  NL: "en",
   OR: "or",
   PB: "pa",
   RJ: "hi",

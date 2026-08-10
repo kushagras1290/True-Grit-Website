@@ -4,6 +4,11 @@ The point of these switches is that they hold on the API, not just in the
 storefront UI, so most of what is worth testing here is a route refusing after a
 switch is flipped — hiding a button stops the honest customer, not a replayed
 request.
+
+Seeds its own purchasable product (`var_settings_test_1kg`) rather than
+depending on the demo catalogue: migration 0095 retires that catalogue from
+every database it touches (the live site must not keep any trace of it), so
+tests cannot rely on it surviving either.
 """
 
 from __future__ import annotations
@@ -18,6 +23,33 @@ from .conftest import SESSION_COOKIE, TEST_PHONE, create_session, verify_phone_t
 
 SETTINGS_PATH = "/v1/admin/storefront-settings"
 PUBLIC_SETTINGS_PATH = "/v1/public/settings"
+CHECKOUT_PRODUCT_ID = "prd_settings_test"
+CHECKOUT_VARIANT_ID = "var_settings_test_1kg"
+
+
+@pytest.fixture(autouse=True)
+def _payable_product(db: SQLiteDatabase) -> None:
+    db._conn.executescript(
+        """
+        INSERT INTO products (id, internal_name, name, slug, product_type, status,
+          accepts_orders, created_at, created_by, updated_at, updated_by)
+        VALUES ('prd_settings_test', 'Settings Test Product', 'Settings Test Product',
+          'settings-test-product', 'simple', 'published', 1,
+          '2026-07-01T00:00:00Z', 'usr_admin', '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO product_variants (id, product_id, sku, name, status, sort_order,
+          created_at, updated_at)
+        VALUES ('var_settings_test_1kg', 'prd_settings_test', 'SET-TEST-1KG', '1 kg',
+          'active', 1, '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
+        INSERT INTO variant_prices (id, variant_id, market_code, currency_code,
+          list_amount_minor, status, created_at, created_by)
+        VALUES ('vpr_settings_test_1kg', 'var_settings_test_1kg', 'IN', 'INR', 89900,
+          'active', '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO inventory_levels (variant_id, location_id, on_hand, reserved,
+          reorder_threshold, version, updated_at)
+        VALUES ('var_settings_test_1kg', 'loc_mumbai', 500, 0, 20, 1, '2026-07-01T00:00:00Z');
+        """
+    )
+    db._conn.commit()
 
 
 def set_switch(db: SQLiteDatabase, key: str, value: str) -> None:
@@ -176,7 +208,7 @@ def _register_and_verify(client: TestClient, sms_outbox: list, *, email: str, na
     assert registered.status_code == 200, registered.text
 
 
-def _checkout(client: TestClient, *, variant_id: str = "var_alphonso_1kg") -> httpx.Response:
+def _checkout(client: TestClient, *, variant_id: str = CHECKOUT_VARIANT_ID) -> httpx.Response:
     return client.post(
         "/v1/public/checkout",
         json={
@@ -217,7 +249,8 @@ def test_payments_override_widens_for_one_product(
 
     set_switch(db, "commerce.payments.enabled", "0")
     db._conn.execute(  # test-only direct access, mirrors `set_switch` above
-        "UPDATE products SET payments_override = 'force_enabled' WHERE id = 'prd_alphonso'"
+        "UPDATE products SET payments_override = 'force_enabled' WHERE id = ?",
+        (CHECKOUT_PRODUCT_ID,),
     )
     db._conn.commit()
 
@@ -235,7 +268,8 @@ def test_payments_override_narrows_for_one_product(
     _register_and_verify(client, sms_outbox, email="narrow@example.test", name="Arjun Rao")
 
     db._conn.execute(
-        "UPDATE products SET payments_override = 'force_disabled' WHERE id = 'prd_alphonso'"
+        "UPDATE products SET payments_override = 'force_disabled' WHERE id = ?",
+        (CHECKOUT_PRODUCT_ID,),
     )
     db._conn.commit()
 

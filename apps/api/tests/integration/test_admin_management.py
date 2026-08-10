@@ -29,6 +29,122 @@ def as_editor(client: TestClient, db: SQLiteDatabase) -> None:
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_editor"))
 
 
+# Migration 0095 retires the old demo catalogue unconditionally -- on every
+# database it touches, including a fresh test one -- archiving/deleting its
+# farms, products and order/farm linkages. Several tests below used to lean on
+# that catalogue's fixed ids (farm_devika, prd_alphonso, ...); they now build
+# small, self-contained, obviously-synthetic fixtures of their own instead.
+
+
+def _seed_farm_owner_orders(db: SQLiteDatabase) -> None:
+    """Give usr_farmowner a farm and hand it ord_1001/ord_1002's line items.
+
+    Migration 0095 nulls every seeded order_item's farm_id along with the old
+    demo catalogue's farm/product links, so farm-owner order scoping needs its
+    own farm rather than the retired farm_devika linkage. ord_1003-1007 keep
+    their NULL farm_id, so they stay outside this farm's scope untouched.
+    """
+    now = "2026-07-01T00:00:00Z"
+    db._conn.execute(
+        "INSERT INTO farms (id, name, slug, country_code, status, created_at, created_by,"
+        " updated_at, updated_by)"
+        " VALUES ('farm_owner_test_scope', 'Order Scope Test Farm', 'order-scope-test-farm',"
+        " 'IN', 'published', ?, 'usr_admin', ?, 'usr_admin')",
+        (now, now),
+    )
+    db._conn.execute(
+        "INSERT INTO farm_members (user_id, farm_id, created_at, created_by)"
+        " VALUES ('usr_farmowner', 'farm_owner_test_scope', ?, 'usr_admin')",
+        (now,),
+    )
+    db._conn.execute(
+        "UPDATE order_items SET farm_id = 'farm_owner_test_scope'"
+        " WHERE id IN ('oit_1001', 'oit_1002')"
+    )
+    db._conn.commit()
+
+
+def _seed_checkout_product(db: SQLiteDatabase) -> None:
+    """A minimal purchasable product: published, one active variant with an
+    active price and starting stock -- self-contained rather than depending on
+    the old demo catalogue's prd_alphonso, which migration 0095 archives."""
+    db._conn.executescript(
+        """
+        INSERT INTO products (id, internal_name, name, slug, product_type, status,
+          accepts_orders, created_at, created_by, updated_at, updated_by)
+        VALUES ('prd_checkout_test', 'Checkout Test Product', 'Checkout Test Product',
+          'checkout-test-product', 'simple', 'published', 1,
+          '2026-07-01T00:00:00Z', 'usr_admin', '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO product_variants (id, product_id, sku, name, status, created_at, updated_at)
+        VALUES ('var_checkout_test', 'prd_checkout_test', 'CHK-TEST-1', '1 unit', 'active',
+          '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
+        INSERT INTO variant_prices (id, variant_id, market_code, currency_code,
+          list_amount_minor, status, created_at, created_by)
+        VALUES ('vpr_checkout_test', 'var_checkout_test', 'IN', 'INR', 89900, 'active',
+          '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO inventory_levels (variant_id, location_id, on_hand, reserved,
+          reorder_threshold, version, updated_at)
+        VALUES ('var_checkout_test', 'loc_mumbai', 50, 0, 10, 1, '2026-07-01T00:00:00Z');
+        """
+    )
+    db._conn.commit()
+
+
+def _seed_price_adjustment_catalogue(db: SQLiteDatabase) -> dict[str, str]:
+    """Two fresh published products with an identical, round list price -- one
+    inside a fresh category, one outside it -- replacing the old demo
+    catalogue's prd_alphonso/himalayan-red-rajma/fresh-fruits, which migration
+    0095 archives and hides."""
+    db._conn.executescript(
+        """
+        INSERT INTO categories (id, internal_name, name, slug, path, level, status,
+          visibility, product_assignment_mode, created_at, created_by, updated_at, updated_by)
+        VALUES ('cat_padj_test', 'Price Adjustment Test Category',
+          'Price Adjustment Test Category', 'price-adjustment-test-category',
+          '/price-adjustment-test-category', 0, 'published', 'public', 'manual',
+          '2026-07-01T00:00:00Z', 'usr_admin', '2026-07-01T00:00:00Z', 'usr_admin');
+
+        INSERT INTO products (id, internal_name, name, slug, product_type, status,
+          created_at, created_by, updated_at, updated_by)
+        VALUES ('prd_padj_in', 'Price Adjustment Test In-Category',
+          'Price Adjustment Test In-Category', 'price-adjustment-test-in-category', 'simple',
+          'published', '2026-07-01T00:00:00Z', 'usr_admin', '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO product_variants (id, product_id, sku, name, status, created_at, updated_at)
+        VALUES ('var_padj_in', 'prd_padj_in', 'PADJ-IN-1', '1 unit', 'active',
+          '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
+        INSERT INTO variant_prices (id, variant_id, market_code, currency_code,
+          list_amount_minor, status, created_at, created_by)
+        VALUES ('vpr_padj_in', 'var_padj_in', 'IN', 'INR', 100000, 'active',
+          '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO product_categories (product_id, category_id, is_primary, sort_order,
+          assigned_at, assigned_by)
+        VALUES ('prd_padj_in', 'cat_padj_test', 1, 1, '2026-07-01T00:00:00Z', 'usr_admin');
+
+        INSERT INTO products (id, internal_name, name, slug, product_type, status,
+          created_at, created_by, updated_at, updated_by)
+        VALUES ('prd_padj_out', 'Price Adjustment Test Out-of-Category',
+          'Price Adjustment Test Out-of-Category', 'price-adjustment-test-out-of-category',
+          'simple', 'published', '2026-07-01T00:00:00Z', 'usr_admin', '2026-07-01T00:00:00Z',
+          'usr_admin');
+        INSERT INTO product_variants (id, product_id, sku, name, status, created_at, updated_at)
+        VALUES ('var_padj_out', 'prd_padj_out', 'PADJ-OUT-1', '1 unit', 'active',
+          '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
+        INSERT INTO variant_prices (id, variant_id, market_code, currency_code,
+          list_amount_minor, status, created_at, created_by)
+        VALUES ('vpr_padj_out', 'var_padj_out', 'IN', 'INR', 100000, 'active',
+          '2026-07-01T00:00:00Z', 'usr_admin');
+        """
+    )
+    db._conn.commit()
+    return {
+        "category_id": "cat_padj_test",
+        "in_category_product_id": "prd_padj_in",
+        "in_category_slug": "price-adjustment-test-in-category",
+        "out_of_category_product_id": "prd_padj_out",
+        "out_of_category_slug": "price-adjustment-test-out-of-category",
+    }
+
+
 # --- Products ---------------------------------------------------------------
 
 
@@ -104,45 +220,70 @@ def test_product_create_edit_publish_archive(client: TestClient, db: SQLiteDatab
 
 
 def test_diet_tag_update_does_not_wipe_non_diet_tags(client: TestClient, db: SQLiteDatabase):
-    """prd_ragi seeds with several diet tags *and* a non-diet one
-    (traditional-indian, tag_group='intention') -- patching dietTagIds must
-    only replace the diet ones, not blanket-delete every product_tags row."""
+    """A product carrying several diet tags *and* a non-diet one (Traditional
+    Indian, tag_group='intention') -- patching dietTagIds must only replace
+    the diet ones, not blanket-delete every product_tags row."""
     as_admin(client, db)
-    before = client.get("/v1/admin/products/prd_ragi").json()
+    product_id = client.post(
+        "/v1/admin/products", json={"name": "Diet Tag Test Product", "productType": "pantry"}
+    ).json()["id"]
+    assert (
+        client.patch(
+            f"/v1/admin/products/{product_id}", json={"dietTagIds": ["tag_gluten_free"]}
+        ).status_code
+        == 200
+    )
+    db._conn.execute(
+        "INSERT INTO product_tags (product_id, tag_id) VALUES (?, 'tag_traditional')", (product_id,)
+    )
+    db._conn.commit()
+    assert (
+        client.patch(
+            f"/v1/admin/products/{product_id}/status", json={"status": "published"}
+        ).status_code
+        == 200
+    )
+    slug = client.get(f"/v1/admin/products/{product_id}").json()["slug"]
+
+    before = client.get(f"/v1/admin/products/{product_id}").json()
     assert "tag_gluten_free" in before["dietTagIds"]
 
     updated = client.patch(
-        "/v1/admin/products/prd_ragi", json={"dietTagIds": ["tag_vegan", "tag_dairy_free"]}
+        f"/v1/admin/products/{product_id}", json={"dietTagIds": ["tag_vegan", "tag_dairy_free"]}
     )
     assert updated.status_code == 200
 
-    after = client.get("/v1/admin/products/prd_ragi").json()
+    after = client.get(f"/v1/admin/products/{product_id}").json()
     assert set(after["dietTagIds"]) == {"tag_vegan", "tag_dairy_free"}
-    public_product = client.get("/v1/public/products/sprouted-ragi-flour").json()
+    public_product = client.get(f"/v1/public/products/{slug}").json()
     assert "Traditional Indian" in public_product["tags"], "non-diet tag must survive"
     assert "Gluten Free" not in public_product["tags"], "replaced, not merged"
 
 
 def test_archive_lists_and_restores_products(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
-    archived = client.post("/v1/admin/products/prd_alphonso/archive")
+    product_id = client.post(
+        "/v1/admin/products", json={"name": "Archive Flow Test Widget", "productType": "pantry"}
+    ).json()["id"]
+
+    archived = client.post(f"/v1/admin/products/{product_id}/archive")
     assert archived.status_code == 200
 
     # Scoped by search: the seed catalogue already carries hundreds of
     # archived filler products (a bulk-generated library), so an unfiltered
     # first page is not guaranteed to include the one this test just archived.
-    archive = client.get("/v1/admin/archive", params={"search": "Alphonso"})
+    archive = client.get("/v1/admin/archive", params={"search": "Archive Flow Test Widget"})
     assert archive.status_code == 200
     rows = archive.json()["items"]
-    product = next(row for row in rows if row["id"] == "prd_alphonso")
+    product = next(row for row in rows if row["id"] == product_id)
     assert product["kind"] == "product"
     assert product["status"] == "archived"
 
-    restored = client.post("/v1/admin/archive/product/prd_alphonso/restore")
+    restored = client.post(f"/v1/admin/archive/product/{product_id}/restore")
     assert restored.status_code == 200
     assert restored.json()["status"] == "draft"
-    assert client.get("/v1/admin/products/prd_alphonso").status_code == 200
-    assert client.get("/v1/admin/products/prd_alphonso").json()["status"] == "draft"
+    assert client.get(f"/v1/admin/products/{product_id}").status_code == 200
+    assert client.get(f"/v1/admin/products/{product_id}").json()["status"] == "draft"
     actions = [row["action"] for row in client.get("/v1/admin/audit").json()["items"]]
     assert "product.restored" in actions
 
@@ -226,25 +367,40 @@ def test_category_update_rejects_bad_visibility(client: TestClient, db: SQLiteDa
 
 def test_inventory_adjustment_persists_and_audits(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
+    product_id = client.post(
+        "/v1/admin/products", json={"name": "Inventory Audit Widget", "productType": "pantry"}
+    ).json()["id"]
+    created_variant = client.post(
+        f"/v1/admin/products/{product_id}/variants",
+        json={"name": "Default", "sku": "INV-AUDIT-1", "listMinor": 10000},
+    )
+    assert created_variant.status_code == 200, created_variant.text
+    assert (
+        client.patch(
+            f"/v1/admin/products/{product_id}/status", json={"status": "published"}
+        ).status_code
+        == 200
+    )
+
     response = client.post(
         "/v1/admin/inventory/adjustments",
         json={
-            "sku": "TRG-MNG-1KG",
+            "sku": "INV-AUDIT-1",
             "quantityDelta": 10,
             "reasonCode": "receipt",
             "note": "Restock delivery",
         },
     )
     assert response.status_code == 200
-    assert response.json()["onHand"] == 130  # seeded 120 + 10
+    assert response.json()["onHand"] == 10
 
     # Searched, not read off page one: the inventory list is paginated and the
     # catalogue is far larger than a single page. One group per product, its
     # variants nested inside.
-    inventory = client.get("/v1/admin/inventory", params={"search": "TRG-MNG-1KG"}).json()["items"]
+    inventory = client.get("/v1/admin/inventory", params={"search": "INV-AUDIT-1"}).json()["items"]
     variants = [variant for group in inventory for variant in group["variants"]]
-    mango = next(row for row in variants if row["sku"] == "TRG-MNG-1KG")
-    assert mango["onHand"] == 130
+    widget = next(row for row in variants if row["sku"] == "INV-AUDIT-1")
+    assert widget["onHand"] == 10
     assert "inventory.adjusted" in [
         row["action"] for row in client.get("/v1/admin/audit").json()["items"]
     ]
@@ -310,6 +466,24 @@ def test_enabled_product_without_stock_appears_and_accepts_first_adjustment(
 
 def test_notifications_are_role_aware(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
+    # A published product that has never been stocked -- 0 on hand against a 0
+    # reorder threshold still counts as needing attention -- triggers the
+    # "inventory" notification without depending on the old demo catalogue's
+    # stock levels, which migration 0095 archives out of every query.
+    product_id = client.post(
+        "/v1/admin/products", json={"name": "Notification Stock Widget", "productType": "pantry"}
+    ).json()["id"]
+    client.post(
+        f"/v1/admin/products/{product_id}/variants",
+        json={"name": "Default", "sku": "NOTIF-STOCK-1", "listMinor": 5000},
+    )
+    assert (
+        client.patch(
+            f"/v1/admin/products/{product_id}/status", json={"status": "published"}
+        ).status_code
+        == 200
+    )
+
     owner = client.get("/v1/admin/notifications")
     assert owner.status_code == 200, owner.text
     owner_ids = {item["id"] for item in owner.json()["items"]}
@@ -610,25 +784,54 @@ def test_owner_can_update_and_delete_empty_farm(client: TestClient, db: SQLiteDa
 
 def test_owner_can_delete_farm_with_active_products(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
-    # Counted from the seed rather than hardcoded: how many products a farm
-    # carries is catalogue data, while "every one of them is archived with the
+    # A fresh, self-contained farm with its own active products -- migration
+    # 0095 deletes the old demo catalogue's farms outright, so this test
+    # builds its own rather than depending on the retired farm_devika.
+    farm_id = "farm_delete_test"
+    now = "2026-07-01T00:00:00Z"
+    db._conn.execute(
+        "INSERT INTO farms (id, name, slug, country_code, status, created_at, created_by,"
+        " updated_at, updated_by)"
+        " VALUES (?, 'Delete Test Farm', 'delete-test-farm', 'IN', 'published', ?, 'usr_admin',"
+        " ?, 'usr_admin')",
+        (farm_id, now, now),
+    )
+    for suffix in ("1", "2"):
+        db._conn.execute(
+            "INSERT INTO products (id, internal_name, name, slug, product_type, farm_id, status,"
+            " created_at, created_by, updated_at, updated_by)"
+            " VALUES (?, ?, ?, ?, 'simple', ?, 'published', ?, 'usr_admin', ?, 'usr_admin')",
+            (
+                f"prd_delete_test_{suffix}",
+                f"Delete Test Product {suffix}",
+                f"Delete Test Product {suffix}",
+                f"delete-test-product-{suffix}",
+                farm_id,
+                now,
+                now,
+            ),
+        )
+    db._conn.commit()
+
+    # Counted from the fixture rather than hardcoded: how many products a farm
+    # carries is fixture data, while "every one of them is archived with the
     # farm" is the behaviour under test.
     active_before = db._conn.execute(
-        "SELECT COUNT(*) AS c FROM products WHERE farm_id = 'farm_devika' AND archived_at IS NULL"
+        "SELECT COUNT(*) AS c FROM products WHERE farm_id = ? AND archived_at IS NULL", (farm_id,)
     ).fetchone()["c"]
     assert active_before > 0, "the fixture must have active products for this to mean anything"
 
-    response = client.delete("/v1/admin/farms/farm_devika")
+    response = client.delete(f"/v1/admin/farms/{farm_id}")
     assert response.status_code == 200
     assert response.json()["archivedProductCount"] == active_before
 
     product = db._conn.execute(
-        "SELECT status, archived_at FROM products WHERE id = 'prd_alphonso'"
+        "SELECT status, archived_at FROM products WHERE id = 'prd_delete_test_1'"
     ).fetchone()
     assert product["status"] == "archived"
     assert product["archived_at"] is not None
     remaining = db._conn.execute(
-        "SELECT COUNT(*) AS c FROM products WHERE farm_id = 'farm_devika' AND archived_at IS NULL"
+        "SELECT COUNT(*) AS c FROM products WHERE farm_id = ? AND archived_at IS NULL", (farm_id,)
     ).fetchone()["c"]
     assert remaining == 0
 
@@ -700,19 +903,20 @@ def test_order_invalid_transition_conflicts(client: TestClient, db: SQLiteDataba
 
 
 def test_order_cancellation_releases_reserved_inventory(client: TestClient, db: SQLiteDatabase):
+    _seed_checkout_product(db)
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_cust_riya"))
     before = db._conn.execute(
-        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_checkout_test'"
     ).fetchone()
     order = client.post(
         "/v1/public/checkout",
         json={
-            "items": [{"variantId": "var_alphonso_1kg", "quantity": 2}],
+            "items": [{"variantId": "var_checkout_test", "quantity": 2}],
             "deliveryAddress": ADDRESS,
         },
     ).json()
     after_checkout = db._conn.execute(
-        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_checkout_test'"
     ).fetchone()
     assert after_checkout["on_hand"] == before["on_hand"]
     assert after_checkout["reserved"] == before["reserved"] + 2
@@ -722,21 +926,22 @@ def test_order_cancellation_releases_reserved_inventory(client: TestClient, db: 
     cancelled = client.patch(f"/v1/admin/orders/{order['id']}/status", json={"status": "cancelled"})
     assert cancelled.status_code == 200
     after_cancel = db._conn.execute(
-        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_checkout_test'"
     ).fetchone()
     assert after_cancel["on_hand"] == before["on_hand"]
     assert after_cancel["reserved"] == before["reserved"]
 
 
 def test_completed_order_consumes_reserved_inventory(client: TestClient, db: SQLiteDatabase):
+    _seed_checkout_product(db)
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_cust_riya"))
     before = db._conn.execute(
-        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_checkout_test'"
     ).fetchone()
     order = client.post(
         "/v1/public/checkout",
         json={
-            "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+            "items": [{"variantId": "var_checkout_test", "quantity": 1}],
             "deliveryAddress": ADDRESS,
         },
     ).json()
@@ -750,15 +955,16 @@ def test_completed_order_consumes_reserved_inventory(client: TestClient, db: SQL
     completed = client.patch(f"/v1/admin/orders/{order['id']}/status", json={"status": "completed"})
     assert completed.status_code == 200
     after_complete = db._conn.execute(
-        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_alphonso_1kg'"
+        "SELECT on_hand, reserved FROM inventory_levels WHERE variant_id = 'var_checkout_test'"
     ).fetchone()
     assert after_complete["on_hand"] == before["on_hand"] - 1
     assert after_complete["reserved"] == before["reserved"]
 
 
 def test_farm_owner_sees_only_own_farm_orders_in_list(client: TestClient, db: SQLiteDatabase):
-    # ord_1001/ord_1002 are entirely prd_alphonso (farm_devika, usr_farmowner's
-    # farm); ord_1003-1007 belong to other farms and must never appear.
+    # ord_1001/ord_1002 are assigned to usr_farmowner's farm by the fixture
+    # below; ord_1003-1007 keep no farm and must never appear.
+    _seed_farm_owner_orders(db)
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     items = client.get("/v1/admin/orders").json()["items"]
     references = {item["publicReference"] for item in items}
@@ -769,6 +975,7 @@ def test_farm_owner_sees_only_own_farm_orders_in_list(client: TestClient, db: SQ
 
 
 def test_farm_owner_gets_full_detail_for_own_farm_order(client: TestClient, db: SQLiteDatabase):
+    _seed_farm_owner_orders(db)
     _seed_paid_razorpay_payment(db, "ord_1001", 94800)
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     detail = client.get("/v1/admin/orders/ord_1001")
@@ -786,6 +993,7 @@ def test_farm_owner_gets_full_detail_for_own_farm_order(client: TestClient, db: 
 
 
 def test_farm_owner_gets_404_for_another_farms_order(client: TestClient, db: SQLiteDatabase):
+    _seed_farm_owner_orders(db)
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     assert client.get("/v1/admin/orders/ord_1003").status_code == 404
 
@@ -798,6 +1006,7 @@ def test_farm_owner_can_transition_own_farm_order(client: TestClient, db: SQLite
 
 
 def test_farm_owner_cannot_transition_another_farms_order(client: TestClient, db: SQLiteDatabase):
+    _seed_farm_owner_orders(db)
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     response = client.patch("/v1/admin/orders/ord_1003/status", json={"status": "cancelled"})
     assert response.status_code == 403
@@ -815,6 +1024,7 @@ def test_regular_admin_still_sees_every_farms_orders(client: TestClient, db: SQL
 
 
 def test_farm_owner_search_results_scoped_to_own_farm(client: TestClient, db: SQLiteDatabase):
+    _seed_farm_owner_orders(db)
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_farmowner"))
     results = client.get("/v1/admin/search", params={"q": "TG-10"}).json()
     references = {row["publicReference"] for row in results["orders"]}
@@ -832,6 +1042,7 @@ def test_farm_owner_with_refund_permission_cannot_refund_anothers_order(
     # single check from the broader "can this role even hold this permission"
     # rule.
     as_admin(client, db)
+    _seed_farm_owner_orders(db)
     permission_ids = {
         permission["key"]: permission["id"]
         for permission in client.get("/v1/admin/permissions").json()["items"]
@@ -1074,8 +1285,24 @@ def test_lowering_the_slide_limit_does_not_delete_saved_slides(
 ):
     """A cap is a rule for the next save, never a silent truncation of the last."""
     as_admin(client, db)
-    before = len(client.get("/v1/admin/site-control").json()["heroSlides"])
-    assert before == 12
+
+    def slide(index: int) -> dict[str, object]:
+        return {
+            "imageUrl": f"/homepage-hero-{index}.png",
+            "imageAlt": f"Banner {index}",
+            "href": "/shop",
+            "label": f"Banner {index}",
+            "enabled": True,
+        }
+
+    # Self-contained: save its own five slides first rather than assuming a
+    # seeded count, then prove lowering the cap doesn't truncate them.
+    seeded = client.patch(
+        "/v1/admin/site-control", json={"heroSlides": [slide(i) for i in range(5)]}
+    )
+    assert seeded.status_code == 200
+    before = len(seeded.json()["heroSlides"])
+    assert before == 5
 
     lowered = client.patch("/v1/admin/site-control", json={"heroMaxSlides": 3})
     assert lowered.status_code == 200
@@ -1328,7 +1555,7 @@ def test_owner_can_manage_the_global_announcement(client: TestClient, db: SQLite
     assert seeded.status_code == 200
     global_row = next(row for row in seeded.json()["scopes"] if row["scope"] == "global")
     assert global_row["active"] is True
-    assert global_row["message"].startswith("Alphonso season")
+    assert global_row["message"]  # seeded with real copy, not asserting its exact text
 
     saved = client.put(
         "/v1/admin/announcements",
@@ -1350,6 +1577,15 @@ def test_owner_can_manage_the_global_announcement(client: TestClient, db: SQLite
 
 def test_owner_can_add_and_remove_a_country_announcement(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
+    # Captured rather than hardcoded: the seeded global message's exact text
+    # is catalogue copy, while "falls back to the global message" is the
+    # behaviour under test.
+    global_message = next(
+        row
+        for row in client.get("/v1/admin/announcements").json()["scopes"]
+        if row["scope"] == "global"
+    )["message"]
+
     added = client.put(
         "/v1/admin/announcements",
         json={
@@ -1367,13 +1603,13 @@ def test_owner_can_add_and_remove_a_country_announcement(client: TestClient, db:
     india = client.get("/v1/public/bootstrap", params={"country": "IN"}).json()
     assert india["announcement"] == {"message": "Diwali boxes open now.", "path": "/diwali"}
     elsewhere = client.get("/v1/public/bootstrap", params={"country": "FR"}).json()
-    assert elsewhere["announcement"]["message"].startswith("Alphonso season")
+    assert elsewhere["announcement"]["message"] == global_message
 
     removed = client.delete("/v1/admin/announcements/IN")
     assert removed.status_code == 200
     assert "IN" not in {row["scope"] for row in removed.json()["scopes"]}
     india_after_removal = client.get("/v1/public/bootstrap", params={"country": "IN"}).json()
-    assert india_after_removal["announcement"]["message"].startswith("Alphonso season")
+    assert india_after_removal["announcement"]["message"] == global_message
 
 
 def test_switching_off_a_country_announcement_does_not_fall_back_to_global(
@@ -1543,41 +1779,53 @@ def test_farm_owner_cannot_manage_price_adjustments(client: TestClient, db: SQLi
 
 
 def test_price_adjustment_product_rule_beats_a_global_rule(client: TestClient, db: SQLiteDatabase):
+    products = _seed_price_adjustment_catalogue(db)
     as_admin(client, db)
     client.put(
         "/v1/admin/price-adjustments", json={"scope": "global", "percent": -10, "active": True}
     )
     client.put(
         "/v1/admin/price-adjustments",
-        json={"scope": "global", "productId": "prd_alphonso", "percent": -50, "active": True},
+        json={
+            "scope": "global",
+            "productId": products["in_category_product_id"],
+            "percent": -50,
+            "active": True,
+        },
     )
 
-    mangoes = client.get("/v1/public/products/organic-alphonso-mangoes").json()
-    assert mangoes["adjustedMinor"] == round(mangoes["priceMinor"] * 0.5)
+    targeted = client.get(f"/v1/public/products/{products['in_category_slug']}").json()
+    assert targeted["adjustedMinor"] == round(targeted["priceMinor"] * 0.5)
 
-    rajma = client.get("/v1/public/products/himalayan-red-rajma").json()
-    assert rajma["adjustedMinor"] == round(rajma["priceMinor"] * 0.9)
+    other = client.get(f"/v1/public/products/{products['out_of_category_slug']}").json()
+    assert other["adjustedMinor"] == round(other["priceMinor"] * 0.9)
 
 
 def test_price_adjustment_country_scope_beats_global_for_its_visitors(
     client: TestClient, db: SQLiteDatabase
 ):
+    products = _seed_price_adjustment_catalogue(db)
     as_admin(client, db)
     client.put(
         "/v1/admin/price-adjustments", json={"scope": "global", "percent": 20, "active": True}
     )
     client.put(
         "/v1/admin/price-adjustments",
-        json={"scope": "in", "productId": "prd_alphonso", "percent": -25, "active": True},
+        json={
+            "scope": "in",
+            "productId": products["in_category_product_id"],
+            "percent": -25,
+            "active": True,
+        },
     )
 
     india = client.get(
-        "/v1/public/products/organic-alphonso-mangoes", params={"country": "IN"}
+        f"/v1/public/products/{products['in_category_slug']}", params={"country": "IN"}
     ).json()
     assert india["adjustedMinor"] == round(india["priceMinor"] * 0.75)
 
     elsewhere = client.get(
-        "/v1/public/products/organic-alphonso-mangoes", params={"country": "FR"}
+        f"/v1/public/products/{products['in_category_slug']}", params={"country": "FR"}
     ).json()
     assert elsewhere["adjustedMinor"] == round(elsewhere["priceMinor"] * 1.2)
 
@@ -1585,50 +1833,67 @@ def test_price_adjustment_country_scope_beats_global_for_its_visitors(
 def test_price_adjustment_category_rule_applies_to_products_in_that_category(
     client: TestClient, db: SQLiteDatabase
 ):
+    products = _seed_price_adjustment_catalogue(db)
     as_admin(client, db)
-    category_id = db._conn.execute(
-        "SELECT id FROM categories WHERE slug = 'fresh-fruits'"
-    ).fetchone()[0]
     client.put(
         "/v1/admin/price-adjustments",
-        json={"scope": "global", "categoryId": category_id, "percent": -15, "active": True},
+        json={
+            "scope": "global",
+            "categoryId": products["category_id"],
+            "percent": -15,
+            "active": True,
+        },
     )
 
-    mangoes = client.get("/v1/public/products/organic-alphonso-mangoes").json()
-    assert mangoes["adjustedMinor"] == round(mangoes["priceMinor"] * 0.85)
+    in_category = client.get(f"/v1/public/products/{products['in_category_slug']}").json()
+    assert in_category["adjustedMinor"] == round(in_category["priceMinor"] * 0.85)
 
-    rajma = client.get("/v1/public/products/himalayan-red-rajma").json()
-    assert rajma["adjustedMinor"] is None
+    out_of_category = client.get(f"/v1/public/products/{products['out_of_category_slug']}").json()
+    assert out_of_category["adjustedMinor"] is None
 
 
 def test_price_adjustment_product_rule_beats_a_category_rule(
     client: TestClient, db: SQLiteDatabase
 ):
+    products = _seed_price_adjustment_catalogue(db)
     as_admin(client, db)
-    category_id = db._conn.execute(
-        "SELECT id FROM categories WHERE slug = 'fresh-fruits'"
-    ).fetchone()[0]
     client.put(
         "/v1/admin/price-adjustments",
-        json={"scope": "global", "categoryId": category_id, "percent": -15, "active": True},
+        json={
+            "scope": "global",
+            "categoryId": products["category_id"],
+            "percent": -15,
+            "active": True,
+        },
     )
     client.put(
         "/v1/admin/price-adjustments",
-        json={"scope": "global", "productId": "prd_alphonso", "percent": -60, "active": True},
+        json={
+            "scope": "global",
+            "productId": products["in_category_product_id"],
+            "percent": -60,
+            "active": True,
+        },
     )
 
-    mangoes = client.get("/v1/public/products/organic-alphonso-mangoes").json()
-    assert mangoes["adjustedMinor"] == round(mangoes["priceMinor"] * 0.4)
+    in_category = client.get(f"/v1/public/products/{products['in_category_slug']}").json()
+    assert in_category["adjustedMinor"] == round(in_category["priceMinor"] * 0.4)
 
 
 def test_inactive_price_adjustment_does_not_apply(client: TestClient, db: SQLiteDatabase):
+    products = _seed_price_adjustment_catalogue(db)
     as_admin(client, db)
     client.put(
         "/v1/admin/price-adjustments",
-        json={"scope": "global", "productId": "prd_alphonso", "percent": -50, "active": False},
+        json={
+            "scope": "global",
+            "productId": products["in_category_product_id"],
+            "percent": -50,
+            "active": False,
+        },
     )
-    mangoes = client.get("/v1/public/products/organic-alphonso-mangoes").json()
-    assert mangoes["adjustedMinor"] is None
+    in_category = client.get(f"/v1/public/products/{products['in_category_slug']}").json()
+    assert in_category["adjustedMinor"] is None
 
 
 # --- Appearance: colours and effects ----------------------------------------
@@ -2189,10 +2454,13 @@ def test_archive_bulk_purge_permanently_removes_archived_rows(
 
 def test_archive_bulk_purge_of_unarchived_item_is_404(client: TestClient, db: SQLiteDatabase):
     as_admin(client, db)
-    # prd_alphonso is never archived in this test's own DB state.
+    # A fresh product, never archived in this test's own DB state.
+    product_id = client.post(
+        "/v1/admin/products", json={"name": "Never Archived Widget", "productType": "pantry"}
+    ).json()["id"]
     response = client.post(
         "/v1/admin/archive/bulk-delete",
-        json={"items": [{"kind": "product", "id": "prd_alphonso"}]},
+        json={"items": [{"kind": "product", "id": product_id}]},
     )
     assert response.status_code == 404
 
@@ -2200,20 +2468,41 @@ def test_archive_bulk_purge_of_unarchived_item_is_404(client: TestClient, db: SQ
 def test_archive_bulk_purge_blocked_by_order_history_returns_conflict(
     client: TestClient, db: SQLiteDatabase
 ):
-    """prd_alphonso's variants are referenced by seeded order_items (ON DELETE
+    """A product whose variant carries inventory movement history (e.g. a
+    stock receipt) is referenced by `inventory_movements` (ON DELETE
     RESTRICT) -- purging it must fail loudly with a clear, safe error instead
-    of corrupting order history or leaking a raw database error."""
+    of corrupting that history or leaking a raw database error."""
     as_admin(client, db)
-    assert client.post("/v1/admin/products/prd_alphonso/archive").status_code == 200
+    product_id = client.post(
+        "/v1/admin/products", json={"name": "Purge Conflict Widget", "productType": "pantry"}
+    ).json()["id"]
+    created_variant = client.post(
+        f"/v1/admin/products/{product_id}/variants",
+        json={"name": "Default", "sku": "PURGE-CONFLICT-1", "listMinor": 5000},
+    )
+    assert created_variant.status_code == 200, created_variant.text
+    adjusted = client.post(
+        "/v1/admin/inventory/adjustments",
+        json={
+            "sku": "PURGE-CONFLICT-1",
+            "quantityDelta": 5,
+            "reasonCode": "receipt",
+            "note": "Initial stock",
+        },
+    )
+    assert adjusted.status_code == 200, adjusted.text
+    assert client.post(f"/v1/admin/products/{product_id}/archive").status_code == 200
 
     purge = client.post(
         "/v1/admin/archive/bulk-delete",
-        json={"items": [{"kind": "product", "id": "prd_alphonso"}]},
+        json={"items": [{"kind": "product", "id": product_id}]},
     )
     assert purge.status_code == 409
     assert "still depend on it" in purge.json()["error"]["message"]
 
     # The product must still exist, untouched, after the failed purge.
-    assert client.get("/v1/admin/products/prd_alphonso").status_code == 404  # archived, not gone
-    archive_rows = client.get("/v1/admin/archive", params={"search": "Alphonso"}).json()["items"]
-    assert any(row["id"] == "prd_alphonso" for row in archive_rows)
+    assert client.get(f"/v1/admin/products/{product_id}").status_code == 404  # archived, not gone
+    archive_rows = client.get(
+        "/v1/admin/archive", params={"search": "Purge Conflict Widget"}
+    ).json()["items"]
+    assert any(row["id"] == product_id for row in archive_rows)

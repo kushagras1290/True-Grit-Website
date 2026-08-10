@@ -54,5 +54,6 @@ export default [
   // Resource route: sets the language cookie and redirects back. Posted to by
   // the switcher's plain form so it works before hydration.
   route("language", "routes/language.ts"),
+  route("favicon.ico", "routes/favicon.ts"),
   route("*", "routes/not-found.tsx"),
 ] satisfies RouteConfig;

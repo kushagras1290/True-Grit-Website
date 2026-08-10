@@ -12,6 +12,7 @@ import { mediaUrl } from "../lib/media";
 import { mergeRouteSeo, seoMeta } from "../lib/seo";
 import { LocalizedText, useLocalizePlural } from "../lib/i18n/localized-text";
 import { useDateFormatter } from "../lib/i18n/dates";
+import { useLocaleContext } from "../lib/i18n/context";
 
 const DISCUSSIONS_PAGE_SIZE = 12;
 const fallbackSeo = {
@@ -32,6 +33,7 @@ export function meta({ data, matches }: Route.MetaArgs) {
 export default function CommunityPage(_props: Route.ComponentProps) {
   const plural = useLocalizePlural();
   const formatDate = useDateFormatter();
+  const { locale } = useLocaleContext();
   const { status } = useCustomer();
   const [searchParams] = useSearchParams();
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
@@ -43,7 +45,7 @@ export default function CommunityPage(_props: Route.ComponentProps) {
     let active = true;
     setDiscussions(null);
     setFailed(false);
-    listDiscussions(DISCUSSIONS_PAGE_SIZE, (page - 1) * DISCUSSIONS_PAGE_SIZE)
+    listDiscussions(locale, DISCUSSIONS_PAGE_SIZE, (page - 1) * DISCUSSIONS_PAGE_SIZE)
       .then((result) => {
         if (!active) return;
         setDiscussions(result.items);
@@ -53,7 +55,7 @@ export default function CommunityPage(_props: Route.ComponentProps) {
     return () => {
       active = false;
     };
-  }, [page]);
+  }, [locale, page]);
 
   return (
     <>

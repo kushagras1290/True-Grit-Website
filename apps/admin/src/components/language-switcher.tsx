@@ -13,16 +13,13 @@
 
 import { Globe } from "lucide-react";
 
-import { LOCALES } from "@truegrit/i18n";
-
 import { localeLabel, useLocaleControls, useT } from "../lib/i18n";
 
-const INDIAN_LOCALES = LOCALES.filter((locale) => locale.group === "indian");
-const WORLD_LOCALES = LOCALES.filter((locale) => locale.group === "world");
-
 export function LanguageSwitcher() {
-  const { locale, setLocale } = useLocaleControls();
+  const { locale, locales, setLocale } = useLocaleControls();
   const t = useT();
+  const indianLocales = locales.filter((entry) => entry.group === "indian");
+  const worldLocales = locales.filter((entry) => entry.group === "world");
 
   return (
     <label className="flex items-center gap-1.5 text-sm text-ink-muted">
@@ -35,16 +32,16 @@ export function LanguageSwitcher() {
         aria-label={t("Change language")}
       >
         <optgroup label={t("Indian languages")}>
-          {INDIAN_LOCALES.map((definition) => (
+          {indianLocales.map((definition) => (
             <option key={definition.code} value={definition.code}>
-              {localeLabel(definition.code)}
+              {localeLabel(definition.code, locales)}
             </option>
           ))}
         </optgroup>
         <optgroup label={t("World languages")}>
-          {WORLD_LOCALES.map((definition) => (
+          {worldLocales.map((definition) => (
             <option key={definition.code} value={definition.code}>
-              {localeLabel(definition.code)}
+              {localeLabel(definition.code, locales)}
             </option>
           ))}
         </optgroup>

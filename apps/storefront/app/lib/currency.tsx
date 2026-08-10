@@ -12,6 +12,7 @@
  */
 
 import { formatMoney } from "@truegrit/contracts";
+import countryToCurrency from "country-to-currency";
 import { createContext, useCallback, useContext, useMemo, type ReactNode } from "react";
 
 export interface DisplayCurrency {
@@ -28,7 +29,7 @@ export const INR: DisplayCurrency = { code: "INR", locale: "en-IN", ratePerInr: 
 // Approximate mid-2026 rates. Display only — replace with a live converter.
 // Locales stay English-based so numbers match the (English) storefront copy;
 // Intl still applies each currency's own symbol and decimal conventions.
-const CURRENCIES: Record<string, DisplayCurrency> = {
+const FALLBACK_CURRENCIES: Record<string, DisplayCurrency> = {
   USD: { code: "USD", locale: "en-US", ratePerInr: 0.0115 },
   EUR: { code: "EUR", locale: "en-IE", ratePerInr: 0.0105 },
   GBP: { code: "GBP", locale: "en-GB", ratePerInr: 0.009 },
@@ -68,76 +69,17 @@ const CURRENCIES: Record<string, DisplayCurrency> = {
   NGN: { code: "NGN", locale: "en-NG", ratePerInr: 17.5 },
 };
 
-const EUROZONE = [
-  "AT",
-  "BE",
-  "HR",
-  "CY",
-  "EE",
-  "FI",
-  "FR",
-  "DE",
-  "GR",
-  "IE",
-  "IT",
-  "LV",
-  "LT",
-  "LU",
-  "MT",
-  "NL",
-  "PT",
-  "SK",
-  "SI",
-  "ES",
-];
-
-const COUNTRY_TO_CURRENCY: Record<string, string> = {
-  IN: "INR",
-  US: "USD",
-  GB: "GBP",
-  AE: "AED",
-  SA: "SAR",
-  QA: "QAR",
-  KW: "KWD",
-  BH: "BHD",
-  OM: "OMR",
-  SG: "SGD",
-  MY: "MYR",
-  TH: "THB",
-  JP: "JPY",
-  KR: "KRW",
-  CN: "CNY",
-  HK: "HKD",
-  AU: "AUD",
-  NZ: "NZD",
-  CA: "CAD",
-  CH: "CHF",
-  SE: "SEK",
-  NO: "NOK",
-  DK: "DKK",
-  ZA: "ZAR",
-  LK: "LKR",
-  BD: "BDT",
-  NP: "NPR",
-  ID: "IDR",
-  PH: "PHP",
-  VN: "VND",
-  BR: "BRL",
-  MX: "MXN",
-  TR: "TRY",
-  IL: "ILS",
-  EG: "EGP",
-  KE: "KES",
-  NG: "NGN",
-  ...Object.fromEntries(EUROZONE.map((country) => [country, "EUR"])),
-};
-
-/** The display currency for a visitor country; INR for India and any country
- * we do not have a rough rate for. */
-export function currencyForCountry(country: string): DisplayCurrency {
-  const code = COUNTRY_TO_CURRENCY[country.toUpperCase()];
+/** The display currency for any ISO country. INR remains the fail-safe for an
+ * invalid country or a currency rate deliberately disabled by an operator. */
+export function currencyForCountry(
+  country: string,
+  rates?: readonly DisplayCurrency[] | null,
+): DisplayCurrency {
+  const countryCode = country.trim().toUpperCase() as keyof typeof countryToCurrency;
+  const code = countryToCurrency[countryCode];
   if (!code || code === "INR") return INR;
-  return CURRENCIES[code] ?? INR;
+  if (rates) return rates.find((rate) => rate.code === code) ?? INR;
+  return FALLBACK_CURRENCIES[code] ?? INR;
 }
 
 /** Format INR minor units in the given display currency. INR keeps the exact
@@ -154,8 +96,16 @@ export function formatDisplayMoney(amountMinorInr: number, currency: DisplayCurr
 
 const CurrencyContext = createContext<DisplayCurrency>(INR);
 
-export function CurrencyProvider({ country, children }: { country: string; children: ReactNode }) {
-  const currency = useMemo(() => currencyForCountry(country), [country]);
+export function CurrencyProvider({
+  country,
+  rates,
+  children,
+}: {
+  country: string;
+  rates?: readonly DisplayCurrency[] | null;
+  children: ReactNode;
+}) {
+  const currency = useMemo(() => currencyForCountry(country, rates), [country, rates]);
   return <CurrencyContext.Provider value={currency}>{children}</CurrencyContext.Provider>;
 }
 
