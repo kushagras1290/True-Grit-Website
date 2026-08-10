@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import countryLocaleMap from "country-locale-map";
 
 import { matchCountryLocale, matchIndiaRegionLocale } from "./geo-locale";
 
@@ -8,11 +9,20 @@ describe("matchCountryLocale", () => {
     expect(matchCountryLocale("de")?.code).toBe("de");
   });
 
-  it("returns null for India and other unmapped countries", () => {
-    // India deliberately has no single-language guess at the country level
-    // (geo-locale.ts's own header comment) -- matchIndiaRegionLocale below
-    // is the state-level refinement instead.
-    expect(matchCountryLocale("IN")).toBeNull();
+  it("uses a supported default for India and formerly unmapped countries", () => {
+    expect(matchCountryLocale("IN")?.code).toBe("hi");
+    expect(matchCountryLocale("PK")?.code).toBe("ur");
+    expect(matchCountryLocale("KE")?.code).toBe("sw");
+    expect(matchCountryLocale("PH")?.code).toBe("fil");
+  });
+
+  it("maps every ISO country to a shipped storefront language", () => {
+    for (const country of countryLocaleMap.getAllCountries()) {
+      expect(matchCountryLocale(country.alpha2), country.name).not.toBeNull();
+    }
+  });
+
+  it("returns null for invalid and absent country codes", () => {
     expect(matchCountryLocale("ZZ")).toBeNull();
     expect(matchCountryLocale(null)).toBeNull();
   });
@@ -44,8 +54,12 @@ describe("matchIndiaRegionLocale", () => {
     expect(matchIndiaRegionLocale("Karnataka", "IN-PB")?.code).toBe("kn");
   });
 
-  it("returns null for a state with no single dominant language in this catalogue", () => {
-    expect(matchIndiaRegionLocale("Nagaland", "IN-NL")).toBeNull();
+  it("uses a correct supported fallback for states whose local language is not shipped", () => {
+    expect(matchIndiaRegionLocale("Nagaland", "IN-NL")?.code).toBe("en");
+    expect(matchIndiaRegionLocale("Arunachal Pradesh", "IN-AR")?.code).toBe("en");
+    expect(matchIndiaRegionLocale("Meghalaya", "IN-ML")?.code).toBe("en");
+    expect(matchIndiaRegionLocale("Mizoram", "IN-MZ")?.code).toBe("en");
+    expect(matchIndiaRegionLocale("Chhattisgarh", "IN-CG")?.code).toBe("hi");
   });
 
   it("returns null when neither region nor regionCode is known", () => {

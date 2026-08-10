@@ -17,7 +17,7 @@ import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { mediaUrl } from "../lib/media";
 import { productEffectivePrice } from "../lib/pricing";
-import { recipeJsonLd, seoMeta } from "../lib/seo";
+import { breadcrumbJsonLd, recipeJsonLd, seoMeta } from "../lib/seo";
 import { LocalizedText, useLocalizeFormat } from "../lib/i18n/localized-text";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
@@ -56,6 +56,14 @@ export function meta({ data: loaderData, matches }: Route.MetaArgs) {
       canonicalPath: loaderData.recipe.seo.canonicalPath,
       imageUrl: mediaUrl(loaderData.recipe.heroImageUrl) ?? undefined,
     }),
+    breadcrumbJsonLd([
+      { name: "Home", path: "/" },
+      { name: "Recipes", path: "/recipes" },
+      {
+        name: loaderData.recipe.title,
+        path: loaderData.recipe.seo.canonicalPath,
+      },
+    ]),
   ];
 }
 

@@ -34,6 +34,23 @@ VALID_APPLICATION: dict[str, Any] = {
 }
 
 
+def add_farm(db: SQLiteDatabase, farm_id: str, name: str) -> None:
+    """A small, obviously-synthetic farm for tests that need a real `farms`
+    row to link against. Migration 0095 is a real, unconditional production
+    cutover that deletes the old demo farms (`farm_devika` and friends) from
+    every database it touches, including fresh test ones -- so a test that
+    needs *a* farm to exist has to bring its own rather than reuse retired
+    demo data."""
+    db._conn.execute(
+        "INSERT INTO farms (id, name, slug, country_code, status, created_at,"
+        " created_by, updated_at, updated_by)"
+        " VALUES (?, ?, ?, 'IN', 'published', '2026-07-01T00:00:00Z', 'usr_admin',"
+        " '2026-07-01T00:00:00Z', 'usr_admin')",
+        (farm_id, name, farm_id.replace("_", "-")),
+    )
+    db._conn.commit()
+
+
 def as_admin(client: TestClient, db: SQLiteDatabase) -> None:
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
 
@@ -201,18 +218,19 @@ def test_only_an_approved_application_can_be_linked_to_a_farm(
 ):
     """Approval decides; it does not onboard. The link is recorded afterwards,
     and only once the decision supports it."""
+    add_farm(db, "farm_test_partner", "Meadowline Growers Collective")
     entry_id = submit(client).json()["id"]
     as_admin(client, db)
 
     too_early = client.post(
-        f"/v1/admin/farm-requests/{entry_id}/link-farm", json={"farmId": "farm_devika"}
+        f"/v1/admin/farm-requests/{entry_id}/link-farm", json={"farmId": "farm_test_partner"}
     )
     assert too_early.status_code == 409
 
     client.post(f"/v1/admin/farm-requests/{entry_id}/decide", json={"decision": "approved"})
     assert (
         client.post(
-            f"/v1/admin/farm-requests/{entry_id}/link-farm", json={"farmId": "farm_devika"}
+            f"/v1/admin/farm-requests/{entry_id}/link-farm", json={"farmId": "farm_test_partner"}
         ).status_code
         == 200
     )
@@ -246,7 +264,21 @@ def test_the_queue_is_permission_gated(client: TestClient, db: SQLiteDatabase):
 
 def test_a_farm_owner_cannot_see_other_growers_applications(client: TestClient, db: SQLiteDatabase):
     """A farm-scoped sub-admin has no business reading who else wants in, even
-    if a future role grant hands them the permission."""
+    if a future role grant hands them the permission.
+
+    `usr_farmowner` (seeded in development.sql) used to be scoped via a
+    `farm_members` row pointing at the demo catalogue's farm_devika. Migration
+    0095's production cutover -- and the dev seed's own matching cleanup pass
+    for fresh databases -- deletes that farm along with it, cascading away the
+    membership row too, so a fresh test database starts this user completely
+    unscoped. A small synthetic farm restores the "scoped sub-admin" scenario
+    this test is actually about.
+    """
+    add_farm(db, "farm_test_scope", "Scoped Test Farm")
+    db._conn.execute(
+        "INSERT OR REPLACE INTO farm_members (user_id, farm_id, created_at, created_by)"
+        " VALUES ('usr_farmowner', 'farm_test_scope', '2026-07-01T00:00:00Z', 'usr_admin')"
+    )
     db._conn.execute(
         "INSERT OR IGNORE INTO role_permissions (role_id, permission_id)"
         " SELECT 'rol_farm_owner', id FROM permissions WHERE key = 'farm_requests.view'"

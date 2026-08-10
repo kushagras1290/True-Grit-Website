@@ -9,6 +9,11 @@ function request(headers: Record<string, string> = {}, cf?: Record<string, unkno
 }
 
 describe("resolveCountry", () => {
+  it("reads the canonical Workers-runtime cf country", () => {
+    expect(resolveCountry(request({}, { country: "DE" }))).toBe("DE");
+    expect(resolveCountry(request({ "cf-ipcountry": "US" }, { country: "de" }))).toBe("DE");
+  });
+
   it("reads the Cloudflare country header", () => {
     expect(resolveCountry(request({ "cf-ipcountry": "US" }))).toBe("US");
     expect(resolveCountry(request({ "CF-IPCountry": "gb" }))).toBe("GB");
@@ -19,9 +24,14 @@ describe("resolveCountry", () => {
     expect(resolveCountry(request({ "cf-ipcountry": "T1" }))).toBe("IN");
   });
 
-  it("lets the tg_country cookie override the header", () => {
+  it("lets the tg_country cookie override the Worker geo and header", () => {
     expect(
-      resolveCountry(request({ "cf-ipcountry": "US", cookie: "tg_session=abc; tg_country=ae" })),
+      resolveCountry(
+        request(
+          { "cf-ipcountry": "US", cookie: "tg_session=abc; tg_country=ae" },
+          { country: "DE" },
+        ),
+      ),
     ).toBe("AE");
   });
 

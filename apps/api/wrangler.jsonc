@@ -111,6 +111,7 @@
     "PUBLIC_STOREFRONT_URL": "https://test.truegritin.com",
     "PUBLIC_ADMIN_URL": "https://adtest.truegritin.com",
     "PUBLIC_PROCESS_URL": "https://truegrit-process-dev.kushagras1234890.workers.dev",
+    "PUBLIC_LANGUAGE_URL": "https://langtest.truegritin.com",
     // Public Google OAuth client id (not a secret) — enables server-side
     // verification of "Sign in with Google" ID tokens.
     "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
@@ -206,6 +207,7 @@
         "PUBLIC_STOREFRONT_URL": "https://stag.truegritin.com",
         "PUBLIC_ADMIN_URL": "https://adstag.truegritin.com",
         "PUBLIC_PROCESS_URL": "https://truegrit-process-staging.kushagras1234890.workers.dev",
+        "PUBLIC_LANGUAGE_URL": "https://langstag.truegritin.com",
         "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
         "FACEBOOK_APP_ID": "",
         "SESSION_COOKIE_SAMESITE": "none",
@@ -276,6 +278,7 @@
         "PUBLIC_STOREFRONT_URL": "https://truegritin.com",
         "PUBLIC_ADMIN_URL": "https://admin.truegritin.com",
         "PUBLIC_PROCESS_URL": "https://process.truegritin.com",
+        "PUBLIC_LANGUAGE_URL": "https://lang.truegritin.com",
         "GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
         "FACEBOOK_APP_ID": "",
         "SESSION_COOKIE_SAMESITE": "none",

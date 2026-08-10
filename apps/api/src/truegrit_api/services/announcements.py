@@ -74,7 +74,9 @@ async def list_announcements(db: Database) -> list[dict[str, Any]]:
     return [_row_to_dict(row) for row in rows]
 
 
-async def resolve_announcement(db: Database, country: str | None) -> dict[str, str] | None:
+async def resolve_announcement(
+    db: Database, country: str | None, *, locale: str | None = None
+) -> dict[str, str] | None:
     """What the storefront should show, for one visitor.
 
     Priority: the visitor's own country row, if one exists and is active; else
@@ -86,22 +88,31 @@ async def resolve_announcement(db: Database, country: str | None) -> dict[str, s
     code = country.strip().upper() if country else None
     if code and _COUNTRY_CODE_PATTERN.match(code):
         country_row = await db.fetch_one(
-            "SELECT active, message, destination_path FROM announcements WHERE country = ?",
+            "SELECT id, active, message, destination_path FROM announcements WHERE country = ?",
             (code,),
         )
         if country_row is not None:
             if not bool(country_row["active"]):
                 return None
+            from truegrit_api.services.translation_hub import override_map
+
+            translated = await override_map(db, "announcement", country_row["id"], locale or "")
             return {
-                "message": country_row["message"],
+                "message": translated.get("message") or country_row["message"],
                 "path": country_row["destination_path"] or "",
             }
     global_row = await db.fetch_one(
-        "SELECT active, message, destination_path FROM announcements WHERE country = 'global'"
+        "SELECT id, active, message, destination_path FROM announcements WHERE country = 'global'"
     )
     if global_row is None or not bool(global_row["active"]):
         return None
-    return {"message": global_row["message"], "path": global_row["destination_path"] or ""}
+    from truegrit_api.services.translation_hub import override_map
+
+    translated = await override_map(db, "announcement", global_row["id"], locale or "")
+    return {
+        "message": translated.get("message") or global_row["message"],
+        "path": global_row["destination_path"] or "",
+    }
 
 
 async def save_announcement(

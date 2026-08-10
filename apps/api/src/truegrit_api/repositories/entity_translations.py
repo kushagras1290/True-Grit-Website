@@ -22,9 +22,31 @@ class EntityTranslationRepository:
             " FROM entity_translations WHERE entity_type = ? AND entity_id = ? AND locale = ?",
             (entity_type, entity_id, locale),
         )
-        if row is None:
+        runtime_rows = await self._db.fetch_all(
+            "SELECT field_key, translated_text, status, updated_at, updated_by"
+            " FROM translation_entries WHERE resource_type = ? AND resource_id = ?"
+            " AND locale = ? AND field_key NOT LIKE '%/%'",
+            (entity_type, entity_id, locale),
+        )
+        if row is None and not runtime_rows:
             return None
-        return {**row, "fields": json.loads(row["fields_json"])}
+        fields = json.loads(row["fields_json"]) if row is not None else {}
+        fields.update({entry["field_key"]: entry["translated_text"] for entry in runtime_rows})
+        latest = max(runtime_rows, key=lambda entry: entry["updated_at"]) if runtime_rows else None
+        return {
+            **(row or {}),
+            "entity_type": entity_type,
+            "entity_id": entity_id,
+            "locale": locale,
+            "auto_translated": (
+                row["auto_translated"]
+                if row is not None
+                else (1 if latest and latest["status"] == "machine" else 0)
+            ),
+            "updated_at": latest["updated_at"] if latest else row["updated_at"],
+            "updated_by": latest["updated_by"] if latest else row["updated_by"],
+            "fields": fields,
+        }
 
     async def list_for_entity(self, entity_type: str, entity_id: str) -> list[dict[str, Any]]:
         return await self._db.fetch_all(
@@ -47,4 +69,15 @@ class EntityTranslationRepository:
             f" WHERE entity_type = ? AND locale = ? AND entity_id IN ({placeholders})",
             (entity_type, locale, *entity_ids),
         )
-        return {row["entity_id"]: json.loads(row["fields_json"]) for row in rows}
+        result = {row["entity_id"]: json.loads(row["fields_json"]) for row in rows}
+        runtime_rows = await self._db.fetch_all(
+            f"SELECT resource_id, field_key, translated_text FROM translation_entries"
+            f" WHERE resource_type = ? AND locale = ? AND field_key NOT LIKE '%/%'"
+            f" AND resource_id IN ({placeholders})",
+            (entity_type, locale, *entity_ids),
+        )
+        for entry in runtime_rows:
+            result.setdefault(entry["resource_id"], {})[entry["field_key"]] = entry[
+                "translated_text"
+            ]
+        return result

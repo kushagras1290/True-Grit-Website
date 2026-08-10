@@ -127,7 +127,9 @@ async def _resolve_parent(db: Database, content_type: str, slug: str) -> dict[st
     }
 
 
-async def list_public_comments(db: Database, content_type: str, slug: str) -> list[dict[str, Any]]:
+async def list_public_comments(
+    db: Database, content_type: str, slug: str, *, locale: str | None = None
+) -> list[dict[str, Any]]:
     """Visible comments for one post, oldest first — how a conversation reads."""
     parent = await _resolve_parent(db, content_type, slug)
     rows = await db.fetch_all(
@@ -140,6 +142,12 @@ async def list_public_comments(db: Database, content_type: str, slug: str) -> li
         """,
         (parent["id"],),
     )
+    if locale and locale != "en":
+        from truegrit_api.services.translation_hub import override_map
+
+        for row in rows:
+            fields = await override_map(db, "content_comment", row["id"], locale)
+            row["body"] = fields.get("body") or row["body"]
     return [
         {
             "id": row["id"],

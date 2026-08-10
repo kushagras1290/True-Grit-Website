@@ -41,7 +41,7 @@ env:
 
 jobs:
   web:
-    name: Storefront + Admin + Process (${{ inputs.environment }})
+    name: Storefront + Admin + Process + Language Studio (${{ inputs.environment }})
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: ${{ inputs.environment }}
@@ -66,6 +66,7 @@ jobs:
         working-directory: apps/storefront
         env:
           CLOUDFLARE_ENV: ${{ inputs.environment }}
+          VITE_GOOGLE_CLIENT_ID: "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com"
         run: pnpm build
       - name: Deploy storefront
         working-directory: apps/storefront
@@ -99,19 +100,35 @@ jobs:
         working-directory: apps/process
         run: pnpm exec wrangler deploy --env "$TARGET_ENVIRONMENT"
 
+      - name: Build language studio
+        working-directory: apps/lang
+        run: |
+          if [ "$TARGET_ENVIRONMENT" = "production" ]; then
+            export VITE_API_URL="https://api.truegritin.com"
+          else
+            export VITE_API_URL="https://apistag.truegritin.com"
+          fi
+          pnpm build
+      - name: Deploy language studio
+        working-directory: apps/lang
+        run: pnpm exec wrangler deploy --env "$TARGET_ENVIRONMENT"
+
       - name: Verify live endpoints
         run: |
           if [ "$TARGET_ENVIRONMENT" = "production" ]; then
             storefront_url="https://truegritin.com"
             admin_url="https://admin.truegritin.com"
             process_url="https://process.truegritin.com"
+            language_url="https://lang.truegritin.com"
           else
             storefront_url="https://stag.truegritin.com"
             admin_url="https://adstag.truegritin.com"
             process_url=""
+            language_url="https://langstag.truegritin.com"
           fi
           curl --fail --retry 5 --retry-all-errors "$storefront_url"
           curl --fail --retry 5 --retry-all-errors "$admin_url"
+          curl --fail --retry 5 --retry-all-errors "$language_url"
           if [ -n "$process_url" ]; then
             curl --fail --retry 5 --retry-all-errors "$process_url"
           fi

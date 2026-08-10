@@ -5,6 +5,7 @@ from __future__ import annotations
 import datetime
 from typing import Any
 
+import pytest
 from fastapi.testclient import TestClient
 
 from tests.integration.conftest import SESSION_COOKIE, create_session
@@ -17,6 +18,53 @@ ADDRESS = {
     "state": "Maharashtra",
     "postalCode": "400001",
 }
+
+# These checkout tests need one always-available, always-published product to
+# push through checkout -- historically `prd_alphonso`/`var_alphonso_1kg` from
+# the demo catalogue. Migration 0095 is a real, unconditional production
+# cutover that archives every pre-existing product (including on fresh test
+# databases), so `var_alphonso_1kg` is no longer sellable there. The live
+# catalogue that replaces it belongs to production, not to this test module,
+# so a small synthetic product/variant of our own keeps checkout exercising
+# the real endpoint without depending on either.
+TEST_PRODUCT_ID = "prd_test_commerce_staple"
+TEST_VARIANT_ID = "var_test_commerce_staple_1kg"
+TEST_VARIANT_SKU = "TST-COMMERCE-1KG"
+
+
+@pytest.fixture(autouse=True)
+def _commerce_baseline(db: SQLiteDatabase) -> None:
+    """A single published, orderable product with stock at `loc_mumbai` --
+    see the module note above for why this can't be the retired demo
+    catalogue or today's live catalogue."""
+    db._conn.execute(
+        "INSERT INTO products (id, internal_name, name, slug, product_type, status,"
+        " created_at, created_by, updated_at, updated_by)"
+        " VALUES (?, 'Test Commerce Staple', 'Test Commerce Staple',"
+        " 'test-commerce-staple', 'simple', 'published',"
+        " '2026-07-01T00:00:00Z', 'usr_admin', '2026-07-01T00:00:00Z', 'usr_admin')",
+        (TEST_PRODUCT_ID,),
+    )
+    db._conn.execute(
+        "INSERT INTO product_variants (id, product_id, sku, name, status, sort_order,"
+        " created_at, updated_at)"
+        " VALUES (?, ?, ?, '1 KG', 'active', 1, '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z')",
+        (TEST_VARIANT_ID, TEST_PRODUCT_ID, TEST_VARIANT_SKU),
+    )
+    db._conn.execute(
+        "INSERT INTO variant_prices (id, variant_id, market_code, currency_code,"
+        " list_amount_minor, starts_at, status, created_at, created_by)"
+        " VALUES ('vpr_test_commerce_staple', ?, 'IN', 'INR', ?,"
+        " '2026-07-01T00:00:00Z', 'active', '2026-07-01T00:00:00Z', 'usr_admin')",
+        (TEST_VARIANT_ID, 89_900),
+    )
+    db._conn.execute(
+        "INSERT INTO inventory_levels (variant_id, location_id, on_hand, reserved,"
+        " reorder_threshold, version, updated_at)"
+        " VALUES (?, 'loc_mumbai', 500, 0, 10, 1, '2026-07-01T00:00:00Z')",
+        (TEST_VARIANT_ID,),
+    )
+    db._conn.commit()
 
 
 def sign_in(client: TestClient, db: SQLiteDatabase, user_id: str) -> None:
@@ -39,7 +87,7 @@ def enable(client: TestClient, db: SQLiteDatabase, **switches: bool) -> None:
 
 def checkout(client: TestClient, **overrides: Any):
     body: dict[str, Any] = {
-        "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+        "items": [{"variantId": TEST_VARIANT_ID, "quantity": 1}],
         "deliveryAddress": ADDRESS,
         "paymentMethod": "razorpay",
     }
@@ -142,7 +190,7 @@ def test_preorder_reserves_harvest_capacity_without_inventory(client, db):
     window = client.post(
         "/v1/admin/harvest-windows",
         json={
-            "productId": "prd_alphonso",
+            "productId": TEST_PRODUCT_ID,
             "title": "Monsoon mango harvest",
             "expectedStart": "2026-09-01",
             "expectedEnd": "2026-09-15",
@@ -151,14 +199,14 @@ def test_preorder_reserves_harvest_capacity_without_inventory(client, db):
     ).json()
     enable(client, db, preorders=True)
     before = db._conn.execute(
-        "SELECT reserved FROM inventory_levels"
-        " WHERE variant_id = 'var_alphonso_1kg' AND location_id = 'loc_mumbai'"
+        "SELECT reserved FROM inventory_levels WHERE variant_id = ? AND location_id = 'loc_mumbai'",
+        (TEST_VARIANT_ID,),
     ).fetchone()["reserved"]
 
     as_customer(client, db)
     response = checkout(
         client,
-        items=[{"variantId": "var_alphonso_1kg", "quantity": 2, "preorder": True}],
+        items=[{"variantId": TEST_VARIANT_ID, "quantity": 2, "preorder": True}],
     )
     assert response.status_code == 200, response.text
     assert response.json()["orderType"] == "preorder"
@@ -174,8 +222,8 @@ def test_preorder_reserves_harvest_capacity_without_inventory(client, db):
     )
     assert too_small.status_code == 409, too_small.text
     after = db._conn.execute(
-        "SELECT reserved FROM inventory_levels"
-        " WHERE variant_id = 'var_alphonso_1kg' AND location_id = 'loc_mumbai'"
+        "SELECT reserved FROM inventory_levels WHERE variant_id = ? AND location_id = 'loc_mumbai'",
+        (TEST_VARIANT_ID,),
     ).fetchone()["reserved"]
     assert after == before
 
@@ -198,7 +246,7 @@ def test_b2b_checkout_applies_bulk_price_and_creates_invoice(client, db):
     assert linked.status_code == 200, linked.text
     price = client.post(
         "/v1/admin/b2b/price-breaks",
-        json={"variantId": "var_alphonso_1kg", "minQuantity": 2, "priceMinor": 70_000},
+        json={"variantId": TEST_VARIANT_ID, "minQuantity": 2, "priceMinor": 70_000},
     )
     assert price.status_code == 200, price.text
     enable(client, db, b2b=True)
@@ -206,7 +254,7 @@ def test_b2b_checkout_applies_bulk_price_and_creates_invoice(client, db):
     as_customer(client, db)
     response = checkout(
         client,
-        items=[{"variantId": "var_alphonso_1kg", "quantity": 2}],
+        items=[{"variantId": TEST_VARIANT_ID, "quantity": 2}],
         paymentMethod="invoice",
     )
     assert response.status_code == 200, response.text

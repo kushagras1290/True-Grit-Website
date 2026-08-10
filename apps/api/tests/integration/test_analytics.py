@@ -2,13 +2,21 @@
 correctness against a real checkout, isolated to today's date so it is never
 tangled up with the seeded historical order data (see
 `database/seeds/development.sql`, backdated well before "today").
+
+Seeds its own purchasable product (`var_analytics_test_1kg`) rather than
+depending on the demo catalogue: migration 0095 retires that catalogue from
+every database it touches (the live site must not keep any trace of it), so
+tests cannot rely on it surviving either.
 """
 
 from __future__ import annotations
 
 from datetime import UTC, datetime
 
+import pytest
+
 from tests.integration.conftest import SESSION_COOKIE, create_session
+from truegrit_api.platform.database import SQLiteDatabase
 
 ADDRESS = {
     "recipientName": "Riya Nair",
@@ -17,6 +25,33 @@ ADDRESS = {
     "state": "Maharashtra",
     "postalCode": "400001",
 }
+
+CHECKOUT_VARIANT_ID = "var_analytics_test_1kg"
+
+
+@pytest.fixture(autouse=True)
+def _purchasable_product(db: SQLiteDatabase) -> None:
+    db._conn.executescript(
+        """
+        INSERT INTO products (id, internal_name, name, slug, product_type, status,
+          accepts_orders, created_at, created_by, updated_at, updated_by)
+        VALUES ('prd_analytics_test', 'Analytics Test Product', 'Analytics Test Product',
+          'analytics-test-product', 'simple', 'published', 1,
+          '2026-07-01T00:00:00Z', 'usr_admin', '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO product_variants (id, product_id, sku, name, status, sort_order,
+          created_at, updated_at)
+        VALUES ('var_analytics_test_1kg', 'prd_analytics_test', 'ANL-TEST-1KG', '1 kg',
+          'active', 1, '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
+        INSERT INTO variant_prices (id, variant_id, market_code, currency_code,
+          list_amount_minor, status, created_at, created_by)
+        VALUES ('vpr_analytics_test_1kg', 'var_analytics_test_1kg', 'IN', 'INR', 89900,
+          'active', '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO inventory_levels (variant_id, location_id, on_hand, reserved,
+          reorder_threshold, version, updated_at)
+        VALUES ('var_analytics_test_1kg', 'loc_mumbai', 500, 0, 20, 1, '2026-07-01T00:00:00Z');
+        """
+    )
+    db._conn.commit()
 
 
 def as_admin(client, db) -> None:
@@ -68,7 +103,7 @@ def test_a_fresh_order_counts_toward_todays_revenue(client, db):
     checkout = client.post(
         "/v1/public/checkout",
         json={
-            "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+            "items": [{"variantId": CHECKOUT_VARIANT_ID, "quantity": 1}],
             "deliveryAddress": ADDRESS,
         },
     )
@@ -94,7 +129,7 @@ def test_a_cancelled_order_does_not_count_as_revenue(client, db):
     checkout = client.post(
         "/v1/public/checkout",
         json={
-            "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+            "items": [{"variantId": CHECKOUT_VARIANT_ID, "quantity": 1}],
             "deliveryAddress": ADDRESS,
         },
     )

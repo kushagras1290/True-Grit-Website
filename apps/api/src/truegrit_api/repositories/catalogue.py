@@ -290,6 +290,9 @@ class CatalogueRepository:
                 {
                     **summary,
                     "name": fields.get("name") or summary["name"],
+                    "farm_name": fields.get("farm_name") or summary["farm_name"],
+                    "region": fields.get("region") or summary["region"],
+                    "image_alt": fields.get("image_alt") or summary["image_alt"],
                     "_short_description": fields.get("short_description")
                     or summary["_short_description"],
                 }
@@ -630,10 +633,13 @@ class CatalogueRepository:
                 (row["id"], row["id"], *related_geo_params),
             )
 
-        farm = await self._db.fetch_one(
-            "SELECT name, region FROM farms WHERE slug = ?", (summary["_farm_slug"],)
-        )
-        farm_name = farm["name"] if farm else summary["farm_name"]
+        farm_name = summary["farm_name"]
+
+        translated_fields: dict[str, Any] = {}
+        if locale and locale != "en":
+            saved = await EntityTranslationRepository(self._db).get("product", row["id"], locale)
+            if saved:
+                translated_fields = saved["fields"]
 
         detail = dict(summary)
         detail.update(
@@ -641,9 +647,13 @@ class CatalogueRepository:
                 "short_description": summary["_short_description"],
                 "overview": summary["_short_description"],
                 "farm_slug": summary["_farm_slug"],
-                "storage_guidance": row["storage_guidance"] or "",
-                "harvest_note": row["harvest_note"] or "",
-                "growing_method": row["growing_method"] or "",
+                "storage_guidance": translated_fields.get("storage_guidance")
+                or row["storage_guidance"]
+                or "",
+                "harvest_note": translated_fields.get("harvest_note") or row["harvest_note"] or "",
+                "growing_method": translated_fields.get("growing_method")
+                or row["growing_method"]
+                or "",
                 "variants": summary["_variants"],
                 "traceability": [
                     {"label": "Farm", "detail": f"{farm_name} — {summary['region']}"},
@@ -664,8 +674,12 @@ class CatalogueRepository:
                     # is the raw English record, so reading the name from it
                     # here left a translated product page under an English
                     # browser title.
-                    "title": row["seo_title"] or summary["name"],
-                    "description": row["seo_description"] or summary["_short_description"],
+                    "title": translated_fields.get("seo_title")
+                    or row["seo_title"]
+                    or summary["name"],
+                    "description": translated_fields.get("seo_description")
+                    or row["seo_description"]
+                    or summary["_short_description"],
                     "canonical_path": f"/product/{row['slug']}",
                     "indexing": "index",
                 },

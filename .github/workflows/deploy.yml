@@ -84,7 +84,7 @@ jobs:
         run: uvx --from workers-py pywrangler deploy
 
   web:
-    name: Storefront + Admin
+    name: Storefront + Admin + Process + Language Studio
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: api
@@ -120,8 +120,15 @@ jobs:
       - name: Deploy release process
         working-directory: apps/process
         run: pnpm exec wrangler deploy
+      - name: Build language studio
+        working-directory: apps/lang
+        run: pnpm build
+      - name: Deploy language studio
+        working-directory: apps/lang
+        run: pnpm exec wrangler deploy
       - name: Verify testing domains
         run: |
           curl --fail --retry 5 --retry-all-errors https://apitest.truegritin.com/health/live
           curl --fail --retry 5 --retry-all-errors https://test.truegritin.com
           curl --fail --retry 5 --retry-all-errors https://adtest.truegritin.com
+          curl --fail --retry 5 --retry-all-errors https://langtest.truegritin.com

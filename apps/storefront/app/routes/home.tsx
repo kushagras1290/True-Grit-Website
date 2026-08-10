@@ -19,7 +19,7 @@ import {
 } from "../lib/catalogue.server";
 import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
-import { seoMeta } from "../lib/seo";
+import { organizationJsonLd, seoMeta, websiteJsonLd } from "../lib/seo";
 
 export async function loader({ request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
@@ -76,7 +76,20 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 }
 
 export function meta({ data, matches }: Route.MetaArgs) {
-  return seoMeta(data?.page.seo, matches);
+  return [
+    ...seoMeta(
+      {
+        title: "True Grit | Traceable Organic Food from Trusted Farms",
+        description:
+          "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
+        canonicalPath: "/",
+        indexing: data?.page.seo.indexing ?? "index",
+      },
+      matches,
+    ),
+    organizationJsonLd(),
+    websiteJsonLd(),
+  ];
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {

@@ -22,8 +22,9 @@ import { commerceLive, getB2BPriceBreaks, type B2BPriceBreakInfo } from "../lib/
 import { usePriceFormatter } from "../lib/currency";
 import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
+import { mediaUrl } from "../lib/media";
 import { productEffectivePrice, variantEffectivePrice } from "../lib/pricing";
-import { seoMeta } from "../lib/seo";
+import { breadcrumbJsonLd, productJsonLd, seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
 import { LocalizedText, useLocalizeFormat, useLocalizeText } from "../lib/i18n/localized-text";
 
@@ -48,7 +49,27 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
 }
 
 export function meta({ data: loaderData, matches }: Route.MetaArgs) {
-  return seoMeta(loaderData?.product.seo, matches);
+  if (!loaderData) return seoMeta(null, matches);
+  const { product } = loaderData;
+  const effective = productEffectivePrice(product);
+  return [
+    ...seoMeta(product.seo, matches),
+    productJsonLd({
+      name: product.name,
+      description: product.shortDescription || product.overview,
+      canonicalPath: product.seo.canonicalPath,
+      sku: product.variants[0]?.sku,
+      priceMinor: effective.amountMinor,
+      currencyCode: product.currencyCode,
+      availability: product.availability,
+      imageUrl: mediaUrl(product.imageUrl),
+    }),
+    breadcrumbJsonLd([
+      { name: "Home", path: "/" },
+      { name: "Shop", path: "/shop" },
+      { name: product.name, path: product.seo.canonicalPath },
+    ]),
+  ];
 }
 
 export default function ProductPage({ loaderData }: Route.ComponentProps) {

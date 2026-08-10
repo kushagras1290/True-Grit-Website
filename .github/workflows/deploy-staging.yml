@@ -76,7 +76,7 @@ jobs:
         run: uvx --from workers-py pywrangler deploy --env staging
 
   web:
-    name: Storefront + Admin
+    name: Storefront + Admin + Process + Language Studio
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: staging
@@ -129,8 +129,15 @@ jobs:
       - name: Deploy release process
         working-directory: apps/process
         run: pnpm exec wrangler deploy --env staging
+      - name: Build language studio
+        working-directory: apps/lang
+        run: pnpm build
+      - name: Deploy language studio
+        working-directory: apps/lang
+        run: pnpm exec wrangler deploy --env staging
       - name: Verify staging domains
         run: |
           curl --fail --retry 5 --retry-all-errors https://apistag.truegritin.com/health/live
           curl --fail --retry 5 --retry-all-errors https://stag.truegritin.com
           curl --fail --retry 5 --retry-all-errors https://adstag.truegritin.com
+          curl --fail --retry 5 --retry-all-errors https://langstag.truegritin.com

@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { seoMeta } from "./seo";
+import {
+  DEFAULT_SITE_DESCRIPTION,
+  absoluteSiteUrl,
+  breadcrumbJsonLd,
+  productJsonLd,
+  seoMeta,
+} from "./seo";
 
 describe("seoMeta", () => {
   it("appends the site name once", () => {
@@ -39,6 +45,52 @@ describe("seoMeta", () => {
       indexing: "noindex",
     });
     expect(hidden).toContainEqual({ name: "robots", content: "noindex, nofollow" });
+  });
+
+  it("always emits an absolute, non-empty canonical and description", () => {
+    const meta = seoMeta({
+      title: "Home",
+      description: "",
+      canonicalPath: "",
+      indexing: "index",
+    });
+    expect(meta).toContainEqual({
+      tagName: "link",
+      rel: "canonical",
+      href: "https://truegritin.com/",
+    });
+    expect(meta).toContainEqual({ name: "description", content: DEFAULT_SITE_DESCRIPTION });
+    expect(absoluteSiteUrl("/product/kathiya-wheat-flour")).toBe(
+      "https://truegritin.com/product/kathiya-wheat-flour",
+    );
+  });
+
+  it("builds Product and BreadcrumbList JSON-LD with absolute URLs", () => {
+    const product = productJsonLd({
+      name: "Kathiya Wheat Flour",
+      description: "Traditional whole-wheat flour.",
+      canonicalPath: "/product/kathiya-wheat-flour",
+      priceMinor: 5500,
+      currencyCode: "INR",
+      availability: "in_stock",
+    })["script:ld+json"];
+    expect(product).toMatchObject({
+      "@type": "Product",
+      url: "https://truegritin.com/product/kathiya-wheat-flour",
+      offers: { price: "55.00", priceCurrency: "INR" },
+    });
+
+    const breadcrumbs = breadcrumbJsonLd([
+      { name: "Home", path: "/" },
+      { name: "Product", path: "/product/kathiya-wheat-flour" },
+    ])["script:ld+json"];
+    expect(breadcrumbs).toMatchObject({
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { position: 1, item: "https://truegritin.com/" },
+        { position: 2, item: "https://truegritin.com/product/kathiya-wheat-flour" },
+      ],
+    });
   });
 
   it("noindexes when no SEO document exists", () => {

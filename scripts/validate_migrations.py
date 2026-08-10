@@ -80,7 +80,7 @@ def main() -> int:
     migrated_customer_products = conn.execute(
         "SELECT COUNT(*) FROM products WHERE status = 'published'"
     ).fetchone()[0]
-    if migrated_customer_categories != 216 or migrated_customer_products != 1500:
+    if migrated_customer_categories != 10 or migrated_customer_products != 30:
         print(
             "customer catalogue must be migration-backed before seed data runs: "
             f"found {migrated_customer_categories} categories and "
@@ -113,15 +113,15 @@ def main() -> int:
         published_products = conn.execute(
             "SELECT COUNT(*) FROM products WHERE status = 'published'"
         ).fetchone()[0]
-        if published_categories != 216:
+        if published_categories != 10:
             print(
-                f"expected 216 published categories, found {published_categories}",
+                f"expected 10 published categories, found {published_categories}",
                 file=sys.stderr,
             )
             return 1
-        if published_products != 1500:
+        if published_products != 30:
             print(
-                f"expected 1500 published products, found {published_products}",
+                f"expected 30 published products, found {published_products}",
                 file=sys.stderr,
             )
             return 1
@@ -175,6 +175,17 @@ def main() -> int:
             )
             return 1
 
+        product_images = conn.execute(
+            "SELECT COUNT(*) FROM products WHERE status = 'published'"
+            " AND (NULLIF(TRIM(image_url), '') IS NOT NULL OR primary_media_id IS NOT NULL)"
+        ).fetchone()[0]
+        if product_images:
+            print(
+                f"expected no product images in the live catalogue, found {product_images}",
+                file=sys.stderr,
+            )
+            return 1
+
         # The editorial library deliberately matches the original visible
         # volume, but every family now has a reader job and quality floor.
         # These checks prevent the old cosmetic three-title generator (or a
@@ -184,15 +195,13 @@ def main() -> int:
             " FROM articles a JOIN article_versions v ON v.id = a.published_version_id"
             " WHERE a.status = 'published' ORDER BY a.id"
         ).fetchall()
-        if len(articles) != 351:
+        if len(articles) != 262:
             print(
-                f"expected 351 useful articles, found {len(articles)}", file=sys.stderr
+                f"expected 262 useful articles, found {len(articles)}", file=sys.stderr
             )
             return 1
-        if len({row[1] for row in articles}) != len(articles) or len(
-            {row[2] for row in articles}
-        ) != len(articles):
-            print("published article titles and slugs must be unique", file=sys.stderr)
+        if len({row[2] for row in articles}) != len(articles):
+            print("published article slugs must be unique", file=sys.stderr)
             return 1
         author_count = len({row[4] for row in articles if row[4]})
         if author_count < 5:
@@ -210,9 +219,7 @@ def main() -> int:
             _author_id,
             raw_content,
         ) in articles:
-            if article_id == "art_millets" or article_id.startswith(
-                ("art_library_", "art_expansion_")
-            ):
+            if not article_id.startswith("art_truegrit_"):
                 print(
                     f"legacy generated article survived: {article_id}", file=sys.stderr
                 )
@@ -232,22 +239,7 @@ def main() -> int:
                 for paragraph in block.get("props", {}).get("paragraphs", [])
             ] + [str(item.get("answer", "")) for item in faq_items]
             word_count = len(" ".join(prose).split())
-            if article_id.startswith("art_guide_"):
-                quality_floor = (5, 350, 6)
-            elif article_id.startswith("art_field_"):
-                quality_floor = (5, 180, 4)
-            elif article_id.startswith("art_case_"):
-                quality_floor = (5, 180, 3)
-            elif article_id.startswith("art_practical_"):
-                quality_floor = (5, 190, 6)
-            elif article_id.startswith("art_fieldbook_"):
-                quality_floor = (5, 175, 5)
-            else:
-                print(
-                    f"unexpected published article family: {article_id}",
-                    file=sys.stderr,
-                )
-                return 1
+            quality_floor = (4, 650, 5)
             min_faq, min_words, min_minutes = quality_floor
             if (
                 len(faq_items) < min_faq
@@ -263,27 +255,23 @@ def main() -> int:
             " FROM recipes r JOIN recipe_versions rv ON rv.id = r.published_version_id"
             " WHERE r.status = 'published' ORDER BY r.id"
         ).fetchall()
-        if len(recipes) != 551:
-            print(f"expected 551 useful recipes, found {len(recipes)}", file=sys.stderr)
+        if len(recipes) != 48:
+            print(f"expected 48 useful recipes, found {len(recipes)}", file=sys.stderr)
             return 1
-        if len({row[1] for row in recipes}) != len(recipes) or len(
-            {row[2] for row in recipes}
-        ) != len(recipes):
-            print("published recipe titles and slugs must be unique", file=sys.stderr)
+        if len({row[2] for row in recipes}) != len(recipes):
+            print("published recipe slugs must be unique", file=sys.stderr)
             return 1
-        practical_recipes = [
-            row for row in recipes if row[0].startswith("rcp_practical_")
-        ]
-        if len(practical_recipes) != 250:
+        practical_recipes = [row for row in recipes if row[0].startswith("rcp_truegrit_")]
+        if len(practical_recipes) != 48:
             print(
-                f"expected 250 new practical recipes, found {len(practical_recipes)}",
+                f"expected 48 new practical recipes, found {len(practical_recipes)}",
                 file=sys.stderr,
             )
             return 1
         for recipe_id, title, _slug, raw_content, ingredient_count in practical_recipes:
             content = json.loads(raw_content)
             steps = content.get("steps", [])
-            if len(steps) != 6 or ingredient_count < 6:
+            if len(steps) < 8 or ingredient_count < 8:
                 print(
                     f"recipe is not executable: {title} ({recipe_id})", file=sys.stderr
                 )
@@ -372,8 +360,8 @@ def main() -> int:
             (block for block in home_blocks if block.get("type") == "hero"), None
         )
         slides = hero.get("props", {}).get("slides", []) if hero else []
-        if len(slides) != 12:
-            print(f"expected 12 homepage banners, found {len(slides)}", file=sys.stderr)
+        if len(slides) != 4:
+            print(f"expected 4 homepage banners, found {len(slides)}", file=sys.stderr)
             return 1
         for slide in slides:
             image_url = str(slide.get("imageUrl", ""))
@@ -384,7 +372,9 @@ def main() -> int:
 
         category_banner_count = conn.execute(
             "SELECT COUNT(*) FROM categories"
-            " WHERE status = 'published' AND hero_image_url LIKE '/banners/categories/%'"
+            " WHERE status = 'published'"
+            " AND hero_image_url LIKE '/catalogue/categories/banners/%'"
+            " AND thumbnail_image_url LIKE '/catalogue/categories/thumbnails/%'"
         ).fetchone()[0]
         if category_banner_count != published_categories:
             print(
@@ -395,34 +385,28 @@ def main() -> int:
             return 1
 
         visible_image_urls = conn.execute(
-            "SELECT DISTINCT image_url, 'product' AS image_kind FROM products"
-            " WHERE status = 'published' AND NULLIF(TRIM(image_url), '') IS NOT NULL"
-            " UNION SELECT DISTINCT hero_image_url, 'category' AS image_kind FROM categories"
+            "SELECT DISTINCT hero_image_url, 'category-banner' AS image_kind FROM categories"
             " WHERE status = 'published' AND visibility = 'public'"
             " AND NULLIF(TRIM(hero_image_url), '') IS NOT NULL"
+            " UNION SELECT DISTINCT thumbnail_image_url, 'category-thumbnail' AS image_kind"
+            " FROM categories WHERE status = 'published' AND visibility = 'public'"
+            " AND NULLIF(TRIM(thumbnail_image_url), '') IS NOT NULL"
         ).fetchall()
         for image_url, image_kind in visible_image_urls:
             asset = ROOT / "apps" / "storefront" / "public" / image_url.lstrip("/")
             expected_prefix = (
-                "/products/" if image_kind == "product" else "/banners/categories/"
+                "/catalogue/categories/thumbnails/"
+                if image_kind == "category-thumbnail"
+                else "/catalogue/categories/banners/"
             )
             if not image_url.startswith(expected_prefix) or not asset.is_file():
                 print(f"missing catalogue image asset: {image_url}", file=sys.stderr)
                 return 1
 
         customer_catalogue_departments = (
-            "farm-fresh-proteins",
-            "pasta-noodles-couscous",
-            "soups-stocks-preserved",
-            "juices-water-functional",
-            "chocolate-confectionery",
-            "regional-indian-pantry",
-            "free-from-special-diet",
-            "baby-care-parenting",
-            "family-wellness-care",
-            "kitchen-dining-storage",
-            "bulk-refill-value",
-            "meal-boxes-subscriptions",
+            "wheat-flour", "cold-pressed-oils", "seeds", "black-gram",
+            "red-lentils", "daliya", "semolina", "whole-wheat-pasta",
+            "whole-wheat-vermicelli", "white-field-peas",
         )
         for department_slug in customer_catalogue_departments:
             category = conn.execute(

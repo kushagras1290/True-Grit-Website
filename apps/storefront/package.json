@@ -16,6 +16,8 @@
     "@truegrit/contracts": "workspace:*",
     "@truegrit/i18n": "workspace:*",
     "@truegrit/ui": "workspace:*",
+    "country-locale-map": "1.9.13",
+    "country-to-currency": "3.0.1",
     "isbot": "^5.1.17",
     "lucide-react": "^0.469.0",
     "qrcode.react": "^4.2.0",

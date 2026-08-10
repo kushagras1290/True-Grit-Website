@@ -142,6 +142,17 @@ def test_me_requires_authentication(client: TestClient):
     assert client.get("/v1/public/auth/me").status_code == 401
 
 
+def test_session_probe_treats_signed_out_as_normal(client: TestClient, sms_outbox):
+    response = client.get("/v1/public/auth/session")
+    assert response.status_code == 200
+    assert response.json() == {"customer": None}
+
+    register(client, sms_outbox)
+    response = client.get("/v1/public/auth/session")
+    assert response.status_code == 200
+    assert response.json()["customer"]["displayName"] == "Priya Sharma"
+
+
 def test_staff_session_cannot_access_customer_me(client: TestClient, db: SQLiteDatabase):
     token = create_session(db, "usr_admin")
     client.cookies.set(SESSION_COOKIE, token)

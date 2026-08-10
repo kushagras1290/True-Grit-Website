@@ -33,7 +33,7 @@ from fastapi import APIRouter, Depends, Request, Response
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
-from truegrit_api.auth.dependencies import get_current_customer, get_database
+from truegrit_api.auth.dependencies import get_current_customer, get_database, get_optional_customer
 from truegrit_api.auth.facebook import verify_facebook_access_token
 from truegrit_api.auth.google import verify_google_id_token
 from truegrit_api.auth.passwords import hash_password, verify_password_async
@@ -506,6 +506,29 @@ async def logout(
 ) -> Any:
     await end_session(db, request, response, settings=get_settings())
     return {"ok": True}
+
+
+@router.get("/session")
+async def customer_session(
+    principal: Annotated[Principal | None, Depends(get_optional_customer)],
+) -> Any:
+    """Non-erroring storefront session probe.
+
+    Being signed out is the normal first-visit state, so the browser should not
+    have to generate a red 401 console request merely to learn that fact. The
+    authenticated `/me` contract remains strict for callers that require it.
+    """
+    if principal is None:
+        return {"customer": None}
+    return {
+        "customer": {
+            "id": principal.user_id,
+            "displayName": principal.display_name,
+            "email": principal.contact_email,
+            "phone": principal.phone_e164,
+            "phoneVerified": principal.has_verified_phone,
+        }
+    }
 
 
 @router.get("/me")

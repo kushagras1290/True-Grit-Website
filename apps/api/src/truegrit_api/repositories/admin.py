@@ -104,7 +104,8 @@ class AdminRepository:
             """
             SELECT
               c.id, c.name, c.slug, c.visibility, c.status, c.updated_at,
-              c.hero_image_url, c.hero_image_alt,
+              COALESCE(c.thumbnail_image_url, c.hero_image_url) AS hero_image_url,
+              COALESCE(c.thumbnail_image_alt, c.hero_image_alt) AS hero_image_alt,
               parent.name AS parent_name,
               (SELECT COUNT(*) FROM product_categories pc WHERE pc.category_id = c.id)
                 AS product_count
@@ -286,7 +287,8 @@ class AdminRepository:
             """
             SELECT id, name, slug, short_description, hero_eyebrow, hero_title, hero_description,
                    season_label, theme_key, visibility, status, seo_title, seo_description,
-                   hero_image_url, hero_image_alt, product_assignment_mode, updated_at,
+                   hero_image_url, hero_image_alt, thumbnail_image_url, thumbnail_image_alt,
+                   product_assignment_mode, updated_at,
                    release_scope
             FROM categories WHERE id = ? AND archived_at IS NULL
             """,

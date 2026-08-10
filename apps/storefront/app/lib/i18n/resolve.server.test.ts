@@ -32,7 +32,7 @@ describe("resolveLocale", () => {
     ).toMatchObject({ locale: { code: "fr" }, source: "cookie" });
   });
 
-  it("honours the browser's weighted language list, including English", () => {
+  it("uses geography before browser defaults so language and currency stay aligned", () => {
     expect(
       resolveLocale(
         request({
@@ -40,7 +40,7 @@ describe("resolveLocale", () => {
           cf: { country: "IN", region: "Tamil Nadu", regionCode: "IN-TN" },
         }),
       ),
-    ).toMatchObject({ locale: { code: "de" }, source: "header" });
+    ).toMatchObject({ locale: { code: "ta" }, source: "geo" });
 
     expect(
       resolveLocale(
@@ -49,20 +49,32 @@ describe("resolveLocale", () => {
           cf: { country: "DE" },
         }),
       ),
-    ).toMatchObject({ locale: { code: "en" }, source: "header" });
+    ).toMatchObject({ locale: { code: "de" }, source: "geo" });
   });
 
-  it("distinguishes Traditional and Simplified Chinese browser regions", () => {
+  it("uses every country's default even when the browser prefers another language", () => {
     expect(
-      resolveLocale(request({ headers: { "accept-language": "zh-TW,zh;q=0.8" } })),
-    ).toMatchObject({ locale: { code: "zh-Hant" }, source: "header" });
-    expect(resolveLocale(request({ headers: { "accept-language": "zh-CN" } }))).toMatchObject({
+      resolveLocale(
+        request({
+          headers: { "accept-language": "fr-FR;q=0.7, de-DE;q=0.9, en;q=0.8" },
+          cf: { country: "US" },
+        }),
+      ),
+    ).toMatchObject({ locale: { code: "en" }, source: "geo" });
+  });
+
+  it("distinguishes Traditional and Simplified Chinese explicit choices", () => {
+    expect(resolveLocale(request({ path: "/shop?lang=zh-TW" }))).toMatchObject({
+      locale: { code: "zh-Hant" },
+      source: "query",
+    });
+    expect(resolveLocale(request({ path: "/shop?lang=zh-CN" }))).toMatchObject({
       locale: { code: "zh-Hans" },
-      source: "header",
+      source: "query",
     });
   });
 
-  it("uses geography only when the browser supplies no supported language", () => {
+  it("uses Indian state geography when available", () => {
     expect(
       resolveLocale(
         request({
@@ -71,5 +83,14 @@ describe("resolveLocale", () => {
         }),
       ),
     ).toMatchObject({ locale: { code: "kn" }, source: "geo" });
+
+    expect(
+      resolveLocale(
+        request({
+          headers: { "accept-language": "hi-IN" },
+          cf: { country: "IN", region: "Nagaland", regionCode: "IN-NL" },
+        }),
+      ),
+    ).toMatchObject({ locale: { code: "en" }, source: "geo" });
   });
 });

@@ -15,6 +15,7 @@ def test_allowed_origins_includes_loopback_siblings():
         public_storefront_url="http://localhost:5173",
         public_admin_url="http://localhost:5174",
         public_process_url="http://localhost:5175",
+        public_language_url="http://localhost:5176",
     )
     origins = settings.allowed_origins
     assert "http://localhost:5173" in origins
@@ -23,6 +24,8 @@ def test_allowed_origins_includes_loopback_siblings():
     assert "http://127.0.0.1:5174" in origins
     assert "http://localhost:5175" in origins
     assert "http://127.0.0.1:5175" in origins
+    assert "http://localhost:5176" in origins
+    assert "http://127.0.0.1:5176" in origins
 
 
 def test_allowed_origins_maps_127_to_localhost():
@@ -30,6 +33,7 @@ def test_allowed_origins_maps_127_to_localhost():
         public_storefront_url="http://127.0.0.1:5173",
         public_admin_url="http://127.0.0.1:5174",
         public_process_url="http://127.0.0.1:5175",
+        public_language_url="http://127.0.0.1:5176",
     )
     assert "http://localhost:5173" in settings.allowed_origins
 
@@ -39,11 +43,13 @@ def test_allowed_origins_leaves_real_domains_untouched():
         public_storefront_url="https://shop.example.com",
         public_admin_url="https://admin.example.com",
         public_process_url="https://process.example.com",
+        public_language_url="https://lang.example.com",
     )
     assert settings.allowed_origins == [
         "https://shop.example.com",
         "https://admin.example.com",
         "https://process.example.com",
+        "https://lang.example.com",
     ]
 
 

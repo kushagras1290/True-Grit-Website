@@ -30,6 +30,7 @@ describe("image specifications", () => {
       Object.fromEntries(IMAGE_SPECIFICATIONS.map((entry) => [entry.id, imageDimensions(entry)])),
     ).toMatchObject({
       "product-image": "1200 × 1200 px",
+      "category-thumbnail": "1200 × 1200 px",
       "brand-mark": "256 × 256 px",
       favicon: "64 × 64 px",
     });

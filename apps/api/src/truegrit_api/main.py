@@ -7,6 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from truegrit_api.api.admin import router as admin_router
 from truegrit_api.api.community import router as community_router
+from truegrit_api.api.currency_rates import admin_router as currency_rates_admin_router
+from truegrit_api.api.currency_rates import public_router as currency_rates_public_router
 from truegrit_api.api.customer_auth import router as customer_auth_router
 from truegrit_api.api.deployments import router as deployments_router
 from truegrit_api.api.farm_partnerships import router as farm_partnerships_router
@@ -19,6 +21,8 @@ from truegrit_api.api.storefront import router as storefront_router
 from truegrit_api.api.submissions import router as submissions_router
 from truegrit_api.api.support_bot import router as support_bot_router
 from truegrit_api.api.support_bot_public import router as support_bot_public_router
+from truegrit_api.api.translation_hub import admin_router as translation_hub_admin_router
+from truegrit_api.api.translation_hub import public_router as translation_hub_public_router
 from truegrit_api.config import get_settings
 from truegrit_api.middleware.cache_policy import PublicCachePolicyMiddleware
 from truegrit_api.middleware.error_handler import install_error_handlers
@@ -65,7 +69,8 @@ def create_app(
         # cookie and read the JSON response (orders, account data, admin
         # data) back through CORS. `allowed_origins` is exactly the
         # storefront/admin origins this deployment actually serves
-        # (`PUBLIC_STOREFRONT_URL`/`PUBLIC_ADMIN_URL`/`PUBLIC_PROCESS_URL`, plus their
+        # (`PUBLIC_STOREFRONT_URL`/`PUBLIC_ADMIN_URL`/`PUBLIC_PROCESS_URL`/
+        # `PUBLIC_LANGUAGE_URL`, plus their
         # localhost/127.0.0.1 sibling for local dev) -- never a wildcard.
         allow_origins=settings.allowed_origins,
         allow_credentials=True,
@@ -118,11 +123,15 @@ def create_app(
     app.include_router(community_router, prefix="/v1/public")
     app.include_router(farm_partnerships_router, prefix="/v1/public")
     app.include_router(support_bot_public_router, prefix="/v1/public")
+    app.include_router(translation_hub_public_router, prefix="/v1/public")
+    app.include_router(currency_rates_public_router, prefix="/v1/public")
     app.include_router(admin_router, prefix="/v1/admin")
     app.include_router(roadmap_admin_router, prefix="/v1/admin")
     app.include_router(deployments_router, prefix="/v1/admin")
     app.include_router(messages_router, prefix="/v1/admin")
     app.include_router(support_bot_router, prefix="/v1/admin")
+    app.include_router(translation_hub_admin_router, prefix="/v1/admin")
+    app.include_router(currency_rates_admin_router, prefix="/v1/admin")
 
     @app.get("/health/live", tags=["health"])
     async def live() -> dict[str, str]:

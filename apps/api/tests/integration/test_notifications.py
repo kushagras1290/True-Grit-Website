@@ -1,5 +1,15 @@
 """Integration tests: admin-only farm-owner creation, durable email jobs, and the
-password-reset flows for the customer and staff portals."""
+password-reset flows for the customer and staff portals.
+
+Seeds its own farm (`farm_riverbend`) and a purchasable product on it rather
+than depending on the demo catalogue: migration 0095 retires that catalogue
+(including `farm_devika` and its `farm_members` link) from every database it
+touches (the live site must not keep any trace of it), so tests cannot rely
+on it surviving either. `usr_farmowner` (`owner@devika.test`) is itself an
+ordinary staff seed account -- like `usr_admin` -- that migration 0095 never
+touches, so it is reused as-is; only its farm membership needs to be
+re-created against the new fixture farm.
+"""
 
 from __future__ import annotations
 
@@ -21,6 +31,10 @@ ADDRESS = {
     "postalCode": "400001",
 }
 
+FARM_ID = "farm_riverbend"
+FARM_NAME = "Riverbend Growers"
+PRODUCT_VARIANT_ID = "var_riverbend_test_1kg"
+
 
 @pytest.fixture(autouse=True)
 def _fast_hashing(monkeypatch: pytest.MonkeyPatch):
@@ -28,6 +42,41 @@ def _fast_hashing(monkeypatch: pytest.MonkeyPatch):
     get_settings.cache_clear()
     yield
     get_settings.cache_clear()
+
+
+@pytest.fixture(autouse=True)
+def _farm_owner_baseline(db: SQLiteDatabase) -> None:
+    """A fresh farm, its owner membership, and one purchasable product on it --
+    everything `test_admin_creates_farm_owner_who_can_sign_in` and
+    `test_checkout_queues_customer_and_farm_owner_emails` need, without
+    touching the retired demo catalogue."""
+    db._conn.executescript(
+        f"""
+        INSERT INTO farms (id, name, slug, country_code, status, created_at,
+          created_by, updated_at, updated_by)
+        VALUES ('{FARM_ID}', '{FARM_NAME}', 'riverbend-growers', 'IN', 'published',
+          '2026-07-01T00:00:00Z', 'usr_admin', '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO farm_members (user_id, farm_id, created_at, created_by)
+        VALUES ('usr_farmowner', '{FARM_ID}', '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO products (id, internal_name, name, slug, product_type, farm_id, status,
+          accepts_orders, created_at, created_by, updated_at, updated_by)
+        VALUES ('prd_riverbend_test', 'Riverbend Test Product', 'Riverbend Test Product',
+          'riverbend-test-product', 'simple', '{FARM_ID}', 'published', 1,
+          '2026-07-01T00:00:00Z', 'usr_admin', '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO product_variants (id, product_id, sku, name, status, sort_order,
+          created_at, updated_at)
+        VALUES ('{PRODUCT_VARIANT_ID}', 'prd_riverbend_test', 'RVB-TEST-1KG', '1 kg',
+          'active', 1, '2026-07-01T00:00:00Z', '2026-07-01T00:00:00Z');
+        INSERT INTO variant_prices (id, variant_id, market_code, currency_code,
+          list_amount_minor, status, created_at, created_by)
+        VALUES ('vpr_riverbend_test_1kg', '{PRODUCT_VARIANT_ID}', 'IN', 'INR', 89900,
+          'active', '2026-07-01T00:00:00Z', 'usr_admin');
+        INSERT INTO inventory_levels (variant_id, location_id, on_hand, reserved,
+          reorder_threshold, version, updated_at)
+        VALUES ('{PRODUCT_VARIANT_ID}', 'loc_mumbai', 500, 0, 20, 1, '2026-07-01T00:00:00Z');
+        """
+    )
+    db._conn.commit()
 
 
 def _token_from(body: str) -> str | None:
@@ -48,12 +97,12 @@ def _pending_emails(db: SQLiteDatabase) -> list[dict[str, object]]:
 def test_admin_creates_farm_owner_who_can_sign_in(client: TestClient, db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
     farms = client.get("/v1/admin/farms").json()["items"]
-    farm_id = next(farm["id"] for farm in farms if farm["name"] == "Devika Organics")
+    farm_id = next(farm["id"] for farm in farms if farm["name"] == FARM_NAME)
 
     created = client.post(
         "/v1/admin/farm-owners",
         json={
-            "email": "new-owner@devika.test",
+            "email": "new-owner@example.test",
             "displayName": "New Owner",
             "farmId": farm_id,
             "password": "strongpass12",
@@ -64,7 +113,7 @@ def test_admin_creates_farm_owner_who_can_sign_in(client: TestClient, db: SQLite
     client.cookies.clear()
     login = client.post(
         "/v1/admin/auth/login",
-        json={"email": "new-owner@devika.test", "password": "strongpass12"},
+        json={"email": "new-owner@example.test", "password": "strongpass12"},
     )
     assert login.status_code == 200
     assert client.get("/v1/admin/me").json()["farmId"] == farm_id
@@ -75,9 +124,9 @@ def test_farm_owner_cannot_create_farm_owner(client: TestClient, db: SQLiteDatab
     response = client.post(
         "/v1/admin/farm-owners",
         json={
-            "email": "x@devika.test",
+            "email": "x@example.test",
             "displayName": "X",
-            "farmId": "farm_devika",
+            "farmId": FARM_ID,
             "password": "strongpass12",
         },
     )
@@ -92,14 +141,14 @@ def test_checkout_queues_customer_and_farm_owner_emails(client: TestClient, db: 
     response = client.post(
         "/v1/public/checkout",
         json={
-            "items": [{"variantId": "var_alphonso_1kg", "quantity": 1}],
+            "items": [{"variantId": PRODUCT_VARIANT_ID, "quantity": 1}],
             "deliveryAddress": ADDRESS,
         },
     )
-    assert response.status_code == 200
+    assert response.status_code == 200, response.text
     recipients = {str(email["to"]) for email in _pending_emails(db)}
     assert "riya@example.test" in recipients  # customer confirmation
-    assert "owner@devika.test" in recipients  # owner of farm_devika (Alphonso)
+    assert "owner@devika.test" in recipients  # owner of farm_riverbend
 
 
 def test_contact_form_records_message_and_sends_email(

@@ -1,5 +1,6 @@
 export interface PublicRuntimeEnv {
   PUBLIC_API_URL?: string;
+  PUBLIC_GOOGLE_CLIENT_ID?: string;
   PUBLIC_FACEBOOK_APP_ID?: string;
 }
 
@@ -10,6 +11,7 @@ declare global {
 }
 
 const BUILD_API_URL = import.meta.env.VITE_API_URL as string | undefined;
+const BUILD_GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
 const BUILD_FACEBOOK_APP_ID = import.meta.env.VITE_FACEBOOK_APP_ID as string | undefined;
 
 function normalizeUrl(value: string | undefined): string {
@@ -61,6 +63,16 @@ export function getPublicFacebookAppId(): string {
     );
   }
   return normalizeUrl(processEnv("PUBLIC_FACEBOOK_APP_ID") || BUILD_FACEBOOK_APP_ID);
+}
+
+export function getPublicGoogleClientId(): string {
+  if (typeof window !== "undefined") {
+    return (
+      normalizeUrl(window.__TRUEGRIT_PUBLIC_ENV__?.PUBLIC_GOOGLE_CLIENT_ID) ||
+      normalizeUrl(BUILD_GOOGLE_CLIENT_ID)
+    );
+  }
+  return normalizeUrl(processEnv("PUBLIC_GOOGLE_CLIENT_ID") || BUILD_GOOGLE_CLIENT_ID);
 }
 
 // Whether the Facebook button is shown is no longer an env flag: it is an

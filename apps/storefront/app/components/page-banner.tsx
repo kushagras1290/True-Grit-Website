@@ -83,17 +83,11 @@ export function PageBanner({
     <>
       <img
         src={resolved}
-        alt=""
-        aria-hidden
-        className="absolute inset-0 h-full w-full scale-105 object-cover opacity-45 blur-md"
-      />
-      <img
-        src={resolved}
         // Decorative: the heading below carries the meaning, so an empty alt
         // avoids a screen reader announcing the same words twice. A caller
         // that supplies real alt text gets it used.
         alt={imageAlt ? localize(imageAlt) : ""}
-        className="absolute inset-0 h-full w-full object-contain"
+        className="absolute inset-0 h-full w-full object-cover"
         fetchPriority={loading === "eager" ? "high" : "auto"}
         loading={loading}
       />

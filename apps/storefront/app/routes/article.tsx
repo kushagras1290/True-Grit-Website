@@ -14,7 +14,7 @@ import {
 import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { mediaUrl } from "../lib/media";
-import { articleJsonLd, seoMeta } from "../lib/seo";
+import { articleJsonLd, breadcrumbJsonLd, seoMeta } from "../lib/seo";
 import { useLocalizeFormat } from "../lib/i18n/localized-text";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
@@ -44,6 +44,14 @@ export function meta({ data: loaderData, matches }: Route.MetaArgs) {
       canonicalPath: loaderData.article.seo.canonicalPath,
       imageUrl: mediaUrl(loaderData.article.heroImageUrl) ?? undefined,
     }),
+    breadcrumbJsonLd([
+      { name: "Home", path: "/" },
+      { name: "Blog", path: "/blog" },
+      {
+        name: loaderData.article.title,
+        path: loaderData.article.seo.canonicalPath,
+      },
+    ]),
   ];
 }
 

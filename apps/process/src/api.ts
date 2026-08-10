@@ -93,6 +93,11 @@ export const releaseApi = {
       body: JSON.stringify({ email, password }),
     }),
   logout: () => request<{ ok: boolean }>("/v1/admin/auth/logout", { method: "POST" }),
+  changePassword: (currentPassword: string, newPassword: string) =>
+    request<{ ok: boolean }>("/v1/admin/auth/change-password", {
+      method: "POST",
+      body: JSON.stringify({ currentPassword, newPassword }),
+    }),
   dashboard: () => request<ReleaseDashboard>("/v1/admin/deployments"),
   verifyStaging: (sha: string, notes: string) =>
     request<{ verified: boolean }>("/v1/admin/deployments/verify-staging", {

@@ -22,6 +22,7 @@
     // Runtime public API origin. The browser receives this value from SSR so
     // production builds cannot accidentally keep a local VITE_API_URL baked in.
     "PUBLIC_API_URL": "https://apitest.truegritin.com",
+    "PUBLIC_GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
     // Public Facebook app id for the storefront account menu. Whether the
     // button is *shown* is an admin-console switch (Site Control -> Storefront
     // switches), not an env flag — see migration 0040.
@@ -41,6 +42,7 @@
       "services": [{ "binding": "API_WORKER", "service": "truegrit-api-staging" }],
       "vars": {
         "PUBLIC_API_URL": "https://apistag.truegritin.com",
+        "PUBLIC_GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
         "PUBLIC_FACEBOOK_APP_ID": "",
       },
     },
@@ -62,6 +64,7 @@
       "services": [{ "binding": "API_WORKER", "service": "truegrit-api-prod" }],
       "vars": {
         "PUBLIC_API_URL": "https://api.truegritin.com",
+        "PUBLIC_GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
         "PUBLIC_FACEBOOK_APP_ID": "",
         "CANONICAL_HOST": "truegritin.com",
       },

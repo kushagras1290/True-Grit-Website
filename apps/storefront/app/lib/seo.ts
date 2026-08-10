@@ -5,6 +5,18 @@ import { EN_MESSAGES, type LocaleMessages, type ResolvedMessages } from "./i18n/
 import { translateSource } from "./i18n/localized-text";
 
 const SITE_NAME = "True Grit";
+export const SITE_ORIGIN = "https://truegritin.com";
+export const DEFAULT_SITE_DESCRIPTION =
+  "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.";
+
+export function absoluteSiteUrl(pathOrUrl: string | null | undefined): string {
+  const value = pathOrUrl?.trim() || "/";
+  try {
+    return new URL(value, SITE_ORIGIN).href;
+  } catch {
+    return `${SITE_ORIGIN}/`;
+  }
+}
 
 /**
  * The resolved catalogue for the current request, read out of the root match.
@@ -57,7 +69,7 @@ export function seoMeta(
   }
   const messages = metaMessages(matches);
   const localizedTitle = translateSource(messages, seo.title);
-  const description = translateSource(messages, seo.description);
+  const description = translateSource(messages, seo.description).trim() || DEFAULT_SITE_DESCRIPTION;
   const title = localizedTitle.includes(SITE_NAME)
     ? localizedTitle
     : `${localizedTitle} · ${SITE_NAME}`;
@@ -66,7 +78,11 @@ export function seoMeta(
     { name: "description", content: description },
     ...(seo.keywords ? [{ name: "keywords", content: seo.keywords }] : []),
     { name: "robots", content: seo.indexing === "index" ? "index, follow" : "noindex, nofollow" },
-    { tagName: "link" as const, rel: "canonical", href: seo.canonicalPath },
+    {
+      tagName: "link" as const,
+      rel: "canonical",
+      href: absoluteSiteUrl(seo.canonicalPath),
+    },
     { property: "og:title", content: title },
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
@@ -93,8 +109,8 @@ export function articleJsonLd(article: {
       description: article.excerpt,
       author: { "@type": "Person", name: article.authorName },
       datePublished: article.publishedAt,
-      mainEntityOfPage: article.canonicalPath,
-      ...(article.imageUrl ? { image: article.imageUrl } : {}),
+      mainEntityOfPage: absoluteSiteUrl(article.canonicalPath),
+      ...(article.imageUrl ? { image: absoluteSiteUrl(article.imageUrl) } : {}),
     },
   };
 }
@@ -124,8 +140,93 @@ export function recipeJsonLd(recipe: {
         `${ingredient.quantityText} ${ingredient.label}`.trim(),
       ),
       recipeInstructions: recipe.steps.map((step) => ({ "@type": "HowToStep", text: step })),
-      mainEntityOfPage: recipe.canonicalPath,
-      ...(recipe.imageUrl ? { image: recipe.imageUrl } : {}),
+      mainEntityOfPage: absoluteSiteUrl(recipe.canonicalPath),
+      ...(recipe.imageUrl ? { image: absoluteSiteUrl(recipe.imageUrl) } : {}),
+    },
+  };
+}
+
+export function organizationJsonLd() {
+  return {
+    "script:ld+json": {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": `${SITE_ORIGIN}/#organization`,
+      name: SITE_NAME,
+      url: `${SITE_ORIGIN}/`,
+      logo: `${SITE_ORIGIN}/brand/true-grit-mark.webp`,
+    },
+  };
+}
+
+export function websiteJsonLd() {
+  return {
+    "script:ld+json": {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": `${SITE_ORIGIN}/#website`,
+      name: SITE_NAME,
+      url: `${SITE_ORIGIN}/`,
+      publisher: { "@id": `${SITE_ORIGIN}/#organization` },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: `${SITE_ORIGIN}/search?q={search_term_string}`,
+        "query-input": "required name=search_term_string",
+      },
+    },
+  };
+}
+
+export function breadcrumbJsonLd(items: Array<{ name: string; path: string }>) {
+  return {
+    "script:ld+json": {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: items.map((item, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: item.name,
+        item: absoluteSiteUrl(item.path),
+      })),
+    },
+  };
+}
+
+export function productJsonLd(product: {
+  name: string;
+  description: string;
+  canonicalPath: string;
+  sku?: string;
+  priceMinor: number;
+  currencyCode: string;
+  availability: "in_stock" | "low_stock" | "out_of_stock";
+  imageUrl?: string | null;
+}) {
+  const availability =
+    product.availability === "out_of_stock"
+      ? "https://schema.org/OutOfStock"
+      : product.availability === "low_stock"
+        ? "https://schema.org/LimitedAvailability"
+        : "https://schema.org/InStock";
+  return {
+    "script:ld+json": {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      description: product.description,
+      url: absoluteSiteUrl(product.canonicalPath),
+      brand: { "@type": "Brand", name: SITE_NAME },
+      ...(product.sku ? { sku: product.sku } : {}),
+      ...(product.imageUrl ? { image: absoluteSiteUrl(product.imageUrl) } : {}),
+      offers: {
+        "@type": "Offer",
+        url: absoluteSiteUrl(product.canonicalPath),
+        priceCurrency: product.currencyCode,
+        price: (product.priceMinor / 100).toFixed(2),
+        availability,
+        itemCondition: "https://schema.org/NewCondition",
+        seller: { "@id": `${SITE_ORIGIN}/#organization` },
+      },
     },
   };
 }

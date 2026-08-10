@@ -32,6 +32,15 @@ export function meta({ data: loaderData, matches }: Route.MetaArgs) {
 export default function FarmPage({ loaderData }: Route.ComponentProps) {
   const format = useLocalizeFormat();
   const { farm, products } = loaderData;
+  const farmEyebrow = farm.establishedYear
+    ? format("{region} · since {year}", {
+        region: farm.region,
+        year: farm.establishedYear,
+      })
+    : farm.region;
+  const farmDescription = farm.farmerName
+    ? format("Farmed by {farmer}", { farmer: farm.farmerName })
+    : "Traditional ingredients grown and prepared with careful small-batch methods.";
   return (
     <>
       <Breadcrumbs
@@ -47,12 +56,9 @@ export default function FarmPage({ loaderData }: Route.ComponentProps) {
       <PageBanner
         imageUrl={farm.heroImageUrl || "/banners/content/default-market-banner.png"}
         imageAlt={farm.heroImageAlt || farm.name}
-        eyebrow={format("{region} · since {year}", {
-          region: farm.region,
-          year: farm.establishedYear,
-        })}
+        eyebrow={farmEyebrow}
         heading={farm.name}
-        description={format("Farmed by {farmer}", { farmer: farm.farmerName })}
+        description={farmDescription}
       />
 
       <div className="mx-auto max-w-[80rem] px-4 pt-6 sm:px-6">

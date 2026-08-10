@@ -81,14 +81,16 @@ export function communitySettings(): Promise<CommunitySettings> {
   return request<CommunitySettings>("/v1/public/community/settings");
 }
 
-export function listDiscussions(limit = 12, offset = 0): Promise<DiscussionPage> {
+export function listDiscussions(locale: string, limit = 12, offset = 0): Promise<DiscussionPage> {
   return request<DiscussionPage>(
-    `/v1/public/community/discussions?limit=${limit}&offset=${offset}`,
+    `/v1/public/community/discussions?limit=${limit}&offset=${offset}&locale=${encodeURIComponent(locale)}`,
   );
 }
 
-export function getDiscussion(id: string): Promise<DiscussionDetail> {
-  return request<DiscussionDetail>(`/v1/public/community/discussions/${encodeURIComponent(id)}`);
+export function getDiscussion(id: string, locale: string): Promise<DiscussionDetail> {
+  return request<DiscussionDetail>(
+    `/v1/public/community/discussions/${encodeURIComponent(id)}?locale=${encodeURIComponent(locale)}`,
+  );
 }
 
 export function createDiscussion(input: { title: string; body: string }): Promise<{ id: string }> {
