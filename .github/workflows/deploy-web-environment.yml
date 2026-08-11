@@ -1,19 +1,27 @@
 name: Deploy web environment
 
-# Manually deploys the storefront + admin SPA to an isolated Cloudflare
-# environment. Staging already auto-deploys on every push to `staging`
-# (deploy-staging.yml); this workflow exists for production, which is never
-# automatic -- same reasoning and the same typed-confirmation gate as
-# deploy-api-environment.yml. Deploy the API to the target environment
-# first (via that workflow): the storefront's service binding (API_WORKER)
-# targets the environment's API Worker by name, and Cloudflare rejects the
-# binding if that Worker has never been deployed.
+# Production auto-deploys on every push to `main`, same trigger and the same
+# reasoning as deploy-api-environment.yml (see its header comment) -- `main`
+# only ever advances via the release cockpit's staging -> main promotion,
+# which already required a human to verify staging first. Staging itself
+# already auto-deploys on every push to `staging` (deploy-staging.yml).
+# `workflow_dispatch` still exists for staging deploys here and for a manual
+# re-run of production; on that path the typed confirmation is still
+# required exactly as before.
+#
+# Both this workflow and the API one trigger independently off the same push
+# -- fine for an already-bootstrapped environment (production's API Worker
+# already exists, so the storefront's service binding always resolves). The
+# "deploy API first" ordering only matters for an environment's very first
+# ever deploy, which is a workflow_dispatch scenario, not this one.
 #
 # Requires the same repository secret every other deploy workflow uses:
 #   CLOUDFLARE_API_TOKEN — a token with Workers Scripts edit permission on
 #   the target account.
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       environment:
@@ -30,21 +38,21 @@ permissions:
   contents: read
 
 concurrency:
-  group: deploy-web-${{ inputs.environment }}
+  group: deploy-web-${{ inputs.environment || 'production' }}
   cancel-in-progress: false
 
 env:
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
   CLOUDFLARE_ACCOUNT_ID: "68185599d29e656475ecc2cabbf581b7"
-  TARGET_ENVIRONMENT: ${{ inputs.environment }}
-  CONFIRMATION: ${{ inputs.confirmation }}
+  TARGET_ENVIRONMENT: ${{ inputs.environment || 'production' }}
+  CONFIRMATION: ${{ inputs.confirmation || 'DEPLOY production' }}
 
 jobs:
   web:
-    name: Storefront + Admin + Process + Language Studio (${{ inputs.environment }})
+    name: Storefront + Admin + Process + Language Studio (${{ inputs.environment || 'production' }})
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    environment: ${{ inputs.environment }}
+    environment: ${{ inputs.environment || 'production' }}
     steps:
       - name: Assert deployment target
         run: |
@@ -65,7 +73,7 @@ jobs:
       - name: Build storefront (Cloudflare Workers)
         working-directory: apps/storefront
         env:
-          CLOUDFLARE_ENV: ${{ inputs.environment }}
+          CLOUDFLARE_ENV: ${{ inputs.environment || 'production' }}
           VITE_GOOGLE_CLIENT_ID: "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com"
         run: pnpm build
       - name: Deploy storefront

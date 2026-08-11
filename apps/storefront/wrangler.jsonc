@@ -51,7 +51,7 @@
     // never automatically on push. Talks to the isolated truegrit-api-prod
     // Worker/D1/R2/Queues (apps/api/wrangler.jsonc's own env.production).
     // Both routes point at this one Worker; workers/app.ts 301-redirects
-    // www -> the canonical apex domain before rendering anything.
+    // the apex -> the canonical www domain before rendering anything.
     "production": {
       "name": "truegrit-storefront-prod",
       "workers_dev": true,
@@ -66,7 +66,7 @@
         "PUBLIC_API_URL": "https://api.truegritin.com",
         "PUBLIC_GOOGLE_CLIENT_ID": "550781007803-reqflk6ao179tttf6a3n150ft96dgekl.apps.googleusercontent.com",
         "PUBLIC_FACEBOOK_APP_ID": "",
-        "CANONICAL_HOST": "truegritin.com",
+        "CANONICAL_HOST": "www.truegritin.com",
       },
     },
   },

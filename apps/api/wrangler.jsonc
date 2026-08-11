@@ -275,7 +275,7 @@
       "triggers": { "crons": ["* * * * *", "0 3 * * *"] },
       "vars": {
         "APP_ENV": "production",
-        "PUBLIC_STOREFRONT_URL": "https://truegritin.com",
+        "PUBLIC_STOREFRONT_URL": "https://www.truegritin.com",
         "PUBLIC_ADMIN_URL": "https://admin.truegritin.com",
         "PUBLIC_PROCESS_URL": "https://process.truegritin.com",
         "PUBLIC_LANGUAGE_URL": "https://lang.truegritin.com",

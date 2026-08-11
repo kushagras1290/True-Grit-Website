@@ -5,7 +5,7 @@ import { EN_MESSAGES, type LocaleMessages, type ResolvedMessages } from "./i18n/
 import { translateSource } from "./i18n/localized-text";
 
 const SITE_NAME = "True Grit";
-export const SITE_ORIGIN = "https://truegritin.com";
+export const SITE_ORIGIN = "https://www.truegritin.com";
 export const DEFAULT_SITE_DESCRIPTION =
   "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.";
 
