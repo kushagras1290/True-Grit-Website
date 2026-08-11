@@ -57,11 +57,11 @@ describe("seoMeta", () => {
     expect(meta).toContainEqual({
       tagName: "link",
       rel: "canonical",
-      href: "https://truegritin.com/",
+      href: "https://www.truegritin.com/",
     });
     expect(meta).toContainEqual({ name: "description", content: DEFAULT_SITE_DESCRIPTION });
     expect(absoluteSiteUrl("/product/kathiya-wheat-flour")).toBe(
-      "https://truegritin.com/product/kathiya-wheat-flour",
+      "https://www.truegritin.com/product/kathiya-wheat-flour",
     );
   });
 
@@ -76,7 +76,7 @@ describe("seoMeta", () => {
     })["script:ld+json"];
     expect(product).toMatchObject({
       "@type": "Product",
-      url: "https://truegritin.com/product/kathiya-wheat-flour",
+      url: "https://www.truegritin.com/product/kathiya-wheat-flour",
       offers: { price: "55.00", priceCurrency: "INR" },
     });
 
@@ -87,8 +87,8 @@ describe("seoMeta", () => {
     expect(breadcrumbs).toMatchObject({
       "@type": "BreadcrumbList",
       itemListElement: [
-        { position: 1, item: "https://truegritin.com/" },
-        { position: 2, item: "https://truegritin.com/product/kathiya-wheat-flour" },
+        { position: 1, item: "https://www.truegritin.com/" },
+        { position: 2, item: "https://www.truegritin.com/product/kathiya-wheat-flour" },
       ],
     });
   });

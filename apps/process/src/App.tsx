@@ -60,7 +60,7 @@ const ENVIRONMENT_LINKS: Record<ReleaseBranch["name"], Array<{ label: string; ur
     { label: "API", url: "https://apistag.truegritin.com/health/live" },
   ],
   main: [
-    { label: "Storefront", url: "https://truegritin.com" },
+    { label: "Storefront", url: "https://www.truegritin.com" },
     { label: "Admin", url: "https://admin.truegritin.com" },
     { label: "API", url: "https://api.truegritin.com/health/live" },
     { label: "Process", url: "https://process.truegritin.com" },
