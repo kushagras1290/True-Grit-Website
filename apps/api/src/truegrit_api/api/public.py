@@ -67,7 +67,7 @@ from truegrit_api.services.jobs import enqueue_email
 from truegrit_api.services.site_documents import (
     SITE_DOCUMENT_TYPES,
     SITEMAP_GENERATORS,
-    default_site_documents,
+    default_site_document,
 )
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
@@ -264,7 +264,7 @@ async def site_document(key: str, db: Annotated[Database, Depends(get_database)]
         raise NotFoundError("Site document not found.")
     document = await SiteDocumentRepository(db).get(key)
     if document is None:
-        document = (await default_site_documents(db, get_settings()))[key]
+        document = await default_site_document(db, get_settings(), key)
     return {
         "key": document["key"],
         "content": document["content"],
