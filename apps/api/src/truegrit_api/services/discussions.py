@@ -233,7 +233,12 @@ async def moderate_discussion(
     assignments = ["updated_at = ?"]
     params: list[Any] = [now]
     if target is not None:
-        assignments += ["status = ?", "moderated_by = ?", "moderated_at = ?", "moderation_reason = ?"]
+        assignments += [
+            "status = ?",
+            "moderated_by = ?",
+            "moderated_at = ?",
+            "moderation_reason = ?",
+        ]
         params += [target, actor.user_id, now, reason]
     if indexing_policy is not None:
         assignments.append("indexing_policy = ?")

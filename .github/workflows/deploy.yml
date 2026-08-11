@@ -74,7 +74,21 @@ jobs:
           mv "$migrations_dir"/*.sql "$hold_dir"/
           for file in "$hold_dir"/*.sql; do
             mv "$file" "$migrations_dir"/
-            npx --yes wrangler@4.110.0 d1 migrations apply truegrit-dev --remote
+            # D1's remote storage layer occasionally times out mid-operation
+            # ("D1 DB storage operation exceeded timeout... [code: 7429]"), a
+            # transient Cloudflare-side condition unrelated to the migration's
+            # SQL. The apply is idempotent (already-applied files are
+            # skipped), so retrying the same command is always safe.
+            attempt=1
+            until npx --yes wrangler@4.110.0 d1 migrations apply truegrit-dev --remote; do
+              if [ "$attempt" -ge 3 ]; then
+                echo "d1 migrations apply failed after $attempt attempts" >&2
+                exit 1
+              fi
+              echo "d1 migrations apply failed (attempt $attempt) -- retrying in 10s" >&2
+              attempt=$((attempt + 1))
+              sleep 10
+            done
           done
       # pywrangler bundles FastAPI/pydantic + the workers/asgi runtime SDK and
       # deploys the Python Worker. The Pyodide venv step only works on Linux,
