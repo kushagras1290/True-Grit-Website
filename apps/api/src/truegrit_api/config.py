@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     github_api_version: str = "2026-03-10"
     deployment_testing_url: str = "https://test.truegritin.com"
     deployment_staging_url: str = "https://stag.truegritin.com"
-    deployment_main_url: str = "https://truegritin.com"
+    deployment_main_url: str = "https://www.truegritin.com"
 
     # Session cookie cross-site policy. Use "lax" when the storefront/admin and
     # API share a registrable domain (subdomains are same-site). Use "none" when
