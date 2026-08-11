@@ -144,6 +144,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             canonical is language-neutral rather than leaving them to guess that
             each visit's language is a separate page. */}
         <link rel="alternate" hrefLang="x-default" href="/" />
+        <meta name="msvalidate.01" content="B2F5E55D2DC74BFBF0122FDE2BA08777" />
         <Meta />
         <Links />
         {/* Values are validated against a colour allow-list before they are

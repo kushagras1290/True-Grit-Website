@@ -31,6 +31,7 @@ _PRODUCT_EDITABLE = (
     "storage_guidance",
     "seo_title",
     "seo_description",
+    "indexing_policy",
     "image_url",
     "image_alt",
     "return_eligible",
@@ -54,6 +55,7 @@ _CATEGORY_EDITABLE = (
     "visibility",
     "seo_title",
     "seo_description",
+    "indexing_policy",
     "hero_image_url",
     "hero_image_alt",
     "thumbnail_image_url",
@@ -154,7 +156,7 @@ async def update_product(
 ) -> dict[str, Any]:
     current = await db.fetch_one(
         "SELECT id, name, slug, short_description, harvest_note, growing_method,"
-        " storage_guidance, seo_title, seo_description,"
+        " storage_guidance, seo_title, seo_description, indexing_policy,"
         " image_url, image_alt, status, return_eligible, accepts_orders,"
         " payments_override, farm_id, primary_media_id"
         " FROM products WHERE id = ? AND archived_at IS NULL",
@@ -199,6 +201,8 @@ async def update_product(
         fields["primary_media_id"] = media["id"] if media else None
 
     updates = _collect_updates(fields, _PRODUCT_EDITABLE, current)
+    if "indexing_policy" in updates and updates["indexing_policy"] not in ("index", "noindex"):
+        raise ValidationAppError("Unsupported indexing policy.")
     if "return_eligible" in updates:
         updates["return_eligible"] = 1 if updates["return_eligible"] else 0
     if "accepts_orders" in updates:
@@ -919,6 +923,7 @@ async def update_category(
     current = await db.fetch_one(
         "SELECT id, name, slug, path, parent_id, short_description, hero_eyebrow, hero_title,"
         " hero_description, season_label, theme_key, visibility, seo_title, seo_description,"
+        " indexing_policy,"
         " hero_image_url, hero_image_alt, thumbnail_image_url, thumbnail_image_alt, status"
         " FROM categories WHERE id = ? AND archived_at IS NULL",
         (category_id,),
@@ -931,6 +936,8 @@ async def update_category(
         updates["name"] = _clean_name(updates["name"])
     if "visibility" in updates and updates["visibility"] not in ("public", "hidden", "private"):
         raise ValidationAppError("Visibility must be public, hidden, or private.")
+    if "indexing_policy" in updates and updates["indexing_policy"] not in ("index", "noindex"):
+        raise ValidationAppError("Unsupported indexing policy.")
     if "slug" in updates:
         new_slug = validate_slug(str(updates["slug"]).strip())
         updates["slug"] = new_slug

@@ -310,7 +310,9 @@ class FarmRepository:
         certification lookup and story assembly per farm to build profile
         cards; the sitemap needs neither."""
         return await self._db.fetch_all(
-            "SELECT slug, updated_at FROM farms WHERE status = 'published' ORDER BY slug LIMIT ?",
+            "SELECT slug, updated_at FROM farms"
+            " WHERE status = 'published' AND indexing_policy = 'index'"
+            " ORDER BY slug LIMIT ?",
             (limit,),
         )
 
@@ -1382,7 +1384,7 @@ class DiscussionRepository:
         row = await self._db.fetch_one(
             """
             SELECT d.id, d.title, d.body, d.image_url, d.image_alt,
-                   d.comment_count, d.last_activity_at, d.created_at,
+                   d.comment_count, d.last_activity_at, d.created_at, d.indexing_policy,
                    u.display_name AS author_name
             FROM discussions d
             JOIN users u ON u.id = d.author_user_id
@@ -1475,7 +1477,8 @@ class DiscussionRepository:
         self, limit: int = SITEMAP_MAX_URLS
     ) -> list[dict[str, Any]]:
         return await self._db.fetch_all(
-            "SELECT id, updated_at FROM discussions WHERE status = 'visible'"
+            "SELECT id, updated_at FROM discussions"
+            " WHERE status = 'visible' AND indexing_policy = 'index'"
             " ORDER BY created_at DESC LIMIT ?",
             (limit,),
         )

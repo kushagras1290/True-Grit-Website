@@ -197,7 +197,7 @@ class AdminRepository:
         product = await self._db.fetch_one(
             """
             SELECT p.id, p.name, p.slug, p.short_description, p.product_type, p.status,
-                   p.seo_title, p.seo_description, p.farm_id,
+                   p.seo_title, p.seo_description, p.indexing_policy, p.farm_id,
                    p.harvest_note, p.growing_method, p.storage_guidance,
                    COALESCE(
                      '/media/' || m.object_key,
@@ -287,6 +287,7 @@ class AdminRepository:
             """
             SELECT id, name, slug, short_description, hero_eyebrow, hero_title, hero_description,
                    season_label, theme_key, visibility, status, seo_title, seo_description,
+                   indexing_policy,
                    hero_image_url, hero_image_alt, thumbnail_image_url, thumbnail_image_alt,
                    product_assignment_mode, updated_at,
                    release_scope

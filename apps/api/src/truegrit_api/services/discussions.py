@@ -206,38 +206,68 @@ async def moderate_discussion(
     request_id: str,
     discussion_id: str,
     *,
-    action: str,
+    action: str | None = None,
     reason: str | None = None,
+    indexing_policy: str | None = None,
 ) -> dict[str, Any]:
-    target = _DISCUSSION_MODERATION_ACTIONS.get(action)
-    if target is None:
-        raise ValidationAppError("Unsupported moderation action.")
+    """Applies a status transition (hide/restore/archive/remove), an
+    `indexing_policy` change, or both in one call -- a search-indexing edit is
+    not a moderation action, so it does not stamp `moderated_by`/`moderated_at`
+    unless a real status action also ran in the same request."""
+    if action is None and indexing_policy is None:
+        raise ValidationAppError("Nothing to update.")
+    target: str | None = None
+    if action is not None:
+        target = _DISCUSSION_MODERATION_ACTIONS.get(action)
+        if target is None:
+            raise ValidationAppError("Unsupported moderation action.")
+    if indexing_policy is not None and indexing_policy not in ("index", "noindex"):
+        raise ValidationAppError("Unsupported indexing policy.")
+
     current = await db.fetch_one("SELECT * FROM discussions WHERE id = ?", (discussion_id,))
     if current is None:
         raise NotFoundError("Discussion not found.")
     reason = (reason or "").strip()[:500] or None
 
     now = utc_now_iso()
+    assignments = ["updated_at = ?"]
+    params: list[Any] = [now]
+    if target is not None:
+        assignments += [
+            "status = ?",
+            "moderated_by = ?",
+            "moderated_at = ?",
+            "moderation_reason = ?",
+        ]
+        params += [target, actor.user_id, now, reason]
+    if indexing_policy is not None:
+        assignments.append("indexing_policy = ?")
+        params.append(indexing_policy)
+    params.append(discussion_id)
+
     await db.batch(
         [
             (
-                "UPDATE discussions SET status = ?, moderated_by = ?, moderated_at = ?,"
-                " moderation_reason = ?, updated_at = ? WHERE id = ?",
-                (target, actor.user_id, now, reason, now, discussion_id),
+                f"UPDATE discussions SET {', '.join(assignments)} WHERE id = ?",
+                tuple(params),
             ),
             audit_statement(
-                action=f"discussion.{action}",
+                action=f"discussion.{action}" if action else "discussion.indexing_updated",
                 entity_type="discussion",
                 entity_id=discussion_id,
                 actor_id=actor.user_id,
                 request_id=request_id,
                 created_at=now,
-                before={"status": current["status"]},
-                after={"status": target, "reason": reason},
+                before={"status": current["status"], "indexingPolicy": current["indexing_policy"]},
+                after={
+                    "status": target or current["status"],
+                    "reason": reason,
+                    "indexingPolicy": indexing_policy or current["indexing_policy"],
+                },
             ),
         ]
     )
-    return {"id": discussion_id, "status": target}
+    return {"id": discussion_id, "status": target or current["status"]}
 
 
 async def delete_discussion(

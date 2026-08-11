@@ -386,6 +386,7 @@ export interface AdminProductDetail {
   certificationIds: string[];
   seoTitle: string;
   seoDescription: string;
+  indexingPolicy: "index" | "noindex";
   imageUrl: string;
   imageAlt: string;
   /** Gallery photos beyond the main image above -- shown only on the
@@ -430,6 +431,7 @@ export interface AdminCategoryDetail {
   status: string;
   seoTitle: string;
   seoDescription: string;
+  indexingPolicy: "index" | "noindex";
   heroImageUrl: string;
   heroImageAlt: string;
   thumbnailImageUrl: string;
@@ -471,6 +473,7 @@ export interface AdminFarmRow {
   updatedAt: string;
   heroImageUrl: string | null;
   heroImageAlt: string | null;
+  indexingPolicy: "index" | "noindex";
 }
 
 export interface AdminContactMessageRow {
@@ -1584,6 +1587,7 @@ export const api = {
       certificationIds: [],
       seoTitle: product.seo.title,
       seoDescription: product.seo.description,
+      indexingPolicy: product.seo.indexing,
       imageUrl: product.imageUrl ?? "",
       imageAlt: product.imageAlt,
       images: [],
@@ -1750,6 +1754,7 @@ export const api = {
       status: category.status,
       seoTitle: "",
       seoDescription: "",
+      indexingPolicy: "index",
       heroImageUrl: "",
       heroImageAlt: category.name,
       thumbnailImageUrl: "",
@@ -2054,6 +2059,7 @@ export const api = {
             updatedAt: "2026-07-01T00:00:00Z",
             heroImageUrl: null,
             heroImageAlt: null,
+            indexingPolicy: "index",
           },
         ])
       : get<{ items: AdminFarmRow[] }>(
@@ -2071,6 +2077,7 @@ export const api = {
     status: string;
     heroImageUrl?: string | null;
     heroImageAlt?: string | null;
+    indexingPolicy?: "index" | "noindex";
   }): Promise<AdminFarmRow> =>
     demoMode
       ? demo({
@@ -2080,6 +2087,7 @@ export const api = {
           updatedAt: new Date().toISOString(),
           heroImageUrl: null,
           heroImageAlt: null,
+          indexingPolicy: "index",
           ...input,
         })
       : post("/v1/admin/farms", input),
@@ -2097,6 +2105,7 @@ export const api = {
       status: string;
       heroImageUrl?: string | null;
       heroImageAlt?: string | null;
+      indexingPolicy?: "index" | "noindex";
     },
   ): Promise<AdminFarmRow> =>
     demoMode
@@ -2106,6 +2115,7 @@ export const api = {
           updatedAt: new Date().toISOString(),
           heroImageUrl: null,
           heroImageAlt: null,
+          indexingPolicy: "index",
           ...input,
           slug: input.slug || input.name.toLowerCase().replaceAll(" ", "-"),
         })
@@ -2999,12 +3009,13 @@ export const api = {
 
   moderateDiscussion: (
     id: string,
-    action: string,
+    action?: string,
     reason?: string,
+    indexingPolicy?: "index" | "noindex",
   ): Promise<{ id: string; status: string }> =>
     demoMode
-      ? demo({ id, status: action })
-      : post(`/v1/admin/discussions/${id}/moderate`, { action, reason }),
+      ? demo({ id, status: action ?? "visible" })
+      : post(`/v1/admin/discussions/${id}/moderate`, { action, reason, indexingPolicy }),
 
   deleteDiscussion: (id: string): Promise<{ id: string; deleted: boolean }> =>
     demoMode ? demo({ id, deleted: true }) : del(`/v1/admin/discussions/${id}`),
