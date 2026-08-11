@@ -23,6 +23,7 @@ their place. Keep sitemap reads on the narrow queries.
 
 from __future__ import annotations
 
+import asyncio
 from html import escape
 from typing import Any, NamedTuple
 
@@ -231,10 +232,16 @@ _LLMS_LIST_CAP = 50
 
 
 async def default_llms_txt(db: Database, settings: Settings) -> str:
-    categories = await CategoryRepository(db).list_published()
-    products, _total = await CatalogueRepository(db).list_all_published(limit=_LLMS_LIST_CAP)
-    articles = await ArticleRepository(db).list_published(limit=_LLMS_LIST_CAP)
-    recipes = await RecipeRepository(db).list_published(limit=_LLMS_LIST_CAP)
+    # Four independent reads with no data dependency between them -- run
+    # concurrently rather than paying their latency serially, since this
+    # itself sits on the (now single-key-scoped, see `default_site_document`)
+    # public endpoint's hot path.
+    categories, (products, _total), articles, recipes = await asyncio.gather(
+        CategoryRepository(db).list_published(),
+        CatalogueRepository(db).list_all_published(limit=_LLMS_LIST_CAP),
+        ArticleRepository(db).list_published(limit=_LLMS_LIST_CAP),
+        RecipeRepository(db).list_published(limit=_LLMS_LIST_CAP),
+    )
     lines = [
         "# True Grit",
         "",
@@ -304,4 +311,40 @@ async def default_site_documents(db: Database, settings: Settings) -> dict[str, 
             "content_type": SITE_DOCUMENT_TYPES["llms_txt"],
             "updated_at": "",
         },
+    }
+
+
+async def default_site_document(db: Database, settings: Settings, key: str) -> dict[str, Any]:
+    """Single-key variant of `default_site_documents`, for the public
+    per-document endpoint (`GET /site-documents/{key}`).
+
+    That endpoint only ever needs one key, but `default_site_documents`
+    unconditionally computes all three -- including `llms_txt`, whose default
+    runs four D1 reads (categories/products/articles/recipes). Every
+    robots.txt/sitemap.xml request was paying full llms.txt-generation cost
+    as a side effect and discarding the result, which is why this became the
+    single highest-latency, highest-volume route on the API (p95 in the
+    seconds, tens of thousands of requests/day -- `robots.txt` alone is
+    fetched by every crawler and bot on essentially every visit). Compute
+    only what the caller actually asked for.
+    """
+    if key == "robots_txt":
+        return {
+            "key": "robots_txt",
+            "content": default_robots_txt(settings),
+            "content_type": SITE_DOCUMENT_TYPES["robots_txt"],
+            "updated_at": "",
+        }
+    if key == "sitemap_xml":
+        return {
+            "key": "sitemap_xml",
+            "content": sitemap_index_xml(settings),
+            "content_type": SITE_DOCUMENT_TYPES["sitemap_xml"],
+            "updated_at": "",
+        }
+    return {
+        "key": "llms_txt",
+        "content": await default_llms_txt(db, settings),
+        "content_type": SITE_DOCUMENT_TYPES["llms_txt"],
+        "updated_at": "",
     }
