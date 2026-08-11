@@ -1,67 +1,62 @@
-import { useEffect, useState, type FormEvent } from "react";
-import { Link, useParams } from "react-router";
+import { useState, type FormEvent } from "react";
+import { data, Link } from "react-router";
 
 import type { Route } from "./+types/discussion";
 import { Section } from "../components/catalogue";
 import { PageBanner } from "../components/page-banner";
+import { catalogueRuntime, loadDiscussion } from "../lib/catalogue.server";
 import { AuthError, useCustomer } from "../lib/customer-auth";
 import { createComment, getDiscussion, type DiscussionDetail } from "../lib/community";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
 import { LocalizedText, useLocalizePlural, useLocalizeText } from "../lib/i18n/localized-text";
 import { useDateFormatter } from "../lib/i18n/dates";
 import { useLocaleContext } from "../lib/i18n/context";
 
-export function meta({ matches }: Route.MetaArgs) {
-  return seoMeta(
-    {
-      title: "Discussion",
-      description: "A discussion in the True Grit community.",
-      canonicalPath: "/community",
-      indexing: "index",
-    },
-    matches,
-  );
+export async function loader({ params, request, context }: Route.LoaderArgs) {
+  const runtime = catalogueRuntime(context);
+  const { locale } = resolveLocale(request);
+  const discussion = await loadDiscussion(params.id, runtime, locale.code);
+  if (!discussion) throw data("Discussion not found", { status: 404 });
+  return { discussion };
+}
+
+export function meta({ data: loaderData, matches }: Route.MetaArgs) {
+  if (!loaderData) return seoMeta(null, matches);
+  return seoMeta(loaderData.discussion.seo, matches);
 }
 
 const FIELD =
   "min-h-11 w-full rounded-sm border border-line bg-canvas px-3 text-sm text-ink" +
   " placeholder:text-ink-muted focus:border-brand focus:outline-none";
 
-export default function DiscussionPage(_props: Route.ComponentProps) {
+export default function DiscussionPage({ loaderData }: Route.ComponentProps) {
   const plural = useLocalizePlural();
   const localize = useLocalizeText();
   const formatDate = useDateFormatter();
   const { locale } = useLocaleContext();
-  const { id = "" } = useParams();
   const { customer, status } = useCustomer();
-  const [discussion, setDiscussion] = useState<DiscussionDetail | null>(null);
-  const [failed, setFailed] = useState(false);
+  const [discussion, setDiscussion] = useState<DiscussionDetail>(loaderData.discussion);
   const [commentBody, setCommentBody] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function reload() {
-    return getDiscussion(id, locale)
+    return getDiscussion(discussion.id, locale)
       .then((entry) => setDiscussion(entry))
-      .catch(() => setFailed(true));
+      .catch(() => {
+        // A refresh failure after posting leaves the previous (still valid)
+        // discussion state on screen rather than replacing a working page
+        // with a "not found" state over a transient network hiccup.
+      });
   }
-
-  useEffect(() => {
-    let active = true;
-    getDiscussion(id, locale)
-      .then((entry) => active && setDiscussion(entry))
-      .catch(() => active && setFailed(true));
-    return () => {
-      active = false;
-    };
-  }, [id, locale]);
 
   async function handleComment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
     setSubmitting(true);
     try {
-      await createComment(id, commentBody);
+      await createComment(discussion.id, commentBody);
       setCommentBody("");
       await reload();
     } catch (caught) {
@@ -69,29 +64,6 @@ export default function DiscussionPage(_props: Route.ComponentProps) {
     } finally {
       setSubmitting(false);
     }
-  }
-
-  if (failed) {
-    return (
-      <Section eyebrow="Community" heading="Discussion not found">
-        <Link
-          to="/community"
-          className="inline-flex min-h-11 items-center rounded-sm border border-line px-5 text-sm font-medium text-ink hover:bg-canvas"
-        >
-          <LocalizedText>Back to community</LocalizedText>
-        </Link>
-      </Section>
-    );
-  }
-
-  if (discussion === null) {
-    return (
-      <Section eyebrow="Community" heading="Loading...">
-        <p className="text-sm text-ink-muted">
-          <LocalizedText>One moment…</LocalizedText>
-        </p>
-      </Section>
-    );
   }
 
   return (

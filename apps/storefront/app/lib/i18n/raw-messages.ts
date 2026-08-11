@@ -40,7 +40,6 @@ const RAW_EN_MESSAGES = {
   "literal.cefc4e86942d": "+ at",
   "literal.0c52ea2c403b": "6-digit code",
   "literal.55a2c6067edc": "A curated set of True Grit products",
-  "literal.0f9d1e311da2": "A discussion in the True Grit community.",
   "literal.cb526015f76e": "A market for food with a known origin.",
   "literal.a2b8fa3d5027":
     "A product you would like us to carry, a feature you wish the site had, or anything else that would make True Grit better — we read every one of these ourselves.",
@@ -207,8 +206,6 @@ const RAW_EN_MESSAGES = {
   "literal.69c297efcdc7": "Dietary",
   "literal.055f4ce44734": "Dietary tags (comma separated, optional)",
   "literal.b524936d7aa1": "Discount",
-  "literal.8fb937b602b4": "Discussion",
-  "literal.e76801c913c6": "Discussion not found",
   "literal.73c79cc2ea23": "Discussions are unavailable right now.",
   "literal.70afe9eff3f2": "Dismiss",
   "literal.bdcde192bb08": "Dispatch rhythm",

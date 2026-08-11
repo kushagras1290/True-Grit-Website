@@ -77,6 +77,7 @@ const farmSchema = z.object({
   establishedYear: z.coerce.number().int().min(1800).max(2100).optional().or(z.literal("")),
   summary: z.string().max(500),
   status: z.enum(["draft", "published", "unpublished"]),
+  indexingPolicy: z.enum(["index", "noindex"]),
   heroImageUrl: z.string().max(1000).optional().or(z.literal("")),
   heroImageAlt: z.string().max(200).optional().or(z.literal("")),
 });
@@ -432,6 +433,7 @@ function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void
       establishedYear: farm?.establishedYear ?? "",
       summary: farm?.summary ?? "",
       status: (farm?.status as FarmForm["status"]) ?? "published",
+      indexingPolicy: farm?.indexingPolicy ?? "index",
       heroImageUrl: farm?.heroImageUrl ?? "",
       heroImageAlt: farm?.heroImageAlt ?? "",
     },
@@ -452,6 +454,7 @@ function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void
               typeof values.establishedYear === "number" ? values.establishedYear : null,
             summary: values.summary,
             status: values.status,
+            indexingPolicy: values.indexingPolicy,
             heroImageUrl: values.heroImageUrl || null,
             heroImageAlt: values.heroImageAlt || null,
           })
@@ -465,6 +468,7 @@ function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void
               typeof values.establishedYear === "number" ? values.establishedYear : null,
             summary: values.summary,
             status: values.status,
+            indexingPolicy: values.indexingPolicy,
             heroImageUrl: values.heroImageUrl || null,
             heroImageAlt: values.heroImageAlt || null,
           }),
@@ -545,6 +549,16 @@ function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void
             </Select>
           </Field>
         </div>
+        <Field label="Search indexing" htmlFor="farm-indexing-policy">
+          <Select id="farm-indexing-policy" {...form.register("indexingPolicy")}>
+            <option value="index">
+              <T>Index</T>
+            </option>
+            <option value="noindex">
+              <T>No index</T>
+            </option>
+          </Select>
+        </Field>
         <Field
           label="Farm summary"
           htmlFor="farm-summary"

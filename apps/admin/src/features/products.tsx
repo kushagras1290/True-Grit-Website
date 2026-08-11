@@ -470,6 +470,7 @@ type GeneralForm = z.infer<typeof generalSchema>;
 const seoSchema = z.object({
   seoTitle: z.string().max(160),
   seoDescription: z.string().max(320),
+  indexingPolicy: z.enum(["index", "noindex"]),
 });
 
 type SeoForm = z.infer<typeof seoSchema>;
@@ -1607,7 +1608,11 @@ function SeoTab({
 }) {
   const form = useForm<SeoForm>({
     resolver: zodResolver(seoSchema),
-    values: { seoTitle: product.seoTitle, seoDescription: product.seoDescription },
+    values: {
+      seoTitle: product.seoTitle,
+      seoDescription: product.seoDescription,
+      indexingPolicy: product.indexingPolicy,
+    },
   });
 
   return (
@@ -1621,6 +1626,16 @@ function SeoTab({
         error={form.formState.errors.seoDescription?.message}
       >
         <Textarea id="seoDescription" {...form.register("seoDescription")} />
+      </Field>
+      <Field label="Search indexing" htmlFor="indexingPolicy">
+        <Select id="indexingPolicy" {...form.register("indexingPolicy")}>
+          <option value="index">
+            <T>Index</T>
+          </option>
+          <option value="noindex">
+            <T>No index</T>
+          </option>
+        </Select>
       </Field>
       <Button type="submit" variant="primary" disabled={saving || !form.formState.isDirty}>
         {saving ? <T>{"Saving…"}</T> : <T>{"Save SEO"}</T>}

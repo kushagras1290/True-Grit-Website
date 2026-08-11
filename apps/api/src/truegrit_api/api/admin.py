@@ -3400,8 +3400,9 @@ async def delete_review_endpoint(
 
 
 class DiscussionModerationRequest(_CamelModel):
-    action: str = Field(min_length=1, max_length=20)
+    action: str | None = Field(default=None, min_length=1, max_length=20)
     reason: str | None = Field(default=None, max_length=500)
+    indexing_policy: str | None = Field(default=None, max_length=16)
 
 
 class CommunitySettingsUpdateRequest(_CamelModel):
@@ -3492,6 +3493,7 @@ async def get_discussion_admin_endpoint(
         "lastActivityAt": row["last_activity_at"],
         "createdAt": row["created_at"],
         "moderationReason": row["moderation_reason"],
+        "indexingPolicy": row["indexing_policy"],
         "comments": [
             {
                 "id": comment["id"],
@@ -3521,6 +3523,7 @@ async def moderate_discussion_endpoint(
         discussion_id,
         action=payload.action,
         reason=payload.reason,
+        indexing_policy=payload.indexing_policy,
     )
 
 
@@ -5395,6 +5398,7 @@ class ProductUpdateRequest(_CamelModel):
     storage_guidance: str | None = Field(default=None, max_length=300)
     seo_title: str | None = Field(default=None, max_length=160)
     seo_description: str | None = Field(default=None, max_length=320)
+    indexing_policy: str | None = Field(default=None, max_length=16)
     image_url: str | None = Field(default=None, max_length=1000)
     image_alt: str | None = Field(default=None, max_length=200)
     release_scope: str | None = Field(default=None, max_length=16)
@@ -5473,6 +5477,7 @@ async def get_product_endpoint(
         "certificationIds": detail.get("certification_ids", []),
         "seoTitle": detail["seo_title"] or "",
         "seoDescription": detail["seo_description"] or "",
+        "indexingPolicy": detail["indexing_policy"],
         "imageUrl": detail["image_url"] or "",
         "imageAlt": detail["image_alt"] or detail["name"],
         "images": [
@@ -5758,6 +5763,7 @@ class CategoryUpdateRequest(_CamelModel):
     visibility: str | None = Field(default=None, max_length=16)
     seo_title: str | None = Field(default=None, max_length=160)
     seo_description: str | None = Field(default=None, max_length=320)
+    indexing_policy: str | None = Field(default=None, max_length=16)
     hero_image_url: str | None = Field(default=None, max_length=1000)
     hero_image_alt: str | None = Field(default=None, max_length=200)
     thumbnail_image_url: str | None = Field(default=None, max_length=1000)
@@ -5819,6 +5825,7 @@ async def get_category_endpoint(
         "status": detail["status"],
         "seoTitle": detail["seo_title"] or "",
         "seoDescription": detail["seo_description"] or "",
+        "indexingPolicy": detail["indexing_policy"],
         "heroImageUrl": detail["hero_image_url"] or "",
         "heroImageAlt": detail["hero_image_alt"] or detail["name"],
         "thumbnailImageUrl": detail["thumbnail_image_url"] or "",
@@ -6615,6 +6622,7 @@ class FarmUpdateRequest(_CamelModel):
     established_year: int | None = Field(default=None, ge=1800, le=2100)
     summary: str | None = Field(default=None, max_length=500)
     status: str | None = Field(default=None, max_length=24)
+    indexing_policy: str | None = Field(default=None, max_length=16)
     hero_image_url: str | None = Field(default=None, max_length=1000)
     hero_image_alt: str | None = Field(default=None, max_length=200)
 
@@ -6645,6 +6653,7 @@ def _farm_response(row: Any) -> dict[str, Any]:
         "updatedAt": row["updated_at"],
         "heroImageUrl": row["hero_image_url"] or None,
         "heroImageAlt": row["hero_image_alt"] or None,
+        "indexingPolicy": row["indexing_policy"],
     }
 
 
@@ -6666,7 +6675,7 @@ async def list_farms_endpoint(
         f"""
         SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.country_code,
                f.story_json, f.established_year, f.status, f.updated_at,
-               f.hero_image_url, f.hero_image_alt,
+               f.hero_image_url, f.hero_image_alt, f.indexing_policy,
                (SELECT COUNT(*) FROM products p
                  WHERE p.farm_id = f.id AND p.archived_at IS NULL) AS product_count
         FROM farms f
@@ -6824,6 +6833,10 @@ async def update_farm_endpoint(
         updates["hero_image_alt"] = (
             payload.hero_image_alt.strip() if payload.hero_image_alt else None
         )
+    if "indexing_policy" in fields:
+        if payload.indexing_policy not in ("index", "noindex"):
+            raise ValidationAppError("Unsupported indexing policy.")
+        updates["indexing_policy"] = payload.indexing_policy
 
     changed = {key: value for key, value in updates.items() if value != current[key]}
     if changed:
@@ -6852,7 +6865,7 @@ async def update_farm_endpoint(
         """
         SELECT f.id, f.name, f.slug, f.farmer_name, f.region, f.country_code,
                f.story_json, f.established_year, f.status, f.updated_at,
-               f.hero_image_url, f.hero_image_alt,
+               f.hero_image_url, f.hero_image_alt, f.indexing_policy,
                (SELECT COUNT(*) FROM products p
                  WHERE p.farm_id = f.id AND p.archived_at IS NULL) AS product_count
         FROM farms f

@@ -113,6 +113,13 @@ async def discussion_detail(
         "commentCount": row["comment_count"],
         "lastActivityAt": row["last_activity_at"],
         "createdAt": row["created_at"],
+        "seo": {
+            "title": row["title"],
+            "description": row["body"][:240],
+            "canonicalPath": f"/community/{row['id']}",
+            "indexing": row["indexing_policy"],
+            "keywords": None,
+        },
         "comments": [
             {
                 "id": comment["id"],

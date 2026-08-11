@@ -42,6 +42,7 @@ import {
 } from "@truegrit/contracts/fixtures";
 
 import { DEFAULT_SITE_SETTINGS, normalizeSiteSettings, type SiteSettings } from "./site-settings";
+import type { DiscussionDetail } from "./community";
 import type { DisplayCurrency } from "./currency";
 
 export interface CatalogueRuntime {
@@ -748,6 +749,21 @@ export async function loadArticle(
     );
   }
   return articles.find((article) => article.slug === slug) ?? null;
+}
+
+/** Community discussions have no fixture/demo mode (see `lib/community.ts`) —
+ * live user-generated content, not catalogue data — so this is a thin
+ * pass-through to the public API; `fromApi` already resolves to `null` when
+ * no API is configured, same as every other loader here. */
+export async function loadDiscussion(
+  id: string,
+  runtime?: CatalogueRuntime,
+  locale?: string,
+): Promise<DiscussionDetail | null> {
+  return fromApi<DiscussionDetail>(
+    withLocale(`/v1/public/community/discussions/${encodeURIComponent(id)}`, locale),
+    runtime,
+  );
 }
 
 export async function loadSiteDocument(
