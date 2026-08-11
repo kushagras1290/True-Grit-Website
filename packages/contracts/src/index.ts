@@ -1125,6 +1125,7 @@ export interface AdminDiscussionDetail {
   lastActivityAt: string;
   createdAt: string;
   moderationReason: string | null;
+  indexingPolicy: "index" | "noindex";
   comments: AdminDiscussionComment[];
 }
 

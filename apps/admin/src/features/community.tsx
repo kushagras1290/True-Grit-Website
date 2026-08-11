@@ -320,6 +320,17 @@ export function DiscussionDetailPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not update."),
   });
 
+  const indexingMutation = useMutation({
+    mutationFn: (indexingPolicy: "index" | "noindex") =>
+      api.moderateDiscussion(id, undefined, undefined, indexingPolicy),
+    onSuccess: async () => {
+      await invalidate();
+      toast.success("Search indexing updated.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not update."),
+  });
+
   const deleteMutation = useMutation({
     mutationFn: () => api.deleteDiscussion(id),
     onSuccess: async () => {
@@ -475,6 +486,23 @@ export function DiscussionDetailPage() {
                 value={reason}
                 onChange={(event) => setReason(event.target.value)}
               />
+            </Field>
+            <Field label="Search indexing" htmlFor="discussion-indexing-policy">
+              <Select
+                id="discussion-indexing-policy"
+                value={entry.indexingPolicy}
+                disabled={indexingMutation.isPending}
+                onChange={(event) =>
+                  indexingMutation.mutate(event.target.value as "index" | "noindex")
+                }
+              >
+                <option value="index">
+                  <T>Index</T>
+                </option>
+                <option value="noindex">
+                  <T>No index</T>
+                </option>
+              </Select>
             </Field>
             {entry.status === "visible" ? (
               <Button

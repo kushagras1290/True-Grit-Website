@@ -517,6 +517,7 @@ const settingsSchema = z.object({
   heroDescription: z.string().max(500),
   seasonLabel: z.string().max(80),
   visibility: z.enum(["public", "hidden", "private"]),
+  indexingPolicy: z.enum(["index", "noindex"]),
   heroImageUrl: z
     .string()
     .max(1000)
@@ -566,6 +567,7 @@ function CategorySettingsForm({
       visibility: (["public", "hidden", "private"].includes(category.visibility)
         ? category.visibility
         : "public") as SettingsForm["visibility"],
+      indexingPolicy: category.indexingPolicy,
       heroImageUrl: category.heroImageUrl,
       heroImageAlt: category.heroImageAlt,
       thumbnailImageUrl: category.thumbnailImageUrl,
@@ -746,6 +748,16 @@ function CategorySettingsForm({
           </option>
           <option value="private">
             <T>Private</T>
+          </option>
+        </Select>
+      </Field>
+      <Field label="Search indexing" htmlFor="c-indexing-policy">
+        <Select id="c-indexing-policy" {...form.register("indexingPolicy")}>
+          <option value="index">
+            <T>Index</T>
+          </option>
+          <option value="noindex">
+            <T>No index</T>
           </option>
         </Select>
       </Field>

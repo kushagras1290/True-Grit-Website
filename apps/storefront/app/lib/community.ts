@@ -6,6 +6,8 @@
  * here since this is live, user-generated content rather than catalogue data.
  */
 
+import type { SeoDocument } from "@truegrit/contracts";
+
 import { AuthError } from "./customer-auth";
 import { getPublicApiUrl } from "./public-env";
 
@@ -38,6 +40,7 @@ export interface DiscussionDetail {
   commentCount: number;
   lastActivityAt: string;
   createdAt: string;
+  seo: SeoDocument;
   comments: DiscussionComment[];
 }
 
