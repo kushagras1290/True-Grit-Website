@@ -203,7 +203,9 @@ def test_site_documents_are_owner_only(client: TestClient, db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
     current = client.get("/v1/admin/site-documents")
     assert current.status_code == 200
-    assert "Sitemap:" in current.json()["robotsTxt"]
+    # Test env default: non-production disallows everything (see
+    # tests/unit/test_site_documents.py for the production-mode shape).
+    assert "Disallow: /" in current.json()["robotsTxt"]
 
     updated = client.patch(
         "/v1/admin/site-documents",
