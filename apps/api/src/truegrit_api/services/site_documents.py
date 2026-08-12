@@ -125,6 +125,15 @@ def _urlset(settings: Settings, entries: list[SitemapEntry], kind: str) -> str:
 
 
 def default_robots_txt(settings: Settings) -> str:
+    # A non-production environment (test/staging/dev) has no admin-set
+    # override by default, so without this it silently inherited the
+    # production "Allow: /" and was free for any crawler to index --
+    # exactly what put test.truegritin.com's product pages into Google.
+    # Blocking crawling here is the ceiling; an owner can still relax it for
+    # a specific environment via Site Settings > Crawler files if they ever
+    # need to (that DB-backed override always wins over this default).
+    if settings.app_env != "production":
+        return "\n".join(["User-agent: *", "Disallow: /", ""])
     return "\n".join(
         [
             "User-agent: *",

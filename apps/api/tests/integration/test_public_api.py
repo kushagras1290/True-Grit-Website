@@ -785,8 +785,12 @@ def test_public_pages_and_site_documents_have_generated_defaults(client: TestCli
     assert about_page["title"] == "About True Grit"
     assert about_page["blocks"][0]["type"] == "hero"
 
+    # The test client runs with app_env="development", which -- like every
+    # non-production environment -- disallows everything by default so a
+    # deployed test/staging environment can never be crawled by accident
+    # (see tests/unit/test_site_documents.py for the production-mode shape).
     robots = client.get("/v1/public/site-documents/robots_txt").json()
-    assert "Sitemap:" in robots["content"]
+    assert "Disallow: /" in robots["content"]
     assert robots["contentType"].startswith("text/plain")
 
     sitemap = client.get("/v1/public/site-documents/sitemap_xml").json()
