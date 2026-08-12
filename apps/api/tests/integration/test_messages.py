@@ -10,10 +10,40 @@ from __future__ import annotations
 from fastapi.testclient import TestClient
 
 from tests.integration.conftest import SESSION_COOKIE, create_session
+from truegrit_api.main import create_app
 from truegrit_api.platform.database import SQLiteDatabase
+from truegrit_api.util.ids import new_id
+from truegrit_api.util.timeutil import utc_now_iso
 
 # usr_admin holds rol_super_admin (the owner); usr_editor/usr_pm are ordinary
 # staff with messages.use but no owner role (see database/seeds/development.sql).
+
+
+class FakeTranslator:
+    """Deterministic stand-in for Workers AI, matching
+    `test_entity_translations.FakeTranslator`."""
+
+    def __init__(self) -> None:
+        self.calls: list[tuple[str, str]] = []
+
+    async def translate(self, text: str, *, target_lang: str, source_lang: str = "en") -> str:
+        self.calls.append((text, target_lang))
+        return f"[{target_lang}] {text.upper()}"
+
+
+def _insert_message(db: SQLiteDatabase, conversation_id: str, sender_id: str, body: str) -> str:
+    """Sending goes over the ChatRoomDO WebSocket in production (not
+    reachable from plain pytest -- see the module docstring), so tests that
+    need an existing message insert one directly, the same shortcut
+    `test_admin_management.py` takes for other Worker-only paths."""
+    message_id = new_id("msg")
+    db._conn.execute(
+        "INSERT INTO messages (id, conversation_id, sender_id, body, created_at)"
+        " VALUES (?, ?, ?, ?, ?)",
+        (message_id, conversation_id, sender_id, body, utc_now_iso()),
+    )
+    db._conn.commit()
+    return message_id
 
 
 def as_owner(client: TestClient, db: SQLiteDatabase) -> None:
@@ -162,3 +192,81 @@ def test_group_requires_a_name_and_direct_requires_exactly_two(
         json={"type": "direct", "participantUserIds": ["usr_admin", "usr_editor", "usr_pm"]},
     )
     assert too_many.status_code == 422
+
+
+def test_translate_message_is_cached_and_only_for_participants(db: SQLiteDatabase):
+    fake = FakeTranslator()
+    app = create_app(db=db, translator=fake)
+    client = TestClient(app, raise_server_exceptions=False)
+    as_owner(client, db)
+
+    conversation_id = client.post(
+        "/v1/admin/messages/conversations",
+        json={"type": "direct", "participantUserIds": ["usr_admin", "usr_editor"]},
+    ).json()["id"]
+    message_id = _insert_message(db, conversation_id, "usr_editor", "Where is the shipment?")
+
+    translated = client.post(
+        f"/v1/admin/messages/conversations/{conversation_id}/messages/{message_id}/translate",
+        json={"locale": "hi"},
+    )
+    assert translated.status_code == 200, translated.text
+    body = translated.json()
+    assert body == {
+        "messageId": message_id,
+        "locale": "hi",
+        "translated": "[hi] WHERE IS THE SHIPMENT?",
+    }
+    assert len(fake.calls) == 1
+
+    # A repeat request for the same (message, locale) is served from the
+    # message_translations cache -- the translator is not called again.
+    again = client.post(
+        f"/v1/admin/messages/conversations/{conversation_id}/messages/{message_id}/translate",
+        json={"locale": "hi"},
+    )
+    assert again.status_code == 200
+    assert again.json()["translated"] == body["translated"]
+    assert len(fake.calls) == 1
+
+    # usr_pm was never added to this direct conversation.
+    as_product_manager(client, db)
+    blocked = client.post(
+        f"/v1/admin/messages/conversations/{conversation_id}/messages/{message_id}/translate",
+        json={"locale": "hi"},
+    )
+    assert blocked.status_code == 404
+
+
+def test_translate_conversation_translates_only_uncached_messages(db: SQLiteDatabase):
+    fake = FakeTranslator()
+    app = create_app(db=db, translator=fake)
+    client = TestClient(app, raise_server_exceptions=False)
+    as_owner(client, db)
+
+    conversation_id = client.post(
+        "/v1/admin/messages/conversations",
+        json={"type": "direct", "participantUserIds": ["usr_admin", "usr_editor"]},
+    ).json()["id"]
+    first_id = _insert_message(db, conversation_id, "usr_admin", "Order shipped today.")
+    second_id = _insert_message(db, conversation_id, "usr_editor", "Great, thank you!")
+
+    # Pre-warm the cache for the first message only.
+    client.post(
+        f"/v1/admin/messages/conversations/{conversation_id}/messages/{first_id}/translate",
+        json={"locale": "fr"},
+    )
+    assert len(fake.calls) == 1
+
+    batch = client.post(
+        f"/v1/admin/messages/conversations/{conversation_id}/translate",
+        json={"locale": "fr", "messageIds": [first_id, second_id]},
+    )
+    assert batch.status_code == 200, batch.text
+    payload = batch.json()
+    assert payload["locale"] == "fr"
+    by_id = {row["messageId"]: row["translated"] for row in payload["messages"]}
+    assert by_id[first_id] == "[fr] ORDER SHIPPED TODAY."
+    assert by_id[second_id] == "[fr] GREAT, THANK YOU!"
+    # Only the second message actually needed a fresh translator call.
+    assert len(fake.calls) == 2

@@ -22,9 +22,15 @@ from fastapi import APIRouter, Depends, Query, Request
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
-from truegrit_api.auth.dependencies import get_database, require_owner, require_permission
+from truegrit_api.auth.dependencies import (
+    get_database,
+    get_translator,
+    require_owner,
+    require_permission,
+)
 from truegrit_api.auth.principal import Principal
 from truegrit_api.platform.database import Database
+from truegrit_api.platform.translation import Translator
 from truegrit_api.services import messages as message_service
 
 router = APIRouter(tags=["admin-messages"])
@@ -53,6 +59,15 @@ class AddParticipantsRequest(_CamelModel):
 
 class MarkReadRequest(_CamelModel):
     last_read_message_id: str | None = None
+
+
+class TranslateMessageRequest(_CamelModel):
+    locale: str = Field(min_length=2, max_length=20)
+
+
+class TranslateConversationRequest(_CamelModel):
+    locale: str = Field(min_length=2, max_length=20)
+    message_ids: list[str] = Field(min_length=1, max_length=200)
 
 
 def _request_id(request: Request) -> str:
@@ -137,3 +152,31 @@ async def remove_participant(
     return await message_service.remove_participant(
         db, actor, _request_id(request), conversation_id, user_id
     )
+
+
+@router.post("/messages/conversations/{conversation_id}/messages/{message_id}/translate")
+async def translate_message(
+    db: _Db,
+    actor: _Actor,
+    translator: Annotated[Translator, Depends(get_translator)],
+    conversation_id: str,
+    message_id: str,
+    body: TranslateMessageRequest,
+) -> dict[str, Any]:
+    return await message_service.translate_message(
+        db, translator, conversation_id, message_id, actor.user_id, body.locale
+    )
+
+
+@router.post("/messages/conversations/{conversation_id}/translate")
+async def translate_conversation(
+    db: _Db,
+    actor: _Actor,
+    translator: Annotated[Translator, Depends(get_translator)],
+    conversation_id: str,
+    body: TranslateConversationRequest,
+) -> dict[str, Any]:
+    translated = await message_service.translate_conversation(
+        db, translator, conversation_id, actor.user_id, body.locale, body.message_ids
+    )
+    return {"locale": body.locale, "messages": translated}

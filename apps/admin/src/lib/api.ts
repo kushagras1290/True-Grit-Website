@@ -3955,6 +3955,33 @@ export const api = {
       ? Promise.reject(new ApiError("Messaging needs the live API.", 501, "not_supported_in_demo"))
       : del(`/v1/admin/messages/conversations/${conversationId}/participants/${userId}`),
 
+  // Telegram-style translate: one message, or every currently-loaded message
+  // in a conversation. Both are cached server-side on (messageId, locale), so
+  // re-toggling the same target language never re-calls the translator.
+
+  translateMessage: (
+    conversationId: string,
+    messageId: string,
+    locale: string,
+  ): Promise<{ messageId: string; locale: string; translated: string }> =>
+    demoMode
+      ? Promise.reject(new ApiError("Messaging needs the live API.", 501, "not_supported_in_demo"))
+      : post(`/v1/admin/messages/conversations/${conversationId}/messages/${messageId}/translate`, {
+          locale,
+        }),
+
+  translateConversation: (
+    conversationId: string,
+    locale: string,
+    messageIds: string[],
+  ): Promise<{ locale: string; messages: Array<{ messageId: string; translated: string }> }> =>
+    demoMode
+      ? Promise.reject(new ApiError("Messaging needs the live API.", 501, "not_supported_in_demo"))
+      : post(`/v1/admin/messages/conversations/${conversationId}/translate`, {
+          locale,
+          messageIds,
+        }),
+
   // --- Admin support bot ---------------------------------------------------
   // Open to any signed-in staff member (no permission gate) -- every
   // live-data tool it can call re-checks the caller's own permissions

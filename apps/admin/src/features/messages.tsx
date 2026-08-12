@@ -6,7 +6,7 @@
  * Sending goes over `useChatSocket`'s WebSocket, not a REST call. */
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Plus, Send, UserMinus, UserPlus, Users } from "lucide-react";
+import { ArrowLeft, Languages, Plus, Send, UserMinus, UserPlus, Users } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { Button, EmptyState, Field, Input, Modal, Select, Textarea } from "../components/ui";
@@ -15,7 +15,7 @@ import { ApiError, api, type ChatMessage, type ConversationSummary } from "../li
 import { formatDateTime } from "../lib/format";
 import { useMe } from "../lib/permissions";
 import { conversationHistoryKey, useChatSocket } from "../lib/useChatSocket";
-import { T } from "../lib/i18n";
+import { T, useLocaleControls } from "../lib/i18n";
 
 function conversationLabel(
   conversation: ConversationSummary,
@@ -106,7 +106,21 @@ function ConversationList({
   );
 }
 
-function MessageBubble({ message, isMine }: { message: ChatMessage; isMine: boolean }) {
+function MessageBubble({
+  message,
+  isMine,
+  translatedBody,
+  translating,
+  onToggleTranslate,
+}: {
+  message: ChatMessage;
+  isMine: boolean;
+  /** Present once this message has a cached translation showing right now;
+   *  absent means the bubble is showing the original `message.body`. */
+  translatedBody: string | undefined;
+  translating: boolean;
+  onToggleTranslate: () => void;
+}) {
   return (
     <div className={`flex flex-col ${isMine ? "items-end" : "items-start"}`}>
       <div
@@ -117,9 +131,25 @@ function MessageBubble({ message, isMine }: { message: ChatMessage; isMine: bool
         {!isMine ? (
           <p className="mb-0.5 text-xs font-semibold opacity-80">{message.senderName}</p>
         ) : null}
-        <p className="whitespace-pre-wrap break-words">{message.body}</p>
+        <p className="whitespace-pre-wrap break-words">{translatedBody ?? message.body}</p>
       </div>
-      <span className="mt-1 text-[11px] text-ink-muted">{formatDateTime(message.createdAt)}</span>
+      <span className="mt-1 flex items-center gap-2 text-[11px] text-ink-muted">
+        {formatDateTime(message.createdAt)}
+        <button
+          type="button"
+          onClick={onToggleTranslate}
+          disabled={translating}
+          className="underline decoration-dotted underline-offset-2 hover:text-ink disabled:opacity-60"
+        >
+          {translating ? (
+            <T>{"Translating…"}</T>
+          ) : translatedBody ? (
+            <T>Show original</T>
+          ) : (
+            <T>Translate</T>
+          )}
+        </button>
+      </span>
     </div>
   );
 }
@@ -140,6 +170,7 @@ function MessageThread({
   const [draft, setDraft] = useState("");
   const [manageOpen, setManageOpen] = useState(false);
   const { status, send } = useChatSocket(conversation.id);
+  const { locale } = useLocaleControls();
 
   const { data: history, isLoading } = useQuery({
     queryKey: conversationHistoryKey(conversation.id),
@@ -160,6 +191,93 @@ function MessageThread({
     // Only re-run when the conversation or its latest message changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversation.id, lastMessageId]);
+
+  // Telegram-style translate: `translations` is a cache of everything ever
+  // fetched for the *current* target locale (messageId -> translated text);
+  // `visible` is which of those bubbles are showing the translation right
+  // now vs. the original. Switching conversations or the target locale
+  // drops both, since a translation cached for one locale/conversation has
+  // no meaning for another.
+  const [translations, setTranslations] = useState<Record<string, string>>({});
+  const [visible, setVisible] = useState<Set<string>>(new Set());
+  const [chatTranslateOn, setChatTranslateOn] = useState(false);
+
+  useEffect(() => {
+    setTranslations({});
+    setVisible(new Set());
+    setChatTranslateOn(false);
+  }, [conversation.id, locale]);
+
+  const translateOne = useMutation({
+    mutationFn: (messageId: string) => api.translateMessage(conversation.id, messageId, locale),
+    onSuccess: (result) => {
+      setTranslations((current) => ({ ...current, [result.messageId]: result.translated }));
+      setVisible((current) => new Set(current).add(result.messageId));
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not translate."),
+  });
+
+  const translateChat = useMutation({
+    mutationFn: (messageIds: string[]) =>
+      api.translateConversation(conversation.id, locale, messageIds),
+    onSuccess: (result) => {
+      setTranslations((current) => {
+        const next = { ...current };
+        for (const row of result.messages) next[row.messageId] = row.translated;
+        return next;
+      });
+      setVisible((current) => {
+        const next = new Set(current);
+        for (const row of result.messages) next.add(row.messageId);
+        return next;
+      });
+    },
+    onError: (error) => {
+      toast.error(error instanceof ApiError ? error.message : "Could not translate the chat.");
+      setChatTranslateOn(false);
+    },
+  });
+
+  // While chat-translate is on, also pick up messages that arrive later
+  // (over the WebSocket) or were individually translated into a different
+  // cache before the toggle was flipped on -- re-running on every new
+  // `lastMessageId` is what makes a live-incoming message get translated
+  // too, not just the ones present at toggle time.
+  useEffect(() => {
+    if (!chatTranslateOn) return;
+    const untranslated = messages.filter((m) => !(m.id in translations));
+    if (untranslated.length > 0) {
+      translateChat.mutate(untranslated.map((m) => m.id));
+    } else {
+      setVisible(new Set(messages.map((m) => m.id)));
+    }
+    // Deliberately excludes `translations`/`translateChat`: this should only
+    // react to the toggle flipping on or a new message arriving, not to its
+    // own writes to the translation cache (which would loop).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatTranslateOn, lastMessageId]);
+
+  function toggleMessageTranslate(messageId: string) {
+    if (visible.has(messageId)) {
+      setVisible((current) => {
+        const next = new Set(current);
+        next.delete(messageId);
+        return next;
+      });
+      return;
+    }
+    if (messageId in translations) {
+      setVisible((current) => new Set(current).add(messageId));
+      return;
+    }
+    translateOne.mutate(messageId);
+  }
+
+  function toggleChatTranslate() {
+    if (chatTranslateOn) setVisible(new Set());
+    setChatTranslateOn(!chatTranslateOn);
+  }
 
   function handleSend() {
     const body = draft.trim();
@@ -204,12 +322,28 @@ function MessageThread({
             </p>
           </div>
         </div>
-        {isSuperAdmin && conversation.type === "group" ? (
-          <Button variant="secondary" onClick={() => setManageOpen(true)}>
-            <Users size={15} />
-            <T>Manage</T>
+        <div className="flex items-center gap-2">
+          <Button
+            variant={chatTranslateOn ? "primary" : "secondary"}
+            onClick={toggleChatTranslate}
+            disabled={translateChat.isPending || messages.length === 0}
+          >
+            <Languages size={15} />
+            {translateChat.isPending ? (
+              <T>{"Translating…"}</T>
+            ) : chatTranslateOn ? (
+              <T>Show original</T>
+            ) : (
+              <T>Translate chat</T>
+            )}
           </Button>
-        ) : null}
+          {isSuperAdmin && conversation.type === "group" ? (
+            <Button variant="secondary" onClick={() => setManageOpen(true)}>
+              <Users size={15} />
+              <T>Manage</T>
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
@@ -227,6 +361,9 @@ function MessageThread({
               key={message.id}
               message={message}
               isMine={message.senderId === myUserId}
+              translatedBody={visible.has(message.id) ? translations[message.id] : undefined}
+              translating={translateOne.isPending && translateOne.variables === message.id}
+              onToggleTranslate={() => toggleMessageTranslate(message.id)}
             />
           ))
         )}

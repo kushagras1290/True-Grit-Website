@@ -22,6 +22,7 @@ from typing import Any
 from truegrit_api.auth.principal import Principal
 from truegrit_api.errors import NotFoundError, ValidationAppError
 from truegrit_api.platform.database import Database
+from truegrit_api.platform.translation import Translator
 from truegrit_api.services.audit import audit_statement
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
@@ -29,6 +30,12 @@ from truegrit_api.util.timeutil import utc_now_iso
 _MAX_GROUP_NAME_LENGTH = 120
 _HISTORY_DEFAULT_LIMIT = 50
 _HISTORY_MAX_LIMIT = 200
+# A "translate this chat" request only ever covers messages the caller
+# already has loaded (the frontend sends exactly the ids on screen), but
+# this still caps it -- the same reasoning as _HISTORY_MAX_LIMIT -- so a
+# crafted request cannot force hundreds of sequential Workers AI calls into
+# one request and blow the Worker's CPU budget.
+_MAX_TRANSLATE_BATCH = 100
 
 
 async def _require_participant(db: Database, conversation_id: str, user_id: str) -> None:
@@ -422,3 +429,111 @@ async def remove_participant(
         ]
     )
     return {"id": conversation_id, "removedUserId": user_id}
+
+
+async def _cached_message_translations(
+    db: Database, message_ids: list[str], locale: str
+) -> dict[str, str]:
+    if not message_ids:
+        return {}
+    placeholders = ", ".join("?" for _ in message_ids)
+    rows = await db.fetch_all(
+        f"SELECT message_id, translated_body FROM message_translations"
+        f" WHERE locale = ? AND message_id IN ({placeholders})",
+        (locale, *message_ids),
+    )
+    return {row["message_id"]: row["translated_body"] for row in rows}
+
+
+async def translate_message(
+    db: Database,
+    translator: Translator,
+    conversation_id: str,
+    message_id: str,
+    actor_user_id: str,
+    locale: str,
+) -> dict[str, Any]:
+    """Translate one message into `locale` -- the per-message "Translate"
+    action. Cached by (message_id, locale): a message's text never changes
+    after it is sent, so a repeat view of an already-translated message never
+    calls the translator again."""
+    await _require_participant(db, conversation_id, actor_user_id)
+    message = await db.fetch_one(
+        "SELECT id, body FROM messages WHERE id = ? AND conversation_id = ?",
+        (message_id, conversation_id),
+    )
+    if message is None:
+        raise NotFoundError("Message not found.")
+
+    cached = await _cached_message_translations(db, [message_id], locale)
+    if message_id in cached:
+        return {"messageId": message_id, "locale": locale, "translated": cached[message_id]}
+
+    translated = await translator.translate(message["body"], target_lang=locale)
+    now = utc_now_iso()
+    await db.execute(
+        """
+        INSERT INTO message_translations (message_id, locale, translated_body, created_at)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT(message_id, locale) DO UPDATE SET
+          translated_body = excluded.translated_body,
+          created_at = excluded.created_at
+        """,
+        (message_id, locale, translated, now),
+    )
+    return {"messageId": message_id, "locale": locale, "translated": translated}
+
+
+async def translate_conversation(
+    db: Database,
+    translator: Translator,
+    conversation_id: str,
+    actor_user_id: str,
+    locale: str,
+    message_ids: list[str],
+) -> list[dict[str, Any]]:
+    """Translate a batch of this conversation's messages into `locale` -- the
+    "Translate chat" action, covering whichever messages the caller currently
+    has loaded (never the full unbounded history; see _MAX_TRANSLATE_BATCH).
+    Already-cached messages are served without a translator call; only the
+    remainder are actually translated (and then cached for next time)."""
+    await _require_participant(db, conversation_id, actor_user_id)
+    unique_ids = list(dict.fromkeys(message_ids))[:_MAX_TRANSLATE_BATCH]
+    if not unique_ids:
+        return []
+
+    placeholders = ", ".join("?" for _ in unique_ids)
+    rows = await db.fetch_all(
+        f"SELECT id, body FROM messages"
+        f" WHERE conversation_id = ? AND id IN ({placeholders})"
+        f" ORDER BY created_at",
+        (conversation_id, *unique_ids),
+    )
+    if not rows:
+        return []
+
+    cached = await _cached_message_translations(db, [row["id"] for row in rows], locale)
+    now = utc_now_iso()
+    statements: list[tuple[str, tuple[Any, ...]]] = []
+    results: list[dict[str, Any]] = []
+    for row in rows:
+        if row["id"] in cached:
+            results.append({"messageId": row["id"], "translated": cached[row["id"]]})
+            continue
+        translated = await translator.translate(row["body"], target_lang=locale)
+        statements.append(
+            (
+                """
+                INSERT INTO message_translations (message_id, locale, translated_body, created_at)
+                VALUES (?, ?, ?, ?)
+                ON CONFLICT(message_id, locale) DO UPDATE SET
+                  translated_body = excluded.translated_body,
+                  created_at = excluded.created_at
+                """,
+                (row["id"], locale, translated, now),
+            )
+        )
+        results.append({"messageId": row["id"], "translated": translated})
+    if statements:
+        await db.batch(statements)
+    return results
