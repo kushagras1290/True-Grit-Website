@@ -33,6 +33,7 @@ import {
 import { useToast } from "../components/toast";
 import { ApiError, api } from "../lib/api";
 import { formatDateTime } from "../lib/format";
+import { IMAGE_SPECIFICATIONS_BY_ID } from "../lib/image-specifications";
 import { PermissionGate, usePermissions } from "../lib/permissions";
 import { T } from "../lib/i18n";
 
@@ -626,7 +627,7 @@ export function RecipeEditorPage() {
   });
 
   const bannerUploadMutation = useMutation({
-    mutationFn: (file: File) => api.uploadImage(file),
+    mutationFn: (file: File) => api.uploadImage(file, IMAGE_SPECIFICATIONS_BY_ID["content-hero"]),
     onSuccess: (result) => {
       form.setValue("heroImageUrl", result.url, { shouldDirty: true, shouldValidate: true });
       if (!form.getValues("heroImageAlt")) {

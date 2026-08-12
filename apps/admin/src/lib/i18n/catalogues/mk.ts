@@ -28,6 +28,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/recipes/": "/рецепти/",
   "← All farms": "← Сите фарми",
   "+ stars": "+ ѕвезди",
+  "₹1,000 preview": "1.000 ₹ преглед",
   "1 star": "1 ѕвезда",
   "15% off your first order": "15% попуст на вашата прва нарачка",
   "2 cups": "2 чаши",
@@ -61,6 +62,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Супер администратор може да започне група или директна порака од копчето + погоре.",
   "A tinted band — check muted text is still readable here.":
     "Затемнет бенд - проверете дали исклучениот текст сè уште може да се чита овде.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "земјата на посетителот избира валута, оваа табела ја дава нејзината приказна вредност, а оригиналната цена на INR останува непроменета. Оневозможените валути се враќаат на стандардните INR-безбедни.",
   Accent: "Акцент",
   "Accept orders and payments": "Прифатете нарачки и плаќања",
   "Accept orders and payments for this product": "Прифатете нарачки и плаќања за овој производ",
@@ -86,6 +89,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": 'id="t0005">Додај сопственик на фарма',
   "Add code": "Додај код",
   "Add country": "Додај земја",
+  "Add currency": "Додајте валута",
   "Add entry": "Додај запис",
   "Add farm owner": "Додајте сопственик на фарма",
   "Add ingredient": "Додајте состојка",
@@ -96,6 +100,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Додајте еден подолу за да започнете.",
   "Add one so the bot has something to reference for this scope.":
     "Додај еден за ботот да има што да референцира за овој опсег.",
+  "Add one using the field above.": "Додајте една користејќи го полето погоре.",
   "Add page": "Додај страница",
   "Add participants": "Додајте учесници",
   "Add point": "Додај точка",
@@ -114,6 +119,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Додај зона",
   Added: "0. производ.",
   "Adding...": "Се додава...",
+  "Adding…": "Се додава…",
   Address: "Адреса",
   "Adjust points": "Прилагодете ги точките",
   "Adjust the search or create a category.":
@@ -215,6 +221,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Азербејџански",
   "B2B / bulk ordering": "B2B / нарачка на големо",
   Back: "Назад",
+  "Back to conversations": "Назад на разговори",
   "Back to sign in": "Назад за да се најавите",
   Balance: "Саланс",
   "Banner alt text": "Алт текст на банерот",
@@ -280,6 +287,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Секции на уредувачот на категории",
   "Category not found": "Категоријата не е пронајдена",
   "Category row": "Ред категорија",
+  "Category thumbnail alt text": "Алт текст на сликичка од категорија",
+  "Category thumbnail URL": "URL на сликичка на категорија",
   "Category to add to the homepage": "Категоријата за додавање на почетната страница",
   "Cautions and low stock.": "Внимание и малку залихи.",
   Cebuano: "Себуано",
@@ -352,6 +361,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Контакт е-пошта",
   Content: "Содржина",
   "Continue with Facebook": "Продолжи со Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Контролирајте ги приближните цени на локалната валута со одредување колку вреди една индиска рупија. Записите од каталогот, наплатата и нарачките остануваат безбедно во INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Контролирајте што секоја улога може да гледа, создава, уредува, објавува или управува.",
   "Control whether each bot is available, and edit what it knows.":
@@ -396,6 +407,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Големина на избраната листа",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Курирани комплети специфични варијанти кои се продаваат заедно по рамна цена. Checkout го применува штедењето автоматски штом кошницата ќе ги собере сите ставки во пакетот.",
+  Currency: "Валута",
+  "Currency code": "Код на валутата",
+  "Currency Converter": "Конвертор на валута",
+  "Currency values unavailable": "Вредностите на валутите се недостапни",
   "Current password": "Тековна лозинка",
   "Currently its own effects.": "Во моментов неговите сопствени ефекти.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -432,6 +447,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Одбиј",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "Декорација зад трагата на страницата и следење на страницата покажувач. И двете се стандардно исклучени, и двете се целосно прескокнати за посетителите кои побарале од нивниот уред намалено движење и ниту едното не се појавува на прозорецот за плаќање - снежните врнежи над формуларот за картичка го одвлекуваат вниманието токму во погрешен момент. Ефектите на една земја ги заменуваат ефектите на целата локација директно за нејзините посетители наместо да се мешаат со нив - „некое снег“ не е значајна мешавина од снег и нема ефект.",
+  Default: "Стандардно",
   "Default commission": "Стандардна провизија",
   "Default fee": "Стандардна такса",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -451,6 +467,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Избриши рецепт",
   "Delete role": "Избришете ја улогата",
   "Delete selected (": "Избриши избрана (",
+  "Delete this entry": "Избришете го овој запис",
   "Delete this price adjustment?": "Да се ​​избрише ова прилагодување на цената?",
   "Delete user": "Избриши го корисникот",
   "Deleting...": "Се брише...",
@@ -472,6 +489,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Дететски и филтри за сертификација",
   "Dietary tags": "Ознаки за исхрана",
   "Dietary tags (comma separated)": "Ознаки за исхрана (одделени со запирки)",
+  "Dietary Tags & Certifications": "Ознаки и сертификати за исхрана",
   "Direct message": "Директна порака",
   Disable: "Оневозможи",
   "Disable selected (": "Оневозможи го избраното (",
@@ -495,12 +513,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "на пр. Сметки",
   "e.g. DIWALI500": "на пр. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "на пр. Собрана неделата од 3 март 2026 година",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "На пр. Индија органски, фер трговија. Сертификатот доделен на кој било производ не може да се избрише додека не се отстрани од него.",
   "e.g. Ops Room": "на пр. Оперативна соба",
   "e.g. Rain-fed, no synthetic pesticides": "на пр. Дождовно, без синтетички пестициди",
   "e.g. Refrigerate and use within 5 days":
     "на пр. Ставете го во фрижидер и користете го во рок од 5 дена",
   "e.g. TO-HONEY-500": "на пр. TO-HONEY-500",
   "e.g. UTR 123456789012": "на пр. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "На пр. Веган, без глутен. Ако се избрише еден, се отстранува од секој производ на кој е проверен.",
   Edit: "Уреди",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Уреди метаподатоци на CMS-страници, индексирање и необработени блокови на страници. Записот на почетната страница е исто така наведен овде, но Поставките за почетната страница се побезбедниот начин за негово менување - овој уредувач зема необработен JSON.",
@@ -606,6 +628,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     "Вклучете или исклучете дел за посетителите во една земја, без да го промените она што го гледаат сите други. Оставете дел на „Наследи“ и тој само го следи полето за обележување во списокот со секции погоре.",
   "Forgot password?": "Ја заборавивте лозинката?",
+  "Formatting locale": "Форматирање на локација",
   "Free delivery above (₹)": "Бесплатна испорака над (₹)",
   "French (Français)": 'француски (Français)</spançais) id="t0004">Фреквенција',
   Frequency: "Фреквенција",
@@ -692,6 +715,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Ако оваа промоција никогаш не била откупена, таа целосно се брише; инаку е архивирана, па се чува нејзината историја.",
   Igbo: "Игбо",
+  Image: "Слика",
   "Image alt text": "Алт текст на сликата",
   "Image alt text (optional)": "Алт текст на сликата (изборно)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -771,6 +795,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Оставете GB за да ја задржите бојата со еден_blankT за да ја задржите едната_blankT. поле е како да го вратите. Боите на страницата или земјата започнуваат од боите на страницата и го отфрлаат само она што го менувате, така што секоја е кратка листа, а не втора палета за одржување. Кога и двете се однесуваат на истиот посетител, страницата победува - дизајнот на уредувачката страница не треба да се поништи со гео-експеримент.",
   "Leave blank to use the default.": "Оставете празно за да го користите стандардното.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Оставете ја врската празна за обична слика што не може да се клика.",
   "Less refunds": "Помалку рефундирање",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Овозможува клиентите да применат шифра на картичката за подарок при наплатата, покривајќи дел или цела вкупна нарачка. Издадете картички од страницата Картички за подароци. Стандардно исклучени - постоечките картички и нивните салда се чуваат, само не може да се откупат, додека ова е исклучено.",
@@ -782,6 +808,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Вкупна линија",
   Lines: "Линии",
   Link: "Врска",
+  "Link (optional)": "Линк (изборно)",
   "Link customer": "Поврзете го клиентот",
   "Link product": "Поврзете производ",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -801,6 +828,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Преглед во живо",
   "Live, and to scale with the real storefront's own styles.":
     "Во живо и размерете според сопствените стилови на вистинскиот излог.",
+  Loading: "Се вчитува",
   "Loading active promotions...": "Се вчитуваат активни промоции...",
   "Loading analytics...": "Се вчитува аналитика...",
   "Loading announcements...": "Се вчитуваат објави...",
@@ -814,6 +842,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Се вчитуваат разговори…",
   "Loading country overrides...": "Се вчитуваат отфрлања на земјата...",
   "Loading crawler files...": "Се вчитуваат датотеките на пребарувачот...",
+  "Loading currency values…": "Се вчитуваат валутни вредности…",
   "Loading delivery charges...": "Се вчитуваат трошоците за испорака...",
   "Loading discussion…": "Се вчитува дискусија…",
   "Loading highlights...": "Се вчитуваат главните моменти...",
@@ -836,6 +865,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Се вчитуваат прекинувачи за излог...",
   "Loading submission…": "Се вчитува поднесок…",
   "Loading...": "Се вчитува...",
+  "Loading…": "Се вчитува…",
   "Local pickup points": "Локални точки за подигање",
   "Locale to translate": "Локално за преведување",
   "Locked out? Use": "Заклучено? Користете",
@@ -885,6 +915,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Причина за умереност",
   Mongolian: "монголски",
   "More from True Grit": "Повеќе од True Grit",
+  "Motto banner": "Бнер за мото",
   "Move down in the showcase": "Движете се надолу во излогот",
   "Move earlier": "Движете се порано",
   "Move later": "Движете се подоцна",
@@ -1012,6 +1043,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Забелешка (потребна е за барање промени или одбивање)",
   "Note (required)": "Забелешка (задолжителна)",
   Notes: "Забелешки",
+  "Nothing here yet": "порака.",
   "Nothing outstanding to pay": "Нема извонредно плаќање",
   "Nothing pending.": "Ништо не чека.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1067,6 +1099,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Органски алфонсо манго",
   "Organic mangoes held in a sunlit orchard":
     "Органски манго се чуваат во овоштарник осветлен на сонце",
+  "Organic wheat flour in a wooden bowl": "Органско пченично брашно во дрвен сад",
   Outstanding: "Извонредна",
   Overview: "Преглед",
   "Owner Reports": "Извештаи на сопственици",
@@ -1116,9 +1149,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Изберете барем една земја или пуштете го насекаде.",
   "Pick at least one country, or release globally.":
     "Изберете најмалку една земја или пуштете го глобално.",
-  "Pick exactly two people for a direct message.": "Изберете точно две лица за директна порака.",
   "Pick one from the list to start reading.":
     "Изберете едно од списокот за да започнете со читање.",
+  "Pick the other person for this direct message.":
+    "Изберете ја другата личност за оваа директна порака.",
   "PIN code": "ПИН-код",
   "PIN patterns": "Шемите на PIN-кодови",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1266,6 +1300,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Потребна е дозвола за pages.view и поврзан API.",
   "Requires products.publish": "Потребен е products.publish",
   "Requires recipes.publish": "Потребен е recipes.publish",
+  "Requires settings access.": "Потребен е пристап до поставките.",
   "Requires the analytics.view permission.": "Бара дозвола за analytics.view.",
   "Requires the inventory.adjust permission.": "Потребна е дозвола за inventory.adjust.",
   "Requires the reports.query permission.": "Потребна е дозвола за report.query.",
@@ -1316,6 +1351,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Во тек...",
   "Russian (Русский)": "руски (Русский)",
   "Safe area": "Безбедна област",
+  "Safe geo-lock:": "Безбедно гео-заклучување:",
   "Sale & Discounts": "Распродажба и попусти",
   "Sale price": "Sanskrit4 (संस्कृतम्)",
   "Sale Price (₹)": "продажна цена (₹)",
@@ -1450,6 +1486,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "српски",
   Servings: "Услуги",
   "Set a new password": "Поставете нова лозинка",
+  "Set as default": "Постави како стандардно",
   "Shop · Farms · Journal": "Купувајте · Фарми · Дневник",
   "Shop fresh greens": "Купувајте свеж зеленчук",
   "Shop root vegetables": "Купувајте зеленчук од корен",
@@ -1460,6 +1497,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "Прикажи најава",
   "Show dietary and certification filters on the shop page":
     "Прикажи ги филтрите за исхрана и сертификација на страницата на продавницата",
+  "Show original": "Прикажи оригинал",
   "Show product recommendations": "Прикажи препораки за производи",
   "Show this snippet": "Прикажи го овој исечок",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1548,6 +1586,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "свахили (кисвахили)",
   "Swedish (Svenska)": "шведски (Свенска)",
   Table: "Табела",
+  "Tags & Certifications": "Ознаки и сертификати",
   "Tags:": "Ознаки:",
   Tajik: "таџиски",
   "Taking payments": "Преземање плаќања",
@@ -1564,6 +1603,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Банерот, редот категорија, редот на производи и полињата за оптимизација се зачувуваат заедно. Кутијата за штиклирање на делови, нарачувањето и приспособената копирање на секцијата се зачувуваат сами, додека ги менувате.",
   "The chat widget customers and visitors see on the storefront.":
     "Диџетот за разговор што клиентите и посетителите го гледаат на излогот.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Списоците на полињата за избор се прикажани на картичката Општо на секој производ. Промените се применуваат насекаде веднаш.",
   "The classic credential pair, including the password-reset flow.":
     "Класичниот пар на акредитиви, вклучувајќи го и протокот за ресетирање лозинка.",
   "the farm owner": "сопственикот на фармата",
@@ -1616,6 +1657,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Овој дел е уреден во сопствен панел подолу по страницата.",
   "Threads started from the storefront appear here.":
     "Темите започнати од излогот се појавуваат овде.",
+  "Thumbnail image URL": "URL на сликата на сликичката",
   Time: "Време",
   "Tinted band": "Затемнет бенд",
   Title: "Наслов",
@@ -1633,7 +1675,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Trail colour": "Боја на патеката",
   "transfer money — make the transfer to": "префрли пари — направете трансфер до",
   "Transfer reference (UPI / bank / cheque)": "Референца за трансфер (UPI / банка / чек)",
+  Translate: "Преведи",
+  "Translate chat": "Преведи разговор",
   "Translating...": "Преведување...",
+  "Translating…": "Се преведува…",
   Translations: "Преводи",
   Triage: "Триажа",
   "True Grit Admin": "True Grit Админ",
@@ -1666,9 +1711,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Поставете слика",
   "Uploading image...": "Се поставува слика...",
   "Uploading image…": "Сликата се поставува...",
+  "Uploading thumbnail...": "Сикичката се прикачува...",
   "Uploading...": "Се прикачува...",
   "Uploading…": "Се поставува…",
   "Urdu (اردو)": "Урду (арدو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Користете посебна слика 0 200 200 × 1. Оваа квадратна слика е исечена за картички со категорија; немојте повторно да го користите широкиот банер за херој.",
   "Use site-wide effects instead": "Користете ги ефектите на целата локација",
   "Use the exact canvas": "Користете го точното платно",
   "Use the navigation to get back.": "Користете ја навигацијата за да се вратите назад.",
@@ -1681,6 +1729,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Користење на бојата на брендот на страницата",
   Uyghur: "ујгурски",
   Uzbek: "узбекистански",
+  "Value of 1 INR": "Вредност од 1 INR",
+  "Value per INR": "Вредност по INR",
   "Value, ₹": "Вредност, ₹",
   Variant: "Варијанта",
   "Variant (SKU)": "Варијанта (SKU)",

@@ -123,6 +123,65 @@ def test_auto_translate_populates_every_supported_field_and_flags_the_result(db)
     assert len(listed) == 1
 
 
+def test_editing_the_english_name_drops_stale_auto_translations_but_keeps_manual_ones(db):
+    fake = FakeTranslator()
+    app = create_app(db=db, translator=fake)
+    client = TestClient(app, raise_server_exceptions=False)
+    as_admin(client, db)
+
+    category_id = client.post(
+        "/v1/admin/categories", json={"name": "Translation Staleness Test"}
+    ).json()["id"]
+
+    auto = client.post(f"/v1/admin/translations/category/{category_id}/hi/auto-translate")
+    assert auto.status_code == 200, auto.text
+    manual = client.put(
+        f"/v1/admin/translations/category/{category_id}/fr",
+        json={"fields": {"name": "Huiles Pressees a Froid"}},
+    )
+    assert manual.status_code == 200, manual.text
+
+    renamed = client.patch(
+        f"/v1/admin/categories/{category_id}", json={"name": "Renamed Staleness Test"}
+    )
+    assert renamed.status_code == 200, renamed.text
+
+    # The machine translation was for the old English name and is now
+    # wrong, so it is gone -- the storefront falls back to the new English
+    # name in Hindi rather than keep showing a translation of text nobody
+    # wrote anymore.
+    hi_after = client.get(f"/v1/admin/translations/category/{category_id}/hi")
+    assert hi_after.json()["autoTranslated"] is False
+    assert hi_after.json()["updatedAt"] is None
+
+    # The hand-written French translation is an editorial choice, not a
+    # stale machine guess, so renaming the category in English does not
+    # touch it.
+    fr_after = client.get(f"/v1/admin/translations/category/{category_id}/fr")
+    assert fr_after.json()["autoTranslated"] is False
+    assert fr_after.json()["fields"]["name"] == "Huiles Pressees a Froid"
+
+
+def test_editing_an_untranslated_field_does_not_touch_existing_translations(db):
+    fake = FakeTranslator()
+    app = create_app(db=db, translator=fake)
+    client = TestClient(app, raise_server_exceptions=False)
+    as_admin(client, db)
+
+    category_id = client.post("/v1/admin/categories", json={"name": "Whole Grain Flours"}).json()[
+        "id"
+    ]
+    client.post(f"/v1/admin/translations/category/{category_id}/hi/auto-translate")
+
+    # `visibility` is not in TRANSLATABLE_FIELDS for category -- changing it
+    # must not discard translations of fields that did not change.
+    updated = client.patch(f"/v1/admin/categories/{category_id}", json={"visibility": "hidden"})
+    assert updated.status_code == 200, updated.text
+
+    hi_after = client.get(f"/v1/admin/translations/category/{category_id}/hi")
+    assert hi_after.json()["autoTranslated"] is True
+
+
 def test_bootstrap_serves_translated_nav_labels_with_english_fallback(client, db):
     as_admin(client, db)
     client.put(

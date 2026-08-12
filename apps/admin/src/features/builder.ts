@@ -50,5 +50,7 @@ export function blockTitle(block: PublicPageBlock): string {
       return "Promotions banner";
     case "recommendations":
       return `Recommended products — ${block.props.heading}`;
+    case "image_banner":
+      return `Image banner — ${block.props.imageAlt}`;
   }
 }

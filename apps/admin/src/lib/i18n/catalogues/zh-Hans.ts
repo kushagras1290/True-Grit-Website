@@ -26,6 +26,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/recipes": "/食谱",
   "← All farms": "← 所有农场",
   "+ stars": "+ 星星",
+  "₹1,000 preview": "1,000 卢比预览",
   "1 star": "1星级",
   "15% off your first order": "首次订单可享受 15% 折扣",
   "2 cups": "2 杯",
@@ -59,6 +60,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "超级管理员可以通过上面的 + 按钮发起群组或直接发送消息。",
   "A tinted band — check muted text is still readable here.":
     "有色带 - 检查静音文本在此处是否仍然可读。",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "访问者所在的国家/地区选择货币，此表提供其显示值，原始 INR 价格保持不变。已禁用的货币将恢复为安全的印度卢比默认值。",
   Accent: "口音",
   "Accept orders and payments": "接受订单并付款",
   "Accept orders and payments for this product": "接受该产品的订单和付款",
@@ -83,6 +86,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "添加类别",
   "Add code": "添加代码",
   "Add country": "添加国家/地区",
+  "Add currency": "添加货币",
   "Add entry": "添加条目",
   "Add farm owner": "添加农场所有者",
   "Add ingredient": "添加成分",
@@ -93,6 +97,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "在下方添加一项即可开始。",
   "Add one so the bot has something to reference for this scope.":
     "添加一个条目，以便机器人在此范围内有一些参考内容。",
+  "Add one using the field above.": "使用上面的字段添加一种货币。",
   "Add page": "添加页面",
   "Add participants": "添加参与者",
   "Add point": "添加积分",
@@ -111,6 +116,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "添加区域",
   Added: "已添加",
   "Adding...": "正在添加...",
+  "Adding…": "添加...",
   Address: "地址",
   "Adjust points": "调整积分",
   "Adjust the search or create a category.": "调整搜索或创建类别。",
@@ -209,6 +215,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "阿塞拜疆语",
   "B2B / bulk ordering": "B2B/批量订购",
   Back: "返回",
+  "Back to conversations": "返回对话",
   "Back to sign in": "返回登录",
   Balance: "余额",
   "Banner alt text": "横幅替代文字",
@@ -270,6 +277,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "类别编辑器部分",
   "Category not found": "找不到类别",
   "Category row": "类别行",
+  "Category thumbnail alt text": "类别缩略图替代文本",
+  "Category thumbnail URL": "类别缩略图网址",
   "Category to add to the homepage": "要添加到主页的类别",
   "Cautions and low stock.": "注意事项和库存不足。",
   Cebuano: "宿务",
@@ -341,6 +350,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "联系电子邮件",
   Content: "内容",
   "Continue with Facebook": "继续使用 Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "通过设置一印度卢比的价值来控制当地货币的大致价格。目录、结帐和订单记录以印度卢比形式安全保存。",
   "Control what each role can view, create, edit, publish or manage.":
     "控制每个角色可以查看、创建、编辑、发布或管理的内容。",
   "Control whether each bot is available, and edit what it knows.":
@@ -385,6 +396,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "精心策划的清单大小",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "精选的特定变体组合以统一价格出售。一旦购物篮容纳了捆绑包中的所有商品，结帐就会自动应用保存。",
+  Currency: "货币",
+  "Currency code": "货币代码",
+  "Currency Converter": "货币转换器",
+  "Currency values unavailable": "货币值不可用",
   "Current password": "当前密码",
   "Currently its own effects.": "当前是其自己的效果。",
   "Currently the site-wide effects — save below to give it its own.":
@@ -421,6 +436,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "拒绝",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "店面顶部的装饰：页面后面漂浮的粒子，以及跟随指针的轨迹。默认情况下，两者都是关闭的，对于要求设备减少运动的访客来说，两者都被完全跳过，而且两者都不会出现在支付窗口上——卡片上的降雪会在错误的时刻分散注意力。一个国家/地区的效果会为其访问者彻底取代整个网站的效果，而不是与它们混合 -“一些雪”并不是雪与无效果的有意义的混合。",
+  Default: "默认",
   "Default commission": "默认佣金",
   "Default fee": "默认费用",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -440,6 +456,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "删除菜谱",
   "Delete role": "删除角色",
   "Delete selected (": "删除所选内容（",
+  "Delete this entry": "删除此条目",
   "Delete this price adjustment?": "删除此价格调整？",
   "Delete user": "删除用户",
   "Deleting...": "删除...",
@@ -462,6 +479,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "饮食和认证过滤器",
   "Dietary tags": "饮食标签",
   "Dietary tags (comma separated)": "饮食标签（逗号分隔）",
+  "Dietary Tags & Certifications": "饮食标签和认证",
   "Direct message": "直接消息",
   Disable: "禁用",
   "Disable selected (": "禁用所选内容（",
@@ -484,11 +502,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "例如帐户",
   "e.g. DIWALI500": "例如DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "例如2026 年 3 月 3 日当周收获",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "例如印度有机、公平贸易。分配给任何产品的认证只有从该产品中删除后才能删除。",
   "e.g. Ops Room": "例如行动室",
   "e.g. Rain-fed, no synthetic pesticides": "例如雨水浇灌，不含合成农药",
   "e.g. Refrigerate and use within 5 days": "例如冷藏并在5天内使用",
   "e.g. TO-HONEY-500": "例如TO-HONEY-500",
   "e.g. UTR 123456789012": "例如UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "例如素食主义者，无麸质。删除它会将其从所有已选中的产品中删除。",
   Edit: "编辑",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "编辑 CMS 页面元数据、索引和原始页面块。此处也列出了主页记录，但主页设置是更安全的更改方式 - 此编辑器采用原始 JSON。",
@@ -590,6 +612,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     "强制向某个国家/地区的访问者打开或关闭某个部分，而不改变其他人看到的内容。留下“继承”部分，它就位于上面部分列表中的复选框后面。",
   "Forgot password?": "忘记密码？",
+  "Formatting locale": "格式化区域设置",
   "Free delivery above (₹)": "免费送货（$）以上",
   "French (Français)": "法语 (Français)",
   Frequency: "频率",
@@ -674,6 +697,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "如果该电子邮件有帐户，则会发送重置链接。",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "如果此促销活动从未兑换过，则会被彻底删除；否则将被存档，以便保留其历史记录。",
+  Image: "图像",
   "Image alt text": "图像替代文本",
   "Image alt text (optional)": "图像替代文本（可选）",
   "Image is sRGB and at or below the listed file-size target.":
@@ -752,6 +776,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "将颜色留空以保留 True Grit 附带的颜色 - 清除字段就是撤消的方式。页面或国家/地区的颜色从网站颜色开始，并且仅覆盖您更改的颜色，因此每个颜色都是一个简短的列表，而不是需要维护的第二个调色板。当两者都适用于同一访问者时，页面获胜 - 编辑页面的设计不应通过地理实验来撤消。",
   "Leave blank to use the default.": "留空以使用默认值。",
+  "Leave the link blank for a plain, unclickable image.":
+    "将链接留空以获得普通的、不可点击的图像。",
   "Less refunds": "退款更少",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "让客户在结账时应用礼品卡代码，覆盖部分或全部订单总额。从礼品卡页面发行卡片。默认关闭 - 现有卡及其余额将被保留，只是不可兑换，而此功能关闭。",
@@ -763,6 +789,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "行数总计",
   Lines: "行数",
   Link: "链接",
+  "Link (optional)": "链接（可选）",
   "Link customer": "链接客户",
   "Link product": "链接产品",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -782,6 +809,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "实时预览",
   "Live, and to scale with the real storefront's own styles.":
     "实时预览，并根据真实店面自己的风格进行缩放。",
+  Loading: "正在加载",
   "Loading active promotions...": "正在加载活动促销...",
   "Loading analytics...": "正在加载分析...",
   "Loading announcements...": "正在加载公告...",
@@ -795,6 +823,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "正在加载对话...",
   "Loading country overrides...": "正在加载国家覆盖...",
   "Loading crawler files...": "正在加载抓取工具文件...",
+  "Loading currency values…": "正在加载货币价值...",
   "Loading delivery charges...": "正在加载运费...",
   "Loading discussion…": "正在加载讨论...",
   "Loading highlights...": "正在加载亮点...",
@@ -817,6 +846,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "正在加载店面开关...",
   "Loading submission…": "正在加载提交...",
   "Loading...": "正在加载...",
+  "Loading…": "正在加载...",
   "Local pickup points": "本地提货点",
   "Locale to translate": "要翻译的区域设置",
   "Locked out? Use": "被锁定？使用",
@@ -865,6 +895,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "审核原因",
   Mongolian: "蒙古语",
   "More from True Grit": "来自True Grit的更多内容",
+  "Motto banner": "座右铭横幅",
   "Move down in the showcase": "在展示区中下移",
   "Move earlier": "移动较早",
   "Move later": "稍后移动",
@@ -989,6 +1020,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Note (required to request changes or reject)": "备注（请求更改或拒绝时必需）",
   "Note (required)": "备注（必需）",
   Notes: "备注",
+  "Nothing here yet": "这里还没有",
   "Nothing outstanding to pay": "没有任何未付款",
   "Nothing pending.": "没有待处理的内容。",
   "Nothing selected — the storefront stays exactly as it is.": "没有选择任何内容 - 店面保持原样。",
@@ -1034,6 +1066,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Orders will appear here once customers check out.": "客户结帐后，订单将显示在此处。",
   "Organic Alphonso Mangoes": "有机阿方索芒果",
   "Organic mangoes held in a sunlit orchard": "装在容器中的有机芒果sunlit orchard",
+  "Organic wheat flour in a wooden bowl": "木碗里的有机小麦粉",
   Outstanding: "杰出",
   Overview: "概述",
   "Owner Reports": "所有者报告",
@@ -1081,8 +1114,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "选择报告，设置可选过滤器，然后运行它。任何自由文本 SQL 都不会到达数据库。",
   "Pick at least one country, or release everywhere.": "至少选择一个国家/地区，或在所有地方发布。",
   "Pick at least one country, or release globally.": "至少选择一个国家/地区，或在全球范围内发布。",
-  "Pick exactly two people for a direct message.": "选择两个人进行直接消息。",
   "Pick one from the list to start reading.": "从列表中选择一个人开始阅读。",
+  "Pick the other person for this direct message.": "选择此私信的其他人。",
   "PIN code": "PIN 码",
   "PIN patterns": "PIN 码模式",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1223,6 +1256,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires pages.view permission and a connected API.": "需要pages.view权限和连接的API API。",
   "Requires products.publish": "需要 products.publish",
   "Requires recipes.publish": "需要 Recipe.publish",
+  "Requires settings access.": "需要设置访问权限。",
   "Requires the analytics.view permission.": "需要analytics.view 权限。",
   "Requires the inventory.adjust permission.": "需要 inventory.adjust 权限。",
   "Requires the reports.query permission.": "需要 reports.query权限。",
@@ -1272,6 +1306,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "正在运行...",
   "Russian (Русский)": "俄语 (Русский)",
   "Safe area": "安全区域",
+  "Safe geo-lock:": "安全地理锁定：",
   "Sale & Discounts": "销售和折扣",
   "Sale price": "销售价格",
   "Sale Price (₹)": "销售价格（$）",
@@ -1403,6 +1438,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "塞尔维亚语",
   Servings: "份量",
   "Set a new password": "设置新密码",
+  "Set as default": "设置为默认",
   "Shop · Farms · Journal": "购物·农场·日记",
   "Shop fresh greens": "购买新鲜蔬菜",
   "Shop root vegetables": "购买根类蔬菜",
@@ -1412,6 +1448,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Short public story for this farm.": "这个农场的简短公共故事。",
   "Show announcement": "显示公告",
   "Show dietary and certification filters on the shop page": "在商店页面上显示饮食和认证过滤器",
+  "Show original": "显示原文",
   "Show product recommendations": "显示产品推荐",
   "Show this snippet": "显示此代码段",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1496,6 +1533,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "斯瓦希里语（斯瓦希里语）",
   "Swedish (Svenska)": "瑞典语（Svenska）",
   Table: "表格",
+  "Tags & Certifications": "标签和认证",
   "Tags:": "标签：",
   Tajik: "塔吉克语",
   "Taking payments": "接受付款",
@@ -1512,6 +1550,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "横幅、类别行、产品行和 SEO 字段保存在一起。部分复选框、排序和自定义部分副本会在您更改时自行保存。",
   "The chat widget customers and visitors see on the storefront.":
     "客户和访客在店面看到的聊天小部件。",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "每个产品的“常规”选项卡上显示的复选框列表。更改会立即应用于所有位置。",
   "The classic credential pair, including the password-reset flow.":
     "经典凭证对，包括密码重置流程。",
   "the farm owner": "农场所有者",
@@ -1559,6 +1599,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "This section is edited in its own panel further down the page.":
     "此部分在页面下方的自己的面板中进行编辑。",
   "Threads started from the storefront appear here.": "从店面开始的话题显示在此处。",
+  "Thumbnail image URL": "缩略图 URL",
   Time: "时间",
   "Tinted band": "有色带",
   Title: "标题",
@@ -1576,7 +1617,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Trail colour": "线索颜色",
   "transfer money — make the transfer to": "转账 - 进行转账至",
   "Transfer reference (UPI / bank / cheque)": "转账参考号（UPI/银行/支票）",
+  Translate: "翻译",
+  "Translate chat": "翻译聊天",
   "Translating...": "正在翻译...",
+  "Translating…": "翻译...",
   Translations: "翻译",
   Triage: "分类",
   "Turkish (Türkçe)": "土耳其语 (Türkçe)",
@@ -1608,9 +1652,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "上传图片",
   "Uploading image...": "正在上传图片...",
   "Uploading image…": "正在上传图片...",
+  "Uploading thumbnail...": "正在上传缩略图...",
   "Uploading...": "正在上传...",
   "Uploading…": "正在上传...",
   "Urdu (اردو)": "乌尔都语 (নো)",
+  USD: "美元",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "使用单独的 1200 × 1200 图片。此方形图像被裁剪为类别卡；请勿重复使用宽英雄横幅。",
   "Use site-wide effects instead": "改用全站效果",
   "Use the exact canvas": "使用精确的画布",
   "Use the navigation to get back.": "使用导航返回。",
@@ -1623,6 +1671,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "使用网站品牌颜色",
   Uyghur: "维吾尔语",
   Uzbek: "乌兹别克语",
+  "Value of 1 INR": "1 印度卢比的价值",
+  "Value per INR": "每印度卢比的价值",
   "Value, ₹": "价值，卢比",
   Variant: "变体",
   "Variant (SKU)": "变体 (SKU)",

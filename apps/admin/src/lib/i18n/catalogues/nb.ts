@@ -25,6 +25,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/recipes": "/oppskrifter",
   "← All farms": "← Alle gårder",
   "+ stars": "+ stjerner",
+  "₹1,000 preview": "1000 INR forhåndsvisning",
   "1 star": "1 stjerne",
   "15% off your first order": "15 % rabatt på din første bestilling",
   "2 cups": "2 kopper",
@@ -59,6 +60,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "En superadministrator kan starte en gruppe eller direktemelding fra +-knappen ovenfor.",
   "A tinted band — check muted text is still readable here.":
     "Et tonet bånd — sjekk dempet tekst er fortsatt lesbar her.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "en besøkendes land velger en valuta, denne tabellen viser visningsverdien, og den opprinnelige INR-prisen forblir uendret. Deaktiverte valutaer faller tilbake til INR-sikre standarder.",
   "Accept orders and payments": "Godta bestillinger og betalinger",
   "Accept orders and payments for this product":
     "Godta bestillinger og betalinger for dette produktet",
@@ -84,6 +87,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Legg til kategori",
   "Add code": "Legg til kode",
   "Add country": "Legg til land",
+  "Add currency": "Legg til valuta",
   "Add entry": "Legg til oppføring",
   "Add farm owner": "Legg til gårdeier",
   "Add ingredient": "Legg til ingrediens",
@@ -94,6 +98,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Legg til en nedenfor for å komme i gang.",
   "Add one so the bot has something to reference for this scope.":
     "Legg til en slik at roboten har noe å referere til for dette omfanget.",
+  "Add one using the field above.": "Legg til en ved å bruke feltet ovenfor.",
   "Add page": "Legg til side",
   "Add participants": "Legg til deltakere",
   "Add point": "Legg til punkt",
@@ -112,6 +117,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Legg til sone",
   Added: "Lagt til",
   "Adding...": "Legger til...",
+  "Adding…": "Legger til...",
   Address: "Adresse",
   "Adjust points": "Juster poeng",
   "Adjust the search or create a category.": "Juster søket eller opprett en kategori.",
@@ -204,6 +210,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Aserbajdsjansk",
   "B2B / bulk ordering": "B2B / massebestilling",
   Back: "Tilbake",
+  "Back to conversations": "Tilbake til samtaler",
   "Back to sign in": "Tilbake til pålogging",
   Balance: "Saldo",
   "Banner alt text": "Alt-bannertekst",
@@ -267,6 +274,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Kategoriredigeringsseksjoner",
   "Category not found": "Kategori ikke funnet",
   "Category row": "Kategorierad",
+  "Category thumbnail alt text": "Kategoriminiatyrbilde alt tekst",
+  "Category thumbnail URL": "Nettadresse for kategoriminiatyrbilde",
   "Category to add to the homepage": "Kategori som skal legges til på hjemmesiden",
   "Cautions and low stock.": "Advarsel og lite lager.",
   "Centred safe area": "Sentralt trygt område",
@@ -337,6 +346,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Kontakt-e-post",
   Content: "Innhold",
   "Continue with Facebook": "Fortsett med Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Kontroller omtrentlige priser i lokal valuta ved å angi hvor mye én indisk rupi er verdt. Katalog-, betalings- og ordreposter forblir trygt i INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Kontrollér hva hver rolle kan se, opprette, redigere, publisere eller administrere.",
   "Control whether each bot is available, and edit what it knows.":
@@ -378,6 +389,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Kurtert listestørrelse",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Kuraterte sett med fast pris som selges sammen til en fast pris. Checkout bruker besparelsen automatisk når en kurv inneholder hver vare i en pakke.",
+  Currency: "Valuta",
+  "Currency code": "Valutakode",
+  "Currency Converter": "Valutaomregner",
+  "Currency values unavailable": "Valutaverdier utilgjengelige",
   "Current password": "Gjeldende passord",
   "Currently its own effects.": "For tiden sine egne effekter.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -414,6 +429,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Avslå",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "Dekorasjon på toppen av butikkfronten: drivende partikler som følger siden, og en peker. Begge er av som standard, begge hoppes helt over for besøkende som har bedt enheten om redusert bevegelse, og ingen av dem vises noen gang i betalingsvinduet – et snøfall over et kortskjema er en distraksjon i nøyaktig feil øyeblikk. Et lands effekter erstatter de hele nettstedet direkte for de besøkende i stedet for å blande seg med dem – «noe snø» er ikke en meningsfull blanding av snø og ingen effekt.",
+  Default: "Standard",
   "Default commission": "Standardprovisjon",
   "Default fee": "Standardgebyr",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -428,6 +444,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Slett oppskrift",
   "Delete role": "Slett rolle",
   "Delete selected (": "Slett valgte (",
+  "Delete this entry": "Slett denne oppføringen",
   "Delete this price adjustment?": "Slette denne prisjusteringen?",
   "Delete user": "Slett bruker",
   "Deleting...": "Sletter...",
@@ -449,6 +466,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Diett- og sertifiseringsfiltre",
   "Dietary tags": "Diettmerker",
   "Dietary tags (comma separated)": "Diettetiketter (kommaseparert)",
+  "Dietary Tags & Certifications": "Diettmerker og sertifiseringer",
   "Direct message": "Direktemelding",
   Disable: "Deaktiver",
   "Disable selected (": "Deaktiver valgte (",
@@ -470,11 +488,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "f.eks. Kontoer",
   "e.g. DIWALI500": "f.eks. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "f.eks. Høstet uken 3. mars 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "F.eks. India økologisk, rettferdig handel. En sertifisering som er tildelt et produkt kan ikke slettes før den fjernes fra det.",
   "e.g. Ops Room": "f.eks. Ops Room",
   "e.g. Rain-fed, no synthetic pesticides": "f.eks. Regnfôret, ingen syntetiske plantevernmidler",
   "e.g. Refrigerate and use within 5 days": "f.eks. Avkjøl og bruk innen 5 dager",
   "e.g. TO-HONEY-500": "f.eks. TO-HONEY-500",
   "e.g. UTR 123456789012": "f.eks. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "F.eks. Vegansk, glutenfri. Hvis du sletter en, fjernes den fra hvert produkt som har det sjekket.",
   Edit: "Rediger",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Rediger CMS-sidemetadata, indeksering og råsideblokker. Hjemmesideposten er også oppført her, men Hjemmesideinnstillinger er den tryggere måten å endre den på – denne editoren bruker rå JSON.",
@@ -576,6 +598,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Tving en del av eller på for besøkende i ett land, uten å endre hva alle andre ser. Legg igjen en seksjon om "Arv", så følger den bare avkrysningsboksen i seksjonslisten ovenfor.',
   "Forgot password?": "Glemt passord?",
+  "Formatting locale": "Formatering av språk",
   "Free delivery above (₹)": "Gratis levering over (₹)",
   "French (Français)": "Fransk (Français)",
   Frequency: "Frekvens",
@@ -656,6 +679,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Hvis den e-posten har en konto, er en tilbakestillingskobling på vei.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Hvis denne kampanjen aldri har blitt innløst, slettes den direkte; ellers er den arkivert slik at historikken beholdes.",
+  Image: "Bilde",
   "Image alt text": "Bilde alt tekst",
   "Image alt text (optional)": "Alt-tekst for bilde (valgfritt)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -726,6 +750,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "La en farge stå tom for å beholde den som True Grit leveres med – å tømme et felt er hvordan du angre. En sides eller lands farger starter fra nettstedsfargene og overstyrer bare det du endrer, så hver enkelt er en kort liste, ikke en ekstra palett å vedlikeholde. Når begge gjelder for samme besøkende, vinner siden – utformingen av en redaksjonell side bør ikke angres av et geoeksperiment.",
   "Leave blank to use the default.": "La stå tomt for å bruke standarden.",
+  "Leave the link blank for a plain, unclickable image.":
+    "La koblingen stå tom for et enkelt, ikke-klikkbart bilde.",
   "Less refunds": "Mindre refusjoner",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Lar kunder bruke en gavekortkode i kassen, som dekker deler av eller hele bestillingen. Utsted kort fra Gavekort-siden. Av som standard – eksisterende kort og saldoene deres beholdes, men kan ikke løses inn, mens dette er slått av.",
@@ -736,6 +762,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Level: "Nivå",
   "Line total": "Linjetotal",
   Lines: "Linjer",
+  "Link (optional)": "Link (valgfritt)",
   "Link customer": "Koble kunde",
   "Link product": "Koble til produkt",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -754,6 +781,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Live forhåndsvisning",
   "Live, and to scale with the real storefront's own styles.":
     "Live og skalere med den ekte butikkfrontens egne stiler.",
+  Loading: "Laster inn",
   "Loading active promotions...": "Laster inn aktive kampanjer...",
   "Loading analytics...": "Laster statistikk...",
   "Loading announcements...": "Laster kunngjøringer...",
@@ -767,6 +795,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Laster inn samtaler...",
   "Loading country overrides...": "Laster landoverstyringer...",
   "Loading crawler files...": "Laster inn crawler-filer...",
+  "Loading currency values…": "Laster inn valutaverdier...",
   "Loading delivery charges...": "Laster leveringskostnader...",
   "Loading discussion…": "Laster diskusjon...",
   "Loading highlights...": "Laster inn høydepunkter...",
@@ -789,6 +818,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Laster inn butikkfrontbrytere...",
   "Loading submission…": "Laster innsending...",
   "Loading...": "Laster inn...",
+  "Loading…": "Laster...",
   "Local pickup points": "Lokale hentesteder",
   "Locale to translate": "Lokal å oversette",
   "Locked out? Use": "Låst ute? Bruk",
@@ -836,6 +866,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Moderasjonsgrunn",
   Mongolian: "mongolsk",
   "More from True Grit": "Mer fra True Grit",
+  "Motto banner": "Mottobanner",
   "Move down in the showcase": "Flytt ned i utstillingsvinduet",
   "Move earlier": "Flytt tidligere",
   "Move later": "Flytt senere",
@@ -961,6 +992,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Merknad (påkrevd for å be om endringer eller avvise)",
   "Note (required)": "Merk (obligatorisk)",
   Notes: "Notater",
+  "Nothing here yet": "Ingenting her ennå",
   "Nothing outstanding to pay": "Ingenting utestående å betale",
   "Nothing pending.": "Ingenting venter.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1013,6 +1045,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Bestillinger vil vises her når kundene sjekker ut.",
   "Organic Alphonso Mangoes": "Organic Alphones",
   "Organic mangoes held in a sunlit orchard": "Økologisk mango holdt i en solbelyst frukthage",
+  "Organic wheat flour in a wooden bowl": "Økologisk hvetemel i en trebolle",
   Outstanding: "Enestående",
   Overview: "Oversikt",
   "Owner Reports": "Eierrapporter",
@@ -1059,9 +1092,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Pick at least one country, or release everywhere.":
     "Velg minst ett land, eller slipp ut overalt.",
   "Pick at least one country, or release globally.": "Velg minst ett land, eller slipp globalt.",
-  "Pick exactly two people for a direct message.":
-    "Velg nøyaktig to personer for en direktemelding.",
   "Pick one from the list to start reading.": "Velg én fra listen for å begynne å lese.",
+  "Pick the other person for this direct message.":
+    "Velg den andre personen for denne direktemeldingen.",
   "PIN code": "PIN-kode",
   "PIN patterns": "PIN-mønstre",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1201,6 +1234,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Krever pages.view-tillatelse og en tilkoblet API.",
   "Requires products.publish": "Krever products.publish",
   "Requires recipes.publish": "Krever recipes.publish",
+  "Requires settings access.": "Krever tilgang til innstillinger.",
   "Requires the analytics.view permission.": "Krever analytics.view-tillatelsen.",
   "Requires the inventory.adjust permission.": "Krever tillatelsen inventory.adjust.",
   "Requires the reports.query permission.": "Krever tillatelsen reports.query.",
@@ -1252,6 +1286,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Kjører...",
   "Russian (Русский)": "Russisk (Русский)",
   "Safe area": "Sikkert område",
+  "Safe geo-lock:": "Sikker geo-lås:",
   "Sale & Discounts": "Salg og rabatter",
   "Sale price": "Utsalgspris",
   "Sale Price (₹)": "Utsalgspris (₹)",
@@ -1378,6 +1413,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "serbisk",
   Servings: "Persjoner",
   "Set a new password": "Angi et nytt passord",
+  "Set as default": "Angi som standard",
   "Shop · Farms · Journal": "Butikk · Gårder · Journal",
   "Shop fresh greens": "Handle ferske grønnsaker",
   "Shop root vegetables": "Kjøp rotgrønnsaker",
@@ -1388,6 +1424,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "Vis kunngjøringen",
   "Show dietary and certification filters on the shop page":
     "Vis kostholds- og sertifiseringsfiltre på butikksiden",
+  "Show original": "Vis original",
   "Show product recommendations": "Vis produktanbefalinger",
   "Show this snippet": "Vis denne kodebiten",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1470,6 +1507,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Supporting text": "Støttetekst",
   "Swedish (Svenska)": "Svensk (Svenska)",
   Table: "Tabell",
+  "Tags & Certifications": "Tagger og sertifiseringer",
   "Tags:": "Etiketter:",
   "Taking payments": "Ta imot betalinger",
   "Tamil (தமிழ்)": "tamilsk (தமிழ்)",
@@ -1483,6 +1521,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Banner-, kategoriraden, produktraden og SEO-feltene lagres sammen. Avmerkingsbokser for seksjoner, bestilling og egendefinert seksjonskopiering lagres på egen hånd, etter hvert som du endrer dem.",
   "The chat widget customers and visitors see on the storefront.":
     "Chat-widgeten kunder og besøkende ser på butikkfronten.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Avmerkingsboksen viser på fanen Generelt for hvert produkt. Endringer gjelder overalt umiddelbart.",
   "The classic credential pair, including the password-reset flow.":
     "Det klassiske legitimasjonsparet, inkludert flyten for tilbakestilling av passord.",
   "the farm owner": "gårdseieren",
@@ -1533,6 +1573,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "This section is edited in its own panel further down the page.":
     "Denne delen er redigert i sitt eget panel lenger ned på siden.",
   "Threads started from the storefront appear here.": "Tråder startet fra butikkfronten vises her.",
+  "Thumbnail image URL": "Nettadresse for miniatyrbilde",
   Time: "Tid",
   "Tinted band": "Tonet bånd",
   Title: "Tittel",
@@ -1550,7 +1591,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Trail colour": "Tilfarge",
   "transfer money — make the transfer to": "overfør penger — foreta overføringen til",
   "Transfer reference (UPI / bank / cheque)": "Overfør referanse (UPI / bank / sjekk)",
+  Translate: "Oversett",
+  "Translate chat": "Oversett chat",
   "Translating...": "Oversette...",
+  "Translating…": "Oversetter...",
   Translations: "Oversettelser",
   "Turkish (Türkçe)": "tyrkisk (Türkçe)",
   "Turn off to freeze new registrations while existing customers keep signing in normally.":
@@ -1579,8 +1623,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Last opp bilde",
   "Uploading image...": "Laster opp bilde...",
   "Uploading image…": "Laster opp bilde...",
+  "Uploading thumbnail...": "Laster opp miniatyrbilde...",
   "Uploading...": "Laster opp...",
   "Uploading…": "Laster opp...",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Bruk et eget bilde på 1200 × 1200. Dette firkantede bildet er beskåret for kategorikort; ikke gjenbruk det brede heltebanneret.",
   "Use site-wide effects instead": "Bruk effekter på hele nettstedet i stedet",
   "Use the exact canvas": "Bruk det nøyaktige lerretet",
   "Use the navigation to get back.": "Bruk navigasjonen for å komme tilbake.",
@@ -1593,6 +1640,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Bruke nettstedets merkefarge",
   Uyghur: "uigurisk",
   Uzbek: "usbekisk",
+  "Value of 1 INR": "Verdi av 1 INR",
+  "Value per INR": "Verdi per INR",
   "Value, ₹": "Verdi, ₹",
   "Variant ID": "Variant-ID",
   "Variant Name": "Variantnavn",

@@ -32,6 +32,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/kauppa",
   "← All farms": "← Kaikki maatilat",
   "+ stars": "+ tähteä",
+  "₹1,000 preview": "1 000 ₹ esikatselu",
   "1 star": "1 tähti",
   "15% off your first order": "15 % alennus ensimmäisestä tilauksestasi",
   "2 cups": "2 kuppia",
@@ -64,6 +65,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pääjärjestelmänvalvoja voi aloittaa ryhmän tai suoran viestin yllä olevasta +-painikkeesta.",
   "A tinted band — check muted text is still readable here.":
     "Sävytetty nauha – mykistetty teksti on edelleen luettavissa täällä.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "vierailijan maa valitsee valuutan, tämä taulukko näyttää sen näyttöarvon, ja alkuperäinen INR-hinta pysyy muuttumattomana. Käytöstä poistetut valuutat palaavat INR-turvallisiin oletusarvoihin.",
   Accent: "Aksentti",
   "Accept orders and payments": "Hyväksy tilaukset ja maksut",
   "Accept orders and payments for this product": "Hyväksy tämän tuotteen tilaukset ja maksut",
@@ -89,6 +92,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Lisää luokka",
   "Add code": "Lisää koodi",
   "Add country": "Lisää maa",
+  "Add currency": "Lisää valuutta",
   "Add entry": "Lisää merkintä",
   "Add ingredient": "Lisää ainesosa",
   "Add items (which variants, how many of each) after creating the bundle, from Manage.":
@@ -98,6 +102,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Aloita lisäämällä yksi alle.",
   "Add one so the bot has something to reference for this scope.":
     "Lisää yksi, jotta botilla on jotain, johon viitata tätä laajuutta varten.",
+  "Add one using the field above.": "Lisää valuutta käyttämällä yllä olevaa kenttää.",
   "Add page": "Lisää sivu",
   "Add participants": "Lisää osallistujia",
   "Add point": "Lisää piste",
@@ -116,6 +121,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Lisää vyöhyke",
   Added: "Lisätty",
   "Adding...": "Lisätään...",
+  "Adding…": "Lisätään…",
   Address: "Osoite",
   "Adjust points": "Muokkaa pisteitä",
   "Adjust the search or create a category.": "Muokkaa hakua tai luo luokka.",
@@ -214,6 +220,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "azerbaidžani",
   "B2B / bulk ordering": "B2B / joukkotilaus",
   Back: "Takaisin",
+  "Back to conversations": "Takaisin keskusteluihin",
   "Back to sign in": "Takaisin kirjautumiseen",
   Balance: "Saldo",
   "Banner alt text": "Bannerin vaihtoehtoinen teksti",
@@ -278,6 +285,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Luokkien muokkausosiot",
   "Category not found": "Luokatkaa ei löydy",
   "Category row": "Luokkarivi",
+  "Category thumbnail alt text": "Luokan pikkukuvan vaihtoehtoinen teksti",
+  "Category thumbnail URL": "Luokan pikkukuvan URL-osoite",
   "Category to add to the homepage": "Etusivulle lisättävä luokka",
   "Cautions and low stock.": "Varoitukset ja alhainen varasto.",
   "Centred safe area": "Keskitetty turva-alue",
@@ -348,6 +357,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Yhteyssähköpostiosoite",
   Content: "Sisältö",
   "Continue with Facebook": "Jatka Facebookin kanssa",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Hallitse likimääräisiä hintoja paikallisessa valuutassa asettamalla yhden Intian rupian arvo. Luettelo, kassa- ja tilaustiedot pysyvät turvallisesti INR:ssä.",
   "Control what each role can view, create, edit, publish or manage.":
     "Hallitse, mitä kukin rooli voi tarkastella, luoda, muokata, julkaista tai hallita.",
   "Control whether each bot is available, and edit what it knows.":
@@ -392,6 +403,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "kuroitu luettelokoko",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "kuroituja sarjoja tiettyihin versioihin, joita myydään yhdessä. Checkout käyttää säästöä automaattisesti, kun kori sisältää kaikki nipussa olevat tuotteet.",
+  Currency: "Valuutta",
+  "Currency code": "Valuuttakoodi",
+  "Currency Converter": "Valuuttamuunnin",
+  "Currency values unavailable": "Valuutta-arvot eivät ole käytettävissä",
   "Current password": "Nykyinen salasana",
   "Currently its own effects.": "Tällä hetkellä omat tehosteensa.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -430,6 +445,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Hylkää",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'Viihteen päällä oleva koristelu: sivun takana ajautuvat hiukkaset ja jälki. Molemmat ovat oletusarvoisesti pois päältä, molemmat ohitetaan kokonaan vierailijoilta, jotka ovat pyytäneet laitteestaan ​​liikkeenrajoitusta, eikä kumpikaan näy koskaan maksuikkunassa – korttilomakkeen päälle sataa lumisadetta häiriötekijä juuri väärällä hetkellä. Maan tehosteet korvaavat vierailijoille sivuston laajuiset tehosteet sen sijaan, että ne sulautuisivat niihin – "vähän lunta" ei ole mielekäs sekoitus lunta ja ei vaikutusta.',
+  Default: "Oletus",
   "Default commission": "Oletuspalkkio",
   "Default fee": "Oletusmaksu",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -449,6 +465,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Poista resepti",
   "Delete role": "Poista rooli",
   "Delete selected (": "Poista valitut (",
+  "Delete this entry": "Poista tämä merkintä",
   "Delete this price adjustment?": "Poistetaanko tämä hinnanoikaisu?",
   "Delete user": "Poista käyttäjä",
   "Deleting...": "Poistetaan...",
@@ -470,6 +487,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Ruokaruoka- ja sertifiointisuodattimet",
   "Dietary tags": "Ruokaruokatunnisteet",
   "Dietary tags (comma separated)": "Ruokaruokatunnisteet (pilkuilla erotettu)",
+  "Dietary Tags & Certifications": "Ruokamerkit ja -todistukset",
   "Direct message": "Suoraviesti",
   Disable: "Poista käytöstä",
   "Disable selected (": "Poista valitut käytöstä (",
@@ -493,12 +511,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "esim. Tilit",
   "e.g. DIWALI500": "esim. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "esim. Korjattu viikolla 3. maaliskuuta 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Esim. Intian luomu, reilu kauppa. Tuotteelle määritettyä sertifikaattia ei voi poistaa ennen kuin se on poistettu siitä.",
   "e.g. Ops Room": "esim. Ops Room",
   "e.g. Rain-fed, no synthetic pesticides":
     "esim. Sadekäyttöinen, ei synteettisiä torjunta-aineita",
   "e.g. Refrigerate and use within 5 days": "esim. Jäähdytä ja käytä 5 päivän kuluessa",
   "e.g. TO-HONEY-500": "esim. TO-HONEY-500",
   "e.g. UTR 123456789012": "esim. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Esim. Vegaaninen, gluteeniton. Jos poistat sellaisen, se poistetaan kaikista tuotteista, joissa se on tarkistettu.",
   Edit: "Muokkaa",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Muokkaa CMS-sivun metatietoja, indeksointia ja raakasivulohkoja. Myös kotisivutietue on lueteltu tässä, mutta etusivun asetukset ovat turvallisempi tapa muuttaa sitä – tämä editori käyttää raaka-JSON-muotoa.",
@@ -602,6 +624,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Pakota osio päälle tai pois päältä vierailijoille yhdessä maassa muuttamatta sitä, mitä muut näkevät. Jätä osio "Peri" ja se seuraa yllä olevan osioluettelon valintaruutua.',
   "Forgot password?": "Unohditko salasanan?",
+  "Formatting locale": "Muotoilualue",
   "Free delivery above (₹)": "Ilmainen toimitus yllä (₹)",
   "French (Français)": "ranska (Français)",
   Frequency: "Tiheys",
@@ -686,6 +709,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Jos tätä tarjousta ei ole koskaan lunastettu, se poistetaan välittömästi. muuten se arkistoidaan, joten sen historia säilytetään.",
   Igbo: "igbo",
+  Image: "Kuva",
   "Image alt text": "Kuvan vaihtoehtoinen teksti",
   "Image alt text (optional)": "Kuvan vaihtoehtoinen teksti (valinnainen)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -762,6 +786,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Jätä väri tyhjäksi, jos haluat säilyttää True Grit:n mukana toimitetun värin. Voit kumota kentän tyhjentämällä. Sivun tai maan värit alkavat sivuston väreistä ja ohittavat vain muuttamasi värit, joten jokainen on lyhyt luettelo, ei toista ylläpidettävää palettia. Kun molemmat koskevat samaa kävijää, sivu voittaa – toimituksellisen sivun suunnittelua ei pidä peruuttaa maantieteellisellä kokeilulla.",
   "Leave blank to use the default.": "Jätä tyhjäksi, jos haluat käyttää oletusarvoa.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Jätä linkki tyhjäksi, niin saat tavallisen kuvan, jota ei voi klikata.",
   "Less refunds": "Vähemmän hyvityksiä",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Antaa asiakkaiden käyttää lahjakorttikoodin kassalla, joka kattaa osan tai koko tilauksensa kokonaissummasta. Myönnä kortit Lahjakortit-sivulta. Oletuksena pois päältä – olemassa olevat kortit ja niiden saldot säilytetään, mutta niitä ei voi lunastaa, kun tämä on pois päältä.",
@@ -773,6 +799,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Rivien kokonaismäärä",
   Lines: "Rivit",
   Link: "Linkki",
+  "Link (optional)": "Linkki (valinnainen)",
   "Link customer": "Linkitä asiakas",
   "Link product": "Liitä tuote",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -791,6 +818,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Live esikatselu",
   "Live, and to scale with the real storefront's own styles.":
     "Live ja skaalaa todellisen julkisivun omien tyylien mukaan.",
+  Loading: "Ladataan",
   "Loading active promotions...": "Ladataan aktiivisia mainoskampanjoita...",
   "Loading analytics...": "Ladataan analytiikkaa...",
   "Loading announcements...": "Ladataan ilmoituksia...",
@@ -804,6 +832,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Ladataan keskusteluja…",
   "Loading country overrides...": "Ladataan maan ohituksia...",
   "Loading crawler files...": "Ladataan indeksointirobottitiedostoja...",
+  "Loading currency values…": "Ladataan valuutta-arvoja…",
   "Loading delivery charges...": "Ladataan toimituskuluja...",
   "Loading discussion…": "Ladataan keskustelua…",
   "Loading highlights...": "Ladataan kohokohtia...",
@@ -826,6 +855,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Ladataan julkisivun vaihtajia...",
   "Loading submission…": "Ladataan lähetystä...",
   "Loading...": "Ladataan...",
+  "Loading…": "Ladataan…",
   "Local pickup points": "Paikalliset noutopisteet",
   "Locale to translate": "Käännöskieli",
   "Locked out? Use": "Oletko lukittu? Käytä",
@@ -876,6 +906,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Moderointisyy",
   Mongolian: "mongolia",
   "More from True Grit": "Lisää True Grit",
+  "Motto banner": "Mottobanneri",
   "Move down in the showcase": "Siirry alas esittelytilassa",
   "Move earlier": "Siirry aikaisemmin",
   "Move later": "Siirrä myöhemmin",
@@ -1001,6 +1032,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Huomaa (pakollinen muutosten pyytämiseen tai hylkäämiseen)",
   "Note (required)": "Huomaa (pakollinen)",
   Notes: "Huomautukset",
+  "Nothing here yet": "Täällä ei vielä mitään",
   "Nothing outstanding to pay": "Ei mitään maksamatta",
   "Nothing pending.": "Ei mitään vireillä.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1055,6 +1087,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Luomu Alphonso Mangot",
   "Organic mangoes held in a sunlit orchard":
     "Auringonvalossa hedelmätarhassa säilytetyt luomumangot",
+  "Organic wheat flour in a wooden bowl": "Luomuvehnäjauhoja puukulhossa",
   Outstanding: "Erinomainen",
   Overview: "Yleiskatsaus",
   "Owner Reports": "Omistajaraportit",
@@ -1103,9 +1136,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Valitse vähintään yksi maa tai julkaise kaikkialla.",
   "Pick at least one country, or release globally.":
     "Valitse vähintään yksi maa tai julkaise maailmanlaajuisesti.",
-  "Pick exactly two people for a direct message.":
-    "Valitse täsmälleen kaksi henkilöä suoraa viestiä varten.",
   "Pick one from the list to start reading.": "Aloita lukeminen valitsemalla yksi luettelosta.",
+  "Pick the other person for this direct message.":
+    "Valitse toinen henkilö tälle suoralle viestille.",
   "PIN code": "PIN-koodi",
   "PIN patterns": "PIN-mallit",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1249,6 +1282,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Edellyttää käyttöoikeutta ja sivun katselua.",
   "Requires products.publish": "Edellyttää products.publish",
   "Requires recipes.publish": "Edellyttää recipes.publish",
+  "Requires settings access.": "Edellyttää asetusten käyttöoikeutta.",
   "Requires the analytics.view permission.": "Edellyttää analytics.view-lupaa.",
   "Requires the inventory.adjust permission.": "Edellyttää inventory.adjust-oikeutta.",
   "Requires the reports.query permission.": "Edellyttää reports.query-oikeutta.",
@@ -1300,6 +1334,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Juoksemassa...",
   "Russian (Русский)": "venäjäksi (Русский)",
   "Safe area": "Turvallinen alue",
+  "Safe geo-lock:": "Turvallinen geolukko:",
   "Sale & Discounts": "Alennus ja alennukset",
   "Sale price": "Alennushinta",
   "Sale Price (₹)": "Alennushinta (₹)",
@@ -1431,6 +1466,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Serbia",
   Servings: "Annosta",
   "Set a new password": "Aseta uusi salasana",
+  "Set as default": "Aseta oletukseksi",
   "Shop · Farms · Journal": "Kauppa · ​​Maatilat · Lehti",
   "Shop fresh greens": "Osta tuoreita vihanneksia",
   "Shop root vegetables": "Osta juureksia",
@@ -1441,6 +1477,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "Näytä ilmoitus",
   "Show dietary and certification filters on the shop page":
     "Näytä ruoka- ja sertifiointisuodattimet kauppasivulla",
+  "Show original": "Näytä alkuperäinen",
   "Show product recommendations": "Näytä tuotesuositukset",
   "Show this snippet": "Näytä tämä katkelma",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1528,6 +1565,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "swahili (kiswahili)",
   "Swedish (Svenska)": "Ruotsi (Svenska)",
   Table: "Taulukko",
+  "Tags & Certifications": "Tagit ja sertifioinnit",
   "Tags:": "Tunnisteet:",
   Tajik: "tadžikiksi",
   "Taking payments": "Maksujen vastaanottaminen",
@@ -1543,6 +1581,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Banneri-, luokkarivi-, tuoterivi- ja SEO-kentät tallentuvat yhdessä. Osioiden valintaruudut, järjestys ja mukautettu osion kopio tallentuvat itsestään, kun muutat niitä.",
   "The chat widget customers and visitors see on the storefront.":
     "Chat-widget, jonka asiakkaat ja vierailijat näkevät julkisivussa.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Valintaruutuluettelot, jotka näkyvät jokaisen tuotteen Yleiset-välilehdellä. Muutokset koskevat kaikkialla välittömästi.",
   "The classic credential pair, including the password-reset flow.":
     "Perinteinen tunnistepari, mukaan lukien salasanan palautusprosessi.",
   "the farm owner": "tilan omistaja",
@@ -1594,6 +1634,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Tätä osiota on muokattu omassa paneelissaan alempana sivua.",
   "Threads started from the storefront appear here.":
     "Liikkeen julkisivusta alkaneet ketjut näkyvät täällä.",
+  "Thumbnail image URL": "Pikkukuvan URL-osoite",
   Time: "Aika",
   "Tinted band": "Sävytetty bändi",
   Title: "Nimi",
@@ -1611,7 +1652,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Trail colour": "Trail color",
   "transfer money — make the transfer to": "rahansiirto – tee siirto osoitteeseen",
   "Transfer reference (UPI / bank / cheque)": "Siirtoviite (UPI / pankki / shekki)",
+  Translate: "Käännä",
+  "Translate chat": "Käännä keskustelu",
   "Translating...": "Käännetään...",
+  "Translating…": "Käännetään…",
   Translations: "Käännökset",
   "True Grit Admin": "True Grit Järjestelmänvalvoja",
   "Turkish (Türkçe)": "turkki (Türkçe)",
@@ -1642,9 +1686,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Lähetä kuva",
   "Uploading image...": "Ladataan kuvaa...",
   "Uploading image…": "Ladataan kuvaa…",
+  "Uploading thumbnail...": "Ladataan pikkukuvaa...",
   "Uploading...": "Ladataan...",
   "Uploading…": "Ladataan…",
   "Urdu (اردو)": "urdu (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Käytä erillistä 1200 × 1200 kuvaa. Tämä neliönmuotoinen kuva on rajattu luokkakortteja varten; älä käytä leveää sankaribanneria uudelleen.",
   "Use site-wide effects instead": "Käytä sen sijaan koko sivuston laajuisia tehosteita",
   "Use the exact canvas": "Käytä tarkkaa kangasta",
   "Use the navigation to get back.": "Palaa takaisin navigoinnin avulla.",
@@ -1657,6 +1704,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Sivuston brändin värin käyttäminen",
   Uyghur: "uiguuri",
   Uzbek: "uzbekki",
+  "Value of 1 INR": "1 INR:n arvo",
+  "Value per INR": "Arvo per INR",
   "Value, ₹": "Arvo, ₹",
   Variant: "versio",
   "Variant (SKU)": "versio (SKU)",

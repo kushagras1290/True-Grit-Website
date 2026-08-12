@@ -1056,6 +1056,7 @@ HOMEPAGE_SECTION_LABELS: dict[str, str] = {
     "reviews_showcase": "Customer reviews",
     "promotion_banner": "Promotions banner",
     "recommendations": "Recommended products",
+    "image_banner": "Motto banner",
 }
 
 # Sections an owner may add from Homepage Settings. Deliberately the
@@ -1071,6 +1072,7 @@ ADDABLE_HOMEPAGE_SECTION_TYPES: tuple[str, ...] = (
     "reviews_showcase",
     "promotion_banner",
     "recommendations",
+    "image_banner",
 )
 
 # Starting content for a new section. Written so the block validates on save
@@ -1119,6 +1121,11 @@ _NEW_SECTION_PROPS: dict[str, dict[str, Any]] = {
         "heading": "Customer favourites",
         "subheading": "Picked by shoppers",
         "limit": 8,
+    },
+    "image_banner": {
+        "imageUrl": "/homepage-hero.png",
+        "imageAlt": "True Grit -- Pure By Nature, True By Choice",
+        "href": None,
     },
 }
 
@@ -1186,6 +1193,8 @@ def _section_summary(block: dict[str, Any]) -> str:
     if block_type == "recommendations":
         limit = props.get("limit", 8)
         return f"Top {limit} best sellers, computed live from orders"
+    if block_type == "image_banner":
+        return str(props.get("imageAlt") or "No image set")
     return ""
 
 
@@ -5170,6 +5179,22 @@ async def list_categories(
     }
 
 
+class DietTagCreateRequest(_CamelModel):
+    label: str = Field(min_length=2, max_length=60)
+
+
+class DietTagUpdateRequest(_CamelModel):
+    label: str = Field(min_length=2, max_length=60)
+
+
+class CertificationCreateRequest(_CamelModel):
+    name: str = Field(min_length=2, max_length=140)
+
+
+class CertificationUpdateRequest(_CamelModel):
+    name: str = Field(min_length=2, max_length=140)
+
+
 @router.get("/diet-tags")
 async def list_diet_tags(
     db: Annotated[Database, Depends(get_database)],
@@ -5182,6 +5207,106 @@ async def list_diet_tags(
     return {"items": [{"id": row["id"], "label": row["label"]} for row in rows]}
 
 
+@router.post("/diet-tags")
+async def create_diet_tag_endpoint(
+    payload: DietTagCreateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("products.edit"))],
+) -> Any:
+    label = payload.label.strip()
+    key = slugify(label)
+    if await db.fetch_one("SELECT id FROM tags WHERE key = ?", (key,)) is not None:
+        raise ConflictError("A dietary tag with this name already exists.")
+    tag_id = new_id("tag")
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                "INSERT INTO tags (id, key, label, tag_group, created_at)"
+                " VALUES (?, ?, ?, 'diet', ?)",
+                (tag_id, key, label, now),
+            ),
+            audit_statement(
+                action="diet_tag.created",
+                entity_type="tag",
+                entity_id=tag_id,
+                actor_id=principal.user_id,
+                request_id=_request_id(request),
+                created_at=now,
+                after={"label": label, "key": key},
+            ),
+        ]
+    )
+    return {"id": tag_id, "label": label}
+
+
+@router.patch("/diet-tags/{tag_id}")
+async def update_diet_tag_endpoint(
+    tag_id: str,
+    payload: DietTagUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("products.edit"))],
+) -> Any:
+    current = await db.fetch_one(
+        "SELECT id, label FROM tags WHERE id = ? AND tag_group = 'diet'", (tag_id,)
+    )
+    if current is None:
+        raise NotFoundError("Dietary tag not found.")
+    label = payload.label.strip()
+    now = utc_now_iso()
+    await db.batch(
+        [
+            ("UPDATE tags SET label = ? WHERE id = ?", (label, tag_id)),
+            audit_statement(
+                action="diet_tag.updated",
+                entity_type="tag",
+                entity_id=tag_id,
+                actor_id=principal.user_id,
+                request_id=_request_id(request),
+                created_at=now,
+                before={"label": current["label"]},
+                after={"label": label},
+            ),
+        ]
+    )
+    return {"id": tag_id, "label": label}
+
+
+@router.delete("/diet-tags/{tag_id}")
+async def delete_diet_tag_endpoint(
+    tag_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("products.edit"))],
+) -> Any:
+    current = await db.fetch_one(
+        "SELECT id, label FROM tags WHERE id = ? AND tag_group = 'diet'", (tag_id,)
+    )
+    if current is None:
+        raise NotFoundError("Dietary tag not found.")
+    now = utc_now_iso()
+    # product_tags.tag_id is ON DELETE CASCADE, so this also drops the tag
+    # from any product currently carrying it -- the confirm dialog in the
+    # admin UI says so before this is ever called.
+    await db.batch(
+        [
+            ("DELETE FROM tags WHERE id = ?", (tag_id,)),
+            audit_statement(
+                action="diet_tag.deleted",
+                entity_type="tag",
+                entity_id=tag_id,
+                actor_id=principal.user_id,
+                request_id=_request_id(request),
+                created_at=now,
+                before={"label": current["label"]},
+            ),
+        ]
+    )
+    return {"id": tag_id}
+
+
 @router.get("/certifications")
 async def list_certifications(
     db: Annotated[Database, Depends(get_database)],
@@ -5191,6 +5316,120 @@ async def list_certifications(
     list -- same small/fixed shape as /diet-tags."""
     rows = await db.fetch_all("SELECT id, name FROM certifications ORDER BY name")
     return {"items": [{"id": row["id"], "name": row["name"]} for row in rows]}
+
+
+@router.post("/certifications")
+async def create_certification_endpoint(
+    payload: CertificationCreateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("products.edit"))],
+) -> Any:
+    name = payload.name.strip()
+    slug = slugify(name)
+    if await db.fetch_one("SELECT id FROM certifications WHERE slug = ?", (slug,)) is not None:
+        raise ConflictError("A certification with this name already exists.")
+    certification_id = new_id("cert")
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                "INSERT INTO certifications (id, name, slug, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?, ?)",
+                (certification_id, name, slug, now, now),
+            ),
+            audit_statement(
+                action="certification.created",
+                entity_type="certification",
+                entity_id=certification_id,
+                actor_id=principal.user_id,
+                request_id=_request_id(request),
+                created_at=now,
+                after={"name": name, "slug": slug},
+            ),
+        ]
+    )
+    return {"id": certification_id, "name": name}
+
+
+@router.patch("/certifications/{certification_id}")
+async def update_certification_endpoint(
+    certification_id: str,
+    payload: CertificationUpdateRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("products.edit"))],
+) -> Any:
+    current = await db.fetch_one(
+        "SELECT id, name FROM certifications WHERE id = ?", (certification_id,)
+    )
+    if current is None:
+        raise NotFoundError("Certification not found.")
+    name = payload.name.strip()
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                "UPDATE certifications SET name = ?, updated_at = ? WHERE id = ?",
+                (name, now, certification_id),
+            ),
+            audit_statement(
+                action="certification.updated",
+                entity_type="certification",
+                entity_id=certification_id,
+                actor_id=principal.user_id,
+                request_id=_request_id(request),
+                created_at=now,
+                before={"name": current["name"]},
+                after={"name": name},
+            ),
+        ]
+    )
+    return {"id": certification_id, "name": name}
+
+
+@router.delete("/certifications/{certification_id}")
+async def delete_certification_endpoint(
+    certification_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("products.edit"))],
+) -> Any:
+    current = await db.fetch_one(
+        "SELECT id, name FROM certifications WHERE id = ?", (certification_id,)
+    )
+    if current is None:
+        raise NotFoundError("Certification not found.")
+    # product_certifications.certification_id is ON DELETE RESTRICT (unlike
+    # tags, a certification is a compliance claim -- silently dropping it
+    # from products that carry it would be data loss, not tidying), so this
+    # checks usage up front and returns a clear error instead of letting the
+    # database reject the DELETE.
+    in_use = await db.fetch_one(
+        "SELECT COUNT(*) AS count FROM product_certifications WHERE certification_id = ?",
+        (certification_id,),
+    )
+    if in_use and in_use["count"] > 0:
+        raise ConflictError(
+            f"{current['name']} is assigned to {in_use['count']} product(s)."
+            " Remove it from those products before deleting it."
+        )
+    now = utc_now_iso()
+    await db.batch(
+        [
+            ("DELETE FROM certifications WHERE id = ?", (certification_id,)),
+            audit_statement(
+                action="certification.deleted",
+                entity_type="certification",
+                entity_id=certification_id,
+                actor_id=principal.user_id,
+                request_id=_request_id(request),
+                created_at=now,
+                before={"name": current["name"]},
+            ),
+        ]
+    )
+    return {"id": certification_id}
 
 
 @router.post("/categories/{category_id}/publish")
@@ -5508,6 +5747,7 @@ async def get_product_endpoint(
                 "listMinor": v["list_minor"],
                 "saleMinor": v["sale_minor"],
                 "available": v["available"],
+                "isDefault": bool(v["is_default"]),
             }
             for v in detail["variants"]
         ],
@@ -5665,6 +5905,21 @@ async def update_variant_endpoint(
         list_minor=payload.list_minor,
         sale_minor=payload.sale_minor,
     )
+
+
+@router.post("/products/{product_id}/variants/{variant_id}/set-default")
+async def set_default_variant_endpoint(
+    product_id: str,
+    variant_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("products.edit"))],
+) -> Any:
+    from ..services.catalogue import set_default_variant
+
+    await _assert_product_scope(db, product_id, principal)
+    await set_default_variant(db, principal, _request_id(request), product_id, variant_id)
+    return {"id": variant_id, "isDefault": True}
 
 
 @router.patch("/products/{product_id}/status")

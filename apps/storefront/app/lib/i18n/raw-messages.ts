@@ -377,6 +377,7 @@ const RAW_EN_MESSAGES = {
   "literal.709a23220f2c": "Name",
   "literal.d850ee188c7c": "New password",
   "literal.bc981983e7f5": "Next",
+  "literal.a4cf971af7dc": "Next slide",
   "literal.2dd829d824dc": "No bundles are live right now — check back soon.",
   "literal.207b24fc9b92": "No comments yet.",
   "literal.61e0b97a0c2e": "No discussions yet. Be the first to start one.",
@@ -515,6 +516,7 @@ const RAW_EN_MESSAGES = {
   "literal.b2f0823a2b9c": "Prep {prep} min - cook {cook} min - serves {servings}",
   "literal.1e08814104bd": "Prep time (min)",
   "literal.50f94286ba30": "Previous",
+  "literal.8e53512a50fa": "Previous slide",
   "literal.93ba97d19f91": "Priced separately",
   "literal.bf631b74c3f4": "Prices and taxes",
   "literal.7db3bf0febb5":

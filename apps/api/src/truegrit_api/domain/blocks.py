@@ -291,6 +291,29 @@ class RecommendationsBlock(_BlockBase):
     props: RecommendationsProps
 
 
+class ImageBannerProps(BaseModel):
+    """A single full-width graphic -- a brand statement or campaign lockup
+    that is itself the content, as opposed to `hero`'s rotating carousel or
+    `rich_text`'s prose. Optionally links somewhere; renders as a plain image
+    when it does not."""
+
+    image_url: str = Field(alias="imageUrl", min_length=1, max_length=1000)
+    image_alt: str = Field(alias="imageAlt", min_length=1, max_length=200)
+    href: str | None = Field(default=None, max_length=512)
+
+    @field_validator("href")
+    @classmethod
+    def _safe_href(cls, value: str | None) -> str | None:
+        return validate_href(value) if value else value
+
+    model_config = {"populate_by_name": True}
+
+
+class ImageBannerBlock(_BlockBase):
+    type: Literal["image_banner"]
+    props: ImageBannerProps
+
+
 PageBlock = Annotated[
     HeroBlock
     | CategoryCollectionBlock
@@ -302,7 +325,8 @@ PageBlock = Annotated[
     | PageLinksBlock
     | ReviewsShowcaseBlock
     | PromotionBannerBlock
-    | RecommendationsBlock,
+    | RecommendationsBlock
+    | ImageBannerBlock,
     Field(discriminator="type"),
 ]
 

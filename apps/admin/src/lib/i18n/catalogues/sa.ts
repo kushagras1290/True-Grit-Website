@@ -28,6 +28,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/recipes": "/नुस्खा",
   "← All farms": "← सर्वाणि कृषिक्षेत्राणि",
   "+ stars": "+ ताराणि",
+  "₹1,000 preview": "₹1,000 पूर्वावलोकन",
   "1 star": "1 तारा",
   "15% off your first order": "भवतः प्रथमक्रमे १५% छूट",
   "2 cups": "२ कप",
@@ -62,6 +63,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "सुपरप्रशासकः उपरि + बटनतः समूहं वा प्रत्यक्षसन्देशं वा आरभुं शक्नोति।",
   "A tinted band — check muted text is still readable here.":
     "एकः टिन्टेड् पट्टिका — चेक म्यूट् पाठः अद्यापि अत्र पठनीयः अस्ति ।",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "आगन्तुकस्य देशः मुद्रां चिनोति, एषा सारणी तस्य प्रदर्शनमूल्यं आपूर्तिं करोति, मूल INR मूल्यं च अपरिवर्तितं तिष्ठति अक्षममुद्राः INR-सुरक्षितपूर्वनिर्धारितस्थानेषु पुनः पतन्ति ।",
   Accent: "उच्चारण",
   "Accept orders and payments": "आदेशान् भुक्तिं च स्वीकुर्वन्तु",
   "Accept orders and payments for this product": "अस्य उत्पादस्य आदेशान् भुक्तिं च स्वीकुर्वन्तु",
@@ -87,6 +90,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "वर्गं योजयतु",
   "Add code": "सङ्केतं योजयतु",
   "Add country": "देशं योजयतु",
+  "Add currency": "मुद्रां योजयतु",
   "Add entry": "प्रविष्टिः योजयतु",
   "Add farm owner": "कृषकस्वामिनं योजयतु",
   "Add ingredient": "घटकं योजयतु",
@@ -97,6 +101,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "प्रारम्भार्थं अधः एकं योजयतु।",
   "Add one so the bot has something to reference for this scope.":
     "एकं योजयतु येन अस्य व्याप्तेः कृते बोट् इत्यस्य सन्दर्भार्थं किमपि भवति ।",
+  "Add one using the field above.": "ऊर्ध्वक्षेत्रस्य उपयोगेन एकं योजयतु ।",
   "Add page": "पृष्ठं योजयतु",
   "Add participants": "प्रतिभागिनः योजयन्तु",
   "Add point": "बिन्दुं योजयन्तु",
@@ -115,6 +120,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "क्षेत्रं योजयतु",
   Added: "जोडितम्",
   "Adding...": "जोडयतु...",
+  "Adding…": "संयोजयित्वा...",
   Address: "पता",
   "Adjust points": "बिन्दून् समायोजयतु",
   "Adjust the search or create a category.": "अन्वेषणं समायोजयतु अथवा श्रेणीं रचयतु।",
@@ -215,6 +221,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Awards, badges, ratings.": "पुरस्काराः, बिल्लाः, रेटिंग्।",
   Azerbaijani: "अजरबैजानी",
   Back: "पृष्ठ",
+  "Back to conversations": "वार्तालापेषु पुनः",
   "Back to sign in": "साइन इन कर्तुं पुनः",
   Balance: "तुल्यता",
   "Banner alt text": "बैनर अल्ट पाठ",
@@ -280,6 +287,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "वर्गसम्पादकखण्डाः",
   "Category not found": "वर्गः न प्राप्तः",
   "Category row": "वर्गपङ्क्तिः",
+  "Category thumbnail alt text": "वर्गं योजयतु thumbnail alt text",
   "Category to add to the homepage": "मुखपृष्ठे योजयितुं श्रेणी",
   "Cautions and low stock.": "सावधानीः न्यूनः स्टॉकः च।",
   Cebuano: "सेबुआनो",
@@ -351,6 +359,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "सम्पर्क ईमेल",
   Content: "सामग्री",
   "Continue with Facebook": "सहितं निरन्तरं कुर्वन्तु फेसबुक",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "एकस्य भारतीयरूप्यकस्य मूल्यं कियत् इति निर्धारयित्वा अनुमानितस्थानीय-मुद्रामूल्यानि नियन्त्रयन्तु। सूची, चेकआउट, आदेशस्य अभिलेखाः INR मध्ये सुरक्षितरूपेण तिष्ठन्ति ।",
   "Control what each role can view, create, edit, publish or manage.":
     "प्रत्येकं भूमिका किं द्रष्टुं, निर्मातुं, सम्पादयितुं, प्रकाशयितुं वा प्रबन्धयितुं वा शक्नोति इति नियन्त्रयन्तु ।",
   "Control whether each bot is available, and edit what it knows.":
@@ -395,6 +405,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "संरक्षणसूची आकार",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "विशिष्टरूपान्तरस्य क्यूरेटेड् सेट् एकत्र सपाटमूल्ये विक्रीयन्ते । एकवारं टोकरी प्रत्येकं द्रव्यं बण्डल् मध्ये धारयति तदा चेकआउट् स्वयमेव रक्षणं प्रयोजयति ।",
+  Currency: "मुद्रा",
+  "Currency code": "मुद्रासङ्केतः",
+  "Currency Converter": "मुद्रारूपान्तरकः",
+  "Currency values unavailable": "मुद्रामूल्यानि अनुपलब्धानि",
   "Current password": "वर्तमानः गुप्तशब्दः",
   "Currently its own effects.": "वर्तमानं स्वकीयाः प्रभावाः ।",
   "Currently the site-wide effects — save below to give it its own.":
@@ -432,6 +446,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "अवरोह",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'भण्डारस्य उपरि अलङ्कारः: पृष्ठस्य पृष्ठतः भ्रमन्तः कणाः, सूचकस्य अनुसरणं च पन्थाः । उभयम् अपि पूर्वनिर्धारितरूपेण निष्क्रियम् अस्ति, उभयम् अपि सम्पूर्णतया तेषां आगन्तुकानां कृते त्यक्तं भवति ये स्वयन्त्रं न्यूनीकृतं गतिं याचन्ते, तथा च उभयम् अपि कदापि भुक्तिविण्डो मध्ये न दृश्यते — कार्डरूपस्य उपरि हिमपातः सम्यक् गलत् क्षणे विक्षेपः भवति देशस्य प्रभावाः साइट्-व्यापीनां स्थाने साक्षात् आगन्तुकानां कृते तेषां सह मिश्रणं न कुर्वन्ति — "किञ्चित् हिमम्" हिमस्य सार्थकं मिश्रणं न भवति, न च प्रभावः ।',
+  Default: "पूर्वनिर्धारित",
   "Default commission": "पूर्वनिर्धारित-आयोगः",
   "Default fee": "पूर्वनिर्धारितशुल्कं",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -451,6 +466,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "नुस्खं विलोपयतु",
   "Delete role": "भूमिका विलोपयतु",
   "Delete selected (": "चयनितं विलोपयतु (",
+  "Delete this entry": "एतत् प्रविष्टिं विलोपयतु",
   "Delete this price adjustment?": "एतत् मूल्यसमायोजनं विलोपयतु?",
   "Delete user": "उपयोक्तृणां विलोपनं",
   "Deleting...": "विलोपनं...",
@@ -474,6 +490,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "आहार तथा प्रमाणीकरण फ़िल्टर",
   "Dietary tags": "आहार टैग",
   "Dietary tags (comma separated)": "आहार टैग (अल्पविराम पृथक्)",
+  "Dietary Tags & Certifications": "आहार-टैग्स् तथा प्रमाणीकरणानि",
   "Direct message": "प्रत्यक्षसन्देश",
   Disable: "अक्षम",
   "Disable selected (": "चयनित अक्षम (",
@@ -497,11 +514,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "उदा. लेखा",
   "e.g. DIWALI500": "उदा. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "उदा. ३ मार्च २०२६",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "उदा. भारत जैविक, निष्पक्ष व्यापार। कस्मैचित् उत्पादाय नियुक्तं प्रमाणीकरणं यावत् तस्मात् निष्कासितं न भवति तावत् विलोपितुं न शक्यते ।",
   "e.g. Ops Room": "उदा. Ops Room",
   "e.g. Rain-fed, no synthetic pesticides": "सप्ताहे कटितम् उदा. वर्षापोषितं, न कृत्रिमकीटनाशकाः",
   "e.g. Refrigerate and use within 5 days": "उदा. ५ दिवसाभ्यन्तरे फ्रिजं कृत्वा उपयोगं",
   "e.g. TO-HONEY-500": "उदा. तो-मधु-५००",
   "e.g. UTR 123456789012": "उदा. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "उदा. शाकाहारी, लस मुक्त। एकं विलोपनं प्रत्येकं उत्पादात् तत् निष्कासयति यस्य परीक्षणं कृतम् अस्ति ।",
   Edit: "सम्पादन",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS पृष्ठमेटाडाटा, अनुक्रमणिका तथा कच्चा पृष्ठखण्ड सम्पादयतु। मुखपृष्ठस्य अभिलेखः अत्र अपि सूचीकृतः अस्ति, परन्तु मुखपृष्ठस्य सेटिंग्स् तत् परिवर्तयितुं सुरक्षितः उपायः अस्ति — अयं सम्पादकः कच्चा JSON गृह्णाति ।",
@@ -605,6 +626,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'एकस्मिन् देशे आगन्तुकानां कृते खण्डं बलात् चालू वा निष्क्रियं वा कुर्वन्तु, अन्ये सर्वे यत् पश्यन्ति तत् परिवर्तनं विना । "Inherit" इत्यत्र एकं खण्डं त्यजन्तु ततः केवलं उपरि खण्डसूचिकायां टिकबॉक्सस्य अनुसरणं करोति ।',
   "Forgot password?": "गुप्तशब्दं विस्मृतवान्?",
+  "Formatting locale": "स्थानीयं स्वरूपणं",
   "Free delivery above (₹)": "उपरि निःशुल्कवितरणं (₹)",
   "French (Français)": "फ्रेञ्च (Français)",
   Frequency: "आवृत्ति",
@@ -690,6 +712,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "यदि एषः प्रचारः कदापि न मोचितः तर्हि साक्षात् लोपितः भवति; अन्यथा संग्रहीतं भवति अतः तस्य इतिहासः रक्षितः भवति ।",
   Igbo: "इग्बो",
+  Image: "प्रतिबिम्ब",
   "Image alt text": "प्रतिबिम्ब alt पाठ",
   "Image alt text (optional)": "प्रतिबिम्ब alt पाठः (वैकल्पिकः)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -755,6 +778,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Label: "लेबल",
   "Land under cultivation": "कृष्याधीनभूमि",
   Language: "भाषा",
+  "Language Studio": "भाषा-स्टूडियो",
   Lao: "लाओ",
   "Last activity": "अन्तिमक्रियाकलाप",
   "Last reviewer note": "अन्तिमसमीक्षकटिप्पणी",
@@ -767,6 +791,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "येन सह True Grit प्रेषयति तत् स्थापयितुं वर्णं रिक्तं त्यजन्तु — क्षेत्रं स्वच्छं करणं भवन्तः कथं पूर्ववत् कुर्वन्ति पृष्ठस्य अथवा देशस्य वर्णाः साइट्-रङ्गात् आरभ्य केवलं यत् भवन्तः परिवर्तयन्ति तत् एव अधिलिखन्ति, अतः प्रत्येकं लघुसूची अस्ति, न तु द्वितीयं पॅलेट् परिपालयितुं । यदा उभयम् अपि एकस्मिन् आगन्तुके प्रवर्तते तदा पृष्ठं विजयते — सम्पादकीयपृष्ठस्य डिजाइनं भूप्रयोगेन पूर्ववत् न कर्तव्यम् ।",
   "Leave blank to use the default.": "पूर्वनिर्धारितस्य उपयोगाय रिक्तं त्यजतु ।",
+  "Leave the link blank for a plain, unclickable image.":
+    "सादे, अक्लिक्-करणीयस्य चित्रस्य कृते लिङ्कं रिक्तं त्यजन्तु ।",
   "Less refunds": "कम धनवापसी",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "ग्राहकाः चेकआउट्-समये उपहार-कार्ड-सङ्केतं प्रयोक्तुं शक्नुवन्ति, यत् तेषां आदेशस्य कुलस्य भागं वा सर्वं वा आच्छादयति । उपहारपत्रपृष्ठात् कार्ड्स् निर्गन्तुं शक्नुवन्ति। पूर्वनिर्धारितरूपेण निष्क्रियः — विद्यमानाः कार्डाः तेषां शेषं च स्थापितं भवति, केवलं मोचनीयं न भवति, यदा एतत् निष्क्रियं भवति।",
@@ -778,6 +804,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "रेखाकुल",
   Lines: "रेखाः",
   Link: "लिङ्क",
+  "Link (optional)": "लिङ्क् (वैकल्पिकम्)",
   "Link customer": "लिङ्कग्राहकः",
   "Link product": "उत्पादं लिङ्क्",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -797,6 +824,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "लाइव पूर्वावलोकन",
   "Live, and to scale with the real storefront's own styles.":
     "लाइव, तथा च वास्तविकस्य भण्डारस्य स्वकीयशैल्याः सह स्केल कर्तुं।",
+  Loading: "लोडिंग्",
   "Loading active promotions...": "सक्रियप्रचाराः लोड् भवन्ति...",
   "Loading analytics...": "विश्लेषणं लोड् भवति...",
   "Loading announcements...": "घोषणा लोड् भवति...",
@@ -810,6 +838,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "वार्तालापं लोडयति...",
   "Loading country overrides...": "देश अधिलिखितानि लोडयति...",
   "Loading crawler files...": "क्रॉलरसञ्चिकाः लोडयति...",
+  "Loading currency values…": "मुद्रामूल्यानि लोडयति...",
   "Loading delivery charges...": "वितरणशुल्कं लोडयति...",
   "Loading discussion…": "चर्चा लोडयति...",
   "Loading highlights...": "हाइलाइट्स् लोडयति...",
@@ -832,6 +861,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "स्टोरफ्रण्ट् स्विच् लोड् भवति...",
   "Loading submission…": "सबमिशन लोड् भवति...",
   "Loading...": "लोड् भवति...",
+  "Loading…": "लोडिंग्...",
   "Local pickup points": "स्थानीय पिकअप बिन्दु",
   "Locale to translate": "अनुवादं कर्तुं स्थानम्",
   "Locked out? Use": "लॉक आउट्? उपयोगं",
@@ -886,6 +916,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "मध्यमकारणम्",
   Mongolian: "मङ्गोलियन",
   "More from True Grit": "अधिकं True Grit",
+  "Motto banner": "मोटो बैनर",
   "Move down in the showcase": "प्रदर्शने अधः गच्छतु",
   "Move earlier": "चलतु पूर्वं",
   "Move later": "पश्चात्",
@@ -1013,6 +1044,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "टिप्पणी (परिवर्तनस्य अनुरोधाय अथवा अस्वीकाराय आवश्यकम्)",
   "Note (required)": "टिप्पणी (आवश्यकम्)",
   Notes: "टिप्पणी",
+  "Nothing here yet": "अत्र अद्यापि किमपि नास्ति",
   "Nothing outstanding to pay": "किमपि दातव्यं नास्ति",
   "Nothing pending.": "किमपि लम्बितम् ।",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1066,6 +1098,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ग्राहकाः एकदा ग्राहकाः पश्यन्ते तदा आदेशाः अत्र दृश्यन्ते ।",
   "Organic Alphonso Mangoes": "जैविक आल्फोन्सो आम",
   "Organic mangoes held in a sunlit orchard": "सूर्यप्रकाशिते फलोद्याने धारिताः जैविकाः आमाः",
+  "Organic wheat flour in a wooden bowl": "ऑर्गेनिक काष्ठकटोरे गोधूमपिष्टं",
   Outstanding: "उत्कृष्ट",
   Overview: "अवलोकनम्",
   "Owner Reports": "स्वामिनिवेदनानि",
@@ -1115,8 +1148,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "कमपि एकं देशं चिनुत, अथवा सर्वत्र विमोचयन्तु ।",
   "Pick at least one country, or release globally.":
     "कमपि एकं देशं चिनुत, अथवा वैश्विकरूपेण विमोचयन्तु ।",
-  "Pick exactly two people for a direct message.": "प्रत्यक्षसन्देशाय सम्यक् द्वौ जनान् चिनुत।",
   "Pick one from the list to start reading.": "पठनं आरभ्यतुं सूचीतः एकं चिनुत।",
+  "Pick the other person for this direct message.":
+    "अस्य प्रत्यक्षसन्देशस्य कृते परं व्यक्तिं चिनुत।",
   "PIN code": "पिन कोड",
   "PIN patterns": "पिनप्रतिमानाः",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1262,6 +1296,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "पृष्ठानि द्रष्टुं आवश्यकम् अनुमतिः तथा च एकं सम्बद्धं एपिआइ।",
   "Requires products.publish": "उत्पादं.प्रकाशनस्य आवश्यकता",
   "Requires recipes.publish": "recipes.publish इत्यस्य आवश्यकता",
+  "Requires settings access.": "सेटिंग्स् अभिगमनस्य आवश्यकता अस्ति।",
   "Requires the analytics.view permission.": "विश्लेषण.दृश्यानुमतिम् आवश्यकम्।",
   "Requires the inventory.adjust permission.": "सूची.समायोजनस्य अनुमतिः आवश्यकी।",
   "Requires the reports.query permission.": "reports.query अनुमतिः आवश्यकी अस्ति ।",
@@ -1313,6 +1348,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "चालनम्...",
   "Russian (Русский)": "रूसी (Русский)",
   "Safe area": "सुरक्षित क्षेत्र",
+  "Safe geo-lock:": "सुरक्षित जियो-लॉक:",
   "Sale & Discounts": "विक्रय एवं छूट",
   "Sale price": "विक्रय मूल्य",
   "Sale Price (₹)": "विक्रय मूल्य (₹)",
@@ -1446,6 +1482,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "सर्बिया",
   Servings: "सेवा",
   "Set a new password": "नवगुप्तशब्दं सेट् कुर्वन्तु",
+  "Set as default": "पूर्वनिर्धारितरूपेण सेट्",
   "Shop · Farms · Journal": "शॉप · फार्म्स · जर्नल्",
   "Shop fresh greens": "नवीनसागस्य शॉपिङ्गं कुर्वन्तु",
   "Shop root vegetables": "मूलशाकानां शॉपिङ्गं",
@@ -1456,6 +1493,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "प्रदर्शनघोषणा",
   "Show dietary and certification filters on the shop page":
     "दुकानपृष्ठे आहारस्य प्रमाणीकरणस्य च फ़िल्टरं दर्शयन्तु",
+  "Show original": "मूलं दर्शयतु",
   "Show product recommendations": "उत्पादस्य अनुशंसाः दर्शयतु",
   "Show this snippet": "एतत् स्निपेट् दर्शयतु",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1542,6 +1580,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "स्वाहिली (किस्वाहिली)",
   "Swedish (Svenska)": "स्वीडिश (स्वेन्स्का)",
   Table: "सारणी",
+  "Tags & Certifications": "टैग्स् तथा प्रमाणीकरणानि",
   "Tags:": "टैग्स:",
   Tajik: "ताजिक",
   "Taking payments": "देयता ग्रहण",
@@ -1558,6 +1597,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "बैनर, श्रेणीपङ्क्तिः, उत्पादपङ्क्तिः, SEO क्षेत्राणि च एकत्र रक्षन्ति । खण्डस्य टिकबॉक्साः, आदेशः, कस्टम् खण्डप्रतिलिपिः च स्वयमेव रक्षन्ति, यथा भवन्तः तान् परिवर्तयन्ति।",
   "The chat widget customers and visitors see on the storefront.":
     "ग्राहकाः आगन्तुकाः च storefront इत्यत्र पश्यन्ति इति गपशपविजेट्।",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "प्रत्येकस्य उत्पादस्य General ट्याब् मध्ये दर्शितानि चेकबॉक्ससूचिकाः । परिवर्तनं सर्वत्र तत्क्षणमेव प्रवर्तते ।",
   "The classic credential pair, including the password-reset flow.":
     "गुप्तशब्द-पुनर्स्थापनप्रवाहः सहितः क्लासिक-प्रमाणपत्रयुग्मम् ।",
   "the farm owner": "खेतस्वामिना",
@@ -1611,6 +1652,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "अयं विभागः पृष्ठस्य अधः स्वस्य पटलस्य सम्पादितः अस्ति ।",
   "Threads started from the storefront appear here.":
     "भण्डारमुखात् आरब्धाः सूत्राः अत्र दृश्यन्ते ।",
+  "Thumbnail image URL": "लघुचित्रप्रतिबिम्बस्य URL",
   Time: "समय",
   "Tinted band": "टिन्टेड् पट्टिका",
   Title: "शीर्षकं",
@@ -1628,7 +1670,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Trail colour": "पगडण्डरङ्ग",
   "transfer money — make the transfer to": "हस्तांतरणधनम् — स्थानान्तरणं कुर्वन्तु to",
   "Transfer reference (UPI / bank / cheque)": "स्थानांतरणसन्दर्भ (UPI / bank / cheque)",
+  Translate: "अनुवाद",
+  "Translate chat": "अनुवादं गपशपं",
   "Translating...": "अनुवादः...",
+  "Translating…": "अनुवादं करोति...",
   Translations: "अनुवाद",
   Triage: "त्रय",
   "True Grit Admin": "True Grit प्रशासक",
@@ -1660,9 +1705,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "प्रतिबिम्बं अपलोड् कुर्वन्तु",
   "Uploading image...": "प्रतिबिम्बं अपलोड् कुर्वन्तु...",
   "Uploading image…": "प्रतिबिम्बं अपलोड् कुर्वन्तु...",
+  "Uploading thumbnail...": "लघुचित्रं अपलोड् क्रियते...",
   "Uploading...": "अपलोड् क्रियते...",
   "Uploading…": "अपलोड् क्रियते...",
   "Urdu (اردو)": "उर्दू (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "पृथक् १२०० × १२०० चित्रस्य उपयोगं कुर्वन्तु । इदं वर्गाकारप्रतिबिम्बं श्रेणीपत्तकानां कृते क्रॉप् कृतम् अस्ति; विस्तृतनायकध्वजस्य पुनः उपयोगं न कुर्वन्तु।",
   "Use site-wide effects instead": "तस्य स्थाने साइट्-व्यापी प्रभावानां उपयोगं कुर्वन्तु",
   "Use the exact canvas": "सटीक कैनवासस्य उपयोगं कुर्वन्तु",
   "Use the navigation to get back.": "पुनः प्राप्तुं नेविगेशनस्य उपयोगं कुर्वन्तु ।",
@@ -1674,6 +1722,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "साइट् ब्राण्ड् वर्णस्य",
   Uyghur: "उयघुर",
   Uzbek: "उज्बेक",
+  "Value of 1 INR": "१ INR मूल्य",
+  "Value per INR": "प्रति INR मूल्य",
   "Value, ₹": "मूल्यं, ₹",
   Variant: "विविधता",
   "Variant (SKU)": "विविधता (SKU)",

@@ -27,6 +27,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/ဆိုင်",
   "← All farms": "← လယ်ယာအားလုံး",
   "+ stars": "+ ကြယ်များ",
+  "₹1,000 preview": "₹1,000 အစမ်းကြည့်ရှုခြင်း",
   "1 star": "ကြယ် 1 ပွင့်",
   "15% off your first order": "သင်၏ ပထမဆုံးမှာယူမှု 15% လျှော့စျေး",
   "2 cups": "2 ခွက်",
@@ -61,6 +62,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "စူပါစီမံခန့်ခွဲသူတစ်ဦးသည် အထက်ဖော်ပြပါ + ခလုတ်မှ အဖွဲ့တစ်ခု သို့မဟုတ် တိုက်ရိုက်မက်ဆေ့ဂျ်ကို စတင်နိုင်သည်။",
   "A tinted band — check muted text is still readable here.":
     "အရောင်ဖျော့ထားသော တီးဝိုင်း — ခြစ်ထားသော စာသားကို ဤနေရာတွင် ဖတ်နိုင်သေးသည်။",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "ဧည့်သည်၏နိုင်ငံသည် ငွေကြေးကိုရွေးချယ်သည်၊ ဤဇယားသည် ၎င်း၏ပြသမှုတန်ဖိုးကို ပေးဆောင်ပြီး မူရင်း INR စျေးနှုန်းသည် မပြောင်းလဲပါ။ ပိတ်ထားသောငွေကြေးများသည် INR-ဘေးကင်းသော ပုံသေများထံ ပြန်ရောက်သွားပါသည်။",
   Accent: "အသံထွက်",
   "Accept orders and payments": "မှာယူမှုနှင့် ငွေပေးချေမှုများကို လက်ခံပါ",
   "Accept orders and payments for this product":
@@ -87,6 +90,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "အမျိုးအစားထည့်ပါ",
   "Add code": "ကုဒ်ထည့်ပါ",
   "Add country": "နိုင်ငံကို ထည့်ပါ",
+  "Add currency": "ငွေကြေးထည့်ပါ",
   "Add entry": "ထည့်သွင်းမှုထည့်ပါ",
   "Add farm owner": "လယ်ယာပိုင်ရှင်ကို ထည့်ပါ",
   "Add ingredient": "ပါဝင်ပစ္စည်းထည့်ပါ",
@@ -97,6 +101,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "စတင်ရန် အောက်တွင် တစ်ခုထည့်ပါ။",
   "Add one so the bot has something to reference for this scope.":
     "တစ်ခုထည့်ပါ သို့မှသာ bot သည် ဤနယ်ပယ်အတွက် ကိုးကားစရာတစ်ခုရှိပါသည်။",
+  "Add one using the field above.": "အထက်အကွက်ကို အသုံးပြု၍ တစ်ခုထည့်ပါ။",
   "Add page": "စာမျက်နှာကို ထည့်ပါ",
   "Add participants": "ပါဝင်သူများကို ထည့်ပါ",
   "Add point": "အမှတ်ထည့်ပါ",
@@ -115,6 +120,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "ဇုန်ထည့်ရန်",
   Added: "ထည့်ထားသည်",
   "Adding...": "ထည့်နေသည်...",
+  "Adding…": "ထည့်နေသည်…",
   Address: "လိပ်စာ",
   "Adjust points": "အမှတ်များကို ချိန်ညှိပါ",
   "Adjust the search or create a category.":
@@ -212,6 +218,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Awards, badges, ratings.": "ဆုများ၊ တံဆိပ်များ၊ အဆင့်သတ်မှတ်ချက်များ။",
   "B2B / bulk ordering": "B2B / အစုလိုက်မှာယူခြင်း",
   Back: "နောက်သို့",
+  "Back to conversations": "စကားဝိုင်းများသို့ ပြန်သွားရန်",
   "Back to sign in": "လက်မှတ်ထိုးဝင်ရန် ပြန်သွားရန်",
   Balance: "လက်ကျန်",
   "Banner alt text": "နဖူးစည်း alt စာသား",
@@ -274,6 +281,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "အမျိုးအစား တည်းဖြတ်မှုကဏ္ဍများ",
   "Category not found": "အမျိုးအစားမတွေ့ပါ",
   "Category row": "အမျိုးအစားအတန်း",
+  "Category thumbnail alt text": "အမျိုးအစားပုံသေး alt စာသား",
+  "Category thumbnail URL": "အမျိုးအစားပုံသေး URL",
   "Category to add to the homepage": "ပင်မစာမျက်နှာသို့ ထည့်ရန် အမျိုးအစား",
   "Cautions and low stock.": "သတိထားစရာများနှင့် စတော့နည်းပါသည်။",
   "Centred safe area": "ဗဟိုပြုဘေးကင်းသောဧရိယာ",
@@ -346,6 +355,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "အီးမေးလ်ဆက်သွယ်ရန်",
   Content: "အကြောင်းအရာ",
   "Continue with Facebook": "Facebook ဖြင့် ဆက်လက်လုပ်ဆောင်ပါ",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "အိန္ဒိယရူပီးမည်မျှတန်ဖိုးရှိသည်ကို သတ်မှတ်ခြင်းဖြင့် အနီးစပ်ဆုံးပြည်တွင်းသုံးငွေစျေးနှုန်းများကို ထိန်းချုပ်ပါ။ ကတ်တလောက်၊ ငွေရှင်းခြင်းနှင့် မှာယူမှုမှတ်တမ်းများသည် INR တွင် လုံခြုံစွာရှိနေပါသည်။",
   "Control what each role can view, create, edit, publish or manage.":
     "အခန်းကဏ္ဍတစ်ခုစီသည် ကြည့်ရှုနိုင်သည်၊ ဖန်တီးနိုင်သည်၊ တည်းဖြတ်နိုင်သည်၊ ထုတ်ဝေနိုင်သည် သို့မဟုတ် စီမံခန့်ခွဲနိုင်သည်များကို ထိန်းချုပ်ပါ။",
   "Control whether each bot is available, and edit what it knows.":
@@ -390,6 +401,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "ရွေးချယ်ထားသော စာရင်းအရွယ်အစား",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "မျိုးကွဲများကို သီးသန့်စျေးနှုန်းဖြင့် စုစည်းရောင်းချသော အတွဲများ ခြင်းတောင်းတစ်ခုသည် အစုအစည်းတစ်ခုအတွင်း ပစ္စည်းတိုင်းကို ကိုင်ဆောင်သည်နှင့်တစ်ပြိုင်နက် ငွေရှင်းခြင်းအား အလိုအလျောက် သက်ရောက်ပါသည်။",
+  Currency: "ငွေကြေး",
+  "Currency code": "ငွေကြေးကုဒ်",
+  "Currency Converter": "ငွေလဲလှယ်နှုန်း",
+  "Currency values unavailable": "ငွေကြေးတန်ဖိုးများ မရရှိနိုင်ပါ",
   "Current password": "လက်ရှိစကားဝှက်",
   "Currently its own effects.": "လောလောဆယ် ၎င်း၏ကိုယ်ပိုင်သက်ရောက်မှုများ။",
   "Currently the site-wide effects — save below to give it its own.":
@@ -427,6 +442,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "ငြင်းဆို",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'စတိုးဆိုင်၏ထိပ်တွင် အလှဆင်ခြင်း- အောက်ပါစာမျက်နှာနောက်ကွယ်မှ လွင့်မျောနေသော အမှုန်အမွှားများ နှင့် အမှတ်အသား။ နှစ်ခုစလုံးကို မူရင်းအတိုင်းပိတ်ထားသည်၊ နှစ်ခုစလုံးသည် ၎င်းတို့၏စက်ပစ္စည်းကို ရွှေ့လျားမှုလျှော့ချရန် တောင်းဆိုထားသော လာရောက်လည်ပတ်သူများအတွက် လုံးလုံးလျားလျား ကျော်သွားသည်၊ ငွေပေးချေမှုဝင်းဒိုးတွင် တစ်ခါမျှမပေါ်ပါ — ကတ်ဖောင်တစ်ခုပေါ်မှ ဆီးနှင်းများကျဆင်းခြင်းသည် မှားယွင်းသောအခိုက်အတန့်တစ်ခုဖြစ်သည်။ နိုင်ငံတစ်ခု၏ အကျိုးသက်ရောက်မှုများသည် ၎င်းတို့နှင့် ရောနှောခြင်းထက် ၎င်း၏လာရောက်လည်ပတ်သူများအတွက် ဆိုဒ်တစ်ခုလုံးကို လုံးလုံးလျားလျား အစားထိုးသည် — "အချို့သောနှင်း" သည် အဓိပ္ပါယ်ရှိသော နှင်းများနှင့် အကျိုးသက်ရောက်မှုမရှိပါ။',
+  Default: "ပုံသေ",
   "Default commission": "မူရင်းကော်မရှင်",
   "Default fee": "မူရင်းအခကြေးငွေ",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -446,6 +462,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "ချက်ပြုတ်နည်းကို ဖျက်ပါ",
   "Delete role": "အခန်းကဏ္ဍကိုဖျက်ပါ",
   "Delete selected (": "ရွေးချယ်ထားသော ဖျက်ပါ (",
+  "Delete this entry": "ဤထည့်သွင်းမှုကို ဖျက်ပါ",
   "Delete this price adjustment?": "ဤစျေးနှုန်းညှိနှိုင်းမှုကို ဖျက်မလား။",
   "Delete user": "အသုံးပြုသူကို ဖျက်ပါ",
   "Deleting...": "ဖျက်နေသည်...",
@@ -468,6 +485,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "အစားအသောက်နှင့် အသိအမှတ်ပြု စစ်ထုတ်မှုများ",
   "Dietary tags": "အစားအသောက် တဂ်များ",
   "Dietary tags (comma separated)": "အစားအသောက် တဂ်များ (ကော်မာကို ပိုင်းခြားထားသည်)",
+  "Dietary Tags & Certifications": "အစားအသောက် တံဆိပ်များနှင့် အသိအမှတ်ပြုမှုများ",
   "Direct message": "တိုက်ရိုက်မက်ဆေ့ဂျ်",
   Disable: "ပိတ်ရန်",
   "Disable selected (": "ရွေးချယ်ထားသော ပိတ်ရန် (",
@@ -489,11 +507,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "ဥပမာ။ အကောင့်များ",
   "e.g. DIWALI500": "ဥပမာ။ DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "ဥပမာ။ မတ်လ 3 ရက် 2026 အပတ်တွင် ရိတ်သိမ်းခဲ့သည်",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "ဥပမာ။ အိန္ဒိယ အော်ဂဲနစ်၊ တရားမျှတသောကုန်သွယ်မှု။ မည်သည့်ထုတ်ကုန်တွင်မဆို သတ်မှတ်ထားသော အသိအမှတ်ပြုလက်မှတ်ကို ၎င်းမှဖယ်ရှားသည်အထိ ဖျက်၍မရပါ။",
   "e.g. Ops Room": "ဥပမာ။ Ops Room",
   "e.g. Rain-fed, no synthetic pesticides": "ဥပမာ။ မိုးကျွေး၊ ဓာတုပိုးသတ်ဆေးမရှိ",
   "e.g. Refrigerate and use within 5 days": "ဥပမာ။ 5 ရက်အတွင်း အအေးခံပြီး အသုံးပြုပါ",
   "e.g. TO-HONEY-500": "ဥပမာ။ TO-HONEY-500",
   "e.g. UTR 123456789012": "ဥပမာ။ UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "ဥပမာ။ Vegan၊ Gluten Free တစ်ခုကို ဖျက်ခြင်းသည် ၎င်းကို စစ်ဆေးထားသော ထုတ်ကုန်တိုင်းမှ ဖယ်ရှားသည်။",
   Edit: "တည်းဖြတ်ရန်",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS စာမျက်နှာ မက်တာဒေတာ၊ ညွှန်းကိန်းနှင့် စာမျက်နှာကြမ်းများကို တည်းဖြတ်ပါ။ ပင်မစာမျက်နှာမှတ်တမ်းကို ဤနေရာတွင်လည်း စာရင်းသွင်းထားသော်လည်း ပင်မစာမျက်နှာဆက်တင်များသည် ၎င်းကိုပြောင်းလဲရန် ပိုမိုလုံခြုံသောနည်းလမ်းဖြစ်သည် — ဤတည်းဖြတ်သူသည် JSON အကြမ်းကို ယူသည်။",
@@ -600,6 +622,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'နိုင်ငံတစ်နိုင်ငံရှိ ဧည့်သည်များအတွက် ကဏ္ဍတစ်ခုအား အခြားသူများမြင်သည်ကို ပြောင်းလဲခြင်းမရှိဘဲ အဖွင့်အပိတ်လုပ်ပါ။ "အမွေဆက်ခံခြင်း" တွင် ကဏ္ဍတစ်ခုကို ထားခဲ့ပါ၊ ၎င်းသည် အထက်ဖော်ပြပါ ကဏ္ဍစာရင်းရှိ ခြစ်ကွက်ကို လိုက်နာပါ။',
   "Forgot password?": "စကားဝှက်ကို မေ့နေပါသလား။",
+  "Formatting locale": "ဒေသကို ဖော်မတ်လုပ်ခြင်း",
   "Free delivery above (₹)": "အထက် အခမဲ့ ပေးပို့ခြင်း (₹)",
   "French (Français)": "ပြင်သစ် (Français)",
   Frequency: "အကြိမ်ရေ",
@@ -679,6 +702,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ထိုအီးမေးလ်တွင် အကောင့်တစ်ခုရှိနေပါက၊ ပြန်လည်သတ်မှတ်ရန် လင့်ခ်တစ်ခု ဖြစ်လာနေပြီဖြစ်သည်။",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "ဤပရိုမိုးရှင်းကို မည်သည့်အခါမှ ကူပွန်မရယူပါက ၎င်းကို လုံးလုံးလျားလျား ဖျက်ပစ်ပါသည်။ သို့မဟုတ်ပါက ၎င်းကို သိမ်းဆည်းထားသောကြောင့် ၎င်း၏မှတ်တမ်းကို သိမ်းဆည်းထားသည်။",
+  Image: "ပုံ",
   "Image alt text": "ရုပ်ပုံ အစားထိုးစာသား",
   "Image alt text (optional)": "Image alt text (ချန်လှပ်ထားနိုင်သည်)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -754,6 +778,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "True Grit သင်္ဘောတစ်စင်းနှင့်အတူ ထားရှိရန် — အကွက်တစ်ခုကို ရှင်းလင်းခြင်းသည် သင်ပြန်ပြင်သည့်နည်းဖြစ်သည်။ စာမျက်နှာတစ်ခု သို့မဟုတ် နိုင်ငံတစ်ခု၏အရောင်များသည် ဆိုက်အရောင်များမှအစပြုပြီး သင်ပြောင်းလဲသည့်အရာများကိုသာ အစားထိုးပါ၊ ထို့ကြောင့် တစ်ခုချင်းစီသည် ထိန်းသိမ်းရန် ဒုတိယအသုတ်မဟုတ်သော စာရင်းတိုတစ်ခုဖြစ်သည်။ နှစ်ခုလုံးသည် တူညီသောလည်ပတ်သူထံ သက်ရောက်သောအခါ၊ စာမျက်နှာသည် အနိုင်ရသည် — ပထဝီဝင်စမ်းသပ်မှုတစ်ခုဖြင့် အယ်ဒီတာစာမျက်နှာ၏ ဒီဇိုင်းကို မပြင်သင့်ပါ။",
   "Leave blank to use the default.": "မူရင်းကိုအသုံးပြုရန် ဗလာကိုချန်ထားပါ။",
+  "Leave the link blank for a plain, unclickable image.":
+    "ရိုးရိုး နှိပ်၍မရသော ပုံတစ်ပုံအတွက် လင့်ခ်ကို ကွက်လပ်ထားလိုက်ပါ။",
   "Less refunds": "ပြန်အမ်းငွေနည်းသည်",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "ဝယ်ယူသူများသည် ငွေရှင်းချိန်တွင် လက်ဆောင်ကတ်ကုဒ်ကို အသုံးပြုခွင့်၊ ၎င်းတို့၏ မှာယူမှု စုစုပေါင်း၏ တစ်စိတ်တစ်ပိုင်း သို့မဟုတ် အားလုံးကို အကျုံးဝင်စေပါသည်။ Gift Cards စာမျက်နှာမှ ကတ်များထုတ်ပေးပါ။ ပုံမှန်အားဖြင့် ပိတ်သည် — လက်ရှိကတ်များနှင့် ၎င်းတို့၏ လက်ကျန်များကို သိမ်းဆည်းထားကာ၊ ၎င်းကို ပိတ်ထားစဉ်တွင် ပြန်လည်ထုတ်ယူ၍မရပါ။",
@@ -765,6 +791,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "လိုင်းစုစုပေါင်း",
   Lines: "လိုင်းများ",
   Link: "လင့်ခ်",
+  "Link (optional)": "လင့်ခ် (ချန်လှပ်ထားနိုင်သည်)",
   "Link customer": "ဝယ်ယူသူအား လင့်ခ်ချိတ်ပါ",
   "Link product": "ထုတ်ကုန်လင့်ခ်များ",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -784,6 +811,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "တိုက်ရိုက်အကြိုကြည့်ရှုခြင်း",
   "Live, and to scale with the real storefront's own styles.":
     "တိုက်ရိုက်ထုတ်လွင့်ပြီး စစ်မှန်သောစတိုးဆိုင်၏ကိုယ်ပိုင်စတိုင်များဖြင့် အတိုင်းအတာကိုပြုလုပ်ရန်။",
+  Loading: "ဖွင့်နေသည်",
   "Loading active promotions...": "အသက်ဝင်သော ပရိုမိုးရှင်းများကို ဖွင့်နေသည်...",
   "Loading analytics...": "ပိုင်းခြားစိတ်ဖြာချက်များကို ဖွင့်နေသည်...",
   "Loading announcements...": "ကြေငြာချက်များကို ဖွင့်နေသည်...",
@@ -797,6 +825,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "စကားဝိုင်းများကို ဖွင့်နေသည်…",
   "Loading country overrides...": "နိုင်ငံကို အစားထိုးခြင်းများကို Loading လုပ်နေသည်...",
   "Loading crawler files...": "စာရေးကိရိယာဖိုင်များကို ဖွင့်နေသည်...",
+  "Loading currency values…": "ငွေကြေးတန်ဖိုးများကို တင်နေသည်…",
   "Loading delivery charges...": "ပို့ဆောင်ခကို တင်နေသည်...",
   "Loading discussion…": "ဆွေးနွေးမှုကို တင်နေသည်…",
   "Loading highlights...": "မီးမောင်းထိုးပြမှုများကို ဖွင့်နေသည်...",
@@ -872,6 +901,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "သင့်လျော်သောအကြောင်းပြချက်",
   Mongolian: "မွန်ဂိုလီးယား",
   "More from True Grit": "True Grit",
+  "Motto banner": "ဆောင်ပုဒ်နဖူးစည်း",
   "Move down in the showcase": "ပြခန်းတွင် အောက်သို့ရွှေ့ပါ",
   "Move earlier": "စောစောရွှေ့ပါ",
   "Move later": "နောက်မှရွှေ့ပါ",
@@ -997,6 +1027,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "မှတ်ချက် (အပြောင်းအလဲများကို တောင်းဆိုရန် သို့မဟုတ် ငြင်းပယ်ရန် လိုအပ်သည်)",
   "Note (required)": "မှတ်ချက် (လိုအပ်သည်)",
   Notes: "မှတ်စုများ",
+  "Nothing here yet": "ဤနေရာတွင် ဘာမှမရှိသေးပါ",
   "Nothing outstanding to pay": "ပေးချေရန် ထူးထူးခြားခြား ဘာမှမရှိပါ",
   "Nothing pending.": "ဘာကိုမှ ဆိုင်းငံ့ထားခြင်းမရှိပါ။",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1052,6 +1083,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "အော်ဂဲနစ် Alphonso Mangoes",
   "Organic mangoes held in a sunlit orchard":
     "နေရောင်ရှိသော ဥယျာဉ်ခြံထဲတွင် ထိန်းသိမ်းထားသော သဘာဝသရက်သီးများ",
+  "Organic wheat flour in a wooden bowl": "သစ်သားပန်းကန်လုံးထဲတွင် အော်ဂဲနစ်ဂျုံမှုန့်",
   Outstanding: "ထူးခြားသော",
   Overview: "အနှစ်ချုပ်",
   "Owner Reports": "ပိုင်ရှင်အစီရင်ခံစာများ",
@@ -1100,9 +1132,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "အနည်းဆုံး နိုင်ငံတစ်ခုကို ရွေးပါ၊ သို့မဟုတ် နေရာတိုင်းတွင် ထုတ်လွှင့်ပါ။",
   "Pick at least one country, or release globally.":
     "အနည်းဆုံး နိုင်ငံတစ်ခုကို ရွေးပါ၊ သို့မဟုတ် တစ်ကမ္ဘာလုံးတွင် ထုတ်ဝေပါ။",
-  "Pick exactly two people for a direct message.":
-    "တိုက်ရိုက်မက်ဆေ့ချ်အတွက် လူနှစ်ဦးကို အတိအကျ ရွေးပါ။",
   "Pick one from the list to start reading.": "စတင်ဖတ်ရှုရန် စာရင်းထဲမှ တစ်ခုကို ရွေးပါ။",
+  "Pick the other person for this direct message.": "ဤတိုက်ရိုက်မက်ဆေ့ချ်အတွက် အခြားလူကို ရွေးပါ",
   "PIN code": "PIN ကုဒ်",
   "PIN patterns": "PIN ပုံစံများ",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1248,6 +1279,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "pages.view ခွင့်ပြုချက်နှင့် ချိတ်ဆက်ထားသော API တစ်ခု လိုအပ်ပါသည်။",
   "Requires products.publish": "ထုတ်ကုန်များ လိုအပ်ပါသည်။ထုတ်ဝေရန်",
   "Requires recipes.publish": "ချက်ပြုတ်နည်းများ လိုအပ်ပါသည်။ထုတ်ဝေရန်",
+  "Requires settings access.": "ဆက်တင်များကို ဝင်သုံးရန် လိုအပ်သည်။",
   "Requires the analytics.view permission.": "analytics.view ခွင့်ပြုချက် လိုအပ်ပါသည်။",
   "Requires the inventory.adjust permission.": "inventory.adjust ခွင့်ပြုချက် လိုအပ်ပါသည်။",
   "Requires the reports.query permission.": "reports.query ခွင့်ပြုချက် လိုအပ်ပါသည်။",
@@ -1299,6 +1331,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "ပြေးနေသည်...",
   "Russian (Русский)": "ရုရှား (Русский)",
   "Safe area": "ဘေးကင်းသောဧရိယာ",
+  "Safe geo-lock:": "လုံခြုံသော ပထဝီဝင်လော့ခ်ချခြင်း-",
   "Sale & Discounts": "ရောင်းချမှုနှင့် လျှော့စျေးများ",
   "Sale price": "ရောင်းစျေး",
   "Sale Price (₹)": "ရောင်းစျေး (₹)",
@@ -1436,6 +1469,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "ဆားဘီးယား",
   Servings: "ဝန်ဆောင်မှုများ",
   "Set a new password": "စကားဝှက်အသစ်သတ်မှတ်ပါ",
+  "Set as default": "မူလအဖြစ် သတ်မှတ်ပါ",
   "Shop · Farms · Journal": "စျေးဝယ်ခြင်း · လယ်ယာများ · ဂျာနယ်",
   "Shop fresh greens": "စိမ်းလန်းသောစျေးဝယ်ရန်",
   "Shop root vegetables": "အသီးအရွက်များ ဈေးဝယ်ပါ",
@@ -1446,6 +1480,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "ကြေငြာချက်ကို ပြပါ",
   "Show dietary and certification filters on the shop page":
     "ဆိုင်စာမျက်နှာတွင် အစားအသောက်နှင့် အသိအမှတ်ပြု စစ်ထုတ်မှုများကို ပြပါ",
+  "Show original": "မူရင်းကိုပြပါ",
   "Show product recommendations": "ထုတ်ကုန် အကြံပြုချက်များကို ပြပါ",
   "Show this snippet": "ဤအတိုအထွာကို ပြပါ",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1533,6 +1568,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "ဆွာဟီလီ (Kiswahili)",
   "Swedish (Svenska)": "ဆွီဒင် (Svenska)",
   Table: "ဇယား",
+  "Tags & Certifications": "တက်ဂ်များနှင့် လက်မှတ်များ",
   "Tags:": "Tags-",
   Tajik: "တာဂျစ်",
   "Taking payments": "ငွေပေးချေမှုများ",
@@ -1547,6 +1583,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "နဖူးစည်း၊ အမျိုးအစားအတန်း၊ ထုတ်ကုန်အတန်းနှင့် SEO အကွက်များ ထိပ်ပိုင်းရှိ နဖူးစည်းကို အတူတကွ သိမ်းဆည်းပါသည်။ အပိုင်း လက်မှတ်ပုံးများ၊ မှာယူခြင်းနှင့် စိတ်ကြိုက်အပိုင်း မိတ္တူကို သင်ပြောင်းလိုက်သည်နှင့် ၎င်းတို့ကို ၎င်းတို့ကိုယ်တိုင် သိမ်းဆည်းပါ။",
   "The chat widget customers and visitors see on the storefront.":
     "ချတ်ဝစ်ဂျက်ကို ဝယ်ယူသူများနှင့် ဧည့်သည်များက စတိုးဆိုင်မျက်နှာစာတွင် တွေ့ရပါသည်။",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "ထုတ်ကုန်တိုင်း၏ အထွေထွေတက်ဘ်တွင် ပြထားသည့် အမှန်ခြစ်အကွက်စာရင်းများ။ အပြောင်းအလဲများသည် နေရာတိုင်းတွင် ချက်ချင်းသက်ရောက်ပါသည်။",
   "The classic credential pair, including the password-reset flow.":
     "စကားဝှက် ပြန်လည်သတ်မှတ်ခြင်း အပါအဝင် ဂန္တဝင်အထောက်အထား အတွဲများ။",
   "the farm owner": "မွေးမြူရေးခြံပိုင်ရှင်",
@@ -1601,6 +1639,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ဤအပိုင်းကို စာမျက်နှာအောက်ရှိ ၎င်း၏ကိုယ်ပိုင်အကန့်တွင် တည်းဖြတ်ထားသည်။",
   "Threads started from the storefront appear here.":
     "စတိုးဆိုင်မျက်နှာစာမှ စတင်ခဲ့သော စာတိုများ ဤနေရာတွင် ပေါ်လာပါသည်။",
+  "Thumbnail image URL": "ပုံသေးပုံ URL",
   Time: "အချိန်",
   "Tinted band": "ရောင်စုံတီးဝိုင်း",
   Title: "ခေါင်းစဉ်",
@@ -1620,7 +1659,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "transfer money — make the transfer to": "ငွေလွှဲပါ — သို့ လွှဲပြောင်းပါ",
   "Transfer reference (UPI / bank / cheque)":
     "လွှဲပြောင်းမှု ရည်ညွှန်းချက် (UPI / ဘဏ် / ချက်လက်မှတ်)",
+  Translate: "ဘာသာပြန်ရန်",
+  "Translate chat": "ချတ်ကို ဘာသာပြန်ပါ",
   "Translating...": "ဘာသာပြန်ဆိုခြင်း...",
+  "Translating…": "ဘာသာပြန်ဆိုခြင်း…",
   Translations: "ဘာသာပြန်များ",
   "True Grit Admin": "True Grit စီမံခန့်ခွဲသူ",
   "Turkish (Türkçe)": "တူရကီ (Türkçe)",
@@ -1651,8 +1693,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "ပုံကို အပ်လုဒ်တင်နေသည်",
   "Uploading image...": "ပုံကို အပ်လုဒ်လုပ်နေသည်...",
   "Uploading image…": "ပုံကို အပ်လုဒ်လုပ်နေသည်…",
+  "Uploading thumbnail...": "ပုံသေးကို အပ်လုဒ်လုပ်နေသည်...",
   "Uploading...": "အပ်လုဒ်လုပ်နေသည်...",
   "Uploading…": "အပ်လုဒ်လုပ်နေသည်…",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "သီးခြား 1200 × 1200 ပုံတစ်ပုံကို သုံးပါ။ ဤစတုရန်းပုံအား အမျိုးအစားကတ်များအတွက် ဖြတ်တောက်ထားသည်။ ကျယ်ပြန့်သောဟီးရိုးနဖူးစည်းကို ပြန်အသုံးမပြုပါနှင့်။",
   "Use site-wide effects instead": "အစား ဝဘ်ဆိုက်ကျယ်ပြန့်သည့်အကျိုးသက်ရောက်မှုများကိုသုံးပါ",
   "Use the exact canvas": "အတိအကျ ကင်းဗတ်များကိုသုံးပါ",
   "Use the navigation to get back.": "ပြန်ရယူရန် လမ်းညွှန်ချက်ကို အသုံးပြုပါ။",
@@ -1663,6 +1708,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Users & Roles": "အသုံးပြုသူများနှင့် ရာထူးများ",
   "Users unavailable": "အသုံးပြုသူများ မရရှိနိုင်ပါ",
   "Using the site brand colour": "ဆိုက်အမှတ်တံဆိပ်အရောင်ကို အသုံးပြုခြင်း",
+  "Value of 1 INR": "တန်ဖိုး 1 INR",
+  "Value per INR": "INR နှုန်းတန်ဖိုး",
   "Value, ₹": "တန်ဖိုး၊ ₹",
   Variant: "မူကွဲ",
   "Variant (SKU)": "မူကွဲ (SKU)",

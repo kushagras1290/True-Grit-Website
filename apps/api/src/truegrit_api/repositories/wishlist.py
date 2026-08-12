@@ -32,7 +32,7 @@ _SUMMARY_JOINS = """
   LEFT JOIN product_variants fv ON fv.id = (
     SELECT v.id FROM product_variants v
     WHERE v.product_id = p.id AND v.status = 'active'
-    ORDER BY v.sort_order LIMIT 1
+    ORDER BY v.is_default DESC, v.sort_order, v.name LIMIT 1
   )
   LEFT JOIN variant_prices vp ON vp.variant_id = fv.id AND vp.status = 'active'
 """

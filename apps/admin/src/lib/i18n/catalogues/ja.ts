@@ -24,6 +24,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/ qty": "/ 数量",
   "← All farms": "← すべての農場",
   "+ stars": "星+",
+  "₹1,000 preview": "₹1,000 プレビュー",
   "1 star": "星1つ",
   "15% off your first order": "初回注文で 15% オフ",
   "2 cups": "2 カップ",
@@ -58,6 +59,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "特権管理者は、上の + ボタンからグループまたはダイレクト メッセージを開始できます。",
   "A tinted band — check muted text is still readable here.":
     "色付きのバンド - ここではミュートされたテキストがまだ読めることを確認してください。",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "訪問者の国が通貨を選択すると、この表がその表示値を提供し、元の INR 価格は変更されません。無効な通貨は INR セーフのデフォルトに戻ります。",
   Accent: "アクセント",
   "Accept orders and payments": "注文と支払いを受け入れる",
   "Accept orders and payments for this product": "この商品の注文と支払いを受け入れる",
@@ -83,6 +86,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "カテゴリを追加",
   "Add code": "コードを追加",
   "Add country": "国を追加",
+  "Add currency": "通貨を追加",
   "Add entry": "エントリの追加",
   "Add farm owner": "ファーム所有者を追加",
   "Add ingredient": "追加成分",
@@ -93,6 +97,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "開始するには下に 1 つ追加します。",
   "Add one so the bot has something to reference for this scope.":
     "ボットがこのスコープに対して参照できるように、エントリを追加します。",
+  "Add one using the field above.": "上のフィールドを使用して追加します。",
   "Add page": "ページを追加",
   "Add participants": "参加者を追加",
   "Add point": "ポイントを追加",
@@ -111,6 +116,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "ゾーンを追加",
   Added: "追加しました",
   "Adding...": "追加中...",
+  "Adding…": "追加中…",
   Address: "住所",
   "Adjust points": "ポイントを調整",
   "Adjust the search or create a category.": "検索を調整するか、カテゴリを作成します。",
@@ -209,6 +215,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "アゼルバイジャン",
   "B2B / bulk ordering": "B2B / バルク注文",
   Back: "戻る",
+  "Back to conversations": "会話に戻る",
   "Back to sign in": "サインインに戻る",
   Balance: "残高",
   "Banner alt text": "バナー代替テキスト",
@@ -274,6 +281,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "カテゴリエディタセクション",
   "Category not found": "カテゴリが見つかりません",
   "Category row": "カテゴリ行",
+  "Category thumbnail alt text": "カテゴリのサムネイル alt text",
+  "Category thumbnail URL": "カテゴリのサムネイル URL",
   "Category to add to the homepage": "ホームページに追加するカテゴリ",
   "Cautions and low stock.": "注意事項と在庫が少ないです。",
   Cebuano: "セブアノ語",
@@ -347,6 +356,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "連絡先メールアドレス",
   Content: "コンテンツ",
   "Continue with Facebook": "Facebook を続行します",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "1 インドルピーの価値を設定することで、現地通貨のおおよその価格を制御します。カタログ、チェックアウト、注文の記録は INR に安全に保存されます。",
   "Control what each role can view, create, edit, publish or manage.":
     "各ロールが表示、作成、編集、公開、管理できる内容を制御します。",
   "Control whether each bot is available, and edit what it knows.":
@@ -391,6 +402,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "厳選されたリストサイズ",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "特定のバリエーションの厳選されたセットを一律価格でまとめて販売。バスケットにバンドル内のすべてのアイテムが入ると、チェックアウトで自動的に節約が適用されます。",
+  Currency: "通貨",
+  "Currency code": "通貨コード",
+  "Currency Converter": "通貨換算",
+  "Currency values unavailable": "通貨値は使用できません",
   "Current password": "現在のパスワード",
   "Currently its own effects.": "現在、独自の効果。",
   "Currently the site-wide effects — save below to give it its own.":
@@ -428,6 +443,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "拒否",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "店頭上部の装飾: ページの後ろに漂う粒子と、ポインタをたどる軌跡。どちらもデフォルトではオフになっており、デバイスの動作を減らすように要求した訪問者に対しては両方とも完全にスキップされ、支払いウィンドウにはどちらも表示されません。カード フォームに雪が降ると、まさにタイミングが悪くなって気が散ってしまいます。国の効果は、訪問者に溶け込むのではなく、サイト全体の効果を完全に置き換えます。「一部の雪」は意味のある雪の混合ではなく、何の効果もありません。",
+  Default: "デフォルト",
   "Default commission": "デフォルト手数料",
   "Default fee": "デフォルト料金",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -447,6 +463,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "レシピを削除",
   "Delete role": "役割を削除",
   "Delete selected (": "選択を削除 (",
+  "Delete this entry": "このエントリを削除します",
   "Delete this price adjustment?": "この価格調整を削除しますか?",
   "Delete user": "ユーザーを削除",
   "Deleting...": "削除中...",
@@ -469,6 +486,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "食事と認証フィルター",
   "Dietary tags": "食事タグ",
   "Dietary tags (comma separated)": "食事タグ (カンマ区切り)",
+  "Dietary Tags & Certifications": "食事タグと認証",
   Disable: "無効にする",
   "Disable selected (": "選択したものを無効にする (",
   "Discard changes": "変更を破棄",
@@ -492,11 +510,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "例:アカウント",
   "e.g. DIWALI500": "例: DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "例: 2026 年 3 月 3 日の週に収穫",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "例:インドのオーガニック、フェアトレード。製品に割り当てられた認定は、その製品から削除されるまで削除できません。",
   "e.g. Ops Room": "します。作戦室",
   "e.g. Rain-fed, no synthetic pesticides": "例:天水栽培、合成農薬不使用",
   "e.g. Refrigerate and use within 5 days": "例:冷蔵保存して 5 日以内にお召し上がりください",
   "e.g. TO-HONEY-500": "例: TO-HONEY-500",
   "e.g. UTR 123456789012": "例: UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "例:ビーガン、グルテンフリー。 1 つを削除すると、チェックされているすべての製品から削除されます。",
   Edit: "編集",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS ページのメタデータ、インデックス作成、生のページ ブロックを編集します。ホームページ レコードもここにリストされますが、ホームページ設定を変更する方が安全です。このエディタは生の JSON を受け取ります。",
@@ -601,6 +623,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     "他の人に表示される内容を変更せずに、ある国の訪問者に対してセクションを強制的にオンまたはオフにします。 [継承] セクションを残すと、上のセクション リストのチェックボックスに従うだけです。",
   "Forgot password?": "パスワードをお忘れですか?",
+  "Formatting locale": "ロケールの書式設定",
   "Free delivery above (₹)": "上記 (₹) では無料配送",
   "French (Français)": "フランス語 (Français)",
   Frequency: "頻度",
@@ -685,6 +708,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "そのメールにアカウントがある場合、リセット リンクが送信されます。",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "このプロモーションが一度も利用されていない場合、完全に削除されます。それ以外の場合はアーカイブされ、履歴が保持されます。",
+  Image: "画像",
   "Image alt text": "画像の代替テキスト",
   "Image alt text (optional)": "画像の代替テキスト (オプション)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -763,6 +787,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "True Grit に同梱されている色を維持するには、色を空白のままにします。元に戻すには、フィールドをクリアします。ページまたは国の色はサイトの色から始まり、変更したもののみを上書きするため、それぞれは短いリストであり、維持する 2 番目のパレットではありません。両方が同じ訪問者に適用される場合、ページが優先されます。編集ページのデザインは地理的実験によって元に戻すべきではありません。",
   "Leave blank to use the default.": "デフォルトを使用するには空白のままにします。",
+  "Leave the link blank for a plain, unclickable image.":
+    "プレーンなクリックできない画像の場合は、リンクを空白のままにします。",
   "Less refunds": "払い戻しが少なくなります",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "顧客はチェックアウト時にギフト カード コードを適用して、注文総額の一部または全部をカバーできます。ギフトカードページからカードを発行します。デフォルトではオフ — 既存のカードとその残高は保持されますが、これがオフの間は引き換えができません。",
@@ -774,6 +800,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "行合計",
   Lines: "行数",
   Link: "リンク",
+  "Link (optional)": "リンク(オプション)",
   "Link customer": "リンク顧客",
   "Link product": "リンクproduct",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -793,6 +820,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "ライブ プレビュー",
   "Live, and to scale with the real storefront's own styles.":
     "実際の店頭独自のスタイルを生き生きと拡張します。",
+  Loading: "読み込み中",
   "Loading active promotions...": "アクティブなプロモーションを読み込み中...",
   "Loading analytics...": "分析を読み込み中...",
   "Loading announcements...": "お知らせを読み込み中...",
@@ -806,6 +834,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "会話を読み込み中…",
   "Loading country overrides...": "国を読み込み中オーバーライド...",
   "Loading crawler files...": "クローラー ファイルを読み込んでいます...",
+  "Loading currency values…": "通貨値を読み込み中…",
   "Loading delivery charges...": "配送料を読み込んでいます...",
   "Loading discussion…": "ディスカッションを読み込んでいます...",
   "Loading highlights...": "ハイライトを読み込んでいます...",
@@ -828,6 +857,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "店頭スイッチを読み込み中...",
   "Loading submission…": "送信を読み込み中...",
   "Loading...": "読み込み中...",
+  "Loading…": "読み込み中…",
   "Local pickup points": "現地の受け取り場所",
   "Locale to translate": "ロケール翻訳",
   "Locked out? Use": "ロックアウトされましたか?使用",
@@ -882,6 +912,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "モデレート理由",
   Mongolian: "モンゴル語",
   "More from True Grit": "True Grit の詳細",
+  "Motto banner": "モットーバナー",
   "Move down in the showcase": "ショーケースの下に移動",
   "Move earlier": "移動前",
   "Move later": "後で移動",
@@ -1008,6 +1039,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Note (required to request changes or reject)": "メモ（変更または拒否を要求する場合に必要）",
   "Note (required)": "メモ（必須）",
   Notes: "メモ",
+  "Nothing here yet": "ここにはまだ何もありません",
   "Nothing outstanding to pay": "なし未払いの支払い",
   "Nothing pending.": "保留中のものはありません。",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1060,6 +1092,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "顧客がチェックアウトすると、注文はここに表示されます。",
   "Organic Alphonso Mangoes": "有機アルフォンソ マンゴー",
   "Organic mangoes held in a sunlit orchard": "太陽の光が降り注ぐ果樹園で育てられた有機マンゴー",
+  "Organic wheat flour in a wooden bowl": "有機小麦粉木製のボウルに入れて",
   Outstanding: "優れた",
   Overview: "概要",
   "Owner Reports": "オーナー レポート",
@@ -1109,9 +1142,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "少なくとも 1 つの国を選択するか、世界中でリリースします。",
   "Pick at least one country, or release globally.":
     "少なくとも 1 つの国を選択するか、世界中にリリースします。",
-  "Pick exactly two people for a direct message.":
-    "ダイレクト メッセージを送信する人を 2 人だけ選択してください。",
   "Pick one from the list to start reading.": "リストから 1 人を選択して読み始めてください。",
+  "Pick the other person for this direct message.": "このダイレクト メッセージの相手を選択します。",
   "PIN code": "PIN コード",
   "PIN patterns": "PIN パターン",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1255,6 +1287,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "pages.view 権限と接続された API が必要ですAPI。",
   "Requires products.publish": "products.publish が必要です。",
   "Requires recipes.publish": "recipes.publish が必要です。",
+  "Requires settings access.": "設定へのアクセスが必要です。",
   "Requires the analytics.view permission.": "analytics.view 権限が必要です。",
   "Requires the inventory.adjust permission.": "inventory.adjust 権限が必要です。",
   "Requires the reports.query permission.": "reports.query が必要です。",
@@ -1305,6 +1338,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "実行中…",
   "Russian (Русский)": "ロシア語 (Русский)",
   "Safe area": "安全エリア",
+  "Safe geo-lock:": "安全な地理ロック:",
   "Sale & Discounts": "セールと割引",
   "Sale price": "セール価格",
   "Sale Price (₹)": "セール価格(₹)",
@@ -1437,6 +1471,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "セルビア語",
   Servings: "サービス",
   "Set a new password": "新しいパスワードを設定してください",
+  "Set as default": "デフォルトとして設定",
   "Shop · Farms · Journal": "ショップ、農場、日記",
   "Shop fresh greens": "新鮮な野菜を購入",
   "Shop root vegetables": "ルートを確認野菜",
@@ -1447,6 +1482,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "お知らせを表示",
   "Show dietary and certification filters on the shop page":
     "ショップページに食事と認証フィルターを表示",
+  "Show original": "オリジナルを表示",
   "Show product recommendations": "製品を表示おすすめ",
   "Show this snippet": "このスニペットを表示する",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1533,6 +1569,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "スワヒリ語 (スワヒリ語)",
   "Swedish (Svenska)": "スウェーデン語 (Svenska)",
   Table: "表",
+  "Tags & Certifications": "タグと認定",
   "Tags:": "タグ:",
   Tajik: "タジク語",
   "Taking payments": "支払いの受け取り",
@@ -1549,6 +1586,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "バナー、カテゴリ行、製品行、SEO フィールドは一緒に保存されます。セクションのチェックボックス、順序付け、およびカスタム セクションのコピーは、変更すると自動的に保存されます。",
   "The chat widget customers and visitors see on the storefront.":
     "顧客と訪問者がストアフロントに表示されるチャット ウィジェット。",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "チェックボックス リストは、各製品の [全般] タブに表示されます。変更はどこにでもすぐに適用されます。",
   "The classic credential pair, including the password-reset flow.":
     "パスワード リセット フローを含む、従来の認証情報のペア。",
   "the farm owner": "ファーム所有者",
@@ -1602,6 +1641,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "このセクションは、ページのさらに下にある独自のパネルで編集されます。",
   "Threads started from the storefront appear here.":
     "ストアフロントから開始されたスレッドがここに表示されます。",
+  "Thumbnail image URL": "サムネイル画像の URL",
   Time: "時間",
   "Tinted band": "色付きのバンド",
   Title: "タイトル",
@@ -1619,7 +1659,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Trail colour": "トレイルの色",
   "transfer money — make the transfer to": "送金 — 送金を行うへ",
   "Transfer reference (UPI / bank / cheque)": "振込先（UPI / 銀行 / 小切手）",
+  Translate: "翻訳",
+  "Translate chat": "チャットを翻訳",
   "Translating...": "翻訳中...",
+  "Translating…": "翻訳中…",
   Translations: "翻訳",
   Triage: "トリアージ",
   "True Grit Admin": "True Grit 管理者",
@@ -1652,9 +1695,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "画像をアップロード",
   "Uploading image...": "画像をアップロード中...",
   "Uploading image…": "画像をアップロード中...",
+  "Uploading thumbnail...": "サムネイルをアップロード中...",
   "Uploading...": "アップロード中...",
   "Uploading…": "アップロード中...",
   "Urdu (اردو)": "ウルドゥー語 (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "別の 1200 × 1200 画像を使用してください。この正方形の画像はカテゴリ カード用にトリミングされています。ワイド ヒーロー バナーは再利用しないでください。",
   "Use site-wide effects instead": "代わりにサイト全体の効果を使用する",
   "Use the exact canvas": "正確な効果を使用してくださいCanvas",
   "Use the navigation to get back.": "ナビゲーションを使用して戻ってください。",
@@ -1667,6 +1713,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "サイト ブランド カラーの使用",
   Uyghur: "ウイグル語",
   Uzbek: "ウズベク語",
+  "Value of 1 INR": "1 INR の価値",
+  "Value per INR": "INR あたりの価値",
   "Value, ₹": "価値、₹",
   Variant: "バリアント",
   "Variant (SKU)": "バリアント (SKU)",

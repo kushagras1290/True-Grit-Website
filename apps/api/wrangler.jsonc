@@ -295,6 +295,21 @@
         "PAYPAL_CLIENT_ID": "",
         "PAYPAL_CURRENCY": "USD",
         "PAYPAL_INR_PER_UNIT": "0",
+        // --- Transactional email ---
+        // Workers cannot open raw SMTP sockets (services/email.py), so
+        // production sends through Resend's HTTP API instead. This address
+        // only sends real mail once BOTH of the following are done:
+        //   1. Verify a sending domain at resend.com (add the SPF/DKIM DNS
+        //      records it gives you to this domain's DNS, e.g. via the
+        //      Cloudflare dashboard) -- Resend refuses to send `From` an
+        //      unverified domain.
+        //   2. `wrangler secret put RESEND_API_KEY --env production`
+        //      (never a var here -- it is a secret)
+        // Until both are done, get_email_sender() falls back to SMTP if
+        // SMTP_HOST is set, or the console sender (logs instead of sending)
+        // otherwise -- so this address existing here does not by itself
+        // turn on live sending.
+        "EMAIL_FROM": "True Grit <no-reply@truegritin.com>",
       },
     },
   },

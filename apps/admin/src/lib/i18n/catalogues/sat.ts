@@ -37,6 +37,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/ᱫᱚᱠᱟᱱ",
   "← All farms": "← ᱥᱟᱱᱟᱢ ᱵᱟᱹᱫᱽ ᱠᱚ",
   "+ stars": "+ ᱤᱯᱤᱞ ᱠᱚ",
+  "₹1,000 preview": "₹1,000 ᱯᱨᱤᱵᱷᱭᱩ",
   "1 star": "᱑ ᱤᱯᱤᱞ",
   "15% off your first order": "ᱟᱢᱟᱜ ᱯᱩᱭᱞᱩ ᱚᱰᱟᱨ ᱨᱮ ᱑᱕% ᱪᱷᱩᱴ",
   "2 cups": "᱒ ᱠᱟᱯ",
@@ -71,6 +72,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ᱢᱤᱫ ᱥᱩᱯᱟᱨ ᱮᱰᱢᱤᱱ ᱫᱚ ᱪᱮᱛᱟᱱ ᱨᱮ ᱢᱮᱱᱟᱜ + ᱵᱩᱛᱟᱢ ᱠᱷᱚᱱ ᱜᱟᱫᱮᱞ ᱥᱮ ᱥᱚᱡᱷᱮ ᱥᱟᱱᱫᱮᱥ ᱮ ᱮᱦᱚᱵ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ᱾",
   "A tinted band — check muted text is still readable here.":
     "ᱢᱤᱫ ᱴᱤᱱᱴᱮᱰ ᱵᱮᱱᱰ — ᱧᱮᱞ ᱢᱮ ᱢᱭᱩᱴᱮᱰ ᱚᱱᱚᱞ ᱱᱤᱛ ᱦᱚᱸ ᱱᱚᱸᱰᱮ ᱯᱟᱲᱦᱟᱣ ᱜᱟᱱᱚᱜᱼᱟ ᱾",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "ᱢᱤᱫ ᱦᱤᱡᱩᱜ ᱫᱤᱥᱚᱢ ᱢᱤᱫ ᱠᱟᱨᱟᱱᱥᱤ ᱵᱟᱪᱷᱟᱣᱟᱭ, ᱱᱚᱶᱟ ᱴᱮᱵᱩᱞ ᱫᱚ ᱚᱱᱟ ᱩᱫᱩᱜ ᱜᱚᱱᱚᱝ ᱮ ᱮᱢᱟ, ᱟᱨ ᱢᱩᱲᱩᱫ INR ᱫᱚ ᱵᱟᱝ ᱵᱚᱫᱚᱞᱚᱜᱼᱟ᱾ ᱚᱠᱟᱹᱡᱽᱣᱟᱹ ᱯᱩᱭᱥᱟᱹ ᱫᱚ INR-ᱨᱚᱠᱷᱟ ᱰᱤᱯᱷᱚᱞᱴ ᱨᱮ ᱨᱩᱣᱟᱹᱲᱚᱜᱼᱟ᱾",
   Accent: "ᱮᱠᱥᱮᱱᱴ",
   "Accept orders and payments": "ᱚᱰᱚᱨ ᱟᱨ ᱯᱮᱢᱮᱱᱴ ᱟᱝᱜᱚᱪ ᱢᱮ",
   "Accept orders and payments for this product": "ᱱᱚᱣᱟ ᱡᱤᱱᱤᱥ ᱞᱟᱹᱜᱤᱫ ᱚᱰᱚᱨ ᱟᱨ ᱯᱮᱭᱢᱮᱱᱴ ᱟᱝᱜᱚᱪ ᱢᱮ",
@@ -96,6 +99,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "ᱜᱟᱛᱟᱠ ᱥᱮᱞᱮᱫ ᱢᱮ",
   "Add code": "ᱠᱳᱰ ᱥᱮᱞᱮᱫ ᱢᱮ",
   "Add country": "ᱫᱤᱥᱚᱢ ᱥᱮᱞᱮᱫ ᱢᱮ",
+  "Add currency": "ᱯᱩᱭᱥᱟᱹ ᱥᱮᱞᱮᱫ ᱢᱮ",
   "Add entry": "ᱵᱚᱞᱚᱱ ᱥᱮᱞᱮᱫ ᱢᱮ",
   "Add farm owner": "ᱵᱟᱹᱫᱽ ᱨᱮᱱ ᱢᱟᱞᱤᱠ ᱥᱮᱞᱮᱫ ᱢᱮ",
   "Add ingredient": "ᱡᱤᱱᱤᱥ ᱥᱮᱞᱮᱫ ᱢᱮ",
@@ -106,6 +110,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "ᱮᱛᱚᱦᱚᱵ ᱞᱟᱹᱜᱤᱫ ᱞᱟᱛᱟᱨ ᱨᱮ ᱢᱤᱫᱴᱟᱹᱝ ᱥᱮᱞᱮᱫ ᱢᱮ ᱾",
   "Add one so the bot has something to reference for this scope.":
     "ᱢᱤᱫ ᱥᱮᱞᱮᱫ ᱢᱮ ᱡᱮ ᱵᱚᱴ ᱴᱷᱮᱱ ᱱᱚᱣᱟ ᱥᱠᱚᱯ ᱞᱟᱹᱜᱤᱫ ᱥᱟᱠᱟᱢ ᱞᱟᱹᱜᱤᱫ ᱡᱟᱦᱟᱱᱟᱜ ᱛᱟᱦᱮᱱ ᱢᱟ᱾",
+  "Add one using the field above.": "ᱪᱮᱛᱟᱱ ᱨᱮ ᱢᱮᱱᱟᱜ ᱯᱟᱦᱴᱟ ᱵᱮᱵᱷᱟᱨ ᱠᱟᱛᱮ ᱢᱤᱫ ᱥᱮᱞᱮᱫ ᱢᱮ ᱾",
   "Add page": "ᱥᱟᱦᱴᱟ ᱥᱮᱞᱮᱫ ᱢᱮ",
   "Add participants": "ᱥᱟᱶ ᱥᱮᱞᱮᱫ ᱠᱚ",
   "Add point": "ᱯᱚᱭᱮᱱᱴ ᱥᱮᱞᱮᱫ ᱢᱮ",
@@ -124,6 +129,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "ᱡᱚᱱ ᱥᱮᱞᱮᱫ ᱢᱮ",
   Added: "ᱥᱮᱞᱮᱫ ᱮᱱᱟ",
   "Adding...": "ᱡᱮᱞᱟᱣ ᱠᱟᱛᱮ...",
+  "Adding…": "ᱡᱮᱞᱟᱣ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ…",
   Address: "ᱴᱷᱤᱠᱟᱹᱱᱟ",
   "Adjust points": "ᱯᱚᱭᱮᱱᱴᱥ ᱵᱮᱵᱷᱟᱨ ᱢᱮ",
   "Adjust the search or create a category.": "ᱥᱮᱸᱫᱽᱨᱟ ᱵᱮᱵᱷᱟᱨ ᱢᱮ ᱟᱨᱵᱟᱝ ᱢᱤᱫ ᱜᱟᱛᱟᱠ ᱛᱮᱭᱟᱨ ᱢᱮ ᱾",
@@ -225,6 +231,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "ᱟᱡᱟᱨᱵᱟᱭᱡᱟᱱᱤ",
   "B2B / bulk ordering": "B2B / ᱵᱟᱹᱞᱠ ᱚᱰᱚᱨᱤᱝ",
   Back: "ᱨᱩᱣᱟᱹᱲ",
+  "Back to conversations": "ᱜᱟᱞᱢᱟᱨᱟᱣ ᱛᱮ ᱨᱩᱣᱟᱹᱲᱚᱜ ᱢᱮ",
   "Back to sign in": "ᱥᱟᱭᱤᱱ ᱤᱱ ᱞᱟᱹᱜᱤᱫ ᱨᱩᱣᱟᱹᱲᱚᱜ ᱢᱮ",
   Balance: "ᱵᱮᱞᱮᱱᱥ",
   "Banner alt text": "ᱵᱮᱱᱟᱨ ᱚᱞᱴ ᱚᱱᱚᱞ",
@@ -289,6 +296,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "ᱜᱟᱛᱟᱠ ᱥᱟᱥᱟᱯᱲᱟᱣᱤᱡ ᱛᱷᱚᱠ ᱠᱚ",
   "Category not found": "ᱛᱷᱚᱠ ᱵᱟᱝ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ",
   "Category row": "ᱛᱷᱚᱠ ᱛᱷᱟᱨ",
+  "Category thumbnail alt text": "ᱜᱟᱛᱟᱠ ᱛᱷᱟᱢᱵᱱᱮᱞ ᱚᱞᱴ ᱚᱱᱚᱞ",
+  "Category thumbnail URL": "ᱜᱟᱛᱟᱠ ᱛᱷᱟᱢᱵᱱᱮᱞ URL",
   "Category to add to the homepage": "ᱦᱳᱢᱥᱟᱦᱴᱟ ᱨᱮ ᱥᱮᱞᱮᱫ ᱞᱟᱹᱜᱤᱫ ᱛᱷᱚᱠ",
   "Cautions and low stock.": "ᱥᱚᱱᱛᱚᱨ ᱟᱨ ᱠᱚᱢ ᱥᱴᱚᱠ ᱾",
   Cebuano: "ᱥᱮᱵᱩᱣᱟᱱᱳ",
@@ -360,6 +369,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "ᱡᱚᱯᱚᱲᱟᱣ ᱤᱢᱮᱞ",
   Content: "ᱡᱤᱱᱤᱥ",
   "Continue with Facebook": "ᱯᱷᱮᱥᱵᱩᱠ ᱥᱟᱶᱛᱮ ᱞᱟᱦᱟᱜ ᱢᱮ",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "ᱢᱤᱫ ᱵᱷᱟᱨᱚᱱ ᱴᱟᱠᱟ ᱛᱤᱱᱟᱹᱜ ᱜᱚᱱᱚᱝ ᱛᱟᱦᱮᱸᱱᱟ ᱚᱱᱟ ᱴᱷᱟᱹᱣᱠᱟᱹ ᱠᱟᱛᱮ ᱟᱱᱢᱟᱱ ᱞᱚᱠᱟᱞ ᱠᱟᱨᱟᱱᱥᱤ ᱫᱟᱢ ᱠᱚᱵᱚᱡᱽ ᱢᱮ᱾ ᱠᱮᱴᱟᱞᱚᱜᱽ, ᱪᱮᱠᱟᱣᱩᱴ ᱟᱨ ᱚᱰᱟᱨ ᱨᱮᱠᱚᱨᱰ ᱠᱚ ᱨᱚᱯᱟ ᱛᱮ ᱛᱟᱦᱮᱱ ᱢᱮ᱾",
   "Control what each role can view, create, edit, publish or manage.":
     "ᱡᱚᱛᱚ ᱵᱷᱩᱢᱤᱠᱟ ᱧᱮᱞ, ᱛᱮᱭᱟᱨ, ᱥᱟᱥᱟᱯᱲᱟᱣ, ᱪᱷᱟᱯᱟᱣ ᱟᱨ ᱵᱟᱝ ᱪᱟᱞᱟᱣ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱚᱱᱟ ᱠᱚᱵᱚᱡᱽ ᱢᱮ᱾",
   "Control whether each bot is available, and edit what it knows.":
@@ -404,6 +415,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "ᱠᱩᱨᱮᱴᱮᱰ ᱛᱟᱞᱠᱟ ᱜᱚᱲᱦᱚᱱ",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "ᱠᱷᱟᱥ ᱵᱷᱮᱨᱤᱭᱮᱱᱴ ᱨᱮᱭᱟᱜ ᱠᱩᱨᱮᱴᱮᱰ ᱥᱮᱴ ᱢᱤᱫ ᱯᱷᱞᱟᱴ ᱫᱟᱢ ᱨᱮ ᱢᱤᱫ ᱥᱟᱶᱛᱮ ᱟᱠᱨᱤᱧᱚᱜ ᱠᱟᱱᱟ᱾ ᱪᱮᱠᱟᱣᱩᱴ ᱫᱚ ᱢᱤᱫ ᱫᱷᱟᱣ ᱵᱟᱥᱠᱮᱴ ᱨᱮ ᱡᱚᱛᱚ ᱡᱤᱱᱤᱥ ᱵᱟᱱᱰᱮᱞ ᱨᱮ ᱫᱚᱦᱚ ᱠᱟᱛᱮ ᱟᱡ ᱛᱮ ᱵᱟᱧᱪᱟᱣ ᱞᱟᱹᱜᱩᱜᱼᱟ᱾",
+  Currency: "ᱯᱩᱭᱥᱟᱹ",
+  "Currency code": "ᱯᱩᱭᱥᱟᱹ ᱠᱚᱰ",
+  "Currency Converter": "ᱯᱩᱭᱥᱟᱹ ᱵᱚᱫᱚᱞᱤᱭᱟᱹ",
+  "Currency values unavailable": "ᱠᱟᱨᱟᱱᱥᱤ ᱜᱚᱱᱚᱝ ᱵᱟᱝ ᱧᱟᱢᱚᱜ ᱠᱟᱱᱟ",
   "Current password": "ᱱᱤᱛᱚᱜ ᱫᱟᱱᱟᱝ ᱥᱟᱵᱟᱫᱽ",
   "Currently its own effects.": "ᱱᱤᱛᱚᱜ ᱫᱚ ᱱᱤᱡᱮᱨᱟᱜ ᱮᱥᱮᱨ ᱠᱟᱱᱟ ᱾",
   "Currently the site-wide effects — save below to give it its own.":
@@ -442,6 +457,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "ᱰᱤᱠᱟᱭᱱᱟᱞ",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'ᱥᱟᱯᱟᱱ ᱥᱴᱚᱯ ᱪᱮᱛᱟᱱ ᱨᱮ ᱥᱟᱡᱟᱣ ᱥᱟᱦᱴᱟ, ᱟᱨ ᱯᱚᱭᱮᱱᱴᱟᱨ ᱯᱟᱧᱡᱟ ᱠᱟᱛᱮ ᱢᱤᱫ ᱰᱟᱦᱟᱨ ᱾ ᱵᱟᱱᱟᱨ ᱫᱚ ᱰᱤᱯᱷᱚᱞᱴ ᱛᱮ ᱵᱚᱸᱫ ᱟᱠᱟᱱᱟ, ᱵᱟᱱᱟᱨ ᱫᱚ ᱩᱱᱠᱩ ᱞᱟᱹᱜᱤᱫ ᱯᱩᱨᱟᱹ ᱜᱮ ᱵᱟᱹᱲᱤᱡ ᱟᱠᱟᱱᱟ ᱚᱠᱚᱭ ᱫᱚ ᱟᱠᱚᱣᱟᱜ ᱰᱤᱵᱷᱟᱭᱤᱥ ᱨᱮ ᱠᱚᱢ ᱞᱟᱹᱜᱤᱫ ᱠᱚ ᱠᱷᱚᱡᱚᱜ ᱠᱟᱱᱟ, ᱟᱨ ᱵᱟᱱᱟᱨ ᱫᱚ ᱯᱮᱭᱢᱮᱱᱴ ᱣᱤᱱᱰᱚ ᱨᱮ ᱵᱟᱝ ᱧᱮᱞᱚᱜ-ᱟ — ᱠᱟᱨᱰ ᱯᱷᱚᱨᱢ ᱨᱮ ᱵᱚᱨᱚᱯᱷ ᱫᱚ ᱴᱷᱤᱠ ᱵᱟᱹᱲᱤᱡ ᱚᱠᱛᱚ ᱨᱮ ᱵᱟᱹᱲᱤᱡ ᱜᱮᱭᱟ᱾ ᱢᱤᱫ ᱫᱤᱥᱚᱢ ᱨᱮᱭᱟᱜ ᱮᱥᱮᱨ ᱫᱚ ᱥᱟᱸᱜᱷᱟᱨᱤᱭᱟᱹ ᱠᱚ ᱥᱟᱶ ᱢᱮᱥᱟᱞ ᱵᱚᱫᱚᱞ ᱠᱟᱛᱮ ᱥᱟᱸᱜᱷᱟᱨᱤᱭᱟᱹ ᱠᱚ ᱵᱚᱫᱚᱞ ᱠᱟᱱᱟ — "ᱠᱤᱪᱷᱩ ᱵᱚᱨᱚᱯᱷ" ᱫᱚ ᱵᱚᱨᱚᱯᱷ ᱨᱮᱭᱟᱜ ᱢᱮᱱᱮᱛ ᱵᱟᱝ ᱠᱟᱱᱟ ᱟᱨ ᱪᱮᱫ ᱮᱥᱮᱨ ᱦᱚᱸ ᱵᱟᱝ ᱠᱟᱱᱟ᱾',
+  Default: "ᱰᱤᱯᱷᱚᱞᱴ",
   "Default fee": "ᱰᱤᱯᱷᱚᱞᱴ ᱯᱷᱤ",
   "Default. Orderable exactly when Site Control's payments switch is on.":
     "ᱟᱥᱚᱞᱟᱜ᱾ ᱥᱟᱭᱤᱴ ᱠᱚᱱᱴᱨᱚᱞ ᱨᱮᱭᱟᱜ ᱯᱮᱢᱮᱱᱴ ᱥᱣᱤᱪ ᱪᱟᱹᱞᱩ ᱛᱟᱦᱮᱱ ᱡᱷᱚᱜ ᱴᱷᱤᱠ ᱜᱮ ᱚᱰᱟᱨ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ᱾",
@@ -460,6 +476,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "ᱨᱮᱥᱤᱯᱤ ᱢᱮᱴᱟᱣ ᱢᱮ",
   "Delete role": "ᱵᱷᱩᱢᱤᱠᱟ ᱢᱮᱴᱟᱣ ᱢᱮ",
   "Delete selected (": "ᱵᱟᱪᱷᱟᱣ ᱠᱟᱱ ᱢᱮᱴᱟᱣ ᱢᱮ (",
+  "Delete this entry": "ᱱᱚᱣᱟ ᱵᱚᱞᱚᱱ ᱢᱮᱴᱟᱣ ᱢᱮ",
   "Delete this price adjustment?": "ᱱᱚᱣᱟ ᱫᱟᱢ ᱥᱚᱢᱟᱱ ᱢᱮᱴᱟᱣ ᱢᱮ?",
   "Delete user": "ᱵᱮᱵᱷᱟᱨᱤᱭᱟᱹ ᱢᱮᱴᱟᱣ ᱢᱮ",
   "Deleting...": "ᱢᱮᱴᱟᱣ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ...",
@@ -483,6 +500,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "ᱡᱚᱢᱟᱜ ᱟᱨ ᱥᱟᱨᱴᱤᱯᱷᱤᱠᱮᱥᱚᱱ ᱯᱷᱤᱞᱴᱟᱨ ᱠᱚ",
   "Dietary tags": "ᱡᱚᱢᱟᱜ ᱴᱮᱜᱽ",
   "Dietary tags (comma separated)": "ᱡᱚᱢᱟᱜ ᱴᱮᱜᱽ (ᱠᱚᱢᱟ ᱵᱷᱮᱜᱟᱨ)",
+  "Dietary Tags & Certifications": "ᱡᱚᱢᱟᱜ ᱴᱮᱜᱽ ᱟᱨ ᱥᱟᱨᱴᱤᱯᱷᱤᱠᱮᱥᱚᱱ",
   "Direct message": "ᱥᱚᱡᱷᱮ ᱠᱷᱚᱵᱚᱨ",
   Disable: "ᱚᱠᱟᱹᱡᱽᱣᱟᱹ",
   "Disable selected (": "ᱵᱟᱪᱷᱟᱣ ᱠᱟᱱ ᱚᱠᱟᱹᱡᱽᱣᱟᱹ ᱢᱮ (",
@@ -506,6 +524,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "ᱡᱮᱞᱠᱟ ᱮᱠᱟᱣᱩᱱᱴ",
   "e.g. DIWALI500": "ᱡᱮᱞᱠᱟ ᱰᱤᱣᱟᱞᱤ᱕᱐᱐",
   "e.g. Harvested the week of 3 March 2026": "ᱡᱮᱞᱠᱟ ᱓ ᱢᱟᱨᱪ ᱒᱐᱒᱖ ᱨᱮᱭᱟᱜ ᱦᱟᱯᱛᱟ ᱨᱮ ᱦᱟᱨᱣᱮᱥᱴ ᱦᱩᱭᱮᱱᱟ",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "ᱮ.ᱥ. ᱵᱷᱟᱨᱚᱛ ᱚᱨᱜᱟᱱᱤᱠ, ᱴᱷᱤᱠ ᱵᱮᱯᱟᱨ᱾ ᱡᱟᱦᱟᱱ ᱡᱤᱱᱤᱥ ᱞᱟᱹᱜᱤᱫ ᱮᱢ ᱟᱠᱟᱱ ᱥᱟᱨᱴᱤᱯᱷᱤᱠᱮᱥᱚᱱ ᱫᱚ ᱚᱱᱟ ᱠᱷᱚᱱ ᱚᱪᱚᱜ ᱦᱟᱹᱵᱤᱡ ᱵᱟᱝ ᱢᱮᱴᱟᱣ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ᱾",
   "e.g. Ops Room": "ᱡᱮᱞᱠᱟ. ᱚᱯᱥ ᱨᱩᱢ",
   "e.g. Rain-fed, no synthetic pesticides":
     "ᱡᱮᱞᱠᱟ ᱡᱟᱹᱯᱩᱫ ᱛᱮ ᱡᱚᱢ ᱚᱪᱚ, ᱥᱤᱱᱛᱷᱮᱴᱤᱠ ᱠᱤᱥᱟᱹᱜ ᱨᱟᱱ ᱵᱟᱹᱱᱩᱜᱼᱟ",
@@ -513,6 +533,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ᱡᱮᱞᱠᱟ ᱨᱮᱯᱷᱨᱤᱡᱟᱨ ᱨᱮ ᱫᱚᱦᱚ ᱠᱟᱛᱮ ᱕ ᱫᱤᱱ ᱵᱷᱤᱛᱨᱤ ᱨᱮ ᱵᱮᱵᱷᱟᱨ ᱢᱮ",
   "e.g. TO-HONEY-500": "ᱡᱮᱞᱠᱟ ᱴᱳ-ᱦᱟᱱᱤ-᱕᱐᱐",
   "e.g. UTR 123456789012": "ᱡᱮᱞᱠᱟ ᱭᱩᱴᱤᱟᱨ ᱑᱒᱓᱔᱕᱖᱗᱘᱙᱐᱑᱒",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "ᱮ.ᱥ. ᱥᱟᱫᱷᱟᱨᱚᱱ, ᱜᱞᱩᱴᱮᱱ ᱯᱷᱨᱤ᱾ ᱢᱤᱫ ᱰᱤᱞᱤᱴ ᱠᱷᱟᱱ ᱱᱚᱣᱟ ᱥᱟᱱᱟᱢ ᱯᱨᱚᱰᱟᱠᱴ ᱠᱷᱚᱱ ᱚᱪᱚᱜᱼᱟ ᱡᱟᱦᱟᱸ ᱨᱮ ᱱᱚᱣᱟ ᱪᱮᱠ ᱦᱩᱭ ᱟᱠᱟᱱᱟ ᱾",
   Edit: "ᱥᱟᱯᱲᱟᱣ",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "ᱥᱤ ᱮᱢ ᱮᱥ ᱥᱟᱦᱴᱟ ᱢᱮᱴᱟᱰᱟᱴᱟ ᱥᱟᱥᱟᱯᱲᱟᱣ ᱢᱮ, ᱤᱱᱰᱮᱠᱥᱤᱝ ᱟᱨ ᱵᱮᱨᱮᱫ ᱥᱟᱦᱴᱟ ᱵᱞᱚᱠ ᱠᱚ ᱾ ᱚᱲᱟᱜ ᱥᱟᱦᱴᱟ ᱨᱮᱠᱚᱨᱰ ᱱᱚᱸᱰᱮ ᱦᱚᱸ ᱥᱩᱪᱤ ᱟᱠᱟᱱᱟ, ᱢᱮᱱᱠᱷᱟᱱ ᱚᱲᱟᱜ ᱥᱟᱦᱴᱟ ᱥᱮᱴᱤᱝ ᱫᱚ ᱱᱚᱶᱟ ᱵᱚᱫᱚᱞ ᱨᱮᱭᱟᱜ ᱨᱚᱯᱟ ᱰᱟᱦᱟᱨ ᱠᱟᱱᱟ — ᱱᱚᱶᱟ ᱥᱟᱥᱟᱯᱲᱟᱣᱤᱡ ᱫᱚ ᱨᱚ JSON ᱮ ᱦᱟᱛᱟᱣᱟ᱾",
@@ -615,6 +637,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'ᱢᱤᱫ ᱫᱤᱥᱚᱢ ᱨᱮ ᱦᱤᱡᱩᱜ ᱠᱚ ᱞᱟᱹᱜᱤᱫ ᱢᱤᱫ ᱛᱷᱚᱠ ᱪᱟᱹᱞᱩ ᱥᱮ ᱵᱚᱱᱫᱚ ᱢᱮ, ᱮᱴᱟᱜ ᱦᱚᱲ ᱪᱮᱫ ᱠᱚ ᱧᱮᱞᱟ ᱚᱱᱟ ᱵᱟᱝ ᱵᱚᱫᱚᱞ ᱠᱟᱛᱮ ᱾ "Inherit" ᱨᱮ ᱢᱤᱫ ᱛᱷᱚᱠ ᱟᱲᱟᱜ ᱢᱮ ᱟᱨ ᱱᱚᱣᱟ ᱫᱚ ᱪᱮᱛᱟᱱ ᱛᱷᱚᱠ ᱛᱟᱞᱠᱟ ᱨᱮ ᱴᱤᱠᱵᱚᱠᱥ ᱯᱟᱧᱡᱟᱭ ᱢᱮ᱾',
   "Forgot password?": "ᱯᱟᱥᱣᱟᱨᱰ ᱦᱤᱲᱤᱧ ᱮᱱᱟ?",
+  "Formatting locale": "ᱞᱚᱠᱮᱞ ᱨᱮᱭᱟᱜ ᱯᱷᱚᱨᱢᱮᱴᱤᱝ",
   "Free delivery above (₹)": "ᱪᱮᱛᱟᱱ ᱨᱮ ᱯᱷᱨᱤ ᱰᱮᱞᱤᱵᱷᱟᱨᱤ (₹)",
   "French (Français)": "ᱯᱷᱨᱮᱸᱪ (ᱯᱷᱨᱟᱱᱥᱟᱭᱤᱥ)",
   Frequency: "ᱯᱷᱨᱤᱠᱩᱣᱮᱱᱥᱤ",
@@ -701,6 +724,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "ᱡᱩᱫᱤ ᱱᱚᱣᱟ ᱯᱨᱚᱪᱟᱨ ᱛᱤᱥ ᱦᱚᱸ ᱵᱟᱝ ᱯᱷᱩᱨᱜᱟᱹᱞ ᱟᱠᱟᱱᱟ ᱱᱚᱣᱟ ᱫᱚ ᱥᱤᱫᱷᱟᱹ ᱢᱮᱴᱟᱣ ᱟᱠᱟᱱᱟ; ᱟᱨ ᱵᱟᱝᱠᱷᱟᱱ ᱱᱚᱣᱟ ᱫᱚ ᱟᱨᱠᱟᱭᱤᱵᱷ ᱛᱟᱦᱮᱱᱟ ᱚᱱᱟᱛᱮ ᱱᱚᱣᱟ ᱱᱟᱜᱟᱢ ᱫᱚ ᱫᱚᱦᱚ ᱛᱟᱦᱮᱱᱟ᱾",
   Igbo: "ᱤᱜᱽᱵᱷᱚ",
+  Image: "ᱪᱤᱛᱟᱹᱨ",
   "Image alt text": "ᱪᱤᱛᱟᱹᱨ ᱚᱞᱴ ᱚᱱᱚᱞ",
   "Image alt text (optional)": "ᱪᱤᱛᱟᱹᱨ ᱚᱞᱴ ᱚᱱᱚᱞ (ᱚᱯᱥᱚᱱᱟᱞ)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -768,6 +792,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Label: "ᱞᱮᱵᱮᱞ",
   "Land under cultivation": "ᱟᱹᱥᱩᱞ ᱦᱟᱥᱟ",
   Language: "ᱯᱟᱹᱨᱥᱤ",
+  "Language Studio": "ᱯᱟᱹᱨᱥᱤ ᱥᱴᱩᱰᱤᱭᱳ",
   Lao: "ᱞᱟᱣ",
   "Last activity": "ᱢᱩᱪᱟᱹᱫ ᱠᱟᱹᱢᱤᱦᱚᱨᱟ",
   "Last reviewer note": "ᱢᱩᱪᱟᱹᱫ ᱧᱮᱞᱵᱤᱰᱟᱹᱣᱤᱭᱟᱹ ᱱᱚᱴ",
@@ -780,6 +805,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "ᱢᱤᱫ ᱨᱚᱝ ᱠᱷᱟᱹᱞᱤ ᱫᱚᱦᱚᱭ ᱢᱮ ᱢᱤᱫ True Grit ᱥᱟᱶ ᱡᱟᱦᱟᱡᱽ ᱥᱟᱶ — ᱢᱤᱫ ᱯᱷᱤᱞᱰ ᱯᱷᱟᱨᱪᱟ ᱫᱚ ᱟᱢ ᱪᱮᱫ ᱞᱮᱠᱟ ᱟᱢ ᱵᱟᱝ ᱮᱢ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ᱾ ᱢᱤᱫ ᱥᱟᱦᱴᱟ ᱥᱮ ᱫᱤᱥᱚᱢ ᱨᱮᱭᱟᱜ ᱨᱚᱝ ᱫᱚ ᱥᱟᱭᱤᱴ ᱨᱚᱝ ᱠᱷᱚᱱ ᱮᱦᱚᱵᱚᱜ-ᱟ ᱟᱨ ᱟᱢ ᱵᱚᱫᱚᱞ ᱠᱟᱛᱮ ᱮᱠᱮᱱ ᱚᱱᱟ ᱜᱮ ᱚᱵᱷᱟᱨᱟᱭᱤᱰ ᱠᱟᱱᱟ, ᱚᱱᱟ ᱛᱮ ᱡᱚᱛᱚ ᱜᱮ ᱠᱟᱹᱴᱤᱡ ᱛᱟᱞᱠᱟ ᱠᱟᱱᱟ, ᱫᱚᱦᱚ ᱞᱟᱹᱜᱤᱫ ᱫᱚ ᱫᱚᱥᱟᱨ ᱯᱮᱞᱮᱴ ᱫᱚ ᱵᱟᱝ ᱠᱟᱱᱟ᱾ ᱛᱤᱱ ᱨᱮ ᱵᱟᱱᱟᱨ ᱢᱤᱫ ᱦᱚᱲ ᱞᱟᱹᱜᱤᱫ ᱞᱟᱹᱜᱩᱜ-ᱟ, ᱥᱟᱦᱴᱟ ᱡᱤᱛᱠᱟᱹᱨᱚᱜ-ᱟ — ᱥᱟᱥᱟᱯᱲᱟᱣᱤᱡ ᱥᱟᱦᱴᱟ ᱨᱮᱭᱟᱜ ᱰᱤᱡᱟᱭᱤᱱ ᱫᱚ ᱡᱤᱭᱚ ᱮᱠᱥᱯᱮᱨᱤᱢᱮᱱᱴ ᱫᱟᱨᱟᱭ ᱛᱮ ᱵᱟᱝ ᱵᱟᱝ ᱦᱩᱭᱩᱜ-ᱟ ᱾",
   "Leave blank to use the default.": "ᱰᱤᱯᱷᱚᱞᱴ ᱵᱮᱵᱷᱟᱨ ᱞᱟᱹᱜᱤᱫ ᱠᱷᱟᱹᱞᱤ ᱟᱲᱟᱜ ᱢᱮ ᱾",
+  "Leave the link blank for a plain, unclickable image.":
+    "ᱥᱟᱫᱷᱟᱨᱚᱱ, ᱵᱟᱝ ᱚᱛᱟ ᱞᱮᱠᱟᱱ ᱪᱤᱛᱟᱹᱨ ᱞᱟᱹᱜᱤᱫ ᱞᱤᱝᱠ ᱠᱷᱟᱹᱞᱤ ᱟᱲᱟᱜ ᱢᱮ ᱾",
   "Less refunds": "ᱠᱚᱢ ᱯᱩᱭᱥᱟᱹ ᱨᱩᱣᱟᱹᱲ",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "ᱜᱚᱨᱦᱟᱠ ᱠᱚ ᱪᱮᱠᱟᱣᱩᱴ ᱨᱮ ᱜᱤᱯᱷᱴ ᱠᱟᱨᱰ ᱠᱚᱰ ᱞᱟᱹᱜᱩ ᱚᱪᱚ ᱠᱚᱣᱟᱭ, ᱟᱠᱚᱣᱟᱜ ᱚᱰᱟᱨ ᱢᱩᱴ ᱨᱮᱭᱟᱜ ᱦᱟᱹᱴᱤᱧ ᱥᱮ ᱥᱟᱱᱟᱢ ᱠᱚ ᱠᱚᱵᱷᱟᱨ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ᱾ ᱜᱤᱯᱷᱴ ᱠᱟᱨᱰ ᱥᱟᱦᱴᱟ ᱠᱷᱚᱱ ᱠᱟᱨᱰ ᱮᱢᱚᱜ ᱢᱮ᱾ ᱰᱤᱯᱷᱚᱞᱴ ᱛᱮ ᱵᱚᱱᱫᱚ — ᱢᱮᱱᱟᱜ ᱠᱟᱨᱰ ᱟᱨ ᱚᱱᱟ ᱨᱮᱭᱟᱜ ᱵᱟᱞᱮᱱᱥ ᱫᱚᱦᱚ ᱢᱮᱱᱟᱜᱼᱟ, ᱮᱠᱮᱱ ᱵᱟᱝ ᱯᱷᱩᱨᱜᱟᱹᱞ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ, ᱡᱚᱠᱷᱚᱱ ᱱᱚᱣᱟ ᱵᱚᱱᱫᱚ ᱜᱮᱭᱟ᱾",
@@ -791,6 +818,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "ᱞᱟᱭᱤᱱ ᱢᱩᱴ",
   Lines: "ᱞᱟᱭᱤᱱ",
   Link: "ᱞᱤᱱᱠ",
+  "Link (optional)": "ᱞᱤᱝᱠ (ᱚᱯᱥᱚᱱᱟᱞ)",
   "Link customer": "ᱠᱟᱥᱴᱚᱢᱟᱨ ᱞᱤᱝᱠ",
   "Link product": "ᱯᱨᱚᱰᱟᱠᱴ ᱞᱤᱝᱠ",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -811,6 +839,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live, and to scale with the real storefront's own styles.":
     "ᱞᱟᱭᱤᱵᱽ, ᱟᱨ ᱥᱟᱹᱨᱤ ᱥᱴᱚᱨᱯᱷᱨᱚᱱᱴ ᱨᱮᱭᱟᱜ ᱱᱤᱡᱮᱨ ᱥᱴᱟᱭᱤᱞ ᱥᱟᱶ ᱥᱠᱮᱞ ᱞᱟᱹᱜᱤᱫ᱾",
   "llms.txt": "ᱮᱞᱮᱞᱮᱢᱮᱥ.ᱴᱤᱮᱠᱥᱴᱤ",
+  Loading: "ᱞᱳᱰᱤᱝ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ",
   "Loading active promotions...": "ᱠᱟᱹᱡᱽᱣᱟᱹ ᱯᱨᱚᱪᱟᱨ ᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ...",
   "Loading analytics...": "ᱟᱱᱟᱞᱤᱴᱤᱥ ᱞᱳᱰᱤᱝ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ...",
   "Loading announcements...": "ᱩᱪᱷᱟ.ᱱ ᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ…",
@@ -824,6 +853,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "ᱜᱟᱞᱢᱟᱨᱟᱣ ᱠᱚ ᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ...",
   "Loading country overrides...": "ᱫᱤᱥᱚᱢ ᱚᱵᱷᱟᱨᱟᱭᱤᱰ ᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ...",
   "Loading crawler files...": "ᱠᱨᱚᱞᱟᱨ ᱨᱮᱫ ᱠᱚ ᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ....",
+  "Loading currency values…": "ᱯᱩᱭᱥᱟᱹ ᱜᱚᱱᱚᱝ ᱠᱚ ᱞᱳᱰᱤᱝ ᱠᱟᱱᱟ...",
   "Loading delivery charges...": "ᱰᱮᱞᱤᱵᱷᱟᱨᱤ ᱪᱟᱨᱡᱽ ᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ...",
   "Loading discussion…": "ᱜᱟᱯᱟᱞᱢᱟᱨᱟᱣ ᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ...",
   "Loading highlights...": "ᱦᱟᱭᱞᱟᱭᱤᱴ ᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ...",
@@ -846,6 +876,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "ᱥᱴᱚᱨᱯᱷᱨᱚᱱᱴ ᱥᱣᱤᱪ ᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ…",
   "Loading submission…": "ᱡᱚᱢᱟᱣ ᱞᱳᱰᱤᱝ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ...",
   "Loading...": "ᱞᱳᱰᱤᱝ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ...",
+  "Loading…": "ᱞᱳᱰᱤᱝ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ...",
   "Local pickup points": "ᱞᱚᱠᱟᱞ ᱯᱤᱠᱟᱯ ᱯᱚᱭᱮᱱᱴ",
   "Locale to translate": "ᱛᱚᱨᱡᱚᱢᱟ ᱞᱟᱹᱜᱤᱫ ᱞᱚᱠᱮᱞ",
   "Locked out? Use": "ᱠᱩᱞᱩᱯ ᱟᱠᱟᱱᱟ? ᱵᱮᱵᱚᱦᱟᱨ ᱢᱮ",
@@ -900,6 +931,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "ᱢᱚᱰᱮᱨᱮᱥᱚᱱ ᱠᱟᱨᱚᱱ",
   Mongolian: "ᱢᱚᱝᱜᱚᱞᱤᱭᱟᱱ",
   "More from True Grit": "ᱥᱯᱟᱱ ᱠᱷᱚᱱ ᱵᱟᱹᱲᱛᱤ True Grit",
+  "Motto banner": "ᱢᱚᱴᱳ ᱵᱮᱱᱟᱨ",
   "Move down in the showcase": "ᱥᱚᱣᱠᱮᱥ ᱨᱮ ᱞᱟᱛᱟᱨ ᱥᱮᱱᱚᱜ ᱢᱮ",
   "Move earlier": "ᱞᱟᱦᱟ ᱥᱮᱱᱚᱜ ᱢᱮ",
   "Move later": "ᱛᱟᱭᱚᱢ ᱥᱮᱱᱚᱜ ᱢᱮ",
@@ -1029,6 +1061,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ᱱᱚᱴ (ᱵᱚᱫᱚᱞ ᱟᱨ ᱵᱟᱝ ᱟᱝᱜᱚᱪ ᱞᱟᱹᱜᱤᱫ ᱟᱨᱫᱟᱥ ᱞᱟᱹᱠᱛᱤᱭᱟᱱᱟ)",
   "Note (required)": "ᱱᱚᱴ (ᱞᱟᱹᱠᱛᱤᱭᱟᱱᱟ)",
   Notes: "ᱱᱚᱴᱥ",
+  "Nothing here yet": "ᱱᱤᱛ ᱦᱚᱸ ᱱᱚᱸᱰᱮ ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱹᱱᱩᱜ ᱟ",
   "Nothing outstanding to pay": "ᱯᱩᱭᱥᱟᱹ ᱮᱢ ᱞᱟᱹᱜᱤᱫ ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱹᱱᱩᱜ ᱟ",
   "Nothing pending.": "ᱪᱮᱫ ᱦᱚᱸ ᱵᱟᱝ ᱛᱟᱹᱝᱜᱤ ᱟᱠᱟᱱᱟ ᱾",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1083,6 +1116,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ᱜᱚᱨᱦᱟᱠ ᱠᱚ ᱪᱮᱠ ᱟᱣᱩᱴ ᱠᱟᱛᱮ ᱚᱰᱚᱨ ᱠᱚ ᱱᱚᱸᱰᱮ ᱧᱮᱞᱚᱜᱼᱟ᱾",
   "Organic Alphonso Mangoes": "ᱚᱨᱜᱟᱱᱤᱠ ᱟᱞᱯᱷᱚᱱᱥᱚ ᱢᱮᱸᱜᱚᱡᱽ",
   "Organic mangoes held in a sunlit orchard": "ᱥᱤᱛᱩᱝ ᱢᱟᱨᱥᱟᱞ ᱵᱟᱜᱟᱱ ᱨᱮ ᱫᱚᱦᱚ ᱠᱟᱱ ᱚᱨᱜᱟᱱᱤᱠ ᱮᱢᱚ",
+  "Organic wheat flour in a wooden bowl": "ᱠᱟᱴ ᱵᱟᱹᱴᱤ ᱨᱮ ᱚᱨᱜᱟᱱᱤᱠ ᱜᱚᱢ ᱟᱴᱟ",
   Outstanding: "ᱚᱥᱟᱶᱛᱟ",
   Overview: "ᱚᱵᱷᱟᱨᱵᱷᱤᱭᱩ",
   "Owner Reports": "ᱢᱟᱞᱤᱠ ᱨᱤᱯᱳᱨᱴ",
@@ -1132,9 +1166,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ᱠᱚᱢ ᱠᱷᱚᱱ ᱠᱚᱢ ᱢᱤᱫ ᱫᱤᱥᱚᱢ ᱵᱟᱪᱷᱟᱣ ᱢᱮ, ᱟᱨᱵᱟᱝ ᱡᱚᱛᱚ ᱡᱟᱭᱜᱟ ᱨᱮ ᱨᱤᱞᱤᱥ ᱢᱮ᱾",
   "Pick at least one country, or release globally.":
     "ᱠᱚᱢ ᱠᱷᱚᱱ ᱠᱚᱢ ᱢᱤᱫ ᱫᱤᱥᱚᱢ ᱵᱟᱪᱷᱟᱣ ᱢᱮ, ᱟᱨᱵᱟᱝ ᱡᱮᱜᱮᱛ ᱞᱮᱠᱟᱛᱮ ᱨᱤᱞᱤᱥ ᱢᱮ᱾",
-  "Pick exactly two people for a direct message.":
-    "ᱥᱚᱡᱷᱮ ᱥᱟᱱᱫᱮᱥ ᱞᱟᱹᱜᱤᱫ ᱴᱷᱟᱹᱣᱠᱟᱹ ᱵᱟᱨ ᱦᱚᱲ ᱵᱟᱪᱷᱟᱣ ᱢᱮ᱾",
   "Pick one from the list to start reading.": "ᱯᱟᱲᱦᱟᱣ ᱮᱦᱚᱵ ᱞᱟᱹᱜᱤᱫ ᱛᱟᱞᱠᱟ ᱠᱷᱚᱱ ᱢᱤᱫ ᱦᱚᱲ ᱵᱟᱪᱷᱟᱣ ᱢᱮ᱾",
+  "Pick the other person for this direct message.": "ᱱᱚᱣᱟ ᱥᱚᱡᱷᱮ ᱥᱟᱱᱫᱮᱥ ᱞᱟᱹᱜᱤᱫ ᱮᱴᱟᱜ ᱦᱚᱲ ᱵᱟᱪᱷᱟᱣ ᱢᱮ᱾",
   "PIN code": "ᱯᱤᱱ ᱠᱚᱰ",
   "PIN patterns": "ᱯᱤᱱ ᱯᱮᱴᱟᱨᱱ",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1280,6 +1313,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ᱥᱟᱦᱴᱟ ᱧᱮᱞ ᱟᱹᱭᱫᱟᱹᱨ ᱟᱨ ᱡᱚᱯᱲᱟᱣ ᱮᱯᱤᱟᱭ ᱞᱟᱹᱠᱛᱤᱜ ᱠᱟᱱᱟ᱾",
   "Requires products.publish": "ᱯᱨᱚᱰᱟᱠᱴ ᱠᱚ ᱞᱟᱹᱠᱛᱤᱜ ᱠᱟᱱᱟ ᱾ ᱪᱷᱟᱯᱟᱣ",
   "Requires recipes.publish": "ᱡᱚᱢᱟᱜ ᱞᱟᱹᱠᱛᱤᱜ ᱠᱟᱱᱟ ᱾ ᱪᱷᱟᱯᱟᱣ",
+  "Requires settings access.": "ᱥᱮᱴᱤᱝ ᱮᱠᱥᱮᱥ ᱞᱟᱹᱠᱛᱤᱜ ᱠᱟᱱᱟ᱾",
   "Requires the analytics.view permission.": "ᱮᱱᱟᱞᱤᱴᱤᱠᱥ. ᱧᱮᱞ ᱟᱹᱭᱫᱟᱹᱨ ᱞᱟᱹᱠᱛᱤᱜ ᱠᱟᱱᱟ᱾",
   "Requires the inventory.adjust permission.": "ᱤᱱᱣᱮᱱᱴᱚᱨᱤ ᱞᱟᱹᱠᱛᱤᱜ ᱠᱟᱱᱟ᱾ ᱮᱰᱡᱟᱥᱴ ᱟᱹᱭᱫᱟᱹᱨ᱾",
   "Requires the reports.query permission.": "ᱨᱤᱯᱳᱨᱴ.ᱠᱩᱠᱞᱤ ᱟᱹᱭᱫᱟᱹᱨ ᱞᱟᱹᱠᱛᱤᱜ ᱠᱟᱱᱟ᱾",
@@ -1329,6 +1363,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running...": "ᱫᱟᱹᱲ ᱠᱟᱱᱟ…",
   "Running…": "ᱫᱟᱹᱲ ᱠᱟᱱᱟ…",
   "Russian (Русский)": "ᱨᱩᱥᱤᱭᱟᱱ (ᱨᱩᱥᱠᱤ)",
+  "Safe geo-lock:": "ᱨᱩᱠᱷᱤᱭᱟᱹ ᱡᱤᱭᱚ-ᱞᱚᱠ:",
   "Sanskrit (संस्कृतम्)": "Sanskrit (ᱥᱟᱱᱥᱯᱟᱱᱴᱢ)",
   "Santali (ᱥᱟᱱᱛᱟᱲᱤ)": "ᱥᱟᱱᱛᱟᱞᱤ ( ᱨᱩᱯ ᱨᱩᱯ)",
   Save: "ᱥᱟᱸᱪᱟᱣ ᱢᱮ",
@@ -1461,6 +1496,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "ᱥᱟᱨᱵᱤᱭᱟᱱ",
   Servings: "ᱥᱮᱵᱟ ᱠᱚ",
   "Set a new password": "ᱢᱤᱫ ᱱᱟᱶᱟ ᱫᱟᱱᱟᱝ ᱥᱟᱵᱟᱫ ᱥᱮᱴ ᱢᱮ",
+  "Set as default": "ᱰᱤᱯᱷᱚᱞᱴ ᱞᱮᱠᱟᱛᱮ ᱥᱮᱴ ᱢᱮ",
   "Shop · Farms · Journal": "ᱫᱚᱠᱟᱱ ᱢᱮ · ᱵᱟᱹᱫᱽ ᱠᱚ · ᱯᱟᱛᱷᱟᱢ",
   "Shop fresh greens": "ᱛᱟᱜᱽᱲᱟ ᱦᱟᱹᱨᱭᱟᱹᱲ ᱠᱤᱨᱤᱧ ᱢᱮ",
   "Shop root vegetables": "ᱦᱩᱰ ᱩᱛᱩ ᱡᱤᱱᱤᱥ ᱠᱤᱨᱤᱧ ᱢᱮ",
@@ -1471,6 +1507,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "ᱜᱚᱲᱦᱚᱱ ᱩᱫᱩᱜ ᱢᱮ",
   "Show dietary and certification filters on the shop page":
     "ᱫᱚᱠᱟᱱ ᱥᱟᱦᱴᱟ ᱨᱮ ᱡᱚᱢᱟᱜ ᱟᱨ ᱥᱟᱨᱴᱤᱯᱷᱤᱠᱮᱥᱚᱱ ᱯᱷᱤᱞᱴᱟᱨ ᱩᱫᱩᱜ ᱢᱮ",
+  "Show original": "ᱟᱥᱚᱞ ᱩᱫᱩᱜ ᱢᱮ",
   "Show product recommendations": "ᱯᱨᱚᱰᱟᱠᱴ ᱞᱟᱹᱭᱥᱚᱞᱦᱟ ᱩᱫᱩᱜ ᱢᱮ",
   "Show this snippet": "ᱱᱚᱣᱟ ᱥᱱᱤᱯᱮᱴ ᱩᱫᱩᱜ ᱢᱮ",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1559,6 +1596,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "ᱥᱣᱟᱦᱤᱞᱤ (ᱠᱤᱥᱣᱟᱦᱤᱞᱤ)",
   "Swedish (Svenska)": "ᱥᱣᱤᱰᱤᱥ (ᱥᱣᱮᱱᱥᱠᱟ)",
   Table: "ᱴᱮᱵᱩᱞ",
+  "Tags & Certifications": "ᱴᱮᱜᱽ ᱟᱨ ᱥᱟᱨᱴᱤᱯᱷᱤᱠᱮᱥᱚᱱ",
   "Tags:": "ᱴᱮᱜᱽᱥ:",
   Tajik: "ᱛᱟᱡᱤᱠ",
   "Taking payments": "ᱯᱩᱭᱥᱟᱹ ᱦᱟᱛᱟᱣ",
@@ -1575,6 +1613,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ᱵᱮᱱᱟᱨ, ᱛᱷᱚᱠ ᱛᱷᱟᱨ, ᱯᱨᱚᱰᱟᱠᱴ ᱛᱷᱟᱨ ᱟᱨ ᱮᱥᱤᱭᱳ ᱯᱷᱤᱞᱰ ᱢᱤᱫ ᱥᱟᱶᱛᱮ ᱥᱟᱧᱪᱟᱣ ᱢᱮ᱾ ᱛᱷᱚᱠ ᱴᱤᱠᱵᱚᱠᱥ, ᱚᱨᱰᱟᱨᱤᱝ ᱟᱨ ᱠᱟᱥᱴᱚᱢ ᱛᱷᱚᱠ ᱠᱚᱯᱤ ᱟᱠᱚ ᱛᱮ ᱥᱟᱧᱪᱟᱣ ᱛᱟᱦᱮᱱᱟ, ᱡᱮᱞᱠᱟ ᱟᱢ ᱚᱱᱟ ᱠᱚᱢ ᱵᱚᱫᱚᱞᱟ᱾",
   "The chat widget customers and visitors see on the storefront.":
     "ᱪᱟᱴ ᱣᱤᱡᱮᱴ ᱜᱚᱨᱦᱟᱠ ᱟᱨ ᱦᱤᱡᱩᱜ ᱠᱚ ᱥᱴᱚᱨᱯᱷᱨᱚᱱᱴ ᱨᱮᱠᱚ ᱧᱮᱞᱟ᱾",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "ᱪᱮᱠᱵᱚᱠᱥ ᱥᱩᱪᱤ ᱫᱚ ᱡᱷᱚᱛᱚ ᱡᱤᱱᱤᱥ ᱨᱮᱭᱟᱜ ᱥᱟᱫᱷᱟᱨᱚᱱ ᱴᱮᱵᱽ ᱨᱮ ᱩᱫᱩᱜ ᱟᱠᱟᱱᱟ ᱾ ᱵᱚᱫᱚᱞ ᱠᱚ ᱫᱚ ᱡᱚᱛᱚ ᱡᱟᱭᱜᱟ ᱨᱮ ᱱᱤᱛ ᱜᱮ ᱞᱟᱹᱜᱩᱜ-ᱟ ᱾",
   "The classic credential pair, including the password-reset flow.":
     "ᱠᱞᱟᱥᱤᱠ ᱠᱨᱮᱰᱮᱱᱥᱤᱭᱟᱞ ᱡᱚᱲ, ᱯᱟᱥᱣᱟᱨᱰ-ᱨᱤᱥᱮᱴ ᱯᱷᱞᱳ ᱥᱟᱶᱛᱮ᱾",
   "the farm owner": "ᱵᱟᱹᱫᱽ ᱢᱟᱞᱤᱠ",
@@ -1627,6 +1667,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ᱱᱚᱣᱟ ᱦᱟᱹᱴᱤᱧ ᱫᱚ ᱥᱟᱦᱴᱟ ᱞᱟᱛᱟᱨ ᱨᱮ ᱱᱤᱡᱮᱨᱟᱜ ᱯᱮᱱᱮᱞ ᱨᱮ ᱮᱰᱤᱴ ᱦᱩᱭ ᱟᱠᱟᱱᱟ ᱾",
   "Threads started from the storefront appear here.":
     "ᱫᱚᱠᱟᱱ ᱥᱟᱢᱟᱝ ᱠᱷᱚᱱ ᱮᱦᱚᱵ ᱟᱠᱟᱱ ᱛᱷᱨᱮᱰ ᱠᱚ ᱱᱚᱸᱰᱮ ᱧᱮᱞᱚᱜᱼᱟ ᱾",
+  "Thumbnail image URL": "ᱛᱷᱟᱢᱵᱱᱮᱭᱞ ᱪᱤᱛᱟᱹᱨ URL",
   Time: "ᱚᱠᱛᱚ",
   "Tinted band": "ᱴᱤᱱᱴᱮᱰ ᱵᱮᱱᱰ",
   Title: "ᱢᱩᱴᱷᱟᱹᱱ",
@@ -1644,7 +1685,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Trail colour": "ᱴᱨᱮᱞ ᱨᱚᱝ",
   "transfer money — make the transfer to": "ᱯᱩᱭᱥᱟᱹ ᱩᱪᱟᱹᱲ — ᱩᱪᱟᱹᱲ ᱛᱮ",
   "Transfer reference (UPI / bank / cheque)": "ᱩᱪᱟᱹᱲ ᱨᱮᱯᱷᱮᱨᱮᱱᱥ (ᱭᱩᱯᱤᱟᱭᱤ/ᱵᱮᱝᱠ/ᱪᱮᱠ)",
+  Translate: "ᱛᱚᱨᱡᱚᱢᱟᱣ ᱢᱮ",
+  "Translate chat": "ᱪᱟᱴ ᱛᱚᱨᱡᱚᱢᱟᱭ",
   "Translating...": "ᱛᱚᱨᱡᱚᱢᱟᱭ...",
+  "Translating…": "ᱛᱚᱨᱡᱚᱢᱟᱭ...",
   Translations: "ᱛᱚᱨᱡᱚᱢᱟ",
   Triage: "ᱴᱨᱟᱭᱮᱡᱽ",
   "True Grit Admin": "True Grit ᱮᱰᱢᱤᱱ",
@@ -1676,9 +1720,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "ᱪᱤᱛᱟᱹᱨ ᱟᱯᱞᱳᱰ ᱢᱮ",
   "Uploading image...": "ᱪᱤᱛᱟᱹᱨ ᱟᱯᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ…",
   "Uploading image…": "ᱪᱤᱛᱟᱹᱨ ᱟᱯᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ…",
+  "Uploading thumbnail...": "ᱛᱷᱟᱢᱵᱱᱮᱭᱞ ᱟᱯᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ…",
   "Uploading...": "ᱟᱯᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ...",
   "Uploading…": "ᱟᱯᱞᱳᱰ ᱦᱩᱭᱩᱜ ᱠᱟᱱᱟ...",
   "Urdu (اردو)": "ᱩᱨᱰᱩ (ᱟᱨᱰᱩ)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "ᱢᱤᱫ ᱵᱷᱮᱜᱟᱨ ᱑᱒᱐᱐ × ᱑᱒᱐᱐ ᱪᱤᱛᱟᱹᱨ ᱵᱮᱵᱷᱟᱨ ᱢᱮ᱾ ᱱᱚᱣᱟ ᱪᱟᱹᱴᱟᱹ ᱪᱤᱛᱟᱹᱨ ᱫᱚ ᱛᱷᱚᱠ ᱠᱟᱨᱰ ᱞᱟᱹᱜᱤᱫ ᱠᱨᱚᱯ ᱟᱠᱟᱱᱟ; ᱚᱥᱟᱨ ᱦᱤᱨᱚ ᱵᱮᱱᱟᱨ ᱫᱚᱦᱲᱟ ᱟᱞᱚᱢ ᱵᱮᱵᱷᱟᱨᱮᱫ ᱟ᱾",
   "Use site-wide effects instead": "ᱚᱱᱟ ᱵᱚᱫᱚᱞ ᱛᱮ ᱥᱟᱭᱤᱴ-ᱯᱟᱥᱱᱟᱣ ᱮᱯᱷᱮᱠᱴ ᱵᱮᱵᱷᱟᱨ ᱢᱮ",
   "Use the exact canvas": "ᱴᱷᱤᱠ ᱠᱮᱱᱵᱟᱥ ᱵᱮᱵᱷᱟᱨ ᱢᱮ",
   "Use the navigation to get back.": "ᱨᱩᱣᱟᱹᱲ ᱧᱟᱢ ᱞᱟᱹᱜᱤᱫ ᱱᱮᱵᱷᱤᱜᱮᱥᱚᱱ ᱵᱮᱵᱚᱦᱟᱨ ᱢᱮ.",
@@ -1691,6 +1738,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "ᱥᱟᱭᱤᱴ ᱵᱨᱟᱱᱰ ᱨᱚᱝ ᱵᱮᱵᱷᱟᱨ ᱠᱟᱛᱮ",
   Uyghur: "ᱩᱭᱜᱩᱨ",
   Uzbek: "ᱩᱡᱷᱮᱠ",
+  "Value of 1 INR": "᱑ INR ᱨᱮᱭᱟᱜ ᱜᱚᱱᱚᱝ",
+  "Value per INR": "ᱜᱚᱱᱚᱝ ᱯᱨᱚᱛᱤ INR",
   "Value, ₹": "ᱜᱚᱱᱚᱝ, ₹",
   Variant: "ᱵᱷᱮᱨᱤᱭᱟᱱᱴ",
   "Variant (SKU)": "ᱵᱷᱮᱨᱤᱭᱟᱱᱴ (SKU)",

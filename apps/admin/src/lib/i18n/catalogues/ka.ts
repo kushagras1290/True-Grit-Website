@@ -32,6 +32,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/მაღაზია",
   "← All farms": "← ყველა ფერმა",
   "+ stars": "+ ვარსკვლავი",
+  "₹1,000 preview": "1000 რუბლი წინასწარი გადახედვა",
   "1 star": "1 ვარსკვლავი",
   "15% off your first order": "15% ფასდაკლება თქვენს პირველ შეკვეთაზე",
   "2 cups": "2 ჭიქა",
@@ -66,6 +67,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "სუპერ ადმინისტრატორს შეუძლია ჯგუფის ან პირდაპირი შეტყობინების დაწყება ზემოთ + ღილაკიდან.",
   "A tinted band — check muted text is still readable here.":
     "შეფერილი ზოლი — შეამოწმეთ დადუმებული ტექსტი კვლავ იკითხება აქ.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "ვიზიტორის ქვეყანა ირჩევს ვალუტას, ეს ცხრილი აწვდის მის საჩვენებელ მნიშვნელობას და ორიგინალური INR ფასი უცვლელი რჩება. გათიშული ვალუტები ბრუნდება INR-უსაფრთხო ნაგულისხმევად.",
   Accent: "აქცენტი",
   "Accept orders and payments": "შეკვეთებისა და გადახდების მიღება",
   "Accept orders and payments for this product": "შეკვეთების და გადახდების მიღება ამ პროდუქტისთვის",
@@ -91,6 +94,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "კატეგორიის დამატება",
   "Add code": "კოდის დამატება",
   "Add country": "ქვეყნის დამატება",
+  "Add currency": "დაამატე ვალუტა",
   "Add entry": "ჩანაწერის დამატება",
   "Add farm owner": "ფერმის მფლობელის დამატება",
   "Add ingredient": "დაამატეთ ინგრედიენტი",
@@ -101,6 +105,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "დაამატეთ ერთი ქვემოთ დასაწყებად.",
   "Add one so the bot has something to reference for this scope.":
     "დაამატეთ ერთი, რათა ბოტს ჰქონდეს რაიმე მითითება ამ სფეროსთვის.",
+  "Add one using the field above.": "დაამატე ერთი ზემოთ ველის გამოყენებით.",
   "Add page": "გვერდის დამატება",
   "Add participants": "მონაწილეების დამატება",
   "Add point": "პუნქტის დამატება",
@@ -119,6 +124,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "ზონის დამატება",
   Added: "დამატებულია",
   "Adding...": "დამატება...",
+  "Adding…": "დამატება...",
   Address: "მისამართი",
   "Adjust points": "ქულების კორექტირება",
   "Adjust the search or create a category.": "დაარეგულირეთ ძიება ან შექმენით კატეგორია.",
@@ -217,6 +223,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "აზერბაიჯანული",
   "B2B / bulk ordering": "B2B / ნაყარი შეკვეთა",
   Back: "უკან",
+  "Back to conversations": "მიმოწერაში დაბრუნება",
   "Back to sign in": "უკან შესვლაზე",
   Balance: "ბალანსი",
   "Banner alt text": "ბანერის ალტ ტექსტი",
@@ -282,6 +289,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "კატეგორიის რედაქტორის სექციები",
   "Category not found": "კატეგორია ვერ მოიძებნა",
   "Category row": "კატეგორიის მწკრივი",
+  "Category thumbnail alt text": "კატეგორიის ესკიზის ალტ ტექსტი",
+  "Category thumbnail URL": "კატეგორიის ესკიზის URL",
   "Category to add to the homepage": "კატეგორია მთავარ გვერდზე დასამატებლად",
   "Cautions and low stock.": "გაფრთხილება და დაბალი მარაგი.",
   Cebuano: "ცებუანო",
@@ -354,6 +363,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "საკონტაქტო ელფოსტა",
   Content: "კონტენტი",
   "Continue with Facebook": "გაგრძელება Facebook-ით",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "აკონტროლეთ ადგილობრივი ვალუტის სავარაუდო ფასები ერთი ინდური რუპიის ღირებულების განსაზღვრით. კატალოგის, ანგარიშსწორებისა და შეკვეთის ჩანაწერები უსაფრთხოდ რჩება INR-ში.",
   "Control what each role can view, create, edit, publish or manage.":
     "აკონტროლეთ, რა შეუძლია თითოეულ როლს ნახოს, შექმნას, რედაქტირება, გამოქვეყნება ან მართვა.",
   "Control whether each bot is available, and edit what it knows.":
@@ -398,6 +409,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "რჩეული სიის ზომა",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "კონკრეტული ვარიანტების კურირებული კომპლექტები, რომლებიც ერთად იყიდება უცვლელ ფასად. Checkout ახორციელებს შენახვას ავტომატურად, როგორც კი კალათაში დაიტევს ყველა ელემენტი პაკეტში.",
+  Currency: "Cavurency",
+  "Currency code": 'ვალუტის კოდი. id="t0005">ნაგულისხმევი',
+  "Currency Converter": "ვალუტის გადამყვანი",
+  "Currency values unavailable": "ვალუტის ღირებულებები მიუწვდომელია",
   "Current password": "ამჟამინდელი პაროლი",
   "Currently its own effects.": "ამჟამად მისი ეფექტებია.",
   "Currently the site-wide effects — save below to give it its own.": "ამჟამად საიტის მასშტაბით",
@@ -434,6 +449,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "უარყოფა",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "დეკორაცია გვერდის უკანა მხარეს და გვერდის ზემოთ მოთავსება მაჩვენებელი. ორივე გამორთულია ნაგულისხმევად, ორივე მთლიანად გამოტოვებულია იმ ვიზიტორებისთვის, რომლებმაც სთხოვეს თავიანთ მოწყობილობას მოძრაობის შემცირება და არც ერთი არ ჩანს გადახდის ფანჯარაში - ბარათის ფორმაზე თოვლი არის ყურადღების გაფანტვა ზუსტად არასწორ მომენტში. ქვეყნის ეფექტები პირდაპირ ცვლის საიტის ეფექტებს მისი ვიზიტორებისთვის, ვიდრე მათთან შერწყმას — „ზოგიერთი თოვლი“ არ არის თოვლის მნიშვნელოვანი ნაზავი და არანაირი ეფექტი.",
+  Default: "ნაგულისხმევი",
   "Default commission": "ნაგულისხმევი საკომისიო",
   "Default fee": "ნაგულისხმევი საკომისიო",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -453,6 +469,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "წაშალე რეცეპტი",
   "Delete role": "როლის წაშლა",
   "Delete selected (": "არჩეულია (",
+  "Delete this entry": "წაშალეთ ეს ჩანაწერი",
   "Delete this price adjustment?": "წაშალოთ ფასის ეს კორექტირება?",
   "Delete user": "წაშალოთ მომხმარებელი",
   "Deleting...": "წაშლა...",
@@ -474,6 +491,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "დიეტური და სასერთიფიკატო ფილტრები",
   "Dietary tags": "დიეტური ტეგები",
   "Dietary tags (comma separated)": "დიეტური ტეგები (მძიმით გამოყოფილი)",
+  "Dietary Tags & Certifications": "დიეტური ტეგები და სერთიფიკატები",
   "Direct message": "პირდაპირი შეტყობინება",
   Disable: "გამორთვა",
   "Disable selected (": "არჩეული გამორთვა (",
@@ -498,12 +516,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "მაგ. ანგარიშები",
   "e.g. DIWALI500": "მაგ. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "მაგ. დაკრეფილია 2026 წლის 3 მარტის კვირა",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "მაგ. ინდოეთის ორგანული, სამართლიანი ვაჭრობა. რომელიმე პროდუქტზე მინიჭებული სერთიფიკატი ვერ წაიშლება, სანამ არ წაიშლება მისგან.",
   "e.g. Ops Room": "მაგ. ოპერაციული ოთახი",
   "e.g. Rain-fed, no synthetic pesticides": "მაგ. წვიმიანი, სინთეზური პესტიციდების გარეშე",
   "e.g. Refrigerate and use within 5 days":
     "მაგ. შედგით მაცივარში და გამოიყენეთ 5 დღის განმავლობაში",
   "e.g. TO-HONEY-500": "მაგ. TO-HONEY-500",
   "e.g. UTR 123456789012": "მაგ. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "მაგ. ვეგანური, გლუტენის გარეშე. ერთის წაშლა წაშლის მას ყველა პროდუქტიდან, რომელსაც აქვს შემოწმებული.",
   Edit: "რედაქტირება",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS გვერდის მეტამონაცემების, ინდექსირების და ნედლი გვერდების ბლოკების რედაქტირება. საწყისი გვერდის ჩანაწერი აქაც არის ჩამოთვლილი, მაგრამ საწყისი გვერდის პარამეტრები მისი შესაცვლელად უფრო უსაფრთხო გზაა — ეს რედაქტორი იღებს დაუმუშავებელ JSON-ს.",
@@ -607,6 +629,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'აიძულებთ ჩართეთ ან გამორთეთ სექცია ერთი ქვეყნის ვიზიტორებისთვის, ისე, რომ არ შეცვალოთ ის, რასაც სხვები ხედავენ. დატოვეთ განყოფილება "მემკვიდრეობაზე" და ის უბრალოდ მიჰყვება ნიშანთა ველს სექციების სიაში.',
   "Forgot password?": "დაგავიწყდათ პაროლი?",
+  "Formatting locale": "ლოკალის ფორმატირება",
   "Free delivery above (₹)": "უფასო მიწოდება ზემოთ (₹)",
   "French (Français)": "ფრანგული (Français)",
   Frequency: "სიხშირე",
@@ -693,6 +716,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "თუ ეს აქცია არასოდეს ყოფილა გამოსყიდული, ის მთლიანად წაიშლება; წინააღმდეგ შემთხვევაში ის დაარქივებულია, ამიტომ მისი ისტორია ინახება.",
   Igbo: "იგბო",
+  Image: "სურათი",
   "Image alt text": "გამოსახულების ალტ ტექსტი",
   "Image alt text (optional)": "გამოსახულების ალტ ტექსტი (არასავალდებულო)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -771,6 +795,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "დატოვეთ ფერი ცარიელი, რომ შეინარჩუნოთ ერთი True Grit-ით გაგზავნილი — ველის გასუფთავება არის ის, თუ როგორ გააუქმებთ. გვერდის ან ქვეყნის ფერები იწყება საიტის ფერებიდან და უგულებელყოფს მხოლოდ იმას, რასაც თქვენ ცვლით, ამიტომ თითოეული არის მოკლე სია და არა მეორე პალიტრა შესანარჩუნებლად. როდესაც ორივე ეხება ერთსა და იმავე ვიზიტორს, გვერდი იმარჯვებს — სარედაქციო გვერდის დიზაინი არ უნდა გაუქმდეს გეოექსპერიმენტით.",
   "Leave blank to use the default.": "ნაგულისხმევად გამოსაყენებლად დატოვეთ ცარიელი.",
+  "Leave the link blank for a plain, unclickable image.":
+    "დაატოვეთ ბმული ცარიელი უბრალო, დაუწკაპუნებელი სურათისთვის.",
   "Less refunds": "ნაკლები თანხის დაბრუნება",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "მომხმარებლებს საშუალებას აძლევს გამოიყენონ სასაჩუქრე ბარათის კოდი ანგარიშსწორებისას, რომელიც მოიცავს მათი მთლიანი შეკვეთის ნაწილს ან მთელს. გაუშვით ბარათები სასაჩუქრე ბარათების გვერდიდან. ნაგულისხმევად გამორთულია — არსებული ბარათები და მათი ნაშთები ინახება, უბრალოდ არ არის გამოსყიდული, სანამ ის გამორთულია.",
@@ -782,6 +808,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "სტრიქონის ჯამი",
   Lines: "ხაზები",
   Link: "ბმული",
+  "Link (optional)": "ბმული (არასავალდებულო)",
   "Link customer": "დააკავშირეთ კლიენტი",
   "Link product": "დააკავშირეთ პროდუქტი",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -801,6 +828,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "პირდაპირი გადახედვა",
   "Live, and to scale with the real storefront's own styles.":
     "პირდაპირი და მასშტაბირება რეალური ვიტრინის საკუთარი სტილის მიხედვით.",
+  Loading: "იტვირთება",
   "Loading active promotions...": "აქტიური აქციების ჩატვირთვა...",
   "Loading analytics...": "იტვირთება ანალიტიკა...",
   "Loading announcements...": "იტვირთება განცხადებები...",
@@ -814,6 +842,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "მიმოწერების ჩატვირთვა…",
   "Loading country overrides...": "ქვეყანის ჩატვირთვა უგულებელყოფს...",
   "Loading crawler files...": "ჩაიტვირთება მცოცავი ფაილი...",
+  "Loading currency values…": "იტვირთება ვალუტის მნიშვნელობები…",
   "Loading delivery charges...": "იტვირთება მიწოდების საფასური...",
   "Loading discussion…": "ჩაიტვირთება დისკუსია…",
   "Loading highlights...": "მინიშნებები იტვირთება...",
@@ -836,6 +865,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "ჩამრთველების ჩატვირთვა...",
   "Loading submission…": "იტვირთება გაგზავნა…",
   "Loading...": "იტვირთება...",
+  "Loading…": "იტვირთება…",
   "Local pickup points": "ადგილობრივი აღების წერტილები",
   "Locale to translate": "სათარგმნი ლოკალი",
   "Locked out? Use": "დაბლოკილია? გამოიყენეთ",
@@ -889,6 +919,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "ზომიერების მიზეზი",
   Mongolian: "მონღოლური",
   "More from True Grit": "მეტი True Grit-დან",
+  "Motto banner": "ამისთვის სხვა პიროვნებისთვის. შეტყობინება.",
   "Move down in the showcase": "გადაიტანეთ ქვემოთ ვიტრინაში",
   "Move earlier": "გადაადგილება უფრო ადრე",
   "Move later": "გადაადგილება მოგვიანებით",
@@ -1016,6 +1047,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "შენიშვნა (აუცილებელია ცვლილებების მოთხოვნის ან უარყოფისთვის)",
   "Note (required)": "შენიშვნა (აუცილებელია)",
   Notes: "შენიშვნები",
+  "Nothing here yet": "აქ ჯერ არაფერია",
   "Nothing outstanding to pay": "გადასახდელი არაფერია",
   "Nothing pending.": "მოლოდინში არაფერია.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1069,6 +1101,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "შეკვეთები გამოჩნდება აქ, როგორც კი კლიენტები შეამოწმებენ.",
   "Organic Alphonso Mangoes": "ორგანული ალფონსო მანგო",
   "Organic mangoes held in a sunlit orchard": "ორგანული მანგო ინახება მზით განათებულ ბაღში",
+  "Organic wheat flour in a wooden bowl": "ორგანული ხორბლის ფქვილი ხის თასში",
   Outstanding: "გამორჩეული",
   Overview: "მიმოხილვა",
   "Owner Reports": "მფლობელის ანგარიშები",
@@ -1119,9 +1152,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "აირჩიეთ მინიმუმ ერთი ქვეყანა, ან გამოუშვით ყველგან.",
   "Pick at least one country, or release globally.":
     "აირჩიეთ მინიმუმ ერთი ქვეყანა, ან გამოუშვით გლობალურად.",
-  "Pick exactly two people for a direct message.":
-    "აირჩიეთ ზუსტად ორი ადამიანი პირდაპირი შეტყობინებისთვის.",
   "Pick one from the list to start reading.": "აირჩიეთ სიიდან ერთი წაკითხვის დასაწყებად.",
+  "Pick the other person for this direct message.":
+    "აირჩიე სხვა ადამიანი ამ პირდაპირი შეტყობინებისთვის.",
   "PIN code": "PIN კოდი",
   "PIN patterns": "PIN-ის შაბლონები",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1268,6 +1301,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ითხოვს pages.view ნებართვას და დაკავშირებულ API-ს.",
   "Requires products.publish": "საჭიროებს products.publish",
   "Requires recipes.publish": "საჭიროებს recipes.publish",
+  "Requires settings access.": "მოითხოვს პარამეტრებზე წვდომას.",
   "Requires the analytics.view permission.": "ითხოვს analytics.view ნებართვას.",
   "Requires the inventory.adjust permission.": "ითხოვს inventory.adjust ნებართვას.",
   "Requires the reports.query permission.": "ითხოვს report.query ნებართვას.",
@@ -1320,6 +1354,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "მიმდინარეობს...",
   "Russian (Русский)": "რუსული (Русский)",
   "Safe area": "უსაფრთხო ტერიტორია",
+  "Safe geo-lock:": "უსაფრთხო გეო-დაბლოკვა:",
   "Sale & Discounts": "გაყიდვა და ფასდაკლებები",
   "Sale price": "Sanskrit4 (संस्कृतम्)",
   "Sale Price (₹)": "გაყიდვის ფასი (₹)",
@@ -1454,6 +1489,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "სერბული",
   Servings: "სერვისები",
   "Set a new password": "ახალი პაროლის დაყენება",
+  "Set as default": "დაყენება ნაგულისხმევად",
   "Shop · Farms · Journal": "იყიდეთ · ფერმები · ჟურნალი",
   "Shop fresh greens": "იყიდეთ ახალი მწვანილი",
   "Shop root vegetables": "შეიძინეთ ძირეული ბოსტნეული",
@@ -1464,6 +1500,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "განცხადების ჩვენება",
   "Show dietary and certification filters on the shop page":
     "დიეტური და სერტიფიცირების ფილტრების ჩვენება მაღაზიის გვერდზე",
+  "Show original": "აჩვენე ორიგინალი",
   "Show product recommendations": "პროდუქტის რეკომენდაციების ჩვენება",
   "Show this snippet": "ამ ფრაგმენტის ჩვენება",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1551,6 +1588,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "სვაჰილი (კიუსაჰილი)",
   "Swedish (Svenska)": "შვედური (Svenska)",
   Table: "ცხრილი",
+  "Tags & Certifications": "თეგები და სერთიფიკატები",
   "Tags:": "ტეგები:",
   Tajik: "ტაჯიკური",
   "Taking payments": "გადახდების მიღება",
@@ -1567,6 +1605,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ბანერის, კატეგორიის მწკრივის, პროდუქტის მწკრივის და SEO ველების ერთად შენახვა. სექციების მონიშვნის ველები, შეკვეთა და მორგებული განყოფილების ასლი შეინახება დამოუკიდებლად, როდესაც თქვენ შეცვლით მათ.",
   "The chat widget customers and visitors see on the storefront.":
     "ჩეთის ვიჯეტს მომხმარებლები და ვიზიტორები ხედავენ ვიტრინაზე.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "ჩამშვები ველების სიები ნაჩვენებია ყველა პროდუქტის ზოგადი ჩანართზე. ცვლილებები ყველგან ვრცელდება დაუყოვნებლივ.",
   "The classic credential pair, including the password-reset flow.":
     "კლასიკური რწმუნებათა სიგელების წყვილი, პაროლის გადატვირთვის ნაკადის ჩათვლით.",
   "the farm owner": "ფერმის მფლობელი",
@@ -1617,6 +1657,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "This section is edited in its own panel further down the page.":
     "ეს განყოფილება რედაქტირებულია საკუთარ პანელში, გვერდის ქვემოთ.",
   "Threads started from the storefront appear here.": "ვიტრინიდან დაწყებული თემები აქ გამოჩნდება.",
+  "Thumbnail image URL": "მინიატურული სურათის URL",
   Time: "დრო",
   "Tinted band": "ფერადი ზოლი",
   Title: "სათაური",
@@ -1634,7 +1675,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Trail: "ტრაილი",
   "transfer money — make the transfer to": "გადარიცხეთ ფული — გადარიცხეთ",
   "Transfer reference (UPI / bank / cheque)": "გადარიცხვის მითითება (UPI / ბანკი / ჩეკი)",
+  Translate: "თარგმნა",
+  "Translate chat": "ჩატის თარგმნა",
   "Translating...": "გადათარგმნა...",
+  "Translating…": "თარგმნა…",
   Translations: "თარგმანი",
   Triage: "ტრიაჟი",
   "True Grit Admin": "True Grit ადმინი",
@@ -1666,9 +1710,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "სურათის ატვირთვა",
   "Uploading image...": "მიმდინარეობს სურათის ატვირთვა...",
   "Uploading image…": "მიმდინარეობს სურათის ატვირთვა...",
+  "Uploading thumbnail...": "მინიატურების ატვირთვა...",
   "Uploading...": "ატვირთვა...",
   "Uploading…": "ატვირთვა…",
   "Urdu (اردو)": "ურდუ (არდო)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "გამოიყენეთ ცალკე 00 200 × 1 სურათი. ეს კვადრატული სურათი ამოჭრილია კატეგორიის ბარათებისთვის; არ გამოიყენო ფართო გმირის ბანერი.",
   "Use site-wide effects instead": "სანაცვლოდ გამოიყენეთ საიტის ეფექტები",
   "Use the exact canvas": "გამოიყენეთ ზუსტი ტილო",
   "Use the navigation to get back.": "გამოიყენეთ ნავიგაცია დასაბრუნებლად.",
@@ -1681,6 +1728,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "საიტის ბრენდის ფერის გამოყენება",
   Uyghur: "უიღური",
   Uzbek: "უზბეკური",
+  "Value of 1 INR": "1 INR-ის ღირებულება",
+  "Value per INR": "მნიშვნელობა INR-ზე",
   "Value, ₹": "ღირებულება, ₹",
   Variant: "ვარიანტი",
   "Variant (SKU)": "ვარიანტი (SKU)",
