@@ -502,8 +502,7 @@ async def set_default_variant(
     await db.batch(
         [
             (
-                "UPDATE product_variants SET is_default = 0"
-                " WHERE product_id = ? AND id != ?",
+                "UPDATE product_variants SET is_default = 0 WHERE product_id = ? AND id != ?",
                 (product_id, variant_id),
             ),
             (

@@ -371,7 +371,9 @@ def test_diet_tag_create_edit_delete(client: TestClient, db: SQLiteDatabase):
 
     updated = client.patch(f"/v1/admin/diet-tags/{tag_id}", json={"label": "Keto"})
     assert updated.status_code == 200
-    labels = {item["id"]: item["label"] for item in client.get("/v1/admin/diet-tags").json()["items"]}
+    labels = {
+        item["id"]: item["label"] for item in client.get("/v1/admin/diet-tags").json()["items"]
+    }
     assert labels[tag_id] == "Keto"
 
     duplicate = client.post("/v1/admin/diet-tags", json={"label": "Keto Friendly"})
@@ -392,7 +394,9 @@ def test_certification_create_edit_delete(client: TestClient, db: SQLiteDatabase
         f"/v1/admin/certifications/{certification_id}", json={"name": "Fair Trade"}
     )
     assert updated.status_code == 200
-    names = {item["id"]: item["name"] for item in client.get("/v1/admin/certifications").json()["items"]}
+    names = {
+        item["id"]: item["name"] for item in client.get("/v1/admin/certifications").json()["items"]
+    }
     assert names[certification_id] == "Fair Trade"
 
     deleted = client.delete(f"/v1/admin/certifications/{certification_id}")
@@ -409,7 +413,8 @@ def test_certification_delete_blocked_while_assigned_to_a_product(
         "/v1/admin/certifications", json={"name": "Organic Assigned Test"}
     ).json()["id"]
     product_id = client.post(
-        "/v1/admin/products", json={"name": "Cert Assignment Test Product", "productType": "general"}
+        "/v1/admin/products",
+        json={"name": "Cert Assignment Test Product", "productType": "general"},
     ).json()["id"]
     patched = client.patch(
         f"/v1/admin/products/{product_id}", json={"certificationIds": [certification_id]}

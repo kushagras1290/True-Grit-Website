@@ -168,9 +168,9 @@ def test_editing_an_untranslated_field_does_not_touch_existing_translations(db):
     client = TestClient(app, raise_server_exceptions=False)
     as_admin(client, db)
 
-    category_id = client.post(
-        "/v1/admin/categories", json={"name": "Whole Grain Flours"}
-    ).json()["id"]
+    category_id = client.post("/v1/admin/categories", json={"name": "Whole Grain Flours"}).json()[
+        "id"
+    ]
     client.post(f"/v1/admin/translations/category/{category_id}/hi/auto-translate")
 
     # `visibility` is not in TRANSLATABLE_FIELDS for category -- changing it
