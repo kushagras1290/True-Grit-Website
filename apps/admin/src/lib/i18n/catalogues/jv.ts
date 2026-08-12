@@ -31,6 +31,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/toko",
   "← All farms": "← Kabeh kebon",
   "+ stars": "+ lintang",
+  "₹1,000 preview": "pratinjau ₹1.000",
   "1 star": "1 lintang",
   "15% off your first order": "Diskon 15% kanggo pesenan pisanan",
   "2 cups": "2 cangkir",
@@ -65,6 +66,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Admin super bisa miwiti grup utawa pesen langsung saka tombol + ing ndhuwur.",
   "A tinted band — check muted text is still readable here.":
     "Tali warna — mriksa teks sing bisu isih bisa diwaca ing kene.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "negara pengunjung milih mata uang, tabel iki nyedhiyakake nilai tampilan, lan rega asli INR tetep ora owah. Mata uang sing dipateni bali menyang standar INR-safe.",
   Accent: "Logat",
   "Accept orders and payments": "Tampa pesenan lan pembayaran",
   "Accept orders and payments for this product": "Tampa pesenan lan pembayaran kanggo produk iki",
@@ -90,6 +93,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Tambah kategori",
   "Add code": "Tambah kode",
   "Add country": "<span juragan tani",
+  "Add currency": "Tambah mata uang",
   "Add entry": "Tambahake entri",
   "Add farm owner": "Tambah pemilik tani",
   "Add ingredient": "Tambah bahan",
@@ -99,6 +103,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one above to get started.": "Tambahake siji ing ndhuwur kanggo miwiti.",
   "Add one below to get started.": "Tambah siji ing ngisor iki kanggo miwiti.",
   "Add one so the bot has something to reference for this scope.": "Admin",
+  "Add one using the field above.": "Tambahake siji nggunakake kolom ing ndhuwur.",
   "Add page": "Tambah kaca",
   "Add participants": "Tambah peserta",
   "Add point": "Tambah titik",
@@ -117,6 +122,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Tambah zona",
   Added: "Tambah",
   "Adding...": "Tambah...",
+  "Adding…": "Nambahake…",
   Address: "Alamat",
   "Adjust points": "Nyetel poin",
   "Adjust the search or create a category.": "Setel telusuran utawa gawe kategori.",
@@ -214,6 +220,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Azerbaijan",
   "B2B / bulk ordering": "Pesenan B2B / akeh",
   Back: "Mbalik",
+  "Back to conversations": "Bali menyang obrolan",
   "Back to sign in": "Mbalik kanggo mlebu",
   Balance: "Saldo",
   "Banner alt text": "Teks alt spanduk",
@@ -274,6 +281,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Bagian editor kategori",
   "Category not found": "Kategori ora ditemokake",
   "Category row": "lowongan",
+  "Category thumbnail alt text": "Teks alt gambar cilik kategori",
+  "Category thumbnail URL": "URL gambar cilik kategori",
   "Category to add to the homepage": 'id="t0009">Cebuano',
   "Cautions and low stock.": "Ati-ati lan stok kurang.",
   "Centred safe area": "Area aman tengah",
@@ -345,6 +354,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Hubungi email",
   Content: "Konten",
   "Continue with Facebook": "Terus nganggo Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Kontrol kira-kira rega mata uang lokal kanthi nyetel pira regane 1 Rupee India. Cathetan katalog, checkout lan pesenan tetep aman ing INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Kontrol apa sing bisa dideleng, digawe, diowahi, diterbitake, utawa dikelola saben peran.",
   "Control whether each bot is available, and edit what it knows.":
@@ -389,6 +400,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Ukuran dhaptar sing dikurasi",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "rega rata-rata sing didol bebarengan. Checkout bakal ngleksanakake panyimpenan kanthi otomatis yen kranjang ngemot saben item ing bundel.",
+  Currency: "Mata Uang",
+  "Currency code": "Kode mata uang",
+  "Currency Converter": "Konverter Mata Uang",
+  "Currency values unavailable": "Nilai mata uang ora kasedhiya",
   "Current password": "Sandhi saiki",
   "Currently its own effects.": "Saiki efek dhewe.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -445,6 +460,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Busak resep",
   "Delete role": "Busak peran",
   "Delete selected (": "Busak sing dipilih (",
+  "Delete this entry": "Busak entri iki",
   "Delete this price adjustment?": "Busak pangaturan rega iki?",
   "Delete user": "Busak pangguna",
   "Deleting...": "Busak...",
@@ -466,6 +482,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Saringan diet & sertifikasi",
   "Dietary tags": "Tag diet",
   "Dietary tags (comma separated)": "Tag diet (dipisahake koma)",
+  "Dietary Tags & Certifications": "Tag & Sertifikasi Diet",
   "Direct message": "Pesen langsung",
   Disable: "Pateni",
   "Disable selected (": "Pateni sing dipilih (",
@@ -488,11 +505,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "mis. Akun",
   "e.g. DIWALI500": "contone. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "contone. Panen minggu 3 Maret 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Contone. India Organik, Perdagangan Adil. Sertifikasi sing diwenehake marang produk apa wae ora bisa dibusak nganti dicopot.",
   "e.g. Ops Room": "mis. Ops Room",
   "e.g. Rain-fed, no synthetic pesticides": "contone. Banyu udan, ora ana pestisida sintetik",
   "e.g. Refrigerate and use within 5 days": "contone. Dinginake lan gunakake sajrone 5 dina",
   "e.g. TO-HONEY-500": "contone. TO-HONEY-500",
   "e.g. UTR 123456789012": "contone. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Contone. Vegan, Bebas Gluten. Mbusak siji mbusak saka saben produk sing wis dicenthang.",
   Edit: "Sunting",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Sunting metadata kaca CMS, indeksasi lan pamblokiran kaca mentah. Rekaman homepage uga ana ing kene, nanging Setelan Homepage minangka cara sing luwih aman kanggo ngganti - editor iki njupuk JSON mentah.",
@@ -595,6 +616,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Mateni utawa mateni bagean kanggo pengunjung ing sawijining negara, tanpa ngganti apa sing dideleng wong liya. Ninggalake bagean ing "Warisake" lan mung tindakake kothak centhang ing dhaptar bagean ndhuwur.',
   "Forgot password?": "Kela sandi?",
+  "Formatting locale": "Format lokal",
   "Free delivery above (₹)": "Gratis kiriman ing ndhuwur (₹)",
   "French (Français)": "Prancis (Français)",
   Frequency: "Frekuensi",
@@ -671,6 +693,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Yen email kasebut duwe akun, link bakal direset.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Yen promosi iki durung nate ditebus, bakal langsung dibusak; yen ora bakal diarsipake supaya sejarahe disimpen.",
+  Image: "Gambar",
   "Image alt text": "Gambar alt text",
   "Image alt text (optional)": "Gambar alt text (opsional)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -729,6 +752,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Korean (한국어)": "Korea (한국어)",
   "Land under cultivation": "Tanah sing ditanduri",
   Language: "Basa",
+  "Language Studio": "Studio Basa",
   "Last activity": "Kegiatan pungkasan",
   "Last reviewer note": "Cathetan reviewer pungkasan",
   "Last sign-in": "Mlebu pungkasan",
@@ -740,6 +764,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Kosongake warna supaya ora ana sing dikirim True Grit — mbusak lapangan yaiku cara sampeyan mbatalake. Werna kaca utawa negara diwiwiti saka warna situs lan mung ngganti apa sing sampeyan ganti, dadi saben dhaptar cekak, dudu palet kapindho sing kudu dijaga. Yen loro-lorone ditrapake kanggo pengunjung sing padha, kaca kasebut menang — desain kaca editor ora kudu dibatalake dening eksperimen geo.",
   "Leave blank to use the default.": "Kosongake kanggo nggunakake standar.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Kosongake link kanggo gambar sing kosong lan ora bisa diklik.",
   "Less refunds": "Bale maneh kurang",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Ngidini pelanggan ngetrapake kode kertu bingkisan nalika checkout, nyakup sebagian utawa kabeh total pesenan. Nerbitake kertu saka kaca Gift Cards. Pateni kanthi gawan — kertu sing ana lan saldone disimpen, mung ora bisa ditebus, nalika iki mati.",
@@ -749,6 +775,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ngidini pelanggan nyiyapake pangiriman awis-ing-kiriman produk saka kaca produke. Pateni kanthi gawan lan ora dibutuhake nalika diluncurake — langganan sing wis ana tetep lan bisa dideleng ing Langganan, mung ora dianyari, nalika iki mati.",
   "Line total": "Total baris",
   Lines: "Garis",
+  "Link (optional)": "Link (opsional)",
   "Link customer": "Link pelanggan",
   "Link product": "Link produk",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -768,6 +795,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Pratinjau langsung",
   "Live, and to scale with the real storefront's own styles.":
     "Urip, lan ukurane nganggo gaya etalase sing nyata.",
+  Loading: "Muat",
   "Loading active promotions...": "Ngunggah promosi sing aktif...",
   "Loading analytics...": "Ngunggahake analytics...",
   "Loading announcements...": "Ngunggahake pengumuman...",
@@ -781,6 +809,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Muat obrolan…",
   "Loading country overrides...": "Ngunggahi negara sing timpa...",
   "Loading crawler files...": "Ngunggahi file crawler...",
+  "Loading currency values…": "Muat nilai mata uang...",
   "Loading delivery charges...": "Ngunggahi biaya pengiriman...",
   "Loading discussion…": "Muat diskusi…",
   "Loading highlights...": "Muat sorotan...",
@@ -803,6 +832,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Ngunggahake saklar etalase...",
   "Loading submission…": "Ngunggahake kiriman…",
   "Loading...": "Ngunggahake...",
+  "Loading…": "Muat…",
   "Local pickup points": "Titik pickup lokal",
   "Locale to translate": "Lokal sing arep diterjemahake",
   "Locked out? Use": "Dikunci? Gunakake",
@@ -851,6 +881,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Alasan moderasi",
   Mongolian: "Mongolia",
   "More from True Grit": "Liyane saka True Grit",
+  "Motto banner": "Spanduk motto",
   "Move down in the showcase": "Pindhah mudhun ing showcase",
   "Move earlier": "Pindhah luwih dhisik",
   "Move later": "Pindhah mengko",
@@ -977,6 +1008,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Cathetan (dibutuhake kanggo njaluk owah-owahan utawa nolak)",
   "Note (required)": "Cathetan (dibutuhake)",
   Notes: "Cathetan",
+  "Nothing here yet": "Durung ana apa-apa ing kene",
   "Nothing outstanding to pay": "Ora ana sing kudu dibayar",
   "Nothing pending.": "Ora ana sing ditundha.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1030,6 +1062,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Mangga Alphonso Organik",
   "Organic mangoes held in a sunlit orchard":
     "Mangga organik sing dianakaké ing kebon sing disinari srengéngé",
+  "Organic wheat flour in a wooden bowl": "Glepung gandum organik ing mangkok kayu",
   Outstanding: "Punjul",
   Overview: "Ringkesan",
   "Owner Reports": "Laporan Pemilik",
@@ -1078,8 +1111,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pilih paling ora siji negara, utawa uculake ing endi wae.",
   "Pick at least one country, or release globally.":
     "Pilih paling ora siji negara, utawa luncurake sacara global.",
-  "Pick exactly two people for a direct message.": "Pilih wong loro kanggo pesen langsung.",
   "Pick one from the list to start reading.": "Pilih siji saka dhaptar kanggo miwiti maca.",
+  "Pick the other person for this direct message.": "Pilih wong liya kanggo pesen langsung iki.",
   "PIN code": "Kode PIN",
   "PIN patterns": "Pola PIN",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1217,6 +1250,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Mbutuhake ijin page.view lan API sing disambungake.",
   "Requires products.publish": "Mbutuhake products.publish",
   "Requires recipes.publish": "Mbutuhake recipes.publish",
+  "Requires settings access.": "Mbutuhake akses setelan.",
   "Requires the analytics.view permission.": "Mbutuhake ijin analytics.view.",
   "Requires the inventory.adjust permission.": "Mbutuhake ijin inventory.adjust.",
   "Requires the reports.query permission.": "Mbutuhake ijin reports.query.",
@@ -1263,6 +1297,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Mlaku...",
   "Russian (Русский)": "Rusia (Русский)",
   "Safe area": "Area aman",
+  "Safe geo-lock:": "Geo-lock aman:",
   "Sale & Discounts": "Adol & Diskon",
   "Sale price": "Rega adol",
   "Sale Price (₹)": "Rega Adol (₹)",
@@ -1396,6 +1431,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Serbia",
   Servings: "Layanan",
   "Set a new password": "Setel sandhi anyar",
+  "Set as default": "Setel minangka standar",
   "Shop · Farms · Journal": "Toko · Pertanian · Jurnal",
   "Shop fresh greens": "Shop fresh",
   "Shop root vegetables": "Toko sayuran oyod",
@@ -1484,6 +1520,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Supporting text": "Tèks dhukungan",
   "Swedish (Svenska)": "Swedia (Svenska)",
   Table: "Tabel",
+  "Tags & Certifications": "Tag & Sertifikasi",
   "Tags:": "Tag:",
   "Taking payments": "Njupuk pembayaran",
   Tax: "Pajak",
@@ -1496,6 +1533,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Spanduk, baris kategori, baris produk lan kolom SEO disimpen bebarengan. Kothak centhang bagean, pesenan lan salinan bagean khusus disimpen dhewe, nalika sampeyan ngganti.",
   "The chat widget customers and visitors see on the storefront.":
     "Widget chatting sing dideleng pelanggan lan pengunjung ing etalase.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Dhaptar kothak centhang ditampilake ing saben tab Umum produk. Owah-owahan langsung ditrapake ing endi wae.",
   "The classic credential pair, including the password-reset flow.":
     "Pasangan kredensial klasik, kalebu alur reset sandhi.",
   "the farm owner": "pemilik tani",
@@ -1546,6 +1585,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Bagian iki diowahi ing panel dhewe ing ngisor kaca.",
   "Threads started from the storefront appear here.":
     "Utas sing diwiwiti saka etalase katon ing kene.",
+  "Thumbnail image URL": "URL gambar cilik",
   Time: "Wektu",
   "Tinted band": "Band berwarna",
   Title: "Judul",
@@ -1591,8 +1631,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Unggah gambar",
   "Uploading image...": "Ngunggah gambar...",
   "Uploading image…": "Ngunggah gambar...",
+  "Uploading thumbnail...": "Ngunggah gambar cilik...",
   "Uploading...": "Ngunggah...",
   "Uploading…": "Ngunggah...",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Gunakake gambar kapisah 1200 ×. Gambar kothak iki dipotong kanggo kertu kategori; aja nganggo maneh spanduk pahlawan sing amba.",
   "Use site-wide effects instead": "Gunakake efek ing saindhenging situs",
   "Use the exact canvas": "Gunakake kanvas sing tepat",
   "Use the navigation to get back.": "Gunakake navigasi kanggo bali.",
@@ -1603,6 +1646,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Users & Roles": "Panganggo & Peran",
   "Users unavailable": "Panganggo ora kasedhiya",
   "Using the site brand colour": "Nganggo werna merek situs",
+  "Value of 1 INR": "Nilai 1 INR",
+  "Value per INR": "Nilai saben INR",
   "Value, ₹": "Nilai, ₹",
   Variant: "Varian",
   "Variant (SKU)": "Varian (SKU)",

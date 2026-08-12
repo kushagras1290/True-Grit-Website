@@ -26,6 +26,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/blog/my-post": '/blog id="t0005">/category/میوه های تازه',
   "← All farms": "← همه مزارع",
   "+ stars": "+ ستاره",
+  "₹1,000 preview": "1000 روپیه پیش‌نمایش",
   "1 star": "1 ستاره",
   "15% off your first order": "15% تخفیف برای اولین سفارش شما",
   "2 cups": "2 فنجان",
@@ -59,6 +60,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "یک سرپرست فوق العاده می تواند یک گروه یا پیام مستقیم را از دکمه + در بالا راه اندازی کند.",
   "A tinted band — check muted text is still readable here.":
     "یک نوار رنگی — متن بی‌صدا را علامت بزنید هنوز در اینجا قابل خواندن است.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "کشور بازدیدکننده ارزی را انتخاب می‌کند، این جدول ارزش نمایشی آن را ارائه می‌کند و قیمت INR اصلی بدون تغییر باقی می‌ماند. ارزهای غیرفعال شده به پیش‌فرض‌های ایمن INR برمی‌گردند.",
   Accent: "لهجه",
   "Accept orders and payments": "پذیرش سفارش‌ها و پرداخت‌ها",
   "Accept orders and payments for this product": "پذیرش سفارش‌ها و پرداخت‌های این محصول",
@@ -84,6 +87,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": 'افزودن id="t0005">افزودن مالک مزرعه',
   "Add code": "افزودن کد",
   "Add country": "افزودن کشور",
+  "Add currency": "افزودن ارز",
   "Add entry": "افزودن مدخل",
   "Add farm owner": "افزودن مالک مزرعه",
   "Add ingredient": "افزودن مواد تشکیل دهنده",
@@ -94,6 +98,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "برای شروع، یکی از زیر را اضافه کنید.",
   "Add one so the bot has something to reference for this scope.":
     "یکی اضافه کنید تا ربات چیزی برای مرجع برای این محدوده داشته باشد.",
+  "Add one using the field above.": "با استفاده از فیلد بالا، یک ارز اضافه کنید.",
   "Add page": "افزودن صفحه",
   "Add participants": "افزودن شرکت کنندگان",
   "Add point": "افزودن نقطه",
@@ -112,6 +117,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "افزودن منطقه",
   Added: "افزوده شد",
   "Adding...": "افزودن...",
+  "Adding…": "افزودن…",
   Address: "آدرس",
   "Adjust points": "تنظیم امتیاز",
   "Adjust the search or create a category.": "جستجو را تنظیم کنید یا یک دسته ایجاد کنید.",
@@ -210,6 +216,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "آذربایجانی",
   "B2B / bulk ordering": "B2B / سفارش انبوه",
   Back: "بازگشت",
+  "Back to conversations": "بازگشت به مکالمات",
   "Back to sign in": "بازگشت به ورود به سیستم",
   Balance: "موجودی",
   "Banner alt text": "متن جایگزین بنر",
@@ -272,6 +279,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "بخش های ویرایشگر دسته",
   "Category not found": "دسته پیدا نشد",
   "Category row": "ردیف دسته",
+  "Category thumbnail alt text": "متن جایگزین تصویر کوچک دسته",
+  "Category thumbnail URL": "نشانی اینترنتی تصویر کوچک دسته",
   "Category to add to the homepage": "رده برای افزودن به صفحه اصلی",
   "Cautions and low stock.": "احتیاط و موجودی کم.",
   Cebuano: "سبوانو",
@@ -344,6 +353,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "ایمیل تماس",
   Content: "محتوا",
   "Continue with Facebook": "ادامه با فیس بوک",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "قیمت های تقریبی ارز محلی را با تعیین ارزش یک روپیه هند کنترل کنید. سوابق کاتالوگ، تسویه‌حساب و سفارش به صورت ایمن در INR باقی می‌ماند.",
   "Control what each role can view, create, edit, publish or manage.":
     "کنترل کنید که هر نقش چه چیزی را می‌تواند مشاهده، ایجاد، ویرایش، انتشار یا مدیریت کند.",
   "Control whether each bot is available, and edit what it knows.":
@@ -388,6 +399,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "اندازه فهرست انتخاب شده",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "مجموعه های انتخاب شده از انواع خاص با هم با قیمت ثابت فروخته می شوند. هنگامی که یک سبد همه موارد را در یک بسته نگهداری می‌کند، Checkout به‌طور خودکار پس‌انداز را اعمال می‌کند.",
+  Currency: "ارز",
+  "Currency code": "کد ارز",
+  "Currency Converter": "تبدیل ارز",
+  "Currency values unavailable": "مقادیر ارز در دسترس نیست",
   "Current password": "گذرواژه فعلی",
   "Currently its own effects.": "فعلاً جلوه‌های خودش را دارد.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -425,6 +440,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "رد کردن",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "تزیینات در بالای صفحه و زیر صفحه را رد کنید. اشاره گر هر دو به طور پیش‌فرض خاموش هستند، هر دو به طور کامل برای بازدیدکنندگانی که از دستگاه خود برای کاهش حرکت درخواست کرده‌اند صرف‌نظر می‌شوند، و هیچکدام هرگز در پنجره پرداخت ظاهر نمی‌شوند - بارش برف روی فرم کارت دقیقاً در لحظه اشتباه باعث حواس‌پرتی می‌شود. جلوه‌های یک کشور به‌جای ترکیب شدن با آن‌ها، به‌جای ترکیب شدن با آن‌ها، برای بازدیدکنندگان آن کاملاً جایگزین جلوه‌های سایت می‌شوند - «مقداری برف» ترکیب معنی‌داری از برف و بدون تأثیر نیست.",
+  Default: "پیش‌فرض",
   "Default commission": "کمیسیون پیش‌فرض",
   "Default fee": "هزینه پیش‌فرض",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -444,6 +460,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "حذف دستور غذا",
   "Delete role": "حذف نقش",
   "Delete selected (": "حذف نقش",
+  "Delete this entry": "حذف این ورودی",
   "Delete this price adjustment?": "این تنظیم قیمت حذف شود؟",
   "Delete user": "حذف کاربر",
   "Deleting...": "در حال حذف...",
@@ -467,6 +484,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "فیلترهای رژیم غذایی و گواهینامه",
   "Dietary tags": "برچسب های غذایی",
   "Dietary tags (comma separated)": "برچسب‌های غذایی (با کاما از هم جدا شده‌اند)",
+  "Dietary Tags & Certifications": "برچسب‌ها و گواهی‌های غذایی",
   "Direct message": "پیام مستقیم",
   Disable: "غیرفعال کردن",
   "Disable selected (": "غیرفعال کردن انتخاب شده (",
@@ -490,12 +508,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "به عنوان مثال. حساب ها",
   "e.g. DIWALI500": "به عنوان مثال. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "به عنوان مثال برداشت در هفته 3 مارس 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "به عنوان مثال هند ارگانیک، تجارت منصفانه. گواهی اختصاص داده شده به هر محصولی تا زمانی که از آن حذف نشود، قابل حذف نیست.",
   "e.g. Ops Room": "به عنوان مثال. اتاق عملیات",
   "e.g. Rain-fed, no synthetic pesticides": "به عنوان مثال. دیم، بدون آفت کش های مصنوعی",
   "e.g. Refrigerate and use within 5 days":
     "به عنوان مثال. ظرف 5 روز در یخچال نگهداری کنید و استفاده کنید",
   "e.g. TO-HONEY-500": "به عنوان مثال TO-HONEY-500",
   "e.g. UTR 123456789012": "به عنوان مثال. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "به عنوان مثال. وگان، بدون گلوتن. با حذف یک مورد، آن را از هر محصولی که بررسی شده است حذف می‌کند.",
   Edit: "ویرایش",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "ویرایش ابرداده های صفحه CMS، نمایه سازی و بلوک های صفحه خام. رکورد صفحه اصلی در اینجا نیز فهرست شده است، اما تنظیمات صفحه اصلی راه امن‌تری برای تغییر آن است — این ویرایشگر JSON خام استفاده می‌کند.",
@@ -600,6 +622,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'روشن یا خاموش کردن بخشی برای بازدیدکنندگان در یک کشور، بدون تغییر آنچه دیگران می‌بینند. بخشی را در "ارث بری" بگذارید و فقط از جعبه علامت در لیست بخش بالا پیروی می کند.',
   "Forgot password?": "گذرواژه را فراموش کرده اید؟",
+  "Formatting locale": "قالب‌بندی محلی",
   "Free delivery above (₹)": "تحویل رایگان در بالا (₹)",
   "French (Français)": "فرانسوی (فرانسه)",
   Frequency: "فرکانس",
@@ -686,6 +709,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "اگر این تبلیغات هرگز استفاده نشده باشد، کاملاً حذف می شود. در غیر این صورت بایگانی می شود تا تاریخچه آن حفظ شود.",
   Igbo: "ایگبو",
+  Image: "تصویر",
   "Image alt text": "متن جایگزین تصویر",
   "Image alt text (optional)": "متن جایگزین تصویر (اختیاری)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -764,6 +788,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "یک رنگ خالی بگذارید تا رنگی که True Grit با آن ارسال می شود نگه دارید — پاک کردن یک فیلد روشی است که می توانید آن را لغو کنید. رنگ‌های یک صفحه یا کشور از رنگ‌های سایت شروع می‌شوند و تنها چیزی را که شما تغییر می‌دهید لغو می‌کنند، بنابراین هر کدام یک لیست کوتاه است، نه یک پالت دوم برای نگهداری. وقتی هر دو برای یک بازدیدکننده اعمال می‌شوند، صفحه برنده می‌شود — طراحی صفحه تحریریه نباید با آزمایش جغرافیایی لغو شود.",
   "Leave blank to use the default.": "برای استفاده از پیش‌فرض، خالی بگذارید.",
+  "Leave the link blank for a plain, unclickable image.":
+    "پیوند را برای یک تصویر ساده و غیرقابل کلیک خالی بگذارید.",
   "Less refunds": "بازپرداخت کمتر",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "به مشتریان امکان می‌دهد در هنگام تسویه‌حساب کد کارت هدیه را اعمال کنند که بخشی یا کل کل سفارش آنها را پوشش می‌دهد. کارت‌ها را از صفحه کارت‌های هدیه صادر کنید. به‌طور پیش‌فرض خاموش - کارت‌های موجود و موجودی‌های آن‌ها حفظ می‌شوند، فقط قابل بازخرید نیستند، در حالی که این کارت خاموش است.",
@@ -775,6 +801,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "کل خط",
   Lines: "خطوط",
   Link: "پیوند",
+  "Link (optional)": "پیوند (اختیاری)",
   "Link customer": "پیوند مشتری",
   "Link product": "پیوند محصول",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -793,6 +820,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "وضعیت بازار زنده، فشار اجرا و فعالیت انتشار.",
   "Live preview": "پیش نمایش زنده",
   "Live, and to scale with the real storefront's own styles.": "زنده، و",
+  Loading: "در حال بارگیری",
   "Loading active promotions...": "در حال بارگیری تبلیغات فعال...",
   "Loading analytics...": "بارگیری تجزیه و تحلیل...",
   "Loading announcements...": "در حال بارگیری اعلامیه ها...",
@@ -806,6 +834,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "در حال بارگیری مکالمات…",
   "Loading country overrides...": "در حال بارگیری موارد لغو کشور...",
   "Loading crawler files...": "در حال بارگیری فایل های خزنده...",
+  "Loading currency values…": "در حال بارگیری مقادیر ارز…",
   "Loading delivery charges...": "در حال بارگیری هزینه های تحویل...",
   "Loading discussion…": "در حال بارگیری بحث…",
   "Loading highlights...": "در حال بارگیری نکات برجسته...",
@@ -828,6 +857,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "در حال بارگیری کلیدهای ویترین...",
   "Loading submission…": "در حال بارگیری ارسال…",
   "Loading...": "در حال بارگیری...",
+  "Loading…": "در حال بارگیری…",
   "Local pickup points": "نقاط تحویل محلی",
   "Locale to translate": "محلی برای ترجمه",
   "Locked out? Use": "قفل شده اید؟ از",
@@ -879,6 +909,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "دلیل اعتدال",
   Mongolian: "مغولی",
   "More from True Grit": "بیشتر از True Grit",
+  "Motto banner": "برنمای شعار",
   "Move down in the showcase": "در ویترین به پایین حرکت کنید",
   "Move earlier": "حرکت زودتر",
   "Move later": "حرکت دیرتر",
@@ -1005,6 +1036,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Note (required to request changes or reject)": "توجه (برای درخواست تغییرات یا رد کردن لازم است)",
   "Note (required)": "توجه (الزامی)",
   Notes: "یادداشت‌ها",
+  "Nothing here yet": "هنوز چیزی اینجا نیست",
   "Nothing outstanding to pay": "هیچ چیز معوقی برای پرداخت وجود ندارد",
   "Nothing pending.": "هیچ چیزی معلق نیست.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1057,6 +1089,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "پس از بررسی مشتریان، سفارش‌ها در اینجا ظاهر می‌شوند.",
   "Organic Alphonso Mangoes": "انبه آلفونسو ارگانیک",
   "Organic mangoes held in a sunlit orchard": "انبه های ارگانیک نگهداری شده در باغی با نور آفتاب",
+  "Organic wheat flour in a wooden bowl": "آرد گندم ارگانیک در یک کاسه چوبی",
   Outstanding: "بی نظیر",
   Overview: "نمای کلی",
   "Owner Reports": "گزارش‌های مالک",
@@ -1106,9 +1139,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "حداقل یک کشور را انتخاب کنید یا در همه جا منتشر کنید.",
   "Pick at least one country, or release globally.":
     "حداقل یک کشور را انتخاب کنید یا در سطح جهانی منتشر کنید.",
-  "Pick exactly two people for a direct message.":
-    "دقیقاً دو نفر را برای یک پیام مستقیم انتخاب کنید.",
   "Pick one from the list to start reading.": "یکی را از لیست برای شروع خواندن انتخاب کنید.",
+  "Pick the other person for this direct message.":
+    "فرد دیگری را برای این پیام مستقیم انتخاب کنید.",
   "PIN code": "پین کد",
   "PIN patterns": "الگوهای پین",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1252,6 +1285,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires pages.view permission and a connected API.":
     "به مجوز pages.view و یک API متصل نیاز دارد.",
   "Requires products.publish": "به products.publish نیاز دارد",
+  "Requires settings access.": "نیاز به دسترسی به تنظیمات دارد.",
   "Requires the analytics.view permission.": "به مجوز analytics.view نیاز دارد.",
   "Requires the inventory.adjust permission.": "به مجوز inventory.adjust نیاز دارد.",
   "Requires the reports.query permission.": "به مجوز report.query نیاز دارد.",
@@ -1302,6 +1336,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "در حال اجرا…",
   "Russian (Русский)": "روسی (Русский)",
   "Safe area": "منطقه امن",
+  "Safe geo-lock:": "قفل جغرافیایی ایمن:",
   "Sale & Discounts": "فروش و تخفیف",
   "Sale price": "Sanskrit4 (संस्कृतम्)",
   "Sale Price (₹)": "قیمت فروش (₹)",
@@ -1433,6 +1468,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "صربی",
   Servings: "سرویس‌ها",
   "Set a new password": "یک رمز عبور جدید تنظیم کنید",
+  "Set as default": "به‌عنوان پیش‌فرض تنظیم شود",
   "Shop · Farms · Journal": "خرید · مزارع · مجله",
   "Shop fresh greens": "خرید سبزیجات تازه",
   "Shop root vegetables": "خرید سبزیجات ریشه دار",
@@ -1529,6 +1565,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "سواحیلی (کیسویلی)",
   "Swedish (Svenska)": "سوئدی (Svenska)",
   Table: "جدول",
+  "Tags & Certifications": "برچسب‌ها و گواهی‌ها",
   "Tags:": "برچسب‌ها:",
   Tajik: "تاجیک",
   "Taking payments": "دریافت پرداخت",
@@ -1545,6 +1582,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "فیلدهای بنر، ردیف دسته، ردیف محصول و SEO با هم ذخیره می شوند. تیک باکس‌های بخش، سفارش‌دهی و کپی بخش سفارشی خود به خود ذخیره می‌شوند، همانطور که شما آنها را تغییر می‌دهید.",
   "The chat widget customers and visitors see on the storefront.":
     "ویجت چت که مشتریان و بازدیدکنندگان در ویترین می بینند.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "لیست‌های چک باکس نشان داده شده در برگه عمومی هر محصول. تغییرات بلافاصله در همه جا اعمال می شوند.",
   "The classic credential pair, including the password-reset flow.":
     "جفت اعتبار کلاسیک، از جمله جریان بازنشانی رمز عبور.",
   "the farm owner": "مالک مزرعه",
@@ -1595,6 +1634,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "این بخش در پانل خود در پایین صفحه ویرایش می‌شود.",
   "Threads started from the storefront appear here.":
     "موضوع‌هایی که از ویترین شروع شده‌اند در اینجا ظاهر می‌شوند.",
+  "Thumbnail image URL": "نشانی اینترنتی تصویر بندانگشتی",
   Time: "زمان",
   "Tinted band": "بند رنگی",
   Title: "عنوان",
@@ -1643,9 +1683,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "آپلود تصویر",
   "Uploading image...": "در حال آپلود تصویر...",
   "Uploading image…": "در حال آپلود تصویر…",
+  "Uploading thumbnail...": "در حال آپلود تصویر کوچک...",
   "Uploading...": "در حال آپلود...",
   "Uploading…": "در حال بارگذاری…",
   "Urdu (اردو)": "اردو (اردو)",
+  USD: "دلار آمریکا",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "از یک تصویر 0 20×1 استفاده کنید. این تصویر مربعی برای کارت های دسته بریده شده است. از بنر گسترده قهرمان استفاده مجدد نکنید.",
   "Use site-wide effects instead": "به جای آن از جلوه های گسترده سایت استفاده کنید",
   "Use the exact canvas": "از بوم دقیق استفاده کنید",
   "Use the navigation to get back.": "از پیمایش برای بازگشت استفاده کنید.",
@@ -1658,6 +1702,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "استفاده از رنگ مارک سایت",
   Uyghur: "ایغور",
   Uzbek: "ازبکی",
+  "Value of 1 INR": "مقدار 1 INR",
+  "Value per INR": "مقدار هر INR",
   "Value, ₹": "ارزش، ₹",
   Variant: "نوع",
   "Variant (SKU)": "نوع (SKU)",

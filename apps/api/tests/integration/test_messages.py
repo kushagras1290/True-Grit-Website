@@ -69,6 +69,22 @@ def test_owner_can_create_group_and_manage_participants(client: TestClient, db: 
     assert {p["userId"] for p in match["participants"]} == {"usr_editor"}
 
 
+def test_participants_carry_their_role_names(client: TestClient, db: SQLiteDatabase):
+    as_owner(client, db)
+    created = client.post(
+        "/v1/admin/messages/conversations",
+        json={"type": "direct", "participantUserIds": ["usr_admin", "usr_editor"]},
+    )
+    assert created.status_code == 200, created.text
+    conversation_id = created.json()["id"]
+
+    conversations = client.get("/v1/admin/messages/conversations").json()
+    match = next(c for c in conversations if c["id"] == conversation_id)
+    by_user = {p["userId"]: p["roles"] for p in match["participants"]}
+    assert by_user["usr_admin"] != []
+    assert isinstance(by_user["usr_editor"], list)
+
+
 def test_non_owner_cannot_create_or_manage_conversations(client: TestClient, db: SQLiteDatabase):
     as_editor(client, db)  # holds messages.use, but is not the super admin
 

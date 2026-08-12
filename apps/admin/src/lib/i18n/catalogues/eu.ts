@@ -29,6 +29,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/denda",
   "← All farms": "← Baserri guztiak",
   "+ stars": "+ izar",
+  "₹1,000 preview": "1.000 ₹ aurrebista",
   "1 star": "izar bat",
   "15% off your first order": "% 15eko deskontua zure lehen eskaera",
   "2 cups": "2 edalontzi",
@@ -63,6 +64,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Superadministratzaile batek goiko + botoitik talde edo mezu zuzen bat abi dezake.",
   "A tinted band — check muted text is still readable here.":
     "Banda tintatua — egiaztatu isilatutako testua oraindik irakur daitekeela hemen.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "bisitari baten herrialdeak dibisa bat hautatzen du, taula honek bere bistaratzeko balioa ematen du eta jatorrizko INR prezioa ez da aldatu. Desgaitutako monetak INR babesteko balio lehenetsietara itzultzen dira.",
   Accent: "Azentua",
   "Accept orders and payments": "Onartu eskaerak eta ordainketak",
   "Accept orders and payments for this product": "Onartu produktu honen eskaerak eta ordainketak",
@@ -88,6 +91,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Gehitu kategoria",
   "Add code": "Gehitu kodea",
   "Add country": "Gehitu herrialdea",
+  "Add currency": "Gehitu moneta",
   "Add entry": "Gehitu sarrera",
   "Add farm owner": "Iragarki baserriaren jabea",
   "Add ingredient": "Gehitu osagaia",
@@ -98,6 +102,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Gehitu bat behean hasteko.",
   "Add one so the bot has something to reference for this scope.":
     "Gehitu bat, bot-ak esparru honetarako erreferentzia egiteko zerbait izan dezan.",
+  "Add one using the field above.": 'id="t0008">Kategoriaren miniatura URL',
   "Add page": "Gehitu orria",
   "Add participants": "Gehitu parte-hartzaileak",
   "Add point": "Gehitu puntua",
@@ -116,6 +121,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Gehitu zona",
   Added: "Gehitu",
   "Adding...": "Gehitzen...",
+  "Adding…": "Gehituz...",
   Address: "Helbidea",
   "Adjust points": "Egokitu puntuak",
   "Adjust the search or create a category.": "Egokitu bilaketa edo sortu kategoria.",
@@ -215,6 +221,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Azerbaijanera",
   "B2B / bulk ordering": "B2B / eskaerak masiboa",
   Back: "Itzuli",
+  "Back to conversations": "Itzuli elkarrizketetara",
   "Back to sign in": "Itzuli saioa hasteko",
   Balance: "Saldoa",
   "Banner alt text": "Bannerren alt testua",
@@ -279,6 +286,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Kategoria editorearen atalak",
   "Category not found": "Ez da aurkitu kategoria",
   "Category row": "Kategoriaren errenkada",
+  "Category thumbnail alt text": "Kategoriaren irudi txikia aldatzeko testua",
+  "Category thumbnail URL": "Kategoriaren irudi txikiaren URLa",
   "Category to add to the homepage": "Hasierako orrialdera gehitzeko kategoria",
   "Cautions and low stock.": "Kontuz eta stock gutxi.",
   "Centred safe area": "Zentratutako eremu segurua",
@@ -349,6 +358,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Harremanetarako helbide elektronikoa",
   Content: "Edukia",
   "Continue with Facebook": "Jarraitu Facebook-ekin",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Kontrolatu tokiko moneta gutxi gorabeherako prezioak indiar errupia batek zenbat balio duen ezarriz. Katalogoaren, ordainketaren eta eskaeren erregistroak seguru mantentzen dira INR-n.",
   "Control what each role can view, create, edit, publish or manage.":
     "Kontrolatu rol bakoitzak zer ikusi, sortu, editatu, argitaratu edo kudeatu dezakeen.",
   "Control whether each bot is available, and edit what it knows.":
@@ -393,6 +404,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Zerrenda-tamaina egokitua",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Aldaera zehatzen multzo prestatuak elkarrekin saltzen dira prezio berdinean. Checkout-ek aurrezpena automatikoki aplikatzen du saski batek sorta bateko elementu guztiak gordetzen dituenean.",
+  Currency: "Moneta",
+  "Currency code": "Moneta-kodea",
+  "Currency Converter": "Moneta-bihurgailua",
+  "Currency values unavailable": "Moneta-balioak ez daude erabilgarri",
   "Current password": "Oraingo pasahitza",
   "Currently its own effects.": "Gaur egun bere ondorioak.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -430,6 +445,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Gutxitu",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'Apainketa erakusleihoaren gainean: orriaren atzetik noraezean dauden partikulak eta arrastoa jarraian. Biak desaktibatuta daude lehenespenez, biak guztiz saltatzen dira euren gailuari mugimendua murrizteko eskatu dioten bisitarientzat, eta ez da inoiz ordainketa leihoan agertzen - txartel-inprimaki baten gainean elurtea une okerreko distrakzioa da. Herrialde baten efektuek gune osoko ondorioak ordezkatzen dituzte bisitarientzat, haiekin nahastu beharrean: "elur pixka bat" ez da elurraren nahasketa esanguratsua eta eraginik gabea.',
+  Default: "Lehenetsia",
   "Default commission": "Komisioa lehenetsia",
   "Default fee": "Tasa lehenetsia",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -449,6 +465,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Hautatu guztiak",
   "Delete role": "Ezabatu rola",
   "Delete selected (": "Ezabatu hautatutakoa (",
+  "Delete this entry": "Ezabatu sarrera hau",
   "Delete this price adjustment?": "Prezio-doikuntza hau ezabatu?",
   "Delete user": "Ezabatu erabiltzailea",
   "Deleting...": "Ezabatu...",
@@ -470,6 +487,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Dieta- eta ziurtapen-iragazkiak",
   "Dietary tags": "Etiketa dietetikoak",
   "Dietary tags (comma separated)": "Etiketa dietetikoak (komaz bereizita)",
+  "Dietary Tags & Certifications": "Etiketa eta ziurtagiri dietetikoak",
   "Direct message": "Mezu zuzena",
   Disable: "Desgaitu",
   "Disable selected (": "Desgaitu hautatutakoa (",
@@ -492,11 +510,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "adibidez. Kontuak",
   "e.g. DIWALI500": "adib. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "adibidez. 2026ko martxoaren 3ko astean bildua",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Adibidez. India Organikoa, Bidezko Merkataritza. Edozein produkturi esleitutako ziurtagiria ezin da ezabatu bertatik kendu arte.",
   "e.g. Ops Room": "adibidez. Operazio gela",
   "e.g. Rain-fed, no synthetic pesticides": "adib. Euripean, pestizida sintetikorik gabe",
   "e.g. Refrigerate and use within 5 days": "adib. Hoztu eta erabili 5 eguneko epean",
   "e.g. TO-HONEY-500": "adibidez. TO-HONEY-500",
   "e.g. UTR 123456789012": "adibidez. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Adibidez. Beganoa, glutenik gabekoa. Bat ezabatzeak egiaztatutako produktu guztietatik kentzen du.",
   Edit: "Editatu",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Editatu CMS orriaren metadatuak, indexatzea eta orrialde-bloke gordinak. Hasierako orriaren erregistroa hemen ere agertzen da, baina Orriaren ezarpenak aldatzeko modu seguruena da: editore honek JSON gordina hartzen du.",
@@ -601,6 +623,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Herrialde bateko bisitarientzat atal bat aktibatu edo desaktibatu behartu, besteek ikusten dutena aldatu gabe. Utzi "Oinordetzan" atal bat eta goiko atal-zerrendako marka-laukiari jarraitzen dio.',
   "Forgot password?": "Pasahitza ahaztu al duzu?",
+  "Formatting locale": "Lokal formatua",
   "Free delivery above (₹)": "Goian doan bidalketa (₹)",
   "French (Français)": "Frantsesa (Français)",
   Frequency: "Maiztasuna",
@@ -682,6 +705,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "E-posta elektroniko horrek kontu bat badu, berrezartzeko esteka martxan dago.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Promozio hau ez bada inoiz trukatu, erabat ezabatuko da; bestela artxibatu egiten da, bere historia gordetzeko.",
+  Image: "(aukerakoa)",
   "Image alt text": "Irudiaren alt testua",
   "Image alt text (optional)": "Irudiaren beste testua (aukerakoa)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -756,6 +780,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Utzi kolore bat hutsik True Grit-k bidaltzen duena mantentzeko — eremu bat garbitzea da desegin. Orrialde edo herrialde baten koloreak guneko koloreetatik hasten dira eta aldatzen duzuna bakarrik gainidazten dute, beraz, bakoitza zerrenda labur bat da, ez mantentzeko bigarren paleta bat. Biak bisitari berari aplikatzen zaizkionean, orrialdeak irabazten du — orri editorial baten diseinua ez da geo esperimentu baten bidez desegin behar.",
   "Leave blank to use the default.": "Utzi hutsik lehenetsia erabiltzeko.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Utzi esteka hutsik, klik egin ezin den irudi bat izateko.",
   "Less refunds": "Itzulketa gutxiago",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Bezeroei opari-txartelaren kodea aplikatzeko aukera ematen die ordaintzerakoan, eskaeraren zati bat edo osoa estaliz. Igorri txartelak Opari Txartelak orrialdetik. Desaktibatuta lehenespenez: lehendik dauden txartelak eta haien saldoak gordetzen dira, ezin dira trukatu, hau desaktibatuta dagoen bitartean.",
@@ -767,6 +793,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Lerro osoa",
   Lines: "Lerroak",
   Link: "Esteka",
+  "Link (optional)": "Esteka (aukerakoa)",
   "Link customer": "Lotu bezeroa",
   "Link product": "Esteka ezazu produktua",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -786,6 +813,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Zuzeneko aurrebista",
   "Live, and to scale with the real storefront's own styles.":
     "Zuzenekoa eta benetako erakusleihoaren estiloekin eskalatu.",
+  Loading: "Kargatzen",
   "Loading active promotions...": "Promozio aktiboak kargatzen...",
   "Loading analytics...": "Analitikak kargatzen...",
   "Loading announcements...": "Iragarkiak kargatzen...",
@@ -799,6 +827,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Elkarrizketak kargatzen...",
   "Loading country overrides...": "Herrialdearen gainidatziak kargatzen...",
   "Loading crawler files...": "Arakatzaile-fitxategiak kargatzen...",
+  "Loading currency values…": "Moneta-balioak kargatzen...",
   "Loading delivery charges...": "Bidalketa-gastuak kargatzen...",
   "Loading discussion…": "Eztabaida kargatzen...",
   "Loading highlights...": "Nabarmenak kargatzen...",
@@ -821,6 +850,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Dendako erakusleihoaren etengailuak kargatzen...",
   "Loading submission…": "Bidalketa kargatzen...",
   "Loading...": "Kargatzen...",
+  "Loading…": "Kargatzen...",
   "Local pickup points": "Tokiko bilketa-puntuak",
   "Locale to translate": "Itzuli beharreko tokikoa",
   "Locked out? Use": "Blokeatu egin duzu? Erabili",
@@ -872,6 +902,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Moderazioaren arrazoia",
   Mongolian: "Mongoliera",
   "More from True Grit": "True Grit-tik gehiago",
+  "Motto banner": "Lema-pankarta",
   "Move down in the showcase": "Mugitu behera erakusleihoan",
   "Move earlier": "Mugitu lehenago",
   "Move later": "Eraman geroago",
@@ -1002,6 +1033,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Oharra (beharrezkoa da aldaketak eskatzeko edo baztertzeko)",
   "Note (required)": "Oharra (beharrezkoa)",
   Notes: "Oharrak",
+  "Nothing here yet": "Oraindik ez dago ezer",
   "Nothing outstanding to pay": "Ez dago ordaindu beharreko ezer",
   "Nothing pending.": "Ez dago ezer zain.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1055,6 +1087,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Organic Alphonso",
   "Organic mangoes held in a sunlit orchard":
     "Eguzki argiztatuta dagoen baratza batean mantendutako mango ekologikoak",
+  "Organic wheat flour in a wooden bowl": "Gai-irina ekologikoa egurrezko ontzi batean",
   Outstanding: "Nabarmenak",
   Overview: "Ikuspen orokorra",
   "Owner Reports": "Jabeen txostenak",
@@ -1104,8 +1137,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Hautatu gutxienez herrialde bat, edo askatu leku guztietan.",
   "Pick at least one country, or release globally.":
     "Hautatu gutxienez herrialde bat, edo askatu orokorrean.",
-  "Pick exactly two people for a direct message.": "Hautatu zuzeneko mezu baterako bi pertsona.",
   "Pick one from the list to start reading.": "Hautatu zerrendatik bat irakurtzen hasteko.",
+  "Pick the other person for this direct message.":
+    "Hautatu beste pertsona bat zuzeneko mezu honetarako.",
   "PIN code": "PIN kodea",
   "PIN patterns": "PIN ereduak",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1251,6 +1285,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "pages.view baimena eta konektatutako API bat behar ditu.",
   "Requires products.publish": "Products.publish behar du",
   "Requires recipes.publish": "Rezetak.publish eskatzen",
+  "Requires settings access.": "Ezarpenetarako sarbidea behar da.",
   "Requires the analytics.view permission.": "analytics.view baimena behar du.",
   "Requires the inventory.adjust permission.": "Inbentarioa.adjust baimena behar du.",
   "Requires the reports.query permission.": "Reports.query baimena behar du.",
@@ -1302,6 +1337,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Abian...",
   "Russian (Русский)": "Errusiera (Русский)",
   "Safe area": "Eremu segurua",
+  "Safe geo-lock:": "Geoblokeo segurua:",
   "Sale & Discounts": "Salmenta eta deskontuak",
   "Sale price": "Salmenta-prezioa",
   "Sale Price (₹)": "Salmenta-prezioa (₹)",
@@ -1441,6 +1477,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Serbiarra",
   Servings: "Zerbitzariak",
   "Set a new password": "Ezarri pasahitz berria",
+  "Set as default": "Ezarri lehenetsi gisa",
   "Shop · Farms · Journal": "Denda · Baserriak · Aldizkaria",
   "Shop fresh greens": "Erosi berde freskoak",
   "Shop root vegetables": "Anun ezazu",
@@ -1534,6 +1571,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Supporting text": "Testu osagarria",
   "Swedish (Svenska)": "Suediera (Svenska)",
   Table: "Taula",
+  "Tags & Certifications": "Etiketak eta ziurtagiriak",
   "Tags:": "Etiketak:",
   Tajik: "Tadjiko",
   "Taking payments": "Ordainketak hartzea",
@@ -1550,6 +1588,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Banerra, kategoriako errenkada, produktuen errenkada eta SEO eremuak batera gordetzen dira. Ataleko marka-koadroak, eskaerak eta atal pertsonalizatuen kopiak bere kabuz gordetzen dira, haiek aldatzen dituzun heinean.",
   "The chat widget customers and visitors see on the storefront.":
     "Bezeroek eta bisitariek erakusleihoan ikusten duten txat-widgeta.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Produktu bakoitzaren Orokorra fitxan agertzen diren kontrol-laukiak ageri dira. Aldaketak edonon aplikatzen dira berehala.",
   "The classic credential pair, including the password-reset flow.":
     "Kredentzial-bikote klasikoa, pasahitza berrezartzeko fluxua barne.",
   "the farm owner": "ustiategiaren jabea",
@@ -1602,6 +1642,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Atal hau bere panelean editatzen da orrialdean beherago.",
   "Threads started from the storefront appear here.":
     "Dendako erakusleihotik hasitako hariak hemen agertzen dira.",
+  "Thumbnail image URL": "Miniatura-irudiaren URLa",
   Time: "Denbora",
   "Tinted band": "Banda tintatua",
   Title: "Izenburua",
@@ -1654,8 +1695,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Kargatu irudia",
   "Uploading image...": "Irudia kargatzen...",
   "Uploading image…": "Irudia kargatzen...",
+  "Uploading thumbnail...": "Miniatura kargatzen...",
   "Uploading...": "Kargatzen...",
   "Uploading…": "Kargatzen...",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Erabili 1200 × 1200 irudi bereizi bat. Irudi karratu hau kategoria-txarteletarako moztuta dago; ez berrerabili heroi zabaleko pankarta.",
   "Use site-wide effects instead": "Erabili gune osoko efektuak ordez",
   "Use the exact canvas": "Erabili mihise zehatza",
   "Use the navigation to get back.": "Erabili nabigazioa itzultzeko.",
@@ -1667,6 +1711,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Users unavailable": "Erabiltzaileak ez daude erabilgarri",
   "Using the site brand colour": "Gunearen markaren kolorea erabiltzea",
   Uyghur: "Uigur",
+  "Value of 1 INR": "INR 1eko balioa",
+  "Value per INR": "INR bakoitzeko balioa",
   "Value, ₹": "Balioa, ₹",
   Variant: "Aldaera",
   "Variant (SKU)": "Aldaera (SKU)",

@@ -32,6 +32,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/siopa",
   "← All farms": "← Gach feirm",
   "+ stars": "+ réalta",
+  "₹1,000 preview": "₹ 1,000 réamhamharc",
   "1 star": "1 réalta",
   "15% off your first order": "15% as do chéad ordú",
   "2 cups": "2 chupán",
@@ -66,6 +67,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Is féidir le sár-riarthóir tús a chur le grúpa nó teachtaireacht dhíreach ón gcnaipe + thuas.",
   "A tinted band — check muted text is still readable here.":
     "Banda tinted — tá an téacs balbhaithe le seic fós inléite anseo.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "roghnaíonn tír chuairteora airgeadra, soláthraíonn an tábla seo a luach taispeána, agus fanann an bunphraghas INR gan athrú. Titeann airgeadraí díchumasaithe ar ais go dtí réamhshocrú INR-safe.",
   "Accept orders and payments": "Glac le horduithe agus le híocaíochtaí",
   "Accept orders and payments for this product":
     "Glac le horduithe agus le híocaíochtaí don táirge seo",
@@ -91,6 +94,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Cuir catagóir leis",
   "Add code": "Cuir cód leis",
   "Add country": "Cuir tír leis",
+  "Add currency": "Cuir airgeadra leis",
   "Add entry": "Cuir iontráil leis",
   "Add farm owner": "Cuir úinéir feirme leis",
   "Add ingredient": "Cuir comhábhar leis",
@@ -101,6 +105,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Cuir ceann thíos leis chun tús a chur leis.",
   "Add one so the bot has something to reference for this scope.":
     "Cuir ceann leis ionas go mbeidh rud éigin ag an bot don raon feidhme seo.",
+  "Add one using the field above.": "Cuir ceann leis ag baint úsáide as an réimse thuas.",
   "Add page": "Cuir leathanach leis",
   "Add participants": "Cuir rannpháirtithe leis",
   "Add point": "Cuir pointe leis",
@@ -119,6 +124,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Cuir crios leis",
   Added: "Curtha leis",
   "Adding...": "Ag cur leis...",
+  "Adding…": "Ag cur…",
   Address: "Seoladh",
   "Adjust points": "Coigeartaigh pointí",
   "Adjust the search or create a category.": "Coigeartaigh an cuardach nó cruthaigh catagóir.",
@@ -214,6 +220,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Asarbaiseáinis",
   "B2B / bulk ordering": "B2B / bulc-ordú",
   Back: "Ar ais",
+  "Back to conversations": "Ar ais chuig na comhráite",
   "Back to sign in": "Ar ais chun síniú isteach",
   Balance: "Iarmhéid",
   "Banner backdrop": "Cúlra na meirgí",
@@ -275,6 +282,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Rannóga an eagarthóra chatagóir",
   "Category not found": "Catagóir gan aimsiú",
   "Category row": "Catagóir ró",
+  "Category thumbnail alt text": "Catagóir mionsamhail alt text",
+  "Category thumbnail URL": "URL mionsamhail na catagóire",
   "Category to add to the homepage": "Catagóir le cur leis an leathanach baile",
   "Cautions and low stock.": "Rabhadh agus stoc íseal.",
   "Centred safe area": "Limistéar sábháilte lárnach",
@@ -344,6 +353,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "R-phost teagmhála",
   Content: "Ábhar",
   "Continue with Facebook": "Lean ar aghaidh le Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Rialaigh neasphraghsanna airgeadra áitiúil trí shocrú cé mhéad is fiú Rúipína Indiach amháin. Fanann taifid chatalóige, seiceála amach agus ordaithe go sábháilte in INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Rialaigh cad is féidir le gach ról a fheiceáil, a chruthú, a chur in eagar, a fhoilsiú nó a bhainistiú.",
   "Control whether each bot is available, and edit what it knows.":
@@ -386,6 +397,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Méid liosta coimeádta",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Tacair choimeádta de roghanna ar leith díolta le chéile ar phraghas comhréidh. Feidhmíonn Seiceáil Amach an coigilteas go huathoibríoch nuair a bhíonn gach earra i gciseán á choinneáil i gciseán.",
+  Currency: "Airgeadra",
+  "Currency code": "Cód airgeadra",
+  "Currency Converter": "Tiontaire Airgeadra",
+  "Currency values unavailable": "Luachanna airgeadra ar fáil",
   "Current password": "Focal faire reatha",
   "Currently its own effects.": "A éifeachtaí féin faoi láthair.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -423,6 +438,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Meath",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'Maisiú ar bharr aghaidh an tsiopa: cáithníní ag sileadh ar chúl an leathanaigh, agus rian ag leanúint an phointeora. Tá an dá cheann múchta de réir réamhshocraithe, ní dhéantar an dá cheann go hiomlán do chuairteoirí a d\'iarr tairiscint laghdaithe ar a ngléas, agus nach bhfeictear riamh ar an bhfuinneog íocaíochta - cuireann titim sneachta thar fhoirm chárta seachráin ag an nóiméad mícheart. Tagann éifeachtaí na tíre in áit na n-iarmhairtí ar fud an tsuímh go hiomlán dá gcuairteoirí seachas iad a chumasc leo - ní meascán bríoch sneachta é "roinnt sneachta" agus níl aon éifeacht aige.',
+  Default: "Réamhshocrú",
   "Default commission": "Coimisiún réamhshocraithe",
   "Default fee": "Táille réamhshocraithe",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -442,6 +458,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Scrios an t-oideas",
   "Delete role": "Scrios ról",
   "Delete selected (": "Scrios roghnaithe (",
+  "Delete this entry": "Scrios an iontráil seo",
   "Delete this price adjustment?": "Scrios an coigeartú praghais seo?",
   "Delete user": "Scrios an t-úsáideoir",
   "Deleting...": "Ag scriosadh...",
@@ -463,6 +480,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Scagairí aiste bia agus deimhniúcháin",
   "Dietary tags": "Clibeanna aiste bia",
   "Dietary tags (comma separated)": "Clibeanna cothaitheacha (deighilte le camóg)",
+  "Dietary Tags & Certifications": "Clibeanna & Deimhnithe Cothaithe",
   "Direct message": "Teachtaireacht dhíreach",
   Disable: "Díchumasaigh",
   "Disable selected (": "Díchumasaigh roghnaithe (",
@@ -484,10 +502,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. 500g Pack": "e.g. Pacáiste 500g",
   "e.g. Accounts": "m.sh. Cuntais",
   "e.g. Harvested the week of 3 March 2026": "e.g. A bhuain seachtain an 3 Márta 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "E.g. India Orgánach, Cóirthrádáil. Ní féidir deimhniú a shanntar do tháirge ar bith a scriosadh go dtí go mbainfear de é.",
   "e.g. Ops Room": "m.sh. Seomra OPs",
   "e.g. Rain-fed, no synthetic pesticides":
     "e.g. Cothaithe de bháisteach, gan aon lotnaidicídí sintéiseacha",
   "e.g. Refrigerate and use within 5 days": "e.g. Cuisnigh agus úsáid laistigh de 5 lá",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "E.g. Vegan, saor ó ghlútan. Má scriosann tú ceann amháin, baintear é de gach táirge a bhfuil sé á sheiceáil aige.",
   Edit: "Cuir in eagar",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Cuir meiteashonraí leathanaigh CMS, innéacsú agus bloic amha leathanaigh in eagar. Tá taifead an leathanaigh baile liostaithe anseo freisin, ach is é Socruithe an Leathanaigh Baile an bealach is sábháilte chun é a athrú - glacann an t-eagarthóir seo JSON amh.",
@@ -593,6 +615,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Cuir i bhfeidhm rannán ar siúl nó as do chuairteoirí i dtír amháin, gan athrú ar an méid a fheiceann gach duine eile. Fág alt ar "Oidhreacht" agus leanann sé an ticbhosca sa liosta rannán thuas.',
   "Forgot password?": "An bhfuil dearmad déanta agat ar an bhfocal faire?",
+  "Formatting locale": "Formáidiú locale",
   "Free delivery above (₹)": "Seachadadh in aisce thuas (₹)",
   "French (Français)": "Fraincis (Francais)",
   Frequency: "Minicíocht",
@@ -673,6 +696,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Má tá cuntas ag an ríomhphost sin, tá nasc athshocraithe ar an mbealach.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Murar fuasclaíodh an promóisean seo riamh scriostar go hiomlán é; seachas sin tá sé sa chartlann ionas go gcoimeádtar a stair.",
+  Image: "Íomhá",
   "Image alt text (optional)": "Image alt text (roghnach)",
   "Image is sRGB and at or below the listed file-size target.":
     "Tá an íomhá sRGB agus ag an sprioc méid comhaid liostaithe nó faoina bhun.",
@@ -734,6 +758,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Label: "Lipéad",
   "Land under cultivation": "Talamh á saothrú",
   Language: "Teanga",
+  "Language Studio": "Stiúideo Teanga",
   "Last activity": "Gníomhaíocht dheireanach",
   "Last reviewer note": "Nóta léirmheastóra deiridh",
   "Last sign-in": "Síniú isteach is déanaí",
@@ -745,6 +770,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Fág dath bán chun an t-aon long True Grit a choinneáil — is é an bealach a chealaigh tú páirc a ghlanadh. Tosaíonn dathanna leathanach nó tíre ó dhathanna an tsuímh agus ní sháraíonn siad ach an méid a athraíonn tú, mar sin is liosta gearr é gach ceann acu, ní an dara pailéad le coinneáil. Nuair a bhaineann an dá cheann leis an gcuairteoir céanna, bíonn an bua ag an leathanach - níor cheart dearadh leathanach eagarthóireachta a chealú le turgnamh geo.",
   "Leave blank to use the default.": "Fág bán chun an réamhshocrú a úsáid.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Fág an nasc bán le haghaidh íomhá simplí nach féidir a chliceáil.",
   "Less refunds": "Níos lú aisíocaíochtaí",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Ligeann sé do chustaiméirí cód cárta bronntanais a chur i bhfeidhm ag an tseiceáil amach, a chlúdaíonn cuid dá n-ordú nó iomlán. Cártaí a eisiúint ón leathanach Cártaí Bronntanas. As de réir réamhshocraithe — coinnítear na cártaí atá ann cheana féin agus a n-iarmhéideanna, ach ní féidir iad a fhuascailt, agus é seo múchta.",
@@ -756,6 +783,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Líne iomlán",
   Lines: "Línte",
   Link: "Nasc",
+  "Link (optional)": "Nasc (roghnach)",
   "Link customer": "Custaiméir naisc",
   "Link product": "Nasc táirge",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -775,6 +803,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Réamhamharc beo",
   "Live, and to scale with the real storefront's own styles.":
     "Beo, agus de réir scála le stíleanna an éadan siopa féin.",
+  Loading: "Ag lódáil",
   "Loading active promotions...": "Promóisin ghníomhacha á lódáil...",
   "Loading analytics...": "Anailísíocht á lódáil…",
   "Loading announcements...": "Fógraí á lódáil...",
@@ -788,6 +817,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Comhráite á luchtú…",
   "Loading country overrides...": "Sáraítear tír á luchtú...",
   "Loading crawler files...": "Comhaid crawler á lódáil...",
+  "Loading currency values…": "Luachanna airgeadra á lódáil…",
   "Loading delivery charges...": "Táillí seachadta á lódáil…",
   "Loading discussion…": "Plé á lódáil…",
   "Loading highlights...": "Buaicphointí á lódáil...",
@@ -810,6 +840,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Lasca aghaidh siopa á lódáil…",
   "Loading submission…": "Aighneacht á lódáil…",
   "Loading...": "Ag lódáil...",
+  "Loading…": "Lódáil…",
   "Local pickup points": "Pointe bailithe áitiúla",
   "Locale to translate": "Locale le haistriú",
   "Locked out? Use": "Glasáilte amach? Úsáid",
@@ -986,6 +1017,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Nóta (riachtanach chun athruithe a iarraidh nó diúltú)",
   "Note (required)": "Nóta (riachtanach)",
   Notes: "Nótaí",
+  "Nothing here yet": "Níl aon rud anseo fós",
   "Nothing outstanding to pay": "Níl aon rud le híoc",
   "Nothing pending.": "Níl aon rud ar feitheamh.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1038,6 +1070,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Orders will appear here once customers check out.":
     "Taispeánfar orduithe anseo a luaithe a dhéanfaidh custaiméirí seiceáil amach.",
   "Organic mangoes held in a sunlit orchard": "Mangoes orgánacha coinnithe in úllord gréine",
+  "Organic wheat flour in a wooden bowl": "Plúr cruithneachta orgánach i mbabhla adhmaid",
   Outstanding: "Sármhaith",
   Overview: "Forbhreathnú",
   "Owner Reports": "Tuairiscí Úinéara",
@@ -1087,9 +1120,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Roghnaigh tír amháin ar a laghad, nó scaoil i ngach áit.",
   "Pick at least one country, or release globally.":
     "Roghnaigh tír amháin ar a laghad, nó scaoil amach go domhanda.",
-  "Pick exactly two people for a direct message.":
-    "Roghnaigh beirt go díreach le haghaidh teachtaireachta dírí.",
   "Pick one from the list to start reading.": "Roghnaigh ceann ón liosta le tosú ag léamh.",
+  "Pick the other person for this direct message.":
+    "Pioc an duine eile don teachtaireacht dhíreach seo.",
   "PIN code": "Cód PIN",
   "PIN patterns": "Pátrúin PIN",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1231,6 +1264,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Tá cead pages.view agus API nasctha ag teastáil.",
   "Requires products.publish": "Táirgí.publish de dhíth",
   "Requires recipes.publish": "Recipes.publish",
+  "Requires settings access.": "Tá rochtain socruithe ag teastáil uaidh.",
   "Requires the analytics.view permission.": "Tá cead analytics.view ag teastáil.",
   "Requires the inventory.adjust permission.": "Tá cead fardail.coigeartaithe ag teastáil.",
   "Requires the reports.query permission.": "Tá cead na tuairisce.scrúduithe ag teastáil.",
@@ -1281,6 +1315,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Rith...",
   "Russian (Русский)": "Rúisis (Русский)",
   "Safe area": "Limistéar Sábháilte",
+  "Safe geo-lock:": "geo-ghlas sábháilte:",
   "Sale & Discounts": "Díolachán & Lascainí",
   "Sale price": "Praghas díola",
   "Sale Price (₹)": "Praghas Díolacháin (₹)",
@@ -1414,6 +1449,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Seirbis",
   Servings: "Seirbhísí",
   "Set a new password": "Socraigh pasfhocal nua",
+  "Set as default": "Socraigh mar réamhshocrú",
   "Shop · Farms · Journal": "Siopa · Farms · Journal",
   "Shop fresh greens": "Siopa glasaigh úra",
   "Shop root vegetables": "Siopa glasraí fréimhe",
@@ -1511,6 +1547,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "Svahaílis (Kiswahili)",
   "Swedish (Svenska)": "Sualainnis (Svenska)",
   Table: "Tábla",
+  "Tags & Certifications": "Clibeanna & Deimhniúcháin",
   "Tags:": "Clibeanna:",
   Tajik: "Táidsíc",
   "Taking payments": "Ag glacadh íocaíochtaí",
@@ -1527,6 +1564,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Sábhálann an bhratach, an tsraith chatagóir, an tsraith táirgí agus na réimsí Sinsearach le chéile. Sábhálann boscaí tic na rannóige, ordú agus cóip saincheaptha na rannóige ina n-aonar, de réir mar a athraíonn tú iad.",
   "The chat widget customers and visitors see on the storefront.":
     "An ghiuirléid chomhrá a fheiceann custaiméirí agus cuairteoirí ar aghaidh an tsiopa.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Liostaí an ticbhosca a thaispeántar ar chluaisín Ginearálta gach táirge. Bíonn athruithe i bhfeidhm i ngach áit láithreach.",
   "The classic credential pair, including the password-reset flow.":
     "An péire clasaiceach creidiúnaithe, lena n-áirítear an sreabhadh athshocraithe pasfhocail.",
   "the farm owner": "úinéir na feirme",
@@ -1583,6 +1622,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Tá an chuid seo curtha in eagar ina phainéal féin níos faide síos an leathanach.",
   "Threads started from the storefront appear here.":
     "Tá snáitheanna tosaithe ó aghaidh an tsiopa le feiceáil anseo.",
+  "Thumbnail image URL": "URL íomhá mionsamhla",
   Time: "Am",
   "Tinted band": "Banna tinted",
   Title: "Teideal",
@@ -1633,8 +1673,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Uaslódáil íomhá",
   "Uploading image...": "Íomhá á uaslódáil...",
   "Uploading image…": "Íomhá á uaslódáil…",
+  "Uploading thumbnail...": "Mionsamhail á uaslódáil...",
   "Uploading...": "Uaslódáil...",
   "Uploading…": "Ag uaslódáil…",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Úsáid íomhá ar leith 1200 × 1200. Tá an íomhá cearnach seo bearrtha le haghaidh cártaí catagóire; ná athúsáid an bhratach leathan laoch.",
   "Use site-wide effects instead": "Úsáid éifeachtaí ar fud an tsuímh ina ionad sin",
   "Use the exact canvas": "Úsáid an chanbhás cruinn",
   "Use the navigation to get back.": "Úsáid an nascleanúint le dul ar ais.",
@@ -1646,6 +1689,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Users unavailable": "Úsáideoirí ar fáil",
   "Using the site brand colour": "Ag úsáid dath branda an tsuímh",
   Uzbek: "Úisbéic",
+  "Value of 1 INR": "Luach 1 INR",
+  "Value per INR": "Luach in aghaidh an INR",
   "Value, ₹": "Luach, ₹",
   Variant: "Athróg",
   "Variant (SKU)": "Athróg (SKU)",

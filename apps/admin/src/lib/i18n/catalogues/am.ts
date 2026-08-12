@@ -31,6 +31,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/ሱቅ",
   "← All farms": "← ሁሉም እርሻዎች",
   "+ stars": "+ ኮከቦች",
+  "₹1,000 preview": "₹1,000 ቅድመ እይታ",
   "1 star": "1 ኮከብ",
   "15% off your first order": "ከመጀመሪያ ትዕዛዝህ 15% ቅናሽ",
   "2 cups": "2 ኩባያ",
@@ -64,6 +65,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "አንድ ሱፐር አስተዳዳሪ ቡድንን ወይም ቀጥታ መልዕክትን ከላይ ካለው + አዝራር መጀመር ይችላል።",
   "A tinted band — check muted text is still readable here.":
     "ባለቀለም ባንድ — ቼክ ድምጸ-ከል የተደረገ ጽሑፍ አሁንም እዚህ ይነበባል።",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "የጎብኝ አገር ምንዛሪ ይመርጣል፣ ይህ ሠንጠረዥ የማሳያ እሴቱን ያቀርባል፣ እና የመጀመሪያው INR ዋጋ ሳይቀየር ይቀራል። የተሰናከሉ ገንዘቦች ወደ INR-አስተማማኝ ነባሪዎች ይመለሳሉ።",
   Accent: "አስተያየት",
   "Accept orders and payments": "ትዕዛዞችን እና ክፍያዎችን ይቀበሉ",
   "Accept orders and payments for this product": "የዚህ ምርት ትዕዛዞችን እና ክፍያዎችን ይቀበሉ",
@@ -88,6 +91,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "መደብ አክል",
   "Add code": "ኮድ አክል",
   "Add country": "ሀገር ጨምር",
+  "Add currency": "ምንዛሬ ያክሉ",
   "Add entry": "ግቤት አክል",
   "Add farm owner": "የእርሻ ባለቤት አክል",
   "Add ingredient": "ንጥረ ነገር አክል",
@@ -98,6 +102,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "ለመጀመር ከታች አንዱን ጨምር።",
   "Add one so the bot has something to reference for this scope.":
     "ቦቱ ለዚህ ወሰን የሚጠቅሰው ነገር እንዲኖረው አንድ ጨምር።",
+  "Add one using the field above.": "ከላይ ያለውን መስክ በመጠቀም አንድ ያክሉ።",
   "Add page": "ገጽ አክል",
   "Add participants": "ተሳታፊዎችን አክል",
   "Add point": "ነጥብ ጨምር",
@@ -116,6 +121,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "ዞን ጨምር",
   Added: "ታክሏል",
   "Adding...": "በማከል ላይ...",
+  "Adding…": "መደመር…",
   Address: "አድራሻ",
   "Adjust points": "ነጥቦችን አስተካክል",
   "Adjust the search or create a category.": "ፍለጋውን አስተካክል ወይም ምድብ ፍጠር።",
@@ -215,6 +221,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "አዘርባጃኒ",
   "B2B / bulk ordering": "B2B/ጅምላ ማዘዝ",
   Back: "ተመለስ",
+  "Back to conversations": "ወደ ንግግሮች ተመለስ",
   "Back to sign in": "ወደ መለያ ተመለስ",
   Balance: "ሚዛን",
   "Banner alt text": "ባነር alt ጽሑፍ",
@@ -278,6 +285,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "የምድብ አርታዒ ክፍሎች",
   "Category not found": "ምድብ አልተገኘም",
   "Category row": "ምድብ ረድፍ",
+  "Category thumbnail alt text": "ምድብ ጥፍር አክል alt ጽሑፍ",
+  "Category thumbnail URL": "ምድብ ጥፍር አክል URL",
   "Category to add to the homepage": "ወደ መነሻ ገጹ የሚታከል ምድብ",
   "Cautions and low stock.": "ጥንቃቄዎች እና ዝቅተኛ ክምችት።",
   Cebuano: "ሴቡአኖ",
@@ -349,6 +358,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "የእውቂያ ኢሜይል",
   Content: "ይዘት",
   "Continue with Facebook": "በፌስቡክ ይቀጥሉ",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "አንድ የህንድ ሩፒ ምን ያህል ዋጋ እንዳለው በማዘጋጀት ግምታዊ የሀገር ውስጥ ምንዛሪ ዋጋዎችን ይቆጣጠሩ። ካታሎግ፣ የፍተሻ እና የማዘዣ መዝገቦች በደህንነት በINR ውስጥ ይቆያሉ።",
   "Control what each role can view, create, edit, publish or manage.":
     "እያንዳንዱ ሚና ማየት፣ መፍጠር፣ ማርትዕ፣ ማተም ወይም ማስተዳደር የሚችለውን ይቆጣጠሩ።",
   "Control whether each bot is available, and edit what it knows.":
@@ -393,6 +404,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "የተመረጠ የዝርዝር መጠን",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "በተለየ የዋጋ ስብስቦች በአንድ ላይ ይሸጣል። ቼክአውት እያንዳንዱን ንጥል ነገር በጥቅል ከያዘ በኋላ በራስ-ሰር ቁጠባውን ይተገበራል።",
+  Currency: "ምንዛሪ",
+  "Currency code": "የምንዛሪ ኮድ",
+  "Currency Converter": "የምንዛሪ መለወጫ",
+  "Currency values unavailable": "የምንዛሪ ዋጋዎች አይገኙም",
   "Current password": "የአሁኑ የይለፍ ቃል",
   "Currently its own effects.": "በአሁኑ ጊዜ የራሱ ተጽዕኖዎች።",
   "Currently the site-wide effects — save below to give it its own.":
@@ -429,6 +444,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "ውድቅ",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'በመደብሩ ፊት ላይ ማስጌጥ፡ ከገጹ ጀርባ የሚንሸራተት ቅንጣቶች፣ እና ዱካዎች። ሁለቱም በነባሪነት ጠፍተዋል፣ ሁለቱም መሳሪያቸውን እንዲቀንስ ለጠየቁ ጎብኝዎች ሙሉ በሙሉ የተዘለሉ ናቸው፣ እና በክፍያ መስኮቱ ላይ በጭራሽ አይታዩም - በካርድ ቅፅ ላይ የበረዶ መውደቅ በትክክል በተሳሳተ ጊዜ ትኩረትን የሚከፋፍል ነው። የአንድ ሀገር ተፅእኖ ከጎበኞቿ ጋር ከመዋሃድ ይልቅ ለጎብኝዎቿ በቀጥታ የሚተካው - "አንዳንድ በረዶ" ትርጉም ያለው የበረዶ ድብልቅ አይደለም እና ምንም ውጤት የለውም።',
+  Default: "ነባሪ",
   "Default commission": "ነባሪ ኮሚሽን",
   "Default fee": "ነባሪ ክፍያ",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -448,6 +464,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "የምግብ አሰራርን ሰርዝ",
   "Delete role": "ሚና ሰርዝ",
   "Delete selected (": "የተመረጠውን ሰርዝ (",
+  "Delete this entry": "ይህን ግቤት ሰርዝ",
   "Delete this price adjustment?": "ይህ የዋጋ ማስተካከያ ይሰረዝ?",
   "Delete user": "ተጠቃሚ ይሰረዝ",
   "Deleting...": "በመሰረዝ ላይ...",
@@ -471,6 +488,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "የአመጋገብ እና የምስክር ወረቀት ማጣሪያዎች",
   "Dietary tags": "የአመጋገብ መለያዎች",
   "Dietary tags (comma separated)": "የአመጋገብ መለያዎች (በነጠላ ሰረዝ ተለይቷል)",
+  "Dietary Tags & Certifications": "የአመጋገብ መለያዎች እና የምስክር ወረቀቶች",
   "Direct message": "ቀጥተኛ መልእክት",
   Disable: "አቦዝን",
   "Disable selected (": "የተመረጠውን አሰናክል (",
@@ -494,11 +512,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "ለምሳሌ፦ መለያዎች",
   "e.g. DIWALI500": "ለምሳሌ፦ DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "ለምሳሌ፦ የተሰበሰበው የመጋቢት 3 2026 ሳምንት",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "ለምሳሌ፦ ህንድ ኦርጋኒክ ፣ ፍትሃዊ ንግድ። ለማንኛውም ምርት የተሰጠ የእውቅና ማረጋገጫ ከሱ እስኪወገድ ድረስ ሊሰረዝ አይችልም።",
   "e.g. Ops Room": "ለምሳሌ፦ ኦፕስ ክፍል",
   "e.g. Rain-fed, no synthetic pesticides": "ለምሳሌ፦ በዝናብ መመገብ፣ ሰው ሰራሽ ፀረ ተባይ ኬሚካሎች የሉም",
   "e.g. Refrigerate and use within 5 days": "ለምሳሌ፦ ማቀዝቀዝ እና በ5 ቀናት ውስጥ ተጠቀም",
   "e.g. TO-HONEY-500": "ለምሳሌ፦ TO-HONEY-500",
   "e.g. UTR 123456789012": "ለምሳሌ፦ UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "ለምሳሌ፦ ቪጋን ፣ ከግሉተን ነፃ። አንዱን መሰረዝ ከተመረመረ ምርት ሁሉ ያስወግደዋል።",
   Edit: "አርትዕ",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "የሲኤምኤስ ገጽ ሜታዳታ፣ መረጃ ጠቋሚ እና የጥሬ ገጽ ብሎኮችን ያርትዑ። የመነሻ ገጽ መዝገቡ እዚህም ተዘርዝሯል፣ ነገር ግን የመነሻ ገጽ ቅንጅቶች እሱን ለመለወጥ በጣም አስተማማኝ መንገድ ነው - ይህ አርታኢ ጥሬ JSON ይወስዳል።",
@@ -600,6 +622,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'ሌሎች ሁሉ የሚያዩትን ሳይቀይሩ በአንድ ሀገር ውስጥ ላሉ ጎብኝዎች አንድ ክፍልን ያስገድዱ ወይም ያጥፉ። በ"ውርስ" ላይ አንድ ክፍል ይተው እና ልክ ከላይ ባለው ክፍል ዝርዝር ውስጥ ያለውን ምልክት ሳጥን ይከተላል።',
   "Forgot password?": "የይለፍ ቃል ረሱ?",
+  "Formatting locale": "አካባቢን መቅረጽ",
   "Free delivery above (₹)": "ከላይ (₹)",
   "French (Français)": "ፈረንሳይኛ (ፍራንሷ)",
   Frequency: "ድግግሞሽ",
@@ -684,6 +707,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "ይህ ማስተዋወቂያ መቼም ካልተገዛ በቀጥታ ይሰረዛል። አለበለዚያ በማህደር ተቀምጧል ታሪኩ እንዲቆይ",
   Igbo: "ኢግቦ",
+  Image: "ምስል",
   "Image alt text (optional)": "ምስል alt text (አማራጭ)",
   "Image is sRGB and at or below the listed file-size target.":
     "ምስሉ sRGB እና ከተዘረዘረው የፋይል መጠን ዒላማ በታች ወይም በታች ነው።",
@@ -748,6 +772,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Label: "መለያ",
   "Land under cultivation": "በእርሻ ላይ ያለ መሬት",
   Language: "ቋንቋ",
+  "Language Studio": "የቋንቋ ስቱዲዮ",
   Lao: "ላኦ",
   "Last activity": "የመጨረሻ እንቅስቃሴ",
   "Last reviewer note": "የመጨረሻ ገምጋሚ ​​ማስታወሻ",
@@ -760,6 +785,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "True Grit የያዘውን አንድ ቀለም ለማቆየት ባዶ ይተዉት - መስክን ማጽዳት እርስዎ እንዴት እንደሚቀለበሱ ነው። የአንድ ገጽ ወይም የሀገር ቀለሞች ከጣቢያው ቀለሞች ይጀምራሉ እና እርስዎ የሚቀይሩትን ብቻ ይሽራሉ, ስለዚህ እያንዳንዱ አጭር ዝርዝር ነው, ለማቆየት ሁለተኛ ቤተ-ስዕል አይደለም. ሁለቱም ለተመሳሳይ ጎብኚ ሲተገበሩ ገጹ ያሸንፋል — የአርትዖት ገጽ ንድፍ በጂኦ ሙከራ መቀልበስ የለበትም።",
   "Leave blank to use the default.": "ነባሪውን ለመጠቀም ባዶውን ይተውት።",
+  "Leave the link blank for a plain, unclickable image.": "ለማይጠቅም ምስል አገናኙን ባዶ ይተውት።",
   "Less refunds": "ያነሰ ተመላሽ ገንዘቦች",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "ደንበኞች የስጦታ ካርድ ኮድን በቼክ መውጫ ላይ እንዲተገብሩ ያስችላቸዋል፣ አጠቃላይ ትዕዛዛቸውን በከፊል ወይም በሙሉ ይሸፍናል። ካርዶችን ከስጦታ ካርዶች ገጽ ያውጡ። በነባሪነት ጠፍቷል — ነባር ካርዶች እና ቀሪ ሒሳቦቻቸው የሚቀመጡት፣ ሊታዘዙ የሚችሉ አይደሉም፣ ይህ ጠፍቶ እያለ",
@@ -771,6 +797,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "የመስመር አጠቃላይ",
   Lines: "መስመሮች",
   Link: "አገናኝ",
+  "Link (optional)": "አገናኝ (አማራጭ)",
   "Link customer": "ደንበኛ አገናኝ",
   "Link product": "አገናኝ ምርት",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -791,6 +818,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live, and to scale with the real storefront's own styles.":
     "ቀጥታ እና በእውነተኛው የመደብር ፊት የራሱ ቅጦች ለመለካት።",
   "llms.txt": "lms.txt",
+  Loading: "በመጫን ላይ",
   "Loading active promotions...": "ንቁ ማስተዋወቂያዎችን በመጫን ላይ...",
   "Loading analytics...": "ትንታኔን በመጫን ላይ...",
   "Loading announcements...": "ማስታወቂያዎችን በመጫን ላይ...",
@@ -804,6 +832,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "ውይይቶችን በመጫን ላይ…",
   "Loading country overrides...": "ሀገር ይሽራል...",
   "Loading crawler files...": "የእቃ መጫኛ ፋይሎችን በመጫን ላይ...",
+  "Loading currency values…": "የምንዛሪ እሴቶችን በመጫን ላይ…",
   "Loading delivery charges...": "የመላኪያ ክፍያዎችን በመጫን ላይ...",
   "Loading discussion…": "ውይይት በመጫን ላይ…",
   "Loading highlights...": "ድምቀቶችን በመጫን ላይ...",
@@ -826,6 +855,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "የመደብር የፊት ማብሪያ ማጥፊያዎችን በመጫን ላይ...",
   "Loading submission…": "ማስረከቢያን በመጫን ላይ…",
   "Loading...": "በመጫን ላይ...",
+  "Loading…": "በመጫን ላይ…",
   "Local pickup points": "አካባቢያዊ የመውሰጃ ነጥቦች",
   "Locale to translate": "የሚተረጎምበት አካባቢ",
   "Locked out? Use": "ተቆልፏል? ተጠቀም",
@@ -877,6 +907,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "የመጠነኛ ምክንያት",
   Mongolian: "ሞንጎሊያኛ",
   "More from True Grit": "ተጨማሪ ከTrue Grit",
+  "Motto banner": "መፈክር ባነር",
   "Move down in the showcase": "በማሳያ ውስጥ ወደ ታች ውረድ",
   "Move earlier": "ቀደም ብሎ ውሰድ",
   "Move later": "በኋላ ውሰድ",
@@ -1001,6 +1032,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Note (required to request changes or reject)": "ማስታወሻ (ለውጦችን ለመጠየቅ ወይም ላለመቀበል ያስፈልጋል)",
   "Note (required)": "ማስታወሻ (አስፈላጊ)",
   Notes: "ማስታወሻዎች",
+  "Nothing here yet": "እዚህ ምንም የለም",
   "Nothing outstanding to pay": "ለመክፈል ምንም ያልተከፈለ ነገር የለም",
   "Nothing pending.": "ምንም በመጠባበቅ ላይ።",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1052,6 +1084,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Orders will appear here once customers check out.": "ደንበኞቻቸው ካረጋገጡ በኋላ ትዕዛዞች እዚህ ይታያሉ።",
   "Organic Alphonso Mangoes": "ኦርጋኒክ አልፎንሶ ማንጎዎች",
   "Organic mangoes held in a sunlit orchard": "በፀሐይ ብርሃን በተሞላ የአትክልት ስፍራ ውስጥ የተያዙ ኦርጋኒክ ማንጎዎች",
+  "Organic wheat flour in a wooden bowl": "የኦርጋኒክ የስንዴ ዱቄት በእንጨት ሳህን ውስጥ",
   Outstanding: "አስደናቂ",
   Overview: "አጠቃላይ እይታ",
   "Owner Reports": "የባለቤት ዘገባዎች",
@@ -1099,8 +1132,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ሪፖርት ምረጥ፣ አማራጭ ማጣሪያዎችን አዘጋጅ እና አሂድ። ምንም ነፃ ጽሑፍ SQL በፍፁም ወደ ዳታቤዝ አይደርስም።",
   "Pick at least one country, or release everywhere.": "ቢያንስ አንድ አገር ይምረጡ ወይም በሁሉም ቦታ ይልቀቁ።",
   "Pick at least one country, or release globally.": "ቢያንስ አንድ አገር ይምረጡ ወይም በዓለም አቀፍ ደረጃ ይልቀቁ።",
-  "Pick exactly two people for a direct message.": "ለቀጥታ መልእክት በትክክል ሁለት ሰዎችን ይምረጡ።",
   "Pick one from the list to start reading.": "ንባብ ለመጀመር ከዝርዝሩ ውስጥ አንዱን ምረጥ።",
+  "Pick the other person for this direct message.": "ለዚህ ቀጥተኛ መልእክት ሌላውን ሰው ይምረጡ።",
   "PIN code": "ፒን ኮድ",
   "PIN patterns": "የፒን ቅጦች",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1242,6 +1275,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires pages.view permission and a connected API.": "የገጽ እይታን እና የተገናኘ ኤፒአይን ይፈልጋል።",
   "Requires products.publish": "ምርቶችን ይፈልጋል። ማተም",
   "Requires recipes.publish": "አዘገጃጀቶችን ይፈልጋል።አትም",
+  "Requires settings access.": "የቅንብሮች መዳረሻ ያስፈልገዋል።",
   "Requires the analytics.view permission.": "የanalytics.view ፍቃድ ያስፈልገዋል።",
   "Requires the inventory.adjust permission.": "የኢንቬንቴሪውን ማስተካከል ይፈልጋል።",
   "Requires the reports.query permission.": "የሪፖርቶቹን የመጠይቅ ፍቃድ ይፈልጋል።",
@@ -1292,6 +1326,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "በመሮጥ ላይ…",
   "Russian (Русский)": "ሩሲያኛ (Русский)",
   "Safe area": "አስተማማኝ አካባቢ",
+  "Safe geo-lock:": "አስተማማኝ ጂኦ-መቆለፊያ፡",
   "Sale & Discounts": "ሽያጭ እና ቅናሾች",
   "Sale price": "የሽያጭ ዋጋ",
   "Sale Price (₹)": "የሽያጭ ዋጋ (₹)",
@@ -1423,6 +1458,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "ሰርቢያን",
   Servings: "አገልግሎቶች",
   "Set a new password": "አዲስ የይለፍ ቃል አዘጋጅ",
+  "Set as default": "እንደ ነባሪ ያቀናብሩ",
   "Shop · Farms · Journal": "ሱቅ · እርሻዎች · ጆርናል",
   "Shop fresh greens": "ትኩስ አረንጓዴዎችን ይግዙ",
   "Shop root vegetables": "የስር አትክልቶችን ይግዙ",
@@ -1518,6 +1554,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "ስዋሂሊ (ኪስዋሂሊ)",
   "Swedish (Svenska)": "ስዊድናዊ (ስቬንስካ)",
   Table: "ሠንጠረዥ",
+  "Tags & Certifications": "መለያዎች እና ማረጋገጫዎች",
   "Tags:": "መለያዎች:",
   Tajik: "ታጂክ",
   "Taking payments": "ክፍያዎችን መቀበል",
@@ -1534,6 +1571,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ባነር፣ የምድብ ረድፍ፣ የምርት ረድፍ እና SEO መስኮች አንድ ላይ ይቆጠባሉ። የክፍል ምልክት ሳጥኖች፣ ማዘዣ እና ብጁ ክፍል ቅጂ ሲቀይሩ በራሳቸው ይቆጥባሉ።",
   "The chat widget customers and visitors see on the storefront.":
     "የቻት መግብር ደንበኞች እና ጎብኝዎች በመደብሩ ፊት ለፊት የሚያዩት።",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "የአመልካች ሳጥን ዝርዝሮች በእያንዳንዱ ምርት አጠቃላይ ትር ላይ ይታያሉ። ለውጦች በሁሉም ቦታ ወዲያውኑ ይተገበራሉ።",
   "The classic credential pair, including the password-reset flow.":
     "የይለፍ ቃል ዳግም ማስጀመሪያ ፍሰትን ጨምሮ የጥንታዊው ምስክርነት ጥንድ።",
   "the farm owner": "የእርሻው ባለቤት",
@@ -1582,6 +1621,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "This section is edited in its own panel further down the page.":
     "ይህ ክፍል ከገጹ በታች ባለው የራሱ ፓኔል ተስተካክሏል።",
   "Threads started from the storefront appear here.": "ከመደብሩ ፊት የተጀመሩ ክሮች እዚህ ይታያሉ።",
+  "Thumbnail image URL": "ድንክዬ ምስል URL",
   Time: "ጊዜ",
   "Tinted band": "ባለቀለም ባንድ",
   Title: "ርዕስ",
@@ -1632,9 +1672,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "ምስል ስቀል",
   "Uploading image...": "ምስል በመስቀል ላይ...",
   "Uploading image…": "ምስል በመስቀል ላይ…",
+  "Uploading thumbnail...": "ድንክዬ በመስቀል ላይ...",
   "Uploading...": "በመስቀል ላይ...",
   "Uploading…": "በመስቀል ላይ…",
   "Urdu (اردو)": "ኡርዱ (አርዱ)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "የተለየ 1200 × 1200 ምስል ተጠቀም። ይህ ካሬ ምስል ለምድብ ካርዶች ተቆርጧል; ሰፊውን የጀግና ባነር እንደገና አይጠቀሙ።",
   "Use site-wide effects instead": "በምትኩ የጣቢያ-ሰፊ ተፅእኖዎችን ተጠቀም",
   "Use the exact canvas": "ትክክለኛውን ተጠቀም። መልሶ ለማግኘት navigation.",
   "Use the navigation to get back.": "ለመመለስ አሰሳውን ተጠቀም።",
@@ -1647,6 +1690,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "የጣቢያውን የምርት ቀለም መጠቀም",
   Uyghur: "ኡዩጉር",
   Uzbek: "ኡዝቤክ",
+  "Value of 1 INR": "የ1 INR ዋጋ",
+  "Value per INR": "ዋጋ በ INR",
   "Value, ₹": "ዋጋ፣ ₹",
   Variant: "ተለዋዋጭ",
   "Variant (SKU)": "ተለዋጭ (SKU)",

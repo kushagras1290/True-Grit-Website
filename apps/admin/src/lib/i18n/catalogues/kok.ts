@@ -34,6 +34,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/recipes/my-recipe": "/रेसिपी/माय-रेसिपी",
   "← All farms": "← सगळ्यो शेत",
   "+ stars": "+ नखेत्रां",
+  "₹1,000 preview": "₹1,000 पूर्वावलोकन",
   "1 star": "1 नखेत्र",
   "15% off your first order": "तुमच्या पयल्या ऑर्डराचेर 15% सूट",
   "2 cups": "2 कप",
@@ -67,6 +68,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "सुपर प्रशासक वयर दिल्ल्या + बटणा वयल्यान गट वा थेट संदेश सुरू करूंक शकता.",
   "A tinted band — check muted text is still readable here.":
     "एक टिंट केल्लो बँड — तपासात म्यूट मजकूर हांगा अजूनय वाचपाक मेळटा.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "अभ्यागताचो देश चलन निवडटा, हें कोश्टक ताचें प्रदर्शन मोल पुरवण करता, आनी मूळ INR किंमत बदलूंक ना. अक्षम चलनां परत INR-सुरक्षीत मुलभूततायेंत पडटात.",
   Accent: "उच्चार",
   "Accept orders and payments": "ऑर्डर आनी फारीकणी स्वीकारात",
   "Accept orders and payments for this product": "ह्या उत्पादनाक ऑर्डर आनी फारीकणी स्वीकारप",
@@ -92,6 +95,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "वर्ग जोडचो",
   "Add code": "कोड जोडचो",
   "Add country": "देश जोडचो",
+  "Add currency": "चलन जोडचें",
   "Add entry": "प्रविष्टी जोडची",
   "Add farm owner": "शेतकार जोडचो",
   "Add ingredient": "घटक जोडात",
@@ -102,6 +106,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "सुरवाती करपाक सकयल एक जोडात.",
   "Add one so the bot has something to reference for this scope.":
     "एक जोडची म्हणजे बॉटाक ह्या व्याप्ती खातीर संदर्भ दिवपाक कितें तरी आसतलें.",
+  "Add one using the field above.": "वयर क्षेत्र वापरून एक जोडचें.",
   "Add page": "पान जोडात",
   "Add participants": "भाग घेवपी जोडप",
   "Add point": "बिंदू जोडचो",
@@ -120,6 +125,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "झोन जोडात",
   Added: "जोडला",
   "Adding...": "जोडला...",
+  "Adding…": "जोडप...",
   Address: "पत्तो",
   "Adjust points": "बिंदू समायोजीत करात",
   "Adjust the search or create a category.": "सोद समायोजीत करात वा वर्ग तयार करात.",
@@ -220,6 +226,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "आझरबैजानी",
   "B2B / bulk ordering": "B2B / बल्क ऑर्डरिंग",
   Back: "फाटीं",
+  "Back to conversations": "संवादांत परत वचप",
   "Back to sign in": "साइन इन करपाक परत",
   Balance: "शिल्लक",
   "Banner alt text": "बॅनर ऑल्ट मजकूर",
@@ -283,6 +290,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "वर्ग संपादक विभाग",
   "Category not found": "वर्ग मेळूंक ना",
   "Category row": "वर्ग ओळी",
+  "Category thumbnail alt text": "कटेगरी thumbnail alt text",
+  "Category thumbnail URL": "वर्ग लघुप्रतिमा URL",
   "Category to add to the homepage": "मुखेल पानाचेर जोडपाची श्रेणी",
   "Cautions and low stock.": "सावधानी आनी उणो स्टॉक.",
   Cebuano: "सेबुआनो",
@@ -352,6 +361,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "संपर्क ईमेल",
   Content: "सामुग्री",
   "Continue with Facebook": "सामुग्री चालू दवरात Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "एक भारतीय रुपया कितलें मोलाचें तें थारावन अदमास थळाव्या-चलन दरांचेर नियंत्रण दवरात. कॅटलॉग, चेकआउट आनी ऑर्डर रेकॉर्ड सुरक्षीतपणान INR त रावतात.",
   "Control what each role can view, create, edit, publish or manage.":
     "दरेक भुमिका कितें पळोवंक, तयार करूंक, संपादीत करूंक, प्रकाशीत करूंक वा वेवस्थापन करूंक शकता हाचेर नियंत्रण दवरचें.",
   "Control whether each bot is available, and edit what it knows.":
@@ -396,6 +407,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "क्युरेटेड यादी आकार",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "विशिश्ट वेरिएंटांचे क्युरेट केल्ले संच सपाट दरान एकठांय विकतात. एकदां बास्केट दरेक वस्तू बंडलांत दवरल्या उपरांत चेकआउट आपोआप जतनाय लागू करता.",
+  Currency: "चलन",
+  "Currency code": "चलन कोड",
+  "Currency Converter": "चलन कनवर्टर",
+  "Currency values unavailable": "चलन मोलां उपलब्ध नात",
   "Current password": "सद्याचो पासवर्ड",
   "Currently its own effects.": "सद्या ताचे स्वताचे परिणाम.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -433,6 +448,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "नकार",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'स्टोरफ्रंटाचेर सजावट: पानाच्या फाटल्यान व्हांवपी कण, आनी पॉयंटराच्या फाटल्यान एक ट्रेल. दोनूय डिफॉल्ट रितीन बंद आसात, दोनूय पुरायपणान वगडायतात ज्या भेटीदारांनी आपल्या डिव्हायसाक उणी गती मागल्या, आनी दोनूय केन्नाच फारीकणी विंडोचेर दिसनात — कार्ड फॉर्माचेर बर्फ पडप हें सारकें चुकीच्या खिणाक विक्षेप आसता. देशाचे परिणाम आपल्या भेट दिवप्यां खातीर सरळ साइट-व्यापी परिणामां कडेन भरसून वचचे परस बदलतात — "कांय बर्फ" हो बर्फाची अर्थपूर्ण भरसण न्हय आनी परिणाम ना.',
+  Default: "मुळावें",
   "Default commission": "मुळावी आयोग",
   "Default fee": "मुळावी शुल्क",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -452,6 +468,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "रेसिपी काडून उडोवप",
   "Delete role": "भुमिका काडून उडोवप",
   "Delete selected (": "निवडिल्ली काडून उडोवप (",
+  "Delete this entry": "ही नोंद काडून उडोवची",
   "Delete this price adjustment?": "हें किंमत समायोजन काडून उडोवप?",
   "Delete user": "वापरपी काडून उडोवप",
   "Deleting...": "काडून उडयता...",
@@ -475,6 +492,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "आहार आनी प्रमाणीकरण फिल्टर",
   "Dietary tags": "आहार टॅग",
   "Dietary tags (comma separated)": "आहार टॅग (स्वल्पविराम वेगळे)",
+  "Dietary Tags & Certifications": "आहार टॅग आनी प्रमाणपत्रां",
   "Direct message": "प्रत्यक्ष संदेश",
   Disable: "अक्षम",
   "Disable selected (": "निवडले अक्षम करचें (",
@@ -498,11 +516,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "उदा. खातीं",
   "e.g. DIWALI500": "उदा. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "उदा. 3 मार्च 2026 दिसा कापणी केल्ली",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "उदा. भारत ऑर्गेनिक, नितळ वेपार. खंयच्याय उत्पादनाक दिल्लें प्रमाणपत्र तातूंतल्यान काडून उडयले बगर काडून उडोवंक मेळना.",
   "e.g. Ops Room": "उदा. ऑप्स रूम",
   "e.g. Rain-fed, no synthetic pesticides": "उदा. पावसांतल्यान पोसपी, कृत्रीम कीटकनाशक",
   "e.g. Refrigerate and use within 5 days": "उदा. फ्रिजांत दवरात आनी 5 दिसां भितर वापरात",
   "e.g. TO-HONEY-500": "उदा. टू-हनी-५००",
   "e.g. UTR 123456789012": "उदा. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "उदा. वेगन, ग्लुटेन मुक्त. एक काडून उडयल्यार तो तपासिल्ल्या दर एका उत्पादनांतल्यान काडून उडयता.",
   Edit: "संपादन",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "सीएमएस पान मेटाडेटा, अनुक्रमणिका आनी कच्चे पान ब्लॉक संपादीत करात. मुखेल पान रेकॉर्ड हांगाय दिल्लो आसा, पूण मुखेल पान मांडावळी हो तो बदलपाचो सुरक्षीत मार्ग आसा — हो संपादक कच्चो JSON घेता.",
@@ -607,6 +629,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'सगल्यांक दिसता तें बदलनासतना, एकाच देशांतल्या भेट दिवप्यांखातीर विभाग जबरदस्तीन चालू वा बंद करचो. "वारसा" चेर एक विभाग सोडचो आनी तो फकत वयर दिल्ल्या विभाग वळेरेंतल्या टिकबॉक्साच्या फाटल्यान वता.',
   "Forgot password?": "गुप्तशब्द विसरला?",
+  "Formatting locale": "स्थानीक स्वरूपण",
   "Free delivery above (₹)": "वयर फुकट वितरण (₹)",
   "French (Français)": "फ्रेंच (फ्रांस)",
   Frequency: "फ्रीक्वेंसी",
@@ -692,6 +715,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "ही प्रमोशन केन्नाच रिडीम जावंक ना जाल्यार ती सरळ काडून उडयतात; नाजाल्यार तो संग्रहीत केल्लो आसता देखून ताचो इतिहास दवरतात.",
   Igbo: "इग्बो",
+  Image: "प्रतिमा",
   "Image alt text": "प्रतिमा alt मजकूर",
   "Image alt text (optional)": "प्रतिमा alt मजकूर (पर्यायी)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -758,6 +782,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Label: "लेबल",
   "Land under cultivation": "लावडीखाला आशिल्ली जमीन",
   Language: "भास",
+  "Language Studio": "भास स्टुडिओ",
   Lao: "लाओ",
   "Last activity": "निमाणी कार्यावळ",
   "Last reviewer note": "निमाणी समीक्षकाची टिप",
@@ -770,6 +795,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "ज्या वांगडा True Grit धाडटा तो दवरपाक रंग रितो सोडचो — क्षेत्र निवळ करप हें तुमी कशें पूर्ववत करतात. पान वा देशाचे रंग साइट रंगांतल्यान सुरू जातात आनी फकत तुमी बदलतात तें ओव्हररायड करतात, देखून दरेक एक ल्हान वळेरी आसा, सांबाळपाक दुसरो पॅलेट न्हय. जेन्ना दोनूय एकाच भेटीदाराक लागू जातात, तेन्ना पान जिखता — संपादकीय पानाची रचना जिओ प्रयोगान फाटीं घेवंक फावना.",
   "Leave blank to use the default.": "मुळावी वापरपाक रितें सोडचें.",
+  "Leave the link blank for a plain, unclickable image.":
+    "साद्या, क्लिक करपाक मेळनाशिल्ल्या प्रतिमे खातीर दुवो रितो सोडचो.",
   "Less refunds": "उणें परतावो",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "ग्राहकांक चेकआउट करतना गिफ्ट कार्ड कोड लागू करूंक दिता, तांच्या ऑर्डर वट्ट भागाचो वा सगळो भाग आस्पावता. गिफ्ट कार्डां पानाचेर कार्डां जारी करात. डिफॉल्ट रितीन बंद — सद्याचे कार्ड आनी तांची शिल्लक दवरतात, फकत सोडपाक मेळनात, जाल्यार हें बंद आसा.",
@@ -781,6 +808,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "ओळी एकूण",
   Lines: "ओळी",
   Link: "दुवो",
+  "Link (optional)": "दुवो (पर्यायी)",
   "Link customer": "लिंक गिरायक",
   "Link product": "उत्पादन दुवो",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -800,6 +828,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "लायव्ह पूर्वावलोकन",
   "Live, and to scale with the real storefront's own styles.":
     "लायव्ह, आनी खऱ्या स्टोरफ्रंटाच्या स्वताच्या शैलींनी स्केल करपाक.",
+  Loading: "लोड करप",
   "Loading active promotions...": "सक्रीय प्रचार लोड करप...",
   "Loading analytics...": "विश्लेशण लोड करप...",
   "Loading announcements...": "घोषणा लोड करप...",
@@ -813,6 +842,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "संवाद लोड करप...",
   "Loading country overrides...": "देश ओव्हररायड लोड करप...",
   "Loading crawler files...": "क्रॉलर फायली लोड करप...",
+  "Loading currency values…": "चलन मोलां लोड करप...",
   "Loading delivery charges...": "वितरण शुल्क लोड करप...",
   "Loading discussion…": "चर्चा लोड करप...",
   "Loading highlights...": "हायलाइट लोड करप...",
@@ -835,6 +865,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "स्टोरफ्रंट स्वीच लोड करप...",
   "Loading submission…": "सबमिशन लोड करप...",
   "Loading...": "लोड करप...",
+  "Loading…": "लोड करप...",
   "Local pickup points": "थळावे पिकअप पॉयंट",
   "Locale to translate": "अणकार करपाक स्थान",
   "Locked out? Use": "लॉक आउट केला? वापरात",
@@ -889,6 +920,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "मध्यम कारण",
   Mongolian: "मंगोलियन",
   "More from True Grit": "True Grit कडल्यान चड",
+  "Motto banner": "मोटो बॅनर",
   "Move down in the showcase": "शोकेसांत सकयल वचप",
   "Move earlier": "हाडप आदीं",
   "Move later": "फुडें हालोवप",
@@ -1015,6 +1047,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "टिप (बदलाची विनंती करपाक वा नाका म्हणपाक गरजेची)",
   "Note (required)": "टिप (गरज आसा)",
   Notes: "नोटी",
+  "Nothing here yet": "हांगा अजून कांयच ना",
   "Nothing outstanding to pay": "फारीक करपाक कांयच उरिल्लें ना",
   "Nothing pending.": "कांयच प्रलंबीत ना.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1068,6 +1101,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "ऑर्गेनिक आल्फोन्सो आंबे",
   "Organic mangoes held in a sunlit orchard":
     "सूर्य उजवाडान उजवाडाच्या बागेंत दवरिल्ले सेंद्रीय आंबे",
+  "Organic wheat flour in a wooden bowl": "ऑर्गॅनिक लांकडी बाटलेंत गंवाचे पिठ",
   Outstanding: "उत्कृश्ट",
   Overview: "अवलोकन",
   "Owner Reports": "मालकाचे अहवाल",
@@ -1117,9 +1151,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "उण्यांत उणो एक देश वेंचचो, वा सगळेकडेन सोडचो.",
   "Pick at least one country, or release globally.":
     "उण्यांत उणो एक देश वेंचचो, वा जागतीक रितीन सोडचो.",
-  "Pick exactly two people for a direct message.":
-    "प्रत्यक्ष संदेशा खातीर सारके दोन लोक वेंचून काडात.",
   "Pick one from the list to start reading.": "वाचपाक सुरवात करपाक वळेरेंतल्यान एक वेंचून काडात.",
+  "Pick the other person for this direct message.":
+    "ह्या थेट संदेशा खातीर दुसऱ्या व्यक्तीक वेंचून काडात.",
   "PIN code": "पिन कोड",
   "PIN patterns": "पिन नमुने",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1264,6 +1298,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "पान पळोवपाची गरज आसा परवानगी आनी जोडिल्लो एपीआय.",
   "Requires products.publish": "products.publish जाय",
   "Requires recipes.publish": "recipes.publish जाय",
+  "Requires settings access.": "सेटिंग्ज प्रवेशाची गरज आसा.",
   "Requires the analytics.view permission.": "analytics.view परवानगी जाय.",
   "Requires the inventory.adjust permission.": "इन्व्हेंट्री.adjust परवानगी जाय.",
   "Requires the reports.query permission.": "reports.query परवानगी जाय.",
@@ -1315,6 +1350,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "चालू आसा...",
   "Russian (Русский)": "रशियन (Русский)",
   "Safe area": "सुरक्षीत क्षेत्र",
+  "Safe geo-lock:": "सुरक्षीत जिओ-लॉक:",
   "Sale & Discounts": "विक्री आनी सवलती",
   "Sale price": "विक्री किंमत",
   "Sale Price (₹)": "विक्री किंमत (₹)",
@@ -1447,6 +1483,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "सर्बियन",
   Servings: "सेवा",
   "Set a new password": "नवो पासवर्ड सेट करचो",
+  "Set as default": "मुळावीत म्हणून सेट करात",
   "Shop · Farms · Journal": "खरेदी · शेतां · जर्नल",
   "Shop fresh greens": "ताजी पाचवीं खरेदी करात",
   "Shop root vegetables": "मुळां खरेदी करात भाजी",
@@ -1546,6 +1583,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "स्वाहिली (किस्वाहिली)",
   "Swedish (Svenska)": "स्वीडीश (स्वेनस्का)",
   Table: "कोश्टक",
+  "Tags & Certifications": "टॅग आनी प्रमाणपत्रां",
   "Tags:": "टॅग्स:",
   Tajik: "ताजिक",
   "Taking payments": "फारीकणी घेवप",
@@ -1561,6 +1599,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "बॅनर, श्रेणी ओळ, उत्पादन ओळ आनी एसईओ क्षेत्रां एकठांय जतनाय घेतात. विभाग टिकबॉक्स, ऑर्डर करप आनी सानुकूल विभाग प्रत स्वता जतनाय घेतात, जशें तुमी बदलतात.",
   "The chat widget customers and visitors see on the storefront.":
     "गप्पा विजेट गिरायक आनी भेट दिवपी स्टोरफ्रंटाचेर पळयतात.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "दर एका उत्पादनाच्या सामान्य टॅबाचेर दाखयल्ली चेकबॉक्स यादी. बदल सगळेकडेन रोखडेंच लागू जातात.",
   "The classic credential pair, including the password-reset flow.":
     "गुप्तशब्द-रीसेट प्रवाह सयत क्लासिक प्रमाणपत्र जोड.",
   "the farm owner": "शेत मालक",
@@ -1613,6 +1653,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "हो विभाग पानाच्या फुडें सकयल स्वताच्या पॅनलांत संपादीत केला.",
   "Threads started from the storefront appear here.":
     "स्टोरफ्रंटांतल्यान सुरू केल्ले धागे हांगा दिसतात.",
+  "Thumbnail image URL": "लघुप्रतिमा प्रतिमा URL",
   Time: "वेळ",
   "Tinted band": "टिंट केल्लो बँड",
   Title: "शीर्षक",
@@ -1664,9 +1705,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "प्रतिमा अपलोड करात",
   "Uploading image...": "अपलोड करात प्रतिमा...",
   "Uploading image…": "प्रतिमेक अपलोड करप...",
+  "Uploading thumbnail...": "लघुप्रतिमा अपलोड करता...",
   "Uploading...": "अपलोड करप...",
   "Uploading…": "अपलोड करप...",
   "Urdu (اردو)": "उर्दू (अर्दु)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "वेगळी 1200 × 1200 प्रतिमा वापरात. ही चौकोनी प्रतिमा श्रेणी कार्डां खातीर कापल्या; रूंद नायक बॅनर परत वापरूं नाकात.",
   "Use site-wide effects instead": "ताचे बदला साइट-व्यापी प्रभाव वापरप",
   "Use the exact canvas": "अचूक कॅनव्हास वापरात",
   "Use the navigation to get back.": "परत मेळोवपाखातीर नेव्हिगेशन वापरात.",
@@ -1679,6 +1723,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "साइट ब्रँड रंग वापरप",
   Uyghur: "उयघुर",
   Uzbek: "उझबेक",
+  "Value of 1 INR": "1 INR चें मोल",
+  "Value per INR": "दर INR मोल",
   "Value, ₹": "मोल, ₹",
   Variant: "वेरिएंट",
   "Variant (SKU)": "वेरिएंट (SKU)",

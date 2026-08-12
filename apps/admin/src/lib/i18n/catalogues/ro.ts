@@ -29,6 +29,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/magazin",
   "← All farms": "← Toate fermele",
   "+ stars": "+ stele",
+  "₹1,000 preview": "Previzualizare de 1.000 INR",
   "1 star": "1 stea",
   "15% off your first order": "15% reducere la prima comandă",
   "2 cups": "2 căni",
@@ -62,6 +63,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Un superadministrator poate începe un grup sau un mesaj direct de la butonul + de mai sus.",
   "A tinted band — check muted text is still readable here.":
     "O bandă nuanțată — se poate citi în continuare textul verificat aici.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "țara unui vizitator selectează o monedă, acest tabel furnizează valoarea afișată a acesteia, iar prețul inițial în INR rămâne neschimbat. Monedele dezactivate revin la valorile implicite sigure pentru INR.",
   "Accept orders and payments": "Acceptați comenzi și plăți",
   "Accept orders and payments for this product": "Acceptați comenzi și plăți pentru acest produs",
   Action: "Acțiune",
@@ -84,6 +87,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Adăugați o categorie",
   "Add code": "Adăugați codul",
   "Add country": "Adăugați țara",
+  "Add currency": "Adăugați o monedă",
   "Add entry": "Adăugați o intrare",
   "Add farm owner": "Adăugați proprietarul fermei",
   "Add ingredient": "Adăugați ingredient",
@@ -94,6 +98,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Adăugați unul mai jos pentru a începe.",
   "Add one so the bot has something to reference for this scope.":
     "Adăugați una, astfel încât botul să aibă ceva de referință pentru acest domeniu.",
+  "Add one using the field above.": "Adăugați una folosind câmpul de mai sus.",
   "Add page": "Adăugați o pagină",
   "Add participants": "Adăugați participanți",
   "Add point": "Adăugați un punct",
@@ -112,6 +117,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Adaugă zonă",
   Added: "Adăugată",
   "Adding...": "Adăugarea...",
+  "Adding…": "Se adaugă...",
   Address: "Adresă",
   "Adjust points": "Ajustați puncte",
   "Adjust the search or create a category.": "Ajustați căutarea sau creați o categorie.",
@@ -210,6 +216,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Azerbaijan",
   "B2B / bulk ordering": "Comenzi B2B / în vrac",
   Back: "Înapoi",
+  "Back to conversations": "Înapoi la conversații",
   "Back to sign in": "Înapoi la conectare",
   Balance: "Sold",
   "Banner alt text": "Text alternativ banner",
@@ -270,6 +277,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": 'C><spanry. id="t0016">Schimbați limba',
   "Category not found": "Categoria nu a fost găsită",
   "Category row": "Rând de categorii",
+  "Category thumbnail alt text": "Textul alternativ al miniaturii categoriei",
+  "Category thumbnail URL": "Adresa URL a miniaturii categoriei",
   "Category to add to the homepage": "Categorie de adăugat la pagina de pornire",
   "Cautions and low stock.": "Atenționări și stoc redus.",
   "Centred safe area": "Zona sigură centrată",
@@ -340,6 +349,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "E-mail de contact",
   Content: "Continuați cu Facebook",
   "Continue with Facebook": "Continuați cu Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Controlați prețurile aproximative în moneda locală setând cât valorează o rupie indiană. Înregistrările catalogului, ale comenzilor și ale comenzilor rămân în siguranță în INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Controlați ce poate vizualiza, crea, edita, publica sau gestiona fiecare rol.",
   "Control whether each bot is available, and edit what it knows.":
@@ -383,6 +394,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Dimensiunea listei selectate",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Seturi de anumite variante vândute împreună la un preț fix. Checkout aplică economisirea automat odată ce un coș deține fiecare articol dintr-un pachet.",
+  Currency: "Moneda",
+  "Currency code": "Codul valutar",
+  "Currency Converter": "Convertorul valutar",
+  "Currency values unavailable": "Valorile monedelor indisponibile",
   "Current password": "Parola curentă",
   "Currently its own effects.": "În prezent, propriile efecte.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -420,6 +435,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Refuzare",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "Decorarea în partea de sus a vitrinei: particule care plutesc în spatele paginii și o urmă de indicator. Ambele sunt dezactivate în mod implicit, ambele sunt omise în întregime pentru vizitatorii care au cerut dispozitivului lor mișcare redusă și niciunul nu apare niciodată în fereastra de plată - o cădere de zăpadă peste formularul unui card este o distragere a atenției exact în momentul greșit. Efectele unei țări le înlocuiesc pe cele de la nivelul întregului site pentru vizitatorii săi, mai degrabă decât să se amestece cu ele — „puțină zăpadă” nu este o combinație semnificativă de zăpadă și nici un efect.",
+  Default: "Implicit",
   "Default commission": "Comision implicit",
   "Default fee": "Taxa implicită",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -439,6 +455,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Ștergeți rețeta",
   "Delete role": "Ștergeți rolul",
   "Delete selected (": "Ștergeți selectat (",
+  "Delete this entry": "Ștergeți această intrare",
   "Delete this price adjustment?": "Livrare",
   "Delete user": "Ștergeți utilizatorul",
   "Deleting...": "Se șterge...",
@@ -460,6 +477,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Filtre alimentare și de certificare",
   "Dietary tags": "Etichete dietetice",
   "Dietary tags (comma separated)": "Etichete dietetice (separate prin virgulă)",
+  "Dietary Tags & Certifications": "Etichete și certificări dietetice",
   "Direct message": "Mesaj direct",
   Disable: "Dezactivați",
   "Disable selected (": "Dezactivați selectat (",
@@ -480,11 +498,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "de ex. Conturi",
   "e.g. DIWALI500": "de ex. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "de ex. Recoltat în săptămâna 3 martie 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "De ex. India organic, comerț echitabil. O certificare atribuită oricărui produs nu poate fi ștearsă până când nu este eliminată din acesta.",
   "e.g. Ops Room": "de ex. Camera operațională",
   "e.g. Rain-fed, no synthetic pesticides": "de ex. Hrănit pe ploaie, fără pesticide sintetice",
   "e.g. Refrigerate and use within 5 days": "de ex. Pune la frigider și folosește în 5 zile",
   "e.g. TO-HONEY-500": "de ex. TO-HONEY-500",
   "e.g. UTR 123456789012": "de ex. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "De ex. Vegan, fără gluten. Ștergerea unuia îl elimină din fiecare produs pe care îl verifică.",
   Edit: "Editați",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Editați metadatele paginii CMS, indexarea și blocurile de pagini brute. Înregistrarea paginii de pornire este listată și aici, dar Setările paginii de pornire sunt modalitatea mai sigură de a o modifica — acest editor preia JSON brut.",
@@ -586,6 +608,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     "Forțați activarea sau dezactivarea unei secțiuni pentru vizitatorii dintr-o țară, fără a modifica ceea ce văd ceilalți. Lăsați o secțiune pe „Moștenire” și urmează doar caseta de bifare din lista de secțiuni de mai sus.",
   "Forgot password?": "Ați uitat parola?",
+  "Formatting locale": "Locale de formatare",
   "Free delivery above (₹)": "Livrare gratuită de mai sus (₹)",
   "French (Français)": "franceză (Français)",
   Frequency: "Frecvență",
@@ -665,6 +688,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Dacă acel e-mail are un cont, un link de resetare este pe drum.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Dacă această promoție nu a fost niciodată valorificată, este ștearsă definitiv; în caz contrar, este arhivat, astfel încât istoricul său să fie păstrat.",
+  Image: "Imagine",
   "Image alt text": "Text alternativ al imaginii",
   "Image alt text (optional)": "Text alternativ al imaginii (opțional)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -739,6 +763,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Lăsați o culoare necompletată pentru a o păstra pe cea cu care True Grit este livrat — ștergerea unui câmp este modul în care o anulați. Culorile unei pagini sau ale unei țări pornesc de la culorile site-ului și înlocuiesc doar ceea ce schimbați, astfel încât fiecare este o listă scurtă, nu o a doua paletă de menținut. Când ambele se aplică aceluiași vizitator, pagina câștigă — designul unei pagini editoriale nu ar trebui să fie anulat de un experiment geografic.",
   "Leave blank to use the default.": "Lăsați necompletat pentru a utiliza valoarea prestabilită.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Lăsați linkul necompletat pentru o imagine simplă, care nu se poate da clic.",
   "Less refunds": "Mai puține rambursări",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Permite clienților să aplice un cod de card cadou la finalizarea comenzii, acoperind parțial sau integral comanda lor. Emite carduri din pagina Carduri cadou. Dezactivat în mod prestabilit — cardurile existente și soldurile lor sunt păstrate, pur și simplu nu pot fi răscumpărate, în timp ce aceasta este dezactivată.",
@@ -749,6 +775,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Level: "Nivel",
   "Line total": "Total linii",
   Lines: "Linii",
+  "Link (optional)": "Link (opțional)",
   "Link customer": "Conectați clientul",
   "Link product": "Conectați produsul",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -768,6 +795,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Previzualizare live",
   "Live, and to scale with the real storefront's own styles.":
     "Live și la scară cu stilurile proprii ale vitrinei reale.",
+  Loading: "Se încarcă",
   "Loading active promotions...": "Se încarcă promoțiile active...",
   "Loading analytics...": "Se încarcă statisticile...",
   "Loading announcements...": "Se încarcă anunțuri...",
@@ -781,6 +809,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Se încarcă conversațiile...",
   "Loading country overrides...": "Se încarcă suprascrierile țării...",
   "Loading crawler files...": "Se încarcă fișierele crawler...",
+  "Loading currency values…": "Se încarcă valorile valutare...",
   "Loading delivery charges...": "Se încarcă taxele de livrare...",
   "Loading discussion…": "Se încarcă discuția...",
   "Loading highlights...": "Se încarcă elementele evidențiate...",
@@ -803,6 +832,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Se încarcă comutatoarele de vitrine...",
   "Loading submission…": "Se încarcă trimiterea...",
   "Loading...": "Se încarcă...",
+  "Loading…": "Se încarcă...",
   "Local pickup points": "Puncte de ridicare locale",
   "Locale to translate": "Locale de tradus",
   "Locked out? Use": "Ați blocat? Folosiți",
@@ -979,6 +1009,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Notă (obligatorie pentru a solicita modificări sau a respinge)",
   "Note (required)": "Notă (obligatorie)",
   Notes: "Note",
+  "Nothing here yet": "Nimic aici încă",
   "Nothing outstanding to pay": "Nimic restante de plătit",
   "Nothing pending.": "Nimic în așteptare.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1032,6 +1063,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Mango Alphonso organic",
   "Organic mangoes held in a sunlit orchard":
     "Mango organice ținute într-o livadă luminată de soare",
+  "Organic wheat flour in a wooden bowl": "Făină de grâu organică într-un castron de lemn",
   Outstanding: "Remarcabil",
   Overview: "Prezentare generală",
   "Owner Reports": "Rapoartele proprietarilor",
@@ -1080,9 +1112,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Alegeți cel puțin o țară sau eliberați peste tot.",
   "Pick at least one country, or release globally.":
     "Alegeți cel puțin o țară sau lansați la nivel global.",
-  "Pick exactly two people for a direct message.":
-    "Alegeți exact două persoane pentru un mesaj direct.",
   "Pick one from the list to start reading.": "Alegeți unul din listă pentru a începe să citiți.",
+  "Pick the other person for this direct message.":
+    "Alege cealaltă persoană pentru acest mesaj direct.",
   "PIN code": "Cod PIN",
   "PIN patterns": "Modele PIN",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1223,6 +1255,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires pages.view permission and a connected API.": "Permisiunea API conectată",
   "Requires products.publish": "Necesită products.publish",
   "Requires recipes.publish": "Necesită recipes.publish",
+  "Requires settings access.": "Necesită acces la setări.",
   "Requires the analytics.view permission.": "Necesită permisiunea analytics.view.",
   "Requires the inventory.adjust permission.": "Necesită permisiunea inventory.adjust.",
   "Requires the reports.query permission.": "Necesită permisiunea reports.query.",
@@ -1275,6 +1308,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Alerg...",
   "Russian (Русский)": "rusă (Русский)",
   "Safe area": "Zona sigură",
+  "Safe geo-lock:": "Geoblocare sigură:",
   "Sale & Discounts": "Reduceri și reduceri",
   "Sale price": "Preț de vânzare",
   "Sale Price (₹)": "Preț de vânzare (₹)",
@@ -1410,6 +1444,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Sârbă",
   Servings: "Servicii",
   "Set a new password": "Setați o nouă parolă",
+  "Set as default": "Setat ca prestabilit",
   "Shop · Farms · Journal": "Magazin · Ferme · Jurnal",
   "Shop fresh greens": "Cumpărați verdeață proaspătă",
   "Shop root vegetables": "Cumpărați legume rădăcinoase",
@@ -1504,6 +1539,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Supporting text": "Text suport",
   "Swedish (Svenska)": "Suedeză (Svenska)",
   Table: "Tabel",
+  "Tags & Certifications": "Etichete și certificări",
   "Tags:": "Etichete:",
   Tajik: "Tadjik",
   "Taking payments": "Preluare plăți",
@@ -1518,6 +1554,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Bannerul, rândul de categorie, rândul de produse și câmpurile SEO se salvează împreună. Casetele de bifare a secțiunilor, comanda și copierea secțiunilor personalizate se salvează singure, pe măsură ce le modificați.",
   "The chat widget customers and visitors see on the storefront.":
     "Widgetul de chat pe care clienții și vizitatorii îl văd în vitrină.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Casuțele de selectare sunt afișate în fila General a fiecărui produs. Modificările se aplică imediat peste tot.",
   "The classic credential pair, including the password-reset flow.":
     "Perechea clasică de acreditări, inclusiv fluxul de resetare a parolei.",
   "the farm owner": "proprietarul fermei",
@@ -1570,6 +1608,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "This section is edited in its own panel further down the page.":
     "Această secțiune este editată în propriul panou mai jos în pagină.",
   "Threads started from the storefront appear here.": "Firele începute din vitrina apar aici.",
+  "Thumbnail image URL": "Adresa URL a imaginii în miniatură",
   Time: "Timp",
   "Tinted band": "Bandă colorată",
   Title: "Titlu",
@@ -1618,8 +1657,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Încarcă imagine",
   "Uploading image...": "Încarcă imagine...",
   "Uploading image…": "Se încarcă imagine...",
+  "Uploading thumbnail...": "Se încarcă miniatura...",
   "Uploading...": "Se încarcă...",
   "Uploading…": "Se încarcă...",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Utilizați o imagine separată de 1200 × 1200. Această imagine pătrată este decupată pentru cardurile de categorie; nu reutilizați bannerul larg erou.",
   "Use site-wide effects instead": "Folosiți în schimb efecte la nivelul întregului site",
   "Use the exact canvas": "Folosiți pânza exactă",
   "Use the navigation to get back.": "Utilizați navigarea pentru a reveni.",
@@ -1630,6 +1672,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Users & Roles": "Utilizatori și roluri",
   "Users unavailable": "Utilizatori indisponibili",
   "Using the site brand colour": "Utilizarea culorii mărcii site-ului",
+  "Value of 1 INR": "Valoare de 1 INR",
+  "Value per INR": "Valoare pe INR",
   "Value, ₹": "Valoare, ₹",
   Variant: "Varianta",
   "Variant (SKU)": "Varianta (SKU)",

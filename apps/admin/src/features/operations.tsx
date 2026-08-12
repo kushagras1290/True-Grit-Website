@@ -42,6 +42,7 @@ import {
   type AdminRole,
 } from "../lib/api";
 import { formatDateTime, formatMoney } from "../lib/format";
+import { IMAGE_SPECIFICATIONS_BY_ID } from "../lib/image-specifications";
 import { PermissionGate } from "../lib/permissions";
 import { ManageRolesModal } from "./scopes";
 import { T } from "../lib/i18n";
@@ -485,7 +486,7 @@ function FarmModal({ farm, onClose }: { farm?: AdminFarmRow; onClose: () => void
   });
 
   const uploadMutation = useMutation({
-    mutationFn: (file: File) => api.uploadImage(file),
+    mutationFn: (file: File) => api.uploadImage(file, IMAGE_SPECIFICATIONS_BY_ID["content-hero"]),
     onSuccess: (result) => form.setValue("heroImageUrl", result.url, { shouldDirty: true }),
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not upload the image."),

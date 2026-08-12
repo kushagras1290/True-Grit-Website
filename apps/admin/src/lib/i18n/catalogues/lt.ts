@@ -30,6 +30,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/parduotuvė",
   "← All farms": "← Visi ūkiai",
   "+ stars": "+ žvaigždutės",
+  "₹1,000 preview": "1 000 INR peržiūra",
   "1 star": "1 žvaigždutė",
   "15% off your first order": "15 % nuolaida pirmajam užsakymui",
   "2 cups": "2 puodeliai",
@@ -65,6 +66,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pagrindinis administratorius gali pradėti grupę arba tiesioginį pranešimą spustelėjęs aukščiau esantį mygtuką +.",
   "A tinted band — check muted text is still readable here.":
     "Tamsinta juosta – čia vis dar galima skaityti nutildytą čekio tekstą.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "lankytojo šalis pasirenka valiutą, šioje lentelėje pateikiama jos rodoma vertė, o pradinė INR kaina lieka nepakitusi. Išjungtos valiutos grąžinamos į numatytuosius INR saugius nustatymus.",
   Accent: "Akcentas",
   "Accept orders and payments": "Priimkite užsakymus ir mokėjimus",
   "Accept orders and payments for this product": "Priimkite šio produkto užsakymus ir mokėjimus",
@@ -90,6 +93,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Pridėti kategoriją",
   "Add code": "Pridėti kodą",
   "Add country": "Pridėti šalį",
+  "Add currency": "Pridėti valiutą",
   "Add entry": "Pridėti įrašą",
   "Add farm owner": "Skelbimas ūkio savininkas",
   "Add ingredient": "Pridėti ingredientą",
@@ -100,6 +104,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Pridėkite vieną žemiau ir pradėkite.",
   "Add one so the bot has something to reference for this scope.":
     "Pridėkite jį, kad robotas turėtų ką nurodyti šioje srityje.",
+  "Add one using the field above.": "Pridėkite ją naudodami anksčiau pateiktą lauką.",
   "Add page": "Pridėti puslapį",
   "Add participants": "Pridėti dalyvius",
   "Add point": "Pridėti tašką",
@@ -118,6 +123,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Pridėti zoną",
   Added: "Pridėta",
   "Adding...": "Pridedama...",
+  "Adding…": "Pridedama...",
   Address: "Adresas",
   "Adjust points": "Koreguokite taškus",
   "Adjust the search or create a category.": "Koreguokite paiešką arba sukurkite kategoriją.",
@@ -214,6 +220,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Azerbaidžaniečių",
   "B2B / bulk ordering": "B2B / masinis užsakymas",
   Back: "Atgal",
+  "Back to conversations": "Atgal į pokalbius",
   "Back to sign in": "Atgal į prisijungimą",
   Balance: "Balansas",
   "Banner alt text": "Reklamjuostės alternatyvus tekstas",
@@ -279,6 +286,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Kategorijų redagavimo priemonės skiltys",
   "Category not found": "Kategorija nerasta",
   "Category row": "Kategorijos eilutė",
+  "Category thumbnail alt text": "Kategorijos miniatiūros alternatyvus tekstas",
+  "Category thumbnail URL": "Kategorijos miniatiūros URL",
   "Category to add to the homepage": "Kategorija, kurią reikia pridėti prie pagrindinio puslapio",
   "Cautions and low stock.": "Atsargumo priemonės ir mažos atsargos.",
   "Centred safe area": "Centrinė saugi zona",
@@ -349,6 +358,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Kontaktinis el. pašto adresas",
   Content: "Turinys",
   "Continue with Facebook": "Tęsti naudojant „Facebook“",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Valdykite apytiksles kainas vietine valiuta nustatydami vienos Indijos rupijos vertę. Katalogo, atsiskaitymo ir užsakymų įrašai saugiai saugomi INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Valdykite, ką kiekvienas vaidmuo gali peržiūrėti, kurti, redaguoti, skelbti ar tvarkyti.",
   "Control whether each bot is available, and edit what it knows.":
@@ -393,6 +404,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Kuriamas sąrašo dydis",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Rūpuojami konkrečių variantų rinkiniai, parduodami kartu už tam tikrą kainą. „Checkout“ sutaupo automatiškai, kai krepšelyje yra kiekviena paketo prekė.",
+  Currency: "Valiuta",
+  "Currency code": "Valiutos kodas",
+  "Currency Converter": "Valiutos keitiklis",
+  "Currency values unavailable": "Valiutų vertės nepasiekiamos",
   "Current password": "Dabartinis slaptažodis",
   "Currently its own effects.": "Šiuo metu tai yra atskiri efektai.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -430,6 +445,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Atmesti",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "Parduotuvės viršuje esantis papuošimas: slenkančios dalelės už puslapio ir takelis. Abu yra išjungti pagal numatytuosius nustatymus, abu yra visiškai praleidžiami lankytojams, kurie paprašė savo įrenginio sumažinti judesį, ir nė vienas iš jų niekada nepasirodo mokėjimo lange – iškritęs sniegas virš kortelės formos atitraukia dėmesį būtent netinkamu momentu. Šalies poveikis lankytojams pakeičia visos svetainės efektus, o ne susilieja su jais – „šiek tiek sniego“ nėra prasmingas sniego ir jokio poveikio derinys.",
+  Default: "Numatytasis",
   "Default commission": "Numatytasis komisinis mokestis",
   "Default fee": "Numatytasis mokestis",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -449,6 +465,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Ištrinti receptą",
   "Delete role": "Ištrinti vaidmenį",
   "Delete selected (": "Ištrinti pasirinktus (",
+  "Delete this entry": "Ištrinti šį įrašą",
   "Delete this price adjustment?": "Ištrinti šį kainos koregavimą?",
   "Delete user": "Ištrinti naudotoją",
   "Deleting...": "Ištrinama...",
@@ -470,6 +487,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Dietiniai ir sertifikavimo filtrai",
   "Dietary tags": "Dietinės žymos",
   "Dietary tags (comma separated)": "Dietinės žymos (atskirtos kableliais)",
+  "Dietary Tags & Certifications": "Dietos žymos ir sertifikatai",
   "Direct message": "Tiesioginį pranešimą",
   Disable: "Išjungti",
   "Disable selected (": "Išjungti pasirinktus (",
@@ -491,11 +509,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "pvz. Paskyros",
   "e.g. DIWALI500": "pvz., DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "pvz. Nuimtas 2026 m. kovo 3 d. savaitę",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Pvz. Indija ekologiška, sąžininga prekyba. Bet kuriam produktui priskirto sertifikato negalima ištrinti, kol jis nebus pašalintas.",
   "e.g. Ops Room": "pvz., Operacijų kambarys",
   "e.g. Rain-fed, no synthetic pesticides": "pvz. Maitinamas lietumi, be sintetinių pesticidų",
   "e.g. Refrigerate and use within 5 days": "pvz. Laikyti šaldytuve ir naudoti per 5 dienas",
   "e.g. TO-HONEY-500": "pvz., TO-HONEY-500",
   "e.g. UTR 123456789012": "pvz. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Pvz. Veganiškas, Be glitimo. Ištrynus jį, jis pašalinamas iš visų produktų, kuriuose jis buvo patikrintas.",
   Edit: "Redaguoti",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Redaguoti TVS puslapio metaduomenis, indeksavimą ir neapdorotus puslapių blokus. Čia taip pat pateikiamas pagrindinio puslapio įrašas, tačiau pagrindinio puslapio nustatymai yra saugesnis būdas jį pakeisti – ši redagavimo priemonė naudoja neapdorotą JSON.",
@@ -599,6 +621,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     "Priverstinai įjunkite arba išjunkite skiltį lankytojams vienoje šalyje nekeisdami to, ką mato visi. Palikite skiltį „Paveldėti“ ir ji bus rodoma po žymės langeliu aukščiau esančiame skilčių sąraše.",
   "Forgot password?": "Pamiršote slaptažodį?",
+  "Formatting locale": "Formatavimo lokalė",
   "Free delivery above (₹)": "Aukščiau pateiktas nemokamas pristatymas (₹)",
   "French (Français)": "Prancūzų (Français)",
   Frequency: "Dažnis",
@@ -682,6 +705,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Jei tame el. laiške yra paskyra, siunčiama nuoroda iš naujo.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Jei ši reklama niekada nebuvo išpirkta, ji iš karto ištrinama; kitu atveju jis yra archyvuojamas, todėl jo istorija išsaugoma.",
+  Image: "Vaizdas",
   "Image alt text": "Vaizdo alternatyvus tekstas",
   "Image alt text (optional)": "Vaizdo alternatyvus tekstas (pasirenkamas)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -747,6 +771,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Label: "Etiketė",
   "Land under cultivation": "Apdirbama žemė",
   Language: "Kalba",
+  "Language Studio": "Kalbų studija",
   Lao: "Laosas",
   "Last activity": "Paskutinė veikla",
   "Last reviewer note": "Paskutinė apžvalgininko pastaba",
@@ -759,6 +784,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Palikite spalvą tuščią, kad išliktų ta, kurią siunčia True Grit – išvalę lauką anuliuosite. Puslapio arba šalies spalvos prasideda nuo svetainės spalvų ir pakeičia tik tai, ką keičiate, todėl kiekviena yra trumpas sąrašas, o ne antra paletė, kurią reikia prižiūrėti. Kai abu taikomi tam pačiam lankytojui, puslapis laimi – redakcinio puslapio dizaino geografinis eksperimentas neturėtų anuliuoti.",
   "Leave blank to use the default.": "Jei norite naudoti numatytąjį, palikite tuščią.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Palikite nuorodą tuščią, kad vaizdas būtų paprastas, kurio negalima spustelėti.",
   "Less refunds": "Mažiau grąžinama",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Klientai gali pritaikyti dovanų kortelės kodą atsiskaitydami, padengdami visą arba dalį užsakymo. Išduokite korteles iš dovanų kortelių puslapio. Išjungta pagal numatytuosius nustatymus – esamos kortelės ir jų likučiai išsaugomi, tik neišperkami, kol ši išjungta.",
@@ -769,6 +796,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Level: "Lygis",
   "Line total": "Iš viso eilučių",
   Lines: "Eilutės",
+  "Link (optional)": "Nuoroda (pasirenkama)",
   "Link customer": "Susieti klientą",
   "Link product": "Susieti produktą",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -788,6 +816,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Tiesioginė peržiūra",
   "Live, and to scale with the real storefront's own styles.":
     "Tiesiogiai ir pritaikykite mastelį pagal tikros parduotuvės filialo stilius.",
+  Loading: "Įkeliama",
   "Loading active promotions...": "Įkeliamos aktyvios reklamos...",
   "Loading analytics...": "Įkeliama analizė...",
   "Loading announcements...": "Įkeliami pranešimai...",
@@ -801,6 +830,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Įkeliami pokalbiai...",
   "Loading country overrides...": "Įkeliami šalies nepaisymai...",
   "Loading crawler files...": "Įkeliami tikrinimo failai...",
+  "Loading currency values…": "Įkeliamos valiutos vertės...",
   "Loading delivery charges...": "Įkeliami pristatymo mokesčiai...",
   "Loading discussion…": "Įkeliama diskusija...",
   "Loading highlights...": "Įkeliami svarbiausi elementai...",
@@ -823,6 +853,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Įkeliami parduotuvės filialo jungikliai...",
   "Loading submission…": "Įkeliamas pateikimas...",
   "Loading...": "Įkeliamas...",
+  "Loading…": "Įkeliama...",
   "Local pickup points": "Vietiniai atsiėmimo taškai",
   "Locale to translate": "Kalba, kurią norite išversti",
   "Locked out? Use": "Užrakintas? Naudokite",
@@ -874,6 +905,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Moderavimo priežastis",
   Mongolian: "mongolų",
   "More from True Grit": "Daugiau iš True Grit",
+  "Motto banner": "Šūkio reklamjuostė",
   "Move down in the showcase": "Perkelti vitrinoje žemyn",
   "Move earlier": "Perkelti anksčiau",
   "Move later": "Perkelti vėliau",
@@ -1000,6 +1032,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pastaba (būtina norint pateikti užklausą dėl pakeitimų arba atmetimo)",
   "Note (required)": "Pastaba (būtina)",
   Notes: "Pastabos",
+  "Nothing here yet": "Čia dar nieko nėra",
   "Nothing outstanding to pay": "Nieko neapmokėtų mokėjimų",
   "Nothing pending.": "Nieko nelaukia.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1052,6 +1085,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Užsakymai bus rodomi čia, kai tik klientai išsiregistruos.",
   "Organic Alphonso Mangoes": "Ekologiški Alphonso Mangos",
   "Organic mangoes held in a sunlit orchard": "Ekologiški mangai, laikomi saulės apšviestame sode",
+  "Organic wheat flour in a wooden bowl": "Ekologiški kvietiniai miltai mediniame dubenyje",
   Outstanding: "Nuostabi",
   Overview: "Apžvalga",
   "Owner Reports": "Savininko ataskaitos",
@@ -1102,10 +1136,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pasirinkite bent vieną šalį arba išleiskite visur.",
   "Pick at least one country, or release globally.":
     "Pasirinkite bent vieną šalį arba išleiskite visame pasaulyje.",
-  "Pick exactly two people for a direct message.":
-    "Tiesioginiam pranešimui rinkitės tiksliai du žmones.",
   "Pick one from the list to start reading.":
     "Norėdami pradėti skaityti, pasirinkite vieną iš sąrašo.",
+  "Pick the other person for this direct message.":
+    "Pasirinkite kitą asmenį šiam tiesioginiam pranešimui.",
   "PIN code": "PIN kodas",
   "PIN patterns": "PIN šablonai",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1250,6 +1284,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Reikalingas leidimas ir prijungtas puslapis.",
   "Requires products.publish": "Reikalingas products.publish",
   "Requires recipes.publish": "Reikalingas receptai.publish",
+  "Requires settings access.": "Reikia prieiga prie nustatymų.",
   "Requires the analytics.view permission.": "Reikalingas analytics.view leidimas.",
   "Requires the inventory.adjust permission.": "Reikalingas leidimas inventory.adjust.",
   "Requires the reports.query permission.": "Reikalingas reports.query leidimas.",
@@ -1301,6 +1336,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Bėga...",
   "Russian (Русский)": "Rusų (Русский)",
   "Safe area": "Saugi zona",
+  "Safe geo-lock:": "Saugus geografinis užraktas:",
   "Sale & Discounts": "Išpardavimas ir nuolaidos",
   "Sale price": "Pardavimo kaina",
   "Sale Price (₹)": "Pardavimo kaina (₹)",
@@ -1430,6 +1466,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Serbų",
   Servings: "Porcijos",
   "Set a new password": "Nustatyti naują slaptažodį",
+  "Set as default": "Nustatyti kaip numatytąjį",
   "Shop · Farms · Journal": "Parduotuvė · Ūkiai · Žurnalas",
   "Shop fresh greens": "Pirkite šviežius žalumynus",
   "Shop root vegetables": "Įsigykite šakninių daržovių",
@@ -1528,6 +1565,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "suahilių (kisvahilių)",
   "Swedish (Svenska)": "Švedų (Svenska)",
   Table: "Lentelė",
+  "Tags & Certifications": "Žymos ir sertifikatai",
   "Tags:": "Žymos:",
   Tajik: "tadžikų k.",
   "Taking payments": "Mokėjimų priėmimas",
@@ -1543,6 +1581,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Reklamjuostė, kategorijos eilutė, produkto eilutė ir SEO laukai išsaugomi kartu. Skilčių žymės langeliai, tvarka ir tinkintos skilties kopija išsaugoma atskirai, kai juos keičiate.",
   "The chat widget customers and visitors see on the storefront.":
     "Pokalbių valdiklis, kurį klientai ir lankytojai mato parduotuvės vitrinoje.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Žymimų laukelių sąrašai, rodomi kiekvieno produkto skirtuke Bendra. Pakeitimai visur taikomi nedelsiant.",
   "The classic credential pair, including the password-reset flow.":
     "Klasikinė kredencialų pora, įskaitant slaptažodžio nustatymo iš naujo eigą.",
   "the farm owner": "Ūkio savininkas",
@@ -1597,6 +1637,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ši skiltis redaguojama atskirame skydelyje toliau puslapyje.",
   "Threads started from the storefront appear here.":
     "Gijos, pradėtos nuo parduotuvės filialo, rodomos čia.",
+  "Thumbnail image URL": "Miniatūros vaizdo URL",
   Time: "Laikas",
   "Tinted band": "Tonuota juosta",
   Title: "Pavadinimas",
@@ -1648,9 +1689,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Įkelkite vaizdą",
   "Uploading image...": "Įkeliamas vaizdas...",
   "Uploading image…": "Įkeliamas vaizdas...",
+  "Uploading thumbnail...": "Įkeliama miniatiūra...",
   "Uploading...": "Įkeliama...",
   "Uploading…": "Įkeliama...",
   "Urdu (اردو)": "urdu (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Naudokite atskirą 1200 × 1200 vaizdą. Šis kvadratinis vaizdas apkarpytas kategorijų kortelėms; pakartotinai nenaudokite plačios herojaus reklamjuostės.",
   "Use site-wide effects instead": "Vietoj to naudokite visos svetainės efektus",
   "Use the exact canvas": "Naudokite tikslią drobę",
   "Use the navigation to get back.": "Grįžti naudokite navigaciją.",
@@ -1663,6 +1707,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Svetainės prekės ženklo spalvos naudojimas",
   Uyghur: "uigūrų",
   Uzbek: "uzbekų",
+  "Value of 1 INR": "1 INR vertė",
+  "Value per INR": "INR vertė",
   "Value, ₹": "Vertė, ₹",
   Variant: "variantas",
   "Variant (SKU)": "variantas (SKU)",

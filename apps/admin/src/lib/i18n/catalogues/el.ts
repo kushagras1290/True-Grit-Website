@@ -25,6 +25,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/ qty": "/ ποσότητα",
   "← All farms": "← Όλες οι φάρμες",
   "+ stars": "+ αστέρια",
+  "₹1,000 preview": "1.000 ₹ προεπισκόπηση",
   "1 star": "1 αστέρι",
   "15% off your first order": "15% έκπτωση στην πρώτη σας παραγγελία",
   "2 cups": "2 φλιτζάνια",
@@ -59,6 +60,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ένας σούπερ διαχειριστής μπορεί να ξεκινήσει μια ομάδα ή ένα άμεσο μήνυμα από το κουμπί + παραπάνω.",
   "A tinted band — check muted text is still readable here.":
     "Μια φιμέ ζώνη — ελέγξτε ότι το κείμενο σε σίγαση εξακολουθεί να είναι αναγνώσιμο εδώ.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "η χώρα του επισκέπτη επιλέγει ένα νόμισμα, αυτός ο πίνακας παρέχει την εμφανιζόμενη τιμή του και η αρχική τιμή INR παραμένει αμετάβλητη. Τα απενεργοποιημένα νομίσματα επανέρχονται σε προεπιλογές με ασφάλεια INR.",
   Accent: "Προφορά",
   "Accept orders and payments": "Αποδοχή παραγγελιών και πληρωμών",
   "Accept orders and payments for this product":
@@ -85,6 +88,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Προσθήκη κατηγορίας",
   "Add code": 'id="t0010">Προσθήκη χώρας',
   "Add country": "Προσθήκη χώρας",
+  "Add currency": "Συζήτηση",
   "Add entry": "Προσθήκη καταχώρισης",
   "Add farm owner": "Προσθήκη κατόχου φάρμας",
   "Add ingredient": "Προσθήκη συστατικού",
@@ -95,6 +99,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Προσθέστε μία παρακάτω για να ξεκινήσετε.",
   "Add one so the bot has something to reference for this scope.":
     "Προσθέστε μία, ώστε το ρομπότ να έχει κάτι να αναφέρει για αυτό το εύρος.",
+  "Add one using the field above.":
+    'Προσθέστε ένα νομίσματα χρησιμοποιώντας το παραπάνω πεδίο. id="t0007">Εναλλακτικό κείμενο μικρογραφίας κατηγορίας',
   "Add page": "Προσθήκη σελίδας",
   "Add participants": "Προσθήκη συμμετεχόντων",
   "Add point": "Προσθήκη σημείου",
@@ -113,6 +119,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Προσθήκη ζώνης",
   Added: "d0. προϊόν.",
   "Adding...": "Προσθήκη...",
+  "Adding…": "Προσθήκη…",
   Address: "Διεύθυνση",
   "Adjust points": "Προσαρμογή πόντων",
   "Adjust the search or create a category.":
@@ -211,6 +218,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Αζερμπαϊτζάν",
   "B2B / bulk ordering": "B2B / μαζική παραγγελία",
   Back: "Επιστροφή",
+  "Back to conversations": "Επιστροφή στις συνομιλίες",
   "Back to sign in": "Επιστροφή για σύνδεση",
   Balance: "Υπόλοιπο",
   "Banner alt text": "Εναλλακτικό κείμενο banner",
@@ -275,6 +283,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Ενότητες επεξεργασίας κατηγορίας",
   "Category not found": "Δεν βρέθηκε η κατηγορία",
   "Category row": "Σειρά κατηγορίας",
+  "Category thumbnail alt text": "Εναλλακτικό κείμενο μικρογραφίας κατηγορίας",
+  "Category thumbnail URL": "Διεύθυνση URL μικρογραφίας κατηγορίας",
   "Category to add to the homepage": "Κατηγορία για προσθήκη στην αρχική σελίδα",
   "Cautions and low stock.": "Προσοχή και χαμηλό απόθεμα.",
   Cebuano: "Κεμπουάνο",
@@ -348,6 +358,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Ηλεκτρονικό ταχυδρομείο επικοινωνίας",
   Content: "Περιεχόμενο",
   "Continue with Facebook": "Συνέχεια με το Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Ελέγξτε τις κατά προσέγγιση τιμές σε τοπικό νόμισμα ορίζοντας πόσο αξίζει μια ρουπία Ινδίας. Τα αρχεία καταλόγου, ολοκλήρωσης αγοράς και παραγγελιών παραμένουν με ασφάλεια σε INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Ελέγξτε τι μπορεί να προβάλει, να δημιουργήσει, να επεξεργαστεί, να δημοσιεύσει ή να διαχειριστεί κάθε ρόλος.",
   "Control whether each bot is available, and edit what it knows.":
@@ -391,6 +403,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Επιμελημένο μέγεθος λίστας",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Επιμελημένα σετ συγκεκριμένων παραλλαγών που πωλούνται μαζί σε σταθερή τιμή. Το Checkout εφαρμόζει την εξοικονόμηση αυτόματα μόλις ένα καλάθι περιέχει κάθε στοιχείο σε μια δέσμη.",
+  Currency: "Νόμισμα",
+  "Currency code": "Κωδικός νομίσματος",
+  "Currency Converter": "Μετατροπέας νομισμάτων",
+  "Currency values unavailable": "Μη διαθέσιμες τιμές νομίσματος",
   "Current password": "Τρέχον κωδικό πρόσβασης",
   "Currently its own effects.": "Αυτήν τη στιγμή τα δικά του εφέ.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -427,6 +443,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Απόρριψη",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'Διακόσμηση πίσω από τη σελίδα και την παρακολούθηση της σελίδας δείκτη. Και τα δύο είναι απενεργοποιημένα από προεπιλογή, και τα δύο παραλείπονται εντελώς για επισκέπτες που έχουν ζητήσει από τη συσκευή τους μειωμένη κίνηση και κανένα δεν εμφανίζεται ποτέ στο παράθυρο πληρωμής - μια χιονόπτωση πάνω από μια φόρμα κάρτας αποσπά την προσοχή ακριβώς τη λάθος στιγμή. Τα εφέ μιας χώρας αντικαθιστούν τα εφέ σε όλο τον ιστότοπο εντελώς για τους επισκέπτες της αντί να αναμειγνύονται μαζί τους — το "λίγο χιόνι" δεν είναι ένας ουσιαστικός συνδυασμός χιονιού και κανένα αποτέλεσμα.',
+  Default: "Προεπιλογή",
   "Default commission": "Προεπιλεγμένη προμήθεια",
   "Default fee": "Προεπιλεγμένη χρέωση",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -446,6 +463,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Διαγραφή συνταγής",
   "Delete role": "Διαγραφή ρόλου",
   "Delete selected (": "Διαγραφή επιλεγμένο (",
+  "Delete this entry": "Διαγραφή αυτής της καταχώρισης",
   "Delete this price adjustment?": "Διαγραφή αυτής της προσαρμογής τιμής;",
   "Delete user": "Διαγραφή χρήστη",
   "Deleting...": "Διαγραφή...",
@@ -468,6 +486,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Φίλτρα διατροφής και πιστοποίησης",
   "Dietary tags": 'Dietary id="t0010">π.χ. DIWALI500',
   "Dietary tags (comma separated)": "Διατροφικές ετικέτες (χωρισμένες με κόμματα)",
+  "Dietary Tags & Certifications": "Διατροφικές ετικέτες και πιστοποιήσεις",
   "Direct message": "Άμεσο μήνυμα",
   Disable: "Απενεργοποίηση",
   "Disable selected (": "Απενεργοποίηση επιλεγμένων (",
@@ -490,11 +509,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "π.χ. Λογαριασμοί",
   "e.g. DIWALI500": "π.χ. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "π.χ. Συγκομίστηκε την εβδομάδα της 3ης Μαρτίου 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Π.χ. India Organic, Fair Trade. Μια πιστοποίηση που έχει εκχωρηθεί σε οποιοδήποτε προϊόν δεν μπορεί να διαγραφεί μέχρι να αφαιρεθεί από αυτό.",
   "e.g. Ops Room": "π.χ. Ops Room",
   "e.g. Rain-fed, no synthetic pesticides": "π.χ. Βροχή, χωρίς συνθετικά φυτοφάρμακα",
   "e.g. Refrigerate and use within 5 days": "π.χ. Ψύξτε και χρησιμοποιήστε το εντός 5 ημερών",
   "e.g. TO-HONEY-500": "π.χ. TO-HONEY-500",
   "e.g. UTR 123456789012": "π.χ. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Π.χ. Vegan, χωρίς γλουτένη. Εάν διαγράψετε ένα, το καταργείτε από κάθε προϊόν που το έχει ελεγμένο.",
   Edit: "Επεξεργασία",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Επεξεργασία μεταδεδομένων σελίδας CMS, ευρετηρίαση και μη επεξεργασμένα μπλοκ σελίδων. Η εγγραφή της αρχικής σελίδας παρατίθεται επίσης εδώ, αλλά οι Ρυθμίσεις αρχικής σελίδας είναι ο ασφαλέστερος τρόπος για να την αλλάξετε — αυτό το πρόγραμμα επεξεργασίας χρησιμοποιεί ακατέργαστο JSON.",
@@ -601,6 +624,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Ενεργοποιήστε ή απενεργοποιήστε μια ενότητα για τους επισκέπτες μιας χώρας, χωρίς να αλλάξετε αυτό που βλέπουν όλοι οι άλλοι. Αφήστε μια ενότητα στην "Κληρονομία" και ακολουθεί απλώς το πλαίσιο επιλογής στην παραπάνω λίστα ενοτήτων.',
   "Forgot password?": "Ξεχάσατε τον κωδικό πρόσβασης;",
+  "Formatting locale": "Μορφοποίηση τοπικών ρυθμίσεων",
   "Free delivery above (₹)": "Δωρεάν παράδοση παραπάνω (₹)",
   "French (Français)": "Γαλλικά (Français)",
   Frequency: "Συχνότητα",
@@ -683,6 +707,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Εάν αυτό το μήνυμα ηλεκτρονικού ταχυδρομείου έχει λογαριασμό, ένας σύνδεσμος επαναφοράς είναι έτοιμος.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Αν αυτή η προσφορά δεν έχει εξαργυρωθεί ποτέ, διαγράφεται οριστικά. Διαφορετικά, αρχειοθετείται, ώστε να διατηρείται το ιστορικό του.",
+  Image: "Εικόνα",
   "Image alt text": "Εναλλακτικό κείμενο εικόνας",
   "Image alt text (optional)": "Εναλλακτικό κείμενο εικόνας (προαιρετικό)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -762,6 +787,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Αφήστε ένα χρώμα κενό για να διατηρήσετε αυτό με το οποίο αποστέλλεται True Grit — η εκκαθάριση ενός πεδίου είναι ο τρόπος αναίρεσης. Τα χρώματα μιας σελίδας ή μιας χώρας ξεκινούν από τα χρώματα του ιστότοπου και παρακάμπτουν μόνο αυτά που αλλάζετε, επομένως το καθένα είναι μια σύντομη λίστα και όχι μια δεύτερη παλέτα που πρέπει να διατηρηθεί. Όταν και τα δύο ισχύουν για τον ίδιο επισκέπτη, η σελίδα κερδίζει — ο σχεδιασμός μιας σελίδας σύνταξης δεν πρέπει να αναιρεθεί με ένα γεωγραφικό πείραμα.",
   "Leave blank to use the default.": "Αφήστε το κενό για να χρησιμοποιήσετε την προεπιλογή.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Αφήστε τον σύνδεσμο κενό για μια απλή εικόνα χωρίς κλικ.",
   "Less refunds": "Λιγότερες επιστροφές χρημάτων",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Επιτρέπει στους πελάτες να εφαρμόζουν έναν κωδικό δωροκάρτας στο ταμείο, που καλύπτει μέρος ή όλο το σύνολο της παραγγελίας τους. Έκδοση καρτών από τη σελίδα Δωροκάρτες. Ανενεργές από προεπιλογή — οι υπάρχουσες κάρτες και τα υπόλοιπά τους διατηρούνται, απλώς δεν μπορούν να εξαργυρωθούν, ενώ αυτό είναι απενεργοποιημένο.",
@@ -773,6 +800,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Σύνολο γραμμής",
   Lines: "Γραμμές",
   Link: "Σύνδεσμος",
+  "Link (optional)": "Σύνδεσμος (προαιρετικός)",
   "Link customer": "Σύνδεση πελάτη",
   "Link product": "Σύνδεση προϊόντος",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -792,6 +820,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Ζωντανή προεπισκόπηση",
   "Live, and to scale with the real storefront's own styles.":
     "Ζωντανά και σε κλίμακα με τα στυλ της πραγματικής βιτρίνας.",
+  Loading: "Φόρτωση",
   "Loading active promotions...": "Φόρτωση ενεργών προωθήσεων...",
   "Loading analytics...": "Φόρτωση αναλυτικών στοιχείων...",
   "Loading announcements...": "Φόρτωση ανακοινώσεων...",
@@ -805,6 +834,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Φόρτωση συνομιλιών…",
   "Loading country overrides...": "Φόρτωση αντικαταστάσεων χώρας...",
   "Loading crawler files...": "Φόρτωση αρχείων προγράμματος ανίχνευσης...",
+  "Loading currency values…": "Φόρτωση τιμών νομισμάτων…",
   "Loading delivery charges...": "Φόρτωση τελών παράδοσης...",
   "Loading discussion…": "Φόρτωση συζήτησης…",
   "Loading highlights...": "Φόρτωση επισημάνσεων...",
@@ -827,6 +857,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Φόρτωση διακοπτών βιτρίνας...",
   "Loading submission…": "Φόρτωση υποβολής…",
   "Loading...": "Φόρτωση...",
+  "Loading…": "Φόρτωση…",
   "Local pickup points": "Τοπικά σημεία παραλαβής",
   "Locale to translate": "Τοπικές ρυθμίσεις για μετάφραση",
   "Locked out? Use": "Κλείδωσε; Χρησιμοποιήστε",
@@ -883,6 +914,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Λόγος μετριοπάθειας",
   Mongolian: "Μογγολικά",
   "More from True Grit": "Περισσότερα από True Grit",
+  "Motto banner": "Μότο banner",
   "Move down in the showcase": "Μετακίνηση προς τα κάτω στη βιτρίνα",
   "Move earlier": "Μετακίνηση νωρίτερα",
   "Move later": "Μετακίνηση αργότερα",
@@ -1011,6 +1043,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Σημείωση (απαιτείται για αίτημα αλλαγών ή απόρριψη)",
   "Note (required)": "Σημείωση (απαιτείται)",
   Notes: "Σημειώσεις",
+  "Nothing here yet": "Τίποτα εδώ ακόμα",
   "Nothing outstanding to pay": "Δεν υπάρχει τίποτα εκκρεμές για πληρωμή",
   "Nothing pending.": "Δεν υπάρχει τίποτα σε εκκρεμότητα.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1063,6 +1096,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Οι παραγγελίες θα εμφανίζονται εδώ μόλις οι πελάτες κάνουν check out.",
   "Organic Alphonso Mangoes": "Οργανικά μάνγκο Alphonso",
   "Organic mangoes held in a sunlit orchard": "Βιολογικά μάνγκο σε έναν ηλιόλουστο περιβόλι",
+  "Organic wheat flour in a wooden bowl": "Βιολογικό αλεύρι σίτου σε ξύλινο μπολ",
   Outstanding: "Εξαιρετικά",
   Overview: "Επισκόπηση",
   "Owner Reports": "Αναφορές κατόχου",
@@ -1112,10 +1146,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Επιλέξτε τουλάχιστον μία χώρα ή κυκλοφορήστε παντού.",
   "Pick at least one country, or release globally.":
     "Επιλέξτε τουλάχιστον μία χώρα ή κυκλοφορήστε παγκοσμίως.",
-  "Pick exactly two people for a direct message.":
-    "Επιλέξτε ακριβώς δύο άτομα για ένα άμεσο μήνυμα.",
   "Pick one from the list to start reading.":
     "Επιλέξτε ένα από τη λίστα για να ξεκινήσετε την ανάγνωση.",
+  "Pick the other person for this direct message.":
+    "Διαλέξτε το άλλο άτομο για αυτό το άμεσο μήνυμα.",
   "PIN code": "Κωδικός PIN",
   "PIN patterns": "Μοτίβα PIN",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1262,6 +1296,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Απαιτεί άδεια pages.view και συνδεδεμένο API.",
   "Requires products.publish": "Απαιτείται products.publish",
   "Requires recipes.publish": "Απαιτείται recipes.publish",
+  "Requires settings access.": "Απαιτεί πρόσβαση στις ρυθμίσεις.",
   "Requires the analytics.view permission.": "Απαιτείται η άδεια analytics.view.",
   "Requires the inventory.adjust permission.": "Απαιτεί την άδεια inventory.adjust.",
   "Requires the reports.query permission.": "Απαιτείται η άδεια report.query.",
@@ -1313,6 +1348,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Εκτέλεση…",
   "Russian (Русский)": "Ρωσικά (Русский)",
   "Safe area": "Ασφαλής περιοχή",
+  "Safe geo-lock:": "Ασφαλές geo-lock:",
   "Sale & Discounts": "Εκπτώσεις και εκπτώσεις",
   "Sale price": 'Sanskrit"> (संस्कृतम्)',
   "Sale Price (₹)": "Τιμή πώλησης (₹)",
@@ -1448,6 +1484,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Σερβικά",
   Servings: "Υπηρεσίες",
   "Set a new password": "Ορισμός νέου κωδικού πρόσβασης",
+  "Set as default": "Ορισμός ως προεπιλογή",
   "Shop · Farms · Journal": "Αγοράστε · Φάρμες · Περιοδικό",
   "Shop fresh greens": "Αγοράστε φρέσκα χόρτα",
   "Shop root vegetables": "Αγοράστε ριζικά λαχανικά",
@@ -1546,6 +1583,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "Σουαχίλι (Κισουαχίλι)",
   "Swedish (Svenska)": "Σουηδικά (Svenska)",
   Table: "Πίνακας",
+  "Tags & Certifications": "Ετικέτες και πιστοποιήσεις",
   "Tags:": "Ετικέτες:",
   Tajik: "Τατζικά",
   "Taking payments": "Λήψη πληρωμών",
@@ -1562,6 +1600,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Το banner, η σειρά κατηγορίας, η σειρά προϊόντων και τα πεδία SEO αποθηκεύονται μαζί. Τα πλαίσια επιλογής ενότητας, η παραγγελία και το προσαρμοσμένο αντίγραφο ενότητας αποθηκεύονται από μόνα τους, καθώς τα αλλάζετε.",
   "The chat widget customers and visitors see on the storefront.":
     "Το γραφικό στοιχείο συνομιλίας που βλέπουν οι πελάτες και οι επισκέπτες στη βιτρίνα.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    'Οι λίστες πλαισίου ελέγχου εμφανίζονται στην καρτέλα "Γενικά" κάθε προϊόντος. Οι αλλαγές ισχύουν παντού αμέσως.',
   "The classic credential pair, including the password-reset flow.":
     "Το κλασικό ζεύγος διαπιστευτηρίων, συμπεριλαμβανομένης της ροής επαναφοράς κωδικού πρόσβασης.",
   "the farm owner": "ο κάτοχος της φάρμας",
@@ -1618,6 +1658,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Αυτή η ενότητα επεξεργάζεται στο δικό της πλαίσιο πιο κάτω στη σελίδα.",
   "Threads started from the storefront appear here.":
     "Τα θέματα που ξεκινούν από τη βιτρίνα εμφανίζονται εδώ.",
+  "Thumbnail image URL": "Διεύθυνση URL εικόνας μικρογραφίας",
   Time: "Ώρα",
   "Tinted band": "Φιμέ ζώνη",
   Title: "Τίτλος",
@@ -1668,9 +1709,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Μεταφόρτωση εικόνας",
   "Uploading image...": "Μεταφόρτωση εικόνας...",
   "Uploading image…": "Μεταφόρτωση εικόνας…",
+  "Uploading thumbnail...": "Μεταφόρτωση μικρογραφίας...",
   "Uploading...": "Μεταφόρτωση...",
   "Uploading…": "Μεταφόρτωση…",
   "Urdu (اردو)": "Ουρντού (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Χρησιμοποιήστε μια ξεχωριστή εικόνα 000 200 × 1. Αυτή η τετράγωνη εικόνα έχει περικοπεί για κάρτες κατηγορίας. μην επαναχρησιμοποιήσετε το ευρύ banner ήρωα.",
   "Use site-wide effects instead": "Χρησιμοποιήστε εφέ σε ολόκληρο τον ιστότοπο",
   "Use the exact canvas": "Χρησιμοποιήστε τον ακριβή καμβά",
   "Use the navigation to get back.": "Χρησιμοποιήστε την πλοήγηση για να επιστρέψετε.",
@@ -1683,6 +1727,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Χρήση του χρώματος της επωνυμίας του ιστότοπου",
   Uyghur: "Ουιγούρη",
   Uzbek: "Ουζμπεκικά",
+  "Value of 1 INR": "Τιμή 1 INR",
+  "Value per INR": "Αξία ανά INR",
   "Value, ₹": "Αξία, ₹",
   Variant: "Παραλλαγή",
   "Variant (SKU)": "Παραλλαγή (SKU)",

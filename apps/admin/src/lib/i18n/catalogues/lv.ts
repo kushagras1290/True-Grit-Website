@@ -30,6 +30,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/veikals",
   "← All farms": "← Visas saimniecības",
   "+ stars": "+ zvaigznes",
+  "₹1,000 preview": "1000 Indijas rūpiju priekšskatījums",
+  "1 INR →": "1 INR →",
   "1 star": "1 zvaigzne",
   "15% off your first order": "15% atlaide jūsu pirmajam pasūtījumam",
   "2 cups": "2 tases",
@@ -63,6 +65,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Superadministrators var izveidot grupu vai tiešu ziņojumu, izmantojot augšējo pogu +.",
   "A tinted band — check muted text is still readable here.":
     "Tonēta josla — šeit joprojām ir lasāms čeka izslēgtais teksts.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "apmeklētāja valsts atlasa valūtu, šajā tabulā ir norādīta tās displeja vērtība, un sākotnējā INR cena paliek nemainīga. Atspējotajām valūtām atgriežas INR drošas noklusējuma vērtības.",
   Accent: "Akcents",
   "Accept orders and payments": "Pieņemt pasūtījumus un maksājumus",
   "Accept orders and payments for this product":
@@ -89,6 +93,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Pievienot kategoriju",
   "Add code": "Pievienot kodu",
   "Add country": "Pievienot valsti",
+  "Add currency": "Pievienojiet valūtu",
   "Add entry": "Pievienot ierakstu",
   "Add farm owner": "Reklāma fermas īpašnieks",
   "Add ingredient": "Pievienot sastāvdaļu",
@@ -99,6 +104,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Lai sāktu, pievienojiet vienu tālāk.",
   "Add one so the bot has something to reference for this scope.":
     "Pievienojiet to, lai robotam būtu uz ko atsaukties šajā jomā.",
+  "Add one using the field above.": "Pievienojiet valūtu, izmantojot iepriekš esošo lauku.",
   "Add page": "Pievienot lapu",
   "Add participants": "Pievienot dalībniekus",
   "Add point": "Pievienot punktu",
@@ -117,6 +123,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Pievienot zonu",
   Added: "Pievienots",
   "Adding...": "Notiek pievienošana...",
+  "Adding…": "Notiek pievienošana...",
   Address: "Adrese",
   "Adjust points": "Pielāgojiet punktus",
   "Adjust the search or create a category.": "Pielāgojiet meklēšanu vai izveidojiet kategoriju.",
@@ -214,6 +221,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "azerbaidžāņu",
   "B2B / bulk ordering": "B2B / lielapjoma pasūtīšana",
   Back: "Atpakaļ",
+  "Back to conversations": "Atpakaļ uz sarunām",
   "Back to sign in": "Atpakaļ, lai pierakstītos",
   Balance: "Atlikums",
   "Banner alt text": "Reklāmkaroga alternatīvais teksts",
@@ -279,6 +287,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Kategoriju redaktora sadaļas",
   "Category not found": "Kategorija nav atrasta",
   "Category row": "Kategorijas rinda",
+  "Category thumbnail alt text": "Kategorijas sīktēla alternatīvais teksts",
+  "Category thumbnail URL": "Kategorijas sīktēla URL",
   "Category to add to the homepage": "Kategorija, ko pievienot sākumlapai",
   "Cautions and low stock.": "Brīdinājumi un mazs krājums.",
   "Centred safe area": "Centrēta drošā zona",
@@ -349,6 +359,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Saziņas e-pasta adrese",
   Content: "Saturs",
   "Continue with Facebook": "Turpināt ar Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Kontrolējiet aptuvenās cenas vietējā valūtā, iestatot vienas Indijas rūpijas vērtību. Catalogue, checkout and order records stay safely in INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Kontrolējiet, ko katra loma var skatīt, izveidot, rediģēt, publicēt vai pārvaldīt.",
   "Control whether each bot is available, and edit what it knows.":
@@ -448,6 +460,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Dzēst recepti",
   "Delete role": "Dzēst lomu",
   "Delete selected (": "Dzēst atlasīto (",
+  "Delete this entry": "Dzēst šo ierakstu",
   "Delete this price adjustment?": "Vai dzēst šo cenas korekciju?",
   "Delete user": "Dzēst lietotāju",
   "Deleting...": "Notiek dzēšana...",
@@ -469,6 +482,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Diētiskie un sertifikācijas filtri",
   "Dietary tags": "Diētiskās atzīmes",
   "Dietary tags (comma separated)": "Uztura atzīmes (atdalītas ar komatu)",
+  "Dietary Tags & Certifications": "Uztura atzīmes un sertifikāti",
   "Direct message": "Tiešo ziņojumu",
   Disable: "Atspējot",
   "Disable selected (": "Atspējot atlasītos (",
@@ -491,11 +505,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "piem. Konti",
   "e.g. DIWALI500": "piem., DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "piem. Ražas novākšana 2026. gada 3. marta nedēļā",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Piem., Indijas organiskā, godīgā tirdzniecība. Jebkuram produktam piešķirto sertifikātu nevar izdzēst, kamēr tas nav noņemts no tā.",
   "e.g. Ops Room": "piem., Operāciju telpa",
   "e.g. Rain-fed, no synthetic pesticides": "piem. Lietus barots, bez sintētiskiem pesticīdiem",
   "e.g. Refrigerate and use within 5 days": "piem. Atdzesējiet un izlietojiet 5 dienu laikā.",
   "e.g. TO-HONEY-500": "piem., TO-HONEY-500",
   "e.g. UTR 123456789012": "piem., UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Piem., Vegāns, bez glutēna. Dzēšot vienu, tas tiek noņemts no visiem produktiem, kuriem tas ir pārbaudīts.",
   Edit: "Rediģēt",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Rediģēt CMS lapas metadatus, indeksēšanu un neapstrādātus lapu blokus. Šeit ir norādīts arī sākumlapas ieraksts, taču sākumlapas iestatījumi ir drošāks veids, kā to mainīt — šis redaktors izmanto neapstrādātu JSON.",
@@ -600,6 +618,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     "Piespiedu kārtā ieslēdziet vai izslēdziet sadaļu apmeklētājiem vienā valstī, nemainot to, ko redz visi citi. Atstājiet sadaļu “Mantot”, un tā vienkārši atrodas aiz izvēles rūtiņas iepriekš sadaļu sarakstā.",
   "Forgot password?": "Vai aizmirsāt paroli?",
+  "Formatting locale": "Formatēšanas lokalizācija",
   "Free delivery above (₹)": "Bezmaksas piegāde iepriekš (₹)",
   "French (Français)": "Franču (Français)",
   Frequency: "Biežums",
@@ -683,6 +702,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ja šim e-pastam ir konts, tiks izveidota atiestatīšanas saite.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Ja šī akcija nekad nav izmantota, tā tiek uzreiz izdzēsta; pretējā gadījumā tas tiek arhivēts, tāpēc tā vēsture tiek saglabāta.",
+  Image: "Attēls",
   "Image alt text": "Attēla alternatīvais teksts",
   "Image alt text (optional)": "Attēla alternatīvais teksts (neobligāts)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -760,6 +780,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Atstājiet tukšu krāsu, lai saglabātu to, ko piegādā True Grit — notīrot lauku, varat atsaukt darbību. Lapas vai valsts krāsas sākas ar vietnes krāsām un ignorē tikai to, ko mainīsit, tāpēc katra ir īss saraksts, nevis otra palete, kas jāuztur. Ja abi attiecas uz vienu un to pašu apmeklētāju, uzvar lapa — redakcionālās lapas noformējums nedrīkst tikt atsaukts ar ģeogrāfisko eksperimentu.",
   "Leave blank to use the default.": "Atstājiet tukšu, lai izmantotu noklusējuma iestatījumu.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Atstājiet saiti tukšu, lai iegūtu vienkāršu, nenoklikšķināmu attēlu.",
   "Less refunds": "Mazāk atmaksas",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Ļauj klientiem norēķināties ar dāvanu kartes kodu, kas sedz visu pasūtījuma kopējo summu vai daļu no tās. Izsniedziet kartes no Dāvanu karšu lapas. Izslēgts pēc noklusējuma — esošās kartes un to atlikumi tiek saglabāti, tikai nav izpērkami, kamēr šī ir izslēgta.",
@@ -770,6 +792,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Level: "Līmenis",
   "Line total": "Rindu kopskaits",
   Lines: "Rindas",
+  "Link (optional)": "Saite (neobligāti)",
   "Link customer": "Saistīt klientu",
   "Link product": "Saistīt produktu",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -789,6 +812,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Tiešraides priekšskatījums",
   "Live, and to scale with the real storefront's own styles.":
     "Tiešraide un mērogošana atbilstoši reālajam veikala stilam.",
+  Loading: "Notiek ielāde",
   "Loading active promotions...": "Notiek aktīvo reklāmu ielāde...",
   "Loading analytics...": "Notiek analīzes datu ielāde...",
   "Loading announcements...": "Notiek paziņojumu ielāde...",
@@ -802,6 +826,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Notiek sarunu ielāde...",
   "Loading country overrides...": "Notiek valsts ignorēšanas ielāde...",
   "Loading crawler files...": "Notiek rāpuļprogrammas failu ielāde...",
+  "Loading currency values…": "Notiek valūtas vērtību ielāde...",
   "Loading delivery charges...": "Notiek piegādes izmaksu ielāde...",
   "Loading discussion…": "Notiek diskusijas ielāde...",
   "Loading highlights...": "Notiek svarīgāko elementu ielāde...",
@@ -824,6 +849,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Notiek veikala fasādes slēdžu ielāde...",
   "Loading submission…": "Notiek iesnieguma ielāde...",
   "Loading...": "Notiek ielāde...",
+  "Loading…": "Notiek ielāde...",
   "Local pickup points": "Vietējie saņemšanas punkti",
   "Locale to translate": "Tulkošanas valoda",
   "Locked out? Use": "Vai esat bloķēts? Izmantojiet",
@@ -877,6 +903,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Moderācijas iemesls",
   Mongolian: "mongoļu",
   "More from True Grit": "Vairāk no True Grit",
+  "Motto banner": "Devīzes reklāmkarogs",
   "Move down in the showcase": "Pārvietot vitrīnā uz leju",
   "Move earlier": "Pārvietot agrāk",
   "Move later": "Pārvietot vēlāk",
@@ -1004,6 +1031,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Piezīme (nepieciešama, lai pieprasītu izmaiņas vai noraidītu)",
   "Note (required)": "Piezīme (obligāta)",
   Notes: "Piezīmes",
+  "Nothing here yet": "Šeit vēl nekas nav.",
   "Nothing outstanding to pay": "Nekas nav jāmaksā",
   "Nothing pending.": "Nekas neapstiprināts.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1057,6 +1085,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Organiskie Alphonso Mango",
   "Organic mangoes held in a sunlit orchard":
     "Boloģiskie mango, kas tiek turēti saules apspīdētā augļu dārzā",
+  "Organic wheat flour in a wooden bowl": "Bioloģiskie kviešu milti koka bļodā",
   Outstanding: "Izcili",
   Overview: "Pārskats",
   "Owner Reports": "īpašnieku pārskati",
@@ -1106,8 +1135,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Izvēlieties vismaz vienu valsti vai izlaidiet visur.",
   "Pick at least one country, or release globally.":
     "Izvēlieties vismaz vienu valsti vai izlaidiet globāli.",
-  "Pick exactly two people for a direct message.": "Tiešajam ziņojumam",
   "Pick one from the list to start reading.": "Izvēlieties vienu sarakstā, lai sāktu lasīt.",
+  "Pick the other person for this direct message.":
+    "Izvēlieties otru personu šim tiešajam ziņojumam.",
   "PIN code": "PIN kods",
   "PIN patterns": "PIN raksti",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1251,6 +1281,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires pages.view permission and a connected API.": "Nepieciešama atļauja.",
   "Requires products.publish": "Nepieciešams products.publish",
   "Requires recipes.publish": "Nepieciešams receptes.publish",
+  "Requires settings access.": "Nepieciešama piekļuve iestatījumiem.",
   "Requires the analytics.view permission.": "Nepieciešama analytics.view atļauja.",
   "Requires the inventory.adjust permission.": "Nepieciešama atļauja inventory.adjust.",
   "Requires the reports.query permission.": "Nepieciešama reports.query atļauja.",
@@ -1303,6 +1334,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Skrien...",
   "Russian (Русский)": "Krievu (Русский)",
   "Safe area": "Drošā zona",
+  "Safe geo-lock:": "Droša ģeogrāfiskā bloķēšana:",
   "Sale & Discounts": "Izpārdošana un atlaides",
   "Sale price": "Pārdošanas cena",
   "Sale Price (₹)": "Pārdošanas cena (₹)",
@@ -1434,6 +1466,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Serbu",
   Servings: "Porcijas",
   "Set a new password": "Jaunas paroles iestatīšana",
+  "Set as default": "Iestatīt kā noklusējumu",
   "Shop · Farms · Journal": "Iepirkties · Lauku saimniecības · Žurnāls",
   "Shop fresh greens": "Iepērciet svaigus zaļumus",
   "Shop root vegetables": "Iegādājieties sakņu dārzeņus",
@@ -1533,6 +1566,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "svahili (kisvahili)",
   "Swedish (Svenska)": "zviedru (Svenska)",
   Table: "Tabula",
+  "Tags & Certifications": "Tagi un sertifikāti",
   "Tags:": "Tagi:",
   Tajik: "tadžiku valoda",
   "Taking payments": "Maksājumu pieņemšana",
@@ -1547,6 +1581,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Reklāmkarogs, kategorijas rinda, produktu rinda un SEO lauki tiek saglabāti kopā. Sadaļu izvēles rūtiņas, secība un pielāgotās sadaļas kopijas tiek saglabātas atsevišķi, tiklīdz tās tiek mainītas.",
   "The chat widget customers and visitors see on the storefront.":
     "Tērzēšanas logrīks, ko klienti un apmeklētāji redz veikala fasādē.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Šī izvēles rūtiņu saraksti tiek parādīti katra produkta cilnē Vispārīgi. Izmaiņas tiek piemērotas visur.",
   "The classic credential pair, including the password-reset flow.":
     "Klasiskais akreditācijas datu pāris, tostarp paroles atiestatīšanas plūsma.",
   "the farm owner": "saimniecības īpašnieks",
@@ -1599,6 +1635,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Šī sadaļa ir rediģēta atsevišķā panelī lapas lejasdaļā.",
   "Threads started from the storefront appear here.":
     "Šeit tiek parādīti pavedieni, kas aizsākti no veikala mājaslapas.",
+  "Thumbnail image URL": "Sīktēla URL",
   Time: "Laiks",
   "Tinted band": "Tonēta josla",
   Title: "Nosaukums",
@@ -1650,9 +1687,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Augšupielādēt attēlu",
   "Uploading image...": "Notiek attēla augšupielāde...",
   "Uploading image…": "Notiek attēla augšupielāde...",
+  "Uploading thumbnail...": "Notiek sīktēla augšupielāde...",
   "Uploading...": "Notiek augšupielāde...",
   "Uploading…": "Notiek augšupielāde...",
   "Urdu (اردو)": "urdu (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Izmantojiet atsevišķu 1200 × 1200 attēlu. Šis kvadrātveida attēls ir apgriezts kategoriju kartēm; neizmantojiet plašo varoņa reklāmkarogu.",
   "Use site-wide effects instead": "Tā vietā izmantojiet visas vietnes efektus",
   "Use the exact canvas": "Izmantojiet precīzu audeklu",
   "Use the navigation to get back.": "Izmantojiet navigāciju, lai atgrieztos.",
@@ -1665,6 +1705,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Vietnes zīmola krāsas izmantošana",
   Uyghur: "uiguru",
   Uzbek: "uzbeku",
+  "Value of 1 INR": "1 INR vērtība",
+  "Value per INR": "INR vērtība",
   "Value, ₹": "Vērtība, ₹",
   Variant: "variants",
   "Variant (SKU)": "variants (SKU)",

@@ -28,6 +28,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/recipes": "/receta",
   "← All farms": "← Të gjitha fermat",
   "+ stars": "+ yje",
+  "₹1,000 preview": "1000 ₹ shikim paraprak",
   "1 star": "1 yll",
   "15% off your first order": "15% zbritje në porosinë tuaj të parë",
   "2 cups": "2 gota",
@@ -63,6 +64,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Një super administrator mund të nisë një grup ose mesazh direkt nga butoni + më sipër.",
   "A tinted band — check muted text is still readable here.":
     "Një brez i lyer — kontrolloni se teksti i heshtur është ende i lexueshëm këtu.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "shteti i një vizitori zgjedh një monedhë, kjo tabelë jep vlerën e saj të shfaqur dhe çmimi origjinal INR mbetet i pandryshuar. Monedhat e çaktivizuara kthehen në parazgjedhje të sigurta për INR.",
   Accent: "Theks",
   "Accept orders and payments": "Prano porosi dhe pagesa",
   "Accept orders and payments for this product": "Prano porosi dhe pagesa për këtë produkt",
@@ -88,6 +91,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": 'id="t0005">Shto pronar ferme',
   "Add code": "Shto kod",
   "Add country": "Shto shtet",
+  "Add currency": "Shto monedhë",
   "Add entry": "Shto hyrje",
   "Add farm owner": "Shto pronarin e fermës",
   "Add ingredient": "Shto përbërës",
@@ -98,6 +102,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Shto një më poshtë për të filluar.",
   "Add one so the bot has something to reference for this scope.":
     "Shto një në mënyrë që roboti të ketë diçka për të referuar për këtë fushë.",
+  "Add one using the field above.": "Shto një duke përdorur fushën e mësipërme.",
   "Add page": "Shto faqen",
   "Add participants": "Shto pjesëmarrës",
   "Add point": "Shto pikë",
@@ -116,6 +121,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Shto zonën",
   Added: "U shtua",
   "Adding...": "Po shtohet...",
+  "Adding…": "Po shtohet…",
   Address: "Adresa",
   "Adjust points": "Rregullo pikat",
   "Adjust the search or create a category.": "Rregulloni kërkimin ose krijoni një kategori.",
@@ -213,6 +219,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Azerbajxhan",
   "B2B / bulk ordering": "B2B / porositje me shumicë",
   Back: "Prapa",
+  "Back to conversations": "Kthehu te bisedat",
   "Back to sign in": "Kthehu për t'u identifikuar",
   Balance: "Bilanci",
   "Banner alt text": "Teksti alternativ i bannerit",
@@ -275,6 +282,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Seksionet e redaktuesit të kategorisë",
   "Category not found": "Kategoria nuk u gjet",
   "Category row": "Rreshti i kategorisë",
+  "Category thumbnail alt text": "Teksti alt i fotografisë së kategorisë",
+  "Category thumbnail URL": "URL-ja e fotografisë së kategorisë",
   "Category to add to the homepage": "Kategoria për t'u shtuar në faqen kryesore",
   "Cautions and low stock.": "Kujdes dhe stoqe të ulëta.",
   "Centred safe area": "Zonë e sigurt në qendër",
@@ -346,6 +355,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Email-i i kontaktit",
   Content: "Përmbajtja",
   "Continue with Facebook": "Vazhdo me Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Kontrollo çmimet e përafërta të monedhës vendase duke vendosur se sa vlen një rupi indiane. Regjistrimet e katalogut, blerjeve dhe porosive qëndrojnë të sigurta në INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Kontrollo se çfarë mund të shikojë, krijojë, modifikojë, publikojë ose menaxhojë secili rol.",
   "Control whether each bot is available, and edit what it knows.":
@@ -390,6 +401,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Madhësia e përzgjedhur e listës",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Grupe të përzgjedhura të varianteve specifike shiten së bashku me një çmim të sheshtë. Checkout e zbaton kursimin automatikisht sapo një shportë të mbajë çdo artikull në një paketë.",
+  Currency: "Maluta",
+  "Currency code": "Kodi i monedhës",
+  "Currency Converter": "Konvertuesi i monedhës",
+  "Currency values unavailable": "Vlerat e monedhës nuk janë të disponueshme",
   "Current password": "Fjalëkalimi aktual",
   "Currently its own effects.": "Aktualisht efektet e veta.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -427,6 +442,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Refuzo",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'Dekorimi pas pjesës së parë të ruajtjes dhe ruajtjes së faqes tregues. Të dyja janë joaktive si parazgjedhje, të dyja janë anashkaluar tërësisht për vizitorët që kanë kërkuar nga pajisja e tyre lëvizje të reduktuar dhe asnjëra nuk shfaqet kurrë në dritaren e pagesës – një reshje bore mbi një formular karte është një shpërqendrim pikërisht në momentin e gabuar. Efektet e një vendi zëvendësojnë ato në të gjithë sitin për vizitorët e tij në vend që të përzihen me ta — "disa borë" nuk është një përzierje domethënëse e borës dhe pa efekt.',
+  Default: "E parazgjedhur",
   "Default commission": "Komisioni i parazgjedhur",
   "Default fee": "Tarifa e parazgjedhur",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -446,6 +462,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Fshi recetën",
   "Delete role": "Fshi rolin",
   "Delete selected (": "Fshi i zgjedhur (",
+  "Delete this entry": "Fshi këtë hyrje",
   "Delete this price adjustment?": "Të fshihet ky rregullim çmimi?",
   "Delete user": "Fshi përdoruesin",
   "Deleting...": "Po fshihet...",
@@ -467,6 +484,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Fitra dietike dhe certifikimi",
   "Dietary tags": "Etiketat dietike",
   "Dietary tags (comma separated)": "Etiketat dietike (të ndara me presje)",
+  "Dietary Tags & Certifications": "Etiketat dhe certifikatat dietike",
   "Direct message": "Mesazhi direkt",
   Disable: "Çaktivizo",
   "Disable selected (": "Çaktivizo të zgjedhurën (",
@@ -488,11 +506,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "p.sh. Llogaritë",
   "e.g. DIWALI500": "p.sh. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "p.sh. E korrur javën e 3 marsit 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "P.sh. India Organike, Tregti e Drejtë. Një certifikim i caktuar për çdo produkt nuk mund të fshihet derisa të hiqet prej tij.",
   "e.g. Ops Room": "p.sh. Dhoma e operacioneve",
   "e.g. Rain-fed, no synthetic pesticides": "p.sh. Të ushqyer me shi, pa pesticide sintetike",
   "e.g. Refrigerate and use within 5 days": "p.sh. Ftojeni dhe përdorni brenda 5 ditëve",
   "e.g. TO-HONEY-500": "p.sh. TO-HONEY-500",
   "e.g. UTR 123456789012": "p.sh. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "P.sh. Vegan, pa gluten. Fshirja e njërit e heq atë nga çdo produkt që e ka të kontrolluar.",
   Edit: "Modifiko",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     'Modifiko të dhënat meta të faqeve CMS, indeksimin dhe blloqet e faqeve të papërpunuara. Regjistrimi i faqes kryesore është renditur gjithashtu këtu, por "Cilësimet e faqes kryesore" janë mënyra më e sigurt për ta ndryshuar atë — ky redaktues përdor JSON të papërpunuar.',
@@ -595,6 +617,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Aktivizoni ose çaktivizoni me forcë një seksion për vizitorët në një vend, pa ndryshuar atë që shohin të gjithë të tjerët. Lini një seksion në "Trashëgimi" dhe ai thjesht ndjek kutinë e shënimeve në listën e seksioneve më lart.',
   "Forgot password?": "Harruat fjalëkalimin?",
+  "Formatting locale": "Formatimi i vendndodhjes",
   "Free delivery above (₹)": "Dorëzimi falas sipër (₹)",
   "French (Français)": "Frëngjisht (Français)",
   Frequency: "Frekuenca",
@@ -678,6 +701,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Nëse ai email ka një llogari, një lidhje e rivendosur është në rrugë e sipër.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Nëse ky promovim nuk është përdorur kurrë, ai fshihet plotësisht; përndryshe ai arkivohet kështu që historia e tij ruhet.",
+  Image: "Imazhi",
   "Image alt text": "Teksti alt i imazhit",
   "Image alt text (optional)": "Teksti alternativ i imazhit (opsionale)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -740,6 +764,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Label: "Etiketa",
   "Land under cultivation": "Toka nën kultivim",
   Language: "Gjuha",
+  "Language Studio": "Studio gjuhësore",
   "Last activity": "Aktiviteti i fundit",
   "Last reviewer note": "Shënimi i fundit i komentuesit",
   "Last sign-in": "Hyrja e fundit",
@@ -751,6 +776,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Lëreni një ngjyrë bosh për të mbajtur atë me True Grit që dërgohet — pastrimi i një fushe është mënyra se si e zhbëni. Ngjyrat e një faqeje ose vendi fillojnë nga ngjyrat e faqes dhe anashkalojnë vetëm ato që ju ndryshoni, kështu që secila është një listë e shkurtër, jo një paletë e dytë për t'u ruajtur. Kur të dyja zbatohen për të njëjtin vizitor, faqja fiton — dizajni i faqes editoriale nuk duhet të zhbëhet nga një eksperiment gjeografik.",
   "Leave blank to use the default.": "Lëreni bosh për të përdorur parazgjedhjen.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Lëreni lidhjen bosh për një imazh të thjeshtë dhe të paklikueshëm.",
   "Less refunds": "Më pak rimbursime",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "I lejon klientët të aplikojnë një kod karte dhuratë në arkë, duke mbuluar një pjesë ose të gjithë totalin e porosisë së tyre. Lëshoni karta nga faqja e kartave të dhuratave. Si parazgjedhje të çaktivizuara — kartat ekzistuese dhe balancat e tyre mbahen, thjesht nuk mund të blihen, ndërkohë që kjo është e fikur.",
@@ -762,6 +789,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Gjithsej i linjës",
   Lines: "Linjat",
   Link: "Lidhja",
+  "Link (optional)": "Lidhja (opsionale)",
   "Link customer": "Lidh klientin",
   "Link product": "Lidh produktin",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -781,6 +809,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Pamja paraprake e drejtpërdrejtë",
   "Live, and to scale with the real storefront's own styles.":
     "Live dhe për t'u shkallëzuar me stilet e veta të vitrinës së vërtetë.",
+  Loading: "Po ngarkohet",
   "Loading active promotions...": "Po ngarkon promovimet aktive...",
   "Loading analytics...": "Po ngarkon analitikën...",
   "Loading announcements...": "Njoftimet po ngarkohen...",
@@ -794,6 +823,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Po ngarkohen bisedat…",
   "Loading country overrides...": "Ngarkimi i shtetit po ngarkon...",
   "Loading crawler files...": "Po ngarkon skedarët e zvarritësit...",
+  "Loading currency values…": "Vlerat e monedhave po ngarkohen...",
   "Loading delivery charges...": "Ngarkon tarifat e dorëzimit...",
   "Loading discussion…": "Po ngarkon diskutimin…",
   "Loading highlights...": "Po ngarkon pikat kryesore...",
@@ -816,6 +846,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Po ngarkohen çelsat e vitrinës...",
   "Loading submission…": "Dorëzimi po ngarkohet…",
   "Loading...": "Po ngarkohet...",
+  "Loading…": "Po ngarkohet…",
   "Local pickup points": "Pika lokale të marrjes",
   "Locale to translate": "Lokale për të përkthyer",
   "Locked out? Use": "E kyçur? Përdor",
@@ -869,6 +900,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Arsyeja e moderimit",
   Mongolian: "mongolisht",
   "More from True Grit": "Më shumë nga True Grit",
+  "Motto banner": "Flamuri i motos",
   "Move down in the showcase": "Lëviz poshtë në vitrinë",
   "Move earlier": "Lëviz më herët",
   "Move later": "Lëviz më vonë",
@@ -996,6 +1028,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Shënim (kërkohet për të kërkuar ndryshime ose refuzuar)",
   "Note (required)": "Shënim (kërkohet)",
   Notes: "Shënime",
+  "Nothing here yet": "Asgjë këtu ende",
   "Nothing outstanding to pay": "Asgjë e papaguar për t'u paguar",
   "Nothing pending.": "urgjente",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1050,6 +1083,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Mango Organike Alphonso",
   "Organic mangoes held in a sunlit orchard":
     "Mango organike të mbajtura në një pemishte të ndriçuar nga dielli",
+  "Organic wheat flour in a wooden bowl": "Miell gruri organik në një tas druri",
   Outstanding: "të jashtëzakonshme",
   Overview: "Përmbledhje",
   "Owner Reports": "Raportet e zotëruesve",
@@ -1097,9 +1131,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Pick at least one country, or release everywhere.": "Zgjidh të paktën një shtet ose lësho kudo.",
   "Pick at least one country, or release globally.":
     "Zgjidh të paktën një shtet ose lësho globalisht.",
-  "Pick exactly two people for a direct message.":
-    "Zgjidhni saktësisht dy persona për një mesazh të drejtpërdrejtë.",
   "Pick one from the list to start reading.": "Zgjidh një nga lista për të filluar të lexosh.",
+  "Pick the other person for this direct message.":
+    "Zgjidh personin tjetër për këtë mesazh të drejtpërdrejtë.",
   "PIN code": "Kodi PIN",
   "PIN patterns": "Modelet e PIN-it",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1243,6 +1277,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kërkon leje pages.view dhe një API të lidhur.",
   "Requires products.publish": "Kërkon products.publish",
   "Requires recipes.publish": "Kërkon recipes.publish",
+  "Requires settings access.": "Kërkon qasje në cilësimet.",
   "Requires the analytics.view permission.": "Kërkon lejen e analytics.view.",
   "Requires the inventory.adjust permission.": "Kërkon lejen e inventory.adjust.",
   "Requires the reports.query permission.": "Kërkon lejen e reportazheve.",
@@ -1294,6 +1329,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Po funksionon...",
   "Russian (Русский)": "Rusisht (Русский)",
   "Safe area": "Zonë e sigurt",
+  "Safe geo-lock:": "Gjeo-kyçje e sigurt:",
   "Sale & Discounts": "Shitje dhe zbritje",
   "Sale price": "Sanskrit4 (संस्कृतम्)",
   "Sale Price (₹)": "Çmimi i shitjes (₹)",
@@ -1426,6 +1462,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Serbisht",
   Servings: "Shërbimet",
   "Set a new password": "Vendos një fjalëkalim të ri",
+  "Set as default": "Cakto si parazgjedhje",
   "Shop · Farms · Journal": "Blini · Fermat · Ditar",
   "Shop fresh greens": "Blini zarzavate të freskëta",
   "Shop root vegetables": "Blini perime me rrënjë",
@@ -1520,6 +1557,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Supporting text": "Teksti mbështetës",
   "Swedish (Svenska)": "Suedisht (Svenska)",
   Table: "Tabela",
+  "Tags & Certifications": "Etiketat dhe certifikatat",
   "Tags:": "Etiketat:",
   Tajik: "Taxhikisht",
   "Taking payments": "Marrja e pagesave",
@@ -1536,6 +1574,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Flamuri, rreshti i kategorisë, rreshti i produktit dhe fushat e SEO ruhen së bashku. Kutitë e shënimeve të seksioneve, porositë dhe kopjimi i personalizuar i seksionit ruhen vetë, ndërsa i ndryshoni ato.",
   "The chat widget customers and visitors see on the storefront.":
     "Vendi i chat-it që klientët dhe vizitorët e shohin në vitrinë.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    'Listat e kutive të zgjedhjes shfaqen në skedën "Përgjithshme" të çdo produkti. Ndryshimet zbatohen kudo menjëherë.',
   "The classic credential pair, including the password-reset flow.":
     "Çifti klasik i kredencialeve, duke përfshirë rrjedhën e rivendosjes së fjalëkalimit.",
   "the farm owner": "pronari i fermës",
@@ -1587,6 +1627,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "This section is edited in its own panel further down the page.":
     "Ky seksion është redaktuar në panelin e tij më poshtë faqes.",
   "Threads started from the storefront appear here.": "Temat e nisura nga vitrina shfaqen këtu.",
+  "Thumbnail image URL": "URL-ja e figurës së miniaturës",
   Time: "Koha",
   "Tinted band": "Band i lyer",
   Title: "Titulli",
@@ -1635,8 +1676,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Ngarko imazh",
   "Uploading image...": "Imazhi po ngarkohet...",
   "Uploading image…": "Imazhi po ngarkohet...",
+  "Uploading thumbnail...": "Ngarkimi i miniaturës...",
   "Uploading...": "Po ngarkohet...",
   "Uploading…": "Po ngarkohet…",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Përdor një imazh të veçantë 00 20 × 1. Ky imazh katror është prerë për kartat e kategorisë; mos e ripërdorni banderolin e gjerë të heroit.",
   "Use site-wide effects instead": "Përdor efekte në të gjithë faqen në vend",
   "Use the exact canvas": "Përdor kanavacën e saktë",
   "Use the navigation to get back.": "Përdor navigimin për t'u rikthyer.",
@@ -1648,6 +1692,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Users unavailable": "Përdoruesit të padisponueshëm",
   "Using the site brand colour": "Përdorimi i ngjyrës së markës së sajtit",
   Uyghur: "Ujgure",
+  "Value of 1 INR": "Vlera prej 1 INR",
+  "Value per INR": "Vlera për INR",
   "Value, ₹": "Vlera, ₹",
   "Variant (SKU)": 'Variant id="t0005">Emri i variantit',
   "Variant ID": "ID-ja e variantit",

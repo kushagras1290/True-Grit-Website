@@ -49,6 +49,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api, type AdminCategoryDetail } from "../lib/api";
 import { COUNTRIES } from "../lib/countries";
 import { formatDate } from "../lib/format";
+import { IMAGE_SPECIFICATIONS_BY_ID } from "../lib/image-specifications";
 import { PermissionGate } from "../lib/permissions";
 import { blockTitle, reorderBlocks, toggleBlock, type BuilderState } from "./builder";
 import { EntityTranslationsPanel } from "./entity-translations";
@@ -579,7 +580,8 @@ function CategorySettingsForm({
   const watchedThumbnailImageUrl = form.watch("thumbnailImageUrl");
   const watchedThumbnailImageAlt = form.watch("thumbnailImageAlt");
   const heroUploadMutation = useMutation({
-    mutationFn: (file: File) => api.uploadImage(file),
+    mutationFn: (file: File) =>
+      api.uploadImage(file, IMAGE_SPECIFICATIONS_BY_ID["category-banner"]),
     onSuccess: (result) => {
       const heroImageAlt = form.getValues("heroImageAlt") || category.name;
       const nextValues = { ...form.getValues(), heroImageUrl: result.url, heroImageAlt };
@@ -592,7 +594,8 @@ function CategorySettingsForm({
       toast.error(error instanceof ApiError ? error.message : "Could not upload image."),
   });
   const thumbnailUploadMutation = useMutation({
-    mutationFn: (file: File) => api.uploadImage(file),
+    mutationFn: (file: File) =>
+      api.uploadImage(file, IMAGE_SPECIFICATIONS_BY_ID["category-thumbnail"]),
     onSuccess: (result) => {
       const thumbnailImageAlt = form.getValues("thumbnailImageAlt") || category.name;
       const nextValues = {

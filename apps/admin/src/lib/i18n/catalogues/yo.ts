@@ -30,6 +30,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/itaja",
   "← All farms": "← Gbogbo oko",
   "+ stars": "+ irawo",
+  "₹1,000 preview": "₹1,000 awotẹlẹ",
   "1 star": "irawo 1",
   "15% off your first order": "15% pa aṣẹ akọkọ rẹ",
   "2 stars": "2 irawọ",
@@ -63,6 +64,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Abojuto Super le bẹrẹ ẹgbẹ kan tabi ifiranṣẹ taara lati bọtini + loke.",
   "A tinted band — check muted text is still readable here.":
     "Arin tinted — ṣayẹwo ọrọ ti o dakẹ jẹ ṣi ṣee ka nibi.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "Orilẹ-ede alejo yan owo kan, tabili yii n pese iye ifihan rẹ, ati pe idiyele INR atilẹba ko yipada. Awọn owo nina alaabo ṣubu pada si awọn aiyipada INR-ailewu.",
   Accent: "Asẹnti",
   "Accept orders and payments": "Gba awọn aṣẹ ati awọn sisanwo",
   "Accept orders and payments for this product": "Gba awọn aṣẹ ati awọn sisanwo fun ọja yii",
@@ -88,6 +91,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Fi ẹka",
   "Add code": "Fi koodu kun",
   "Add country": "Ṣafikun orilẹ-ede",
+  "Add currency": "Fi owo kun",
   "Add entry": "Ṣafikun titẹ sii",
   "Add farm owner": "Ṣafikun oniwun oko",
   "Add ingredient": "Fi eroja kun",
@@ -98,6 +102,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "oju-iwe",
   "Add one so the bot has something to reference for this scope.":
     "Fi ọkan kun ki bot naa ni nkan lati tọka si aaye yii.",
+  "Add one using the field above.": "Fi ọkan kun nipa lilo aaye loke.",
   "Add page": "Fi oju-iwe kun",
   "Add participants": "Fi awọn olukopa kun",
   "Add point": "Fi aaye kun",
@@ -116,6 +121,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Fi agbegbe kun",
   Added: "Ṣafikun",
   "Adding...": "Ṣafikun...",
+  "Adding…": "Ṣafikun…",
   Address: "Adirẹsi",
   "Adjust points": "Ṣatunṣe awọn aaye",
   "Adjust the search or create a category.": "Ṣatunse wiwa tabi ṣẹda ẹka kan.",
@@ -209,6 +215,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Azerbaijan",
   "B2B / bulk ordering": "B2B / pipaṣẹ olopobobo",
   Back: "Pada",
+  "Back to conversations": "Pada si awọn ibaraẹnisọrọ",
   "Back to sign in": "Pada lati wọle",
   Balance: "Iwọntunwọnsi",
   "Banner image": "Aworan asia",
@@ -264,6 +271,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Awọn apakan olootu ẹka",
   "Category not found": "A ko ri Ẹka",
   "Category row": "Ẹka ila",
+  "Category thumbnail alt text": "Ẹka eekanna atanpako alt ọrọ",
+  "Category thumbnail URL": "Ẹka URL thumbnail",
   "Category to add to the homepage": "Ẹka lati fikun si oju-iwe akọọkan",
   "Cautions and low stock.": "Awọn iṣọra ati ọja kekere.",
   "Centred safe area": "Agbegbe ailewu aarin",
@@ -331,6 +340,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Imeeli olubasọrọ",
   Content: "Akoonu",
   "Continue with Facebook": "Tẹsiwaju pẹlu Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Ṣakoso awọn idiyele agbegbe-isunmọ nipa tito iye iye rupee India kan ni iye. Katalogi, isanwo ati awọn igbasilẹ aṣẹ duro lailewu ni INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Ṣakoso ohun ti ipa kọọkan le wo, ṣẹda, ṣatunkọ, ṣe atẹjade tabi ṣakoso.",
   "Control whether each bot is available, and edit what it knows.":
@@ -372,6 +383,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Iwọn atokọ ti a yan",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Ti a ṣe akojọpọ iye owo ni pato. Ṣiṣayẹwo wa ni fifipamọ laifọwọyi ni kete ti agbọn ba di gbogbo ohun kan sinu idii kan.",
+  Currency: "Owo",
+  "Currency code": "Koodu owo",
+  "Currency Converter": "Iyipada owo",
+  "Currency values unavailable": "Awọn iye owo ko si",
   "Current password": "Ọrọigbaniwọle lọwọlọwọ",
   "Currently its own effects.": "Lọwọlọwọ awọn ipa tirẹ.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -407,6 +422,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Kọ",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'Ọṣọ ori iwaju ile itaja: fifo patikulu lẹhin oju-iwe. Awọn mejeeji wa ni pipa nipasẹ aiyipada, awọn mejeeji ti fo patapata fun awọn alejo ti o ti beere ẹrọ wọn fun idinku išipopada, ati pe ko han rara lori ferese isanwo - isubu yinyin lori fọọmu kaadi jẹ idamu ni deede akoko ti ko tọ. Awọn ipa ti orilẹ-ede kan rọpo awọn aaye jakejado aaye fun awọn olubẹwo rẹ ju ki o dapọ mọ wọn - "diẹ egbon" kii ṣe idapọ egbon ti o ni itumọ ati pe ko si ipa.',
+  Default: "Aiyipada",
   "Default commission": "Igbimọ aiyipada",
   "Default fee": "Ọya aiyipada",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -426,6 +442,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Pa ilana ilana rẹ",
   "Delete role": "Pa ipa",
   "Delete selected (": "Paarẹ ti a ti yan (",
+  "Delete this entry": "Pa titẹ sii yii",
   "Delete this price adjustment?": "Pa atunṣe owo yii rẹ bi?",
   "Delete user": "Pa olumulo rẹ",
   "Deleting...": "Npaarẹ...",
@@ -447,6 +464,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Ijẹunjẹ & awọn asẹ iwe-ẹri",
   "Dietary tags": "Awọn ami ijẹẹmu",
   "Dietary tags (comma separated)": "Awọn ami ijẹẹmu (ipin komama)",
+  "Dietary Tags & Certifications": "Awọn ami ijẹẹmu & Awọn iwe-ẹri",
   "Direct message": "Ifiranṣẹ taara",
   Disable: "Pa",
   "Disable selected (": "Pa a yan (",
@@ -467,12 +485,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. 500g Pack": "fun apẹẹrẹ. Apo 500g",
   "e.g. Accounts": "fun apẹẹrẹ. Awọn akọọlẹ",
   "e.g. Harvested the week of 3 March 2026": "fun apẹẹrẹ. Ikore ni ọsẹ ti 3 Oṣu Kẹta 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Fun apẹẹrẹ. India Organic, Fair Trade. Iwe-ẹri ti a yàn si ọja eyikeyi ko ṣe paarẹ titi yoo fi yọ kuro ninu rẹ.",
   "e.g. Ops Room": "fun apẹẹrẹ. Yara Ops",
   "e.g. Rain-fed, no synthetic pesticides":
     "fun apẹẹrẹ. Ti jẹ jijo, ko si awọn ipakokoropaeku sintetiki",
   "e.g. Refrigerate and use within 5 days": "fun apẹẹrẹ. Fi sinu firiji ki o lo laarin awọn ọjọ 5",
   "e.g. TO-HONEY-500": "fun apẹẹrẹ. TO-oyin-500",
   "e.g. UTR 123456789012": "fun apẹẹrẹ. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Fun apẹẹrẹ. Ajewebe, Giluteni Ọfẹ. Piparẹ ọkan yoo yọ kuro ni gbogbo ọja ti o ti ṣayẹwo.",
   Edit: "Ṣatunkọ",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Ṣatunkọ metadata oju-iwe CMS, titọka ati awọn bulọọki oju-iwe aise. Igbasilẹ oju-iwe akọkọ ti wa ni atokọ nibi paapaa, ṣugbọn Awọn Eto Oju-iwe akọkọ jẹ ọna ti o ni aabo julọ lati yi pada — olootu yii gba JSON aise.",
@@ -572,6 +594,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Fi ipa mu apakan kan tan tabi pa fun awọn alejo ni orilẹ-ede kan, laisi iyipada ohun ti gbogbo eniyan miiran rii. Fi apakan kan silẹ lori "Jẹ" ati pe o kan tẹle apoti tickbox ninu atokọ apakan loke.',
   "Forgot password?": "Ṣe gbagbe ọrọ igbaniwọle?",
+  "Formatting locale": "Ṣiṣe ọna kika agbegbe",
   "Free delivery above (₹)": "Ifijiṣẹ ọfẹ loke (₹)",
   "French (Français)": "Faranse (Français)",
   Frequency: "Igbohunsafẹfẹ",
@@ -647,6 +670,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ti imeeli yẹn ba ni akọọlẹ kan, ọna asopọ atunto wa ni ọna rẹ.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Ti igbega yii ko ba ti irapada ri, o ti parẹ patapata; bí bẹ́ẹ̀ kọ́, ó jẹ́ ìpamọ́ nítorí náà ìtàn rẹ̀ jẹ́ títọ́.",
+  Image: "Aworan",
   "Image alt text (optional)": "Aworan alt text (iyan)",
   "Image is sRGB and at or below the listed file-size target.":
     "Aworan jẹ sRGB ati ni tabi isalẹ ibi-afẹde iwọn-faili ti a ṣe akojọ.",
@@ -705,6 +729,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Label: "Aami",
   "Land under cultivation": "Ilẹ ti o wa labẹ ogbin",
   Language: "Ede",
+  "Language Studio": "Ile-iṣere ede",
   "Last activity": "Iṣẹ ṣiṣe kẹhin",
   "Last reviewer note": "Akiyesi oluyẹwo kẹhin",
   "Last sign-in": "Iwọle ti o kẹhin",
@@ -716,6 +741,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Fi awọ kan silẹ ni ofifo lati tọju ọkan True Grit ti o wa pẹlu — piparẹ aaye kan jẹ bi o ṣe ṣe atunṣe. Oju-iwe kan tabi awọn awọ orilẹ-ede bẹrẹ lati awọn awọ aaye ati ki o bori ohun ti o yipada nikan, nitorinaa ọkọọkan jẹ atokọ kukuru, kii ṣe paleti keji lati ṣetọju. Nigbati awọn mejeeji ba waye si alejo kanna, oju-iwe naa bori — apẹrẹ oju-iwe olootu ko yẹ ki o jẹ atunṣe nipasẹ idanwo geo kan.",
   "Leave blank to use the default.": "Fi òfo silẹ lati lo aiyipada.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Fi ọna asopọ naa silẹ ni ofifo fun aworan itele kan, ti ko ṣee tẹ.",
   "Less refunds": "Awọn agbapada to dinku",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Jẹ ki awọn onibara lo koodu kaadi ẹbun ni ibi isanwo, ti o bo apakan tabi gbogbo gbogbo aṣẹ wọn lapapọ. Ṣe awọn kaadi jade lati oju-iwe Awọn kaadi ẹbun. Paa nipasẹ aiyipada - awọn kaadi ti o wa ati awọn iwọntunwọnsi wọn wa ni ipamọ, kii ṣe irapada, lakoko ti eyi wa ni pipa.",
@@ -727,6 +754,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Lapapọ Laini",
   Lines: "Awọn ila",
   Link: "Line",
+  "Link (optional)": "Asopọ (aṣayan)",
   "Link customer": "Obara ọna asopọ",
   "Link product": "ọja ọna asopọ",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -745,6 +773,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Awotẹlẹ Live",
   "Live, and to scale with the real storefront's own styles.":
     "Laaye, ati lati ṣe iwọn pẹlu awọn ara ile itaja gidi gidi.",
+  Loading: "Ikojọpọ",
   "Loading active promotions...": "Ikojọpọ awọn igbega ti nṣiṣe lọwọ...",
   "Loading analytics...": "Awọn atupale ikojọpọ...",
   "Loading announcements...": "Awọn ikede ikojọpọ...",
@@ -758,6 +787,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Ṣakoso awọn ibaraẹnisọrọ…",
   "Loading country overrides...": "Ikojọpọ orilẹ-ede dojukọ...",
   "Loading crawler files...": "Ikojọpọ awọn faili crawler...",
+  "Loading currency values…": "Nkojọpọ awọn iye owo…",
   "Loading delivery charges...": "Ikojọpọ awọn idiyele ifijiṣẹ...",
   "Loading discussion…": "gbigbi fanfa…",
   "Loading highlights...": "Ikojọpọ awọn ifojusi...",
@@ -780,6 +810,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Ikojọpọ awọn iyipada iwaju itaja...",
   "Loading submission…": "Ifisilẹ silẹ…",
   "Loading...": "Ikojọpọ...",
+  "Loading…": "Nkojọpọ…",
   "Local pickup points": "Awọn aaye gbigba agbegbe",
   "Locale to translate": "Agbegbe lati tumọ",
   "Locked out? Use": "Titiipa jade? Lo",
@@ -825,6 +856,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderate thread": "Okun onidede",
   "Moderation reason": "Idi iwọntunwọnsi",
   "More from True Grit": "Diẹ sii lati True Grit",
+  "Motto banner": "Asia asia",
   "Move down in the showcase": "Yi lọ silẹ ninu ifihan",
   "Move earlier": "Yi lọ sẹyin",
   "Move later": "Yi lọ nigbamii",
@@ -948,6 +980,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Note (required to request changes or reject)": "Akiyesi (beere fun ayipada tabi kọ)",
   "Note (required)": "Akiyesi (beere)",
   Notes: "Awọn akọsilẹ",
+  "Nothing here yet": "Ko si nkankan nibi sibẹsibẹ",
   "Nothing outstanding to pay": "Ko si ohun to ṣe pataki lati san",
   "Nothing pending.": "Ko si nkankan ni isunmọtosi.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -999,6 +1032,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Orders will appear here once customers check out.":
     "Awọn aṣẹ yoo han nibi ni kete ti awọn onibara ba ṣayẹwo.",
   "Organic mangoes held in a sunlit orchard": "Awọn mango elegan ti o waye ninu ọgba-igi ti oorun",
+  "Organic wheat flour in a wooden bowl": "Iyẹfun alikama eleto ninu ọpọn onigi",
   Outstanding: "Iyatọ",
   Overview: "Akopọ",
   "Owner Reports": "Awọn ijabọ eni",
@@ -1046,8 +1080,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Mu o kere ju orilẹ-ede kan, tabi tu silẹ nibi gbogbo.",
   "Pick at least one country, or release globally.":
     "Mu o kere ju orilẹ-ede kan, tabi tu silẹ ni agbaye.",
-  "Pick exactly two people for a direct message.": "Mu eniyan meji ni pato fun ifiranṣẹ taara.",
   "Pick one from the list to start reading.": "Mu ọkan lati inu atokọ naa lati bẹrẹ kika.",
+  "Pick the other person for this direct message.": "Ẹ mu ẹnikeji fun ifiranṣẹ taara yii.",
   "PIN code": "Koodi PIN",
   "PIN patterns": "Awọn ilana PIN",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1190,6 +1224,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Nilo awọn oju-iwe.iyọnda wiwo ati API ti o sopọ mọ.",
   "Requires products.publish": "Nilo awọn ọja.jade",
   "Requires recipes.publish": "Nilo awọn ilana. ṣejade",
+  "Requires settings access.": "Nilo wiwọle awọn eto.",
   "Requires the analytics.view permission.": "Nilo igbanilaaye analytics.view.",
   "Requires the inventory.adjust permission.": "Nilo inventory. satunṣe igbanilaaye.",
   "Requires the reports.query permission.": "Nbeere igbanilaaye awọn ijabọ. ibeere.",
@@ -1240,6 +1275,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running...": "Ṣiṣe...",
   "Running…": "Nṣiṣẹ…",
   "Safe area": "Agbegbe ailewu",
+  "Safe geo-lock:": "Titiipa geo-ti aabo:",
   "Sale & Discounts": "Titaja & Awọn ẹdinwo",
   "Sale price": "Iye owo tita",
   "Sale Price (₹)": "Iyele Tita (₹)",
@@ -1370,6 +1406,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Yatọ awọn paragirafi pẹlu laini òfo. Awọn ọna asopọ lo [ọrọ] (/ ipa ọna); HTML jẹ kọ.",
   Servings: "Awọn iṣẹ",
   "Set a new password": "Ṣeto ọrọ igbaniwọle titun",
+  "Set as default": "Ṣeto bi aiyipada",
   "Shop · Farms · Journal": "Ijaja · Awọn oko · Iwe akọọlẹ",
   "Shop fresh greens": "Raja ewe tuntun",
   "Shop root vegetables": "Raja awọn ẹfọ gbongbo",
@@ -1458,6 +1495,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     'Super-><span id="t0010 nikan." Awọn aṣiṣe ohun elo ati awọn imukuro ti ko ni ọwọ, tuntun akọkọ.',
   "Supporting text": "Ọrọ atilẹyin",
   Table: "Tabili",
+  "Tags & Certifications": "Awọn afi & Awọn iwe-ẹri",
   "Taking payments": "Gbigba owo sisan",
   Target: "Àfojúsùn",
   "Temporary password": "Ọrọigbaniwọle igba diẹ",
@@ -1468,6 +1506,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Asia, ila ẹka, ila ọja ati awọn aaye SEO pamọ papọ. Awọn apoti ami apakan, pipaṣẹ ati ẹda ẹda apakan ti ara wọn, bi o ṣe yipada wọn.",
   "The chat widget customers and visitors see on the storefront.":
     "Awọn onibara ẹrọ ailorukọ iwiregbe ati awọn alejo rii ni iwaju ile itaja.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Awọn atokọ apoti ti o han lori gbogbo taabu Gbogbogbo ọja. Awọn ayipada waye nibikibi lẹsẹkẹsẹ.",
   "The classic credential pair, including the password-reset flow.":
     "Míwọ̀n ìjẹ́wọ́ ẹ̀rí, pẹ̀lú ìṣàn ìṣàtúntò ọ̀rọ̀ìpamọ́.",
   "the farm owner": "oniwun oko",
@@ -1518,6 +1558,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Abala yii jẹ atunṣe ni pánẹ́ẹ̀sì tirẹ siwaju si isalẹ oju-iwe naa.",
   "Threads started from the storefront appear here.":
     "Awọn ọna kika ti o bẹrẹ lati iwaju ile itaja han nibi.",
+  "Thumbnail image URL": "URL aworan eekanna atanpako",
   Time: "Aago",
   "Tinted band": "Agbo egbe tin",
   Title: "Akọle",
@@ -1567,8 +1608,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Ṣiṣe aworan",
   "Uploading image...": "Aworan ikojọpọ...",
   "Uploading image…": "Aworan ikojọpọ…",
+  "Uploading thumbnail...": "Ikojọpọ eekanna atanpako...",
   "Uploading...": "Ikojọpọ...",
   "Uploading…": "Ikojọpọ…",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Lo aworan 1200 × 1200 ọtọtọ. Yi square image ti wa ni cropped fun awọn kaadi ẹka; maṣe tun lo ọpagun akọni nla naa.",
   "Use site-wide effects instead": "Lo awọn ipa jakejado aaye dipo",
   "Use the exact canvas": "Lo kanfasi gangan",
   "Use the navigation to get back.": "Lo lilọ kiri lati gba pada.",
@@ -1579,6 +1623,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Users & Roles": "Awọn olumulo & Awọn ipa",
   "Users unavailable": "Ko si awọn olumulo",
   "Using the site brand colour": "Lilo awọ ami iyasọtọ aaye naa",
+  "Value of 1 INR": "Iye ti 1 INR",
+  "Value per INR": "Iye fun INR",
   "Value, ₹": "Iye, ₹",
   Variant: "Iyatọ",
   "Variant (SKU)": "Iyatọ (SKU)",

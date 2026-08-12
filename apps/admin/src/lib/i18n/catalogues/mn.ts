@@ -25,6 +25,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/recipes/my-recipe": "/жор/миний жор",
   "← All farms": "← Бүх фермүүд",
   "+ stars": "+ одтой",
+  "₹1,000 preview": "₹1,000 урьдчилж үзэх",
   "1 star": "1 од",
   "15% off your first order": "Анхны захиалгаа 15% хямдруул",
   "2 cups": "2 аяга",
@@ -59,6 +60,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Супер админ дээрх + товчлуураас групп эсвэл шууд мессеж үүсгэх боломжтой.",
   "A tinted band — check muted text is still readable here.":
     "Өнгөтэй хамтлаг — дуугүй текстийг эндээс унших боломжтой хэвээр байна.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "Зочлогчийн улс валют сонгох бөгөөд энэ хүснэгтэд түүний дэлгэцийн утгыг харуулдаг бөгөөд анхны INR үнэ өөрчлөгдөөгүй хэвээр байна. Идэвхгүй болсон мөнгөн тэмдэгтүүд INR-ийн аюулгүй өгөгдмөл рүү буцна.",
   "Accept orders and payments": "Захиалга, төлбөрийг хүлээн авах",
   "Accept orders and payments for this product":
     "Энэ бүтээгдэхүүний захиалга, төлбөрийг хүлээн авах",
@@ -84,6 +87,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Ангилал нэмэх",
   "Add code": "Код нэмэх",
   "Add country": "Улс орон нэмэх",
+  "Add currency": "C",
   "Add entry": "Оруулга нэмэх",
   "Add farm owner": "Фермер эзэмшигч нэмэх",
   "Add ingredient": "Найрлага нэмэх",
@@ -94,6 +98,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Эхлүүлэхийн тулд доор нэгийг нэмнэ үү.",
   "Add one so the bot has something to reference for this scope.":
     "Нэг нэгийг нэмснээр робот энэ хамрах хүрээний талаар лавлах зүйлтэй болно.",
+  "Add one using the field above.": "thumbnail alt text",
   "Add page": "Хуудас нэмэх",
   "Add participants": "Оролцогчид нэмэх",
   "Add point": "Цэг нэмэх",
@@ -112,6 +117,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Бүс нэмэх",
   Added: "Нэмсэн",
   "Adding...": "Нэмж байна...",
+  "Adding…": "Нэмж байна...",
   Address: "Хаяг",
   "Adjust points": "Цэгийг тохируулах",
   "Adjust the search or create a category.": "Хайлтыг тохируулах эсвэл ангилал үүсгэнэ үү.",
@@ -203,6 +209,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Азербайжан",
   "B2B / bulk ordering": "B2B / бөөнөөр захиалах",
   Back: "Буцах",
+  "Back to conversations": "Харилцан яриа руу буцах",
   "Back to sign in": "Нэвтрэх рүү буцах",
   Balance: "Үлдэл",
   "Banner alt text": "Баннерын өөр текст",
@@ -268,6 +275,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Ангилал засварлагч хэсгүүд",
   "Category not found": "Ангилал олдсонгүй",
   "Category row": "Ангиллын мөр",
+  "Category thumbnail alt text": "Ангиллын өнгөц зургийн өөр текст",
+  "Category thumbnail URL": "Ангиллын өнгөц зургийн URL",
   "Category to add to the homepage": "Нүүр хуудсанд нэмэх ангилал",
   "Cautions and low stock.": "Анхааруулга, нөөц бага.",
   Cebuano: "Себуано",
@@ -341,6 +350,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Холбоо барих имэйл",
   Content: "Агуулга",
   "Continue with Facebook": "Фэйсбүүкээр үргэлжлүүлэх",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Нэг Энэтхэг рупи хэр үнэтэй болохыг тохируулах замаар орон нутгийн мөнгөн тэмдэгтийн ойролцоо үнийг хянах. Каталог, тооцоо болон захиалгын бүртгэл нь INR-д найдвартай хадгалагдана.",
   "Control what each role can view, create, edit, publish or manage.":
     "Үүр бүр юуг харах, үүсгэх, засах, нийтлэх эсвэл удирдах боломжтойг хянах.",
   "Control whether each bot is available, and edit what it knows.":
@@ -385,6 +396,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Цахилгаан жагсаалтын хэмжээ",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Тодорхой хувилбаруудын хамт зарагддаг. Тооцоолол нь сагсанд багцад байгаа зүйл бүрийг багтаах үед автоматаар хэмнэлтийг хэрэгжүүлнэ.",
+  Currency: "Валютын тэмдэгт",
+  "Currency code": "Валютын код",
+  "Currency Converter": "Валютын хөрвүүлэгч",
+  "Currency values unavailable": "Валютын үнэ",
   "Current password": "Одоогийн нууц үг",
   "Currently its own effects.": "Одоогоор өөрийн нөлөөлөл байна.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -422,6 +437,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Татгалзах",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'Дэлгүүрийн дээд талд байрлах чимэглэл: хуудасны ард эргэлдэж буй тоосонцор ба жим. Аль аль нь өгөгдмөл байдлаар унтарсан бөгөөд төхөөрөмжөөсөө хөдөлгөөнийг багасгахыг хүссэн зочдод хоёуланг нь алгасдаг бөгөөд төлбөрийн цонхонд хэзээ ч харагдахгүй - картын маягт дээр цас орох нь яг буруу үед анхаарал сарниулах явдал юм. Тухайн орны нөлөөлөл нь зочдод холилдохоос илүүтэйгээр сайтын нийтийг хамарсан нөлөөг шууд орлуулдаг — "зарим цас" гэдэг нь цасны утга учиртай хольц биш бөгөөд ямар ч нөлөө үзүүлэхгүй.',
+  Default: "Өгөгдмөл",
   "Default commission": "Өгөгдмөл комисс",
   "Default fee": "Өгөгдмөл хураамж",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -441,6 +457,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Жорыг устгах",
   "Delete role": "Үүргийг устгах",
   "Delete selected (": 'Үүнийг устгах (</span0><01id?) id="t0012">Хэрэглэгчийг устгах',
+  "Delete this entry": "Энэ оруулгыг устгах",
   "Delete this price adjustment?": "Энэ үнийн тохируулгыг устгах уу?",
   "Delete user": "Хэрэглэгчийг устгах",
   "Deleting...": "Устгаж байна...",
@@ -463,6 +480,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Хоолны дэглэм ба баталгаажуулалтын шүүлтүүрүүд",
   "Dietary tags": "Хоолны шошго",
   "Dietary tags (comma separated)": "Хоолны шошго (таслалаар тусгаарлагдсан)",
+  "Dietary Tags & Certifications": "Хоолны шошго ба гэрчилгээ",
   "Direct message": "Шууд мессеж",
   Disable: "Идэвхгүй болгох",
   "Disable selected (": "Сонгосоныг идэвхгүй болгох (",
@@ -487,11 +505,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "жишээ нь. Бүртгэлүүд",
   "e.g. Harvested the week of 3 March 2026":
     "жишээ нь. 2026 оны 3-р сарын 3-ны долоо хоногт хураасан",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Жишээ нь. Энэтхэг Органик, Шударга худалдаа. Аливаа бүтээгдэхүүнд олгосон гэрчилгээг түүнээс хасах хүртэл устгах боломжгүй.",
   "e.g. Ops Room": "ж.нь. Үйл ажиллагааны өрөө",
   "e.g. Rain-fed, no synthetic pesticides": "жишээ нь. Бороотой, синтетик пестицидгүй",
   "e.g. Refrigerate and use within 5 days": "жишээ нь. Хөргөж, 5 хоногийн дотор хэрэглээрэй",
   "e.g. TO-HONEY-500": "жишээ нь. Зөгийн бал-500",
   "e.g. UTR 123456789012": "жишээ нь. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Жишээ нь. Веган, Цавуулаггүй. Нэгийг нь устгаснаар шалгасан бүтээгдэхүүн бүрээс үүнийг устгана.",
   Edit: "Засах",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS хуудасны мета өгөгдөл, индексжүүлэлт болон түүхий хуудасны блокуудыг засах. Нүүр хуудасны бичлэгийг энд бас жагсаасан байгаа боловч Нүүр хуудасны тохиргоо нь үүнийг өөрчлөх илүү найдвартай арга юм — энэ засварлагч нь түүхий JSON ашигладаг.",
@@ -595,6 +617,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Бусдын хардаг зүйлийг өөрчлөхгүйгээр нэг улсын зочдод зориулж хэсгийг хүчээр асаах эсвэл унтраах. "Өвлөх" хэсэгт хэсэг үлдээгээрэй, энэ нь дээрх хэсгийн жагсаалтын тэмдэглэгээг дагаж болно.',
   "Forgot password?": "Нууц үгээ мартсан уу?",
+  "Formatting locale": "Хэлэлцүүрийг форматлаж байна",
   "Free delivery above (₹)": "Дээрх (₹)",
   Frequency: "Давтамж",
   "Fresh Fruits": "Шинэ жимс",
@@ -679,6 +702,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Хэрэв энэ урамшууллыг хэзээ ч зарцуулж байгаагүй бол шууд устгана; Үгүй бол энэ нь архивлагдсан тул түүхийг нь хадгална.",
   Igbo: "Игбо",
+  Image: "Зураг",
   "Image alt text": "Зургийн өөр текст",
   "Image alt text (optional)": "Зургийн нэмэлт текст (заавал биш)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -757,6 +781,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Нэг True Grit нийлүүлэх өнгийг хоосон үлдээгээрэй — талбарыг арилгах нь та буцаах арга юм. Хуудас эсвэл улс орны өнгө нь сайтын өнгөнөөс эхэлж, зөвхөн таны өөрчилсөн зүйлийг хүчингүй болгодог тул тус бүр нь богино жагсаалт бөгөөд хадгалах хоёр дахь палитр биш юм. Хоёулаа нэг зочдод хандвал хуудас ялна — редакцийн хуудасны дизайныг гео туршилтаар буцаах ёсгүй.",
   "Leave blank to use the default.": "Өгөгдмөлийг ашиглахын тулд хоосон орхино уу.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Энгийн, товших боломжгүй зураг авахын тулд холбоосыг хоосон орхино уу.",
   "Less refunds": "Буцаан олголтын хэмжээ бага",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Үйлчлүүлэгчид захиалгын нийт дүнг хэсэгчлэн эсвэл бүхэлд нь хамарсан бэлгийн картын кодыг төлбөр тооцоо хийхдээ хэрэглэх боломжийг олгоно. Бэлгийн карт хуудаснаас карт гарга. Өгөгдмөлөөр унтраалттай — одоо байгаа картууд болон тэдгээрийн үлдэгдэл нь унтраалттай үед хадгалагдах боловч буцаан олгох боломжгүй.",
@@ -768,6 +794,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Мөрийн нийт",
   Lines: "Мөр",
   Link: 'id="t0005">Бүтээгдэхүүнийг холбоно уу',
+  "Link (optional)": "Холбоос (заавал биш)",
   "Link customer": "Хэрэглэгчийг холбох",
   "Link product": "Бүтээгдэхүүнийг холбох",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -787,6 +814,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Шууд урьдчилан үзэх",
   "Live, and to scale with the real storefront's own styles.":
     "Шууд үзэх ба бодит дэлгүүрийн нүүр хуудасны өөрийн хэв маягт тохируулан өргөжүүлэх.",
+  Loading: "Ачаалж байна",
   "Loading active promotions...": "Идэвхтэй сурталчилгааг ачаалж байна...",
   "Loading analytics...": "Шинжилгээг ачаалж байна...",
   "Loading announcements...": "Мэдэгдэл ачаалж байна...",
@@ -800,6 +828,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Харилцан яриаг ачаалж байна...",
   "Loading country overrides...": "Улсыг хүчингүй болгож ачаалж байна...",
   "Loading crawler files...": "Мөлхөгч файлуудыг ачаалж байна...",
+  "Loading currency values…": "Валютын утгыг ачаалж байна...",
   "Loading delivery charges...": "Хүргэлтийн төлбөрийг ачаалж байна...",
   "Loading discussion…": "Хэлэлцүүлгийг ачаалж байна...",
   "Loading highlights...": "Онцлох зүйлсийг ачаалж байна...",
@@ -822,6 +851,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Дэлгүүрийн нүүр хуудасны шилжүүлэгчийг ачаалж байна...",
   "Loading submission…": "Иргүүлэлтийг ачаалж байна...",
   "Loading...": "Ачааж байна...",
+  "Loading…": "Ачаалж байна...",
   "Local pickup points": "Орон нутгийн хүлээн авах цэгүүд",
   "Locale to translate": "Орчуулах хэл",
   "Locked out? Use": "Түгжигдсэн үү? Ашиглах",
@@ -874,6 +904,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Зохицуулах шалтгаан",
   Mongolian: "Монгол хэл",
   "More from True Grit": "Дэлгэрэнгүй True Grit",
+  "Motto banner": "Уриа баннер",
   "Move down in the showcase": "Үзүүлэн дотор доош шилжих",
   "Move earlier": "Өмнө нь зөөх",
   "Move later": "Дараа зөөх",
@@ -1003,6 +1034,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Тэмдэглэл (өөрчлөлт хийх эсвэл татгалзах хүсэлт гаргахад шаардлагатай)",
   "Note (required)": "Тэмдэглэл (заавал биш)",
   Notes: "Тэмдэглэл",
+  "Nothing here yet": "Одоохондоо юу ч алга",
   "Nothing outstanding to pay": "Төлбөр төлөх ёстой зүйл байхгүй",
   "Nothing pending.": "Хүлээж байгаа зүйл алга.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1056,6 +1088,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Үйлчлүүлэгчид захиалгаа гаргасны дараа энд харагдах болно.",
   "Organic Alphonso Mangoes": "Органик Альфонсо Манго",
   "Organic mangoes held in a sunlit orchard": "Нар тусдаг цэцэрлэгт хадгалагдаж буй органик манго",
+  "Organic wheat flour in a wooden bowl": "Модон аяганд хийсэн органик улаан буудайн гурил",
   Outstanding: "Гайхалтай",
   Overview: "Тойм",
   "Owner Reports": "Эзэмшигчийн тайлан",
@@ -1106,10 +1139,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Дор хаяж нэг улсыг сонгох эсвэл хаа сайгүй гарга.",
   "Pick at least one country, or release globally.":
     "Ядаж нэг улсыг сонгох эсвэл дэлхий даяар гаргах.",
-  "Pick exactly two people for a direct message.":
-    "Шууд зурвас илгээхийн тулд яг хоёр хүн сонгоно уу.",
   "Pick one from the list to start reading.":
     "Уншаж эхлэхийн тулд жагсаалтаас нэгийг нь сонгоно уу.",
+  "Pick the other person for this direct message.": "Энэ шууд мессежийн нөгөө хүнийг сонгоно уу.",
   "PIN code": "ПИН код",
   "PIN patterns": "ПИН хээ",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.": "-)",
@@ -1255,6 +1287,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pages.view зөвшөөрөл болон холбогдсон API шаардлагатай.",
   "Requires products.publish": "Products.publish",
   "Requires recipes.publish": '. id="t0009">Report.query зөвшөөрөл шаардлагатай.',
+  "Requires settings access.": "Тохиргоонд хандах шаардлагатай.",
   "Requires the analytics.view permission.": "analytics.view зөвшөөрөл шаардлагатай.",
   "Requires the inventory.adjust permission.": "Бараа материалын зөвшөөрөл шаардлагатай.",
   "Requires the reports.query permission.": "Report.query зөвшөөрөл шаардлагатай.",
@@ -1306,6 +1339,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Ажиллаж байна...",
   "Russian (Русский)": "Орос (Русский)",
   "Safe area": 'id="t0011">Санскрит (संस्कृतम्)',
+  "Safe geo-lock:": "Аюулгүй гео-түгжээ:",
   "Sale & Discounts": "Хямдрал, хямдрал",
   "Sale price": "Орос (Русский)",
   "Sale Price (₹)": "Хямдралын үнэ (₹)",
@@ -1442,6 +1476,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Серб",
   Servings: "Үйлчилгээ",
   "Set a new password": "Шинэ нууц үг тохируулах",
+  "Set as default": "Өгөгдмөлөөр тохируулах",
   "Shop · Farms · Journal": "Дэлгүүр · Ферм · сэтгүүл",
   "Shop fresh greens": "Шинэ ногоон дэлгүүр",
   "Shop root vegetables": "Үндэс ногоо худалдаж авах",
@@ -1539,6 +1574,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "Суахили (Кисвахили)",
   "Swedish (Svenska)": "Швед (Свенска)",
   Table: "Хүснэгт",
+  "Tags & Certifications": "Таг, гэрчилгээ",
   "Tags:": "Шошгууд:",
   Tajik: "Тажик",
   "Taking payments": "Tamil",
@@ -1555,6 +1591,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Баннер, категорийн мөр, бүтээгдэхүүний мөр болон SEO талбаруудыг хамтдаа хадгалдаг. Хэсгийн тэмдэглэгээ, захиалга болон захиалгат хэсгийн хуулбар нь таныг өөрчлөх үед бие даан хадгалагдана.",
   "The chat widget customers and visitors see on the storefront.":
     "Үйлчлүүлэгчид болон зочдод чатын виджетийг дэлгүүрийн нүүрэн дээрээс харна уу.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    'Бүтээгдэхүүний "Ерөнхий" таб дээр тэмдэглэгээний жагсаалт харагдана. Өөрчлөлтүүд хаа сайгүй нэн даруй хэрэгжинэ.',
   "The classic credential pair, including the password-reset flow.":
     "Нууц үг шинэчлэх урсгалыг багтаасан сонгодог итгэмжлэлийн хос.",
   "the farm owner": "фермийн эзэмшигч",
@@ -1606,6 +1644,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Энэ хэсгийг хуудасны доод хэсэгт байрлах өөрийн самбарт зассан.",
   "Threads started from the storefront appear here.":
     '<t>0 id="t0005">Дээрх CMS хуудсаар дэмжигдээгүй дэлгүүрийн нүүр хуудасны гарчиг, тайлбар, түлхүүр үг, индексжүүлэлт. Энэ чиглүүлэлтийн үндсэн тохиргоог хадгалахын тулд талбарыг хоосон орхино уу.',
+  "Thumbnail image URL": "Өнгөт зургийн URL",
   Time: "Хугацаа",
   Title: "Гарчиг",
   "Title, description, keywords and indexing for storefront routes that aren't backed by a CMS page above. Leave a field blank to keep that route's built-in default.":
@@ -1653,9 +1692,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Зураг байршуулна уу",
   "Uploading image...": "Зургийг байршуулж байна...",
   "Uploading image…": "Зураг байршуулж байна...",
+  "Uploading thumbnail...": "Өнгөт зургийг байршуулж байна...",
   "Uploading...": "Байршуулж байна...",
   "Uploading…": "Байршуулж байна...",
   "Urdu (اردو)": "Урду (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Тусдаа 1200 × 1200 хэмжээтэй зураг ашиглана уу. Энэ дөрвөлжин зургийг категорийн картуудад зориулж тайрсан; өргөн баатрын баннерыг дахин бүү ашигла.",
   "Use site-wide effects instead": "Үүний оронд сайт даяар эффект ашиглах",
   "Use the exact canvas": "Яг зураг ашиглах",
   "Use the navigation to get back.": "Буцахын тулд навигацыг ашиглана уу.",
@@ -1668,6 +1710,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Сайтын брэндийн өнгийг ашиглах",
   Uyghur: "Уйгур",
   Uzbek: "Узбек",
+  "Value of 1 INR": "1 INR-ийн утга",
+  "Value per INR": "INR тутамд үнэ",
   "Value, ₹": "Үнэ цэнэ, ₹",
   Variant: "Хувилбар",
   "Variant (SKU)": "Хувилбар (SKU)",

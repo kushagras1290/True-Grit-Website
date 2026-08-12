@@ -25,6 +25,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/ qty": "/ 수량",
   "← All farms": "← 모든 농장",
   "+ stars": "별점 이상",
+  "₹1,000 preview": "1,000루피 미리보기",
   "1 star": "별점 1개",
   "15% off your first order": "첫 주문 15% 할인",
   "2 cups": "2컵",
@@ -59,6 +60,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "최고 관리자는 위의 + 버튼을 사용하여 그룹을 시작하거나 다이렉트 메시지를 보낼 수 있습니다.",
   "A tinted band — check muted text is still readable here.":
     "색조 밴드 - 음소거된 텍스트는 여기에서 여전히 읽을 수 있습니다.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "방문자의 국가가 통화를 선택하면 이 표에 표시 값이 제공되며 원래 INR 가격은 변경되지 않습니다. 비활성화된 통화는 INR 안전 기본값으로 돌아갑니다.",
   Accent: "악센트",
   "Accept orders and payments": "주문 및 결제 수락",
   "Accept orders and payments for this product": "이 제품에 대한 주문 및 결제 수락",
@@ -84,6 +87,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "카테고리 추가",
   "Add code": "코드 추가",
   "Add country": "국가 추가",
+  "Add currency": "통화를 추가",
   "Add entry": "항목 추가",
   "Add farm owner": "농장 소유자 추가",
   "Add ingredient": "추가 성분",
@@ -94,6 +98,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "시작하려면 아래 항목을 추가하세요.",
   "Add one so the bot has something to reference for this scope.":
     "봇이 이 범위에 대해 참조할 내용이 있도록 하나를 추가하세요.",
+  "Add one using the field above.": "위 필드를 사용하여 통화를 추가하세요.",
   "Add page": "페이지 추가",
   "Add participants": "참가자 추가",
   "Add point": "포인트 추가",
@@ -112,6 +117,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "영역 추가",
   Added: "추가됨",
   "Adding...": "추가 중...",
+  "Adding…": "추가…",
   Address: "주소",
   "Adjust points": "포인트 조정",
   "Adjust the search or create a category.": "검색을 조정하거나 카테고리를 생성하세요.",
@@ -209,6 +215,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "아제르바이잔",
   "B2B / bulk ordering": "B2B / 대량 주문",
   Back: "뒤로",
+  "Back to conversations": "대화로 돌아가기",
   "Back to sign in": "로그인으로 돌아가기",
   Balance: "잔액",
   "Banner alt text": "배너 대체 텍스트",
@@ -273,6 +280,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "카테고리 편집기 섹션",
   "Category not found": "카테고리를 찾을 수 없음",
   "Category row": "카테고리 행",
+  "Category thumbnail alt text": "카테고리 썸네일 대체 텍스트",
+  "Category thumbnail URL": "카테고리 썸네일 URL",
   "Category to add to the homepage": "홈페이지에 추가할 카테고리",
   "Cautions and low stock.": "주의사항 및 재고가 부족합니다.",
   Cebuano: "세부아노",
@@ -344,6 +353,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "연락처 이메일",
   Content: "콘텐츠",
   "Continue with Facebook": "Facebook 계속하기",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "인도 루피 1개의 가치를 설정하여 대략적인 현지 통화 가격을 관리하세요. 카탈로그, 결제 및 주문 기록은 INR로 안전하게 유지됩니다.",
   "Control what each role can view, create, edit, publish or manage.":
     "각 역할이 보고, 만들고, 만들 수 있는 항목 제어 편집, 게시 또는 관리하세요.",
   "Control whether each bot is available, and edit what it knows.":
@@ -388,6 +399,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "선별된 목록 크기",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "선별된 특정 변형 세트는 정액 가격으로 함께 판매됩니다. Checkout은 장바구니에 번들의 모든 항목이 포함되면 자동으로 할인을 적용합니다.",
+  Currency: "통화",
+  "Currency code": "통화 코드",
+  "Currency Converter": "통화 변환기",
+  "Currency values unavailable": "통화 값을 사용할 수 없음",
   "Current password": "현재 비밀번호",
   "Currently its own effects.": "현재 자체 효과.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -424,6 +439,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "거절",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     '점포 전면 장식: 매장 뒤쪽으로 떠다니는 입자 페이지와 포인터 뒤의 흔적. 둘 다 기본적으로 꺼져 있으며 장치에 움직임 감소를 요청한 방문자의 경우 둘 다 완전히 건너뛰고 결제 창에 둘 다 표시되지 않습니다. 카드 양식 위에 눈이 내리는 것은 정확히 잘못된 순간에 주의를 산만하게 합니다. 국가의 영향은 방문자와 섞이지 않고 사이트 전체의 영향을 완전히 대체합니다. "일부 눈"은 의미 있는 눈의 혼합이 아니며 효과가 없습니다.',
+  Default: "기본값",
   "Default commission": "기본 커미션",
   "Default fee": "기본 수수료",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -443,6 +459,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "레시피 삭제",
   "Delete role": "역할 삭제",
   "Delete selected (": "선택 항목 삭제(",
+  "Delete this entry": "이 항목 삭제",
   "Delete this price adjustment?": "이 가격 조정을 삭제하시겠습니까?",
   "Delete user": "사용자 삭제",
   "Deleting...": "삭제 중...",
@@ -465,6 +482,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "식이 요법 및 인증 필터",
   "Dietary tags": "식이 태그",
   "Dietary tags (comma separated)": "식이 태그(쉼표로 구분)",
+  "Dietary Tags & Certifications": "식이 태그 및 인증",
   "Direct message": "다이렉트 메시지",
   Disable: "사용 중지",
   "Disable selected (": "선택한 사용 중지(",
@@ -488,11 +506,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "예: 계정",
   "e.g. DIWALI500": "예: DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "예: 2026년 3월 3일 주에 수확됨",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "예: 인도 유기농, 공정 무역. 제품에 할당된 인증은 제거될 때까지 삭제할 수 없습니다.",
   "e.g. Ops Room": "예: 운영실",
   "e.g. Rain-fed, no synthetic pesticides": "예: 빗물을 먹고 합성 살충제를 사용하지 않습니다",
   "e.g. Refrigerate and use within 5 days": "예: 냉장 보관 후 5일 이내에 사용",
   "e.g. TO-HONEY-500": "예: TO-HONEY-500",
   "e.g. UTR 123456789012": "예: UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "예: 비건, 글루텐 프리. 하나를 삭제하면 선택한 모든 제품에서 해당 항목이 제거됩니다.",
   Edit: "수정",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS 페이지 메타데이터, 색인 생성 및 원시 페이지 블록을 수정합니다. 홈페이지 기록도 여기에 나열되어 있지만 홈페이지 설정을 변경하는 것이 더 안전한 방법입니다. 이 편집기는 원시 JSON을 사용합니다.",
@@ -596,6 +618,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     "다른 모든 사람에게 표시되는 내용은 변경하지 않고 한 국가의 방문자에 대해 섹션을 강제로 설정하거나 해제합니다. '상속' 섹션을 남겨두면 위 섹션 목록의 체크박스 바로 뒤에 표시됩니다.",
   "Forgot password?": "비밀번호를 잊으셨나요?",
+  "Formatting locale": "언어 형식 지정",
   "Free delivery above (₹)": "(₹) 이상 무료 배송",
   "French (Français)": "프랑스어(프랑스어)",
   Frequency: "빈도",
@@ -680,6 +703,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "해당 이메일에 계정이 있으면 재설정 링크가 전송됩니다.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "이 프로모션을 사용한 적이 없으면 완전히 삭제됩니다. 그렇지 않으면 보관되어 기록이 유지됩니다.",
+  Image: "이미지",
   "Image alt text": "이미지 대체 텍스트",
   "Image alt text (optional)": "이미지 대체 텍스트(선택 사항)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -758,6 +782,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "True Grit에서 제공하는 색상을 유지하려면 색상을 비워 두세요. 필드를 지우면 실행 취소할 수 있습니다. 페이지 또는 국가의 색상은 사이트 색상에서 시작하여 변경한 색상만 재정의하므로 각 색상은 유지 관리할 두 번째 팔레트가 아니라 짧은 목록입니다. 둘 다 동일한 방문자에게 적용되면 페이지가 우선합니다. 지역 실험으로 편집 페이지의 디자인이 취소되어서는 안 됩니다.",
   "Leave blank to use the default.": "기본값을 사용하려면 비워 두세요.",
+  "Leave the link blank for a plain, unclickable image.":
+    "클릭할 수 없는 일반 이미지를 보려면 링크를 비워 두세요.",
   "Less refunds": "환불 감소",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "고객이 결제 시 주문 총액의 일부 또는 전체에 기프트 카드 코드를 적용할 수 있습니다. 기프트 카드 페이지에서 카드를 발행하세요. 기본적으로 꺼짐 — 기존 카드와 잔액은 유지되지만 꺼진 동안에는 사용할 수 없습니다.",
@@ -769,6 +795,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "줄 합계",
   Lines: "줄",
   Link: "링크",
+  "Link (optional)": "링크 (선택사항)",
   "Link customer": "연결 고객",
   "Link product": "제품 연결",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -787,6 +814,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "실시간 미리보기",
   "Live, and to scale with the real storefront's own styles.":
     "실시간 매장의 고유한 스타일에 맞춰 확장할 수 있습니다.",
+  Loading: "로드 중",
   "Loading active promotions...": "활성 프로모션 로드 중...",
   "Loading analytics...": "분석 로드 중...",
   "Loading announcements...": "공지사항 로드 중...",
@@ -800,6 +828,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "대화 로드 중…",
   "Loading country overrides...": "국가 재정의 로드 중...",
   "Loading crawler files...": "크롤러 파일 로드 중...",
+  "Loading currency values…": "통화 값 로드 중…",
   "Loading delivery charges...": "배송료 로드 중...",
   "Loading discussion…": "토론 로드 중...",
   "Loading highlights...": "하이라이트 로드 중...",
@@ -822,6 +851,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "스토어 스위치 로드 중...",
   "Loading submission…": "제출물 로드 중...",
   "Loading...": "로드 중...",
+  "Loading…": "로드 중…",
   "Local pickup points": "현지 픽업 지점",
   "Locale to translate": "번역할 언어",
   "Locked out? Use": "잠겼나요?",
@@ -873,6 +903,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "조정 이유",
   Mongolian: "몽골어",
   "More from True Grit": "True Grit의 추가 정보",
+  "Motto banner": "모토 배너",
   "Move down in the showcase": "쇼케이스에서 아래로 이동",
   "Move earlier": "이전으로 이동",
   "Move later": "나중에 이동",
@@ -999,6 +1030,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Note (required to request changes or reject)": "메모(변경 요청 또는 거부 시 필요)",
   "Note (required)": "메모(필수)",
   Notes: "메모",
+  "Nothing here yet": "아직 아무것도 없습니다",
   "Nothing outstanding to pay": "미해결 사항 없음 지불",
   "Nothing pending.": "보류 중인 항목이 없습니다.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1050,6 +1082,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "고객이 체크아웃하면 여기에 주문이 표시됩니다.",
   "Organic Alphonso Mangoes": "유기농 알폰소 망고",
   "Organic mangoes held in a sunlit orchard": "햇빛이 비치는 과수원에서 보관되는 유기농 망고",
+  "Organic wheat flour in a wooden bowl": "나무 그릇에 담긴 유기농 밀가루",
   Outstanding: "뛰어난",
   Overview: "개요",
   "Owner Reports": "소유자 보고서",
@@ -1099,9 +1132,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "최소 하나의 국가를 선택하거나 모든 곳에서 릴리스하세요.",
   "Pick at least one country, or release globally.":
     "최소 하나의 국가를 선택하거나 전 세계적으로 릴리스하세요.",
-  "Pick exactly two people for a direct message.":
-    "다이렉트 메시지를 보낼 사람을 정확히 두 명 선택하세요.",
   "Pick one from the list to start reading.": "읽기 시작하려면 목록에서 한 명을 선택하세요.",
+  "Pick the other person for this direct message.":
+    "이 다이렉트 메시지를 보낼 다른 사람을 선택하세요.",
   "PIN code": "PIN 코드",
   "PIN patterns": "PIN 패턴",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1246,6 +1279,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "pages.view 권한 및 연결된 API가 필요합니다.",
   "Requires products.publish": "products.publish 필요",
   "Requires recipes.publish": "recipes.publish 필요",
+  "Requires settings access.": "설정 액세스가 필요합니다.",
   "Requires the analytics.view permission.": "analytics.view 권한이 필요합니다.",
   "Requires the inventory.adjust permission.": "inventory.adjust 권한이 필요합니다.",
   "Requires the reports.query permission.": "reports.query 권한이 필요합니다.",
@@ -1296,6 +1330,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "실행 중…",
   "Russian (Русский)": "러시아어(Русский)",
   "Safe area": "안전 지역",
+  "Safe geo-lock:": "안전한 지역 잠금:",
   "Sale & Discounts": "할인 및 할인",
   "Sale price": "할인 가격",
   "Sale Price (₹)": "할인가(₹)",
@@ -1427,6 +1462,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "세르비아어",
   Servings: "제공",
   "Set a new password": "새 비밀번호 설정",
+  "Set as default": "기본값으로 설정",
   "Shop · Farms · Journal": "상점 · 농장 · 저널",
   "Shop fresh greens": "신선한 채소 쇼핑",
   "Shop root vegetables": "쇼핑 루트 야채",
@@ -1521,6 +1557,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "스와힐리어(Kiswahili)",
   "Swedish (Svenska)": "스웨덴어(Svenska)",
   Table: "테이블",
+  "Tags & Certifications": "태그 및 인증",
   "Tags:": "태그:",
   Tajik: "타지크어",
   "Taking payments": "결제 받기",
@@ -1537,6 +1574,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "배너, 카테고리 행, 제품 행, SEO 필드가 함께 저장됩니다. 섹션 체크박스, 순서 및 사용자 정의 섹션 사본은 변경 시 자체적으로 저장됩니다.",
   "The chat widget customers and visitors see on the storefront.":
     "고객과 방문자가 매장에서 보는 채팅 위젯.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "모든 제품의 일반 탭에 표시되는 확인란 목록입니다. 변경사항은 모든 곳에 즉시 적용됩니다.",
   "The classic credential pair, including the password-reset flow.":
     "비밀번호 재설정 흐름을 포함한 클래식 자격 증명 쌍.",
   "the farm owner": "팜 소유자",
@@ -1587,6 +1626,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "This section is edited in its own panel further down the page.":
     "이 섹션은 페이지 아래에 있는 자체 패널에서 편집됩니다.",
   "Threads started from the storefront appear here.": "상점에서 시작된 스레드가 여기에 표시됩니다.",
+  "Thumbnail image URL": "썸네일 이미지 URL",
   Time: "시간",
   "Tinted band": "색상 밴드",
   Title: "제목",
@@ -1637,9 +1677,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "이미지 업로드",
   "Uploading image...": "이미지 업로드 중...",
   "Uploading image…": "이미지 업로드 중...",
+  "Uploading thumbnail...": "썸네일 업로드 중...",
   "Uploading...": "업로드 중...",
   "Uploading…": "업로드 중...",
   "Urdu (اردو)": "우르두어(اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "별도의 1200 × 1200 이미지를 사용하세요. 이 정사각형 이미지는 카테고리 카드용으로 잘립니다. 넓은 히어로 배너를 재사용하지 마세요.",
   "Use site-wide effects instead": "대신 사이트 전체 효과 사용",
   "Use the exact canvas": "정확한 캔버스 사용",
   "Use the navigation to get back.": "돌아가려면 탐색을 사용하세요.",
@@ -1652,6 +1695,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "사이트 브랜드 색상 사용",
   Uyghur: "위구르",
   Uzbek: "우즈베크어",
+  "Value of 1 INR": "1INR의 가치",
+  "Value per INR": "INR당 가치",
   Variant: "변형",
   "Variant (SKU)": "변형(SKU)",
   "Variant ID": "변형 ID",

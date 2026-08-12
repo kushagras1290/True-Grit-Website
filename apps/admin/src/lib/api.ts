@@ -74,6 +74,8 @@ import {
   products,
   recipes as demoRecipes,
 } from "@truegrit/contracts/fixtures";
+import { resizeImageToSpec } from "./image-resize";
+import type { ImageSpecification } from "./image-specifications";
 
 const API_URL: string | undefined = import.meta.env.VITE_API_URL as string | undefined;
 export const adminApiBaseUrl = (API_URL ?? "").replace(/\/+$/, "");
@@ -613,6 +615,7 @@ export interface AdminNotification {
 export interface ConversationParticipant {
   userId: string;
   displayName: string;
+  roles: string[];
 }
 
 export interface ConversationSummary {
@@ -2753,10 +2756,15 @@ export const api = {
           (body) => body.items,
         ),
 
-  uploadImage: async (file: File): Promise<{ id: string; url: string }> =>
-    demoMode
-      ? demo({ id: `img_${Date.now().toString(36)}`, url: URL.createObjectURL(file) })
-      : postFile(`/v1/admin/media/images?filename=${encodeURIComponent(file.name)}`, file),
+  uploadImage: async (
+    file: File,
+    resizeSpec?: Pick<ImageSpecification, "width" | "height">,
+  ): Promise<{ id: string; url: string }> => {
+    const upload = resizeSpec ? await resizeImageToSpec(file, resizeSpec) : file;
+    return demoMode
+      ? demo({ id: `img_${Date.now().toString(36)}`, url: URL.createObjectURL(upload) })
+      : postFile(`/v1/admin/media/images?filename=${encodeURIComponent(upload.name)}`, upload);
+  },
 
   homeBlocks: (): Promise<PublicPageBlock[]> => demo(homePage.blocks),
 

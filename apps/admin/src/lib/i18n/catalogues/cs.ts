@@ -28,6 +28,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/obchod",
   "← All farms": "← Všechny farmy",
   "+ stars": "+ hvězdiček",
+  "₹1,000 preview": "Náhled 1 000₹",
   "1 star": "1 hvězdička",
   "15% off your first order": "15% sleva na vaši první objednávku",
   "2 cups": "2 šálky",
@@ -62,6 +63,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Superadministrátor může vytvořit skupinu nebo přímou zprávu pomocí tlačítka + výše.",
   "A tinted band — check muted text is still readable here.":
     "Tónovaný pásek – zde je stále čitelný text ztlumený šekem.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "země návštěvníka vybere měnu, tato tabulka poskytne její zobrazenou hodnotu a původní cena INR zůstane nezměněna. Deaktivované měny se vrátí na výchozí hodnoty bezpečné pro INR.",
   "Accept orders and payments": "Přijímání objednávek a plateb",
   "Accept orders and payments for this product": "Přijímání objednávek a plateb za tento produkt",
   "Active points appear as free checkout alternatives.":
@@ -79,6 +82,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Přidat kategorii",
   "Add code": "Přidat kód",
   "Add country": "Přidat zemi",
+  "Add currency": "Přidat měnu",
   "Add entry": "Přidat záznam",
   "Add farm owner": "Přidat vlastníka farmy",
   "Add ingredient": "Přidat přísadu",
@@ -89,6 +93,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Začněte přidáním jedné níže.",
   "Add one so the bot has something to reference for this scope.":
     "Přidat jeden, aby měl robot pro tento rozsah na co odkazovat.",
+  "Add one using the field above.": "Přidejte jednu pomocí pole výše.",
   "Add page": "Přidat stránku",
   "Add participants": "Přidat účastníky",
   "Add point": "Přidat bod",
@@ -107,6 +112,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Přidat zónu",
   Added: "Přidáno",
   "Adding...": "Přidávání...",
+  "Adding…": "Přidávání…",
   Address: "Adresa",
   "Adjust points": "Upravit body",
   "Adjust the search or create a category.": "Upravte vyhledávání nebo vytvořte kategorii.",
@@ -203,6 +209,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Ázerbájdžánština",
   "B2B / bulk ordering": "B2B / hromadné objednávky",
   Back: "Zpět",
+  "Back to conversations": "Zpět na konverzace",
   "Back to sign in": "Zpět k přihlášení",
   Balance: "Zůstatek",
   "Banner alt text": "Alternativní text banneru",
@@ -266,6 +273,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Sekce editoru kategorií",
   "Category not found": "Kategorie nenalezena",
   "Category row": "Řádek kategorie",
+  "Category thumbnail alt text": "Alt text miniatury kategorie",
+  "Category thumbnail URL": "Adresa URL miniatury kategorie",
   "Category to add to the homepage": "Kategorie, kterou chcete přidat na domovskou stránku",
   "Cautions and low stock.": "Pozor a nízké zásoby.",
   "Centred safe area": "Centrovaná bezpečná oblast",
@@ -337,6 +346,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Kontaktní e-mail",
   Content: "Obsah",
   "Continue with Facebook": "Pokračovat na Facebooku",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Ovládejte přibližné ceny v místní měně nastavením hodnoty jedné indické rupie. Záznamy v katalogu, pokladnách a objednávkách zůstávají bezpečně v INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Ovládejte, co může každá role prohlížet, vytvářet, upravovat, publikovat nebo spravovat.",
   "Control whether each bot is available, and edit what it knows.":
@@ -381,6 +392,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Vybraná velikost seznamu",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Vybrané sady konkrétních pevných cenových variant prodávané společně. Pokladna uplatní úsporu automaticky, jakmile košík obsahuje všechny položky v balíčku.",
+  Currency: "Měna",
+  "Currency code": "Kód měn",
+  "Currency Converter": "Převodník měn",
+  "Currency values unavailable": "Hodnoty měn nejsou k dispozici",
   "Current password": "Aktuální heslo",
   "Currently its own effects.": "V současné době vlastní efekty.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -419,6 +434,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Odmítnout",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "Dekorace v horní části výlohy: unášené částice za ukazovátkem a stopa po stránce. Obě jsou ve výchozím nastavení vypnuty, obě jsou zcela přeskočeny pro návštěvníky, kteří požádali své zařízení o snížený pohyb, a ani jedno se nikdy neobjeví v platebním okně – sněžení nad formulářem karty je rušivým faktorem přesně ve špatný okamžik. Efekty země pro její návštěvníky přímo nahrazují ty, které se týkají celého webu, než aby s nimi splývaly – „nějaký sníh“ není smysluplná směs sněhu a žádný efekt.",
+  Default: "Výchozí",
   "Default commission": "Výchozí provize",
   "Default fee": "Výchozí poplatek",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -438,6 +454,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Smazat recept",
   "Delete role": "Smazat roli",
   "Delete selected (": "Smazat vybrané (",
+  "Delete this entry": "Smazat tento záznam",
   "Delete this price adjustment?": "Smazat tuto úpravu ceny?",
   "Delete user": "Smazat uživatele",
   "Deleting...": "Mazání...",
@@ -459,6 +476,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Stravovací a certifikační filtry",
   "Dietary tags": "Značky stravy",
   "Dietary tags (comma separated)": "Značky stravy (oddělené čárkami)",
+  "Dietary Tags & Certifications": "Jídelní štítky a certifikace",
   "Direct message": "Přímou zprávu",
   Disable: "Zakázat",
   "Disable selected (": "Zakázat vybrané (",
@@ -480,11 +498,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "např. Účty",
   "e.g. DIWALI500": "např. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "např. Sklizeno v týdnu od 3. března 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Např. Indie organické, spravedlivý obchod. Certifikaci přiřazenou k libovolnému produktu nelze smazat, dokud z něj neodeberete.",
   "e.g. Ops Room": "např. Operační místnost",
   "e.g. Rain-fed, no synthetic pesticides": "např. Krmení deštěm, žádné syntetické pesticidy",
   "e.g. Refrigerate and use within 5 days": "např. Uchovávejte v chladničce a spotřebujte do 5 dnů",
   "e.g. TO-HONEY-500": "např. TO-MED-500",
   "e.g. UTR 123456789012": "např. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Např. Veganské, Bezlepkové. Smazáním jednoho odstraníte jej ze všech produktů, u kterých byl zaškrtnut.",
   Edit: "Upravit",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Upravit metadata stránky CMS, indexování a nezpracované bloky stránek. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.",
@@ -586,6 +608,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     "Vynutí zapnutí nebo vypnutí sekce pro návštěvníky v jedné zemi, aniž by se změnilo to, co vidí všichni ostatní. Nechte sekci „Zdědit“ a bude následovat za zaškrtávacím políčkem v seznamu sekcí výše.",
   "Forgot password?": "Zapomněli jste heslo?",
+  "Formatting locale": "Místo formátování",
   "Free delivery above (₹)": "Doručení zdarma výše (₹)",
   "French (Français)": "francouzština (Français)",
   Frequency: "Frekvence",
@@ -666,6 +689,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pokud má tento e-mail účet, je na cestě odkaz pro obnovení.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Pokud tato propagace nebyla nikdy uplatněna, je přímo smazána. jinak je archivován, takže je uchována jeho historie.",
+  Image: "Obrázek",
   "Image alt text": "Alternativní text obrázku",
   "Image alt text (optional)": "Alternativní text obrázku (volitelné)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -739,6 +763,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Ponechte prázdnou barvu, chcete-li zachovat barvu, se kterou se True Grit dodává – vymazáním pole můžete vrátit zpět. Barvy stránky nebo země vycházejí z barev webu a přepisují pouze to, co změníte, takže každá je krátkým seznamem, nikoli druhou paletou, kterou je třeba udržovat. Když se obě vztahují na stejného návštěvníka, stránka vyhraje – design redakční stránky by neměl být vrácen zpět pomocí geografického experimentu.",
   "Leave blank to use the default.": "Chcete-li použít výchozí nastavení, ponechte pole prázdné.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Ponechte odkaz prázdný, abyste získali prostý obrázek, na který nelze kliknout.",
   "Less refunds": "Méně refundací",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Umožňuje zákazníkům použít kód dárkové karty u pokladny, který pokryje část nebo celou celkovou částku objednávky. Vystavte karty ze stránky Dárkové karty. Ve výchozím nastavení vypnuto – stávající karty a jejich zůstatky jsou zachovány, jen je nelze uplatnit, když je tato funkce vypnutá.",
@@ -750,6 +776,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Celkem řádku",
   Lines: "Řádky",
   Link: "Odkaz",
+  "Link (optional)": "Odkaz (volitelné)",
   "Link customer": "Propojit zákazníka",
   "Link product": "Odkaz na produkt",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -769,6 +796,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Živý náhled",
   "Live, and to scale with the real storefront's own styles.":
     "Živě a přizpůsobujte se vlastním stylům skutečného obchodu.",
+  Loading: "Načítání",
   "Loading active promotions...": "Načítání aktivních propagací...",
   "Loading analytics...": "Načítání statistik...",
   "Loading announcements...": "Načítání oznámení...",
@@ -782,6 +810,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Načítání konverzací…",
   "Loading country overrides...": "Načítání přepisů zemí...",
   "Loading crawler files...": "Načítání souborů prohledávače...",
+  "Loading currency values…": "Načítání hodnot měn…",
   "Loading delivery charges...": "Načítání poplatků za doručení...",
   "Loading discussion…": "Načítání diskuze…",
   "Loading highlights...": "Načítání nejdůležitějších informací...",
@@ -804,6 +833,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Načítání přepínačů výlohy...",
   "Loading submission…": "Načítání příspěvku...",
   "Loading...": "Načítání...",
+  "Loading…": "Načítání…",
   "Local pickup points": "Místní místa vyzvednutí",
   "Locale to translate": "Místní jazyk k překladu",
   "Locked out? Use": "Umkl jste? Použijte",
@@ -981,6 +1011,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Poznámka (vyžadováno pro vyžádání změn nebo zamítnutí)",
   "Note (required)": "Poznámka (povinné)",
   Notes: "Poznámky",
+  "Nothing here yet": "Zatím tu nic není",
   "Nothing outstanding to pay": "Nic k zaplacení",
   "Nothing pending.": "Nic nevyřízeno.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1031,6 +1062,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Objednávky se zde zobrazí, jakmile zákazníci dokončí objednávku.",
   "Organic Alphonso Mangoes": "Bio mango Alphonso",
   "Organic mangoes held in a sunlit orchard": "Bio mango ve slunném sadu",
+  "Organic wheat flour in a wooden bowl": "Bio pšeničná mouka v dřevěné misce",
   Outstanding: "Vynikající",
   Overview: "Přehled",
   "Owner Reports": "Hlášení vlastníka",
@@ -1077,8 +1109,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Vyberte alespoň jednu zemi nebo ji uvolněte všude.",
   "Pick at least one country, or release globally.":
     "Vyberte alespoň jednu zemi nebo ji uvolněte globálně.",
-  "Pick exactly two people for a direct message.": "Vyberte přesně dva lidi pro přímou zprávu.",
   "Pick one from the list to start reading.": "Vyberte jednoho ze seznamu a začněte číst.",
+  "Pick the other person for this direct message.": "Vyberte druhou osobu pro tuto přímou zprávu.",
   "PIN code": "Kód PIN",
   "PIN patterns": "Vzory PIN",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1220,6 +1252,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Vyžaduje oprávnění pages.view a připojené rozhraní API.",
   "Requires products.publish": "Vyžaduje products.publish",
   "Requires recipes.publish": "Vyžaduje recepty.publikovat",
+  "Requires settings access.": "Vyžaduje přístup k nastavení.",
   "Requires the analytics.view permission.": "Vyžaduje oprávnění analytics.view.",
   "Requires the inventory.adjust permission.": "Vyžaduje oprávnění inventar.adjust.",
   "Requires the reports.query permission.": "Vyžaduje oprávnění reports.query.",
@@ -1270,6 +1303,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Běh...",
   "Russian (Русский)": "Ruština (Русский)",
   "Safe area": "Bezpečná oblast",
+  "Safe geo-lock:": "Bezpečný geografický zámek:",
   "Sale & Discounts": "Výprodej a slevy",
   "Sale price": "Cena v akci",
   "Sale Price (₹)": "Cena v akci (₹)",
@@ -1396,6 +1430,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Srbština",
   Servings: "Podávky",
   "Set a new password": "Nastavit nové heslo",
+  "Set as default": "Nastavit jako výchozí",
   "Shop · Farms · Journal": "Obchod · Farmy · Deník",
   "Shop fresh greens": "Nakupovat čerstvou zeleninu",
   "Shop root vegetables": "Nakupovat kořenovou zeleninu",
@@ -1491,6 +1526,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "svahilština (kiswahili)",
   "Swedish (Svenska)": "Švédština (Svenska)",
   Table: "Tabulka",
+  "Tags & Certifications": "Značky a certifikace",
   "Tags:": "Štítky:",
   Tajik: "Tádžština",
   "Taking payments": "Přijímání plateb",
@@ -1507,6 +1543,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Banner, řádek kategorie, řádek produktu a pole SEO se uloží společně. Zaškrtávací políčka sekcí, objednávání a vlastní kopírování sekcí se ukládají samy, když je změníte.",
   "The chat widget customers and visitors see on the storefront.":
     "Wadget chatu, který zákazníci a návštěvníci vidí ve výkladu.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Seznam zaškrtávacích políček se zobrazuje na kartě Obecné u každého produktu. Změny se okamžitě projeví všude.",
   "The classic credential pair, including the password-reset flow.":
     "Klasický pár přihlašovacích údajů, včetně postupu pro resetování hesla.",
   "the farm owner": "majitel farmy",
@@ -1555,6 +1593,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "This section is edited in its own panel further down the page.":
     "Tato sekce je upravena na vlastním panelu níže na stránce.",
   "Threads started from the storefront appear here.": "Zde se zobrazují vlákna zahájená z výlohy.",
+  "Thumbnail image URL": "Adresa URL obrázku miniatury",
   Time: "Čas",
   "Tinted band": "Tónovaný pás",
   Title: "Název",
@@ -1603,9 +1642,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Nahrát obrázek",
   "Uploading image...": "Nahrát obrázek...",
   "Uploading image…": "Nahrát obrázek…",
+  "Uploading thumbnail...": "Nahrávání miniatury...",
   "Uploading...": "Nahrávání...",
   "Uploading…": "Nahrávání...",
   "Urdu (اردو)": "Urdština (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Použijte samostatný obrázek o velikosti 1200 × 1200. Tento čtvercový obrázek je oříznut pro karty kategorií; nepoužívejte znovu široký banner hrdiny.",
   "Use site-wide effects instead": "Místo toho použijte efekty pro celý web",
   "Use the exact canvas": "Použijte přesné plátno",
   "Use the navigation to get back.": "Pro návrat zpět použijte navigaci.",
@@ -1618,6 +1660,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Použití barvy značky webu",
   Uyghur: "Ujgurština",
   Uzbek: "uzbecká",
+  "Value of 1 INR": "Hodnota 1 INR",
+  "Value per INR": "Hodnota za INR",
   "Value, ₹": "Hodnota, ₹",
   Variant: "Varianta",
   "Variant (SKU)": "Varianta (SKU)",

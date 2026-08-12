@@ -31,6 +31,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/խանութ",
   "← All farms": "← Բոլոր ֆերմաները",
   "+ stars": "+ աստղեր",
+  "₹1,000 preview": "1000 ₹ նախադիտում",
   "1 star": "1 աստղ",
   "15% off your first order": "15% զեղչ ձեր առաջին պատվերի համար",
   "2 cups": "2 բաժակ աստղեր",
@@ -64,6 +65,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Սուպեր ադմինը կարող է խումբ կամ ուղիղ հաղորդագրություն բացել վերևի + կոճակից:",
   "A tinted band — check muted text is still readable here.":
     "Մգեցված ժապավեն. ստուգեք անջատված տեքստը դեռ ընթեռնելի է այստեղ:",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "այցելուի երկիրն ընտրում է արժույթը, այս աղյուսակը տրամադրում է դրա ցուցադրման արժեքը, իսկ սկզբնական INR գինը մնում է անփոփոխ: Անջատված արժույթները վերադառնում են INR-անվտանգության կանխադրվածներին:",
   Accent: "Առոգան",
   "Accept orders and payments": "Ընդունել պատվերներ և վճարումներ",
   "Accept orders and payments for this product":
@@ -90,6 +93,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Ավելացնել կատեգորիա",
   "Add code": "Ավելացնել կոդ",
   "Add country": "Ավելացնել երկիր",
+  "Add currency": "Ավելացրեք արժույթ",
   "Add entry": "Ավելացնել գրառում",
   "Add farm owner": "Ավելացնել ֆերմայի սեփականատիրոջը",
   "Add ingredient": "Ավելացրեք բաղադրիչ",
@@ -100,6 +104,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Սկսելու համար ներքևում ավելացրեք մեկը:",
   "Add one so the bot has something to reference for this scope.":
     "Ավելացրե՛ք մեկը, որպեսզի բոտն ունենա հղում այս շրջանակի համար:",
+  "Add one using the field above.": "Ավելացրեք մեկը՝ օգտագործելով վերը նշված դաշտը:",
   "Add page": "Ավելացնել էջ",
   "Add participants": "Ավելացնել մասնակիցների",
   "Add point": "Ավելացնել կետ",
@@ -118,6 +123,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Ավելացնել գոտի",
   Added: "Ավելացված է",
   "Adding...": "Ավելացվում է...",
+  "Adding…": "Ավելացվում է…",
   Address: "Հասցե",
   "Adjust points": "Կարգավորել միավորները",
   "Adjust the search or create a category.": "Կարգավորեք որոնումը կամ ստեղծեք կատեգորիա:",
@@ -218,6 +224,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Ադրբեջանական",
   "B2B / bulk ordering": "B2B / զանգվածային պատվեր",
   Back: "Վերադարձ",
+  "Back to conversations": "Վերադառնալ խոսակցություններին",
   "Back to sign in": "Վերադառնալ մուտք գործելու համար",
   Balance: "Մնացորդը",
   "Banner alt text": "Ազդանշանի այլընտրանքային տեքստ",
@@ -283,6 +290,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Կատեգորիայի խմբագրիչի բաժինները",
   "Category not found": "Կատեգորիան չի գտնվել",
   "Category row": "Կատեգորիայի տող",
+  "Category thumbnail alt text": "Կատեգորիայի մանրապատկերների այլընտրանքային տեքստ",
+  "Category thumbnail URL": "Կատեգորիայի մանրապատկերների URL",
   "Category to add to the homepage": "Կատեգորիան՝ գլխավոր էջին ավելացնելու համար",
   "Cautions and low stock.": "Զգուշացումներ և քիչ պաշար:",
   Cebuano: "Սեբուանո",
@@ -356,6 +365,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Կոնտակտային էլ.փոստ",
   Content: "Բովանդակություն",
   "Continue with Facebook": "Շարունակել Facebook-ի հետ",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Վերահսկեք տեղական արժույթի մոտավոր գները՝ սահմանելով, թե որքան արժե մեկ հնդկական ռուփին: Կատալոգի, վճարումների և պատվերի գրառումները ապահով կերպով պահպանվում են INR-ով:",
   "Control what each role can view, create, edit, publish or manage.":
     "Վերահսկեք, թե յուրաքանչյուր դերը ինչ կարող է դիտել, ստեղծել, խմբագրել, հրապարակել կամ կառավարել:",
   "Control whether each bot is available, and edit what it knows.":
@@ -400,6 +411,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Ընտրված ցուցակի չափը",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Հատուկ տարբերակների ընտրված հավաքածուներ, որոնք միասին վաճառվում են հաստատագրված գնով: Checkout-ն ավտոմատ կերպով կիրառում է խնայողությունը, երբ զամբյուղը պահում է փաթեթի յուրաքանչյուր ապրանք:",
+  Currency: "Արժույթ",
+  "Currency code": "Արժույթի կոդը",
+  "Currency Converter": "Արժույթի փոխարկիչ",
+  "Currency values unavailable": "Արժույթի արժեքները անհասանելի են",
   "Current password": "Ընթացիկ գաղտնաբառը",
   "Currently its own effects.": "Ներկայումս իր սեփական էֆեկտները:",
   "Currently the site-wide effects — save below to give it its own.":
@@ -438,6 +453,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Մերժել",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "Զարդարել էջի ետևում գտնվող էջը և հետևել էջին: ցուցիչ. Երկուսն էլ լռելյայն անջատված են, երկուսն էլ ամբողջությամբ բաց են թողնվել այն այցելուների համար, ովքեր իրենց սարքից խնդրել են նվազեցնել շարժումը, և ոչ մեկը երբեք չի երևում վճարման պատուհանում. քարտի ձևի վրա ձյունը շեղում է ուշադրությունը ճիշտ սխալ պահին: Երկրի էֆեկտները փոխարինում են կայքի ողջ էֆեկտներին ուղղակիորեն իր այցելուների համար, այլ ոչ թե միաձուլվում նրանց հետ. «որոշ ձյունը» ձյան իմաստալից խառնուրդ չէ և ոչ մի ազդեցություն:",
+  Default: "Լռելյայն",
   "Default commission": "Լռելյայն հանձնաժողով",
   "Default fee": "Լռելյայն վճար",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -457,6 +473,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Ջնջել բաղադրատոմսը",
   "Delete role": "Ջնջել դերը",
   "Delete selected (": "Ջնջել դերը",
+  "Delete this entry": "Ջնջել այս գրառումը",
   "Delete this price adjustment?": "Ջնջե՞լ այս գնի ճշգրտումը:",
   "Delete user": "Ջնջե՞լ օգտվողին",
   "Deleting...": "Ջնջել...",
@@ -478,6 +495,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Դիետիկ և հավաստագրման զտիչներ",
   "Dietary tags": "Դիետիկ պիտակներ",
   "Dietary tags (comma separated)": "Դիետիկ պիտակներ (ստորակետերով առանձնացված)",
+  "Dietary Tags & Certifications": "Դիետիկ պիտակներ և հավաստագրեր",
   "Direct message": "Ուղիղ հաղորդագրություն",
   Disable: "Անջատել",
   "Disable selected (": "Անջատել ընտրվածը (",
@@ -502,11 +520,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "օր. Հաշիվներ",
   "e.g. DIWALI500": "օր. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "օր. Հնձվել է 2026 թվականի մարտի 3-ի շաբաթը",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Օրինակ. Հնդկաստան Օրգանական, Արդար Առևտուր: Որևէ ապրանքին տրված հավաստագիրը չի կարող ջնջվել, քանի դեռ չի հանվել դրանից:",
   "e.g. Ops Room": "օր. Օպերացիոն սենյակ",
   "e.g. Rain-fed, no synthetic pesticides": "օր. Անձրևային, առանց սինթետիկ թունաքիմիկատների",
   "e.g. Refrigerate and use within 5 days": "օր. Սառեցրեք և օգտագործեք 5 օրվա ընթացքում",
   "e.g. TO-HONEY-500": "օր. TO-HONEY-500",
   "e.g. UTR 123456789012": "օր. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Օրինակ. Vegan, առանց գլյուտենի: Մեկը ջնջելով այն կհեռացվի յուրաքանչյուր ապրանքից, որտեղ այն ստուգված է:",
   Edit: "Խմբագրել",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Խմբագրել CMS էջի մետատվյալները, ինդեքսավորումը և չմշակված էջի բլոկները: Գլխավոր էջի գրառումը նույնպես նշված է այստեղ, սակայն Գլխավոր էջի կարգավորումներն այն փոխելու առավել անվտանգ միջոցն են. այս խմբագրիչը օգտագործում է չմշակված JSON:",
@@ -611,6 +633,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     "Պարտադիր միացնել կամ անջատել բաժինը մեկ երկրի այցելուների համար՝ չփոխելով այն, ինչ տեսնում են բոլորը: Թողեք «Ժառանգել» բաժինը, և այն պարզապես հետևում է վերևի հատվածի ցանկում նշված վանդակին:",
   "Forgot password?": "Մոռացե՞լ եք գաղտնաբառը:",
+  "Formatting locale": "Տեղի ձևաչափում",
   "Free delivery above (₹)": "Անվճար առաքում վերևում (₹)",
   "French (Français)": "ֆրանսերեն (Français)",
   Frequency: "Հաճախականություն",
@@ -696,6 +719,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Եթե այս ակցիան երբեք չի մարվել, այն ուղղակիորեն ջնջվում է. հակառակ դեպքում այն ​​արխիվացված է, ուստի պահպանվում է դրա պատմությունը:",
   Igbo: "Իգբո",
+  Image: "Պատկեր",
   "Image alt text": "Պատկերի այլընտրանքային տեքստ",
   "Image alt text (optional)": "Պատկերի այլընտրանքային տեքստ (ըստ ցանկության)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -774,6 +798,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Գույնը դատարկ թողեք՝ True Grit-ով առաքվողը պահելու համար. դաշտը մաքրելով՝ դուք կարող եք հետարկել: Էջի կամ երկրի գույները սկսվում են կայքի գույներից և անտեսում են միայն այն, ինչ դուք փոխում եք, ուստի յուրաքանչյուրը կարճ ցուցակ է, այլ ոչ թե երկրորդ գունապնակ, որը պետք է պահպանվի: Երբ երկուսն էլ վերաբերում են նույն այցելուին, էջը հաղթում է. խմբագրական էջի ձևավորումը չպետք է հետարկվի աշխարհագրական փորձի միջոցով:",
   "Leave blank to use the default.": "Լռելյայն օգտագործելու համար թողեք դատարկ:",
+  "Leave the link blank for a plain, unclickable image.":
+    "Հղումը դատարկ թողեք պարզ, չսեղմվող պատկերի համար:",
   "Less refunds": "Ավելի քիչ գումարի վերադարձ",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Հաճախորդներին հնարավորություն է տալիս վճարման պահին կիրառել նվեր քարտի կոդը՝ ծածկելով իրենց պատվերի ընդհանուր մի մասը կամ ամբողջը: Թողարկեք քարտեր Նվեր Քարտերի էջից: Լռելյայն անջատված է. գոյություն ունեցող քարտերը և դրանց մնացորդները պահվում են, պարզապես չեն կարող մարվել, քանի դեռ սա անջատված է:",
@@ -785,6 +811,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Տողի ընդհանուր",
   Lines: "Գծեր",
   Link: "Հղում",
+  "Link (optional)": "Հղում (ըստ ցանկության)",
   "Link customer": "Կապել հաճախորդը",
   "Link product": "Կցել արտադրանքը",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -804,6 +831,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Կենդանի նախադիտում",
   "Live, and to scale with the real storefront's own styles.":
     "Ուղիղ հեռարձակում և չափեք իրական խանութի սեփական ոճերը:",
+  Loading: "Բեռնվում է",
   "Loading active promotions...": "Բեռնվում են ակտիվ գովազդներ...",
   "Loading analytics...": "Վերլուծական տվյալների բեռնում...",
   "Loading announcements...": "Բեռնվում են հայտարարություններ...",
@@ -817,6 +845,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Բեռնվում են խոսակցությունները…",
   "Loading country overrides...": "Բեռնվում են երկրի վերափոխումները...",
   "Loading crawler files...": "Բեռնվում են սողունի ֆայլերը...",
+  "Loading currency values…": "Բեռնվում են արժույթի արժեքները…",
   "Loading delivery charges...": "Բեռնվում են առաքման վճարները...",
   "Loading discussion…": "Քննարկումը բեռնվում է…",
   "Loading highlights...": "Բեռնվում են կարևոր կետերը...",
@@ -839,6 +868,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Բեռնվում են խանութի ցուցափեղկերի անջատիչները...",
   "Loading submission…": "Բեռնվում է ներկայացումը…",
   "Loading...": "Բեռնվում է...",
+  "Loading…": "Բեռնվում է…",
   "Local pickup points": "Տեղական հավաքման կետեր",
   "Locale to translate": "Լոկալ թարգմանության համար",
   "Locked out? Use": "Կողպված եք: Օգտագործեք",
@@ -893,6 +923,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Չափավորության պատճառ",
   Mongolian: "մոնղոլերեն",
   "More from True Grit": "Ավելին՝ True Grit-ից",
+  "Motto banner": "Կարգախոսի դրոշակակիր",
   "Move down in the showcase": "Տեղափոխեք ցուցափեղկի ներքև",
   "Move earlier": "Տեղափոխեք ավելի վաղ",
   "Move later": "Տեղափոխեք ավելի ուշ",
@@ -1020,6 +1051,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ծանոթագրություն (պահանջվում է փոփոխություններ պահանջելու կամ մերժելու համար)",
   "Note (required)": "Նշում (պարտադիր է)",
   Notes: "Ծանոթագրություններ",
+  "Nothing here yet": "Այստեղ դեռ ոչինչ չկա",
   "Nothing outstanding to pay": "Չվճարելու ոչինչ չկա",
   "Nothing pending.": "Ոչ մի սպասող բան չկա:",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1075,6 +1107,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Օրգանական Alphonso Mangoes",
   "Organic mangoes held in a sunlit orchard":
     "Օրգանական մանգոները պահվում են արևով լուսավորված այգում",
+  "Organic wheat flour in a wooden bowl": "Օրգանական ցորենի ալյուր փայտե ամանի մեջ",
   Outstanding: "Հրաշալի",
   Overview: "Ակնարկ",
   "Owner Reports": "Սեփականատիրոջ հաշվետվություններ",
@@ -1124,9 +1157,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ընտրեք առնվազն մեկ երկիր կամ թողարկեք ամենուր:",
   "Pick at least one country, or release globally.":
     "Ընտրեք առնվազն մեկ երկիր կամ թողարկեք ամբողջ աշխարհում:",
-  "Pick exactly two people for a direct message.":
-    "Ուղիղ հաղորդագրության համար ընտրեք ուղիղ երկու հոգու:",
   "Pick one from the list to start reading.": "Ընտրեք ցանկից մեկը, որպեսզի սկսեք կարդալ:",
+  "Pick the other person for this direct message.":
+    "Ընտրեք մյուս անձին այս ուղիղ հաղորդագրության համար:",
   "PIN code": "PIN կոդը",
   "PIN patterns": "PIN-ի նախշերը",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1274,6 +1307,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Պահանջում է pages.view թույլտվություն և միացված API:",
   "Requires products.publish": "Պահանջում է products.publish",
   "Requires recipes.publish": "Պահանջում է recipes.publish",
+  "Requires settings access.": "Պահանջում է մուտք գործել կարգավորումներ:",
   "Requires the analytics.view permission.": "Պահանջում է analytics.view թույլտվություն:",
   "Requires the inventory.adjust permission.": "Պահանջում է inventory.adjust թույլտվություն:",
   "Requires the reports.query permission.": "Պահանջում է report.query թույլտվություն:",
@@ -1327,6 +1361,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Վազում…",
   "Russian (Русский)": "Ռուսերեն (Русский)",
   "Safe area": "Ապահով տարածք",
+  "Safe geo-lock:": "Ապահով աշխարհագրական կողպեք.",
   "Sale & Discounts": "Վաճառք և զեղչեր",
   "Sale price": "Sanskrit (संस्कृतम्)",
   "Sale Price (₹)": "Վաճառքի գին (₹)",
@@ -1460,6 +1495,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "սերբերեն",
   Servings: "Ծառայություններ",
   "Set a new password": "Սահմանել նոր գաղտնաբառ",
+  "Set as default": "Սահմանել որպես լռելյայն",
   "Shop · Farms · Journal": "Գնումներ · Ֆերմերային տնտեսություններ · ամսագիր",
   "Shop fresh greens": "Shop greens",
   "Shop root vegetables": "Գնեք արմատային բանջարեղեն",
@@ -1557,6 +1593,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "սվահիլի (կիսահիլի)",
   "Swedish (Svenska)": "շվեդերեն (Svenska)",
   Table: "Աղյուսակ",
+  "Tags & Certifications": "Թեգեր և հավաստագրեր",
   "Tags:": "Պիտակներ՝",
   Tajik: "Տաջիկերեն",
   "Taking payments": "Վճարումներ կատարել",
@@ -1573,6 +1610,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Դրոշի, կատեգորիայի տողի, արտադրանքի տողի և SEO դաշտերը միասին պահվում են: Բաժինների վանդակները, պատվերները և հատուկ բաժնի պատճենները պահվում են ինքնուրույն, երբ դուք փոխում եք դրանք:",
   "The chat widget customers and visitors see on the storefront.":
     "Զրույցի վիջեթը հաճախորդները և այցելուները տեսնում են խանութի ցուցափեղկին:",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Վանդակների ցուցակները ցուցադրվում են յուրաքանչյուր ապրանքի Ընդհանուր ներդիրում: Փոփոխություններն անմիջապես կիրառվում են ամենուր:",
   "The classic credential pair, including the password-reset flow.":
     "Դասական հավատարմագրերի զույգը, ներառյալ գաղտնաբառի վերակայման հոսքը:",
   "the farm owner": "ֆերմայի սեփականատերը",
@@ -1624,6 +1663,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Այս բաժինը խմբագրված է իր սեփական վահանակում` էջի ներքեւում:",
   "Threads started from the storefront appear here.":
     "Խանութի ցուցափեղկից սկսված թեմաները հայտնվում են այստեղ:",
+  "Thumbnail image URL": "Մաննապատկերի պատկերի URL",
   Time: "Ժամանակը",
   "Tinted band": "Մգեցված ժապավեն",
   Title: "Վերնագիր",
@@ -1673,9 +1713,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Վերբեռնեք պատկեր",
   "Uploading image...": "Վերբեռնվում է պատկեր...",
   "Uploading image…": "Նկարի վերբեռնում…",
+  "Uploading thumbnail...": "Վերբեռնվում է մանրապատկեր...",
   "Uploading...": "Վերբեռնվում է...",
   "Uploading…": "Վերբեռնվում է…",
   "Urdu (اردو)": "ուրդու (اردու)",
+  USD: "ԱՄՆ դոլար",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Օգտագործեք առանձին 020 × 1 պատկեր: Այս քառակուսի պատկերը կտրված է կատեգորիայի քարտերի համար. մի նորից օգտագործեք հերոսի լայն դրոշակը:",
   "Use site-wide effects instead": "Փոխարենը օգտագործեք ամբողջ կայքի էֆեկտները",
   "Use the exact canvas": "Օգտագործեք ճշգրիտ կտավը",
   "Use the navigation to get back.": "Վերադառնալու համար օգտագործեք նավիգացիան:",
@@ -1688,6 +1732,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Օգտագործելով կայքի ապրանքանիշի գույնը",
   Uyghur: "ույղուր",
   Uzbek: "ուզբեկերեն",
+  "Value of 1 INR": "1 INR-ի արժեքը",
+  "Value per INR": "Արժեքը մեկ INR-ի համար",
   "Value, ₹": "Արժեք, ₹",
   Variant: "Տարբերակ",
   "Variant (SKU)": "Տարբերակ (SKU)",

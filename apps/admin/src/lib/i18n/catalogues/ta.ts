@@ -27,6 +27,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/recipes": "/சமையல்கள்",
   "← All farms": "← அனைத்து பண்ணைகள்",
   "+ stars": "+ நட்சத்திரங்கள்",
+  "₹1,000 preview": "₹1,000 மாதிரிக்காட்சி",
+  "1 INR →": "1 இந்திய ரூபாய் →",
   "1 star": "1 நட்சத்திரம்",
   "15% off your first order": "உங்கள் முதல் ஆர்டரில் 15% தள்ளுபடி",
   "2 cups": "2 கப்",
@@ -62,6 +64,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "மேலே உள்ள + பொத்தானில் இருந்து ஒரு சூப்பர் அட்மின் குழு அல்லது நேரடி செய்தியைத் தொடங்கலாம்.",
   "A tinted band — check muted text is still readable here.":
     "ஒரு டின்ட் பேண்ட் — ஒலியடக்கப்பட்ட டெக்ஸ்ட் இன்னும் இங்கே படிக்கக்கூடியதா என சரிபார்க்கவும்.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "ஒரு பார்வையாளரின் நாடு நாணயத்தைத் தேர்ந்தெடுக்கிறது, இந்த அட்டவணை அதன் காட்சி மதிப்பை வழங்குகிறது, மேலும் அசல் INR விலை மாறாமல் இருக்கும். முடக்கப்பட்ட நாணயங்கள் INR-பாதுகாப்பான இயல்புநிலைகளுக்குத் திரும்பும்.",
   Accent: "உச்சரிப்பு",
   "Accept orders and payments": "ஆர்டர்கள் மற்றும் பேமெண்ட்களை ஏற்கவும்",
   "Accept orders and payments for this product": "இந்த ஆர்டர்கள் மற்றும் பேமெண்ட்டுகளை ஏற்கவும்",
@@ -87,6 +91,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "வகையைச் சேர்",
   "Add code": "குறியீட்டைச் சேர்",
   "Add country": "நாட்டைச் சேர்",
+  "Add currency": "நாணயத்தைச் சேர்",
   "Add entry": "உள்ளீட்டைச் சேர்",
   "Add farm owner": "பண்ணை உரிமையாளரைச் சேர்",
   "Add ingredient": "மூலப்பொருளைச் சேர்",
@@ -97,6 +102,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "தொடங்குவதற்கு கீழே ஒன்றைச் சேர்க்கவும்.",
   "Add one so the bot has something to reference for this scope.":
     "ஒன்றைச் சேர், அதனால் இந்த நோக்கத்திற்காக பாட் எதையாவது குறிப்பிட வேண்டும்.",
+  "Add one using the field above.": "மேலே உள்ள புலத்தைப் பயன்படுத்தி ஒன்றைச் சேர்க்கவும்.",
   "Add page": "பக்கத்தைச் சேர்",
   "Add participants": "பங்கேற்பாளர்களைச் சேர்",
   "Add point": "புள்ளியைச் சேர்",
@@ -115,6 +121,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "மண்டலத்தைச் சேர்",
   Added: "சேர்க்கப்பட்டது",
   "Adding...": "சேர்க்கிறது...",
+  "Adding…": "சேர்க்கிறது...",
   Address: "முகவரி",
   "Adjust points": "புள்ளிகளைச் சரிசெய்",
   "Adjust the search or create a category.": "தேடலைச் சரிசெய்யவும் அல்லது வகையை உருவாக்கவும்.",
@@ -214,6 +221,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "அஜர்பைஜானி",
   "B2B / bulk ordering": "B2B / மொத்தமாக ஆர்டர் செய்தல்",
   Back: "பின்",
+  "Back to conversations": "உரையாடல்களுக்குத் திரும்பு",
   "Back to sign in": "உள்நுழைய திரும்பவும்",
   Balance: "இருப்பு",
   "Banner alt text": "பேனர் மாற்று உரை",
@@ -278,6 +286,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "வகை எடிட்டர் பிரிவுகள்",
   "Category not found": "வகை காணப்படவில்லை",
   "Category row": "வகை வரிசை",
+  "Category thumbnail alt text": "வகை சிறுபட மாற்று உரை",
+  "Category thumbnail URL": "வகை சிறுபட URL",
   "Category to add to the homepage": "முகப்புப்பக்கத்தில் சேர்க்க வகை",
   "Cautions and low stock.": "எச்சரிக்கைகள் மற்றும் குறைந்த இருப்பு.",
   Cebuano: "செபுவானோ",
@@ -352,6 +362,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "தொடர்பு மின்னஞ்சல்",
   Content: "உள்ளடக்கம்",
   "Continue with Facebook": "Facebookஐத் தொடரவும்",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "ஒரு இந்திய ரூபாயின் மதிப்பு எவ்வளவு என்பதை அமைப்பதன் மூலம் தோராயமான உள்ளூர் நாணய விலைகளைக் கட்டுப்படுத்தவும். பட்டியல், செக் அவுட் மற்றும் ஆர்டர் பதிவுகள் INR இல் பாதுகாப்பாக இருக்கும்.",
   "Control what each role can view, create, edit, publish or manage.":
     "ஒவ்வொரு பாத்திரமும் எதைப் பார்க்கலாம், உருவாக்கலாம், திருத்தலாம், வெளியிடலாம் அல்லது நிர்வகிக்கலாம் என்பதைக் கட்டுப்படுத்தவும்.",
   "Control whether each bot is available, and edit what it knows.":
@@ -396,6 +408,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "தேர்ந்தெடுக்கப்பட்ட பட்டியல் அளவு",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "குறிப்பிட்ட வகைகளின் க்யூரேட்டட் செட் ஒரே விலையில் ஒன்றாக விற்கப்படுகிறது. ஒரு கூடை ஒரு மூட்டையில் உள்ள ஒவ்வொரு பொருளையும் வைத்திருந்தால், செக்அவுட் தானாகவே சேமிப்பைப் பயன்படுத்துகிறது.",
+  Currency: "நாணயம்",
+  "Currency code": "நாணயக் குறியீடு",
+  "Currency Converter": "நாணய மாற்றி",
+  "Currency values unavailable": "நாணய மதிப்புகள் கிடைக்கவில்லை",
   "Current password": "தற்போதைய கடவுச்சொல்",
   "Currently its own effects.": "தற்போது அதன் சொந்த விளைவுகள்.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -433,6 +449,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "குறைவு",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'ஸ்டோர் முகப்பின் மேல் அலங்காரம்: பக்கத்திற்குப் பின்னால் டிரிஃப்டிங் துகள்கள் மற்றும் சுட்டியைத் தொடர்ந்து ஒரு தடம். இரண்டும் இயல்பாகவே ஆஃப் செய்யப்பட்டுள்ளன, இரண்டும் தங்கள் சாதனத்தைக் குறைத்த இயக்கத்தைக் கேட்ட பார்வையாளர்களுக்காக முற்றிலும் தவிர்க்கப்படும், மேலும் கட்டணம் செலுத்தும் சாளரத்தில் எதுவும் தோன்றாது - கார்டு படிவத்தின் மீது பனிப்பொழிவு என்பது தவறான நேரத்தில் கவனத்தை சிதறடிக்கும். ஒரு நாட்டின் விளைவுகள் அதன் பார்வையாளர்களுடன் கலப்பதை விட தளம் முழுவதும் உள்ளவற்றை நேரடியாக மாற்றும் — "சில பனி" என்பது பனியின் அர்த்தமுள்ள கலவை அல்ல மற்றும் எந்த விளைவும் இல்லை.',
+  Default: "இயல்புநிலை",
   "Default commission": "இயல்புநிலை கமிஷன்",
   "Default fee": "இயல்புநிலை கட்டணம்",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -452,6 +469,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "செய்முறையை நீக்கு",
   "Delete role": "பாலை நீக்கு",
   "Delete selected (": "தேர்ந்தெடுக்கப்பட்ட (",
+  "Delete this entry": "இந்த பதிவை நீக்கவும்",
   "Delete this price adjustment?": "இந்த விலை சரிசெய்தலை நீக்கவா?",
   "Delete user": "பயனரை நீக்கு",
   "Deleting...": "நீக்குகிறது...",
@@ -475,6 +493,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "உணவு & சான்றிதழ் வடிப்பான்கள்",
   "Dietary tags": "உணவுக் குறிச்சொற்கள்",
   "Dietary tags (comma separated)": "உணவுக் குறிச்சொற்கள் (கமாவால் பிரிக்கப்பட்டது)",
+  "Dietary Tags & Certifications": "உணவு குறிச்சொற்கள் & சான்றிதழ்கள்",
   "Direct message": "நேரடி செய்தி",
   Disable: "முடக்கு",
   "Disable selected (": "தேர்ந்தெடுத்ததை முடக்கு (",
@@ -499,12 +518,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "எ.கா. கணக்குகள்",
   "e.g. DIWALI500": "எ.கா. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "எ.கா. மார்ச் 3, 2026 வாரத்தில் அறுவடை செய்யப்பட்டது",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "எ.கா. இந்தியா ஆர்கானிக், நியாயமான வர்த்தகம். எந்தவொரு தயாரிப்புக்கும் ஒதுக்கப்பட்ட சான்றிதழை அதிலிருந்து அகற்றும் வரை நீக்க முடியாது.",
   "e.g. Ops Room": "எ.கா. Ops Room",
   "e.g. Rain-fed, no synthetic pesticides": "எ.கா. மழைநீர், செயற்கை பூச்சிக்கொல்லிகள் இல்லை",
   "e.g. Refrigerate and use within 5 days":
     "எ.கா. குளிர்சாதன பெட்டியில் வைத்து 5 நாட்களுக்குள் பயன்படுத்தவும்",
   "e.g. TO-HONEY-500": "எ.கா. TO-HONEY-500",
   "e.g. UTR 123456789012": "எ.கா. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "எ.கா. சைவ உணவு, பசையம் இல்லாதது. ஒன்றை நீக்கினால், அது சரிபார்க்கப்பட்ட ஒவ்வொரு தயாரிப்பிலிருந்தும் அது அகற்றப்படும்.",
   Edit: "திருத்து",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS பக்க மெட்டாடேட்டா, அட்டவணைப்படுத்தல் மற்றும் மூல பக்கத் தொகுதிகளைத் திருத்தவும். முகப்புப் பதிவு இங்கேயும் பட்டியலிடப்பட்டுள்ளது, ஆனால் முகப்புப் பக்க அமைப்புகளே அதை மாற்றுவதற்கான பாதுகாப்பான வழியாகும் — இந்த எடிட்டர் JSON ஐப் பயன்படுத்துகிறது.",
@@ -610,6 +633,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'எல்லோரும் பார்ப்பதை மாற்றாமல், ஒரே நாட்டில் உள்ள பார்வையாளர்களுக்காக ஒரு பிரிவை ஆன் அல்லது ஆஃப் செய்யவும். "இன்ஹெரிட்" இல் ஒரு பிரிவை விட்டு விடுங்கள், அது மேலே உள்ள பிரிவு பட்டியலில் உள்ள டிக்பாக்ஸைப் பின்தொடர்கிறது.',
   "Forgot password?": "கடவுச்சொல்லை மறந்துவிட்டீர்களா?",
+  "Formatting locale": "மொழியை வடிவமைத்தல்",
   "Free delivery above (₹)": "மேலே இலவச டெலிவரி (₹)",
   "French (Français)": "பிரெஞ்சு (பிரான்சாய்ஸ்)",
   Frequency: "அதிர்வெண்",
@@ -696,6 +720,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "இந்த விளம்பரம் ஒருபோதும் ரிடீம் செய்யப்படவில்லை என்றால், அது முழுவதுமாக நீக்கப்படும்; இல்லையெனில் அது காப்பகப்படுத்தப்பட்டதால் அதன் வரலாறு சேமிக்கப்படும்.",
   Igbo: "பட்டியலிடப்பட்ட கோப்பு கீழே உள்ளது இலக்கு.",
+  Image: "படம்",
   "Image alt text": "பட மாற்று உரை",
   "Image alt text (optional)": "பட மாற்று உரை (விரும்பினால்)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -762,6 +787,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Label: "லேபிள்",
   "Land under cultivation": "பயிரிடப்படும் நிலம்",
   Language: "மொழி",
+  "Language Studio": "மொழி ஸ்டுடியோ",
   Lao: "லாவோ",
   "Last activity": "கடைசி செயல்பாடு",
   "Last reviewer note": "கடைசி மதிப்பாய்வாளர் குறிப்பு",
@@ -775,6 +801,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "ஒரு True Grit கப்பல்களை வைத்திருக்க ஒரு வண்ணத்தை காலியாக விடவும் — ஒரு புலத்தை அழிப்பதே நீங்கள் செயல்தவிர்க்க வேண்டும். ஒரு பக்கம் அல்லது நாட்டின் வண்ணங்கள் தளத்தின் வண்ணங்களிலிருந்து தொடங்கி, நீங்கள் மாற்றுவதை மட்டுமே மேலெழுதுகின்றன, எனவே ஒவ்வொன்றும் ஒரு சிறிய பட்டியல், பராமரிக்க இரண்டாவது தட்டு அல்ல. இரண்டும் ஒரே பார்வையாளருக்குப் பொருந்தும்போது, ​​பக்கம் வெற்றிபெறும் — புவியியல் பரிசோதனையின் மூலம் எடிட்டோரியல் பக்கத்தின் வடிவமைப்பு செயல்தவிர்க்கப்படக் கூடாது.",
   "Leave blank to use the default.": "இயல்புநிலையைப் பயன்படுத்த, காலியாக விடவும்.",
+  "Leave the link blank for a plain, unclickable image.": "lankclave the link படம்.",
   "Less refunds": "குறைவான பணத்தைத் திரும்பப்பெறும்",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "செக் அவுட்டின் போது வாடிக்கையாளர்கள் கிஃப்ட் கார்டு குறியீட்டைப் பயன்படுத்த அனுமதிக்கிறார்கள், அதில் மொத்த ஆர்டரின் ஒரு பகுதி அல்லது முழுவதையும் உள்ளடக்கும். பரிசு அட்டைகள் பக்கத்திலிருந்து அட்டைகளை வழங்கவும். இயல்புநிலையாக முடக்கப்பட்டுள்ளது — ஏற்கனவே உள்ள கார்டுகள் மற்றும் அவற்றின் இருப்புக்கள் சேமிக்கப்படும், இது முடக்கப்பட்டிருக்கும் போது மீட்டெடுக்க முடியாது.",
@@ -786,6 +813,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "கோடு மொத்தம்",
   Lines: "கோடுகள்",
   Link: "இணைப்பு",
+  "Link (optional)": "இணைப்பு (விரும்பினால்)",
   "Link customer": "இணைப்பு வாடிக்கையாளருக்கு",
   "Link product": "இணைப்பு தயாரிப்பு",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -805,6 +833,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "நேரடி முன்னோட்டம்",
   "Live, and to scale with the real storefront's own styles.":
     "நேரலை, மற்றும் உண்மையான ஸ்டோர்ஃபிரண்டின் சொந்த பாணிகளுடன் அளவிடவும்.",
+  Loading: "ஏற்றுகிறது",
   "Loading active promotions...": "செயலில் உள்ள விளம்பரங்களை ஏற்றுகிறது...",
   "Loading analytics...": "பகுப்பாய்வுகளை ஏற்றுகிறது...",
   "Loading announcements...": "அறிவிப்புகளை ஏற்றுகிறது...",
@@ -818,6 +847,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "உரையாடல்களை ஏற்றுகிறது...",
   "Loading country overrides...": "நாட்டை மீறுகிறது...",
   "Loading crawler files...": "கிராலர் கோப்புகளை ஏற்றுகிறது...",
+  "Loading currency values…": "நாணய மதிப்புகளை ஏற்றுகிறது...",
   "Loading delivery charges...": "டெலிவரி கட்டணங்களை ஏற்றுகிறது...",
   "Loading discussion…": "விவாதத்தை ஏற்றுகிறது...",
   "Loading highlights...": "சிறப்பம்சங்களை ஏற்றுகிறது...",
@@ -840,6 +870,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "ஸ்டோர் முகப்பு சுவிட்சுகளை ஏற்றுகிறது...",
   "Loading submission…": "சமர்ப்பிப்பை ஏற்றுகிறது...",
   "Loading...": "ஏற்றப்படுகிறது...",
+  "Loading…": "ஏற்றப்படுகிறது...",
   "Local pickup points": "உள்ளூர் பிக்கப் புள்ளிகள்",
   "Locale to translate": "மொழிபெயர்ப்பதற்கான மொழி",
   "Locked out? Use": "பூட்டிவிட்டதா? பயன்படுத்தவும்",
@@ -894,6 +925,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "நடுநிலைக் காரணம்",
   Mongolian: "மங்கோலியன்",
   "More from True Grit": "True Grit இலிருந்து மேலும்",
+  "Motto banner": "மோட்டோ பேனர்",
   "Move down in the showcase": "ஷோகேஸில் கீழே நகர்த்தவும்",
   "Move earlier": "முன் நகர்த்தவும்",
   "Move later": "பின்னர் நகர்த்தவும்",
@@ -1023,6 +1055,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "குறிப்பு (மாற்றங்களைக் கோர அல்லது நிராகரிக்க வேண்டும்)",
   "Note (required)": 'குறிப்பு id="t0009">குறிப்புகள்',
   Notes: "குறிப்புகள்",
+  "Nothing here yet": "இங்கே எதுவும் இல்லை",
   "Nothing outstanding to pay": "அவசரம்",
   "Nothing pending.": "எதுவும் நிலுவையில் இல்லை.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1077,6 +1110,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": 'ஆர்கானிக் பொருட்கள் id="t0005">பங்கேற்பாளர்கள்',
   "Organic mangoes held in a sunlit orchard":
     "சூரிய ஒளியுடன் கூடிய பழத்தோட்டத்தில் வைக்கப்படும் ஆர்கானிக் மாம்பழங்கள்",
+  "Organic wheat flour in a wooden bowl": 'இந்த நபருக்கு 4="Pick0 id" செய்தி.',
   Outstanding: "சிறந்தது",
   Overview: "கண்ணோட்டம்",
   "Owner Reports": "உரிமையாளர் அறிக்கைகள்",
@@ -1126,10 +1160,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "குறைந்தது ஒரு நாட்டையாவது தேர்ந்தெடுக்கவும் அல்லது எல்லா இடங்களிலும் வெளியிடவும்.",
   "Pick at least one country, or release globally.":
     "குறைந்தது ஒரு நாட்டையாவது தேர்வு செய்யவும் அல்லது உலகளவில் வெளியிடவும்.",
-  "Pick exactly two people for a direct message.":
-    "நேரடிச் செய்திக்கு இரண்டு பேரைத் தேர்ந்தெடுக்கவும்.",
   "Pick one from the list to start reading.":
     "படிக்கத் தொடங்க பட்டியலிலிருந்து ஒருவரைத் தேர்ந்தெடுக்கவும்.",
+  "Pick the other person for this direct message.":
+    "இந்த நேரடி செய்திக்கு மற்ற நபரைத் தேர்ந்தெடுக்கவும்.",
   "PIN code": "PIN குறியீடு",
   "PIN patterns": "PIN வடிவங்கள்",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1275,6 +1309,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "pages.view அனுமதி மற்றும் இணைக்கப்பட்ட API தேவை.",
   "Requires products.publish": "தயாரிப்புகள் தேவை.வெளியீடு",
   "Requires recipes.publish": "requires recipes.publish",
+  "Requires settings access.": "அமைப்புகளுக்கான அணுகல் தேவை.",
   "Requires the analytics.view permission.": "analytics.view அனுமதி தேவை.",
   "Requires the inventory.adjust permission.": "இன்வென்டரி தேவை.சரிசெய்ய அனுமதி.",
   "Requires the reports.query permission.": "reports.query அனுமதி தேவை.",
@@ -1326,6 +1361,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "இயங்குகிறது...",
   "Russian (Русский)": "ரஷியன் (Русский)",
   "Safe area": "பாதுகாப்பான பகுதி",
+  "Safe geo-lock:": "பாதுகாப்பான புவி-பூட்டு:",
   "Sale & Discounts": "விற்பனை & தள்ளுபடிகள்",
   "Sale price": "விற்பனை விலை",
   "Sale Price (₹)": "விற்பனை விலை (₹)",
@@ -1462,6 +1498,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "புதிய கடவுச்சொற்களை அமைக்கவும். கீரைகள்",
   Servings: "சேவைகள்",
   "Set a new password": "புதிய கடவுச்சொல்லை அமைக்கவும்",
+  "Set as default": "இயல்புநிலையாக அமை",
   "Shop fresh greens": "புதிய கீரைகளை வாங்கவும்",
   "Shop root vegetables": "வேர் காய்கறிகளை வாங்கவும்",
   "Shop the market": "சந்தையில் வாங்கவும்",
@@ -1562,6 +1599,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "சுவாஹிலி (கிஸ்வாஹிலி)",
   "Swedish (Svenska)": "ஸ்வீடிஷ் (ஸ்வென்ஸ்கா)",
   Table: "டேபிள்",
+  "Tags & Certifications": "குறிச்சொற்கள் & சான்றிதழ்கள்",
   "Tags:": "குறிச்சொற்கள்:",
   Tajik: "தாஜிக்",
   "Taking payments": "பணம் செலுத்துதல்",
@@ -1578,6 +1616,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "பேனர், வகை வரிசை, தயாரிப்பு வரிசை மற்றும் SEO புலங்கள் ஒன்றாகச் சேமிக்கப்படும். பிரிவு டிக்பாக்ஸ்கள், ஆர்டர் செய்தல் மற்றும் பிரத்தியேகப் பிரிவின் நகலை நீங்கள் மாற்றும்போது, அவை தானாகவே சேமிக்கப்படும்.",
   "The chat widget customers and visitors see on the storefront.":
     "அரட்டை விட்ஜெட் ஊழியர்கள் மற்றும் பார்வையாளர்கள் கடை முகப்பில் பார்க்கிறார்கள்.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "ஒவ்வொரு தயாரிப்பின் பொதுத் தாவலிலும் காட்டப்படும் தேர்வுப்பெட்டி பட்டியல்கள். மாற்றங்கள் எல்லா இடங்களிலும் உடனடியாகப் பொருந்தும்.",
   "The classic credential pair, including the password-reset flow.":
     "கடவுச்சொல்-மீட்டமைப்பு ஓட்டம் உட்பட கிளாசிக் நற்சான்றிதழ் ஜோடி.",
   "the farm owner": "பண்ணை உரிமையாளர்",
@@ -1632,6 +1672,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "இந்தப் பிரிவு அதன் சொந்த பேனலில் பக்கத்திற்கு கீழே திருத்தப்பட்டுள்ளது.",
   "Threads started from the storefront appear here.":
     "ஸ்டோர் முகப்பில் இருந்து தொடங்கப்பட்ட நூல்கள் இங்கே தோன்றும்.",
+  "Thumbnail image URL": "சிறுபடப் பட URL",
   Time: "நேரம்",
   "Tinted band": "டின்ட் பேண்ட்",
   Title: "தலைப்பு",
@@ -1681,9 +1722,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "படத்தைப் பதிவேற்றவும்",
   "Uploading image...": "படத்தைப் பதிவேற்றுகிறது...",
   "Uploading image…": "படத்தைப் பதிவேற்றுகிறது...",
+  "Uploading thumbnail...": "சிறுபடத்தைப் பதிவேற்றுகிறது...",
   "Uploading...": "பதிவேற்றுகிறது...",
   "Uploading…": "பதிவேற்றுகிறது...",
   "Urdu (اردو)": "உருது (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "தனி 1200 × 1200 படத்தைப் பயன்படுத்தவும். இந்த சதுரப் படம் வகை அட்டைகளுக்காக செதுக்கப்பட்டது; பரந்த ஹீரோ பேனரை மீண்டும் பயன்படுத்த வேண்டாம்.",
   "Use site-wide effects instead": "இதற்குப் பதிலாக தளம் முழுவதும் விளைவுகளைப் பயன்படுத்தவும்",
   "Use the exact canvas": "சரியான கேன்வாஸைப் பயன்படுத்தவும்",
   "Use the navigation to get back.": "திரும்பப் பெற வழிசெலுத்தலைப் பயன்படுத்தவும்.",
@@ -1696,6 +1740,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "தள பிராண்ட் நிறத்தைப் பயன்படுத்துதல்",
   Uyghur: "உய்குர்",
   Uzbek: "உஸ்பெக்",
+  "Value of 1 INR": "மதிப்பு 1 INR",
+  "Value per INR": "ஒரு INRக்கான மதிப்பு",
   "Value, ₹": "மதிப்பு, ₹",
   Variant: "மாறுபாடு",
   "Variant (SKU)": "மாறுபாடு (SKU)",

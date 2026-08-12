@@ -6,7 +6,7 @@
  * Sending goes over `useChatSocket`'s WebSocket, not a REST call. */
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Send, UserMinus, UserPlus, Users } from "lucide-react";
+import { ArrowLeft, Plus, Send, UserMinus, UserPlus, Users } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { Button, EmptyState, Field, Input, Modal, Select, Textarea } from "../components/ui";
@@ -24,6 +24,18 @@ function conversationLabel(
   if (conversation.type === "group") return conversation.name ?? "Untitled group";
   const other = conversation.participants.find((p) => p.userId !== myUserId);
   return other?.displayName ?? "Direct message";
+}
+
+/** The other person's role(s) in a direct message, e.g. "Farm Owner" -- so
+ *  an admin can see who they are actually talking to, not just a name.
+ *  Group conversations already show every member's role in "Manage". */
+function directMessageRole(
+  conversation: ConversationSummary,
+  myUserId: string | undefined,
+): string | null {
+  if (conversation.type !== "direct") return null;
+  const other = conversation.participants.find((p) => p.userId !== myUserId);
+  return other && other.roles.length > 0 ? other.roles.join(", ") : null;
 }
 
 function ConversationList({
@@ -77,8 +89,15 @@ function ConversationList({
                 </span>
               ) : null}
             </span>
-            <span className="truncate text-xs text-ink-muted">
-              {conversation.lastMessageBody ?? <T>{"No messages yet"}</T>}
+            <span className="flex items-center justify-between gap-2">
+              <span className="truncate text-xs text-ink-muted">
+                {conversation.lastMessageBody ?? <T>{"No messages yet"}</T>}
+              </span>
+              {conversation.lastMessageAt ? (
+                <span className="shrink-0 text-[11px] text-ink-muted">
+                  {formatDateTime(conversation.lastMessageAt)}
+                </span>
+              ) : null}
             </span>
           </button>
         </li>
@@ -109,10 +128,12 @@ function MessageThread({
   conversation,
   myUserId,
   isSuperAdmin,
+  onBack,
 }: {
   conversation: ConversationSummary;
   myUserId: string | undefined;
   isSuperAdmin: boolean;
+  onBack: () => void;
 }) {
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -154,17 +175,34 @@ function MessageThread({
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between border-b border-line px-4 py-3">
-        <div>
-          <p className="font-medium text-ink">{conversationLabel(conversation, myUserId)}</p>
-          <p className="text-xs text-ink-muted">
-            {status === "open" ? (
-              <T>{"Live"}</T>
-            ) : status === "connecting" ? (
-              <T>{"Connecting…"}</T>
-            ) : (
-              <T>{"Reconnecting…"}</T>
-            )}
-          </p>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onBack}
+            aria-label="Back to conversations"
+            className="flex h-8 w-8 items-center justify-center rounded-sm text-ink-muted hover:bg-canvas md:hidden"
+          >
+            <ArrowLeft size={16} />
+          </button>
+          <div>
+            <p className="flex items-center gap-2 font-medium text-ink">
+              {conversationLabel(conversation, myUserId)}
+              {directMessageRole(conversation, myUserId) ? (
+                <span className="rounded-full bg-subtle px-2 py-0.5 text-[11px] font-medium text-ink-muted">
+                  {directMessageRole(conversation, myUserId)}
+                </span>
+              ) : null}
+            </p>
+            <p className="text-xs text-ink-muted">
+              {status === "open" ? (
+                <T>{"Live"}</T>
+              ) : status === "connecting" ? (
+                <T>{"Connecting…"}</T>
+              ) : (
+                <T>{"Reconnecting…"}</T>
+              )}
+            </p>
+          </div>
         </div>
         {isSuperAdmin && conversation.type === "group" ? (
           <Button variant="secondary" onClick={() => setManageOpen(true)}>
@@ -263,7 +301,9 @@ function StaffPicker({
             onChange={() => onToggle(user.id)}
           />
           <span className="text-ink">{user.displayName}</span>
-          <span className="text-xs text-ink-muted">{user.email}</span>
+          <span className="text-xs text-ink-muted">
+            {user.roles.length > 0 ? user.roles.join(", ") : <T>{"No role"}</T>}
+          </span>
         </label>
       ))}
     </div>
@@ -343,7 +383,14 @@ function ManageParticipantsModal({
                 key={participant.userId}
                 className="flex items-center justify-between rounded-sm border border-line px-2.5 py-1.5 text-sm"
               >
-                {participant.displayName}
+                <span>
+                  {participant.displayName}
+                  {participant.roles.length > 0 ? (
+                    <span className="ml-1.5 text-xs text-ink-muted">
+                      ({participant.roles.join(", ")})
+                    </span>
+                  ) : null}
+                </span>
                 <button
                   type="button"
                   aria-label={`Remove ${participant.displayName}`}
@@ -388,7 +435,15 @@ function ManageParticipantsModal({
   );
 }
 
-function NewConversationModal({ onClose }: { onClose: () => void }) {
+function NewConversationModal({
+  myUserId,
+  onClose,
+  onCreated,
+}: {
+  myUserId: string | undefined;
+  onClose: () => void;
+  onCreated: (conversationId: string) => void;
+}) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [type, setType] = useState<"group" | "direct">("group");
@@ -400,21 +455,35 @@ function NewConversationModal({ onClose }: { onClose: () => void }) {
       api.createConversation({
         type,
         name: type === "group" ? name.trim() : null,
-        participantUserIds: participantIds,
+        // The creator is always a participant of what they create -- without
+        // this, a conversation made from this modal never appears in the
+        // creator's own list (list_my_conversations only returns
+        // conversations you belong to), so they could never open, message
+        // in, or manage it again after closing this modal.
+        participantUserIds: myUserId ? [...participantIds, myUserId] : participantIds,
       }),
-    onSuccess: async () => {
+    onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: ["conversations"] });
-      toast.success(type === "group" ? "Group created." : "Conversation started.");
-      onClose();
+      toast.success(
+        type === "group"
+          ? "Group created."
+          : result.reused
+            ? "Conversation found."
+            : "Conversation started.",
+      );
+      onCreated(result.id);
     },
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not create."),
   });
 
+  // The current user is added automatically above, so the picker only ever
+  // needs to name the *other* people -- one more for a direct message, at
+  // least one more for a group.
   const canSubmit =
     type === "group"
       ? name.trim().length > 0 && participantIds.length >= 1
-      : participantIds.length === 2;
+      : participantIds.length === 1;
 
   return (
     <Modal title="New conversation" onClose={onClose}>
@@ -448,7 +517,7 @@ function NewConversationModal({ onClose }: { onClose: () => void }) {
           </Field>
         ) : (
           <p className="text-xs text-ink-muted">
-            <T>Pick exactly two people for a direct message.</T>
+            <T>Pick the other person for this direct message.</T>
           </p>
         )}
 
@@ -457,12 +526,12 @@ function NewConversationModal({ onClose }: { onClose: () => void }) {
             <T>Participants</T>
           </p>
           <StaffPicker
-            excludeUserIds={[]}
+            excludeUserIds={myUserId ? [myUserId] : []}
             selected={participantIds}
             onToggle={(userId) =>
               setParticipantIds((current) => {
                 if (current.includes(userId)) return current.filter((id) => id !== userId);
-                if (type === "direct" && current.length >= 2) return current;
+                if (type === "direct" && current.length >= 1) return current;
                 return [...current, userId];
               })
             }
@@ -517,7 +586,11 @@ export function MessagesPage() {
       </div>
 
       <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden rounded-md border border-line bg-surface shadow-card md:grid-cols-[20rem_minmax(0,1fr)]">
-        <div className="flex min-h-0 flex-col border-line md:border-r">
+        <div
+          className={`min-h-0 flex-col border-line md:flex md:border-r ${
+            selected ? "hidden md:flex" : "flex"
+          }`}
+        >
           <ConversationList
             conversations={conversations ?? []}
             isLoading={isLoading}
@@ -526,12 +599,13 @@ export function MessagesPage() {
             myUserId={me?.id}
           />
         </div>
-        <div className="hidden min-h-0 md:block">
+        <div className={`min-h-0 md:block ${selected ? "block" : "hidden md:block"}`}>
           {selected ? (
             <MessageThread
               conversation={selected}
               myUserId={me?.id}
               isSuperAdmin={me?.isSuperAdmin ?? false}
+              onBack={() => setSelectedId(null)}
             />
           ) : (
             <div className="flex h-full items-center justify-center">
@@ -545,7 +619,14 @@ export function MessagesPage() {
       </div>
 
       {newConversationOpen ? (
-        <NewConversationModal onClose={() => setNewConversationOpen(false)} />
+        <NewConversationModal
+          myUserId={me?.id}
+          onClose={() => setNewConversationOpen(false)}
+          onCreated={(conversationId) => {
+            setSelectedId(conversationId);
+            setNewConversationOpen(false);
+          }}
+        />
       ) : null}
     </div>
   );

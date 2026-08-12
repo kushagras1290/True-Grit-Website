@@ -29,6 +29,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/üzlet",
   "← All farms": "← Minden farm",
   "+ stars": "+ csillag",
+  "₹1,000 preview": "1000 INR előnézet",
   "1 star": "1 csillag",
   "15% off your first order": "15% kedvezmény az első rendelésedből",
   "2 cups": "2 csésze",
@@ -63,6 +64,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "A kiemelt adminisztrátor csoportot vagy közvetlen üzenetet indíthat a fenti + gombbal.",
   "A tinted band — check muted text is still readable here.":
     "Színezett sáv – a csekk elnémított szövege továbbra is olvasható.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "a látogató országa kiválaszt egy pénznemet, ez a táblázat adja meg annak megjelenítési értékét, és az eredeti INR ár változatlan marad. A letiltott pénznemek visszaállnak az INR biztonságos alapértékeire.",
   Accent: "Kiemelés",
   "Accept orders and payments": "Rendelések és fizetések elfogadása",
   "Accept orders and payments for this product":
@@ -89,6 +92,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Kategória hozzáadása",
   "Add code": "Kód hozzáadása",
   "Add country": "Ország hozzáadása",
+  "Add currency": "Pénznem hozzáadása",
   "Add entry": "Bejegyzés hozzáadása",
   "Add farm owner": "Hirdetés a farm tulajdonosához",
   "Add ingredient": "Hozzávaló hozzáadása",
@@ -99,6 +103,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "A kezdéshez vegyen fel egyet alább.",
   "Add one so the bot has something to reference for this scope.":
     "Adjon hozzá egyet, hogy a botnak legyen mire hivatkoznia ehhez a hatókörhöz.",
+  "Add one using the field above.": "Adjon hozzá egyet a fenti mező segítségével.",
   "Add page": "Oldal hozzáadása",
   "Add participants": "Résztvevők hozzáadása",
   "Add point": "Pont hozzáadása",
@@ -117,6 +122,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Zóna hozzáadása",
   Added: "Hozzáadva",
   "Adding...": "Hozzáadás...",
+  "Adding…": "Hozzáadás…",
   Address: "Cím",
   "Adjust points": "Pontok módosítása",
   "Adjust the search or create a category.": "Módosítsa a keresést vagy hozzon létre kategóriát.",
@@ -213,6 +219,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "azerbajdzsáni",
   "B2B / bulk ordering": "B2B / tömeges rendelés",
   Back: "Vissza",
+  "Back to conversations": "Vissza a beszélgetésekhez",
   "Back to sign in": "Vissza a bejelentkezéshez",
   Balance: "Egyenleg",
   "Banner alt text": "Szalaghirdetés alternatív szövege",
@@ -276,6 +283,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Kategóriaszerkesztő szakaszok",
   "Category not found": "A kategória nem található",
   "Category row": "Kategória sor",
+  "Category thumbnail alt text": "Kategória indexkép alternatív szövege",
+  "Category thumbnail URL": "Kategória indexképének URL-je",
   "Category to add to the homepage": "A kezdőlaphoz hozzáadandó kategória",
   "Cautions and low stock.": "Vigyázat és alacsony készlet.",
   "Centred safe area": "Középen lévő biztonságos terület",
@@ -346,6 +355,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Kapcsolatfelvételi e-mail-cím",
   Content: "Tartalom",
   "Continue with Facebook": "Folytatás a Facebookkal",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Szabályozhatja a hozzávetőleges helyi pénznemben számított árakat azáltal, hogy mennyit ér egy indiai rúpia. A katalógus, a fizetési és a rendelési rekordok biztonságosan INR-ben maradnak.",
   "Control what each role can view, create, edit, publish or manage.":
     "Szabályozhatja, hogy az egyes szerepkörök mit tekinthetnek meg, hozhatnak létre, szerkeszthetnek, publikálhatnak vagy kezelhetnek.",
   "Control whether each bot is available, and edit what it knows.":
@@ -390,6 +401,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "válogatott listaméret",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "meghatározott változatok válogatott készletei, közös áron. A Checkout automatikusan alkalmazza a megtakarítást, ha a kosárban minden egyes tétel található egy csomagban.",
+  Currency: "Pénznem",
+  "Currency code": "Pénznemkód",
+  "Currency Converter": "Pénznemváltó",
+  "Currency values unavailable": "A pénznemek nem állnak rendelkezésre",
   "Current password": "Jelenlegi jelszó",
   "Currently its own effects.": "Jelenleg a saját hatásai.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -427,6 +442,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Elutasítás",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "Díszítés a kirakat tetején: sodródó részecskék az oldal mögött, és egy nyomvonal. Alapértelmezés szerint mindkettő ki van kapcsolva, mindkettő teljesen kimarad azoknál a látogatóknál, akik mozgáscsökkentést kértek eszközüktől, és egyik sem jelenik meg soha a fizetési ablakban – a kártyalap feletti hóesés pont rossz pillanatban vonja el a figyelmet. Egy ország hatásai a látogatók számára közvetlenül helyettesítik az egész webhelyre érvényes hatásokat, ahelyett, hogy keverednének velük – a „néhány hó” nem a hó és hatástalan keveréke.",
+  Default: "Alapértelmezett",
   "Default commission": "Alapértelmezett jutalék",
   "Default fee": "Alapértelmezett díj",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -446,6 +462,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Recept törlése",
   "Delete role": "Szerepkör törlése",
   "Delete selected (": "Kijelölt törlése (",
+  "Delete this entry": "A bejegyzés törlése",
   "Delete this price adjustment?": "Törli ezt az árkorrekciót?",
   "Delete user": "Felhasználó törlése",
   "Deleting...": "Törlés...",
@@ -467,6 +484,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Étrendi és minősítési szűrők",
   "Dietary tags": "Étrendi címkék",
   "Dietary tags (comma separated)": "Étrendi címkék (vesszővel elválasztva)",
+  "Dietary Tags & Certifications": "Étrendi címkék és tanúsítványok",
   "Direct message": "Közvetlen üzenet",
   Disable: "Letiltás",
   "Disable selected (": "Kijelöltek letiltása (",
@@ -490,12 +508,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "pl. Fiókok",
   "e.g. DIWALI500": "pl. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "pl. A 2026. március 3-i héten betakarított",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Pl. India Bio, Fair Trade. Egy termékhez rendelt tanúsítványt addig nem lehet törölni, amíg el nem távolítják róla.",
   "e.g. Ops Room": "pl. Műveleti szoba",
   "e.g. Rain-fed, no synthetic pesticides":
     "pl. Esővel táplálva, szintetikus növényvédő szer nélkül",
   "e.g. Refrigerate and use within 5 days": "pl. Hűtőbe tesszük és 5 napon belül felhasználjuk",
   "e.g. TO-HONEY-500": "pl. TO-HONEY-500",
   "e.g. UTR 123456789012": "pl. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Pl. Vegán, gluténmentes. Ha törli az egyiket, az eltávolítja az összes ellenőrzött termékből.",
   Edit: "Szerkesztés",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS-oldal metaadatok, indexelés és nyers oldalblokkok szerkesztése. A kezdőlap rekordja itt is megjelenik, de a kezdőlap beállításai a biztonságosabb módja annak megváltoztatásának – ez a szerkesztő nyers JSON-t használ.",
@@ -596,6 +618,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     "Egy szakasz be- vagy kikapcsolása egy országban tartózkodó látogatók számára anélkül, hogy megváltoztatná a többiek által látottakat. Hagyjon meg egy részt az „Öröklés” lehetőségnél, és az csak a fenti szakaszlistában található jelölőnégyzetet követi.",
   "Forgot password?": "Elfelejtette a jelszavát?",
+  "Formatting locale": "Formázási nyelv- és országkód",
   "Free delivery above (₹)": "Ingyenes szállítás fent (₹)",
   "French (Français)": "Francia (Français)",
   Frequency: "Gyakoriság",
@@ -678,6 +701,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ha az e-mail-cím rendelkezik fiókkal, a visszaállítási link úton van.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Ha ezt a promóciót még soha nem váltották be, akkor a rendszer azonnal törli; egyébként archiválva van, így előzményei megmaradnak.",
+  Image: "Kép",
   "Image alt text": "Kép alternatív szövege",
   "Image alt text (optional)": "Kép alternatív szövege (opcionális)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -755,6 +779,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Hagyjon üresen egy színt, hogy a True Grit által szállított szín megmaradjon – a mező törlésével vonhatja vissza. Egy oldal vagy ország színei a webhely színeiből indulnak ki, és csak azt írják felül, amit Ön módosít, így mindegyik egy rövid lista, nem pedig egy második karbantartandó paletta. Ha mindkettő ugyanarra a látogatóra vonatkozik, az oldal nyer – a szerkesztői oldal tervét nem szabad visszavonni egy földrajzi kísérlet által.",
   "Leave blank to use the default.": "Hagyja üresen az alapértelmezett használatához.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Hagyja üresen a linket egy egyszerű, nem kattintható képhez.",
   "Less refunds": "Kevesebb visszatérítés",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Lehetővé teszi az ügyfeleknek, hogy a fizetéskor ajándékutalvány-kódot alkalmazzanak, amely a rendelés teljes összegének egy részét vagy egészét fedezi. Kártyák kibocsátása az Ajándékkártyák oldalról. Alapértelmezés szerint ki – a meglévő kártyák és azok egyenlege megmarad, de nem váltható be, míg ez ki van kapcsolva.",
@@ -765,6 +791,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Level: "Szint",
   "Line total": "Sorok összesen",
   Lines: "Sorok",
+  "Link (optional)": "Link (nem kötelező)",
   "Link customer": "Ügyfél összekapcsolása",
   "Link product": "Termék linkelése",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -784,6 +811,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Élő előnézet",
   "Live, and to scale with the real storefront's own styles.":
     "Élő, és méretezhető a valódi kirakat saját stílusai szerint.",
+  Loading: "Betöltés",
   "Loading active promotions...": "Aktív promóciók betöltése...",
   "Loading analytics...": "Elemzések betöltése...",
   "Loading announcements...": "Bejelentések betöltése...",
@@ -797,6 +825,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Beszélgetések betöltése…",
   "Loading country overrides...": "Országfelülbírálások betöltése...",
   "Loading crawler files...": "Robot fájlok betöltése...",
+  "Loading currency values…": "Pénznemértékek betöltése…",
   "Loading delivery charges...": "Kézbesítési díjak betöltése...",
   "Loading discussion…": "Beszélgetés betöltése...",
   "Loading highlights...": "Kiemelések betöltése...",
@@ -819,6 +848,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Kirakatkapcsolók betöltése...",
   "Loading submission…": "Beküldés betöltése...",
   "Loading...": "Betöltés...",
+  "Loading…": "Betöltés…",
   "Local pickup points": "Helyi átvételi pontok",
   "Locale to translate": "A fordítás nyelve",
   "Locked out? Use": "Kizárva van? Használja a",
@@ -872,6 +902,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Moderálás oka",
   Mongolian: "mongol",
   "More from True Grit": "Továbbiak innen: True Grit",
+  "Motto banner": "Mottószalag",
   "Move down in the showcase": "Mozgás lejjebb a kirakatban",
   "Move earlier": "Korábbi költözés",
   "Move later": "Mozgás később",
@@ -997,6 +1028,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Megjegyzés (módosítás kéréséhez vagy elutasításához szükséges)",
   "Note (required)": "Megjegyzés (kötelező)",
   Notes: "Megjegyzések",
+  "Nothing here yet": "Itt még nincs semmi",
   "Nothing outstanding to pay": "Nincs fizetendő tartozás",
   "Nothing pending.": "Semmi függőben.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1049,6 +1081,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Orders will appear here once customers check out.":
     "A rendelések itt jelennek meg, amint az ügyfelek kijelentkeznek.",
   "Organic mangoes held in a sunlit orchard": "Napsütötte gyümölcsösben tartott biomangó",
+  "Organic wheat flour in a wooden bowl": "Búzaliszt fatálban",
   Outstanding: "Kiemelkedő",
   Overview: "Áttekintés",
   "Owner Reports": "Tulajdonosi jelentések",
@@ -1098,9 +1131,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Válasszon legalább egy országot, vagy adjon ki mindenhol.",
   "Pick at least one country, or release globally.":
     "Válasszon legalább egy országot, vagy adjon ki globálisan.",
-  "Pick exactly two people for a direct message.":
-    "Válassz ki pontosan két személyt a közvetlen üzenethez.",
   "Pick one from the list to start reading.": "Válassz egyet a listáról az olvasás megkezdéséhez.",
+  "Pick the other person for this direct message.":
+    "Válaszd ki a másik személyt a közvetlen üzenethez.",
   "PIN code": "PIN-kód",
   "PIN patterns": "PIN-minták",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1243,6 +1276,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires pages.view permission and a connected API.": "Engedély és csatlakoztatott oldal.",
   "Requires products.publish": "Products.publish szükséges.",
   "Requires recipes.publish": "Receptek.publish szükséges",
+  "Requires settings access.": "Beállításokhoz való hozzáférés szükséges.",
   "Requires the analytics.view permission.": "Analytics.view engedély szükséges.",
   "Requires the inventory.adjust permission.": "Inventory.adjust engedély szükséges.",
   "Requires the reports.query permission.": "Reports.query engedély szükséges.",
@@ -1295,6 +1329,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Futás…",
   "Russian (Русский)": "orosz (Русский)",
   "Safe area": "Biztonságos terület",
+  "Safe geo-lock:": "Biztonságos földrajzi zár:",
   "Sale & Discounts": "Akció és kedvezmények",
   "Sale price": "Akciós ár",
   "Sale Price (₹)": "Akciós ár (₹)",
@@ -1429,6 +1464,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Szerb",
   Servings: "Adatok",
   "Set a new password": "Új jelszó beállítása",
+  "Set as default": "Beállítás alapértelmezettként",
   "Shop · Farms · Journal": "Vásárlás · Farmok · Folyóirat",
   "Shop fresh greens": "Vásároljon friss zöldségeket",
   "Shop root vegetables": "Gyökérzöldségek vásárlása",
@@ -1527,6 +1563,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "szuahéli (kiswahili)",
   "Swedish (Svenska)": "svéd (Svenska)",
   Table: "Táblázat",
+  "Tags & Certifications": "Címkék és tanúsítványok",
   "Tags:": "Címkék:",
   Tajik: "tádzsik",
   "Taking payments": "Befizetések fogadása",
@@ -1542,6 +1579,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "A szalaghirdetés, a kategóriasor, a terméksor és a SEO mezők együtt menthetők. A szakaszok jelölőnégyzetei, a sorrend és az egyéni szakaszmásolat önmagukban mentésre kerülnek, amikor módosítja őket.",
   "The chat widget customers and visitors see on the storefront.":
     "A csevegőmodul, amelyet az ügyfelek és a látogatók a kirakaton látnak.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Az összes termék Általános lapján megjelenő jelölőnégyzetek listája. A változások mindenhol azonnal érvénybe lépnek.",
   "The classic credential pair, including the password-reset flow.":
     "A klasszikus hitelesítő adatpár, beleértve a jelszó-visszaállítási folyamatot.",
   "the farm owner": "a gazdaság tulajdonosa",
@@ -1594,6 +1633,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ez a szakasz az oldal lejjebb lévő saját paneljén szerkeszthető.",
   "Threads started from the storefront appear here.":
     "Itt jelennek meg a kirakatról indított szálak.",
+  "Thumbnail image URL": "Indexkép URL-je",
   Time: "Idő",
   "Tinted band": "Színezett szalag",
   Title: "Cím",
@@ -1644,9 +1684,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Kép feltöltése",
   "Uploading image...": "Kép feltöltése...",
   "Uploading image…": "Kép feltöltése...",
+  "Uploading thumbnail...": "Indexkép feltöltése...",
   "Uploading...": "Feltöltés...",
   "Uploading…": "Feltöltés…",
   "Urdu (اردو)": "urdu (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Használjon külön 1200 × 1200 méretű képet. Ez a négyzet alakú kép le van vágva a kategóriakártyákhoz; ne használja újra a széles hős szalaghirdetést.",
   "Use site-wide effects instead": "Használjon helyette az egész webhelyre kiterjedő effektusokat",
   "Use the exact canvas": "Használja a pontos vásznat",
   "Use the navigation to get back.": "Használja a navigációt a visszatéréshez.",
@@ -1659,6 +1702,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "A webhely márkaszínének használata",
   Uyghur: "ujgur",
   Uzbek: "üzbég",
+  "Value of 1 INR": "1 INR értéke",
+  "Value per INR": "INR-enkénti érték",
   "Value, ₹": "Érték, ₹",
   Variant: "változat",
   "Variant (SKU)": "változat (SKU)",

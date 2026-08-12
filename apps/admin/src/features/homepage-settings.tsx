@@ -39,6 +39,7 @@ import {
   type HomepageSection,
   type SiteControl,
 } from "../lib/api";
+import { IMAGE_SPECIFICATIONS_BY_ID } from "../lib/image-specifications";
 import { usePermissions } from "../lib/permissions";
 import { T } from "../lib/i18n";
 
@@ -253,7 +254,8 @@ export function HomepageSettingsPage() {
   });
 
   const uploadMutation = useMutation({
-    mutationFn: ({ file }: { file: File; index: number }) => api.uploadImage(file),
+    mutationFn: ({ file }: { file: File; index: number }) =>
+      api.uploadImage(file, IMAGE_SPECIFICATIONS_BY_ID["home-page-banner"]),
     onSuccess: (result, variables) => {
       const values = form.getValues();
       const slides = [...values.heroSlides];
@@ -1644,7 +1646,8 @@ function ImageBannerEditor({
   const [href, setHref] = useState(() => readString(section.props, "href"));
 
   const uploadMutation = useMutation({
-    mutationFn: (file: File) => api.uploadImage(file),
+    mutationFn: (file: File) =>
+      api.uploadImage(file, IMAGE_SPECIFICATIONS_BY_ID["home-page-banner"]),
     onSuccess: (result) => {
       setImageUrl(result.url);
       toast.success("Image uploaded. Save the section to apply it.");

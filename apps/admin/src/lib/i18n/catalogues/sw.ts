@@ -25,6 +25,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/farms": "/mashamba",
   "← All farms": "← Mashamba yote",
   "+ stars": "+ nyota",
+  "₹1,000 preview": "Muhtasari wa ₹1,000",
+  "1 INR →": "INR 1 →",
   "1 star": "1 nyota",
   "15% off your first order": "Punguzo la 15% la agizo lako la kwanza",
   "2 cups": "Vikombe 2",
@@ -59,6 +61,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Msimamizi mkuu anaweza kuanzisha kikundi au ujumbe wa moja kwa moja kutoka kwa kitufe cha + kilicho hapo juu.",
   "A tinted band — check muted text is still readable here.":
     "Bendi ya tinted — angalia maandishi yaliyonyamazishwa bado yanaweza kusomeka hapa.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "Nchi anayotembelea huchagua sarafu, jedwali hili linatoa thamani yake ya kuonyesha, na bei ya INR asili haijabadilika. Sarafu zilizozimwa hurudi kwenye chaguomsingi za INR-safe.",
   Accent: "Lafudhi",
   "Accept orders and payments": "Kubali maagizo na malipo",
   "Accept orders and payments for this product": "Kubali maagizo na malipo ya bidhaa hii",
@@ -84,6 +88,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Ongeza aina",
   "Add code": "Ongeza msimbo",
   "Add country": "Ongeza nchi",
+  "Add currency": "Ongeza sarafu",
   "Add entry": "Ongeza ingizo",
   "Add farm owner": "Ongeza mmiliki wa shamba",
   "Add ingredient": "Ongeza kiungo",
@@ -94,6 +99,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Ongeza moja hapa chini ili kuanza.",
   "Add one so the bot has something to reference for this scope.":
     "Ongeza moja ili roboti ipate kitu cha kurejelea kwa upeo huu.",
+  "Add one using the field above.": "Ongeza moja kwa kutumia sehemu iliyo hapo juu.",
   "Add page": "Ongeza ukurasa",
   "Add participants": "Ongeza washiriki",
   "Add point": "Ongeza pointi",
@@ -112,6 +118,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Ongeza eneo",
   Added: "Imeongezwa",
   "Adding...": "Inaongeza...",
+  "Adding…": "Inaongeza…",
   Address: "Anwani",
   "Adjust points": "Rekebisha pointi",
   "Adjust the search or create a category.": "Rekebisha utafutaji au unda aina.",
@@ -208,6 +215,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Kiazerbaijani",
   "B2B / bulk ordering": "B2B / kuagiza kwa wingi",
   Back: "Nyuma",
+  "Back to conversations": "Rudi kwenye mazungumzo",
   "Back to sign in": "Rudi ili uingie katika akaunti",
   Balance: "Salio",
   "Banner alt text": "Maandishi mbadala ya bango",
@@ -268,6 +276,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Sehemu za wahariri wa kitengo",
   "Category not found": "Kitengo hakijapatikana",
   "Category row": "Kitengo cha safu",
+  "Category thumbnail alt text": "Nakala mbadala ya kijipicha cha aina",
+  "Category thumbnail URL": "URL ya kijipicha cha aina",
   "Category to add to the homepage": "Kitengo cha kuongeza kwenye ukurasa wa nyumbani",
   "Cautions and low stock.": "Tahadhari na hisa chache.",
   "Centred safe area": "Eneo lililo salama",
@@ -337,6 +347,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Barua pepe ya mawasiliano",
   Content: "Maudhui",
   "Continue with Facebook": "Endelea na Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Dhibiti kadirio la bei za sarafu ya nchi kwa kuweka thamani ya Rupia moja ya India. Rekodi za orodha, malipo na agizo hukaa kwa usalama katika INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Dhibiti kile ambacho kila jukumu linaweza kuona, kuunda, kuhariri, kuchapisha au kudhibiti.",
   "Control whether each bot is available, and edit what it knows.":
@@ -379,6 +391,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Ukubwa wa orodha ulioratibiwa",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Seti zilizoratibiwa za vibadala maalum vinavyouzwa pamoja kwa bei mahususi. Malipo hutumika kuhifadhi kiotomatiki mara kikapu kinaposhikilia kila kitu kwenye kifurushi.",
+  Currency: "Fedha",
+  "Currency code": "Msimbo wa sarafu",
+  "Currency Converter": "Kibadilisha Sarafu",
+  "Currency values unavailable": "Thamani za sarafu hazipatikani",
   "Current password": "Nenosiri la sasa",
   "Currently its own effects.": "Madhara yake kwa sasa.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -416,6 +432,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Kata",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'Mapambo yaliyo juu ya mbele ya duka: chembechembe zinazoteleza nyuma ya ukurasa, na sehemu inayofuata ya ukurasa. Zote mbili zimezimwa kwa chaguomsingi, zote mbili haziruhusiwi kabisa kwa wageni ambao wameomba kifaa chao kipunguze mwendo, na wala hazionekani kamwe kwenye dirisha la malipo - maporomoko ya theluji kwenye fomu ya kadi ni jambo la kuvuruga kwa wakati usiofaa kabisa. Athari za nchi huchukua nafasi ya zile za tovuti nzima moja kwa moja kwa wageni wake badala ya kuchanganya nao - "theluji kidogo" sio mchanganyiko wa maana wa theluji na hakuna athari.',
+  Default: "Chaguo-msingi",
   "Default commission": "Tume chaguo-msingi",
   "Default fee": "Ada chaguo-msingi",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -435,6 +452,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Futa mapishi",
   "Delete role": "Futa jukumu",
   "Delete selected (": "Futa iliyochaguliwa (",
+  "Delete this entry": "Futa ingizo hili",
   "Delete this price adjustment?": "Ungependa kufuta marekebisho haya ya bei?",
   "Delete user": "Futa mtumiaji",
   "Deleting...": "Inafuta...",
@@ -456,6 +474,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Vichujio vya vyakula na vyeti",
   "Dietary tags": "Lebo za vyakula",
   "Dietary tags (comma separated)": "Lebo za lishe (koma zimetenganishwa)",
+  "Dietary Tags & Certifications": "Lebo za Chakula na Vyeti",
   "Direct message": "Ujumbe wa moja kwa moja",
   Disable: "Zima",
   "Disable selected (": "Lemaza zilizochaguliwa (",
@@ -478,11 +497,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "k.m. Akaunti",
   "e.g. DIWALI500": "k.m. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "k.m. Ilivunwa wiki ya 3 Machi 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Mf. India Organic, Fair Trade. Cheti kilichotolewa kwa bidhaa yoyote hakiwezi kufutwa hadi kiondolewe kutoka kwayo.",
   "e.g. Ops Room": "k.m. Ops Room",
   "e.g. Rain-fed, no synthetic pesticides": "k.m. Kulishwa kwa mvua, hakuna dawa za kuulia wadudu",
   "e.g. Refrigerate and use within 5 days": "k.m. Weka kwenye jokofu na utumie ndani ya siku 5",
   "e.g. TO-HONEY-500": "k.m. TO-HONEY-500",
   "e.g. UTR 123456789012": "k.m. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Mf. Vegan, Bila Gluten. Kuifuta moja huiondoa kwenye kila bidhaa iliyochaguliwa.",
   Edit: "Hariri",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Hariri metadata ya ukurasa wa CMS, faharasa na vizuizi vya ukurasa ghafi. Rekodi ya ukurasa wa nyumbani imeorodheshwa hapa pia, lakini Mipangilio ya Ukurasa wa Nyumbani ndiyo njia salama zaidi ya kuibadilisha - kihariri hiki kinatumia JSON ghafi.",
@@ -585,6 +608,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Lazimisha au uzime sehemu kwa wageni katika nchi moja, bila kubadilisha kile ambacho kila mtu anaona. Ondoka kwenye sehemu ya "Rithi" na itafuata tu kisanduku cha tiki kwenye orodha ya sehemu iliyo hapo juu.',
   "Forgot password?": "Je, umesahau nenosiri?",
+  "Formatting locale": "Kuumbiza lugha",
   "Free delivery above (₹)": "Usafirishaji bila malipo hapo juu ( ₹)",
   "French (Français)": "Kifaransa (Français)",
   Frequency: "Marudio",
@@ -668,6 +692,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ikiwa barua pepe hiyo ina akaunti, kiungo cha kuweka upya kiko njiani.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Ikiwa ofa hii haijawahi kukombolewa, itafutwa moja kwa moja; vinginevyo huwekwa kwenye kumbukumbu ili historia yake itunzwe.",
+  Image: "Picha",
   "Image alt text": "Maandishi mbadala ya picha",
   "Image alt text (optional)": "Maandishi mbadala ya picha (si lazima)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -729,6 +754,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Label: "Lebo",
   "Land under cultivation": "Ardhi inayolimwa",
   Language: "Lugha",
+  "Language Studio": "Studio ya Lugha",
   "Last activity": "Shughuli ya mwisho",
   "Last reviewer note": "Dokezo la mkaguzi wa mwisho",
   "Last sign-in": "Kuingia mara ya mwisho",
@@ -740,6 +766,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Acha rangi wazi ili kuhifadhi meli True Grit moja — kufuta sehemu ni jinsi ya kutendua. Ukurasa au rangi za nchi huanza kutoka kwa rangi za tovuti na kubatilisha tu unachobadilisha, kwa hivyo kila moja ni orodha fupi, si ubao wa pili wa kudumisha. Wakati zote zinatumika kwa mgeni mmoja, ukurasa utashinda - muundo wa ukurasa wa uhariri haupaswi kutenduliwa kwa jaribio la kijiografia.",
   "Leave blank to use the default.": "Ondoka wazi ili kutumia chaguomsingi.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Wacha kiungo kikiwa wazi kwa picha wazi, isiyobofya.",
   "Less refunds": "Rejesha chache",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Huruhusu wateja kutumia msimbo wa kadi ya zawadi wakati wa kulipa, sehemu ya malipo au jumla ya agizo lao lote. Kadi za toleo kutoka kwa ukurasa wa Kadi za Zawadi. Imezimwa kwa chaguo-msingi - kadi zilizopo na salio lake huwekwa, lakini haiwezi kukombolewa, wakati hii imezimwa.",
@@ -751,6 +779,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Jumla ya laini",
   Lines: "Laini",
   Link: "Kiungo",
+  "Link (optional)": "Kiungo (si lazima)",
   "Link customer": "Unganisha mteja",
   "Link product": "Unganisha bidhaa",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -769,6 +798,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Onyesho la moja kwa moja",
   "Live, and to scale with the real storefront's own styles.":
     "Live, na kuongeza ukubwa kwa mitindo halisi ya mbele ya duka.",
+  Loading: "Inapakia",
   "Loading active promotions...": "Inapakia matangazo yanayoendelea...",
   "Loading analytics...": "Inapakia takwimu...",
   "Loading announcements...": "Inapakia matangazo...",
@@ -782,6 +812,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Inapakia mazungumzo…",
   "Loading country overrides...": "Inapakia vifurushi vya nchi...",
   "Loading crawler files...": "Inapakia faili za kutambaa...",
+  "Loading currency values…": "Inapakia thamani za sarafu…",
   "Loading delivery charges...": "Inapakia gharama za uwasilishaji...",
   "Loading discussion…": "Inapakia majadiliano…",
   "Loading highlights...": "Inapakia vivutio...",
@@ -804,6 +835,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Inapakia swichi za mbele ya duka...",
   "Loading submission…": "Inapakia uwasilishaji…",
   "Loading...": "Inapakia...",
+  "Loading…": "Inapakia…",
   "Local pickup points": "Sehemu za karibu za kuchukua",
   "Locale to translate": "Eneo la kutafsiri",
   "Locked out? Use": "Umefungiwa nje? Tumia",
@@ -855,6 +887,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Sababu ya kiasi",
   Mongolian: "Kimongolia",
   "More from True Grit": "Zaidi kutoka True Grit",
+  "Motto banner": "Bango la kauli mbiu",
   "Move down in the showcase": "Sogea chini kwenye onyesho",
   "Move earlier": "Sogeza mapema",
   "Move later": "Sogeza baadaye",
@@ -979,6 +1012,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kumbuka (inahitajika ili kuomba mabadiliko au kukataa)",
   "Note (required)": "Kumbuka (inahitajika)",
   Notes: "Madokezo",
+  "Nothing here yet": "Bado hakuna kitu hapa",
   "Nothing outstanding to pay": "Hakuna kitu ambacho kinasalia kulipa",
   "Nothing pending.": "Hakuna kitu kinasubiri.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1034,6 +1068,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Embe Halisi za Alphonso",
   "Organic mangoes held in a sunlit orchard":
     "Embe hai zinazoshikiliwa kwenye bustani iliyoangaziwa na jua",
+  "Organic wheat flour in a wooden bowl": "Unga wa ngano wa kikaboni kwenye bakuli la mbao",
   Outstanding: "Ili bora",
   Overview: "Muhtasari",
   "Owner Reports": "Ripoti za Mmiliki",
@@ -1080,9 +1115,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Chagua angalau nchi moja, au uachilie kila mahali.",
   "Pick at least one country, or release globally.":
     "Chagua angalau nchi moja, au uachilie ulimwenguni.",
-  "Pick exactly two people for a direct message.":
-    "Chagua watu wawili haswa kwa ujumbe wa moja kwa moja.",
   "Pick one from the list to start reading.": "Chagua mmoja kutoka kwenye orodha ili uanze kusoma.",
+  "Pick the other person for this direct message.":
+    "Chagua mtu mwingine kwa ujumbe huu wa moja kwa moja.",
   "PIN code": "Msimbo wa PIN",
   "PIN patterns": "Mifumo ya PIN",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1227,6 +1262,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Inahitaji ruhusa ya kurasa.view na API iliyounganishwa.",
   "Requires products.publish": "Inahitaji products.publish",
   "Requires recipes.publish": "Inahitaji mapishi.publish",
+  "Requires settings access.": "Inahitaji ufikiaji wa mipangilio.",
   "Requires the analytics.view permission.": "Inahitaji ruhusa ya analytics.view.",
   "Requires the inventory.adjust permission.": "Inahitaji ruhusa ya hesabu.kurekebisha.",
   "Requires the reports.query permission.": "Inahitaji ruhusa ya report.query.",
@@ -1410,6 +1446,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Kiserbia",
   Servings: "Huduma",
   "Set a new password": "Weka nenosiri jipya",
+  "Set as default": "Weka kama chaguomsingi",
   "Shop · Farms · Journal": "Duka · Mashamba · Jarida",
   "Shop fresh greens": "Nunua mboga mpya",
   "Shop root vegetables": "Nunua mboga za mizizi",
@@ -1508,6 +1545,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "Kiswahili (Kiswahili)",
   "Swedish (Svenska)": "Kiswidi (Svenska)",
   Table: "Jedwali",
+  "Tags & Certifications": "Lebo na Uidhinishaji",
   "Tags:": "Lebo:",
   Tajik: "Tajiki",
   "Taking payments": "Kupokea malipo",
@@ -1523,6 +1561,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Bango, safu mlalo ya kategoria, safu mlalo ya bidhaa na sehemu za SEO huhifadhiwa pamoja. Visanduku vya tiki vya sehemu, uagizaji na nakala za sehemu maalum huhifadhi peke yake, unapozibadilisha.",
   "The chat widget customers and visitors see on the storefront.":
     "Wateja na wageni wa wijeti ya gumzo mbele ya duka.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Orodha za kisanduku cha kuteua zinazoonyeshwa kwenye kila kichupo cha Jumla cha bidhaa. Mabadiliko yatatumika kila mahali mara moja.",
   "The classic credential pair, including the password-reset flow.":
     "Jozi za kitambulisho cha kawaida, ikijumuisha mtiririko wa kuweka upya nenosiri.",
   "the farm owner": "mmiliki wa shamba",
@@ -1575,6 +1615,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Sehemu hii imehaririwa katika kidirisha chake zaidi chini ya ukurasa.",
   "Threads started from the storefront appear here.":
     "Nzizi zilizoanzishwa kutoka mbele ya duka zinaonekana hapa.",
+  "Thumbnail image URL": "URL ya kijipicha",
   "Tinted band": "Mkanda wa Tinted",
   Title: "Tinted",
   "Title, description, keywords and indexing for storefront routes that aren't backed by a CMS page above. Leave a field blank to keep that route's built-in default.":
@@ -1622,9 +1663,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Pakia picha",
   "Uploading image...": "Inapakia picha...",
   "Uploading image…": "Inapakia picha…",
+  "Uploading thumbnail...": "Inapakia kijipicha...",
   "Uploading...": "Inapakia...",
   "Uploading…": "Inapakia…",
   "Urdu (اردو)": "Kiurdu (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Tumia picha tofauti ya 1200 × 1200. Picha hii ya mraba imepunguzwa kwa kadi za kategoria; usitumie tena bango pana la shujaa.",
   "Use site-wide effects instead": "Tumia madoido ya tovuti kote badala yake",
   "Use the exact canvas": "Tumia turubai halisi",
   "Use the navigation to get back.": "Tumia urambazaji ili kurudi.",
@@ -1637,6 +1681,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Kwa kutumia rangi ya chapa ya tovuti",
   Uyghur: "Kiuyghur",
   Uzbek: "Kiuzbeki",
+  "Value of 1 INR": "Thamani ya INR 1",
+  "Value per INR": "Thamani kwa INR",
   "Value, ₹": "Thamani,",
   Variant: "Lahaja",
   "Variant (SKU)": "Lahaja (SKU)",

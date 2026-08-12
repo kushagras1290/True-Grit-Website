@@ -25,6 +25,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/recipes/my-recipe": "/retseptlar/mening-retseptim",
   "← All farms": "← Barcha fermalar",
   "+ stars": "+ yulduz",
+  "₹1,000 preview": "1000₹ oldindan ko'rish",
   "1 star": "1 yulduz",
   "15% off your first order": "Birinchi buyurtmangizga 15% chegirma",
   "2 cups": "2 stakan",
@@ -59,6 +60,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Super administrator yuqoridagi + tugmasi orqali guruh yoki bevosita xabar yuborishi mumkin.",
   "A tinted band — check muted text is still readable here.":
     "To‘g‘ri chiziq — bu yerda ovozsiz matnni tekshirish hali ham mumkin.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "tashrif buyuruvchi mamlakat valyutani tanlaydi, bu jadval uning ko'rsatish qiymatini beradi va INRning dastlabki narxi o'zgarishsiz qoladi. O‘chirib qo‘yilgan valyutalar INR uchun xavfsiz birlamchi parametrlarga qaytadi.",
   "Accept orders and payments": "Buyurtmalar va to‘lovlarni qabul qilish",
   "Accept orders and payments for this product":
     "Ushbu mahsulot uchun buyurtma va to‘lovlarni qabul qilish",
@@ -84,6 +87,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Kategoriya qo'shish",
   "Add code": "Kod qo'shish",
   "Add country": "Mamlakat qo'shish",
+  "Add currency": "eskiz pastki matni",
   "Add entry": "Yozuv qo‘shish",
   "Add farm owner": "Ferma egasi qo‘shish",
   "Add ingredient": "Ingredient qo‘shing",
@@ -94,6 +98,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Boshlash uchun quyida bittasini qo‘shing. page",
   "Add one so the bot has something to reference for this scope.":
     "Botda ushbu sohaga havola qilish uchun biror narsa qo‘shing.",
+  "Add one using the field above.": "Yuqoridagi maydondan foydalanib bittasini qo‘shing.",
   "Add page": "Sahifa qo'shish",
   "Add participants": "Ishtirokchilarni qo'shish",
   "Add point": "Bol qo‘shish",
@@ -107,6 +112,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Hudud qo'shish",
   Added: "Qo‘shilgan",
   "Adding...": "Qo‘shilmoqda...",
+  "Adding…": "Qo‘shilmoqda...",
   Address: "Manzil",
   "Adjust points": "Ballarni sozlash",
   "Adjust the search or create a category.": "Qidiruvni sozlang yoki turkum yarating.",
@@ -204,6 +210,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Ozarbayjon",
   "B2B / bulk ordering": "B2B / ommaviy buyurtma",
   Back: "Orqaga",
+  "Back to conversations": "Suhbatlarga qaytish.",
   "Back to sign in": "Kirishga qaytish",
   Balance: "Balans",
   "Banner alt text": "Bannerning muqobil matni",
@@ -269,6 +276,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Kategoriya muharriri bo'limlari",
   "Category not found": "Kategoriya topilmadi",
   "Category row": "Kategoriya qatori",
+  "Category thumbnail alt text": "Turkum eskizi oʻzgaruvchan matn",
+  "Category thumbnail URL": "Kategoriya eskizi URL",
   "Category to add to the homepage": "Bosh sahifaga qo‘shiladigan turkum",
   "Cautions and low stock.": "Ogohlantirishlar va kam zaxira.",
   Cebuano: "Sebuano",
@@ -342,6 +351,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Kontakt email",
   Content: "Kontent",
   "Continue with Facebook": "Facebookda davom etish",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Bir hind rupiyasi qanchaligini belgilash orqali mahalliy valyutadagi taxminiy narxlarni boshqaring. Katalog, hisob-kitob va buyurtma yozuvlari INRda xavfsiz saqlanadi.",
   "Control what each role can view, create, edit, publish or manage.":
     "Har bir rol nimani ko‘rishi, yaratishi, tahrirlashi, nashr etishi yoki boshqarishi mumkinligini boshqaring.",
   "Control whether each bot is available, and edit what it knows.":
@@ -386,6 +397,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Tuzlangan ro‘yxat o‘lchami",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Ma’lum bir xil narxlarda sotiladi. Toʻplamdagi har bir element savatga tushganidan soʻng, hisob-kitob avtomatik ravishda tejashni qoʻllaydi.",
+  Currency: "Valyuta",
+  "Currency code": "Valyuta kodi",
+  "Currency Converter": "Valyuta konvertori",
+  "Currency values unavailable": "Valyuta qiymatlari mavjud emas",
   "Current password": "Joriy parol",
   "Currently its own effects.": "Hozirda oʻzining effektlari.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -423,6 +438,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Rad etish",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "Dikon tepasidagi bezak: sahifa orqasida suzuvchi zarrachalar va yo‘nalish. Ikkalasi ham sukut bo'yicha o'chirilgan, ikkalasi ham o'z qurilmasidan harakatni kamaytirishni so'ragan tashrif buyuruvchilar uchun butunlay o'tkazib yuboriladi va hech qachon to'lov oynasida ko'rinmaydi - karta blankasi ustidan qor yog'ishi noto'g'ri vaqtda chalg'itadi. Mamlakat effektlari o‘z tashrif buyuruvchilari bilan aralashmasdan emas, balki butun sayt bo‘ylab o‘rnini bosadi — “bir oz qor” qorning mazmunli aralashmasi emas va hech qanday ta’sir qilmaydi.",
+  Default: "Birlamchi",
   "Default commission": "Birlamchi komissiya",
   "Default fee": "Delutativ to‘lov",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -442,6 +458,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Retseptni o‘chirish",
   "Delete role": "Rolni o‘chirish",
   "Delete selected (": "Tanlanganni o‘chirish (",
+  "Delete this entry": "Ushbu yozuvni o‘chirish",
   "Delete this price adjustment?": "Ushbu narx moslashuvi o‘chirilsinmi?",
   "Delete user": "Foydalanuvchi o‘chirilsin",
   "Deleting...": "O‘chirilmoqda...",
@@ -463,6 +480,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Diyet va sertifikatlash filtrlari",
   "Dietary tags": "Diyet teglari",
   "Dietary tags (comma separated)": "Diyet teglari (vergul bilan ajratilgan)",
+  "Dietary Tags & Certifications": "Diyet teglari va sertifikatlari",
   "Direct message": "To'g'ridan-to'g'ri xabar",
   Disable: "O‘chirish",
   "Disable selected (": "D",
@@ -485,6 +503,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. 500g Pack": "e. 500 g paket",
   "e.g. Accounts": "masalan, Hisoblar",
   "e.g. Harvested the week of 3 March 2026": "m-n. Hosil 2026-yil 3-mart haftasi",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Masalan. Hindiston Organik, adolatli savdo. Har qanday mahsulotga tayinlangan sertifikat undan olib tashlanmaguncha oʻchirilmaydi.",
   "e.g. Ops Room": "m-n. Operatsiya xonasi",
   "e.g. Rain-fed, no synthetic pesticides":
     "m-n. Yomg'ir bilan oziqlangan, sintetik pestitsidlarsiz",
@@ -492,6 +512,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "masalan. Sovutgichda saqlang va 5 kun ichida foydalaning",
   "e.g. TO-HONEY-500": "m-n. TO-HONEY-500",
   "e.g. UTR 123456789012": "masalan. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Masalan. Vegan, glyutensiz. Bittasini o‘chirish, u tekshirilgan har bir mahsulotdan olib tashlanadi.",
   Edit: "Tahrirlash",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS sahifa metamaʼlumotlarini, indekslash va xom sahifa bloklarini tahrirlash. Bosh sahifa yozuvi ham shu yerda keltirilgan, lekin Bosh sahifa sozlamalari uni oʻzgartirishning xavfsiz usuli hisoblanadi — bu muharrir xom JSON faylini oladi.",
@@ -597,6 +619,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     "Boshqalar ko‘rganini o‘zgartirmasdan, bir mamlakatga tashrif buyuruvchilar uchun bo‘limni majburlab yoqish yoki o‘chirish. “Meros olish” boʻlimida boʻlim qoldiring va u yuqoridagi boʻlimlar roʻyxatidagi katakchadan keyingina boʻladi.",
   "Forgot password?": "Parolni unutdingizmi?",
+  "Formatting locale": "Mahallani formatlash",
   "Free delivery above (₹)": "Yuqoridagi bepul yetkazib berish (₹)",
   "French (Français)": "Fransuz (Fransa)",
   Frequency: "Chastotasi",
@@ -681,6 +704,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Agar bu e-pochtada hisob bo‘lsa, qayta tiklash havolasi yo‘lda.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Agar bu aksiya hech qachon ishlatilmagan bo'lsa, u butunlay o'chiriladi; aks holda u arxivlanadi, shuning uchun uning tarixi saqlanadi.",
+  Image: "Rasm",
   "Image alt text": "Tasvirning alternativ matni",
   "Image alt text (optional)": "Tasvirning alternativ matni (ixtiyoriy)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -759,6 +783,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Bir True Grit yuboradigan rangni bo‘sh qoldirish uchun — maydonni tozalash orqali bekor qilish mumkin. Sahifa yoki mamlakat ranglari sayt ranglaridan boshlanadi va faqat siz o'zgartirgan narsalarni bekor qiladi, shuning uchun ularning har biri qo'llab-quvvatlanadigan ikkinchi palitra emas, balki qisqa ro'yxatdir. Ikkalasi bir tashrif buyuruvchiga murojaat qilganda, sahifa g‘olib bo‘ladi — tahririyat sahifasi dizayni geo-tajriba orqali bekor qilinmasligi kerak.",
   "Leave blank to use the default.": "Sukut bo‘yicha foydalanish uchun bo‘sh qoldiring.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Oddiy, bosilmaydigan rasm uchun havolani boʻsh qoldiring.",
   "Less refunds": "To‘lovni qaytarish kamroq",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Mijozlarga to‘lov vaqtida sovg‘a kartasi kodini qo‘llash imkonini beradi, bu esa buyurtmaning bir qismini yoki hammasini qamrab oladi. Sovg'a kartalari sahifasidan kartalarni chiqaring. Sukut boʻyicha oʻchirilgan — mavjud kartalar va ularning balanslari oʻchiq boʻlgandagina qaytarib boʻlmaydi, saqlanadi.",
@@ -769,6 +795,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Jami qator",
   Lines: "Qatorlar",
   Link: "Havola",
+  "Link (optional)": "Havola (ixtiyoriy)",
   "Link customer": "Mijozni bog‘lash",
   "Link product": "Mahsulotni bog'lang",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -782,6 +809,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Jonli ko‘rish",
   "Live, and to scale with the real storefront's own styles.":
     "Jonli rejimda va haqiqiy vitrinaning o‘ziga xos uslublari bilan kengaytiring.",
+  Loading: "Yuklanmoqda",
   "Loading active promotions...": "Faol reklamalar yuklanmoqda...",
   "Loading analytics...": "Tahlil yuklanmoqda...",
   "Loading announcements...": "E'lonlar yuklanmoqda...",
@@ -795,6 +823,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Suhbatlar yuklanmoqda…",
   "Loading country overrides...": "Mamlakat bekor qilinmoqda...",
   "Loading crawler files...": "Krauer fayllari yuklanmoqda...",
+  "Loading currency values…": "Valyuta qiymatlari yuklanmoqda…",
   "Loading delivery charges...": "Yetkazib berish to‘lovlari yuklanmoqda...",
   "Loading discussion…": "Muhokama yuklanmoqda...",
   "Loading highlights...": "Asosiy fikrlar yuklanmoqda...",
@@ -817,6 +846,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Dikon ko‘rinishidagi kalitlar yuklanmoqda...",
   "Loading submission…": "Yuklash yuklanmoqda…",
   "Loading...": "Yuklanmoqda...",
+  "Loading…": "Yuklanmoqda…",
   "Local pickup points": "Mahalliy qabul qilish punktlari",
   "Locale to translate": "Tarjima qilinadigan til",
   "Locked out? Use": "Bloklanganmi? Foydalanish",
@@ -867,6 +897,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Moderatsiya sababi",
   Mongolian: "Mo'g'ulcha",
   "More from True Grit": "Yana True Grit",
+  "Motto banner": "Shior banneri",
   "Move down in the showcase": "Vitrinda pastga siljitish",
   "Move earlier": "Ertaga siljitish",
   "Move later": "Keyinroq ko‘chirish",
@@ -992,6 +1023,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Eslatma (o‘zgartirish so‘rash yoki rad etish uchun zarur)",
   "Note (required)": "Eslatma (majburiy)",
   Notes: "Eslatmalar",
+  "Nothing here yet": "Bu yerda hali hech narsa yo‘q",
   "Nothing outstanding to pay": "To‘lanadigan hech narsa yo‘q",
   "Nothing pending.": "Hech narsa kutilmayapti.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1045,6 +1077,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Organik Alphonso Mango",
   "Organic mangoes held in a sunlit orchard":
     "Quyosh charog‘on bog‘da saqlanadigan organik mangolar",
+  "Organic wheat flour in a wooden bowl": "Yog‘och idishdagi organik bug‘doy uni",
   Outstanding: "Ajoyib",
   Overview: "Umumiy ko‘rinish",
   "Owner Reports": "Egasi hisobotlari",
@@ -1095,9 +1128,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Hech boʻlmaganda bitta mamlakatni tanlang yoki hamma joyda chiqaring.",
   "Pick at least one country, or release globally.":
     "Kamida bitta mamlakatni tanlang yoki butun dunyo boʻylab chiqaring.",
-  "Pick exactly two people for a direct message.":
-    "To'g'ridan-to'g'ri xabar uchun ikkita odamni tanlang.",
   "Pick one from the list to start reading.": "O'qishni boshlash uchun ro'yxatdan birini tanlang.",
+  "Pick the other person for this direct message.":
+    "Ushbu bevosita xabar uchun boshqa odamni tanlang.",
   "PIN code": "PIN kod",
   "PIN patterns": "PIN kod namunalari",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1244,6 +1277,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires products.publish": "Products.publish",
   "Requires recipes.publish":
     'Inventarizatsiyani talab qiladi. id="t0009">Report.query ruxsatini talab qiladi.',
+  "Requires settings access.": "Sozlamalarga kirishni talab qiladi.",
   "Requires the analytics.view permission.": "Analytics.view ruxsatini talab qiladi.",
   "Requires the inventory.adjust permission.": "Inventarizatsiyani talab qiladi.",
   "Requires the reports.query permission.": "Report.query ruxsatini talab qiladi.",
@@ -1295,6 +1329,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Ishlamoqda...",
   "Russian (Русский)": "Ruscha (Russkiy)",
   "Safe area": 'id="t0011">Sanskrit (kīngīīīī)',
+  "Safe geo-lock:": "Xavfsiz geo-lock:",
   "Sale & Discounts": "Sotish va chegirmalar",
   "Sale price": "Sotish narxi",
   "Sale Price (₹)": "Sotuv narxi (₹)",
@@ -1425,6 +1460,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Sending…": "Yuborish…",
   "Separate paragraphs with a blank line. Links use [text](/path); HTML is rejected.":
     "Separate paragraphs with a blank line. Havolalarda [matn](/path); HTML is rejected.",
+  "Set as default": "Sukut bo‘yicha o‘rnatish",
   "Show dietary and certification filters on the shop page":
     "Do‘kon sahifasida parhez va sertifikat filtrlarini ko‘rsatish",
   "Shown even if a higher-priority automatic promotion is also active.":
@@ -1505,6 +1541,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "Suahili (Kisvahili)",
   "Swedish (Svenska)": "Shvetsiya (Svenska)",
   Table: "Jadval",
+  "Tags & Certifications": "Teglar va sertifikatlar",
   "Tags:": "Teglar:",
   Tajik: "Tojikcha",
   "Taking payments": "Tamil",
@@ -1521,6 +1558,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Banner, turkum qatori, mahsulot qatori va SEO maydonlari birgalikda saqlanadi. Boʻlim belgilash katakchalari, buyurtma va moslashtirilgan boʻlim nusxalari siz ularni oʻzgartirganingizdek oʻz-oʻzidan saqlanadi.",
   "The chat widget customers and visitors see on the storefront.":
     "Chat vidjeti mijozlar va tashrif buyuruvchilar doʻkonda koʻrishadi.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Har bir mahsulotning \"Umumiy\" sahifasida ko'rsatilgan katakchalar ro'yxati. Oʻzgarishlar darhol hamma joyda qoʻllaniladi.",
   "The classic credential pair, including the password-reset flow.":
     "Klassik hisob maʼlumotlari juftligi, jumladan, parolni qayta oʻrnatish jarayoni.",
   "the farm owner": "ferma egasi",
@@ -1573,6 +1612,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ushbu bo'lim sahifaning pastroqdagi o'z panelida tahrirlangan.",
   "Threads started from the storefront appear here.":
     "Dikondan boshlangan mavzular shu yerda ko'rinadi.",
+  "Thumbnail image URL": "Eskiz rasm URL manzili",
   Time: "Vaqt",
   Title: "Sarlavha",
   "Title, description, keywords and indexing for storefront routes that aren't backed by a CMS page above. Leave a field blank to keep that route's built-in default.":
@@ -1621,9 +1661,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Rasmni yuklash",
   "Uploading image...": "Rasm yuklanmoqda...",
   "Uploading image…": "Rasm yuklanmoqda…",
+  "Uploading thumbnail...": "Eskiz yuklanmoqda...",
   "Uploading...": "Yuklanmoqda...",
   "Uploading…": "Yuklanmoqda…",
   "Urdu (اردو)": "Urdu (ạrdw)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Alohida 1200 × 1200 rasmdan foydalaning. Ushbu kvadrat rasm kategoriya kartalari uchun kesilgan; keng qahramon banneridan qayta foydalanmang.",
   "Use site-wide effects instead": "O'rniga butun sayt effektlaridan foydalaning",
   "Use the exact canvas": "Aniq tuvaldan foydalaning",
   "Use the navigation to get back.": "Orqaga qaytish uchun navigatsiyadan foydalaning.",
@@ -1636,6 +1679,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Sayt brendi rangidan foydalanish",
   Uyghur: "Uyg‘urcha",
   Uzbek: "O‘zbek",
+  "Value of 1 INR": "1 INR qiymati",
+  "Value per INR": "Har bir INR qiymati",
   "Value, ₹": "Qiymat, ₹",
   "Variant ID": "Variant identifikatori",
   "Variant Name": "Variant nomi",

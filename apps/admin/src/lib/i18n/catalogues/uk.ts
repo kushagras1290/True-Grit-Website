@@ -25,6 +25,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/ qty": "/ кількість",
   "← All farms": "← Усі ферми",
   "+ stars": "+ зірочки",
+  "₹1,000 preview": "Попередній перегляд 1000 рупій",
+  "1 INR →": "1 індійська рупія →",
   "1 star": "1 зірка",
   "15% off your first order": "Знижка 15% на ваше перше замовлення",
   "2 cups": "2 чашки",
@@ -59,6 +61,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Суперадміністратор може створити групу або пряме повідомлення за допомогою кнопки + вище.",
   "A tinted band — check muted text is still readable here.":
     "Тонована смуга — тут можна прочитати приглушений текст.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "країна відвідувача вибирає валюту, у цій таблиці відображається її значення, а початкова ціна індійської рупії залишається незмінною. Вимкнені валюти повертаються до безпечних індійських рупій за замовчуванням.",
   Accent: "Акцент",
   "Accept orders and payments": "Приймати замовлення та платежі",
   "Accept orders and payments for this product":
@@ -85,6 +89,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Додати категорію",
   "Add code": "Додати код",
   "Add country": "Додати країну",
+  "Add currency": "Додайте валюту",
   "Add entry": "Додати запис",
   "Add farm owner": "Додати власника ферми",
   "Add ingredient": "Додати інгредієнт",
@@ -95,6 +100,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Додайте один нижче, щоб почати.",
   "Add one so the bot has something to reference for this scope.":
     "Додайте один, щоб боту було на що посилатися для цієї області.",
+  "Add one using the field above.": "Додайте валюту за допомогою поля вище.",
   "Add page": "Додати сторінка",
   "Add participants": "Додати учасників",
   "Add point": "Додати бал",
@@ -113,6 +119,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Додати зону",
   Added: "Додано",
   "Adding...": "Додавання...",
+  "Adding…": "Додавання…",
   Address: "Адресу",
   "Adjust points": "Налаштувати точки",
   "Adjust the search or create a category.": "Налаштуйте пошук або створіть категорію.",
@@ -213,6 +220,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Азербайджан",
   "B2B / bulk ordering": "B2B / масове замовлення",
   Back: "Назад",
+  "Back to conversations": "Назад до розмов",
   "Back to sign in": "Назад до входу",
   Balance: "Баланс",
   "Banner alt text": "Альтернативний текст банера",
@@ -274,6 +282,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Редактор категорій розділи",
   "Category not found": "Категорію не знайдено",
   "Category row": "Рядок категорії",
+  "Category thumbnail alt text": "Мініатюра категорії alt текст",
+  "Category thumbnail URL": "URL-адреса мініатюри категорії",
   "Category to add to the homepage": "Категорію для додавання на домашню сторінку",
   "Cautions and low stock.": "Застереження та низький запас.",
   "Centred safe area": "Центральна безпечна зона",
@@ -345,6 +355,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Контактна електронна адреса",
   Content: "Вміст",
   "Continue with Facebook": "Продовжити з Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Контролюйте приблизні ціни в місцевій валюті, встановлюючи, скільки коштує одна індійська рупія. Каталог, записи про оформлення замовлення та записи про замовлення зберігаються в індійських рупіях.",
   "Control what each role can view, create, edit, publish or manage.":
     "Контролюйте, що кожна роль може переглядати, створювати, редагувати, публікувати чи керувати.",
   "Control whether each bot is available, and edit what it knows.":
@@ -389,6 +401,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Вибраний розмір списку",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Вибрані набори певних варіантів продаються разом за єдиною ціною. Checkout застосовує збереження автоматично, щойно в кошику зберігаються всі товари в пакеті.",
+  Currency: "Валюта",
+  "Currency code": "Код валюти",
+  "Currency Converter": "Конвертер валют",
+  "Currency values unavailable": "Значення валюти недоступні",
   "Current password": "Поточний пароль",
   "Currently its own effects.": "Наразі його власні ефекти.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -426,6 +442,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Відхилити",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "Декорація верхньої частини вітрини: рухливі частинки за сторінкою та слід за вказівником. Обидва вимкнені за замовчуванням, обидва повністю пропускаються для відвідувачів, які попросили свій пристрій зменшити рух, і жодне ніколи не з’являється у вікні платежу — снігопад над формою картки відволікає увагу саме в невідповідний момент. Ефекти країни замінюють ефекти для всього сайту для відвідувачів, а не змішуються з ними — «трохи снігу» не є значущою сумішшю снігу та жодного ефекту.",
+  Default: "За умовчанням",
   "Default commission": "Комісія за замовчуванням",
   "Default fee": "Комісія за замовчуванням",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -445,6 +462,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Видалити рецепт",
   "Delete role": "Видалити роль",
   "Delete selected (": "Видалити вибране (",
+  "Delete this entry": "Видалити цей запис",
   "Delete this price adjustment?": "Видалити це коригування ціни?",
   "Delete user": "Видалити користувача",
   "Deleting...": "Видалення...",
@@ -466,6 +484,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Дієтичні та сертифікаційні фільтри",
   "Dietary tags": "Дієтичні теги",
   "Dietary tags (comma separated)": "Дієтичні теги (розділені комами)",
+  "Dietary Tags & Certifications": "Дієтичні етикетки та сертифікати",
   "Direct message": "Пряме повідомлення",
   Disable: "Вимкнути",
   "Disable selected (": "Вимкнути вибране (",
@@ -489,12 +508,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "напр. Облікові записи",
   "e.g. DIWALI500": "напр. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "наприклад, Зібрано 3 березня 2026 р.",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Напр. India Organic, Справедлива торгівля. Сертифікат, призначений будь-якому продукту, не можна видалити, доки його не буде видалено.",
   "e.g. Ops Room": "напр. Операційна кімната",
   "e.g. Rain-fed, no synthetic pesticides": "наприклад, Дощова годівля, без синтетичних пестицидів",
   "e.g. Refrigerate and use within 5 days":
     "напр. Зберігайте в холодильнику та використовуйте протягом 5 днів",
   "e.g. TO-HONEY-500": "напр. TO-HONEY-500",
   "e.g. UTR 123456789012": "напр. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Напр. Веганський, без глютену. Видалення одного видаляє його з усіх перевірених продуктів.",
   Edit: "Редагувати",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Редагувати метадані сторінки CMS, індексування та необроблені блоки сторінок. Запис домашньої сторінки також указано тут, але налаштування домашньої сторінки є безпечнішим способом змінити його — цей редактор використовує необроблений JSON.",
@@ -597,6 +620,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     "Примусово вмикайте або вимикайте розділ для відвідувачів в одній країні, не змінюючи те, що бачать інші. Залиште розділ «Успадкувати», і він просто поставить прапорець у списку розділів вище.",
   "Forgot password?": "Забули пароль?",
+  "Formatting locale": "Форматування мови",
   "Free delivery above (₹)": "Безкоштовна доставка вище (₹)",
   "French (Français)": "Французька (Français)",
   Frequency: "Частота",
@@ -680,6 +704,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Якщо цей електронний лист має обліковий запис, посилання для скидання вже готове.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Якщо ця рекламна акція ніколи не була використана, вона видаляється відразу; інакше воно архівується, тому його історія зберігається.",
+  Image: "Зображення",
   "Image alt text": "Альтернативний текст зображення",
   "Image alt text (optional)": "Альтернативний текст зображення (необов’язково)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -761,6 +786,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Залиште колір порожнім, щоб зберегти той, який постачається True Grit — очищуйте поле. скасувати. Кольори сторінки або країни починаються з кольорів сайту та замінюють лише те, що ви змінюєте, тому кожен є коротким списком, а не другою палітрою, яку потрібно підтримувати. Коли обидва стосуються одного відвідувача, сторінка виграє — дизайн редакційної сторінки не повинен бути скасований геоекспериментом.",
   "Leave blank to use the default.":
     "Залиште поле порожнім, щоб використовувати значення за умовчанням.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Залиште посилання пустим, щоб отримати просте зображення, яке не можна натиснути.",
   "Less refunds": "Менше відшкодування",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Дозволяє клієнтам застосовувати код подарункової картки під час оформлення замовлення, покриваючи частину або всю суму замовлення. Випускайте картки на сторінці Подарункові картки. Вимкнено за замовчуванням — наявні картки та їхні баланси зберігаються, але їх не можна використовувати, поки цю функцію вимкнено.",
@@ -772,6 +799,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Усього рядків",
   Lines: "Рядків",
   Link: "Посилання",
+  "Link (optional)": "Посилання (необов’язково)",
   "Link customer": "Зв’язати клієнта",
   "Link product": "Посилання продукт",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -791,6 +819,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Пряма трансляція попередній перегляд",
   "Live, and to scale with the real storefront's own styles.":
     "Наживо та для масштабування за допомогою власних стилів справжньої вітрини.",
+  Loading: "Завантаження",
   "Loading active promotions...": "Завантаження активних акцій...",
   "Loading analytics...": "Завантаження аналітики...",
   "Loading announcements...": "Завантаження оголошень...",
@@ -804,6 +833,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Завантаження розмов…",
   "Loading country overrides...": "Завантаження зміни країни...",
   "Loading crawler files...": "Завантаження файлів сканера...",
+  "Loading currency values…": "Завантаження значень валют…",
   "Loading delivery charges...": "Завантаження вартості доставки...",
   "Loading discussion…": "Завантаження обговорення…",
   "Loading highlights...": "Завантаження основних моментів...",
@@ -826,6 +856,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Завантаження перемикачів вітрини...",
   "Loading submission…": "Завантаження подання…",
   "Loading...": "Завантаження...",
+  "Loading…": "Завантаження…",
   "Local pickup points": "Місцеві точки отримання",
   "Locale to translate": "Мова для перекладу",
   "Locked out? Use": "Заблоковано? Використання",
@@ -881,6 +912,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Причина модерування",
   Mongolian: "Монгольська",
   "More from True Grit": "Більше від True Grit",
+  "Motto banner": "Банер із девізом",
   "Move down in the showcase": "Переміститися вниз у вітрині",
   "Move earlier": "Перемістити раніше",
   "Move later": "Перемістити пізніше",
@@ -1009,6 +1041,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Примітка (необхідна для запиту змін або відхилення)",
   "Note (required)": "Примітка (обов’язкова)",
   Notes: "Примітки",
+  "Nothing here yet": "Тут ще нічого немає",
   "Nothing outstanding to pay": "Немає непогашених для оплати",
   "Nothing pending.": "Нічого не очікує.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1062,6 +1095,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Органічне манго Альфонсо",
   "Organic mangoes held in a sunlit orchard":
     "Органічне манго, яке зберігається на сонці фруктовий сад",
+  "Organic wheat flour in a wooden bowl": "Органічне пшеничне борошно в дерев’яній мисці",
   Outstanding: "Видатний",
   Overview: "Огляд",
   "Owner Reports": "Звіти власника",
@@ -1111,9 +1145,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Виберіть принаймні одну країну або випустіть усюди.",
   "Pick at least one country, or release globally.":
     "Виберіть принаймні одну країну або випустіть глобально.",
-  "Pick exactly two people for a direct message.":
-    "Виберіть рівно двох людей для прямого повідомлення.",
   "Pick one from the list to start reading.": "Виберіть одного зі списку, щоб почати читати.",
+  "Pick the other person for this direct message.":
+    "Виберіть іншу особу для цього прямого повідомлення.",
   "PIN code": "PIN-код",
   "PIN patterns": "Шаблони PIN-коду",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1258,6 +1292,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Потрібен дозвіл pages.view і підключений API.",
   "Requires products.publish": "Потрібен products.publish",
   "Requires recipes.publish": "Потрібен recipes.publish",
+  "Requires settings access.": "Потрібен доступ до налаштувань.",
   "Requires the analytics.view permission.": "Потрібен дозвіл analytics.view.",
   "Requires the inventory.adjust permission.": "Потрібен дозвіл inventory.adjust.",
   "Requires the reports.query permission.": "Потрібен Reports.query permission.",
@@ -1309,6 +1344,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Запуск…",
   "Russian (Русский)": "Російський (Русский)",
   "Safe area": "Безпечна зона",
+  "Safe geo-lock:": "Безпечне геоблокування:",
   "Sale & Discounts": "Розпродаж і знижки",
   "Sale price": "Знижкова ціна",
   "Sale Price (₹)": "Знижна ціна (₹)",
@@ -1444,6 +1480,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Сербська",
   Servings: "Порції",
   "Set a new password": "Установити новий пароль",
+  "Set as default": "Установити за умовчанням",
   "Shop · Farms · Journal": "Магазин · Ферми · Журнал",
   "Shop fresh greens": "Купити свіжу зелень",
   "Shop root vegetables": "Купити корінь овочі",
@@ -1540,6 +1577,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "Суахілі (Kiswahili)",
   "Swedish (Svenska)": "Шведська (Svenska)",
   Table: "Таблиця",
+  "Tags & Certifications": "Теги та сертифікати",
   "Tags:": "Теги:",
   Tajik: "таджицька",
   "Taking payments": "прийом платежів",
@@ -1556,6 +1594,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Поля банера, рядка категорії, продукту та пошукової оптимізації зберігаються разом. Поля для позначок розділів, упорядкування та спеціальна копія розділів зберігаються самостійно, коли ви їх змінюєте.",
   "The chat widget customers and visitors see on the storefront.":
     "Віджет чату, який клієнти та відвідувачі бачать на вітрині магазину.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    'Списки прапорців, які відображаються на вкладці "Загальні" кожного продукту. Зміни одразу застосовуються всюди.',
   "The classic credential pair, including the password-reset flow.":
     "Класична пара облікових даних, включаючи процес скидання пароля.",
   "the farm owner": "власник ферми",
@@ -1607,6 +1647,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Цей розділ редагується на окремій панелі нижче на сторінці.",
   "Threads started from the storefront appear here.":
     "Тут відображаються теми, розпочаті з вітрини магазину.",
+  "Thumbnail image URL": "URL-адреса мініатюри зображення",
   Time: "Час",
   "Tinted band": "Тонована смуга",
   Title: "Назва",
@@ -1652,9 +1693,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Завантажте зображення",
   "Uploading image...": "Завантаження зображення...",
   "Uploading image…": "Завантаження зображення…",
+  "Uploading thumbnail...": "Завантаження мініатюри...",
   "Uploading...": "Завантаження...",
   "Uploading…": "Завантаження…",
   "Urdu (اردو)": "Урду (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Використовуйте окреме зображення 1200 × 1200. Це квадратне зображення обрізане для карток категорій; не використовуйте повторно широкий банер героя.",
   "Use site-wide effects instead": "Натомість використовуйте ефекти для всього сайту",
   "Use the exact canvas": "Використовуйте точне полотно",
   "Use the navigation to get back.": "Використовуйте навігацію, щоб повернутися.",
@@ -1667,6 +1711,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Використання кольору бренду сайту",
   Uyghur: "Уйгурський",
   Uzbek: "Узбецький",
+  "Value of 1 INR": "Вартість 1 INR",
+  "Value per INR": "Вартість за INR",
   "Value, ₹": "Вартість, ₹",
   Variant: "Варіант",
   "Variant (SKU)": "Варіант (SKU)",

@@ -41,6 +41,7 @@ import { useToast } from "../components/toast";
 import { ApiError, api, type AdminProductDetail, type AdminProductImage } from "../lib/api";
 import { COUNTRIES } from "../lib/countries";
 import { formatDate, formatMoney } from "../lib/format";
+import { IMAGE_SPECIFICATIONS_BY_ID } from "../lib/image-specifications";
 import { PermissionGate } from "../lib/permissions";
 import { EntityTranslationsPanel } from "./entity-translations";
 import { T } from "../lib/i18n";
@@ -1285,7 +1286,7 @@ function GeneralTab({
   const watchedImageUrl = form.watch("imageUrl");
   const watchedImageAlt = form.watch("imageAlt");
   const uploadMutation = useMutation({
-    mutationFn: (file: File) => api.uploadImage(file),
+    mutationFn: (file: File) => api.uploadImage(file, IMAGE_SPECIFICATIONS_BY_ID["product-image"]),
     onSuccess: (result) => {
       const imageAlt = form.getValues("imageAlt") || product.name;
       form.setValue("imageUrl", result.url, { shouldDirty: true, shouldValidate: true });
@@ -1515,7 +1516,7 @@ function ProductGallerySection({
   }, [images]);
 
   const uploadMutation = useMutation({
-    mutationFn: (file: File) => api.uploadImage(file),
+    mutationFn: (file: File) => api.uploadImage(file, IMAGE_SPECIFICATIONS_BY_ID["product-image"]),
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not upload image."),
   });

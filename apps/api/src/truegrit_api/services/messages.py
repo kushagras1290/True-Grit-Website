@@ -62,12 +62,17 @@ async def _validate_staff_user_ids(db: Database, user_ids: list[str]) -> list[st
 async def _participants_by_conversation(
     db: Database, conversation_ids: list[str]
 ) -> dict[str, list[dict[str, Any]]]:
+    """Each participant's role names ride along so the UI can show who it is
+    talking to (e.g. "Riya Nair -- Farm Owner") without a second round trip
+    per participant -- same GROUP_CONCAT shape as the admin user list."""
     if not conversation_ids:
         return {}
     placeholders = ", ".join("?" for _ in conversation_ids)
     rows = await db.fetch_all(
         f"""
-        SELECT cp.conversation_id, u.id AS user_id, u.display_name
+        SELECT cp.conversation_id, u.id AS user_id, u.display_name,
+          (SELECT GROUP_CONCAT(r.name, ', ') FROM user_roles ur
+            JOIN roles r ON r.id = ur.role_id WHERE ur.user_id = u.id) AS role_names
         FROM conversation_participants cp
         JOIN users u ON u.id = cp.user_id
         WHERE cp.conversation_id IN ({placeholders})
@@ -78,7 +83,11 @@ async def _participants_by_conversation(
     result: dict[str, list[dict[str, Any]]] = {cid: [] for cid in conversation_ids}
     for row in rows:
         result[row["conversation_id"]].append(
-            {"userId": row["user_id"], "displayName": row["display_name"]}
+            {
+                "userId": row["user_id"],
+                "displayName": row["display_name"],
+                "roles": row["role_names"].split(", ") if row["role_names"] else [],
+            }
         )
     return result
 

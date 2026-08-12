@@ -152,6 +152,12 @@ export const IMAGE_SPECIFICATIONS: readonly ImageSpecification[] = [
   },
 ] as const;
 
+/** Looked up by upload call sites that know exactly which placement they
+ *  are uploading for, so the file can be resized to that canvas before it
+ *  ever reaches the server (see `lib/image-resize.ts`). */
+export const IMAGE_SPECIFICATIONS_BY_ID: Readonly<Record<string, ImageSpecification>> =
+  Object.fromEntries(IMAGE_SPECIFICATIONS.map((spec) => [spec.id, spec]));
+
 export function imageDimensions(specification: ImageSpecification): string {
   return `${specification.width} × ${specification.height} px`;
 }
