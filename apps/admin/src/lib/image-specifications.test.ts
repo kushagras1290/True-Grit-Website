@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { IMAGE_SPECIFICATIONS, imageDimensions } from "./image-specifications";
+import {
+  IMAGE_SPECIFICATIONS,
+  IMAGE_SPECIFICATIONS_BY_ID,
+  imageDimensions,
+} from "./image-specifications";
 
 describe("image specifications", () => {
   it("keeps every identifier unique and every dimension integral", () => {
@@ -34,5 +38,11 @@ describe("image specifications", () => {
       "brand-mark": "256 × 256 px",
       favicon: "64 × 64 px",
     });
+  });
+
+  it("looks every specification up by id, for upload sites that resize to a known placement", () => {
+    for (const entry of IMAGE_SPECIFICATIONS) {
+      expect(IMAGE_SPECIFICATIONS_BY_ID[entry.id]).toBe(entry);
+    }
   });
 });

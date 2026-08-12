@@ -30,6 +30,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/búð",
   "← All farms": "← Allir bæir",
   "+ stars": "+ stjörnur",
+  "₹1,000 preview": "1.000 INR forskoðun",
   "1 star": "1 stjarna",
   "15% off your first order": "15% afsláttur af fyrstu pöntun",
   "2 cups": "2 bollar",
@@ -64,6 +65,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Yfirstjórnandi getur stofnað hóp eða bein skilaboð frá + hnappnum hér að ofan.",
   "A tinted band — check muted text is still readable here.":
     "Lynt band — athugaðu að þöggaður texti er enn læsilegur hér.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "Land gesta velur gjaldmiðil, þessi tafla gefur upp birtingargildi þess og upprunalega INR verðið helst óbreytt. Óvirkir gjaldmiðlar falla aftur í INR-örugg sjálfgefna stillingar.",
   Accent: "Hreimur",
   "Accept orders and payments": "Ta við pöntunum og greiðslum",
   "Accept orders and payments for this product": "Samþykkja pantanir og greiðslur fyrir þessa vöru",
@@ -88,6 +91,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Bæta við flokki",
   "Add code": "Bæta við kóða",
   "Add country": "Bæta við landi",
+  "Add currency": "Bæta við gjaldmiðli",
   "Add entry": "Bæta við færslu",
   "Add farm owner": "Bæta við býliseiganda",
   "Add ingredient": "Bæta við innihaldsefni",
@@ -98,6 +102,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Bættu við einum hér að neðan til að byrja.",
   "Add one so the bot has something to reference for this scope.":
     "Bæta við einni svo botninn hafi eitthvað til að vísa til fyrir þetta umfang.",
+  "Add one using the field above.": "Bæta við einum með því að nota reitinn hér að ofan.",
   "Add page": "Bæta við síðu",
   "Add participants": "Bæta við þátttakendum",
   "Add point": "Bæta við punkti",
@@ -116,6 +121,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Bæta við svæði",
   Added: "Bætt við",
   "Adding...": "Bætir við...",
+  "Adding…": "Bætir við...",
   Address: "Heimilisfang",
   "Adjust points": "Leiðrétta punkta",
   "Adjust the search or create a category.": "Breyttu leitinni eða búðu til flokk.",
@@ -213,6 +219,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Aserbaídsjan",
   "B2B / bulk ordering": "B2B / magnpöntun",
   Back: "Til baka",
+  "Back to conversations": "Aftur í samtöl",
   "Back to sign in": "Til baka til innskráningar",
   Balance: "Staða",
   "Banner alt text": "Alt texti borði",
@@ -277,6 +284,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Flokkaritill",
   "Category not found": "Flokkur fannst ekki",
   "Category row": "Flokkaröð",
+  "Category thumbnail alt text": "Flokkar smámynd alt texti",
+  "Category thumbnail URL": "Vefslóð fyrir smámynd flokka",
   "Category to add to the homepage": "Flokkur til að bæta við heimasíðuna",
   "Cautions and low stock.": "Varúð og lítið magn.",
   "Centred safe area": "Miðað öruggt svæði",
@@ -347,6 +356,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Tölvupóstfang",
   Content: "Efni",
   "Continue with Facebook": "Halda áfram með Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Stjórnaðu áætluðu verði í staðbundnum gjaldmiðli með því að stilla hversu mikils virði ein indversk rúpía er. Skrár, greiðsluskrár og pöntunarskrár eru öruggar í INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Stjórna því hvað hvert hlutverk getur skoðað, búið til, breytt, birt eða stjórnað.",
   "Control whether each bot is available, and edit what it knows.":
@@ -391,6 +402,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Sjálfstærð listastærð",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Söfnuð sett af tilteknu verði seld saman á tilteknu verði. Checkout notar sparnaðinn sjálfkrafa þegar karfa geymir hvern hlut í búnti.",
+  Currency: "Gjaldmiðill",
+  "Currency code": "Gjaldmiðilskóði",
+  "Currency Converter": "Gjaldmiðill",
+  "Currency values unavailable": "Gjaldmiðilsgildi ekki tiltæk",
   "Current password": "Núverandi lykilorð",
   "Currently its own effects.": "Eins og er eigin áhrif.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -427,6 +442,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Hafna",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "Skreyting ofan á verslunarglugganum: agnir reka á eftir síðunni og slóð. Hvort tveggja er sjálfgefið slökkt, báðum er algjörlega sleppt fyrir gesti sem hafa beðið tækið sitt um að draga úr hreyfingu og hvorugt birtist aldrei á greiðsluglugganum - snjókoma yfir korteyðublað er truflun á nákvæmlega röngu augnabliki. Áhrif lands koma beinlínis í stað þeirra allra vefsvæða fyrir gesti þess frekar en að blandast saman við þá — „snjór“ er ekki þýðingarmikil blanda af snjó og engin áhrif.",
+  Default: "Sjálfgefið",
   "Default commission": "Sjálfgefið þóknun",
   "Default fee": "Sjálfgefið gjald",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -446,6 +462,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Eyða uppskrift",
   "Delete role": "Eyða hlutverki",
   "Delete selected (": "Eyða völdum (",
+  "Delete this entry": "Eyða þessari færslu",
   "Delete this price adjustment?": "Eyða þessari verðleiðréttingu?",
   "Delete user": "Eyða notanda",
   "Deleting...": "Eyðir...",
@@ -467,6 +484,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Fæðu- og vottunarsíur",
   "Dietary tags": "Fæðumerki",
   "Dietary tags (comma separated)": "Fæðumerki (aðskilin með kommum)",
+  "Dietary Tags & Certifications": "Fæðumerkingar og vottanir",
   "Direct message": "Bein skilaboð",
   Disable: "Slökkva á",
   "Disable selected (": "Slökkva á völdum (",
@@ -489,11 +507,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "t.d. Reikningar",
   "e.g. DIWALI500": "t.d. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "t.d. Uppskera vikuna 3. mars 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "T.d. Indland Lífrænt, Fair Trade. Ekki er hægt að eyða vottun sem er úthlutað á hvaða vöru sem er fyrr en hún er fjarlægð úr henni.",
   "e.g. Ops Room": "t.d. Ops herbergi",
   "e.g. Rain-fed, no synthetic pesticides": "t.d. Regnfóðrað, engin tilbúið skordýraeitur",
   "e.g. Refrigerate and use within 5 days": "t.d. Geymist í kæli og notaði innan 5 daga",
   "e.g. TO-HONEY-500": "t.d. TO-HONEY-500",
   "e.g. UTR 123456789012": "t.d. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "T.d. Vegan, glútenfrítt. Ef einni er eytt er það fjarlægt úr hverri vöru sem hefur það athugað.",
   Edit: "Breyta",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Breyta lýsigögnum CMS síðu, flokkun og hráum síðublokkum. Heimasíðuskráin er einnig skráð hér, en heimasíðustillingar eru öruggari leiðin til að breyta henni - þessi ritstjóri tekur hráan JSON.",
@@ -597,6 +619,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Kveiktu eða slökktu á hluta fyrir gesti í einu landi, án þess að breyta því sem allir aðrir sjá. Skildu eftir hluta um "Erfa" og hann fylgir bara hakinu í hlutalistanum hér að ofan.',
   "Forgot password?": "Gleymdirðu lykilorði?",
+  "Formatting locale": "Staðsniðssnið",
   "Free delivery above (₹)": "Frí heimsending fyrir ofan (₹)",
   "French (Français)": "Franska (Français)",
   Frequency: "Tíðni",
@@ -678,6 +701,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ef netfangið er með reikning er endurstillingartengill á leiðinni.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Ef þessi kynning hefur aldrei verið innleyst er henni beint eytt; annars er það í geymslu þannig að sögu þess er haldið.",
+  Image: "Mynd",
   "Image alt text": "Mynd alt texti",
   "Image alt text (optional)": "Mynd alt texti (valfrjálst)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -751,6 +775,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Láttu lit vera auðan til að halda þeim sem True Grit sendir með — það er hvernig þú afturkallar reit. Litir síðu eða lands byrja á litum vefsvæðisins og hnekkja aðeins því sem þú breytir, þannig að hver og einn er stuttur listi, ekki önnur litatöflu til að viðhalda. Þegar bæði eiga við um sama gesti vinnur síðan – hönnun ritstjórnarsíðu ætti ekki að vera afturkölluð með landfræðilegri tilraun.",
   "Leave blank to use the default.": "Leyfðu autt til að nota sjálfgefið.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Látið hlekkinn vera auðan fyrir einfalda, ósmellanlega mynd.",
   "Less refunds": "Minni endurgreiðslur",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Gerir viðskiptavinum kleift að nota gjafakortskóða við kassa, sem nær yfir hluta eða alla heildarpöntun þeirra. Gefðu út kort af gjafakortasíðunni. Slökkt er sjálfgefið — núverandi kort og inneign þeirra er geymd, bara ekki hægt að innleysa, á meðan slökkt er á þessu.",
@@ -762,6 +788,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Heildarlína",
   Lines: "Línur",
   Link: "Tengill",
+  "Link (optional)": "Tengill (valfrjálst)",
   "Link customer": "Tengdu viðskiptavin",
   "Link product": "Tengill vöru",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -781,6 +808,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Forskoðun í beinni",
   "Live, and to scale with the real storefront's own styles.":
     "Í beinni og til að skala með eigin stílum verslunargluggans.",
+  Loading: "Hleður",
   "Loading active promotions...": "Hleður virkar kynningar...",
   "Loading analytics...": "Hleður greiningar...",
   "Loading announcements...": "Hleður tilkynningar...",
@@ -794,6 +822,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Hleður samtöl...",
   "Loading country overrides...": "Hleður landshnekki...",
   "Loading crawler files...": "Hleður skriðskrár...",
+  "Loading currency values…": "Hleður gjaldmiðilsgildi...",
   "Loading delivery charges...": "Hleður sendingargjöld...",
   "Loading discussion…": "Hleður umræðu...",
   "Loading highlights...": "Hleður hápunktum...",
@@ -816,6 +845,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Hleður búðarrofa...",
   "Loading submission…": "Hleður uppgjöf...",
   "Loading...": "Hleður...",
+  "Loading…": "Hleður…",
   "Local pickup points": "Staðbundnir afhendingarstaðir",
   "Locale to translate": "Staðsetning til að þýða",
   "Locked out? Use": "Læst úti? Notaðu",
@@ -863,6 +893,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Hófsástæða",
   Mongolian: "mongólska",
   "More from True Grit": "Meira frá True Grit",
+  "Motto banner": "Kjörorð",
   "Move down in the showcase": "Færa niður í sýningarskápnum",
   "Move earlier": "Færa fyrr",
   "Move later": "Færa seinna",
@@ -987,6 +1018,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Athugasemd (nauðsynlegt til að biðja um breytingar eða hafna)",
   "Note (required)": "Athugasemd (áskilið)",
   Notes: "Athugasemdir",
+  "Nothing here yet": "Ekkert hér ennþá",
   "Nothing outstanding to pay": "Ekkert útistandandi að borga",
   "Nothing pending.": "Ekkert í bið.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1040,6 +1072,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pantanir munu birtast hér þegar viðskiptavinir skrá sig.",
   "Organic Alphonso Mangoes": "Mangoganic Alphonic",
   "Organic mangoes held in a sunlit orchard": "Lífrænt mangó haldið í sólbjörtum aldingarði",
+  "Organic wheat flour in a wooden bowl": "Lífrænt hveiti í tréskál",
   Outstanding: "Framúrskarandi",
   Overview: "Yfirlit",
   "Owner Reports": "Eigandaskýrslur",
@@ -1088,9 +1121,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Veldu að minnsta kosti eitt land, eða slepptu alls staðar.",
   "Pick at least one country, or release globally.":
     "Veldu að minnsta kosti eitt land, eða slepptu um allan heim.",
-  "Pick exactly two people for a direct message.":
-    "Veldu nákvæmlega tvo einstaklinga fyrir bein skilaboð.",
   "Pick one from the list to start reading.": "Veldu einn af listanum til að byrja að lesa.",
+  "Pick the other person for this direct message.":
+    "Veldu hinn aðilann fyrir þessi beinu skilaboð.",
   "PIN code": "PIN-kóði",
   "PIN patterns": "PIN-mynstur",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1233,6 +1266,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires pages.view permission and a connected API.": "Krefst pages.view leyfis og tengds API.",
   "Requires products.publish": "Krefst products.publish",
   "Requires recipes.publish": "Karfst recipes.publish",
+  "Requires settings access.": "Karfst aðgangs að stillingum.",
   "Requires the analytics.view permission.": "Krefst analytics.view leyfis.",
   "Requires the inventory.adjust permission.": "Karfst inventory.adjust leyfisins.",
   "Requires the reports.query permission.": "Krefst reports.query leyfisins.",
@@ -1285,6 +1319,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Í gangi...",
   "Russian (Русский)": "rússneska (Русский)",
   "Safe area": "Öryggið svæði",
+  "Safe geo-lock:": "Öryggur landlæsing:",
   "Sale & Discounts": "Útsala og afsláttur",
   "Sale price": "Útsöluverð",
   "Sale Price (₹)": "Útsöluverð (₹)",
@@ -1415,6 +1450,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Serbneska",
   Servings: "Skoða",
   "Set a new password": "Settu nýtt lykilorð",
+  "Set as default": "Setja sem sjálfgefið",
   "Shop · Farms · Journal": "Versla · Farms · Journal",
   "Shop fresh greens": "Verslaðu ferskt grænmeti",
   "Shop root vegetables": "Verslaðu rótargrænmeti",
@@ -1425,6 +1461,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "Sýna tilkynningu",
   "Show dietary and certification filters on the shop page":
     "Sýna mataræði og vottunarsíur á verslunarsíðunni",
+  "Show original": "Sýna upprunalega",
   "Show product recommendations": "Sýna tillögur um vörur",
   "Show this snippet": "Sýna þennan bút",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1509,6 +1546,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Supporting text": "Stuðningstexti",
   "Swedish (Svenska)": "sænska (svenska)",
   Table: "Tafla",
+  "Tags & Certifications": "Merki og vottanir",
   "Tags:": "Tög:",
   Tajik: "Tadsjikska",
   "Taking payments": "Taka við greiðslum",
@@ -1524,6 +1562,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Borðinn, flokkaröðin, vörulínan og SEO reitirnir vistast saman. Hlutamerkjareitir, röðun og sérsniðin afrit af hluta vistast sjálfstætt, eftir því sem þú breytir þeim.",
   "The chat widget customers and visitors see on the storefront.":
     "Spjallgræjan sem viðskiptavinir og gestir sjá á verslunarglugganum.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Gátreitirnir eru sýndir á Almennt flipanum á hverri vöru. Breytingar gilda alls staðar strax.",
   "The classic credential pair, including the password-reset flow.":
     "Hið klassíska skilríkispar, þar á meðal flæði til að endurstilla lykilorð.",
   "the farm owner": "búeigandinn",
@@ -1576,6 +1616,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Þessum hluta er breytt í sínu eigin spjaldi neðar á síðunni.",
   "Threads started from the storefront appear here.":
     "Þræðir sem byrjaðir eru á verslunarglugganum birtast hér.",
+  "Thumbnail image URL": "Vefslóð smámynda",
   Time: "Tími",
   "Tinted band": "Lynt band",
   Title: "Titill",
@@ -1593,7 +1634,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Trail colour": "Slóðalitur",
   "transfer money — make the transfer to": "millifærðu peninga — millifærðu á",
   "Transfer reference (UPI / bank / cheque)": "Flytja tilvísun (UPI / banki / ávísun)",
+  Translate: "Þýða",
+  "Translate chat": "Þýða spjall",
   "Translating...": "Þýðir...",
+  "Translating…": "Þýða...",
   Translations: "Þýðingar",
   "True Grit Admin": "True Grit Stjórnandi",
   "Turkish (Türkçe)": "tyrkneska (Türkçe)",
@@ -1624,8 +1668,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Hlaða inn mynd",
   "Uploading image...": "Hleður inn mynd...",
   "Uploading image…": "Hleður inn mynd...",
+  "Uploading thumbnail...": "Hleður upp smámynd...",
   "Uploading...": "Hleður inn...",
   "Uploading…": "Hleður inn...",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Notaðu sérstaka 1200 × 1200 mynd. Þessi ferningamynd er klippt fyrir flokkaspjöld; ekki endurnýta breiðu hetjuborðann.",
   "Use site-wide effects instead": "Notaðu í staðinn áhrif á vefsvæðið",
   "Use the exact canvas": "Notaðu nákvæmlega striga",
   "Use the navigation to get back.": "Notaðu leiðsögnina til að komast til baka.",
@@ -1638,6 +1685,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Notaðu vörumerkjalit vefsvæðisins",
   Uyghur: "Úygúr",
   Uzbek: "Úsbekska",
+  "Value of 1 INR": "Gildi 1 INR",
+  "Value per INR": "Gildi á INR",
   "Value, ₹": "Verðmæti, ₹",
   Variant: "Afbrigði",
   "Variant (SKU)": "Afbrigði (SKU)",

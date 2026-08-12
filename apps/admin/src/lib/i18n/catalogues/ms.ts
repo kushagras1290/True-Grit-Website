@@ -28,6 +28,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/kedai",
   "← All farms": "← Semua ladang",
   "+ stars": "+ bintang",
+  "₹1,000 preview": "pratonton ₹1,000",
   "1 star": "1 bintang",
   "15% off your first order": "Diskaun 15% untuk pesanan pertama anda",
   "2 cups": '0 cawan id="t0004">0 cawan id="t0004"> bintang',
@@ -62,6 +63,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pentadbir super boleh memulakan kumpulan atau mesej terus daripada butang + di atas.",
   "A tinted band — check muted text is still readable here.":
     "Jalur berwarna — semak teks diredam masih boleh dibaca di sini.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "negara pelawat memilih mata wang, jadual ini membekalkan nilai paparannya dan harga asal INR kekal tidak berubah. Mata wang yang dilumpuhkan kembali kepada lalai selamat INR.",
   Accent: "Aksen",
   "Accept orders and payments": "Terima pesanan dan pembayaran",
   "Accept orders and payments for this product": "Terima pesanan dan pembayaran untuk produk ini",
@@ -87,6 +90,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Tambah kategori",
   "Add code": "Tambah kod",
   "Add country": "Tambah negara",
+  "Add currency": "Tambah mata wang",
   "Add entry": "Tambah entri",
   "Add farm owner": "Tambah pemilik ladang",
   "Add ingredient": "Tambah ramuan",
@@ -97,6 +101,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": 'Bermula.><span di bawah id="t0004">Tambah halaman',
   "Add one so the bot has something to reference for this scope.":
     "Tambah satu supaya bot mempunyai sesuatu untuk dirujuk untuk skop ini.",
+  "Add one using the field above.": "Tambah satu menggunakan medan di atas.",
   "Add page": 'Tambah halaman i</4"><Tambahkan peserta',
   "Add participants": "Tambah peserta",
   "Add point": "Tambah mata",
@@ -115,6 +120,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Tambah zon",
   Added: "Tambah",
   "Adding...": "Tambah...",
+  "Adding…": "Menambah…",
   Address: "Alamat",
   "Adjust points": "Laraskan mata",
   "Adjust the search or create a category.": "Laraskan carian atau buat kategori.",
@@ -215,6 +221,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Azerbaijan",
   "B2B / bulk ordering": "Pesanan B2B / pukal",
   Back: "Kembali",
+  "Back to conversations": "Kembali ke perbualan",
   "Back to sign in": "Kembali untuk log masuk",
   Balance: "Baki",
   "Banner alt text": "Teks alt sepanduk",
@@ -276,6 +283,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Bahagian editor kategori",
   "Category not found": "Kategori tidak ditemui",
   "Category row": 'low stock. id="t0009">Cebuano',
+  "Category thumbnail alt text": "Teks alt lakaran kenit kategori",
+  "Category thumbnail URL": "URL lakaran kecil kategori",
   "Category to add to the homepage": "Kategori untuk ditambahkan pada halaman utama",
   "Cautions and low stock.": "Awas dan stok yang rendah.",
   "Centred safe area": "Kawasan selamat berpusat",
@@ -345,6 +354,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "E-mel hubungan",
   Content: "Kandungan",
   "Continue with Facebook": "Teruskan dengan Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Kawal anggaran harga mata wang tempatan dengan menetapkan nilai satu rupee India. Rekod katalog, daftar keluar dan pesanan kekal dalam INR dengan selamat.",
   "Control what each role can view, create, edit, publish or manage.":
     "Kawal perkara yang setiap peranan boleh lihat, cipta, edit, terbitkan atau urus.",
   "Control whether each bot is available, and edit what it knows.":
@@ -389,6 +400,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Saiz senarai susun atur",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "set harga rata yang tertentu. Checkout menggunakan penjimatan secara automatik apabila bakul menyimpan setiap item dalam satu berkas.",
+  Currency: "Mata Wang",
+  "Currency code": "Kod mata wang",
+  "Currency Converter": "Penukar Mata Wang",
+  "Currency values unavailable": '<span id="t0004">Nilai tidak tersedia',
   "Current password": "Kata laluan semasa",
   "Currently its own effects.": "Pada masa ini kesannya sendiri.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -425,6 +440,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Tolak",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'Hiasan di bahagian atas halaman berikut, menghanyutkan di hadapan etalase: Kedua-duanya dimatikan secara lalai, kedua-duanya dilangkau sepenuhnya untuk pelawat yang telah meminta peranti mereka untuk gerakan yang dikurangkan, dan tidak pernah muncul pada tetingkap pembayaran — salji turun pada borang kad adalah gangguan pada saat yang salah. Kesan sesebuah negara menggantikan kesan di seluruh tapak secara langsung untuk pelawatnya dan bukannya digabungkan dengannya — "sesetengah salji" bukanlah gabungan salji yang bermakna dan tiada kesan.',
+  Default: "Lalai",
   "Default commission": "Komisen lalai",
   "Default fee": "Yuran lalai",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -444,6 +460,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Padamkan resipi",
   "Delete role": "Padam peranan",
   "Delete selected (": "Padam yang dipilih (",
+  "Delete this entry": "Padam entri ini",
   "Delete this price adjustment?": "Padamkan pelarasan harga ini?",
   "Delete user": "Padamkan pengguna",
   "Deleting...": "Memadamkan...",
@@ -465,6 +482,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "DIWALI500",
   "Dietary tags": "Teg diet",
   "Dietary tags (comma separated)": "Teg pemakanan (dipisahkan koma)",
+  "Dietary Tags & Certifications": "Teg & Pensijilan Pemakanan",
   "Direct message": "Mesej langsung",
   Disable: "Lumpuhkan",
   "Disable selected (": "Lumpuhkan yang dipilih (",
@@ -487,11 +505,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "cth. Akaun",
   "e.g. DIWALI500": "cth. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "cth. Dituai minggu 3 Mac 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Cth. India Organik, Perdagangan Adil. Pensijilan yang diberikan kepada mana-mana produk tidak boleh dipadamkan sehingga dialih keluar daripadanya.",
   "e.g. Ops Room": "cth. Bilik Ops",
   "e.g. Rain-fed, no synthetic pesticides": "cth. Tadah hujan, tiada racun perosak sintetik",
   "e.g. Refrigerate and use within 5 days": "cth. Sejukkan dan gunakan dalam masa 5 hari",
   "e.g. TO-HONEY-500": "cth. TO-HONEY-500",
   "e.g. UTR 123456789012": "cth. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Cth. Vegan, Tanpa Gluten. Memadam satu akan mengalih keluarnya daripada setiap produk yang telah disemak.",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Edit metadata halaman CMS, pengindeksan dan sekatan halaman mentah. Rekod halaman utama juga disenaraikan di sini, tetapi Tetapan Halaman Utama ialah cara yang lebih selamat untuk menukarnya — editor ini menggunakan JSON mentah.",
   "Edit content": "Edit kandungan",
@@ -595,6 +617,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Paksa bahagian hidup atau mati untuk pelawat di satu negara, tanpa mengubah perkara yang dilihat oleh orang lain. Tinggalkan bahagian pada "Warisi" dan ia hanya mengikut kotak semak dalam senarai bahagian di atas.',
   "Forgot password?": "Terlupa kata laluan?",
+  "Formatting locale": "Memformat tempat",
   "Free delivery above (₹)": "Penghantaran percuma di atas (₹)",
   "French (Français)": "Bahasa Perancis (Français)",
   Frequency: "Kekerapan",
@@ -676,6 +699,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Jika e-mel itu mempunyai akaun, pautan set semula sedang dalam perjalanan.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Jika promosi ini tidak pernah ditebus, ia akan dipadamkan terus; jika tidak, ia diarkibkan supaya sejarahnya disimpan.",
+  Image: "Imej",
   "Image alt text": "Imej alt text",
   "Image alt text (optional)": "Imej alt text (pilihan)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -735,6 +759,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Korean (한국어)": "Bahasa Korea (한국어)",
   "Land under cultivation": "Tanah di bawah penanaman",
   Language: "Bahasa",
+  "Language Studio": "Studio Bahasa",
   "Last activity": "Aktiviti terakhir",
   "Last reviewer note": "Nota pengulas terakhir",
   "Last sign-in": "Log masuk terakhir",
@@ -746,6 +771,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Biarkan warna kosong untuk memastikan yang True Grit dihantar — mengosongkan medan adalah cara anda membuat asal. Warna halaman atau negara bermula daripada warna tapak dan menggantikan hanya perkara yang anda ubah, jadi setiap satu ialah senarai pendek, bukan palet kedua untuk dikekalkan. Apabila kedua-duanya digunakan pada pelawat yang sama, halaman itu menang — reka bentuk halaman editorial tidak boleh dibuat asal oleh percubaan geo.",
   "Leave blank to use the default.": "Biar kosong untuk menggunakan lalai.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Biarkan pautan kosong untuk imej biasa dan tidak boleh diklik.",
   "Less refunds": "Kurang bayaran balik",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Membolehkan pelanggan menggunakan kod kad hadiah semasa pembayaran, meliputi sebahagian atau keseluruhan jumlah pesanan mereka. Keluarkan kad daripada halaman Kad Hadiah. Dimatikan secara lalai — kad sedia ada dan bakinya disimpan, cuma tidak boleh ditebus, sementara ini dimatikan.",
@@ -757,6 +784,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Jumlah baris",
   Lines: "Barisan",
   Link: "Pautan",
+  "Link (optional)": "Pautan (pilihan)",
   "Link customer": "Pautkan pelanggan",
   "Link product": "Pautkan produk",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -776,6 +804,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Pratonton langsung",
   "Live, and to scale with the real storefront's own styles.":
     "Langsung dan mengikut skala dengan gaya etalase sebenar sendiri.",
+  Loading: "Memuatkan",
   "Loading active promotions...": "Memuatkan promosi aktif...",
   "Loading analytics...": "Memuatkan analitis...",
   "Loading announcements...": "Memuatkan pengumuman...",
@@ -789,6 +818,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Memuatkan perbualan...",
   "Loading country overrides...": "Memuatkan negara mengatasi...",
   "Loading crawler files...": "Memuatkan fail perangkak...",
+  "Loading currency values…": "Memuatkan nilai mata wang...",
   "Loading delivery charges...": "Memuatkan caj penghantaran...",
   "Loading discussion…": "Memuatkan perbincangan…",
   "Loading highlights...": "Memuatkan sorotan...",
@@ -811,6 +841,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Memuatkan suis etalase...",
   "Loading submission…": "Memuatkan penyerahan…",
   "Loading...": "Memuatkan...",
+  "Loading…": "Memuatkan…",
   "Local pickup points": "Titik pengambilan tempatan",
   "Locale to translate": "Setempat untuk diterjemahkan",
   "Locked out? Use": "Dikunci keluar? Gunakan",
@@ -862,6 +893,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Sebab penyederhanaan",
   Mongolian: 'turunkan id="t0010">Alih lebih awal',
   "More from True Grit": "Lagi daripada True Grit",
+  "Motto banner": "Sepanduk moto",
   "Move down in the showcase": "Bergerak ke bawah dalam ruang pameran",
   "Move earlier": "Bergerak lebih awal",
   "Move later": "Alih kemudian",
@@ -989,6 +1021,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Nota (diperlukan untuk meminta perubahan atau menolak)",
   "Note (required)": "Nota (diperlukan)",
   Notes: "Nota",
+  "Nothing here yet": "Tiada apa-apa lagi di sini",
   "Nothing outstanding to pay": "Tiada apa-apa yang tertunggak untuk dibayar",
   "Nothing pending.": "Tiada apa-apa yang belum selesai.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1043,6 +1076,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Mangga Alphonso Organik",
   "Organic mangoes held in a sunlit orchard":
     "Mangga organik yang dipegang di dalam dusun yang diterangi matahari",
+  "Organic wheat flour in a wooden bowl": "Tepung gandum organik dalam mangkuk kayu",
   Outstanding: "Luar",
   Overview: "Gambaran Keseluruhan",
   "Owner Reports": "Laporan Pemilik i",
@@ -1091,8 +1125,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pilih sekurang-kurangnya satu negara atau keluarkan di mana-mana sahaja.",
   "Pick at least one country, or release globally.":
     "Pilih sekurang-kurangnya satu negara atau keluarkan secara global.",
-  "Pick exactly two people for a direct message.": "Pilih dua orang untuk mesej langsung.",
   "Pick one from the list to start reading.": "Pilih satu daripada senarai untuk mula membaca.",
+  "Pick the other person for this direct message.": "Pilih orang lain untuk mesej langsung ini.",
   "PIN code": "Kod PIN",
   "PIN patterns": "Corak PIN",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1236,6 +1270,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Memerlukan kebenaran page.view dan API yang disambungkan.",
   "Requires products.publish": "Memerlukan products.publish",
   "Requires recipes.publish": "Memerlukan recipes.publish",
+  "Requires settings access.": "Memerlukan akses tetapan.",
   "Requires the analytics.view permission.": "Memerlukan kebenaran analytics.view.",
   "Requires the inventory.adjust permission.": "Memerlukan kebenaran inventori.adjust.",
   "Requires the reports.query permission.": "Memerlukan kebenaran reports.query.",
@@ -1286,6 +1321,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Berlari...",
   "Russian (Русский)": "Rusia (Русский)",
   "Safe area": "Kawasan selamat",
+  "Safe geo-lock:": "Geo-kunci selamat:",
   "Sale & Discounts": "Jualan & Diskaun",
   "Sale price": "Harga jualan",
   "Sale Price (₹)": "Harga Jualan (₹)",
@@ -1415,6 +1451,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Serbia",
   Servings: "Sajian",
   "Set a new password": "Tetapkan kata laluan baharu",
+  "Set as default": "Tetapkan sebagai lalai",
   "Shop · Farms · Journal": "Beli-belah · Ladang · Jurnal",
   "Shop fresh greens": "Beli sayur-sayuran segar",
   "Shop root vegetables": "Beli sayur akar",
@@ -1425,6 +1462,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "Tunjukkan pengumuman",
   "Show dietary and certification filters on the shop page":
     "Tunjukkan penapis pemakanan dan pensijilan pada halaman kedai",
+  "Show original": "Tunjukkan yang asal",
   "Show product recommendations": "Tunjukkan cadangan produk",
   "Show this snippet": "Tunjukkan coretan ini",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1509,6 +1547,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Supporting text": "Teks sokongan",
   "Swedish (Svenska)": "Sweden (Svenska)",
   Table: "Jadual",
+  "Tags & Certifications": "Teg & Pensijilan",
   "Tags:": "Teg:",
   "Taking payments": "Mengambil pembayaran",
   Target: "Sasaran",
@@ -1522,6 +1561,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Sepanduk, baris kategori, baris produk dan medan SEO disimpan bersama-sama. Kotak tanda bahagian, pesanan dan salinan bahagian tersuai disimpan sendiri, semasa anda mengubahnya.",
   "The chat widget customers and visitors see on the storefront.":
     "Widget sembang yang dilihat pelanggan dan pelawat di etalase.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Senarai kotak pilihan ditunjukkan pada setiap tab Umum produk. Perubahan berlaku di mana-mana serta-merta.",
   "The classic credential pair, including the password-reset flow.":
     "Pasangan bukti kelayakan klasik, termasuk aliran penetapan semula kata laluan.",
   "the farm owner": "pemilik ladang",
@@ -1575,6 +1616,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Bahagian ini diedit dalam panelnya sendiri lebih jauh ke bawah halaman.",
   "Threads started from the storefront appear here.":
     "Benang yang bermula dari etalase muncul di sini.",
+  "Thumbnail image URL": "URL imej kecil",
   Time: "Masa",
   "Tinted band": "Jalur berwarna",
   Title: "Tajuk",
@@ -1593,7 +1635,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Trail colour": "Warna jejak",
   "transfer money — make the transfer to": "pindah wang — buat pindahan ke",
   "Transfer reference (UPI / bank / cheque)": "Rujukan pindahan (UPI / bank / cek)",
+  Translate: "Terjemah",
+  "Translate chat": "Terjemah sembang",
   "Translating...": "Menterjemah...",
+  "Translating…": "Terjemah…",
   Translations: "Terjemahan",
   "Turkish (Türkçe)": "Bahasa Turki (Türkçe)",
   "Turn off to freeze new registrations while existing customers keep signing in normally.":
@@ -1622,8 +1667,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Muat naik imej",
   "Uploading image...": "Memuat naik imej...",
   "Uploading image…": "Memuat naik imej...",
+  "Uploading thumbnail...": "Memuat naik imej kecil...",
   "Uploading...": "Memuat naik...",
   "Uploading…": "Memuat naik…",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Gunakan imej 1200 × yang berasingan. Imej segi empat sama ini dipangkas untuk kad kategori; jangan gunakan semula sepanduk wira lebar.",
   "Use site-wide effects instead": "Gunakan kesan seluruh tapak sebaliknya",
   "Use the exact canvas": "Gunakan kanvas yang tepat",
   "Use the navigation to get back.": "Gunakan navigasi untuk kembali.",
@@ -1635,6 +1683,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Users unavailable": "Pengguna tidak tersedia",
   "Using the site brand colour": "Menggunakan warna jenama tapak",
   Uzbek: "Uzbekistan",
+  "Value of 1 INR": "Nilai 1 INR",
+  "Value per INR": "Nilai setiap INR",
   "Value, ₹": "Nilai, ₹",
   Variant: "Varian",
   "Variant (SKU)": "Varian (SKU)",

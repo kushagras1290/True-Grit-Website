@@ -24,6 +24,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/ qty": "/ quantité",
   "← All farms": "← Toutes les fermes",
   "+ stars": "+ étoiles",
+  "₹1,000 preview": "Aperçu de 1 000 ₹",
   "15% off your first order": "15 % de réduction sur votre première commande",
   "2 cups": "2 tasses",
   "2 stars": "2 étoiles",
@@ -58,6 +59,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Un super administrateur peut créer un groupe ou un message direct à partir du bouton + ci-dessus.",
   "A tinted band — check muted text is still readable here.":
     "Une bande teintée : vérifiez que le texte en sourdine est toujours lisible ici.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "le pays d'un visiteur sélectionne une devise, ce tableau fournit sa valeur d'affichage et le prix INR d'origine reste inchangé. Les devises désactivées reviennent aux valeurs par défaut de sécurité INR.",
   "Accept orders and payments": "Acceptez les commandes et paiements",
   "Accept orders and payments for this product":
     "Accepter les commandes et les paiements pour ce produit",
@@ -80,6 +83,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Ajouter une catégorie",
   "Add code": "Ajouter un code",
   "Add country": "Ajouter un pays",
+  "Add currency": "Ajouter une devise",
   "Add entry": "Ajouter une entrée",
   "Add farm owner": "Ajouter une ferme propriétaire",
   "Add ingredient": "Ajouter un ingrédient",
@@ -90,6 +94,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Ajoutez-en un ci-dessous pour commencer.",
   "Add one so the bot has something to reference for this scope.":
     "Ajoutez-en une pour que le bot ait quelque chose à référencer pour cette portée.",
+  "Add one using the field above.": "Ajoutez-en une en utilisant le champ ci-dessus.",
   "Add page": "Ajouter page",
   "Add participants": "Ajouter des participants",
   "Add point": "Ajouter point",
@@ -108,6 +113,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Ajouter une zone",
   Added: "Ajouté",
   "Adding...": "Ajout...",
+  "Adding…": "Ajout…",
   Address: "Adresse",
   "Adjust points": "Ajuster les points",
   "Adjust the search or create a category.": "Ajustez la recherche ou créez une catégorie.",
@@ -204,6 +210,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Azerbaïdjanais",
   "B2B / bulk ordering": "B2B/commande groupée",
   Back: "Retour",
+  "Back to conversations": "Retour aux conversations",
   "Back to sign in": "Retour à la connexion",
   Balance: "Solde",
   "Banner alt text": "Texte alternatif de la bannière",
@@ -263,6 +270,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Catégorie sections de l'éditeur",
   "Category not found": "Catégorie introuvable",
   "Category row": "Ligne de catégorie",
+  "Category thumbnail alt text": "Vignette de la catégorie alt text",
+  "Category thumbnail URL": "URL miniature de la catégorie",
   "Category to add to the homepage": "Catégorie à ajouter à la page d'accueil",
   "Cautions and low stock.": "Attentions et stock faible.",
   "Centred safe area": "Zone de sécurité centrée",
@@ -327,6 +336,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "E-mail de contact",
   Content: "Contenu",
   "Continue with Facebook": "Continuer avec Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Contrôlez les prix approximatifs en monnaie locale en définissant la valeur d'une roupie indienne. Les enregistrements de catalogue, de paiement et de commande restent en sécurité en INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Contrôlez ce que chaque rôle peut afficher, créer, modifier, publier ou gérer.",
   "Control whether each bot is available, and edit what it knows.":
@@ -369,6 +380,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Taille de la liste organisée",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Ensembles sélectionnés de variantes spécifiques vendus ensemble à un prix forfaitaire. Le paiement applique automatiquement la sauvegarde une fois qu'un panier contient tous les articles d'un lot.",
+  Currency: "Devise",
+  "Currency code": "Code de devise",
+  "Currency Converter": "Convertisseur de devises",
+  "Currency values unavailable": "Valeurs de devise non disponibles",
   "Current password": "Mot de passe actuel",
   "Currently its own effects.": "Actuellement ses propres effets.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -405,6 +420,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Refus",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     "Décoration en haut de la vitrine : particules dérivantes derrière la page et traînée suivant le pointeur. Les deux sont désactivés par défaut, les deux sont entièrement ignorés pour les visiteurs qui ont demandé à leur appareil de réduire les mouvements, et aucun n'apparaît jamais sur la fenêtre de paiement - une chute de neige sur un formulaire de carte est une distraction exactement au mauvais moment. Les effets d'un pays remplacent purement et simplement ceux de l'ensemble du site pour ses visiteurs plutôt que de se mélanger à eux : \"un peu de neige\" n'est pas un mélange significatif de neige et aucun effet.",
+  Default: "Par défaut",
   "Default commission": "Commission par défaut",
   "Default fee": "Frais par défaut",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -424,6 +440,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Supprimer la recette",
   "Delete role": "Supprimer le rôle",
   "Delete selected (": "Supprimer la sélection (",
+  "Delete this entry": "Supprimer cette entrée",
   "Delete this price adjustment?": "Supprimer cet ajustement de prix ?",
   "Delete user": "Supprimer l'utilisateur",
   "Deleting...": "Suppression...",
@@ -444,6 +461,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Filtres diététiques et de certification",
   "Dietary tags": "Étiquettes diététiques",
   "Dietary tags (comma separated)": "Étiquettes alimentaires (séparées par des virgules)",
+  "Dietary Tags & Certifications": "Étiquettes et certifications alimentaires",
   "Direct message": "Message direct",
   Disable: "Désactiver",
   "Disable selected (": "Désactiver la sélection (",
@@ -465,11 +483,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "par ex. Comptes",
   "e.g. DIWALI500": "par ex. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "par exemple. Récolté la semaine du 3 mars 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Par exemple. Inde Biologique, Commerce Equitable. Une certification attribuée à un produit ne peut pas être supprimée tant qu'elle n'en est pas supprimée.",
   "e.g. Ops Room": "par ex. Salle des opérations",
   "e.g. Rain-fed, no synthetic pesticides": "par ex. Culture pluviale, sans pesticides de synthèse",
   "e.g. Refrigerate and use within 5 days": "par ex. Réfrigérer et utiliser dans les 5 jours",
   "e.g. TO-HONEY-500": "par ex. TO-HONEY-500",
   "e.g. UTR 123456789012": "par ex. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Par ex. Végétalien, sans gluten. En supprimer un le supprime de tous les produits pour lesquels il est coché.",
   Edit: "Modifier",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Modifier les métadonnées de la page CMS, l'indexation et les blocs de page bruts. L'enregistrement de la page d'accueil est également répertorié ici, mais les paramètres de la page d'accueil constituent le moyen le plus sûr de le modifier : cet éditeur utilise du JSON brut.",
@@ -573,6 +595,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     "Forcer l'activation ou la désactivation d'une section pour les visiteurs d'un pays, sans modifier ce que voient tous les autres. Laissez une section sur \"Hériter\" et elle suit simplement la case à cocher dans la liste des sections ci-dessus.",
   "Forgot password?": "Mot de passe oublié ?",
+  "Formatting locale": "Formatage local",
   "Free delivery above (₹)": "Livraison gratuite au-dessus de ( ₹)",
   "French (Français)": "Français (Français)",
   Frequency: "Fréquence",
@@ -726,6 +749,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Laissez une couleur vide pour conserver celle avec laquelle True Grit est livré – effacer un champ est la façon de procéder tu défaits. Les couleurs d'une page ou d'un pays partent des couleurs du site et remplacent uniquement ce que vous modifiez, chacune étant donc une courte liste et non une seconde palette à gérer. Lorsque les deux s'appliquent au même visiteur, la page gagne : la conception d'une page éditoriale ne doit pas être annulée par une expérience géographique.",
   "Leave blank to use the default.": "Laissez vide pour utiliser la valeur par défaut.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Laissez le lien vide pour une image simple et non cliquable.",
   "Less refunds": "Moins de remboursements",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Permet aux clients d'appliquer un code de carte-cadeau au moment du paiement, couvrant une partie ou la totalité du total de leur commande. Émettez des cartes à partir de la page Cartes-cadeaux. Désactivé par défaut : les cartes existantes et leurs soldes sont conservés, mais ne peuvent pas être échangés pendant cette période.",
@@ -737,6 +762,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Total de la ligne",
   Lines: "Lignes",
   Link: "Lien",
+  "Link (optional)": "Lien (facultatif)",
   "Link customer": "Client lié",
   "Link product": "Lien vers le produit",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -756,6 +782,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Aperçu en direct",
   "Live, and to scale with the real storefront's own styles.":
     "En direct, et à adapter aux styles propres à la vitrine réelle.",
+  Loading: "Chargement",
   "Loading active promotions...": "Chargement des promotions actives...",
   "Loading analytics...": "Chargement des analyses...",
   "Loading announcements...": "Chargement des annonces...",
@@ -769,6 +796,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Chargement des conversations…",
   "Loading country overrides...": "Chargement des remplacements de pays...",
   "Loading crawler files...": "Chargement des fichiers du robot...",
+  "Loading currency values…": "Chargement des valeurs monétaires…",
   "Loading delivery charges...": "Chargement des frais de livraison...",
   "Loading discussion…": "Chargement de la discussion…",
   "Loading highlights...": "Chargement des faits saillants...",
@@ -791,6 +819,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Chargement des commutateurs de vitrine...",
   "Loading submission…": "Chargement de la soumission…",
   "Loading...": "Chargement en cours...",
+  "Loading…": "Chargement…",
   "Local pickup points": "Points de retrait locaux",
   "Locale to translate": "Local à traduire",
   "Locked out? Use": "Verrouillé ? Utilisez",
@@ -841,6 +870,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Raison de la modération",
   Mongolian: "Mongol",
   "More from True Grit": "Plus de True Grit",
+  "Motto banner": "Bannière de devise",
   "Move down in the showcase": "Descendre dans la vitrine",
   "Move earlier": "Déplacer plus tôt",
   "Move later": "Déplacer plus tard",
@@ -966,6 +996,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Remarque (obligatoire pour demander des modifications ou rejeter)",
   "Note (required)": "Remarque (obligatoire)",
   Notes: "Remarques",
+  "Nothing here yet": "Rien ici encore",
   "Nothing outstanding to pay": "Rien d'impayé à payer",
   "Nothing pending.": "Rien en attente.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1017,6 +1048,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Mangues Alphonso biologiques",
   "Organic mangoes held in a sunlit orchard":
     "Mangues biologiques conservées dans un endroit ensoleillé verger",
+  "Organic wheat flour in a wooden bowl": "Farine de blé biologique dans un bol en bois",
   Outstanding: "Exceptionnel",
   Overview: "Vue d'ensemble",
   "Owner Reports": "Rapports du propriétaire",
@@ -1061,10 +1093,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Sélectionnez au moins un pays ou publiez-le partout.",
   "Pick at least one country, or release globally.":
     "Choisissez au moins un pays ou publiez-le dans le monde entier.",
-  "Pick exactly two people for a direct message.":
-    "Choisissez exactement deux personnes pour un message direct.",
   "Pick one from the list to start reading.":
     "Choisissez-en une dans la liste pour commencer à lire.",
+  "Pick the other person for this direct message.":
+    "Choisissez l'autre personne pour ce message direct.",
   "PIN code": "Code PIN",
   "PIN patterns": "Modèles de code PIN",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1204,6 +1236,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Nécessite l'autorisation d'affichage des pages et une connexion connectée. API.",
   "Requires products.publish": "Nécessite products.publish",
   "Requires recipes.publish": "Nécessite des recettes.publish",
+  "Requires settings access.": "Nécessite un accès aux paramètres.",
   "Requires the analytics.view permission.": "Nécessite l'autorisation d'analyse.view.",
   "Requires the inventory.adjust permission.": "Nécessite l'autorisation d'inventaire.ajuster.",
   "Requires the reports.query permission.": "Nécessite les rapports.query autorisation.",
@@ -1256,6 +1289,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "En cours d'exécution…",
   "Russian (Русский)": "Russe (Русский)",
   "Safe area": "Zone de sécurité",
+  "Safe geo-lock:": "Verrouillage géographique sécurisé :",
   "Sale & Discounts": "Ventes et réductions",
   "Sale price": "Prix de vente",
   "Sale Price (₹)": "Prix de vente ( ₹)",
@@ -1389,6 +1423,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Serbe",
   Servings: "Portions",
   "Set a new password": "Définir un nouveau mot de passe",
+  "Set as default": "Définir par défaut",
   "Shop · Farms · Journal": "Boutique · Fermes · Journal",
   "Shop fresh greens": "Acheter des légumes frais",
   "Shop root vegetables": "Achetez des légumes-racines",
@@ -1399,6 +1434,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "Afficher l'annonce",
   "Show dietary and certification filters on the shop page":
     "Afficher les filtres diététiques et de certification sur la page de la boutique",
+  "Show original": "Afficher l'original",
   "Show product recommendations": "Afficher les recommandations de produits",
   "Show this snippet": "Afficher cet extrait",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1483,6 +1519,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Supporting text": "Texte de support",
   "Swedish (Svenska)": "Suédois (Svenska)",
   Table: "Tableau",
+  "Tags & Certifications": "Étiquettes et certifications",
   "Tags:": "Tags :",
   Tajik: "Tadjik",
   "Taking payments": "Prendre des paiements",
@@ -1497,6 +1534,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "La bannière, la ligne de catégorie, la ligne de produit et les champs SEO sont enregistrés ensemble. Les cases à cocher, le classement et la copie de section personnalisée sont enregistrés automatiquement au fur et à mesure que vous les modifiez.",
   "The chat widget customers and visitors see on the storefront.":
     "Le widget de chat que les clients et les visiteurs voient sur la vitrine.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Les listes de cases à cocher affichées dans l'onglet Général de chaque produit. Les modifications s'appliquent immédiatement partout.",
   "The classic credential pair, including the password-reset flow.":
     "La paire d'informations d'identification classique, y compris le flux de réinitialisation du mot de passe.",
   "the farm owner": "le propriétaire de la ferme",
@@ -1551,6 +1590,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Cette section est modifiée dans son propre panneau plus bas sur la page.",
   "Threads started from the storefront appear here.":
     "Les fils de discussion lancés depuis la vitrine apparaissent ici.",
+  "Thumbnail image URL": "URL de l'image miniature",
   Time: "Heure",
   "Tinted band": "Bande teintée",
   Title: "Titre",
@@ -1567,7 +1607,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Trail colour": "Couleur du sentier",
   "transfer money — make the transfer to": "transférer de l'argent — effectuer le virement vers",
   "Transfer reference (UPI / bank / cheque)": "Référence du virement (UPI / banque / chèque)",
+  Translate: "Traduire",
+  "Translate chat": "Traduire le chat",
   "Translating...": "Traduction...",
+  "Translating…": "Traduire…",
   Translations: "Traductions",
   "True Grit Admin": "True Grit Administrateur",
   "Turkish (Türkçe)": "Turc (Türkçe)",
@@ -1598,9 +1641,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Télécharger une image",
   "Uploading image...": "Téléchargement image...",
   "Uploading image…": "Téléchargement de l'image…",
+  "Uploading thumbnail...": "Téléchargement de la miniature...",
   "Uploading...": "Téléchargement...",
   "Uploading…": "Téléchargement…",
   "Urdu (اردو)": "Ourdou (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Utilisez une image distincte de 1 200 × 1 200. Cette image carrée est recadrée pour les cartes de catégorie ; ne réutilisez pas la large bannière du héros.",
   "Use site-wide effects instead": "Utilisez plutôt des effets à l'échelle du site",
   "Use the exact canvas": "Utilisez le canevas exact",
   "Use the navigation to get back.": "Utilisez la navigation pour revenir.",
@@ -1613,6 +1659,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Utiliser la couleur de la marque du site",
   Uyghur: "Ouïghour",
   Uzbek: "Ouzbek",
+  "Value of 1 INR": "Valeur de 1 INR",
+  "Value per INR": "Valeur par INR",
   "Value, ₹": "Valeur, ₹",
   Variant: "Variante",
   "Variant (SKU)": "Variante (SKU)",

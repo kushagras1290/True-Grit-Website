@@ -38,3 +38,20 @@ body {
   box-shadow: var(--focus-ring);
   border-radius: var(--radius-sm);
 }
+
+/* TopProgressBar's top-of-page bar (components/top-progress-bar.tsx): a
+   sweep from left to right, rather than an indeterminate width change, so
+   it never falsely implies a known completion percentage for work whose
+   actual progress nothing here tracks. Mirrors the storefront's
+   navigation-progress keyframe. */
+@keyframes admin-progress {
+  0% {
+    transform: translateX(-100%) scaleX(0.4);
+  }
+  50% {
+    transform: translateX(0%) scaleX(0.6);
+  }
+  100% {
+    transform: translateX(100%) scaleX(0.4);
+  }
+}

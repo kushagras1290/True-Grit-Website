@@ -6,7 +6,7 @@
  * Sending goes over `useChatSocket`'s WebSocket, not a REST call. */
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Send, UserMinus, UserPlus, Users } from "lucide-react";
+import { ArrowLeft, Languages, Plus, Send, UserMinus, UserPlus, Users } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { Button, EmptyState, Field, Input, Modal, Select, Textarea } from "../components/ui";
@@ -15,7 +15,7 @@ import { ApiError, api, type ChatMessage, type ConversationSummary } from "../li
 import { formatDateTime } from "../lib/format";
 import { useMe } from "../lib/permissions";
 import { conversationHistoryKey, useChatSocket } from "../lib/useChatSocket";
-import { T } from "../lib/i18n";
+import { T, useLocaleControls } from "../lib/i18n";
 
 function conversationLabel(
   conversation: ConversationSummary,
@@ -24,6 +24,18 @@ function conversationLabel(
   if (conversation.type === "group") return conversation.name ?? "Untitled group";
   const other = conversation.participants.find((p) => p.userId !== myUserId);
   return other?.displayName ?? "Direct message";
+}
+
+/** The other person's role(s) in a direct message, e.g. "Farm Owner" -- so
+ *  an admin can see who they are actually talking to, not just a name.
+ *  Group conversations already show every member's role in "Manage". */
+function directMessageRole(
+  conversation: ConversationSummary,
+  myUserId: string | undefined,
+): string | null {
+  if (conversation.type !== "direct") return null;
+  const other = conversation.participants.find((p) => p.userId !== myUserId);
+  return other && other.roles.length > 0 ? other.roles.join(", ") : null;
 }
 
 function ConversationList({
@@ -77,8 +89,15 @@ function ConversationList({
                 </span>
               ) : null}
             </span>
-            <span className="truncate text-xs text-ink-muted">
-              {conversation.lastMessageBody ?? <T>{"No messages yet"}</T>}
+            <span className="flex items-center justify-between gap-2">
+              <span className="truncate text-xs text-ink-muted">
+                {conversation.lastMessageBody ?? <T>{"No messages yet"}</T>}
+              </span>
+              {conversation.lastMessageAt ? (
+                <span className="shrink-0 text-[11px] text-ink-muted">
+                  {formatDateTime(conversation.lastMessageAt)}
+                </span>
+              ) : null}
             </span>
           </button>
         </li>
@@ -87,7 +106,21 @@ function ConversationList({
   );
 }
 
-function MessageBubble({ message, isMine }: { message: ChatMessage; isMine: boolean }) {
+function MessageBubble({
+  message,
+  isMine,
+  translatedBody,
+  translating,
+  onToggleTranslate,
+}: {
+  message: ChatMessage;
+  isMine: boolean;
+  /** Present once this message has a cached translation showing right now;
+   *  absent means the bubble is showing the original `message.body`. */
+  translatedBody: string | undefined;
+  translating: boolean;
+  onToggleTranslate: () => void;
+}) {
   return (
     <div className={`flex flex-col ${isMine ? "items-end" : "items-start"}`}>
       <div
@@ -98,9 +131,25 @@ function MessageBubble({ message, isMine }: { message: ChatMessage; isMine: bool
         {!isMine ? (
           <p className="mb-0.5 text-xs font-semibold opacity-80">{message.senderName}</p>
         ) : null}
-        <p className="whitespace-pre-wrap break-words">{message.body}</p>
+        <p className="whitespace-pre-wrap break-words">{translatedBody ?? message.body}</p>
       </div>
-      <span className="mt-1 text-[11px] text-ink-muted">{formatDateTime(message.createdAt)}</span>
+      <span className="mt-1 flex items-center gap-2 text-[11px] text-ink-muted">
+        {formatDateTime(message.createdAt)}
+        <button
+          type="button"
+          onClick={onToggleTranslate}
+          disabled={translating}
+          className="underline decoration-dotted underline-offset-2 hover:text-ink disabled:opacity-60"
+        >
+          {translating ? (
+            <T>{"Translating…"}</T>
+          ) : translatedBody ? (
+            <T>Show original</T>
+          ) : (
+            <T>Translate</T>
+          )}
+        </button>
+      </span>
     </div>
   );
 }
@@ -109,16 +158,19 @@ function MessageThread({
   conversation,
   myUserId,
   isSuperAdmin,
+  onBack,
 }: {
   conversation: ConversationSummary;
   myUserId: string | undefined;
   isSuperAdmin: boolean;
+  onBack: () => void;
 }) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState("");
   const [manageOpen, setManageOpen] = useState(false);
   const { status, send } = useChatSocket(conversation.id);
+  const { locale } = useLocaleControls();
 
   const { data: history, isLoading } = useQuery({
     queryKey: conversationHistoryKey(conversation.id),
@@ -140,6 +192,93 @@ function MessageThread({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversation.id, lastMessageId]);
 
+  // Telegram-style translate: `translations` is a cache of everything ever
+  // fetched for the *current* target locale (messageId -> translated text);
+  // `visible` is which of those bubbles are showing the translation right
+  // now vs. the original. Switching conversations or the target locale
+  // drops both, since a translation cached for one locale/conversation has
+  // no meaning for another.
+  const [translations, setTranslations] = useState<Record<string, string>>({});
+  const [visible, setVisible] = useState<Set<string>>(new Set());
+  const [chatTranslateOn, setChatTranslateOn] = useState(false);
+
+  useEffect(() => {
+    setTranslations({});
+    setVisible(new Set());
+    setChatTranslateOn(false);
+  }, [conversation.id, locale]);
+
+  const translateOne = useMutation({
+    mutationFn: (messageId: string) => api.translateMessage(conversation.id, messageId, locale),
+    onSuccess: (result) => {
+      setTranslations((current) => ({ ...current, [result.messageId]: result.translated }));
+      setVisible((current) => new Set(current).add(result.messageId));
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not translate."),
+  });
+
+  const translateChat = useMutation({
+    mutationFn: (messageIds: string[]) =>
+      api.translateConversation(conversation.id, locale, messageIds),
+    onSuccess: (result) => {
+      setTranslations((current) => {
+        const next = { ...current };
+        for (const row of result.messages) next[row.messageId] = row.translated;
+        return next;
+      });
+      setVisible((current) => {
+        const next = new Set(current);
+        for (const row of result.messages) next.add(row.messageId);
+        return next;
+      });
+    },
+    onError: (error) => {
+      toast.error(error instanceof ApiError ? error.message : "Could not translate the chat.");
+      setChatTranslateOn(false);
+    },
+  });
+
+  // While chat-translate is on, also pick up messages that arrive later
+  // (over the WebSocket) or were individually translated into a different
+  // cache before the toggle was flipped on -- re-running on every new
+  // `lastMessageId` is what makes a live-incoming message get translated
+  // too, not just the ones present at toggle time.
+  useEffect(() => {
+    if (!chatTranslateOn) return;
+    const untranslated = messages.filter((m) => !(m.id in translations));
+    if (untranslated.length > 0) {
+      translateChat.mutate(untranslated.map((m) => m.id));
+    } else {
+      setVisible(new Set(messages.map((m) => m.id)));
+    }
+    // Deliberately excludes `translations`/`translateChat`: this should only
+    // react to the toggle flipping on or a new message arriving, not to its
+    // own writes to the translation cache (which would loop).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatTranslateOn, lastMessageId]);
+
+  function toggleMessageTranslate(messageId: string) {
+    if (visible.has(messageId)) {
+      setVisible((current) => {
+        const next = new Set(current);
+        next.delete(messageId);
+        return next;
+      });
+      return;
+    }
+    if (messageId in translations) {
+      setVisible((current) => new Set(current).add(messageId));
+      return;
+    }
+    translateOne.mutate(messageId);
+  }
+
+  function toggleChatTranslate() {
+    if (chatTranslateOn) setVisible(new Set());
+    setChatTranslateOn(!chatTranslateOn);
+  }
+
   function handleSend() {
     const body = draft.trim();
     if (!body) return;
@@ -154,24 +293,57 @@ function MessageThread({
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between border-b border-line px-4 py-3">
-        <div>
-          <p className="font-medium text-ink">{conversationLabel(conversation, myUserId)}</p>
-          <p className="text-xs text-ink-muted">
-            {status === "open" ? (
-              <T>{"Live"}</T>
-            ) : status === "connecting" ? (
-              <T>{"Connecting…"}</T>
-            ) : (
-              <T>{"Reconnecting…"}</T>
-            )}
-          </p>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onBack}
+            aria-label="Back to conversations"
+            className="flex h-8 w-8 items-center justify-center rounded-sm text-ink-muted hover:bg-canvas md:hidden"
+          >
+            <ArrowLeft size={16} />
+          </button>
+          <div>
+            <p className="flex items-center gap-2 font-medium text-ink">
+              {conversationLabel(conversation, myUserId)}
+              {directMessageRole(conversation, myUserId) ? (
+                <span className="rounded-full bg-subtle px-2 py-0.5 text-[11px] font-medium text-ink-muted">
+                  {directMessageRole(conversation, myUserId)}
+                </span>
+              ) : null}
+            </p>
+            <p className="text-xs text-ink-muted">
+              {status === "open" ? (
+                <T>{"Live"}</T>
+              ) : status === "connecting" ? (
+                <T>{"Connecting…"}</T>
+              ) : (
+                <T>{"Reconnecting…"}</T>
+              )}
+            </p>
+          </div>
         </div>
-        {isSuperAdmin && conversation.type === "group" ? (
-          <Button variant="secondary" onClick={() => setManageOpen(true)}>
-            <Users size={15} />
-            <T>Manage</T>
+        <div className="flex items-center gap-2">
+          <Button
+            variant={chatTranslateOn ? "primary" : "secondary"}
+            onClick={toggleChatTranslate}
+            disabled={translateChat.isPending || messages.length === 0}
+          >
+            <Languages size={15} />
+            {translateChat.isPending ? (
+              <T>{"Translating…"}</T>
+            ) : chatTranslateOn ? (
+              <T>Show original</T>
+            ) : (
+              <T>Translate chat</T>
+            )}
           </Button>
-        ) : null}
+          {isSuperAdmin && conversation.type === "group" ? (
+            <Button variant="secondary" onClick={() => setManageOpen(true)}>
+              <Users size={15} />
+              <T>Manage</T>
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
@@ -189,6 +361,9 @@ function MessageThread({
               key={message.id}
               message={message}
               isMine={message.senderId === myUserId}
+              translatedBody={visible.has(message.id) ? translations[message.id] : undefined}
+              translating={translateOne.isPending && translateOne.variables === message.id}
+              onToggleTranslate={() => toggleMessageTranslate(message.id)}
             />
           ))
         )}
@@ -263,7 +438,9 @@ function StaffPicker({
             onChange={() => onToggle(user.id)}
           />
           <span className="text-ink">{user.displayName}</span>
-          <span className="text-xs text-ink-muted">{user.email}</span>
+          <span className="text-xs text-ink-muted">
+            {user.roles.length > 0 ? user.roles.join(", ") : <T>{"No role"}</T>}
+          </span>
         </label>
       ))}
     </div>
@@ -343,7 +520,14 @@ function ManageParticipantsModal({
                 key={participant.userId}
                 className="flex items-center justify-between rounded-sm border border-line px-2.5 py-1.5 text-sm"
               >
-                {participant.displayName}
+                <span>
+                  {participant.displayName}
+                  {participant.roles.length > 0 ? (
+                    <span className="ml-1.5 text-xs text-ink-muted">
+                      ({participant.roles.join(", ")})
+                    </span>
+                  ) : null}
+                </span>
                 <button
                   type="button"
                   aria-label={`Remove ${participant.displayName}`}
@@ -388,7 +572,15 @@ function ManageParticipantsModal({
   );
 }
 
-function NewConversationModal({ onClose }: { onClose: () => void }) {
+function NewConversationModal({
+  myUserId,
+  onClose,
+  onCreated,
+}: {
+  myUserId: string | undefined;
+  onClose: () => void;
+  onCreated: (conversationId: string) => void;
+}) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [type, setType] = useState<"group" | "direct">("group");
@@ -400,21 +592,35 @@ function NewConversationModal({ onClose }: { onClose: () => void }) {
       api.createConversation({
         type,
         name: type === "group" ? name.trim() : null,
-        participantUserIds: participantIds,
+        // The creator is always a participant of what they create -- without
+        // this, a conversation made from this modal never appears in the
+        // creator's own list (list_my_conversations only returns
+        // conversations you belong to), so they could never open, message
+        // in, or manage it again after closing this modal.
+        participantUserIds: myUserId ? [...participantIds, myUserId] : participantIds,
       }),
-    onSuccess: async () => {
+    onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: ["conversations"] });
-      toast.success(type === "group" ? "Group created." : "Conversation started.");
-      onClose();
+      toast.success(
+        type === "group"
+          ? "Group created."
+          : result.reused
+            ? "Conversation found."
+            : "Conversation started.",
+      );
+      onCreated(result.id);
     },
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not create."),
   });
 
+  // The current user is added automatically above, so the picker only ever
+  // needs to name the *other* people -- one more for a direct message, at
+  // least one more for a group.
   const canSubmit =
     type === "group"
       ? name.trim().length > 0 && participantIds.length >= 1
-      : participantIds.length === 2;
+      : participantIds.length === 1;
 
   return (
     <Modal title="New conversation" onClose={onClose}>
@@ -448,7 +654,7 @@ function NewConversationModal({ onClose }: { onClose: () => void }) {
           </Field>
         ) : (
           <p className="text-xs text-ink-muted">
-            <T>Pick exactly two people for a direct message.</T>
+            <T>Pick the other person for this direct message.</T>
           </p>
         )}
 
@@ -457,12 +663,12 @@ function NewConversationModal({ onClose }: { onClose: () => void }) {
             <T>Participants</T>
           </p>
           <StaffPicker
-            excludeUserIds={[]}
+            excludeUserIds={myUserId ? [myUserId] : []}
             selected={participantIds}
             onToggle={(userId) =>
               setParticipantIds((current) => {
                 if (current.includes(userId)) return current.filter((id) => id !== userId);
-                if (type === "direct" && current.length >= 2) return current;
+                if (type === "direct" && current.length >= 1) return current;
                 return [...current, userId];
               })
             }
@@ -517,7 +723,11 @@ export function MessagesPage() {
       </div>
 
       <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden rounded-md border border-line bg-surface shadow-card md:grid-cols-[20rem_minmax(0,1fr)]">
-        <div className="flex min-h-0 flex-col border-line md:border-r">
+        <div
+          className={`min-h-0 flex-col border-line md:flex md:border-r ${
+            selected ? "hidden md:flex" : "flex"
+          }`}
+        >
           <ConversationList
             conversations={conversations ?? []}
             isLoading={isLoading}
@@ -526,12 +736,13 @@ export function MessagesPage() {
             myUserId={me?.id}
           />
         </div>
-        <div className="hidden min-h-0 md:block">
+        <div className={`min-h-0 md:block ${selected ? "block" : "hidden md:block"}`}>
           {selected ? (
             <MessageThread
               conversation={selected}
               myUserId={me?.id}
               isSuperAdmin={me?.isSuperAdmin ?? false}
+              onBack={() => setSelectedId(null)}
             />
           ) : (
             <div className="flex h-full items-center justify-center">
@@ -545,7 +756,14 @@ export function MessagesPage() {
       </div>
 
       {newConversationOpen ? (
-        <NewConversationModal onClose={() => setNewConversationOpen(false)} />
+        <NewConversationModal
+          myUserId={me?.id}
+          onClose={() => setNewConversationOpen(false)}
+          onCreated={(conversationId) => {
+            setSelectedId(conversationId);
+            setNewConversationOpen(false);
+          }}
+        />
       ) : null}
     </div>
   );

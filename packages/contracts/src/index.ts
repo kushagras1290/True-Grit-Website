@@ -456,6 +456,21 @@ export interface RecommendationsBlock extends BlockBase {
   };
 }
 
+/**
+ * A single full-width graphic -- a brand statement or campaign lockup that is
+ * itself the content, unlike `hero`'s rotating carousel or `rich_text`'s
+ * prose. Optionally links somewhere; renders as a plain image when it does
+ * not.
+ */
+export interface ImageBannerBlock extends BlockBase {
+  type: "image_banner";
+  props: {
+    imageUrl: string;
+    imageAlt: string;
+    href: string | null;
+  };
+}
+
 export type PublicPageBlock =
   | HeroBlock
   | CategoryCollectionBlock
@@ -467,7 +482,8 @@ export type PublicPageBlock =
   | PageLinksBlock
   | ReviewsShowcaseBlock
   | PromotionBannerBlock
-  | RecommendationsBlock;
+  | RecommendationsBlock
+  | ImageBannerBlock;
 
 export type PublicBlockType = PublicPageBlock["type"];
 

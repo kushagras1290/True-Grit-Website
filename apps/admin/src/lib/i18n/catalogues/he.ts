@@ -19,6 +19,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   ") · started": ") · התחיל",
   "← All farms": "← כל החוות",
   "+ stars": "+ כוכבים",
+  "₹1,000 preview": "₹1,000 תצוגה מקדימה",
   "1 star": "כוכב אחד",
   "15% off your first order": "15% הנחה על ההזמנה הראשונה שלך",
   "2 cups": "2 כוסות",
@@ -52,6 +53,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "מנהל-על יכול להתחיל קבוצה או הודעה ישירה מכפתור ה-+ למעלה.",
   "A tinted band — check muted text is still readable here.":
     "פס כהה - טקסט מושתק עדיין ניתן לקרוא כאן.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "ארץ של מבקר בוחרת מטבע, טבלה זו מספקת את ערך התצוגה שלה, ומחיר INR המקורי נשאר ללא שינוי. מטבעות מושבתים חוזרים לברירות המחדל בטוחות ב-INR.",
   "Accept orders and payments": "קבל הזמנות ותשלומים",
   "Accept orders and payments for this product": "קבל הזמנות ותשלומים עבור מוצר זה",
   Action: "פעולה",
@@ -76,6 +79,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "הוסף קטגוריה",
   "Add code": "הוסף קוד",
   "Add country": "הוסף מדינה",
+  "Add currency": "הוסף מטבע",
   "Add entry": "הוסף ערך",
   "Add farm owner": "הוסף בעל חווה",
   "Add ingredient": "הוסף מרכיב",
@@ -86,6 +90,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "הוסף אחד למטה כדי להתחיל.",
   "Add one so the bot has something to reference for this scope.":
     "הוסף אחד כך שלבוט יהיה משהו להתייחס להיקף זה.",
+  "Add one using the field above.": "הוסף אחד באמצעות השדה שלמעלה.",
   "Add page": "הוסף דף",
   "Add participants": "הוסף משתתפים",
   "Add point": "הוסף נקודה",
@@ -104,6 +109,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "הוסף אזור",
   Added: "נוסף",
   "Adding...": "מוסיף...",
+  "Adding…": "מוסיף...",
   Address: "כתובת",
   "Adjust points": "התאם נקודות",
   "Adjust the search or create a category.": "שנה את החיפוש או צור קטגוריה.",
@@ -195,6 +201,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "אזרבייג'נית",
   "B2B / bulk ordering": "B2B / הזמנה בכמות גדולה",
   Back: "חזרה",
+  "Back to conversations": "חזרה לשיחות",
   "Back to sign in": "חזרה לכניסה",
   Balance: "יתרה",
   "Banner alt text": "טקסט חלופי באנר",
@@ -255,6 +262,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "קטעי עורך קטגוריות",
   "Category not found": "קטגוריה לא נמצאה",
   "Category row": "שורת קטגוריה",
+  "Category thumbnail alt text": "טקסט חלופי של תמונה ממוזערת של קטגוריה",
+  "Category thumbnail URL": "כתובת אתר של תמונה ממוזערת של קטגוריה",
   "Category to add to the homepage": "קטגוריה להוספה לדף הבית",
   "Cautions and low stock.": "אזהרות ומלאי נמוך.",
   "Centred safe area": "אזור בטוח במרכז",
@@ -324,6 +333,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "אימייל ליצירת קשר",
   Content: "תוכן",
   "Continue with Facebook": "המשך עם פייסבוק",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "שלוט במחירים משוערים במטבע המקומי על ידי הגדרת כמה שווה רופי הודי אחד. רשומות קטלוג, קופה והזמנות נשארות בבטחה ב-INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "שלוט במה שכל תפקיד יכול להציג, ליצור, לערוך, לפרסם או לנהל.",
   "Control whether each bot is available, and edit what it knows.":
@@ -366,6 +377,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "גודל רשימה מאורגנת",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "סטים מאוחדים של גרסאות קבועות שנמכרות יחד במחיר אחיד. Checkout מחיל את החיסכון באופן אוטומטי ברגע שסל מכיל כל פריט בחבילה.",
+  Currency: "מטבע",
+  "Currency code": "קוד מטבע",
+  "Currency Converter": "ממיר מטבעות",
+  "Currency values unavailable": "ערכי מטבע לא זמינים",
   "Current password": "סיסמה נוכחית",
   "Currently its own effects.": "כרגע ההשפעות שלו.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -400,6 +415,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "דחייה",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'קישוט על גבי חזית החנות: חלקיקים נסחפים מאחורי הדף, ומסלול. שניהם כבויים כברירת מחדל, שניהם מדלגים לחלוטין עבור מבקרים שביקשו מהמכשיר שלהם תנועה מופחתת, ואף אחד מהם לא מופיע בחלון התשלום - נפילת שלג על טופס כרטיס היא הסחת דעת בדיוק ברגע הלא נכון. ההשפעות של מדינה מחליפות את ההשפעות בכל האתר עבור המבקרים בה במקום להתמזג איתם - "קצת שלג" אינו שילוב משמעותי של שלג וללא השפעה.',
+  Default: "ברירת מחדל",
   "Default commission": "עמלת ברירת מחדל",
   "Default fee": "עמלת ברירת מחדל",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -419,6 +435,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "מחיקת מתכון",
   "Delete role": "מחק תפקיד",
   "Delete selected (": "מחק נבחר (",
+  "Delete this entry": "מחיקת ערך זה",
   "Delete this price adjustment?": "למחוק את התאמת המחיר הזו?",
   "Delete user": "מחק משתמש",
   "Deleting...": "מוחק...",
@@ -436,6 +453,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "מסננים תזונתיים והסמכה",
   "Dietary tags": "תגים תזונתיים",
   "Dietary tags (comma separated)": "תגים תזונתיים (מופרדים בפסיק)",
+  "Dietary Tags & Certifications": "תגים ואישורים תזונתיים",
   "Direct message": "הודעה ישירה",
   Disable: "השבת",
   "Disable selected (": "השבתה שנבחרו (",
@@ -457,11 +475,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "למשל. חשבונות",
   "e.g. DIWALI500": "למשל. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "לדוגמה נקצר בשבוע של 3 במרץ 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "לדוגמה הודו אורגנית, סחר הוגן. לא ניתן למחוק אישור שהוקצה למוצר כלשהו עד להסרה ממנו.",
   "e.g. Ops Room": "למשל. Ops Room",
   "e.g. Rain-fed, no synthetic pesticides": "למשל. מוזנת גשם, ללא חומרי הדברה סינתטיים",
   "e.g. Refrigerate and use within 5 days": "למשל. יש לקרר ולהשתמש תוך 5 ימים",
   "e.g. TO-HONEY-500": "למשל. TO-HONEY-500",
   "e.g. UTR 123456789012": "למשל. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "למשל. טבעוני, ללא גלוטן. מחיקת אחד מסירה אותו מכל מוצר שבדק אותו.",
   Edit: "ערוך",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "ערוך מטא נתונים של דפי CMS, אינדקס ובלוקים של דפים גולמיים. רשומת דף הבית רשומה גם כאן, אבל הגדרות דף הבית הן הדרך הבטוחה יותר לשנות אותה - עורך זה דורש JSON גולמי.",
@@ -562,6 +584,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'כפה או השבת קטע עבור מבקרים במדינה אחת, מבלי לשנות את מה שכולם רואים. השאירו קטע בנושא "ירושה" והוא פשוט יעקוב אחר תיבת הסימון ברשימת הסעיפים למעלה.',
   "Forgot password?": "שכחתם סיסמה?",
+  "Formatting locale": "עיצוב מיקום",
   "Free delivery above (₹)": "משלוח חינם למעלה (₹)",
   "French (Français)": "צרפתית (Français)",
   Frequency: "תדירות",
@@ -643,6 +666,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "אם מבצע זה מעולם לא מומש, הוא נמחק על הסף; אחרת הוא נשמר בארכיון כך שההיסטוריה שלו נשמרת.",
   Igbo: "איגבו",
+  Image: "תמונה",
   "Image alt text": "טקסט חלופי לתמונה",
   "Image alt text (optional)": "טקסט חלופי של תמונה (אופציונלי)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -717,6 +741,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "השאיר צבע ריק כדי להשאיר את זה שTrue Grit נשלח איתו - ניקוי שדה הוא הדרך שבה אתה מבטל. הצבעים של עמוד או מדינה מתחילים מצבעי האתר ועוברים רק את מה שאתה משנה, כך שכל אחד מהם הוא רשימה קצרה, לא פלטה שניה לתחזוקה. כאשר שניהם חלים על אותו מבקר, הדף מנצח - אין לבטל עיצוב של דף עריכה על ידי ניסוי גיאוגרפי.",
   "Leave blank to use the default.": "השאירו ריק כדי להשתמש בברירת המחדל.",
+  "Leave the link blank for a plain, unclickable image.":
+    "השאירו את הקישור ריק לתמונה פשוטה שאינה ניתנת ללחיצה.",
   "Less refunds": "פחות החזרים",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "מאפשר ללקוחות להחיל קוד כרטיס מתנה בקופה, המכסה חלק או כל ההזמנה שלהם. הנפק כרטיסים מדף כרטיסי המתנה. כבוי כברירת מחדל - הכרטיסים הקיימים והיתרות שלהם נשמרות, רק לא ניתנות למימוש, בזמן שזה כבוי.",
@@ -728,6 +754,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": 'סה"כ שורה',
   Lines: "שורות",
   Link: "קישור",
+  "Link (optional)": "קישור (אופציונלי)",
   "Link customer": "לקוח קישור",
   "Link product": "מוצר קישור",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -747,6 +774,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "תצוגה מקדימה חיה",
   "Live, and to scale with the real storefront's own styles.":
     "בשידור חי, ולהתרחב עם הסגנונות של חזית החנות האמיתית.",
+  Loading: "טוען",
   "Loading active promotions...": "טוען קידומים פעילים...",
   "Loading analytics...": "טוען ניתוח נתונים...",
   "Loading announcements...": "טוען הודעות...",
@@ -760,6 +788,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "טוען שיחות...",
   "Loading country overrides...": "טוען עקיפות מדינה...",
   "Loading crawler files...": "טוען קבצי סורק...",
+  "Loading currency values…": "טוען ערכי מטבע...",
   "Loading delivery charges...": "טעינת דמי משלוח...",
   "Loading discussion…": "טוען דיון...",
   "Loading highlights...": "טוען דגשים...",
@@ -782,6 +811,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "טוען מתגי חלון ראווה...",
   "Loading submission…": "טוען הגשה...",
   "Loading...": "טוען...",
+  "Loading…": "טוען...",
   "Local pickup points": "נקודות איסוף מקומיות",
   "Locale to translate": "מקום לתרגום",
   "Locked out? Use": "נעול? השתמש ב",
@@ -829,6 +859,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "סיבה למתן",
   Mongolian: "מונגולית",
   "More from True Grit": "עוד מ-True Grit",
+  "Motto banner": "מוטו באנר",
   "Move down in the showcase": "זוז למטה בחלון הראווה",
   "Move earlier": "העבר מוקדם יותר",
   "Move later": "העבר מאוחר יותר",
@@ -952,6 +983,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Note (required to request changes or reject)": "הערה (נדרש כדי לבקש שינויים או לדחות)",
   "Note (required)": "הערה (חובה)",
   Notes: "הערות",
+  "Nothing here yet": "עדיין אין כאן שום דבר",
   "Nothing outstanding to pay": "שום דבר לא עומד לשלם",
   "Nothing pending.": "שום דבר בהמתנה.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1001,6 +1033,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "הזמנות יופיעו כאן ברגע שהלקוחות מבצעים צ'ק-אאוט.",
   "Organic Alphonso Mangoes": "Mangoesspan",
   "Organic mangoes held in a sunlit orchard": "מנגו אורגני המוחזק במטע מואר שמש",
+  "Organic wheat flour in a wooden bowl": "קמח חיטה אורגני בקערת עץ",
   Outstanding: "יוצא מן הכלל",
   Overview: "סקירה כללית",
   "Owner Reports": "דוחות בעלים",
@@ -1044,8 +1077,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "בחר דוח, הגדר מסננים אופציונליים והפעל אותו. אף טקסט חופשי SQL לא מגיע למסד הנתונים.",
   "Pick at least one country, or release everywhere.": "בחר לפחות מדינה אחת, או שחרר בכל מקום.",
   "Pick at least one country, or release globally.": "בחר לפחות מדינה אחת, או שחרר ברחבי העולם.",
-  "Pick exactly two people for a direct message.": "בחר בדיוק שני אנשים להודעה ישירה.",
   "Pick one from the list to start reading.": "בחר אחד מהרשימה כדי להתחיל לקרוא.",
+  "Pick the other person for this direct message.": "בחר את האדם השני להודעה הישירה הזו.",
   "PIN code": "קוד PIN",
   "PIN patterns": "דפוסי PIN",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1184,6 +1217,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires pages.view permission and a connected API.": "דורש הרשאת pages.view וממשק API מחובר.",
   "Requires products.publish": "דרוש products.publish",
   "Requires recipes.publish": "דרוש recipes.publish",
+  "Requires settings access.": "דורש גישת הגדרות.",
   "Requires the analytics.view permission.": "דורש הרשאת analytics.view.",
   "Requires the inventory.adjust permission.": "דורש הרשאת inventory.adjust.",
   "Requires the reports.query permission.": "דורש הרשאת reports.query.",
@@ -1234,6 +1268,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "פועל...",
   "Russian (Русский)": "רוסית (Русский)",
   "Safe area": "אזור בטוח",
+  "Safe geo-lock:": "נעילת גיאוגרפי בטוחה:",
   "Sale & Discounts": "מבצע והנחות",
   "Sale price": "מחיר מבצע",
   "Sale Price (₹)": "מחיר מבצע (₹)",
@@ -1360,6 +1395,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "סרבית",
   Servings: "מנות",
   "Set a new password": "הגדר סיסמה חדשה",
+  "Set as default": "הגדר כברירת מחדל",
   "Shop · Farms · Journal": "חנות · חוות · יומן",
   "Shop fresh greens": "קנה ירקות טריים",
   "Shop root vegetables": "קנו ירקות שורש",
@@ -1369,6 +1405,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Short public story for this farm.": "סיפור ציבורי קצר לחווה זו.",
   "Show announcement": "הצג הודעה",
   "Show dietary and certification filters on the shop page": "הצג מסנני תזונה והסמכה בדף החנות",
+  "Show original": "הצג מקורי",
   "Show product recommendations": "הצג המלצות למוצר",
   "Show this snippet": "הצג קטע זה",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1452,6 +1489,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "סווהילי (קיסוואהילי)",
   "Swedish (Svenska)": "שוודית (סוונסקה)",
   Table: "טבלה",
+  "Tags & Certifications": "תגים והסמכות",
   "Tags:": "תגים:",
   Tajik: "טג'יקית",
   "Taking payments": "לקיחת תשלומים",
@@ -1468,6 +1506,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "שדות הבאנר, שורת הקטגוריה, שורת המוצר ושדות SEO שומרות יחד. תיבות סימון מדור, הזמנה והעתקת מדור מותאמת אישית נשמרים בעצמם, כפי שתשנה אותם.",
   "The chat widget customers and visitors see on the storefront.":
     "יישומון הצ'אט שלקוחות ומבקרים רואים בחזית החנות.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "רשימות תיבת הסימון המוצגות בכרטיסייה כללית של כל מוצר. השינויים חלים בכל מקום באופן מיידי.",
   "The classic credential pair, including the password-reset flow.":
     "צמד האישורים הקלאסי, כולל זרימת איפוס הסיסמה.",
   "the farm owner": "בעל החווה",
@@ -1516,6 +1556,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "This section is edited in its own panel further down the page.":
     "קטע זה נערך בחלונית משלו בהמשך הדף.",
   "Threads started from the storefront appear here.": "שרשורים שהתחילו מחזית החנות מופיעים כאן.",
+  "Thumbnail image URL": "כתובת אתר של תמונה ממוזערת",
   Time: "זמן",
   "Tinted band": "להקה כהה",
   Title: "כותרת",
@@ -1533,7 +1574,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Trail colour": "צבע השביל",
   "transfer money — make the transfer to": "העבר כסף — בצע את ההעברה ל",
   "Transfer reference (UPI / bank / cheque)": "העברה להעברה (UPI / בנק / המחאה)",
+  Translate: "תרגם",
+  "Translate chat": "תרגם צ'אט",
   "Translating...": "מתרגם...",
+  "Translating…": "מתרגם...",
   Translations: "תרגום",
   "True Grit Admin": "True Grit מנהל",
   "Turkish (Türkçe)": "טורקית (טורקיה)",
@@ -1565,6 +1609,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "העלה תמונה",
   "Uploading image...": "מעלה תמונה...",
   "Uploading image…": "מעלה תמונה...",
+  "Uploading thumbnail...": "מעלה תמונה ממוזערת...",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "השתמש בתמונה נפרדת בגודל 1200 × 1200. תמונה מרובעת זו נחתכת עבור כרטיסי קטגוריה; אין לעשות שימוש חוזר בבאנר הגיבור הרחב.",
   "Use the navigation to get back.": "Use the navigation to get חזרה.",
   "Use WebP unless PNG is specified. Do not bake text or logos into photographs.":
     "השתמש ב-WebP אלא אם צוין PNG. אין לאפות טקסט או לוגו לתמונות.",
@@ -1575,6 +1622,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "שימוש בצבע המותג של האתר",
   Uyghur: "אויגורי",
   Uzbek: "אוזבקית",
+  "Value of 1 INR": "ערך של 1 INR",
+  "Value per INR": "ערך לכל INR",
   "Value, ₹": "ערך, ₹",
   Variant: "וריאנט",
   "Variant (SKU)": "וריאנט (SKU)",

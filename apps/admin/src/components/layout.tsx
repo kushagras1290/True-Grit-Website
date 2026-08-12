@@ -44,6 +44,7 @@ import {
   ShoppingCart,
   Sprout,
   Star,
+  Tags,
   Terminal,
   Ticket,
   UtensilsCrossed,
@@ -61,6 +62,7 @@ import { useMe, usePermissions } from "../lib/permissions";
 import { T } from "../lib/i18n";
 import { LanguageSwitcher } from "./language-switcher";
 import { SupportBotWidget } from "./support-bot-widget";
+import { TopProgressBar } from "./top-progress-bar";
 
 const SIDEBAR_COLLAPSED_KEY = "truegrit.admin.sidebar-collapsed";
 
@@ -119,6 +121,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         label: "Categories",
         icon: <FolderTree size={16} />,
         permission: "categories.view",
+      },
+      {
+        to: "/tags-certifications",
+        label: "Tags & Certifications",
+        icon: <Tags size={16} />,
+        permission: "products.view",
       },
       {
         to: "/price-adjustments",
@@ -564,18 +572,26 @@ export function Shell() {
     queryFn: api.submissionsPendingCount,
     enabled: permissions.has("submissions.view"),
     refetchInterval: 60_000,
+    // Without this, every Shell remount (route change, StrictMode, a parent
+    // re-render) treats cached data as instantly stale and re-fetches on top
+    // of the interval timer -- on a page that remounts often that turns into
+    // a request storm that pegs the tab. Match it to refetchInterval so a
+    // remount can reuse data instead of always re-fetching.
+    staleTime: 60_000,
   });
   const { data: openFarmRequests } = useQuery({
     queryKey: ["farm-requests-open-count"],
     queryFn: api.farmRequestsOpenCount,
     enabled: permissions.has("farm_requests.view"),
     refetchInterval: 60_000,
+    staleTime: 60_000,
   });
   const { data: pendingReviews } = useQuery({
     queryKey: ["reviews-pending-count"],
     queryFn: api.reviewsPendingCount,
     enabled: permissions.has("reviews.view"),
     refetchInterval: 60_000,
+    staleTime: 60_000,
   });
   // No dedicated unread-count endpoint -- the conversation list already
   // carries each conversation's unreadCount, so the sidebar badge just sums
@@ -587,6 +603,7 @@ export function Shell() {
     queryFn: api.listConversations,
     enabled: permissions.has("messages.use"),
     refetchInterval: 60_000,
+    staleTime: 60_000,
   });
   const badges = {
     submissionsPending: pendingSubmissions ?? 0,
@@ -598,6 +615,7 @@ export function Shell() {
     queryKey: ["admin-notifications"],
     queryFn: api.notifications,
     refetchInterval: 60_000,
+    staleTime: 60_000,
   });
   const logout = useMutation({
     mutationFn: api.logout,
@@ -610,7 +628,13 @@ export function Shell() {
   const showBack = location.pathname !== "/";
 
   return (
-    <div className="flex min-h-screen">
+    // h-screen + overflow-hidden pins the shell to the viewport so the
+    // sidebar and the main content each scroll on their own -- previously
+    // this was min-h-screen, which let the whole document grow past the
+    // viewport on a long page and scrolled the sidebar along with it instead
+    // of keeping navigation in place.
+    <div className="flex h-screen overflow-hidden">
+      <TopProgressBar />
       <a
         href="#admin-content"
         className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-surface focus:px-3 focus:py-2"
@@ -620,7 +644,10 @@ export function Shell() {
 
       <aside
         className={cn(
-          "hidden shrink-0 border-r border-line bg-surface transition-[width] duration-150 md:flex md:flex-col",
+          // min-h-0 lets this flex child shrink below its content's natural
+          // height -- without it, the h-screen row above has no effect and
+          // the overflow-y-auto below never has anything to clip.
+          "hidden min-h-0 shrink-0 border-r border-line bg-surface transition-[width] duration-150 md:flex md:flex-col",
           collapsed ? "w-16" : "w-60",
         )}
       >
@@ -670,8 +697,8 @@ export function Shell() {
         </div>
       ) : null}
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between gap-4 border-b border-line bg-surface px-4 py-3 sm:px-6">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <header className="flex shrink-0 items-center justify-between gap-4 border-b border-line bg-surface px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -736,7 +763,7 @@ export function Shell() {
             </Button>
           </div>
         </header>
-        <main id="admin-content" className="flex-1 px-4 py-6 sm:px-6">
+        <main id="admin-content" className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
           <Outlet />
         </main>
       </div>

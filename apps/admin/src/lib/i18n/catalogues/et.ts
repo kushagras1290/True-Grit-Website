@@ -30,6 +30,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/pood",
   "← All farms": "← Kõik talud",
   "+ stars": "+ tärni",
+  "₹1,000 preview": "1000 ₹ eelvaade",
   "1 star": "1 tärn",
   "15% off your first order": "15% teie esimesest tellimusest",
   "2 cups": "2 tassi",
@@ -62,6 +63,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Superadministraator saab ülaloleva + nupuga alustada rühma või sõnumit.",
   "A tinted band — check muted text is still readable here.":
     "Toonitud riba – vaigistatud tekst on siin endiselt loetav.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "külastaja riik valib valuuta, see tabel annab selle kuvatava väärtuse ja algne INR hind jääb muutumatuks. Keelatud valuutad lähevad tagasi INR-i ohututele vaikeväärtustele.",
   Accent: "Aktsent",
   "Accept orders and payments": "Tellimuste ja maksete vastuvõtmine",
   "Accept orders and payments for this product":
@@ -88,6 +91,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Lisa kategooria",
   "Add code": "Lisa kood",
   "Add country": "Lisage riik",
+  "Add currency": "Valuuta lisamine",
   "Add entry": "Lisa kirje",
   "Add farm owner": "Reklaami talu omanik",
   "Add ingredient": "Lisage koostisosa",
@@ -98,6 +102,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Alustamiseks lisage üks allpool.",
   "Add one so the bot has something to reference for this scope.":
     "Lisage üks, et robotil oleks selle ulatuse jaoks midagi viidata.",
+  "Add one using the field above.": "Lisage üks ülaloleva välja abil.",
   "Add page": "Lisa leht",
   "Add participants": "Lisa osalejad",
   "Add point": "Lisa punkt",
@@ -116,6 +121,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Lisa tsoon",
   Added: "Lisatud",
   "Adding...": "Lisamine...",
+  "Adding…": "Lisamine…",
   Address: "Aadress",
   "Adjust points": "Punktide kohandamine",
   "Adjust the search or create a category.": "Kohandage otsingut või looge kategooria.",
@@ -214,6 +220,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Aserbaidžaani",
   "B2B / bulk ordering": "B2B / hulgitellimine",
   Back: "Tagasi",
+  "Back to conversations": "Tagasi vestluste juurde",
   "Back to sign in": "Tagasi sisselogimiseks",
   Balance: "Saldo",
   "Banner alt text": "Bänneri alternatiivtekst",
@@ -278,6 +285,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Kategooriaredaktori jaotised",
   "Category not found": "Kategooriat ei leitud",
   "Category row": "Kategooriarida",
+  "Category thumbnail alt text": "Kategooria pisipildi alternatiivtekst",
+  "Category thumbnail URL": "Kategooria pisipildi URL",
   "Category to add to the homepage": "Kategooria avalehele lisamiseks",
   "Cautions and low stock.": "Ettevaatusabinõud ja madalad laoseisud.",
   "Centred safe area": "Keskne turvaala",
@@ -347,6 +356,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Kontaktmeiliaadress",
   Content: "Sisu",
   "Continue with Facebook": "Jätka Facebookiga",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Juhtige ligikaudseid hindu kohalikus valuutas, määrates ühe India ruupia väärtuse. Kataloogi-, kassa- ja tellimuskirjed jäävad turvaliselt INR-i.",
   "Control what each role can view, create, edit, publish or manage.":
     "Juhtige, mida iga roll saab vaadata, luua, redigeerida, avaldada või hallata.",
   "Control whether each bot is available, and edit what it knows.":
@@ -390,6 +401,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Kureeritud loendi suurus",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Kureeritud komplektid kindla hinnaga, müüakse koos kindla hinnaga. Checkout rakendab säästmist automaatselt, kui ostukorvis on kõik komplektis olevad üksused.",
+  Currency: "Valuuta",
+  "Currency code": "Valuutakood",
+  "Currency Converter": "Valuutakonverter",
+  "Currency values unavailable": "Valuuta väärtused pole saadaval",
   "Current password": "Praegune parool",
   "Currently its own effects.": "Praegu oma mõjud.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -427,6 +442,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Keeldu",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'Kaunistus poe ülaosas: lehe taga triivivad osakesed ja jälg. Mõlemad on vaikimisi välja lülitatud, mõlemad jäetakse täielikult vahele nende külastajate jaoks, kes on palunud oma seadmelt liikumist vähendada ja kumbki ei ilmu kunagi makseaknasse – kaardivormi kohal olev lumesadu segab tähelepanu täpselt valel hetkel. Riigi mõjud asendavad külastajate jaoks saidiülesed efektid, selle asemel, et nendega sulanduda – "natuke lund" ei ole sisukas segu lumest ja mõju puudumisest.',
+  Default: "Vaikimisi",
   "Default commission": "Vaikevahendustasu",
   "Default fee": "Vaiketasu",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -446,6 +462,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Kustuta retsept",
   "Delete role": "Kustuta roll",
   "Delete selected (": "Kustuta valitud (",
+  "Delete this entry": "Kustuta see kirje",
   "Delete this price adjustment?": "Kas kustutada see hinna korrigeerimine?",
   "Delete user": "Kasutaja kustutamine",
   "Deleting...": "Kustutamine...",
@@ -467,6 +484,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Toitumis- ja sertifitseerimisfiltrid",
   "Dietary tags": "Toitumissildid",
   "Dietary tags (comma separated)": "Toidumärgised (komadega eraldatud)",
+  "Dietary Tags & Certifications": "Toidusildid ja sertifikaadid",
   "Direct message": "Otsesõnum",
   Disable: "Keela",
   "Disable selected (": "Keela valitud (",
@@ -489,12 +507,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "nt. Kontod",
   "e.g. DIWALI500": "nt. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "nt Koristatud nädalal 3. märtsil 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Nt. India orgaaniline, õiglane kaubandus. Ühelegi tootele määratud sertifikaati ei saa kustutada enne, kui see on sellelt eemaldatud.",
   "e.g. Ops Room": "nt. Ops Room",
   "e.g. Rain-fed, no synthetic pesticides":
     "nt. Vihmaga toidetud, ilma sünteetiliste pestitsiidideta",
   "e.g. Refrigerate and use within 5 days": "nt. Hoia külmkapis ja kasuta ära 5 päeva jooksul",
   "e.g. TO-HONEY-500": "nt. TO-HOONEY-500",
   "e.g. UTR 123456789012": "nt. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Nt. Vegan, gluteenivaba. Selle kustutamisel eemaldatakse see kõigist kontrollitud toodetest.",
   Edit: "Muuda",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "CMS-i lehe metaandmeid, indekseerimist ja töötlemata leheplokke. Siin on loetletud ka kodulehe kirje, kuid kodulehe seaded on turvalisem viis selle muutmiseks – see redaktor kasutab töötlemata JSON-i.",
@@ -599,6 +621,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Sundige ühe riigi külastajate jaoks jaotis sisse või välja, muutmata seda, mida kõik teised näevad. Jätke jaotis "Pärimine" ja see järgneb ülaloleva jaotise loendi märkeruutule.',
   "Forgot password?": "Kas unustasite parooli?",
+  "Formatting locale": "Vormindamise lokaat",
   "Free delivery above (₹)": "Ülalpool tasuta kohaletoimetamine (₹)",
   "French (Français)": "prantsuse (Français)",
   Frequency: "Sagedus",
@@ -680,6 +703,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kui sellel meilil on konto, on lähtestamise link teel.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Kui seda pakkumist pole kunagi lunastatud, kustutatakse see kohe; muul juhul arhiivitakse, nii et selle ajalugu säilitatakse.",
+  Image: "Pilt",
   "Image alt text": "Pildi alternatiivtekst",
   "Image alt text (optional)": "Kujutise alternatiivtekst (valikuline)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -744,6 +768,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Label: "Silt",
   "Land under cultivation": "Haritav maa",
   Language: "Keel",
+  "Language Studio": "Keelestuudio",
   "Last activity": "Viimane tegevus",
   "Last reviewer note": "Viimane ülevaataja märkus",
   "Last sign-in": "Viimane sisselogimine",
@@ -755,6 +780,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Jätke värv tühjaks, et säilitada see, millega True Grit tarnitakse – välja tühjendamine on viis, kuidas tühistada. Lehe või riigi värvid algavad saidi värvidest ja alistavad ainult selle, mida muudate, nii et igaüks neist on lühike loend, mitte teine ​​palett, mida hooldada. Kui mõlemad kehtivad samale külastajale, võidab leht – toimetuslehe kujundust ei tohiks geokatse tühistada.",
   "Leave blank to use the default.": "Vaikeväärtuse kasutamiseks jätke tühjaks.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Lihtsa, mitteklõpsatava pildi jaoks jätke link tühjaks.",
   "Less refunds": "Vähem tagasimakseid",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Võimaldab klientidel kassas rakendada kinkekaardi koodi, mis katab osa või kogu tellimuse kogusumma. Kaarte väljasta kinkekaartide lehelt. Vaikimisi väljas – olemasolevad kaardid ja nende saldod jäetakse alles, kuid neid ei saa lunastada, kuni see on välja lülitatud.",
@@ -765,6 +792,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Level: "Tase",
   "Line total": "Rea kokku",
   Lines: "Read",
+  "Link (optional)": "Link (valikuline)",
   "Link customer": "Lingi klient",
   "Link product": "Lingi toode",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -784,6 +812,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Reaalajas eelvaade",
   "Live, and to scale with the real storefront's own styles.":
     "Reaalajas ja tegeliku poe stiiliga skaleerimine.",
+  Loading: "Laadimine",
   "Loading active promotions...": "Aktiivsete reklaamide laadimine...",
   "Loading analytics...": "Analüütika laadimine...",
   "Loading announcements...": "Teadete laadimine...",
@@ -797,6 +826,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Loading vestluss...",
   "Loading country overrides...": "Riigi alistamiste laadimine...",
   "Loading crawler files...": "Indekseerimisfailide laadimine...",
+  "Loading currency values…": "Valuuta väärtuste laadimine...",
   "Loading delivery charges...": "Tarnetasude laadimine...",
   "Loading discussion…": "Arutelu laadimine...",
   "Loading highlights...": "Esiletõstetud teemade laadimine...",
@@ -819,6 +849,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Poe esikülje lülitite laadimine...",
   "Loading submission…": "Esitluse laadimine...",
   "Loading...": "Laadimine...",
+  "Loading…": "Laadimine…",
   "Local pickup points": "Kohalikud järeletulemispunktid",
   "Locale to translate": "Tõlgitav keel",
   "Locked out? Use": "Kas olete lukustatud? Kasuta",
@@ -871,6 +902,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Modereerimise põhjus",
   Mongolian: "mongoolia",
   "More from True Grit": "Rohkem teenusest True Grit",
+  "Motto banner": "Motobänner",
   "Move down in the showcase": "Vitriinil allapoole liikumine",
   "Move earlier": "Teisalda varem",
   "Move later": "Liiguta hiljem",
@@ -996,6 +1028,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Märkus (nõutav muudatuste taotlemiseks või tagasilükkamiseks)",
   "Note (required)": "Märkus (nõutav)",
   Notes: "Märkused",
+  "Nothing here yet": "Siin pole veel midagi",
   "Nothing outstanding to pay": "Pole midagi tasumata",
   "Nothing pending.": "Pole midagi ootel.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1050,6 +1083,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Orgaanilised Alphonso Mangod",
   "Organic mangoes held in a sunlit orchard":
     "Päikesevalguses viljapuuaias peetavad orgaanilised mangod",
+  "Organic wheat flour in a wooden bowl": "Mahe nisujahu puukausis",
   Outstanding: "Suurepärane",
   Overview: "Ülevaade",
   "Owner Reports": "Omanikuaruanded",
@@ -1099,8 +1133,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Valige vähemalt üks riik või vabastage kõikjal.",
   "Pick at least one country, or release globally.":
     "Valige vähemalt üks riik või vabastage globaalselt.",
-  "Pick exactly two people for a direct message.": "Valige otsesõnumi jaoks täpselt kaks inimest.",
   "Pick one from the list to start reading.": "Valige lugemise alustamiseks loendist üks.",
+  "Pick the other person for this direct message.": "Valige selle otsesõnumi jaoks teine ​​isik",
   "PIN code": "PIN-kood",
   "PIN patterns": "PIN-mustrid",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1244,6 +1278,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires pages.view permission and a connected API.": "luba.",
   "Requires products.publish": "Nõuab products.publish",
   "Requires recipes.publish": "Requery.0 permission report.",
+  "Requires settings access.": "Nõuab juurdepääsu seadetele.",
   "Requires the analytics.view permission.": "Nõuab analytics.view luba.",
   "Requires the inventory.adjust permission.": "Nõuab inventory.adjust luba.",
   "Requires the reports.query permission.": "Nõuab reports.query luba.",
@@ -1295,6 +1330,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Jooks...",
   "Russian (Русский)": "vene (Русский)",
   "Safe area": "Turvaline piirkond",
+  "Safe geo-lock:": "Turvaline geolukk:",
   "Sale & Discounts": "Müük ja allahindlused",
   "Sale price": "Müügihind",
   "Sale Price (₹)": "Müügihind (₹)",
@@ -1426,6 +1462,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Serbia",
   Servings: "Portsjonid",
   "Set a new password": "Uue parooli määramine",
+  "Set as default": "Määra vaikeseadeks",
   "Shop · Farms · Journal": "Ostke · Farmid · Ajakiri",
   "Shop fresh greens": "Ostke värskeid rohelisi",
   "Shop root vegetables": "Ostke juurvilju",
@@ -1436,6 +1473,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "Kuva teadaanne",
   "Show dietary and certification filters on the shop page":
     "Kuva poe lehel toitumis- ja sertifitseerimisfiltrid",
+  "Show original": "Kuva originaal",
   "Show product recommendations": "Kuva tootesoovitused",
   "Show this snippet": "Kuva see väljavõte",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1523,6 +1561,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "suahiili (kisuahiili)",
   "Swedish (Svenska)": "Rootsi (Svenska)",
   Table: "Tabel",
+  "Tags & Certifications": "Märgendid ja sertifikaadid",
   "Tags:": "Sildid:",
   Tajik: "tadžiki keel",
   "Taking payments": "Maksete vastuvõtmine",
@@ -1538,6 +1577,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Bänner, kategooria rida, tooterida ja SEO väljad salvestavad koos. Jaotiste märkekastid, järjestamine ja kohandatud jaotise koopia salvestatakse ise, kui te neid muudate.",
   "The chat widget customers and visitors see on the storefront.":
     "Vestlusvidin, mida kliendid ja külastajad poefassaadil näevad.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Märgeruutude loendid, mis kuvatakse iga toote vahekaardil Üldine. Muudatused rakenduvad kõikjal kohe.",
   "The classic credential pair, including the password-reset flow.":
     "Klassikaline mandaadipaar, sealhulgas parooli lähtestamise voog.",
   "the farm owner": "talu omanik",
@@ -1587,6 +1628,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Seda jaotist muudetakse lehe all olevas paneelis.",
   "Threads started from the storefront appear here.":
     "Siin kuvatakse poefassaadilt alguse saanud lõimed.",
+  "Thumbnail image URL": "Pisipildi URL",
   Time: "Aeg",
   "Tinted band": "Toonitud riba",
   Title: "Pealkiri",
@@ -1605,7 +1647,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Trail colour": "Raja värv",
   "transfer money — make the transfer to": "raha ülekandmine – tehke ülekanne aadressile",
   "Transfer reference (UPI / bank / cheque)": "Ülekande viide (UPI / pank / tšekk)",
+  Translate: "Tõlgi",
+  "Translate chat": "Tõlgi vestlus",
   "Translating...": "Tõlkimine...",
+  "Translating…": "Tõlkimine...",
   Translations: "Tõlked",
   Triage: "Triaaž",
   "True Grit Admin": "True Grit Administraator",
@@ -1638,9 +1683,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Laadi pilt üles",
   "Uploading image...": "Kujutise üleslaadimine...",
   "Uploading image…": "Kujutise üleslaadimine...",
+  "Uploading thumbnail...": "Pisipildi üleslaadimine...",
   "Uploading...": "Üleslaadimine...",
   "Uploading…": "Üleslaadimine...",
   "Urdu (اردو)": "urdu (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Kasutage eraldi 1200 × 1200 pilti. See ruudukujuline pilt on kategooriakaartide jaoks kärbitud; ärge kasutage laia kangelase bännerit uuesti.",
   "Use site-wide effects instead": "Kasutage selle asemel saidiüleseid efekte",
   "Use the exact canvas": "Kasutage täpselt lõuendit",
   "Use the navigation to get back.": "Kasutage tagasipöördumiseks navigeerimist.",
@@ -1653,6 +1701,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Saidi brändi värvi kasutamine",
   Uyghur: "uiguuri",
   Uzbek: "usbeki",
+  "Value of 1 INR": "1 INR väärtus",
+  "Value per INR": "Väärtus INR kohta",
   "Value, ₹": "Väärtus, ₹",
   Variant: "variant",
   "Variant (SKU)": "variant (SKU)",

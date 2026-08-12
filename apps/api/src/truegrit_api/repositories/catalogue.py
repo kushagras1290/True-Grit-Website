@@ -107,7 +107,7 @@ class CatalogueRepository:
         rows = await self._db.fetch_all(
             f"""
             SELECT
-              v.id, v.product_id, v.name, v.sku, v.sort_order,
+              v.id, v.product_id, v.name, v.sku, v.sort_order, v.is_default,
               vp.list_amount_minor, vp.sale_amount_minor,
               COALESCE(SUM(il.on_hand - il.reserved), 0) AS available,
               COALESCE(MIN(il.reorder_threshold), 0) AS reorder_threshold
@@ -117,7 +117,10 @@ class CatalogueRepository:
             LEFT JOIN inventory_levels il ON il.variant_id = v.id
             WHERE v.product_id IN ({placeholders}) AND v.status = 'active'
             GROUP BY v.id
-            ORDER BY v.product_id, v.sort_order
+            -- The customer-facing initial variant selection (product.tsx)
+            -- just takes the first entry in this list, so the explicit
+            -- default (migration 0100) has to sort first here too.
+            ORDER BY v.product_id, v.is_default DESC, v.sort_order, v.name
             """,
             product_ids,
         )

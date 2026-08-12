@@ -31,6 +31,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/tenda",
   "← All farms": "← Todas as granxas",
   "+ stars": "+ estrelas",
+  "₹1,000 preview": "Vista previa de 1.000 ₹",
   "1 star": "1 estrela",
   "15% off your first order": "15 % de desconto no teu primeiro pedido",
   "2 cups": "2 cuncas",
@@ -66,6 +67,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Un superadministrador pode iniciar un grupo ou unha mensaxe directa desde o botón + anterior.",
   "A tinted band — check muted text is still readable here.":
     "Unha banda tintada: comproba que o texto silenciado aínda se pode leer aquí.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "o país dun visitante selecciona unha moeda, esta táboa ofrece o seu valor de visualización e o prezo orixinal de INR permanece sen cambios. As moedas desactivadas volven aos valores predeterminados seguros para INR.",
   Accent: "Acentuar",
   "Accept orders and payments":
     'Acceptar pedidos e pagos. id="t0007">Aceptar pedidos e pagos para este produto',
@@ -91,6 +94,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Engadir categoría",
   "Add code": "Engadir código",
   "Add country": "Engadir país",
+  "Add currency": "Engadir moeda",
   "Add entry": "Engadir entrada",
   "Add farm owner": "Propietario do anuncio",
   "Add ingredient": "Engadir ingrediente",
@@ -101,6 +105,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Engade un abaixo para comezar.",
   "Add one so the bot has something to reference for this scope.":
     "Engadir unha para que o bot teña algo que facer referencia para este ámbito.",
+  "Add one using the field above.": "Engadir unha usando o campo anterior.",
   "Add page": "Engadir páxina",
   "Add participants": "Participantes de anuncios",
   "Add point": "Engadir punto",
@@ -119,6 +124,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Engadir zona",
   Added: "Engadido",
   "Adding...": "Engadindo...",
+  "Adding…": "Engadindo...",
   Address: "Enderezo",
   "Adjust points": "Axustar puntos",
   "Adjust the search or create a category.": "Axusta a busca ou crea unha categoría.",
@@ -217,6 +223,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Azerbaijani: "Azerbaixán",
   "B2B / bulk ordering": "B2B / pedidos masivos",
   Back: "Volver",
+  "Back to conversations": "Volver ás conversas",
   "Back to sign in": "Volver para iniciar sesión",
   Balance: "Saldo",
   "Banner alt text": "Texto alternativo do banner",
@@ -280,6 +287,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Seccións do editor de categorías",
   "Category not found": "Categoría non atopada",
   "Category row": "Fila da categoría",
+  "Category thumbnail alt text": "Texto alternativo da miniatura da categoría",
+  "Category thumbnail URL": "URL da miniatura da categoría",
   "Category to add to the homepage": "Categoría para engadir á páxina de inicio",
   "Cautions and low stock.": "Precaucións e escaso stock.",
   "Centred safe area": "Zona segura centrada",
@@ -348,6 +357,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Correo electrónico de contacto",
   Content: "Contido",
   "Continue with Facebook": "Continuar con Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Controla os prezos aproximados en moeda local configurando canto vale unha rupia india. Os rexistros do catálogo, da compra e dos pedidos mantéñense de forma segura en INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Controla o que cada rol pode ver, crear, editar, publicar ou xestionar.",
   "Control whether each bot is available, and edit what it knows.":
@@ -392,6 +403,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Tamaño da lista seleccionada",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Conxuntos seleccionados de variantes específicas vendidos xuntos a un prezo fixo. Checkout aplica o aforro automaticamente unha vez que unha cesta contén todos os artigos dun paquete.",
+  Currency: "Moeda",
+  "Currency code": "Código de moeda",
+  "Currency Converter": "Conversor de moeda",
+  "Currency values unavailable": "Os valores de moeda non están dispoñibles",
   "Current password": "Contrasinal actual",
   "Currently its own effects.": "Actualmente os seus propios efectos.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -429,6 +444,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Rexeitar",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'Decoración na parte superior do escaparate: partículas á deriva detrás da páxina e un rastro. Ambos están desactivados de forma predeterminada, os dous omítense por completo para os visitantes que solicitaron o seu dispositivo para reducir o movemento, e nunca aparecen na xanela de pago: unha nevada sobre o formulario dunha tarxeta é unha distracción exactamente no momento equivocado. Os efectos dun país substitúen os de todo o sitio directamente para os seus visitantes en lugar de mesturarse con eles: "algo de neve" non é unha mestura significativa de neve e ningún efecto.',
+  Default: "Predeterminado",
   "Default commission": "Comisión predeterminada",
   "Default fee": "Taxa predeterminada",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -448,6 +464,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Eliminar receita",
   "Delete role": "Eliminar función",
   "Delete selected (": "Eliminar seleccionado (",
+  "Delete this entry": "Eliminar esta entrada",
   "Delete this price adjustment?": "Eliminar este axuste de prezo?",
   "Delete user": "Eliminar usuario",
   "Deleting...": "Eliminando...",
@@ -470,6 +487,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Filtros dietéticos e de certificación",
   "Dietary tags": "Etiquetas dietéticas",
   "Dietary tags (comma separated)": "Etiquetas dietéticas (separadas por comas)",
+  "Dietary Tags & Certifications": "Etiquetas e certificacións dietéticas",
   "Direct message": "Mensaxe directa",
   Disable: "Desactivar",
   "Disable selected (": "Desactivar seleccionadas (",
@@ -491,11 +509,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "p.ex. Contas",
   "e.g. DIWALI500": "p.ex. DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "p. ex. Colleitada a semana do 3 de marzo de 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "P.ex. India Orgánica, Comercio Xusto. Non se pode eliminar unha certificación asignada a ningún produto ata que non se elimine del.",
   "e.g. Ops Room": "p. ex. Sala de operacións",
   "e.g. Rain-fed, no synthetic pesticides": "p. ex. De chuvia, sen pesticidas sintéticos",
   "e.g. Refrigerate and use within 5 days": "p.ex. Refrixera e úsao nun prazo de 5 días",
   "e.g. TO-HONEY-500": "p.ex. TO-HONEY-500",
   "e.g. UTR 123456789012": "p.ex. UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "P.ex. Vegan, sen glute. Ao eliminar un, elimínao de todos os produtos que o teñan marcado.",
   Edit: "Editar",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Editar metadatos da páxina do CMS, indexación e bloques de páxinas en bruto. O rexistro da páxina de inicio tamén aparece aquí, pero a configuración da páxina de inicio é a forma máis segura de cambialo: este editor usa JSON sen formato.",
@@ -597,6 +619,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Forzar unha sección activada ou desactivada para os visitantes dun país, sen cambiar o que ven todos os demais. Deixa unha sección sobre "Herdar" e só segue a caixa de verificación na lista de seccións anterior.',
   "Forgot password?": "Esqueceches o contrasinal?",
+  "Formatting locale": "Formatar a configuración rexional",
   "Free delivery above (₹)": "Entrega gratuíta anterior (₹)",
   "French (Français)": "Francés (Français)",
   Frequency: "Frecuencia",
@@ -677,6 +700,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Se ese correo electrónico ten unha conta, está en curso unha ligazón de restablecemento.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Se esta promoción nunca se trocou, elimínase directamente; en caso contrario, arquivase para que se garda o seu historial.",
+  Image: "Imaxe",
   "Image alt text": "Texto alternativo da imaxe",
   "Image alt text (optional)": 'Imaxe indicada="0-5"> guía de tamaño',
   "Image is sRGB and at or below the listed file-size target.":
@@ -752,6 +776,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Deixa unha cor en branco para manter a que se envía True Grit: borrar un campo é como desfaces. As cores dunha páxina ou dun país comezan a partir das cores do sitio e só anulan o que cambias, polo que cada unha é unha lista curta, non unha segunda paleta para manter. Cando ambos se aplican ao mesmo visitante, a páxina gaña: o deseño dunha páxina editorial non debería desfacerse mediante un experimento xeolóxico.",
   "Leave blank to use the default.": "Deixa en branco para usar o valor predeterminado.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Deixa a ligazón en branco para unha imaxe simple e sen facer clic.",
   "Less refunds": "Menos reembolsos",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Permite aos clientes aplicar un código de tarxeta de agasallo ao realizar a compra, que cobre parte ou a totalidade do seu pedido. Emite tarxetas desde a páxina Tarxetas de agasallo. Desactivado de forma predeterminada: as tarxetas existentes e os seus saldos consérvanse, pero non se poden canxear, mentres esta está desactivada.",
@@ -763,6 +789,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Liña total",
   Lines: "Liñas",
   Link: "Ligazón",
+  "Link (optional)": "Ligazón (opcional)",
   "Link customer": "Ligar cliente",
   "Link product": "Ligar produto",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -783,6 +810,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Vista previa en directo",
   "Live, and to scale with the real storefront's own styles.":
     "En directo e escalar cos estilos propios da tenda real.",
+  Loading: "Cargando",
   "Loading active promotions...": "Cargando promocións activas...",
   "Loading analytics...": "Cargando analíticas...",
   "Loading announcements...": "Cargando anuncios...",
@@ -796,6 +824,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Cargando conversas...",
   "Loading country overrides...": "Cargando as substitucións do país...",
   "Loading crawler files...": "Cargando ficheiros de exploración...",
+  "Loading currency values…": "Cargando valores de moeda...",
   "Loading delivery charges...": "Cargando os gastos de envío...",
   "Loading discussion…": "Cargando debate...",
   "Loading highlights...": "Cargando elementos destacados...",
@@ -818,6 +847,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Cargando interruptores de escaparate...",
   "Loading submission…": "Cargando envío...",
   "Loading...": "Cargando...",
+  "Loading…": "Cargando...",
   "Local pickup points": "Puntos de recollida locais",
   "Locale to translate": "Local para traducir",
   "Locked out? Use": "Bloqueo? Usa",
@@ -869,6 +899,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Motivo de moderación",
   Mongolian: "Mongol",
   "More from True Grit": "Máis de True Grit",
+  "Motto banner": "Banner do lema",
   "Move down in the showcase": "Mover cara abaixo na vitrina",
   "Move earlier": "Mover antes",
   "Move later": "Mover máis tarde",
@@ -998,6 +1029,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Nota (obrigatoria para solicitar cambios ou rexeitar)",
   "Note (required)": "Nota (obrigatoria)",
   Notes: "Notas",
+  "Nothing here yet": "Aínda non hai nada",
   "Nothing outstanding to pay": "Nada pendente por pagar",
   "Nothing pending.": "Nada pendente.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1050,6 +1082,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Os pedidos aparecerán aquí unha vez que os clientes paguen.",
   "Organic Alphonso Mangoes": "Organic Alphonso",
   "Organic mangoes held in a sunlit orchard": "Mangos orgánicos nun horto iluminado polo sol",
+  "Organic wheat flour in a wooden bowl": "Fariña de trigo ecolóxica nunha cunca de madeira",
   Outstanding: "Excelente",
   Overview: "Descrición xeral",
   "Owner Reports": "Informes do propietario",
@@ -1098,8 +1131,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Escolle polo menos un país ou publícalo en todas partes.",
   "Pick at least one country, or release globally.":
     "Escolle polo menos un país ou publícao globalmente.",
-  "Pick exactly two people for a direct message.": "Escolle unha da lista. lectura.",
   "Pick one from the list to start reading.": "Escolle un da lista para comezar a ler.",
+  "Pick the other person for this direct message.":
+    "Escolle a outra persoa para esta mensaxe directa.",
   "PIN code": "Código PIN",
   "PIN patterns": "Padróns PIN",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1243,6 +1277,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Require permiso pages.view e unha API conectada.",
   "Requires products.publish": "Require products.publish",
   "Requires recipes.publish": "Require recipes.publish",
+  "Requires settings access.": "Require acceso á configuración.",
   "Requires the analytics.view permission.": "Require o permiso analytics.view.",
   "Requires the inventory.adjust permission.": "Require o permiso inventory.adjust.",
   "Requires the reports.query permission.": "Require o permiso reports.query.",
@@ -1293,6 +1328,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Correndo...",
   "Russian (Русский)": "Ruso (Русский)",
   "Safe area": "Zona segura",
+  "Safe geo-lock:": "Bloqueo xeolóxico seguro:",
   "Sale & Discounts": "Venda e descontos",
   "Sale price": "Prezo de venda",
   "Sale Price (₹)": "Prezo de venda (₹)",
@@ -1426,6 +1462,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Serbio",
   Servings: "Porcións",
   "Set a new password": "Establece un novo contrasinal",
+  "Set as default": "Establecer como predeterminado",
   "Shop · Farms · Journal": "Tenda · Facendas · Xornal",
   "Shop fresh greens": "Comprar verduras frescas",
   "Shop root vegetables": "Anuncio",
@@ -1436,6 +1473,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "Mostrar anuncio",
   "Show dietary and certification filters on the shop page":
     "Mostrar filtros dietéticos e de certificación na páxina da tenda",
+  "Show original": "Amosar orixinal",
   "Show product recommendations": "Mostrar recomendacións de produtos",
   "Show this snippet": "Mostrar este fragmento",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1518,6 +1556,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Supporting text": "Texto compatible",
   "Swedish (Svenska)": "Sueco (svenska)",
   Table: "Táboa",
+  "Tags & Certifications": "Etiquetas e certificacións",
   "Tags:": "Etiquetas:",
   Tajik: "Taxico",
   "Taking payments": "Recepción de pagamentos",
@@ -1533,6 +1572,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "O banner, a fila da categoría, a fila do produto e os campos de SEO gárdanse xuntos. As caixas de verificación das seccións, a orde e a copia de seccións personalizadas gárdanse por si mesmas, a medida que as cambias.",
   "The chat widget customers and visitors see on the storefront.":
     "O widget de chat que os clientes e visitantes ven na tenda.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "As caixas de verificación aparecen na pestana Xeral de cada produto. Os cambios aplícanse en todas partes inmediatamente.",
   "The classic credential pair, including the password-reset flow.":
     "O par de credenciais clásico, incluído o fluxo de restablecemento do contrasinal.",
   "the farm owner": "o propietario da granxa",
@@ -1584,6 +1625,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "This section is edited in its own panel further down the page.":
     "Esta sección edítase no seu propio panel máis abaixo na páxina.",
   "Threads started from the storefront appear here.": "Aquí aparecen fíos iniciados desde a tenda.",
+  "Thumbnail image URL": "URL da imaxe en miniatura",
   Time: "Tempo",
   "Tinted band": "Banda tintada",
   Title: '<span>id="Title',
@@ -1601,7 +1643,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Trail colour": "Color do rastro",
   "transfer money — make the transfer to": "Transferir diñeiro: fai a transferencia a",
   "Transfer reference (UPI / bank / cheque)": "Referencia da transferencia (UPI/banco/cheque)",
+  Translate: "Traducir",
+  "Translate chat": "Traducir chat",
   "Translating...": "Traducindo...",
+  "Translating…": "Traducir...",
   Translations: "Traducións",
   "True Grit Admin": "True Grit Administrador",
   "Turkish (Türkçe)": "Turco (Türkçe)",
@@ -1633,8 +1678,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Cargar imaxe",
   "Uploading image...": "Cargando imaxe...",
   "Uploading image…": "Cargando imaxe...",
+  "Uploading thumbnail...": "Cargando miniatura...",
   "Uploading...": "Cargando...",
   "Uploading…": "Cargando...",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Utiliza unha imaxe separada de 1200 × 1200. Esta imaxe cadrada está recortada para tarxetas de categoría; non reutilices o banner ancho do heroe.",
   "Use site-wide effects instead": "Usa efectos de todo o sitio no seu lugar",
   "Use the exact canvas": "Usa o lenzo exacto",
   "Use the navigation to get back.": "Usa a navegación para volver.",
@@ -1647,6 +1695,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Utilizar a cor da marca do sitio",
   Uyghur: "Uigur",
   Uzbek: "Uzbeco",
+  "Value of 1 INR": "Valor de 1 INR",
+  "Value per INR": "Valor por INR",
   "Value, ₹": "Valor, ₹",
   Variant: "Variante",
   "Variant (SKU)": "Variante (SKU)",

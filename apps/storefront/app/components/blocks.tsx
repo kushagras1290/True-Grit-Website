@@ -8,6 +8,7 @@ import type {
   ProductSummary,
   PublicPageBlock,
 } from "@truegrit/contracts";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router";
 
@@ -97,6 +98,7 @@ function renderRichTextParagraph(paragraph: string) {
 
 function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "hero" }> }) {
   const format = useLocalizeFormat();
+  const localize = useLocalizeText();
   const slides = (block.props.slides ?? []).filter(
     (slide) => slide.enabled !== false && slide.imageUrl,
   );
@@ -120,8 +122,19 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
     const timer = window.setInterval(() => {
       setActiveIndex((index) => (index + 1) % slides.length);
     }, 15000);
+    // Depends on activeIndex too, not just slides.length, so a manual
+    // prev/next/dot click restarts the 15s countdown from that point
+    // instead of auto-advancing again a moment later.
     return () => window.clearInterval(timer);
-  }, [slides.length]);
+  }, [slides.length, activeIndex]);
+
+  function showPrevious() {
+    setActiveIndex((index) => (index - 1 + slides.length) % slides.length);
+  }
+
+  function showNext() {
+    setActiveIndex((index) => (index + 1) % slides.length);
+  }
 
   if (slides.length > 0) {
     const activeSlide = slides[Math.min(activeIndex, slides.length - 1)]!;
@@ -154,6 +167,27 @@ function HeroBlockView({ block }: { block: Extract<PublicPageBlock, { type: "her
               {activeSlide.label}
             </span>
           </Link>
+
+          {slides.length > 1 ? (
+            <>
+              <button
+                type="button"
+                onClick={showPrevious}
+                aria-label={localize("Previous slide")}
+                className="absolute top-1/2 left-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/30 text-white transition-colors hover:bg-black/50"
+              >
+                <ChevronLeft size={20} aria-hidden />
+              </button>
+              <button
+                type="button"
+                onClick={showNext}
+                aria-label={localize("Next slide")}
+                className="absolute top-1/2 right-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/30 text-white transition-colors hover:bg-black/50"
+              >
+                <ChevronRight size={20} aria-hidden />
+              </button>
+            </>
+          ) : null}
 
           <div className="absolute right-5 bottom-5 flex gap-1">
             {slides.map((slide, index) => (
@@ -326,6 +360,28 @@ export function CmsBlock({ block, data }: { block: PublicPageBlock; data: BlockD
           </dl>
         </Section>
       );
+
+    case "image_banner": {
+      const image = (
+        <img
+          src={mediaUrl(block.props.imageUrl)}
+          alt={block.props.imageAlt}
+          className="mx-auto w-full max-w-3xl object-contain"
+          loading="lazy"
+        />
+      );
+      return (
+        <Section>
+          {block.props.href ? (
+            <Link to={block.props.href} aria-label={block.props.imageAlt} className="block">
+              {image}
+            </Link>
+          ) : (
+            image
+          )}
+        </Section>
+      );
+    }
 
     case "rich_text":
       return (

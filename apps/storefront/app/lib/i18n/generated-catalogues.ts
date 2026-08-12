@@ -6207,6 +6207,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "अगली स्लाइड",
+    "literal.8e53512a50fa": "पिछली स्लाइड",
   },
   bn: {
     "literal.87df31bb89b3": "— পুনরাবৃত্ত ডেলিভারি সেট আপ করতে অ্যাকাউন্ট মেনু থেকে সাইন ইন করুন",
@@ -7125,6 +7127,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "পরবর্তী স্লাইড",
+    "literal.8e53512a50fa": "পূর্ববর্তী স্লাইড",
   },
   mr: {
     "literal.87df31bb89b3": "— आवर्ती वितरण सेट करण्यासाठी खाते मेनूमधून साइन इन करा",
@@ -8047,6 +8051,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "पुढील स्लाइड",
+    "literal.8e53512a50fa": "मागील स्लाइड",
   },
   te: {
     "literal.87df31bb89b3": "— పునరావృత డెలివరీని సెటప్ చేయడానికి ఖాతా మెను నుండి సైన్ ఇన్ చేయండి",
@@ -8977,6 +8983,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "తదుపరి స్లయిడ్",
+    "literal.8e53512a50fa": "మునుపటి స్లయిడ్",
   },
   ta: {
     "literal.87df31bb89b3": "— தொடர்ச்சியான விநியோகத்தை அமைக்க கணக்கு மெனுவிலிருந்து உள்நுழைக",
@@ -9922,6 +9930,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "அடுத்த ஸ்லைடு",
+    "literal.8e53512a50fa": "முந்தைய ஸ்லைடு",
   },
   gu: {
     "literal.87df31bb89b3": "— રિકરિંગ ડિલિવરી સેટ કરવા માટે એકાઉન્ટ મેનૂમાંથી સાઇન ઇન કરો",
@@ -10844,6 +10854,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "આગળની સ્લાઈડ",
+    "literal.8e53512a50fa": "અગાઉની સ્લાઇડ",
   },
   ur: {
     "literal.87df31bb89b3": "—",
@@ -11768,6 +11780,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "اگلی سلائیڈ",
+    "literal.8e53512a50fa": "پچھلی سلائیڈ",
   },
   kn: {
     "literal.87df31bb89b3": "— ಮರುಕಳಿಸುವ ವಿತರಣೆಯನ್ನು ಹೊಂದಿಸಲು ಖಾತೆ ಮೆನುವಿನಿಂದ ಸೈನ್ ಇನ್ ಮಾಡಿ",
@@ -12701,6 +12715,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "ಮುಂದಿನ ಸ್ಲೈಡ್",
+    "literal.8e53512a50fa": "ಹಿಂದಿನ ಸ್ಲೈಡ್",
   },
   or: {
     "literal.87df31bb89b3": "- ବାରମ୍ବାର ବିତରଣର ସେଟ୍ ଅପ୍ କରିବାକୁ ଆକାଉଣ୍ଟ୍ ମେନୁରୁ ସାଇନ୍ ଇନ୍ କରନ୍ତୁ |",
@@ -13632,6 +13648,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "ପରବର୍ତ୍ତୀ ସ୍ଲାଇଡ୍ |",
+    "literal.8e53512a50fa": "ପୂର୍ବ ସ୍ଲାଇଡ୍",
   },
   ml: {
     "literal.87df31bb89b3":
@@ -14581,6 +14599,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "അടുത്ത സ്ലൈഡ്",
+    "literal.8e53512a50fa": "മുമ്പത്തെ സ്ലൈഡ്",
   },
   pa: {
     "literal.87df31bb89b3": "— ਦੀ ਆਵਰਤੀ ਡਿਲੀਵਰੀ ਸੈਟ ਅਪ ਕਰਨ ਲਈ ਖਾਤਾ ਮੀਨੂ ਤੋਂ ਸਾਈਨ ਇਨ ਕਰੋ",
@@ -15500,6 +15520,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "ਅਗਲੀ ਸਲਾਈਡ",
+    "literal.8e53512a50fa": "ਪਿਛਲੀ ਸਲਾਈਡ",
   },
   as: {
     "literal.87df31bb89b3": "— প্ৰয়োগ কৰা",
@@ -16421,6 +16443,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "পৰৱৰ্তী স্লাইড",
+    "literal.8e53512a50fa": "পূৰ্বৰ স্লাইড",
   },
   mai: {
     "literal.87df31bb89b3": "— कें आवर्ती वितरण कें सेटअप करय कें लेल खाता मेनू सं साइन इन करूं",
@@ -17339,6 +17363,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "अगिला स्लाइड",
+    "literal.8e53512a50fa": "पिछला स्लाइड",
   },
   sat: {
     "literal.87df31bb89b3": "— ᱮᱠᱟᱣᱩᱱᱴ ᱢᱮᱱᱩ ᱠᱷᱚᱱ ᱥᱟᱭᱤᱱ ᱤᱱ ᱢᱮ ᱫᱚᱦᱲᱟ ᱰᱮᱞᱤᱵᱷᱟᱨᱤ ᱥᱮᱴ ᱟᱯ ᱞᱟᱹᱜᱤᱫ",
@@ -18264,6 +18290,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "ᱛᱟᱭᱚᱢ ᱥᱞᱟᱭᱤᱰ",
+    "literal.8e53512a50fa": "ᱞᱟᱦᱟ ᱨᱮᱱᱟᱜ ᱥᱞᱟᱭᱤᱰ",
   },
   ks: {
     "literal.87df31bb89b3": "—",
@@ -19188,6 +19216,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "اگلی سلائیڈ",
+    "literal.8e53512a50fa": "پچھلی سلائیڈ",
   },
   ne: {
     "literal.87df31bb89b3": "—",
@@ -20111,6 +20141,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "अर्को स्लाइड",
+    "literal.8e53512a50fa": "अघिल्लो स्लाइड",
   },
   sd: {
     "literal.87df31bb89b3": "—",
@@ -21025,6 +21057,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "ايندڙ سلائڊ",
+    "literal.8e53512a50fa": "پوئين سلائڊ",
   },
   kok: {
     "literal.87df31bb89b3": "— ची परत परत वितरण सेट करपाक खातें मेनूंतल्यान सायन इन करात",
@@ -21943,6 +21977,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "फुडली स्लाइड",
+    "literal.8e53512a50fa": "आदली स्लाइड",
   },
   doi: {
     "literal.87df31bb89b3": "— दी आवर्ती डिलीवरी गी सेट करने लेई खाता मेनू थमां साइन इन करो",
@@ -22866,6 +22902,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "अगली स्लाइड",
+    "literal.8e53512a50fa": "पिछली स्लाइड",
   },
   mni: {
     "literal.87df31bb89b3": "— পুনরাবৃত্ত ডেলিভারি সেট আপ করতে অ্যাকাউন্ট মেনু থেকে সাইন ইন করুন",
@@ -23784,6 +23822,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "পরবর্তী স্লাইড",
+    "literal.8e53512a50fa": "পূর্ববর্তী স্লাইড",
   },
   brx: {
     "literal.87df31bb89b3": "- आवर्ती डिलीवरी सेट करने के लिए खाता मेनू से साइन इन करें",
@@ -24710,6 +24750,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "अगली स्लाइड",
+    "literal.8e53512a50fa": "पिछली स्लाइड",
   },
   sa: {
     "literal.87df31bb89b3": "— पुनरावर्तनीयवितरणं स्थापयितुं खातामेनूतः प्रवेशं कुर्वन्तु",
@@ -25639,6 +25681,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "अग्रिमः स्लाइड्",
+    "literal.8e53512a50fa": "पूर्वस्लाइड्",
   },
   "zh-Hans": {
     "literal.87df31bb89b3": "— 从帐户菜单登录，设置定期配送",
@@ -26490,6 +26534,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "下一张幻灯片",
+    "literal.8e53512a50fa": "上一张幻灯片",
   },
   es: {
     "literal.87df31bb89b3":
@@ -27431,6 +27477,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Siguiente diapositiva",
+    "literal.8e53512a50fa": "Diapositiva anterior",
   },
   ar: {
     "literal.87df31bb89b3": "— قم بتسجيل الدخول من قائمة الحساب لإعداد التسليم المتكرر",
@@ -28330,6 +28378,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "الشريحة التالية",
+    "literal.8e53512a50fa": "الشريحة السابقة",
   },
   pt: {
     "literal.87df31bb89b3": "— faça login no menu da conta para configurar a entrega recorrente de",
@@ -29261,6 +29311,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Próximo slide",
+    "literal.8e53512a50fa": "Diapositivo anterior",
   },
   fr: {
     "literal.87df31bb89b3":
@@ -30204,6 +30256,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Diapositive suivante",
+    "literal.8e53512a50fa": "Diapositive précédente",
   },
   ru: {
     "literal.87df31bb89b3":
@@ -31135,6 +31189,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Следующий слайд",
+    "literal.8e53512a50fa": "Предыдущий слайд",
   },
   id: {
     "literal.87df31bb89b3": "— masuk dari menu akun untuk menyiapkan pengiriman berulang dari",
@@ -32072,6 +32128,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Slide berikutnya",
+    "literal.8e53512a50fa": "Slide sebelumnya",
   },
   de: {
     "literal.87df31bb89b3":
@@ -33017,6 +33075,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Nächste Folie",
+    "literal.8e53512a50fa": "Vorherige Folie",
   },
   ja: {
     "literal.87df31bb89b3": "— アカウント メニューからサインインして、",
@@ -33930,6 +33990,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "次のスライド",
+    "literal.8e53512a50fa": "前のスライド",
   },
   tr: {
     "literal.87df31bb89b3": "— uygulanan",
@@ -34866,6 +34928,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Sonraki slayt",
+    "literal.8e53512a50fa": "Önceki slayt",
   },
   vi: {
     "literal.87df31bb89b3": "— đăng nhập từ menu tài khoản để thiết lập việc phân phối định kỳ",
@@ -35801,6 +35865,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Trang trình bày tiếp theo",
+    "literal.8e53512a50fa": "Trang trình bày trước",
   },
   ko: {
     "literal.87df31bb89b3": "— 계정 메뉴에서 로그인하여 반복 배송을 설정하세요",
@@ -36703,6 +36769,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "다음 슬라이드",
+    "literal.8e53512a50fa": "이전 슬라이드",
   },
   it: {
     "literal.87df31bb89b3": "— accedi dal menu account per impostare la consegna ricorrente di",
@@ -37639,6 +37707,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Diapositiva successiva",
+    "literal.8e53512a50fa": "Diapositiva precedente",
   },
   fa: {
     "literal.87df31bb89b3": "— از منوی حساب وارد شوید تا تحویل تکرار شونده را تنظیم کنید",
@@ -38552,6 +38622,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "اسلاید بعدی",
+    "literal.8e53512a50fa": "اسلاید قبلی",
   },
   "zh-Hant": {
     "literal.87df31bb89b3": "— 從帳戶選單登錄，設定定期交付",
@@ -39404,6 +39476,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "下一張投影片",
+    "literal.8e53512a50fa": "上一張投影片",
   },
   th: {
     "literal.87df31bb89b3": "— ลงชื่อเข้าใช้จากเมนูบัญชีเพื่อตั้งค่าการจัดส่งแบบประจำของ",
@@ -40310,6 +40384,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "สไลด์ถัดไป",
+    "literal.8e53512a50fa": "สไลด์ก่อนหน้า",
   },
   pl: {
     "literal.87df31bb89b3": "— zaloguj się z menu konta, aby ustawić powtarzającą się dostawę",
@@ -41239,6 +41315,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Następny slajd",
+    "literal.8e53512a50fa": "Poprzedni slajd",
   },
   uk: {
     "literal.87df31bb89b3":
@@ -42166,6 +42244,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Наступний слайд",
+    "literal.8e53512a50fa": "Попередній слайд",
   },
   nl: {
     "literal.87df31bb89b3":
@@ -43095,6 +43175,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Volgende dia",
+    "literal.8e53512a50fa": "Vorige dia",
   },
   fil: {
     "literal.87df31bb89b3":
@@ -44040,6 +44122,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Susunod na slide",
+    "literal.8e53512a50fa": "Nakaraang slide",
   },
   sw: {
     "literal.87df31bb89b3":
@@ -44964,6 +45048,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Slaidi inayofuata",
+    "literal.8e53512a50fa": "Slaidi iliyotangulia",
   },
   he: {
     "literal.87df31bb89b3": "— היכנס מתפריט החשבון כדי להגדיר מסירה חוזרת של",
@@ -45840,6 +45926,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "השקף הבא",
+    "literal.8e53512a50fa": "שקופית קודמת",
   },
   sv: {
     "literal.87df31bb89b3": "— logga in från kontomenyn för att ställa in återkommande leverans av",
@@ -46761,6 +46849,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Nästa bild",
+    "literal.8e53512a50fa": "Föregående bild",
   },
   nb: {
     "literal.87df31bb89b3": "— logg på fra kontomenyen for å konfigurere gjentakende levering av",
@@ -47680,6 +47770,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Neste lysbilde",
+    "literal.8e53512a50fa": "Forrige lysbilde",
   },
   da: {
     "literal.87df31bb89b3":
@@ -48607,6 +48699,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Næste slide",
+    "literal.8e53512a50fa": "Forrige dias",
   },
   fi: {
     "literal.87df31bb89b3": "— kirjaudu sisään tilivalikosta ja määritä toistuva toimitus",
@@ -49537,6 +49631,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Seuraava dia",
+    "literal.8e53512a50fa": "Edellinen dia",
   },
   el: {
     "literal.87df31bb89b3":
@@ -50479,6 +50575,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Επόμενη διαφάνεια",
+    "literal.8e53512a50fa": "Προηγούμενη διαφάνεια",
   },
   cs: {
     "literal.87df31bb89b3": "— přihlaste se z nabídky účtu a nastavte opakující se doručování",
@@ -51403,6 +51501,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Další snímek",
+    "literal.8e53512a50fa": "Předchozí snímek",
   },
   hu: {
     "literal.87df31bb89b3": "— jelentkezzen be a fiókmenüből az ismétlődő kézbesítés beállításához",
@@ -52333,6 +52433,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Következő dia",
+    "literal.8e53512a50fa": "Előző dia",
   },
   ro: {
     "literal.87df31bb89b3":
@@ -53272,6 +53374,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Următorul diapozitiv",
+    "literal.8e53512a50fa": "Diapozitivul anterior",
   },
   sk: {
     "literal.87df31bb89b3": "— prihláste sa z ponuky účtu a nastavte si opakované doručovanie",
@@ -54199,6 +54303,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Ďalšia snímka",
+    "literal.8e53512a50fa": "Predchádzajúca snímka",
   },
   bg: {
     "literal.87df31bb89b3": "— влезте от менюто на акаунта, за да настроите периодична доставка на",
@@ -55129,6 +55235,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Следващ слайд",
+    "literal.8e53512a50fa": "Предишен слайд",
   },
   af: {
     "literal.87df31bb89b3": "— meld aan vanaf die rekeningkieslys om herhalende aflewering van",
@@ -56059,6 +56167,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Volgende skyfie",
+    "literal.8e53512a50fa": "Vorige skyfie",
   },
   sq: {
     "literal.87df31bb89b3":
@@ -56990,6 +57100,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Rrëshqitja tjetër",
+    "literal.8e53512a50fa": "Sllajdi i mëparshëm",
   },
   am: {
     "literal.87df31bb89b3": "— ተደጋጋሚ ማድረሻን ለማዘጋጀት ከመለያው ሜኑ ይግቡ",
@@ -57850,6 +57962,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "ቀጣይ ስላይድ",
+    "literal.8e53512a50fa": "ቀዳሚ ስላይድ",
   },
   hy: {
     "literal.87df31bb89b3": "— մուտք գործեք հաշվի ընտրացանկից՝ կարգավորելու",
@@ -58779,6 +58893,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Հաջորդ սլայդը",
+    "literal.8e53512a50fa": "Նախորդ սլայդը",
   },
   az: {
     "literal.87df31bb89b3":
@@ -59714,6 +59830,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Növbəti slayd",
+    "literal.8e53512a50fa": "Əvvəlki slayd",
   },
   eu: {
     "literal.87df31bb89b3": "— hasi saioa kontuaren menutik",
@@ -60646,6 +60764,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Hurrengo diapositiba",
+    "literal.8e53512a50fa": "Aurreko diapositiba",
   },
   be: {
     "literal.87df31bb89b3":
@@ -61578,6 +61698,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Наступны слайд",
+    "literal.8e53512a50fa": "Папярэдні слайд",
   },
   bs: {
     "literal.87df31bb89b3": "— prijavite se iz menija računa da postavite ponavljajuću isporuku",
@@ -62501,6 +62623,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Sljedeći slajd",
+    "literal.8e53512a50fa": "Prethodni slajd",
   },
   ca: {
     "literal.87df31bb89b3":
@@ -63445,6 +63569,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Diapositiva següent",
+    "literal.8e53512a50fa": "Diapositiva anterior",
   },
   hr: {
     "literal.87df31bb89b3":
@@ -64369,6 +64495,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Sljedeći slajd",
+    "literal.8e53512a50fa": "Prethodni slajd",
   },
   et: {
     "literal.87df31bb89b3": "— logige sisse kontomenüüst, et seadistada korduv tarne",
@@ -65288,6 +65416,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Järgmine slaid",
+    "literal.8e53512a50fa": "Eelmine slaid",
   },
   gl: {
     "literal.87df31bb89b3":
@@ -66223,6 +66353,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Seguinte diapositiva",
+    "literal.8e53512a50fa": "Diapositiva anterior",
   },
   ka: {
     "literal.87df31bb89b3": "— შედით ანგარიშის მენიუდან, რათა დააყენოთ",
@@ -67148,6 +67280,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "შემდეგი სლაიდი",
+    "literal.8e53512a50fa": "წინა სლაიდი",
   },
   ha: {
     "literal.87df31bb89b3": "- shiga daga menu na asusun don saita isar da akai-akai na",
@@ -68071,6 +68205,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Zamewar gaba",
+    "literal.8e53512a50fa": "Zamewar da ta gabata",
   },
   is: {
     "literal.87df31bb89b3":
@@ -68997,6 +69133,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Næsta glæra",
+    "literal.8e53512a50fa": "Fyrri glæra",
   },
   ga: {
     "literal.87df31bb89b3":
@@ -69936,6 +70074,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Sleamhnán seo chugainn",
+    "literal.8e53512a50fa": "Sleamhnán roimhe seo",
   },
   jv: {
     "literal.87df31bb89b3": "— mlebu saka menu akun kanggo nyiyapake pangiriman bola-bali",
@@ -70859,6 +70999,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Slide sabanjure",
+    "literal.8e53512a50fa": "Muter sadurunge",
   },
   kk: {
     "literal.87df31bb89b3": "— қайталанатын жеткізуді орнату үшін есептік жазба мәзірінен кіріңіз",
@@ -71792,6 +71934,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Келесі слайд",
+    "literal.8e53512a50fa": "Алдыңғы слайд",
   },
   km: {
     "literal.87df31bb89b3": "— ចូល​ពី​ម៉ឺនុយ​គណនី ដើម្បី​រៀបចំ​ការ​ចែកចាយ​ដដែលៗ​នៃ",
@@ -72715,6 +72859,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "ស្លាយបន្ទាប់",
+    "literal.8e53512a50fa": "ស្លាយមុន។",
   },
   lo: {
     "literal.87df31bb89b3": "— ເຂົ້າສູ່ລະບົບຈາກເມນູບັນຊີເພື່ອຕັ້ງຄ່າການຈັດສົ່ງແບບເກີດຂຶ້ນຊ້ຳໆຂອງ",
@@ -73624,6 +73770,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "ສະໄລ້ຕໍ່ໄປ",
+    "literal.8e53512a50fa": "ສະໄລ້ກ່ອນໜ້າ",
   },
   lv: {
     "literal.87df31bb89b3": "— pierakstieties no konta izvēlnes, lai iestatītu periodisku piegādi",
@@ -74552,6 +74700,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Nākamais slaids",
+    "literal.8e53512a50fa": "Iepriekšējais slaids",
   },
   lt: {
     "literal.87df31bb89b3":
@@ -75476,6 +75626,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Kita skaidrė",
+    "literal.8e53512a50fa": "Ankstesnė skaidrė",
   },
   mk: {
     "literal.87df31bb89b3":
@@ -76397,6 +76549,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Следен слајд",
+    "literal.8e53512a50fa": "Претходен слајд",
   },
   ms: {
     "literal.87df31bb89b3":
@@ -77336,6 +77490,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Slaid seterusnya",
+    "literal.8e53512a50fa": "Slaid sebelumnya",
   },
   mn: {
     "literal.87df31bb89b3": "—",
@@ -78264,6 +78420,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Дараагийн слайд",
+    "literal.8e53512a50fa": "Өмнөх слайд",
   },
   my: {
     "literal.87df31bb89b3": "— ထပ်တလဲလဲ ပေးပို့ခြင်းကို စနစ်ထည့်သွင်းရန်",
@@ -79208,6 +79366,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "နောက်တစ်ခုလျှော",
+    "literal.8e53512a50fa": "ယခင်လျှော",
   },
   ps: {
     "literal.87df31bb89b3": "— د حساب له مینو څخه ننوتئ ترڅو د تکراري تحویل تنظیم کړئ د",
@@ -80124,6 +80284,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "بل سلایډ",
+    "literal.8e53512a50fa": "مخکینی سلایډ",
   },
   sr: {
     "literal.87df31bb89b3": "— пријавите се из менија налога да бисте подесили периодичну испоруку",
@@ -81045,6 +81207,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Следећи слајд",
+    "literal.8e53512a50fa": "Претходни слајд",
   },
   sl: {
     "literal.87df31bb89b3": "— prijavite se v meniju računa, da nastavite ponavljajočo se dostavo",
@@ -81967,6 +82131,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Naslednji diapozitiv",
+    "literal.8e53512a50fa": "Prejšnji diapozitiv",
   },
   so: {
     "literal.87df31bb89b3":
@@ -82901,6 +83067,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "slide soo socda",
+    "literal.8e53512a50fa": "slide hore",
   },
   zu: {
     "literal.87df31bb89b3":
@@ -83836,6 +84004,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Isilayidi esilandelayo",
+    "literal.8e53512a50fa": "Isilayidi sangaphambilini",
   },
   xh: {
     "literal.87df31bb89b3": "— ngena kwi-akhawunti yemenyu ukuseta unikezelo oluqhubekayo lwe",
@@ -84766,6 +84936,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Isilayidi esilandelayo",
+    "literal.8e53512a50fa": "Isilayidi sangaphambili",
   },
   yo: {
     "literal.87df31bb89b3": "— wole lati inu akoto akoto lati seto ifijiṣẹ loorekoore ti",
@@ -85673,6 +85845,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Ifaworanhan atẹle",
+    "literal.8e53512a50fa": "Ifaworanhan ti tẹlẹ",
   },
   ig: {
     "literal.87df31bb89b3": "— banye na menu akaụntụ ka hazie nnyefe ugboro ugboro nke",
@@ -86581,6 +86755,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "slide na-esote",
+    "literal.8e53512a50fa": "Ihe mmịfe gara aga",
   },
   uz: {
     "literal.87df31bb89b3": "— takroriy yetkazib berishni sozlash uchun hisob menyusiga kiring",
@@ -87516,6 +87692,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Keyingi slayd",
+    "literal.8e53512a50fa": "Oldingi slayd",
   },
   tk: {
     "literal.87df31bb89b3": "- gaýtalanýan eltip bermek üçin hasap menýusyndan giriň",
@@ -88438,6 +88616,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Indiki slaýd",
+    "literal.8e53512a50fa": "Öňki slaýd",
   },
   ky: {
     "literal.87df31bb89b3": "— кайталануучу жеткирүүнү орнотуу үчүн эсеп менюсуна кириңиз",
@@ -89367,6 +89547,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Кийинки слайд",
+    "literal.8e53512a50fa": "Мурунку слайд",
   },
   tg: {
     "literal.87df31bb89b3": "— аз менюи ҳисоб ворид шавед, то интиқоли такрории",
@@ -90300,6 +90482,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Слайди навбатӣ",
+    "literal.8e53512a50fa": "Слайди қаблӣ",
   },
   ceb: {
     "literal.87df31bb89b3":
@@ -91244,6 +91428,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Sunod nga slide",
+    "literal.8e53512a50fa": "Nauna nga slide",
   },
   cy: {
     "literal.87df31bb89b3": "— mewngofnodwch o ddewislen y cyfrif i sefydlu dosbarthiad cylchol",
@@ -92176,6 +92362,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Sleid nesaf",
+    "literal.8e53512a50fa": "Sleid flaenorol",
   },
   mt: {
     "literal.87df31bb89b3": "— idħol mill-menu tal-kont biex twaqqaf konsenja rikorrenti ta",
@@ -93106,6 +93294,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Slide li jmiss",
+    "literal.8e53512a50fa": "Slide preċedenti",
   },
   lb: {
     "literal.87df31bb89b3": "— mellt Iech aus dem Kontomenü un fir widderhuelend Liwwerung vu",
@@ -94033,6 +94223,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Nächst Rutsch",
+    "literal.8e53512a50fa": "Virdrun Rutsch",
   },
   rw: {
     "literal.87df31bb89b3": "- injira muri konte ya menu kugirango ushireho itangwa rya",
@@ -94948,6 +95140,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Igice gikurikira",
+    "literal.8e53512a50fa": "Igice cyambere",
   },
   ny: {
     "literal.87df31bb89b3": "— lowani muakaunti yanu kuti mukhazikitse",
@@ -95865,6 +96059,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "Chotsatira chotsatira",
+    "literal.8e53512a50fa": "Slide yam'mbuyo",
   },
   ug: {
     "literal.87df31bb89b3": "- ھېسابات تىزىملىكىدىن كىرىپ قايتا-قايتا يەتكۈزۈشنى تەڭشەڭ",
@@ -96793,5 +96989,7 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.ab648f368c7e":
       "Shop traceable organic food from True Grit — traditional grains, stone-ground flours, pulses, seeds and cold-pressed oils sourced directly from trusted farms.",
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
+    "literal.a4cf971af7dc": "كېيىنكى تام تەسۋىر",
+    "literal.8e53512a50fa": "ئالدىنقى تام تەسۋىر",
   },
 };

@@ -60,7 +60,8 @@ class AdminRepository:
               u.display_name AS updated_by,
               COALESCE(f.name, b.name, '') AS farm_name,
               (SELECT v.sku FROM product_variants v
-                WHERE v.product_id = p.id ORDER BY v.sort_order LIMIT 1) AS sku,
+                WHERE v.product_id = p.id
+                ORDER BY v.is_default DESC, v.sort_order, v.name LIMIT 1) AS sku,
               (SELECT GROUP_CONCAT(c.name, ', ') FROM product_categories pc
                 JOIN categories c ON c.id = pc.category_id
                 WHERE pc.product_id = p.id) AS categories,
@@ -264,7 +265,7 @@ class AdminRepository:
         )
         variants = await self._db.fetch_all(
             """
-            SELECT v.id, v.name, v.sku, v.status,
+            SELECT v.id, v.name, v.sku, v.status, v.is_default,
               (SELECT vp.list_amount_minor FROM variant_prices vp
                 WHERE vp.variant_id = v.id AND vp.status = 'active'
                 ORDER BY vp.starts_at DESC LIMIT 1) AS list_minor,
@@ -275,7 +276,7 @@ class AdminRepository:
                 WHERE il.variant_id = v.id) AS available
             FROM product_variants v
             WHERE v.product_id = ?
-            ORDER BY v.sort_order, v.name
+            ORDER BY v.is_default DESC, v.sort_order, v.name
             """,
             (product_id,),
         )
@@ -490,7 +491,8 @@ class AdminRepository:
             """
             SELECT p.id, p.name, p.slug,
               (SELECT v.sku FROM product_variants v
-                WHERE v.product_id = p.id ORDER BY v.sort_order LIMIT 1) AS sku
+                WHERE v.product_id = p.id
+                ORDER BY v.is_default DESC, v.sort_order, v.name LIMIT 1) AS sku
             FROM products p
             WHERE p.archived_at IS NULL
               AND (? IS NULL OR p.farm_id = ?)

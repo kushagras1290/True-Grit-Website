@@ -23,6 +23,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/ due": "/ đến hạn",
   "← All farms": "← Tất cả các trang trại",
   "+ stars": "+ sao",
+  "₹1,000 preview": "₹1.000 xem trước",
   "1 star": "1 sao",
   "15% off your first order": "Giảm 15% cho đơn hàng đầu tiên của bạn",
   "2 cups": "2 cốc",
@@ -57,6 +58,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Quản trị viên cấp cao có thể bắt đầu nhóm hoặc gửi tin nhắn trực tiếp từ nút + ở trên.",
   "A tinted band — check muted text is still readable here.":
     "Dải màu — văn bản bị tắt tiếng séc vẫn có thể đọc được ở đây.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "quốc gia của khách truy cập chọn một loại tiền tệ, bảng này cung cấp giá trị hiển thị của nó và giá INR ban đầu không thay đổi. Đơn vị tiền tệ bị vô hiệu hóa sẽ quay trở lại mặc định an toàn INR.",
   Accent: "Giọng",
   "Accept orders and payments": "Chấp nhận đơn đặt hàng và thanh toán",
   "Accept orders and payments for this product":
@@ -83,6 +86,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "Thêm danh mục",
   "Add code": "Thêm mã",
   "Add country": "Thêm quốc gia",
+  "Add currency": "Thêm đơn vị tiền tệ",
   "Add entry": "Thêm mục",
   "Add farm owner": "Thêm chủ trang trại",
   "Add ingredient": "Thêm thành phần",
@@ -93,6 +97,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "Thêm một trang bên dưới để bắt đầu.",
   "Add one so the bot has something to reference for this scope.":
     "Thêm một mục để bot có nội dung tham khảo cho phạm vi này.",
+  "Add one using the field above.": "Thêm một đơn vị tiền tệ bằng cách sử dụng trường ở trên.",
   "Add page": "Thêm trang",
   "Add participants": "Thêm người tham gia",
   "Add point": "Thêm điểm",
@@ -111,6 +116,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "Thêm khu vực",
   Added: "Đã thêm",
   "Adding...": "Đang thêm...",
+  "Adding…": "Đang thêm…",
   Address: "Địa chỉ",
   "Adjust points": "Điều chỉnh điểm",
   "Adjust the search or create a category.": "Điều chỉnh tìm kiếm hoặc tạo danh mục.",
@@ -205,6 +211,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Awards, badges, ratings.": "Giải thưởng, huy hiệu, xếp hạng.",
   "B2B / bulk ordering": "B2B / đặt hàng số lượng lớn",
   Back: "Quay lại",
+  "Back to conversations": "Quay lại cuộc trò chuyện",
   "Back to sign in": "Quay lại để đăng nhập",
   Balance: "Số dư",
   "Banner alt text": "Văn bản thay thế biểu ngữ",
@@ -268,6 +275,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "Phần biên tập danh mục",
   "Category not found": "Danh mục không đã tìm thấy",
   "Category row": "Hàng danh mục",
+  "Category thumbnail alt text": "Văn bản thay thế hình thu nhỏ danh mục",
+  "Category thumbnail URL": "URL hình thu nhỏ danh mục",
   "Category to add to the homepage": "Danh mục cần thêm vào trang chủ",
   "Cautions and low stock.": "Thận trọng và sắp hết hàng.",
   "Centred safe area": "Khu vực an toàn tập trung",
@@ -338,6 +347,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "Email liên hệ",
   Content: "Nội dung",
   "Continue with Facebook": "Tiếp tục với Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "Kiểm soát giá gần đúng bằng nội tệ bằng cách đặt giá trị của một rupee Ấn Độ. Hồ sơ danh mục, thanh toán và đơn đặt hàng luôn được lưu giữ an toàn trong INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Kiểm soát nội dung mà mỗi vai trò có thể xem, tạo, chỉnh sửa, xuất bản hoặc quản lý.",
   "Control whether each bot is available, and edit what it knows.":
@@ -382,6 +393,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "Kích thước danh sách được tuyển chọn",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "Các tập hợp biến thể cụ thể được tuyển chọn được bán cùng nhau ở một mức giá cố định. Checkout áp dụng tính năng lưu tự động sau khi giỏ chứa mọi mặt hàng trong một gói.",
+  Currency: "Tiền tệ",
+  "Currency code": "Mã tiền tệ",
+  "Currency Converter": "Bộ chuyển đổi tiền tệ",
+  "Currency values unavailable": "Không có giá trị tiền tệ",
   "Current password": "Mật khẩu hiện tại",
   "Currently its own effects.": "Hiện tại có hiệu ứng riêng.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -419,6 +434,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "Từ chối",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'Trang trí phía trên mặt tiền cửa hàng: các hạt trôi phía sau trang và một vệt theo con trỏ. Cả hai đều bị tắt theo mặc định, cả hai đều bị bỏ qua hoàn toàn đối với những khách truy cập đã yêu cầu giảm chuyển động trên thiết bị của họ và không bao giờ xuất hiện trên cửa sổ thanh toán - tuyết rơi trên biểu mẫu thẻ có thể gây mất tập trung vào đúng thời điểm. Hiệu ứng của một quốc gia thay thế hoàn toàn các hiệu ứng trên toàn trang web cho khách truy cập thay vì hòa trộn với chúng — "một ít tuyết" không phải là sự kết hợp có ý nghĩa giữa tuyết và không có hiệu ứng.',
+  Default: "Mặc định",
   "Default commission": "Hoa hồng mặc định",
   "Default fee": "Phí mặc định",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -438,6 +454,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "Xóa công thức",
   "Delete role": "Xóa vai trò",
   "Delete selected (": "Xóa đã chọn (",
+  "Delete this entry": "Xóa mục này",
   "Delete this price adjustment?": "Xóa điều chỉnh giá này?",
   "Delete user": "Xóa người dùng",
   "Deleting...": "Đang xóa...",
@@ -459,6 +476,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "Bộ lọc chứng nhận và chế độ ăn kiêng",
   "Dietary tags": "Thẻ ăn kiêng",
   "Dietary tags (comma separated)": "Thẻ ăn kiêng (được phân tách bằng dấu phẩy)",
+  "Dietary Tags & Certifications": "Thẻ và chứng nhận về chế độ ăn kiêng",
   "Direct message": "Tin nhắn trực tiếp",
   Disable: "Tắt",
   "Disable selected (": "Tắt các mục đã chọn (",
@@ -481,12 +499,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "ví dụ: Tài khoản",
   "e.g. DIWALI500": "ví dụ: DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "ví dụ: Thu hoạch vào tuần ngày 3 tháng 3 năm 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "Ví dụ: Ấn Độ hữu cơ, thương mại công bằng. Chứng nhận được cấp cho bất kỳ sản phẩm nào không thể bị xóa cho đến khi bị xóa khỏi sản phẩm đó.",
   "e.g. Ops Room": "ví dụ: Phòng điều hành",
   "e.g. Rain-fed, no synthetic pesticides":
     "ví dụ: Cho ăn bằng mưa, không dùng thuốc trừ sâu tổng hợp",
   "e.g. Refrigerate and use within 5 days": "ví dụ: Làm lạnh và sử dụng trong vòng 5 ngày",
   "e.g. TO-HONEY-500": "ví dụ: TO-HONEY-500",
   "e.g. UTR 123456789012": "ví dụ: UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "Ví dụ: Ăn chay, không chứa gluten. Việc xóa một sẽ xóa nó khỏi mọi sản phẩm đã được kiểm tra.",
   Edit: "Chỉnh sửa",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "Chỉnh sửa siêu dữ liệu, lập chỉ mục và khối trang thô của trang CMS. Bản ghi trang chủ cũng được liệt kê ở đây, nhưng Cài đặt trang chủ là cách an toàn hơn để thay đổi nó — trình chỉnh sửa này sử dụng JSON thô.",
@@ -588,6 +610,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Bắt buộc bật hoặc tắt một phần đối với khách truy cập ở một quốc gia mà không thay đổi nội dung mà những người khác nhìn thấy. Để lại một phần trên "Kế thừa" và nó chỉ theo hộp kiểm trong danh sách phần ở trên.',
   "Forgot password?": "Quên mật khẩu?",
+  "Formatting locale": "Định dạng ngôn ngữ",
   "Free delivery above (₹)": "Giao hàng miễn phí ở trên (₹)",
   "French (Français)": "Pháp (Français)",
   Frequency: "Tần suất",
@@ -670,6 +693,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Nếu email đó có địa chỉ email tài khoản, một liên kết đặt lại đang được gửi đến.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "Nếu chương trình khuyến mãi này chưa bao giờ được đổi thì nó sẽ bị xóa hoàn toàn; nếu không thì nó sẽ được lưu trữ để lịch sử của nó được lưu giữ.",
+  Image: "Hình ảnh",
   "Image alt text": "Văn bản thay thế hình ảnh",
   "Image alt text (optional)": "Văn bản thay thế hình ảnh (tùy chọn)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -741,6 +765,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Để trống một màu để giữ lại màu True Grit đi kèm — xóa một trường là cách bạn hoàn tác. Màu của một trang hoặc quốc gia bắt đầu từ màu của trang web và chỉ ghi đè những gì bạn thay đổi, vì vậy mỗi màu là một danh sách ngắn chứ không phải bảng màu thứ hai để duy trì. Khi cả hai áp dụng cho cùng một khách truy cập, trang sẽ thắng — thử nghiệm địa lý sẽ không thể hoàn tác thiết kế của trang xã luận.",
   "Leave blank to use the default.": "Để trống để sử dụng mặc định.",
+  "Leave the link blank for a plain, unclickable image.":
+    "Để trống liên kết cho một hình ảnh đơn giản, không thể nhấp vào.",
   "Less refunds": "Số tiền hoàn lại ít hơn",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "Cho phép khách hàng áp dụng mã thẻ quà tặng khi thanh toán, bao gồm một phần hoặc toàn bộ tổng đơn đặt hàng của họ. Phát hành thẻ từ trang Thẻ quà tặng. Tắt theo mặc định — các thẻ hiện có và số dư của chúng được giữ nguyên, chỉ không thể đổi được trong khi tính năng này tắt.",
@@ -752,6 +778,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Line total": "Tổng số dòng",
   Lines: "Các dòng",
   Link: "Liên kết",
+  "Link (optional)": "Liên kết (tùy chọn)",
   "Link customer": "Liên kết khách hàng",
   "Link product": "Liên kết sản phẩm",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -771,6 +798,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "Xem trước trực tiếp",
   "Live, and to scale with the real storefront's own styles.":
     "Trực tiếp và mở rộng quy mô theo phong cách riêng của cửa hàng thực.",
+  Loading: "Đang tải",
   "Loading active promotions...": "Đang tải các quảng cáo đang hoạt động...",
   "Loading analytics...": "Đang tải số liệu phân tích...",
   "Loading announcements...": "Đang tải thông báo...",
@@ -784,6 +812,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "Đang tải cuộc hội thoại…",
   "Loading country overrides...": "Đang tải ghi đè quốc gia...",
   "Loading crawler files...": "Đang tải tệp trình thu thập thông tin...",
+  "Loading currency values…": "Đang tải giá trị tiền tệ…",
   "Loading delivery charges...": "Đang tải phí giao hàng...",
   "Loading discussion…": "Đang tải cuộc thảo luận…",
   "Loading highlights...": "Đang tải điểm nổi bật...",
@@ -806,6 +835,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "Đang tải các công tắc mặt tiền cửa hàng...",
   "Loading submission…": "Đang tải nội dung gửi…",
   "Loading...": "Đang tải...",
+  "Loading…": "Đang tải…",
   "Local pickup points": "Các điểm nhận hàng tại địa phương",
   "Locale to translate": "Ngôn ngữ cần dịch",
   "Locked out? Use": "Đã khóa? Sử dụng",
@@ -855,6 +885,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "Lý do kiểm duyệt",
   Mongolian: "Mông Cổ",
   "More from True Grit": "Thêm từ True Grit",
+  "Motto banner": "Biểu ngữ khẩu hiệu",
   "Move down in the showcase": "Chuyển xuống tủ trưng bày",
   "Move earlier": "Di chuyển sớm hơn",
   "Move later": "Di chuyển sau",
@@ -982,6 +1013,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ghi chú (bắt buộc để yêu cầu thay đổi hoặc từ chối)",
   "Note (required)": "Ghi chú (bắt buộc)",
   Notes: "Ghi chú",
+  "Nothing here yet": "Chưa có gì ở đây",
   "Nothing outstanding to pay": "Không có gì chưa thanh toán",
   "Nothing pending.": "Không có gì đang chờ xử lý.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1034,6 +1066,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Đơn đặt hàng sẽ xuất hiện ở đây sau khi khách hàng kiểm tra out.",
   "Organic Alphonso Mangoes": "Xoài Alphonso hữu cơ",
   "Organic mangoes held in a sunlit orchard": "Xoài hữu cơ được trồng trong vườn ngập nắng",
+  "Organic wheat flour in a wooden bowl": "Bột mì hữu cơ đựng trong bát gỗ",
   Outstanding: "Nổi bật",
   Overview: "Tổng quan",
   "Owner Reports": "Báo cáo của chủ sở hữu",
@@ -1083,9 +1116,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Chọn ít nhất một quốc gia hoặc phát hành ở mọi nơi.",
   "Pick at least one country, or release globally.":
     "Chọn ít nhất một quốc gia hoặc phát hành trên toàn cầu.",
-  "Pick exactly two people for a direct message.":
-    "Chọn chính xác hai người cho tin nhắn trực tiếp.",
   "Pick one from the list to start reading.": "Chọn một người từ danh sách để bắt đầu đọc.",
+  "Pick the other person for this direct message.":
+    "Chọn người còn lại cho buổi trực tiếp này message.",
   "PIN code": "Mã PIN",
   "PIN patterns": "Mẫu mã PIN",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1230,6 +1263,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Yêu cầu quyền xem trang và API được kết nối.",
   "Requires products.publish": "Yêu cầu sản phẩm.publish",
   "Requires recipes.publish": "Yêu cầu công thức nấu ăn.publish",
+  "Requires settings access.": "Yêu cầu quyền truy cập cài đặt.",
   "Requires the analytics.view permission.": "Cần có quyền phân tích.",
   "Requires the inventory.adjust permission.": "Cần có quyền Inventory.just.",
   "Requires the reports.query permission.": "Cần có quyền báo cáo.truy vấn.",
@@ -1281,6 +1315,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "Đang chạy…",
   "Russian (Русский)": "Tiếng Nga (Русский)",
   "Safe area": "Khu vực an toàn",
+  "Safe geo-lock:": "Khóa địa lý an toàn:",
   "Sale & Discounts": "Giảm giá & Giảm giá",
   "Sale price": "Giá bán",
   "Sale Price (₹)": "Giá bán (₹)",
@@ -1415,6 +1450,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "Tiếng Serbia",
   Servings: "Khẩu phần",
   "Set a new password": "Đặt mật khẩu mới",
+  "Set as default": "Đặt làm mặc định",
   "Shop · Farms · Journal": "Mua sắm · Trang trại · Tạp chí",
   "Shop fresh greens": "Mua rau tươi",
   "Shop root vegetables": "Mua rau củ",
@@ -1425,6 +1461,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "Hiển thị thông báo",
   "Show dietary and certification filters on the shop page":
     "Hiển thị các bộ lọc chế độ ăn kiêng và chứng nhận trên trang cửa hàng",
+  "Show original": "Hiển thị bản gốc",
   "Show product recommendations": "Hiển thị đề xuất sản phẩm",
   "Show this snippet": "Hiển thị đoạn trích này",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1511,6 +1548,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Swahili (Kiswahili)": "Tiếng Swahili (Kiswahili)",
   "Swedish (Svenska)": "Tiếng Thụy Điển (Svenska)",
   Table: "Bảng",
+  "Tags & Certifications": "Thẻ và chứng chỉ",
   "Tags:": "Thẻ:",
   "Taking payments": "Nhận thanh toán",
   Target: "Mục tiêu",
@@ -1524,6 +1562,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Biểu ngữ, hàng danh mục, hàng sản phẩm và các trường SEO được lưu cùng nhau. Các hộp kiểm mục, thứ tự và bản sao phần tùy chỉnh sẽ tự lưu khi bạn thay đổi chúng.",
   "The chat widget customers and visitors see on the storefront.":
     "Tiện ích trò chuyện mà khách hàng và khách truy cập nhìn thấy trên mặt tiền cửa hàng.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "Danh sách hộp kiểm được hiển thị trên tab Chung của mọi sản phẩm. Các thay đổi sẽ áp dụng ngay lập tức ở mọi nơi.",
   "The classic credential pair, including the password-reset flow.":
     "Cặp thông tin xác thực cổ điển, bao gồm cả quy trình đặt lại mật khẩu.",
   "the farm owner": "chủ trang trại",
@@ -1575,6 +1615,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Phần này được chỉnh sửa trong bảng điều khiển riêng ở cuối trang.",
   "Threads started from the storefront appear here.":
     "Các chủ đề bắt đầu từ mặt tiền cửa hàng sẽ xuất hiện ở đây.",
+  "Thumbnail image URL": "URL hình ảnh thu nhỏ",
   Time: "Thời gian",
   "Tinted band": "Dải màu",
   Title: "Tiêu đề",
@@ -1593,7 +1634,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Trail colour": "Màu đường dẫn",
   "transfer money — make the transfer to": "chuyển tiền — thực hiện chuyển khoản tới",
   "Transfer reference (UPI / bank / cheque)": "Số tham chiếu chuyển khoản (UPI / ngân hàng / séc)",
+  Translate: "Dịch",
+  "Translate chat": "Dịch trò chuyện",
   "Translating...": "Đang dịch...",
+  "Translating…": "Dịch…",
   Translations: "Bản dịch",
   "True Grit Admin": "True Grit Quản trị viên",
   "Turkish (Türkçe)": "Tiếng Thổ Nhĩ Kỳ (Türkçe)",
@@ -1624,9 +1668,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "Tải hình ảnh lên",
   "Uploading image...": "Đang tải hình ảnh lên...",
   "Uploading image…": "Đang tải hình ảnh lên…",
+  "Uploading thumbnail...": "Đang tải hình thu nhỏ lên...",
   "Uploading...": "Đang tải lên...",
   "Uploading…": "Đang tải lên…",
   "Urdu (اردو)": "Tiếng Urdu (اردو)",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "Sử dụng hình ảnh 1200 × 1200 riêng biệt. Hình ảnh vuông này được cắt bớt để làm thẻ danh mục; không sử dụng lại biểu ngữ anh hùng rộng.",
   "Use site-wide effects instead": "Thay vào đó, hãy sử dụng các hiệu ứng trên toàn trang web",
   "Use the exact canvas": "Sử dụng canvas chính xác",
   "Use the navigation to get back.": "Sử dụng điều hướng để quay lại.",
@@ -1638,6 +1685,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Users unavailable": "Không có người dùng",
   "Using the site brand colour": "Sử dụng màu thương hiệu của trang web",
   Uzbek: "Tiếng Uzbek",
+  "Value of 1 INR": "Giá trị của 1 INR",
+  "Value per INR": "Giá trị mỗi INR",
   "Value, ₹": "Giá trị, ₹",
   Variant: "Biến thể",
   "Variant (SKU)": "Biến thể (SKU)",

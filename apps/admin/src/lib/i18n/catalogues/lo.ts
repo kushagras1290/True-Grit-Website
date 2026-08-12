@@ -24,6 +24,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "/shop": "/ຮ້ານ",
   "← All farms": "← ຟາມທັງໝົດ",
   "+ stars": "+ ດາວ",
+  "₹1,000 preview": "₹1,000 ຕົວຢ່າງ",
   "1 star": "1 ດາວ",
   "15% off your first order": "ສ່ວນຫຼຸດ 15% ການສັ່ງຊື້ຄັ້ງທຳອິດ",
   "2 cups": "2 ຈອກ",
@@ -58,6 +59,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ຜູ້ເບິ່ງແຍງລະດັບສູງສາມາດເລີ່ມກຸ່ມ ຫຼື ຂໍ້ຄວາມໂດຍກົງຈາກປຸ່ມ + ຂ້າງເທິງ.",
   "A tinted band — check muted text is still readable here.":
     "ແຖບສີ — ຂໍ້ຄວາມທີ່ປິດສຽງແມ່ນຍັງສາມາດອ່ານໄດ້ຢູ່ບ່ອນນີ້.",
+  "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
+    "ປະເທດຂອງຜູ້ເຂົ້າຊົມເລືອກສະກຸນເງິນ, ຕາຕະລາງນີ້ສະຫນອງມູນຄ່າການສະແດງຂອງມັນ, ແລະລາຄາ INR ເດີມຍັງຄົງບໍ່ປ່ຽນແປງ. ສະກຸນເງິນທີ່ຖືກປິດນຳໃຊ້ຈະກັບຄືນໄປເປັນຄ່າເລີ່ມຕົ້ນທີ່ປອດໄພ INR.",
   "Accept orders and payments": "ຍອມຮັບການສັ່ງຊື້ ແລະການຈ່າຍເງິນ",
   "Accept orders and payments for this product": "ຍອມຮັບການສັ່ງຊື້ ແລະການຈ່າຍເງິນຂອງຜະລິດຕະພັນນີ້",
   Action: "ການກະທຳ",
@@ -82,6 +85,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add category": "ເພີ່ມໝວດໝູ່",
   "Add code": "ເພີ່ມລະຫັດ",
   "Add country": "ເພີ່ມປະເທດ",
+  "Add currency": "ເພີ່ມສະກຸນເງິນ",
   "Add entry": "ເພີ່ມການປ້ອນຂໍ້ມູນ",
   "Add farm owner": "ເພີ່ມເຈົ້າຂອງຟາມ",
   "Add ingredient": "ເພີ່ມສ່ວນປະກອບ",
@@ -92,6 +96,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add one below to get started.": "ເພີ່ມອັນໜຶ່ງຂ້າງລຸ່ມເພື່ອເລີ່ມຕົ້ນ.",
   "Add one so the bot has something to reference for this scope.":
     "ເພີ່ມອັນໜຶ່ງເພື່ອໃຫ້ບັອດມີບາງອັນເພື່ອອ້າງອີງສຳລັບຂອບເຂດນີ້.",
+  "Add one using the field above.": "ເພີ່ມອັນນຶ່ງໂດຍໃຊ້ຊ່ອງຂໍ້ມູນຂ້າງເທິງ.",
   "Add page": "ເພີ່ມໜ້າ",
   "Add participants": "ເພີ່ມຜູ້ເຂົ້າຮ່ວມ",
   "Add point": "ເພີ່ມຈຸດ",
@@ -110,6 +115,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add zone": "ເພີ່ມເຂດ",
   Added: "ເພີ່ມແລ້ວ",
   "Adding...": "ກຳລັງເພີ່ມ...",
+  "Adding…": "ກຳລັງເພີ່ມ…",
   Address: "ທີ່ຢູ່",
   "Adjust points": "ປັບຈຸດ",
   "Adjust the search or create a category.": "ປັບການຊອກຫາ ຫຼືສ້າງໝວດໝູ່.",
@@ -205,6 +211,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Awards, badges, ratings.": "ລາງວັນ, ປ້າຍ, ການໃຫ້ຄະແນນ.",
   "B2B / bulk ordering": "B2B / ການສັ່ງຊື້ເປັນຊຸດ",
   Back: "ກັບຄືນ",
+  "Back to conversations": "ກັບໄປທີ່ການສົນທະນາ",
   "Back to sign in": "ກັບໄປເຂົ້າສູ່ລະບົບ",
   Balance: "ຍອດເງິນ",
   "Banner alt text": "ຂໍ້ຄວາມສຳຮອງປ້າຍໂຄສະນາ",
@@ -265,6 +272,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Category editor sections": "ພາກສ່ວນບັນນາທິການໝວດໝູ່",
   "Category not found": "ບໍ່ພົບໝວດໝູ່",
   "Category row": "ແຖວໝວດໝູ່",
+  "Category thumbnail alt text": "ຂໍ້ຄວາມຫຍໍ້ຂອງໝວດໝູ່",
   "Category to add to the homepage": "ໝວດໝູ່ທີ່ຈະເພີ່ມໃສ່ໜ້າຫຼັກ",
   "Cautions and low stock.": "ຂໍ້ຄວນລະວັງ ແລະສິນຄ້າມີໜ້ອຍ.",
   "Centred safe area": "ພື້ນທີ່ປອດໄພເປັນໃຈກາງ",
@@ -334,6 +342,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact email": "ອີເມວຕິດຕໍ່",
   Content: "ເນື້ອຫາ",
   "Continue with Facebook": "ສືບຕໍ່ກັບ Facebook",
+  "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
+    "ຄວບຄຸມລາຄາໂດຍປະມານຂອງສະກຸນເງິນທ້ອງຖິ່ນໂດຍການກໍານົດວ່າໜຶ່ງຣູປີອິນເດຍມີມູນຄ່າເທົ່າໃດ. ບັນທຶກລາຍການ, ຈ່າຍເງິນ ແລະຄຳສັ່ງຊື້ຢູ່ໃນ INR ຢ່າງປອດໄພ.",
   "Control what each role can view, create, edit, publish or manage.":
     "ຄວບຄຸມສິ່ງທີ່ແຕ່ລະບົດບາດສາມາດເບິ່ງ, ສ້າງ, ແກ້ໄຂ, ເຜີຍແຜ່ ຫຼືຈັດການ.",
   "Control whether each bot is available, and edit what it knows.":
@@ -377,6 +387,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Curated list size": "ຂະໜາດລາຍການທີ່ຄັດສັນມາ",
   "Curated sets of specific variants sold together at a flat price. Checkout applies the saving automatically once a basket holds every item in a bundle.":
     "ຊຸດທີ່ຄັດສັນມາພ້ອມໆກັນໃນລາຄາສະເພາະ. Checkout ນຳໃຊ້ການປະຢັດອັດຕະໂນມັດເມື່ອກະຕ່າເກັບທຸກລາຍການຢູ່ໃນມັດ.",
+  Currency: "ສະກຸນເງິນ",
+  "Currency code": "ລະຫັດສະກຸນເງິນ",
+  "Currency Converter": "ຕົວປ່ຽນສະກຸນເງິນ",
+  "Currency values unavailable": "ຄ່າສະກຸນເງິນບໍ່ສາມາດໃຊ້ໄດ້",
   "Current password": "ລະຫັດຜ່ານປັດຈຸບັນ",
   "Currently its own effects.": "ປັດຈຸບັນຜົນກະທົບຂອງມັນເອງ.",
   "Currently the site-wide effects — save below to give it its own.":
@@ -412,6 +426,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Decline: "ປະຕິເສດ",
   'Decoration on top of the storefront: drifting particles behind the page, and a trail following the pointer. Both are off by default, both are skipped entirely for visitors who have asked their device for reduced motion, and neither ever appears on the payment window — a snowfall over a card form is a distraction at exactly the wrong moment. A country\'s effects replace the site-wide ones outright for its visitors rather than blending with them — "some snow" is not a meaningful mix of snow and no effect.':
     'ການຕົກແຕ່ງຢູ່ເທິງສຸດຂອງໜ້າຮ້ານ: ອະນຸພາກທີ່ລອຍຢູ່ທາງຫລັງຂອງໜ້າຕໍ່ໄປນີ້, ແລະຈຸດທີ່ຕັ້ງໄວ້. ທັງສອງຖືກປິດໄວ້ໂດຍຄ່າເລີ່ມຕົ້ນ, ທັງສອງແມ່ນຂ້າມທັງຫມົດສໍາລັບຜູ້ມາຢ້ຽມຢາມທີ່ຮ້ອງຂໍໃຫ້ອຸປະກອນຂອງເຂົາເຈົ້າສໍາລັບການເຄື່ອນໄຫວຫຼຸດລົງ, ແລະບໍ່ເຄີຍປາກົດຢູ່ໃນປ່ອງຢ້ຽມການຈ່າຍເງິນ - ຫິມະຕົກຢູ່ໃນຮູບແບບບັດເປັນສິ່ງລົບກວນໃນທັນທີທີ່ຜິດພາດ. ຜົນກະທົບຂອງປະເທດໃດໜຶ່ງມາແທນທີ່ໜ້າເວັບທັງໝົດໃຫ້ກັບຜູ້ເຂົ້າຊົມຂອງມັນ ແທນທີ່ຈະປະສົມກັບພວກມັນ — "ຫິມະບາງອັນ" ບໍ່ແມ່ນການປະສົມຂອງຫິມະທີ່ມີຄວາມຫມາຍ ແລະບໍ່ມີຜົນຫຍັງເລີຍ.',
+  Default: "ຄ່າເລີ່ມຕົ້ນ",
   "Default commission": "ຄ່າຄອມເມັ້ນເລີ່ມຕົ້ນ",
   "Default fee": "ຄ່າເລີ່ມຕົ້ນ",
   "Default. Orderable exactly when Site Control's payments switch is on.":
@@ -431,6 +446,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete recipe": "ລຶບສູດອາຫານ",
   "Delete role": "ລຶບບົດບາດ",
   "Delete selected (": "ລຶບທີ່ເລືອກ (",
+  "Delete this entry": "ລຶບລາຍການນີ້",
   "Delete this price adjustment?": "ລຶບການປັບລາຄານີ້ບໍ?",
   "Delete user": "ລຶບຜູ້ໃຊ້",
   "Deleting...": "ກຳລັງລຶບ...",
@@ -452,6 +468,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Dietary & certification filters": "ຕົວກອງອາຫານ ແລະ ການຮັບຮອງ",
   "Dietary tags": "ແທັກອາຫານ",
   "Dietary tags (comma separated)": "ແທັກອາຫານ (ແຍກເຄື່ອງໝາຍຈຸດ)",
+  "Dietary Tags & Certifications": "ປ້າຍກຳກັບອາຫານ ແລະໃບຢັ້ງຢືນ",
   "Direct message": "ຂໍ້ຄວາມໂດຍກົງ",
   Disable: "ປິດໃຊ້ງານ",
   "Disable selected (": "ປິດໃຊ້ງານທີ່ເລືອກ (",
@@ -473,11 +490,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "e.g. Accounts": "ເຊັ່ນ: ບັນຊີ",
   "e.g. DIWALI500": "ເຊັ່ນ: DIWALI500",
   "e.g. Harvested the week of 3 March 2026": "ເຊັ່ນ: ເກັບກ່ຽວໃນອາທິດຂອງວັນທີ 3 ມີນາ 2026",
+  "E.g. India Organic, Fair Trade. A certification assigned to any product cannot be deleted until removed from it.":
+    "ເຊັ່ນ: ອິນເດຍອິນຊີ, ການຄ້າຍຸດຕິທໍາ. ການຢັ້ງຢືນທີ່ມອບໃຫ້ຜະລິດຕະພັນໃດນຶ່ງບໍ່ສາມາດຖືກລຶບໄດ້ຈົນກວ່າຈະເອົາອອກຈາກມັນ.",
   "e.g. Ops Room": "ເຊັ່ນ: Ops Room",
   "e.g. Rain-fed, no synthetic pesticides": "ເຊັ່ນ: ລະດູຝົນ, ບໍ່ມີຢາຂ້າແມງໄມ້ສັງເຄາະ",
   "e.g. Refrigerate and use within 5 days": "ເຊັ່ນ: ຕູ້ເຢັນແລະໃຊ້ພາຍໃນ 5 ມື້",
   "e.g. TO-HONEY-500": "ເຊັ່ນ: TO-HONEY-500",
   "e.g. UTR 123456789012": "ເຊັ່ນ: UTR 123456789012",
+  "E.g. Vegan, Gluten Free. Deleting one removes it from every product that has it checked.":
+    "ເຊັ່ນ: Vegan, Gluten Free. ການລຶບອັນໜຶ່ງຈະລຶບມັນອອກຈາກທຸກຜະລິດຕະພັນທີ່ມັນກວດແລ້ວ.",
   Edit: "ແກ້ໄຂ",
   "Edit CMS page metadata, indexing and raw page blocks. The homepage record is listed here too, but Homepage Settings is the safer way to change it — this editor takes raw JSON.":
     "ແກ້ໄຂເມຕາເດຕາຂອງໜ້າ CMS, ການສ້າງດັດສະນີ ແລະບລັອກໜ້າດິບ. ບັນທຶກໜ້າຫຼັກມີລາຍຊື່ຢູ່ບ່ອນນີ້ຄືກັນ, ແຕ່ການຕັ້ງຄ່າໜ້າຫຼັກແມ່ນວິທີທີ່ປອດໄພກວ່າທີ່ຈະປ່ຽນມັນ — ບັນນາທິການນີ້ໃຊ້ JSON ດິບ.",
@@ -579,6 +600,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'ບັງຄັບໃຫ້ເປີດ ຫຼືປິດພາກສ່ວນໜຶ່ງສຳລັບນັກທ່ອງທ່ຽວໃນປະເທດໜຶ່ງ, ໂດຍບໍ່ຕ້ອງປ່ຽນສິ່ງທີ່ທຸກຄົນເຫັນ. ອອກຈາກພາກສ່ວນ "Inherit" ແລະມັນພຽງແຕ່ປະຕິບັດຕາມ tickbox ໃນລາຍການພາກສ່ວນຂ້າງເທິງ.',
   "Forgot password?": "ລືມລະຫັດຜ່ານ?",
+  "Formatting locale": "ການຈັດຮູບແບບສະຖານທີ່",
   "Free delivery above (₹)": "ການຈັດສົ່ງຟຣີຂ້າງເທິງ (₹)",
   "French (Français)": "ຝຣັ່ງ (ຝຣັ່ງ)",
   Frequency: "ຄວາມຖີ່",
@@ -656,6 +678,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ຖ້າອີເມວນັ້ນມີບັນຊີ, ລິ້ງຣີເຊັດແມ່ນຢູ່ໃນທາງຂອງມັນ.",
   "If this promotion has never been redeemed it is deleted outright; otherwise it is archived so its history is kept.":
     "ຖ້າໂປຣໂມຊັນນີ້ບໍ່ເຄີຍຖືກແລກມັນຈະຖືກລຶບທັນທີ; ຖ້າບໍ່ດັ່ງນັ້ນ ມັນຖືກເກັບໄວ້ເພື່ອເກັບປະຫວັດຂອງມັນໄວ້.",
+  Image: "ຮູບພາບ",
   "Image alt text": "ຂໍ້ຄວາມສຳຮອງຮູບ",
   "Image alt text (optional)": "Image alt text (ທາງເລືອກ)",
   "Image is sRGB and at or below the listed file-size target.":
@@ -730,6 +753,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "ປ່ອຍສີຫວ່າງໄວ້ເພື່ອບໍ່ໃຫ້ເຮືອ True Grit ລຳໜຶ່ງຢູ່ — ການລ້າງຊ່ອງຂໍ້ມູນແມ່ນວິທີທີ່ທ່ານຍົກເລີກ. ສີຂອງຫນ້າຫຼືປະເທດເລີ່ມຕົ້ນຈາກສີເວັບໄຊທ໌ແລະ override ພຽງແຕ່ສິ່ງທີ່ທ່ານປ່ຽນ, ສະນັ້ນແຕ່ລະແມ່ນບັນຊີລາຍຊື່ສັ້ນ, ບໍ່ແມ່ນ palette ທີສອງເພື່ອຮັກສາ. ເມື່ອທັງສອງນຳໃຊ້ກັບຜູ້ເຂົ້າຊົມດຽວກັນ, ໜ້າຈະຊະນະ — ການອອກແບບໜ້າບັນນາທິການບໍ່ຄວນຖືກຍົກເລີກໂດຍການທົດລອງທາງພູມສາດ.",
   "Leave blank to use the default.": "ປ່ອຍຫວ່າງໄວ້ເພື່ອໃຊ້ຄ່າເລີ່ມຕົ້ນ.",
+  "Leave the link blank for a plain, unclickable image.":
+    "ປະ​ໃຫ້​ລິ້ງ​ຫວ່າງ​ຫວ່າງ​ໄວ້​ເພື່ອ​ເປັນ​ຮູບ​ພາບ​ທີ່​ບໍ່​ສາ​ມາດ​ຄລິກ​ໄດ້.",
   "Less refunds": "ການຄືນເງິນໜ້ອຍລົງ",
   "Lets customers apply a gift card code at checkout, covering part or all of their order total. Issue cards from the Gift Cards page. Off by default — existing cards and their balances are kept, just not redeemable, while this is off.":
     "ໃຫ້ລູກຄ້ານຳໃຊ້ລະຫັດບັດຂອງຂວັນໃນເວລາຈ່າຍເງິນ, ກວມເອົາບາງສ່ວນ ຫຼືທັງໝົດຂອງຈຳນວນການສັ່ງຊື້ຂອງເຂົາເຈົ້າ. ອອກບັດຈາກໜ້າບັດຂອງຂວັນ. ປິດຕາມຄ່າເລີ່ມຕົ້ນ — ບັດທີ່ມີຢູ່ ແລະຍອດຄົງເຫຼືອຂອງພວກມັນຖືກເກັບຮັກສາໄວ້, ພຽງແຕ່ບໍ່ສາມາດແລກຊື້ໄດ້, ໃນຂະນະທີ່ປິດຢູ່.",
@@ -740,6 +765,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Level: "ລະດັບ",
   "Line total": "ທັງໝົດແຖວ",
   Lines: "ສາຍ",
+  "Link (optional)": "ລິ້ງ (ທາງ​ເລືອກ​ອື່ນ)",
   "Link customer": "ເຊື່ອມໂຍງລູກຄ້າ",
   "Link product": "ເຊື່ອມໂຍງຜະລິດຕະພັນ",
   "Linked business accounts receive quantity price breaks and may use approved invoice terms.":
@@ -759,6 +785,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live preview": "ຕົວຢ່າງສົດ",
   "Live, and to scale with the real storefront's own styles.":
     "ສົດ ແລະເພື່ອຂະຫຍາຍຮູບແບບຂອງໜ້າຮ້ານຕົວຈິງ.",
+  Loading: "ກຳລັງ​ໂຫຼດ",
   "Loading active promotions...": "ກຳລັງໂຫຼດໂປຣໂມຊັນທີ່ເປີດຢູ່...",
   "Loading analytics...": "ກຳລັງໂຫຼດການວິເຄາະ...",
   "Loading announcements...": "ກຳລັງໂຫຼດການປະກາດ...",
@@ -772,6 +799,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading conversations…": "ກຳລັງໂຫລດບົດສົນທະນາ…",
   "Loading country overrides...": "ກຳລັງໂຫຼດຂ້າມປະເທດ...",
   "Loading crawler files...": "ກຳລັງໂຫຼດໄຟລ໌ຕົວກວາດເວັບ...",
+  "Loading currency values…": "ກຳລັງ​ໂຫຼດ​ຄ່າ​ເງິນ​ຕາ…",
   "Loading delivery charges...": "ກຳລັງໂຫຼດຄ່າຈັດສົ່ງ...",
   "Loading discussion…": "ກຳລັງໂຫຼດບົດສົນທະນາ…",
   "Loading highlights...": "ກຳລັງໂຫຼດຈຸດເດັ່ນ...",
@@ -794,6 +822,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading storefront switches...": "ກຳລັງໂຫລດສະວິດໜ້າຮ້ານ...",
   "Loading submission…": "ກຳລັງໂຫຼດການສົ່ງຂໍ້ມູນ...",
   "Loading...": "ກຳລັງໂຫລດ...",
+  "Loading…": "ກຳລັງໂຫລດ…",
   "Local pickup points": "ຈຸດຮັບຂອງທ້ອງຖິ່ນ",
   "Locale to translate": "ທ້ອງຖິ່ນທີ່ຈະແປ",
   "Locked out? Use": "ຖືກລັອກບໍ່? ໃຊ້",
@@ -841,6 +870,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Moderation reason": "ເຫດຜົນປານກາງ",
   Mongolian: "ມົງໂກລີ",
   "More from True Grit": "ເພີ່ມເຕີມຈາກ True Grit",
+  "Motto banner": "ປ້າຍໂຄສະນາຄຳຂວັນ",
   "Move down in the showcase": "ຍ້າຍລົງໃນຕູ້ວາງສະແດງ",
   "Move earlier": "ຍ້າຍກ່ອນໜ້າ",
   "Move later": "ຍ້າຍພາຍຫຼັງ",
@@ -966,6 +996,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Note (required to request changes or reject)": "ໝາຍເຫດ (ຕ້ອງຮ້ອງຂໍການປ່ຽນແປງ ຫຼືປະຕິເສດ)",
   "Note (required)": "ໝາຍເຫດ (ຕ້ອງການ)",
   Notes: "ບັນທຶກ",
+  "Nothing here yet": "ບໍ່ມີຫຍັງເທື່ອ",
   "Nothing outstanding to pay": "ບໍ່ມີຫຍັງຄ້າງຈ່າຍ",
   "Nothing pending.": "ບໍ່ມີຫຍັງຄ້າງຢູ່.",
   "Nothing selected — the storefront stays exactly as it is.":
@@ -1019,6 +1050,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ການສັ່ງຊື້ຈະປາກົດຢູ່ບ່ອນນີ້ເມື່ອລູກຄ້າເຊັກເອົາ.",
   "Organic Alphonso Mangoes": "ໝາກມ່ວງອໍແກນິກອໍແກນິກ",
   "Organic mangoes held in a sunlit orchard": "ໝາກມ່ວງອໍແກນິກທີ່ຖືຢູ່ໃນສວນທີ່ມີແສງແດດ",
+  "Organic wheat flour in a wooden bowl": "ແປ້ງສາລີອໍແກນິກໃນໂຖປັດສະວະໄມ້",
   Outstanding: "ດີເດັ່ນ",
   Overview: "ພາບລວມ",
   "Owner Reports": "ລາຍງານເຈົ້າຂອງ",
@@ -1066,8 +1098,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ເລືອກລາຍງານ, ຕັ້ງຕົວກັ່ນຕອງທາງເລືອກ ແລະເປີດໃຊ້ມັນ. ບໍ່ມີ SQL ຂໍ້ຄວາມທີ່ບໍ່ເສຍຄ່າໄປຮອດຖານຂໍ້ມູນເທື່ອ.",
   "Pick at least one country, or release everywhere.": "ເລືອກຢ່າງໜ້ອຍໜຶ່ງປະເທດ, ຫຼືປ່ອຍຢູ່ທຸກບ່ອນ.",
   "Pick at least one country, or release globally.": "ເລືອກຢ່າງໜ້ອຍໜຶ່ງປະເທດ, ຫຼືປ່ອຍທົ່ວໂລກ.",
-  "Pick exactly two people for a direct message.": "ເລືອກສອງຄົນເພື່ອຂໍ້ຄວາມໂດຍກົງ.",
   "Pick one from the list to start reading.": "ເລືອກຫນຶ່ງຈາກລາຍຊື່ເພື່ອເລີ່ມການອ່ານ.",
+  "Pick the other person for this direct message.": "ເລືອກຄົນອື່ນສຳລັບຂໍ້ຄວາມນີ້",
   "PIN code": "ລະຫັດ PIN",
   "PIN patterns": "ຮູບແບບ PIN",
   "PIN patterns accept an exact value or a trailing wildcard, such as 560*.":
@@ -1208,6 +1240,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ຕ້ອງການສິດອະນຸຍາດ pages.view ແລະ API ທີ່ເຊື່ອມຕໍ່ແລ້ວ.",
   "Requires products.publish": "ຕ້ອງການຜະລິດຕະພັນ.Publish",
   "Requires recipes.publish": "ຕ້ອງການສູດອາຫານ.ເຜີຍແຜ່",
+  "Requires settings access.": "ຕ້ອງການການເຂົ້າເຖິງການຕັ້ງຄ່າ.",
   "Requires the analytics.view permission.": "ຕ້ອງການການອະນຸຍາດ analytics.view.",
   "Requires the inventory.adjust permission.": "ຕ້ອງການການອະນຸຍາດ inventory.adjust.",
   "Requires the reports.query permission.": "ຕ້ອງການການອະນຸຍາດ reports.query.",
@@ -1258,6 +1291,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Running…": "ກຳລັງແລ່ນ…",
   "Russian (Русский)": "ລັດເຊຍ (Русский)",
   "Safe area": "ພື້ນທີ່ປອດໄພ",
+  "Safe geo-lock:": "ການລັອກທາງພູມສາດທີ່ປອດໄພ:",
   "Sale & Discounts": "ຂາຍ ແລະສ່ວນຫຼຸດ",
   "Sale price": "ລາຄາຂາຍ",
   "Sale Price (₹)": "ລາຄາຂາຍ (₹)",
@@ -1387,6 +1421,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Serbian: "ເຊີເບຍ",
   Servings: "ການໃຫ້ບໍລິການ",
   "Set a new password": "ຕັ້ງລະຫັດຜ່ານໃໝ່",
+  "Set as default": "ຕັ້ງເປັນຄ່າເລີ່ມຕົ້ນ",
   "Shop · Farms · Journal": "ຮ້ານຄ້າ · ຟາມ · ວາລະສານ",
   "Shop fresh greens": "ຮ້ານຂາຍຜັກສົດ",
   "Shop root vegetables": "ຊື້ຜັກຮາກ",
@@ -1397,6 +1432,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show announcement": "ສະແດງການປະກາດ",
   "Show dietary and certification filters on the shop page":
     "ສະແດງຕົວກັ່ນຕອງອາຫານ ແລະໃບຮັບຮອງໃນໜ້າຮ້ານ",
+  "Show original": "ສະແດງຕົ້ນສະບັບ",
   "Show product recommendations": "ສະແດງການແນະນຳຜະລິດຕະພັນ",
   "Show this snippet": "ສະແດງສະນິບເພັດນີ້",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
@@ -1480,6 +1516,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Supporting text": "ຂໍ້ຄວາມທີ່ຮອງຮັບ",
   "Swedish (Svenska)": "ສະວີດິຊ (Svenska)",
   Table: "ຕາຕະລາງ",
+  "Tags & Certifications": "ແທັກ & ການຢັ້ງຢືນ",
   "Tags:": "ແທັກ:",
   "Taking payments": "ການຈ່າຍເງິນ",
   "Tamil (தமிழ்)": "(தமிழ்)",
@@ -1495,6 +1532,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "ປ້າຍໂຄສະນາ, ແຖວໝວດໝູ່, ແຖວຜະລິດຕະພັນ ແລະຊ່ອງຂໍ້ມູນ SEO ຮວມກັນ. ສ່ວນ tickboxes, ການສັ່ງຊື້ ແລະ ພາກສ່ວນທີ່ກຳນົດເອງຈະສຳເນົາບັນທຶກດ້ວຍຕົວມັນເອງ, ໃນຂະນະທີ່ທ່ານປ່ຽນພວກມັນ.",
   "The chat widget customers and visitors see on the storefront.":
     "ວິດເຈັດການສົນທະນາທີ່ລູກຄ້າ ແລະຜູ້ເຂົ້າຊົມເຫັນຢູ່ໜ້າຮ້ານ.",
+  "The checkbox lists shown on every product's General tab. Changes apply everywhere immediately.":
+    "ລາຍການກ່ອງໝາຍຖືກສະແດງຢູ່ໃນແຖບທົ່ວໄປຂອງທຸກໆຜະລິດຕະພັນ. ການ​ປ່ຽນ​ແປງ​ມີ​ຜົນ​ໃນ​ທຸກ​ບ່ອນ​ໃນ​ທັນ​ທີ.",
   "The classic credential pair, including the password-reset flow.":
     "ຄູ່ຂໍ້ມູນປະຈຳຕົວແບບເກົ່າ, ລວມທັງຂັ້ນຕອນການຣີເຊັດລະຫັດຜ່ານ.",
   "the farm owner": "ເຈົ້າຂອງຟາມ",
@@ -1544,6 +1583,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "This section is edited in its own panel further down the page.":
     "ພາກນີ້ຖືກແກ້ໄຂໃນແຜງຂອງມັນເອງຕື່ມລົງຈາກໜ້າ.",
   "Threads started from the storefront appear here.": "ກະທູ້ເລີ່ມຕົ້ນຈາກໜ້າຮ້ານປາກົດຢູ່ບ່ອນນີ້.",
+  "Thumbnail image URL": "ຮູບ​ຫຍໍ້ URL",
   Time: "ເວລາ",
   "Tinted band": "ແຖບສີ",
   Title: "ຫົວຂໍ້",
@@ -1560,7 +1600,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Trail: "ທາງ",
   "transfer money — make the transfer to": "ໂອນເງິນ — ເຮັດການໂອນໄປ",
   "Transfer reference (UPI / bank / cheque)": "ໂອນອ້າງອີງ (UPI / bank / cheque)",
+  Translate: "ແປພາສາ",
+  "Translate chat": "ແປການສົນທະນາ",
   "Translating...": "ການແປ...",
+  "Translating…": "ການແປ...",
   Translations: "ການແປ",
   "Turkish (Türkçe)": "ຕຸລະກີ (Türkçe)",
   Turkmen: "ຕວກເມັນ",
@@ -1591,8 +1634,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload image": "ອັບໂຫຼດຮູບ",
   "Uploading image...": "ກຳລັງອັບໂຫລດຮູບ...",
   "Uploading image…": "ກຳລັງອັບໂຫລດຮູບ...",
+  "Uploading thumbnail...": "ກຳລັງ​ອັບ​ໂຫຼດ​ຮູບ​ຫຍໍ້...",
   "Uploading...": "ກຳລັງອັບໂຫລດ...",
   "Uploading…": "ກຳລັງອັບໂຫລດ…",
+  "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
+    "ໃຊ້​ຮູບ​ຂະ​ໜາດ 1200 × 1200 ແຍກ​ຕ່າງ​ຫາກ. ຮູບສີ່ຫຼ່ຽມນີ້ຖືກຕັດສຳລັບບັດປະເພດ; ຫ້າມໃຊ້ປ້າຍໂຄສະນາແບບວິລະຊົນແບບກວ້າງຄືນໃໝ່.",
   "Use site-wide effects instead": "ໃຊ້ຜົນກະທົບທົ່ວເວັບໄຊແທນ",
   "Use the exact canvas": "ໃຊ້ຜ້າໃບທີ່ແນ່ນອນ",
   "Use the navigation to get back.": "ໃຊ້ການນໍາທາງເພື່ອກັບຄືນ.",
@@ -1603,6 +1649,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Users & Roles": "ຜູ້ໃຊ້ ແລະບົດບາດ",
   "Users unavailable": "ຜູ້ໃຊ້ບໍ່ສາມາດໃຊ້ໄດ້",
   "Using the site brand colour": "ການໃຊ້ສີຍີ່ຫໍ້ຂອງເວັບໄຊ",
+  "Value of 1 INR": "ມູນຄ່າ 1 INR",
+  "Value per INR": "ມູນຄ່າຕໍ່ INR",
   "Value, ₹": "ມູນຄ່າ, ₹",
   Variant: "ຕົວແປ",
   "Variant (SKU)": "ຕົວແປ (SKU)",
