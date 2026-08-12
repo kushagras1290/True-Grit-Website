@@ -414,6 +414,7 @@ export interface AdminProductDetail {
     listMinor: number | null;
     saleMinor: number | null;
     available: number;
+    isDefault: boolean;
   }>;
 }
 
@@ -1140,6 +1141,7 @@ const DEMO_SECTION_LABELS: Record<string, string> = {
   reviews_showcase: "Customer reviews",
   promotion_banner: "Promotions banner",
   recommendations: "Recommended products",
+  image_banner: "Motto banner",
 };
 
 const DEMO_ADDABLE_TYPES = [
@@ -1151,6 +1153,7 @@ const DEMO_ADDABLE_TYPES = [
   "reviews_showcase",
   "promotion_banner",
   "recommendations",
+  "image_banner",
 ];
 
 const DEMO_NEW_SECTION_PROPS: Record<string, Record<string, unknown>> = {
@@ -1197,6 +1200,11 @@ const DEMO_NEW_SECTION_PROPS: Record<string, Record<string, unknown>> = {
     subheading: "Picked by shoppers",
     limit: 8,
   },
+  image_banner: {
+    imageUrl: "/homepage-hero.png",
+    imageAlt: "True Grit -- Pure By Nature, True By Choice",
+    href: null,
+  },
 };
 
 const DEMO_CLAIMED_SECTION_TYPES = ["hero", "category_collection", "product_collection"];
@@ -1236,6 +1244,8 @@ function demoSectionSummary(block: PublicPageBlock): string {
       return block.props.source === "manual" ? "One specific promotion" : "Best active promotion";
     case "recommendations":
       return `Top ${block.props.limit} best sellers, computed live from orders`;
+    case "image_banner":
+      return block.props.imageAlt || "No image set";
   }
 }
 
@@ -1598,7 +1608,7 @@ export const api = {
       acceptsOrders: true,
       paymentsOverride: "inherit",
       linkedProducts: [],
-      variants: product.variants.map((variant) => ({
+      variants: product.variants.map((variant, index) => ({
         id: variant.id,
         name: variant.name,
         sku: variant.sku,
@@ -1606,6 +1616,7 @@ export const api = {
         listMinor: variant.listMinor,
         saleMinor: variant.saleMinor,
         available: 0,
+        isDefault: index === 0,
       })),
     });
   },
@@ -1643,6 +1654,14 @@ export const api = {
     demoMode
       ? demo({ id: variantId })
       : patch(`/v1/admin/products/${productId}/variants/${variantId}`, input),
+
+  setDefaultVariant: (
+    productId: string,
+    variantId: string,
+  ): Promise<{ id: string; isDefault: boolean }> =>
+    demoMode
+      ? demo({ id: variantId, isDefault: true })
+      : post(`/v1/admin/products/${productId}/variants/${variantId}/set-default`),
 
   updateProductStatus: (
     productId: string,
@@ -1729,12 +1748,34 @@ export const api = {
       ? demo(DEMO_DIET_TAGS)
       : get<{ items: AdminDietTagOption[] }>("/v1/admin/diet-tags").then((body) => body.items),
 
+  createDietTag: (label: string): Promise<AdminDietTagOption> =>
+    demoMode
+      ? demo({ id: `tag_demo_${Date.now()}`, label })
+      : post("/v1/admin/diet-tags", { label }),
+
+  updateDietTag: (id: string, label: string): Promise<AdminDietTagOption> =>
+    demoMode ? demo({ id, label }) : patch(`/v1/admin/diet-tags/${id}`, { label }),
+
+  deleteDietTag: (id: string): Promise<{ id: string }> =>
+    demoMode ? demo({ id }) : del(`/v1/admin/diet-tags/${id}`),
+
   certifications: (): Promise<AdminCertificationOption[]> =>
     demoMode
       ? demo(DEMO_CERTIFICATIONS)
       : get<{ items: AdminCertificationOption[] }>("/v1/admin/certifications").then(
           (body) => body.items,
         ),
+
+  createCertification: (name: string): Promise<AdminCertificationOption> =>
+    demoMode
+      ? demo({ id: `cert_demo_${Date.now()}`, name })
+      : post("/v1/admin/certifications", { name }),
+
+  updateCertification: (id: string, name: string): Promise<AdminCertificationOption> =>
+    demoMode ? demo({ id, name }) : patch(`/v1/admin/certifications/${id}`, { name }),
+
+  deleteCertification: (id: string): Promise<{ id: string }> =>
+    demoMode ? demo({ id }) : del(`/v1/admin/certifications/${id}`),
 
   getCategory: (id: string): Promise<AdminCategoryDetail> => {
     if (!demoMode) return get<AdminCategoryDetail>(`/v1/admin/categories/${id}`);

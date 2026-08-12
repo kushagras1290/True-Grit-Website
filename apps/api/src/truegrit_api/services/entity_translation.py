@@ -204,6 +204,35 @@ async def delete_entity_translation(
     )
 
 
+async def invalidate_stale_auto_translations(
+    db: Database, entity_type: str, entity_id: str, changed_fields: set[str]
+) -> None:
+    """Drop every auto-translated row for this entity when an English field
+    the translation registry tracks just changed.
+
+    Without this, renaming a category (or product, ...) from English left
+    every other locale showing the *old* English text's translation
+    indefinitely -- correct-looking, wrong content, with no visible sign
+    anything was stale. Only `auto_translated = 1` rows are touched: a
+    reviewed/hand-written translation (`auto_translated = 0`) is a deliberate
+    editorial choice, never discarded just because the English source moved.
+    Dropping the row rather than re-translating inline means a save stays
+    fast (no external translation call in the request path) and falls back
+    to English immediately instead of showing stale text -- the existing
+    `backfill-entity-translations` batch script is what regenerates the
+    dropped rows.
+    """
+    if entity_type not in TRANSLATABLE_FIELDS:
+        return
+    if not (changed_fields & set(TRANSLATABLE_FIELDS[entity_type])):
+        return
+    await db.execute(
+        "DELETE FROM entity_translations"
+        " WHERE entity_type = ? AND entity_id = ? AND auto_translated = 1",
+        (entity_type, entity_id),
+    )
+
+
 async def auto_translate_entity(
     db: Database,
     actor: Principal,

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ShieldCheck } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from "react-router";
 
 import { Button, Field, Input } from "../components/ui";
@@ -263,16 +263,23 @@ export function RequireAdminAuth({ children }: { children: ReactNode }) {
   const me = useMe();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  // useLocation() returns a new object on every navigation; reading it
+  // through a ref instead of a dependency means the listener below is
+  // registered once for the component's lifetime rather than torn down and
+  // re-added on every route change, while `handleAuthExpired` still redirects
+  // back to whichever page was current when the 401 actually happened.
+  const locationRef = useRef(location);
+  locationRef.current = location;
 
   useEffect(() => {
     function handleAuthExpired() {
       queryClient.clear();
-      navigate("/login", { replace: true, state: { from: location } });
+      navigate("/login", { replace: true, state: { from: locationRef.current } });
     }
 
     window.addEventListener(ADMIN_AUTH_EXPIRED_EVENT, handleAuthExpired);
     return () => window.removeEventListener(ADMIN_AUTH_EXPIRED_EVENT, handleAuthExpired);
-  }, [location, navigate, queryClient]);
+  }, [navigate, queryClient]);
 
   if (me.isLoading) {
     return (

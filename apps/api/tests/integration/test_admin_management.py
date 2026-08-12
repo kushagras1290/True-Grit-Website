@@ -362,6 +362,64 @@ def test_category_update_rejects_bad_visibility(client: TestClient, db: SQLiteDa
     assert response.status_code == 422
 
 
+def test_diet_tag_create_edit_delete(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    created = client.post("/v1/admin/diet-tags", json={"label": "Keto Friendly"})
+    assert created.status_code == 200
+    tag_id = created.json()["id"]
+    assert any(item["id"] == tag_id for item in client.get("/v1/admin/diet-tags").json()["items"])
+
+    updated = client.patch(f"/v1/admin/diet-tags/{tag_id}", json={"label": "Keto"})
+    assert updated.status_code == 200
+    labels = {item["id"]: item["label"] for item in client.get("/v1/admin/diet-tags").json()["items"]}
+    assert labels[tag_id] == "Keto"
+
+    duplicate = client.post("/v1/admin/diet-tags", json={"label": "Keto Friendly"})
+    assert duplicate.status_code == 409
+
+    deleted = client.delete(f"/v1/admin/diet-tags/{tag_id}")
+    assert deleted.status_code == 200
+    assert tag_id not in {item["id"] for item in client.get("/v1/admin/diet-tags").json()["items"]}
+
+
+def test_certification_create_edit_delete(client: TestClient, db: SQLiteDatabase):
+    as_admin(client, db)
+    created = client.post("/v1/admin/certifications", json={"name": "Fair Trade Certified"})
+    assert created.status_code == 200
+    certification_id = created.json()["id"]
+
+    updated = client.patch(
+        f"/v1/admin/certifications/{certification_id}", json={"name": "Fair Trade"}
+    )
+    assert updated.status_code == 200
+    names = {item["id"]: item["name"] for item in client.get("/v1/admin/certifications").json()["items"]}
+    assert names[certification_id] == "Fair Trade"
+
+    deleted = client.delete(f"/v1/admin/certifications/{certification_id}")
+    assert deleted.status_code == 200
+    remaining = {item["id"] for item in client.get("/v1/admin/certifications").json()["items"]}
+    assert certification_id not in remaining
+
+
+def test_certification_delete_blocked_while_assigned_to_a_product(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    certification_id = client.post(
+        "/v1/admin/certifications", json={"name": "Organic Assigned Test"}
+    ).json()["id"]
+    product_id = client.post(
+        "/v1/admin/products", json={"name": "Cert Assignment Test Product", "productType": "general"}
+    ).json()["id"]
+    patched = client.patch(
+        f"/v1/admin/products/{product_id}", json={"certificationIds": [certification_id]}
+    )
+    assert patched.status_code == 200
+
+    blocked = client.delete(f"/v1/admin/certifications/{certification_id}")
+    assert blocked.status_code == 409
+
+
 # --- Inventory --------------------------------------------------------------
 
 
@@ -1328,6 +1386,7 @@ def test_owner_can_manage_homepage_sections(client: TestClient, db: SQLiteDataba
         "reviews_showcase",
         "promotion_banner",
         "recommendations",
+        "image_banner",
     }
 
     # The three sections Site Control's own editors bind to are undeletable but
@@ -1443,6 +1502,45 @@ def test_unknown_homepage_section_type_is_refused(client: TestClient, db: SQLite
     assert (
         client.post("/v1/admin/homepage/sections", json={"type": "custom_html"}).status_code == 422
     )
+
+
+def test_image_banner_section_add_edit_and_reject_unsafe_href(
+    client: TestClient, db: SQLiteDatabase
+):
+    as_admin(client, db)
+    added = client.post("/v1/admin/homepage/sections", json={"type": "image_banner"})
+    assert added.status_code == 200
+    new_section = added.json()["sections"][-1]
+    assert new_section["type"] == "image_banner"
+    assert new_section["enabled"] is False
+
+    unsafe = client.patch(
+        f"/v1/admin/homepage/sections/{new_section['id']}",
+        json={
+            "props": {
+                "imageUrl": "/motto.png",
+                "imageAlt": "Pure by nature, true by choice",
+                "href": "javascript:alert(1)",
+            }
+        },
+    )
+    assert unsafe.status_code == 422
+
+    saved = client.patch(
+        f"/v1/admin/homepage/sections/{new_section['id']}",
+        json={
+            "props": {
+                "imageUrl": "/motto.png",
+                "imageAlt": "Pure by nature, true by choice",
+                "href": "/shop",
+            }
+        },
+    )
+    assert saved.status_code == 200
+    stored = next(
+        section for section in saved.json()["sections"] if section["id"] == new_section["id"]
+    )
+    assert stored["summary"] == "Pure by nature, true by choice"
     assert client.post("/v1/admin/homepage/sections", json={"type": "hero"}).status_code == 422
 
 

@@ -2,7 +2,7 @@
  * create dialog, draft save, publish workflow and archive. */
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createColumnHelper,
   flexRender,
@@ -12,7 +12,7 @@ import {
   type SortingState,
 } from "@tanstack/react-table";
 import type { AdminProductRow } from "@truegrit/contracts";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Star } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router";
@@ -154,6 +154,10 @@ export function ProductListPage() {
     queryKey: ["admin-products", page, searchQuery],
     queryFn: () =>
       api.products({ limit: PRODUCTS_PAGE_LIMIT, offset, search: searchQuery || undefined }),
+    // Keeps the current page's rows on screen while the next page loads,
+    // instead of the table blanking to a loading skeleton on every click --
+    // pagination without a full-table flash.
+    placeholderData: keepPreviousData,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
   const [creating, setCreating] = useState(false);
@@ -688,6 +692,16 @@ export function ProductEditorPage() {
       toast.error(error instanceof ApiError ? error.message : "Could not delete."),
   });
 
+  const setDefaultVariantMutation = useMutation({
+    mutationFn: (variantId: string) => api.setDefaultVariant(id, variantId),
+    onSuccess: async () => {
+      await invalidate();
+      toast.success("Default variant updated.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not set the default variant."),
+  });
+
   if (isLoading)
     return (
       <p className="text-sm text-ink-muted">
@@ -824,6 +838,9 @@ export function ProductEditorPage() {
                 <Th>
                   <T>Status</T>
                 </Th>
+                <Th>
+                  <T>Default</T>
+                </Th>
                 <Th></Th>
               </tr>
             </thead>
@@ -833,7 +850,7 @@ export function ProductEditorPage() {
                   <Td className="text-ink-muted">
                     <T>No variants yet.</T>
                   </Td>
-                  <Td /> <Td /> <Td /> <Td /> <Td /> <Td />
+                  <Td /> <Td /> <Td /> <Td /> <Td /> <Td /> <Td />
                 </tr>
               ) : (
                 product.variants.map((variant) => (
@@ -845,6 +862,23 @@ export function ProductEditorPage() {
                     <Td>{variant.available}</Td>
                     <Td>
                       <StatusPill status={variant.status} />
+                    </Td>
+                    <Td>
+                      {variant.isDefault ? (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-subtle px-2 py-0.5 text-xs font-medium text-brand">
+                          <Star size={12} aria-hidden fill="currentColor" />
+                          <T>Default</T>
+                        </span>
+                      ) : (
+                        <Button
+                          variant="tertiary"
+                          className="text-xs"
+                          disabled={setDefaultVariantMutation.isPending}
+                          onClick={() => setDefaultVariantMutation.mutate(variant.id)}
+                        >
+                          <T>Set as default</T>
+                        </Button>
+                      )}
                     </Td>
                     <Td className="text-right">
                       <Button variant="secondary" onClick={() => setEditingVariant(variant)}>

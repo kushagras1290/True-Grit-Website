@@ -293,6 +293,53 @@ def test_primary_variant_create_and_update(client: TestClient, db: SQLiteDatabas
     assert variant["listMinor"] == 45900
 
 
+def test_first_variant_is_default_and_can_be_reassigned(client: TestClient, db: SQLiteDatabase):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
+
+    first = client.post(
+        "/v1/admin/products/prd_ta_greens/variants",
+        json={"name": "Snack pack", "sku": "TRG-SPINACH-SNACK", "listMinor": 9900},
+    ).json()["id"]
+    second = client.post(
+        "/v1/admin/products/prd_ta_greens/variants",
+        json={"name": "Bulk pack", "sku": "TRG-SPINACH-BULK", "listMinor": 199900},
+    ).json()["id"]
+
+    detail = client.get("/v1/admin/products/prd_ta_greens").json()
+    defaults = [v for v in detail["variants"] if v["isDefault"]]
+    assert len(defaults) == 1, "exactly one variant must be default at all times"
+    # prd_ta_greens already had a variant before this test ran, so the new
+    # second variant is not it.
+    assert defaults[0]["id"] not in (second,)
+
+    switched = client.post(f"/v1/admin/products/prd_ta_greens/variants/{second}/set-default")
+    assert switched.status_code == 200, switched.text
+    assert switched.json() == {"id": second, "isDefault": True}
+
+    detail = client.get("/v1/admin/products/prd_ta_greens").json()
+    defaults = [v for v in detail["variants"] if v["isDefault"]]
+    assert defaults == [next(v for v in detail["variants"] if v["id"] == second)]
+    assert next(v for v in detail["variants"] if v["id"] == first)["isDefault"] is False
+    # The default variant sorts first, matching what the editor's General
+    # tab and the storefront's initial selection both read as variants[0].
+    assert detail["variants"][0]["id"] == second
+
+
+def test_set_default_variant_requires_it_to_belong_to_the_product(
+    client: TestClient, db: SQLiteDatabase
+):
+    client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
+    other_variant = client.post(
+        "/v1/admin/products/prd_ta_mango/variants",
+        json={"name": "Other product variant", "sku": "TRG-MANGO-OTHER", "listMinor": 29900},
+    ).json()["id"]
+
+    mismatched = client.post(
+        f"/v1/admin/products/prd_ta_greens/variants/{other_variant}/set-default"
+    )
+    assert mismatched.status_code == 404
+
+
 def test_publish_category_writes_audit_and_outbox(client: TestClient, db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
 

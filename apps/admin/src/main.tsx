@@ -52,6 +52,7 @@ import { AdminLogsPage } from "./features/server-logs";
 import { SiteControlPage } from "./features/site-control";
 import { SubmissionDetailPage, SubmissionsListPage } from "./features/submissions";
 import { SubscriptionsListPage } from "./features/subscriptions";
+import { TagsCertificationsPage } from "./features/tags-certifications";
 import { RequireSuperAdmin } from "./lib/permissions";
 
 const queryClient = new QueryClient({
@@ -83,6 +84,7 @@ createRoot(document.getElementById("root")!).render(
                 <Route path="products/:id" element={<ProductEditorPage />} />
                 <Route path="categories" element={<CategoryListPage />} />
                 <Route path="categories/:id" element={<CategoryEditorPage />} />
+                <Route path="tags-certifications" element={<TagsCertificationsPage />} />
                 <Route path="price-adjustments" element={<PriceAdjustmentsPage />} />
                 <Route path="currency-rates" element={<CurrencyRatesPage />} />
                 <Route path="promotions" element={<PromotionsListPage />} />

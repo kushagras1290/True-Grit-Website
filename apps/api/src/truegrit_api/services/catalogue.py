@@ -18,6 +18,7 @@ from truegrit_api.domain.slugs import slugify, validate_slug
 from truegrit_api.errors import ConflictError, NotFoundError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
+from truegrit_api.services.entity_translation import invalidate_stale_auto_translations
 from truegrit_api.services.feature_settings import load_curated_max_items
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
@@ -430,14 +431,23 @@ async def create_variant(
     variant_id = new_id("var")
     price_id = new_id("vpr")
     now = utc_now_iso()
+    # A product's first variant has no sibling to lose the default to, so it
+    # is the default from the moment it exists -- otherwise every new
+    # product would briefly have zero default variants, which the editor's
+    # SKU/price fields and the storefront's initial selection both assume
+    # never happens.
+    existing = await db.fetch_one(
+        "SELECT id FROM product_variants WHERE product_id = ? LIMIT 1", (product_id,)
+    )
+    is_default = 1 if existing is None else 0
 
     await db.batch(
         [
             (
                 "INSERT INTO product_variants"
-                " (id, product_id, sku, name, status, created_at, updated_at)"
-                " VALUES (?, ?, ?, ?, 'active', ?, ?)",
-                (variant_id, product_id, sku, name.strip(), now, now),
+                " (id, product_id, sku, name, status, is_default, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?, 'active', ?, ?, ?)",
+                (variant_id, product_id, sku, name.strip(), is_default, now, now),
             ),
             (
                 "INSERT INTO variant_prices"
@@ -463,6 +473,54 @@ async def create_variant(
         ]
     )
     return variant_id
+
+
+async def set_default_variant(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    product_id: str,
+    variant_id: str,
+) -> None:
+    """Make `variant_id` the one and only default for its product.
+
+    Exactly one variant per product is default at all times (enforced here,
+    not by a schema constraint SQLite can't express across rows), so this
+    always clears every sibling's flag in the same batch as setting this
+    one's -- never just flips one row and trusts the caller to have cleared
+    the rest.
+    """
+    variant = await db.fetch_one(
+        "SELECT id, is_default FROM product_variants WHERE id = ? AND product_id = ?",
+        (variant_id, product_id),
+    )
+    if variant is None:
+        raise NotFoundError("Variant not found.")
+    if variant["is_default"]:
+        return
+    now = utc_now_iso()
+    await db.batch(
+        [
+            (
+                "UPDATE product_variants SET is_default = 0"
+                " WHERE product_id = ? AND id != ?",
+                (product_id, variant_id),
+            ),
+            (
+                "UPDATE product_variants SET is_default = 1 WHERE id = ?",
+                (variant_id,),
+            ),
+            audit_statement(
+                action="variant.set_default",
+                entity_type="variant",
+                entity_id=variant_id,
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                after={"isDefault": True},
+            ),
+        ]
+    )
 
 
 async def update_variant(
@@ -1094,3 +1152,4 @@ async def _apply_update(
             ),
         ]
     )
+    await invalidate_stale_auto_translations(db, entity_type, entity_id, set(updates))

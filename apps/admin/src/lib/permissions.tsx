@@ -6,7 +6,7 @@
  */
 
 import { useQuery } from "@tanstack/react-query";
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import { Navigate } from "react-router";
 
 import { api } from "./api";
@@ -19,7 +19,11 @@ export function useMe() {
 
 export function usePermissions(): ReadonlySet<string> {
   const { data } = useMe();
-  return new Set(data?.permissions ?? []);
+  // Memoized so every consumer (Shell, PermissionGate, ...) gets the same Set
+  // reference across renders instead of a new one each time -- a fresh Set
+  // every render made every prop/effect that depends on it look "changed" on
+  // every re-render, for no reason tied to the actual permission list.
+  return useMemo(() => new Set(data?.permissions ?? []), [data?.permissions]);
 }
 
 export function PermissionGate({

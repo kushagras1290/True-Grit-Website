@@ -367,7 +367,10 @@ export function Pagination({
 }) {
   if (page === 1 && rowCount < limit) return null;
   return (
-    <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
+    // mb-16 keeps "Next" clear of the floating help-assistant launcher
+    // (fixed bottom-5 right-5 in Shell) -- without it, the two overlap at
+    // the bottom of a scrolled page and the launcher swallows the click.
+    <div className="mt-6 mb-16 flex items-center justify-between border-t border-line pt-4">
       <Button
         type="button"
         variant="secondary"

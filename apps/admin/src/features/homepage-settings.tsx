@@ -1104,6 +1104,7 @@ const SECTION_EDITORS = new Set([
   "reviews_showcase",
   "promotion_banner",
   "recommendations",
+  "image_banner",
 ]);
 
 type Props = Record<string, unknown>;
@@ -1156,6 +1157,8 @@ function SectionContentEditor({
       return <PromotionBannerEditor section={section} saving={saving} onSave={onSave} />;
     case "recommendations":
       return <RecommendationsEditor section={section} saving={saving} onSave={onSave} />;
+    case "image_banner":
+      return <ImageBannerEditor section={section} saving={saving} onSave={onSave} />;
     default:
       return (
         <p className="text-sm text-ink-muted">
@@ -1619,6 +1622,100 @@ function NewsletterEditor({
         saving={saving}
         hint="Say how often you will write and that unsubscribing is easy."
       />
+    </form>
+  );
+}
+
+/** A single full-width graphic -- a brand statement or campaign lockup that
+ *  is itself the content, rather than a heading/body pair like every other
+ *  section here. Optionally links somewhere. */
+function ImageBannerEditor({
+  section,
+  saving,
+  onSave,
+}: {
+  section: HomepageSection;
+  saving: boolean;
+  onSave: (props: Props) => void;
+}) {
+  const toast = useToast();
+  const [imageUrl, setImageUrl] = useState(() => readString(section.props, "imageUrl"));
+  const [imageAlt, setImageAlt] = useState(() => readString(section.props, "imageAlt"));
+  const [href, setHref] = useState(() => readString(section.props, "href"));
+
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => api.uploadImage(file),
+    onSuccess: (result) => {
+      setImageUrl(result.url);
+      toast.success("Image uploaded. Save the section to apply it.");
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not upload the image."),
+  });
+
+  return (
+    <form
+      className="space-y-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (!imageUrl.trim() || !imageAlt.trim()) {
+          toast.error("The banner needs an image and alt text describing it.");
+          return;
+        }
+        onSave({
+          imageUrl: imageUrl.trim(),
+          imageAlt: imageAlt.trim(),
+          href: href.trim() || null,
+        });
+      }}
+    >
+      <Field label="Image" htmlFor={`image-banner-upload-${section.id}`}>
+        <Input
+          id={`image-banner-upload-${section.id}`}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          className="mb-2"
+          disabled={uploadMutation.isPending || saving}
+          onChange={(event) => {
+            const file = event.currentTarget.files?.[0];
+            if (file) uploadMutation.mutate(file);
+            event.currentTarget.value = "";
+          }}
+        />
+        <Input
+          value={imageUrl}
+          placeholder={uploadMutation.isPending ? "Uploading image..." : "Image URL"}
+          onChange={(event) => setImageUrl(event.target.value)}
+        />
+        {imageUrl ? (
+          <div className="mt-3">
+            <ImagePreview
+              src={imageUrl}
+              alt={imageAlt}
+              label="Motto banner"
+              className="h-24 w-full max-w-md"
+            />
+          </div>
+        ) : null}
+      </Field>
+      <Field label="Alt text" htmlFor={`image-banner-alt-${section.id}`}>
+        <Input
+          id={`image-banner-alt-${section.id}`}
+          value={imageAlt}
+          maxLength={200}
+          onChange={(event) => setImageAlt(event.target.value)}
+        />
+      </Field>
+      <Field label="Link (optional)" htmlFor={`image-banner-href-${section.id}`}>
+        <Input
+          id={`image-banner-href-${section.id}`}
+          placeholder="/shop"
+          value={href}
+          maxLength={512}
+          onChange={(event) => setHref(event.target.value)}
+        />
+      </Field>
+      <SaveRow saving={saving} hint="Leave the link blank for a plain, unclickable image." />
     </form>
   );
 }
