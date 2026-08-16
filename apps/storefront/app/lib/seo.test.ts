@@ -5,6 +5,8 @@ import {
   absoluteSiteUrl,
   breadcrumbJsonLd,
   productJsonLd,
+  recipeJsonLd,
+  recipeStepAnchor,
   seoMeta,
 } from "./seo";
 
@@ -95,5 +97,91 @@ describe("seoMeta", () => {
 
   it("noindexes when no SEO document exists", () => {
     expect(seoMeta(null)).toContainEqual({ name: "robots", content: "noindex" });
+  });
+});
+
+describe("recipeJsonLd", () => {
+  const base = {
+    title: "Sattu Paratha",
+    excerpt: "Roasted gram flour stuffed flatbread.",
+    prepMinutes: 20,
+    cookMinutes: 15,
+    servings: 4,
+    ingredients: [{ label: "black gram sattu", quantityText: "200 g" }],
+    steps: [
+      "Mix the sattu with onion and spices. Rub it between your palms until it holds together loosely.",
+      "Roll and cook on a hot tawa.",
+    ],
+    canonicalPath: "/recipes/sattu-paratha",
+  };
+
+  it("reports a total time Google does not have to derive", () => {
+    const recipe = recipeJsonLd(base)["script:ld+json"];
+    expect(recipe).toMatchObject({
+      prepTime: "PT20M",
+      cookTime: "PT15M",
+      totalTime: "PT35M",
+      author: { "@type": "Organization", name: "True Grit" },
+    });
+  });
+
+  it("states a cuisine only when the recipe carries one", () => {
+    expect(recipeJsonLd({ ...base, cuisine: "Indian" })["script:ld+json"]).toMatchObject({
+      recipeCuisine: "Indian",
+    });
+    expect(recipeJsonLd({ ...base, cuisine: "Italian" })["script:ld+json"]).toMatchObject({
+      recipeCuisine: "Italian",
+    });
+    // No site-wide fallback: an unset cuisine must not become "Indian" on a
+    // recipe written for another market.
+    expect(recipeJsonLd(base)["script:ld+json"]).not.toHaveProperty("recipeCuisine");
+    expect(recipeJsonLd({ ...base, cuisine: null })["script:ld+json"]).not.toHaveProperty(
+      "recipeCuisine",
+    );
+    expect(recipeJsonLd({ ...base, cuisine: "  " })["script:ld+json"]).not.toHaveProperty(
+      "recipeCuisine",
+    );
+  });
+
+  it("gives every step a resolvable anchor and names only the ones worth naming", () => {
+    const recipe = recipeJsonLd(base)["script:ld+json"] as {
+      recipeInstructions: Array<{ name?: string; text: string; url: string }>;
+    };
+    expect(recipe.recipeInstructions[0]).toMatchObject({
+      name: "Mix the sattu with onion and spices.",
+      url: "https://www.truegritin.com/recipes/sattu-paratha#step-1",
+    });
+    // Single-sentence step: a `name` here would merely restate `text`.
+    expect(recipe.recipeInstructions[1]).not.toHaveProperty("name");
+    expect(recipe.recipeInstructions[1]).toMatchObject({
+      url: "https://www.truegritin.com/recipes/sattu-paratha#step-2",
+    });
+    expect(recipe.recipeInstructions.map((_, index) => recipeStepAnchor(index))).toEqual([
+      "step-1",
+      "step-2",
+    ]);
+  });
+
+  it("prefers editor keywords over dietary tags, and omits the field when neither exists", () => {
+    expect(
+      recipeJsonLd({ ...base, keywords: "sattu, paratha", dietaryTags: ["vegetarian"] })[
+        "script:ld+json"
+      ],
+    ).toMatchObject({ keywords: "sattu, paratha" });
+
+    expect(
+      recipeJsonLd({ ...base, keywords: "   ", dietaryTags: ["vegetarian", "high protein"] })[
+        "script:ld+json"
+      ],
+    ).toMatchObject({ keywords: "vegetarian, high protein" });
+
+    expect(recipeJsonLd(base)["script:ld+json"]).not.toHaveProperty("keywords");
+  });
+
+  it("never invents ratings, nutrition or video it has no data for", () => {
+    const recipe = recipeJsonLd(base)["script:ld+json"];
+    expect(recipe).not.toHaveProperty("aggregateRating");
+    expect(recipe).not.toHaveProperty("nutrition");
+    expect(recipe).not.toHaveProperty("video");
   });
 });

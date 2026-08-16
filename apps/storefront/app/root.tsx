@@ -34,6 +34,7 @@ import { LocaleProvider, useLocaleContext } from "./lib/i18n/context";
 import { DEFAULT_LOCALE, LOCALES, localeDirection } from "./lib/i18n/locales";
 import { messagesFor } from "./lib/i18n/messages.server";
 import { resolveLocale } from "./lib/i18n/resolve.server";
+import { absoluteSiteUrl } from "./lib/seo";
 import { DEFAULT_SITE_SETTINGS, SiteSettingsProvider } from "./lib/site-settings";
 import { resolveThemeTokens, themeStyleSheet } from "./lib/theme";
 import { LocalizedText } from "./lib/i18n/localized-text";
@@ -142,8 +143,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* Every language is the same URL with a different cookie, so there is
             no per-locale href to advertise; `x-default` tells crawlers the
             canonical is language-neutral rather than leaving them to guess that
-            each visit's language is a separate page. */}
-        <link rel="alternate" hrefLang="x-default" href="/" />
+            each visit's language is a separate page. Absolute by necessity:
+            Google discards `hreflang` values that are not fully qualified, so
+            the root-relative form this used to emit was silently ignored. */}
+        <link rel="alternate" hrefLang="x-default" href={absoluteSiteUrl(pathname)} />
         <meta name="msvalidate.01" content="B2F5E55D2DC74BFBF0122FDE2BA08777" />
         <Meta />
         <Links />

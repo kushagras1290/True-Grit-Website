@@ -19,6 +19,7 @@
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
+    "test:scripts": "node --test \"scripts/**/*.test.mjs\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "db:validate": "python3 scripts/validate_migrations.py",

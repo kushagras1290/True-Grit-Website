@@ -17,7 +17,7 @@ import { resolveCountry } from "../lib/geo.server";
 import { resolveLocale } from "../lib/i18n/resolve.server";
 import { mediaUrl } from "../lib/media";
 import { productEffectivePrice } from "../lib/pricing";
-import { breadcrumbJsonLd, recipeJsonLd, seoMeta } from "../lib/seo";
+import { breadcrumbJsonLd, recipeJsonLd, recipeStepAnchor, seoMeta } from "../lib/seo";
 import { LocalizedText, useLocalizeFormat } from "../lib/i18n/localized-text";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
@@ -55,6 +55,9 @@ export function meta({ data: loaderData, matches }: Route.MetaArgs) {
       steps: loaderData.recipe.steps,
       canonicalPath: loaderData.recipe.seo.canonicalPath,
       imageUrl: mediaUrl(loaderData.recipe.heroImageUrl) ?? undefined,
+      dietaryTags: loaderData.recipe.dietaryTags,
+      keywords: loaderData.recipe.seo.keywords,
+      cuisine: loaderData.recipe.cuisine,
     }),
     breadcrumbJsonLd([
       { name: "Home", path: "/" },
@@ -176,7 +179,10 @@ export default function RecipePage({ loaderData }: Route.ComponentProps) {
             </h2>
             <ol className="mt-3 space-y-5">
               {recipe.steps.map((step, index) => (
-                <li key={index} className="flex gap-4">
+                // `id` is the target of the `HowToStep.url` emitted in the
+                // recipe JSON-LD, so a step deep link from search results
+                // scrolls to the instruction it names.
+                <li key={index} id={recipeStepAnchor(index)} className="flex gap-4">
                   <span aria-hidden className="font-display text-2xl text-accent">
                     {index + 1}
                   </span>

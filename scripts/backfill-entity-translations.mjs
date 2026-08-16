@@ -31,8 +31,17 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
+import { TRANSLATION_ISSUES, inspectTranslation } from "./lib/translation-quality.mjs";
+
 const CACHE_DIR = path.resolve("node_modules/.cache/truegrit-entity-i18n");
 const SQL_DIR = path.resolve("node_modules/.cache/truegrit-entity-sql");
+const TOKEN_LOCK = path.resolve("node_modules/.cache/truegrit-cloudflare-token.lock");
+const WRANGLER_CONFIG =
+  process.env.TG_WRANGLER_CONFIG ??
+  path.join(
+    process.env.XDG_CONFIG_HOME ?? path.join(process.env.APPDATA ?? "", "xdg.config"),
+    ".wrangler/config/default.toml",
+  );
 // The definitive language list; the storefront's own locales.ts is a
 // re-export shim with no literal definitions of its own.
 const LOCALES_FILE = path.resolve("packages/i18n/src/locales.ts");
@@ -54,21 +63,49 @@ const TRANSLATION_CONCURRENCY = 8;
 /** Google's endpoint truncates long payloads; this is the batch budget the
  *  storefront catalogue generator already proved out. */
 const BATCH_CHARACTER_BUDGET = 1200;
+/** Live M2M100 probes preserve every marker at 12 items / roughly 500 source
+ * characters. Larger payloads can hit the model's output ceiling and are
+ * rejected by our strict parser, so keep this independently conservative. */
+const M2M_BATCH_CHARACTER_BUDGET = Number(process.env.TG_CF_M2M_BATCH_CHARS ?? 500);
+const M2M_BATCH_ITEM_LIMIT = Number(process.env.TG_CF_M2M_BATCH_ITEMS ?? 12);
 const CLOUDFLARE_BATCH_POLL_MS = Number(process.env.TG_CF_BATCH_POLL_MS ?? 10_000);
 const CLOUDFLARE_SYNC_CONCURRENCY = Number(process.env.TG_CF_SYNC_CONCURRENCY ?? 4);
 const CLOUDFLARE_TRANSLATION_MODE = process.env.TG_CF_TRANSLATION_MODE ?? "sync";
+const LLM_BATCH_CHARACTER_BUDGET = Number(process.env.TG_CF_LLM_BATCH_CHARS ?? 3_500);
+const LLM_BATCH_ITEM_LIMIT = Number(process.env.TG_CF_LLM_BATCH_ITEMS ?? 20);
 const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID ?? "";
 let cloudflareApiToken = process.env.CLOUDFLARE_API_TOKEN ?? "";
 const CLOUDFLARE_TRANSLATION_MODEL = "@cf/meta/m2m100-1.2b";
 const CLOUDFLARE_LLM_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+const CLOUDFLARE_LLM_MODEL_BY_LOCALE = new Map([
+  ["sat", "@cf/meta/llama-4-scout-17b-16e-instruct"],
+  ["mni", "@cf/meta/llama-4-scout-17b-16e-instruct"],
+  ["brx", "@cf/google/gemma-4-26b-a4b-it"],
+]);
 const CLOUDFLARE_BATCH_URL = (model) =>
   `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/ai/run/${model}?queueRequest=true`;
 
-/** M2M100 covers most advertised locales. These codes were probed against the
- * live model on 2026-08-09 and rejected by the model itself, so they use the
- * multilingual LLM batch path below instead of being silently mapped to a
- * different language. */
-const CLOUDFLARE_LLM_LOCALES = new Map([
+/**
+ * Set `TG_CF_USE_M2M=1` to restore the old `@cf/meta/m2m100-1.2b` path.
+ *
+ * It is off by default because that model is what put "रसोई के लिए रसोई के लिए
+ * रसोई" ("kitchen for kitchen for kitchen"), "_KKathiya ग्रीनहाउस" and
+ * "डैडी - टॉयलेट" ("Daddy - Toilet", for Daliya) into production. M2M100-1.2B
+ * is a small 2020-era translation model: it loops its decoder on short
+ * marketing copy, chews up the shield placeholders that protect brand names,
+ * and picks the wrong sense of a noun with no context to correct it. Every
+ * locale now goes through the instruction-following model instead, which takes
+ * a glossary and a do-not-translate list.
+ */
+const USE_M2M_TRANSLATION = process.env.TG_CF_USE_M2M === "1";
+
+/**
+ * Hand-tuned language descriptions for locales where the bare English name is
+ * not a precise enough instruction -- a script has to be named, or a
+ * neighbouring language has to be ruled out explicitly. Every other locale
+ * uses its `englishName` from `packages/i18n/src/locales.ts`.
+ */
+const LLM_LANGUAGE_OVERRIDES = new Map([
   ["as", "Assamese"],
   ["kok", "Konkani"],
   ["sat", "Santali (Ol Chiki script)"],
@@ -77,7 +114,7 @@ const CLOUDFLARE_LLM_LOCALES = new Map([
   ["doi", "Dogri"],
   ["mai", "Maithili"],
   ["sa", "Sanskrit"],
-  ["brx", "Bodo"],
+  ["brx", "standard Bodo in Devanagari script (never Hindi, Nepali, Bengali, or Assamese)"],
   ["te", "Telugu"],
   ["tk", "Turkmen"],
   ["mni", "Manipuri (Meitei Mayek script)"],
@@ -88,6 +125,22 @@ const CLOUDFLARE_LLM_LOCALES = new Map([
   ["ny", "Chichewa"],
   ["ug", "Uyghur"],
 ]);
+/**
+ * Sense hints for the Indian food vocabulary this catalogue is built from.
+ *
+ * The failures these prevent are not grammar errors but wrong-sense picks:
+ * "Kathiya Wheat Flour" came back as "_KKathiya greenhouse" and "Daliya" as
+ * "डैडी - टॉयलेट" ("Daddy - Toilet"). A bare noun carries no context, so the
+ * model guesses; naming what each term actually is removes the guess.
+ */
+const GLOSSARY_RULE =
+  "These are Indian foods: use the established name in the target language, or " +
+  "transliterate faithfully, and never substitute an unrelated word. Daliya is cracked " +
+  "wheat, Sattu is roasted gram flour, Besan is gram flour, Atta is wholemeal wheat flour, " +
+  "Suji is semolina, Masoor is red lentil, Urad is black gram, Til is sesame, Seviyan is " +
+  "vermicelli, Achaar is pickle, and Ladoo, Chikki, Paratha, Chilla, Ghugni, Upma, Bhakri " +
+  "and Halwa are dish names. ";
+
 const CLOUDFLARE_LOCALE = new Map([
   ["zh-Hans", "zh"],
   ["zh-Hant", "zh"],
@@ -198,8 +251,7 @@ const GOOGLE_LOCALE = new Map([
   ["zh-Hant", "zh-TW"],
   ["nb", "no"],
   ["ks", "ur"],
-  ["brx", "hi"],
-  ["mni", "bn"],
+  ["mni", "mni-Mtei"],
 ]);
 
 function parseArguments(argv) {
@@ -248,9 +300,25 @@ function parseArguments(argv) {
  *  the language list from drifting into a second hand-maintained copy. */
 function localeDefinitions() {
   const source = fs.readFileSync(LOCALES_FILE, "utf8");
-  return [...source.matchAll(/\{\s*code:\s*"([^"]+)"[^}]*?group:\s*"(indian|world)"/gs)].map(
-    (match) => ({ code: match[1], group: match[2] }),
-  );
+  return [
+    ...source.matchAll(
+      /\{\s*code:\s*"([^"]+)"[^}]*?englishName:\s*"([^"]+)"[^}]*?group:\s*"(indian|world)"/gs,
+    ),
+  ].map((match) => ({ code: match[1], englishName: match[2], group: match[3] }));
+}
+
+/** Cached so the locales file is parsed once rather than per translated batch. */
+const ENGLISH_NAME_BY_LOCALE = new Map(
+  localeDefinitions().map((locale) => [locale.code, locale.englishName]),
+);
+
+/**
+ * The language to instruct the model in. Always resolves to something, which is
+ * what makes the LLM path usable for every locale rather than the handful that
+ * M2M100 refused outright.
+ */
+function llmLanguageFor(locale) {
+  return LLM_LANGUAGE_OVERRIDES.get(locale) ?? ENGLISH_NAME_BY_LOCALE.get(locale) ?? locale;
 }
 
 function resolveLocales(selector) {
@@ -282,10 +350,7 @@ function resolveLocales(selector) {
 const WRANGLER = path.resolve("node_modules/wrangler/bin/wrangler.js");
 
 function wrangler(args, maxBuffer) {
-  return execFileSync(process.execPath, [WRANGLER, ...args], {
-    encoding: "utf8",
-    maxBuffer,
-  });
+  return execFileSync(process.execPath, [WRANGLER, ...args], { encoding: "utf8", maxBuffer });
 }
 
 let runtimeOptions;
@@ -312,28 +377,53 @@ function d1Query(sql) {
   return parsed[0]?.results ?? [];
 }
 
-function d1ExecuteFile(file) {
-  wrangler([...d1Args(), "--yes", "--file", file], 64 * 1024 * 1024);
+async function d1ExecuteFile(file) {
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      return wrangler([...d1Args(), "--yes", "--file", file], 64 * 1024 * 1024);
+    } catch (error) {
+      if (attempt >= 6) throw error;
+      await wait(Math.min(15_000, 1_500 * 2 ** (attempt - 1)));
+    }
+  }
 }
 
 const sqlText = (value) => `'${String(value).replaceAll("'", "''")}'`;
 
 function shield(source) {
   return source
-    .replaceAll("True Grit", "__TGBRAND__")
-    .replaceAll("Vikas Farms", "__VIKASFARMS__")
-    .replaceAll("Kathiya", "__KATHIYA__")
-    .replaceAll("Banshi", "__BANSHI__")
-    .replaceAll("Paigambari", "__PAIGAMBARI__");
+    .replaceAll("True Grit", "[[[9001]]]")
+    .replaceAll("Vikas Farms", "[[[9002]]]")
+    .replaceAll("Kathiya", "[[[9003]]]")
+    .replaceAll("Banshi", "[[[9004]]]")
+    .replaceAll("Paigambari", "[[[9005]]]");
 }
 
 function unshield(source) {
+  const objectWrapped = /^\{"k\d+":\s*"([\s\S]*)\}$/.exec(source.trim());
+  if (objectWrapped) source = objectWrapped[1].replace(/"$/, "");
   return source
-    .replaceAll("__TGBRAND__", "True Grit")
-    .replaceAll("__VIKASFARMS__", "Vikas Farms")
-    .replaceAll("__KATHIYA__", "Kathiya")
-    .replaceAll("__BANSHI__", "Banshi")
-    .replaceAll("__PAIGAMBARI__", "Paigambari")
+    .replace(/tgbrand/gi, "True Grit")
+    .replace(/_+\s*(?:tgbrand|true\s*grit)\s*_+/gi, "True Grit")
+    .replace(/_+\s*(true\s*grit)\b|\b(true\s*grit)\s*_+/gi, "True Grit")
+    .replace(/_+\s*vikas\s*farms\s*_+/gi, "Vikas Farms")
+    .replace(/_+\s*(vikas\s*farms)\b|\b(vikas\s*farms)\s*_+/gi, "Vikas Farms")
+    .replace(/_+\s*(?:kathiya|khiatya|kathija|kathhiya|athiya)\s*_+/gi, "Kathiya")
+    .replace(/_+\s*(kathiya|khiatya|kathija|kathhiya|athiya)\b/gi, "Kathiya")
+    .replace(/_+\s*banshi\s*_+/gi, "Banshi")
+    .replace(/_+\s*banshi\b/gi, "Banshi")
+    .replace(/_+\s*(?:paigambari|pagambari|paygambari)\s*_+/gi, "Paigambari")
+    .replace(/_+\s*(paigambari|pagambari|paygambari)\b/gi, "Paigambari")
+    .replace(/\[{2,4}9001\]{2,4}/g, "True Grit")
+    .replace(/\[{2,4}9002\]{2,4}/g, "Vikas Farms")
+    .replace(/\[{2,4}9003\]{2,4}/g, "Kathiya")
+    .replace(/\[{2,4}9004\]{2,4}/g, "Banshi")
+    .replace(/\[{2,4}9005\]{2,4}/g, "Paigambari")
+    .replace(/\[{2,4}꯹꯰꯰꯱\]{2,4}/g, "True Grit")
+    .replace(/\[{2,4}꯹꯰꯰꯲\]{2,4}/g, "Vikas Farms")
+    .replace(/\[{2,4}꯹꯰꯰꯳\]{2,4}/g, "Kathiya")
+    .replace(/\[{2,4}꯹꯰꯰꯴\]{2,4}/g, "Banshi")
+    .replace(/\[{2,4}꯹꯰꯰꯵\]{2,4}/g, "Paigambari")
     .trim();
 }
 
@@ -437,11 +527,92 @@ function cacheFileFor(locale) {
   return path.join(CACHE_DIR, `${locale}.json`);
 }
 
+/**
+ * Rejections from the quality gate, keyed by locale, for the end-of-run report.
+ * Kept rather than merely counted so a bad locale or a bad model can be
+ * recognised from the output instead of by reading the database afterwards.
+ */
+const qualityRejects = new Map();
+
+/**
+ * Issues that are conclusive from the translated value alone, with no English
+ * source to compare against. Used to evict already-poisoned cache entries,
+ * where only the hash of the source was kept.
+ */
+const SOURCELESS_ISSUES = new Set([
+  TRANSLATION_ISSUES.EMPTY,
+  TRANSLATION_ISSUES.PLACEHOLDER_LEAK,
+  TRANSLATION_ISSUES.BRAND_MANGLED,
+  TRANSLATION_ISSUES.REPETITION,
+]);
+
+/**
+ * Stores a translation only if it survives the mechanical quality gate.
+ *
+ * A rejected value is deliberately not cached at all: `translatedEntityFields`
+ * falls back to the English source on a cache miss, so the reader gets clean
+ * English instead of "kitchen for kitchen for kitchen", and the next run
+ * retries the value rather than treating the damage as done.
+ */
+function acceptTranslation(cache, locale, english, translated) {
+  const { ok, issues } = inspectTranslation({ source: english, translated, locale });
+  if (ok) {
+    cache[hash(english)] = translated;
+    return true;
+  }
+  const rejects = qualityRejects.get(locale) ?? [];
+  rejects.push({ english, translated, issues });
+  qualityRejects.set(locale, rejects);
+  return false;
+}
+
+/** Prints what the gate threw away, loudest offender first. */
+function reportQualityRejects() {
+  if (qualityRejects.size === 0) return;
+  process.stdout.write("\nQuality gate rejections (left in English, retried next run):\n");
+  const byLocale = [...qualityRejects.entries()].sort((a, b) => b[1].length - a[1].length);
+  for (const [locale, rejects] of byLocale) {
+    const counts = new Map();
+    for (const reject of rejects) {
+      for (const issue of reject.issues) counts.set(issue, (counts.get(issue) ?? 0) + 1);
+    }
+    const breakdown = [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([issue, n]) => `${issue}=${n}`)
+      .join(" ");
+    process.stdout.write(`  ${locale}: ${rejects.length} rejected (${breakdown})\n`);
+    for (const reject of rejects.slice(0, 3)) {
+      process.stdout.write(
+        `      ${JSON.stringify(reject.english)} -> ${JSON.stringify(reject.translated)}\n`,
+      );
+    }
+  }
+}
+
 function loadCache(locale) {
   const file = cacheFileFor(locale);
   if (!fs.existsSync(file)) return {};
   try {
-    return JSON.parse(fs.readFileSync(file, "utf8"));
+    const cache = JSON.parse(fs.readFileSync(file, "utf8"));
+    let changed = false;
+    for (const [key, value] of Object.entries(cache)) {
+      if (typeof value !== "string") continue;
+      const normalized = unshield(value);
+      // Caches written before the quality gate existed hold M2M100 damage that
+      // `unshield` cannot repair. Evicting here means a re-run regenerates the
+      // value instead of replaying the corruption straight back into D1.
+      const { issues } = inspectTranslation({ source: "", translated: normalized, locale });
+      if (issues.some((issue) => SOURCELESS_ISSUES.has(issue))) {
+        delete cache[key];
+        changed = true;
+        continue;
+      }
+      if (normalized === value) continue;
+      cache[key] = normalized;
+      changed = true;
+    }
+    if (changed) fs.writeFileSync(file, JSON.stringify(cache));
+    return cache;
   } catch {
     return {};
   }
@@ -449,17 +620,56 @@ function loadCache(locale) {
 
 const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
+function configuredCloudflareToken() {
+  if (!fs.existsSync(WRANGLER_CONFIG)) return "";
+  const match = /oauth_token\s*=\s*"([^"]+)"/.exec(fs.readFileSync(WRANGLER_CONFIG, "utf8"));
+  return match?.[1] ?? "";
+}
+
+function waitSync(milliseconds) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds);
+}
+
 function refreshCloudflareToken() {
-  const output = execFileSync(process.execPath, [WRANGLER, "auth", "token"], {
-    encoding: "utf8",
-    maxBuffer: 1024 * 1024,
-  });
-  const token = output
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .findLast((line) => /^[A-Za-z0-9_.-]{40,}$/.test(line));
-  if (!token) throw new Error("Wrangler did not return a refreshed Cloudflare token");
-  cloudflareApiToken = token;
+  const reuseConfiguredToken = () => {
+    const configured = configuredCloudflareToken();
+    if (!configured || configured === cloudflareApiToken) return false;
+    cloudflareApiToken = configured;
+    return true;
+  };
+  if (reuseConfiguredToken()) return;
+
+  let lock;
+  for (;;) {
+    try {
+      lock = fs.openSync(TOKEN_LOCK, "wx");
+      break;
+    } catch (error) {
+      if (error?.code !== "EEXIST") throw error;
+      if (reuseConfiguredToken()) return;
+      const age = Date.now() - fs.statSync(TOKEN_LOCK).mtimeMs;
+      if (age > 180_000) fs.rmSync(TOKEN_LOCK, { force: true });
+      else waitSync(1_000);
+    }
+  }
+
+  try {
+    if (reuseConfiguredToken()) return;
+    const output = execFileSync(process.execPath, [WRANGLER, "auth", "token"], {
+      encoding: "utf8",
+      maxBuffer: 1024 * 1024,
+      timeout: 120_000,
+    });
+    const token = output
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .findLast((line) => /^[A-Za-z0-9_.-]{40,}$/.test(line));
+    if (!token) throw new Error("Wrangler did not return a refreshed Cloudflare token");
+    cloudflareApiToken = token;
+  } finally {
+    fs.closeSync(lock);
+    fs.rmSync(TOKEN_LOCK, { force: true });
+  }
 }
 
 async function cloudflareRequest(model, input, attempt = 1) {
@@ -509,7 +719,7 @@ async function cloudflareSyncRequest(model, input, attempt = 1) {
             "content-type": "application/json",
           },
           body: JSON.stringify(input),
-          signal: AbortSignal.timeout(30_000),
+          signal: AbortSignal.timeout(model === CLOUDFLARE_TRANSLATION_MODEL ? 30_000 : 120_000),
         },
       );
       const payload = await response.json();
@@ -531,6 +741,7 @@ async function cloudflareSyncRequest(model, input, attempt = 1) {
       return payload.result;
     } catch (error) {
       if (String(error).includes("Cloudflare AI ")) throw error;
+      if (model !== CLOUDFLARE_TRANSLATION_MODEL && currentAttempt >= 2) throw error;
       await wait(Math.min(30_000, 750 * 2 ** Math.min(currentAttempt, 5)) + Math.random() * 500);
     }
   }
@@ -555,11 +766,21 @@ async function cloudflareBatch(model, requests, locale) {
   const queued = await cloudflareRequest(model, { requests });
   if (!queued.request_id) throw new Error(`${locale}: Cloudflare AI returned no request_id`);
   process.stdout.write(`${locale}: queued Cloudflare batch ${queued.request_id}\n`);
+  let propagationRetries = 0;
   for (;;) {
     await wait(CLOUDFLARE_BATCH_POLL_MS);
-    const result = await cloudflareRequest(model, {
-      request_id: queued.request_id,
-    });
+    let result;
+    try {
+      result = await cloudflareRequest(model, { request_id: queued.request_id });
+    } catch (error) {
+      // Newly queued jobs can briefly return 5504 before every queue replica
+      // can see the request. Treat that propagation window as queued state.
+      if (String(error).includes("Request not found in queue") && propagationRetries < 12) {
+        propagationRetries += 1;
+        continue;
+      }
+      throw error;
+    }
     if (Array.isArray(result.responses)) return result.responses;
     if (Array.isArray(result.results)) {
       return result.results.map((entry) => ({
@@ -594,7 +815,10 @@ function llmBatches(values) {
   let size = 0;
   for (const value of values) {
     const cost = value.length + 8;
-    if (current.length > 0 && (current.length >= 20 || size + cost > 3_500)) {
+    if (
+      current.length > 0 &&
+      (current.length >= LLM_BATCH_ITEM_LIMIT || size + cost > LLM_BATCH_CHARACTER_BUDGET)
+    ) {
       batches.push(current);
       current = [];
       size = 0;
@@ -606,14 +830,99 @@ function llmBatches(values) {
   return batches;
 }
 
+function m2mBatches(values) {
+  const batches = [];
+  let current = [];
+  let size = 0;
+  for (const value of values) {
+    const cost = value.length + 32;
+    if (
+      current.length > 0 &&
+      (current.length >= M2M_BATCH_ITEM_LIMIT || size + cost > M2M_BATCH_CHARACTER_BUDGET)
+    ) {
+      batches.push(current);
+      current = [];
+      size = 0;
+    }
+    current.push(value);
+    size += cost;
+  }
+  if (current.length > 0) batches.push(current);
+  return batches;
+}
+
+/**
+ * M2M100 accepts one text value per request, but a catalogue locale contains
+ * more than two thousand small, independent strings.  Packing a bounded set
+ * behind stable XML-like markers reduces request overhead dramatically.  The
+ * parser is deliberately strict: if the model drops, duplicates, or reorders
+ * any marker, the caller retries that batch one string at a time.
+ */
+function parseMarkedTranslations(text, expected) {
+  if (typeof text !== "string") throw new Error("M2M100 returned no translated text");
+  const matches = [...text.matchAll(/<x(\d+)>/g)];
+  if (matches.length !== expected) throw new Error("M2M100 marker count mismatch");
+  const translations = [];
+  for (let index = 0; index < matches.length; index += 1) {
+    if (Number(matches[index][1]) !== index) throw new Error("M2M100 marker order mismatch");
+    const start = matches[index].index + matches[index][0].length;
+    const end = matches[index + 1]?.index ?? text.length;
+    const translated = text.slice(start, end).trim();
+    if (!translated) throw new Error("M2M100 returned an empty marked translation");
+    translations.push(unshield(translated));
+  }
+  return translations;
+}
+
+async function translateM2mBatch(locale, batch) {
+  const target = CLOUDFLARE_LOCALE.get(locale) ?? locale;
+  if (batch.length === 1) {
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const result = await cloudflareSyncRequest(CLOUDFLARE_TRANSLATION_MODEL, {
+        text: shield(batch[0]),
+        source_lang: "en",
+        target_lang: target,
+      });
+      const translated = result?.translated_text;
+      if (typeof translated === "string" && translated.trim()) {
+        return [unshield(translated)];
+      }
+    }
+    // Brand-only and punctuation-only values can legitimately produce no
+    // model tokens. They are already correct in every locale.
+    return [batch[0]];
+  }
+
+  const marked = batch.map((english, index) => `<x${index}> ${shield(english)}`).join("\n");
+  const result = await cloudflareSyncRequest(CLOUDFLARE_TRANSLATION_MODEL, {
+    text: marked,
+    source_lang: "en",
+    target_lang: target,
+  });
+  try {
+    return parseMarkedTranslations(result?.translated_text, batch.length);
+  } catch {
+    const translations = [];
+    for (const english of batch) translations.push(...(await translateM2mBatch(locale, [english])));
+    return translations;
+  }
+}
+
 function parseLlmTranslations(response, expected, locale, index) {
-  const text = response?.result?.response ?? response?.response;
-  if (typeof text !== "string") {
+  const raw =
+    response?.result?.response ??
+    response?.response ??
+    response?.result?.choices?.[0]?.message?.content ??
+    response?.choices?.[0]?.message?.content;
+  if (!raw || (typeof raw !== "string" && typeof raw !== "object")) {
     throw new Error(`${locale}: LLM batch ${index} returned no text`);
   }
-  const match = /\{[\s\S]*\}/.exec(text);
-  if (!match) throw new Error(`${locale}: LLM batch ${index} returned no JSON object`);
-  const parsed = JSON.parse(match[0]);
+  let parsed = raw;
+  if (typeof raw === "string") {
+    const match = /\{[\s\S]*\}/.exec(raw);
+    if (!match) throw new Error(`${locale}: LLM batch ${index} returned no JSON object`);
+    parsed = JSON.parse(match[0]);
+  }
   if (!Array.isArray(parsed.translations) || parsed.translations.length !== expected) {
     throw new Error(
       `${locale}: LLM batch ${index} returned ${parsed.translations?.length ?? 0}/${expected} strings`,
@@ -623,30 +932,122 @@ function parseLlmTranslations(response, expected, locale, index) {
     if (typeof translation !== "string" || !translation.trim()) {
       throw new Error(`${locale}: LLM batch ${index} returned an empty translation`);
     }
-    return unshield(translation);
+    const normalized = unshield(translation);
+    assertLocaleScript(locale, normalized);
+    return normalized;
   });
+}
+
+function assertLocaleScript(locale, translation) {
+  if (locale !== "sat") return;
+  const brandless = translation
+    .replaceAll("True Grit", "")
+    .replaceAll("Vikas Farms", "")
+    .replaceAll("Kathiya", "")
+    .replaceAll("Banshi", "")
+    .replaceAll("Paigambari", "");
+  const wrongScript = /[\u0900-\u09ff]/u.test(brandless);
+  const hasOlChiki = /[\u1c50-\u1c7f]/u.test(brandless);
+  const latinLetters = (brandless.match(/[a-z]/gi) ?? []).length;
+  if (wrongScript || (!hasOlChiki && latinLetters > 5)) {
+    throw new Error("sat: translation is not in Ol Chiki script");
+  }
+}
+
+async function translateLlmBatch(locale, language, batch, label) {
+  const model = CLOUDFLARE_LLM_MODEL_BY_LOCALE.get(locale) ?? CLOUDFLARE_LLM_MODEL;
+  const scriptRule =
+    locale === "sat"
+      ? " Write Santali only in Ol Chiki (Unicode U+1C50-U+1C7F); never use Devanagari, Bengali, or Hindi."
+      : "";
+  try {
+    const result = await cloudflareSyncRequest(model, {
+      messages: [
+        {
+          role: "system",
+          content:
+            `You are a precise professional translator. Use only ${language}. ` +
+            "Never add, repeat, explain, or omit content. Preserve placeholder tokens exactly." +
+            scriptRule,
+        },
+        {
+          role: "user",
+          content:
+            `Translate every string in this JSON array from English into ${language}. ` +
+            "Preserve array length and order. Return only a JSON object with one key, " +
+            "translations, whose value is the translated string array. Do not translate " +
+            "True Grit, Vikas Farms, Kathiya, Banshi, or Paigambari. " +
+            GLOSSARY_RULE +
+            "Input: " +
+            JSON.stringify(batch.map(shield)),
+        },
+      ],
+      temperature: 0,
+      max_tokens: 4096,
+    });
+    return parseLlmTranslations(result, batch.length, locale, label);
+  } catch (error) {
+    if (batch.length === 1) {
+      const fallback = await cloudflareSyncRequest(model, {
+        messages: [
+          {
+            role: "system",
+            content:
+              `You are a precise professional translator. Use only ${language}. ` +
+              "Never add, repeat, explain, or omit content. Preserve placeholder tokens exactly." +
+              scriptRule,
+          },
+          {
+            role: "user",
+            content:
+              `Translate this text from English into ${language}. Return only the translated ` +
+              "text, with no explanation or quotation marks. Do not translate True Grit, " +
+              "Vikas Farms, Kathiya, Banshi, or Paigambari. " +
+              GLOSSARY_RULE +
+              "Text: " +
+              shield(batch[0]),
+          },
+        ],
+        temperature: 0,
+        max_tokens: 4096,
+      });
+      const plain =
+        fallback?.response ??
+        fallback?.result?.response ??
+        fallback?.choices?.[0]?.message?.content ??
+        fallback?.result?.choices?.[0]?.message?.content;
+      if (typeof plain === "string" && plain.trim()) {
+        const normalized = unshield(plain);
+        assertLocaleScript(locale, normalized);
+        return [normalized];
+      }
+      throw error;
+    }
+    const middle = Math.ceil(batch.length / 2);
+    return [
+      ...(await translateLlmBatch(locale, language, batch.slice(0, middle), `${label}a`)),
+      ...(await translateLlmBatch(locale, language, batch.slice(middle), `${label}b`)),
+    ];
+  }
 }
 
 async function translateAllCloudflare(locale, pending, cache) {
   if (pending.length === 0) return cache;
-  const language = CLOUDFLARE_LLM_LOCALES.get(locale);
-  if (!language) {
+  const language = llmLanguageFor(locale);
+  if (USE_M2M_TRANSLATION && !LLM_LANGUAGE_OVERRIDES.has(locale)) {
     if (CLOUDFLARE_TRANSLATION_MODE === "sync") {
       let completed = 0;
-      await mapConcurrent(pending, CLOUDFLARE_SYNC_CONCURRENCY, async (english) => {
-        const result = await cloudflareSyncRequest(CLOUDFLARE_TRANSLATION_MODEL, {
-          text: shield(english),
-          source_lang: "en",
-          target_lang: CLOUDFLARE_LOCALE.get(locale) ?? locale,
+      const batches = m2mBatches(pending);
+      let nextCheckpoint = 100;
+      await mapConcurrent(batches, CLOUDFLARE_SYNC_CONCURRENCY, async (batch) => {
+        const translations = await translateM2mBatch(locale, batch);
+        batch.forEach((english, index) => {
+          acceptTranslation(cache, locale, english, translations[index]);
         });
-        const translated = result?.translated_text;
-        if (typeof translated !== "string" || !translated.trim()) {
-          throw new Error(`${locale}: Cloudflare translation returned an empty string`);
-        }
-        cache[hash(english)] = unshield(translated);
-        completed += 1;
-        if (completed % 100 === 0 || completed === pending.length) {
+        completed += batch.length;
+        if (completed >= nextCheckpoint || completed === pending.length) {
           fs.writeFileSync(cacheFileFor(locale), JSON.stringify(cache));
+          while (nextCheckpoint <= completed) nextCheckpoint += 100;
           process.stdout.write(
             `\r  ${locale}: synchronously translated ${completed}/${pending.length}   `,
           );
@@ -667,6 +1068,9 @@ async function translateAllCloudflare(locale, pending, cache) {
       locale,
       250,
     );
+    // Responses carry only the source hash, but the quality gate has to compare
+    // against the English it came from, so map back to it.
+    const englishByReference = new Map(pending.map((english) => [hash(english), english]));
     for (const response of responses) {
       const translated = response?.result?.translated_text;
       if (!response.success || typeof translated !== "string" || !translated.trim()) {
@@ -674,59 +1078,51 @@ async function translateAllCloudflare(locale, pending, cache) {
           `${locale}: Cloudflare translation failed for ${response.external_reference}`,
         );
       }
-      cache[response.external_reference] = unshield(translated);
+      const english = englishByReference.get(response.external_reference);
+      if (english === undefined) {
+        throw new Error(`${locale}: unknown external_reference ${response.external_reference}`);
+      }
+      acceptTranslation(cache, locale, english, unshield(translated));
     }
   } else {
+    const model = CLOUDFLARE_LLM_MODEL_BY_LOCALE.get(locale) ?? CLOUDFLARE_LLM_MODEL;
     const batches = llmBatches(pending);
     if (CLOUDFLARE_TRANSLATION_MODE === "sync") {
       let completed = 0;
-      await mapConcurrent(
-        batches,
-        Math.min(6, CLOUDFLARE_SYNC_CONCURRENCY),
-        async (batch, index) => {
-          const result = await cloudflareSyncRequest(CLOUDFLARE_LLM_MODEL, {
-            messages: [
-              {
-                role: "user",
-                content:
-                  `Translate every string in this JSON array from English into ${language}. ` +
-                  "Preserve array length and order. Return only a JSON object with one key, " +
-                  "translations, whose value is the translated string array. Do not translate " +
-                  "True Grit, Vikas Farms, Kathiya, Banshi, or Paigambari. Input: " +
-                  JSON.stringify(batch.map(shield)),
-              },
-            ],
-            temperature: 0,
-            max_tokens: 4096,
-          });
-          const translations = parseLlmTranslations(result, batch.length, locale, index);
-          batch.forEach((english, entryIndex) => {
-            cache[hash(english)] = translations[entryIndex];
-          });
-          completed += 1;
-          if (completed % 10 === 0 || completed === batches.length) {
-            fs.writeFileSync(cacheFileFor(locale), JSON.stringify(cache));
-            process.stdout.write(
-              `\r  ${locale}: translated ${completed}/${batches.length} LLM chunks   `,
-            );
-          }
-        },
-      );
+      await mapConcurrent(batches, CLOUDFLARE_SYNC_CONCURRENCY, async (batch, index) => {
+        const translations = await translateLlmBatch(locale, language, batch, index);
+        batch.forEach((english, entryIndex) => {
+          acceptTranslation(cache, locale, english, translations[entryIndex]);
+        });
+        completed += 1;
+        fs.writeFileSync(cacheFileFor(locale), JSON.stringify(cache));
+        process.stdout.write(
+          `\r  ${locale}: translated ${completed}/${batches.length} LLM chunks   `,
+        );
+      });
       fs.writeFileSync(cacheFileFor(locale), JSON.stringify(cache));
       process.stdout.write("\n");
       return cache;
     }
     const responses = await cloudflareBatches(
-      CLOUDFLARE_LLM_MODEL,
+      model,
       batches.map((batch, index) => ({
         messages: [
+          {
+            role: "system",
+            content:
+              `You are a precise professional translator. Use only ${language}. ` +
+              "Never add, repeat, explain, or omit content. Preserve placeholder tokens exactly.",
+          },
           {
             role: "user",
             content:
               `Translate every string in this JSON array from English into ${language}. ` +
               "Preserve array length and order. Return only a JSON object with one key, " +
               "translations, whose value is the translated string array. Do not translate " +
-              "True Grit, Vikas Farms, Kathiya, Banshi, or Paigambari. Input: " +
+              "True Grit, Vikas Farms, Kathiya, Banshi, or Paigambari. " +
+              GLOSSARY_RULE +
+              "Input: " +
               JSON.stringify(batch.map(shield)),
           },
         ],
@@ -745,7 +1141,7 @@ async function translateAllCloudflare(locale, pending, cache) {
       if (!response?.success) throw new Error(`${locale}: LLM batch ${index} failed`);
       const translations = parseLlmTranslations(response, batches[index].length, locale, index);
       batches[index].forEach((english, entryIndex) => {
-        cache[hash(english)] = translations[entryIndex];
+        acceptTranslation(cache, locale, english, translations[entryIndex]);
       });
     }
   }
@@ -775,7 +1171,7 @@ async function translateAll(locale, sources, cache) {
     const results = await Promise.all(slice.map((batch) => requestBatch(locale, batch)));
     slice.forEach((batch, batchIndex) => {
       batch.forEach((english, entryIndex) => {
-        cache[hash(english)] = results[batchIndex][entryIndex];
+        acceptTranslation(cache, locale, english, results[batchIndex][entryIndex]);
       });
     });
     done += slice.reduce((total, batch) => total + batch.length, 0);
@@ -1001,7 +1397,7 @@ async function main() {
       const slice = statements.slice(index, index + STATEMENTS_PER_FILE);
       const file = path.join(SQL_DIR, `${locale}-${index}.sql`);
       fs.writeFileSync(file, `${slice.join("\n")}\n`);
-      d1ExecuteFile(file);
+      await d1ExecuteFile(file);
       fs.rmSync(file, { force: true });
       process.stdout.write(
         `\r  ${locale}: sent ${Math.min(index + slice.length, statements.length)}/${statements.length} statements   `,
@@ -1012,6 +1408,7 @@ async function main() {
   }
 
   process.stdout.write(`\nDone. ${written} rows written this run.\n`);
+  reportQualityRejects();
 }
 
 await main();

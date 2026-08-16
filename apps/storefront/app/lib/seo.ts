@@ -116,6 +116,32 @@ export function articleJsonLd(article: {
 }
 
 /** JSON-LD structured data for a Recipe. */
+/** Longest a derived `HowToStep.name` may run before it stops reading as a
+ *  summary. Google's guidance is that `name` must not simply restate `text`. */
+const MAX_STEP_NAME_LENGTH = 60;
+
+export function recipeStepAnchor(index: number): string {
+  return `step-${index + 1}`;
+}
+
+/**
+ * A short label for a method step, or `null` when the step cannot yield one.
+ *
+ * Steps are stored as free prose with no separate heading, so the first
+ * sentence is the only summary available. A single-sentence step has nothing
+ * to summarise -- emitting `name` there would duplicate `text`, which Google
+ * calls out specifically -- so those return `null` and the field is omitted.
+ */
+function summariseStep(step: string): string | null {
+  const text = step.trim();
+  const firstSentence = /^.*?[.!?](?=\s|$)/.exec(text)?.[0]?.trim();
+  if (!firstSentence || firstSentence.length === text.length) return null;
+  if (firstSentence.length <= MAX_STEP_NAME_LENGTH) return firstSentence;
+  const clipped = firstSentence.slice(0, MAX_STEP_NAME_LENGTH);
+  const lastSpace = clipped.lastIndexOf(" ");
+  return `${lastSpace > 0 ? clipped.slice(0, lastSpace) : clipped}...`;
+}
+
 export function recipeJsonLd(recipe: {
   title: string;
   excerpt: string;
@@ -126,7 +152,14 @@ export function recipeJsonLd(recipe: {
   steps: string[];
   canonicalPath: string;
   imageUrl?: string;
+  dietaryTags?: string[];
+  keywords?: string | null;
+  cuisine?: string | null;
 }) {
+  const canonical = absoluteSiteUrl(recipe.canonicalPath);
+  // `seo.keywords` is editor-supplied and therefore the better signal; the
+  // dietary tags are a real fallback rather than an invented one.
+  const keywords = recipe.keywords?.trim() || (recipe.dietaryTags ?? []).join(", ");
   return {
     "script:ld+json": {
       "@context": "https://schema.org",
@@ -135,12 +168,41 @@ export function recipeJsonLd(recipe: {
       description: recipe.excerpt,
       prepTime: `PT${recipe.prepMinutes}M`,
       cookTime: `PT${recipe.cookMinutes}M`,
+      // Google reads `totalTime` separately from the two parts and does not
+      // add them up itself, so an explicit sum is what makes the cook-time
+      // filter work in search results.
+      totalTime: `PT${recipe.prepMinutes + recipe.cookMinutes}M`,
       recipeYield: `${recipe.servings} servings`,
+      // Omitted rather than defaulted: a site-wide fallback would publish
+      // "Indian" over a recipe written for another market, and a false claim in
+      // structured data is worse than a missing optional field.
+      ...(recipe.cuisine?.trim() ? { recipeCuisine: recipe.cuisine.trim() } : {}),
+      // Named as the publisher, which is what these are: brand-published
+      // recipes with no individual byline in the CMS. The `@id` matches the
+      // Organization node on the home page so the two merge into one entity
+      // rather than reading as two different publishers with the same name.
+      author: {
+        "@type": "Organization",
+        "@id": `${SITE_ORIGIN}/#organization`,
+        name: SITE_NAME,
+        url: `${SITE_ORIGIN}/`,
+      },
       recipeIngredient: recipe.ingredients.map((ingredient) =>
         `${ingredient.quantityText} ${ingredient.label}`.trim(),
       ),
-      recipeInstructions: recipe.steps.map((step) => ({ "@type": "HowToStep", text: step })),
-      mainEntityOfPage: absoluteSiteUrl(recipe.canonicalPath),
+      recipeInstructions: recipe.steps.map((step, index) => {
+        const name = summariseStep(step);
+        return {
+          "@type": "HowToStep",
+          ...(name ? { name } : {}),
+          text: step,
+          // Resolves to the matching `id` on the rendered step (routes/recipe.tsx),
+          // so the deep link Google shows actually lands on that instruction.
+          url: `${canonical}#${recipeStepAnchor(index)}`,
+        };
+      }),
+      mainEntityOfPage: canonical,
+      ...(keywords ? { keywords } : {}),
       ...(recipe.imageUrl ? { image: absoluteSiteUrl(recipe.imageUrl) } : {}),
     },
   };

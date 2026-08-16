@@ -32,7 +32,7 @@ describe("resolveLocale", () => {
     ).toMatchObject({ locale: { code: "fr" }, source: "cookie" });
   });
 
-  it("uses geography before browser defaults so language and currency stay aligned", () => {
+  it("honours a stated browser language over the country the request came from", () => {
     expect(
       resolveLocale(
         request({
@@ -40,7 +40,7 @@ describe("resolveLocale", () => {
           cf: { country: "IN", region: "Tamil Nadu", regionCode: "IN-TN" },
         }),
       ),
-    ).toMatchObject({ locale: { code: "ta" }, source: "geo" });
+    ).toMatchObject({ locale: { code: "de" }, source: "header" });
 
     expect(
       resolveLocale(
@@ -49,17 +49,31 @@ describe("resolveLocale", () => {
           cf: { country: "DE" },
         }),
       ),
-    ).toMatchObject({ locale: { code: "de" }, source: "geo" });
+    ).toMatchObject({ locale: { code: "en" }, source: "header" });
   });
 
-  it("uses every country's default even when the browser prefers another language", () => {
+  it("answers a browser asking for English in English, wherever it dialled in from", () => {
+    // The regression this ordering exists for: an Indian IP used to force
+    // Hindi over an explicit `en-US`, and because the catalogue copy is only
+    // partly translated the reader got `<html lang="hi">` around English text.
     expect(
       resolveLocale(
         request({
-          headers: { "accept-language": "fr-FR;q=0.7, de-DE;q=0.9, en;q=0.8" },
-          cf: { country: "US" },
+          headers: { "accept-language": "en-US,en;q=0.9" },
+          cf: { country: "IN", region: "Uttar Pradesh", regionCode: "IN-UP" },
         }),
       ),
+    ).toMatchObject({ locale: { code: "en" }, source: "header" });
+  });
+
+  it("falls back to country geography when the browser states no usable preference", () => {
+    expect(resolveLocale(request({ cf: { country: "DE" } }))).toMatchObject({
+      locale: { code: "de" },
+      source: "geo",
+    });
+
+    expect(
+      resolveLocale(request({ headers: { "accept-language": "xx-ZZ" }, cf: { country: "US" } })),
     ).toMatchObject({ locale: { code: "en" }, source: "geo" });
   });
 
@@ -84,6 +98,18 @@ describe("resolveLocale", () => {
       ),
     ).toMatchObject({ locale: { code: "kn" }, source: "geo" });
 
+    // Nagaland maps to English rather than Hindi, and with no usable header
+    // the state mapping is still what decides it.
+    expect(
+      resolveLocale(
+        request({
+          headers: { "accept-language": "xx-ZZ" },
+          cf: { country: "IN", region: "Nagaland", regionCode: "IN-NL" },
+        }),
+      ),
+    ).toMatchObject({ locale: { code: "en" }, source: "geo" });
+
+    // A Hindi-speaking browser in a non-Hindi state is taken at its word.
     expect(
       resolveLocale(
         request({
@@ -91,6 +117,6 @@ describe("resolveLocale", () => {
           cf: { country: "IN", region: "Nagaland", regionCode: "IN-NL" },
         }),
       ),
-    ).toMatchObject({ locale: { code: "en" }, source: "geo" });
+    ).toMatchObject({ locale: { code: "hi" }, source: "header" });
   });
 });
