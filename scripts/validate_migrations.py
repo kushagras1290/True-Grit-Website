@@ -9,6 +9,7 @@ integrity checks, then applies the development seed.
 from __future__ import annotations
 
 import json
+import re
 import sqlite3
 import sys
 from pathlib import Path
@@ -255,8 +256,8 @@ def main() -> int:
             " FROM recipes r JOIN recipe_versions rv ON rv.id = r.published_version_id"
             " WHERE r.status = 'published' ORDER BY r.id"
         ).fetchall()
-        if len(recipes) != 48:
-            print(f"expected 48 useful recipes, found {len(recipes)}", file=sys.stderr)
+        if len(recipes) != 148:
+            print(f"expected 148 useful recipes, found {len(recipes)}", file=sys.stderr)
             return 1
         if len({row[2] for row in recipes}) != len(recipes):
             print("published recipe slugs must be unique", file=sys.stderr)
@@ -268,7 +269,18 @@ def main() -> int:
                 file=sys.stderr,
             )
             return 1
-        for recipe_id, title, _slug, raw_content, ingredient_count in practical_recipes:
+        world_recipes = [row for row in recipes if row[0].startswith("rcp_world_")]
+        if len(world_recipes) != 100:
+            print(
+                f"expected 100 world kitchen recipes, found {len(world_recipes)}",
+                file=sys.stderr,
+            )
+            return 1
+        # Held to the same executability bar as the Indian set: a recipe aimed at
+        # a new market is worthless if it cannot actually be cooked from.
+        for recipe_id, title, _slug, raw_content, ingredient_count in (
+            practical_recipes + world_recipes
+        ):
             content = json.loads(raw_content)
             steps = content.get("steps", [])
             if len(steps) < 8 or ingredient_count < 8:
@@ -282,42 +294,75 @@ def main() -> int:
                 )
                 return 1
 
+        # The world set exists because the catalogue was entirely Indian, so a
+        # row that omits its cuisine, or quietly says "Indian", defeats the
+        # point and silently restores the wrong structured-data claim.
+        world_cuisines = conn.execute(
+            "SELECT id, cuisine FROM recipes WHERE id LIKE 'rcp_world_%'"
+        ).fetchall()
+        for recipe_id, cuisine in world_cuisines:
+            if not cuisine or cuisine == "Indian":
+                print(
+                    f"world kitchen recipe must state a non-Indian cuisine: {recipe_id}",
+                    file=sys.stderr,
+                )
+                return 1
+        if conn.execute(
+            "SELECT COUNT(*) FROM recipes WHERE status = 'published' AND cuisine IS NULL"
+        ).fetchone()[0]:
+            print("every published recipe needs a cuisine", file=sys.stderr)
+            return 1
+
         discussions = conn.execute(
             "SELECT id, title, body, author_user_id FROM discussions"
             " WHERE status = 'visible' ORDER BY id"
         ).fetchall()
-        if len(discussions) != 400:
+        if len(discussions) != 130:
             print(
-                f"expected 400 useful discussions, found {len(discussions)}",
+                f"expected 130 useful discussions, found {len(discussions)}",
                 file=sys.stderr,
             )
             return 1
-        if any(row[0].startswith("dsc_expansion_") for row in discussions):
-            print("legacy generated discussion survived", file=sys.stderr)
-            return 1
-        editorial_discussions = [
-            row for row in discussions if row[0].startswith("dsc_editorial_")
+        # Three generations of CROSS JOIN-generated threads, all retired: the
+        # `dsc_expansion_*` set by migration 0050, and the `dsc_editorial_*` /
+        # `dsc_practical_*` sets by migration 0102. Re-adding bulk-templated
+        # community content is the specific regression this guards against --
+        # it once accounted for 45% of the sitemap.
+        for retired in ("dsc_expansion_", "dsc_editorial_", "dsc_practical_"):
+            if any(row[0].startswith(retired) for row in discussions):
+                print(f"retired generated discussion survived: {retired}", file=sys.stderr)
+                return 1
+        authored_discussions = [
+            row for row in discussions if row[0].startswith("dsc_truegrit_")
         ]
-        if len(editorial_discussions) != 100:
+        if len(authored_discussions) != 30:
             print(
-                f"expected 100 evidence-led discussions, found {len(editorial_discussions)}",
+                f"expected 30 hand-written discussions, found {len(authored_discussions)}",
                 file=sys.stderr,
             )
             return 1
-        if any(len(row[2].split()) < 45 for row in editorial_discussions):
-            print("editorial discussion prompt is too thin", file=sys.stderr)
+        if any(len(row[2].split()) < 55 for row in authored_discussions):
+            print("hand-written discussion prompt is too thin", file=sys.stderr)
             return 1
-        practical_discussions = [
-            row for row in discussions if row[0].startswith("dsc_practical_")
+        # The point of replacing the generated library was that every thread
+        # says something different. Templated rows shared a trailing paragraph
+        # verbatim, so compare whole bodies and titles rather than counting.
+        if len({row[1] for row in authored_discussions}) != len(authored_discussions):
+            print("hand-written discussion titles must be unique", file=sys.stderr)
+            return 1
+        if len({row[2] for row in authored_discussions}) != len(authored_discussions):
+            print("hand-written discussion bodies must be unique", file=sys.stderr)
+            return 1
+        # No two threads may share a closing sentence. Whole-body uniqueness
+        # alone would not have caught the generated sets: their bodies differed
+        # only in a leading clause and then ran into an identical trailing
+        # paragraph, so compare the last sentence on its own.
+        closing_sentences = [
+            [part for part in re.split(r"[.?!]", row[2]) if part.strip()][-1].strip()
+            for row in authored_discussions
         ]
-        if len(practical_discussions) != 200:
-            print(
-                f"expected 200 new practical discussions, found {len(practical_discussions)}",
-                file=sys.stderr,
-            )
-            return 1
-        if any(len(row[2].split()) < 55 for row in practical_discussions):
-            print("practical discussion prompt is too thin", file=sys.stderr)
+        if len(set(closing_sentences)) != len(closing_sentences):
+            print("hand-written discussions share a closing sentence", file=sys.stderr)
             return 1
         if len({row[3] for row in discussions}) < 8:
             print(
