@@ -414,7 +414,7 @@ class FarmRepository:
 
 _RECIPE_PUBLIC_COLUMNS = """
     id, title, slug, excerpt, prep_minutes, cook_minutes, servings,
-    dietary_tags_json, published_version_id, seo_title, seo_description,
+    dietary_tags_json, cuisine, published_version_id, seo_title, seo_description,
     seo_keywords, canonical_url, indexing_policy, hero_image_url, hero_image_alt
 """
 
@@ -560,6 +560,9 @@ class RecipeRepository:
             "cook_minutes": int(row["cook_minutes"] or 0),
             "servings": int(row["servings"] or 0),
             "dietary_tags": [str(tag) for tag in tags] if isinstance(tags, list) else [],
+            # NULL stays None so the storefront omits `recipeCuisine` entirely
+            # rather than asserting a cuisine the recipe never claimed.
+            "cuisine": row["cuisine"] or None,
             "hero_image_url": row["hero_image_url"] or None,
             "hero_image_alt": translated_fields.get("hero_image_alt")
             or row["hero_image_alt"]

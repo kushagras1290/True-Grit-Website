@@ -245,6 +245,8 @@ class RecipeDetail(PublicModel):
     cook_minutes: int
     servings: int
     dietary_tags: list[str]
+    #: Schema.org `recipeCuisine`. Absent means the recipe makes no claim.
+    cuisine: str | None = None
     hero_image_url: str | None = None
     hero_image_alt: str | None = None
     ingredients: list[RecipeIngredient]

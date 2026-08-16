@@ -285,6 +285,9 @@ export interface RecipeSummary {
   cookMinutes: number;
   servings: number;
   dietaryTags: string[];
+  /** Schema.org `recipeCuisine`. Null means the recipe makes no claim, and the
+   *  structured data omits the field rather than guessing one. */
+  cuisine?: string | null;
   /** Banner image shown on the recipe page and as the listing thumbnail. */
   heroImageUrl?: string | null;
   heroImageAlt?: string | null;

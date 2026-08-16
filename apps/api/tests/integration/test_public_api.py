@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from fastapi.testclient import TestClient
@@ -118,6 +119,7 @@ ANNOUNCEMENT_MESSAGE = "Test season alert for the public API fixture."
 ANNOUNCEMENT_PATH = "/seasonal"
 
 _NOW = "2026-08-10T00:00:00Z"
+_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 
 def _restrict_product(db: SQLiteDatabase, product_id: str, countries: list[str]) -> None:
@@ -582,15 +584,25 @@ def _insert_discussions(db: SQLiteDatabase) -> int:
     long_body = " ".join(
         f"This is filler sentence number {n} for the fixture discussion body." for n in range(1, 9)
     )
+    # Anchored to the newest thread the migrations actually ship rather than to
+    # a literal date. This batch has to dominate page one of
+    # `ORDER BY last_activity_at DESC`, and every content migration that adds
+    # threads moves that goalpost -- migration 0102 moved it from 2026-08-02 to
+    # 2026-08-12 and broke the hard-coded date that used to live here.
+    newest = db._conn.execute(
+        "SELECT MAX(last_activity_at) AS newest FROM discussions WHERE status = 'visible'"
+    ).fetchone()["newest"]
+    anchor = (
+        datetime.strptime(newest, _TIMESTAMP_FORMAT).replace(tzinfo=timezone.utc)
+        if newest
+        else datetime(2026, 1, 1, tzinfo=timezone.utc)
+    ) + timedelta(days=1)
     for i in range(1, DISCUSSION_COUNT + 1):
         featured = i == 1
         discussion_id = FEATURED_DISCUSSION_ID if featured else f"dsc_pub_{i:02d}"
         title = "Test Featured Discussion" if featured else f"Test Discussion {i:02d}"
         body = long_body if featured else f"Test discussion body number {i}."
-        # All strictly later than any pre-existing content (real threads top
-        # out around early March), so this batch always dominates page one of
-        # `ORDER BY last_activity_at DESC`.
-        last_activity_at = f"2026-08-10T00:{i:02d}:00Z"
+        last_activity_at = (anchor + timedelta(minutes=i)).strftime(_TIMESTAMP_FORMAT)
         db._conn.execute(
             "INSERT INTO discussions (id, author_user_id, title, body, status, comment_count,"
             " last_activity_at, created_at, updated_at) VALUES (?, 'usr_admin', ?, ?, 'visible',"

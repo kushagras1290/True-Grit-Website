@@ -40,6 +40,10 @@ jobs:
       # translation catalogue, which is how the site ended up part-translated.
       - run: pnpm i18n:audit
       - run: pnpm test
+      # Guards the translation quality gate. `pnpm test` is recursive over
+      # workspace packages and never reaches scripts/, which is how the
+      # backfill shipped without checks on what it wrote to the database.
+      - run: pnpm test:scripts
       - run: pnpm build
 
   backend:

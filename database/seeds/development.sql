@@ -3917,11 +3917,20 @@ WHERE id IN (
 
 -- The live catalogue migration intentionally replaces the former editorial
 -- and farm records. Keep development aligned after this legacy seed has run.
+--
+-- The prefix list is an allow-list of content the migrations own, not just the
+-- 0095 set: `rcp_world_%` (migration 0105) is published content too, and
+-- leaving it out of these clauses silently deleted all twelve rows in
+-- development while production kept them.
 DELETE FROM search_content
 WHERE (entity_type = 'article' AND entity_id NOT LIKE 'art_truegrit_%')
-   OR (entity_type = 'recipe' AND entity_id NOT LIKE 'rcp_truegrit_%');
+   OR (
+     entity_type = 'recipe'
+     AND entity_id NOT LIKE 'rcp_truegrit_%'
+     AND entity_id NOT LIKE 'rcp_world_%'
+   );
 DELETE FROM articles WHERE id NOT LIKE 'art_truegrit_%';
-DELETE FROM recipes WHERE id NOT LIKE 'rcp_truegrit_%';
+DELETE FROM recipes WHERE id NOT LIKE 'rcp_truegrit_%' AND id NOT LIKE 'rcp_world_%';
 UPDATE products SET farm_id = NULL WHERE farm_id IS NOT NULL AND farm_id != 'farm_vikas';
 UPDATE order_items SET farm_id = NULL WHERE farm_id IS NOT NULL AND farm_id != 'farm_vikas';
 UPDATE farm_partnership_requests SET linked_farm_id = NULL
