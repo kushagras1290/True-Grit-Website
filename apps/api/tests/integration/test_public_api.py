@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from fastapi.testclient import TestClient
@@ -593,9 +593,9 @@ def _insert_discussions(db: SQLiteDatabase) -> int:
         "SELECT MAX(last_activity_at) AS newest FROM discussions WHERE status = 'visible'"
     ).fetchone()["newest"]
     anchor = (
-        datetime.strptime(newest, _TIMESTAMP_FORMAT).replace(tzinfo=timezone.utc)
+        datetime.strptime(newest, _TIMESTAMP_FORMAT).replace(tzinfo=UTC)
         if newest
-        else datetime(2026, 1, 1, tzinfo=timezone.utc)
+        else datetime(2026, 1, 1, tzinfo=UTC)
     ) + timedelta(days=1)
     for i in range(1, DISCUSSION_COUNT + 1):
         featured = i == 1
