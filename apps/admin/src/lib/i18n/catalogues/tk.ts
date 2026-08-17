@@ -1157,6 +1157,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Her jogap üçin getirilen syýasat teksti",
   "Polish (Polski)": "Polýak (Polski)",
   "Portuguese (Português)": "Portugaliýa (Português)",
+  Position: "Positionerleşişi",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Oňyn bahany ýokarlandyrýar (diňe täze baha hökmünde görkezilen bellik). Ativearamaz ony peseldýär (arzanladylan, hakyky bahasy bilen görkezilýär). −90% bilen 500% arasynda. Şol bir maksat we masştab üçin düzgüni tygşytlamak, dublikat goşmagyň ýerine onuň ornuny tutýar.",
   "Post a blog (submission form)": "Blog iberiň (tabşyrma formasy)",

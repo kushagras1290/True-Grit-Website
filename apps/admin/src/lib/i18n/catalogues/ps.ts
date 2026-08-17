@@ -1126,6 +1126,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "د پالیسي متن په هر ځواب کې حواله شوی",
   "Polish (Polski)": "پولنډي (پولسکي)",
   "Portuguese (Português)": "پرتګالي (پرتګالي)",
+  Position: "پوزیشن",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "مثبت قیمت لوړوي (یو مارک اپ، یوازې د نوي قیمت په توګه ښودل شوی). منفي دا کموي (یو تخفیف، د ریښتینې قیمت سره ښودل شوی). د −90% او 500% ترمنځ. د ورته هدف او دائرې لپاره د یوې قاعدې خوندي کول د نقل اضافه کولو پرځای دا بدلوي.",
   "Post a blog (submission form)": "یو بلاګ پوسټ کړئ (د سپارلو فورمه)",

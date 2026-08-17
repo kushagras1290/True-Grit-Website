@@ -1178,6 +1178,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "ஒரு பதிலுக்கு மேற்கோள் காட்டப்பட்ட கொள்கை உரை",
   "Polish (Polski)": "போலந்து (போல்ஸ்கி)",
   "Portuguese (Português)": "போர்த்துகீசியம் (போர்த்துகீசியம்)",
+  Position: "நிலை",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "நேர்மறையானது விலையை உயர்த்துகிறது (மார்க்அப், புதிய விலையாக மட்டுமே காட்டப்படும்). எதிர்மறையானது அதைக் குறைக்கிறது (தள்ளுபடி, உண்மையான விலையுடன் காட்டப்படும்). −90% மற்றும் 500% இடையே. நகலைச் சேர்ப்பதற்குப் பதிலாக, அதே இலக்கு மற்றும் நோக்கத்திற்கான விதியைச் சேமிப்பது அதை மாற்றுகிறது.",
   "Post a blog (submission form)": "ஒரு வலைப்பதிவை இடுகையிடவும் (சமர்ப்பிப்பு படிவம்)",

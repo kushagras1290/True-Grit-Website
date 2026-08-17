@@ -1132,6 +1132,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Maandishi ya sera yaliyonukuliwa kwa kila jibu",
   "Polish (Polski)": "Kipolishi (Polski)",
   "Portuguese (Português)": "Kireno (Kireno)",
+  Position: "Nafasi",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Chanya huongeza bei (alama, iliyoonyeshwa kama bei mpya pekee). Hasi huishusha (punguzo, lililoonyeshwa kwa bei halisi iliyopigwa). Kati ya -90% na 500%. Kuhifadhi sheria kwa lengo sawa na upeo huibadilisha badala ya kuongeza nakala.",
   "Post a blog (submission form)": "Chapisha blogu (fomu ya kuwasilisha)",

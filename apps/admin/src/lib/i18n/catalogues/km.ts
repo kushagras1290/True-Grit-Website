@@ -1137,6 +1137,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "អត្ថបទគោលការណ៍ដែលបានដកស្រង់ក្នុងមួយចម្លើយ",
   "Polish (Polski)": "ប៉ូឡូញ (ប៉ូឡូញ)",
   "Portuguese (Português)": "ព័រទុយហ្គាល់ (ព័រទុយហ្គាល់)",
+  Position: "ទីតាំង",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "វិជ្ជមានបង្កើនតម្លៃ (ការសម្គាល់ បង្ហាញជាតម្លៃថ្មីតែម្នាក់ឯង)។ អវិជ្ជមានបន្ថយវា (ការបញ្ចុះតម្លៃបង្ហាញជាមួយនឹងតម្លៃពិតដែលបានវាយលុក)។ រវាង -90% និង 500% ។ ការរក្សាទុកច្បាប់សម្រាប់គោលដៅដូចគ្នា និងវិសាលភាពជំនួសវាជាជាងការបន្ថែមស្ទួន។",
   "Post a blog (submission form)": "បង្ហោះប្លុក (ទម្រង់បែបបទដាក់ស្នើ)",

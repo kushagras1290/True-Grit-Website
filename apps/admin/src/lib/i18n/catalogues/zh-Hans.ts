@@ -1130,6 +1130,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "每个答案引用的政策文本",
   "Polish (Polski)": "波兰语（Polski）",
   "Portuguese (Português)": "葡萄牙语（Português）",
+  Position: "位置",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "正数会提高价格（加价，仅显示为新价格）。负值会降低它（折扣，以实际价格划线显示）。 -90% 到 500% 之间。保存相同目标和范围的规则会替换它，而不是添加重复项。",
   "Post a blog (submission form)": "发布博客（提交表单）",

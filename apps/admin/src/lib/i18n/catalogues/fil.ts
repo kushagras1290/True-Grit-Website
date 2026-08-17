@@ -1005,6 +1005,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Points (+ / -)": "Mga puntos (+ / -)",
   "Policy page slugs": "Mga slug ng page ng patakaran",
   "Policy text quoted per answer": "Text ng patakaran na sinipi bawat sagot",
+  Position: "Posisyon",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Pinataas ng positibo ang presyo (isang markup, ipinapakita bilang ang bagong presyo lamang). Ibinababa ito ng negatibo (isang diskwento, na ipinapakita kasama ang tunay na presyong tinamaan). Sa pagitan ng −90% at 500%. Ang pag-save ng panuntunan para sa parehong target at saklaw ay papalitan ito sa halip na magdagdag ng duplicate.",
   "Post a blog (submission form)": "Mag-post ng blog (submission form)",

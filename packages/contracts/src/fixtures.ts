@@ -1036,84 +1036,111 @@ export function getCategoryPage(slug: string): PublicCategoryPage | null {
   };
 }
 
+function fixtureFarm(
+  id: string,
+  name: string,
+  slug: string,
+  region: string,
+  summary: string,
+  heroImageAlt: string,
+  methods: string[],
+): FarmDetail {
+  return {
+    id,
+    name,
+    slug,
+    farmerName: "",
+    region,
+    summary,
+    certification: "Verified farm",
+    establishedYear: 0,
+    story: `${summary} Each harvest is handled in small batches with clear field-to-pack records.`,
+    methods,
+    productSlugs: [],
+    heroImageUrl: `/banners/farms/${slug}.webp`,
+    heroImageAlt,
+    seo: {
+      title: `${name} — True Grit`,
+      description: summary,
+      canonicalPath: `/farms/${slug}`,
+      indexing: "index",
+    },
+  };
+}
+
 export const farms: FarmDetail[] = [
-  {
-    id: "farm_devika",
-    name: "Devika Organics",
-    slug: "devika-organics",
-    farmerName: "Devika Kulkarni",
-    region: "Ratnagiri, Maharashtra",
-    summary: "Three generations of Alphonso orchards farmed without synthetic inputs since 1998.",
-    certification: "India Organic (NPOP)",
-    establishedYear: 1998,
-    story:
-      "The Kulkarni family has farmed these laterite slopes above the Arabian Sea for three generations. When Devika took over in 1998, she converted the orchards fully to organic methods — compost pits under every tree, no carbide ripening, and a packing shed a hundred metres from the trees. We never needed chemicals, she says. We needed patience.",
-    methods: [
-      "Tree-ripening, no carbide",
-      "Compost-fed orchards",
-      "Hand grading and same-day packing",
-    ],
-    productSlugs: ["organic-alphonso-mangoes"],
-    heroImageUrl: null,
-    heroImageAlt: null,
-    seo: {
-      title: "Devika Organics — Ratnagiri Alphonso orchards",
-      description:
-        "Certified organic Alphonso mango orchards in Ratnagiri, farmed by the Kulkarni family.",
-      canonicalPath: "/farms/devika-organics",
-      indexing: "index",
-    },
-  },
-  {
-    id: "farm_anandvan",
-    name: "Anandvan Collective",
-    slug: "anandvan-collective",
-    farmerName: "Ravi Patil",
-    region: "Wardha, Maharashtra",
-    summary:
-      "A 40-family collective growing millets, pulses and cold-pressed oilseeds on regenerated soil.",
-    certification: "PGS-India Green",
-    establishedYear: 2011,
-    story:
-      "Anandvan began when forty families in Wardha pooled degraded farmland and committed to a ten-year soil regeneration plan. Today the collective grows rain-fed millets and oilseeds, runs its own stone mill and wooden ghani, and shares profits by contributed area.",
-    methods: ["Rain-fed cultivation", "Collective stone milling", "Wood-pressed oils under 40°C"],
-    productSlugs: ["organic-baby-spinach", "sprouted-ragi-flour", "wood-pressed-groundnut-oil"],
-    heroImageUrl: null,
-    heroImageAlt: null,
-    seo: {
-      title: "Anandvan Collective — regenerative millet farming",
-      description: "A farmer collective in Wardha growing certified organic millets and pulses.",
-      canonicalPath: "/farms/anandvan-collective",
-      indexing: "index",
-    },
-  },
-  {
-    id: "farm_himgiri",
-    name: "Himgiri Terraces",
-    slug: "himgiri-terraces",
-    farmerName: "Tara Negi",
-    region: "Uttarkashi, Uttarakhand",
-    summary: "High-altitude terraced farms growing rajma, amaranth and Himalayan spices.",
-    certification: "India Organic (NPOP)",
-    establishedYear: 2015,
-    story:
-      "At 1,800 metres in Uttarkashi, Tara Negi organises a network of terraced smallholdings that were organic long before certification existed. Glacial channels irrigate the terraces; the single October harvest is sun-dried on rooftops and hand-sorted through the winter.",
-    methods: [
-      "High-altitude terracing",
-      "Glacial-fed irrigation",
-      "Single annual harvest, hand-sorted",
-    ],
-    productSlugs: ["himalayan-red-rajma"],
-    heroImageUrl: null,
-    heroImageAlt: null,
-    seo: {
-      title: "Himgiri Terraces — Himalayan hill farms",
-      description:
-        "High-altitude organic terraces in Uttarkashi growing rajma, amaranth and spices.",
-      canonicalPath: "/farms/himgiri-terraces",
-      indexing: "index",
-    },
-  },
+  fixtureFarm(
+    "farm_bagi_1",
+    "Bagi Farm I",
+    "bagi-farm-i",
+    "Bagi, India",
+    "A Bagi farm growing traditional wheat with careful soil and crop management.",
+    "Farmer inspecting mature wheat at Bagi Farm I",
+    ["Traditional wheat cultivation", "Soil-led crop management", "Field-to-pack records"],
+  ),
+  fixtureFarm(
+    "farm_bagi_2",
+    "Bagi Farm II",
+    "bagi-farm-ii",
+    "Bagi, India",
+    "A second Bagi farm tending rain-fed field crops on carefully managed soil.",
+    "Farmers crossing green rain-fed fields at Bagi Farm II",
+    ["Rain-aware cultivation", "Small-batch grain handling", "Lot-level crop records"],
+  ),
+  fixtureFarm(
+    "farm_sajerah_1",
+    "Sajerah Farm I",
+    "sajerah-farm-i",
+    "Sajerah, India",
+    "A Sajerah oilseed farm growing mustard across open, fertile fields.",
+    "Farmer walking through mustard fields at Sajerah Farm I",
+    ["Seasonal mustard cultivation", "Seed drying and sorting", "Field-to-press records"],
+  ),
+  fixtureFarm(
+    "farm_sajerah_2",
+    "Sajerah Farm II",
+    "sajerah-farm-ii",
+    "Sajerah, India",
+    "A second Sajerah farm combining traditional crops with attentive water management.",
+    "Farmer tending irrigated crops at Sajerah Farm II",
+    ["Traditional crop cultivation", "Measured irrigation", "Small-batch handling"],
+  ),
+  fixtureFarm(
+    "farm_najirpur_1",
+    "Najirpur Farm I",
+    "najirpur-farm-i",
+    "Najirpur, India",
+    "A Najirpur farm harvesting and sorting sesame for seed and oil.",
+    "Farmers gathering sesame stalks at Najirpur Farm I",
+    ["Hand-harvested sesame", "Natural drying", "Field-to-press records"],
+  ),
+  fixtureFarm(
+    "farm_najirpur_2",
+    "Najirpur Farm II",
+    "najirpur-farm-ii",
+    "Najirpur, India",
+    "A second Najirpur farm growing lentils and field peas in well-kept plots.",
+    "Farmer checking a pulse crop at Najirpur Farm II",
+    ["Pulse crop rotation", "Soil and moisture checks", "Separated harvest lots"],
+  ),
+  fixtureFarm(
+    "farm_khutmili_1",
+    "Khutmili Farm I",
+    "khutmili-farm-i",
+    "Khutmili, India",
+    "A Khutmili farm growing flax for seeds and cold-pressed oil.",
+    "Farmer walking through blue flax at Khutmili Farm I",
+    ["Seasonal flax cultivation", "Careful seed cleaning", "Field-to-press records"],
+  ),
+  fixtureFarm(
+    "farm_khutmili_2",
+    "Khutmili Farm II",
+    "khutmili-farm-ii",
+    "Khutmili, India",
+    "A second Khutmili farm growing and hand-sorting black gram.",
+    "Farmers sorting black gram at Khutmili Farm II",
+    ["Black gram crop care", "Hand sorting", "Small-batch pulse processing"],
+  ),
 ];
 
 export const recipes: RecipeDetail[] = [
@@ -1251,9 +1278,16 @@ export const homePage: PublicPage = {
         eyebrow: "Certified organic. Fully traceable.",
         heading: "Food grown the way nature intended.",
         text: "Fresh organic produce, conscious pantry essentials and trusted local farms — delivered with complete transparency.",
-        imageUrl: "/homepage-hero.png",
-        imageAlt: "Organic mangoes held in a sunlit orchard",
+        imageUrl: "/banners/home/catalogue/00-our-farms.webp",
+        imageAlt: "Partner farmers walking between varied crop fields",
         slides: [
+          {
+            imageUrl: "/banners/home/catalogue/00-our-farms.webp",
+            imageAlt: "Partner farmers walking between varied crop fields",
+            href: "/farms",
+            label: "Meet our farms",
+            enabled: true,
+          },
           {
             imageUrl: "/homepage-hero.png",
             imageAlt: "Organic mangoes held in a sunlit orchard",
@@ -1357,9 +1391,9 @@ export const homePage: PublicPage = {
       version: 1,
       enabled: true,
       props: {
-        farmSlug: "devika-organics",
-        quote: "We never needed chemicals. We needed patience.",
-        attribution: "Devika Kulkarni, Devika Organics",
+        farmSlug: "bagi-farm-i",
+        quote: "Traditional food begins with careful farming and clear field-to-pack records.",
+        attribution: "Bagi Farm I",
       },
     },
     {

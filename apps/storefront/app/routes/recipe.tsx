@@ -36,7 +36,7 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
     // ingredient straight to the cart (see `lib/pricing.ts`).
     loadProductsBySlugs(ingredientSlugs, country, runtime, locale.code),
     loadProductsBySlugs(blockProductSlugs, country, runtime, locale.code),
-    loadFarms(runtime),
+    loadFarms(runtime, locale.code),
   ]);
   return { recipe, ingredientProducts, blockProducts, farms };
 }

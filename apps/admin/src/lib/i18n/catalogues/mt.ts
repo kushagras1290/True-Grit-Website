@@ -1129,6 +1129,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Test tal-politika kkwotat għal kull tweġiba",
   "Polish (Polski)": "Pollakk (Polski)",
   "Portuguese (Português)": "Portugiż (Portugiż)",
+  Position: "Pożizzjoni",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Pożittiv jgħolli l-prezz (markup, muri bħala l-prezz il-ġdid biss). Negattiv ibaxxiha (roħs, muri bil-prezz reali milqut). Bejn -90% u 500%. Is-salvataġġ ta' regola għall-istess mira u ambitu jissostitwiha aktar milli żżid duplikat.",
   "Post a blog (submission form)": "Ipposta blog (formola ta' sottomissjoni)",

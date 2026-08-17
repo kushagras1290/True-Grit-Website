@@ -1107,6 +1107,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "ھەر بىر جاۋابقا نەقىل ئېلىنغان سىياسەت تېكىستى",
   "Polish (Polski)": "پولشا (Polski)",
   "Portuguese (Português)": "پورتۇگال تىلى (Português)",
+  Position: "ئورنى",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "ئاكتىپ باھانى ئۆستۈرىدۇ (بەلگە ، پەقەت يېڭى باھا سۈپىتىدە كۆرسىتىلىدۇ). سەلبىي ئۇنى تۆۋەنلىتىدۇ (ئېتىبار باھادا ھەقىقىي باھا بىلەن كۆرسىتىلىدۇ). % 90 تىن% 500 كىچە. ئوخشاش نىشان ۋە دائىرە ئۈچۈن قائىدە تېجەش ئۇنىڭ كۆپەيتىلگەن نۇسخىسىنى ئەمەس ، بەلكى ئۇنىڭ ئورنىنى ئالىدۇ.",
   "Post a blog (submission form)": "بىلوگ يوللاڭ (تاپشۇرۇش جەدۋىلى)",

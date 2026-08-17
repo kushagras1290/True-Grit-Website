@@ -1065,6 +1065,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "ederede amụma e hotara na azịza",
   "Polish (Polski)": "Polski (Polski)",
   "Portuguese (Português)": "Português (Português)",
+  Position: "Ọnọdụ",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Ezigbo na-ebuli ọnụ ahịa (akara akara, egosiri dị ka ọnụ ahịa ọhụrụ naanị). Negative na-eweda ya ala (mbelata ego, nke egosiri na ọnụ ahịa dị adị n'ezie). N'etiti -90% na 500%. Ịchekwa iwu maka otu ebumnuche na oke na-edochi ya kama ịtinye oyiri.",
   "Post a blog (submission form)": "Bisa blọgụ (ụdị nrubeisi)",

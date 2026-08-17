@@ -1182,6 +1182,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "ᱛᱮᱞᱟ ᱞᱮᱠᱟᱛᱮ ᱯᱚᱞᱤᱥᱤ ᱚᱱᱚᱞ ᱫᱚᱦᱚ ᱟᱠᱟᱱᱟ",
   "Polish (Polski)": "ᱯᱚᱞᱤᱥ (ᱯᱚᱞᱥᱠᱤ)",
   "Portuguese (Português)": "ᱯᱩᱨᱴᱩᱜᱤᱡᱽ (ᱯᱳᱨᱴᱩᱜᱤᱥ)",
+  Position: "ᱚᱵᱚᱥᱛᱟ",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "ᱯᱚᱡᱤᱴᱤᱵᱷ ᱫᱚ ᱫᱟᱢ ᱵᱟᱲᱛᱤᱭᱟ (ᱢᱤᱫ ᱢᱟᱨᱠᱟᱯ, ᱮᱠᱮᱱ ᱱᱟᱶᱟ ᱫᱟᱢ ᱞᱮᱠᱟ ᱩᱫᱩᱜ ᱟᱠᱟᱱᱟ)᱾ ᱱᱮᱜᱮᱴᱤᱵᱷ ᱱᱚᱣᱟ ᱠᱚᱢᱟᱭ (ᱢᱤᱫ ᱪᱷᱩᱴ, ᱥᱟᱹᱨᱤ ᱫᱟᱢ ᱥᱟᱶᱛᱮ ᱩᱫᱩᱜ ᱟᱠᱟᱱᱟ)᱾ -᱙᱐% ᱟᱨ ᱕᱐᱐% ᱛᱟᱞᱟᱨᱮ ᱾ ᱢᱤᱫ ᱡᱚᱥ ᱟᱨ ᱥᱠᱚᱯ ᱞᱟᱹᱜᱤᱫ ᱢᱤᱫ ᱱᱤᱭᱚᱢ ᱥᱟᱧᱪᱟᱣ ᱫᱚ ᱰᱩᱯᱞᱤᱠᱮᱴ ᱥᱮᱞᱮᱫ ᱵᱚᱫᱚᱞ ᱛᱮ ᱚᱱᱟ ᱵᱚᱫᱚᱞᱚᱜᱼᱟ᱾",
   "Post a blog (submission form)": "ᱢᱤᱫ ᱵᱽᱞᱚᱜᱽ ᱯᱚᱥᱴ ᱢᱮ (ᱡᱚᱢᱟᱣ ᱯᱷᱚᱨᱢ)",

@@ -1180,6 +1180,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "നയ വാചകം, ഓരോ പേജിനും ഉദ്ധരിച്ചിട്ടുള്ള പോളിസി ടെക്‌സ്‌റ്റ്, tub><span 0 പേജ്",
   "Polish (Polski)": "പോളീഷ് (പോൾസ്കി)",
   "Portuguese (Português)": "പോർച്ചുഗീസ് (പോർച്ചുഗീസ്)",
+  Position: "സ്ഥാനം",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "പോസിറ്റീവ് വില ഉയർത്തുന്നു (ഒരു മാർക്ക്അപ്പ്, പുതിയ വിലയായി മാത്രം കാണിക്കുന്നു). നെഗറ്റീവ് അതിനെ താഴ്ത്തുന്നു (ഒരു കിഴിവ്, യഥാർത്ഥ വിലയിൽ കാണിച്ചിരിക്കുന്നു). −90% നും 500% നും ഇടയിൽ. ഒരു ഡ്യൂപ്ലിക്കേറ്റ് ചേർക്കുന്നതിനുപകരം ഒരേ ലക്ഷ്യത്തിനും വ്യാപ്തിക്കുമായി ഒരു നിയമം സംരക്ഷിക്കുന്നത് അതിനെ മാറ്റിസ്ഥാപിക്കുന്നു.",
   "Post a blog (submission form)": "ഒരു ബ്ലോഗ് പോസ്‌റ്റ് ചെയ്യുക (സമർപ്പണ ഫോം)",

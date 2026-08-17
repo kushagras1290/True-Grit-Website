@@ -1152,6 +1152,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Politikas teksts citēts katrā atbildē",
   "Polish (Polski)": "poļu (polski)",
   "Portuguese (Português)": "portugāļu (Português)",
+  Position: "Amats",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Pozitīvs paaugstina cenu (uzcenojums, kas tiek rādīts tikai kā jaunā cena). Negatīvs to samazina (atlaide, kas tiek parādīta ar pārsvītrotu reālo cenu). No –90% līdz 500%. Saglabājot kārtulu vienam un tam pašam mērķim un darbības jomai, tā tiek aizstāta, nevis pievienota dublikāts.",
   "Post a blog (submission form)": "Publicēt emuāru (iesniegšanas veidlapa)",

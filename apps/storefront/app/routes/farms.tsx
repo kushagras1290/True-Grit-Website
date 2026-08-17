@@ -5,11 +5,13 @@ import { Section } from "../components/catalogue";
 import { PageBanner } from "../components/page-banner";
 import { catalogueRuntime, loadFarms } from "../lib/catalogue.server";
 import { useLocaleContext } from "../lib/i18n/context";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
 
-export async function loader({ context }: Route.LoaderArgs) {
-  return { farms: await loadFarms(catalogueRuntime(context)) };
+export async function loader({ request, context }: Route.LoaderArgs) {
+  const { locale } = resolveLocale(request);
+  return { farms: await loadFarms(catalogueRuntime(context), locale.code) };
 }
 
 export function meta({ matches }: Route.MetaArgs) {
@@ -46,23 +48,34 @@ export default function FarmsPage({ loaderData }: Route.ComponentProps) {
             <Link
               key={farm.id}
               to={`/farms/${farm.slug}`}
-              className="group rounded-md border border-line bg-surface p-6 shadow-card transition-transform duration-200 hover:-translate-y-0.5"
+              className="group overflow-hidden rounded-md border border-line bg-surface shadow-card transition-transform duration-200 hover:-translate-y-0.5"
             >
-              {farm.establishedYear ? (
-                <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
-                  {t("farms.since", { year: farm.establishedYear })}
-                </p>
+              {farm.heroImageUrl ? (
+                <img
+                  src={farm.heroImageUrl}
+                  alt={farm.heroImageAlt || farm.name}
+                  className="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                  decoding="async"
+                />
               ) : null}
-              <h2 className="mt-2 font-display text-xl text-ink group-hover:text-brand">
-                {farm.name}
-              </h2>
-              <p className="mt-1 text-sm text-ink-muted">
-                {[farm.farmerName, farm.region].filter(Boolean).join(" · ")}
-              </p>
-              <p className="mt-3 text-sm text-ink">{farm.summary}</p>
-              <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-subtle px-3 py-1 text-xs font-medium text-brand">
-                <span aria-hidden>✓</span> {farm.certification}
-              </p>
+              <div className="p-6">
+                {farm.establishedYear ? (
+                  <p className="text-xs font-semibold tracking-[0.14em] text-accent uppercase">
+                    {t("farms.since", { year: farm.establishedYear })}
+                  </p>
+                ) : null}
+                <h2 className="mt-2 font-display text-xl text-ink group-hover:text-brand">
+                  {farm.name}
+                </h2>
+                <p className="mt-1 text-sm text-ink-muted">
+                  {[farm.farmerName, farm.region].filter(Boolean).join(" · ")}
+                </p>
+                <p className="mt-3 text-sm text-ink">{farm.summary}</p>
+                <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-subtle px-3 py-1 text-xs font-medium text-brand">
+                  <span aria-hidden>✓</span> {farm.certification}
+                </p>
+              </div>
             </Link>
           ))}
         </div>

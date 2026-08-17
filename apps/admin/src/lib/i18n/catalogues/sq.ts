@@ -1148,6 +1148,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Teksti i politikës i cituar për përgjigje",
   "Polish (Polski)": "Polonisht (polski)",
   "Portuguese (Português)": "portugeze (portugeze)",
+  Position: "Pozicioni",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Pozitiv ngre çmimin (një shënim, i treguar vetëm si çmimi i ri). Negativi e ul atë (një zbritje, e treguar me çmimin real të shënuar). Midis -90% dhe 500%. Ruajtja e një rregulli për të njëjtin objektiv dhe shtrirje e zëvendëson atë në vend që të shtojë një dublikatë.",
   "Post a blog (submission form)": "Postoni një blog (formulari i paraqitjes)",

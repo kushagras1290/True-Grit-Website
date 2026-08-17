@@ -1148,6 +1148,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "A válaszonként idézett irányelvszöveg",
   "Polish (Polski)": "lengyel (polski)",
   "Portuguese (Português)": "portugál (Português)",
+  Position: "Pozíció",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Pozitív megemeli az árat (felár, amely önmagában új árként jelenik meg). A negatív csökkenti (engedmény, a valós ár áthúzásával látható). -90% és 500% között. Ha ugyanarra a célra és hatókörre menti a szabályt, az lecseréli azt, nem pedig ismétlődést.",
   "Post a blog (submission form)": "Tegyen közzé egy blogot (beküldési űrlap)",

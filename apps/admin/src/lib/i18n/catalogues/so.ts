@@ -1099,6 +1099,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Qoraalka siyaasadda ee laga soo xigtay jawaabtiiba",
   "Polish (Polski)": "Polski (Polski)",
   "Portuguese (Português)": "Bortigu (Português)",
+  Position: "Boos",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Togan ayaa kor u qaadaysa qiimaha (calaamadeyn, oo lagu muujiyay qiimaha cusub oo keliya). Negative ayaa hoos u dhigaya (dhimista, oo lagu muujiyay qiimaha dhabta ah ee lagu soo rogay). Inta u dhaxaysa -90% iyo 500%. U kaydinta xeerka isla bartilmaameedka iyo baaxadda ayaa beddesha halkii lagu dari lahaa nuqul.",
   "Post a blog (submission form)": "Ku dheji blog (foomka gudbinta)",

@@ -1155,6 +1155,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Ар бир жоопко цитата келтирилген саясаттын тексти",
   "Polish (Polski)": "Польша (Польски)",
   "Portuguese (Português)": "Португалия (Português)",
+  Position: "Позиция",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Оң бааны көтөрөт (жалгыз жаңы баа катары көрсөтүлгөн кошумча). Терс аны төмөндөтөт (арзандатуу, реалдуу баа менен көрсөтүлгөн). −90% жана 500% ортосунда. Эрежени бир эле максат жана масштаб үчүн сактоо дубликатты кошуунун ордуна аны алмаштырат.",
   "Post a blog (submission form)": "Блогду жарыялоо (тапшыруу формасы)",

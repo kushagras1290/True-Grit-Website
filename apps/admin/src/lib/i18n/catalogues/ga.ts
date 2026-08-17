@@ -1137,6 +1137,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Téacs polasaí luaite in aghaidh an fhreagra",
   "Polish (Polski)": "Polainnis (Polski)",
   "Portuguese (Português)": "Portaingéilis (Portaingéilis)",
+  Position: "Suíomh",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Positive an praghas (marcáil, léirithe mar an praghas nua amháin). Íslíonn an diúltach é (lascaine, léirithe leis an bpraghas fíor a baineadh amach). Idir −90% agus 500%. Nuair a shábhálann tú riail don sprioc chéanna agus don scóip chéanna cuirtear é ina áit seachas dúblach a chur leis.",
   "Post a blog (submission form)": "Postáil blag (foirm aighneacht)",
