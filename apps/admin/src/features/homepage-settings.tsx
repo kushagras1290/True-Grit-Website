@@ -42,6 +42,7 @@ import {
 import { IMAGE_SPECIFICATIONS_BY_ID } from "../lib/image-specifications";
 import { usePermissions } from "../lib/permissions";
 import { T } from "../lib/i18n";
+import { repositionItem } from "./builder";
 
 /** Mirrors the identical helper in `site-control.tsx` / `appearance.tsx` — a
  *  scope here is always a two-letter country code, never `'global'`; the
@@ -340,6 +341,19 @@ export function HomepageSettingsPage() {
     }
   }
 
+  function moveSlide(index: number, nextIndex: number) {
+    const slides = repositionItem(form.getValues("heroSlides"), index, nextIndex);
+    form.setValue("heroSlides", slides, { shouldDirty: true, shouldValidate: true });
+    form.setValue("heroImageUrl", slides[0]?.imageUrl ?? "", {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    form.setValue("heroImageAlt", slides[0]?.imageAlt ?? "", {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  }
+
   return (
     <div>
       <PageHeader
@@ -473,16 +487,32 @@ export function HomepageSettingsPage() {
                       />
                     </div>
                     <div className="grid gap-3 md:grid-cols-2">
-                      <label className="flex items-center gap-2 text-sm text-ink md:col-span-2">
-                        <input
-                          type="checkbox"
-                          checked={slide.enabled}
-                          onChange={(event) =>
-                            updateSlide(index, { enabled: event.target.checked })
-                          }
-                        />
-                        <T>Enabled</T>
-                      </label>
+                      <div className="flex items-end justify-between gap-4 md:col-span-2">
+                        <label className="flex min-h-9 items-center gap-2 text-sm text-ink">
+                          <input
+                            type="checkbox"
+                            checked={slide.enabled}
+                            onChange={(event) =>
+                              updateSlide(index, { enabled: event.target.checked })
+                            }
+                          />
+                          <T>Enabled</T>
+                        </label>
+                        <Field label="Position" htmlFor={`slide-position-${index}`}>
+                          <Select
+                            id={`slide-position-${index}`}
+                            value={index}
+                            onChange={(event) => moveSlide(index, Number(event.target.value))}
+                            className="w-28"
+                          >
+                            {heroSlides.map((_, position) => (
+                              <option key={position} value={position}>
+                                {position + 1}
+                              </option>
+                            ))}
+                          </Select>
+                        </Field>
+                      </div>
                       <Field label="Image URL" htmlFor={`slide-image-${index}`}>
                         <Input
                           id={`slide-image-${index}`}

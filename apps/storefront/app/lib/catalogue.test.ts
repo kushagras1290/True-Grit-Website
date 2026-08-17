@@ -187,7 +187,7 @@ describe("search", () => {
   });
 
   it("groups farm and article results", async () => {
-    const farms = await runSearch("devika");
+    const farms = await runSearch("bagi");
     expect(farms.groups.some((group) => group.group === "farms")).toBe(true);
     const articles = await runSearch("millets");
     expect(articles.groups.some((group) => group.group === "articles")).toBe(true);

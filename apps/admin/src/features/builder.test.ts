@@ -1,7 +1,13 @@
 import { homePage } from "@truegrit/contracts/fixtures";
 import { describe, expect, it } from "vitest";
 
-import { blockTitle, reorderBlocks, toggleBlock, type BuilderState } from "./builder";
+import {
+  blockTitle,
+  reorderBlocks,
+  repositionItem,
+  toggleBlock,
+  type BuilderState,
+} from "./builder";
 
 function initialState(): BuilderState {
   return { blocks: structuredClone(homePage.blocks), selectedBlockId: null, dirty: false };
@@ -42,6 +48,21 @@ describe("toggleBlock", () => {
     expect(next.blocks[2]!.enabled).toBe(!target.enabled);
     expect(next.blocks[0]!.enabled).toBe(state.blocks[0]!.enabled);
     expect(next.dirty).toBe(true);
+  });
+});
+
+describe("repositionItem", () => {
+  it("can promote the third carousel slide to the first position", () => {
+    const slides = ["first", "second", "third", "fourth"];
+    const reordered = repositionItem(slides, 2, 0);
+    expect(reordered).toEqual(["third", "first", "second", "fourth"]);
+    expect(slides).toEqual(["first", "second", "third", "fourth"]);
+  });
+
+  it("is a no-op for an invalid or unchanged position", () => {
+    const slides = ["first", "second"];
+    expect(repositionItem(slides, 0, 0)).toBe(slides);
+    expect(repositionItem(slides, 4, 0)).toBe(slides);
   });
 });
 

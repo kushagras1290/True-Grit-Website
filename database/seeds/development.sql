@@ -3931,27 +3931,48 @@ WHERE (entity_type = 'article' AND entity_id NOT LIKE 'art_truegrit_%')
    );
 DELETE FROM articles WHERE id NOT LIKE 'art_truegrit_%';
 DELETE FROM recipes WHERE id NOT LIKE 'rcp_truegrit_%' AND id NOT LIKE 'rcp_world_%';
-UPDATE products SET farm_id = NULL WHERE farm_id IS NOT NULL AND farm_id != 'farm_vikas';
-UPDATE order_items SET farm_id = NULL WHERE farm_id IS NOT NULL AND farm_id != 'farm_vikas';
+UPDATE products SET farm_id = NULL
+WHERE farm_id IS NOT NULL
+  AND farm_id NOT IN (
+    'farm_bagi_1', 'farm_bagi_2', 'farm_sajerah_1', 'farm_sajerah_2',
+    'farm_najirpur_1', 'farm_najirpur_2', 'farm_khutmili_1', 'farm_khutmili_2'
+  );
+UPDATE order_items SET farm_id = NULL
+WHERE farm_id IS NOT NULL
+  AND farm_id NOT IN (
+    'farm_bagi_1', 'farm_bagi_2', 'farm_sajerah_1', 'farm_sajerah_2',
+    'farm_najirpur_1', 'farm_najirpur_2', 'farm_khutmili_1', 'farm_khutmili_2'
+  );
 UPDATE farm_partnership_requests SET linked_farm_id = NULL
-WHERE linked_farm_id IS NOT NULL AND linked_farm_id != 'farm_vikas';
-DELETE FROM farms WHERE id != 'farm_vikas';
+WHERE linked_farm_id IS NOT NULL
+  AND linked_farm_id NOT IN (
+    'farm_bagi_1', 'farm_bagi_2', 'farm_sajerah_1', 'farm_sajerah_2',
+    'farm_najirpur_1', 'farm_najirpur_2', 'farm_khutmili_1', 'farm_khutmili_2'
+  );
+DELETE FROM farms
+WHERE id NOT IN (
+  'farm_bagi_1', 'farm_bagi_2', 'farm_sajerah_1', 'farm_sajerah_2',
+  'farm_najirpur_1', 'farm_najirpur_2', 'farm_khutmili_1', 'farm_khutmili_2'
+);
+
+-- The legacy seed builds an older twelve-slide carousel above. Finish with the
+-- same four-slide live homepage that migration 0106 publishes in production.
 UPDATE page_versions
 SET content_json = json_set(
   content_json,
-  '$.blocks[0].props.imageUrl', '/banners/home/catalogue/01-complete-organic-range.webp',
-  '$.blocks[0].props.imageAlt', 'True Grit traditional grains, pulses, seeds and cold-pressed oils',
+  '$.blocks[0].props.imageUrl', '/banners/home/catalogue/00-our-farms.webp',
+  '$.blocks[0].props.imageAlt', 'Partner farmers walking between varied crop fields',
   '$.blocks[0].props.slides', json('[
+    {"imageUrl":"/banners/home/catalogue/00-our-farms.webp","imageAlt":"Partner farmers walking between varied crop fields","href":"/farms","label":"Meet our farms","enabled":true},
     {"imageUrl":"/banners/home/catalogue/01-complete-organic-range.webp","imageAlt":"True Grit traditional grains, pulses, seeds and cold-pressed oils","href":"/shop","label":"Explore the complete organic range","enabled":true},
-    {"imageUrl":"/banners/home/catalogue/02-vikas-farms.webp","imageAlt":"Traditional grain harvest at Vikas Farms","href":"/farms/vikas-farms","label":"Meet Vikas Farms","enabled":true},
     {"imageUrl":"/banners/home/catalogue/03-traditional-small-batch.webp","imageAlt":"Traditional small-batch flour and grain processing","href":"/blog/from-farm-to-flour-how-true-grit-products-are-made","label":"See how your food is made","enabled":true},
     {"imageUrl":"/banners/home/catalogue/04-cook-with-true-grit.webp","imageAlt":"A traditional Indian meal prepared with True Grit pantry staples","href":"/recipes","label":"Cook with True Grit","enabled":true}
   ]'),
   '$.blocks[2].props.categorySlugs', json('["wheat-flour","cold-pressed-oils","seeds","black-gram","red-lentils","daliya","semolina","whole-wheat-pasta","whole-wheat-vermicelli","white-field-peas"]'),
   '$.blocks[3].props.productSlugs', json('["kathiya-wheat-flour","banshi-wheat-flour","paigambari-wheat-flour","black-mustard-oil","yellow-mustard-oil","linseed-flax-seed-oil","roasted-flax-seeds","plain-flax-seed","sesame-seed","sesame-oil","roasted-sesame-seeds","black-gram-whole"]'),
-  '$.blocks[4].props.farmSlug', 'vikas-farms',
-  '$.blocks[4].props.quote', 'Traditional food begins with careful farming and patient small-batch work.',
-  '$.blocks[4].props.attribution', 'Vikas Farms'
+  '$.blocks[4].props.farmSlug', 'bagi-farm-i',
+  '$.blocks[4].props.quote', 'Traditional food begins with careful farming and clear field-to-pack records.',
+  '$.blocks[4].props.attribution', 'Bagi Farm I'
 )
 WHERE id = 'pgv_home_1';
 

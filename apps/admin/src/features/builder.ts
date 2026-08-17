@@ -8,6 +8,24 @@ export interface BuilderState {
   dirty: boolean;
 }
 
+/** Move one ordered editor item to an exact zero-based position without
+ * mutating the form state that React Hook Form is currently rendering. */
+export function repositionItem<T>(items: T[], fromIndex: number, toIndex: number): T[] {
+  if (
+    fromIndex === toIndex ||
+    fromIndex < 0 ||
+    toIndex < 0 ||
+    fromIndex >= items.length ||
+    toIndex >= items.length
+  ) {
+    return items;
+  }
+  const reordered = [...items];
+  const [moved] = reordered.splice(fromIndex, 1);
+  reordered.splice(toIndex, 0, moved!);
+  return reordered;
+}
+
 export function reorderBlocks(state: BuilderState, activeId: string, overId: string): BuilderState {
   if (activeId === overId) return state;
   const fromIndex = state.blocks.findIndex((block) => block.id === activeId);
