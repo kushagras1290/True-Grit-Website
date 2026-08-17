@@ -1053,6 +1053,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy page slugs": "Iphepha lomgaqo-nkqubo i-slugs",
   "Policy text quoted per answer": "Umgaqo-nkqubo ucatshulwe ngempendulo nganye",
   "Portuguese (Português)": "Português (Português)",
+  Position: "Indawo",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Positive iphakamisa ixabiso (uphawu, oluboniswa njengexabiso elitsha lodwa). I-Negative iyayithoba (isaphulelo, esiboniswe ngexabiso lokwenyani elibethiweyo). Phakathi −90% kunye 500%. Ukugcina umthetho kwithagethi efanayo kunye nomthamo endaweni yawo kunokongeza impinda.",
   "Post a blog (submission form)": "Posa ibhlog (ifomu yothumelo)",

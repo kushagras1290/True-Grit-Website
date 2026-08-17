@@ -27,7 +27,7 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   );
   const [products, farms] = await Promise.all([
     loadProductsBySlugs(productSlugs, resolveCountry(request), runtime, locale.code),
-    loadFarms(runtime),
+    loadFarms(runtime, locale.code),
   ]);
   return { article, products, farms };
 }

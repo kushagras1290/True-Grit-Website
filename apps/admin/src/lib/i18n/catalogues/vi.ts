@@ -1133,6 +1133,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Văn bản chính sách được trích dẫn trên mỗi câu trả lời",
   "Polish (Polski)": "Tiếng Ba Lan (Polski)",
   "Portuguese (Português)": "Tiếng Bồ Đào Nha (Português)",
+  Position: "Vị trí",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Tích cực tăng giá (tăng giá, chỉ hiển thị dưới dạng giá mới). Tiêu cực làm giảm nó (giảm giá, được hiển thị với giá thực tế). Từ −90% đến 500%. Việc lưu quy tắc cho cùng một mục tiêu và phạm vi sẽ thay thế quy tắc đó thay vì thêm một quy tắc trùng lặp.",
   "Post a blog (submission form)": "Đăng blog (biểu mẫu gửi)",

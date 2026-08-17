@@ -1175,6 +1175,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Քաղաքականության տեքստը մեջբերված է յուրաքանչյուր պատասխանի համար",
   "Polish (Polski)": "լեհերեն (լեհերեն)",
   "Portuguese (Português)": "պորտուգալերեն (պորտուգալերեն)",
+  Position: "Դիրք",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Դրականը բարձրացնում է գինը (նշում, որը ցուցադրվում է միայն որպես նոր գին): Բացասականը իջեցնում է այն (զեղչ, որը ցուցադրվում է իրական գնով): −90% և 500% միջակայքում։ Նույն թիրախի և շրջանակի համար կանոն պահելը փոխարինում է այն, քան կրկնօրինակ ավելացնելը:",
   "Post a blog (submission form)": "Տեղադրեք բլոգ (ներկայացման ձև)",

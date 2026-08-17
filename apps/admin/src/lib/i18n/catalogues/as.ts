@@ -1171,6 +1171,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "প্ৰতি উত্তৰত উদ্ধৃত নীতি লিখনী",
   "Polish (Polski)": "পোলিছ (পলস্কি)",
   "Portuguese (Português)": "পৰ্তুগীজ (পৰ্তুগুৱেছ)",
+  Position: "অৱস্থান",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "ধনাত্মক মূল্য বৃদ্ধি কৰে (এটা মাৰ্কআপ, কেৱল নতুন মূল্য হিচাপে দেখুওৱা হৈছে)। নেগেটিভে ইয়াক কমায় (এটা ৰেহাই, প্ৰকৃত মূল্যৰ মাজেৰে আঘাত কৰি দেখুওৱা হৈছে)। −৯০% আৰু ৫০০%ৰ ভিতৰত। একেটা লক্ষ্য আৰু পৰিসৰৰ বাবে এটা নিয়ম সংৰক্ষণ কৰিলে এটা নকল যোগ কৰাৰ পৰিৱৰ্তে ইয়াৰ ঠাই লয়।",
   "Post a blog (submission form)": "এটা ব্লগ পোষ্ট কৰক (দাখিল প্ৰ-পত্ৰ)",

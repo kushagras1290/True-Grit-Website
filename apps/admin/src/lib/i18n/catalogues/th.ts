@@ -1127,6 +1127,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "ข้อความนโยบายที่ยกมาต่อคำตอบ",
   "Polish (Polski)": "โปแลนด์ (โปแลนด์)",
   "Portuguese (Português)": "โปรตุเกส (Português)",
+  Position: "ตำแหน่ง",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "ค่าบวกทำให้ราคาสูงขึ้น (มาร์กอัปซึ่งแสดงเป็นราคาใหม่เพียงอย่างเดียว) ค่าลบจะทำให้ราคาลดลง (ส่วนลด ซึ่งแสดงด้วยราคาจริงที่ทะลุผ่าน) ระหว่าง −90% ถึง 500% การบันทึกกฎสำหรับเป้าหมายและขอบเขตเดียวกันจะแทนที่กฎแทนที่จะเพิ่มรายการที่ซ้ำกัน",
   "Post a blog (submission form)": "โพสต์บล็อก (แบบฟอร์มการส่ง)",

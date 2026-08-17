@@ -1093,6 +1093,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "טקסט מדיניות מצוטט לכל תשובה",
   "Polish (Polski)": "פולנית (פולסקי)",
   "Portuguese (Português)": "פורטוגזית (פורטוגזית)",
+  Position: "מיקום",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "חיובי מעלה את המחיר (סימון, מוצג כמחיר החדש בלבד). שלילי מוריד אותו (הנחה, מוצגת עם המחיר האמיתי שנחצה). בין -90% ל-500%. שמירת כלל עבור אותו יעד והיקף מחליפה אותו במקום להוסיף כפילות.",
   "Post a blog (submission form)": "פרסם בלוג (טופס הגשה)",

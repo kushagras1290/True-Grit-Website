@@ -1126,6 +1126,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "ਪ੍ਰਤੀ ਜਵਾਬ ਦਾ ਹਵਾਲਾ ਦਿੱਤਾ ਗਿਆ ਨੀਤੀ ਟੈਕਸਟ",
   "Polish (Polski)": "ਪੋਲਿਸ਼ (ਪੋਲਸਕੀ)",
   "Portuguese (Português)": "ਪੁਰਤਗਾਲੀ (ਪੁਰਤਗਾਲੀ)",
+  Position: "ਸਥਿਤੀ",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "ਸਕਾਰਾਤਮਕ ਕੀਮਤ ਵਧਾਉਂਦਾ ਹੈ (ਇੱਕ ਮਾਰਕਅੱਪ, ਇਕੱਲੇ ਨਵੀਂ ਕੀਮਤ ਵਜੋਂ ਦਿਖਾਇਆ ਗਿਆ)। ਨਕਾਰਾਤਮਕ ਇਸ ਨੂੰ ਘਟਾਉਂਦਾ ਹੈ (ਇੱਕ ਛੋਟ, ਅਸਲ ਕੀਮਤ ਦੇ ਨਾਲ ਦਿਖਾਈ ਗਈ)। −90% ਅਤੇ 500% ਦੇ ਵਿਚਕਾਰ। ਉਸੇ ਟੀਚੇ ਅਤੇ ਸਕੋਪ ਲਈ ਇੱਕ ਨਿਯਮ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰਨਾ ਇੱਕ ਡੁਪਲੀਕੇਟ ਜੋੜਨ ਦੀ ਬਜਾਏ ਇਸਨੂੰ ਬਦਲ ਦਿੰਦਾ ਹੈ।",
   "Post a blog (submission form)": "ਇੱਕ ਬਲੌਗ ਪੋਸਟ ਕਰੋ (ਸਬਮਿਸ਼ਨ ਫਾਰਮ)",

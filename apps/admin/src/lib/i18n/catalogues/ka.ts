@@ -1169,6 +1169,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "პოლიტიკის ტექსტი ციტირებულია თითო პასუხზე",
   "Polish (Polski)": "პოლონური (პოლსკი)",
   "Portuguese (Português)": "პორტუგალიური (პორტუგალიური)",
+  Position: "პოზიცია",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "დადებითი ამაღლებს ფასს (მარკი, რომელიც ნაჩვენებია მხოლოდ როგორც ახალი ფასი). ნეგატივი ამცირებს მას (ფასდაკლება, რომელიც ნაჩვენებია რეალური ფასით). −90%-დან 500%-მდე. წესის შენახვა იმავე მიზნისა და მოცულობისთვის ცვლის მას, ვიდრე დუბლიკატის დამატებას.",
   "Post a blog (submission form)": "გამოაქვეყნეთ ბლოგი (გამოგზავნის ფორმა)",

@@ -1164,6 +1164,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Текст правил, цитируемый для каждого ответа",
   "Polish (Polski)": "Польский (Polski)",
   "Portuguese (Português)": "Португальский (Português)",
+  Position: "Позиция",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Положительное значение повышает цену (наценка, отображаемая только как новая цена). Отрицательное значение снижает ее (скидка отображается с перечеркнутой реальной ценой). От −90% до 500%. Сохранение правила для той же цели и области действия заменяет его, а не добавляет дубликат.",
   "Post a blog (submission form)": "Опубликовать блог (форма отправки)",

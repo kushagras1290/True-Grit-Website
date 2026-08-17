@@ -1138,6 +1138,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Stefna texti vitnað í hvert svar",
   "Polish (Polski)": "pólska (pólska)",
   "Portuguese (Português)": "portúgalska (portúgalska)",
+  Position: "Staða",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Jákvæð hækkar verðið (álagning, sýnd sem nýtt verð eingöngu). Neikvætt lækkar það (afsláttur, sýndur með raunverði slegið í gegn). Milli -90% og 500%. Að vista reglu fyrir sama markmið og sama umfang kemur í stað hennar frekar en að bæta við afriti.",
   "Post a blog (submission form)": "Settu blogg (skilaform)",

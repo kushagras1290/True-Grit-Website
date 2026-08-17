@@ -35,7 +35,7 @@ export async function loadCmsRoute(
   const page = await loadPage(slug, runtime, locale.code);
   return {
     page,
-    blockData: page ? await loadBlockData(page, request, runtime) : emptyBlockData(),
+    blockData: page ? await loadBlockData(page, request, runtime, locale.code) : emptyBlockData(),
   };
 }
 
@@ -54,6 +54,7 @@ async function loadBlockData(
   page: PublicPage,
   request: Request,
   runtime: CatalogueRuntime,
+  locale: string,
 ): Promise<BlockData> {
   const productSlugs = page.blocks.flatMap((block) =>
     block.type === "product_collection" ? block.props.productSlugs : [],
@@ -73,14 +74,14 @@ async function loadBlockData(
   const country = resolveCountry(request);
   const [categories, farms, products, reviewLists, promotions, recommendationLists] =
     await Promise.all([
-      loadCategories(country, runtime),
-      loadFarms(runtime),
-      loadProductsBySlugs(productSlugs, country, runtime),
+      loadCategories(country, runtime, locale),
+      loadFarms(runtime, locale),
+      loadProductsBySlugs(productSlugs, country, runtime, locale),
       Promise.all(reviewBlocks.map((block) => loadFeaturedReviews(block, runtime))),
       Promise.all(promotionBlocks.map((block) => loadFeaturedPromotion(block.props, runtime))),
       Promise.all(
         recommendationBlocks.map((block) =>
-          loadBestsellers({ limit: block.props.limit }, country, runtime),
+          loadBestsellers({ limit: block.props.limit }, country, runtime, locale),
         ),
       ),
     ]);

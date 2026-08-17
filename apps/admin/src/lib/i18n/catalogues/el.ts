@@ -1164,6 +1164,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Κείμενο πολιτικής που αναφέρεται ανά απάντηση",
   "Polish (Polski)": "Πολωνικά (Πολωνικά)",
   "Portuguese (Português)": "Πορτογαλικά (Πορτογαλικά)",
+  Position: "Θέση",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Το θετικό αυξάνει την τιμή (μια σήμανση, που εμφανίζεται μόνο ως νέα τιμή). Το Negative το μειώνει (μια έκπτωση, που εμφανίζεται με την πραγματική τιμή συμπληρωμένη). Μεταξύ -90% και 500%. Η αποθήκευση ενός κανόνα για τον ίδιο στόχο και εύρος τον αντικαθιστά αντί να προσθέσει ένα αντίγραφο.",
   "Post a blog (submission form)": "Δημοσίευση ιστολογίου (φόρμα υποβολής)",

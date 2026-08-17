@@ -44,7 +44,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const [categories, farms, products, reviewLists, promotions, recommendationLists] =
     await Promise.all([
       loadCategories(country, runtime, locale.code),
-      loadFarms(runtime),
+      loadFarms(runtime, locale.code),
       loadProductsBySlugs(productSlugs, country, runtime, locale.code),
       Promise.all(reviewBlocks.map((block) => loadFeaturedReviews(block, runtime))),
       Promise.all(promotionBlocks.map((block) => loadFeaturedPromotion(block.props, runtime))),

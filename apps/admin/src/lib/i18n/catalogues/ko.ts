@@ -1149,6 +1149,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "답변별로 인용된 정책 텍스트",
   "Polish (Polski)": "폴란드어(Polski)",
   "Portuguese (Português)": "포르투갈어(Português)",
+  Position: "직위",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "양수는 가격을 인상합니다(인상폭은 새 가격으로만 표시됨). 음수는 가격을 낮춥니다(할인, 실제 가격이 표시됨). -90%에서 500% 사이. 동일한 대상 및 범위에 대한 규칙을 저장하면 중복 항목을 추가하는 대신 규칙이 대체됩니다.",
   "Post a blog (submission form)": "블로그 게시(제출 양식)",

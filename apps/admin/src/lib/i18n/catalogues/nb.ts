@@ -1109,6 +1109,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Retningslinjetekst sitert per svar",
   "Polish (Polski)": "polsk (polsk)",
   "Portuguese (Português)": "portugisisk (português)",
+  Position: "Posisjon",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Positivt øker prisen (en markup, vist som den nye prisen alene). Negativt senker den (en rabatt, vist med den reelle prisen slått gjennom). Mellom −90 % og 500 %. Lagring av en regel for samme mål og omfang erstatter den i stedet for å legge til en duplikat.",
   "Post a blog (submission form)": "Legg ut en blogg (innleveringsskjema)",
