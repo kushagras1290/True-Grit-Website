@@ -1154,6 +1154,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Atsakyme cituojamas politikos tekstas",
   "Polish (Polski)": "lenkų (lenkų)",
   "Portuguese (Português)": "portugalų (Português)",
+  Position: "Padėtis",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Teigiamas padidina kainą (antkainis, rodomas tik kaip nauja kaina). Neigiamas jį sumažina (nuolaida, rodoma su realia kaina). Nuo –90% iki 500%. Išsaugojus taisyklę, skirtą tam pačiam tikslui ir apimčiai, ji pakeičiama, o ne pridedama dublikatas.",
   "Post a blog (submission form)": "Paskelbkite tinklaraštį (pateikimo forma)",

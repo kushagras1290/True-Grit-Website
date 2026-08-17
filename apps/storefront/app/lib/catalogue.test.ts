@@ -11,11 +11,13 @@ import {
   loadAllProducts,
   loadCategories,
   loadCategoryPage,
+  loadFarms,
   loadHighlightedProducts,
   loadProduct,
   loadProductPage,
   loadProductsBySlugs,
   runSearch,
+  type CatalogueRuntime,
 } from "./catalogue.server";
 
 describe("demo catalogue", () => {
@@ -120,6 +122,23 @@ describe("demo catalogue", () => {
     const highlights = await loadHighlightedProducts("IN");
     expect(highlights.length).toBeGreaterThan(0);
     expect(highlights[0]?.slug).toBe(products[0]?.slug);
+  });
+
+  it("requests farm listings in the visitor's locale", async () => {
+    const seen: string[] = [];
+    const runtime: CatalogueRuntime = {
+      apiUrl: "https://api.test",
+      apiWorker: {
+        fetch: (async (request: Request) => {
+          seen.push(request.url);
+          return Response.json({ items: [] });
+        }) as unknown as typeof fetch,
+      },
+    };
+
+    await loadFarms(runtime, "hi");
+
+    expect(seen).toEqual(["https://api.test/v1/public/farms?locale=hi"]);
   });
 
   it("exposes tree position on every category so the shop can group them", () => {

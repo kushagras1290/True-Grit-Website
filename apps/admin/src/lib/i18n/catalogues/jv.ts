@@ -1127,6 +1127,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Tèks kabijakan sing dikutip saben jawaban",
   "Polish (Polski)": "Polandia (Polski)",
   "Portuguese (Português)": "Basa Portugis (Português)",
+  Position: "Posisi",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Positif mundhakaken rega (markup, ditampilake minangka rega anyar piyambak). Negatif ngedhunake (diskon, ditampilake kanthi rega nyata). Antarane -90% lan 500%. Nyimpen aturan kanggo target lan ruang lingkup sing padha ngganti tinimbang nambahake duplikat.",
   "Post a blog (submission form)": "Kirim blog (formulir pengajuan)",

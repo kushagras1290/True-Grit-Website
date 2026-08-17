@@ -1154,6 +1154,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Erantzun bakoitzeko aipatzen den politika-testua",
   "Polish (Polski)": "Poloniera (Polskia)",
   "Portuguese (Português)": "Portugesa (Portugalera)",
+  Position: "Kokapena",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Positiboak prezioa igotzen du (marka bat, prezio berri gisa bakarrik agertzen da). Negatiboak murrizten du (deskontua, benetako prezioa markatuta agertzen da). %-90 eta %500 artean. Helburu eta esparru bererako arau bat gordetzeak bikoiztu bat gehitu beharrean ordezkatzen du.",
   "Post a blog (submission form)": "Blog bat argitaratu (bidaltzeko inprimakia)",

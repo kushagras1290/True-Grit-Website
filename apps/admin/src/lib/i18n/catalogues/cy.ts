@@ -1113,6 +1113,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Testun polisi wedi'i ddyfynnu fesul ateb",
   "Polish (Polski)": "Pwyleg (Polski)",
   "Portuguese (Português)": "Portiwgaleg (Português)",
+  Position: "Swyddiad",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Positive yn codi'r pris (marcio, a ddangosir fel y pris newydd yn unig). Negyddol yn ei ostwng (gostyngiad, wedi'i ddangos gyda'r pris gwirioneddol wedi'i daro drwodd). Rhwng −90% a 500%. Mae cadw rheol ar gyfer yr un targed a chwmpas yn ei disodli yn hytrach nag ychwanegu copi dyblyg.",
   "Post a blog (submission form)": "Postiwch blog (ffurflen gyflwyno)",

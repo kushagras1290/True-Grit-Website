@@ -1141,6 +1141,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Inyandiko ya politiki yavuzwe kuri buri gisubizo",
   "Polish (Polski)": "Igipolonye (Polski)",
   "Portuguese (Português)": "Igiporutugali (Português)",
+  Position: "Umwanya",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Ibyiza bizamura igiciro (ikimenyetso, cyerekanwe nkigiciro gishya cyonyine). Ibibi birayimanura (kugabanywa, kwerekanwa nigiciro nyacyo cyanyuze). Hagati ya −90% na 500%. Kuzigama itegeko kumugambi umwe nubunini birabisimbuza aho kongeramo duplicate.",
   "Post a blog (submission form)": "Kohereza blog (ifishi yo gutanga)",

@@ -1105,6 +1105,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy page slugs": "Ama-slugs ekhasi lenqubomgomo",
   "Policy text quoted per answer": "Umbhalo wenqubomgomo ocashuniwe ngempendulo ngayinye",
   "Portuguese (Português)": "IsiPutukezi (Português)",
+  Position: "Isikhundla",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Okuhle kuphakamisa inani (imakhaphu, eboniswa njengentengo entsha iyodwa). Okubi kuyayehlisa (isaphulelo, esiboniswa nenani langempela elishayiwe). Phakathi kuka-−90% no-500%. Ukulondoloza isimiso sethagethi efanayo kanye nobubanzi kuyayishintsha esikhundleni sokwengeza impinda.",
   "Post a blog (submission form)": "Thumela ibhulogi (ifomu lokuhambisa)",

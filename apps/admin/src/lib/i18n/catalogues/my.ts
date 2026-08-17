@@ -1148,6 +1148,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "အဖြေတစ်ခုလျှင် ကိုးကားဖော်ပြထားသော မူဝါဒစာသား",
   "Polish (Polski)": "ပိုလန် (Polski)",
   "Portuguese (Português)": "ပေါ်တူဂီ (Português)",
+  Position: "ရာထူး",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "အပြုသဘောက စျေးနှုန်းကို တိုးပေးသည် (စျေးနှုန်းအသစ်တစ်ခုတည်းအဖြစ် ပြထားသည့် အမှတ်အသားတစ်ခု)။ အနုတ်လက္ခဏာက ၎င်းကို လျှော့ပေးသည် (စျေးနှုန်းအစစ်အမှန်ဖြင့် ရိုက်ပြထားသည်)။ −90% နှင့် 500% ကြား။ တူညီသောပစ်မှတ်အတွက် စည်းကမ်းချက်တစ်ခုအား သိမ်းဆည်းခြင်းသည် မိတ္တူပွားခြင်းကိုထည့်ခြင်းထက် ၎င်းကိုအစားထိုးသည်။",
   "Post a blog (submission form)": "ဘလော့ဂ်တစ်ခု (တင်သွင်းမှုပုံစံ) ပို့စ်တင်ပါ",

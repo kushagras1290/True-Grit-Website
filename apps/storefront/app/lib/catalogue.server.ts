@@ -675,8 +675,11 @@ export async function loadHighlightedProducts(
   );
 }
 
-export async function loadFarms(runtime?: CatalogueRuntime): Promise<FarmDetail[]> {
-  return listFromApi<FarmDetail>("/v1/public/farms", farms, runtime);
+export async function loadFarms(
+  runtime?: CatalogueRuntime,
+  locale?: string,
+): Promise<FarmDetail[]> {
+  return listFromApi<FarmDetail>(withLocale("/v1/public/farms", locale), farms, runtime);
 }
 
 export async function loadFarm(

@@ -41,7 +41,7 @@ import {
 } from "../lib/api";
 import { IMAGE_SPECIFICATIONS_BY_ID } from "../lib/image-specifications";
 import { usePermissions } from "../lib/permissions";
-import { T } from "../lib/i18n";
+import { T, useT } from "../lib/i18n";
 import { repositionItem } from "./builder";
 
 /** Mirrors the identical helper in `site-control.tsx` / `appearance.tsx` — a
@@ -189,6 +189,7 @@ function defaults(data?: SiteControl): HomepageForm {
 }
 
 export function HomepageSettingsPage() {
+  const t = useT();
   const toast = useToast();
   const queryClient = useQueryClient();
   const { data, isLoading, isError } = useQuery({
@@ -498,7 +499,7 @@ export function HomepageSettingsPage() {
                           />
                           <T>Enabled</T>
                         </label>
-                        <Field label="Position" htmlFor={`slide-position-${index}`}>
+                        <Field label={t("Position")} htmlFor={`slide-position-${index}`}>
                           <Select
                             id={`slide-position-${index}`}
                             value={index}

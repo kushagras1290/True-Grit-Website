@@ -1156,6 +1156,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "نص السياسة المقتبس لكل إجابة",
   "Polish (Polski)": "البولندية (Polski)",
   "Portuguese (Português)": "البرتغالية (البرتغالية)",
+  Position: "المنصب",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "الإيجابية ترفع السعر (زيادة، تظهر على أنها السعر الجديد وحده). السالب يخفضه (الخصم، يظهر مع السعر الحقيقي الذي تم اختراقه). بين -90% و500%. يؤدي حفظ قاعدة لنفس الهدف والنطاق إلى استبدالها بدلاً من إضافة نسخة مكررة.",
   "Post a blog (submission form)": "نشر مدونة (نموذج إرسال)",

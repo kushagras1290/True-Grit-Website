@@ -1174,6 +1174,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "విధాన వచనం, ప్రతి పేజీకి కోట్ చేయబడినవి",
   "Polish (Polski)": "పోలిష్ (పోల్స్కి)",
   "Portuguese (Português)": "పోర్చుగీస్ (పోర్చుగీస్)",
+  Position: "స్థానం",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "పాజిటివ్ ధరను పెంచుతుంది (మార్కప్, కొత్త ధర మాత్రమే చూపబడింది). ప్రతికూలత దానిని తగ్గిస్తుంది (తగ్గింపు, నిజమైన ధరతో చూపబడింది). −90% మరియు 500% మధ్య. అదే లక్ష్యం మరియు స్కోప్ కోసం నియమాన్ని సేవ్ చేయడం నకిలీని జోడించడం కంటే భర్తీ చేస్తుంది.",
   "Post a blog (submission form)": "బ్లాగ్‌ను పోస్ట్ చేయండి (సమర్పణ ఫారమ్)",

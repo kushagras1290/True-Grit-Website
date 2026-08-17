@@ -5,11 +5,13 @@ import { Section } from "../components/catalogue";
 import { PageBanner } from "../components/page-banner";
 import { catalogueRuntime, loadFarms } from "../lib/catalogue.server";
 import { useLocaleContext } from "../lib/i18n/context";
+import { resolveLocale } from "../lib/i18n/resolve.server";
 import { seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
 
-export async function loader({ context }: Route.LoaderArgs) {
-  return { farms: await loadFarms(catalogueRuntime(context)) };
+export async function loader({ request, context }: Route.LoaderArgs) {
+  const { locale } = resolveLocale(request);
+  return { farms: await loadFarms(catalogueRuntime(context), locale.code) };
 }
 
 export function meta({ matches }: Route.MetaArgs) {

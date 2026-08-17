@@ -1181,6 +1181,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "ଉତ୍ତର ପ୍ରତି ଉଦ୍ଧୃତ ନୀତି ପାଠ୍ୟ |",
   "Polish (Polski)": "ପୋଲାଣ୍ଡ (ପୋଲସ୍କି)",
   "Portuguese (Português)": "ପର୍ତ୍ତୁଗୀଜ୍ (Português)",
+  Position: "ଅବସ୍ଥାନ",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "ସକରାତ୍ମକ ମୂଲ୍ୟ ବୃଦ୍ଧି କରେ (ଏକ ମାର୍କଅପ୍, କେବଳ ନୂତନ ମୂଲ୍ୟ ଭାବରେ ଦେଖାଯାଏ) | ନେଗେଟିଭ୍ ଏହାକୁ ହ୍ରାସ କରେ (ରିହାତି, ପ୍ରକୃତ ମୂଲ୍ୟ ସହିତ ଦେଖାଯାଇଥିବା) | −90% ରୁ 500% ମଧ୍ୟରେ | ସମାନ ଲକ୍ଷ୍ୟ ଏବଂ ପରିସର ପାଇଁ ଏକ ନିୟମ ସଞ୍ଚୟ କରିବା ଏହାର ନକଲ ଯୋଡିବା ପରିବର୍ତ୍ତେ ଏହାକୁ ବଦଳାଇଥାଏ |",
   "Post a blog (submission form)": "ଏକ ବ୍ଲଗ୍ ପୋଷ୍ଟ କରନ୍ତୁ (ଦାଖଲ ଫର୍ମ)",

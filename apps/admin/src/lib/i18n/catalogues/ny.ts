@@ -1068,6 +1068,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy page slugs": "Zolemba zatsamba lalamulo",
   "Policy text quoted per answer": "Zolemba zalamulo zotchulidwa payankho lililonse",
   "Portuguese (Português)": "Chipwitikizi (Português)",
+  Position: "Malo",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Positive imakweza mtengo (mndandanda, wowonetsedwa ngati mtengo watsopano wokha). Zoyipa zimatsitsa (kuchotsera, kowonetsedwa ndi mtengo weniweni womwe wagulidwa). Pakati pa -90% ndi 500%. Kusunga lamulo la chandamale chofanana ndi kuchuluka kwake kumalowetsa m'malo mwake m'malo mowonjezera chobwereza.",
   "Post a blog (submission form)": "Tumizani bulogu (fomu yotumizira)",

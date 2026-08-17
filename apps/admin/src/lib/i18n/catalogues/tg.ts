@@ -1161,6 +1161,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Матни сиёсат дар як ҷавоб иқтибос оварда шудааст",
   "Polish (Polski)": "Лаҳистон (Полски)",
   "Portuguese (Português)": "Португалӣ (Português)",
+  Position: "Мавқеъ",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Мусбат нархро баланд мекунад (баҳогузорӣ, танҳо ҳамчун нархи нав нишон дода шудааст). Манфӣ онро паст мекунад (тахфиф, ки бо нархи воқеӣ нишон дода шудааст). Байни -90% ва 500%. Нигоҳ доштани қоида барои як ҳадаф ва миқёс онро иваз мекунад, ба ҷои илова кардани нусха.",
   "Post a blog (submission form)": "Интишори блог (шакли пешниҳод)",

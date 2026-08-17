@@ -1165,6 +1165,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "ಪ್ರತಿ ಉತ್ತರಕ್ಕೆ ನೀತಿ ಪಠ್ಯವನ್ನು ಉಲ್ಲೇಖಿಸಲಾಗಿದೆ",
   "Polish (Polski)": "ಪೋಲಿಷ್ (ಪೋಲ್ಸ್ಕಿ)",
   "Portuguese (Português)": "ಪೋರ್ಚುಗೀಸ್ (ಪೋರ್ಚುಗೀಸ್)",
+  Position: "ಸ್ಥಾನ",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "ಧನಾತ್ಮಕವು ಬೆಲೆಯನ್ನು ಹೆಚ್ಚಿಸುತ್ತದೆ (ಮಾರ್ಕ್‌ಅಪ್, ಕೇವಲ ಹೊಸ ಬೆಲೆ ಎಂದು ತೋರಿಸಲಾಗಿದೆ). ಋಣಾತ್ಮಕವು ಅದನ್ನು ಕಡಿಮೆ ಮಾಡುತ್ತದೆ (ರಿಯಾಯಿತಿ, ನಿಜವಾದ ಬೆಲೆಯೊಂದಿಗೆ ತೋರಿಸಲಾಗಿದೆ). −90% ಮತ್ತು 500% ನಡುವೆ. ಒಂದೇ ಗುರಿ ಮತ್ತು ವ್ಯಾಪ್ತಿಗೆ ನಿಯಮವನ್ನು ಉಳಿಸುವುದರಿಂದ ನಕಲಿಯನ್ನು ಸೇರಿಸುವ ಬದಲು ಅದನ್ನು ಬದಲಾಯಿಸಲಾಗುತ್ತದೆ.",
   "Post a blog (submission form)": "ಬ್ಲಾಗ್ ಪೋಸ್ಟ್ ಮಾಡಿ (ಸಲ್ಲಿಕೆ ನಮೂನೆ)",

@@ -1096,6 +1096,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "Ọrọ ilana ti a fa jade fun idahun",
   "Polish (Polski)": "Polski (Polski)",
   "Portuguese (Português)": "Português (Português)",
+  Position: "Ipo",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Idaniloju gbe idiyele soke (siṣamisi kan, ti o han bi idiyele tuntun nikan). Odi rẹ silẹ ( ẹdinwo kan, ti o han pẹlu idiyele gidi ti o lu nipasẹ). Laarin -90% ati 500%. Ṣafipamọ ofin kan fun ibi-afẹde ati iwọn kanna ni o rọpo dipo fifi ẹda-ẹda kan kun.",
   "Post a blog (submission form)": "Fi bulọọgi kan (fọọmu ifakalẹ)",

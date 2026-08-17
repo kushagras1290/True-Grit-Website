@@ -1041,6 +1041,7 @@ const ADMIN_SOURCE_STRINGS = [
   "Policy text quoted per answer",
   "Polish (Polski)",
   "Portuguese (Português)",
+  "Position",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.",
   "Post a blog (submission form)",
   "Post a recipe (submission form)",

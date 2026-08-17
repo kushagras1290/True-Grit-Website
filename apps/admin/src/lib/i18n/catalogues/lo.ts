@@ -1114,6 +1114,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Policy text quoted per answer": "ຂໍ້ຄວາມນະໂຍບາຍທີ່ຍົກມາຕໍ່ຄຳຕອບ",
   "Polish (Polski)": "ໂປໂລຍ (ໂປໂລຍ)",
   "Portuguese (Português)": "ປອກຕຸຍການ (ປໍຕູກີສ)",
+  Position: "ຕຳແໜ່ງ",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "ທາງບວກເພີ່ມລາຄາ (ເປັນເຄື່ອງໝາຍ, ສະແດງເປັນລາຄາໃໝ່ຢ່າງດຽວ). ທາງລົບຫຼຸດລົງມັນ (ສ່ວນຫຼຸດ, ສະແດງໃຫ້ເຫັນກັບລາຄາທີ່ແທ້ຈິງໄດ້ຕີຜ່ານ). ລະຫວ່າງ −90% ຫາ 500%. ການບັນທຶກກົດລະບຽບສໍາລັບເປົ້າໝາຍດຽວກັນ ແລະຂອບເຂດຈະແທນທີ່ມັນແທນທີ່ຈະເພີ່ມຊໍ້າກັນ.",
   "Post a blog (submission form)": "ໂພສບລັອກ (ແບບຟອມການສົ່ງຂໍ້ມູນ)",
