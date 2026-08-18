@@ -117,20 +117,21 @@ function TuningRow({
         <p className="text-sm font-medium text-ink">{label}</p>
         <p className="mt-1 text-sm text-ink-muted">{description}</p>
       </div>
-      <Input
-        type="number"
-        className="w-24 shrink-0"
-        min={min}
-        max={max}
-        value={draft}
-        disabled={disabled}
-        aria-label={label}
-        onChange={(event) => setDraft(event.target.value)}
-        onBlur={commit}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") event.currentTarget.blur();
-        }}
-      />
+      <div className="w-24 shrink-0">
+        <Input
+          type="number"
+          min={min}
+          max={max}
+          value={draft}
+          disabled={disabled}
+          aria-label={label}
+          onChange={(event) => setDraft(event.target.value)}
+          onBlur={commit}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") event.currentTarget.blur();
+          }}
+        />
+      </div>
     </li>
   );
 }
