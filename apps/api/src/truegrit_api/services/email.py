@@ -234,9 +234,7 @@ def choose_provider(
     return _PROVIDER_CONSOLE
 
 
-def get_email_sender(
-    settings: Settings | None = None, preferred: str | None = None
-) -> EmailSender:
+def get_email_sender(settings: Settings | None = None, preferred: str | None = None) -> EmailSender:
     settings = settings or get_settings()
     provider = choose_provider(
         preferred,

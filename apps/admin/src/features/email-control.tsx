@@ -282,8 +282,8 @@ function RateLimitsSection() {
         </h2>
         <p className="max-w-3xl text-sm text-ink-muted">
           <T>
-            Once a window fills up, further emails in it wait for the next minute's dispatch
-            instead of failing outright -- nothing is lost, it just slows down.
+            Once a window fills up, further emails in it wait for the next minute's dispatch instead
+            of failing outright -- nothing is lost, it just slows down.
           </T>
         </p>
       </div>
@@ -332,7 +332,9 @@ function RateLimitsSection() {
         </summary>
         <div className="space-y-3 border-t border-line p-3">
           <p className="text-xs text-ink-muted">
-            <T>Blank means a category has no cap of its own -- the global limit above still applies.</T>
+            <T>
+              Blank means a category has no cap of its own -- the global limit above still applies.
+            </T>
           </p>
           {Object.entries(data.categories).map(([category, info]) => {
             const draft = categoryDrafts[category];
@@ -340,7 +342,10 @@ function RateLimitsSection() {
             const dailyValue = draft?.daily ?? String(info.dailyLimit ?? "");
             const isDirty = draft !== undefined;
             return (
-              <div key={category} className="flex flex-wrap items-end gap-3 border-t border-line pt-3 first:border-t-0 first:pt-0">
+              <div
+                key={category}
+                className="flex flex-wrap items-end gap-3 border-t border-line pt-3 first:border-t-0 first:pt-0"
+              >
                 <span className="min-w-40 flex-1 text-sm text-ink">{info.label}</span>
                 <Field label="Per hour" htmlFor={`email-cat-hourly-${category}`}>
                   <Input

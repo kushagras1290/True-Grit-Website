@@ -258,8 +258,7 @@ async def update_email_settings(
                 value = "" if raw_limit in (None, "") else str(int(raw_limit))
                 if value and not 1 <= int(value) <= _MAX_DAILY_LIMIT:
                     raise ValidationAppError(
-                        f"{category} daily limit must be blank or between"
-                        f" 1 and {_MAX_DAILY_LIMIT}."
+                        f"{category} daily limit must be blank or between 1 and {_MAX_DAILY_LIMIT}."
                     )
                 pending.append((f"{_CATEGORY_LIMIT_PREFIX}{category}.daily", value))
                 changed[f"{category}.daily_limit"] = value or None

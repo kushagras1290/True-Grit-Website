@@ -798,8 +798,8 @@ function HomepageSectionsSection() {
         <p className="max-w-3xl text-sm text-ink-muted">
           <T>
             Untick a section to hide it from customers without losing its content, and use the
-            position dropdown to change the order they appear in. Changes here apply as soon as
-            you make them.
+            position dropdown to change the order they appear in. Changes here apply as soon as you
+            make them.
           </T>
         </p>
       </div>
