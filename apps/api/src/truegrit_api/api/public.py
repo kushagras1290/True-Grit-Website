@@ -368,6 +368,7 @@ async def contact(
         ),
         aggregate_type="contact_message",
         aggregate_id=message_id,
+        category="contact_form",
     )
     return {"ok": True, "id": message_id}
 

@@ -324,7 +324,9 @@ class Default(WorkerEntrypoint):
         import json
 
         from truegrit_api.platform.translation import WorkersAITranslator
-        from truegrit_api.services.email import OutboundEmail
+        from truegrit_api.services.email import OutboundEmail, choose_provider, split_from_address
+        from truegrit_api.services.email_gate import record_email_outcome
+        from truegrit_api.services.email_settings import preferred_provider
         from truegrit_api.services.jobs import process_queue_job, retain_dead_letter
         from truegrit_api.services.translation_batches import process_task
 
@@ -339,36 +341,80 @@ class Default(WorkerEntrypoint):
                 datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
             )
 
-        async def deliver_email(email: OutboundEmail, idempotency_key: str) -> bool:
+        async def deliver_email(email: OutboundEmail, idempotency_key: str, category: str) -> bool:
+            """Kept as its own Workers-native ``js.fetch`` implementation rather
+            than calling `BrevoEmailSender`/`ResendEmailSender` from
+            `services.email` -- Pyodide's `urllib` cannot do real non-blocking
+            I/O on Workers, which is exactly why this closure has always
+            duplicated the HTTP call instead of reusing the sync senders."""
             settings = Settings()
-            if not settings.resend_api_key:
-                print("queue.email_unconfigured: RESEND_API_KEY is required")
+            provider = choose_provider(
+                await preferred_provider(db),
+                has_brevo=bool(settings.brevo_api_key),
+                has_resend=bool(settings.resend_api_key),
+                has_smtp=False,
+            )
+            if provider not in ("brevo", "resend"):
+                print("queue.email_unconfigured: no BREVO_API_KEY or RESEND_API_KEY")
+                await record_email_outcome(
+                    db,
+                    category=category,
+                    provider="none",
+                    outcome="provider_error",
+                    detail="No email provider configured.",
+                    recipient=email.to,
+                    outbox_event_id=idempotency_key,
+                )
                 return False
+
             from js import fetch
 
-            payload: dict[str, Any] = {
-                "from": settings.email_from,
-                "to": [email.to],
-                "subject": email.subject,
-                "text": email.body,
-            }
-            if email.html_body:
-                payload["html"] = email.html_body
+            if provider == "brevo":
+                sender_name, sender_address = split_from_address(settings.email_from)
+                payload: dict[str, Any] = {
+                    "sender": {"email": sender_address, "name": sender_name or sender_address},
+                    "to": [{"email": email.to}],
+                    "subject": email.subject,
+                    "textContent": email.body,
+                }
+                if email.html_body:
+                    payload["htmlContent"] = email.html_body
+                url = settings.brevo_api_url
+                headers = {
+                    "api-key": settings.brevo_api_key,
+                    "content-type": "application/json",
+                    "idempotency-key": idempotency_key,
+                }
+            else:
+                payload = {
+                    "from": settings.email_from,
+                    "to": [email.to],
+                    "subject": email.subject,
+                    "text": email.body,
+                }
+                if email.html_body:
+                    payload["html"] = email.html_body
+                url = settings.resend_api_url
+                headers = {
+                    "authorization": f"Bearer {settings.resend_api_key}",
+                    "content-type": "application/json",
+                    "idempotency-key": idempotency_key,
+                }
+
             response = await fetch(
-                settings.resend_api_url,
-                _js_object(
-                    {
-                        "method": "POST",
-                        "headers": {
-                            "authorization": f"Bearer {settings.resend_api_key}",
-                            "content-type": "application/json",
-                            "idempotency-key": idempotency_key,
-                        },
-                        "body": json.dumps(payload),
-                    }
-                ),
+                url, _js_object({"method": "POST", "headers": headers, "body": json.dumps(payload)})
             )
-            return bool(response.ok)
+            ok = bool(response.ok)
+            await record_email_outcome(
+                db,
+                category=category,
+                provider=provider,
+                outcome="sent" if ok else "provider_error",
+                detail="" if ok else f"HTTP {getattr(response, 'status', 'unknown')}",
+                recipient=email.to,
+                outbox_event_id=idempotency_key,
+            )
+            return ok
 
         translator = WorkersAITranslator(self.env.AI)
 

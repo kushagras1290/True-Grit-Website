@@ -22,6 +22,7 @@ import { DiscussionDetailPage, DiscussionsListPage } from "./features/community"
 import { ContentCommentsPage } from "./features/content-comments";
 import { DashboardPage } from "./features/dashboard";
 import { DbBrowserPage } from "./features/db-browser";
+import { EmailControlPage } from "./features/email-control";
 import { FarmRequestDetailPage, FarmRequestsListPage } from "./features/farm-requests";
 import { ExpandedCommercePage } from "./features/expanded-commerce";
 import { GiftCardsListPage } from "./features/gift-cards";
@@ -116,6 +117,7 @@ createRoot(document.getElementById("root")!).render(
                   <Route path="homepage-settings" element={<HomepageSettingsPage />} />
                   <Route path="appearance" element={<AppearancePage />} />
                   <Route path="site-control" element={<SiteControlPage />} />
+                  <Route path="email" element={<EmailControlPage />} />
                   {/* The homepage controls used to live under Site Control; keep
                   bookmarks and links from older docs working. */}
                   <Route

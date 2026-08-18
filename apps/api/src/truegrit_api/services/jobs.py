@@ -12,6 +12,7 @@ from typing import Any, Protocol
 from truegrit_api.logging import log_event
 from truegrit_api.platform.database import Database
 from truegrit_api.services.email import OutboundEmail, send_email
+from truegrit_api.services.email_gate import check_email_gate, record_email_outcome
 from truegrit_api.util.timeutil import utc_now_iso
 
 _EMAIL_EVENT = "notification.email.v1"
@@ -43,8 +44,14 @@ async def enqueue_email(
     html_body: str | None = None,
     aggregate_type: str,
     aggregate_id: str,
+    category: str,
 ) -> str:
-    """Persist one email job; repeating the same business event is a no-op."""
+    """Persist one email job; repeating the same business event is a no-op.
+
+    `category` drives the admin-controlled toggle and rate limit
+    (`services/email_gate.py`) checked at dispatch time -- it must be one of
+    `email_settings.EMAIL_CATEGORIES`.
+    """
     event_id = _event_id(f"email:{dedupe_key}")
     now = utc_now_iso()
     payload = json.dumps(
@@ -55,10 +62,10 @@ async def enqueue_email(
         """
         INSERT OR IGNORE INTO outbox_events
           (id, event_type, event_version, aggregate_type, aggregate_id,
-           payload_json, status, available_at, created_at)
-        VALUES (?, ?, 1, ?, ?, ?, 'pending', ?, ?)
+           payload_json, status, available_at, created_at, category)
+        VALUES (?, ?, 1, ?, ?, ?, 'pending', ?, ?, ?)
         """,
-        (event_id, _EMAIL_EVENT, aggregate_type, aggregate_id, payload, now, now),
+        (event_id, _EMAIL_EVENT, aggregate_type, aggregate_id, payload, now, now, category),
     )
     return event_id
 
@@ -68,18 +75,33 @@ def _retry_at(attempt_count: int) -> str:
     return (datetime.now(UTC) + timedelta(seconds=delay_seconds)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+_RATE_LIMIT_RETRY_SECONDS = 60
+
+
 async def dispatch_pending_outbox(
     db: Database,
     publisher: QueuePublisher,
     *,
     limit: int = _MAX_BATCH_SIZE,
 ) -> dict[str, int]:
-    """Publish pending rows; duplicates are safe because event IDs are stable."""
+    """Publish pending rows; duplicates are safe because event IDs are stable.
+
+    Email rows are additionally checked against `services.email_gate` before
+    publishing:
+
+    * A category the admin switched off marks the row `failed` immediately
+      (a skipped notification is never worth resurrecting later) and records
+      why in `email_send_log`.
+    * A row over its rate limit is left `pending` with `available_at` pushed
+      a minute out -- the next cron tick retries it -- and `attempt_count` is
+      **not** incremented, because a throttle is not a delivery failure and
+      must not burn through the row's retry budget into the DLQ.
+    """
     bounded_limit = max(1, min(limit, _MAX_BATCH_SIZE))
     rows = await db.fetch_all(
         """
         SELECT id, event_type, event_version, aggregate_type, aggregate_id,
-               payload_json, attempt_count, created_at
+               payload_json, attempt_count, created_at, category
         FROM outbox_events
         WHERE status = 'pending' AND available_at <= ? AND attempt_count < ?
         ORDER BY available_at, created_at
@@ -89,7 +111,46 @@ async def dispatch_pending_outbox(
     )
     published = 0
     failed = 0
+    blocked = 0
+    rate_limited = 0
     for row in rows:
+        category = row["category"]
+        if row["event_type"] == _EMAIL_EVENT:
+            gate = await check_email_gate(db, category)
+            if not gate.allowed:
+                payload = json.loads(row["payload_json"])
+                await record_email_outcome(
+                    db,
+                    category=category,
+                    provider="none",
+                    outcome=gate.outcome,
+                    outbox_event_id=row["id"],
+                    recipient=payload.get("to"),
+                )
+                if gate.outcome == "rate_limited":
+                    await db.execute(
+                        "UPDATE outbox_events SET available_at = ?"
+                        " WHERE id = ? AND status = 'pending'",
+                        (
+                            (
+                                datetime.now(UTC) + timedelta(seconds=_RATE_LIMIT_RETRY_SECONDS)
+                            ).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                            row["id"],
+                        ),
+                    )
+                    rate_limited += 1
+                else:
+                    await db.execute(
+                        """
+                        UPDATE outbox_events
+                        SET status = 'failed', attempt_count = attempt_count + 1
+                        WHERE id = ? AND status = 'pending'
+                        """,
+                        (row["id"],),
+                    )
+                    blocked += 1
+                continue
+
         message = {
             "idempotencyKey": row["id"],
             "eventType": row["event_type"],
@@ -98,6 +159,7 @@ async def dispatch_pending_outbox(
             "aggregateId": row["aggregate_id"],
             "payload": json.loads(row["payload_json"]),
             "createdAt": row["created_at"],
+            "category": category,
         }
         try:
             await publisher.send(message)
@@ -131,7 +193,13 @@ async def dispatch_pending_outbox(
             (utc_now_iso(), row["id"]),
         )
         published += 1
-    return {"selected": len(rows), "published": published, "failed": failed}
+    return {
+        "selected": len(rows),
+        "published": published,
+        "failed": failed,
+        "blocked": blocked,
+        "rateLimited": rate_limited,
+    }
 
 
 def _required_string(payload: Mapping[str, Any], key: str) -> str:
@@ -145,7 +213,7 @@ async def process_queue_job(
     db: Database,
     message: Mapping[str, Any],
     *,
-    deliver_email: Callable[[OutboundEmail, str], bool | Awaitable[bool]] | None = None,
+    deliver_email: Callable[[OutboundEmail, str, str], bool | Awaitable[bool]] | None = None,
     invalidate_cache: Callable[[str, str], Awaitable[None]] | None = None,
     translate_task: Callable[[str], Awaitable[None]] | None = None,
 ) -> str:
@@ -173,12 +241,13 @@ async def process_queue_job(
             body=_required_string(payload, "body"),
             html_body=html_value,
         )
+        category = str(message.get("category") or "uncategorized")
         sender = deliver_email or (
-            lambda value, _key: send_email(
+            lambda value, _key, _category: send_email(
                 value.to, value.subject, value.body, html_body=value.html_body
             )
         )
-        delivery_result = sender(email, idempotency_key)
+        delivery_result = sender(email, idempotency_key, category)
         accepted = (
             await delivery_result if inspect.isawaitable(delivery_result) else delivery_result
         )

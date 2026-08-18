@@ -131,7 +131,9 @@ from truegrit_api.services.catalogue import (
     update_product,
 )
 from truegrit_api.services.contact import contactable_email, display_contact
-from truegrit_api.services.email import email_transport_name, send_email
+from truegrit_api.services.email import email_transport_name
+from truegrit_api.services.email_gate import send_gated_email
+from truegrit_api.services.email_settings import preferred_provider
 from truegrit_api.services.email_templates import (
     render_farm_partnership_approved,
     render_farm_partnership_rejected,
@@ -2989,6 +2991,7 @@ async def decide_submission_endpoint(
                 ),
                 aggregate_type="content_submission",
                 aggregate_id=submission_id,
+                category="content_submission_decision",
             )
         elif payload.decision == "changes_requested" and payload.note:
             edit_url = f"{settings.public_storefront_url}/account/submissions/{submission_id}/edit"
@@ -3005,6 +3008,7 @@ async def decide_submission_endpoint(
                 ),
                 aggregate_type="content_submission",
                 aggregate_id=submission_id,
+                category="content_submission_decision",
             )
         elif payload.decision == "rejected" and payload.note:
             await enqueue_email(
@@ -3020,6 +3024,7 @@ async def decide_submission_endpoint(
                 ),
                 aggregate_type="content_submission",
                 aggregate_id=submission_id,
+                category="content_submission_decision",
             )
     return result
 
@@ -3167,6 +3172,7 @@ async def decide_farm_request_endpoint(
                 ),
                 aggregate_type="farm_partnership_request",
                 aggregate_id=entry_id,
+                category="farm_partnership_decision",
             )
         else:
             await enqueue_email(
@@ -3184,6 +3190,7 @@ async def decide_farm_request_endpoint(
                 ),
                 aggregate_type="farm_partnership_request",
                 aggregate_id=entry_id,
+                category="farm_partnership_decision",
             )
     return {"id": result["id"], "status": result["status"]}
 
@@ -6514,14 +6521,26 @@ async def invite_user_endpoint(
         settings=settings,
     )
     email_sent = (
-        send_email(email.to, email.subject, email.body, settings, email.html_body)
+        await send_gated_email(
+            db,
+            category="staff_account",
+            to=email.to,
+            subject=email.subject,
+            body=email.body,
+            settings=settings,
+            html_body=email.html_body,
+        )
         if email is not None
         else False
     )
     # The console sender "succeeds" without delivering anything, so a bare
     # emailSent=true would tell the operator an invitation arrived when no mail
     # transport is configured at all. Report which transport handled it.
-    return {**result, "emailSent": email_sent, "emailTransport": email_transport_name(settings)}
+    return {
+        **result,
+        "emailSent": email_sent,
+        "emailTransport": email_transport_name(settings, await preferred_provider(db)),
+    }
 
 
 @router.post("/users")
@@ -6631,7 +6650,15 @@ async def email_user_password_reset_endpoint(
     )
     if email is None:
         raise ValidationAppError("This user cannot receive a reset email.")
-    email_sent = send_email(email.to, email.subject, email.body, settings, email.html_body)
+    email_sent = await send_gated_email(
+        db,
+        category="staff_account",
+        to=email.to,
+        subject=email.subject,
+        body=email.body,
+        settings=settings,
+        html_body=email.html_body,
+    )
     await db.batch(
         [
             audit_statement(
@@ -7223,7 +7250,15 @@ async def staff_password_reset_request(
         settings=settings,
     )
     if email is not None:
-        send_email(email.to, email.subject, email.body, settings, email.html_body)
+        await send_gated_email(
+            db,
+            category="staff_account",
+            to=email.to,
+            subject=email.subject,
+            body=email.body,
+            settings=settings,
+            html_body=email.html_body,
+        )
     return {"ok": True}
 
 

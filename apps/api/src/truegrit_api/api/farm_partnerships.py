@@ -182,6 +182,7 @@ async def submit_farm_partnership_request(
         ),
         aggregate_type="farm_partnership_request",
         aggregate_id=result["id"],
+        category="farm_partnership_application",
     )
     await enqueue_email(
         db,
@@ -198,5 +199,6 @@ async def submit_farm_partnership_request(
         html_body=render_farm_partnership_received(result["contactName"], result["farmName"]),
         aggregate_type="farm_partnership_request",
         aggregate_id=result["id"],
+        category="farm_partnership_application",
     )
     return {"id": result["id"], "status": result["status"]}

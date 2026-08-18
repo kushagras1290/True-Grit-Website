@@ -679,6 +679,7 @@ export function HomepageSettingsPage() {
 // ---------------------------------------------------------------------------
 
 function HomepageSectionsSection() {
+  const t = useT();
   const toast = useToast();
   const queryClient = useQueryClient();
   const { data, isLoading, isError } = useQuery({
@@ -779,13 +780,12 @@ function HomepageSectionsSection() {
 
   const sections = data.sections;
 
-  function move(index: number, delta: number) {
-    const target = index + delta;
-    if (target < 0 || target >= sections.length) return;
-    const ids = sections.map((section) => section.id);
-    const moved = ids[index]!;
-    ids[index] = ids[target]!;
-    ids[target] = moved;
+  function moveTo(index: number, targetIndex: number) {
+    const ids = repositionItem(
+      sections.map((section) => section.id),
+      index,
+      targetIndex,
+    );
     orderMutation.mutate(ids);
   }
 
@@ -798,7 +798,8 @@ function HomepageSectionsSection() {
         <p className="max-w-3xl text-sm text-ink-muted">
           <T>
             Untick a section to hide it from customers without losing its content, and use the
-            arrows to change the order they appear in. Changes here apply as soon as you make them.
+            position dropdown to change the order they appear in. Changes here apply as soon as you
+            make them.
           </T>
         </p>
       </div>
@@ -832,26 +833,24 @@ function HomepageSectionsSection() {
                     </span>
                   </span>
                 </label>
-                <div className="flex shrink-0 items-center gap-1.5">
+                <div className="flex shrink-0 items-center gap-3">
                   <StatusPill status={section.enabled ? "published" : "draft"} />
-                  <button
-                    type="button"
-                    aria-label={`Move ${section.label} up`}
-                    className="min-h-8 min-w-8 rounded-sm border border-line text-xs disabled:opacity-40"
-                    disabled={busy || index === 0}
-                    onClick={() => move(index, -1)}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    aria-label={`Move ${section.label} down`}
-                    className="min-h-8 min-w-8 rounded-sm border border-line text-xs disabled:opacity-40"
-                    disabled={busy || index === sections.length - 1}
-                    onClick={() => move(index, 1)}
-                  >
-                    ↓
-                  </button>
+                  <Field label={t("Position")} htmlFor={`section-position-${section.id}`}>
+                    <Select
+                      id={`section-position-${section.id}`}
+                      aria-label={`Position of ${section.label}`}
+                      value={index}
+                      disabled={busy}
+                      onChange={(event) => moveTo(index, Number(event.target.value))}
+                      className="w-20"
+                    >
+                      {sections.map((_, position) => (
+                        <option key={position} value={position}>
+                          {position + 1}
+                        </option>
+                      ))}
+                    </Select>
+                  </Field>
                   {SECTION_EDITORS.has(section.type) ? (
                     <Button
                       type="button"
