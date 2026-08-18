@@ -11,6 +11,7 @@ from truegrit_api.api.currency_rates import admin_router as currency_rates_admin
 from truegrit_api.api.currency_rates import public_router as currency_rates_public_router
 from truegrit_api.api.customer_auth import router as customer_auth_router
 from truegrit_api.api.deployments import router as deployments_router
+from truegrit_api.api.email_admin import router as email_admin_router
 from truegrit_api.api.farm_partnerships import router as farm_partnerships_router
 from truegrit_api.api.messages import router as messages_router
 from truegrit_api.api.phone_auth import router as phone_auth_router
@@ -126,6 +127,7 @@ def create_app(
     app.include_router(translation_hub_public_router, prefix="/v1/public")
     app.include_router(currency_rates_public_router, prefix="/v1/public")
     app.include_router(admin_router, prefix="/v1/admin")
+    app.include_router(email_admin_router, prefix="/v1/admin")
     app.include_router(roadmap_admin_router, prefix="/v1/admin")
     app.include_router(deployments_router, prefix="/v1/admin")
     app.include_router(messages_router, prefix="/v1/admin")

@@ -258,6 +258,10 @@ const STATUS_STYLES: Record<string, string> = {
   disabled: "bg-danger/10 text-danger",
   cancelled: "bg-danger/10 text-danger",
   out_of_stock: "bg-danger/10 text-danger",
+  sent: "bg-subtle text-brand",
+  rate_limited: "bg-warning/10 text-warning",
+  blocked_disabled: "bg-canvas text-ink-muted border border-line",
+  provider_error: "bg-danger/10 text-danger",
 };
 
 export function StatusPill({ status }: { status: string }) {

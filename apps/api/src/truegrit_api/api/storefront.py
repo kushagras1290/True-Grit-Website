@@ -534,6 +534,7 @@ async def _queue_order_emails(
             html_body=render_order_confirmation(customer.display_name, reference, total),
             aggregate_type="order",
             aggregate_id=order["id"],
+            category="order_confirmation",
         )
     owners = await db.fetch_all(
         """
@@ -560,6 +561,7 @@ async def _queue_order_emails(
             ),
             aggregate_type="order",
             aggregate_id=order["id"],
+            category="order_farm_notification",
         )
 
 

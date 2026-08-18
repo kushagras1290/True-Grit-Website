@@ -39,6 +39,7 @@ import {
   Repeat,
   RotateCcw,
   ScrollText,
+  Send,
   Settings,
   ShieldCheck,
   ShoppingCart,
@@ -253,6 +254,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         to: "/site-control",
         label: "Site Settings",
         icon: <Settings size={16} />,
+        permission: "settings.view",
+      },
+      {
+        to: "/email",
+        label: "Email",
+        icon: <Send size={16} />,
         permission: "settings.view",
       },
       {
