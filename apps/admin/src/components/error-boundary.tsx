@@ -12,6 +12,7 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 
 import { Button } from "./ui";
+import { T } from "../lib/i18n";
 
 interface Props {
   children: ReactNode;
@@ -38,11 +39,15 @@ export class AdminErrorBoundary extends Component<Props, State> {
     return (
       <main className="flex min-h-screen items-center justify-center bg-canvas px-6 text-center">
         <div className="max-w-md">
-          <p className="font-display text-lg text-ink">Something went wrong</p>
+          <p className="font-display text-lg text-ink">
+            <T>Something went wrong</T>
+          </p>
           <p className="mt-2 text-sm text-ink-muted">
-            This page hit an unexpected error and could not finish rendering. Reloading usually
-            fixes it. If it keeps happening, share what you were doing when it happened with the
-            engineering team.
+            <T>
+              This page hit an unexpected error and could not finish rendering. Reloading usually
+              fixes it. If it keeps happening, share what you were doing when it happened with the
+              engineering team.
+            </T>
           </p>
           <p className="mt-3 overflow-x-auto rounded-sm border border-line bg-surface px-3 py-2 text-left text-xs break-words text-ink-muted">
             {error.message}
@@ -53,7 +58,7 @@ export class AdminErrorBoundary extends Component<Props, State> {
             className="mt-4"
             onClick={() => window.location.reload()}
           >
-            Reload page
+            <T>Reload page</T>
           </Button>
         </div>
       </main>
