@@ -1235,6 +1235,8 @@ function demoSectionSummary(block: PublicPageBlock): string {
       return plural(block.props.items.length, "question", "questions");
     case "rich_text":
       return plural(block.props.paragraphs.length, "paragraph", "paragraphs");
+    case "bullet_list":
+      return plural(block.props.items.length, "bullet", "bullets");
     case "farmer_story":
       return block.props.attribution || "No attribution";
     case "newsletter":
