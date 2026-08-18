@@ -66,6 +66,10 @@ export interface SiteSettings {
    *  Validated server-side to a hex triplet before it is stored, because it
    *  ends up in an inline style attribute. */
   supportBotColor: string;
+  /** Whether the floating "Ask us" launcher should render at all. False means
+   *  the button itself must not appear, not just that sending a message would
+   *  fail -- see `components/support-bot-widget.tsx`. */
+  supportBotStorefrontEnabled: boolean;
 }
 
 export const DEFAULT_PAYMENTS_DISABLED_NOTICE =
@@ -98,6 +102,9 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   theme: DEFAULT_THEME,
   effects: DEFAULT_EFFECTS,
   supportBotColor: "",
+  // Matches the backend default (services/support_bot_settings.py: both
+  // widgets default to enabled until an owner turns one off).
+  supportBotStorefrontEnabled: true,
 };
 
 /** Coerce an untrusted API payload into a complete `SiteSettings`.
@@ -123,6 +130,7 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
     theme: unknown;
     effects: unknown;
     supportBotColor: unknown;
+    supportBotStorefrontEnabled: unknown;
   }>;
   const auth = source.auth ?? {};
   const payments = source.payments ?? {};
@@ -190,6 +198,10 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
     supportBotColor: /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(String(source.supportBotColor))
       ? String(source.supportBotColor)
       : "",
+    supportBotStorefrontEnabled: bool(
+      source.supportBotStorefrontEnabled,
+      DEFAULT_SITE_SETTINGS.supportBotStorefrontEnabled,
+    ),
   };
 }
 

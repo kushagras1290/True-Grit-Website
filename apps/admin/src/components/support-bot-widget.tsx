@@ -50,11 +50,17 @@ export function SupportBotWidget() {
   const scrollRef = useRef<HTMLDivElement>(null);
   // Read from the public settings payload, not /support-bot/settings: that one
   // needs `support_bot.manage`, and this widget is shown to every staff member.
-  const { data: accent } = useQuery({
-    queryKey: ["support-bot-widget-color"],
-    queryFn: api.supportBotWidgetColor,
+  const { data: widgetSettings } = useQuery({
+    queryKey: ["support-bot-widget-settings"],
+    queryFn: api.supportBotWidgetSettings,
     staleTime: 5 * 60_000,
   });
+  const accent = widgetSettings?.color;
+  // Undefined while the query is still in flight is treated as "not enabled
+  // yet" rather than "enabled" -- the alternative is the launcher flashing
+  // into view on load and then disappearing the moment the real value (off)
+  // arrives, which is worse than a brief absence.
+  const enabled = widgetSettings?.enabled ?? false;
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
@@ -72,6 +78,12 @@ export function SupportBotWidget() {
       setTurns((prev) => [...prev, { role: "assistant", content: message, isError: true }]);
     },
   });
+
+  // Hidden entirely, not just refusing to answer: an admin who switches the
+  // bot off from Help Assistant settings expects the launcher itself to
+  // disappear, not stay visible on every admin page and fail on use. Placed
+  // after every hook above so hook order stays identical across renders.
+  if (!enabled) return null;
 
   function send() {
     const message = draft.trim();

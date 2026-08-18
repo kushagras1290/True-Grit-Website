@@ -12,6 +12,9 @@
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "tailwind-merge": "^3.6.0"
+  },
   "devDependencies": {
     "typescript": "^5.8.3"
   }

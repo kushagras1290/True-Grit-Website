@@ -166,28 +166,48 @@ class FaqBlock(_BlockBase):
     props: FaqProps
 
 
+def _safe_prose_list(value: list[str]) -> list[str]:
+    for entry in value:
+        if "<" in entry or ">" in entry:
+            raise ValueError("Text cannot contain markup.")
+        if len(entry) > MAX_PARAGRAPH_LENGTH:
+            raise ValueError(f"Text cannot exceed {MAX_PARAGRAPH_LENGTH} characters.")
+        validate_inline_links(entry)
+    return value
+
+
 class RichTextProps(BaseModel):
     # Restricted rich text: plain paragraphs with an optional safe inline link
     # syntax `[label](href)`. No raw HTML ever.
+    heading: str | None = Field(default=None, max_length=120)
     paragraphs: list[str] = Field(min_length=1, max_length=60)
 
     @field_validator("paragraphs")
     @classmethod
     def _safe_paragraphs(cls, value: list[str]) -> list[str]:
-        for paragraph in value:
-            if "<" in paragraph or ">" in paragraph:
-                raise ValueError("Rich text paragraphs cannot contain markup.")
-            if len(paragraph) > MAX_PARAGRAPH_LENGTH:
-                raise ValueError(
-                    f"Rich text paragraphs cannot exceed {MAX_PARAGRAPH_LENGTH} characters."
-                )
-            validate_inline_links(paragraph)
-        return value
+        return _safe_prose_list(value)
 
 
 class RichTextBlock(_BlockBase):
     type: Literal["rich_text"]
     props: RichTextProps
+
+
+class BulletListProps(BaseModel):
+    # Same restricted-text rules as rich_text, applied per list item rather
+    # than per paragraph.
+    heading: str | None = Field(default=None, max_length=120)
+    items: list[str] = Field(min_length=1, max_length=30)
+
+    @field_validator("items")
+    @classmethod
+    def _safe_items(cls, value: list[str]) -> list[str]:
+        return _safe_prose_list(value)
+
+
+class BulletListBlock(_BlockBase):
+    type: Literal["bullet_list"]
+    props: BulletListProps
 
 
 class NewsletterProps(BaseModel):
@@ -321,6 +341,7 @@ PageBlock = Annotated[
     | FarmerStoryBlock
     | FaqBlock
     | RichTextBlock
+    | BulletListBlock
     | NewsletterBlock
     | PageLinksBlock
     | ReviewsShowcaseBlock

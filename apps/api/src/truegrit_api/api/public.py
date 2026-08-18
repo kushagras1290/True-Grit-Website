@@ -168,7 +168,13 @@ async def storefront_settings(
     `effects` before either ever reaches the browser, so the storefront itself
     stays completely unaware that "global" was resolved per visitor.
     """
-    settings, appearance, support_bot_color = await asyncio.gather(
+    (
+        settings,
+        appearance,
+        support_bot_color,
+        support_bot_storefront_enabled,
+        support_bot_admin_enabled,
+    ) = await asyncio.gather(
         load_public_settings(db, get_settings()),
         load_public_appearance(db, country),
         # Rides along for the same reason the colours above do: the chat
@@ -178,8 +184,20 @@ async def storefront_settings(
         # `support_bot.manage`-gated, and the widget is shown to every staff
         # member. A colour carries nothing sensitive.
         support_bot_settings.get_widget_color(db),
+        # Enabled state rides along too, for the same reason: without it,
+        # both widgets rendered their floating launcher unconditionally and
+        # only found out the bot was off when a message actually failed to
+        # send, instead of the button never appearing at all.
+        support_bot_settings.is_enabled(db, "storefront"),
+        support_bot_settings.is_enabled(db, "admin"),
     )
-    return {**settings.to_camel_dict(), **appearance, "supportBotColor": support_bot_color}
+    return {
+        **settings.to_camel_dict(),
+        **appearance,
+        "supportBotColor": support_bot_color,
+        "supportBotStorefrontEnabled": support_bot_storefront_enabled,
+        "supportBotAdminEnabled": support_bot_admin_enabled,
+    }
 
 
 @router.get("/payment-methods")

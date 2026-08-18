@@ -1235,6 +1235,8 @@ function demoSectionSummary(block: PublicPageBlock): string {
       return plural(block.props.items.length, "question", "questions");
     case "rich_text":
       return plural(block.props.paragraphs.length, "paragraph", "paragraphs");
+    case "bullet_list":
+      return plural(block.props.items.length, "bullet", "bullets");
     case "farmer_story":
       return block.props.attribution || "No attribution";
     case "newsletter":
@@ -4070,13 +4072,18 @@ export const api = {
     demoMode ? demo({ widgetColor }) : patch("/v1/admin/support-bot/widget-color", { widgetColor }),
 
   /** Public, unauthenticated: the floating widget is shown to every staff
-   *  member, but the settings endpoint above is `support_bot.manage`-gated. */
-  supportBotWidgetColor: (): Promise<string> =>
+   *  member, but the settings endpoint above is `support_bot.manage`-gated.
+   *  Carries `enabled` too -- without it the launcher rendered even when an
+   *  owner had switched the admin bot off from Site Settings. */
+  supportBotWidgetSettings: (): Promise<{ color: string; enabled: boolean }> =>
     demoMode
-      ? demo("")
-      : get<{ supportBotColor?: string }>("/v1/public/settings").then(
-          (body) => body.supportBotColor ?? "",
-        ),
+      ? demo({ color: "", enabled: true })
+      : get<{ supportBotColor?: string; supportBotAdminEnabled?: boolean }>(
+          "/v1/public/settings",
+        ).then((body) => ({
+          color: body.supportBotColor ?? "",
+          enabled: body.supportBotAdminEnabled ?? true,
+        })),
 };
 
 /** `wss://…/v1/admin/messages/realtime/{conversationId}` — the session cookie

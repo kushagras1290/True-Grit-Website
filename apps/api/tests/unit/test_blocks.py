@@ -2,7 +2,12 @@ import json
 
 import pytest
 
-from truegrit_api.domain.blocks import PageLinksBlock, validate_blocks
+from truegrit_api.domain.blocks import (
+    BulletListBlock,
+    PageLinksBlock,
+    RichTextBlock,
+    validate_blocks,
+)
 from truegrit_api.errors import ValidationAppError
 
 HERO = {
@@ -76,6 +81,64 @@ def test_rich_text_rejects_markup():
     }
     with pytest.raises(ValidationAppError):
         validate_blocks([block])
+
+
+def test_rich_text_heading_is_optional_and_stored():
+    with_heading = {
+        "id": "blk_rt_h",
+        "type": "rich_text",
+        "version": 1,
+        "enabled": True,
+        "props": {"heading": "Storage tips", "paragraphs": ["Fine paragraph."]},
+    }
+    without_heading = {
+        **with_heading,
+        "id": "blk_rt_nh",
+        "props": {"paragraphs": ["Fine paragraph."]},
+    }
+    validated = validate_blocks([with_heading, without_heading])
+    first, second = validated[0], validated[1]
+    assert isinstance(first, RichTextBlock)
+    assert isinstance(second, RichTextBlock)
+    assert first.props.heading == "Storage tips"
+    assert second.props.heading is None
+
+
+def test_bullet_list_accepts_inline_links_and_rejects_markup():
+    ok = {
+        "id": "blk_bl",
+        "type": "bullet_list",
+        "version": 1,
+        "enabled": True,
+        "props": {
+            "heading": "Quick checks",
+            "items": ["Smell it first.", "See the [Kathiya flour](/product/kathiya-wheat-flour)."],
+        },
+    }
+    validated = validate_blocks([ok])
+    block = validated[0]
+    assert isinstance(block, BulletListBlock)
+    assert block.props.items[1].startswith("See the [Kathiya")
+
+    bad = {
+        **ok,
+        "id": "blk_bl_bad",
+        "props": {**ok["props"], "items": ["<script>alert(1)</script>"]},
+    }
+    with pytest.raises(ValidationAppError):
+        validate_blocks([bad])
+
+
+def test_bullet_list_requires_at_least_one_item():
+    empty = {
+        "id": "blk_bl_empty",
+        "type": "bullet_list",
+        "version": 1,
+        "enabled": True,
+        "props": {"items": []},
+    }
+    with pytest.raises(ValidationAppError):
+        validate_blocks([empty])
 
 
 def test_duplicate_block_ids_rejected():

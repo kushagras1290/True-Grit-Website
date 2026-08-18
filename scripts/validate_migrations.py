@@ -233,14 +233,29 @@ def main() -> int:
                 if block.get("type") == "faq"
                 for item in block.get("props", {}).get("items", [])
             ]
-            prose = [
-                paragraph
-                for block in blocks
-                if block.get("type") == "rich_text"
-                for paragraph in block.get("props", {}).get("paragraphs", [])
-            ] + [str(item.get("answer", "")) for item in faq_items]
+            prose = (
+                [
+                    paragraph
+                    for block in blocks
+                    if block.get("type") == "rich_text"
+                    for paragraph in block.get("props", {}).get("paragraphs", [])
+                ]
+                + [
+                    item
+                    for block in blocks
+                    if block.get("type") == "bullet_list"
+                    for item in block.get("props", {}).get("items", [])
+                ]
+                + [str(item.get("answer", "")) for item in faq_items]
+            )
             word_count = len(" ".join(prose).split())
-            quality_floor = (4, 650, 5)
+            # Migration 0106 replaced the old fixed 650-word template with a
+            # deliberately short, bullet-heavy format (rich_text intro +
+            # bullet_list + product_collection + FAQ) -- the shortest article
+            # across all 262 runs 177 combined words, so 150 stays a floor
+            # against a return to the old thin, cosmetic three-title
+            # generator without penalising genuinely crisp writing.
+            quality_floor = (4, 150, 2)
             min_faq, min_words, min_minutes = quality_floor
             if (
                 len(faq_items) < min_faq
