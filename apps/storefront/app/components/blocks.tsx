@@ -385,12 +385,23 @@ export function CmsBlock({ block, data }: { block: PublicPageBlock; data: BlockD
 
     case "rich_text":
       return (
-        <Section>
+        <Section heading={block.props.heading}>
           <div className="mx-auto max-w-2xl space-y-4 text-base text-ink">
             {block.props.paragraphs.map((paragraph, index) => (
               <p key={index}>{renderRichTextParagraph(paragraph)}</p>
             ))}
           </div>
+        </Section>
+      );
+
+    case "bullet_list":
+      return (
+        <Section heading={block.props.heading}>
+          <ul className="mx-auto max-w-2xl list-disc space-y-2 pl-5 text-base text-ink marker:text-accent">
+            {block.props.items.map((item, index) => (
+              <li key={index}>{renderRichTextParagraph(item)}</li>
+            ))}
+          </ul>
         </Section>
       );
 
