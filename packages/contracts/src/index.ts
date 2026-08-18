@@ -378,7 +378,17 @@ export interface FaqBlock extends BlockBase {
 
 export interface RichTextBlock extends BlockBase {
   type: "rich_text";
-  props: { paragraphs: string[] };
+  /** `heading` is optional: a block used purely as a continuation paragraph
+   *  (no new subheading) omits it. */
+  props: { heading?: string; paragraphs: string[] };
+}
+
+export interface BulletListBlock extends BlockBase {
+  type: "bullet_list";
+  /** Same inline `[label](href)` link syntax as `rich_text`, one link per
+   *  item at most in practice, so a bullet can point at a product or a
+   *  community discussion without breaking out of list rhythm. */
+  props: { heading?: string; items: string[] };
 }
 
 export interface NewsletterBlock extends BlockBase {
@@ -481,6 +491,7 @@ export type PublicPageBlock =
   | FarmerStoryBlock
   | FaqBlock
   | RichTextBlock
+  | BulletListBlock
   | NewsletterBlock
   | PageLinksBlock
   | ReviewsShowcaseBlock
@@ -504,7 +515,8 @@ export interface PublicPage {
  * there. `rich_text` paragraphs may contain the inline link syntax
  * `[label](href)`; `product_collection` is how a post "highlights" products.
  */
-export type ContentBlock = RichTextBlock | ProductCollectionBlock | FarmerStoryBlock | FaqBlock;
+export type ContentBlock =
+  RichTextBlock | BulletListBlock | ProductCollectionBlock | FarmerStoryBlock | FaqBlock;
 
 // ---------------------------------------------------------------------------
 // Admin DTOs (subset used by the admin SPA)

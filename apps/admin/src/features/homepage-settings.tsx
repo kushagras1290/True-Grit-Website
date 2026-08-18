@@ -15,7 +15,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -186,6 +186,47 @@ function defaults(data?: SiteControl): HomepageForm {
     featuredCategories: data?.featuredCategories ?? [],
     freshFavourites: data?.freshFavourites ?? [],
   };
+}
+
+/** A plain `<input type="file">` renders as the browser's own, unlabelled
+ *  "Choose file" control -- nothing on it says the file goes to R2, and long
+ *  filenames get truncated into something like "Choose file N...en". This
+ *  hides that control and drives it from a real button instead, so the
+ *  action reads the way every other action in this console does. */
+function UploadImageButton({
+  onSelect,
+  disabled,
+  pending,
+}: {
+  onSelect: (file: File) => void;
+  disabled?: boolean;
+  pending?: boolean;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  return (
+    <>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        className="hidden"
+        disabled={disabled}
+        onChange={(event) => {
+          const file = event.currentTarget.files?.[0];
+          event.currentTarget.value = "";
+          if (file) onSelect(file);
+        }}
+      />
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={disabled}
+        onClick={() => inputRef.current?.click()}
+      >
+        {pending ? <T>{"Uploading..."}</T> : <T>{"Upload to R2"}</T>}
+      </Button>
+    </>
+  );
 }
 
 export function HomepageSettingsPage() {
@@ -400,18 +441,13 @@ export function HomepageSettingsPage() {
               htmlFor="heroImageUrl"
               error={form.formState.errors.heroImageUrl?.message}
             >
-              <Input
-                id="heroImageUpload"
-                type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif"
-                className="mb-2"
-                disabled={uploadMutation.isPending || mutation.isPending}
-                onChange={(event) => {
-                  const file = event.currentTarget.files?.[0];
-                  if (file) uploadMutation.mutate({ file, index: 0 });
-                  event.currentTarget.value = "";
-                }}
-              />
+              <div className="mb-2">
+                <UploadImageButton
+                  disabled={uploadMutation.isPending || mutation.isPending}
+                  pending={uploadMutation.isPending}
+                  onSelect={(file) => uploadMutation.mutate({ file, index: 0 })}
+                />
+              </div>
               <Input
                 id="heroImageUrl"
                 placeholder={uploadMutation.isPending ? "Uploading image..." : "Banner image URL"}
@@ -476,15 +512,10 @@ export function HomepageSettingsPage() {
                         label={slide.label || `Slide ${index + 1}`}
                         className="h-20 w-36"
                       />
-                      <Input
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp,image/gif"
+                      <UploadImageButton
                         disabled={uploadMutation.isPending || mutation.isPending}
-                        onChange={(event) => {
-                          const file = event.currentTarget.files?.[0];
-                          if (file) uploadMutation.mutate({ file, index });
-                          event.currentTarget.value = "";
-                        }}
+                        pending={uploadMutation.isPending}
+                        onSelect={(file) => uploadMutation.mutate({ file, index })}
                       />
                     </div>
                     <div className="grid gap-3 md:grid-cols-2">
@@ -660,8 +691,14 @@ function HomepageSectionsSection() {
 
   function applyResult(result: Awaited<ReturnType<typeof api.homepageSections>>) {
     queryClient.setQueryData(["homepage-sections"], result);
-    // The curated rows are read back through Site Control's shape too.
-    return queryClient.invalidateQueries({ queryKey: ["site-control"] });
+    // The curated rows are read back through Site Control's shape too. This
+    // revalidation is best-effort: the change itself already landed via
+    // setQueryData above, so a failure here (e.g. the session expiring
+    // between the action and this follow-up fetch) must not surface as an
+    // unhandled rejection -- react-query does not route errors thrown from
+    // inside onSuccess to onError, so an uncaught one here would otherwise
+    // propagate straight to the browser instead of the toast below.
+    return queryClient.invalidateQueries({ queryKey: ["site-control"] }).catch(() => {});
   }
 
   function reportError(fallback: string) {

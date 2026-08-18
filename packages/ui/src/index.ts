@@ -1,8 +1,21 @@
 /** Shared UI helpers for True Grit frontends. */
 
-/** Join conditional class names, dropping falsy values. */
+import { twMerge } from "tailwind-merge";
+
+/**
+ * Join conditional class names, dropping falsy values, and resolve
+ * same-property Tailwind conflicts (e.g. a caller's `px-0` overriding a base
+ * component's `px-2`) in favour of the last class supplied.
+ *
+ * A plain `.join(" ")` here previously let the *compiled stylesheet's*
+ * internal rule order decide which of two conflicting utilities won, which
+ * has no relationship to the order callers passed them in -- it silently
+ * dropped an intended override wherever a base component's className and a
+ * caller's override className both set the same property. `twMerge`
+ * resolves that the way every call site actually assumes: last one wins.
+ */
 export function cn(...classes: Array<string | false | null | undefined>): string {
-  return classes.filter(Boolean).join(" ");
+  return twMerge(classes.filter(Boolean).join(" "));
 }
 
 export type ThemeKey = "forest" | "sage" | "terracotta" | "charcoal" | "gold";

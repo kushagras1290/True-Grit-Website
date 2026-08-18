@@ -35,7 +35,7 @@ export function SupportBotWidget({ country }: { country?: string | null }) {
   const localize = useLocalizeText();
   const { locale } = useLocaleContext();
   const { status } = useCustomer();
-  const { supportBotColor } = useSiteSettings();
+  const { supportBotColor, supportBotStorefrontEnabled } = useSiteSettings();
   const accentStyle = supportBotColor ? { backgroundColor: supportBotColor } : undefined;
 
   useEffect(() => {
@@ -69,6 +69,11 @@ export function SupportBotWidget({ country }: { country?: string | null }) {
       setIsPending(false);
     }
   }
+
+  // Hidden entirely, not just refusing to answer: an owner who switches the
+  // bot off from Site Settings expects the launcher itself to disappear, not
+  // to stay visible and fail once a visitor tries to use it.
+  if (!supportBotStorefrontEnabled) return null;
 
   return (
     <div className="fixed right-4 bottom-4 z-40 md:right-6 md:bottom-6">
