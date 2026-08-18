@@ -93,6 +93,11 @@ class Settings(BaseSettings):
     # and keeps email-triggering flows testable without a real mail server.
     resend_api_key: str = ""
     resend_api_url: str = "https://api.resend.com/emails"
+    # Brevo (formerly Sendinblue) transactional email REST API. Distinct auth
+    # scheme from Resend: a bare `api-key` header, not `authorization: Bearer`.
+    # The key is a secret: supply it via `wrangler secret put BREVO_API_KEY`.
+    brevo_api_key: str = ""
+    brevo_api_url: str = "https://api.brevo.com/v3/smtp/email"
     smtp_host: str = ""
     smtp_port: int = 587
     smtp_username: str = ""
@@ -225,7 +230,7 @@ class Settings(BaseSettings):
     def email_configured(self) -> bool:
         """True when a real transport is available. False means the console
         sender, which logs the message instead of delivering it."""
-        return bool(self.resend_api_key or self.smtp_host)
+        return bool(self.resend_api_key or self.brevo_api_key or self.smtp_host)
 
     @property
     def fast2sms_enabled(self) -> bool:

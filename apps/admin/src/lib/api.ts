@@ -43,6 +43,10 @@ import type {
   CommunitySettings,
   ContentBlock,
   CursorTrailKey,
+  EmailActivityResponse,
+  EmailControlSettings,
+  EmailSettingsUpdate,
+  EmailTestSendResult,
   PublicPageBlock,
   ReportDefinitionSummary,
   ReportRunResult,
@@ -199,6 +203,86 @@ const DEMO_STOREFRONT_SETTINGS: StorefrontSettingsResponse = {
     b2b: false,
     anySignInAvailable: true,
   },
+};
+
+const DEMO_EMAIL_CATEGORY_INFO: Record<string, { label: string; description: string }> = {
+  order_confirmation: {
+    label: "Order confirmation",
+    description: "Sent to a customer when their order is placed.",
+  },
+  order_farm_notification: {
+    label: "Farm order notice",
+    description: "Sent to a farm owner when one of their products is ordered.",
+  },
+  customer_welcome: {
+    label: "Customer welcome",
+    description: "Sent when a new customer account is created.",
+  },
+  customer_password_reset: {
+    label: "Customer password reset",
+    description: "Sent when a customer requests a password reset.",
+  },
+  contact_form: {
+    label: "Contact form",
+    description: "Sent to staff when a storefront contact form is submitted.",
+  },
+  farm_partnership_application: {
+    label: "Farm partnership application",
+    description: "Sent to staff and the applicant when a farm applies to supply True Grit.",
+  },
+  farm_partnership_decision: {
+    label: "Farm partnership decision",
+    description: "Sent to an applicant when staff approve or reject their application.",
+  },
+  content_submission_decision: {
+    label: "Content submission decision",
+    description:
+      "Sent to a contributor when staff approve, request changes on, or reject a submission.",
+  },
+  staff_account: {
+    label: "Staff account",
+    description:
+      "Staff invitations and staff password resets. Disabling this can block staff " +
+      "self-service password reset -- the recovery path into this very admin panel.",
+  },
+};
+
+const DEMO_EMAIL_SETTINGS: EmailControlSettings = {
+  provider: null,
+  globalHourlyLimit: 300,
+  globalDailyLimit: 3000,
+  configuredProviders: { resend: true, brevo: false, smtp: false },
+  activeProvider: "resend",
+  categories: Object.fromEntries(
+    Object.entries(DEMO_EMAIL_CATEGORY_INFO).map(([category, info]) => [
+      category,
+      { ...info, enabled: true, hourlyLimit: null, dailyLimit: null },
+    ]),
+  ),
+};
+
+const DEMO_EMAIL_ACTIVITY: EmailActivityResponse = {
+  entries: [
+    {
+      id: "eml_demo1",
+      category: "order_confirmation",
+      provider: "resend",
+      outcome: "sent",
+      detail: "",
+      recipientDomain: "example.com",
+      occurredAt: new Date(Date.now() - 5 * 60_000).toISOString(),
+    },
+    {
+      id: "eml_demo2",
+      category: "customer_welcome",
+      provider: "resend",
+      outcome: "sent",
+      detail: "",
+      recipientDomain: "gmail.com",
+      occurredAt: new Date(Date.now() - 40 * 60_000).toISOString(),
+    },
+  ],
+  summary24h: { sent: 2, blocked_disabled: 0, rate_limited: 0, provider_error: 0 },
 };
 
 async function demo<T>(data: T): Promise<T> {
@@ -3452,6 +3536,55 @@ export const api = {
 
   updateCuratedSettings: (input: { maxItems: number }): Promise<{ maxItems: number }> =>
     demoMode ? demo(input) : patch(`/v1/admin/curated-settings`, input),
+
+  // --- Email control (`/email` page) --------------------------------------
+  //
+  // Provider selection (Resend/Brevo), per-category on/off switches and rate
+  // limits, and recent send activity. A standalone page rather than folded
+  // into Site Settings, mirroring how Subscriptions and Gift Cards each get
+  // their own nav entry instead of living under one catch-all settings page.
+
+  emailSettings: (): Promise<EmailControlSettings> =>
+    demoMode ? demo(DEMO_EMAIL_SETTINGS) : get(`/v1/admin/email/settings`),
+
+  updateEmailSettings: (input: EmailSettingsUpdate): Promise<EmailControlSettings> =>
+    demoMode
+      ? demo({
+          ...DEMO_EMAIL_SETTINGS,
+          ...(input.provider !== undefined ? { provider: input.provider } : {}),
+          ...(input.globalHourlyLimit !== undefined
+            ? { globalHourlyLimit: input.globalHourlyLimit }
+            : {}),
+          ...(input.globalDailyLimit !== undefined
+            ? { globalDailyLimit: input.globalDailyLimit }
+            : {}),
+          categories: Object.fromEntries(
+            Object.entries(DEMO_EMAIL_SETTINGS.categories).map(([category, current]) => [
+              category,
+              { ...current, ...(input.categories?.[category] ?? {}) },
+            ]),
+          ),
+        })
+      : put(`/v1/admin/email/settings`, input),
+
+  emailActivity: (params?: {
+    category?: string;
+    outcome?: string;
+    limit?: number;
+  }): Promise<EmailActivityResponse> => {
+    if (demoMode) return demo(DEMO_EMAIL_ACTIVITY);
+    const query = new URLSearchParams();
+    if (params?.category) query.set("category", params.category);
+    if (params?.outcome) query.set("outcome", params.outcome);
+    if (params?.limit) query.set("limit", String(params.limit));
+    const suffix = query.toString() ? `?${query.toString()}` : "";
+    return get(`/v1/admin/email/activity${suffix}`);
+  },
+
+  sendTestEmail: (): Promise<EmailTestSendResult> =>
+    demoMode
+      ? demo({ sent: true, provider: "console", to: DEMO_EMAIL })
+      : post(`/v1/admin/email/test-send`),
 
   // --- Subscriptions -----------------------------------------------------
   //

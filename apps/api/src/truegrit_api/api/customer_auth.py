@@ -362,6 +362,7 @@ async def register(
         html_body=render_customer_welcome(name, settings.public_storefront_url),
         aggregate_type="customer",
         aggregate_id=user_id,
+        category="customer_welcome",
     )
     return {
         "ok": True,
@@ -587,6 +588,7 @@ async def password_reset_request(
             html_body=email.html_body,
             aggregate_type="customer_password_reset",
             aggregate_id=email.to,
+            category="customer_password_reset",
         )
     return {"ok": True}
 

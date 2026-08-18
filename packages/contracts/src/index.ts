@@ -1290,6 +1290,71 @@ export interface StorefrontSettingsResponse {
 }
 
 // ---------------------------------------------------------------------------
+// Email admin console (`/email` page, `services/email_settings.py`,
+// `services/email_gate.py`) -- provider selection, per-category on/off
+// switches and rate limits, and recent send activity.
+// ---------------------------------------------------------------------------
+
+export type EmailProvider = "resend" | "brevo";
+
+export interface EmailCategorySettings {
+  label: string;
+  description: string;
+  enabled: boolean;
+  hourlyLimit: number | null;
+  dailyLimit: number | null;
+}
+
+export interface EmailControlSettings {
+  provider: EmailProvider | null;
+  categories: Record<string, EmailCategorySettings>;
+  globalHourlyLimit: number;
+  globalDailyLimit: number;
+  configuredProviders: {
+    resend: boolean;
+    brevo: boolean;
+    smtp: boolean;
+  };
+  activeProvider: string;
+}
+
+export interface EmailCategoryUpdate {
+  enabled?: boolean;
+  hourlyLimit?: number | null;
+  dailyLimit?: number | null;
+}
+
+export interface EmailSettingsUpdate {
+  provider?: EmailProvider | null;
+  globalHourlyLimit?: number;
+  globalDailyLimit?: number;
+  categories?: Record<string, EmailCategoryUpdate>;
+}
+
+export type EmailOutcome = "sent" | "blocked_disabled" | "rate_limited" | "provider_error";
+
+export interface EmailActivityRow {
+  id: string;
+  category: string;
+  provider: string;
+  outcome: EmailOutcome;
+  detail: string;
+  recipientDomain: string | null;
+  occurredAt: string;
+}
+
+export interface EmailActivityResponse {
+  entries: EmailActivityRow[];
+  summary24h: Record<EmailOutcome, number>;
+}
+
+export interface EmailTestSendResult {
+  sent: boolean;
+  provider: string;
+  to: string;
+}
+
+// ---------------------------------------------------------------------------
 // Appearance: colour theme and ambient effects
 // ---------------------------------------------------------------------------
 

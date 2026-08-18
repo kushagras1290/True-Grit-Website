@@ -158,17 +158,108 @@ class ResendEmailSender:
                 raise OSError(f"Resend API returned HTTP {response.status}")
 
 
-def get_email_sender(settings: Settings | None = None) -> EmailSender:
+class BrevoEmailSender:
+    """Brevo (formerly Sendinblue) transactional email REST API.
+
+    Distinct auth scheme from Resend: a bare ``api-key`` header, not
+    ``authorization: Bearer``. Brevo also wants sender name/address split into
+    separate fields rather than the combined ``"Name <addr>"`` string every
+    other transport here accepts, hence `split_from_address`.
+    """
+
+    def __init__(self, settings: Settings) -> None:
+        self._settings = settings
+
+    def send(self, message: OutboundEmail) -> None:
+        settings = self._settings
+        sender_name, sender_address = split_from_address(settings.email_from)
+        payload: dict[str, object] = {
+            "sender": {"email": sender_address, "name": sender_name or sender_address},
+            "to": [{"email": message.to}],
+            "subject": message.subject,
+            "textContent": message.body,
+        }
+        if message.html_body:
+            payload["htmlContent"] = message.html_body
+        request = urllib.request.Request(
+            settings.brevo_api_url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+                "api-key": settings.brevo_api_key,
+                "content-type": "application/json",
+                "accept": "application/json",
+            },
+            method="POST",
+        )
+        with urllib.request.urlopen(request, timeout=settings.smtp_timeout_seconds) as response:
+            if response.status >= 400:
+                raise OSError(f"Brevo API returned HTTP {response.status}")
+
+
+def split_from_address(email_from: str) -> tuple[str, str]:
+    """``"True Grit <no-reply@x.com>"`` -> ``("True Grit", "no-reply@x.com")``."""
+    name, address = parseaddr(email_from)
+    return name, address or email_from
+
+
+_PROVIDER_RESEND = "resend"
+_PROVIDER_BREVO = "brevo"
+_PROVIDER_SMTP = "smtp"
+_PROVIDER_CONSOLE = "console"
+
+
+def choose_provider(
+    preferred: str | None, *, has_brevo: bool, has_resend: bool, has_smtp: bool
+) -> str:
+    """Pure precedence decision, no I/O -- shared by the sync senders below and
+    by worker.py's async Workers-native delivery path, so the two never drift.
+
+    An admin-set preference wins only if that provider is actually configured
+    (same "a switch can only take something away" rule as
+    ``feature_settings.py``: a preference cannot conjure a missing API key).
+    With no usable preference, Brevo wins over Resend when both are
+    configured -- Brevo's free tier is the one this integration was added
+    for -- falling through to SMTP, then the console sender.
+    """
+    if preferred == _PROVIDER_RESEND and has_resend:
+        return _PROVIDER_RESEND
+    if preferred == _PROVIDER_BREVO and has_brevo:
+        return _PROVIDER_BREVO
+    if has_brevo:
+        return _PROVIDER_BREVO
+    if has_resend:
+        return _PROVIDER_RESEND
+    if has_smtp:
+        return _PROVIDER_SMTP
+    return _PROVIDER_CONSOLE
+
+
+def get_email_sender(
+    settings: Settings | None = None, preferred: str | None = None
+) -> EmailSender:
     settings = settings or get_settings()
-    if settings.resend_api_key:
+    provider = choose_provider(
+        preferred,
+        has_brevo=bool(settings.brevo_api_key),
+        has_resend=bool(settings.resend_api_key),
+        has_smtp=bool(settings.smtp_host),
+    )
+    if provider == _PROVIDER_BREVO:
+        return BrevoEmailSender(settings)
+    if provider == _PROVIDER_RESEND:
         return ResendEmailSender(settings)
-    if settings.smtp_host:
+    if provider == _PROVIDER_SMTP:
         return SmtpEmailSender(settings)
     return ConsoleEmailSender()
 
 
 def send_email(
-    to: str, subject: str, body: str, settings: Settings | None = None, html_body: str | None = None
+    to: str,
+    subject: str,
+    body: str,
+    settings: Settings | None = None,
+    html_body: str | None = None,
+    preferred_provider: str | None = None,
 ) -> bool:
     """Best-effort send. Logs and swallows transport errors so the caller's
     primary action (order, reset) is never blocked by mail delivery.
@@ -178,7 +269,7 @@ def send_email(
     so provider failures are retried instead of being swallowed."""
     resolved = settings or get_settings()
     try:
-        get_email_sender(resolved).send(
+        get_email_sender(resolved, preferred_provider).send(
             OutboundEmail(to=to, subject=subject, body=body, html_body=html_body)
         )
         return True
@@ -192,7 +283,7 @@ def send_email(
             "email_send_failed",
             to=to,
             subject=subject,
-            transport=email_transport_name(resolved),
+            transport=email_transport_name(resolved, preferred_provider),
             smtp_host=resolved.smtp_host,
             smtp_port=resolved.smtp_port,
             smtp_implicit_tls=resolved.smtp_implicit_tls,
@@ -204,8 +295,9 @@ def send_email(
         return False
 
 
-def email_transport_name(settings: Settings | None = None) -> str:
-    """Which sender `get_email_sender` would pick: "resend", "smtp" or "console".
+def email_transport_name(settings: Settings | None = None, preferred: str | None = None) -> str:
+    """Which sender `get_email_sender` would pick: "brevo", "resend", "smtp"
+    or "console".
 
     Callers that report delivery to a human need this, because the console
     sender *succeeds* without delivering anything: "invitation sent" with no
@@ -213,8 +305,9 @@ def email_transport_name(settings: Settings | None = None) -> str:
     no way to tell from the result alone.
     """
     resolved = settings or get_settings()
-    if resolved.resend_api_key:
-        return "resend"
-    if resolved.smtp_host:
-        return "smtp"
-    return "console"
+    return choose_provider(
+        preferred,
+        has_brevo=bool(resolved.brevo_api_key),
+        has_resend=bool(resolved.resend_api_key),
+        has_smtp=bool(resolved.smtp_host),
+    )

@@ -254,8 +254,10 @@ def test_staff_password_reset_flow(
 ):
     captured: dict[str, str] = {}
     monkeypatch.setattr(
-        "truegrit_api.api.admin.send_email",
-        lambda to, subject, body, settings=None, html_body=None: captured.update(body=body),
+        "truegrit_api.services.email_gate.send_email",
+        lambda to, subject, body, settings=None, html_body=None, preferred_provider=None: (
+            captured.update(body=body) or True
+        ),
     )
     assert (
         client.post(

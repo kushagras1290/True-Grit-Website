@@ -8,6 +8,7 @@ notice, hence these tests.
 
 from __future__ import annotations
 
+import json
 import smtplib
 import ssl
 from typing import Any
@@ -16,13 +17,16 @@ import pytest
 
 from truegrit_api.config import Settings
 from truegrit_api.services.email import (
+    BrevoEmailSender,
     ConsoleEmailSender,
     OutboundEmail,
     ResendEmailSender,
     SmtpEmailSender,
+    choose_provider,
     email_transport_name,
     get_email_sender,
     send_email,
+    split_from_address,
 )
 
 
@@ -198,3 +202,98 @@ def test_console_sender_reports_success_without_delivering():
     assert send_email("a@b.test", "s", "b", settings()) is True
     assert email_transport_name(settings()) == "console"
     assert isinstance(get_email_sender(settings()), ConsoleEmailSender)
+
+
+# --- Provider precedence (services.email.choose_provider) -------------------
+
+
+def test_brevo_wins_over_resend_when_both_are_configured():
+    """Brevo's free tier is the reason this integration exists; with no
+    admin preference set, it should be what a fresh deploy actually uses."""
+    assert choose_provider(None, has_brevo=True, has_resend=True, has_smtp=True) == "brevo"
+
+
+def test_resend_wins_over_smtp_when_brevo_is_not_configured():
+    assert choose_provider(None, has_brevo=False, has_resend=True, has_smtp=True) == "resend"
+
+
+def test_falls_through_to_smtp_then_console():
+    assert choose_provider(None, has_brevo=False, has_resend=False, has_smtp=True) == "smtp"
+    assert choose_provider(None, has_brevo=False, has_resend=False, has_smtp=False) == "console"
+
+
+def test_admin_preference_wins_only_when_that_provider_is_configured():
+    """A preference cannot conjure a missing API key -- same 'a switch can
+    only take something away' rule feature_settings.py documents."""
+    assert choose_provider("resend", has_brevo=True, has_resend=True, has_smtp=False) == "resend"
+    # Preferred Resend but no Resend key: falls through to whatever else works.
+    assert choose_provider("resend", has_brevo=True, has_resend=False, has_smtp=False) == "brevo"
+    assert choose_provider("brevo", has_brevo=False, has_resend=True, has_smtp=False) == "resend"
+
+
+# --- Brevo transport ----------------------------------------------------------
+
+
+class FakeHttpResponse:
+    def __init__(self, status: int = 200) -> None:
+        self.status = status
+
+    def __enter__(self) -> FakeHttpResponse:
+        return self
+
+    def __exit__(self, *_exc: object) -> bool:
+        return False
+
+
+def test_brevo_sender_posts_split_sender_and_api_key_header(monkeypatch: pytest.MonkeyPatch):
+    captured: dict[str, Any] = {}
+
+    def fake_urlopen(request: Any, timeout: float | None = None) -> FakeHttpResponse:
+        captured["request"] = request
+        return FakeHttpResponse(200)
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    BrevoEmailSender(
+        settings(brevo_api_key="brevo_test", email_from="True Grit <no-reply@truegrit.test>")
+    ).send(OutboundEmail(to="a@b.test", subject="Hi", body="Body", html_body="<p>Hi</p>"))
+
+    request = captured["request"]
+    assert request.full_url == "https://api.brevo.com/v3/smtp/email"
+    assert request.get_header("Api-key") == "brevo_test"
+    payload = json.loads(request.data)
+    assert payload["sender"] == {"email": "no-reply@truegrit.test", "name": "True Grit"}
+    assert payload["to"] == [{"email": "a@b.test"}]
+    assert payload["textContent"] == "Body"
+    assert payload["htmlContent"] == "<p>Hi</p>"
+
+
+def test_brevo_sender_raises_on_http_error(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr("urllib.request.urlopen", lambda *a, **k: FakeHttpResponse(422))
+    with pytest.raises(OSError):
+        BrevoEmailSender(settings(brevo_api_key="brevo_test")).send(
+            OutboundEmail(to="a@b.test", subject="Hi", body="Body")
+        )
+
+
+def test_split_from_address_separates_name_and_address():
+    assert split_from_address("True Grit <no-reply@x.test>") == ("True Grit", "no-reply@x.test")
+    assert split_from_address("bare@x.test") == ("", "bare@x.test")
+
+
+def test_brevo_is_picked_over_resend_end_to_end():
+    configured = settings(brevo_api_key="brevo_test", resend_api_key="re_test")
+    assert isinstance(get_email_sender(configured), BrevoEmailSender)
+    assert email_transport_name(configured) == "brevo"
+
+
+def test_preferred_provider_is_forwarded_through_send_email(monkeypatch: pytest.MonkeyPatch):
+    captured: dict[str, Any] = {}
+
+    def fake_urlopen(request: Any, timeout: float | None = None) -> FakeHttpResponse:
+        captured["url"] = request.full_url
+        return FakeHttpResponse(200)
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    configured = settings(brevo_api_key="brevo_test", resend_api_key="re_test")
+    assert send_email("a@b.test", "s", "b", configured, preferred_provider="resend") is True
+    assert captured["url"] == configured.resend_api_url
