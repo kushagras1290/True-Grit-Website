@@ -217,9 +217,14 @@ function EscalationRow({
           <p className="text-sm break-words text-ink">{escalation.message}</p>
           <p className="mt-1 text-xs text-ink-muted">
             {formatDateTime(escalation.createdAt)} · {escalation.intent} ·{" "}
-            {escalation.reason.replace(/_/g, " ")} ·{" "}
-            <T>confidence</T> {escalation.confidence.toFixed(2)}
-            {escalation.customerUserId ? null : <> · <T>not signed in</T></>}
+            {escalation.reason.replace(/_/g, " ")} · <T>confidence</T>{" "}
+            {escalation.confidence.toFixed(2)}
+            {escalation.customerUserId ? null : (
+              <>
+                {" "}
+                · <T>not signed in</T>
+              </>
+            )}
           </p>
           {escalation.alternatives.length > 0 ? (
             <p className="mt-1 text-xs text-ink-muted">

@@ -1151,9 +1151,9 @@ export interface ExperimentAssignment {
 
 export function getExperimentAssignments(): Promise<ExperimentAssignment[]> {
   if (!commerceLive) return Promise.resolve([]);
-  return request<{ assignments: ExperimentAssignment[] }>("/v1/public/experiments/assignments").then(
-    (body) => body.assignments,
-  );
+  return request<{ assignments: ExperimentAssignment[] }>(
+    "/v1/public/experiments/assignments",
+  ).then((body) => body.assignments);
 }
 
 export function trackExperimentExposure(experimentKey: string): Promise<void> {
