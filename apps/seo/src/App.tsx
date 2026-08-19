@@ -18,7 +18,6 @@ import { cn } from "@truegrit/ui";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertTriangle,
-  Bot,
   Check,
   CheckCircle2,
   ChevronDown,
@@ -31,6 +30,7 @@ import {
   Loader2,
   LockKeyhole,
   LogOut,
+  Mail,
   Play,
   Plus,
   RefreshCw,
@@ -39,6 +39,8 @@ import {
   Sparkles,
   Trash2,
   Undo2,
+  UserCog,
+  Users,
   X,
   XCircle,
 } from "lucide-react";
@@ -47,6 +49,8 @@ import { useMemo, useState, type FormEvent, type ReactNode } from "react";
 import {
   ApiError,
   seoApi,
+  type AdminRole,
+  type AdminUser,
   type Competitor,
   type ContentGap,
   type Finding,
@@ -55,11 +59,12 @@ import {
   type KeywordGap,
   type Proposal,
   type StaffUser,
+  type UserStatus,
 } from "./api";
 
 /* ─── Constants ────────────────────────────────────────────────────── */
 
-type TabKey = "proposals" | "findings" | "keywords" | "content" | "competitors";
+type TabKey = "proposals" | "findings" | "keywords" | "content" | "competitors" | "users";
 
 const NAV_ITEMS: Array<{ key: TabKey; label: string; icon: ReactNode }> = [
   { key: "proposals", label: "Proposals", icon: <Sparkles size={16} /> },
@@ -67,6 +72,7 @@ const NAV_ITEMS: Array<{ key: TabKey; label: string; icon: ReactNode }> = [
   { key: "keywords", label: "Keywords", icon: <Search size={16} /> },
   { key: "content", label: "Content gaps", icon: <Layers size={16} /> },
   { key: "competitors", label: "Competitors", icon: <Globe size={16} /> },
+  { key: "users", label: "Users", icon: <Users size={16} /> },
 ];
 
 const SEVERITY_STYLES: Record<string, string> = {
@@ -115,6 +121,17 @@ function relativeAge(iso: string): string {
   if (days < 30) return `${days} days`;
   const months = Math.floor(days / 30);
   return `${months} month${months === 1 ? "" : "s"}`;
+}
+
+function TrueGritMark({ className }: { className?: string }) {
+  return (
+    <img
+      src="/favicon.png"
+      alt=""
+      aria-hidden="true"
+      className={cn("h-6 w-6 object-contain", className)}
+    />
+  );
 }
 
 /* ─── Shared UI atoms ──────────────────────────────────────────────── */
@@ -227,7 +244,7 @@ function Login({ onAuthenticated }: { onAuthenticated: (user: StaffUser) => void
         <div className="max-w-xl">
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ink-inverse/15">
-              <Bot size={20} />
+              <TrueGritMark />
             </span>
             <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-75">
               True Grit SEO Agent
@@ -247,7 +264,7 @@ function Login({ onAuthenticated }: { onAuthenticated: (user: StaffUser) => void
         <div className="w-full">
           <div className="mb-8 flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-sm bg-subtle text-brand">
-              <Shield size={20} />
+              <TrueGritMark />
             </span>
             <div>
               <h2 className="font-display text-2xl text-ink">Staff sign in</h2>
@@ -318,7 +335,7 @@ function Header({ user, onLogout }: { user: StaffUser; onLogout: () => void }) {
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
         <div className="flex items-center gap-3">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand text-ink-inverse">
-            <Bot size={18} />
+            <TrueGritMark className="h-5 w-5" />
           </span>
           <div>
             <p className="font-display text-lg text-ink">SEO Agent</p>
@@ -1001,6 +1018,244 @@ function CompetitorsTab() {
 
 /* ─── Shell ────────────────────────────────────────────────────────── */
 
+/* Users */
+
+function UserStatusPill({ status }: { status: UserStatus }) {
+  const styles: Record<UserStatus, string> = {
+    active: "bg-success/10 text-success",
+    invited: "bg-accent/10 text-accent",
+    disabled: "bg-danger/10 text-danger",
+  };
+  return (
+    <span
+      className={cn(
+        "inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium capitalize",
+        styles[status],
+      )}
+    >
+      {status}
+    </span>
+  );
+}
+
+function UsersTab({ user }: { user: StaffUser }) {
+  const queryClient = useQueryClient();
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [draftSearch, setDraftSearch] = useState("");
+  const [message, setMessage] = useState<{ tone: "success" | "danger"; text: string } | null>(null);
+  const limit = 25;
+  const offset = (page - 1) * limit;
+  const canViewUsers = user.isSuperAdmin || user.permissions.includes("users.view");
+  const canManageUsers = user.isSuperAdmin || user.permissions.includes("users.manage_roles");
+
+  const users = useQuery({
+    queryKey: ["admin-users", page, search],
+    queryFn: () => seoApi.users({ limit, offset, search: search || undefined }),
+    enabled: canViewUsers,
+  });
+  const roles = useQuery({
+    queryKey: ["admin-roles"],
+    queryFn: seoApi.roles,
+    enabled: canViewUsers,
+  });
+  const statusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: UserStatus }) =>
+      seoApi.setUserStatus(id, status),
+    onSuccess: async () => {
+      setMessage({ tone: "success", text: "User status updated." });
+      await queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+    },
+    onError: (error) =>
+      setMessage({ tone: "danger", text: errorMessage(error, "Could not update user status.") }),
+  });
+  const roleMutation = useMutation({
+    mutationFn: ({ id, roleId }: { id: string; roleId: string }) =>
+      seoApi.setUserRoles(id, roleId ? [roleId] : []),
+    onSuccess: async () => {
+      setMessage({ tone: "success", text: "User role updated." });
+      await queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+    },
+    onError: (error) =>
+      setMessage({ tone: "danger", text: errorMessage(error, "Could not update user role.") }),
+  });
+  const resetMutation = useMutation({
+    mutationFn: seoApi.sendUserPasswordReset,
+    onSuccess: (result) =>
+      setMessage({
+        tone: "success",
+        text: result.emailSent
+          ? `Password reset sent to ${result.email}.`
+          : `Password reset created for ${result.email}, but ${result.emailTransport} did not send it.`,
+      }),
+    onError: (error) =>
+      setMessage({ tone: "danger", text: errorMessage(error, "Could not send password reset.") }),
+  });
+
+  function submitSearch(event: FormEvent) {
+    event.preventDefault();
+    setSearch(draftSearch.trim());
+    setPage(1);
+  }
+
+  if (!canViewUsers) {
+    return (
+      <EmptyState
+        icon={<Users size={28} />}
+        title="Users unavailable"
+        hint="This account needs users.view permission."
+      />
+    );
+  }
+
+  const rows = users.data ?? [];
+  const roleRows = roles.data ?? [];
+  const busy = statusMutation.isPending || roleMutation.isPending || resetMutation.isPending;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <form className="flex min-w-72 flex-1 gap-2" onSubmit={submitSearch}>
+          <Input
+            aria-label="Search users"
+            placeholder="Search users..."
+            value={draftSearch}
+            onChange={(event) => setDraftSearch(event.target.value)}
+          />
+          <Button type="submit" variant="secondary">
+            <Search size={15} /> Search
+          </Button>
+        </form>
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={page === 1 || users.isLoading}
+            onClick={() => setPage((value) => Math.max(1, value - 1))}
+          >
+            Previous
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={rows.length < limit || users.isLoading}
+            onClick={() => setPage((value) => value + 1)}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
+
+      {message ? (
+        <p
+          role="status"
+          className={cn(
+            "rounded-sm px-3 py-2 text-sm",
+            message.tone === "success" ? "bg-success/10 text-success" : "bg-danger/10 text-danger",
+          )}
+        >
+          {message.text}
+        </p>
+      ) : null}
+
+      <div className="overflow-x-auto rounded-md border border-line bg-surface">
+        {users.isLoading ? (
+          <Spinner />
+        ) : users.isError ? (
+          <EmptyState
+            icon={<AlertTriangle size={28} />}
+            title="Users could not load"
+            hint={errorMessage(users.error, "Check permissions and API connectivity.")}
+          />
+        ) : rows.length === 0 ? (
+          <EmptyState icon={<Users size={28} />} title="No users found" />
+        ) : (
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-line bg-canvas text-left text-xs text-ink-muted">
+                <th className="px-4 py-2 font-medium">Name</th>
+                <th className="px-4 py-2 font-medium">Email</th>
+                <th className="px-4 py-2 font-medium">Status</th>
+                <th className="px-4 py-2 font-medium">Role</th>
+                <th className="px-4 py-2 font-medium">Last sign-in</th>
+                <th className="px-4 py-2 font-medium">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row: AdminUser) => (
+                <tr key={row.id} className="border-b border-line last:border-b-0">
+                  <td className="px-4 py-3 font-medium text-ink">{row.displayName}</td>
+                  <td className="px-4 py-3 text-ink-muted">{row.email}</td>
+                  <td className="px-4 py-3">
+                    <UserStatusPill status={row.status} />
+                  </td>
+                  <td className="px-4 py-3">
+                    {canManageUsers ? (
+                      <select
+                        aria-label={`Role for ${row.displayName}`}
+                        className="min-h-9 min-w-44 rounded-sm border border-line-strong bg-surface px-3 text-sm text-ink"
+                        value={row.roleIds?.[0] ?? ""}
+                        disabled={roles.isLoading || busy}
+                        onChange={(event) =>
+                          roleMutation.mutate({ id: row.id, roleId: event.target.value })
+                        }
+                      >
+                        <option value="">No role</option>
+                        {roleRows.map((role: AdminRole) => (
+                          <option key={role.id} value={role.id}>
+                            {role.name}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <span>{row.roles.join(", ") || "No role"}</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-ink-muted">
+                    {row.lastSignInAt ? formatDate(row.lastSignInAt) : "Never"}
+                  </td>
+                  <td className="px-4 py-3">
+                    {canManageUsers ? (
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          className="px-2.5"
+                          disabled={busy}
+                          onClick={() =>
+                            statusMutation.mutate({
+                              id: row.id,
+                              status: row.status === "disabled" ? "active" : "disabled",
+                            })
+                          }
+                        >
+                          <UserCog size={14} />
+                          {row.status === "disabled" ? "Enable" : "Disable"}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          className="px-2.5"
+                          disabled={busy}
+                          onClick={() => resetMutation.mutate(row.id)}
+                        >
+                          <Mail size={14} /> Reset
+                        </Button>
+                      </div>
+                    ) : (
+                      <span className="text-xs text-ink-muted">View only</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function Dashboard({ user, onLogout }: { user: StaffUser; onLogout: () => void }) {
   const [tab, setTab] = useState<TabKey>("proposals");
 
@@ -1051,6 +1306,7 @@ function Dashboard({ user, onLogout }: { user: StaffUser; onLogout: () => void }
         {tab === "keywords" ? <KeywordsTab /> : null}
         {tab === "content" ? <ContentGapsTab /> : null}
         {tab === "competitors" ? <CompetitorsTab /> : null}
+        {tab === "users" ? <UsersTab user={user} /> : null}
       </div>
     </div>
   );

@@ -28,6 +28,29 @@ export interface StaffUser {
   permissions: string[];
 }
 
+export type UserStatus = "invited" | "active" | "disabled";
+
+export interface AdminUser {
+  id: string;
+  displayName: string;
+  email: string;
+  status: UserStatus;
+  roles: string[];
+  roleIds?: string[];
+  lastSignInAt: string | null;
+}
+
+export interface AdminRole {
+  id: string;
+  key: string;
+  name: string;
+  description: string;
+  isSystem: boolean;
+  locked: boolean;
+  permissionIds: string[];
+  permissionKeys: string[];
+}
+
 export type RunStatus = "queued" | "running" | "completed" | "failed";
 
 export interface CrawlRun {
@@ -159,6 +182,32 @@ export const seoApi = {
       body: JSON.stringify({ email, password }),
     }),
   logout: () => request<{ ok: boolean }>("/v1/admin/auth/logout", { method: "POST" }),
+
+  users: ({
+    limit = 50,
+    offset = 0,
+    search,
+  }: { limit?: number; offset?: number; search?: string } = {}) => {
+    const query = new URLSearchParams({ limit: String(limit), offset: String(offset) });
+    if (search) query.set("search", search);
+    return request<{ items: AdminUser[] }>(`/v1/admin/users?${query}`).then((body) => body.items);
+  },
+  roles: () => request<{ items: AdminRole[] }>("/v1/admin/roles").then((body) => body.items),
+  setUserStatus: (id: string, status: UserStatus) =>
+    request<{ id: string; status: UserStatus }>(`/v1/admin/users/${id}/status`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    }),
+  setUserRoles: (id: string, roleIds: string[]) =>
+    request<{ id: string }>(`/v1/admin/users/${id}/roles`, {
+      method: "PATCH",
+      body: JSON.stringify({ roleIds }),
+    }),
+  sendUserPasswordReset: (id: string) =>
+    request<{ id: string; email: string; emailSent: boolean; emailTransport: string }>(
+      `/v1/admin/users/${id}/password-reset-email`,
+      { method: "POST" },
+    ),
 
   summary: () => request<Summary>("/v1/admin/seo/summary"),
   setEnabled: (enabled: boolean) =>

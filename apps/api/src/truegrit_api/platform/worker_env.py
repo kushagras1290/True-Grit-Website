@@ -11,16 +11,28 @@ from truegrit_api.config import Settings, get_settings
 def public_worker_origins(env: Any) -> set[str]:
     """Origins that may receive credentialed emergency Worker responses."""
 
-    return {
+    origins = {
         value
         for value in (
             getattr(env, "PUBLIC_ADMIN_URL", ""),
             getattr(env, "PUBLIC_STOREFRONT_URL", ""),
             getattr(env, "PUBLIC_PROCESS_URL", ""),
             getattr(env, "PUBLIC_LANGUAGE_URL", ""),
+            getattr(env, "PUBLIC_SEO_URL", ""),
         )
         if value
     }
+    if getattr(env, "PUBLIC_SEO_URL", ""):
+        return origins
+    deployed_seo_origins = {
+        "development": "https://seotest.truegritin.com",
+        "staging": "https://seostag.truegritin.com",
+        "production": "https://seo.truegritin.com",
+    }
+    fallback = deployed_seo_origins.get(getattr(env, "APP_ENV", ""))
+    if fallback and any("truegritin.com" in origin for origin in origins):
+        origins.add(fallback)
+    return origins
 
 
 def bridge_worker_env(env: Any) -> None:

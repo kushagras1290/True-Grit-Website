@@ -13,6 +13,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Standard implicit-TLS ("SMTPS") port. 587 and 25 are the STARTTLS ports.
 SMTPS_PORT = 465
+DEPLOYED_SEO_ORIGINS = {
+    "development": "https://seotest.truegritin.com",
+    "staging": "https://seostag.truegritin.com",
+    "production": "https://seo.truegritin.com",
+}
 
 
 class Settings(BaseSettings):
@@ -23,6 +28,7 @@ class Settings(BaseSettings):
     public_admin_url: str = "http://localhost:5174"
     public_process_url: str = "http://localhost:5175"
     public_language_url: str = "http://localhost:5176"
+    public_seo_url: str = ""
     default_market: str = "IN"
     default_currency: str = "INR"
     session_cookie_name: str = "tg_session"
@@ -305,12 +311,17 @@ class Settings(BaseSettings):
             self.public_admin_url,
             self.public_process_url,
             self.public_language_url,
+            self.public_seo_url,
         ):
+            if not url:
+                continue
             origins.append(url)
             if "127.0.0.1" in url:
                 origins.append(url.replace("127.0.0.1", "localhost"))
             elif "localhost" in url:
                 origins.append(url.replace("localhost", "127.0.0.1"))
+        if not self.public_seo_url and any("truegritin.com" in origin for origin in origins):
+            origins.append(DEPLOYED_SEO_ORIGINS[self.app_env])
         return list(dict.fromkeys(origins))
 
     @property
