@@ -28,7 +28,11 @@ import { useToast } from "../components/toast";
 import {
   ApiError,
   api,
+  type SupportBotEscalation,
+  type SupportBotEscalationSeverity,
+  type SupportBotEscalationStatus,
   type SupportBotKnowledgeEntry,
+  type SupportBotPolicyFact,
   type SupportBotScope,
   type SupportBotTuningKey,
 } from "../lib/api";
@@ -136,33 +140,111 @@ function TuningRow({
   );
 }
 
-function PolicyPagesRow({
-  value,
+/** One standing fact the storefront bot quotes. Blank is a legitimate value,
+ *  not an empty form field: it switches the wording that needs this fact back
+ *  off and sends those questions to a person, so the row says which state it
+ *  is in rather than leaving the operator to infer it. */
+function PolicyFactRow({
+  fact,
   disabled,
   onCommit,
 }: {
-  value: string;
+  fact: SupportBotPolicyFact;
   disabled: boolean;
-  onCommit: (next: string) => void;
+  onCommit: (value: string) => void;
 }) {
-  const [draft, setDraft] = useState(value);
-  useEffect(() => setDraft(value), [value]);
+  const [draft, setDraft] = useState(fact.value);
+  useEffect(() => setDraft(fact.value), [fact.value]);
 
   return (
-    <div className="mt-3">
+    <li className="border-t border-line py-3 first:border-t-0">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <label className="text-sm font-medium text-ink" htmlFor={`fact-${fact.key}`}>
+          <T>{fact.label}</T>
+        </label>
+        <span
+          className={
+            "inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-medium " +
+            (fact.isConfigured
+              ? "bg-success/10 text-success"
+              : "border border-line bg-canvas text-ink-muted")
+          }
+        >
+          {fact.isConfigured ? <T>Answered by the bot</T> : <T>Sent to a person</T>}
+        </span>
+      </div>
+      <p className="mt-1 text-sm text-ink-muted">
+        <T>{fact.hint}</T>
+      </p>
       <Input
+        id={`fact-${fact.key}`}
+        className="mt-2"
         value={draft}
-        placeholder="returns delivery help terms privacy"
-        maxLength={500}
+        maxLength={200}
         disabled={disabled}
-        aria-label="Policy page slugs"
+        placeholder="Not set"
         onChange={(event) => setDraft(event.target.value)}
-        onBlur={() => draft.trim() !== value && onCommit(draft)}
+        onBlur={() => draft.trim() !== fact.value && onCommit(draft.trim())}
         onKeyDown={(event) => {
           if (event.key === "Enter") event.currentTarget.blur();
         }}
       />
-    </div>
+    </li>
+  );
+}
+
+const SEVERITY_STYLES: Record<SupportBotEscalationSeverity, string> = {
+  critical: "bg-danger/10 text-danger",
+  high: "bg-warning/10 text-warning",
+  normal: "border border-line bg-canvas text-ink-muted",
+};
+
+/** One handed-over conversation. The runner-up intents matter as much as the
+ *  message: they are what tells you which phrasing the phrasebook is missing. */
+function EscalationRow({
+  escalation,
+  disabled,
+  onResolve,
+}: {
+  escalation: SupportBotEscalation;
+  disabled: boolean;
+  onResolve: (status: SupportBotEscalationStatus) => void;
+}) {
+  return (
+    <li className="border-t border-line py-3 first:border-t-0">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="text-sm break-words text-ink">{escalation.message}</p>
+          <p className="mt-1 text-xs text-ink-muted">
+            {formatDateTime(escalation.createdAt)} · {escalation.intent} ·{" "}
+            {escalation.reason.replace(/_/g, " ")} ·{" "}
+            <T>confidence</T> {escalation.confidence.toFixed(2)}
+            {escalation.customerUserId ? null : <> · <T>not signed in</T></>}
+          </p>
+          {escalation.alternatives.length > 0 ? (
+            <p className="mt-1 text-xs text-ink-muted">
+              <T>Nearly matched</T>:{" "}
+              {escalation.alternatives
+                .map((item) => `${item.intent} (${item.score.toFixed(2)})`)
+                .join(", ")}
+            </p>
+          ) : null}
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <span
+            className={
+              "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium " +
+              SEVERITY_STYLES[escalation.severity]
+            }
+          >
+            {escalation.severity}
+          </span>
+          <Button type="button" disabled={disabled} onClick={() => onResolve("resolved")}>
+            <T>Resolve</T>
+          </Button>
+        </div>
+      </div>
+    </li>
   );
 }
 
@@ -349,10 +431,30 @@ export function SupportBotSettingsPage() {
     onError: (error) => toast.error(errorMessage(error, "Could not update that setting.")),
   });
 
-  const setPolicyPages = useMutation({
-    mutationFn: (policyPages: string) => api.setSupportBotPolicyPages(policyPages),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["support-bot-settings"] }),
-    onError: (error) => toast.error(errorMessage(error, "Could not update the page list.")),
+  const { data: policyFacts } = useQuery({
+    queryKey: ["support-bot-policy-facts"],
+    queryFn: api.supportBotPolicyFacts,
+  });
+  const { data: escalations } = useQuery({
+    queryKey: ["support-bot-escalations"],
+    queryFn: () => api.supportBotEscalations({ status: "open", limit: 25 }),
+  });
+
+  const setPolicyFact = useMutation({
+    mutationFn: ({ key, value }: { key: string; value: string }) =>
+      api.setSupportBotPolicyFact(key, value),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["support-bot-policy-facts"] }),
+    onError: (error) => toast.error(errorMessage(error, "Could not update that fact.")),
+  });
+
+  const resolveEscalation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: SupportBotEscalationStatus }) =>
+      api.setSupportBotEscalationStatus(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["support-bot-escalations"] });
+      toast.success("Marked as handled.");
+    },
+    onError: (error) => toast.error(errorMessage(error, "Could not update that item.")),
   });
 
   const setColor = useMutation({
@@ -429,12 +531,68 @@ export function SupportBotSettingsPage() {
 
       <section className="mb-6 rounded-md border border-line bg-surface p-4">
         <h2 className="font-display text-base text-ink">
-          <T>Answer tuning</T>
+          <T>Storefront answers</T>
         </h2>
         <p className="mt-1 text-sm text-ink-muted">
           <T>
-            Applies to both bots. Larger values give the assistant more to work with and cost more
-            per answer.
+            The storefront bot only states figures you have entered here. Anything left blank is
+            sent to a person instead, so it can never quote a policy nobody set.
+          </T>
+        </p>
+        <ul className="mt-2">
+          {(policyFacts ?? []).map((fact) => (
+            <PolicyFactRow
+              key={fact.key}
+              fact={fact}
+              disabled={setPolicyFact.isPending}
+              onCommit={(value) => setPolicyFact.mutate({ key: fact.key, value })}
+            />
+          ))}
+        </ul>
+      </section>
+
+      <section className="mb-6 rounded-md border border-line bg-surface p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="font-display text-base text-ink">
+            <T>Handed to a person</T>
+          </h2>
+          <span className="text-sm text-ink-muted">
+            {escalations?.total ?? 0} <T>open</T>
+          </span>
+        </div>
+        <p className="mt-1 text-sm text-ink-muted">
+          <T>
+            Questions the storefront bot would not answer, worst first. The phrasings it nearly
+            matched are shown against each one, which is what tells you what to add to its
+            vocabulary.
+          </T>
+        </p>
+        {escalations && escalations.items.length > 0 ? (
+          <ul className="mt-2">
+            {escalations.items.map((escalation) => (
+              <EscalationRow
+                key={escalation.id}
+                escalation={escalation}
+                disabled={resolveEscalation.isPending}
+                onResolve={(status) => resolveEscalation.mutate({ id: escalation.id, status })}
+              />
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-sm text-ink-muted">
+            <T>Nothing waiting. Everything asked so far was answered or refused cleanly.</T>
+          </p>
+        )}
+      </section>
+
+      <section className="mb-6 rounded-md border border-line bg-surface p-4">
+        <h2 className="font-display text-base text-ink">
+          <T>Admin bot answer tuning</T>
+        </h2>
+        <p className="mt-1 text-sm text-ink-muted">
+          <T>
+            Applies to the admin panel bot only. The storefront bot does not use a language model,
+            so it has nothing to tune here.
           </T>
         </p>
         <ul className="mt-2">
@@ -456,42 +614,7 @@ export function SupportBotSettingsPage() {
             disabled={tuneBot.isPending}
             onCommit={(value) => tuneBot.mutate({ key: "knowledgeSnippets", value })}
           />
-          <TuningRow
-            label="Search results per lookup"
-            description="How many products, articles or recipes the storefront bot's search returns each time it looks something up."
-            value={settings?.searchResults ?? 5}
-            min={1}
-            max={20}
-            disabled={tuneBot.isPending}
-            onCommit={(value) => tuneBot.mutate({ key: "searchResults", value })}
-          />
-          <TuningRow
-            label="Policy text quoted per answer"
-            description="How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about."
-            value={settings?.policyChars ?? 4000}
-            min={500}
-            max={12000}
-            disabled={tuneBot.isPending}
-            onCommit={(value) => tuneBot.mutate({ key: "policyChars", value })}
-          />
         </ul>
-      </section>
-
-      <section className="mb-6 rounded-md border border-line bg-surface p-4">
-        <h2 className="font-display text-base text-ink">
-          <T>Pages the storefront bot may quote</T>
-        </h2>
-        <p className="mt-1 text-sm text-ink-muted">
-          <T>
-            Published page slugs, separated by spaces. The bot reads these word for word when a
-            customer asks about policy, so its answers match what you actually published.
-          </T>
-        </p>
-        <PolicyPagesRow
-          value={settings?.policyPages ?? ""}
-          disabled={setPolicyPages.isPending}
-          onCommit={(value) => setPolicyPages.mutate(value)}
-        />
       </section>
 
       <section className="mb-6 rounded-md border border-line bg-surface p-4">

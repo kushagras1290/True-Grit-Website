@@ -1,4 +1,4 @@
-import type { ProductSummary } from "@truegrit/contracts";
+import type { ProductSummary, RecommendedProduct } from "@truegrit/contracts";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
@@ -6,7 +6,7 @@ import type { Route } from "./+types/cart";
 import { Section } from "../components/catalogue";
 import { RecommendedProducts } from "../components/recommendations";
 import { useCart } from "../lib/cart";
-import { commerceLive, getBestsellers } from "../lib/commerce";
+import { commerceLive, getBestsellers, getProductRecommendations } from "../lib/commerce";
 import { usePriceFormatter } from "../lib/currency";
 import { seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
@@ -34,12 +34,17 @@ export default function CartPage(_props: Route.ComponentProps) {
   // localStorage, so only the browser knows which slugs to exclude. Re-fetches
   // whenever the basket's contents change, so a newly added item drops out of
   // its own "you might also like" row.
-  const [recommended, setRecommended] = useState<ProductSummary[]>([]);
+  const [recommended, setRecommended] = useState<Array<ProductSummary | RecommendedProduct>>([]);
   const cartSlugs = lines.map((line) => line.productSlug).join(",");
   useEffect(() => {
     if (!commerceLive || !recommendations.enabled) return;
     let active = true;
-    getBestsellers({ excludeSlugs: cartSlugs ? cartSlugs.split(",") : undefined })
+    const recommendationRequest = lines[0]
+      ? getProductRecommendations(lines[0].productSlug, 8).then((items) =>
+          items.filter((item) => !cartSlugs.split(",").includes(item.product.slug)),
+        )
+      : getBestsellers({ excludeSlugs: cartSlugs ? cartSlugs.split(",") : undefined });
+    recommendationRequest
       .then((items) => {
         if (active) setRecommended(items);
       })
@@ -71,6 +76,7 @@ export default function CartPage(_props: Route.ComponentProps) {
           eyebrow="Popular this week"
           heading="Start here"
           products={recommended}
+          placement="cart"
         />
       </>
     );
@@ -205,6 +211,7 @@ export default function CartPage(_props: Route.ComponentProps) {
         eyebrow="Frequently added"
         heading="You might also like"
         products={recommended}
+        placement="cart"
       />
     </>
   );

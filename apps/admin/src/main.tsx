@@ -21,6 +21,7 @@ import { CurrencyRatesPage } from "./features/currency-rates";
 import { DiscussionDetailPage, DiscussionsListPage } from "./features/community";
 import { ContentCommentsPage } from "./features/content-comments";
 import { DashboardPage } from "./features/dashboard";
+import { ExperimentsPage, ExperimentDetailView } from "./features/experiments";
 import { DbBrowserPage } from "./features/db-browser";
 import { EmailControlPage } from "./features/email-control";
 import { FarmRequestDetailPage, FarmRequestsListPage } from "./features/farm-requests";
@@ -28,6 +29,7 @@ import { ExpandedCommercePage } from "./features/expanded-commerce";
 import { GiftCardsListPage } from "./features/gift-cards";
 import { HomepageSettingsPage } from "./features/homepage-settings";
 import { ImageGuidePage } from "./features/image-guide";
+import { InventoryIntelligencePage } from "./features/inventory-intelligence";
 import { MessagesPage } from "./features/messages";
 import { SupportBotSettingsPage } from "./features/support-bot-settings";
 import {
@@ -103,6 +105,7 @@ createRoot(document.getElementById("root")!).render(
                   <Route path="subscriptions" element={<SubscriptionsListPage />} />
                   <Route path="expanded-commerce" element={<ExpandedCommercePage />} />
                   <Route path="inventory" element={<InventoryPage />} />
+                  <Route path="inventory-intelligence" element={<InventoryIntelligencePage />} />
                   <Route path="farms" element={<FarmsPage />} />
                   <Route path="farm-requests" element={<FarmRequestsListPage />} />
                   <Route path="farm-requests/:id" element={<FarmRequestDetailPage />} />
@@ -141,6 +144,10 @@ createRoot(document.getElementById("root")!).render(
                   <Route path="scopes" element={<ScopeManagementPage />} />
                   <Route path="audit" element={<AuditPage />} />
                   <Route path="reports" element={<ReportsPage />} />
+                  <Route path="experiments">
+                    <Route index element={<ExperimentsPage />} />
+                    <Route path=":id" element={<ExperimentDetailView />} />
+                  </Route>
                   <Route path="help-assistant" element={<SupportBotSettingsPage />} />
                   <Route
                     path="admin-logs"

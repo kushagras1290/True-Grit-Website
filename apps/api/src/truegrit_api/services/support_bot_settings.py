@@ -1,6 +1,21 @@
-"""On/off switches and answer-tuning knobs for each support bot, shared by
-`services.support_bot` (admin) and `services.support_bot_public`
-(storefront).
+"""On/off switches and answer-tuning knobs for the support bots.
+
+Two bots, and they are no longer the same kind of thing:
+
+* The **admin panel bot** (`services.support_bot`) is model-backed, so it has
+  a prompt whose size and reference material are worth tuning. The knobs below
+  are its.
+* The **storefront bot** (`truegrit_api.support_bot`) is deterministic and has
+  no prompt at all. It reads exactly one value from this module,
+  `support_bot.storefront_enabled`, and nothing else here applies to it. What
+  it needs from an operator instead lives in `services.support_bot_operations`:
+  the policy facts it quotes, and the queue of questions it could not answer.
+
+Three settings were removed when the storefront bot stopped using a model:
+`policyPages` (the allowlist for a `read_policy` tool that no longer exists),
+`searchResults` and `policyChars` (limits on that bot's prompt). All three had
+become inert, and a settings screen offering knobs that do nothing is worse
+than one that omits them.
 
 Stored in the existing `app_settings` key/value table (migration 0034),
 exactly the same pattern `services.discussions`' min-account-age setting
@@ -9,10 +24,10 @@ default to enabled; an admin with `support_bot.manage` can turn either off
 (e.g. while a Workers AI incident is ongoing, or the knowledge base is being
 reworked) without a deploy.
 
-The two tuning values are here rather than as module constants for the same
-reason: they change how every answer is built, and an operator tuning answer
-quality should not need a deploy to do it. Both are clamped to a sane range
-on the way in, so a bad value cannot make the prompt unbounded.
+The tuning values are here rather than as module constants because they change
+how every admin-bot answer is built, and an operator tuning answer quality
+should not need a deploy to do it. Both are clamped to a sane range on the way
+in, so a bad value cannot make the prompt unbounded.
 """
 
 from __future__ import annotations
@@ -27,7 +42,7 @@ from truegrit_api.services.audit import audit_statement
 from truegrit_api.util.timeutil import utc_now_iso
 
 BotScope = Literal["admin", "storefront"]
-TuningKey = Literal["historyTurns", "knowledgeSnippets", "searchResults", "policyChars"]
+TuningKey = Literal["historyTurns", "knowledgeSnippets"]
 
 _SETTING_KEYS: dict[BotScope, str] = {
     "admin": "support_bot.admin_enabled",
@@ -35,79 +50,14 @@ _SETTING_KEYS: dict[BotScope, str] = {
 }
 _DEFAULT_ENABLED = True
 
-# key -> (app_settings key, default, minimum, maximum)
+# key -> (app_settings key, default, minimum, maximum). Admin bot only.
 _TUNING: dict[TuningKey, tuple[str, int, int, int]] = {
     # How many prior turns the client may replay into the prompt. Higher keeps
     # more context, at a proportional cost in tokens and CPU per answer.
     "historyTurns": ("support_bot.history_turns", 10, 0, 40),
     # How many knowledge-base entries are embedded as reference material.
     "knowledgeSnippets": ("support_bot.knowledge_snippets", 6, 1, 30),
-    # How many catalogue/content hits the storefront bot's search tools return
-    # per call. More gives the model more to ground an answer in; too many and
-    # the results crowd out the rest of the prompt.
-    "searchResults": ("support_bot.search_results", 5, 1, 20),
-    # How much of a policy page's text `read_policy` hands to the model. Long
-    # enough to carry the specifics a customer asked about, short enough that
-    # one page cannot swallow the whole prompt.
-    "policyChars": ("support_bot.policy_chars", 4000, 500, 12000),
 }
-
-_POLICY_PAGES_KEY = "support_bot.policy_pages"
-_DEFAULT_POLICY_PAGES = ("returns", "delivery", "help", "terms", "privacy", "standards", "about")
-_MAX_POLICY_PAGES = 20
-# Slugs only. These are looked up as published CMS pages and offered to the
-# model as an enum, so anything that is not slug-shaped is dropped rather than
-# trusted.
-_SLUG_PATTERN = re.compile(r"^[a-z0-9-]{1,80}$")
-
-
-async def get_policy_pages(db: Database) -> tuple[str, ...]:
-    """Which published pages `read_policy` may quote, in operator-chosen order."""
-    row = await db.fetch_one("SELECT value FROM app_settings WHERE key = ?", (_POLICY_PAGES_KEY,))
-    if row is None:
-        return _DEFAULT_POLICY_PAGES
-    slugs = _clean_policy_pages(str(row["value"] or ""))
-    return slugs or _DEFAULT_POLICY_PAGES
-
-
-def _clean_policy_pages(raw: str) -> tuple[str, ...]:
-    candidates = [part.strip().lower() for part in raw.replace(",", " ").split()]
-    kept = [slug for slug in dict.fromkeys(candidates) if _SLUG_PATTERN.match(slug)]
-    return tuple(kept[:_MAX_POLICY_PAGES])
-
-
-async def set_policy_pages(
-    db: Database, actor: Principal, request_id: str, raw: str
-) -> dict[str, Any]:
-    slugs = _clean_policy_pages(raw)
-    if not slugs:
-        raise ValidationAppError(
-            "List at least one page slug, e.g. 'returns delivery help'. Slugs use lowercase"
-            " letters, numbers and hyphens."
-        )
-    now = utc_now_iso()
-    value = " ".join(slugs)
-    await db.batch(
-        [
-            (
-                "INSERT INTO app_settings (key, value, updated_at, updated_by) VALUES (?, ?, ?, ?)"
-                " ON CONFLICT(key) DO UPDATE SET"
-                "  value = excluded.value, updated_at = excluded.updated_at,"
-                " updated_by = excluded.updated_by",
-                (_POLICY_PAGES_KEY, value, now, actor.user_id),
-            ),
-            audit_statement(
-                action="support_bot.policy_pages_changed",
-                entity_type="app_setting",
-                entity_id=_POLICY_PAGES_KEY,
-                actor_id=actor.user_id,
-                request_id=request_id,
-                created_at=now,
-                after={"pages": value},
-            ),
-        ]
-    )
-    return {"policyPages": value}
 
 
 async def get_tuning(db: Database, key: TuningKey) -> int:
@@ -243,5 +193,4 @@ async def get_all(db: Database) -> dict[str, Any]:
     for key in _TUNING:
         settings[key] = await get_tuning(db, key)
     settings["widgetColor"] = await get_widget_color(db)
-    settings["policyPages"] = " ".join(await get_policy_pages(db))
     return settings

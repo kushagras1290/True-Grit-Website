@@ -39,6 +39,7 @@ import type {
   AdminUserRow,
   AmbientEffectKey,
   AnalyticsOverview,
+  DemandForecastPoint,
   AuditLogRow,
   CommunitySettings,
   ContentBlock,
@@ -47,6 +48,7 @@ import type {
   EmailControlSettings,
   EmailSettingsUpdate,
   EmailTestSendResult,
+  InventoryIntelligenceResponse,
   PublicPageBlock,
   ReportDefinitionSummary,
   ReportRunResult,
@@ -744,24 +746,65 @@ export interface SupportBotKnowledgeEntry {
   updatedAt: string;
 }
 
-export type SupportBotTuningKey =
-  "historyTurns" | "knowledgeSnippets" | "searchResults" | "policyChars";
+/** Admin-bot only. The storefront bot has no prompt to tune; `searchResults`,
+ *  `policyChars` and `policyPages` were removed with the model it used. */
+export type SupportBotTuningKey = "historyTurns" | "knowledgeSnippets";
 
 export interface SupportBotSettings {
   admin: boolean;
   storefront: boolean;
-  /** How many prior turns the client may replay into the prompt. */
+  /** How many prior turns the client may replay into the admin bot's prompt. */
   historyTurns: number;
   /** How many knowledge-base entries are embedded as reference material. */
   knowledgeSnippets: number;
-  /** How many hits the storefront bot's search tools return per call. */
-  searchResults: number;
-  /** How much of a policy page's text the bot may quote. */
-  policyChars: number;
   /** Hex colour for both chat widgets; blank means inherit the site brand. */
   widgetColor: string;
-  /** Space-separated page slugs the storefront bot may quote verbatim. */
-  policyPages: string;
+}
+
+/** One standing fact the deterministic storefront bot quotes, e.g. the return
+ *  window. Seeded blank by migration 0109: until a value is set, the wording
+ *  that needs it stays switched off and the question goes to a person, so
+ *  `isConfigured` is the signal the screen surfaces. */
+export interface SupportBotPolicyFact {
+  key: string;
+  value: string;
+  label: string;
+  hint: string;
+  isConfigured: boolean;
+  updatedAt: string | null;
+}
+
+export type SupportBotEscalationStatus = "open" | "in_progress" | "resolved" | "dismissed";
+export type SupportBotEscalationSeverity = "normal" | "high" | "critical";
+
+/** One conversation the bot handed to a person. `alternatives` is the useful
+ *  half: what the classifier nearly matched, and therefore which phrasing is
+ *  missing from the phrasebook. */
+export interface SupportBotEscalation {
+  id: string;
+  createdAt: string;
+  customerUserId: string | null;
+  requestId: string;
+  message: string;
+  intent: string;
+  confidence: number;
+  tier: string;
+  reason: string;
+  severity: SupportBotEscalationSeverity;
+  status: SupportBotEscalationStatus;
+  alternatives: Array<{ intent: string; score: number }>;
+  slots: Record<string, unknown>;
+  context: Record<string, unknown>;
+  resolvedAt: string | null;
+  resolutionNote: string | null;
+}
+
+export interface SupportBotEscalationSummaryRow {
+  intent: string;
+  reason: string;
+  count: number;
+  averageConfidence: number;
+  lastSeen: string;
 }
 
 export interface SiteControl {
@@ -1567,6 +1610,71 @@ export interface B2BInvoiceRow {
   paymentReference: string | null;
   issuedAt: string;
   paidAt: string | null;
+}
+
+export interface ExperimentVariant {
+  key: string;
+  name: string;
+}
+
+export interface ExperimentRow {
+  id: string;
+  key: string;
+  name: string;
+  description: string;
+  status: "draft" | "running" | "completed" | "stopped";
+  variants: ExperimentVariant[];
+  allocationPct: number;
+  primaryMetric: "conversion" | "continuous";
+  targetSampleSize: number | null;
+  sampleSizes?: Record<string, number>;
+  startedAt: string | null;
+  endedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ExperimentResultVariant {
+  key: string;
+  name: string;
+  exposures: number;
+  conversions: number;
+  conversionRate: number;
+  meanValue: number;
+  stdValue: number;
+}
+
+export interface ExperimentComparison {
+  treatmentKey: string;
+  treatmentName: string;
+  metricType: "conversion" | "continuous";
+  controlRate?: number;
+  treatmentRate?: number;
+  controlMean?: number;
+  controlStd?: number;
+  treatmentMean?: number;
+  treatmentStd?: number;
+  absoluteEffect?: number;
+  meanDifference?: number;
+  relativeEffect: number;
+  zStat?: number;
+  tStat?: number;
+  pValue: number;
+  ciLower: number;
+  ciUpper: number;
+  msprtStat: number;
+  msprtPValue: number;
+  isSignificant: boolean;
+  requiredSamplePerVariant: number | null;
+  powerAchieved: number;
+}
+
+export interface ExperimentResults {
+  experiment: ExperimentRow;
+  variants: ExperimentResultVariant[];
+  comparisons: ExperimentComparison[];
+  totalExposures: number;
+  totalConversions: number;
 }
 
 export const api = {
@@ -3936,6 +4044,84 @@ export const api = {
           }`,
         ),
 
+  inventoryIntelligence: (): Promise<InventoryIntelligenceResponse> =>
+    demoMode
+      ? demo({
+          run: {
+            id: "dfr_demo",
+            modelVersion: "moving-average-weekday-v1",
+            horizonDays: 30,
+            completedAt: new Date().toISOString(),
+          },
+          summary: { reorderSoon: 2, forecastedSkus: adminInventory.length },
+          items: adminInventory.map((row, index) => ({
+            productId: row.productId,
+            productName: row.productName,
+            productStatus: row.productStatus,
+            variantId: row.variantId,
+            variantName: row.variantName,
+            sku: row.sku,
+            availableUnits: row.onHand - row.reserved,
+            avgDaily7: index < 2 ? 3.4 - index : 0.6,
+            avgDaily30: index < 2 ? 2.9 - index * 0.4 : 0.5,
+            leadTimeDays: 7,
+            safetyStockDays: 2,
+            daysUntilStockout: index < 2 ? 3.2 + index * 2 : 24 + index,
+            projectedStockoutDate: new Date(Date.now() + (4 + index) * 86_400_000)
+              .toISOString()
+              .slice(0, 10),
+            reorderRecommended: index < 2,
+            recommendedOrderUnits: index < 2 ? 28 - index * 6 : 0,
+            dataDays: 90,
+          })),
+        })
+      : get<InventoryIntelligenceResponse>("/v1/admin/inventory-intelligence"),
+
+  inventoryForecast: (
+    variantId: string,
+  ): Promise<{ runId: string | null; items: DemandForecastPoint[] }> =>
+    demoMode
+      ? demo({
+          runId: "dfr_demo",
+          items: Array.from({ length: 30 }, (_, index) => ({
+            forecastDate: new Date(Date.now() + (index + 1) * 86_400_000)
+              .toISOString()
+              .slice(0, 10),
+            predictedUnits: 2.4 + (index % 7 === 5 || index % 7 === 6 ? 1.1 : 0),
+            lowerUnits: 0.8,
+            upperUnits: 4.9,
+            seasonalityMultiplier: index % 7 === 5 || index % 7 === 6 ? 1.35 : 0.92,
+          })),
+        })
+      : get(`/v1/admin/inventory-intelligence/${encodeURIComponent(variantId)}/forecast`),
+
+  updateInventoryForecastSettings: (
+    variantId: string,
+    input: { leadTimeDays: number; safetyStockDays: number },
+  ): Promise<{ variantId: string; leadTimeDays: number; safetyStockDays: number }> =>
+    demoMode
+      ? demo({ variantId, ...input })
+      : patch(`/v1/admin/inventory-intelligence/${encodeURIComponent(variantId)}/settings`, input),
+
+  recomputeInventoryForecasts: (): Promise<{
+    runId: string;
+    variants: number;
+    forecasts: number;
+  }> =>
+    demoMode
+      ? demo({ runId: "dfr_demo", variants: adminInventory.length, forecasts: 30 })
+      : post("/v1/admin/inventory-intelligence/recompute", {}),
+
+  recomputeRecommendations: (): Promise<{
+    runId: string;
+    orders: number;
+    products: number;
+    associations: number;
+  }> =>
+    demoMode
+      ? demo({ runId: "rrn_demo", orders: 163, products: 12, associations: 80 })
+      : post("/v1/admin/recommendations/recompute", {}),
+
   // --- Farm revenue & payouts --------------------------------------------
 
   revenue: (): Promise<FarmRevenueSummary> =>
@@ -4173,10 +4359,7 @@ export const api = {
           storefront: true,
           historyTurns: 10,
           knowledgeSnippets: 6,
-          searchResults: 5,
-          policyChars: 4000,
           widgetColor: "",
-          policyPages: "returns delivery help terms privacy standards about",
         })
       : get("/v1/admin/support-bot/settings"),
 
@@ -4196,13 +4379,51 @@ export const api = {
   ): Promise<{ key: SupportBotTuningKey; value: number }> =>
     demoMode ? demo({ key, value }) : patch(`/v1/admin/support-bot/tuning/${key}`, { value }),
 
-  /** Space- or comma-separated slugs; the API normalises and returns them. */
-  setSupportBotPolicyPages: (policyPages: string): Promise<{ policyPages: string }> =>
-    demoMode ? demo({ policyPages }) : patch("/v1/admin/support-bot/policy-pages", { policyPages }),
-
   /** Blank clears the override and returns both widgets to the brand colour. */
   setSupportBotWidgetColor: (widgetColor: string): Promise<{ widgetColor: string }> =>
     demoMode ? demo({ widgetColor }) : patch("/v1/admin/support-bot/widget-color", { widgetColor }),
+
+  supportBotPolicyFacts: (): Promise<SupportBotPolicyFact[]> =>
+    demoMode ? demo([]) : get("/v1/admin/support-bot/policy-facts"),
+
+  /** Blank is a valid value: it switches the wording that depends on this
+   *  fact back off, which is how a figure is retracted before its replacement
+   *  is known. */
+  setSupportBotPolicyFact: (
+    key: string,
+    value: string,
+  ): Promise<{ key: string; value: string; isConfigured: boolean }> =>
+    demoMode
+      ? demo({ key, value, isConfigured: Boolean(value) })
+      : patch(`/v1/admin/support-bot/policy-facts/${key}`, { value }),
+
+  supportBotEscalations: (params?: {
+    status?: SupportBotEscalationStatus;
+    severity?: SupportBotEscalationSeverity;
+    limit?: number;
+    offset?: number;
+  }): Promise<{ total: number; items: SupportBotEscalation[] }> => {
+    if (demoMode) return demo({ total: 0, items: [] });
+    const query = new URLSearchParams();
+    if (params?.status) query.set("status", params.status);
+    if (params?.severity) query.set("severity", params.severity);
+    if (params?.limit) query.set("limit", String(params.limit));
+    if (params?.offset) query.set("offset", String(params.offset));
+    const suffix = query.toString();
+    return get(`/v1/admin/support-bot/escalations${suffix ? `?${suffix}` : ""}`);
+  },
+
+  supportBotEscalationSummary: (): Promise<SupportBotEscalationSummaryRow[]> =>
+    demoMode ? demo([]) : get("/v1/admin/support-bot/escalations/summary"),
+
+  setSupportBotEscalationStatus: (
+    id: string,
+    status: SupportBotEscalationStatus,
+    note = "",
+  ): Promise<{ id: string; status: SupportBotEscalationStatus; resolutionNote: string }> =>
+    demoMode
+      ? demo({ id, status, resolutionNote: note })
+      : patch(`/v1/admin/support-bot/escalations/${id}`, { status, note }),
 
   /** Public, unauthenticated: the floating widget is shown to every staff
    *  member, but the settings endpoint above is `support_bot.manage`-gated.
@@ -4217,6 +4438,24 @@ export const api = {
           color: body.supportBotColor ?? "",
           enabled: body.supportBotAdminEnabled ?? true,
         })),
+
+  experiments: (): Promise<ExperimentRow[]> => (demoMode ? demo([]) : get("/v1/admin/experiments")),
+
+  experimentDetails: (id: string): Promise<ExperimentRow> =>
+    demoMode ? Promise.reject(new Error("No demo data")) : get(`/v1/admin/experiments/${id}`),
+
+  experimentResults: (id: string): Promise<ExperimentResults> =>
+    demoMode
+      ? Promise.reject(new Error("No demo data"))
+      : get(`/v1/admin/experiments/${id}/results`),
+
+  setExperimentStatus: (
+    id: string,
+    status: "draft" | "running" | "completed" | "stopped",
+  ): Promise<ExperimentRow> =>
+    demoMode
+      ? Promise.reject(new Error("No demo data"))
+      : post(`/v1/admin/experiments/${id}/${status === "running" ? "start" : status}`, {}),
 };
 
 /** `wss://…/v1/admin/messages/realtime/{conversationId}` — the session cookie

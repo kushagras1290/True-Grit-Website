@@ -37,6 +37,8 @@ seed, exercising exactly the SQL that D1 will run. On Workers, the `DB` binding 
 - `GET /health/live`
 - `GET /v1/public/bootstrap | home | categories/:slug | products/:slug | search?q=`
 - `GET /v1/admin/me | products | categories | audit` (session cookie + RBAC)
+- `GET /v1/admin/inventory-intelligence` (SKU forecasts + reorder decisions)
+- `GET /v1/public/products/:id/recommendations` (explainable ranked products)
 - `POST /v1/admin/categories/:id/publish` (workflow + audit + outbox in one batch)
 
 Docs are intentionally not public (`docs_url=None`); the OpenAPI document is served at

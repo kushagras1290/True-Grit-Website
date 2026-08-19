@@ -101,7 +101,9 @@
     // hours. Drives Subscribe & Save renewals (Default.scheduled in
     // worker.py); a no-op cost of one settings read on stores that have
     // never turned the feature on. See services/subscriptions.py.
-    "crons": ["* * * * *", "0 3 * * *"],
+    // Recommendations refresh nightly at 02:15 UTC; demand forecasts refresh
+    // Mondays at 02:30 UTC. Both complete before 03:00 subscription renewals.
+    "crons": ["* * * * *", "15 2 * * *", "30 2 * * 1", "0 3 * * *"],
   },
   "vars": {
     "APP_ENV": "development",
@@ -201,7 +203,9 @@
           { "queue": "truegrit-dlq-staging", "max_batch_size": 10, "max_batch_timeout": 5 },
         ],
       },
-      "triggers": { "crons": ["* * * * *", "0 3 * * *"] },
+      "triggers": {
+        "crons": ["* * * * *", "15 2 * * *", "30 2 * * 1", "0 3 * * *"],
+      },
       "vars": {
         "APP_ENV": "staging",
         "PUBLIC_STOREFRONT_URL": "https://stag.truegritin.com",
@@ -272,7 +276,9 @@
           { "queue": "truegrit-dlq-prod", "max_batch_size": 10, "max_batch_timeout": 5 },
         ],
       },
-      "triggers": { "crons": ["* * * * *", "0 3 * * *"] },
+      "triggers": {
+        "crons": ["* * * * *", "15 2 * * *", "30 2 * * 1", "0 3 * * *"],
+      },
       "vars": {
         "APP_ENV": "production",
         "PUBLIC_STOREFRONT_URL": "https://www.truegritin.com",

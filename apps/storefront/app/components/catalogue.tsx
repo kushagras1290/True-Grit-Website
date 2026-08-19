@@ -107,13 +107,21 @@ export function AvailabilityNote({
   return <p className={`text-xs font-medium ${tone}`}>{label}</p>;
 }
 
-export function ProductCard({ product }: { product: ProductSummary }) {
+export function ProductCard({
+  product,
+  href = `/product/${product.slug}`,
+  onNavigate,
+}: {
+  product: ProductSummary;
+  href?: string;
+  onNavigate?: () => void;
+}) {
   const price = usePriceFormatter();
   const effective = productEffectivePrice(product);
   return (
     <article className="group relative">
       <WishlistButton productId={product.id} className="absolute top-2 right-2 z-10" />
-      <Link to={`/product/${product.slug}`} className="block">
+      <Link to={href} onClick={onNavigate} className="block">
         <ProduceFrame
           slug={product.slug}
           alt={product.imageAlt}

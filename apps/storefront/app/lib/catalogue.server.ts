@@ -16,6 +16,7 @@ import type {
   ProductFilters,
   ProductReview,
   ProductSummary,
+  RecommendedProduct,
   PublicBootstrap,
   PublicBundle,
   PublicCategoryPage,
@@ -656,6 +657,31 @@ export async function loadAlsoBought(
     [],
     runtime,
   );
+}
+
+/** Ranked recommendation blend for a product. Unlike the legacy
+ * `loadAlsoBought` list, every item carries its explainable score/run metadata
+ * so storefront events and checkout revenue can be attributed to the exact
+ * completed model run. */
+export async function loadProductRecommendations(
+  productRef: string,
+  limit: number,
+  country?: string,
+  runtime?: CatalogueRuntime,
+  locale?: string,
+): Promise<RecommendedProduct[]> {
+  if (!apiUrl(runtime)) return [];
+  const response = await fromApi<{ items: RecommendedProduct[] }>(
+    withLocale(
+      withCountry(
+        `/v1/public/products/${encodeURIComponent(productRef)}/recommendations?limit=${limit}`,
+        country,
+      ),
+      locale,
+    ),
+    runtime,
+  );
+  return response?.items ?? [];
 }
 
 /**
