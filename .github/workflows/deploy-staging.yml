@@ -154,6 +154,8 @@ jobs:
         run: pnpm exec wrangler deploy --env staging
       - name: Build SEO studio
         working-directory: apps/seo
+        env:
+          VITE_API_URL: "https://apistag.truegritin.com"
         run: pnpm build
       - name: Deploy SEO studio
         working-directory: apps/seo

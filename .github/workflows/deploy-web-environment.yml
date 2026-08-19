@@ -123,7 +123,13 @@ jobs:
 
       - name: Build SEO studio
         working-directory: apps/seo
-        run: pnpm build
+        run: |
+          if [ "$TARGET_ENVIRONMENT" = "production" ]; then
+            export VITE_API_URL="https://api.truegritin.com"
+          else
+            export VITE_API_URL="https://apistag.truegritin.com"
+          fi
+          pnpm build
       - name: Deploy SEO studio
         working-directory: apps/seo
         run: pnpm exec wrangler deploy --env "$TARGET_ENVIRONMENT"
