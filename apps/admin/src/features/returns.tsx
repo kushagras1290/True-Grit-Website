@@ -37,6 +37,38 @@ const REASON_LABELS: Record<string, string> = {
   other: "Other",
 };
 
+const AGENT_DECISION_LABELS: Record<string, string> = {
+  auto_approve: "Auto-approved",
+  escalate: "Escalated",
+  auto_deny: "Auto-denied",
+};
+
+const AGENT_DECISION_CLASSES: Record<string, string> = {
+  auto_approve: "bg-emerald-100 text-emerald-800",
+  escalate: "bg-amber-100 text-amber-800",
+  auto_deny: "bg-rose-100 text-rose-800",
+};
+
+function AgentBadge({
+  riskScore,
+  decision,
+}: {
+  riskScore: number | null;
+  decision: string | null;
+}) {
+  if (decision === null) return <span className="text-ink-muted">—</span>;
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+        AGENT_DECISION_CLASSES[decision] ?? "bg-canvas text-ink-muted"
+      }`}
+    >
+      {AGENT_DECISION_LABELS[decision] ?? decision}
+      {riskScore !== null ? ` · ${riskScore}` : ""}
+    </span>
+  );
+}
+
 export function ReturnsListPage() {
   const [statusFilter, setStatusFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -122,16 +154,19 @@ export function ReturnsListPage() {
               <T>Status</T>
             </Th>
             <Th>
+              <T>Risk</T>
+            </Th>
+            <Th>
               <T>Requested</T>
             </Th>
           </tr>
         </thead>
         {isLoading ? (
-          <LoadingRows columns={5} />
+          <LoadingRows columns={6} />
         ) : returns.length === 0 ? (
           <tbody>
             <tr>
-              <td colSpan={5} className="px-3 py-8">
+              <td colSpan={6} className="px-3 py-8">
                 <EmptyState
                   title="No return requests"
                   hint="Requests filed from the storefront appear here."
@@ -155,6 +190,9 @@ export function ReturnsListPage() {
                 <Td>{REASON_LABELS[entry.reasonCode] ?? entry.reasonCode}</Td>
                 <Td>
                   <StatusPill status={entry.status} />
+                </Td>
+                <Td>
+                  <AgentBadge riskScore={entry.agentRiskScore} decision={entry.agentDecision} />
                 </Td>
                 <Td>{formatDateTime(entry.requestedAt)}</Td>
               </tr>
@@ -235,11 +273,54 @@ export function ReturnDetailPage() {
       <PageHeader
         title={`Return — ${entry.orderReference}`}
         description={entry.customerName}
-        actions={<StatusPill status={entry.status} />}
+        actions={
+          <div className="flex items-center gap-2">
+            {entry.resolvedByAgent ? (
+              <span className="inline-flex items-center rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-800">
+                <T>Resolved automatically by the refund agent</T>
+              </span>
+            ) : null}
+            <StatusPill status={entry.status} />
+          </div>
+        }
       />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-4">
+          {entry.agentAssessment ? (
+            <div className="rounded-md border border-line bg-surface p-5">
+              <div className="flex items-center justify-between">
+                <h2 className="font-display text-lg text-ink">
+                  <T>Agent assessment</T>
+                </h2>
+                <AgentBadge
+                  riskScore={entry.agentAssessment.riskScore}
+                  decision={entry.agentAssessment.decision}
+                />
+              </div>
+              <p className="mt-2 text-sm text-ink-muted">{entry.agentAssessment.rationale}</p>
+              {entry.agentAssessment.signals.length > 0 ? (
+                <ul className="mt-3 space-y-2">
+                  {entry.agentAssessment.signals.map((signal) => (
+                    <li key={signal.id} className="rounded-md bg-canvas p-2.5 text-sm">
+                      <div className="flex items-center justify-between font-medium text-ink">
+                        <span>{signal.label}</span>
+                        <span className="text-ink-muted">+{signal.weight}</span>
+                      </div>
+                      <p className="mt-0.5 text-ink-muted">{signal.rationale}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-3 text-sm text-ink-muted">
+                  <T>No fraud signals fired.</T>
+                </p>
+              )}
+              <p className="mt-3 text-xs text-ink-muted">
+                <T>Evaluated</T> {formatDateTime(entry.agentAssessment.evaluatedAt)}
+              </p>
+            </div>
+          ) : null}
           <div className="rounded-md border border-line bg-surface p-5">
             <dl className="grid grid-cols-2 gap-4 text-sm">
               <div>

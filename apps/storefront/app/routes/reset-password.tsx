@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router";
 
 import type { Route } from "./+types/reset-password";
 import { Section } from "../components/catalogue";
+import { PasswordField } from "../components/password-field";
 import { AuthError, confirmPasswordReset } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
 import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
@@ -81,9 +82,8 @@ export default function ResetPasswordPage(_props: Route.ComponentProps) {
           <span className="text-xs font-medium text-ink-muted">
             <LocalizedText>New password</LocalizedText>
           </span>
-          <input
+          <PasswordField
             name="password"
-            type="password"
             minLength={10}
             autoComplete="new-password"
             required

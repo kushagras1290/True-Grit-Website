@@ -17,6 +17,7 @@ import {
 import { useLocaleContext } from "../lib/i18n/context";
 import { useSiteSettings, type SiteSettings } from "../lib/site-settings";
 import { HeaderLanguageSwitcher, LanguageSwitcher } from "./language-switcher";
+import { PasswordField } from "./password-field";
 import { AddPhonePrompt, PhoneAuthPanel, PhoneVerifier } from "./phone-auth";
 import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
 
@@ -481,9 +482,8 @@ function CustomerPortal() {
                     <span className="text-xs font-medium text-ink-muted">
                       <LocalizedText>Password</LocalizedText>
                     </span>
-                    <input
+                    <PasswordField
                       name="password"
-                      type="password"
                       autoComplete={mode === "register" ? "new-password" : "current-password"}
                       required
                       minLength={mode === "register" ? 10 : undefined}

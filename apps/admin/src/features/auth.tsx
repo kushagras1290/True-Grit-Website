@@ -3,7 +3,7 @@ import { ShieldCheck } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from "react-router";
 
-import { Button, Field, Input } from "../components/ui";
+import { Button, Field, Input, PasswordInput } from "../components/ui";
 import {
   ADMIN_AUTH_EXPIRED_EVENT,
   ApiError,
@@ -104,10 +104,9 @@ export function AdminResetPasswordPage() {
             }}
           >
             <Field label="New password" htmlFor="new-password">
-              <Input
+              <PasswordInput
                 id="new-password"
                 name="password"
-                type="password"
                 minLength={10}
                 autoComplete="new-password"
                 required
@@ -225,10 +224,9 @@ export function AdminLoginPage() {
               />
             </Field>
             <Field label="Password" htmlFor="admin-password">
-              <Input
+              <PasswordInput
                 id="admin-password"
                 name="password"
-                type="password"
                 autoComplete="current-password"
                 defaultValue={demoMode ? "admin123" : ""}
                 required

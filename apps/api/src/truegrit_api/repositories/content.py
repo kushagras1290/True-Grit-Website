@@ -1218,11 +1218,16 @@ class ReturnRequestRepository:
                    COALESCE(u.display_name, o.customer_email) AS customer_name,
                    rr.reason_code, rr.status, rr.requested_refund_amount_minor,
                    rr.resolution_type, rr.resolution_amount_minor, rr.requested_at,
-                   rr.resolved_at
+                   rr.resolved_at, ror.risk_score AS agent_risk_score,
+                   ror.decision AS agent_decision
             FROM return_requests rr
             JOIN orders o ON o.id = rr.order_id
             LEFT JOIN users u ON u.id = rr.customer_user_id
             LEFT JOIN order_items oi ON oi.id = rr.order_item_id
+            LEFT JOIN refund_orchestrator_runs ror ON ror.id = (
+              SELECT id FROM refund_orchestrator_runs
+              WHERE return_request_id = rr.id ORDER BY created_at DESC LIMIT 1
+            )
             WHERE (? IS NULL OR rr.status = ?)
               AND (? IS NULL OR oi.farm_id = ?)
             {search_clause}

@@ -143,7 +143,12 @@ export interface Proposal {
 }
 
 export interface Summary {
-  settings: { enabled: boolean; maxPages: number; competitorMaxPages: number };
+  settings: {
+    enabled: boolean;
+    maxPages: number;
+    competitorMaxPages: number;
+    scheduleDays: number;
+  };
   counts: {
     openBySeverity: Record<string, number>;
     openByCategory: Record<string, number>;
@@ -211,9 +216,14 @@ export const seoApi = {
 
   summary: () => request<Summary>("/v1/admin/seo/summary"),
   setEnabled: (enabled: boolean) =>
-    request<{ enabled: boolean }>("/v1/admin/seo/settings", {
+    request<Summary["settings"]>("/v1/admin/seo/settings", {
       method: "PATCH",
       body: JSON.stringify({ enabled }),
+    }),
+  setScheduleDays: (scheduleDays: number) =>
+    request<Summary["settings"]>("/v1/admin/seo/settings", {
+      method: "PATCH",
+      body: JSON.stringify({ scheduleDays }),
     }),
 
   runs: (limit = 20) => request<CrawlRun[]>(`/v1/admin/seo/runs?limit=${limit}`),

@@ -8,6 +8,8 @@ import {
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
+  Eye,
+  EyeOff,
   ExternalLink,
   FileText,
   Globe2,
@@ -116,6 +118,30 @@ function Button({
 const controlClass =
   "min-h-10 w-full rounded-sm border border-line-strong bg-surface px-3 text-sm text-ink placeholder:text-ink-muted focus:border-brand focus:outline-none";
 
+function PasswordInput({
+  className,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement>) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <div className="relative">
+      <input
+        type={visible ? "text" : "password"}
+        className={cn(controlClass, "pr-9", className)}
+        {...props}
+      />
+      <button
+        type="button"
+        onClick={() => setVisible((value) => !value)}
+        className="absolute inset-y-0 right-0 flex items-center px-2.5 text-ink-muted hover:text-ink"
+        aria-label={visible ? "Hide password" : "Show password"}
+      >
+        {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
+    </div>
+  );
+}
+
 function Login({ onDone }: { onDone: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -205,9 +231,8 @@ function Login({ onDone }: { onDone: () => void }) {
           </label>
           <label className="mt-4 block text-sm font-medium text-ink">
             Password
-            <input
-              className={`${controlClass} mt-1.5`}
-              type="password"
+            <PasswordInput
+              className="mt-1.5"
               autoComplete="current-password"
               required
               value={password}
@@ -1489,9 +1514,8 @@ function AccountWorkspace({ user }: { user: StaffUser }) {
         >
           <label className="block text-sm font-medium text-ink">
             Current password
-            <input
-              className={`${controlClass} mt-1.5`}
-              type="password"
+            <PasswordInput
+              className="mt-1.5"
               autoComplete="current-password"
               required
               value={currentPassword}
@@ -1500,9 +1524,8 @@ function AccountWorkspace({ user }: { user: StaffUser }) {
           </label>
           <label className="block text-sm font-medium text-ink">
             New password
-            <input
-              className={`${controlClass} mt-1.5`}
-              type="password"
+            <PasswordInput
+              className="mt-1.5"
               autoComplete="new-password"
               required
               minLength={10}
@@ -1513,9 +1536,8 @@ function AccountWorkspace({ user }: { user: StaffUser }) {
           </label>
           <label className="block text-sm font-medium text-ink">
             Confirm new password
-            <input
-              className={`${controlClass} mt-1.5`}
-              type="password"
+            <PasswordInput
+              className="mt-1.5"
               autoComplete="new-password"
               required
               value={confirmPassword}

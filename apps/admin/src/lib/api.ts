@@ -181,6 +181,9 @@ const DEMO_STOREFRONT_SETTINGS: StorefrontSettingsResponse = {
     preorders: false,
     deliveryZones: false,
     b2b: false,
+    // Off by default (migration 0113) -- real financial/business-risk
+    // decision, same reasoning as promotions/subscriptions/giftCards.
+    refundOrchestrator: false,
     blogBannerImageUrl: "",
     blogBannerImageAlt: "",
     farmsBannerImageUrl: "",
@@ -203,6 +206,7 @@ const DEMO_STOREFRONT_SETTINGS: StorefrontSettingsResponse = {
     preorders: false,
     deliveryZones: false,
     b2b: false,
+    refundOrchestrator: false,
     anySignInAvailable: true,
   },
 };

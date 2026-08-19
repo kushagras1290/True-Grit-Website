@@ -35,6 +35,7 @@ from truegrit_api.platform.http import HttpError, post_form_async, post_json_asy
 
 _RAZORPAY_ORDERS_URL = "https://api.razorpay.com/v1/orders"
 _RAZORPAY_PAYMENTS_URL = "https://api.razorpay.com/v1/payments"
+_STRIPE_REFUNDS_URL = "https://api.stripe.com/v1/refunds"
 # Both INR and every currency PayPal is likely to be configured with here (USD,
 # GBP, EUR, AUD, CAD, SGD) are two-decimal. A zero-decimal presentment currency
 # (JPY) would need its own exponent table; `paypal_currency` is validated against
@@ -319,6 +320,57 @@ async def refund_paypal_capture(
         )
         raise PaymentError("The refund could not be processed. Please try again.") from exc
     if not isinstance(result, dict) or result.get("status") not in {"COMPLETED", "PENDING"}:
+        raise PaymentError("The payment provider did not confirm the refund.")
+    refund_id = result.get("id")
+    if not refund_id:
+        raise PaymentError("The payment provider did not confirm the refund.")
+    return str(refund_id)
+
+
+# --- Stripe (cards, global) ---------------------------------------------------
+#
+# No order-creation or capture flow exists yet here -- `config.py`'s
+# `payment_stripe_visible` is deliberately off until that is built and tested,
+# so `provider = 'stripe'` never appears on a real `payments` row today. This
+# refund function exists ahead of that so the moment Stripe checkout ships and
+# starts writing `provider_intent_id` as the PaymentIntent id (`pi_...`),
+# refunds -- both a staff-issued one and the refund orchestrator's automatic
+# one -- already work with no further change on the refund side.
+
+
+async def refund_stripe_payment(
+    settings: Settings, *, payment_intent_id: str, amount_minor: int, idempotency_key: str
+) -> str:
+    """Refund (fully or partially) a captured Stripe PaymentIntent and return
+    the refund id. `idempotency_key` maps to Stripe's own `Idempotency-Key`
+    header, the same retry-safety contract `refund_razorpay_payment` and
+    `refund_paypal_capture` each give their own gateway. Stripe amounts are
+    already expressed in the currency's smallest unit, the same convention
+    `amount_minor` uses everywhere else in this codebase, so no conversion is
+    needed the way PayPal's INR-to-`paypal_currency` conversion is."""
+    if not settings.stripe_enabled:
+        raise PaymentError("Online refunds are not available right now.")
+    authorization = "Basic " + base64.b64encode(f"{settings.stripe_secret_key}:".encode()).decode(
+        "ascii"
+    )
+    try:
+        result = await post_form_async(
+            _STRIPE_REFUNDS_URL,
+            form={"payment_intent": payment_intent_id, "amount": str(amount_minor)},
+            headers={
+                "authorization": authorization,
+                "Idempotency-Key": idempotency_key,
+            },
+        )
+    except HttpError as exc:
+        log_event(
+            "error",
+            "stripe_refund_failed",
+            payment_intent_id=payment_intent_id,
+            error_type=type(exc).__name__,
+        )
+        raise PaymentError("The refund could not be processed. Please try again.") from exc
+    if not isinstance(result, dict) or result.get("status") not in {"succeeded", "pending"}:
         raise PaymentError("The payment provider did not confirm the refund.")
     refund_id = result.get("id")
     if not refund_id:

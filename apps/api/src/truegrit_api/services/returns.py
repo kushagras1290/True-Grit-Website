@@ -25,6 +25,9 @@ from truegrit_api.errors import (
 )
 from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
+from truegrit_api.services.feature_settings import refund_orchestrator_enabled
+from truegrit_api.services.jobs import enqueue_refund_evaluation
+from truegrit_api.services.orders import refund_via_gateway
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
 
@@ -147,6 +150,8 @@ async def create_return_request(
             ),
         ]
     )
+    if await refund_orchestrator_enabled(db):
+        await enqueue_refund_evaluation(db, return_request_id=return_id)
     return {"id": return_id, "status": "requested"}
 
 
@@ -238,6 +243,8 @@ async def resolve_return_request(
         raise NotFoundError("Order not found.")
 
     refund_amount = int(resolution_amount_minor or 0)
+    gateway_result: dict[str, Any] | None = None
+    gateway_statements: list[tuple[str, Any]] = []
     if resolution_type == "refund":
         if not actor.has("orders.refund"):
             raise PermissionDeniedError()
@@ -245,6 +252,12 @@ async def resolve_return_request(
             raise ValidationAppError("Enter a refund amount greater than zero.")
         if refund_amount > order["total_minor"]:
             raise ValidationAppError("Refund cannot exceed the order total.")
+        # Actually calls the gateway (Razorpay/PayPal), the same shared path
+        # `issue_refund` uses -- previously this only wrote the
+        # `order_adjustments` ledger row below and never moved real money.
+        gateway_result, gateway_statements = await refund_via_gateway(
+            db, current["order_id"], amount_minor=refund_amount
+        )
 
     now = utc_now_iso()
     target_status = _RESOLUTION_TARGET_STATUS[resolution_type]
@@ -279,10 +292,8 @@ async def resolve_return_request(
             },
         ),
     ]
-    if resolution_type == "refund" and refund_amount > 0:
-        new_payment_status = (
-            "refunded" if refund_amount >= order["total_minor"] else "partially_refunded"
-        )
+    if resolution_type == "refund" and gateway_result is not None:
+        statements.extend(gateway_statements)
         statements.append(
             (
                 "INSERT INTO order_adjustments"
@@ -292,16 +303,35 @@ async def resolve_return_request(
                     new_id("adj"),
                     current["order_id"],
                     "Return refund",
-                    -refund_amount,
+                    -gateway_result["refundedMinor"],
                     now,
                     actor.user_id,
                 ),
             )
         )
+        # Also audited as `order.refunded`, the same action `issue_refund`
+        # writes -- so a return-driven refund shows up on the Refunds
+        # Oversight page (`GET /admin/refunds`) exactly like a directly
+        # issued one, instead of being invisible to it.
         statements.append(
-            (
-                "UPDATE orders SET payment_status = ?, updated_at = ? WHERE id = ?",
-                (new_payment_status, now, current["order_id"]),
+            audit_statement(
+                action="order.refunded",
+                entity_type="order",
+                entity_id=current["order_id"],
+                actor_id=actor.user_id,
+                request_id=request_id,
+                created_at=now,
+                before={
+                    "paymentStatus": gateway_result["previousPaymentStatus"],
+                    "alreadyRefunded": gateway_result["alreadyRefundedBefore"],
+                },
+                after={
+                    "paymentStatus": gateway_result["paymentStatus"],
+                    "refundedNow": gateway_result["refundedMinor"],
+                    "reason": (resolution_notes or "").strip() or "Return resolved as refund",
+                    "providerRefundId": gateway_result["providerRefundId"],
+                    "returnRequestId": return_id,
+                },
             )
         )
     await db.batch(statements)

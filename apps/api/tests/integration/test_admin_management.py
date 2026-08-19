@@ -1206,6 +1206,48 @@ def test_refund_blocked_for_cod_orders(client: TestClient, db: SQLiteDatabase):
     assert response.status_code == 422
 
 
+def test_owner_can_refund_a_stripe_payment(client: TestClient, db: SQLiteDatabase, monkeypatch):
+    """Stripe checkout doesn't exist yet, but the refund side is ready for it --
+    seeds a Stripe payment row directly (the same way a future checkout
+    implementation would) and proves `issue_refund` routes it through
+    `refund_stripe_payment` correctly."""
+    as_admin(client, db)
+    now = "2026-07-15T00:00:00Z"
+    db._conn.execute(
+        "INSERT INTO payments"
+        " (id, order_id, provider, provider_intent_id, amount_minor, currency_code,"
+        "  status, created_at, updated_at)"
+        " VALUES ('pay_stripe_1001', 'ord_1001', 'stripe', 'pi_test123', 94800, 'INR',"
+        "  'paid', ?, ?)",
+        (now, now),
+    )
+    db._conn.commit()
+
+    async def fake_stripe_refund(settings, *, payment_intent_id, amount_minor, idempotency_key):
+        assert payment_intent_id == "pi_test123"
+        assert amount_minor == 94800
+        return "re_test123"
+
+    monkeypatch.setattr(
+        "truegrit_api.services.orders.refund_stripe_payment", fake_stripe_refund
+    )
+
+    response = client.post(
+        "/v1/admin/orders/ord_1001/refund", json={"reason": "Customer requested cancellation"}
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["paymentStatus"] == "refunded"
+    assert body["refundedMinor"] == 94800
+
+    detail = client.get("/v1/admin/orders/ord_1001").json()
+    assert detail["payment"]["status"] == "refunded"
+
+    refunds = client.get("/v1/admin/refunds").json()["items"]
+    match = next(item for item in refunds if item["orderId"] == "ord_1001")
+    assert match["providerRefundId"] == "re_test123"
+
+
 def test_refund_requires_orders_refund_permission_even_with_orders_view(
     client: TestClient, db: SQLiteDatabase
 ):
