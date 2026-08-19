@@ -23,6 +23,7 @@ from truegrit_api.config import get_settings
 from truegrit_api.domain.money import basis_points_discount
 from truegrit_api.errors import ConflictError, PhoneRequiredError, ValidationAppError
 from truegrit_api.platform.database import Database
+from truegrit_api.services import experiments as experiments_service
 from truegrit_api.services.audit import audit_statement
 from truegrit_api.services.b2b import (
     check_credit_limit,
@@ -58,6 +59,46 @@ class CheckoutLine:
     variant_id: str
     quantity: int
     preorder: bool = False
+    recommendation_source_product_id: str | None = None
+    recommendation_run_id: str | None = None
+    recommendation_placement: str | None = None
+
+
+async def _validated_recommendation_attribution(
+    db: Database, line: CheckoutLine, recommended_product_id: str
+) -> dict[str, str | None] | None:
+    """Accept attribution only for a real source/target pair.
+
+    Attribution changes analytics, not price, but it is still server-owned
+    data. A client cannot claim an arbitrary organic purchase came from a
+    recommendation by inventing product or run ids.
+    """
+    source_id = line.recommendation_source_product_id
+    placement = line.recommendation_placement
+    if not placement or source_id == recommended_product_id:
+        return None
+    if placement not in {"product", "cart", "homepage", "category", "shop", "order"}:
+        return None
+    if line.recommendation_run_id and source_id:
+        valid = await db.fetch_one(
+            "SELECT 1 AS ok FROM product_cooccurrence"
+            " WHERE run_id = ? AND source_product_id = ? AND recommended_product_id = ?",
+            (line.recommendation_run_id, source_id, recommended_product_id),
+        )
+        if valid is None:
+            return None
+        run_id: str | None = line.recommendation_run_id
+    elif source_id:
+        valid = await db.fetch_one("SELECT id FROM products WHERE id = ?", (source_id,))
+        if valid is None:
+            return None
+        run_id = None
+    else:
+        # Homepage/shop popularity rows have no anchor product. The target is
+        # already the server-resolved checkout product, and the placement is
+        # the attribution signal.
+        run_id = None
+    return {"source_product_id": source_id, "run_id": run_id, "placement": placement}
 
 
 def _reference() -> str:
@@ -174,6 +215,7 @@ async def _resolve_line(
         tier_price = await resolve_b2b_price(db, line.variant_id, line.quantity)
         if tier_price is not None:
             unit = min(unit, tier_price)
+    attribution = await _validated_recommendation_attribution(db, line, str(variant["product_id"]))
     return {
         "variant": variant,
         "location_id": level["location_id"] if level is not None else None,
@@ -183,6 +225,7 @@ async def _resolve_line(
         "currency_code": price["currency_code"],
         "quantity": line.quantity,
         "line_total_minor": unit * line.quantity,
+        "recommendation_attribution": attribution,
     }
 
 
@@ -276,14 +319,23 @@ async def place_order(
     if len(items) > _MAX_LINES:
         raise ValidationAppError("Too many items in one order.")
     # Collapse duplicate variant lines defensively.
-    merged: dict[tuple[str, bool], int] = {}
+    merged: dict[tuple[str, bool], CheckoutLine] = {}
     for line in items:
         key = (line.variant_id, line.preorder)
-        merged[key] = merged.get(key, 0) + line.quantity
-    lines = [
-        CheckoutLine(variant_id=variant_id, quantity=quantity, preorder=is_preorder)
-        for (variant_id, is_preorder), quantity in merged.items()
-    ]
+        existing = merged.get(key)
+        if existing is None:
+            merged[key] = line
+        else:
+            attributed = existing if existing.recommendation_placement else line
+            merged[key] = CheckoutLine(
+                variant_id=line.variant_id,
+                quantity=existing.quantity + line.quantity,
+                preorder=line.preorder,
+                recommendation_source_product_id=attributed.recommendation_source_product_id,
+                recommendation_run_id=attributed.recommendation_run_id,
+                recommendation_placement=attributed.recommendation_placement,
+            )
+    lines = list(merged.values())
 
     address = _validate_address(delivery_address)
     settings = get_settings()
@@ -622,6 +674,7 @@ async def place_order(
 
     for item in resolved:
         variant = item["variant"]
+        order_item_id = new_id("oit")
         statements.append(
             (
                 """
@@ -632,7 +685,7 @@ async def place_order(
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?, ?)
                 """,
                 (
-                    new_id("oit"),
+                    order_item_id,
                     order_id,
                     variant["product_id"],
                     variant["variant_id"],
@@ -647,6 +700,31 @@ async def place_order(
                 ),
             )
         )
+        attribution = item["recommendation_attribution"]
+        if attribution is not None:
+            allocated_discount = (
+                (total_discount * item["line_total_minor"]) // subtotal if subtotal else 0
+            )
+            statements.append(
+                (
+                    "INSERT INTO recommendation_attributions"
+                    " (id, order_id, order_item_id, source_product_id, recommended_product_id,"
+                    " recommendation_run_id, placement, quantity, attributed_revenue_minor,"
+                    " created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    (
+                        new_id("rat"),
+                        order_id,
+                        order_item_id,
+                        attribution["source_product_id"],
+                        variant["product_id"],
+                        attribution["run_id"],
+                        attribution["placement"],
+                        item["quantity"],
+                        max(item["line_total_minor"] - allocated_discount, 0),
+                        now,
+                    ),
+                )
+            )
         if item["harvest_window_id"] is None:
             statements.append(
                 (
@@ -862,6 +940,26 @@ async def place_order(
             if existing is not None:
                 return _order_result(existing)
         raise
+
+    # ── A/B experiment conversion tracking ──────────────────────────────
+    # Fire a 'conversion' event for every running experiment this customer
+    # is assigned to.  Server-side so a missed client-side event never
+    # loses the conversion data.  event_value carries the order total
+    # (minor units) for continuous-metric experiments (e.g. AOV lift).
+    # Deliberately *after* the batch: a conversion without a persisted
+    # order is noise, not signal, so we only fire once the order is real.
+    try:
+        assignments = await experiments_service.get_user_assignments(db, customer.user_id)
+        for assignment in assignments:
+            await experiments_service.track_event(
+                db,
+                experiment_key=assignment["experimentKey"],
+                user_id=customer.user_id,
+                event_type="conversion",
+                event_value=float(total),
+            )
+    except Exception:
+        pass  # experiment tracking must never break checkout
 
     return {
         "id": order_id,

@@ -8,11 +8,13 @@
  * admin bundle ships to a Cloudflare Worker, and a handful of <rect>s cover
  * everything a single revenue-trend needs. */
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { RefreshCw } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import { EmptyState, PageHeader } from "../components/ui";
-import { api } from "../lib/api";
+import { Button, EmptyState, PageHeader } from "../components/ui";
+import { useToast } from "../components/toast";
+import { ApiError, api } from "../lib/api";
 import { formatMoney } from "../lib/format";
 import { T } from "../lib/i18n";
 
@@ -123,12 +125,20 @@ function StatusBreakdown({ rows }: { rows: { status: string; orderCount: number 
 }
 
 export function AnalyticsPage() {
+  const toast = useToast();
   const [preset, setPreset] = useState<RangePreset>(30);
   const range = useMemo(() => ({ from: isoDaysAgo(preset - 1), to: todayIso() }), [preset]);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["admin-analytics-overview", range.from, range.to],
     queryFn: () => api.analyticsOverview(range),
+  });
+  const recomputeRecommendations = useMutation({
+    mutationFn: api.recomputeRecommendations,
+    onSuccess: (result) =>
+      toast.success(`Recommendation model refreshed with ${result.associations} associations.`),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not refresh recommendations."),
   });
 
   return (
@@ -225,6 +235,60 @@ export function AnalyticsPage() {
               </div>
             </div>
           </div>
+
+          <section className="rounded-md border border-line bg-surface p-5">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <h2 className="font-display text-lg text-ink">
+                  <T>Recommendation performance</T>
+                </h2>
+                <p className="mt-1 max-w-2xl text-sm text-ink-muted">
+                  <T>
+                    Widget engagement and checkout revenue attributed to products discovered through
+                    recommendations in this date range.
+                  </T>
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={recomputeRecommendations.isPending}
+                onClick={() => recomputeRecommendations.mutate()}
+              >
+                <RefreshCw
+                  size={15}
+                  className={recomputeRecommendations.isPending ? "animate-spin" : ""}
+                />
+                {recomputeRecommendations.isPending ? (
+                  <T>Rebuilding...</T>
+                ) : (
+                  <T>Rebuild recommendations</T>
+                )}
+              </Button>
+            </div>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <KpiCard
+                label="Click-through rate"
+                value={`${(data.recommendations.clickThroughRate * 100).toFixed(1)}%`}
+                hint={`${data.recommendations.clicks} clicks from ${data.recommendations.impressions} impressions`}
+              />
+              <KpiCard
+                label="Added to basket"
+                value={String(data.recommendations.addToCarts)}
+                hint="Adds after a recommendation click"
+              />
+              <KpiCard
+                label="Attributed orders"
+                value={String(data.recommendations.attributedOrders)}
+                hint={`${data.recommendations.attributedUnits} recommended units sold`}
+              />
+              <KpiCard
+                label="Attributed revenue"
+                value={formatMoney(data.recommendations.attributedRevenueMinor, "INR")}
+                hint="Net line revenue after allocated discounts"
+              />
+            </div>
+          </section>
         </div>
       )}
     </div>

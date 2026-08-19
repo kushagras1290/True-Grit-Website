@@ -11,6 +11,7 @@ from typing import Any, Final
 from truegrit_api.errors import ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.analytics import AnalyticsRepository
+from truegrit_api.services.recommendations import recommendation_metrics
 
 # A dashboard, not an export tool -- a year is generous for "how is the store
 # doing" while still bounding the work a single request can trigger.
@@ -58,6 +59,7 @@ async def load_overview(
     revenue_by_day = await repository.revenue_by_day(from_date=clean_from, to_date=clean_to)
     top_products = await repository.top_products(from_date=clean_from, to_date=clean_to)
     status_breakdown = await repository.status_breakdown(from_date=clean_from, to_date=clean_to)
+    recommendations = await recommendation_metrics(db, from_date=clean_from, to_date=clean_to)
 
     return {
         "fromDate": clean_from,
@@ -87,4 +89,5 @@ async def load_overview(
             {"status": row["order_status"], "orderCount": int(row["order_count"])}
             for row in status_breakdown
         ],
+        "recommendations": recommendations,
     }

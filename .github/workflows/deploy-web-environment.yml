@@ -49,7 +49,7 @@ env:
 
 jobs:
   web:
-    name: Storefront + Admin + Process + Language Studio (${{ inputs.environment || 'production' }})
+    name: Storefront + Admin + Process + Language Studio + SEO (${{ inputs.environment || 'production' }})
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: ${{ inputs.environment || 'production' }}
@@ -121,6 +121,13 @@ jobs:
         working-directory: apps/lang
         run: pnpm exec wrangler deploy --env "$TARGET_ENVIRONMENT"
 
+      - name: Build SEO studio
+        working-directory: apps/seo
+        run: pnpm build
+      - name: Deploy SEO studio
+        working-directory: apps/seo
+        run: pnpm exec wrangler deploy --env "$TARGET_ENVIRONMENT"
+
       - name: Verify live endpoints
         # A bare curl User-Agent trips Cloudflare Bot Fight Mode's heuristics
         # (no browser fingerprint), which returns 403 before the request ever
@@ -135,15 +142,18 @@ jobs:
             admin_url="https://admin.truegritin.com"
             process_url="https://process.truegritin.com"
             language_url="https://lang.truegritin.com"
+            seo_url="https://seo.truegritin.com"
           else
             storefront_url="https://stag.truegritin.com"
             admin_url="https://adstag.truegritin.com"
             process_url=""
             language_url="https://langstag.truegritin.com"
+            seo_url="https://seostag.truegritin.com"
           fi
           curl --fail --retry 5 --retry-all-errors -A "$UA" "$storefront_url"
           curl --fail --retry 5 --retry-all-errors -A "$UA" "$admin_url"
           curl --fail --retry 5 --retry-all-errors -A "$UA" "$language_url"
+          curl --fail --retry 5 --retry-all-errors -A "$UA" "$seo_url"
           if [ -n "$process_url" ]; then
             curl --fail --retry 5 --retry-all-errors -A "$UA" "$process_url"
           fi

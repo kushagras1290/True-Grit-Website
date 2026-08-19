@@ -8,7 +8,7 @@ customer can never see another's orders.
 from __future__ import annotations
 
 import json
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, ConfigDict, Field
@@ -22,6 +22,7 @@ from truegrit_api.errors import ConflictError, NotFoundError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.repositories.content import ReturnRequestRepository
 from truegrit_api.services import addresses as address_service
+from truegrit_api.services import experiments as experiments_service
 from truegrit_api.services import subscriptions as subscription_service
 from truegrit_api.services import wishlist as wishlist_service
 from truegrit_api.services.b2b import create_invoice
@@ -69,6 +70,11 @@ class CheckoutItem(_CamelModel):
     variant_id: str = Field(max_length=64)
     quantity: int = Field(ge=1, le=99)
     preorder: bool = False
+    recommendation_source_product_id: str | None = Field(default=None, max_length=64)
+    recommendation_run_id: str | None = Field(default=None, max_length=64)
+    recommendation_placement: (
+        Literal["product", "cart", "homepage", "category", "shop", "order"] | None
+    ) = None
 
 
 class CheckoutAddress(_CamelModel):
@@ -247,6 +253,9 @@ async def checkout(
                 variant_id=item.variant_id,
                 quantity=item.quantity,
                 preorder=item.preorder,
+                recommendation_source_product_id=item.recommendation_source_product_id,
+                recommendation_run_id=item.recommendation_run_id,
+                recommendation_placement=item.recommendation_placement,
             )
             for item in payload.items
         ],
@@ -1019,3 +1028,45 @@ async def remove_from_my_wishlist_endpoint(
         db, customer, _request_id(request), product_id=product_id
     )
     return {"productId": product_id, "removed": True}
+
+
+# ─── Experiments / A/B Testing (public) ─────────────────────────────
+
+
+@router.get("/experiments/assignments")
+async def my_experiment_assignments(
+    customer: Annotated[Principal, Depends(get_current_customer)],
+    db: Annotated[Database, Depends(get_database)],
+) -> Any:
+    """All running experiments and the signed-in customer's variant for each.
+
+    Called on storefront page load so the UI can render the correct variant.
+    Deterministic — same user always gets the same assignment."""
+    return {"assignments": await experiments_service.get_user_assignments(db, customer.user_id)}
+
+
+class ExperimentEventRequest(_CamelModel):
+    experiment_key: str = Field(min_length=1, max_length=80)
+    event_type: str = Field(min_length=1, max_length=40)
+    event_value: float | None = None
+
+
+@router.post("/experiments/events")
+async def track_experiment_event(
+    payload: ExperimentEventRequest,
+    customer: Annotated[Principal, Depends(get_current_customer)],
+    db: Annotated[Database, Depends(get_database)],
+) -> Any:
+    """Fire an experiment event (exposure, add-to-cart, checkout-started).
+
+    Conversions are also fired server-side at order placement (see
+    services/checkout.py) so a missed client-side event never loses the
+    conversion data."""
+    tracked = await experiments_service.track_event(
+        db,
+        experiment_key=payload.experiment_key,
+        user_id=customer.user_id,
+        event_type=payload.event_type,
+        event_value=payload.event_value,
+    )
+    return {"tracked": tracked}

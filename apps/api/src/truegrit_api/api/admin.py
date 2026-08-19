@@ -74,6 +74,7 @@ from truegrit_api.services import bundles as bundle_service
 from truegrit_api.services import content_comments as content_comment_service
 from truegrit_api.services import discussions as discussion_service
 from truegrit_api.services import entity_translation as entity_translation_service
+from truegrit_api.services import experiments as experiments_service
 from truegrit_api.services import farm_partnerships as farm_partnership_service
 from truegrit_api.services import gift_cards as gift_card_service
 from truegrit_api.services import promotions as promotion_service
@@ -7380,3 +7381,131 @@ async def issue_farm_payout_endpoint(
         note=payload.note,
         expected_payout_minor=payload.expected_payout_minor,
     )
+
+
+# ─── Experiments / A/B Testing ────────────────────────────────────────
+
+
+class CreateExperimentRequest(_CamelModel):
+    key: str
+    name: str
+    description: str = ""
+    variants: list[dict[str, str]]
+    allocation_pct: int = Field(default=100, ge=0, le=100)
+    primary_metric: str = "conversion"
+    target_sample_size: int | None = None
+
+
+class UpdateExperimentRequest(_CamelModel):
+    name: str | None = None
+    description: str | None = None
+    variants: list[dict[str, str]] | None = None
+    allocation_pct: int | None = Field(default=None, ge=0, le=100)
+    primary_metric: str | None = None
+    target_sample_size: int | None = None
+
+
+@router.get("/experiments")
+async def list_experiments(
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("experiments.manage"))],
+    status: str | None = Query(default=None),
+) -> Any:
+    return await experiments_service.list_experiments(db, status=status)
+
+
+@router.post("/experiments", status_code=201)
+async def create_experiment(
+    payload: CreateExperimentRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("experiments.manage"))],
+) -> Any:
+    return await experiments_service.create_experiment(
+        db,
+        principal,
+        _request_id(request),
+        key=payload.key,
+        name=payload.name,
+        description=payload.description,
+        variants=payload.variants,
+        allocation_pct=payload.allocation_pct,
+        primary_metric=payload.primary_metric,
+        target_sample_size=payload.target_sample_size,
+    )
+
+
+@router.get("/experiments/{experiment_id}")
+async def get_experiment(
+    experiment_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("experiments.manage"))],
+) -> Any:
+    return await experiments_service.get_experiment(db, experiment_id)
+
+
+@router.patch("/experiments/{experiment_id}")
+async def update_experiment(
+    experiment_id: str,
+    payload: UpdateExperimentRequest,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("experiments.manage"))],
+) -> Any:
+    return await experiments_service.update_experiment(
+        db,
+        principal,
+        _request_id(request),
+        experiment_id=experiment_id,
+        name=payload.name,
+        description=payload.description,
+        variants=payload.variants,
+        allocation_pct=payload.allocation_pct,
+        primary_metric=payload.primary_metric,
+        target_sample_size=payload.target_sample_size,
+    )
+
+
+@router.post("/experiments/{experiment_id}/start")
+async def start_experiment(
+    experiment_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("experiments.manage"))],
+) -> Any:
+    return await experiments_service.start_experiment(
+        db, principal, _request_id(request), experiment_id
+    )
+
+
+@router.post("/experiments/{experiment_id}/stop")
+async def stop_experiment(
+    experiment_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("experiments.manage"))],
+) -> Any:
+    return await experiments_service.stop_experiment(
+        db, principal, _request_id(request), experiment_id
+    )
+
+
+@router.post("/experiments/{experiment_id}/complete")
+async def complete_experiment(
+    experiment_id: str,
+    request: Request,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("experiments.manage"))],
+) -> Any:
+    return await experiments_service.complete_experiment(
+        db, principal, _request_id(request), experiment_id
+    )
+
+
+@router.get("/experiments/{experiment_id}/results")
+async def experiment_results(
+    experiment_id: str,
+    db: Annotated[Database, Depends(get_database)],
+    principal: Annotated[Principal, Depends(require_permission("experiments.manage"))],
+) -> Any:
+    return await experiments_service.compute_results(db, experiment_id)

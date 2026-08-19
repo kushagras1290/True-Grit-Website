@@ -1,0 +1,85 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "truegrit-seo-dev",
+  "compatibility_date": "2026-07-11",
+  // The crawler entry point. There is no `fetch` handler: with `assets`
+  // configured and no `run_worker_first`, every HTTP request is served by the
+  // static SPA and the Worker code only ever runs on a cron trigger.
+  "main": "worker/index.ts",
+  "workers_dev": true,
+  "routes": [{ "pattern": "seotest.truegritin.com", "custom_domain": true }],
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+  },
+  "observability": { "enabled": true },
+  "vars": {
+    "SITE_ORIGIN": "https://test.truegritin.com",
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "truegrit-dev",
+      "database_id": "ca1cec13-5ec4-4e59-85ef-1115b365bb89",
+      "migrations_dir": "../../database/migrations",
+    },
+  ],
+  // Two schedules doing different jobs. The daily one only queues a run; the
+  // five-minute one crawls a batch and is what makes a long run resumable
+  // across invocations. See worker/index.ts.
+  "triggers": {
+    "crons": ["0 3 * * *", "*/5 * * * *"],
+  },
+  "env": {
+    "staging": {
+      "name": "truegrit-seo-staging",
+      "workers_dev": true,
+      "routes": [{ "pattern": "seostag.truegritin.com", "custom_domain": true }],
+      "main": "worker/index.ts",
+      "assets": {
+        "directory": "./dist",
+        "not_found_handling": "single-page-application",
+      },
+      "observability": { "enabled": true },
+      "vars": {
+        "SITE_ORIGIN": "https://stag.truegritin.com",
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "truegrit-staging",
+          "database_id": "67cd4e24-f693-4f5a-8057-97371899b87e",
+          "migrations_dir": "../../database/migrations",
+        },
+      ],
+      "triggers": {
+        "crons": ["0 3 * * *", "*/5 * * * *"],
+      },
+    },
+    "production": {
+      "name": "truegrit-seo-prod",
+      "workers_dev": true,
+      "routes": [{ "pattern": "seo.truegritin.com", "custom_domain": true }],
+      "main": "worker/index.ts",
+      "assets": {
+        "directory": "./dist",
+        "not_found_handling": "single-page-application",
+      },
+      "observability": { "enabled": true },
+      "vars": {
+        "SITE_ORIGIN": "https://www.truegritin.com",
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "truegrit-prod",
+          "database_id": "a2356e42-0e8f-42cf-862f-ef88b6f1bb9e",
+          "migrations_dir": "../../database/migrations",
+        },
+      ],
+      "triggers": {
+        "crons": ["0 3 * * *", "*/5 * * * *"],
+      },
+    },
+  },
+}

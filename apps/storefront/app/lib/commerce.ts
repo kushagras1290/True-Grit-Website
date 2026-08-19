@@ -9,6 +9,7 @@
 import type {
   CustomerAddress,
   ProductSummary,
+  RecommendedProduct,
   SubscriptionFrequency,
   SubscriptionRow,
   WishlistItem,
@@ -23,6 +24,18 @@ export interface CheckoutItem {
   variantId: string;
   quantity: number;
   preorder?: boolean;
+  recommendationSourceProductId?: string;
+  recommendationRunId?: string;
+  recommendationPlacement?: "product" | "cart" | "homepage" | "category" | "shop" | "order";
+}
+
+export function getProductRecommendations(
+  productRef: string,
+  limit = 8,
+): Promise<RecommendedProduct[]> {
+  return request<{ items: RecommendedProduct[] }>(
+    `/v1/public/products/${encodeURIComponent(productRef)}/recommendations?limit=${limit}`,
+  ).then((body) => body.items);
 }
 
 export interface DeliveryAddress {
@@ -1129,4 +1142,27 @@ export function sendContactMessage(input: ContactMessage): Promise<{ ok: boolean
     method: "POST",
     body: JSON.stringify(input),
   });
+}
+
+export interface ExperimentAssignment {
+  experimentKey: string;
+  variantKey: string;
+}
+
+export function getExperimentAssignments(): Promise<ExperimentAssignment[]> {
+  if (!commerceLive) return Promise.resolve([]);
+  return request<{ assignments: ExperimentAssignment[] }>(
+    "/v1/public/experiments/assignments",
+  ).then((body) => body.assignments);
+}
+
+export function trackExperimentExposure(experimentKey: string): Promise<void> {
+  if (!commerceLive) return Promise.resolve();
+  return request("/v1/public/experiments/events", {
+    method: "POST",
+    body: JSON.stringify({
+      experiment_key: experimentKey,
+      event_type: "exposure",
+    }),
+  }).then(() => {});
 }

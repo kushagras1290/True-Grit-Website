@@ -922,6 +922,15 @@ export const analyticsOverview: AnalyticsOverview = {
     { status: "cancelled", orderCount: 8 },
     { status: "pending_payment", orderCount: 4 },
   ],
+  recommendations: {
+    impressions: 1_842,
+    clicks: 176,
+    addToCarts: 61,
+    clickThroughRate: 0.0955,
+    attributedOrders: 29,
+    attributedUnits: 37,
+    attributedRevenueMinor: 86_400,
+  },
 };
 
 /** Products per category slug. Subcategory entries repeat their department's

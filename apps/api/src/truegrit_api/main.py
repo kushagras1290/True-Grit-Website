@@ -13,11 +13,14 @@ from truegrit_api.api.customer_auth import router as customer_auth_router
 from truegrit_api.api.deployments import router as deployments_router
 from truegrit_api.api.email_admin import router as email_admin_router
 from truegrit_api.api.farm_partnerships import router as farm_partnerships_router
+from truegrit_api.api.intelligence import admin_router as intelligence_admin_router
+from truegrit_api.api.intelligence import public_router as intelligence_public_router
 from truegrit_api.api.messages import router as messages_router
 from truegrit_api.api.phone_auth import router as phone_auth_router
 from truegrit_api.api.public import router as public_router
 from truegrit_api.api.roadmap_admin import router as roadmap_admin_router
 from truegrit_api.api.roadmap_public import router as roadmap_public_router
+from truegrit_api.api.seo import router as seo_router
 from truegrit_api.api.storefront import router as storefront_router
 from truegrit_api.api.submissions import router as submissions_router
 from truegrit_api.api.support_bot import router as support_bot_router
@@ -126,12 +129,15 @@ def create_app(
     app.include_router(support_bot_public_router, prefix="/v1/public")
     app.include_router(translation_hub_public_router, prefix="/v1/public")
     app.include_router(currency_rates_public_router, prefix="/v1/public")
+    app.include_router(intelligence_public_router, prefix="/v1/public")
     app.include_router(admin_router, prefix="/v1/admin")
+    app.include_router(intelligence_admin_router, prefix="/v1/admin")
     app.include_router(email_admin_router, prefix="/v1/admin")
     app.include_router(roadmap_admin_router, prefix="/v1/admin")
     app.include_router(deployments_router, prefix="/v1/admin")
     app.include_router(messages_router, prefix="/v1/admin")
     app.include_router(support_bot_router, prefix="/v1/admin")
+    app.include_router(seo_router, prefix="/v1/admin")
     app.include_router(translation_hub_admin_router, prefix="/v1/admin")
     app.include_router(currency_rates_admin_router, prefix="/v1/admin")
 
