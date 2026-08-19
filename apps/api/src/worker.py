@@ -275,26 +275,19 @@ async def _serve_media_direct(env: Any, request: Any, path: str) -> Any:
 
 class Default(WorkerEntrypoint):
     async def scheduled(self, controller: Any, env: Any = None, ctx: Any = None) -> None:
-        """Cloudflare Cron Trigger entry point (see `triggers.crons` in
-        wrangler.jsonc) -- places one renewal order for every Subscribe & Save
-        subscription due today, via the identical code path the admin's
-        manual "run renewals now" button also calls
-        (`services.subscriptions.run_due_renewals`). A no-op whenever the
-        sitewide subscriptions switch is off, so this cron firing on a store
-        that has never turned the feature on costs one cheap settings read.
+        """Dispatch the job matching the exact UTC cron expression.
 
-        Deliberately does not build the FastAPI app or go through ASGI at
-        all -- a scheduled event is not an HTTP request, so this talks to D1
-        directly, the same way `_upload_media_direct`/`_serve_media_direct`
-        bypass ASGI for their own non-request-shaped work. Any failure is
-        logged and swallowed: a cron isolate has no browser waiting on a
-        response, and the batch itself already isolates and records each
-        subscription's own outcome (see run_due_renewals), so there is
-        nothing left here that a retry would fix that tomorrow's run will
-        not already retry on its own.
+        Cloudflare sends every configured trigger through this one handler;
+        matching ``controller.cron`` keeps minute-level outbox work separate
+        from daily recommendations, weekly forecasts and subscriptions. The
+        services write run status before/after their rollups, so an exception
+        is safe to surface to Cron Past Events and the previous completed run
+        remains live.
         """
         from truegrit_api.platform.d1 import D1Database
+        from truegrit_api.services.demand_forecasting import recompute_demand_forecasts
         from truegrit_api.services.jobs import dispatch_pending_outbox
+        from truegrit_api.services.recommendations import recompute_recommendations
         from truegrit_api.services.subscriptions import run_due_renewals
         from truegrit_api.services.translation_batches import enqueue_pending_tasks
         from truegrit_api.util.ids import new_request_id
@@ -302,22 +295,38 @@ class Default(WorkerEntrypoint):
         try:
             _bridge_worker_env(self.env)
             db = D1Database(self.env.DB)
-            queued_translations = await enqueue_pending_tasks(db)
-            dispatched = await dispatch_pending_outbox(
-                db, _WorkersQueuePublisher(self.env.JOBS_QUEUE)
-            )
-            print(
-                "outbox.scheduled: "
-                f"{dispatched['published']}/{dispatched['selected']} published, "
-                f"{dispatched['failed']} failed, {queued_translations} translation tasks queued"
-            )
-            if str(getattr(controller, "cron", "")) == "0 3 * * *":
+            cron = str(getattr(controller, "cron", ""))
+            if cron == "* * * * *":
+                queued_translations = await enqueue_pending_tasks(db)
+                dispatched = await dispatch_pending_outbox(
+                    db, _WorkersQueuePublisher(self.env.JOBS_QUEUE)
+                )
+                print(
+                    "outbox.scheduled: "
+                    f"{dispatched['published']}/{dispatched['selected']} published, "
+                    f"{dispatched['failed']} failed, "
+                    f"{queued_translations} translation tasks queued"
+                )
+            elif cron == "15 2 * * *":
+                result = await recompute_recommendations(db)
+                print(
+                    "recommendations.scheduled: "
+                    f"{result['associations']} associations across {result['products']} products"
+                )
+            elif cron == "30 2 * * 1":
+                result = await recompute_demand_forecasts(db)
+                print(
+                    "demand_forecast.scheduled: "
+                    f"{result['forecasts']} forecasts across {result['variants']} variants"
+                )
+            elif cron == "0 3 * * *":
                 result = await run_due_renewals(db, new_request_id())
                 print(
                     f"subscriptions.scheduled: {result['succeeded']}/{result['processed']} renewed"
                 )
         except Exception as exc:
-            print(f"subscriptions.scheduled crashed: {type(exc).__name__}: {exc}")
+            print(f"scheduled.crashed: {type(exc).__name__}: {exc}")
+            raise
 
     async def queue(self, batch: Any, env: Any = None, ctx: Any = None) -> None:
         """Consume jobs idempotently and retain exhausted messages from the DLQ."""

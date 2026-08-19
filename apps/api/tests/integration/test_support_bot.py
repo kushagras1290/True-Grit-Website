@@ -195,15 +195,15 @@ def test_bot_enabled_by_default(db: SQLiteDatabase):
 
     settings = client.get("/v1/admin/support-bot/settings")
     assert settings.status_code == 200
+    # `searchResults`, `policyChars` and `policyPages` were removed with the
+    # storefront bot's model: all three only shaped that bot's prompt, and it
+    # no longer has one. What remains applies to the admin bot alone.
     assert settings.json() == {
         "admin": True,
         "storefront": True,
         "historyTurns": 10,
         "knowledgeSnippets": 6,
-        "searchResults": 5,
-        "policyChars": 4000,
         "widgetColor": "",  # blank = inherit the site brand colour
-        "policyPages": "returns delivery help terms privacy standards about",
     }
 
 
@@ -277,18 +277,18 @@ def test_tuning_clamps_out_of_range_values(db: SQLiteDatabase):
     client.cookies.set(SESSION_COOKIE, create_session(db, "usr_admin"))
 
     # Past the field's own outer bound: rejected outright rather than stored.
-    rejected = client.patch("/v1/admin/support-bot/tuning/searchResults", json={"value": 99999})
+    rejected = client.patch("/v1/admin/support-bot/tuning/historyTurns", json={"value": 99999})
     assert rejected.status_code == 422
 
     # Within the field bound but above this key's own maximum: clamped down.
-    clamped = client.patch("/v1/admin/support-bot/tuning/searchResults", json={"value": 999})
+    clamped = client.patch("/v1/admin/support-bot/tuning/historyTurns", json={"value": 999})
     assert clamped.status_code == 200
-    assert clamped.json() == {"key": "searchResults", "value": 20}
+    assert clamped.json() == {"key": "historyTurns", "value": 40}
 
     # Each key keeps its own range, not a shared one.
-    chars = client.patch("/v1/admin/support-bot/tuning/policyChars", json={"value": 99})
-    assert chars.status_code == 200
-    assert chars.json() == {"key": "policyChars", "value": 500}  # clamped up to the minimum
+    snippets = client.patch("/v1/admin/support-bot/tuning/knowledgeSnippets", json={"value": 999})
+    assert snippets.status_code == 200
+    assert snippets.json() == {"key": "knowledgeSnippets", "value": 30}
 
 
 def test_widget_color_round_trips_and_reaches_the_storefront(db: SQLiteDatabase):

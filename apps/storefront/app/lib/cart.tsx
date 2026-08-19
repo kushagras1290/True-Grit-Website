@@ -20,6 +20,9 @@ export interface CartLine {
   variantName: string;
   unitMinor: number;
   preorder?: boolean;
+  recommendationSourceProductId?: string;
+  recommendationRunId?: string;
+  recommendationPlacement?: "product" | "cart" | "homepage" | "category" | "shop" | "order";
   quantity: number;
 }
 

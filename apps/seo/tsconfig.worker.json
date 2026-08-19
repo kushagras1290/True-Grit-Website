@@ -1,0 +1,12 @@
+{
+  // The crawler runs in workerd, not the browser: it needs HTMLRewriter, D1 and
+  // the scheduled-handler types, and must NOT see `vite/client` or the DOM libs
+  // the SPA half depends on. Separate project rather than one merged config, so
+  // a browser-only API used by mistake in the worker fails to compile.
+  "extends": "../../packages/config/tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023"],
+    "types": ["@cloudflare/workers-types"]
+  },
+  "include": ["worker"]
+}

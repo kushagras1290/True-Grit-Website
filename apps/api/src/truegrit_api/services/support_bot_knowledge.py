@@ -1,13 +1,17 @@
-"""Admin-editable knowledge base shared by both support bots
-(`services.support_bot` for the admin panel, `services.support_bot_public`
-for the storefront).
+"""Admin-editable knowledge base for the admin-panel support bot
+(`services.support_bot`).
 
 Rows live in `support_bot_knowledge` (migrations 0076/0077), split by
 `scope` ('admin' | 'storefront') into one table and one
 `support_bot.manage`-gated admin-panel screen rather than building two
-parallel CRUD surfaces -- customers never edit what their bot knows, so both
-scopes stay admin-managed. `select_relevant` (read by whichever bot is
-answering) only ever reads its own scope.
+parallel CRUD surfaces. `select_relevant` only ever reads its own scope.
+
+The 'storefront' rows are currently unread: the customer-facing bot was
+replaced by the deterministic pipeline in `truegrit_api.support_bot`, which
+answers from `support_bot_policy_facts` and live catalogue rows through fixed
+templates rather than by feeding reference text to a model. They are kept
+because they are hand-written policy summaries and are the obvious source
+material if a scoped knowledge lookup is ever added back.
 
 `keywords` stays a plain space-separated column matched by simple overlap
 against the asker's question -- the corpus is small enough (dozens of short

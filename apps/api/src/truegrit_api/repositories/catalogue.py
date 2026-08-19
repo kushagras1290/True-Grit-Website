@@ -573,6 +573,16 @@ class CatalogueRepository:
         order = {product_id: index for index, product_id in enumerate(product_ids)}
         return sorted(summaries, key=lambda item: order.get(item["id"], len(order)))
 
+    async def resolve_ranked_product_ids(
+        self,
+        product_ids: list[str],
+        *,
+        country: str | None = None,
+        locale: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """Public service boundary for pre-ranked recommendation rollups."""
+        return await self._resolve_ranked(product_ids, country=country, locale=locale)
+
     async def list_highlighted(
         self, country: str | None = None, *, limit: int = 12, locale: str | None = None
     ) -> list[dict[str, Any]]:

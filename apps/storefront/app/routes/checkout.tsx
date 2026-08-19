@@ -19,6 +19,8 @@ import {
   getPaymentMethods,
   getPickupPoints,
   newCheckoutIdempotencyKey,
+  getExperimentAssignments,
+  trackExperimentExposure,
   openPaypalPaymentWindow,
   openRazorpayPaymentWindow,
   payWithPaypalWindow,
@@ -42,7 +44,7 @@ import { usePriceFormatter, useDisplayCurrency } from "../lib/currency";
 import { AuthError, useCustomer } from "../lib/customer-auth";
 import { seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
-import { LocalizedText, useLocalizeText } from "../lib/i18n/localized-text";
+import { LocalizedText, useLocalizeFormat, useLocalizeText } from "../lib/i18n/localized-text";
 
 export function meta({ matches }: Route.MetaArgs) {
   return seoMeta(
@@ -72,6 +74,7 @@ const FIELD =
 
 export default function CheckoutPage(_props: Route.ComponentProps) {
   const localize = useLocalizeText();
+  const format = useLocalizeFormat();
   const { customer, status } = useCustomer();
   const { payments, promotions, giftCards, loyalty, pickup, deliveryZones, b2b } =
     useSiteSettings();
@@ -106,6 +109,7 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
   const [deliverySlots, setDeliverySlots] = useState<DeliverySlotInfo[]>([]);
   const [deliverySlotId, setDeliverySlotId] = useState("");
   const [b2bAccount, setB2BAccount] = useState<B2BAccountInfo | null>(null);
+  const [freeShipVariant, setFreeShipVariant] = useState<string | null>(null);
   // Stable for the life of this page: every retry of the same submission
   // (a double-click, a timeout-and-resend) reuses it, so the server returns
   // the order that attempt already placed instead of placing a second one.
@@ -145,6 +149,32 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
         (deliveryCheck?.serviceable === true &&
           ((deliveryCheck.slots?.length ?? 0) === 0 ||
             (Boolean(deliveryDate) && Boolean(deliverySlotId))));
+
+  // Fetches the customer's assignment for the free-shipping-message
+  // experiment once per page load and fires the exposure event -- see
+  // services/experiments.py for the deterministic hash-bucket assignment and
+  // the mSPRT-backed significance test this is measured against.
+  useEffect(() => {
+    if (!commerceLive) return;
+    let active = true;
+    getExperimentAssignments()
+      .then((assignments) => {
+        if (!active) return;
+        const match = assignments.find((a) => a.experimentKey === "checkout_free_ship_msg");
+        if (match) {
+          setFreeShipVariant(match.variantKey);
+          trackExperimentExposure("checkout_free_ship_msg").catch(() => {});
+        } else {
+          setFreeShipVariant("control");
+        }
+      })
+      .catch(() => {
+        if (active) setFreeShipVariant("control");
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!commerceLive || !payments.enabled) return;
@@ -449,6 +479,9 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
           variantId: line.variantId,
           quantity: line.quantity,
           preorder: Boolean(line.preorder),
+          recommendationSourceProductId: line.recommendationSourceProductId,
+          recommendationRunId: line.recommendationRunId,
+          recommendationPlacement: line.recommendationPlacement,
         })),
         address,
         {
@@ -844,6 +877,30 @@ export default function CheckoutPage(_props: Route.ComponentProps) {
               {referralMessage ? (
                 <p className="mt-1 text-xs text-ink-muted">{referralMessage}</p>
               ) : null}
+            </div>
+          ) : null}
+
+          {deliveryZones.enabled && deliverySettings.freeThresholdMinor > 0 && freeShipVariant ? (
+            <div className="mt-4 rounded-md border border-brand/30 bg-brand/5 p-3 text-sm text-brand">
+              {freeShipVariant === "urgency" ? (
+                subtotalMinor < resolvedFreeThreshold ? (
+                  <span className="font-medium">
+                    {format("You're {amount} away from FREE delivery!", {
+                      amount: formatPrice(resolvedFreeThreshold - subtotalMinor),
+                    })}
+                  </span>
+                ) : (
+                  <span className="font-medium">
+                    <LocalizedText>You've unlocked FREE delivery!</LocalizedText>
+                  </span>
+                )
+              ) : (
+                <span>
+                  {format("Free delivery on orders above {amount}", {
+                    amount: formatPrice(resolvedFreeThreshold),
+                  })}
+                </span>
+              )}
             </div>
           ) : null}
 

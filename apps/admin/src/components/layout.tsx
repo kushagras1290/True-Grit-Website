@@ -14,6 +14,7 @@ import {
   CircleDollarSign,
   Database,
   ExternalLink,
+  FlaskConical,
   FolderTree,
   Gift,
   HandHeart,
@@ -48,6 +49,7 @@ import {
   Tags,
   Terminal,
   Ticket,
+  TrendingUp,
   UtensilsCrossed,
   Users,
   Wallet,
@@ -175,6 +177,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         to: "/inventory",
         label: "Inventory",
         icon: <Warehouse size={16} />,
+        permission: "inventory.view",
+      },
+      {
+        to: "/inventory-intelligence",
+        label: "Inventory Intelligence",
+        icon: <TrendingUp size={16} />,
         permission: "inventory.view",
       },
       {
@@ -335,6 +343,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         to: "/reports",
         label: "Owner Reports",
         icon: <BarChart3 size={16} />,
+        permission: "reports.query",
+      },
+      {
+        to: "/experiments",
+        label: "A/B Experiments",
+        icon: <FlaskConical size={16} />,
         permission: "reports.query",
       },
       {

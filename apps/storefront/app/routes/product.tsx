@@ -12,7 +12,7 @@ import { SubscribeAndSave } from "../components/subscribe-and-save";
 import { WishlistButton } from "../components/wishlist-button";
 import {
   catalogueRuntime,
-  loadAlsoBought,
+  loadProductRecommendations,
   loadProduct,
   loadProductReviews,
   loadProductsBySlugs,
@@ -27,6 +27,7 @@ import { productEffectivePrice, variantEffectivePrice } from "../lib/pricing";
 import { breadcrumbJsonLd, productJsonLd, seoMeta } from "../lib/seo";
 import { useSiteSettings } from "../lib/site-settings";
 import { LocalizedText, useLocalizeFormat, useLocalizeText } from "../lib/i18n/localized-text";
+import { trackRecommendation } from "../lib/recommendation-tracking";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const country = resolveCountry(request);
@@ -34,10 +35,10 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   const runtime = catalogueRuntime(context);
   const product = await loadProduct(params.slug, country, runtime, locale.code);
   if (!product) throw data("Product not found", { status: 404 });
-  const [related, reviews, alsoBought] = await Promise.all([
+  const [related, reviews, recommendations] = await Promise.all([
     loadProductsBySlugs(product.relatedSlugs, country, runtime, locale.code),
     loadProductReviews(product.slug, runtime),
-    loadAlsoBought(product.slug, 6, country, runtime, locale.code),
+    loadProductRecommendations(product.id, 6, country, runtime, locale.code),
   ]);
   // Absolute, not root-relative: a QR code has to resolve on whatever device
   // scans it, unlike the canonical <link> tag which the browser/crawler
@@ -45,7 +46,7 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   // incoming request rather than a config constant so it's automatically
   // correct on a custom domain, a preview URL, or local dev alike.
   const origin = new URL(request.url).origin;
-  return { product, related, reviews, alsoBought, origin };
+  return { product, related, reviews, recommendations, origin };
 }
 
 export function meta({ data: loaderData, matches }: Route.MetaArgs) {
@@ -75,12 +76,25 @@ export function meta({ data: loaderData, matches }: Route.MetaArgs) {
 export default function ProductPage({ loaderData }: Route.ComponentProps) {
   const format = useLocalizeFormat();
   const localize = useLocalizeText();
-  const { product, related, reviews, alsoBought, origin } = loaderData;
+  const { product, related, reviews, recommendations, origin } = loaderData;
   const { add } = useCart();
   const formatPrice = usePriceFormatter();
   const { payments, preorders, b2b } = useSiteSettings();
   const [searchParams] = useSearchParams();
   const preorderRequested = preorders.enabled && searchParams.get("preorder") === "1";
+  const recommendationSourceProductId = searchParams.get("recSource");
+  const recommendationRunId = searchParams.get("recRun");
+  const recommendationPlacement = searchParams.get("recPlacement");
+  const validRecommendationPlacement = [
+    "product",
+    "cart",
+    "homepage",
+    "category",
+    "shop",
+    "order",
+  ].includes(recommendationPlacement ?? "")
+    ? (recommendationPlacement as "product" | "cart" | "homepage" | "category" | "shop" | "order")
+    : null;
   const [variantId, setVariantId] = useState(product.variants[0]?.id ?? "");
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
@@ -252,9 +266,23 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
                     variantName: variant.name,
                     unitMinor,
                     preorder: preorderRequested,
+                    recommendationSourceProductId: recommendationSourceProductId ?? undefined,
+                    recommendationRunId: recommendationRunId ?? undefined,
+                    recommendationPlacement: validRecommendationPlacement ?? undefined,
                   },
                   quantity,
                 );
+                if (validRecommendationPlacement) {
+                  trackRecommendation(
+                    {
+                      sourceProductId: recommendationSourceProductId,
+                      recommendedProductId: product.id,
+                      recommendationRunId,
+                      placement: validRecommendationPlacement,
+                    },
+                    "add_to_cart",
+                  );
+                }
                 setAdded(true);
                 setTimeout(() => setAdded(false), 2000);
               }}
@@ -438,7 +466,9 @@ export default function ProductPage({ loaderData }: Route.ComponentProps) {
       <RecommendedProducts
         eyebrow="Frequently bought together"
         heading="Customers also bought"
-        products={alsoBought}
+        products={recommendations}
+        placement="product"
+        sourceProductId={product.id}
         tone="subtle"
       />
     </>

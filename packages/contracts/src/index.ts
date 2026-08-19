@@ -1076,6 +1076,70 @@ export interface AnalyticsOverview {
   revenueByDay: AnalyticsRevenuePoint[];
   topProducts: AnalyticsTopProduct[];
   statusBreakdown: AnalyticsStatusCount[];
+  recommendations: RecommendationAnalytics;
+}
+
+export interface RecommendationAnalytics {
+  impressions: number;
+  clicks: number;
+  addToCarts: number;
+  clickThroughRate: number;
+  attributedOrders: number;
+  attributedUnits: number;
+  attributedRevenueMinor: number;
+}
+
+export interface RecommendationSignal {
+  runId: string | null;
+  sourceProductId: string;
+  score: number;
+  confidence: number;
+  lift: number;
+  cosineSimilarity: number;
+  reason: "frequently_bought_together" | "similar_product" | "trending";
+}
+
+export interface RecommendedProduct {
+  product: ProductSummary;
+  recommendation: RecommendationSignal;
+}
+
+export interface DemandForecastPoint {
+  forecastDate: string;
+  predictedUnits: number;
+  lowerUnits: number;
+  upperUnits: number;
+  seasonalityMultiplier: number;
+}
+
+export interface InventoryIntelligenceItem {
+  productId: string;
+  productName: string;
+  productStatus: string;
+  variantId: string;
+  variantName: string;
+  sku: string;
+  availableUnits: number;
+  avgDaily7: number;
+  avgDaily30: number;
+  leadTimeDays: number;
+  safetyStockDays: number;
+  daysUntilStockout: number | null;
+  projectedStockoutDate: string | null;
+  reorderRecommended: boolean;
+  recommendedOrderUnits: number;
+  dataDays: number;
+}
+
+export interface InventoryIntelligenceResponse {
+  run: {
+    id: string;
+    modelVersion: string;
+    horizonDays: number;
+    completedAt: string;
+  } | null;
+  summary: { reorderSoon: number; forecastedSkus: number };
+  items: InventoryIntelligenceItem[];
 }
 
 // ---------------------------------------------------------------------------

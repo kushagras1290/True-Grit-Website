@@ -93,7 +93,7 @@ jobs:
         run: uvx --from workers-py pywrangler deploy --env staging
 
   web:
-    name: Storefront + Admin + Process + Language Studio
+    name: Storefront + Admin + Process + Language Studio + SEO
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: staging
@@ -152,6 +152,12 @@ jobs:
       - name: Deploy language studio
         working-directory: apps/lang
         run: pnpm exec wrangler deploy --env staging
+      - name: Build SEO studio
+        working-directory: apps/seo
+        run: pnpm build
+      - name: Deploy SEO studio
+        working-directory: apps/seo
+        run: pnpm exec wrangler deploy --env staging
       - name: Verify staging domains
         # A bare curl User-Agent trips Cloudflare Bot Fight Mode's heuristics
         # (no browser fingerprint), which returns 403 before the request ever
@@ -165,3 +171,4 @@ jobs:
           curl --fail --retry 5 --retry-all-errors -A "$UA" https://stag.truegritin.com
           curl --fail --retry 5 --retry-all-errors -A "$UA" https://adstag.truegritin.com
           curl --fail --retry 5 --retry-all-errors -A "$UA" https://langstag.truegritin.com
+          curl --fail --retry 5 --retry-all-errors -A "$UA" https://seostag.truegritin.com

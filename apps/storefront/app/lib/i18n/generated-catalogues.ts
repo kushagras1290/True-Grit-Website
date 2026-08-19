@@ -6209,6 +6209,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "अगली स्लाइड",
     "literal.8e53512a50fa": "पिछली स्लाइड",
+    "literal.555511e95852": "{amount} से ऊपर के ऑर्डर पर निःशुल्क डिलीवरी",
+    "literal.994816a0bc68": "आप मुफ़्त डिलीवरी से {amount} दूर हैं!",
+    "literal.578c0777a949": "आपने मुफ़्त डिलीवरी अनलॉक कर लिया है!",
   },
   bn: {
     "literal.87df31bb89b3": "— পুনরাবৃত্ত ডেলিভারি সেট আপ করতে অ্যাকাউন্ট মেনু থেকে সাইন ইন করুন",
@@ -7129,6 +7132,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "পরবর্তী স্লাইড",
     "literal.8e53512a50fa": "পূর্ববর্তী স্লাইড",
+    "literal.555511e95852": "{amount} এর উপরে অর্ডারে বিনামূল্যে বিতরণ",
+    "literal.994816a0bc68": "আপনি বিনামূল্যে বিতরণ থেকে {amount} দূরে!",
+    "literal.578c0777a949": "আপনি বিনামূল্যে বিতরণ আনলক করেছেন!",
   },
   mr: {
     "literal.87df31bb89b3": "— आवर्ती वितरण सेट करण्यासाठी खाते मेनूमधून साइन इन करा",
@@ -8053,6 +8059,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "पुढील स्लाइड",
     "literal.8e53512a50fa": "मागील स्लाइड",
+    "literal.555511e95852": "{amount} वरील ऑर्डरवर मोफत वितरण",
+    "literal.994816a0bc68": "तुम्ही मोफत वितरणापासून {amount} दूर आहात!",
+    "literal.578c0777a949": "तुम्ही मोफत वितरण अनलॉक केले आहे!",
   },
   te: {
     "literal.87df31bb89b3": "— పునరావృత డెలివరీని సెటప్ చేయడానికి ఖాతా మెను నుండి సైన్ ఇన్ చేయండి",
@@ -8985,6 +8994,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "తదుపరి స్లయిడ్",
     "literal.8e53512a50fa": "మునుపటి స్లయిడ్",
+    "literal.555511e95852": "{amount} కంటే ఎక్కువ ఆర్డర్‌లపై ఉచిత డెలివరీ",
+    "literal.994816a0bc68": "మీరు ఉచిత డెలివరీకి {amount} దూరంలో ఉన్నారు!",
+    "literal.578c0777a949": "మీరు ఉచిత డెలివరీని అన్‌లాక్ చేసారు!",
   },
   ta: {
     "literal.87df31bb89b3": "— தொடர்ச்சியான விநியோகத்தை அமைக்க கணக்கு மெனுவிலிருந்து உள்நுழைக",
@@ -9932,6 +9944,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "அடுத்த ஸ்லைடு",
     "literal.8e53512a50fa": "முந்தைய ஸ்லைடு",
+    "literal.555511e95852": "{amount}க்கு மேல் உள்ள ஆர்டர்களுக்கு இலவச டெலிவரி",
+    "literal.994816a0bc68": "இலவச டெலிவரிக்கு {amount} தொலைவில் உள்ளீர்கள்!",
+    "literal.578c0777a949": "இலவச டெலிவரியைத் திறந்துவிட்டீர்கள்!",
   },
   gu: {
     "literal.87df31bb89b3": "— રિકરિંગ ડિલિવરી સેટ કરવા માટે એકાઉન્ટ મેનૂમાંથી સાઇન ઇન કરો",
@@ -10856,6 +10871,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "આગળની સ્લાઈડ",
     "literal.8e53512a50fa": "અગાઉની સ્લાઇડ",
+    "literal.555511e95852": "{amount} થી વધુના ઓર્ડર પર મફત વિતરણ",
+    "literal.994816a0bc68": "તમે મફત વિતરણથી {amount} દૂર છો!",
+    "literal.578c0777a949": "તમે મફત ડિલિવરી અનલૉક કરી છે!",
   },
   ur: {
     "literal.87df31bb89b3": "—",
@@ -11782,6 +11800,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "اگلی سلائیڈ",
     "literal.8e53512a50fa": "پچھلی سلائیڈ",
+    "literal.555511e95852": "{amount} سے زیادہ کے آرڈرز پر مفت ڈیلیوری",
+    "literal.994816a0bc68": "آپ مفت ڈیلیوری سے {amount} دور ہیں!",
+    "literal.578c0777a949": "آپ نے مفت ڈیلیوری کو غیر مقفل کر دیا ہے!",
   },
   kn: {
     "literal.87df31bb89b3": "— ಮರುಕಳಿಸುವ ವಿತರಣೆಯನ್ನು ಹೊಂದಿಸಲು ಖಾತೆ ಮೆನುವಿನಿಂದ ಸೈನ್ ಇನ್ ಮಾಡಿ",
@@ -12717,6 +12738,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "ಮುಂದಿನ ಸ್ಲೈಡ್",
     "literal.8e53512a50fa": "ಹಿಂದಿನ ಸ್ಲೈಡ್",
+    "literal.555511e95852": "{amount} ಮೇಲಿನ ಆರ್ಡರ್‌ಗಳಿಗೆ ಉಚಿತ ವಿತರಣೆ",
+    "literal.994816a0bc68": "ಉಚಿತ ವಿತರಣೆಯಿಂದ ನೀವು {amount} ದೂರದಲ್ಲಿರುವಿರಿ!",
+    "literal.578c0777a949": "ನೀವು ಉಚಿತ ವಿತರಣೆಯನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡಿರುವಿರಿ!",
   },
   or: {
     "literal.87df31bb89b3": "- ବାରମ୍ବାର ବିତରଣର ସେଟ୍ ଅପ୍ କରିବାକୁ ଆକାଉଣ୍ଟ୍ ମେନୁରୁ ସାଇନ୍ ଇନ୍ କରନ୍ତୁ |",
@@ -13650,6 +13674,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "ପରବର୍ତ୍ତୀ ସ୍ଲାଇଡ୍ |",
     "literal.8e53512a50fa": "ପୂର୍ବ ସ୍ଲାଇଡ୍",
+    "literal.555511e95852": "{amount} ଉପରେ ଅର୍ଡର ଉପରେ ମାଗଣା ବିତରଣ |",
+    "literal.994816a0bc68": "ଆପଣ ମାଗଣା ବିତରଣ ଠାରୁ {amount} ଦୂରରେ!",
+    "literal.578c0777a949": "ଆପଣ ମାଗଣା ବିତରଣକୁ ଅନଲକ୍ କରିଛନ୍ତି!",
   },
   ml: {
     "literal.87df31bb89b3":
@@ -14601,6 +14628,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "അടുത്ത സ്ലൈഡ്",
     "literal.8e53512a50fa": "മുമ്പത്തെ സ്ലൈഡ്",
+    "literal.555511e95852": "{amount}-ന് മുകളിലുള്ള ഓർഡറുകൾക്ക് സൗജന്യ ഡെലിവറി",
+    "literal.994816a0bc68": "സൗജന്യ ഡെലിവറിയിൽ നിന്ന് നിങ്ങൾ {amount} അകലെയാണ്!",
+    "literal.578c0777a949": "നിങ്ങൾ സൗജന്യ ഡെലിവറി അൺലോക്ക് ചെയ്തു!",
   },
   pa: {
     "literal.87df31bb89b3": "— ਦੀ ਆਵਰਤੀ ਡਿਲੀਵਰੀ ਸੈਟ ਅਪ ਕਰਨ ਲਈ ਖਾਤਾ ਮੀਨੂ ਤੋਂ ਸਾਈਨ ਇਨ ਕਰੋ",
@@ -15522,6 +15552,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "ਅਗਲੀ ਸਲਾਈਡ",
     "literal.8e53512a50fa": "ਪਿਛਲੀ ਸਲਾਈਡ",
+    "literal.555511e95852": "{amount} ਤੋਂ ਵੱਧ ਦੇ ਆਰਡਰਾਂ 'ਤੇ ਮੁਫਤ ਡਿਲੀਵਰੀ",
+    "literal.994816a0bc68": "ਤੁਸੀਂ ਮੁਫ਼ਤ ਡਿਲੀਵਰੀ ਤੋਂ {amount} ਦੂਰ ਹੋ!",
+    "literal.578c0777a949": "ਤੁਸੀਂ ਮੁਫ਼ਤ ਡਿਲੀਵਰੀ ਨੂੰ ਅਨਲੌਕ ਕਰ ਲਿਆ ਹੈ!",
   },
   as: {
     "literal.87df31bb89b3": "— প্ৰয়োগ কৰা",
@@ -16445,6 +16478,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "পৰৱৰ্তী স্লাইড",
     "literal.8e53512a50fa": "পূৰ্বৰ স্লাইড",
+    "literal.555511e95852": "{amount} ৰ ওপৰৰ অৰ্ডাৰত বিনামূলীয়া ডেলিভাৰী",
+    "literal.994816a0bc68": "আপুনি বিনামূলীয়া ডেলিভাৰীৰ পৰা {amount} দূৰত!",
+    "literal.578c0777a949": "আপুনি বিনামূলীয়া ডেলিভাৰী আনলক কৰিছে!",
   },
   mai: {
     "literal.87df31bb89b3": "— कें आवर्ती वितरण कें सेटअप करय कें लेल खाता मेनू सं साइन इन करूं",
@@ -17365,6 +17401,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "अगिला स्लाइड",
     "literal.8e53512a50fa": "पिछला स्लाइड",
+    "literal.555511e95852": "{amount} स ऊपर के ऑर्डर पर मुफ्त डिलीवरी",
+    "literal.994816a0bc68": "अहाँ मुफ्त डिलीवरी स {amount} दूर छी!",
+    "literal.578c0777a949": "अहाँ FREE डिलीवरी के अनलॉक क देलहुं अछि!",
   },
   sat: {
     "literal.87df31bb89b3": "— ᱮᱠᱟᱣᱩᱱᱴ ᱢᱮᱱᱩ ᱠᱷᱚᱱ ᱥᱟᱭᱤᱱ ᱤᱱ ᱢᱮ ᱫᱚᱦᱲᱟ ᱰᱮᱞᱤᱵᱷᱟᱨᱤ ᱥᱮᱴ ᱟᱯ ᱞᱟᱹᱜᱤᱫ",
@@ -18292,6 +18331,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "ᱛᱟᱭᱚᱢ ᱥᱞᱟᱭᱤᱰ",
     "literal.8e53512a50fa": "ᱞᱟᱦᱟ ᱨᱮᱱᱟᱜ ᱥᱞᱟᱭᱤᱰ",
+    "literal.555511e95852": "ᱪᱮᱛᱟᱱ ᱨᱮᱱᱟᱜ ᱚᱰᱚᱨ ᱠᱚ ᱨᱮ ᱯᱷᱨᱤ ᱰᱮᱞᱤᱵᱷᱟᱨᱤ {amount}",
+    "literal.994816a0bc68": "ᱟᱢ ᱫᱚ {amount} ᱯᱷᱨᱤ ᱰᱮᱞᱤᱵᱷᱟᱨᱤ ᱠᱷᱚᱱ ᱥᱟᱦᱟᱨ ᱨᱮ ᱢᱮᱱᱟᱢᱟ!",
+    "literal.578c0777a949": "ᱟᱢ ᱯᱷᱨᱤ ᱰᱮᱞᱤᱵᱷᱟᱨᱤ ᱚᱱᱞᱚᱠ ᱠᱮᱫᱟᱢ!",
   },
   ks: {
     "literal.87df31bb89b3": "—",
@@ -19218,6 +19260,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "اگلی سلائیڈ",
     "literal.8e53512a50fa": "پچھلی سلائیڈ",
+    "literal.555511e95852": "{amount} سے زیادہ کے آرڈرز پر مفت ڈیلیوری",
+    "literal.994816a0bc68": "آپ مفت ڈیلیوری سے {amount} دور ہیں!",
+    "literal.578c0777a949": "آپ نے مفت ڈیلیوری کو غیر مقفل کر دیا ہے!",
   },
   ne: {
     "literal.87df31bb89b3": "—",
@@ -20143,6 +20188,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "अर्को स्लाइड",
     "literal.8e53512a50fa": "अघिल्लो स्लाइड",
+    "literal.555511e95852": "{amount} माथिका अर्डरहरूमा नि:शुल्क डेलिभरी",
+    "literal.994816a0bc68": "तपाईं नि:शुल्क डेलिभरीबाट {amount} टाढा हुनुहुन्छ!",
+    "literal.578c0777a949": "तपाईंले नि:शुल्क डेलिभरी अनलक गर्नुभएको छ!",
   },
   sd: {
     "literal.87df31bb89b3": "—",
@@ -21059,6 +21107,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "ايندڙ سلائڊ",
     "literal.8e53512a50fa": "پوئين سلائڊ",
+    "literal.555511e95852": "{amount} کان مٿي آرڊر تي مفت ترسيل",
+    "literal.994816a0bc68": "توهان مفت پهچائڻ کان {amount} پري آهيو!",
+    "literal.578c0777a949": "توهان ان لاڪ ڪيو آهي مفت پهچائڻ!",
   },
   kok: {
     "literal.87df31bb89b3": "— ची परत परत वितरण सेट करपाक खातें मेनूंतल्यान सायन इन करात",
@@ -21979,6 +22030,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "फुडली स्लाइड",
     "literal.8e53512a50fa": "आदली स्लाइड",
+    "literal.555511e95852": "वयर दिल्ल्या ऑर्डरांचेर फुकट वितरण {amount}",
+    "literal.994816a0bc68": "तुमी फुकट डिलिव्हरी पासून {amount} पयस आसात!",
+    "literal.578c0777a949": "तुमी फुकट डिलिव्हरी अनलॉक केल्या!",
   },
   doi: {
     "literal.87df31bb89b3": "— दी आवर्ती डिलीवरी गी सेट करने लेई खाता मेनू थमां साइन इन करो",
@@ -22904,6 +22958,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "अगली स्लाइड",
     "literal.8e53512a50fa": "पिछली स्लाइड",
+    "literal.555511e95852": "{amount} दे ऊपर दे आर्डर पर मुफ्त डिलीवरी",
+    "literal.994816a0bc68": "तुस मुफ्त डिलीवरी कोला {amount} दूर हो!",
+    "literal.578c0777a949": "तुसें मुफ्त डिलीवरी दा ताला खोल दित्ता ऐ!",
   },
   mni: {
     "literal.87df31bb89b3": "— পুনরাবৃত্ত ডেলিভারি সেট আপ করতে অ্যাকাউন্ট মেনু থেকে সাইন ইন করুন",
@@ -23824,6 +23881,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "পরবর্তী স্লাইড",
     "literal.8e53512a50fa": "পূর্ববর্তী স্লাইড",
+    "literal.555511e95852": "{amount} এর উপরে অর্ডারে বিনামূল্যে বিতরণ",
+    "literal.994816a0bc68": "আপনি বিনামূল্যে বিতরণ থেকে {amount} দূরে!",
+    "literal.578c0777a949": "আপনি বিনামূল্যে বিতরণ আনলক করেছেন!",
   },
   brx: {
     "literal.87df31bb89b3": "- आवर्ती डिलीवरी सेट करने के लिए खाता मेनू से साइन इन करें",
@@ -24752,6 +24812,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "अगली स्लाइड",
     "literal.8e53512a50fa": "पिछली स्लाइड",
+    "literal.555511e95852": "{amount} से ऊपर के ऑर्डर पर निःशुल्क डिलीवरी",
+    "literal.994816a0bc68": "आप मुफ़्त डिलीवरी से {amount} दूर हैं!",
+    "literal.578c0777a949": "आपने मुफ़्त डिलीवरी अनलॉक कर लिया है!",
   },
   sa: {
     "literal.87df31bb89b3": "— पुनरावर्तनीयवितरणं स्थापयितुं खातामेनूतः प्रवेशं कुर्वन्तु",
@@ -25683,6 +25746,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "अग्रिमः स्लाइड्",
     "literal.8e53512a50fa": "पूर्वस्लाइड्",
+    "literal.555511e95852": "{amount} इत्यस्य उपरि आदेशेषु निःशुल्कं वितरणम्।",
+    "literal.994816a0bc68": "भवन्तः निःशुल्कवितरणात् {amount} दूराः सन्ति!",
+    "literal.578c0777a949": "भवन्तः FREE delivery अनलॉक् कृतवन्तः!",
   },
   "zh-Hans": {
     "literal.87df31bb89b3": "— 从帐户菜单登录，设置定期配送",
@@ -26536,6 +26602,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "下一张幻灯片",
     "literal.8e53512a50fa": "上一张幻灯片",
+    "literal.555511e95852": "订单金额超过 {amount} 免费送货",
+    "literal.994816a0bc68": "您距离免费送货还有{amount}！",
+    "literal.578c0777a949": "您已解锁免费送货！",
   },
   es: {
     "literal.87df31bb89b3":
@@ -27479,6 +27548,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Siguiente diapositiva",
     "literal.8e53512a50fa": "Diapositiva anterior",
+    "literal.555511e95852": "Entrega gratuita en pedidos superiores a {amount}",
+    "literal.994816a0bc68": "¡Estás a {amount} de recibir la entrega GRATIS!",
+    "literal.578c0777a949": "¡Has desbloqueado la entrega GRATIS!",
   },
   ar: {
     "literal.87df31bb89b3": "— قم بتسجيل الدخول من قائمة الحساب لإعداد التسليم المتكرر",
@@ -28380,6 +28452,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "الشريحة التالية",
     "literal.8e53512a50fa": "الشريحة السابقة",
+    "literal.555511e95852": "توصيل مجاني للطلبات التي تزيد عن {amount}",
+    "literal.994816a0bc68": "أنت على بعد {amount} من التسليم المجاني!",
+    "literal.578c0777a949": "لقد فتحت التوصيل المجاني!",
   },
   pt: {
     "literal.87df31bb89b3": "— faça login no menu da conta para configurar a entrega recorrente de",
@@ -29313,6 +29388,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Próximo slide",
     "literal.8e53512a50fa": "Diapositivo anterior",
+    "literal.555511e95852": "Entrega gratuita para pedidos acima de {amount}",
+    "literal.994816a0bc68": "Faltam {amount} para você ter entrega GRATUITA!",
+    "literal.578c0777a949": "Você desbloqueou a entrega GRATUITA!",
   },
   fr: {
     "literal.87df31bb89b3":
@@ -30258,6 +30336,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Diapositive suivante",
     "literal.8e53512a50fa": "Diapositive précédente",
+    "literal.555511e95852": "Livraison gratuite pour les commandes supérieures à {amount}",
+    "literal.994816a0bc68": "Il vous manque {amount} pour bénéficier de la livraison GRATUITE !",
+    "literal.578c0777a949": "Vous avez débloqué la livraison GRATUITE !",
   },
   ru: {
     "literal.87df31bb89b3":
@@ -31191,6 +31272,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Следующий слайд",
     "literal.8e53512a50fa": "Предыдущий слайд",
+    "literal.555511e95852": "Бесплатная доставка при заказе на сумму свыше {amount}.",
+    "literal.994816a0bc68": "Вам осталось {amount} до БЕСПЛАТНОЙ доставки!",
+    "literal.578c0777a949": "Вы разблокировали БЕСПЛАТНУЮ доставку!",
   },
   id: {
     "literal.87df31bb89b3": "— masuk dari menu akun untuk menyiapkan pengiriman berulang dari",
@@ -32130,6 +32214,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Slide berikutnya",
     "literal.8e53512a50fa": "Slide sebelumnya",
+    "literal.555511e95852": "Gratis ongkos kirim untuk pesanan di atas {amount}",
+    "literal.994816a0bc68": "Tinggal {amount} lagi untuk mendapatkan pengiriman GRATIS!",
+    "literal.578c0777a949": "Anda telah membuka kunci pengiriman GRATIS!",
   },
   de: {
     "literal.87df31bb89b3":
@@ -33077,6 +33164,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Nächste Folie",
     "literal.8e53512a50fa": "Vorherige Folie",
+    "literal.555511e95852": "Kostenlose Lieferung bei Bestellungen über {amount}",
+    "literal.994816a0bc68": "Bis zur KOSTENLOSEN Lieferung sind es noch {amount}!",
+    "literal.578c0777a949": "Sie haben die KOSTENLOSE Lieferung freigeschaltet!",
   },
   ja: {
     "literal.87df31bb89b3": "— アカウント メニューからサインインして、",
@@ -33992,6 +34082,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "次のスライド",
     "literal.8e53512a50fa": "前のスライド",
+    "literal.555511e95852": "{amount} 以上のご注文で送料無料",
+    "literal.994816a0bc68": "送料無料まであと {amount} です!",
+    "literal.578c0777a949": "無料配送のロックを解除しました!",
   },
   tr: {
     "literal.87df31bb89b3": "— uygulanan",
@@ -34930,6 +35023,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Sonraki slayt",
     "literal.8e53512a50fa": "Önceki slayt",
+    "literal.555511e95852": "{amount} üzeri siparişlerde ücretsiz teslimat",
+    "literal.994816a0bc68": "ÜCRETSİZ teslimattan {amount} uzaktasınız!",
+    "literal.578c0777a949": "ÜCRETSİZ teslimatın kilidini açtınız!",
   },
   vi: {
     "literal.87df31bb89b3": "— đăng nhập từ menu tài khoản để thiết lập việc phân phối định kỳ",
@@ -35867,6 +35963,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Trang trình bày tiếp theo",
     "literal.8e53512a50fa": "Trang trình bày trước",
+    "literal.555511e95852": "Giao hàng miễn phí cho các đơn hàng trên {amount}",
+    "literal.994816a0bc68": "Bạn còn {amount} nữa mới được giao hàng MIỄN PHÍ!",
+    "literal.578c0777a949": "Bạn đã mở khóa giao hàng MIỄN PHÍ!",
   },
   ko: {
     "literal.87df31bb89b3": "— 계정 메뉴에서 로그인하여 반복 배송을 설정하세요",
@@ -36771,6 +36870,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "다음 슬라이드",
     "literal.8e53512a50fa": "이전 슬라이드",
+    "literal.555511e95852": "{amount} 이상 주문 시 무료 배송",
+    "literal.994816a0bc68": "무료 배송이 {amount} 남았습니다!",
+    "literal.578c0777a949": "무료 배송을 잠금 해제하셨습니다!",
   },
   it: {
     "literal.87df31bb89b3": "— accedi dal menu account per impostare la consegna ricorrente di",
@@ -37709,6 +37811,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Diapositiva successiva",
     "literal.8e53512a50fa": "Diapositiva precedente",
+    "literal.555511e95852": "Consegna gratuita per ordini superiori a {amount}",
+    "literal.994816a0bc68": "Ti mancano {amount} per la consegna GRATUITA!",
+    "literal.578c0777a949": "Hai sbloccato la consegna GRATUITA!",
   },
   fa: {
     "literal.87df31bb89b3": "— از منوی حساب وارد شوید تا تحویل تکرار شونده را تنظیم کنید",
@@ -38624,6 +38729,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "اسلاید بعدی",
     "literal.8e53512a50fa": "اسلاید قبلی",
+    "literal.555511e95852": "ارسال رایگان برای سفارشات بالای {amount}",
+    "literal.994816a0bc68": "شما {amount} تا تحویل رایگان فاصله دارید!",
+    "literal.578c0777a949": "شما تحویل رایگان را باز کرده اید!",
   },
   "zh-Hant": {
     "literal.87df31bb89b3": "— 從帳戶選單登錄，設定定期交付",
@@ -39478,6 +39586,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "下一張投影片",
     "literal.8e53512a50fa": "上一張投影片",
+    "literal.555511e95852": "訂單金額超過 {amount} 免費送貨",
+    "literal.994816a0bc68": "您距離免費送貨還有{amount}！",
+    "literal.578c0777a949": "您已解鎖免費送貨！",
   },
   th: {
     "literal.87df31bb89b3": "— ลงชื่อเข้าใช้จากเมนูบัญชีเพื่อตั้งค่าการจัดส่งแบบประจำของ",
@@ -40386,6 +40497,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "สไลด์ถัดไป",
     "literal.8e53512a50fa": "สไลด์ก่อนหน้า",
+    "literal.555511e95852": "จัดส่งฟรีเมื่อสั่งซื้อเกิน {amount}",
+    "literal.994816a0bc68": "คุณเหลืออีก {amount} จากการจัดส่งฟรี!",
+    "literal.578c0777a949": "คุณได้ปลดล็อคการจัดส่งฟรี!",
   },
   pl: {
     "literal.87df31bb89b3": "— zaloguj się z menu konta, aby ustawić powtarzającą się dostawę",
@@ -41317,6 +41431,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Następny slajd",
     "literal.8e53512a50fa": "Poprzedni slajd",
+    "literal.555511e95852": "Bezpłatna dostawa przy zamówieniach powyżej {amount}",
+    "literal.994816a0bc68": "Brakuje Ci {amount} do DARMOWEJ dostawy!",
+    "literal.578c0777a949": "Odblokowałeś DARMOWĄ dostawę!",
   },
   uk: {
     "literal.87df31bb89b3":
@@ -42246,6 +42363,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Наступний слайд",
     "literal.8e53512a50fa": "Попередній слайд",
+    "literal.555511e95852": "Безкоштовна доставка для замовлень на суму понад {amount}",
+    "literal.994816a0bc68": "Вам залишилося {amount} до БЕЗКОШТОВНОЇ доставки!",
+    "literal.578c0777a949": "Ви отримали БЕЗКОШТОВНУ доставку!",
   },
   nl: {
     "literal.87df31bb89b3":
@@ -43177,6 +43297,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Volgende dia",
     "literal.8e53512a50fa": "Vorige dia",
+    "literal.555511e95852": "Gratis verzending bij bestellingen boven {amount}",
+    "literal.994816a0bc68": "Je bent nog {amount} verwijderd van GRATIS bezorging!",
+    "literal.578c0777a949": "Je hebt GRATIS bezorging ontgrendeld!",
   },
   fil: {
     "literal.87df31bb89b3":
@@ -44124,6 +44247,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Susunod na slide",
     "literal.8e53512a50fa": "Nakaraang slide",
+    "literal.555511e95852": "Libreng paghahatid sa mga order na higit sa {amount}",
+    "literal.994816a0bc68": "{amount} ka pa mula sa LIBRENG paghahatid!",
+    "literal.578c0777a949": "Na-unlock mo ang LIBRENG paghahatid!",
   },
   sw: {
     "literal.87df31bb89b3":
@@ -45050,6 +45176,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Slaidi inayofuata",
     "literal.8e53512a50fa": "Slaidi iliyotangulia",
+    "literal.555511e95852": "Utaletewa bila malipo kwa maagizo zaidi ya {amount}",
+    "literal.994816a0bc68": "Umebakiza {amount} ili uletewe BILA MALIPO!",
+    "literal.578c0777a949": "Umefungua utoaji BILA MALIPO!",
   },
   he: {
     "literal.87df31bb89b3": "— היכנס מתפריט החשבון כדי להגדיר מסירה חוזרת של",
@@ -45928,6 +46057,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "השקף הבא",
     "literal.8e53512a50fa": "שקופית קודמת",
+    "literal.555511e95852": "משלוח חינם בהזמנות מעל {amount}",
+    "literal.994816a0bc68": "אתה רחוק {amount} ממשלוח חינם!",
+    "literal.578c0777a949": "פתחת משלוח חינם!",
   },
   sv: {
     "literal.87df31bb89b3": "— logga in från kontomenyn för att ställa in återkommande leverans av",
@@ -46851,6 +46983,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Nästa bild",
     "literal.8e53512a50fa": "Föregående bild",
+    "literal.555511e95852": "Fri frakt på beställningar över {amount}",
+    "literal.994816a0bc68": "Du är {amount} från GRATIS leverans!",
+    "literal.578c0777a949": "Du har låst upp GRATIS leverans!",
   },
   nb: {
     "literal.87df31bb89b3": "— logg på fra kontomenyen for å konfigurere gjentakende levering av",
@@ -47772,6 +47907,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Neste lysbilde",
     "literal.8e53512a50fa": "Forrige lysbilde",
+    "literal.555511e95852": "Gratis levering på bestillinger over {amount}",
+    "literal.994816a0bc68": "Du er {amount} unna GRATIS levering!",
+    "literal.578c0777a949": "Du har låst opp GRATIS levering!",
   },
   da: {
     "literal.87df31bb89b3":
@@ -48701,6 +48839,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Næste slide",
     "literal.8e53512a50fa": "Forrige dias",
+    "literal.555511e95852": "Gratis levering på ordrer over {amount}",
+    "literal.994816a0bc68": "Du er {amount} væk fra GRATIS levering!",
+    "literal.578c0777a949": "Du har låst op for GRATIS levering!",
   },
   fi: {
     "literal.87df31bb89b3": "— kirjaudu sisään tilivalikosta ja määritä toistuva toimitus",
@@ -49633,6 +49774,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Seuraava dia",
     "literal.8e53512a50fa": "Edellinen dia",
+    "literal.555511e95852": "Ilmainen toimitus yli {amount} tilauksille",
+    "literal.994816a0bc68": "Olet {amount} päässä ILMAISTA toimituksesta!",
+    "literal.578c0777a949": "Olet avannut ILMAISEN toimituksen!",
   },
   el: {
     "literal.87df31bb89b3":
@@ -50577,6 +50721,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Επόμενη διαφάνεια",
     "literal.8e53512a50fa": "Προηγούμενη διαφάνεια",
+    "literal.555511e95852": "Δωρεάν παράδοση για παραγγελίες άνω των {amount}",
+    "literal.994816a0bc68": "Απέχετε {amount} από τη ΔΩΡΕΑΝ παράδοση!",
+    "literal.578c0777a949": "Ξεκλειδώσατε ΔΩΡΕΑΝ παράδοση!",
   },
   cs: {
     "literal.87df31bb89b3": "— přihlaste se z nabídky účtu a nastavte opakující se doručování",
@@ -51503,6 +51650,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Další snímek",
     "literal.8e53512a50fa": "Předchozí snímek",
+    "literal.555511e95852": "Doručení zdarma u objednávek nad {amount}",
+    "literal.994816a0bc68": "Od doručení ZDARMA vás dělí {amount}!",
+    "literal.578c0777a949": "Odemkli jste doručení ZDARMA!",
   },
   hu: {
     "literal.87df31bb89b3": "— jelentkezzen be a fiókmenüből az ismétlődő kézbesítés beállításához",
@@ -52435,6 +52585,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Következő dia",
     "literal.8e53512a50fa": "Előző dia",
+    "literal.555511e95852": "Ingyenes házhozszállítás {amount} feletti rendelés esetén",
+    "literal.994816a0bc68": "Még {amount} van hátra az INGYENES kiszállítástól!",
+    "literal.578c0777a949": "Kinyitotta az INGYENES kiszállítást!",
   },
   ro: {
     "literal.87df31bb89b3":
@@ -53376,6 +53529,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Următorul diapozitiv",
     "literal.8e53512a50fa": "Diapozitivul anterior",
+    "literal.555511e95852": "Livrare gratuită pentru comenzile de peste {amount}",
+    "literal.994816a0bc68": "Mai aveți {amount} de livrare GRATUITĂ!",
+    "literal.578c0777a949": "Ai deblocat livrarea GRATUITĂ!",
   },
   sk: {
     "literal.87df31bb89b3": "— prihláste sa z ponuky účtu a nastavte si opakované doručovanie",
@@ -54305,6 +54461,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Ďalšia snímka",
     "literal.8e53512a50fa": "Predchádzajúca snímka",
+    "literal.555511e95852": "Bezplatné doručenie pri objednávkach nad {amount}",
+    "literal.994816a0bc68": "Od doručenia ZDARMA vás delí {amount}!",
+    "literal.578c0777a949": "Odomkli ste doručenie ZDARMA!",
   },
   bg: {
     "literal.87df31bb89b3": "— влезте от менюто на акаунта, за да настроите периодична доставка на",
@@ -55237,6 +55396,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Следващ слайд",
     "literal.8e53512a50fa": "Предишен слайд",
+    "literal.555511e95852": "Безплатна доставка за поръчки над {amount}",
+    "literal.994816a0bc68": "Остават ви {amount} от БЕЗПЛАТНА доставка!",
+    "literal.578c0777a949": "Отключихте БЕЗПЛАТНА доставка!",
   },
   af: {
     "literal.87df31bb89b3": "— meld aan vanaf die rekeningkieslys om herhalende aflewering van",
@@ -56169,6 +56331,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Volgende skyfie",
     "literal.8e53512a50fa": "Vorige skyfie",
+    "literal.555511e95852": "Gratis aflewering op bestellings bo {amount}",
+    "literal.994816a0bc68": "Jy is {amount} weg van GRATIS aflewering!",
+    "literal.578c0777a949": "Jy het GRATIS aflewering ontsluit!",
   },
   sq: {
     "literal.87df31bb89b3":
@@ -57102,6 +57267,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Rrëshqitja tjetër",
     "literal.8e53512a50fa": "Sllajdi i mëparshëm",
+    "literal.555511e95852": "Dërgesë falas për porositë mbi {amount}",
+    "literal.994816a0bc68": "Jeni {amount} larg dërgesës FALAS!",
+    "literal.578c0777a949": "Ju keni zhbllokuar dërgesën FALAS!",
   },
   am: {
     "literal.87df31bb89b3": "— ተደጋጋሚ ማድረሻን ለማዘጋጀት ከመለያው ሜኑ ይግቡ",
@@ -57964,6 +58132,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "ቀጣይ ስላይድ",
     "literal.8e53512a50fa": "ቀዳሚ ስላይድ",
+    "literal.555511e95852": "ከ{amount} በላይ በሆኑ ትዕዛዞች ነፃ ማድረስ",
+    "literal.994816a0bc68": "በነጻ ማድረስ {amount} ይርቃሉ!",
+    "literal.578c0777a949": "ነፃ ማድረሻን ከፍተዋል!",
   },
   hy: {
     "literal.87df31bb89b3": "— մուտք գործեք հաշվի ընտրացանկից՝ կարգավորելու",
@@ -58895,6 +59066,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Հաջորդ սլայդը",
     "literal.8e53512a50fa": "Նախորդ սլայդը",
+    "literal.555511e95852": "Անվճար առաքում {amount}-ից բարձր պատվերների դեպքում",
+    "literal.994816a0bc68": "Ձեզ մնում է {amount} ԱՆՎՃԱՐ առաքում:",
+    "literal.578c0777a949": "Դուք բացել եք ԱՆՎՃԱՐ առաքում:",
   },
   az: {
     "literal.87df31bb89b3":
@@ -59832,6 +60006,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Növbəti slayd",
     "literal.8e53512a50fa": "Əvvəlki slayd",
+    "literal.555511e95852": "{amount}-dan yuxarı olan sifarişlərdə pulsuz çatdırılma",
+    "literal.994816a0bc68": "PULSUZ çatdırılmadan {amount} uzaqsınız!",
+    "literal.578c0777a949": "PULSUZ çatdırılmanı açdınız!",
   },
   eu: {
     "literal.87df31bb89b3": "— hasi saioa kontuaren menutik",
@@ -60766,6 +60943,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Hurrengo diapositiba",
     "literal.8e53512a50fa": "Aurreko diapositiba",
+    "literal.555511e95852": "Doako bidalketa {amount} baino gehiagoko eskaeretan",
+    "literal.994816a0bc68": "DOAN bidaltzeko {amount} falta zara!",
+    "literal.578c0777a949": "DOAN bidalketa desblokeatu duzu!",
   },
   be: {
     "literal.87df31bb89b3":
@@ -61700,6 +61880,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Наступны слайд",
     "literal.8e53512a50fa": "Папярэдні слайд",
+    "literal.555511e95852": "Бясплатная дастаўка для заказаў на суму звыш {amount}",
+    "literal.994816a0bc68": "Вам не хапае {amount} да БЯСПЛАТНАЙ дастаўкі!",
+    "literal.578c0777a949": "Вы разблакіравалі БЯСПЛАТНУЮ дастаўку!",
   },
   bs: {
     "literal.87df31bb89b3": "— prijavite se iz menija računa da postavite ponavljajuću isporuku",
@@ -62625,6 +62808,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Sljedeći slajd",
     "literal.8e53512a50fa": "Prethodni slajd",
+    "literal.555511e95852": "Besplatna dostava za narudžbe iznad {amount}",
+    "literal.994816a0bc68": "Ostalo vam je {amount} do BESPLATNE dostave!",
+    "literal.578c0777a949": "Otključali ste BESPLATNU dostavu!",
   },
   ca: {
     "literal.87df31bb89b3":
@@ -63571,6 +63757,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Diapositiva següent",
     "literal.8e53512a50fa": "Diapositiva anterior",
+    "literal.555511e95852": "Lliurament gratuït per a comandes superiors a {amount}",
+    "literal.994816a0bc68": "Et falten {amount} l'entrega GRATIS!",
+    "literal.578c0777a949": "Has desbloquejat l'entrega GRATIS!",
   },
   hr: {
     "literal.87df31bb89b3":
@@ -64497,6 +64686,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Sljedeći slajd",
     "literal.8e53512a50fa": "Prethodni slajd",
+    "literal.555511e95852": "Besplatna dostava za narudžbe iznad {amount}",
+    "literal.994816a0bc68": "Još {amount} vas dijeli od BESPLATNE dostave!",
+    "literal.578c0777a949": "Otključali ste BESPLATNU dostavu!",
   },
   et: {
     "literal.87df31bb89b3": "— logige sisse kontomenüüst, et seadistada korduv tarne",
@@ -65418,6 +65610,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Järgmine slaid",
     "literal.8e53512a50fa": "Eelmine slaid",
+    "literal.555511e95852": "Tasuta kohaletoimetamine tellimustele üle {amount}",
+    "literal.994816a0bc68": "Teil on {amount} TASUTA kohaletoimetamise võimalus!",
+    "literal.578c0777a949": "Olete avanud TASUTA kohaletoimetamise!",
   },
   gl: {
     "literal.87df31bb89b3":
@@ -66355,6 +66550,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Seguinte diapositiva",
     "literal.8e53512a50fa": "Diapositiva anterior",
+    "literal.555511e95852": "Entrega gratuíta para pedidos superiores a {amount}",
+    "literal.994816a0bc68": "Estás a {amount} de entrega GRATIS!",
+    "literal.578c0777a949": "Desbloqueaches a entrega GRATIS!",
   },
   ka: {
     "literal.87df31bb89b3": "— შედით ანგარიშის მენიუდან, რათა დააყენოთ",
@@ -67282,6 +67480,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "შემდეგი სლაიდი",
     "literal.8e53512a50fa": "წინა სლაიდი",
+    "literal.555511e95852": "უფასო მიწოდება {amount} ზემოთ შეკვეთებზე",
+    "literal.994816a0bc68": "თქვენ {amount} დაშორდით უფასო მიწოდებას!",
+    "literal.578c0777a949": "თქვენ განბლოკეთ უფასო მიწოდება!",
   },
   ha: {
     "literal.87df31bb89b3": "- shiga daga menu na asusun don saita isar da akai-akai na",
@@ -68207,6 +68408,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Zamewar gaba",
     "literal.8e53512a50fa": "Zamewar da ta gabata",
+    "literal.555511e95852": "Bayarwa kyauta akan oda sama da {amount}",
+    "literal.994816a0bc68": "Kuna nesa da {amount} daga bayarwa KYAUTA!",
+    "literal.578c0777a949": "Kun buɗe bayarwa KYAUTA!",
   },
   is: {
     "literal.87df31bb89b3":
@@ -69135,6 +69339,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Næsta glæra",
     "literal.8e53512a50fa": "Fyrri glæra",
+    "literal.555511e95852": "Ókeypis heimsending á pöntunum yfir {amount}",
+    "literal.994816a0bc68": "Þú ert {amount} í burtu frá ÓKEYPIS afhendingu!",
+    "literal.578c0777a949": "Þú hefur opnað ÓKEYPIS afhendingu!",
   },
   ga: {
     "literal.87df31bb89b3":
@@ -70076,6 +70283,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Sleamhnán seo chugainn",
     "literal.8e53512a50fa": "Sleamhnán roimhe seo",
+    "literal.555511e95852": "Seachadadh saor in aisce ar orduithe thuas {amount}",
+    "literal.994816a0bc68": "Tá tú {amount} amach ó sheachadadh SAOR IN AISCE!",
+    "literal.578c0777a949": "Tá seachadadh SAOR IN AISCE díghlasáilte agat!",
   },
   jv: {
     "literal.87df31bb89b3": "— mlebu saka menu akun kanggo nyiyapake pangiriman bola-bali",
@@ -71001,6 +71211,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Slide sabanjure",
     "literal.8e53512a50fa": "Muter sadurunge",
+    "literal.555511e95852": "Pengiriman gratis kanggo pesenan ing ndhuwur {amount}",
+    "literal.994816a0bc68": "Sampeyan {amount} adoh saka pangiriman GRATIS!",
+    "literal.578c0777a949": "Sampeyan wis mbukak kunci pengiriman GRATIS!",
   },
   kk: {
     "literal.87df31bb89b3": "— қайталанатын жеткізуді орнату үшін есептік жазба мәзірінен кіріңіз",
@@ -71936,6 +72149,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Келесі слайд",
     "literal.8e53512a50fa": "Алдыңғы слайд",
+    "literal.555511e95852": "{amount} жоғары тапсырыстар үшін тегін жеткізу",
+    "literal.994816a0bc68": "Сізде ТЕГІН жеткізу мүмкіндігіне {amount} қалды!",
+    "literal.578c0777a949": "Сіз ТЕГІН жеткізу құлпын аштыңыз!",
   },
   km: {
     "literal.87df31bb89b3": "— ចូល​ពី​ម៉ឺនុយ​គណនី ដើម្បី​រៀបចំ​ការ​ចែកចាយ​ដដែលៗ​នៃ",
@@ -72861,6 +73077,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "ស្លាយបន្ទាប់",
     "literal.8e53512a50fa": "ស្លាយមុន។",
+    "literal.555511e95852": "ការដឹកជញ្ជូនដោយឥតគិតថ្លៃលើការបញ្ជាទិញលើសពី {amount}",
+    "literal.994816a0bc68": "អ្នកនៅឆ្ងាយ {amount} ពីការដឹកជញ្ជូនឥតគិតថ្លៃ!",
+    "literal.578c0777a949": "អ្នកបានដោះសោការដឹកជញ្ជូនដោយឥតគិតថ្លៃ!",
   },
   lo: {
     "literal.87df31bb89b3": "— ເຂົ້າສູ່ລະບົບຈາກເມນູບັນຊີເພື່ອຕັ້ງຄ່າການຈັດສົ່ງແບບເກີດຂຶ້ນຊ້ຳໆຂອງ",
@@ -73772,6 +73991,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "ສະໄລ້ຕໍ່ໄປ",
     "literal.8e53512a50fa": "ສະໄລ້ກ່ອນໜ້າ",
+    "literal.555511e95852": "ສົ່ງຟຣີເມື່ອສັ່ງເກີນ {amount}",
+    "literal.994816a0bc68": "ເຈົ້າຢູ່ໄກ {amount} ຈາກການຈັດສົ່ງຟຣີ!",
+    "literal.578c0777a949": "ທ່ານໄດ້ປົດລັອກການຈັດສົ່ງຟຣີ!",
   },
   lv: {
     "literal.87df31bb89b3": "— pierakstieties no konta izvēlnes, lai iestatītu periodisku piegādi",
@@ -74702,6 +74924,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Nākamais slaids",
     "literal.8e53512a50fa": "Iepriekšējais slaids",
+    "literal.555511e95852": "Bezmaksas piegāde pasūtījumiem virs {amount}",
+    "literal.994816a0bc68": "Jums ir jāmaksā {amount}, lai saņemtu BEZMAKSAS piegādi!",
+    "literal.578c0777a949": "Jūs esat atbloķējis BEZMAKSAS piegādi!",
   },
   lt: {
     "literal.87df31bb89b3":
@@ -75628,6 +75853,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Kita skaidrė",
     "literal.8e53512a50fa": "Ankstesnė skaidrė",
+    "literal.555511e95852": "Nemokamas pristatymas užsakymams virš {amount}",
+    "literal.994816a0bc68": "Liko {amount} ir galėsite gauti NEMOKAMĄ pristatymą!",
+    "literal.578c0777a949": "Jūs atrakinote NEMOKAMĄ pristatymą!",
   },
   mk: {
     "literal.87df31bb89b3":
@@ -76551,6 +76779,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Следен слајд",
     "literal.8e53512a50fa": "Претходен слајд",
+    "literal.555511e95852": "Бесплатна достава за нарачки над {amount}",
+    "literal.994816a0bc68": "Ве дели {amount} од БЕСПЛАТНА достава!",
+    "literal.578c0777a949": "Ја отклучивте БЕСПЛАТНА испорака!",
   },
   ms: {
     "literal.87df31bb89b3":
@@ -77492,6 +77723,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Slaid seterusnya",
     "literal.8e53512a50fa": "Slaid sebelumnya",
+    "literal.555511e95852": "Penghantaran percuma untuk pesanan melebihi {amount}",
+    "literal.994816a0bc68": "Anda tinggal {amount} lagi untuk penghantaran PERCUMA!",
+    "literal.578c0777a949": "Anda telah membuka kunci penghantaran PERCUMA!",
   },
   mn: {
     "literal.87df31bb89b3": "—",
@@ -78422,6 +78656,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Дараагийн слайд",
     "literal.8e53512a50fa": "Өмнөх слайд",
+    "literal.555511e95852": "{amount}-с дээш захиалгад хүргэлт үнэгүй",
+    "literal.994816a0bc68": "Танд ҮНЭГҮЙ хүргэлт хийхэд {amount} дутуу байна!",
+    "literal.578c0777a949": "Та ҮНЭГҮЙ хүргэлтийн түгжээг тайллаа!",
   },
   my: {
     "literal.87df31bb89b3": "— ထပ်တလဲလဲ ပေးပို့ခြင်းကို စနစ်ထည့်သွင်းရန်",
@@ -79368,6 +79605,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "နောက်တစ်ခုလျှော",
     "literal.8e53512a50fa": "ယခင်လျှော",
+    "literal.555511e95852": "{amount} နှင့်အထက် မှာယူပါက အခမဲ့ ပို့ဆောင်ခြင်း",
+    "literal.994816a0bc68": "အခမဲ့ ပို့ဆောင်ခြင်းမှ သင် {amount} ဝေးပါသည်။",
+    "literal.578c0777a949": "အခမဲ့ ပို့ဆောင်မှုကို သင်လော့ခ်ဖွင့်လိုက်ပါပြီ။",
   },
   ps: {
     "literal.87df31bb89b3": "— د حساب له مینو څخه ننوتئ ترڅو د تکراري تحویل تنظیم کړئ د",
@@ -80286,6 +80526,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "بل سلایډ",
     "literal.8e53512a50fa": "مخکینی سلایډ",
+    "literal.555511e95852": "د {amount} څخه پورته امرونو باندې وړیا تحویلي",
+    "literal.994816a0bc68": "تاسو د وړیا تحویلۍ څخه {amount} لرې یاست!",
+    "literal.578c0777a949": "تاسو وړیا تحویلي خلاص کړی!",
   },
   sr: {
     "literal.87df31bb89b3": "— пријавите се из менија налога да бисте подесили периодичну испоруку",
@@ -81209,6 +81452,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Следећи слајд",
     "literal.8e53512a50fa": "Претходни слајд",
+    "literal.555511e95852": "Free delivery on orders above {amount}",
+    "literal.994816a0bc68": "You're {amount} away from FREE delivery!",
+    "literal.578c0777a949": "Откључали сте БЕСПЛАТНУ испоруку!",
   },
   sl: {
     "literal.87df31bb89b3": "— prijavite se v meniju računa, da nastavite ponavljajočo se dostavo",
@@ -82133,6 +82379,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Naslednji diapozitiv",
     "literal.8e53512a50fa": "Prejšnji diapozitiv",
+    "literal.555511e95852": "Brezplačna dostava za naročila nad {amount}",
+    "literal.994816a0bc68": "Do BREZPLAČNE dostave vas loči še {amount}!",
+    "literal.578c0777a949": "Odklenili ste BREZPLAČNO dostavo!",
   },
   so: {
     "literal.87df31bb89b3":
@@ -83069,6 +83318,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "slide soo socda",
     "literal.8e53512a50fa": "slide hore",
+    "literal.555511e95852": "Dirista bilaashka ah dalabaadka ka sarreeya {amount}",
+    "literal.994816a0bc68": "Waxaad {amount} ka fog tahay keenista bilaashka ah!",
+    "literal.578c0777a949": "Waxaad furtay keenista bilaashka ah!",
   },
   zu: {
     "literal.87df31bb89b3":
@@ -84006,6 +84258,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Isilayidi esilandelayo",
     "literal.8e53512a50fa": "Isilayidi sangaphambilini",
+    "literal.555511e95852": "Ukulethwa kwamahhala kuma-oda angaphezu kuka-{amount}",
+    "literal.994816a0bc68": "Ususele ngo-{amount} ekulethweni KWAMAHHALA!",
+    "literal.578c0777a949": "Uvule ukulethwa KWAMAHHALA!",
   },
   xh: {
     "literal.87df31bb89b3": "— ngena kwi-akhawunti yemenyu ukuseta unikezelo oluqhubekayo lwe",
@@ -84938,6 +85193,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Isilayidi esilandelayo",
     "literal.8e53512a50fa": "Isilayidi sangaphambili",
+    "literal.555511e95852": "Ukuhanjiswa simahla kwiiodolo ezingaphezulu {amount}",
+    "literal.994816a0bc68": "U- {amount} kude nokuhanjiswa KWAMAHHALA!",
+    "literal.578c0777a949": "Uluvulile unikezelo SIMAHLA!",
   },
   yo: {
     "literal.87df31bb89b3": "— wole lati inu akoto akoto lati seto ifijiṣẹ loorekoore ti",
@@ -85847,6 +86105,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Ifaworanhan atẹle",
     "literal.8e53512a50fa": "Ifaworanhan ti tẹlẹ",
+    "literal.555511e95852": "Ifijiṣẹ ọfẹ lori awọn aṣẹ loke {amount}",
+    "literal.994816a0bc68": "O wa {amount} kuro ni ifijiṣẹ Ọfẹ!",
+    "literal.578c0777a949": "O ti ṣii ifijiṣẹ ỌFẸ!",
   },
   ig: {
     "literal.87df31bb89b3": "— banye na menu akaụntụ ka hazie nnyefe ugboro ugboro nke",
@@ -86757,6 +87018,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "slide na-esote",
     "literal.8e53512a50fa": "Ihe mmịfe gara aga",
+    "literal.555511e95852": "Nbufe efu na iwu dị n'elu {amount}",
+    "literal.994816a0bc68": "Ị nọ {amount} na nnyefe efu!",
+    "literal.578c0777a949": "Ị kpọgheela nnyefe n'efu!",
   },
   uz: {
     "literal.87df31bb89b3": "— takroriy yetkazib berishni sozlash uchun hisob menyusiga kiring",
@@ -87694,6 +87958,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Keyingi slayd",
     "literal.8e53512a50fa": "Oldingi slayd",
+    "literal.555511e95852": "{amount} dan ortiq buyurtmalar uchun bepul yetkazib berish",
+    "literal.994816a0bc68": "BEPUL yetkazib berish imkoniyatidan {amount} qoldingiz!",
+    "literal.578c0777a949": "Siz BEPUL yetkazib berish imkoniyatini ochdingiz!",
   },
   tk: {
     "literal.87df31bb89b3": "- gaýtalanýan eltip bermek üçin hasap menýusyndan giriň",
@@ -88618,6 +88885,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Indiki slaýd",
     "literal.8e53512a50fa": "Öňki slaýd",
+    "literal.555511e95852": "{amount} ýokardaky sargytlar boýunça mugt eltip bermek",
+    "literal.994816a0bc68": "Mugt eltip bermekden {amount} uzakda!",
+    "literal.578c0777a949": "Mugt eltip berdiňiz!",
   },
   ky: {
     "literal.87df31bb89b3": "— кайталануучу жеткирүүнү орнотуу үчүн эсеп менюсуна кириңиз",
@@ -89549,6 +89819,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Кийинки слайд",
     "literal.8e53512a50fa": "Мурунку слайд",
+    "literal.555511e95852": "{amount} жогору буйрутмалар боюнча акысыз жеткирүү",
+    "literal.994816a0bc68": "АКЫСЫЗ жеткирүүгө {amount} калдыңыз!",
+    "literal.578c0777a949": "Сиз АКЫСЫЗ жеткирүү кулпусун ачтыңыз!",
   },
   tg: {
     "literal.87df31bb89b3": "— аз менюи ҳисоб ворид шавед, то интиқоли такрории",
@@ -90484,6 +90757,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Слайди навбатӣ",
     "literal.8e53512a50fa": "Слайди қаблӣ",
+    "literal.555511e95852": "Расонидани ройгон барои фармоишҳои зиёда аз {amount}",
+    "literal.994816a0bc68": "Шумо аз интиқоли РОЙГОН {amount} дуред!",
+    "literal.578c0777a949": "Шумо интиқоли РОЙГОНро кушодаед!",
   },
   ceb: {
     "literal.87df31bb89b3":
@@ -91430,6 +91706,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Sunod nga slide",
     "literal.8e53512a50fa": "Nauna nga slide",
+    "literal.555511e95852": "Libre nga pagpadala sa mga order nga labaw sa {amount}",
+    "literal.994816a0bc68": "{amount} ka gikan sa LIBRE nga pagpadala!",
+    "literal.578c0777a949": "Giablihan nimo ang LIBRE nga pagpadala!",
   },
   cy: {
     "literal.87df31bb89b3": "— mewngofnodwch o ddewislen y cyfrif i sefydlu dosbarthiad cylchol",
@@ -92364,6 +92643,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Sleid nesaf",
     "literal.8e53512a50fa": "Sleid flaenorol",
+    "literal.555511e95852": "Dosbarthiad am ddim ar archebion uwchben {amount}",
+    "literal.994816a0bc68": "Rydych chi {amount} i ffwrdd o ddosbarthu AM DDIM!",
+    "literal.578c0777a949": "Rydych chi wedi datgloi dosbarthiad AM DDIM!",
   },
   mt: {
     "literal.87df31bb89b3": "— idħol mill-menu tal-kont biex twaqqaf konsenja rikorrenti ta",
@@ -93296,6 +93578,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Slide li jmiss",
     "literal.8e53512a50fa": "Slide preċedenti",
+    "literal.555511e95852": "Kunsinna b'xejn fuq ordnijiet 'il fuq minn {amount}",
+    "literal.994816a0bc68": "Int {amount} 'l bogħod mill-kunsinna B'XEJN!",
+    "literal.578c0777a949": "Int żblokkat konsenja B'XEJN!",
   },
   lb: {
     "literal.87df31bb89b3": "— mellt Iech aus dem Kontomenü un fir widderhuelend Liwwerung vu",
@@ -94225,6 +94510,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Nächst Rutsch",
     "literal.8e53512a50fa": "Virdrun Rutsch",
+    "literal.555511e95852": "Gratis Liwwerung op Bestellungen iwwer {amount}",
+    "literal.994816a0bc68": "Dir sidd {amount} ewech vun GRATIS Liwwerung!",
+    "literal.578c0777a949": "Dir hutt GRATIS Liwwerung opgehuewen!",
   },
   rw: {
     "literal.87df31bb89b3": "- injira muri konte ya menu kugirango ushireho itangwa rya",
@@ -95142,6 +95430,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Igice gikurikira",
     "literal.8e53512a50fa": "Igice cyambere",
+    "literal.555511e95852": "Gutanga kubuntu kubicuruzwa hejuru {amount}",
+    "literal.994816a0bc68": "Wowe {amount} kure yubuntu!",
+    "literal.578c0777a949": "Wafunguye kubuntu!",
   },
   ny: {
     "literal.87df31bb89b3": "— lowani muakaunti yanu kuti mukhazikitse",
@@ -96061,6 +96352,9 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "Chotsatira chotsatira",
     "literal.8e53512a50fa": "Slide yam'mbuyo",
+    "literal.555511e95852": "Kutumizira ulere pamaoda opitilira {amount}",
+    "literal.994816a0bc68": "Mwatsala {amount} kuti musatumizidwe KWAULERE!",
+    "literal.578c0777a949": "Mwatsegula kutumiza KWAULERE!",
   },
   ug: {
     "literal.87df31bb89b3": "- ھېسابات تىزىملىكىدىن كىرىپ قايتا-قايتا يەتكۈزۈشنى تەڭشەڭ",
@@ -96991,5 +97285,8 @@ export const GENERATED_LITERAL_CATALOGUES: Readonly<Record<string, LocaleMessage
     "literal.d8818b788a93": "True Grit | Traceable Organic Food from Trusted Farms",
     "literal.a4cf971af7dc": "كېيىنكى تام تەسۋىر",
     "literal.8e53512a50fa": "ئالدىنقى تام تەسۋىر",
+    "literal.555511e95852": "ئۈستىدىكى زاكازدا ھەقسىز يەتكۈزۈش {amount}",
+    "literal.994816a0bc68": "سىز {amount} ھەقسىز يەتكۈزۈشتىن يىراق!",
+    "literal.578c0777a949": "ھەقسىز يەتكۈزۈپ بەردىڭىز!",
   },
 };

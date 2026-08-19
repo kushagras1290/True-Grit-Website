@@ -31,6 +31,13 @@ import path from "node:path";
 const WRANGLER = path.resolve("node_modules/wrangler/bin/wrangler.js");
 const CACHE_DIR = path.resolve("node_modules/.cache/truegrit-page-i18n");
 const SQL_DIR = path.resolve("node_modules/.cache/truegrit-page-sql");
+const TOKEN_LOCK = path.resolve("node_modules/.cache/truegrit-cloudflare-token.lock");
+const WRANGLER_CONFIG =
+  process.env.TG_WRANGLER_CONFIG ??
+  path.join(
+    process.env.XDG_CONFIG_HOME ?? path.join(process.env.APPDATA ?? "", "xdg.config"),
+    ".wrangler/config/default.toml",
+  );
 // The definitive language list; the storefront's own locales.ts is a
 // re-export shim with no literal definitions of its own.
 const LOCALES_FILE = path.resolve("packages/i18n/src/locales.ts");
@@ -43,6 +50,9 @@ const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID ?? "";
 let cloudflareApiToken = process.env.CLOUDFLARE_API_TOKEN ?? "";
 const CLOUDFLARE_TRANSLATION_MODEL = "@cf/meta/m2m100-1.2b";
 const CLOUDFLARE_LLM_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+const CLOUDFLARE_LLM_MODEL_BY_LOCALE = new Map([
+  ["sat", "@cf/meta/llama-4-scout-17b-16e-instruct"],
+]);
 const CLOUDFLARE_LLM_LOCALES = new Map([
   ["as", "Assamese"],
   ["kok", "Konkani"],
@@ -144,10 +154,7 @@ function localeCodes(selector) {
 }
 
 function wrangler(args, maxBuffer = 128 * 1024 * 1024) {
-  return execFileSync(process.execPath, [WRANGLER, ...args], {
-    encoding: "utf8",
-    maxBuffer,
-  });
+  return execFileSync(process.execPath, [WRANGLER, ...args], { encoding: "utf8", maxBuffer });
 }
 
 let runtimeOptions;
@@ -169,6 +176,17 @@ function d1Query(sql) {
   const start = output.indexOf("[");
   if (start < 0) throw new Error(`Unexpected wrangler output:\n${output.slice(0, 400)}`);
   return JSON.parse(output.slice(start))[0]?.results ?? [];
+}
+
+async function d1Import(file) {
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      return wrangler([...d1Args(), "--yes", "--file", file]);
+    } catch (error) {
+      if (attempt >= 6) throw error;
+      await wait(Math.min(15_000, 1_500 * 2 ** (attempt - 1)));
+    }
+  }
 }
 
 const sqlText = (value) => `'${String(value).replaceAll("'", "''")}'`;
@@ -195,9 +213,20 @@ function walkCopy(node, visit, key = null) {
 }
 
 const shield = (source) =>
-  source.replaceAll("True Grit", "__TGBRAND__").replaceAll("Vikas Farms", "__VIKASFARMS__");
-const unshield = (source) =>
-  source.replaceAll("__TGBRAND__", "True Grit").replaceAll("__VIKASFARMS__", "Vikas Farms").trim();
+  source.replaceAll("True Grit", "[[[9001]]]").replaceAll("Vikas Farms", "[[[9002]]]");
+function unshield(source) {
+  const objectWrapped = /^\{"k\d+":\s*"([\s\S]*)\}$/.exec(source.trim());
+  if (objectWrapped) source = objectWrapped[1].replace(/"$/, "");
+  return source
+    .replace(/tgbrand/gi, "True Grit")
+    .replace(/_+\s*(?:tgbrand|true\s*grit)\s*_+/gi, "True Grit")
+    .replace(/_+\s*(true\s*grit)\b|\b(true\s*grit)\s*_+/gi, "True Grit")
+    .replace(/_+\s*vikas\s*farms\s*_+/gi, "Vikas Farms")
+    .replace(/_+\s*(vikas\s*farms)\b|\b(vikas\s*farms)\s*_+/gi, "Vikas Farms")
+    .replace(/\[{2,4}9001\]{2,4}/g, "True Grit")
+    .replace(/\[{2,4}9002\]{2,4}/g, "Vikas Farms")
+    .trim();
+}
 const escapeHtml = (source) =>
   source
     .replaceAll("&", "&amp;")
@@ -290,17 +319,56 @@ function batched(values) {
 
 const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
+function configuredCloudflareToken() {
+  if (!fs.existsSync(WRANGLER_CONFIG)) return "";
+  const match = /oauth_token\s*=\s*"([^"]+)"/.exec(fs.readFileSync(WRANGLER_CONFIG, "utf8"));
+  return match?.[1] ?? "";
+}
+
+function waitSync(milliseconds) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds);
+}
+
 function refreshCloudflareToken() {
-  const output = execFileSync(process.execPath, [WRANGLER, "auth", "token"], {
-    encoding: "utf8",
-    maxBuffer: 1024 * 1024,
-  });
-  const token = output
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .findLast((line) => /^[A-Za-z0-9_.-]{40,}$/.test(line));
-  if (!token) throw new Error("Wrangler did not return a refreshed Cloudflare token");
-  cloudflareApiToken = token;
+  const reuseConfiguredToken = () => {
+    const configured = configuredCloudflareToken();
+    if (!configured || configured === cloudflareApiToken) return false;
+    cloudflareApiToken = configured;
+    return true;
+  };
+  if (reuseConfiguredToken()) return;
+
+  let lock;
+  for (;;) {
+    try {
+      lock = fs.openSync(TOKEN_LOCK, "wx");
+      break;
+    } catch (error) {
+      if (error?.code !== "EEXIST") throw error;
+      if (reuseConfiguredToken()) return;
+      const age = Date.now() - fs.statSync(TOKEN_LOCK).mtimeMs;
+      if (age > 180_000) fs.rmSync(TOKEN_LOCK, { force: true });
+      else waitSync(1_000);
+    }
+  }
+
+  try {
+    if (reuseConfiguredToken()) return;
+    const output = execFileSync(process.execPath, [WRANGLER, "auth", "token"], {
+      encoding: "utf8",
+      maxBuffer: 1024 * 1024,
+      timeout: 120_000,
+    });
+    const token = output
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .findLast((line) => /^[A-Za-z0-9_.-]{40,}$/.test(line));
+    if (!token) throw new Error("Wrangler did not return a refreshed Cloudflare token");
+    cloudflareApiToken = token;
+  } finally {
+    fs.closeSync(lock);
+    fs.rmSync(TOKEN_LOCK, { force: true });
+  }
 }
 
 async function cloudflareRequest(model, input, attempt = 1) {
@@ -353,7 +421,7 @@ async function cloudflareSyncRequest(model, input, attempt = 1) {
             "content-type": "application/json",
           },
           body: JSON.stringify(input),
-          signal: AbortSignal.timeout(30_000),
+          signal: AbortSignal.timeout(model === CLOUDFLARE_TRANSLATION_MODEL ? 30_000 : 120_000),
         },
       );
       const payload = await response.json();
@@ -375,6 +443,7 @@ async function cloudflareSyncRequest(model, input, attempt = 1) {
       return payload.result;
     } catch (error) {
       if (String(error).includes("Cloudflare AI ")) throw error;
+      if (model !== CLOUDFLARE_TRANSLATION_MODEL && currentAttempt >= 2) throw error;
       await wait(Math.min(30_000, 750 * 2 ** Math.min(currentAttempt, 5)) + Math.random() * 500);
     }
   }
@@ -401,9 +470,7 @@ async function cloudflareBatch(model, requests, locale) {
   process.stdout.write(`${locale}: queued Cloudflare batch ${queued.request_id}\n`);
   for (;;) {
     await wait(CLOUDFLARE_BATCH_POLL_MS);
-    const result = await cloudflareRequest(model, {
-      request_id: queued.request_id,
-    });
+    const result = await cloudflareRequest(model, { request_id: queued.request_id });
     if (Array.isArray(result.responses)) return result.responses;
     if (Array.isArray(result.results)) {
       return result.results.map((entry) => ({
@@ -451,10 +518,20 @@ function llmBatches(values) {
 }
 
 function parseLlmTranslations(response, expected, locale, index) {
-  const text = response?.result?.response ?? response?.response;
-  const match = typeof text === "string" ? /\{[\s\S]*\}/.exec(text) : null;
-  if (!match) throw new Error(`${locale}: LLM batch ${index} returned no JSON object`);
-  const parsed = JSON.parse(match[0]);
+  const raw =
+    response?.result?.response ??
+    response?.response ??
+    response?.result?.choices?.[0]?.message?.content ??
+    response?.choices?.[0]?.message?.content;
+  let parsed = raw;
+  if (typeof raw === "string") {
+    const match = /\{[\s\S]*\}/.exec(raw);
+    if (!match) throw new Error(`${locale}: LLM batch ${index} returned no JSON object`);
+    parsed = JSON.parse(match[0]);
+  }
+  if (!parsed || typeof parsed !== "object") {
+    throw new Error(`${locale}: LLM batch ${index} returned no JSON object`);
+  }
   if (!Array.isArray(parsed.translations) || parsed.translations.length !== expected) {
     throw new Error(
       `${locale}: LLM batch ${index} returned ${parsed.translations?.length ?? 0}/${expected} strings`,
@@ -466,6 +543,57 @@ function parseLlmTranslations(response, expected, locale, index) {
     }
     return unshield(translation);
   });
+}
+
+async function translateLlmBatch(locale, language, batch, label) {
+  const model = CLOUDFLARE_LLM_MODEL_BY_LOCALE.get(locale) ?? CLOUDFLARE_LLM_MODEL;
+  try {
+    const result = await cloudflareSyncRequest(model, {
+      messages: [
+        {
+          role: "user",
+          content:
+            `Translate every string in this JSON array from English into ${language}. ` +
+            "Preserve array length and order. Return only a JSON object with one key, " +
+            "translations, whose value is the translated string array. Do not translate " +
+            "True Grit, Vikas Farms, Kathiya, Banshi, or Paigambari. Input: " +
+            JSON.stringify(batch.map(shield)),
+        },
+      ],
+      temperature: 0,
+      max_tokens: 4096,
+    });
+    return parseLlmTranslations(result, batch.length, locale, label);
+  } catch (error) {
+    if (batch.length === 1) {
+      const fallback = await cloudflareSyncRequest(model, {
+        messages: [
+          {
+            role: "user",
+            content:
+              `Translate this text from English into ${language}. Return only the translated ` +
+              "text, with no explanation or quotation marks. Do not translate True Grit, " +
+              "Vikas Farms, Kathiya, Banshi, or Paigambari. Text: " +
+              shield(batch[0]),
+          },
+        ],
+        temperature: 0,
+        max_tokens: 4096,
+      });
+      const plain =
+        fallback?.response ??
+        fallback?.result?.response ??
+        fallback?.choices?.[0]?.message?.content ??
+        fallback?.result?.choices?.[0]?.message?.content;
+      if (typeof plain === "string" && plain.trim()) return [unshield(plain)];
+      throw error;
+    }
+    const middle = Math.ceil(batch.length / 2);
+    return [
+      ...(await translateLlmBatch(locale, language, batch.slice(0, middle), `${label}a`)),
+      ...(await translateLlmBatch(locale, language, batch.slice(middle), `${label}b`)),
+    ];
+  }
 }
 
 async function translateCloudflare(locale, pending, cache) {
@@ -516,30 +644,10 @@ async function translateCloudflare(locale, pending, cache) {
     const results = await mapConcurrent(
       batches,
       Math.min(6, CLOUDFLARE_SYNC_CONCURRENCY),
-      (batch) =>
-        cloudflareSyncRequest(CLOUDFLARE_LLM_MODEL, {
-          messages: [
-            {
-              role: "user",
-              content:
-                `Translate every string in this JSON array from English into ${language}. ` +
-                "Preserve array length and order. Return only a JSON object with one key, " +
-                "translations, whose value is the translated string array. Do not translate " +
-                "True Grit or Vikas Farms. Input: " +
-                JSON.stringify(batch.map(shield)),
-            },
-          ],
-          temperature: 0,
-          max_tokens: 4096,
-        }),
+      (batch, index) => translateLlmBatch(locale, language, batch, index),
     );
     for (let index = 0; index < batches.length; index += 1) {
-      const translations = parseLlmTranslations(
-        results[index],
-        batches[index].length,
-        locale,
-        index,
-      );
+      const translations = results[index];
       batches[index].forEach((english, entryIndex) => {
         cache[hash(english)] = translations[entryIndex];
       });
@@ -680,7 +788,7 @@ async function main() {
         "  (page_id, locale, content_json, auto_translated, updated_at, updated_by)\n" +
         `VALUES\n${values.join(",\n")};\n`,
     );
-    wrangler([...d1Args(), "--yes", "--file", file]);
+    await d1Import(file);
     fs.rmSync(file, { force: true });
     written += values.length;
     process.stdout.write(`${locale}: wrote ${values.length} pages\n`);
