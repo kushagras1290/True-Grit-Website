@@ -55,10 +55,7 @@ export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElem
 /** A password `<input>` with a show/hide toggle, so staff can check what
  * they typed before submitting -- wraps `Input` rather than duplicating its
  * styling, matching every other primitive in this file. */
-export function PasswordInput({
-  className,
-  ...props
-}: InputHTMLAttributes<HTMLInputElement>) {
+export function PasswordInput({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
   const t = useT();
   const [visible, setVisible] = useState(false);
   return (

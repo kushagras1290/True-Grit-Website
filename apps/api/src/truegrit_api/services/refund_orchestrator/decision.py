@@ -41,8 +41,7 @@ def decide(ctx: RefundContext, assessment: RiskAssessment) -> DecisionOutcome:
         return DecisionOutcome(
             decision=Decision.AUTO_DENY,
             rationale=(
-                "This order's payment is already fully refunded; there is nothing left to"
-                " pay out."
+                "This order's payment is already fully refunded; there is nothing left to pay out."
             ),
         )
 

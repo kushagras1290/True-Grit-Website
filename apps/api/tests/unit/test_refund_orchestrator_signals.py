@@ -141,9 +141,7 @@ def test_missing_evidence_only_matters_for_evidence_reason_codes() -> None:
     no_evidence_damaged = score_context(_clean_ctx(reason_code="damaged", evidence_media_count=0))
     assert "MISSING_EVIDENCE" in [s.id for s in no_evidence_damaged.signals]
 
-    with_evidence_damaged = score_context(
-        _clean_ctx(reason_code="damaged", evidence_media_count=2)
-    )
+    with_evidence_damaged = score_context(_clean_ctx(reason_code="damaged", evidence_media_count=2))
     assert "MISSING_EVIDENCE" not in [s.id for s in with_evidence_damaged.signals]
 
 

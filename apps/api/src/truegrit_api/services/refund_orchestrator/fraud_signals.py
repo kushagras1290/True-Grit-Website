@@ -30,9 +30,7 @@ from truegrit_api.services.refund_orchestrator.reader import RefundContext
 # confirmed dead going forward and always escalates, the same as COD.
 GATEWAY_REFUNDABLE_PROVIDERS: Final = frozenset({"razorpay", "stripe"})
 
-_EVIDENCE_EXPECTED_REASON_CODES: Final = frozenset(
-    {"damaged", "quality_issue", "not_as_described"}
-)
+_EVIDENCE_EXPECTED_REASON_CODES: Final = frozenset({"damaged", "quality_issue", "not_as_described"})
 
 # --- Weights (0-100 scale) --------------------------------------------------
 # Chosen so no single soft signal alone reaches the escalate threshold

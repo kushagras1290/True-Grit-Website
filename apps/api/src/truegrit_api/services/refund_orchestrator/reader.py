@@ -124,9 +124,7 @@ async def gather_context(db: Database, return_request_id: str) -> RefundContext:
             """,
             (customer_id,),
         )
-        lifetime_refunded_minor = (
-            int(lifetime_refund_row["refunded"]) if lifetime_refund_row else 0
-        )
+        lifetime_refunded_minor = int(lifetime_refund_row["refunded"]) if lifetime_refund_row else 0
 
     evidence_ids: list[str] = []
     raw_evidence = return_row["evidence_media_ids_json"]

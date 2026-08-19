@@ -177,10 +177,7 @@ function Input({ className, ...props }: React.InputHTMLAttributes<HTMLInputEleme
   );
 }
 
-function PasswordInput({
-  className,
-  ...props
-}: React.InputHTMLAttributes<HTMLInputElement>) {
+function PasswordInput({ className, ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
   const [visible, setVisible] = useState(false);
   return (
     <div className="relative">

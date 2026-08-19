@@ -43,7 +43,9 @@ def _staff_principal() -> Principal:
 
 def _customer_principal() -> Principal:
     return Principal(
-        user_id=_CUSTOMER_ID, display_name="Riya Nair", email="riya@example.test",
+        user_id=_CUSTOMER_ID,
+        display_name="Riya Nair",
+        email="riya@example.test",
         user_type="customer",
     )
 
@@ -101,13 +103,9 @@ async def _fake_refund(settings, *, payment_id, amount_minor, idempotency_key):
     return "rfnd_test123"
 
 
-def test_auto_approve_calls_gateway_and_notifies(
-    db: SQLiteDatabase, monkeypatch
-) -> None:
+def test_auto_approve_calls_gateway_and_notifies(db: SQLiteDatabase, monkeypatch) -> None:
     async def scenario() -> None:
-        monkeypatch.setattr(
-            "truegrit_api.services.orders.refund_razorpay_payment", _fake_refund
-        )
+        monkeypatch.setattr("truegrit_api.services.orders.refund_razorpay_payment", _fake_refund)
         _seed_paid_razorpay_payment(db, _ORDER_ID, _ORDER_TOTAL_MINOR)
         _seed_return_request(
             db,
@@ -131,9 +129,7 @@ def test_auto_approve_calls_gateway_and_notifies(
         assert row["resolution_amount_minor"] == 10_000
         assert row["resolved_by"] == SYSTEM_ACTOR_USER_ID
 
-        payment = await db.fetch_one(
-            "SELECT status FROM payments WHERE order_id = ?", (_ORDER_ID,)
-        )
+        payment = await db.fetch_one("SELECT status FROM payments WHERE order_id = ?", (_ORDER_ID,))
         assert payment is not None
         assert payment["status"] == "partially_refunded"
 
@@ -161,8 +157,7 @@ def test_auto_approve_calls_gateway_and_notifies(
         assert audit is not None
 
         run = await db.fetch_one(
-            "SELECT decision, risk_score FROM refund_orchestrator_runs"
-            " WHERE return_request_id = ?",
+            "SELECT decision, risk_score FROM refund_orchestrator_runs WHERE return_request_id = ?",
             ("ret_auto_approve",),
         )
         assert run is not None
@@ -176,19 +171,13 @@ def test_auto_approve_calls_gateway_and_notifies(
     asyncio.run(scenario())
 
 
-def test_escalate_leaves_under_review_and_moves_no_money(
-    db: SQLiteDatabase, monkeypatch
-) -> None:
+def test_escalate_leaves_under_review_and_moves_no_money(db: SQLiteDatabase, monkeypatch) -> None:
     async def scenario() -> None:
-        monkeypatch.setattr(
-            "truegrit_api.services.orders.refund_razorpay_payment", _fake_refund
-        )
+        monkeypatch.setattr("truegrit_api.services.orders.refund_razorpay_payment", _fake_refund)
         _seed_paid_razorpay_payment(db, _ORDER_ID, _ORDER_TOTAL_MINOR)
         # No requested amount -- decision.py always escalates this, since it
         # cannot safely determine a refund amount on its own.
-        _seed_return_request(
-            db, return_id="ret_escalate", requested_refund_amount_minor=None
-        )
+        _seed_return_request(db, return_id="ret_escalate", requested_refund_amount_minor=None)
 
         outcome = await run_refund_orchestrator(db, "ret_escalate")
 
@@ -200,9 +189,7 @@ def test_escalate_leaves_under_review_and_moves_no_money(
         assert row is not None
         assert row["status"] == "under_review"
 
-        payment = await db.fetch_one(
-            "SELECT status FROM payments WHERE order_id = ?", (_ORDER_ID,)
-        )
+        payment = await db.fetch_one("SELECT status FROM payments WHERE order_id = ?", (_ORDER_ID,))
         assert payment is not None
         assert payment["status"] == "paid"  # untouched
 
@@ -224,13 +211,9 @@ def test_escalate_leaves_under_review_and_moves_no_money(
     asyncio.run(scenario())
 
 
-def test_auto_deny_when_payment_already_fully_refunded(
-    db: SQLiteDatabase
-) -> None:
+def test_auto_deny_when_payment_already_fully_refunded(db: SQLiteDatabase) -> None:
     async def scenario() -> None:
-        _seed_paid_razorpay_payment(
-            db, _ORDER_ID, _ORDER_TOTAL_MINOR, status="refunded"
-        )
+        _seed_paid_razorpay_payment(db, _ORDER_ID, _ORDER_TOTAL_MINOR, status="refunded")
         _seed_return_request(db, return_id="ret_auto_deny")
 
         outcome = await run_refund_orchestrator(db, "ret_auto_deny")
@@ -253,9 +236,7 @@ def test_auto_deny_when_payment_already_fully_refunded(
     asyncio.run(scenario())
 
 
-def test_cod_orders_always_escalate_regardless_of_risk_score(
-    db: SQLiteDatabase
-) -> None:
+def test_cod_orders_always_escalate_regardless_of_risk_score(db: SQLiteDatabase) -> None:
     async def scenario() -> None:
         now = "2026-07-15T00:00:00Z"
         db._conn.execute(
@@ -280,9 +261,7 @@ def test_cod_orders_always_escalate_regardless_of_risk_score(
     asyncio.run(scenario())
 
 
-def test_create_return_request_enqueues_evaluation_only_when_enabled(
-    db: SQLiteDatabase
-) -> None:
+def test_create_return_request_enqueues_evaluation_only_when_enabled(db: SQLiteDatabase) -> None:
     async def scenario() -> None:
         result = await create_return_request(
             db,
@@ -340,9 +319,7 @@ def test_manual_resolve_as_refund_now_actually_calls_the_gateway(
     through the same gateway path `issue_refund` uses."""
 
     async def scenario() -> None:
-        monkeypatch.setattr(
-            "truegrit_api.services.orders.refund_razorpay_payment", _fake_refund
-        )
+        monkeypatch.setattr("truegrit_api.services.orders.refund_razorpay_payment", _fake_refund)
         _seed_paid_razorpay_payment(db, _ORDER_ID, _ORDER_TOTAL_MINOR)
         _seed_return_request(db, return_id="ret_manual", requested_refund_amount_minor=20_000)
         actor = _staff_principal()
@@ -358,9 +335,7 @@ def test_manual_resolve_as_refund_now_actually_calls_the_gateway(
             resolution_notes="Approved after phone call with customer.",
         )
 
-        payment = await db.fetch_one(
-            "SELECT status FROM payments WHERE order_id = ?", (_ORDER_ID,)
-        )
+        payment = await db.fetch_one("SELECT status FROM payments WHERE order_id = ?", (_ORDER_ID,))
         assert payment is not None
         assert payment["status"] == "partially_refunded"
 

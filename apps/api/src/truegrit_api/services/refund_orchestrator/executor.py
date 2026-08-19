@@ -100,9 +100,7 @@ async def run_refund_orchestrator(db: Database, return_request_id: str) -> Decis
             resolution_amount_minor=refund_amount,
             resolution_notes=f"Auto-approved by the refund agent. {outcome.rationale}",
         )
-        await notify_customer(
-            db, ctx=ctx, outcome=outcome, refunded_amount_minor=refund_amount
-        )
+        await notify_customer(db, ctx=ctx, outcome=outcome, refunded_amount_minor=refund_amount)
     elif outcome.decision == Decision.AUTO_DENY:
         await decide_return_request(db, actor, request_id, return_request_id, decision="rejected")
         await notify_customer(db, ctx=ctx, outcome=outcome, refunded_amount_minor=None)

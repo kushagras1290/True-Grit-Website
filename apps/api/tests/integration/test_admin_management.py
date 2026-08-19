@@ -1228,9 +1228,7 @@ def test_owner_can_refund_a_stripe_payment(client: TestClient, db: SQLiteDatabas
         assert amount_minor == 94800
         return "re_test123"
 
-    monkeypatch.setattr(
-        "truegrit_api.services.orders.refund_stripe_payment", fake_stripe_refund
-    )
+    monkeypatch.setattr("truegrit_api.services.orders.refund_stripe_payment", fake_stripe_refund)
 
     response = client.post(
         "/v1/admin/orders/ord_1001/refund", json={"reason": "Customer requested cancellation"}

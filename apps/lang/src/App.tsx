@@ -118,10 +118,7 @@ function Button({
 const controlClass =
   "min-h-10 w-full rounded-sm border border-line-strong bg-surface px-3 text-sm text-ink placeholder:text-ink-muted focus:border-brand focus:outline-none";
 
-function PasswordInput({
-  className,
-  ...props
-}: React.InputHTMLAttributes<HTMLInputElement>) {
+function PasswordInput({ className, ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
   const [visible, setVisible] = useState(false);
   return (
     <div className="relative">
