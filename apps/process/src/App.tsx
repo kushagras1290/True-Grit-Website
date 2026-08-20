@@ -6,6 +6,8 @@ import {
   Check,
   CheckCircle2,
   CircleDot,
+  Eye,
+  EyeOff,
   ExternalLink,
   GitBranch,
   GitCommitHorizontal,
@@ -131,6 +133,23 @@ function Input({ className, ...props }: React.InputHTMLAttributes<HTMLInputEleme
       )}
       {...props}
     />
+  );
+}
+
+function PasswordInput({ className, ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <div className="relative">
+      <Input type={visible ? "text" : "password"} className={cn("pr-9", className)} {...props} />
+      <button
+        type="button"
+        onClick={() => setVisible((value) => !value)}
+        className="absolute inset-y-0 right-0 flex items-center px-2.5 text-ink-muted hover:text-ink"
+        aria-label={visible ? "Hide password" : "Show password"}
+      >
+        {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
+    </div>
   );
 }
 
@@ -297,9 +316,8 @@ function Login({ onAuthenticated }: { onAuthenticated: (user: StaffUser) => void
               />
             </Field>
             <Field label="Password" htmlFor="password">
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 autoComplete="current-password"
                 required
                 value={password}
@@ -780,9 +798,8 @@ function UsersTab({
               />
             </Field>
             <Field label="Temporary password" htmlFor="release-user-password">
-              <Input
+              <PasswordInput
                 id="release-user-password"
-                type="password"
                 autoComplete="new-password"
                 required
                 minLength={10}
@@ -829,9 +846,8 @@ function UsersTab({
             }}
           >
             <Field label="New password" htmlFor="reset-password-input">
-              <Input
+              <PasswordInput
                 id="reset-password-input"
-                type="password"
                 autoComplete="new-password"
                 required
                 minLength={10}
@@ -973,9 +989,8 @@ function AccountTab({
           }}
         >
           <Field label="Current password" htmlFor="process-current-password">
-            <Input
+            <PasswordInput
               id="process-current-password"
-              type="password"
               autoComplete="current-password"
               required
               value={currentPassword}
@@ -983,9 +998,8 @@ function AccountTab({
             />
           </Field>
           <Field label="New password" htmlFor="process-new-password">
-            <Input
+            <PasswordInput
               id="process-new-password"
-              type="password"
               autoComplete="new-password"
               minLength={10}
               maxLength={256}
@@ -995,9 +1009,8 @@ function AccountTab({
             />
           </Field>
           <Field label="Confirm new password" htmlFor="process-confirm-password">
-            <Input
+            <PasswordInput
               id="process-confirm-password"
-              type="password"
               autoComplete="new-password"
               required
               value={confirmPassword}

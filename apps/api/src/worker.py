@@ -430,6 +430,13 @@ class Default(WorkerEntrypoint):
         async def translate_batch_task(task_id: str) -> None:
             await process_task(db, translator, task_id)
 
+        async def evaluate_refund(return_request_id: str) -> None:
+            from truegrit_api.services.refund_orchestrator.executor import (
+                run_refund_orchestrator,
+            )
+
+            await run_refund_orchestrator(db, return_request_id)
+
         for raw_message in messages:
             message = raw_message
             body = _to_py(message.body)
@@ -446,6 +453,7 @@ class Default(WorkerEntrypoint):
                     deliver_email=deliver_email,
                     invalidate_cache=invalidate_cache,
                     translate_task=translate_batch_task,
+                    evaluate_refund=evaluate_refund,
                 )
                 message.ack()
                 print(f"queue.job_{outcome}: {payload.get('idempotencyKey', 'unknown')}")

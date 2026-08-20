@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useToast } from "../components/toast";
-import { Button, Field, Input, PageHeader } from "../components/ui";
+import { Button, Field, PageHeader, PasswordInput } from "../components/ui";
 import { ApiError, api, demoMode } from "../lib/api";
 import { useMe } from "../lib/permissions";
 import { T } from "../lib/i18n";
@@ -101,9 +101,8 @@ export function AccountPage() {
               htmlFor="currentPassword"
               error={form.formState.errors.currentPassword?.message}
             >
-              <Input
+              <PasswordInput
                 id="currentPassword"
-                type="password"
                 autoComplete="current-password"
                 {...form.register("currentPassword")}
               />
@@ -114,9 +113,8 @@ export function AccountPage() {
               htmlFor="newPassword"
               error={form.formState.errors.newPassword?.message}
             >
-              <Input
+              <PasswordInput
                 id="newPassword"
-                type="password"
                 autoComplete="new-password"
                 {...form.register("newPassword")}
               />
@@ -127,9 +125,8 @@ export function AccountPage() {
               htmlFor="confirmPassword"
               error={form.formState.errors.confirmPassword?.message}
             >
-              <Input
+              <PasswordInput
                 id="confirmPassword"
-                type="password"
                 autoComplete="new-password"
                 {...form.register("confirmPassword")}
               />

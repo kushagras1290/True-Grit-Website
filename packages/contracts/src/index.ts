@@ -748,6 +748,25 @@ export interface AdminReturnRequestRow {
   resolutionAmountMinor: number | null;
   requestedAt: string;
   resolvedAt: string | null;
+  agentRiskScore: number | null;
+  agentDecision: RefundOrchestratorDecision | null;
+}
+
+export interface RefundOrchestratorSignal {
+  id: string;
+  label: string;
+  weight: number;
+  rationale: string;
+}
+
+export type RefundOrchestratorDecision = "auto_approve" | "escalate" | "auto_deny";
+
+export interface RefundOrchestratorAssessment {
+  riskScore: number;
+  decision: RefundOrchestratorDecision;
+  signals: RefundOrchestratorSignal[];
+  rationale: string;
+  evaluatedAt: string;
 }
 
 export interface AdminReturnRequestDetail {
@@ -768,6 +787,8 @@ export interface AdminReturnRequestDetail {
   resolutionNotes: string | null;
   requestedAt: string;
   resolvedAt: string | null;
+  resolvedByAgent: boolean;
+  agentAssessment: RefundOrchestratorAssessment | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -1322,6 +1343,7 @@ export interface StorefrontSettings {
   preorders: boolean;
   deliveryZones: boolean;
   b2b: boolean;
+  refundOrchestrator: boolean;
   blogBannerImageUrl: string;
   blogBannerImageAlt: string;
   farmsBannerImageUrl: string;
@@ -1345,6 +1367,7 @@ export interface StorefrontSettingsEffective {
   preorders: boolean;
   deliveryZones: boolean;
   b2b: boolean;
+  refundOrchestrator: boolean;
   anySignInAvailable: boolean;
 }
 

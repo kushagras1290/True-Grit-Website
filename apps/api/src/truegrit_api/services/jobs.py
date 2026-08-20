@@ -16,6 +16,7 @@ from truegrit_api.services.email_gate import check_email_gate, record_email_outc
 from truegrit_api.util.timeutil import utc_now_iso
 
 _EMAIL_EVENT = "notification.email.v1"
+_REFUND_EVALUATE_EVENT = "refund_orchestrator.evaluate.v1"
 _MAX_DISPATCH_ATTEMPTS = 10
 _MAX_BATCH_SIZE = 50
 _MAX_EMAIL_FIELD = 200_000
@@ -66,6 +67,31 @@ async def enqueue_email(
         VALUES (?, ?, 1, ?, ?, ?, 'pending', ?, ?, ?)
         """,
         (event_id, _EMAIL_EVENT, aggregate_type, aggregate_id, payload, now, now, category),
+    )
+    return event_id
+
+
+async def enqueue_refund_evaluation(db: Database, *, return_request_id: str) -> str:
+    """Persist one refund-orchestrator evaluation job for a return request.
+
+    Same durable-outbox mechanism `enqueue_email` uses (retried, survives a
+    Worker restart) and the same idempotency scheme: re-running this for the
+    same return request is a no-op because the event id is derived from
+    `return_request_id`, not randomly generated. Uncategorized rather than an
+    email category -- this event never goes through the email gate, only
+    `process_queue_job`'s dispatch does.
+    """
+    event_id = _event_id(f"refund-evaluate:{return_request_id}")
+    now = utc_now_iso()
+    payload = json.dumps({"returnRequestId": return_request_id}, separators=(",", ":"))
+    await db.execute(
+        """
+        INSERT OR IGNORE INTO outbox_events
+          (id, event_type, event_version, aggregate_type, aggregate_id,
+           payload_json, status, available_at, created_at, category)
+        VALUES (?, ?, 1, 'return_request', ?, ?, 'pending', ?, ?, 'uncategorized')
+        """,
+        (event_id, _REFUND_EVALUATE_EVENT, return_request_id, payload, now, now),
     )
     return event_id
 
@@ -216,6 +242,7 @@ async def process_queue_job(
     deliver_email: Callable[[OutboundEmail, str, str], bool | Awaitable[bool]] | None = None,
     invalidate_cache: Callable[[str, str], Awaitable[None]] | None = None,
     translate_task: Callable[[str], Awaitable[None]] | None = None,
+    evaluate_refund: Callable[[str], Awaitable[None]] | None = None,
 ) -> str:
     """Process one at-least-once queue delivery exactly once by idempotency key."""
     idempotency_key = _required_string(message, "idempotencyKey")
@@ -263,6 +290,10 @@ async def process_queue_job(
         if translate_task is None:
             raise RetryableJobError("Translation worker is not configured.")
         await translate_task(_required_string(payload, "taskId"))
+    elif event_type == _REFUND_EVALUATE_EVENT:
+        if evaluate_refund is None:
+            raise RetryableJobError("Refund orchestrator is not configured.")
+        await evaluate_refund(_required_string(payload, "returnRequestId"))
     else:
         raise ValueError(f"Unsupported queue event type: {event_type}")
 

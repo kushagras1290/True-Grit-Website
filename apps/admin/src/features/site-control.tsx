@@ -885,6 +885,23 @@ function StorefrontSwitchesSection() {
 
       <div>
         <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
+          <T>Refund automation</T>
+        </h3>
+        <ul className="mt-3 max-w-3xl">
+          <SwitchRow
+            label="Enable the refund agent"
+            description="Automatically scores every new return request for fraud risk and auto-approves (with a real Razorpay refund), auto-denies, or escalates it to a human in the Returns queue. Off by default -- while off, every return request is triaged and resolved by staff exactly as it works today. See a request's Returns detail page for the agent's risk score and reasoning once this is on."
+            checked={settings.refundOrchestrator}
+            effective={effective.refundOrchestrator}
+            unavailableHint=""
+            disabled={mutation.isPending}
+            onChange={(next) => mutation.mutate({ refundOrchestrator: next })}
+          />
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
           <T>Delivery charges</T>
         </h3>
         <p className="mt-1 max-w-2xl text-sm text-ink-muted">

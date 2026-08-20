@@ -27,7 +27,11 @@ from truegrit_api.platform.database import Database
 from truegrit_api.services.audit import audit_statement
 from truegrit_api.services.feature_settings import load_loyalty_settings, loyalty_enabled
 from truegrit_api.services.loyalty import get_customer_loyalty
-from truegrit_api.services.payments import refund_paypal_capture, refund_razorpay_payment
+from truegrit_api.services.payments import (
+    refund_paypal_capture,
+    refund_razorpay_payment,
+    refund_stripe_payment,
+)
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
 
@@ -290,16 +294,19 @@ async def update_order_status(
 _REFUNDABLE_PAYMENT_STATUSES = frozenset({"paid", "partially_refunded"})
 
 
-async def issue_refund(
-    db: Database,
-    actor: Principal,
-    request_id: str,
-    order_id: str,
-    *,
-    amount_minor: int | None,
-    reason: str,
-) -> dict[str, Any]:
-    """Refund all or part of an order's payment through its original gateway.
+async def refund_via_gateway(
+    db: Database, order_id: str, *, amount_minor: int | None
+) -> tuple[dict[str, Any], list[tuple[str, Any]]]:
+    """Validate refundability, call the payment's provider gateway, and build
+    the `payment_events`/`payments`/`orders` statements for it.
+
+    Deliberately does not execute or audit anything itself: this is the one
+    place in the codebase that ever calls a real refund API, shared by
+    `issue_refund` (a staff-initiated refund) and
+    `services.returns.resolve_return_request` (a return resolved as
+    "refund", by a human or by the refund orchestrator) — each of those
+    callers has its own extra rows and audit action to add, so they batch
+    everything together atomically themselves.
 
     `amount_minor` omitted means "refund whatever remains unrefunded". Amount
     and refundability are always computed from `payments`/`payment_events` —
@@ -307,14 +314,6 @@ async def issue_refund(
     remaining balance, so two concurrent partial-refund requests can't
     together refund more than was actually paid.
     """
-    if not actor.has("orders.refund"):
-        raise PermissionDeniedError("Issuing refunds requires the orders.refund permission.")
-
-    order = await db.fetch_one("SELECT id, payment_status FROM orders WHERE id = ?", (order_id,))
-    if order is None:
-        raise NotFoundError("Order not found.")
-    await _assert_farm_owns_order(db, actor, order_id)
-
     payment = await db.fetch_one(
         """
         SELECT id, provider, provider_intent_id, amount_minor, currency_code, status
@@ -370,6 +369,13 @@ async def issue_refund(
             currency=payment["currency_code"],
             idempotency_key=event_id,
         )
+    elif payment["provider"] == "stripe":
+        provider_refund_id = await refund_stripe_payment(
+            settings,
+            payment_intent_id=payment["provider_intent_id"],
+            amount_minor=refund_amount,
+            idempotency_key=event_id,
+        )
     else:
         raise ValidationAppError(
             f"Refunds are not supported for payment provider '{payment['provider']}'."
@@ -377,42 +383,83 @@ async def issue_refund(
 
     now = utc_now_iso()
     new_payment_status = "refunded" if refund_amount == remaining else "partially_refunded"
-    await db.batch(
-        [
-            (
-                "INSERT INTO payment_events"
-                " (id, payment_id, event_type, provider_event_id, amount_minor, created_at)"
-                " VALUES (?, ?, 'refund', ?, ?, ?)",
-                (event_id, payment["id"], provider_refund_id, refund_amount, now),
-            ),
-            (
-                "UPDATE payments SET status = ?, updated_at = ? WHERE id = ?",
-                (new_payment_status, now, payment["id"]),
-            ),
-            (
-                "UPDATE orders SET payment_status = ?, updated_at = ? WHERE id = ?",
-                (new_payment_status, now, order_id),
-            ),
-            audit_statement(
-                action="order.refunded",
-                entity_type="order",
-                entity_id=order_id,
-                actor_id=actor.user_id,
-                request_id=request_id,
-                created_at=now,
-                before={"paymentStatus": payment["status"], "alreadyRefunded": already_refunded},
-                after={
-                    "paymentStatus": new_payment_status,
-                    "refundedNow": refund_amount,
-                    "reason": reason,
-                    "providerRefundId": provider_refund_id,
-                },
-            ),
-        ]
-    )
-    return {
-        "id": order_id,
+    statements: list[tuple[str, Any]] = [
+        (
+            "INSERT INTO payment_events"
+            " (id, payment_id, event_type, provider_event_id, amount_minor, created_at)"
+            " VALUES (?, ?, 'refund', ?, ?, ?)",
+            (event_id, payment["id"], provider_refund_id, refund_amount, now),
+        ),
+        (
+            "UPDATE payments SET status = ?, updated_at = ? WHERE id = ?",
+            (new_payment_status, now, payment["id"]),
+        ),
+        (
+            "UPDATE orders SET payment_status = ?, updated_at = ? WHERE id = ?",
+            (new_payment_status, now, order_id),
+        ),
+    ]
+    result = {
         "paymentStatus": new_payment_status,
         "refundedMinor": refund_amount,
         "totalRefundedMinor": already_refunded + refund_amount,
+        "providerRefundId": provider_refund_id,
+        "previousPaymentStatus": payment["status"],
+        "alreadyRefundedBefore": already_refunded,
+    }
+    return result, statements
+
+
+async def issue_refund(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    order_id: str,
+    *,
+    amount_minor: int | None,
+    reason: str,
+) -> dict[str, Any]:
+    """Refund all or part of an order's payment through its original gateway.
+
+    See `refund_via_gateway` for the actual gateway call and row-building —
+    this wraps it with the `orders.refund` permission check, the farm-scope
+    guard, and the `order.refunded` audit entry that is specific to a
+    directly staff-initiated refund.
+    """
+    if not actor.has("orders.refund"):
+        raise PermissionDeniedError("Issuing refunds requires the orders.refund permission.")
+
+    order = await db.fetch_one("SELECT id, payment_status FROM orders WHERE id = ?", (order_id,))
+    if order is None:
+        raise NotFoundError("Order not found.")
+    await _assert_farm_owns_order(db, actor, order_id)
+
+    result, statements = await refund_via_gateway(db, order_id, amount_minor=amount_minor)
+    now = utc_now_iso()
+    statements.append(
+        audit_statement(
+            action="order.refunded",
+            entity_type="order",
+            entity_id=order_id,
+            actor_id=actor.user_id,
+            request_id=request_id,
+            created_at=now,
+            before={
+                "paymentStatus": result["previousPaymentStatus"],
+                "alreadyRefunded": result["alreadyRefundedBefore"],
+            },
+            after={
+                "paymentStatus": result["paymentStatus"],
+                "refundedNow": result["refundedMinor"],
+                "reason": reason,
+                "providerRefundId": result["providerRefundId"],
+            },
+        )
+    )
+    await db.batch(statements)
+    return {
+        "id": order_id,
+        "paymentStatus": result["paymentStatus"],
+        "refundedMinor": result["refundedMinor"],
+        "totalRefundedMinor": result["totalRefundedMinor"],
     }

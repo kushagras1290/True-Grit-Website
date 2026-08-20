@@ -1,7 +1,7 @@
 /** Restrained admin primitives — one button hierarchy, quiet surfaces, no card zoo. */
 
 import { cn } from "@truegrit/ui";
-import { AlertTriangle, X } from "lucide-react";
+import { AlertTriangle, Eye, EyeOff, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import type {
   ButtonHTMLAttributes,
@@ -11,7 +11,7 @@ import type {
   TdHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
-import { T } from "../lib/i18n";
+import { T, useT } from "../lib/i18n";
 
 export function Button({
   variant = "secondary",
@@ -49,6 +49,27 @@ export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElem
       )}
       {...props}
     />
+  );
+}
+
+/** A password `<input>` with a show/hide toggle, so staff can check what
+ * they typed before submitting -- wraps `Input` rather than duplicating its
+ * styling, matching every other primitive in this file. */
+export function PasswordInput({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
+  const t = useT();
+  const [visible, setVisible] = useState(false);
+  return (
+    <div className="relative">
+      <Input type={visible ? "text" : "password"} className={cn("pr-9", className)} {...props} />
+      <button
+        type="button"
+        onClick={() => setVisible((value) => !value)}
+        className="absolute inset-y-0 right-0 flex items-center px-2.5 text-ink-muted hover:text-ink"
+        aria-label={visible ? t("Hide password") : t("Show password")}
+      >
+        {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
+    </div>
   );
 }
 

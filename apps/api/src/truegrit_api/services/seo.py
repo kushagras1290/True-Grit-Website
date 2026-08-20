@@ -71,6 +71,9 @@ _MAX_PAGE_SIZE = 200
 _SEVERITY_ORDER = (
     "CASE severity WHEN 'critical' THEN 0 WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END"
 )
+# 0 = manual only. The Worker's daily cron tick checks this against the last
+# cron-queued run before deciding to actually queue one -- see apps/seo/worker.
+_ALLOWED_SCHEDULE_DAYS = frozenset({0, 1, 3, 7})
 
 
 # --- Settings ---------------------------------------------------------------
@@ -86,38 +89,79 @@ async def get_settings(db: Database) -> dict[str, Any]:
         "SELECT key, value FROM app_settings WHERE key LIKE 'seo.%'",
     )
     values = {str(row["key"]): str(row["value"] or "") for row in rows}
+    try:
+        schedule_days = int(values.get("seo.schedule_days") or 1)
+    except ValueError:
+        schedule_days = 1
+    if schedule_days not in _ALLOWED_SCHEDULE_DAYS:
+        schedule_days = 1
     return {
         "enabled": values.get("seo.enabled") == "true",
         "maxPages": int(values.get("seo.max_pages") or 500),
         "competitorMaxPages": int(values.get("seo.competitor_max_pages") or 30),
+        "scheduleDays": schedule_days,
     }
 
 
-async def set_enabled(
-    db: Database, actor: Principal, request_id: str, enabled: bool
+async def update_settings(
+    db: Database,
+    actor: Principal,
+    request_id: str,
+    *,
+    enabled: bool | None = None,
+    schedule_days: int | None = None,
 ) -> dict[str, Any]:
+    """Partial update: only the fields actually sent are written, the same
+    discipline `update_storefront_settings` uses -- flipping the schedule
+    must never silently reset the enabled switch to whatever the client last
+    rendered, or the other way round."""
+    if schedule_days is not None and schedule_days not in _ALLOWED_SCHEDULE_DAYS:
+        raise ValidationAppError("Schedule must be 0 (manual), 1, 3, or 7 days.")
+
     now = utc_now_iso()
-    await db.batch(
-        [
+    statements: list[tuple[str, Any]] = []
+    changed: dict[str, Any] = {}
+
+    if enabled is not None:
+        statements.append(
             (
                 "INSERT INTO app_settings (key, value, updated_at, updated_by)"
                 " VALUES ('seo.enabled', ?, ?, ?) ON CONFLICT(key) DO UPDATE SET"
                 " value = excluded.value, updated_at = excluded.updated_at,"
                 " updated_by = excluded.updated_by",
                 ("true" if enabled else "false", now, actor.user_id),
-            ),
-            audit_statement(
-                action="seo.enabled_changed",
-                entity_type="app_setting",
-                entity_id="seo.enabled",
-                actor_id=actor.user_id,
-                request_id=request_id,
-                created_at=now,
-                after={"enabled": enabled},
-            ),
-        ]
+            )
+        )
+        changed["enabled"] = enabled
+
+    if schedule_days is not None:
+        statements.append(
+            (
+                "INSERT INTO app_settings (key, value, updated_at, updated_by)"
+                " VALUES ('seo.schedule_days', ?, ?, ?) ON CONFLICT(key) DO UPDATE SET"
+                " value = excluded.value, updated_at = excluded.updated_at,"
+                " updated_by = excluded.updated_by",
+                (str(schedule_days), now, actor.user_id),
+            )
+        )
+        changed["scheduleDays"] = schedule_days
+
+    if not statements:
+        return await get_settings(db)
+
+    statements.append(
+        audit_statement(
+            action="seo.settings_changed",
+            entity_type="app_setting",
+            entity_id="seo",
+            actor_id=actor.user_id,
+            request_id=request_id,
+            created_at=now,
+            after=changed,
+        )
     )
-    return {"enabled": enabled}
+    await db.batch(statements)
+    return await get_settings(db)
 
 
 # --- Runs -------------------------------------------------------------------
