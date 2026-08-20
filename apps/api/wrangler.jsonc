@@ -103,7 +103,7 @@
     // never turned the feature on. See services/subscriptions.py.
     // Recommendations refresh nightly at 02:15 UTC; demand forecasts refresh
     // Mondays at 02:30 UTC. Both complete before 03:00 subscription renewals.
-    "crons": ["* * * * *", "15 2 * * *", "30 2 * * 1", "0 3 * * *"],
+    "crons": ["* * * * *", "15 2 * * *", "30 2 * * 1", "0 3 * * *", "0 4 * * *"],
   },
   "vars": {
     "APP_ENV": "development",
@@ -205,7 +205,7 @@
         ],
       },
       "triggers": {
-        "crons": ["* * * * *", "15 2 * * *", "30 2 * * 1", "0 3 * * *"],
+        "crons": ["* * * * *", "15 2 * * *", "30 2 * * 1", "0 3 * * *", "0 4 * * *"],
       },
       "vars": {
         "APP_ENV": "staging",
@@ -279,7 +279,7 @@
         ],
       },
       "triggers": {
-        "crons": ["* * * * *", "15 2 * * *", "30 2 * * 1", "0 3 * * *"],
+        "crons": ["* * * * *", "15 2 * * *", "30 2 * * 1", "0 3 * * *", "0 4 * * *"],
       },
       "vars": {
         "APP_ENV": "production",

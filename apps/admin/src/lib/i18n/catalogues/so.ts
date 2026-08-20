@@ -22,6 +22,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   ") · started": ") bilaabay",
   "[label](/path)": "[label](/dariiqa)",
   "/ due": "/ sabab",
+  "/ variant": "/ kala duwanaansho",
   "/farms": "/beeraha",
   "/recipes": "/cunto karinta",
   "/recipes/": "/cunto-recipes/",
@@ -34,6 +35,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "2 cups": "2 koob",
   "2 stars": "2 xiddigood",
   "3 stars": "3 xiddigood",
+  "30-day demand": "30-maalmood dalab",
   "4 stars": "4 xiddigood",
   "5 stars": "5 xiddigood",
   "5xx AppErrors and unhandled exceptions will show up here as they happen.":
@@ -65,6 +67,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Koox midab leh — hubi qoraalka damiyaysan wali waa la akhriyi karaa halkan.",
   "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
     "dalka booqdaha ayaa doorta lacag, miiskaan wuxuu bixiyaa qiimihiisa bandhiga, iyo qiimihii INR ee asalka ahaa isma bedelin. Lacagaha naafada ah waxay dib ugu noqdaan INR-la'aanta badbaadada.",
+  "A/B Experiments": "A/B Tijaabo",
   Accent: "Lahjad",
   "Accept orders and payments": "Aqbal dalabaadka iyo lacagaha",
   "Accept orders and payments for this product": "Aqbal dalabaadka iyo lacagaha alaabtan",
@@ -76,6 +79,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Active points appear as free checkout alternatives.":
     "Dhibcaha firfircooni waxay u muuqdaan sidii wax kala iibsiga bilaashka ah.",
   "Active rules": "Xeerarka firfircoon",
+  "Active, published variants": "Active, kala duwanaansho la daabacay",
   Actor: "Jilaa",
   Add: "Ku dar",
   "Add / edit roles": "Ku dar / wax ka beddel doorarka",
@@ -86,6 +90,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add a question": "Kudar su'aal",
   "Add a section…": "Ku dar qayb…",
   "Add a snippet": "Ku dar qayb yar",
+  "Add bracket": "Ku dar gunta",
   "Add business": "Ku dar ganacsi",
   "Add category": "Ku dar qayb",
   "Add code": "Kudar kood",
@@ -119,9 +124,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add window": "Ku dar daaqada",
   "Add zone": "Kudar aagga",
   Added: "ku daray",
+  "Added to basket": "Waxaa lagu daray dambiisha",
   "Adding...": "Ku dar...",
   "Adding…": "Ku darida…",
   Address: "Cinwaanka",
+  "Adds after a recommendation click": "Ku dar talo ka dib guji",
   "Adjust points": "hagaajin dhibcaha",
   "Adjust the search or create a category.": "hagaajin raadinta ama samee qayb.",
   "Adjust the search or create a product.": "Hagaaji raadinta ama samee badeecad.",
@@ -134,7 +141,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   ADMIN_LOGIN_EMAIL: 'id="t0005">ADMIN_LOGIN_PASSWORD',
   Afrikaans: "Afrika",
   "After refunds, all farms": "ka dib lacag celinta, dhammaan beeraha",
+  "Agent assessment": "qiimaynta wakiilka",
   All: "Dhammaan",
+  "All outcomes": "Natiijooyinka oo dhan",
   "All ratings": "Dhammaan qiimaynta",
   "All statuses": "Dhammaan heerarka",
   "All types": "Dhammaan noocyada",
@@ -149,6 +158,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Amharic: "Amxaari",
   Amount: "Qaddar",
   "Amount off, ₹": "Qaddarka ka maqan, ₹",
+  "An admin preference wins only if that provider's API key is actually configured on the server -- picking one here can never send mail through a provider with no key set.":
+    "Doorashada maamulka ayaa guulaysta kaliya haddii bixiyaha API furaha si dhab ah loogu habeeyay serfer-ka mid ka mid ah halkan waligeed kama soo diri karto boostada adeeg bixiyaha aan lahayn furaha.",
   "An impression of the motion and colour, not a pixel-accurate rehearsal.":
     "aragtida dhaqdhaqaaqa iyo midabka, ma aha ku celcelinta saxda ah ee pixel.",
   "Analytics unavailable": "Falanqaynta lama heli karo",
@@ -159,7 +170,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Banner Ogaysiis",
   "Announcements unavailable": "Ogaysiisyada lama heli karo",
   Answer: "Jawaab",
-  "Answer tuning": "jawaab toosin",
+  "Answered by the bot": "waxaa ka jawaabay bot",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Qof kasta oo soo gala wuu faalloon karaa. Bilaabida dood cusub oo kaliya ayaa lagu xiray da'da koontada.",
   "API mode": "qaab API",
@@ -178,12 +189,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Waxa laga codsadaa beer kasta iyada oo aan lahayn qiimaheeda.",
   "Applies to": "Waxay khusaysaa",
-  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
-    "Waxay khusaysaa labada bots. Qiimayaasha waaweyni waxay siiyan kaaliyaha in ka badan si uu ula shaqeeyo oo qiimo badan ayuu ku bixiyaa jawaab kasta.",
   "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
     "Waxay khusaysaa labada widgets ee lagu sheekeysto. U daa mid nadiif ah si aad u raacdo midabka astaanta goobta ee Midabka & Saamaynta.",
   "Applies to every visitor Cloudflare resolves to":
     "Waxay khusaysaa booqde kasta Cloudflare waxay go'aansataa",
+  "Applies to the admin panel bot only. The storefront bot does not use a language model, so it has nothing to tune here.":
+    "Waxay khusaysaa guddida maamulka bot oo keliya. Botga hore ee dukaanka ma isticmaalo qaabka luqadda, markaa ma haysto wax halkan lagu hagaajiyo.",
   Approve: "ansixiyaa",
   "Approve & publish": "Oggol oo daabac",
   Approved: "Waa la ansixiyay",
@@ -200,11 +211,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
     "Weydii sida wax loogu sameeyo guddiga maamulka, ama weydii amarrada la sugayo, alaabta kaydka yar, ama heerka dalabka.",
   "Assigned roles": "Doorrada la qoondeeyay",
+  "Attributed orders": "Amarada loo nisbeeyay",
+  "Attributed revenue": "Dakhliga loo nisbeeyey",
   Attribution: "Sifada",
   "Audit Log": "Log Audit",
   Author: "Qoraaga",
+  "Auto (best configured)": "Atoomaati ah (ugu habaysan ugu wanagsan)",
   "Auto-translate": "Si toos ah u tarjun",
   "Auto-translate all": "Si toos ah u tarjun dhammaan",
+  "Automatically scores every new return request for fraud risk and auto-approves (with a real Razorpay refund), auto-denies, or escalates it to a human in the Returns queue. Off by default -- while off, every return request is triaged and resolved by staff exactly as it works today. See a request's Returns detail page for the agent's risk score and reasoning once this is on.":
+    "Si otomaatig ah buu u buunbuuniyaa codsi kasta oo soo celin ah ee khatarta khayaanada oo si toos ah u ansixiya (oo leh lacag celinta Razorpay dhabta ah), si toos ah u diida, ama u kordhisa bini'aadamka ku jira safka soo celinta. Demin si caadi ah -- inta la maqan yahay, codsi kasta oo soo laabasho ah ayaa la kala soocaa oo ay xalliyaan shaqaaluhu sida uu maanta u shaqeeyo. Fiiri bogga faahfaahinta soo celinta codsiga ee dhibcaha khatarta wakiilka iyo sababaynta marka tani dhacdo.",
   Availability: "helitaanka",
   Available: "la heli karo",
   "available · reorder at": "la heli karo · dib u dalbo xaga",
@@ -218,6 +234,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "B2B / bulk ordering": "B2B / dalbashada badan",
   Back: "Dib",
   "Back to conversations": "Ku noqo wada sheekeysiga",
+  "Back to experiments": "Ku laabo tijaabooyinka",
+  "Back to Experiments": "Ku-noqoshada Tijaabada",
   "Back to sign in": "Dib u soo gal",
   "Banner image": "Sawirka calanka",
   "Banner image alt text": "Sawir banner alt text",
@@ -233,6 +251,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Xayeysiinta ugu firfircoon (cusbooneysiin si toos ah)",
   "Best sellers, resolved live from orders on every homepage load -- nothing to keep stocked.":
     "Iibiyayaasha ugu fiican, si toos ah ayaa looga xalliyaa dalabaadka bog kasta oo guri -- ma jiraan wax kaydsan.",
+  "Blank means a category has no cap of its own -- the global limit above still applies.":
+    "Black macnaheedu waa qayb aan lahayn koof u gaar ah -- xadka caalamiga ah ee kor ku xusan wali wuu jiraa.",
   "Blocks JSON": "Waxay xannibaysaa JSON",
   "Blog and recipe pitches from the community appear here.":
     "Blog-ga iyo meelaha cuntada lagu kariyo ee bulshada ayaa halkan ka muuqda.",
@@ -245,6 +265,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Body: "Jidhka",
   "Body text": "Qoraalka jirka",
   Bosnian: "Bosnia",
+  "Bracket name": "Magaca Bracket",
   Brand: "Summada",
   "Built-in": "lagu dhisay",
   Bundle: "Qiimaha",
@@ -304,6 +325,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Clear: "Nadiifi",
   "Clearing...": "Nadiifinta...",
   "Click link": "rix linkiga",
+  "Click-through rate": "guji heerka qiimaha",
   Close: "Xir",
   "Close help assistant": "Xir caawimada",
   "Close navigation": "xir navigation",
@@ -327,6 +349,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Common questions": "Su'aalaha caadiga ah",
   Community: "Bulsha",
   Company: "Shirkad",
+  Complete: "Dhamays",
   Completed: "Waa la dhammeeyay",
   Configuration: "Qaababka",
   "Configure loyalty, pickup, harvest reservations, delivery logistics and wholesale accounts. Customer access is controlled independently by the five checkboxes in Site Control.":
@@ -340,14 +363,20 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact Attempts": "isku dayada xiriirka",
   "Contact attempts unavailable": "isku dayga xidhiidhka lama heli karo",
   "Contact email": "Iimaylka xidhiidhka",
+  "Contact form": "Foomka xidhiidhka",
+  "Content submission decision": "Go'aanka gudbinta nuxurka",
   "Continue with Facebook": "ku sii wad Facebook",
+  "Continuous (e.g. AOV)": "oo joogto ah (tusaale AOV)",
   "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
     "Koontarool qiyaasaha sicirka-lacagta gudaha adiga oo dejinaya inta hal rubi ee Hindiya qiimaheedu yahay. Kaydka, hubinta iyo dalbashada diiwaanadu si badbaado leh ayay ugu jiraan INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Maamulka door kasta waxa uu arki karo, abuuri karo, wax ka beddeli karo, daabici karo ama maamuli karo.",
   "Control whether each bot is available, and edit what it knows.":
     "Xakamee in bot kasta la heli karo, oo wax ka beddel waxa ay garanayso.",
+  "Conv. Rate": "Conv. Heerka",
   "Conversation turns remembered": "Wadahadalkii waa la xusuustaa",
+  "Conversion rate": "qiimaha beddelka",
+  Conversions: "beddellada",
   Cook: "kariyo",
   "Cook minutes": "daqiiqado karinta",
   "Copy inside dark bands.": "Koobi gudaha xadhkaha mugdiga ah.",
@@ -355,6 +384,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Could not load archived records.": "Ma rari karo diiwaanada kaydsan.",
   "Could not load this feature.": "ma shubi karo sifadan.",
   Countries: "dalalka",
+  "Countries in this bracket": "Wadamada ku jira garabkan",
   Country: "Dal",
   "Country overrides unavailable": "Dalku wuu dhaafaa lama heli karo",
   "Coupon codes": "Koodhadhka kuuban",
@@ -378,6 +408,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Create promotion": "Abuur xayaysiis",
   "Create role": "Abuur door",
   "Create the first draft to get started.": "Samee qabyo qoraalka ugu horeeya si aad u bilowdo.",
+  "Creating experiments from the admin panel is not available yet.":
+    "Abuuritaanka tijaabooyinka guddiga maamulka lama heli karo weli.",
   "Creating...": "Abuuritaanka...",
   "Creating…": "Abuuritaanka…",
   "Credit limit, ₹": "xadka deynta, ₹",
@@ -392,15 +424,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Currency values unavailable": "Qiimaha lacagta lama heli karo",
   "Current password": "Sirta hadda jirta",
   "Currently its own effects.": "Hadda saamaynteeda.",
+  "Currently sending via": "hadda lagu dirayo dhex",
   "Currently the site-wide effects — save below to give it its own.":
     "hadda saamaynta goobta-ballaaran - hoos ku dhig si aad u siiso keeda.",
   "Cursor trail": "Cursor raad",
   Customer: "macmiilka",
   "Customer favourites": "macmiilka ugu jecel",
   "Customer image URL": "URL sawirka macaamiisha",
+  "Customer password reset": "Dib u dajin erayga sirta ah ee macaamiisha",
   "Customer ratings and reviews from verified purchases.":
     "qiimaynta macaamiisha iyo dib u eegisyada iibka la xaqiijiyay.",
   "Customer user ID": "Aqoonsiga isticmaalaha macaamiisha",
+  "Customer welcome": "soo dhawoow macaamiisha",
   "Customer-created Subscribe & Save deliveries. Pause, resume or cancel on a customer's behalf, or run the renewal batch that otherwise fires on its own schedule.":
     "Macaamiishu-abuuray is-diiwaangeli & kaydi waxyaabaha la keenayo. Haki, dib u bilaw ama jooji magaca macmiilka, ama maamul dufcada cusboonaysiinta ee haddii kale dab ku shido jadwalkeeda.",
   "Customer-facing description (optional)": "Sharaxaad u jeedda macaamiisha (ikhtiyaar)",
@@ -415,11 +450,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Customers can reserve products against active harvest windows instead of current stock.":
     "Macaamiishu waxay kaydin karaan alaabooyinka daaqadaha firfircoon ee goosashada halkii ay ka ahaan lahaayeen kaydka hadda jira.",
   Cut: "Jaray",
+  "Daily demand": "Baahida maalinlaha ah",
   "Daily revenue for the selected range": "Dakhliga maalinlaha ah ee tirada la doortay",
   "Dairy Free": "Caanaha Bilaashka ah",
   Danger: "khatar",
   "Dark band": "Koox madow",
+  "data days": "Maalmaha xogta",
   "Day (0 Sun – 6 Sat)": "Maalinta (0 Sun – 6 Sat)",
+  "Days left": "Maalmo ka harsan",
   Deactivate: "dami",
   Decision: "Go'aan",
   Decline: "Diiminta",
@@ -446,6 +484,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete selected (": "Tirtir la doortay (",
   "Delete this entry": "Tirtir gelitaan",
   "Delete this price adjustment?": "Ma tirtiri hagaajinta qiimahan?",
+  "Delete this pricing bracket?": "tirtir garabkan qiimaha?",
   "Delete user": "Tirtir isticmaalaha",
   "Deleting...": "Tirtirka...",
   Delivery: "keenid",
@@ -515,6 +554,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Eligible for return": "U qalmi soo celinta",
   "Email + password": "Email + erayga sirta ah",
   "Email for reset link": "Iimaylka dib u dajinta isku xidhka",
+  "Email settings unavailable": "ee iimaylka lama heli karo",
   Enable: "Daro",
   "Enable at least one block.": "Daar ugu yaraan hal baloog.",
   "Enable B2B and bulk ordering": "Daree B2B iyo dalbashada badan",
@@ -526,6 +566,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Enable seasonal pre-orders": "Daro dalabaadka xilliyeedka",
   "Enable selected (": "Da yeel la doortay (",
   "Enable Subscribe & Save": "Dareemi is-diiwaangelinta oo kaydi",
+  "Enable the refund agent": "Samee wakiilka lacag celinta",
   Enabled: "Waa la dajiyay",
   Ends: "Dhamamaad",
   "Ends (optional)": "Waxay dhamaanaysaa (ikhtiyaar)",
@@ -534,6 +575,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Errors and destructive actions.": "khaladaadka iyo falalka burburinta.",
   Established: "la aasaasay",
   Estonian: "Estoniya",
+  Evaluated: "la qiimeeyay",
   Event: "Dhacdo",
   "Every colour the storefront uses, site-wide or for one page, plus ambient effects and cursor trails. Changes go live as soon as you save.":
     "midab kasta oo dukaanka hortiisa ku yaal ayaa isticmaala, goobta oo dhan ama hal bog, oo lagu daray saamaynta jawiga iyo dariiqyada cursorka. Isbeddellada ayaa toos u socda isla marka aad kaydsato.",
@@ -552,18 +594,25 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Expanded Commerce": "Ganacsiga Balaadhan",
   "Expected end": "Dhammaadka la filayo",
   "Expected start": "bilawga la filayo",
+  "Expected to run out inside lead time": "Waxaa la filayaa in ay ku dhamaato wakhtiga rasaasta",
+  Experiment: "Tijaabo",
+  "Experiments are currently created from the database; the admin panel does not yet have a creation form.":
+    "kharashyada hadda waa laga sameeyay kaydka xogta guddiga maamulka weli ma laha qaab abuur.",
   Expires: 'id="t0016">Qaar hadiyadeed',
   "Expires (optional)": "Waxay dhacaysaa (ikhtiyaar)",
   Explore: "Baadi",
   "Explore the market": "Suuqa sahamin",
   "Export at the listed width and height. Do not upload a 16:9 photo for a banner.":
     "Dhoofinta ballaca iyo dhererka liiska ku jira. Ha soo gelin sawirka 16:9 ee banner.",
+  Exposures: "Baahinta",
   'Extra photos shown as a thumbnail strip on the product page, the way most shops show different angles of the same item. Up to 8. Saved immediately, no separate "Save draft" needed.':
     'Sawiro dheeraad ah oo lagu muujiyay sida thumbnail strip ee bogga alaabta, sida dukaamada intooda badani u muujiyaan xaglo kala duwan oo isku mid ah. Ilaa 8. La kaydiyaa isla markiiba, looma baahna "Save draft" gaar ah.',
   Eyebrow: "Isha isha",
   "Eyebrows and small highlights.": "Isha isha iyo muuqaalada yaryar.",
   "Facebook Login button in the storefront account menu.":
     "Badhanka galitaanka Facebook ee ku jira liiska akoonnada hore ee dukaanka.",
+  "Failed to load experiment": "ku guul daraystay in la raro tijaabada",
+  "Failed to load experiments": "ku guul daraystay in la raro tijaabooyinka",
   "Falls back to the route's built-in description":
     "Waxay dib ugu soo dhacdaa dariiqa sharaxaada ku dhex dhisan",
   "Falls back to the route's built-in title":
@@ -574,6 +623,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Farm id (e.g. farm_devika)": "aqoonsiga beerta ( tusaale farm_devika )",
   "Farm name": "magaca beerta",
   "Farm not found": "Beerta lama helin",
+  "Farm order notice": "Ogaysiis dalbashada beeraha",
+  "Farm partnership application": "Codsiga iskaashiga beeraha",
+  "Farm partnership decision": "Go'aanka iskaashiga beeraha",
   "Farm record": "Rikoorka beeraha",
   "Farm request not found": "Codsiga beerta lama helin",
   "Farm Requests": "Codsiyada beeraha",
@@ -590,6 +642,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Fee, ₹": "khidmad, ₹",
   Fields: "Garoomada",
   "File target": "Bartilmaameedka faylka",
+  "Filter by outcome": "Natiijada ku shaandhee",
   "Filter by rating": "Ku shaandhee qiimaynta",
   "Filter by status": "Ugu kala sooc heerka",
   "Find a product to add": "Raadi alaab aad ku darto",
@@ -600,6 +653,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Footer and inverted sections.": "cagaha iyo qaybaha rogan.",
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Ku qasb qayb ka mid ah dami ama dami booqdayaasha hal waddan, adoon beddelin waxa qof kasta oo kale arko. Ka tag qayb "Dhaxal" oo waxay raacdaa sanduuqa calaamadaynta ee liiska qaybta sare.',
+  "Forecast unavailable": "Saadaasha lama heli karo",
+  "Forecasted SKUs": "SKUs la saadaaliyay",
+  "Forecasting...": "saadaasha...",
   "Forgot password?": "Ma illowday erayga sirta ah?",
   "Formatting locale": "Qaabka qaabaynta gudaha",
   "Free delivery above (₹)": "Diiwaangelinta bilaashka ah ee kor ku xusan (₹)",
@@ -618,6 +674,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Give one country its own colours": "Dal sii midabadiisa",
   "Give one country its own effects": "Dal sii raadkiisa",
   "Give one page its own colours": "Sii hal bog midabyadiisa",
+  "Global — per day": "Global — maalintii",
+  "Global — per hour": "Global — saacadiiba",
   "gluten-free, plant-based": "gluten-free, dhirta ku salaysan",
   "Go back": "Dib u noqo",
   Gold: "dahab",
@@ -625,6 +683,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Greek (Ελληνικά)": "Giriig (Ελληνικά)",
   "Gross revenue": "Gross",
   Group: "Koox",
+  "Group countries into brackets that each pay a markup over India's base price. Both the percentage and which countries sit in each bracket are yours to adjust at any time.":
+    "Wadamada kooxuhu u kala qaybsan yihiin oo mid kastaaba bixiyo qiime ka badan qiimaha saldhigga Hindiya. Labada boqol iyo dalalka ku fadhiya garab kasta adigaa iska leh si aad u hagaajisid wakhti kasta.",
   "Group name": "magaca kooxda",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "Beraleyda ka codsatay /beero/lamaane si ay suuqa u keenaan. Wax akoon ah looma baahna si loo codsado, markaa dib u eeg halkan waa albaabka kaliya.",
@@ -633,6 +693,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "h lead": "h hogaanka",
   "Hairline border": "xaduuda timaha",
   "Hand-picked testimonials": 'marqaatiyo gacanta lagu soo qaatay. id="t0007">Hausa',
+  "Handed to a person": "Qof loo dhiibay",
   "Harvest calendar": "Kalandarka goosashada",
   "Harvest note": "Ogeysiiska goosashada",
   Heading: "ciwaanka",
@@ -647,6 +708,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Hero title": "ciwaanka geesiga",
   Hidden: "Qaran",
   Hide: "Qarin",
+  "Hide password": "Qari erayga sirta ah",
   "Hides the system cursor so the trail is the cursor. Links, buttons and form fields keep a real pointer regardless — losing the hit target on those is not a trade worth making.":
     "Waxay qarisaa cursorka nidaamka markaas raadku waa cursor. Xidhiidhiyayaasha, badhamada iyo goobaha foomku waxay hayaan tilmaame dhab ah iyada oo aan loo eegin - luminta bartilmaameedka kuwan maahan ganacsi mudan in la sameeyo.",
   "Highlighted products": "Alaabada la iftiimiyay",
@@ -658,15 +720,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage Settings": "Dejinta boggaga",
   "Homepage settings unavailable": "Dejinta boggaga lama heli karo",
   Hours: "Saacadaha",
-  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
-    "Immisa xaraf oo ka mid ah bogga siyaasadda ee dukaanka bot ayaa laga yaabaa inuu akhriyo ka hor inta uusan jawaabin. Waxay sii dheeraysaa faahfaahin dheeraad ah oo macmiilku wax ka waydiiyo.",
   "How many entries from the list below are given to the assistant as reference.":
     "Immisa ka mid ah liiska hoose ayaa la siiyay kaaliyaha tixraac ahaan.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Immisa badeecooyin ama qaybaha hawlwadeenku waxa uu ka soo qaadan karaa dookhyada cusub, Qaybaha la soo bandhigay (Homepage Settings) iyo alaabta la iftiimiyay (hoos). Kor u qaadida waxay badbaadinaysaa isla markiiba, looma baahna in la geeyo; ilaa 50, saqafka qaabka block laftiisa ayaa dhaqan galinaya.",
   "How many products to show": "Immisa badeeco ayaa la soo bandhigayaa",
-  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
-    "Immisa badeecooyin, maqaallo ama cuntooyin ah raadinta bot-ka hore ee dukaanka ayaa soo noqda mar kasta oo ay wax u muuqdaan.",
   "How many to show": "Immisa ayaa la soo bandhigayaa",
   "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
     "Intee in le'eg ayaa sheekada hadda lagu soo celiyaa su'aal kasta. 0 wuxuu kaga jawaabaa su'aal kasta si gooni ah.",
@@ -731,13 +789,17 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Land under cultivation": "Dhulka la beero",
   Language: "Luqad",
   "Language Studio": "Istuudiyaha Luuqadda",
+  "last 24h": "24-kii saac ee la soo dhaafay",
   "Last activity": "Hawlihii u dambeeyay",
+  "Last refresh": "Cusbooneysii ugu dambeysay",
   "Last reviewer note": "Ogaysiis dib u eegista u dambeeyay",
   "Last sign-in": "Gelitaankii u dambeeyay",
   "Last sync": "Isku dhiggii u dambeeyay",
+  "last synced": "ugu dambeysay ee la synced",
   "Last updated": "Cusbooneysii ugu dambeysay",
   Latvian: "Latvia",
   "Layout — drag or use arrow keys": "Layout — jiid ama isticmaal furayaasha fallaadha",
+  "Lead time": "Waqtiga hogaaminta",
   "Lead time, hours": "Waqtiga hogaaminta, saacadaha",
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Ka tag midab maran si aad u ilaaliso midka True Grit - nadiifinta garoonku waa sidaad u noqon lahayd. Bog ama midabada waddanku waxay ka soo bilowdaan midabada goobta waxayna meesha ka saarayaan kaliya waxaad bedesho, markaa mid kastaa waa liis gaaban, maaha palette labaad oo lagu ilaaliyo. Marka ay labaduba khuseeyaan isla booqde, bogga ayaa guulaysta — nashqada bogga tifaftirka waa in aan lagu beddelin tijaabo juqraafi.",
@@ -770,6 +832,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live marketplace state, fulfilment pressure and publishing activity.":
     "Xaaladda suuqa tooska ah, cadaadiska buuxinta iyo hawsha daabacaadda.",
   "Live preview": "aragti toos ah",
+  "Live rates from": "Qiimaha tooska ah ee laga bilaabo",
   "Live, and to scale with the real storefront's own styles.":
     "Lool, iyo in lagu qiyaaso qaabka dhabta ah ee bakhaarka hortiisa.",
   "llms.txt": "lms.txt",
@@ -790,6 +853,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading currency values…": "soo dejinaya qiyamka lacagta...",
   "Loading delivery charges...": "Soo rarista kharashka geynta...",
   "Loading discussion…": "daloolaya dood...",
+  "Loading email settings...": "Soo dejinaha iimaylka...",
+  "Loading forecast...": "Soosaarida saadaasha...",
   "Loading highlights...": "Soo dejinaya waxyaabaha muhiimka ah...",
   "Loading homepage sections...": "soo raraya qaybaha bogga hoyga...",
   "Loading homepage settings...": "Soo dejinaha bogga hoyga...",
@@ -798,6 +863,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading order…": "dalabka soo dejinta…",
   "Loading permissions...": "Oggolaanshaha soo dejinta...",
   "Loading price adjustments...": "soo dejinaya hagaajinta qiimaha...",
+  "Loading price tiers…": "Soo dejinta qiimaha heerarka…",
   "Loading product…": "soodejinaya badeecada…",
   "Loading products...": "soodejinaya badeecada...",
   "Loading recipe…": "soodejinaya cuntada...",
@@ -835,6 +901,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Mark contacted": "Mark la xidhiidhay",
   "Mark paid": "Calaamad bixi",
   "Mark under review": "Calaamad dib u eegis",
+  "Markup %": "Calaamadeynta %",
   "Maximum carousel slides": "Salibiyada ugu badan ee carousel",
   "Maximum discount, ₹ (optional)": "dhimista ugu badan, ₹ (ikhtiyaar)",
   "Maximum items": "Alaabada ugu badan",
@@ -865,10 +932,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Move later": "Mar dambe dhaqaaq",
   "Move order to": "U guuri dalabka",
   "Move up in the showcase": "U kac bandhigga",
+  "mSPRT Test Stat:": "mSPRT Tijaabada Stat:",
   "Muted text": "qoraal la damiyay",
   Name: "Magaca",
   "Navigation labels": "Calaamadaha hagidda",
+  "Nearly matched": "ku dhawaad ​​isbarbar socda",
   "Needs attention": "Waxay u baahan tahay fiiro gaar ah",
+  "Net line revenue after allocated discounts":
+    "dakhliga saafiga ah kadib qiimo dhimis loo qoondeeyay",
   "Net revenue": "dakhliga saafiga ah",
   Never: "Weligaa",
   "Never accept payments for this product": "Weligaa ha aqbalin lacagaha alaabtan",
@@ -881,6 +952,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "New conversation": "wada hadal cusub",
   "New coupon code": "code cusub oo kuuboon",
   "New customers": "macmiil cusub",
+  "New Experiment": "Tijaabo cusub",
   "New farm": "Beer cusub",
   "New password": "Sirta cusub",
   "New post": "post cusub",
@@ -908,18 +980,24 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Weli wax kood ah ma jiro - dhiirrigelintan waxay si toos ah u khusaysaa gaadhi kasta oo xaqa u leh.",
   "No comments": "Faallo ma leh",
   "No comments yet.": "Weli faallooyin ma jiraan.",
+  "No completed run": "Ma jiro orod la dhammaystiray",
   "No contact attempts": "Ma jiro isku dayo xiriir ah",
   "No content yet": "Wali wax nuxur ah ma jiraan",
   "No conversations yet": "Wali wax wada hadal ah ma jiraan",
+  "No countries assigned yet.": "Wali wadan lama magacaabin.",
   "No country overrides yet. Add a country above to give it its own section visibility.":
     "Wali ma jiro wadan jabiyay Ku dar wadan sare si aad u siiso muuqaalkiisa qaybtiisa.",
   "No discussions": "wax wada hadal ah ma jiraan",
+  "No email activity yet.": "Weli wax hawl iimayl ah ma jiro.",
   "No embedded True Grit logo, headline, button, or watermark.":
     "Ma jiro True Grit calaamad, cinwaan, badhan, ama calaamad-watermark.",
+  "No experiments": "Ma jiraan tijaabooyin",
   "No farm assigned": "Ma jiro beer loo xilsaaray",
   "No farm requests": "Ma jiraan codsiyo beereed",
   "No farmer name": "Magaca beeralayda ma jiro",
   "No farms yet": "Weli beero ma jiraan",
+  "No forecast yet": "Weli saadaalin ma jirto",
+  "No fraud signals fired.": "wax calaamado been abuur ah lama ridin.",
   "No fresh favourites yet. Add a few below.":
     "Wali kuwa ugu cadcad ma jiraan. Waxoogaa hoos ku dar.",
   "No gift cards yet": "Wali wax kaarar hadiyad ah ma jiraan",
@@ -948,6 +1026,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No permissions": "Ma jiro rukhsad",
   "No pre-orders yet.": "Weli wax dalabaad ah ma jiro.",
   "No price adjustments yet": "Wali wax hagaajin ah ma jiraan",
+  "No pricing brackets yet": "Weli ma jiro wax qiima dhimis ah",
   "No products linked yet.": "Weli wax alaab ah oo ku xidhan ma jiraan.",
   "No products match": "Ma jiraan wax alaab ah oo ku habboon",
   "No products match.": "Ma jiraan wax alaab ah oo ku habboon.",
@@ -978,6 +1057,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Not orderable even while the site-wide switch is on.":
     "Lama dalban karo xitaa inta goobta oo dhan uu shido.",
   "Not redeemed against any order yet.": "Wali lagama soo iibsan wax dalab ah.",
+  "Not set": "aan la dejin",
+  "not signed in": "lama saxeexin",
+  "Not Significant (Yet)": "Mid Muhiim ah (Weli)",
+  "Not started": "Ma bilaaban",
   "Note (optional)": "Xusuusin (ikhtiyaar)",
   "Note (required to decline)": "Xusuusin (loo baahan yahay in la diido)",
   "Note (required to request changes or reject)":
@@ -990,6 +1073,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Nothing selected — the storefront stays exactly as it is.":
     "Wax la doortay - bakhaarku sidiisa ayuu u ahaanayaa.",
   "Nothing urgent": "Wax degdeg ah ma jiro",
+  "Nothing waiting. Everything asked so far was answered or refused cleanly.":
+    "Ma jiraan wax sugi Wax kasta oo la waydiiyay ilaa hadda si nadiif ah ayaa looga jawaabay ama loo diiday.",
   Notifications: "Ogaysiisyada",
   "Nut Free": "Luudka bilaashka ah",
   Off: "off",
@@ -1001,6 +1086,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "On hand": "Gacanta ku taal",
   "on the sign-in page. The reset link goes to the address above.":
     "ee bogga galitaanka. Isku xirka dib u habeyntu wuxuu tagayaa ciwaanka kore.",
+  "Once a window fills up, further emails in it wait for the next minute's dispatch instead of failing outright -- nothing is lost, it just slows down.":
+    "Marka uu daaqadu buuxsanto, iimaylo dheeraad ah oo ku jira waxay sugtaa soo dirida daqiiqada soo socota halkii aad si toos ah u fashilmi lahayd -- waxba ma lumiyo, way yaraynaysaa.",
   "Once you have created this grower's farm in the console, link the application to it here for provenance.":
     "Marka aad abuurto beertan beeraleyda ah ee console-ka, ku xidh arjiga halkan si aad u muujiso.",
   "One composition engine renders every category — no code per category.":
@@ -1025,6 +1112,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
     "Waxyaabaha ikhtiyaarka ah ee ka muuqda maaddooyinka - waxay taageertaa isla blocks qoraalada blog-ka, oo ay ku jiraan",
   Order: "Amarka",
+  "Order confirmation": "xaqiijin daldal",
   "order line": "khadka dalbashada",
   "Order lines": "khadka dalabka",
   "Order not found": "dalab lama helin",
@@ -1039,7 +1127,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic mangoes held in a sunlit orchard":
     "Cambabaha Organikka ah ee lagu hayo geed geedeedka qoraxda leh",
   "Organic wheat flour in a wooden bowl": "Daqiiqda qamadiga ah ee ku jirta baaquli alwaax ah",
+  Outcome: "Natiijooyinka",
   Outstanding: "Caawa",
+  "over India's base price": "ka badan qiimaha saldhiga India",
   Overview: "dulmar",
   "Owner Reports": "Warbixinta Mulkiilaha",
   "Owner-only controls for /sitemap.xml, /robots.txt and /llms.txt.":
@@ -1055,7 +1145,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "ciwaanka bogga",
   "Page unavailable": "bog lama heli karo",
   Pages: "bogag",
-  "Pages the storefront bot may quote": "bogagga dukaanka hortiisa bot laga yaabo inuu soo xigtay",
   Paid: "Lagu bixiyay",
   "Paid out": "La bixiyay",
   "paid via": "lagu bixiyay",
@@ -1072,6 +1161,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Pending: "in la sugayo",
   "Pending fulfilment": "fulinta la sugayo",
   "Pending work for your role": "shaqada kaa sugaysa doorkaada",
+  "Per day": "maalintii",
+  "Per hour": "Saacaddii",
+  "Per-category overrides": "Qayb kasta way ka gudubtay",
   "Per-customer limit (optional)": "Xadadka macmiilka (ikhtiyaar)",
   "Percent off": "Boqolkiiba dhimis",
   "Permanently delete item": "Si joogto ah u tirtir shayga",
@@ -1095,8 +1187,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Platform earns": "Madal waxa kasbada",
   "points ·": "dhibcaha ·",
   "Points (+ / -)": "Dhibcaha (+ / -)",
-  "Policy page slugs": "bogga siyaasadda ee slugs",
-  "Policy text quoted per answer": "Qoraalka siyaasadda ee laga soo xigtay jawaabtiiba",
   "Polish (Polski)": "Polski (Polski)",
   "Portuguese (Português)": "Bortigu (Português)",
   Position: "Boos",
@@ -1106,6 +1196,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Post a recipe (submission form)": "Ku dheji cunto karinta (qaab gudbin)",
   "Post Comments": "Faallooyinka soo dheji",
   Posted: "La dhajiyay",
+  "Power Achieved:": "Awoodda la gaarey:",
+  "Preferred provider": "Bixiyaha la doortay",
   Prep: "Diyaargaraw",
   "Prep minutes": "Daqiiqado diyaarin ah",
   "Preview is checked on both a narrow phone and a desktop screen.":
@@ -1114,6 +1206,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Price: "Qiimaha",
   "Price (₹) (Primary Variant)": "Qiimaha (₹) (Ka duwanaanshaha Koowaad)",
   "Price adjustments unavailable": "Qiimaha wax ka beddelka lama heli karo",
+  "Price Tiers": "Heerarka Qiimaha",
+  "Price tiers unavailable": "Qiimaha heerarka lama heli karo",
   "Primary button label": "calaamadaha badhanka aasaasiga ah",
   "Primary button link": "isku xidhka badhanka aasaasiga ah",
   "Primary buttons, links, the wordmark.": "Badhamada aasaasiga ah, isku xidhka, ereyga ereyga.",
@@ -1122,6 +1216,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Mudnaanta (guulaysiga sare marka ay dhowr u qalmaan)",
   Private: "Gaar ah",
   Product: "Bade",
+  "Product / SKU": "Badeecada / SKU",
   "Product cards, panels, the header.": "Kaararka badeecada, baalaladaha, madaxa.",
   "Product editor sections": "Qaybaha tafatiraha alaabta",
   "Product ID": "Aqoonsiga Alaabta",
@@ -1133,6 +1228,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Product type": "Nooca badeecada",
   Products: "Alaabaha",
   Promotion: "Horumarinta",
+  Provider: "Bixiyaha",
   "Provider ref": "Bixiyaha ref",
   Public: "dadweyne",
   "Public categories": "Qaybaha dadweynaha",
@@ -1143,18 +1239,21 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Waxaa loo daabacay sida",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "Qaybaha la daabacay ee slider-page-ka. Macaamiisha waxay arkaan afar mar miiska miiska, siday u kala horreeyaan. Kor u qaad xadka Kontoroolka Goobta.",
-  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
-    "slugs bogga la daabacay, oo ay u kala qaybsan yihiin meelo bannaan. Botku waxa uu u akhriyaa kelmadan kelmad marka macmiilku ku weydiiyo siyaasadda, markaa jawaabaheedu waxa ay la mid yihiin waxa aad dhab ahaantii daabacday.",
   "Published products": "Alaabada la daabacay",
   "Publishing…": "Daabacaada…",
   "Pull quote": "Jiid xigasho",
+  "Push to Sheet": "Ku riix xaashida",
+  "Pushing…": "Riixitaanka…",
   "Put essential subjects inside the dashed centre. Responsive crops may remove the edges.":
     "Mawduucyada muhiimka ah dhig gudaha xarunta daahsoon. Dalagyada ka jawaaba waxay ka saari karaan geesaha.",
   Quantity: "Tirada",
   "Quantity delta (+/−)": "Tirada delta (+/−)",
   Question: "Su'aal",
+  "Questions the storefront bot would not answer, worst first. The phrasings it nearly matched are shown against each one, which is what tells you what to add to its vocabulary.":
+    "Su'aalaha bot-ka hore ee dukaanku kama jawaabi doono, ugu xun marka hore. Erayada ay ku dhowdahay in ay isku mid noqdaan ayaa mid kasta lagu tusayaa, taas oo ah waxa kuu sheegaya waxa aad ku dari karto ereybixinteeda.",
   Quote: "xigasho",
   "Raise this to curate more than": "U kor u qaad kan si aad u diyaariso wax ka badan",
+  "Rate limits": "Xadadka qiimaha",
   Rating: "Qiimeyn",
   "Reader comments on blog posts and recipes appear here.":
     "Faallooyinka akhristaha ee qoraalada blogka iyo cuntooyinka ayaa halkan ka muuqda.",
@@ -1167,12 +1266,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Reason: "sabab",
   "Reason (optional)": "sabab (ikhtiyaar)",
   "Reason:": "sabab:",
+  "Rebuild recommendations": "Dib u dhis talooyinka",
+  "Rebuilding...": "Dib u dhiska...",
   Receipt: "rasiidh",
+  "Recent activity": "Dhaqdhaqaaqii dhawaa",
   "Recent administrative activity": "Hawlihii maamulka ee u dambeeyay",
   "Recipe not found": "Cuntada lama helin",
   Recipes: "Cuntada cuntada",
+  Recipient: "hele",
   "Recipient email (optional)": "iimaylka qaataha (ikhtiyaar)",
+  "Recommendation performance": "waxqabadka talada",
   Recommendations: "Talo soo jeedin",
+  "Recommended order": "dalab lagu taliyay",
   "Reconnecting…": "Dib u xidhidhinta...",
   "Record adjustment": "Isku hagaajinta diiwaanka",
   "Record inventory adjustment": "Diiwaanka hagaajinta agabka",
@@ -1186,9 +1291,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Redemptions: "Madax furashada",
   Reference: "Tixraac",
   Refresh: "Cusbooneysii",
+  "Refresh now": "immika dib u cusboonaysii",
   "Refresh once the API is back online.": "Cusbooneysii marka API uu ku soo noqdo khadka.",
+  "Refreshing…": "Cusbooneysiin...",
   Refund: "Lacagta soo celinta",
   "Refund amount (₹)": "Qaddarka soo celinta (₹)",
+  "Refund automation": "Automation soo celinta",
   Refunded: "la soo celiyay",
   "Refunded by": "waxaa soo celiyay",
   "refunded of": "waxaa soo celiyay",
@@ -1197,9 +1305,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Region: "Gobol",
   Reject: "Diidii",
   Rejected: "Waa la diiday",
+  "Relative Effect": "Saamaynta Qaraabada",
   "Release everywhere": "meel walba ku sii daa",
   "Release globally (all countries)": "Sii daa caalami ahaan (wadamada oo dhan)",
   "Release only in these countries": "Sida kaliya ee wadamadan",
+  "Reload page": "dib u soo rar bogga",
   "remaining of": "hartay",
   "remains unrefunded on this": "ilaa lacag la'aan tan",
   Remove: "ka saar",
@@ -1210,6 +1320,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Remove page colours": "ka saar midabada bogga",
   "Remove translation": "saar turjumaada",
   Removed: "la saaray",
+  "Reorder soon": "Dib u dalbo dhawaan",
   "Replace the pointer with the trail": "Ku beddel tilmaame raadraaca",
   Replaced: "la beddelay",
   Replacement: "bedelka",
@@ -1219,8 +1330,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requested refund": "lacag celin la codsaday",
   "Requests filed from the storefront appear here.":
     "Codsiyada laga soo gudbiyay dukaanka hortiisa ayaa ka muuqda halkan.",
+  "Required Sample:": "Sample loo baahan yahay:",
   "Requires articles.publish": "Waxay u baahan tahay maqaallo. daabac",
   "Requires categories.publish": "Waxay u baahan tahay qaybaha. daabac",
+  "Requires inventory.view and migration 0111.":
+    "Waxay u baahantahay inventory.view and migration 0111.",
   "Requires owner settings access and a connected API.":
     "Waxay u baahan tahay marin u helida dejinta milkiilaha iyo API ku xiran.",
   "Requires owner settings access.": "Waxay u baahan tahay marin u helida dejinta milkiilaha.",
@@ -1232,6 +1346,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires the analytics.view permission.": "Waxay u baahantahay ogolaanshaha analytics.view.",
   "Requires the inventory.adjust permission.": "Waxay u baahantahay agabka. hagaajin ogolaanshaha.",
   "Requires the reports.query permission.": "Waxay u baahantahay ogolaanshaha warbixnta.",
+  Resend: "dib u dir",
   "Reserve future capacity without consuming current inventory.":
     "La kaydso awoodda mustaqbalka adigoon isticmaalin alaabada hadda jirta.",
   Reserved: "La kaydiyay",
@@ -1241,17 +1356,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Resolution: "xalka",
   Resolve: "xali",
   "Resolve return": "xali soo laabashada",
+  "Resolved automatically by the refund agent": "waxaa si toos ah u xaliya wakiilka lacag celinta",
   "Resolves live on every homepage load -- nothing to keep up to date.":
     "Si toos ah ayay u xalliyaa culayska bog kasta -- ma jiraan si aad ula socoto.",
   "Resolving…": "xalinta…",
   "Respect the safe area": "Ixtiraam meesha nabdoon",
+  "Restock lead time (days)": "Soo celinta wakhtiga rasaasta (maalmo)",
   Restore: "soo celi",
   "Restore (make visible)": "Dib u soo celi (ka dhig mid muuqda)",
   Resume: "Bilow",
   Retry: "Dib u tijaabi",
   "Return request not found": "Codsiga soo celinta lama helin",
   Returns: "Soo celinta",
-  "returns delivery help terms privacy": "soo celisa shuruudaha caawinta gaarsiinta sirta",
   Revenue: "dakhliga",
   "Revenue (paid)": "Dakhliga (la bixiyo)",
   "Revenue by day": "Dakhliga maalintii",
@@ -1265,6 +1381,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Reviews: "Dib u eegis",
   "Reviews customers write from a completed order appear here.":
     "Dib u eegisyada macaamiishu ku qoraan dalab dhamaystiran ayaa halkan ka muuqda.",
+  Risk: "Khatarta",
   Role: "Door",
   "Role catalogue": "Doorka",
   Roles: "Doorka",
@@ -1273,13 +1390,17 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Roles have not been seeded yet.": "Doorrada weli lama abuur.",
   "Roles unavailable": "Doorrada lama heli karo",
   "Romanian (Română)": "Romani (Roman)",
+  "Run forecast now": "Saadaasha socodsii hadda",
   "Run renewals now": "Wax cusboonaysiinta hadda",
   "Run report": "wakhti warbixi",
+  "Run the baseline once; it will then refresh every Monday.":
+    "Sadaalinta hal mar socodsii; waxay markaa dib u cusboonayn doontaa Isniin kasta.",
   "Running...": "orod...",
   "Running…": "orod...",
   "Russian (Русский)": "Ruushka (Русский)",
   "Safe area": "Aag nabdoon",
   "Safe geo-lock:": "Loo-quful ammaan ah:",
+  "Safety stock (days)": "Safety stock (maalmo)",
   "Sale & Discounts": "Iibka & Dhimista",
   "Sale price": "Qiimaha iibka",
   "Sale Price (₹)": "Qiimaha Iibka (₹)",
@@ -1301,6 +1422,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Save labels": "Keydi calaamadaha",
   "Save message": "Keydi fariinta",
   "Save page SEO": "Keydi bogga SEO",
+  "Save planning settings": "Keydi dejinta qorshaynta",
   "Save roles": "Keydi doorarka",
   "Save rule": "Keydi xeerka",
   "Save section": "Qeyb keydi",
@@ -1355,7 +1477,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Raadi badeecadaha, dalabaadka, isticmaalayaasha, qaybaha…",
   "Search promotions": "Xilliyada raadinta",
   "Search recipes": "Raadi cuntooyinka",
-  "Search results per lookup": "Natiijooyinka raadinta goob kasta",
   "Search returns": "Soo celinta raadinta",
   "Search reviews": "Raadi faallooyin",
   "Search submissions": "soo gudbinta raadinta",
@@ -1402,16 +1523,38 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Send invite": "u dir martiqaad",
   "Send reset email": "Diri iimaylka dib u dajinta",
   "Send reset link": "Diri xidhiidhinta dib u dajinta",
+  "Send test email": "U dir emayl tijaabo ah",
   "Sending...": "Dirir...",
   "Sending…": "Diraya…",
+  "Sent to a contributor when staff approve, request changes on, or reject a submission.":
+    "loo diro ka qaybqaataha marka shaqaaluhu ay ansixiyaan, codsadaan in wax laga beddelo, ama ay diidaan soo gudbinta.",
+  "Sent to a customer when their order is placed.":
+    "Waxa loo diraa macmiilka marka dalabkooda la dhigo.",
+  "Sent to a farm owner when one of their products is ordered.":
+    "Waxa loo diraa mulkiilaha beerta marka mid ka mid ah alaabtooda la dalbado.",
+  "Sent to a person": "Waxa loo diray qof",
+  "Sent to an applicant when staff approve or reject their application.":
+    "loo diro codsade marka shaqaaluhu ay ansixiyaan ama ay diidaan codsigooda.",
+  "Sent to staff and the applicant when a farm applies to supply True Grit.":
+    "Waxa loo diraa shaqaalaha iyo codsadaha marka beertu codsato in la keeno True Grit.",
+  "Sent to staff when a storefront contact form is submitted.":
+    "Waxa loo diraa shaqaalaha marka foomka xidhiidhka hore ee dukaanka la soo gudbiyo.",
+  "Sent when a customer requests a password reset.":
+    "Waxa la diraa marka macmiilku codsado dib u dejin sirta ah.",
+  "Sent when a new customer account is created.":
+    "Waxa la diraa marka koontada macmiilka cusub la sameeyo.",
   "SEO description": "Sharaxaadda SEO",
   "SEO keywords": "Erayada muhiimka ah ee SEO",
   "SEO title": "ciwaanka SEO",
   "Separate paragraphs with a blank line. Links use [text](/path); HTML is rejected.":
     "U kala saar cutubyada xariiq madhan. Isku-xirayaashu waxay isticmaalaan [qoraal] (/ waddada); HTML waa la diiday.",
+  "Sequential testing allows continuous monitoring without p-hacking. Results are valid at any time.":
+    "Tijaabada isku xigta waxay ogolaataa la socodka joogtada ah iyada oo aan la jabsanin. Natiijooyinka waa ansax wakhti kasta.",
   Servings: "Adeeyada",
   "Set a new password": "Samee furaha sirta ah cusub",
   "Set as default": "U deji sidii hore",
+  "Shaded area is the 95% residual interval; the line is expected daily units.":
+    "Aagga hadhsan waa inta u dhaxaysa 95%; khadka ayaa la filayaa unug maalinle ah.",
   "Shop · Farms · Journal": "Dukaanka · Beeraha · Joornaalka",
   "Shop fresh greens": "Ka iibso cagaar cusub",
   "Shop root vegetables": "Ka iibso khudaarta xididka",
@@ -1423,7 +1566,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show dietary and certification filters on the shop page":
     "Tus shaandhada cuntada iyo shahaadaynta bogga dukaanka",
   "Show original": "muuji asalka",
+  "Show password": "muuji erayga sirta ah",
   "Show product recommendations": "muuji talooyinka alaabta",
+  "Show reorder recommendations only": "muuji talooyinka dib u habaynta kaliya",
   "Show this snippet": "muuji qaybkan",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
     "oo lagu muujiyay meesha ugu sareysa ee boostada iyo sida thumbnail ee ku jira liiska blogga.",
@@ -1457,6 +1602,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kontaroolada goobta-ballaaran: bannerka ogeysiiska, furayaasha hore ee dukaamada, bogagga CMS, SEO-ka-wad kasta iyo faylasha gurguurta. Hoyga laftiisa waxa uu leeyahay bog u gaar ah.",
   "Skip to content": "U bood nuxurka",
   "SKU (Primary Variant)": "SKU (Kala duwanaanshaha Koowaad)",
+  "SKU demand, days until stockout and reorder quantities from rolling sales and weekday seasonality.":
+    "Baahida SKU, maalmo ilaa kaydinta iyo dib u habaynta tirada iibka iyo xilliga maalmaha shaqada.",
   "slots used": "boosaska la isticmaalay",
   Slovenian: "Slovenia",
   "Slug (optional — derived from the name if blank)":
@@ -1466,21 +1613,32 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Sawirada sawir-qaadista wakhtiga iibka - wax-ka-beddelka buugaagta weligood amar ma qorin.",
   "Sold out": "la iibiyay",
   Somali: "Soomaali",
+  "Something went wrong": "waxbaa khaldamay",
   "space separated, e.g. product publish visibility":
     "meel bannaan oo kala go'day, tusaale. Product publish visibility",
   "Spanish (Español)": "Isbaanish (Español)",
   "Sprouted ragi flour": "daqiiq ragi oo soo baxay",
+  "Staff account": "Akoonka shaqaalaha",
   "Staff sign in": "Shaqaalaha ayaa soo gala",
+  "Start Experiment": "Bilow Tijaabo",
+  "Started At": "Waxay bilaabantay",
   Starts: "Bilaaban",
   "Starts (optional)": "Bilow (ikhtiyaar)",
   "Starts with no permissions — you'll pick what it can do right after creating it.":
     "Waxay ku bilaabataa ogolaansho la'aan - waxaad dooran doontaa waxay samayn karto si sax ah kadib abuurista.",
+  "Statistical Significance (mSPRT)": "Muhiimada Tirakoobka (mSPRT)",
+  "Statistically rigorous sequential testing for product features and growth.":
+    "Tijaabooyin adag oo istaatistikada ah ee sifooyinka iyo kobaca alaabta.",
+  "Statistically Significant": "Tirakoob ahaan muhiim",
   Status: "Halka",
   Steps: "Tallaabooyin",
   "Steps (one per line)": "Tallaabooyinka (halkiiba hal)",
+  "Stock healthy": "Stay caafimaad qabta",
+  Stop: "Jooji",
   "Storage guidance": "Hagaha kaydinta",
   "Store credit": "Qaybta kaydka",
   Storefront: "front Store",
+  "Storefront answers": "jawabaha dukaanka hortiisa",
   "Storefront bot": "Bakhaarka hore ee dukaanka",
   "Storefront switches": "Shirkadaha hore ee dukaanka",
   "Storefront switches unavailable": "Shirkadaha hore ee dukaanka lama heli karo",
@@ -1502,6 +1660,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Super-admin only. Application errors and unhandled exceptions, newest first.":
     "Super-admin kaliya. Khaladaadka codsiga iyo ka-reebitaanka aan la maarayn, ugu horrayn.",
   "Supporting text": "qoraal taageer",
+  "Sync from Sheet": "Isku-xidhka xaashida",
   Table: "Shaxda",
   "Taking payments": "Qarash bixinta",
   Target: "bartilmaameed",
@@ -1539,6 +1698,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'The same kill-switch as Site Control\'s "Accept orders and payments", scoped to just this product. Uncheck it when this one item runs out or fails a quality check — the page stays live and browsable, but "Add to basket" is replaced with a message and a contact form until you switch it back on. This is independent of the site-wide switch: turning ordering off here has no effect on any other product.':
     'Isbeddel la mid ah kan kantaroolka bogga "Aqbal dalabaadka iyo lacag-bixinta", oo ku kooban badeecadan. Iska saar marka shaygani dhamaado ama uu ku guuldareysto hubinta tayada - boggu si toos ah ayuu u ahaanayaa oo la daalacan karaa, laakiin "Ku dar dambiisha" waxaa lagu beddelaa fariin iyo foomka xiriirka ilaa aad dib u shideyso. Tani way ka madax bannaan tahay daminta goobta oo dhan: dalbashada halkan wax saamayn ah kuma yeelanayso badeecad kale.',
   "The selected CMS page could not be loaded.": "Bogga CMS ee la doortay lama rari karo.",
+  "The storefront bot only states figures you have entered here. Anything left blank is sent to a person instead, so it can never quote a policy nobody set.":
+    "Bakhaarka hore ee dukaanka ayaa sheegaya oo kaliya tirooyinka aad halkan galisay. Wax kasta oo madhan ayaa loo diraa qofka, sidaa awgeed marna ma soo xigan karto siyaasad aan qofna dejin.",
   "The storefront's palette and the decoration on top of it.":
     "Qalabka hore ee bakhaarka iyo qurxinta dusheeda.",
   "The two new passwords do not match.": "Labada sirood ee cusub isma dhigmaan.",
@@ -1551,10 +1712,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These roles define the permission sets available when inviting or editing users.":
     "Doorradan ayaa qeexaya jaangooyooyinka oggolaanshaha ee la heli karo marka la martiqaadayo ama la tafatirayo isticmaalayaasha.",
   "Thinking…": "Fikirka…",
+  "Thirty-day unit forecast with confidence interval":
+    "Soddon maalmood oo saadaasha cutubka ah iyada oo kalsooni la isku halleyn karo",
   "This application is": "arjigan waa",
   "This order is in a final state.": "Dalabkani waxa uu marayaa xaalad u dambaysay.",
   "This page contains sensitive application diagnostics.":
     "boggan waxa uu ka kooban yahay baadhitaano xasaasi ah oo codsiga ah.",
+  "This page hit an unexpected error and could not finish rendering. Reloading usually fixes it. If it keeps happening, share what you were doing when it happened with the engineering team.":
+    "Boggani waxa uu ku dhacay cilad lama filaan ah mana dhamayn karo samaynta. Dib-u-dejinta inta badan waxay hagaajisaa. Haddii ay sii socoto, la wadaag wixii aad samaynaysay markii ay dhacday kooxda injineernimada.",
   "This page requires the revenue.view permission.":
     "Boggani wuxuu u baahan yahay ogolaanshaha dakhliga. view.",
   "This permanently removes the image from storage. Images still referenced by a product, page, article or recipe cannot be deleted.":
@@ -1581,7 +1746,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Top products": "Badeecadaha ugu sarreeya",
   "Top-rated reviews (updates automatically)": "qiimihii ugu sarreeyay (cusbooneysiin si toos ah)",
   Total: "wadarta",
+  "Total Conversions": "Guud ahaan beddelka",
+  "Total Traffic": "wadarta guud ee gaadiidka",
   "Total use limit (optional)": "wadarta isticmaalka xadka (ikhtiyaar)",
+  "Traffic Allocation": "qoondaynta gaadiidka",
   Trail: "Raadi",
   "Trail colour": "midabka raad-raac",
   "transfer money — make the transfer to": "lacagta wareejinta - ka dhig wareejinta",
@@ -1597,6 +1765,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Dami si aad u qaboojiso diiwaan gelinta cusub iyadoo macaamiishii hore ay si caadi ah u soo galayaan.",
   "Turn sign-in methods and ordering on or off without a deploy. The pill on the right is what customers actually get: a switch can only ever take a feature away, never add one the API is not configured for.":
     "Dar hababka gelida oo dalbo dami ama dami la'aanteed. Kiniinka midigta ku yaal waa waxa macaamiishu ay dhab ahaantii helayaan: beddelku waxa uu kaliya ka qaadi karaa sifo, waligaa ha ku darin mid API aanu u habaysan.",
+  "Turning this off can block staff self-service password reset -- the recovery path into this very admin panel.":
+    "Dminta tani waxay xannibi kartaa dib-u-dejinta erayga sirta ah ee iskood u adeega -- dariiqa soo kabashada ee guddidan maamulka.",
   Type: "Nooca",
   "Type of section to add": "Nooca qaybta lagu daro",
   "Ukrainian (Українська)": "Yukreeniyaan (Українська)",
@@ -1609,8 +1779,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Unpublish: "aan daabicin",
   Unpublished: "aan la daabicin",
   "Unpublishing…": "aan daabicin…",
-  "Untick a section to hide it from customers without losing its content, and use the arrows to change the order they appear in. Changes here apply as soon as you make them.":
-    "Ka saar qayb si aad uga qariso macaamiisha adoon lumin nuxurkeeda, oo isticmaal fallaadhaha si aad u beddesho nidaamka ay ku soo muuqdaan. Isbeddellada halkan ayaa khuseeya isla markaad sameyso.",
+  "Untick a kind of email to stop it from sending, without touching anything else.":
+    "Ka saar nooc iimaylka ah si aad uga joojiso diritaanka, adigoon taaban wax kale.",
+  "Untick a section to hide it from customers without losing its content, and use the position dropdown to change the order they appear in. Changes here apply as soon as you make them.":
+    "Ka saar qayb si aad uga qariso macaamiisha adoon lumin waxa ku jira, oo isticmaal booska hoos u dhaca si aad u badasho nidaamka ay u soo muuqdaan. Isbeddelada halkan ayaa khuseeya isla markaad sameyso.",
   "Up to": "ilaa",
   Updated: "Waa la cusboonaysiiyay",
   "Updated by": "Waxaa cusboonaysiiyay",
@@ -1618,6 +1790,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload an image to get started.": "Soo rar sawirka si aad u bilowdo.",
   "Upload checklist": "Soo rar liiska hubinta",
   "Upload image": "Soo rar sawirka",
+  "Upload to R2": "U rar R2",
   "Uploading image...": "Soo rarista sawirka...",
   "Uploading image…": "Soo rarista sawirka...",
   "Uploading thumbnail...": "Soo rarid thumbnail...",
@@ -1636,12 +1809,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Users & Roles": "Isticmalayaasha & Doorarka",
   "Users unavailable": "Isticmaalayaasha lama heli karo",
   "Using the site brand colour": "Isticmaalka midabka astaanta goobta",
+  "Value (Mean)": "Qiimaha (Mean)",
   "Value of 1 INR": "qiimaha 1 INR",
   "Value per INR": "Qiimaha INR kasta",
   "Value, ₹": "qiimaha, ₹",
   Variant: "Varian",
   "Variant ID": "Aqoonsiga kala duwan",
   "Variant Name": "Magaca kala duwan",
+  "Variant Performance": "Waxqabad kala duwan",
   Variants: "Ka duwanaanshiyaha",
   "Variants of": "Ka duwanaanshaha",
   View: "Arag",
@@ -1669,10 +1844,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "What the promotion does": "Waxay dhiirigelintu qabato",
   "What they grow:": "Waxay koraan:",
   "What this role is for": "Waa maxay doorkani",
+  "What was actually sent, blocked, throttled or rejected.":
+    "waxa la diray, la xannibay, la xayiray ama la diiday.",
   When: "Marka",
   "Where this category is released": "Halka qaybtan la sii daayo",
   "Where this product is released": "Halka alaabtan lagu sii daayo",
   "Which promotion to show": "ee dallacaadda lagu muujinayo",
+  "Which provider sends True Grit's email, which kinds of email are allowed out, how fast, and what actually happened recently.":
+    "Bixiyehee soo dira iimaylka True Grit, nooca iimaylka la ogolyahay, sida u dhakhsaha badan, iyo waxa dhab ahaantii dhacay dhawaan.",
   "Which reviews to show": "ee dib u eegisyada lagu muujinayo",
   "Whole order": "dalab dhan",
   "Whole site": "goob dhan",
@@ -1684,6 +1863,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "sababta kaadhkan loo soo saaray — niyad wanaag, soo celinta waxa loo xaliyay sida kaydka credit, iwm.",
   "Widget colour": "midabka widget",
   "Widget colour hex": "midabka widget hex",
+  "Widget engagement and checkout revenue attributed to products discovered through recommendations in this date range.":
+    "ka qayb qaadashada widget iyo dakhliga hubinta ee loo nisbeeyo alaabta lagu helay talooyinka taariikhdan.",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Erayada bot-ku waxay u dhigmaan su'aasha si loo go'aamiyo gelitaankan inay khusayso.",
   "Working...": "shaqada...",

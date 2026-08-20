@@ -220,6 +220,23 @@ class Settings(BaseSettings):
     payment_paypal_visible: bool = False
     payment_stripe_visible: bool = False
 
+    # Google Sheets round-trip for manually tuning currency display rates
+    # (`services.currency_rates.push_to_sheet`/`sync_from_sheet`). A service
+    # account, not OAuth: this is a server-to-server integration with no
+    # human sign-in flow. All three must be set together -- see
+    # `google_sheets_configured`.
+    google_sheets_client_email: str = ""
+    google_sheets_private_key: str = ""
+    google_sheets_spreadsheet_id: str = ""
+
+    @property
+    def google_sheets_configured(self) -> bool:
+        return bool(
+            self.google_sheets_client_email
+            and self.google_sheets_private_key
+            and self.google_sheets_spreadsheet_id
+        )
+
     @property
     def smtp_implicit_tls(self) -> bool:
         """Whether to open the SMTP socket already wrapped in TLS.
