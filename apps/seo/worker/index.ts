@@ -3,7 +3,7 @@
  *
  * Two cron expressions, doing different jobs:
  *
- *   `0 3 * * *`      queue a full audit once a day.
+ *   `0 3 * * *`      check whether a scheduled audit is due, once a day.
  *   every 5 minutes  advance whatever is queued or half-finished.
  *
  * (The five-minute expression is not written out here because a cron step
@@ -16,6 +16,11 @@
  * invocation, and a run queued by hand from the dashboard is picked up by the
  * same path within five minutes without the API needing a queue binding.
  *
+ * The daily trigger firing does not mean a run gets queued every day --
+ * `isScheduleDue` compares the dashboard's `seo.schedule_days` setting
+ * against the last cron-queued run, so "every 3 days" or "weekly" is a
+ * setting change, not a redeploy. See `crawl.ts` for that check.
+ *
  * There is no `fetch` handler. The dashboard is served from this Worker's
  * static assets, and its data comes from the main API (`/v1/admin/seo/*`),
  * which already has the staff session and permission checks. Adding a second
@@ -24,7 +29,7 @@
  * subtly wrong.
  */
 
-import { enqueueRun, isEnabled, tick } from "./crawl";
+import { enqueueRun, isEnabled, isScheduleDue, tick } from "./crawl";
 import type { Env } from "./types";
 
 const DAILY_CRON = "0 3 * * *";
@@ -32,11 +37,13 @@ const DAILY_CRON = "0 3 * * *";
 export default {
   async scheduled(event: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
     if (event.cron === DAILY_CRON) {
-      // Queue only. The tick that follows does the crawling, so the daily
-      // trigger stays fast and cannot be the thing that times out.
+      // Queue only, and only when due. The tick that follows does the
+      // crawling, so the daily trigger stays fast and cannot be the thing
+      // that times out.
       ctx.waitUntil(
         (async () => {
           if (!(await isEnabled(env))) return;
+          if (!(await isScheduleDue(env))) return;
           const runId = await enqueueRun(env, "cron");
           console.log(`seo.run_queued run=${runId} trigger=cron`);
         })(),

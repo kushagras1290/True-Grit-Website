@@ -222,6 +222,54 @@ def render_order_confirmation(customer_name: str, reference: str, total: str) ->
     return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)
 
 
+def render_refund_approved(customer_name: str, order_reference: str, amount_display: str) -> str:
+    """Renders the HTML for a refund the refund orchestrator (or staff) has
+    processed -- the amount has already been sent back through the original
+    payment gateway by the time this is sent."""
+    subject = f"Your refund for order {order_reference} has been processed"
+    header_title = "True Grit"
+
+    body_html = f"""
+    <h2 style="color: #1e293b; margin-top: 0;">Hi {customer_name},</h2>
+    <p>Your return for order <strong>{order_reference}</strong> has been approved.</p>
+
+    <div class="order-panel">
+        <h3 style="margin-top: 0; color: #0f5132;">Refund Summary</h3>
+        <div class="order-detail"><strong>Order Reference:</strong> {order_reference}</div>
+        <div class="order-detail"><strong>Refunded Amount:</strong> {amount_display}</div>
+    </div>
+
+    <p>The amount above has been sent back to your original payment method. It may take a
+    few business days to appear on your statement, depending on your bank or card issuer.</p>
+    <p style="margin-bottom: 0;">Best regards,<br>The True Grit Team</p>
+    """
+
+    return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)
+
+
+def render_refund_denied(customer_name: str, order_reference: str, reason: str) -> str:
+    """Renders the HTML declining a return's refund. `reason` is a
+    plain-language rationale (never a raw fraud-signal id), the same
+    treatment `render_farm_partnership_rejected` gives its own reason."""
+    subject = f"About your return for order {order_reference}"
+    header_title = "True Grit"
+    safe_reason = html.escape(reason)
+
+    body_html = f"""
+    <h2 style="color: #1e293b; margin-top: 0;">Hi {customer_name},</h2>
+    <p>After review, we're not able to refund your return for order
+    <strong>{order_reference}</strong>.</p>
+    <div class="order-panel">
+        <div class="order-detail">{safe_reason}</div>
+    </div>
+    <p>If you think this is a mistake, reply to this email and our team will take another
+    look.</p>
+    <p style="margin-bottom: 0;">The True Grit Team</p>
+    """
+
+    return _BASE_HTML.format(subject=subject, header_title=header_title, body_html=body_html)
+
+
 def render_farm_order_notification(
     owner_name: str, farm_name: str, reference: str, admin_url: str
 ) -> str:

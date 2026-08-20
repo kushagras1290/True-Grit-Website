@@ -61,6 +61,10 @@ EMAIL_CATEGORIES: Final[dict[str, tuple[str, str]]] = {
         "Staff invitations and staff password resets. Disabling this can block staff "
         "self-service password reset -- the recovery path into this very admin panel.",
     ),
+    "refund_orchestrator": (
+        "Refund orchestrator",
+        "Sent to a customer when the automated refund agent approves or denies their return.",
+    ),
 }
 
 _DEFAULT_GLOBAL_HOURLY: Final = 300

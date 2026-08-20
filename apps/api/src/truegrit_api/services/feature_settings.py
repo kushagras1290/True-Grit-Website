@@ -55,6 +55,7 @@ KEY_PICKUP: Final = "commerce.pickup.enabled"
 KEY_PREORDERS: Final = "commerce.preorders.enabled"
 KEY_DELIVERY_ZONES: Final = "commerce.delivery_zones.enabled"
 KEY_B2B: Final = "commerce.b2b.enabled"
+KEY_REFUND_ORCHESTRATOR: Final = "commerce.refund_orchestrator.enabled"
 KEY_DELIVERY_FEE_MINOR: Final = "commerce.delivery_fee_minor"
 KEY_FREE_DELIVERY_THRESHOLD_MINOR: Final = "commerce.free_delivery_threshold_minor"
 KEY_BLOG_BANNER_URL: Final = "banner.blog.image_url"
@@ -104,6 +105,11 @@ _BOOLEAN_DEFAULTS: Final[dict[str, bool]] = {
     KEY_PREORDERS: False,
     KEY_DELIVERY_ZONES: False,
     KEY_B2B: False,
+    # Off by default, same reasoning as KEY_PROMOTIONS -- an automated
+    # pipeline that can move real refund money and email customers
+    # unattended is a deliberate business decision an operator switches on,
+    # never a permissive fallback for a corrupted row (migration 0113).
+    KEY_REFUND_ORCHESTRATOR: False,
 }
 
 DEFAULT_SUBSCRIPTION_DISCOUNT_PERCENT: Final = 5
@@ -151,6 +157,7 @@ class StorefrontSettings:
     preorders: bool
     delivery_zones: bool
     b2b: bool
+    refund_orchestrator: bool
     blog_banner_image_url: str
     blog_banner_image_alt: str
     farms_banner_image_url: str
@@ -175,6 +182,7 @@ class StorefrontSettings:
             "preorders": self.preorders,
             "deliveryZones": self.delivery_zones,
             "b2b": self.b2b,
+            "refundOrchestrator": self.refund_orchestrator,
             "blogBannerImageUrl": self.blog_banner_image_url,
             "blogBannerImageAlt": self.blog_banner_image_alt,
             "farmsBannerImageUrl": self.farms_banner_image_url,
@@ -500,6 +508,9 @@ async def load_storefront_settings(db: Database) -> StorefrontSettings:
             values.get(KEY_DELIVERY_ZONES), default=_BOOLEAN_DEFAULTS[KEY_DELIVERY_ZONES]
         ),
         b2b=_parse_bool(values.get(KEY_B2B), default=_BOOLEAN_DEFAULTS[KEY_B2B]),
+        refund_orchestrator=_parse_bool(
+            values.get(KEY_REFUND_ORCHESTRATOR), default=_BOOLEAN_DEFAULTS[KEY_REFUND_ORCHESTRATOR]
+        ),
         blog_banner_image_url=(values.get(KEY_BLOG_BANNER_URL) or "").strip(),
         blog_banner_image_alt=(values.get(KEY_BLOG_BANNER_ALT) or "").strip(),
         farms_banner_image_url=(values.get(KEY_FARMS_BANNER_URL) or "").strip(),
@@ -533,6 +544,7 @@ class PublicStorefrontSettings:
     preorders: bool
     delivery_zones: bool
     b2b: bool
+    refund_orchestrator: bool
     blog_banner_image_url: str
     blog_banner_image_alt: str
     farms_banner_image_url: str
@@ -580,6 +592,7 @@ class PublicStorefrontSettings:
             "preorders": {"enabled": self.preorders},
             "deliveryZones": {"enabled": self.delivery_zones},
             "b2b": {"enabled": self.b2b},
+            "refundOrchestrator": {"enabled": self.refund_orchestrator},
             "banners": {
                 "blogImageUrl": self.blog_banner_image_url,
                 "blogImageAlt": self.blog_banner_image_alt,
@@ -631,6 +644,10 @@ def resolve_public_settings(
         preorders=stored.preorders,
         delivery_zones=stored.delivery_zones,
         b2b=stored.b2b,
+        # No server configuration gates this either -- unlike a payment
+        # gateway, deciding and refunding through Razorpay needs no separate
+        # external key beyond what checkout already requires.
+        refund_orchestrator=stored.refund_orchestrator,
         blog_banner_image_url=stored.blog_banner_image_url,
         blog_banner_image_alt=stored.blog_banner_image_alt,
         farms_banner_image_url=stored.farms_banner_image_url,
@@ -725,6 +742,15 @@ async def b2b_enabled(db: Database) -> bool:
     return (await load_storefront_settings(db)).b2b
 
 
+async def refund_orchestrator_enabled(db: Database) -> bool:
+    """Whether the automated refund-orchestrator pipeline is switched on --
+    checked before `services.returns.create_return_request` enqueues an
+    evaluation job. Off by default: a disabled switch simply leaves every
+    return request exactly as it works today, triaged and resolved by hand
+    -- it never blocks the ordinary return-request flow."""
+    return (await load_storefront_settings(db)).refund_orchestrator
+
+
 async def load_subscription_discount_percent(db: Database) -> int:
     """The percent-off applied to every subscription renewal order -- the
     incentive that makes "Subscribe & Save" a saving, not just a schedule.
@@ -795,6 +821,7 @@ async def update_storefront_settings(
         "preorders": KEY_PREORDERS,
         "delivery_zones": KEY_DELIVERY_ZONES,
         "b2b": KEY_B2B,
+        "refund_orchestrator": KEY_REFUND_ORCHESTRATOR,
     }
 
     now = utc_now_iso()

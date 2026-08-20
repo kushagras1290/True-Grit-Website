@@ -169,6 +169,44 @@ def test_a_second_run_cannot_be_queued_while_one_is_pending(db: SQLiteDatabase):
     assert second.status_code == 409
 
 
+# --- Settings -------------------------------------------------------------------
+
+
+def test_schedule_days_defaults_to_daily(db: SQLiteDatabase):
+    response = _staff(db).get("/v1/admin/seo/summary")
+    assert response.status_code == 200
+    assert response.json()["settings"]["scheduleDays"] == 1
+
+
+def test_updating_schedule_days_leaves_enabled_switch_untouched(db: SQLiteDatabase):
+    _enable(db)
+    staff = _staff(db)
+    response = staff.patch("/v1/admin/seo/settings", json={"scheduleDays": 7})
+    assert response.status_code == 200, response.text
+    body = response.json()
+    assert body["scheduleDays"] == 7
+    assert body["enabled"] is True  # untouched by a schedule-only PATCH
+
+    summary = staff.get("/v1/admin/seo/summary").json()
+    assert summary["settings"]["scheduleDays"] == 7
+    assert summary["settings"]["enabled"] is True
+
+
+def test_updating_enabled_leaves_schedule_days_untouched(db: SQLiteDatabase):
+    staff = _staff(db)
+    staff.patch("/v1/admin/seo/settings", json={"scheduleDays": 3})
+    response = staff.patch("/v1/admin/seo/settings", json={"enabled": True})
+    assert response.status_code == 200, response.text
+    body = response.json()
+    assert body["enabled"] is True
+    assert body["scheduleDays"] == 3  # untouched by an enabled-only PATCH
+
+
+def test_schedule_days_rejects_an_arbitrary_value(db: SQLiteDatabase):
+    response = _staff(db).patch("/v1/admin/seo/settings", json={"scheduleDays": 2})
+    assert response.status_code == 422
+
+
 # --- Findings -----------------------------------------------------------------
 
 

@@ -33,8 +33,14 @@ class _CamelModel(BaseModel):
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
 
-class EnabledRequest(_CamelModel):
-    enabled: bool
+class SeoSettingsRequest(_CamelModel):
+    """Every field optional and only the ones actually sent are written
+    (`update_settings`'s own partial-update discipline) -- a PATCH that
+    changes the schedule must not silently flip `enabled` back to whatever
+    the client last rendered."""
+
+    enabled: bool | None = None
+    schedule_days: int | None = None
 
 
 class CompetitorRequest(_CamelModel):
@@ -75,13 +81,19 @@ async def summary(db: Annotated[Database, Depends(get_database)], actor: _Actor)
 
 
 @router.patch("/seo/settings")
-async def set_enabled(
+async def update_settings(
     db: Annotated[Database, Depends(get_database)],
     actor: _Actor,
     request: Request,
-    body: EnabledRequest,
+    body: SeoSettingsRequest,
 ) -> dict[str, Any]:
-    return await seo.set_enabled(db, actor, _request_id(request), body.enabled)
+    return await seo.update_settings(
+        db,
+        actor,
+        _request_id(request),
+        enabled=body.enabled,
+        schedule_days=body.schedule_days,
+    )
 
 
 # --- Runs -------------------------------------------------------------------

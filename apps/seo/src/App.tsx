@@ -22,6 +22,8 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronRight,
+  Eye,
+  EyeOff,
   ExternalLink,
   Filter,
   Globe,
@@ -175,6 +177,23 @@ function Input({ className, ...props }: React.InputHTMLAttributes<HTMLInputEleme
   );
 }
 
+function PasswordInput({ className, ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <div className="relative">
+      <Input type={visible ? "text" : "password"} className={cn("pr-9", className)} {...props} />
+      <button
+        type="button"
+        onClick={() => setVisible((value) => !value)}
+        className="absolute inset-y-0 right-0 flex items-center px-2.5 text-ink-muted hover:text-ink"
+        aria-label={visible ? "Hide password" : "Show password"}
+      >
+        {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
+    </div>
+  );
+}
+
 function Field({
   label,
   htmlFor,
@@ -283,9 +302,8 @@ function Login({ onAuthenticated }: { onAuthenticated: (user: StaffUser) => void
               />
             </Field>
             <Field label="Password" htmlFor="password">
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 autoComplete="current-password"
                 required
                 value={password}
@@ -314,12 +332,34 @@ function Login({ onAuthenticated }: { onAuthenticated: (user: StaffUser) => void
 
 /* ─── Header ───────────────────────────────────────────────────────── */
 
+const SCHEDULE_OPTIONS: { value: number; label: string }[] = [
+  { value: 1, label: "Daily" },
+  { value: 3, label: "Every 3 days" },
+  { value: 7, label: "Weekly" },
+  { value: 0, label: "Manual only" },
+];
+
 function Header({ user, onLogout }: { user: StaffUser; onLogout: () => void }) {
   const queryClient = useQueryClient();
-  const { data: summary } = useQuery({ queryKey: ["seo-summary"], queryFn: seoApi.summary });
+  const { data: summary } = useQuery({
+    queryKey: ["seo-summary"],
+    queryFn: seoApi.summary,
+    // Live-updates crawl progress instead of leaving "Crawling..." blank
+    // until the user manually refreshes -- only polls while something is
+    // actually in flight, so an idle dashboard costs nothing extra.
+    refetchInterval: (query) => {
+      const latest = query.state.data?.runs[0];
+      const inFlight = latest?.status === "queued" || latest?.status === "running";
+      return inFlight ? 4_000 : false;
+    },
+  });
 
   const toggle = useMutation({
     mutationFn: (enabled: boolean) => seoApi.setEnabled(enabled),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["seo-summary"] }),
+  });
+  const setSchedule = useMutation({
+    mutationFn: (scheduleDays: number) => seoApi.setScheduleDays(scheduleDays),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["seo-summary"] }),
   });
   const queueRun = useMutation({
@@ -329,6 +369,12 @@ function Header({ user, onLogout }: { user: StaffUser; onLogout: () => void }) {
 
   const latestRun = summary?.runs[0];
   const runInFlight = latestRun?.status === "queued" || latestRun?.status === "running";
+  const progressLabel =
+    latestRun?.status === "running"
+      ? latestRun.pagesDiscovered > 0
+        ? `Crawling… ${latestRun.pagesCrawled}/${latestRun.pagesDiscovered} pages`
+        : "Crawling… discovering pages"
+      : "Queued";
 
   return (
     <header className="border-b border-line bg-surface">
@@ -352,6 +398,21 @@ function Header({ user, onLogout }: { user: StaffUser; onLogout: () => void }) {
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <label className="flex items-center gap-1.5 text-xs text-ink-muted">
+            Auto-run
+            <select
+              className="rounded-sm border border-line-strong bg-surface px-1.5 py-1 text-xs text-ink"
+              value={summary?.settings.scheduleDays ?? 1}
+              disabled={setSchedule.isPending}
+              onChange={(event) => setSchedule.mutate(Number(event.target.value))}
+            >
+              {SCHEDULE_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
           <Button
             variant={summary?.settings.enabled ? "secondary" : "primary"}
             onClick={() => toggle.mutate(!summary?.settings.enabled)}
@@ -365,7 +426,7 @@ function Header({ user, onLogout }: { user: StaffUser; onLogout: () => void }) {
             onClick={() => queueRun.mutate()}
           >
             {runInFlight ? <Loader2 size={15} className="animate-spin-slow" /> : <Play size={15} />}
-            {runInFlight ? (latestRun?.status === "running" ? "Crawling…" : "Queued") : "Run crawl"}
+            {runInFlight ? progressLabel : "Run crawl"}
           </Button>
           <div className="mx-1 h-6 w-px bg-line" />
           <div className="text-right text-xs">
@@ -377,6 +438,28 @@ function Header({ user, onLogout }: { user: StaffUser; onLogout: () => void }) {
           </Button>
         </div>
       </div>
+      {latestRun?.status === "running" && latestRun.pagesDiscovered > 0 ? (
+        <div className="border-t border-line bg-canvas px-6 py-2">
+          <div className="flex items-center justify-between text-xs text-ink-muted">
+            <span>{progressLabel}</span>
+            <span>
+              {Math.min(
+                100,
+                Math.round((latestRun.pagesCrawled / latestRun.pagesDiscovered) * 100),
+              )}
+              %
+            </span>
+          </div>
+          <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-line">
+            <div
+              className="h-full rounded-full bg-brand transition-[width]"
+              style={{
+                width: `${Math.min(100, Math.round((latestRun.pagesCrawled / latestRun.pagesDiscovered) * 100))}%`,
+              }}
+            />
+          </div>
+        </div>
+      ) : null}
       {latestRun?.status === "failed" ? (
         <div className="border-t border-danger/20 bg-danger/5 px-6 py-2 text-xs text-danger">
           <AlertTriangle size={13} className="mr-1 inline" />

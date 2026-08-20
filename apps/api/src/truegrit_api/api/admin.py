@@ -2789,6 +2789,8 @@ def _return_request_admin_row(row: dict[str, Any]) -> dict[str, Any]:
         "resolutionAmountMinor": row["resolution_amount_minor"],
         "requestedAt": row["requested_at"],
         "resolvedAt": row["resolved_at"],
+        "agentRiskScore": row["agent_risk_score"],
+        "agentDecision": row["agent_decision"],
     }
 
 
@@ -2820,6 +2822,12 @@ async def get_return_endpoint(
     row = await ReturnRequestRepository(db).get_admin_detail(return_id, farm_id=principal.farm_id)
     if row is None:
         raise NotFoundError("Return request not found.")
+    run = await db.fetch_one(
+        "SELECT risk_score, decision, signals_json, rationale, created_at"
+        " FROM refund_orchestrator_runs WHERE return_request_id = ?"
+        " ORDER BY created_at DESC LIMIT 1",
+        (return_id,),
+    )
     return {
         "id": row["id"],
         "orderReference": row["public_reference"],
@@ -2838,6 +2846,18 @@ async def get_return_endpoint(
         "resolutionNotes": row["resolution_notes"],
         "requestedAt": row["requested_at"],
         "resolvedAt": row["resolved_at"],
+        "resolvedByAgent": row["resolved_by"] == "usr_refund_orchestrator",
+        "agentAssessment": (
+            {
+                "riskScore": run["risk_score"],
+                "decision": run["decision"],
+                "signals": json.loads(run["signals_json"]),
+                "rationale": run["rationale"],
+                "evaluatedAt": run["created_at"],
+            }
+            if run is not None
+            else None
+        ),
     }
 
 
@@ -3450,6 +3470,7 @@ class StorefrontSettingsUpdateRequest(_CamelModel):
     preorders: bool | None = None
     delivery_zones: bool | None = None
     b2b: bool | None = None
+    refund_orchestrator: bool | None = None
     payments_disabled_notice: str | None = Field(default=None, max_length=600)
     blog_banner_image_url: str | None = Field(default=None, max_length=1000)
     blog_banner_image_alt: str | None = Field(default=None, max_length=200)
@@ -3662,6 +3683,7 @@ def _storefront_settings_response(
             "preorders": effective.preorders,
             "deliveryZones": effective.delivery_zones,
             "b2b": effective.b2b,
+            "refundOrchestrator": effective.refund_orchestrator,
             "anySignInAvailable": effective.any_sign_in_available,
         },
     }

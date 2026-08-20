@@ -139,6 +139,26 @@ export async function isEnabled(env: Env): Promise<boolean> {
   return (await setting(env, "seo.enabled", "false")) === "true";
 }
 
+/** Whether the daily cron tick should actually queue a run right now.
+ *
+ * The Cloudflare Cron Trigger itself still fires once a day (changing that
+ * needs a deploy), but the *decision* to queue is dashboard-configurable:
+ * `seo.schedule_days` is compared against the last cron-queued run's
+ * timestamp, so "every 3 days" or "weekly" falls out of the same daily tick
+ * without a different trigger. `0` (or unset) means manual-only -- the tick
+ * checks in but never queues anything on its own; only the "Run crawl"
+ * button does. */
+export async function isScheduleDue(env: Env): Promise<boolean> {
+  const days = Number.parseInt(await setting(env, "seo.schedule_days", "1"), 10);
+  if (!Number.isFinite(days) || days <= 0) return false;
+  const last = await env.DB.prepare(
+    "SELECT queued_at FROM seo_crawl_runs WHERE trigger = 'cron' ORDER BY queued_at DESC LIMIT 1",
+  ).first<{ queued_at: string }>();
+  if (!last) return true;
+  const elapsedMs = Date.now() - new Date(last.queued_at).getTime();
+  return elapsedMs >= days * 24 * 60 * 60 * 1000;
+}
+
 /** Claim the oldest queued run, or null. The conditional UPDATE is the lock:
  *  two overlapping cron invocations cannot both claim the same row. */
 export async function claimQueuedRun(env: Env): Promise<string | null> {
