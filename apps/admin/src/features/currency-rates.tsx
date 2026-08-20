@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { Plus, RefreshCw, Sheet } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { useToast } from "../components/toast";
 import { Button, EmptyState, Field, Input, PageHeader, StatusPill } from "../components/ui";
-import { ApiError, api, type CurrencyRate } from "../lib/api";
+import { ApiError, api, type CurrencyRate, type CurrencyRatesResponse } from "../lib/api";
 import { T } from "../lib/i18n";
 import { usePermissions } from "../lib/permissions";
 
@@ -30,17 +30,15 @@ function RateRow({ rate, canEdit }: { rate: CurrencyRate; canEdit: boolean }) {
   const mutation = useMutation({
     mutationFn: () => api.saveCurrencyRate(draft),
     onSuccess: ({ rate: saved }) => {
-      queryClient.setQueryData<{ baseCurrency: "INR"; rates: CurrencyRate[] }>(
-        ["currency-rates"],
-        (current) =>
-          current
-            ? {
-                ...current,
-                rates: current.rates.map((entry) =>
-                  entry.currencyCode === saved.currencyCode ? saved : entry,
-                ),
-              }
-            : current,
+      queryClient.setQueryData<CurrencyRatesResponse>(["currency-rates"], (current) =>
+        current
+          ? {
+              ...current,
+              rates: current.rates.map((entry) =>
+                entry.currencyCode === saved.currencyCode ? saved : entry,
+              ),
+            }
+          : current,
       );
       toast.success(`${saved.currencyCode} conversion value saved.`);
     },
@@ -105,6 +103,119 @@ function RateRow({ rate, canEdit }: { rate: CurrencyRate; canEdit: boolean }) {
   );
 }
 
+function lastSyncedAt(rates: CurrencyRate[]): string | null {
+  const timestamps = rates.map((rate) => rate.updatedAt).filter(Boolean);
+  if (timestamps.length === 0) return null;
+  return timestamps.reduce((latest, current) => (current > latest ? current : latest));
+}
+
+function LiveSyncPanel({ data, canEdit }: { data: CurrencyRatesResponse; canEdit: boolean }) {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+
+  function applyRates(rates: CurrencyRate[]) {
+    queryClient.setQueryData<CurrencyRatesResponse>(["currency-rates"], (current) =>
+      current ? { ...current, rates } : current,
+    );
+  }
+
+  const refreshMutation = useMutation({
+    mutationFn: () => api.refreshCurrencyRates(),
+    onSuccess: ({ result, rates }) => {
+      if (rates.length) applyRates(rates);
+      toast.success(
+        result.updatedCount > 0
+          ? `${result.updatedCount} rate${result.updatedCount === 1 ? "" : "s"} refreshed from the live source.`
+          : "Rates are already up to date.",
+      );
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not refresh live rates."),
+  });
+
+  const pushMutation = useMutation({
+    mutationFn: () => api.pushCurrencyRatesToSheet(),
+    onSuccess: ({ result }) =>
+      toast.success(
+        `Pushed ${result.pushedCount} rate${result.pushedCount === 1 ? "" : "s"} to the sheet.`,
+      ),
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not push to Google Sheets."),
+  });
+
+  const syncMutation = useMutation({
+    mutationFn: () => api.syncCurrencyRatesFromSheet(),
+    onSuccess: ({ result, rates }) => {
+      if (rates.length) applyRates(rates);
+      toast.success(
+        `Synced ${result.updatedCount} rate${result.updatedCount === 1 ? "" : "s"} from the sheet` +
+          (result.skippedCount > 0 ? `, skipped ${result.skippedCount}.` : "."),
+      );
+    },
+    onError: (error) =>
+      toast.error(error instanceof ApiError ? error.message : "Could not sync from Google Sheets."),
+  });
+
+  const synced = lastSyncedAt(data.rates);
+  const sheetHint = data.sheetsConfigured
+    ? undefined
+    : "Google Sheets is not connected for this deployment yet.";
+
+  return (
+    <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-md border border-line bg-surface px-4 py-3 text-sm">
+      <div className="text-ink-muted">
+        <T>Live rates from</T>{" "}
+        <a
+          href={data.liveSourceUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="font-medium text-accent underline underline-offset-2"
+        >
+          {data.liveSourceUrl}
+        </a>
+        {synced ? (
+          <span className="ml-2">
+            · <T>last synced</T> {new Date(synced).toLocaleString()}
+          </span>
+        ) : null}
+      </div>
+      {canEdit ? (
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={refreshMutation.isPending}
+            onClick={() => refreshMutation.mutate()}
+          >
+            <RefreshCw size={16} />
+            {refreshMutation.isPending ? <T>{"Refreshing…"}</T> : <T>{"Refresh now"}</T>}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={!data.sheetsConfigured || pushMutation.isPending}
+            title={sheetHint}
+            onClick={() => pushMutation.mutate()}
+          >
+            <Sheet size={16} />
+            {pushMutation.isPending ? <T>{"Pushing…"}</T> : <T>{"Push to Sheet"}</T>}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={!data.sheetsConfigured || syncMutation.isPending}
+            title={sheetHint}
+            onClick={() => syncMutation.mutate()}
+          >
+            <Sheet size={16} />
+            {syncMutation.isPending ? <T>{"Syncing…"}</T> : <T>{"Sync from Sheet"}</T>}
+          </Button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export function CurrencyRatesPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -124,18 +235,16 @@ export function CurrencyRatesPage() {
   const addMutation = useMutation({
     mutationFn: () => api.saveCurrencyRate(newRate),
     onSuccess: ({ rate }) => {
-      queryClient.setQueryData<{ baseCurrency: "INR"; rates: CurrencyRate[] }>(
-        ["currency-rates"],
-        (current) =>
-          current
-            ? {
-                ...current,
-                rates: [
-                  ...current.rates.filter((item) => item.currencyCode !== rate.currencyCode),
-                  rate,
-                ].sort((a, b) => a.currencyCode.localeCompare(b.currencyCode)),
-              }
-            : current,
+      queryClient.setQueryData<CurrencyRatesResponse>(["currency-rates"], (current) =>
+        current
+          ? {
+              ...current,
+              rates: [
+                ...current.rates.filter((item) => item.currencyCode !== rate.currencyCode),
+                rate,
+              ].sort((a, b) => a.currencyCode.localeCompare(b.currencyCode)),
+            }
+          : current,
       );
       setNewRate({ currencyCode: "", locale: "en-US", ratePerInr: "", active: true });
       setAdding(false);
@@ -169,6 +278,8 @@ export function CurrencyRatesPage() {
           ) : undefined
         }
       />
+
+      <LiveSyncPanel data={data} canEdit={canEdit} />
 
       <div className="mb-5 rounded-md border border-line bg-subtle/40 px-4 py-3 text-sm text-ink-muted">
         <strong className="text-ink">

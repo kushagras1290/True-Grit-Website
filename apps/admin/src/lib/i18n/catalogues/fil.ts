@@ -30,6 +30,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "2 cups": "2 tasa",
   "2 stars": "2 star",
   "3 stars": "3 star",
+  "30-day demand": "30-araw na demand",
   "4 stars": "4 star",
   "5 stars": "5 star",
   "5xx AppErrors and unhandled exceptions will show up here as they happen.":
@@ -62,6 +63,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Isang tinted na banda — check ang naka-mute na text ay nababasa pa rin dito.",
   "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
     "pumili ng currency ang bansa ng bisita, ibinibigay ng talahanayang ito ang display value nito, at hindi nagbabago ang orihinal na presyo ng INR. Ang mga naka-disable na pera ay bumabalik sa mga default na ligtas sa INR.",
+  "A/B Experiments": "Mga Eksperimento sa A/B",
   "Accept orders and payments": "Tanggapin ang mga order at pagbabayad",
   "Accept orders and payments for this product":
     "Tanggapin ang mga order at pagbabayad ng produktong ito",
@@ -73,6 +75,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Active points appear as free checkout alternatives.":
     "Lumalabas ang mga aktibong puntos bilang mga libreng alternatibo sa pag-checkout.",
   "Active rules": "Mga aktibong panuntunan",
+  "Active, published variants": "Mga aktibo at na-publish na variant",
   Actor: "Aktor",
   Add: "Idagdag",
   "Add / edit roles": "Magdagdag / mag-edit ng mga tungkulin",
@@ -83,6 +86,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add a question": "Magdagdag ng tanong",
   "Add a section…": "Magdagdag ng seksyon...",
   "Add a snippet": "Magdagdag ng snippet",
+  "Add bracket": "Magdagdag ng bracket",
   "Add business": "Magdagdag ng negosyo",
   "Add category": "Magdagdag ng kategorya",
   "Add code": "Magdagdag ng code",
@@ -116,17 +120,22 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add window": "Magdagdag ng window",
   "Add zone": "Magdagdag ng zone",
   Added: "Idinagdag",
+  "Added to basket": "Idinagdag sa basket",
   "Adding...": "Pagdaragdag...",
   "Adding…": "Nagdaragdag…",
+  "Adds after a recommendation click": "Idinaragdag pagkatapos ng pag-click sa rekomendasyon",
   "Adjust points": "Isaayos ang mga puntos",
   "Adjust the search or create a category.": "Isaayos ang paghahanap o lumikha ng kategorya.",
   "Adjust the search or create a product.": "Isaayos ang paghahanap o gumawa ng produkto.",
   "Adjustment %": "Pagsasaayos %",
   "Adjustments restricted": "Pinaghihigpitan ang mga pagsasaayos",
   "Admin API is unavailable": "Hindi available ang Admin API",
+  "Admin bot answer tuning": "Pag-tune ng sagot sa bot ng admin",
   "Admin Logs": "Mga Log ng Admin",
   "After refunds, all farms": "Pagkatapos ng mga refund, lahat ng farm",
+  "Agent assessment": "Pagsusuri ng ahente",
   All: "Lahat",
+  "All outcomes": "Lahat ng resulta",
   "All ratings": "Lahat ng rating",
   "All statuses": "Lahat ng status",
   "All types": "Lahat ng uri",
@@ -140,6 +149,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Palaging tumanggap ng mga pagbabayad para sa produktong ito",
   Amount: "Halaga",
   "Amount off, ₹": "Halagang diskwento, ₹",
+  "An admin preference wins only if that provider's API key is actually configured on the server -- picking one here can never send mail through a provider with no key set.":
+    "Ang isang kagustuhan ng admin ay mananalo lamang kung ang API key ng provider na iyon ay talagang hindi na-configure sa isang server dito --walang na-configure sa isang server dito set.",
   "An impression of the motion and colour, not a pixel-accurate rehearsal.":
     "Isang impression ng galaw at kulay, hindi isang pixel-accurate na rehearsal.",
   "Analytics unavailable": "Hindi available ang Analytics",
@@ -150,7 +161,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Banner ng anunsyo",
   "Announcements unavailable": "Hindi available ang mga anunsyo",
   Answer: "Sagot",
-  "Answer tuning": "Pag-tune ng sagot",
+  "Answered by the bot": "Sinagot ng bot",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Maaaring magkomento ang sinumang naka-sign in. Ang pagsisimula lamang ng bagong talakayan ay may gate ng edad ng account.",
   "Appearance unavailable": "Hindi available ang hitsura",
@@ -168,12 +179,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Inilapat sa bawat sakahan nang walang sariling rate.",
   "Applies to": "Nalalapat sa",
-  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
-    "Nalalapat sa parehong mga bot. Ang mas malalaking halaga ay nagbibigay sa katulong ng higit na makatrabaho at mas mahal sa bawat sagot.",
   "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
     "Nalalapat sa parehong mga widget ng chat. Iwanan itong naka-clear upang sundan ang kulay ng brand ng site mula sa Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "Nalalapat sa bawat bisita na niresolba ng Cloudflare sa",
+  "Applies to the admin panel bot only. The storefront bot does not use a language model, so it has nothing to tune here.":
+    "Nalalapat lang sa admin panel bot. Ang storefront bot ay hindi gumagamit ng modelo ng wika, kaya wala itong dapat i-tune dito.",
   Approve: "Aprubahan",
   "Approve & publish": "Aprubahan at i-publish",
   Approved: "Inaprubahan",
@@ -186,9 +197,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
     "Magtanong kung paano gumawa ng isang bagay sa admin panel, o magtanong tungkol sa mga nakabinbing order, mababang stock na item, o status ng order.",
   "Assigned roles": "Mga nakatalagang tungkulin",
+  "Attributed orders": "Mga na-attribute na order",
+  "Attributed revenue": "Na-attribute na kita",
   Author: "May-akda",
+  "Auto (best configured)": "Auto (pinakamahusay na na-configure)",
   "Auto-translate": "Awtomatikong isalin",
   "Auto-translate all": "Awtomatikong isalin lahat",
+  "Automatically scores every new return request for fraud risk and auto-approves (with a real Razorpay refund), auto-denies, or escalates it to a human in the Returns queue. Off by default -- while off, every return request is triaged and resolved by staff exactly as it works today. See a request's Returns detail page for the agent's risk score and reasoning once this is on.":
+    "Awtomatikong sinusuri ang bawat bagong kahilingan sa pagbabalik para sa panganib ng panloloko at awtomatikong nag-aapruba (na may totoong Razorpay refund), awtomatikong tinatanggihan, o dinadala ito sa isang tao sa queue ng Pagbabalik. Naka-off bilang default -- habang naka-off, ang bawat kahilingan sa pagbabalik ay sinusuri at niresolba ng mga tauhan nang eksakto kung paano ito gumagana ngayon. Tingnan ang page ng detalye ng Pagbabalik ng kahilingan para sa marka ng panganib at pangangatwiran ng ahente kapag naka-on na ito.",
   "available · reorder at": "available · muling ayusin sa",
   "Available is always derived (on hand − reserved). Every change is a movement.":
     "Available ay palaging kinukuha (sa kamay − nakalaan). Ang bawat pagbabago ay isang kilusan.",
@@ -198,6 +214,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "B2B / bulk ordering": "B2B / maramihang pag-order",
   Back: "Bumalik",
   "Back to conversations": "Bumalik sa mga pag-uusap",
+  "Back to experiments": "Bumalik sa mga eksperimento",
+  "Back to Experiments": "Bumalik sa Mga Eksperimento",
   "Back to sign in": "Bumalik para mag-sign in",
   Balance: "Balanse",
   "Banner image URL": "URL ng larawan ng banner",
@@ -213,6 +231,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pinakamahusay na aktibong promosyon (awtomatikong nag-a-update)",
   "Best sellers, resolved live from orders on every homepage load -- nothing to keep stocked.":
     "Mga pinakamabenta, naresolba nang live mula sa mga order sa bawat pag-load ng homepage -- walang dapat panatilihing stock.",
+  "Blank means a category has no cap of its own -- the global limit above still applies.":
+    "Blanko ay nangangahulugan na ang isang kategorya ay walang sariling limitasyon -- nalalapat pa rin ang pandaigdigang limitasyon sa itaas.",
   "Blocks JSON": "Bina-block ang JSON",
   "Blog and recipe pitches from the community appear here.":
     'lumalabas dito ang komunidad. id="t0009">Blog banner',
@@ -221,6 +241,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Mga post sa blog at recipe na itinayo ng komunidad, naghihintay ng pagsusuri.",
   "Bloggers draft and submit posts here; reviewers approve and publish.":
     "Blogger at nagsumite ng mga post dito; inaprubahan at ini-publish ng mga reviewer.",
+  "Bracket name": "Pangalan ng bracket",
   "bundle price · items priced at": "presyo ng bundle · mga item na may presyong",
   "Bundle price, ₹": "Presyo ng bundle, ₹",
   Bundles: "Mga Bundle",
@@ -295,6 +316,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Common questions": "Mga karaniwang tanong",
   Community: "Komunidad",
   Company: "Kumpanya",
+  Complete: "Kumpleto",
   Completed: "Nakumpleto",
   "Configure loyalty, pickup, harvest reservations, delivery logistics and wholesale accounts. Customer access is controlled independently by the five checkboxes in Site Control.":
     "I-configure ang loyalty, pickup, harvest reservation, delivery logistics at wholesale account. Ang access ng customer ay hiwalay na kinokontrol ng limang checkbox sa Site Control.",
@@ -307,8 +329,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact Attempts": "Mga Pagsubok sa Pakikipag-ugnayan",
   "Contact attempts unavailable": "Hindi available ang mga pagtatangka sa pakikipag-ugnayan",
   "Contact email": "Makipag-ugnayan sa email",
+  "Contact form": "Form sa pakikipag-ugnayan",
   Content: "Nilalaman",
+  "Content submission decision": "Pasya sa pagsusumite ng content",
   "Continue with Facebook": "Magpatuloy sa Facebook",
+  "Continuous (e.g. AOV)": "Tuloy-tuloy (hal. AOV)",
+  Control: "Kontrol",
   "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
     "Kontrolin ang tinatayang presyo ng lokal na pera sa pamamagitan ng pagtatakda kung magkano ang halaga ng isang Indian rupee. Ang mga talaan ng catalog, checkout at order ay ligtas na nananatili sa INR.",
   "Control what each role can view, create, edit, publish or manage.":
@@ -316,6 +342,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Control whether each bot is available, and edit what it knows.":
     "Kontrolin kung available ang bawat bot, at i-edit ang alam nito.",
   "Conversation turns remembered": "Naaalala ang mga pag-uusap",
+  "Conversion rate": "Rate ng conversion",
+  Conversions: "Mga Conversion",
   Cook: "Magluto",
   "Cook minutes": "Magluto ng minuto",
   "Copy inside dark bands.": "Kopyahin sa loob ng dark bands.",
@@ -323,6 +351,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Could not load archived records.": "Hindi ma-load ang mga naka-archive na tala.",
   "Could not load this feature.": "Hindi ma-load ang feature na ito.",
   Countries: "Mga Bansa",
+  "Countries in this bracket": "Mga bansa sa bracket na ito",
   Country: "Bansa",
   "Country overrides unavailable": "Hindi available ang mga override ng bansa",
   "Coupon codes": "Mga coupon code",
@@ -346,6 +375,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Create promotion": "Gumawa ng promosyon",
   "Create role": "Gumawa ng tungkulin",
   "Create the first draft to get started.": "Gumawa ng unang draft upang makapagsimula.",
+  "Creating experiments from the admin panel is not available yet.":
+    "Hindi pa available ang paggawa ng mga eksperimento mula sa admin panel.",
   "Creating...": "Gumagawa...",
   "Creating…": "Gumagawa...",
   "Credit limit, ₹": "Limit sa kredito, ₹",
@@ -356,11 +387,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Currency values unavailable": "Hindi available ang mga value ng currency",
   "Current password": "Kasalukuyang password",
   "Currently its own effects.": "Kasalukuyang sarili nitong mga epekto.",
+  "Currently sending via": "Kasalukuyang ipinapadala sa pamamagitan ng",
   "Currently the site-wide effects — save below to give it its own.":
     "Sa kasalukuyan ang mga epekto sa buong site — i-save sa ibaba upang bigyan ito ng sarili.",
   "Customer favourites": "Mga paborito ng customer",
+  "Customer password reset": "Pag-reset ng password ng customer",
   "Customer ratings and reviews from verified purchases.":
     "Mga rating at review ng customer mula sa mga na-verify na pagbili.",
+  "Customer welcome": "Maligayang pagdating ng customer",
   "Customer-created Subscribe & Save deliveries. Pause, resume or cancel on a customer's behalf, or run the renewal batch that otherwise fires on its own schedule.":
     "Ginawa ng customer na Mag-subscribe at Mag-save ng mga paghahatid. I-pause, ipagpatuloy o kanselahin sa ngalan ng customer, o patakbuhin ang renewal batch na gagana sa sarili nitong iskedyul.",
   "Customer-facing description (optional)": "Customer-facing description (opsyonal)",
@@ -373,9 +407,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Customers can reserve products against active harvest windows instead of current stock.":
     "Maaaring magreserba ng mga produkto ang mga customer laban sa mga aktibong harvest window sa halip na kasalukuyang stock.",
   Cut: "Bawasin",
+  "Daily demand": "Pang-araw-araw na pangangailangan",
   "Daily revenue for the selected range": "Pang-araw-araw na kita",
   Danger: "Panganib",
+  "data days": "mga araw ng data",
   "Day (0 Sun – 6 Sat)": "Araw (0 Linggo – 6 Sab)",
+  "Days left": "Mga araw na natitira",
   Deactivate: "I-deactivate",
   Decision: "Desisyon",
   Decline: "Tanggihan",
@@ -402,6 +439,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete selected (": "Tanggalin ang napili (",
   "Delete this entry": "Tanggalin ang entry na ito",
   "Delete this price adjustment?": "Tanggalin ang pagsasaayos ng presyo na ito?",
+  "Delete this pricing bracket?": "I-delete ang pricing bracket na ito?",
   "Delete user": "Tanggalin ang user",
   "Deleting...": "Tinatanggal...",
   Delivery: "Paghahatid",
@@ -467,6 +505,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Effects & Trails": "Mga Epekto at Trail",
   "Eligible for return": "Kwalipikadong ibalik",
   "Email for reset link": "Email para sa link sa pag-reset",
+  "Email settings unavailable": "Hindi available ang mga setting ng email",
   Enable: "Paganahin",
   "Enable at least one block.": "Paganahin ang kahit isang block.",
   "Enable B2B and bulk ordering": "I-enable ang B2B at maramihang pag-order",
@@ -477,12 +516,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Enable seasonal pre-orders": "I-enable",
   "Enable selected (": "I-enable ang napili (",
   "Enable Subscribe & Save": "I-enable ang Mag-subscribe at I-save",
+  "Enable the refund agent": "I-enable ang refund agent",
   Enabled: "I-enable",
   Ends: "Matatapos",
   "Ends (optional)": "Ends (opsyonal)",
   "Enforce delivery zones and slots": "Ipatupad ang mga delivery zone at slot",
   "Errors and destructive actions.": "Mga error at mapangwasak na pagkilos.",
   Established: "Itinatag",
+  Evaluated: "Nasuri",
   Event: "Kaganapan",
   "Every colour the storefront uses, site-wide or for one page, plus ambient effects and cursor trails. Changes go live as soon as you save.":
     "Ginagamit ng store ang buong page, color-end na page para sa buong store. effect at cursor trail. Magiging live ang mga pagbabago sa sandaling mag-save ka.",
@@ -501,6 +542,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Expanded Commerce": "Pinalawak na Komersyo",
   "Expected end": "Inaasahang wakas",
   "Expected start": "Inaasahang pagsisimula",
+  "Expected to run out inside lead time": "Inaasahang maubusan sa loob ng lead time",
+  Experiment: "Eksperimento",
+  "Experiments are currently created from the database; the admin panel does not yet have a creation form.":
+    "Kasalukuyang nilikha ang mga eksperimento mula sa database; ang admin panel ay wala pang form sa paggawa.",
   Expires: "Mag-e-expire",
   "Expires (optional)": 'Gift card id="t0005">Mga Gift Card',
   Explore: "I-explore",
@@ -508,15 +553,21 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "I-explore sa nakalistang lapad at taas. Huwag mag-upload ng 16:9 na larawan para sa isang banner.",
   "Export at the listed width and height. Do not upload a 16:9 photo for a banner.":
     "I-export sa nakalistang lapad at taas. Huwag mag-upload ng 16:9 na larawan para sa isang banner.",
+  Exposures: "Mga Exposure",
   'Extra photos shown as a thumbnail strip on the product page, the way most shops show different angles of the same item. Up to 8. Saved immediately, no separate "Save draft" needed.':
     'Mga karagdagang larawan na ipinapakita bilang isang thumbnail strip sa page ng produkto, kung paano ipinapakita ng karamihan sa mga tindahan ang iba\'t ibang anggulo ng parehong item. Hanggang 8. Na-save kaagad, hindi kailangan ng hiwalay na "I-save ang draft."',
   Eyebrow: "Kilay",
   "Eyebrows and small highlights.": "Mga kilay at maliliit na highlight.",
   "Facebook Login button in the storefront account menu.":
     "Button sa Pag-login sa Facebook sa menu ng storefront account.",
+  "Failed to load experiment": "Nabigong i-load ang eksperimento",
+  "Failed to load experiments": "Nabigong i-load ang mga eksperimento",
   "Falls back to the route's built-in description": "Bumalik sa built-in na paglalarawan ng ruta",
   "Falls back to the route's built-in title": "Bumalik sa built-in na pamagat ng ruta",
   "Farm id (e.g. farm_devika)": "Farm id (hal. farm_devika)",
+  "Farm order notice": "Abiso ng order sa sakahan",
+  "Farm partnership application": "Aplikasyon sa pakikipagsosyo sa sakahan",
+  "Farm partnership decision": "Pasya sa pakikipagsosyo sa sakahan",
   "Farm request not found": "Hindi nakita ang kahilingan sa sakahan",
   "Farm Requests": "Mga Kahilingan sa Sakahan",
   "Farm requests unavailable": "Hindi available ang mga kahilingan sa sakahan",
@@ -531,6 +582,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Fee, ₹": "Bayarin, ₹",
   Fields: "Mga Patlang",
   "File target": "Target ng file",
+  "Filter by outcome": "I-filter ayon sa kinalabasan",
   "Filter by rating": "I-filter ayon sa rating",
   "Filter by status": "I-filter ayon sa status",
   "Find a product to add": "Maghanap ng produktong idaragdag",
@@ -541,6 +593,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Footer and inverted sections.": "Mga footer at baligtad na seksyon.",
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Puwersahang i-on o i-off ang isang seksyon para sa mga bisita sa isang bansa, nang hindi binabago ang nakikita ng iba. Mag-iwan ng seksyon sa "Magmana" at sumusunod lang ito sa tickbox sa listahan ng seksyon sa itaas.',
+  "Forecast unavailable": "Hindi available ang hula",
+  "Forecasted SKUs": "Mga hinulaang SKU",
+  "Forecasting...": "Pagtataya...",
   "Forgot password?": "Nakalimutan ang password?",
   "Formatting locale": "Pag-format ng locale",
   "Free delivery above (₹)": "Libreng paghahatid sa itaas (₹)",
@@ -556,10 +611,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Give one country its own colours": "Bigyan ng sariling mga kulay ang isang bansa",
   "Give one country its own effects": "Bigyan ng sariling mga epekto ang isang bansa",
   "Give one page its own colours": "Bigyan ang isang page ng sarili nitong mga kulay",
+  "Global — per day": "Pandaigdigan — bawat araw",
+  "Global — per hour": "Pandaigdigan — bawat oras",
   "Go back": "Bumalik",
   "Google Identity Services button in the storefront account menu.":
     "button ng Google Identity Services sa menu ng storefront account.",
   "Gross revenue": "Gross na kita",
+  "Group countries into brackets that each pay a markup over India's base price. Both the percentage and which countries sit in each bracket are yours to adjust at any time.":
+    "Pagpangkatin ang mga bansa sa mga bracket na bawat isa ay nagbabayad ng markup kaysa sa batayang presyo ng India. Parehong ang porsyento at kung aling mga bansa ang makikita sa bawat bracket ay sa iyo upang ayusin anumang oras.",
   "Group name": "Pangalan ng grupo",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "Mga grower/partner na nag-apply sa /farms Walang kinakailangang account para mag-apply, kaya ang pagsusuri dito ang tanging gate.",
@@ -567,6 +626,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "GST number": "numero ng GST",
   "Hairline border": "Hangganan ng hairline",
   "Hand-picked testimonials": "Mga napiling testimonial",
+  "Handed to a person": "Ibinigay sa isang tao",
   "Harvest calendar": "Kalendaryo ng pag-aani",
   "Harvest note": "Tala sa pag-aani",
   "Headings and copy.": "Mga heading at kopya.",
@@ -575,6 +635,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Hero title": "Pamagat ng bayani",
   Hidden: "Nakatago",
   Hide: "Itago",
+  "Hide password": "Itago ang password",
   "Hides the system cursor so the trail is the cursor. Links, buttons and form fields keep a real pointer regardless — losing the hit target on those is not a trade worth making.":
     "Itinatago ang cursor ng system kaya ang cursor ng system. Ang mga link, button at form na field ay nagpapanatili ng isang tunay na pointer anuman — ang pagkawala ng hit target sa mga iyon ay hindi isang trade na sulit na gawin.",
   "Highlighted products": "Mga naka-highlight na produkto",
@@ -584,15 +645,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage Settings": "Mga Setting ng Homepage",
   "Homepage settings unavailable": "Hindi available ang mga setting ng homepage",
   Hours: "Mga Oras",
-  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
-    "Ilang character ng page ng patakaran ang maaaring basahin ng storefront bot bago sumagot. Ang mas matagal ay nagpapanatili ng higit pa sa detalyeng itinanong ng isang customer.",
   "How many entries from the list below are given to the assistant as reference.":
     "Gaano karaming mga entry mula sa listahan sa ibaba ang ibinibigay sa assistant bilang reference.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Gaano karaming mga produkto o kategorya ang maaaring piliin ng operator sa Mga Bagong Paborito, Mga Tampok na Kategorya (Mga Setting ng Homepage) at Mga Naka-highlight na produkto (sa ibaba). Ang pagtataas nito ay nakakatipid kaagad, hindi kailangan ng pag-deploy; hanggang 50, ang kisame na ipinapatupad mismo ng block format.",
   "How many products to show": "Gaano karaming mga produkto ang ipapakita",
-  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
-    "Gaano karaming mga produkto, artikulo o recipe ang ibinabalik ng paghahanap ng bot sa storefront sa tuwing may hinahanap ito.",
   "How many to show": "Ilan ang ipapakita",
   "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
     "Gaano karami sa kasalukuyang chat ang ibinabalik sa bawat tanong. 0 ang sumasagot sa bawat tanong nang hiwalay.",
@@ -651,12 +708,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Knowledge entries per answer": "Mga entry sa kaalaman bawat sagot",
   "Land under cultivation": "Lupang sinasaka",
   Language: "Language i",
+  "last 24h": "huling 24h",
   "Last activity": "Huling aktibidad",
+  "Last refresh": "Huling pag-refresh",
   "Last reviewer note": "Huling tala ng reviewer",
   "Last sign-in": "Huling pag-sign-in",
   "Last sync": "Huling pag-sync",
+  "last synced": "huling na-sync",
   "Last updated": "Huling na-update",
   "Layout — drag or use arrow keys": "Layout — i-drag o gamitin ang mga arrow key",
+  "Lead time": "Oras ng lead",
   "Lead time, hours": "Oras ng lead, oras",
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Iwanang blangko ang isang kulay upang panatilihing may True Grit na ipinapadala — ang pag-clear sa isang field ay kung paano mo i-undo. Nagsisimula ang mga kulay ng page o bansa sa mga kulay ng site at i-override lang ang iyong binago, kaya ang bawat isa ay isang maikling listahan, hindi isang pangalawang palette na dapat panatilihin. Kapag parehong nalalapat sa parehong bisita, ang page ay nanalo — ang disenyo ng isang editoryal na pahina ay hindi dapat i-undo ng isang geo experiment.",
@@ -687,6 +748,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live marketplace state, fulfilment pressure and publishing activity.":
     "Live marketplace state, fulfillment pressure at aktibidad sa pag-publish.",
   "Live preview": "Live na preview",
+  "Live rates from": "Mga live na rate mula sa",
   "Live, and to scale with the real storefront's own styles.":
     "Live, at i-scale gamit ang sariling mga istilo ng totoong storefront.",
   Loading: "Naglo-load",
@@ -706,6 +768,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading currency values…": "Naglo-load ng mga halaga ng pera...",
   "Loading delivery charges...": "Naglo-load ng mga singil sa paghahatid...",
   "Loading discussion…": "Naglo-load ng talakayan...",
+  "Loading email settings...": "Naglo-load ng mga setting ng email...",
+  "Loading forecast...": "Naglo-load ng hula...",
   "Loading highlights...": "Naglo-load ng mga highlight...",
   "Loading homepage sections...": "Naglo-load ng mga seksyon ng homepage...",
   "Loading homepage settings...": "Naglo-load ng mga setting ng homepage...",
@@ -714,6 +778,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading order…": "Naglo-load ng order...",
   "Loading permissions...": "Naglo-load ng mga pahintulot...",
   "Loading price adjustments...": "Naglo-load ng mga pagsasaayos ng presyo...",
+  "Loading price tiers…": "Naglo-load ng mga tier ng presyo...",
   "Loading product…": "Naglo-load ng produkto…",
   "Loading products...": "Naglo-load ng mga produkto...",
   "Loading recipe…": "Naglo-load ng recipe...",
@@ -762,6 +827,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Metadata used by search engines and social previews for `/`.":
     "Metadata na ginagamit ng mga search engine at social preview para sa `/`.",
   Method: "Paraan",
+  Metric: "Sukatan",
   "Minimum account age to start a discussion (months)":
     "Minimum na edad ng account para magsimula ng talakayan (mga buwan)",
   "Minimum order, ₹ (optional)": "Minimum na order, ₹ (opsyonal)",
@@ -778,7 +844,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Muted text": "Naka-mute na text",
   Name: "Pangalan",
   "Navigation labels": "Mga label ng navigation",
+  "Nearly matched": "Halos tugma",
   "Needs attention": "Kailangan ng pansin",
+  "Net line revenue after allocated discounts":
+    "Net line na kita pagkatapos ng mga inilaan na diskwento",
   "Net revenue": "Netong kita",
   Never: "Huwag kailanman",
   "Never accept payments for this product":
@@ -792,6 +861,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "New conversation": "Bagong pag-uusap",
   "New coupon code": "Bagong coupon code",
   "New customers": "Mga bagong customer",
+  "New Experiment": "Bagong Eksperimento",
   "New farm": "Bagong farm",
   "New password": "Bagong password",
   "New post": "Bagong post",
@@ -819,18 +889,24 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Wala pang code — awtomatikong nalalapat ang promosyon na ito sa bawat karapat-dapat na cart.",
   "No comments": "Wala pang komento",
   "No comments yet.": "Wala pang komento.",
+  "No completed run": "Walang nakumpletong pagtakbo",
   "No contact attempts": "Wala pang mga pagtatangka sa pakikipag-ugnayan",
   "No content yet": "Wala pang nilalaman",
   "No conversations yet": "Wala pang mga pag-uusap",
+  "No countries assigned yet.": "Wala pang nakatalagang bansa.",
   "No country overrides yet. Add a country above to give it its own section visibility.":
     "Wala pang na-override sa bansa. Magdagdag ng bansa sa itaas upang bigyan ito ng sariling visibility ng seksyon.",
   "No discussions": "Walang mga talakayan",
+  "No email activity yet.": "Wala pang aktibidad sa email.",
   "No embedded True Grit logo, headline, button, or watermark.":
     "Walang naka-embed na True Grit logo, headline, button, o watermark.",
+  "No experiments": "Wala pang mga eksperimento",
   "No farm assigned": "Walang nakatalagang sakahan",
   "No farm requests": "Walang mga kahilingan sa sakahan",
   "No farmer name": "Walang pangalan ng magsasaka",
   "No farms yet": "Wala pang mga sakahan",
+  "No forecast yet": "Wala pang hula",
+  "No fraud signals fired.": "Walang signal ng panloloko na pinapagana.",
   "No fresh favourites yet. Add a few below.":
     "Wala pang mga sariwang paborito. Magdagdag ng ilan sa ibaba.",
   "No gift cards yet": "Wala pang gift card",
@@ -859,6 +935,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No permissions": "Wala pang pahintulot",
   "No pre-orders yet.": "Wala pang pre-order.",
   "No price adjustments yet": "Wala pang pagsasaayos ng presyo",
+  "No pricing brackets yet": "Wala pang pricing bracket",
   "No products linked yet.": "Wala pang naka-link na produkto.",
   "No products match": "Walang tugmang produkto",
   "No products match.": "Walang tugmang produkto.",
@@ -888,6 +965,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Not orderable even while the site-wide switch is on.":
     "Hindi ma-order kahit na naka-on ang switch sa buong site.",
   "Not redeemed against any order yet.": "Hindi pa nakukuha sa anumang order.",
+  "Not set": "Hindi nakatakda",
+  "not signed in": "hindi naka-sign in",
+  "Not Significant (Yet)": "Hindi Mahalaga (Pa)",
+  "Not started": "Hindi pa nagsimula",
   "Note (optional)": "Tandaan (opsyonal)",
   "Note (required to decline)": "Tandaan (kinakailangang tanggihan)",
   "Note (required to request changes or reject)":
@@ -900,6 +981,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Nothing selected — the storefront stays exactly as it is.":
     "Walang napili — ang storefront ay mananatiling eksakto kung ano ito.",
   "Nothing urgent": "Walang apurahan",
+  "Nothing waiting. Everything asked so far was answered or refused cleanly.":
+    "Walang naghihintay. Lahat ng itinanong sa ngayon ay sinagot o tinanggihan ng malinis.",
   Notifications: "Mga Notification",
   Off: "Naka-off",
   "Off closes checkout entirely and shows customers a contact form instead, so interest is still captured. Baskets are left untouched.":
@@ -910,6 +993,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "On hand": "Nasa kamay",
   "on the sign-in page. The reset link goes to the address above.":
     "sa pahina ng pag-sign-in. Ang link sa pag-reset ay mapupunta sa address sa itaas.",
+  "Once a window fills up, further emails in it wait for the next minute's dispatch instead of failing outright -- nothing is lost, it just slows down.":
+    "Kapag napuno ang isang window, ang karagdagang mga email sa loob nito ay maghihintay para sa susunod na minutong pagpapadala sa halip na mabigo nang tahasan -- walang nawala, bumabagal lang ito.",
   "Once you have created this grower's farm in the console, link the application to it here for provenance.":
     "Sa sandaling nagawa mo na ang farm ng grower na ito sa console, i-link ang application dito para sa provenance.",
   "One composition engine renders every category — no code per category.":
@@ -934,6 +1019,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Optional: "Opsyonal",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
     "Opsyonal na nilalaman na ipinapakita sa itaas ng mga sangkap — sumusuporta sa parehong mga bloke gaya ng mga post sa blog, kabilang ang",
+  "Order confirmation": "Pagkumpirma ng order",
   "order line": "linya ng order",
   "Order lines": "Mga linya ng order",
   "Order not found": "Hindi nakita ang order",
@@ -950,7 +1036,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Mga organikong mangga na hawak sa isang taniman ng araw",
   "Organic wheat flour in a wooden bowl":
     "Organic na harina ng trigo sa isang mangkok na gawa sa kahoy",
+  Outcome: "Kinalabasan",
   Outstanding: "Natitirang",
+  "over India's base price": "sa batayang presyo ng India",
   Overview: "Pangkalahatang-ideya",
   "Owner Reports": "Mga Ulat ng May-ari para sa i",
   "Owner-only controls for /sitemap.xml, /robots.txt and /llms.txt.":
@@ -962,7 +1050,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Pamagat ng page",
   "Page unavailable": "Hindi available ang page",
   Pages: "Mga page",
-  "Pages the storefront bot may quote": "Mga page na maaaring i-quote ng storefront bot",
   Paid: "Bayad",
   "Paid out": "Bayad",
   "paid via": "binayaran sa pamamagitan ng",
@@ -980,6 +1067,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Pending: "Nakabinbin",
   "Pending fulfilment": "Nakabinbing katuparan",
   "Pending work for your role": "Nakabinbing trabaho para sa iyong tungkulin",
+  "Per day": "Bawat araw",
+  "Per hour": "Bawat oras",
+  "Per-category overrides": "Mga override sa bawat kategorya",
   "Per-customer limit (optional)": "Limit sa bawat customer (opsyonal)",
   "Percent off": "Porsyento ng diskwento",
   "Permanently delete item": "Permanenteng tanggalin ang item",
@@ -1003,8 +1093,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Platform earns": "Kumita ang platform",
   "points ·": "mga puntos ·",
   "Points (+ / -)": "Mga puntos (+ / -)",
-  "Policy page slugs": "Mga slug ng page ng patakaran",
-  "Policy text quoted per answer": "Text ng patakaran na sinipi bawat sagot",
   Position: "Posisyon",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
     "Pinataas ng positibo ang presyo (isang markup, ipinapakita bilang ang bagong presyo lamang). Ibinababa ito ng negatibo (isang diskwento, na ipinapakita kasama ang tunay na presyong tinamaan). Sa pagitan ng −90% at 500%. Ang pag-save ng panuntunan para sa parehong target at saklaw ay papalitan ito sa halip na magdagdag ng duplicate.",
@@ -1012,6 +1100,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Post a recipe (submission form)": "Mag-post ng recipe (submission form)",
   "Post Comments": "Mag-post ng Mga Komento",
   Posted: "Na-post",
+  "Preferred provider": "Pinipiling provider",
   "Prep minutes": "Mga minuto ng paghahanda",
   "Preview is checked on both a narrow phone and a desktop screen.":
     "Tine-check ang preview sa parehong makitid na telepono at desktop screen.",
@@ -1019,6 +1108,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Price: "Presyo",
   "Price (₹) (Primary Variant)": "Presyo (₹) (Pangunahing Variant)",
   "Price adjustments unavailable": "Hindi available ang mga pagsasaayos ng presyo",
+  "Price Tiers": "Mga Tier ng Presyo",
+  "Price tiers unavailable": "Hindi available ang mga tier ng presyo",
   "Primary button label": "Label ng pangunahing button",
   "Primary button link": "Link ng pangunahing button",
   "Primary buttons, links, the wordmark.": "Mga pangunahing button, link, ang wordmark.",
@@ -1026,6 +1117,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Priority (higher wins when several qualify)": "Priyoridad (mas mataas na panalo)",
   Private: "Pribado",
   Product: "Produkto",
+  "Product / SKU": "Produkto / SKU",
   "Product cards, panels, the header.": "Mga card ng produkto, panel, header.",
   "Product editor sections": "Mga seksyon ng editor ng produkto",
   "Product ID": "ID ng Produkto",
@@ -1047,8 +1139,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Na-publish bilang",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "na-publish na mga kategorya para sa slider ng homepage. Nakikita ng mga customer ang apat sa isang pagkakataon sa desktop, sa ganitong pagkakasunud-sunod. Taasan ang limitasyon sa Site Control.",
-  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
-    "Mga na-publish na page slug, na pinaghihiwalay ng mga puwang. Binabasa ng bot ang salita para sa salita kapag nagtanong ang isang customer tungkol sa patakaran, kaya tumutugma ang mga sagot nito sa aktwal mong na-publish.",
   "Published products": "Mga na-publish na produkto",
   "Put essential subjects inside the dashed centre. Responsive crops may remove the edges.":
     "Maglagay ng mga putol-putol na paksa. Maaaring alisin ng mga tumutugon na pananim ang mga gilid.",
@@ -1056,7 +1146,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Quantity: "Dami",
   "Quantity delta (+/−)": "Dami ng delta (+/−)",
   Question: "Tanong",
+  "Questions the storefront bot would not answer, worst first. The phrasings it nearly matched are shown against each one, which is what tells you what to add to its vocabulary.":
+    "Mga tanong na hindi sasagutin ng storefront bot, pinakamasama muna. Ang mga pariralang halos itugma nito ay ipinapakita laban sa bawat isa, na siyang nagsasabi sa iyo kung ano ang idaragdag sa bokabularyo nito.",
   "Raise this to curate more than": "Itaas ito para mag-curate ng higit sa",
+  "Rate limits": "Mga limitasyon sa rate",
   "Reader comments on blog posts and recipes appear here.":
     "Lalabas dito ang mga komento ng mambabasa sa mga post sa blog at recipe.",
   "Reader comments on blog posts and recipes.":
@@ -1068,12 +1161,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Reason: "Dahilan",
   "Reason (optional)": "Dahilan (opsyonal)",
   "Reason:": "Dahilan:",
+  "Rebuild recommendations": "Muling buuin ang mga rekomendasyon",
+  "Rebuilding...": "Muling pagbuo...",
   Receipt: "Resibo",
+  "Recent activity": "Kamakailang aktibidad",
   "Recent administrative activity": "Kamakailang administratibong aktibidad",
   "Recipe not found": "Hindi nakita ang recipe",
   Recipes: "Mga Recipe",
+  Recipient: "Tatanggap",
   "Recipient email (optional)": "Email ng tatanggap (opsyonal)",
+  "Recommendation performance": "Pagganap ng rekomendasyon",
   Recommendations: "Mga Rekomendasyon",
+  "Recommended order": "Inirerekomendang order",
   "Reconnecting…": "Muling kumokonekta...",
   "Record adjustment": "I-record ang pagsasaayos",
   "Record inventory adjustment": "I-record ang pagsasaayos ng imbentaryo",
@@ -1087,9 +1186,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Redemptions: "Mga Pagkuha",
   Reference: "Sanggunian",
   Refresh: "I-refresh",
+  "Refresh now": "I-refresh ngayon",
   "Refresh once the API is back online.": "I-refresh kapag online na muli ang API.",
+  "Refreshing…": "I-refresh...",
   Refund: "I-refund",
   "Refund amount (₹)": "Halaga ng refund (₹)",
+  "Refund automation": "Pag-automate ng refund",
   Refunded: "Na-refund",
   "Refunded by": "Ni-refund ng",
   "refunded of": "ni-refund ng",
@@ -1101,6 +1203,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Release everywhere": "I-release kahit saan",
   "Release globally (all countries)": "I-release sa buong mundo (lahat ng bansa)",
   "Release only in these countries": "I-release lang sa mga bansang ito",
+  "Reload page": "I-reload ang page",
   "remaining of": "natitira sa",
   "remains unrefunded on this": "nananatiling hindi na-refund dito",
   Remove: "Alisin",
@@ -1111,6 +1214,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Remove page colours": "Alisin ang mga kulay ng pahina",
   "Remove translation": "Alisin ang pagsasalin",
   Removed: "Inalis",
+  "Reorder soon": "Muling ayusin sa lalong madaling panahon",
   "Replace the pointer with the trail": "Palitan ang pointer ng trail",
   Replaced: "Pinalitan",
   Replacement: "Palitan",
@@ -1119,8 +1223,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requested refund": "Humiling ng refund",
   "Requests filed from the storefront appear here.":
     "Lalabas dito ang mga kahilingang na-file mula sa storefront.",
+  "Required Sample:": "Kinakailangan na Sample:",
   "Requires articles.publish": "Nangangailangan ng articles.publish",
   "Requires categories.publish": "Nangangailangan ng categories.publish",
+  "Requires inventory.view and migration 0111.":
+    "Nangangailangan ng inventory.view at migration 0111.",
   "Requires owner settings access and a connected API.":
     "Nangangailangan ng access sa mga setting ng may-ari at isang konektadong API.",
   "Requires owner settings access.": "Nangangailangan ng access sa mga setting ng may-ari.",
@@ -1132,24 +1239,25 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires the analytics.view permission.": "Nangangailangan ng pahintulot sa analytics.view.",
   "Requires the inventory.adjust permission.": "Nangangailangan ng pahintulot sa inventory.adjust.",
   "Requires the reports.query permission.": "Nangangailangan ng pahintulot sa reports.query.",
+  Resend: "Muling ipadala",
   "Reserve future capacity without consuming current inventory.":
     "Magreserba ng kapasidad sa hinaharap nang hindi kumukonsumo ng kasalukuyang imbentaryo.",
   Reserved: "Nakareserba",
   "reserved ·": "nakareserba ·",
   Reset: "I-reset",
   "Reset password": "I-reset ang password",
+  "Resolved automatically by the refund agent": "Awtomatikong nalutas ng ahente ng refund",
   "Resolves live on every homepage load -- nothing to keep up to date.":
     "Resolve live sa bawat load ng homepage -- walang dapat panatilihing napapanahon.",
   "Resolving…": "Resolving...",
   "Respect the safe area": "Igalang ang ligtas na lugar",
+  "Restock lead time (days)": "Restock lead time (mga araw)",
   Restore: "I-restore",
   "Restore (make visible)": "I-restore (gawing nakikita)",
   Resume: "Ipagpatuloy",
   Retry: "Subukang muli",
   "Return request not found": "Hindi nakita ang kahilingan sa pagbabalik",
   Returns: "Mga Pagbabalik",
-  "returns delivery help terms privacy":
-    "ibinabalik ang privacy ng mga tuntunin ng tulong sa paghahatid",
   Revenue: "Kita",
   "Revenue (paid)": "Kita (binayaran)",
   "Revenue by day": "Kita ayon sa araw",
@@ -1171,12 +1279,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Ang mga tungkulin ay mga koleksyon ng mga pahintulot; sinusuri ng API ang mga pahintulot, hindi kailanman mga pangalan ng tungkulin.",
   "Roles have not been seeded yet.": "Ang mga tungkulin ay hindi pa naseeded.",
   "Roles unavailable": "Hindi available ang mga tungkulin",
+  "Run forecast now": "Patakbuhin ang forecast ngayon",
   "Run renewals now": 'Running id="t0005">Tumatakbo…',
   "Run report": "Patakbuhin ang ulat",
+  "Run the baseline once; it will then refresh every Monday.":
+    "Patakbuhin ang baseline nang isang beses; magre-refresh ito tuwing Lunes.",
   "Running...": "Tumatakbo...",
   "Running…": "Tumatakbo...",
   "Safe area": "Ligtas na lugar",
   "Safe geo-lock:": "Ligtas na geo-lock:",
+  "Safety stock (days)": "Safety stock (mga araw)",
   "Sale & Discounts": "Sale at Mga Diskwento",
   "Sale price": 'Sales na presyo id="t0010">Sale Price (₹)',
   Save: "I-save",
@@ -1197,6 +1309,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Save labels": "I-save ang mga label",
   "Save message": "I-save ang mensahe",
   "Save page SEO": "I-save ang page SEO",
+  "Save planning settings": "I-save ang mga setting ng pagpaplano",
   "Save roles": "I-save ang mga tungkulin",
   "Save rule": "I-save ang panuntunan",
   "Save scope": "I-save ang saklaw",
@@ -1255,7 +1368,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Maghanap ng mga produkto, order, user, kategorya...",
   "Search promotions": "Maghanap ng mga promosyon",
   "Search recipes": "Maghanap ng mga recipe",
-  "Search results per lookup": "Mga resulta ng paghahanap sa bawat paghahanap",
   "Search returns": "Maghanap ng mga pagbalik",
   "Search reviews": "Maghanap ng mga review",
   "Search submissions": "Maghanap ng mga pagsusumite",
@@ -1302,14 +1414,36 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Send invite": "Ipadala ang imbitasyon",
   "Send reset email": "Ipadala ang reset email",
   "Send reset link": "Ipadala ang reset link",
+  "Send test email": "Magpadala ng pansubok na email",
   "Sending...": "Ipinapadala...",
   "Sending…": "Ipinapadala...",
+  "Sent to a contributor when staff approve, request changes on, or reject a submission.":
+    "Ipinadala sa isang contributor kapag inaprubahan ng staff, humiling ng mga pagbabago sa, o tinanggihan ang isang pagsusumite.",
+  "Sent to a customer when their order is placed.":
+    "Ipinadala sa isang customer kapag naisagawa na ang kanilang order.",
+  "Sent to a farm owner when one of their products is ordered.":
+    "Ipinadala sa isang may-ari ng bukid kapag na-order ang isa sa kanilang mga produkto.",
+  "Sent to a person": "Ipinadala sa isang tao",
+  "Sent to an applicant when staff approve or reject their application.":
+    "Ipinadala sa isang aplikante kapag inaprubahan o tinanggihan ng kawani ang kanilang aplikasyon.",
+  "Sent to staff and the applicant when a farm applies to supply True Grit.":
+    "Ipinadala sa kawani at ang aplikante kapag nag-apply ang isang sakahan upang mag-supply ng True Grit.",
+  "Sent to staff when a storefront contact form is submitted.":
+    "Ipinadala sa staff kapag may isinumiteng form sa pakikipag-ugnayan sa storefront.",
+  "Sent when a customer requests a password reset.":
+    "Ipinadala kapag humiling ang customer ng pag-reset ng password.",
+  "Sent when a new customer account is created.":
+    "Ipinadala kapag may ginawang bagong account ng customer.",
   "SEO description": "SEO paglalarawan",
   "Separate paragraphs with a blank line. Links use [text](/path); HTML is rejected.":
     "Paghiwalayin ang mga blangko na talata. Gumagamit ang mga link ng [text](/path); Tinanggihan ang HTML.",
+  "Sequential testing allows continuous monitoring without p-hacking. Results are valid at any time.":
+    "Pinapayagan ng sunud-sunod na pagsubok ang patuloy na pagsubaybay nang walang p-hacking. Ang mga resulta ay may bisa anumang oras.",
   Servings: "Mga Servings",
   "Set a new password": "Magtakda ng bagong password",
   "Set as default": "Itakda bilang default",
+  "Shaded area is the 95% residual interval; the line is expected daily units.":
+    "Ang may kulay na lugar ay ang 95% na natitirang pagitan; ang linya ay inaasahang pang-araw-araw na unit.",
   "Shop · Farms · Journal": "Mamili · Mga Bukid · Journal",
   "Shop fresh greens": "Mamili ng mga sariwang gulay",
   "Shop root vegetables": "Mamili ng mga ugat na gulay",
@@ -1321,7 +1455,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show dietary and certification filters on the shop page":
     "Ipakita ang mga filter ng dietary at certification sa page ng shop",
   "Show original": "Ipakita ang orihinal",
+  "Show password": "Ipakita ang password",
   "Show product recommendations": "Ipakita ang mga rekomendasyon sa produkto",
+  "Show reorder recommendations only": "Ipakita lamang ang mga rekomendasyon sa muling pagkakaayos",
   "Show this snippet": "Ipakita ang snippet na ito",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
     "Ipinapakita sa tuktok ng post at bilang thumbnail nito sa listahan ng blog.",
@@ -1357,6 +1493,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Skip to content": "Laktawan sa nilalaman",
   SKU: 'SKU">SKU',
   "SKU (Primary Variant)": "SKU (Pangunahing Variant)",
+  "SKU demand, days until stockout and reorder quantities from rolling sales and weekday seasonality.":
+    "Demand ng SKU, mga araw bago mag-stock out at muling mag-order ng mga dami mula sa rolling sales at seasonality sa weekday.",
   "slots used": "mga ginamit na slot",
   Slovenian: "Slug",
   "Slug (optional — derived from the name if blank)":
@@ -1365,17 +1503,26 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Snapshots at purchase time — catalogue edits never rewrite an order.":
     "Mga snapshot sa oras ng pagbili — ang mga pag-edit sa catalog ay hindi kailanman muling nagsusulat ng order.",
   "Sold out": "Naubos na",
+  "Something went wrong": "Nagkaroon ng problema",
   "space separated, e.g. product publish visibility":
     "space separated, hal. visibility sa pag-publish ng produkto",
+  "Staff account": "Account ng tauhan",
+  "Start Experiment": "Simulan ang Eksperimento",
+  "Started At": "Nagsimula Sa",
   Starts: "Magsisimula",
   "Starts (optional)": "Magsisimula (opsyonal)",
   "Starts with no permissions — you'll pick what it can do right after creating it.":
     "Nagsisimula nang walang pahintulot — pipili ka kung ano ang magagawa nito pagkatapos gawin ito.",
+  "Statistically rigorous sequential testing for product features and growth.":
+    "Istatistikong mahigpit na sunud-sunod na pagsubok para sa mga feature ng produkto at paglago.",
+  "Statistically Significant": "Statistical Significant",
   Steps: "Mga Hakbang",
   "Steps (one per line)": "Mga Hakbang (isa bawat linya)",
   "Stock Status": "Status ng Stock",
+  Stop: "Ihinto",
   "Storage guidance": "Gabay sa storage",
   "Store credit": "Kredito sa tindahan",
+  "Storefront answers": "Mga sagot sa storefront",
   "Storefront switches": "Mga switch sa storefront",
   "Storefront switches unavailable": "Hindi available ang mga switch sa storefront",
   "Strong border": "Malakas na hangganan",
@@ -1396,6 +1543,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Super-admin only. Application errors and unhandled exceptions, newest first.":
     "Super-admin lang. Mga error sa application at hindi nahawakang mga exception, pinakabago muna.",
   "Supporting text": "Suportadong text",
+  "Sync from Sheet": "I-sync mula sa Sheet",
+  "Syncing…": "Pag-sync...",
   Table: "Talahanayan",
   "Tags & Certifications": "Mga Tag at Certification",
   "Tags:": "Mga Tag:",
@@ -1435,6 +1584,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'The same kill-switch as Site Control\'s "Accept orders and payments", scoped to just this product. Uncheck it when this one item runs out or fails a quality check — the page stays live and browsable, but "Add to basket" is replaced with a message and a contact form until you switch it back on. This is independent of the site-wide switch: turning ordering off here has no effect on any other product.':
     'Ang parehong kill-switch bilang "Tanggapin ang mga order at pagbabayad" ng Site Control, na saklaw sa produktong ito lang. Alisan ng check ito kapag ang isang item na ito ay naubos o nabigo sa isang pagsusuri sa kalidad — ang page ay mananatiling live at naba-browse, ngunit ang "Idagdag sa basket" ay papalitan ng isang mensahe at isang form sa pakikipag-ugnayan hanggang sa i-on mo itong muli. Ito ay independiyente sa switch sa buong site: ang pag-off ng pag-order dito ay walang epekto sa anumang iba pang produkto.',
   "The selected CMS page could not be loaded.": "Hindi ma-load ang napiling page ng CMS.",
+  "The storefront bot only states figures you have entered here. Anything left blank is sent to a person instead, so it can never quote a policy nobody set.":
+    "Ang storefront bot ay nagsasaad lamang ng mga numero na iyong inilagay dito. Ang anumang naiwang blangko ay ipinapadala sa halip sa isang tao, kaya hinding-hindi ito makakapag-quote ng patakarang walang itinakda.",
   "The storefront's palette and the decoration on top of it.":
     "Ang palette ng storefront at ang dekorasyon sa ibabaw nito.",
   "The two new passwords do not match.": "Hindi tumugma ang dalawang password.",
@@ -1447,10 +1598,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These roles define the permission sets available when inviting or editing users.":
     "Tinutukoy ng mga tungkuling ito ang mga set ng pahintulot na available kapag nag-iimbita o nag-e-edit ng mga user.",
   "Thinking…": "Nag-iisip...",
+  "Thirty-day unit forecast with confidence interval":
+    "Tatlumpung araw na pagtataya ng unit na may agwat ng kumpiyansa",
   "This application is": "Ang application na ito ay",
   "This order is in a final state.": "Ang order na ito ay nasa panghuling estado.",
   "This page contains sensitive application diagnostics.":
     "Ang page na ito ay naglalaman ng mga sensitibong diagnostic ng application.",
+  "This page hit an unexpected error and could not finish rendering. Reloading usually fixes it. If it keeps happening, share what you were doing when it happened with the engineering team.":
+    "Ang page na ito ay nagkaroon ng hindi inaasahang error at hindi matapos ang pag-render. Karaniwang inaayos ito ng pag-reload. Kung patuloy itong nangyayari, ibahagi ang iyong ginagawa noong nangyari ito sa engineering team.",
   "This page requires the revenue.view permission.":
     "Kinakailangan ng page na ito ang revenue.view na pahintulot.",
   "This permanently removes the image from storage. Images still referenced by a product, page, article or recipe cannot be deleted.":
@@ -1479,7 +1634,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Top-rated reviews (updates automatically)":
     "Mga review na may pinakamataas na rating (awtomatikong nag-a-update)",
   Total: "Kabuuan",
+  "Total Conversions": "Kabuuang Mga Conversion",
+  "Total Traffic": "Kabuuang Trapiko",
   "Total use limit (optional)": "Kabuuang limitasyon sa paggamit (opsyonal)",
+  "Traffic Allocation": "Paglalaan ng Trapiko",
   "Trail colour": "Kulay ng trail",
   "transfer money — make the transfer to": "maglipat ng pera — gawin ang paglipat sa",
   "Transfer reference (UPI / bank / cheque)": "Ilipat ang reference (UPI / bangko / tseke)",
@@ -1492,18 +1650,23 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "I-off para i-freeze ang mga bagong pagpaparehistro habang patuloy na nagsa-sign in ang mga kasalukuyang customer.",
   "Turn sign-in methods and ordering on or off without a deploy. The pill on the right is what customers actually get: a switch can only ever take a feature away, never add one the API is not configured for.":
     "I-on o i-off ang mga paraan ng pag-sign in at pag-order nang walang deployment. Ang tableta sa kanan ay ang talagang nakukuha ng mga customer: ang isang switch ay maaari lamang mag-alis ng isang feature, hindi kailanman magdagdag ng isa kung saan hindi naka-configure ang API.",
+  "Turning this off can block staff self-service password reset -- the recovery path into this very admin panel.":
+    "Ang pag-off nito ay maaaring ma-block ng staff ang self-service na pag-reset ng password -- ang path ng pagbawi sa mismong admin panel na ito.",
   Type: "Uri",
   "Type of section to add": "Uri ng seksyong idaragdag",
   "Uncheck this for products that genuinely cannot be returned (e.g. certain fresh perishables). Customers won't be able to file a return request against an ineligible product.":
     "Alisan ng check ito para sa mga produktong talagang hindi maibabalik (hal. ilang mga sariwang nabubulok). Hindi makakapaghain ang mga customer ng kahilingan sa pagbabalik laban sa isang hindi karapat-dapat na produkto.",
   "Under review": "Sinusuri",
   "Unit price, ₹": "Presyo ng unit, ₹",
+  "units (": "mga unit (",
   "units sold": "mga naibentang unit",
   Unpublish: "I-unpublish",
   Unpublished: "Hindi nai-publish",
   "Unpublishing…": "Ina-unpublish...",
-  "Untick a section to hide it from customers without losing its content, and use the arrows to change the order they appear in. Changes here apply as soon as you make them.":
-    "Alisan ng check ang isang seksyon upang itago ito mula sa mga customer nang hindi nawawala ang nilalaman nito, at gamitin ang mga arrow upang baguhin ang pagkakasunud-sunod kung saan sila lumabas. Nalalapat ang mga pagbabago dito sa sandaling gawin mo ang mga ito.",
+  "Untick a kind of email to stop it from sending, without touching anything else.":
+    "Alisin ang check sa isang uri ng email upang pigilan itong ipadala, nang hindi hinawakan ang anupaman.",
+  "Untick a section to hide it from customers without losing its content, and use the position dropdown to change the order they appear in. Changes here apply as soon as you make them.":
+    "Alisan ng check ang isang seksyon upang itago ito mula sa mga customer nang hindi nawawala ang nilalaman nito, at gamitin ang dropdown ng posisyon upang baguhin ang pagkakasunud-sunod kung saan sila lumabas. Nalalapat ang mga pagbabago dito sa sandaling magawa mo ang mga ito.",
   "Up to": "Hanggang sa",
   Updated: "Na-update",
   "Updated by": "Na-update ni",
@@ -1511,6 +1674,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload an image to get started.": "Mag-upload ng larawan para makapagsimula.",
   "Upload checklist": "Mag-upload ng checklist",
   "Upload image": "Mag-upload ng larawan",
+  "Upload to R2": "I-upload sa R2",
   "Uploading image...": "Ina-upload ang larawan...",
   "Uploading image…": "Ina-upload ang larawan...",
   "Uploading thumbnail...": "Ina-upload ang thumbnail...",
@@ -1528,10 +1692,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Users & Roles": "Mga User at Tungkulin",
   "Users unavailable": "Hindi available ang mga user",
   "Using the site brand colour": "Paggamit ng kulay ng brand ng site",
+  "Value (Mean)": "Halaga (Mean)",
   "Value of 1 INR": "Halaga ng 1 INR",
   "Value per INR": "Halaga bawat INR",
   "Value, ₹": "Halaga, ₹",
   "Variant Name": "Pangalan ng Variant",
+  "Variant Performance": "Pagganap ng Variant",
   Variants: "Mga Variant",
   "Variants of": "Mga Variant ng",
   View: "Tingnan",
@@ -1558,11 +1724,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     'Ano ang ginagawa ng promosyon id="t0008">Ano ang ginagawa ng promosyon. grow:',
   "What they grow:": "Ano ang kanilang pinalago:",
   "What this role is for": "Para saan ang tungkuling ito",
+  "What was actually sent, blocked, throttled or rejected.":
+    "Ano ang aktwal na ipinadala, na-block, na-throttle o tinanggihan.",
   When: "Kailan",
   "Where this category is released": "ipakita ang kategoryang ito",
   "Where this product is released": "Saan inilabas ang produktong ito",
   "Which promotion to show":
     'ipakita ang kategoryang ito id="t0015">Aling mga review ang ipapakita',
+  "Which provider sends True Grit's email, which kinds of email are allowed out, how fast, and what actually happened recently.":
+    "Alin ang mga uri ng email na pinahihintulutan, at anong mga uri ng email ang pinahihintulutan ng TGBR, __ kung ano ang aktwal na nangyari kamakailan.",
   "Which reviews to show": "Aling mga review ang ipapakita",
   "Whole order": "Buong order",
   "Whole site": "Buong site",
@@ -1574,6 +1744,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Bakit ibinigay ang card na ito — isang mabuting kalooban, isang pagbabalik na naresolba bilang credit sa tindahan, atbp.",
   "Widget colour": "Kulay ng widget",
   "Widget colour hex": "Hex ng kulay ng widget",
+  "Widget engagement and checkout revenue attributed to products discovered through recommendations in this date range.":
+    "Ang pakikipag-ugnayan sa widget at kita sa pag-checkout na naiugnay sa mga produktong natuklasan sa pamamagitan ng mga rekomendasyon sa hanay ng petsang ito.",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Mga salitang tumutugma ang bot sa isang tanong upang mapagpasyahan na may kaugnayan ang entry na ito.",
   "Working...": "Gumagana...",

@@ -918,6 +918,10 @@ export interface PriceAdjustmentsResponse {
   rules: PriceAdjustmentRule[];
 }
 
+/** Demo-mode fallback for the live rate source link — the real value comes
+ *  from `CurrencyRatesResponse.liveSourceUrl` (`services/currency_rates.py`). */
+const LIVE_CURRENCY_SOURCE_URL = "https://open.er-api.com/v6/latest/INR";
+
 export interface CurrencyRate {
   currencyCode: string;
   locale: string;
@@ -930,6 +934,38 @@ export interface CurrencyRate {
 export interface CurrencyRatesResponse {
   baseCurrency: "INR";
   rates: CurrencyRate[];
+  liveSourceUrl: string;
+  sheetsConfigured: boolean;
+}
+
+export interface CurrencyRatesRefreshResult {
+  result: { updatedCount: number; currencies: string[] };
+  rates: CurrencyRate[];
+}
+
+export interface CurrencySheetPushResult {
+  result: { pushedCount: number };
+}
+
+export interface CurrencySheetSyncResult {
+  result: { updatedCount: number; skippedCount: number };
+  rates: CurrencyRate[];
+}
+
+/** A named markup percent plus the set of countries it applies to — a
+ *  convenience manager over a batch of global-scope `price_adjustments`
+ *  rows. See `services/price_tiers.py`. */
+export interface PriceTierBracket {
+  id: string;
+  label: string;
+  percent: number;
+  sortOrder: number;
+  updatedAt: string;
+  countries: string[];
+}
+
+export interface PriceTiersResponse {
+  brackets: PriceTierBracket[];
 }
 
 /** One themed scope: the site-wide palette (`global`), a single page (`/shop`),
@@ -1520,6 +1556,23 @@ function demoPriceAdjustmentRows(): PriceAdjustmentRule[] {
 
 function demoPriceAdjustments(): PriceAdjustmentsResponse {
   return { rules: structuredClone(demoPriceAdjustmentRows()) };
+}
+
+// Demo-mode price tiers, seeded with the same starting brackets/percentages
+// the real migration ships (0115_price_tiers.sql), no countries pre-assigned.
+let demoPriceTiers_: PriceTierBracket[] | null = null;
+
+function demoPriceTierRows(): PriceTierBracket[] {
+  demoPriceTiers_ ??= [
+    { id: "ptier_1", label: "Tier 1", percent: 100, sortOrder: 0, updatedAt: "", countries: [] },
+    { id: "ptier_2", label: "Tier 2", percent: 75, sortOrder: 1, updatedAt: "", countries: [] },
+    { id: "ptier_3", label: "Tier 3", percent: 50, sortOrder: 2, updatedAt: "", countries: [] },
+  ];
+  return demoPriceTiers_;
+}
+
+function demoPriceTiers(): PriceTiersResponse {
+  return { brackets: structuredClone(demoPriceTierRows()) };
 }
 
 function hasDemoSession(): boolean {
@@ -2602,6 +2655,8 @@ export const api = {
     demoMode
       ? demo({
           baseCurrency: "INR" as const,
+          liveSourceUrl: LIVE_CURRENCY_SOURCE_URL,
+          sheetsConfigured: false,
           rates: [
             {
               currencyCode: "INR",
@@ -2627,6 +2682,21 @@ export const api = {
           ],
         })
       : get<CurrencyRatesResponse>("/v1/admin/currency-rates"),
+
+  refreshCurrencyRates: (): Promise<CurrencyRatesRefreshResult> =>
+    demoMode
+      ? demo({ result: { updatedCount: 0, currencies: [] }, rates: [] })
+      : post<CurrencyRatesRefreshResult>("/v1/admin/currency-rates/refresh"),
+
+  pushCurrencyRatesToSheet: (): Promise<CurrencySheetPushResult> =>
+    demoMode
+      ? demo({ result: { pushedCount: 0 } })
+      : post<CurrencySheetPushResult>("/v1/admin/currency-rates/push-to-sheet"),
+
+  syncCurrencyRatesFromSheet: (): Promise<CurrencySheetSyncResult> =>
+    demoMode
+      ? demo({ result: { updatedCount: 0, skippedCount: 0 }, rates: [] })
+      : post<CurrencySheetSyncResult>("/v1/admin/currency-rates/sync-from-sheet"),
 
   saveCurrencyRate: (input: {
     currencyCode: string;
@@ -2704,6 +2774,83 @@ export const api = {
     }
     rules.splice(index, 1);
     return demo(demoPriceAdjustments());
+  },
+
+  priceTiers: (): Promise<PriceTiersResponse> =>
+    demoMode ? demo(demoPriceTiers()) : get<PriceTiersResponse>("/v1/admin/price-tiers"),
+
+  createPriceTierBracket: (input: {
+    label: string;
+    percent: number;
+  }): Promise<PriceTiersResponse> => {
+    if (!demoMode)
+      return post<{ bracket: PriceTierBracket; brackets: PriceTierBracket[] }>(
+        "/v1/admin/price-tiers",
+        input,
+      ).then((result) => ({ brackets: result.brackets }));
+    const brackets = demoPriceTierRows();
+    brackets.push({
+      id: `ptier_demo_${Date.now().toString(36)}`,
+      label: input.label,
+      percent: input.percent,
+      sortOrder: brackets.length,
+      updatedAt: new Date().toISOString(),
+      countries: [],
+    });
+    return demo(demoPriceTiers());
+  },
+
+  updatePriceTierBracket: (
+    bracketId: string,
+    input: { label: string; percent: number },
+  ): Promise<PriceTiersResponse> => {
+    if (!demoMode)
+      return put<{ bracket: PriceTierBracket; brackets: PriceTierBracket[] }>(
+        `/v1/admin/price-tiers/${encodeURIComponent(bracketId)}`,
+        input,
+      ).then((result) => ({ brackets: result.brackets }));
+    const brackets = demoPriceTierRows();
+    const bracket = brackets.find((entry) => entry.id === bracketId);
+    if (!bracket) throw new ApiError("That pricing bracket could not be found.", 404, "not_found");
+    bracket.label = input.label;
+    bracket.percent = input.percent;
+    bracket.updatedAt = new Date().toISOString();
+    return demo(demoPriceTiers());
+  },
+
+  deletePriceTierBracket: (bracketId: string): Promise<PriceTiersResponse> => {
+    if (!demoMode) return del(`/v1/admin/price-tiers/${encodeURIComponent(bracketId)}`);
+    const brackets = demoPriceTierRows();
+    const index = brackets.findIndex((entry) => entry.id === bracketId);
+    if (index === -1) {
+      throw new ApiError("That pricing bracket could not be found.", 404, "not_found");
+    }
+    brackets.splice(index, 1);
+    return demo(demoPriceTiers());
+  },
+
+  assignPriceTierCountry: (input: {
+    countryCode: string;
+    bracketId: string;
+  }): Promise<PriceTiersResponse> => {
+    if (!demoMode) return post("/v1/admin/price-tiers/countries", input);
+    const brackets = demoPriceTierRows();
+    const bracket = brackets.find((entry) => entry.id === input.bracketId);
+    if (!bracket) throw new ApiError("That pricing bracket could not be found.", 404, "not_found");
+    for (const entry of brackets) {
+      entry.countries = entry.countries.filter((code) => code !== input.countryCode);
+    }
+    bracket.countries.push(input.countryCode);
+    return demo(demoPriceTiers());
+  },
+
+  unassignPriceTierCountry: (countryCode: string): Promise<PriceTiersResponse> => {
+    if (!demoMode) return del(`/v1/admin/price-tiers/countries/${encodeURIComponent(countryCode)}`);
+    const brackets = demoPriceTierRows();
+    for (const entry of brackets) {
+      entry.countries = entry.countries.filter((code) => code !== countryCode);
+    }
+    return demo(demoPriceTiers());
   },
 
   appearance: (): Promise<AppearanceResponse> =>

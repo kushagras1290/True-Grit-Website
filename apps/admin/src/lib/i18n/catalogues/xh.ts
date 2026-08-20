@@ -22,6 +22,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   ") · started": ") · iqalile",
   "[label](/path)": "[ileyibhile](/indlela)",
   "/ due": "/ ngenxa",
+  "/ variant": "/ eyahlukileyo",
   "/recipes/": "/iiresiphi/",
   "← All farms": "← Zonke iifama",
   "+ stars": "+ iinkwenkwezi",
@@ -31,6 +32,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "2 cups": "2 iikomityi",
   "2 stars": "2 iinkwenkwezi",
   "3 stars": "3 iinkwenkwezi",
+  "30-day demand": "30-imfuno yeentsuku",
   "4 stars": "4 iinkwenkwezi",
   "5 stars": "5 iinkwenkwezi",
   "5xx AppErrors and unhandled exceptions will show up here as they happen.":
@@ -62,6 +64,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "A tinted band — khangela umbhalo ocinyiweyo usafundeka apha.",
   "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
     "Ilizwe londwendwelo likhetha imali, le theyibhile ibonelela ngexabiso layo lokubonisa, kwaye ixabiso loqobo le-INR lisahleli lingatshintshanga. Iimali ezikhubaziweyo zibuyela kwi-INR-ezihlala zikhuselekile.",
+  "A/B Experiments": "A/B aMafuniselo",
   "Accept orders and payments": "Yamkela iiodolo kunye neentlawulo",
   "Accept orders and payments for this product": "Yamkela iiodolo neentlawulo zale mveliso",
   Action: "Isenzo",
@@ -72,6 +75,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Active points appear as free checkout alternatives.":
     "Amanqaku asebenzayo avela njengezinye iindlela zokuphuma simahla.",
   "Active rules": "Imigaqo esebenzayo",
+  "Active, published variants": "Esebenzayo, okwahluka okupapashiweyo",
   Actor: "Umdlali",
   Add: "Yongeza",
   "Add / edit roles": "Yongeza / hlela iindima",
@@ -82,6 +86,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add a question": "Yongeza umbuzo",
   "Add a section…": "Yongeza icandelo…",
   "Add a snippet": "Yongeza isiqwengana",
+  "Add bracket": "Yongeza isibiyeli",
   "Add business": "Yongeza ishishini",
   "Add category": "Yongeza udidi",
   "Add code": "Yongeza ikhowudi",
@@ -115,9 +120,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add window": "Yongeza ifestile",
   "Add zone": "Yongeza indawo",
   Added: "Ongeziwe",
+  "Added to basket": "Ongezwe kwibhaskithi",
   "Adding...": "Yongeza...",
   "Adding…": "Iyongeza…",
   Address: "Idilesi",
+  "Adds after a recommendation click": "Iyongeza emva konqakrazo lwengcebiso",
   "Adjust points": "Lungisa amanqaku",
   "Adjust the search or create a category.": "Lungisa uphendlo okanye wenze udidi.",
   "Adjust the search or create a product.": "Lungisa uphendlo okanye wenze imveliso.",
@@ -125,9 +132,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjustments restricted": "Uhlengahlengiso luthintelwe",
   Admin: "Umlawuli",
   "Admin API is unavailable": "Admin API ayifumaneki",
+  "Admin bot answer tuning": "Ulungiso lwempendulo yebhot yomlawuli",
   "Admin panel bot": "Ibhoti yephaneli yomlawuli",
   "After refunds, all farms": "Emva kwembuyekezo, zonke iifama",
+  "Agent assessment": "Uvavanyo lomenzeli",
   All: "Zonke",
+  "All outcomes": "Zonke iziphumo",
   "All ratings": "Zonke izikalo",
   "All statuses": "Zonke iimeko",
   "All types": "Zonke iindidi",
@@ -140,6 +150,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Ambient effect": "Isiphumo se-Ambient",
   Amount: "Isixa",
   "Amount off, ₹": "Isixa-mali, ₹",
+  "An admin preference wins only if that provider's API key is actually configured on the server -- picking one here can never send mail through a provider with no key set.":
+    "Ulawulo olukhethwayo luphumelela kuphela ukuba isitshixo seAPI salo mboneleli siqwalaselwe ngokwenene kumncedisi -- ukukhetha enye apha akunakuze ithumele imeyile ngomboneleli ngaphandle kweseti yesitshixo.",
   "An impression of the motion and colour, not a pixel-accurate rehearsal.":
     "Imbonakalo yesindululo kunye nombala, hayi ipixel-echanekileyo ukuziqhelanisa.",
   Analytics: "Uhlalutyo",
@@ -151,7 +163,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Isibhengezo sesibhengezo",
   "Announcements unavailable": "Izaziso azikho",
   Answer: "Impendulo",
-  "Answer tuning": "Ulungiso lwempendulo",
+  "Answered by the bot": "Iphendulwe yi bot",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Nabani na ongenileyo angaphawula. Ukuqala ingxoxo entsha kuphela kumasango e-akhawunti yobudala.",
   "API mode": "imo ye-API",
@@ -170,12 +182,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Isetyenziswa kwifama nganye ngaphandle komlinganiselo wayo.",
   "Applies to": "Ifaka ku",
-  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
-    "Isebenza kuzo zombini ii-bots. Amaxabiso amakhulu anika umncedisi ukusebenza kunye kwaye abize ngaphezulu kwempendulo nganye.",
   "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
     "Isebenza kuzo zombini iiwijethi zengxoxo. Yiyeke icociwe ukuze ulandele umbala webhrendi yesayithi ukusuka kwiMibala & neZiphumo.",
   "Applies to every visitor Cloudflare resolves to":
     "Isebenza kumtyeleli ngamnye Cloudflare ugqiba kwelokuba",
+  "Applies to the admin panel bot only. The storefront bot does not use a language model, so it has nothing to tune here.":
+    "Isebenza kwibhoti yendawo yolawulo kuphela. Ibhot yangaphambili yevenkile ayisebenzisi imodeli yolwimi, ngoko ayinanto yokushuna apha.",
   Approve: "Vumela",
   "Approve & publish": "Vumela kwaye upapashe",
   Approved: "Ivunyiwe",
@@ -189,9 +201,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
     "Buza indlela yokwenza into kwiqela lenjongo yolawulo, okanye ubuze ngeeodolo ezisalindileyo, izinto eziphantsi, okanye ubume be-odolo.",
   "Assigned roles": "Iindima ezabelweyo",
+  "Attributed orders": "Abalelwa ii-odolo",
+  "Attributed revenue": "Ingeniso ebalelwayo",
   Author: "Umbhali",
+  "Auto (best configured)": "Auto (iqwalaselwe kakuhle)",
   "Auto-translate": "Tolika ngokuzenzekela",
   "Auto-translate all": "Tolika ngokuzenzekela zonke",
+  "Automatically scores every new return request for fraud risk and auto-approves (with a real Razorpay refund), auto-denies, or escalates it to a human in the Returns queue. Off by default -- while off, every return request is triaged and resolved by staff exactly as it works today. See a request's Returns detail page for the agent's risk score and reasoning once this is on.":
+    "Izikelisa ngokuzenzekelayo isicelo esitsha sembuyekezo somngcipheko worhwaphilizo kwaye ivume ngokuzenzekelayo (ngembuyekezo yokwenyani yeRazorpay), iyakhanyela ngokuzenzekelayo, okanye iyinyuse iye emntwini kumgca wokuBuyisa. Ukucinywa ngokungagqibekanga -- ngeli lixa ungekhoyo, isicelo ngasinye sijongwa kwaye sisonjululwe ngabasebenzi kanye njengoko sisebenza namhlanje. Jonga isicelo seReturns iinkcukacha zephepha lamanqaku omngcipheko womenzeli kunye nokuqiqa xa sele ivuliwe.",
   Availability: "Ubukho",
   Available: "Iyafumaneka",
   "available · reorder at": "iyafumaneka · phinda oda e",
@@ -204,6 +221,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "B2B / bulk ordering": "B2B / iodolo eninzi",
   Back: "Buyela",
   "Back to conversations": "Buyela kwiincoko",
+  "Back to experiments": "Buyela kwimifuniselo",
+  "Back to Experiments": "Buyela kuMfuniselo",
   "Back to sign in": "Buyela ukuze ungene",
   Balance: "Ibhalansi",
   "Banner alt text": "Alt text ye-Banner",
@@ -222,6 +241,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Eyona yonyuselo lusebenzayo (uhlaziyo oluzenzekelayo)",
   "Best sellers, resolved live from orders on every homepage load -- nothing to keep stocked.":
     "Abona bathengisi bangcono, basonjululwe ngokuthe ngqo kwii-odolo kwiphepha lasekhaya ngalinye -- akukho nto izakugcinwa.",
+  "Blank means a category has no cap of its own -- the global limit above still applies.":
+    "Ayinanto ithetha ukuba udidi alunamda walo -- umda wehlabathi ungentla usasebenza.",
   "Blocks JSON": "IiBlocks JSON",
   "Blog and recipe pitches from the community appear here.":
     "Iblogi kunye neendlela zokupheka ezisuka kuluntu zivela apha.",
@@ -231,6 +252,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "IiBlogger ziyila kwaye zingenise iiposti apha; abagxeki bayavuma kwaye bapapashe.",
   Body: "Umzimba",
   Bosnian: "Bosnia",
+  "Bracket name": "Igama lesibiyeli",
   "Built-in": "Yakhelwe ngaphakathi",
   "bundle price · items priced at": "ixabiso lenqwaba · izinto zixatyiswe ku",
   "Bundle price, ₹": "Ixabiso le-Bundle, ₹",
@@ -286,6 +308,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Clear: "Cima",
   "Clearing...": "Iyacoca...",
   "Click link": "Cofa ikhonkco",
+  "Click-through rate": "Cofa-ngomlinganiselo",
   Close: "Vala",
   "Close help assistant": "Vala umncedisi woncedo",
   "Close navigation": "Vala ukukhangela",
@@ -309,6 +332,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Common questions": "Imibuzo eqhelekileyo",
   Community: "Uluntu",
   Company: "Inkampani",
+  Complete: "Gqiba",
   Completed: "Kugqityiwe",
   Configuration: "Ubumbeko",
   "Configure loyalty, pickup, harvest reservations, delivery logistics and wholesale accounts. Customer access is controlled independently by the five checkboxes in Site Control.":
@@ -322,21 +346,29 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact Attempts": "Iinzame zoQhagamshelwano",
   "Contact attempts unavailable": "Imizamo yoqhakamshelwano ayifumaneki",
   "Contact email": "I-imeyile yoQhagamshelwano",
+  "Contact form": "Ifomu yoQhagamshelwano",
   Content: "Umxholo",
+  "Content submission decision": "Isigqibo sokungeniswa kwesiqulatho",
   "Continue with Facebook": "Qhubeka noFacebook",
+  "Continuous (e.g. AOV)": "Okuqhubekayo (umz. AOV)",
+  Control: "Lawula",
   "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
     "Lawula amaxabiso aqikelelwayo emali yasekhaya ngokucwangcisa ukuba yimalini enye yerupee yaseIndiya. Ikhathalogu, ukuphuma kunye neerekhodi zeodolo zihlala zikhuselekile kwi-INR.",
+  "Control vs": "Lawula vs",
   "Control what each role can view, create, edit, publish or manage.":
     "Lawula indima nganye enokujongwa, iyilwe, ihlele, ipapashe okanye ilawulwe.",
   "Control whether each bot is available, and edit what it knows.":
     "Lawula ukuba ibhot nganye iyafumaneka, kwaye uhlele into eyaziyo.",
+  "Conv. Rate": "Conv. Ireyithi",
   "Conversation turns remembered": "Incoko ijika ikhunjulwe",
+  "Conversion rate": "Ireyithi yoguqulo",
   "Cook minutes": "Ukupheka imizuzu",
   "Copy inside dark bands.": "Khuphela ngaphakathi kweebhanti ezimnyama.",
   Correction: "Ulungiso",
   "Could not load archived records.": "Ayinakulayisha iirekhodi ezigciniweyo.",
   "Could not load this feature.": "Ayikwazanga kulayisha oluphawu.",
   Countries: "Amazwe",
+  "Countries in this bracket": "Amazwe akule bracket",
   Country: "Ilizwe",
   "Country overrides unavailable": "Ilizwe elingaphezulu alifumaneki",
   "Coupon codes": "Iikhowudi zeKhuphoni",
@@ -360,6 +392,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Create promotion": "Yenza unyuso",
   "Create role": "Yenza indima",
   "Create the first draft to get started.": "Yenza uyilo lokuqala ukuze uqalise.",
+  "Creating experiments from the admin panel is not available yet.":
+    "Uyila imifuniselo kwiqela lenjongo yolawulo akukafumaneki.",
   "Creating...": "Uyila...",
   "Creating…": "Yenza...",
   "Credit limit, ₹": "Umda wetyala, ₹",
@@ -372,15 +406,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Currency values unavailable": "Amaxabiso emali awafumaneki",
   "Current password": "Igama lokugqithisa langoku",
   "Currently its own effects.": "Okwangoku iziphumo zayo.",
+  "Currently sending via": "Ithumela ngoku nge",
   "Currently the site-wide effects — save below to give it its own.":
     "Okwangoku iziphumo zesayithi-banzi — gcina ngezantsi ukuze uyinike eyayo.",
   "Cursor trail": "Umkhondo weCursor",
   Customer: "Umthengi",
   "Customer favourites": "Favourites yabathengi",
   "Customer image URL": "URL yomfanekiso wabathengi",
+  "Customer password reset": "Useta kwakhona igama lokugqitha lomthengi",
   "Customer ratings and reviews from verified purchases.":
     "Ukalisho lwabathengi kunye nophononongo olusuka kwiintengo eziqinisekisiweyo.",
   "Customer user ID": "ID yomsebenzisi woMthengi",
+  "Customer welcome": "Wamkelekile umThengi",
   "Customer-created Subscribe & Save deliveries. Pause, resume or cancel on a customer's behalf, or run the renewal batch that otherwise fires on its own schedule.":
     "Okudalwe ngumthengi Bhalisa & Gcina ukuhanjiswa. Misa, phinda uqalise okanye urhoxise egameni lomthengi, okanye uqalise ibhetshi yokuhlaziya enokuthi ivuthe kwishedyuli yayo.",
   "Customer-facing description (optional)": "Inkcazo ejongene nomThengi (ukhetho)",
@@ -394,10 +431,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Customers can reserve products against active harvest windows instead of current stock.":
     "Abathengi banokugcina imveliso kwiifestile zokuvuna ezisebenzayo endaweni yesitokhwe sangoku.",
   Cut: "Sika",
+  "Daily demand": "Imfuno yemihla ngemihla",
   "Daily revenue for the selected range": "Ingeniso yosuku kuluhlu olukhethiweyo",
   "Dairy Free": "Mahala Yobisi",
   Danger: "Ingozi",
+  "data days": "iintsuku zedatha",
   "Day (0 Sun – 6 Sat)": "Day (0 Langa - 6 Sat)",
+  "Days left": "Iintsuku ezishiyekileyo",
   Deactivate: "Yenza isebenze",
   Decision: "Isigqibo",
   Decline: "Yala",
@@ -425,6 +465,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete selected (": "Cima ekhethiweyo (",
   "Delete this entry": "Cima olungeno",
   "Delete this price adjustment?": "Cima olu lungelelaniso lwexabiso?",
+  "Delete this pricing bracket?": "Cima esi sibiyeli samaxabiso?",
   "Delete user": "Cima umsebenzisi",
   "Deleting...": "Iyacima...",
   Delivery: "Ukuhanjiswa",
@@ -494,6 +535,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Email: "I-imeyile",
   "Email + password": "I-imeyile + negama lokugqitha",
   "Email for reset link": "I-imeyile yokusetha kwakhona ikhonkco",
+  "Email settings unavailable": "Iisetingi ze-imeyile azifumaneki",
   Enable: "Vula",
   "Enable at least one block.": "Vula ubuncinane ibhloko enye.",
   "Enable B2B and bulk ordering": "Vula i-B2B kunye ne-odolo eninzi",
@@ -504,6 +546,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Enable seasonal pre-orders": "Vula ii-odolo zangaphambili zesizini",
   "Enable selected (": "Vula ezikhethiweyo (",
   "Enable Subscribe & Save": "Vumela uBhaliso & Gcina",
+  "Enable the refund agent": "Vumela umenzeli wembuyekezo",
   Enabled: "Vula",
   Ends: "Iphela",
   "Ends (optional)": "Iphela (ukhetho)",
@@ -512,6 +555,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Errors and destructive actions.": "Iimpazamo kunye nezenzo ezonakalisayo.",
   Established: "Isekiwe",
   Estonian: "isi-Estonian",
+  Evaluated: "Ivavanyiwe",
   Event: "Isiganeko",
   "Every colour the storefront uses, site-wide or for one page, plus ambient effects and cursor trails. Changes go live as soon as you save.":
     "Wonke umbala osetyenziswayo ngaphambili kwevenkile, indawo-banzi ye-cursor kunye neziphumo zephepha elinye kunye ne-trails enye. Utshintsho luza kubonakala ngokukhawuleza wakuba ugcinile.",
@@ -530,23 +574,32 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Expanded Commerce": "URhwebo olwandisiweyo",
   "Expected end": "Isiphelo esilindelweyo",
   "Expected start": "Isiqalo esilindelekileyo",
+  "Expected to run out inside lead time":
+    "Kulindeleke ukuba iphele ngaphakathi kwexesha lokukhokela",
+  Experiment: "Ukulinga",
+  "Experiments are currently created from the database; the admin panel does not yet have a creation form.":
+    "Amalingo enziwe ngoku kwisiseko sedatha; indawo yolawulo ayikabinayo ifomu yokuyila.",
   Expires: "Iphelelwa",
   "Expires (optional)": "Iphelelwa (ukhetho)",
   Explore: "Jonga",
   "Explore the market": "Jonga imarike",
   "Export at the listed width and height. Do not upload a 16:9 photo for a banner.":
     "Rhweba ngaphandle kububanzi obudwelisiweyo kunye nobude. Musa ukulayisha ifoto ye-16:9 yebhena.",
+  Exposures: "Izityhilelo",
   'Extra photos shown as a thumbnail strip on the product page, the way most shops show different angles of the same item. Up to 8. Saved immediately, no separate "Save draft" needed.':
     'Iifoto ezongezelelweyo eziboniswe njengomfanekiso wesithombe kwiphepha lemveliso, indlela iivenkile ezininzi ezibonisa ngayo ii-engile ezahlukeneyo zento enye. Ukuya kuthi ga kwi-8. Igcinwe ngokukhawuleza, akukho kwahlukileyo "Gcina uyilo" olufunekayo.',
   Eyebrow: "Ishiya",
   "Eyebrows and small highlights.": "Amashiya kunye namagqabantshintshi amancinci.",
   "Facebook Login button in the storefront account menu.":
     "Facebook Ngena iqhosha kwimenyu yeakhawunti yevenkile.",
+  "Failed to load experiment": "Ayiphumelelanga ukulayisha umfuniselo",
+  "Failed to load experiments": "Ayiphumelelanga ukulayisha imifuniselo",
   "Falls back to the route's built-in description":
     "Iwa umva kwindlela yenkcazo eyakhelwe-ngaphakathi",
   "Falls back to the route's built-in title": "Iwa umva kwindlela eyakhelwe-ngaphakathi isihloko",
   "Farm name": "Igama leFama",
   "Farm not found": "Fama ayifunyenwanga",
+  "Farm partnership decision": "Isigqibo seNtsebenziswano yaseFama",
   "Farm record": "Fama irekhodi",
   "Farm request not found": "Isicelo sefama asifunyenwanga",
   "Farm Requests": "Izicelo zeFama",
@@ -559,6 +612,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Fee, ₹": "Umrhumo, ₹",
   "File target": "Ifayile ekujoliswe kuyo",
   Filipino: "kwiiPhilippines",
+  "Filter by outcome": "Hlunga ngesiphumo",
   "Filter by rating": "Hluza ngokulinganisa",
   "Filter by status": "Hluza ngokwesimo",
   "Find a product to add": "Fumana imveliso oza kuyongeza",
@@ -569,6 +623,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Footer and inverted sections.": "Amazantsi kunye namacandelo aguqulweyo.",
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Nyanzelela icandelo livule okanye livale iindwendwe kwilizwe elinye, ngaphandle kokutshintsha okubonwa ngumntu wonke. Shiya icandelo ku "Lifa" kwaye ilandela nje ibhokisi yetikhi kuluhlu lwecandelo elingentla.',
+  "Forecast unavailable": "uqikelelo lwentelekelelo alufumaneki",
+  "Forecasted SKUs": "ii-SKU ezixeliweyo",
+  "Forecasting...": "Uqikelelo...",
   "Forgot password?": "Ulibele igama eligqithisiweyo?",
   "Formatting locale": "Ukufomatha indawo",
   "Free delivery above (₹)": "Ukuhanjiswa kwamahala ngaphezulu ( ₹)",
@@ -584,12 +641,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Give one country its own colours": "Nika ilizwe elinye imibala yalo",
   "Give one country its own effects": "Nika ilizwe elinye iziphumo zalo",
   "Give one page its own colours": "Nika iphepha elinye ngemibala yalo",
+  "Global — per day": "Global — ngosuku",
+  "Global — per hour": "Global — ngeyure nganye",
   "Gluten Free": "Mahala yeGluten",
   "Go back": "Buyela umva",
   "Google Identity Services button in the storefront account menu.":
     "Google iqhosha leeNkonzo zesazisi",
   "Gross revenue": "Ingeniso epheleleyo",
   Group: "Iqela",
+  "Group countries into brackets that each pay a markup over India's base price. Both the percentage and which countries sit in each bracket are yours to adjust at any time.":
+    "Qelanisa amazwe kwizibiyeli elinye lihlawula imakisho ngaphezulu kwexabiso elisisiseko laseIndiya. Zombini ipesenti kunye namazwe ahlala kwisibiyeli ngasinye zezakho ukuba uzilungise nanini na.",
   "Group name": "Igama leQela",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "Abalimi abafake izicelo e/farms/partner ukubonelela imakethi. Akukho akhawunti ifunwayo ukufaka isicelo, kungoko ke kujongwe kwakhona apha kuphela kwesango.",
@@ -598,6 +659,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "h lead": "h ukukhokela",
   "Hairline border": "Umda weenwele",
   "Hand-picked testimonials": "Izingqinisiso ezikhethwe ngesandla",
+  "Handed to a person": "Inikezelwe emntwini",
   "Harvest calendar": "Ikhalenda yokuvuna",
   "Harvest note": "Inqaku lokuvuna",
   Heading: "Isihloko",
@@ -613,6 +675,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Hero title": "Isihloko seqhawe",
   Hidden: "Sifihliwe",
   Hide: "Fihla",
+  "Hide password": "Fihla igama eliyimfihlo",
   "Hides the system cursor so the trail is the cursor. Links, buttons and form fields keep a real pointer regardless — losing the hit target on those is not a trade worth making.":
     "Ifihla isalathisi senkqubo ukuze umzila ube sisalathisi. Amakhonkco, amaqhosha kunye neefom zefom zigcina isalathisi sokwenyani kungakhathaliseki - ukulahlekelwa yithagethi ekujoliswe kuyo abo akusiyo urhwebo olufanele ukwenziwa.",
   "Highlighted products": "Iimveliso eziqaqambileyo",
@@ -624,15 +687,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage Settings": "Imimiselo yephepha lasekhaya",
   "Homepage settings unavailable": "Iisetingi zephepha lasekhaya azifumaneki",
   Hours: "Iiyure",
-  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
-    "Bangaphi abalinganiswa benkqubo yephepha enokuthi ifundwe ngasemva kwevenkile phambi kokuba uphendule. Ixesha elide ligcina iinkcukacha ezininzi umthengi abuzwe ngazo.",
   "How many entries from the list below are given to the assistant as reference.":
     "Mangaphi amangeno asuka kuluhlu olungezantsi anikwe umncedisi njengereferensi.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Zingaphi iimveliso okanye iindidi umsebenzisi anokuzikhetha kwiiFavourites eziTsha, Iindidi eziBalulekileyo (Iisetingi zephepha lasekhaya) kunye neemveliso eziPhakisiweyo (ngezantsi). Ukuyiphakamisa kusindisa ngokukhawuleza, akukho mfuneko yokuthunyelwa; ukuya kuthi ga kwi-50, isilingi yefomati yebhloko iyanyanzeliswa ngokwayo.",
   "How many products to show": "Zingaphi iimveliso eziboniswayo",
-  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
-    "Zingaphi iimveliso, amanqaku okanye iiresiphi ukhangelo lwebhot yevenkile engaphambili olubuyiselayo qho xa lujonge okuthile.",
   "How many to show": "Zingaphi eziboniswayo",
   "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
     "Ingakanani incoko yangoku ebuyiselwayo ngombuzo ngamnye. I-0 iphendula yonke imibuzo ibekwe yodwa.",
@@ -695,12 +754,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Land under cultivation": "Umhlaba olinywayo",
   Language: "Ulwimi",
   "Language Studio": "Isitudiyo solwimi",
+  "last 24h": "i-24h yokugqibela",
   "Last activity": "Umsebenzi wokugqibela",
+  "Last refresh": "Uhlaziyo lokugqibela",
   "Last reviewer note": "Inqaku lomhloli wokugqibela",
   "Last sign-in": "Ukungena kokugqibela",
   "Last sync": "Ungqamaniso lokugqibela",
+  "last synced": "ungqamaniso lokugqibela",
   "Last updated": "Igqibele ukuhlaziya",
   "Layout — drag or use arrow keys": "Ubeko — tsala okanye usebenzise izitshixo zotolo",
+  "Lead time": "Ixesha lokukhokela",
   "Lead time, hours": "Ixesha lokukhokela, iiyure",
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Shiya umbala ungenanto ukuze ugcine enye True Grit iinqanawa — ukucima indawo yindlela orhoxisa ngayo. Iphepha okanye imibala yelizwe iqala kwimibala yesayithi kwaye ibhala ngaphezulu kwento oyitshintshayo, ngoko ke uluhlu ngalunye luluhlu olufutshane, hayi i-palette yesibini yokugcina. Xa zombini zisebenza kumtyeleli omnye, iphepha liyaphumelela — uyilo lwephepha lomhleli akufuneki lungenziwa ngumfuniselo we geo.",
@@ -732,6 +795,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live connected": "Live connection",
   "Live marketplace state, fulfilment pressure and publishing activity.":
     "Live marketplace state, inzaliseko yoxinzelelo kunye nomsebenzi wokupapasha.",
+  "Live rates from": "Amaxabiso okuphila ukusuka",
   "Live, and to scale with the real storefront's own styles.":
     "Live, kunye nokukala ngezimbo zevenkile yokwenyani.",
   Loading: "Iyalayisha",
@@ -751,6 +815,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading currency values…": "Ilayisha amaxabiso emali…",
   "Loading delivery charges...": "Ilayisha ukuhanjiswa kweendleko...",
   "Loading discussion…": "Ilayisha ingxoxo…",
+  "Loading email settings...": "Ilayisha iisetingi ze-imeyile...",
+  "Loading forecast...": "Ilayisha uqikelelo...",
   "Loading highlights...": "Ilayisha amagqabantshintshi...",
   "Loading homepage sections...": "Ilayisha amacandelo ephepha lasekhaya...",
   "Loading homepage settings...": "Ilayisha iisetingi zephepha lasekhaya...",
@@ -759,6 +825,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading order…": "Ilayisha iodolo…",
   "Loading permissions...": "Ilayisha iimvume...",
   "Loading price adjustments...": "Ilayisha uhlengahlengiso lwamaxabiso...",
+  "Loading price tiers…": "Ilayisha amaxabiso amanqanaba…",
   "Loading product…": "Ilayisha imveliso…",
   "Loading products...": "Ilayisha iimveliso...",
   "Loading recipe…": "Ilayisha iresiphi…",
@@ -822,7 +889,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Muted text": "umbhalo othunyiweyo",
   Name: "Igama",
   "Navigation labels": "Navigation",
+  "Nearly matched": "Iphantse ingqamane",
   "Needs attention": "Ifuna ukuhoywa",
+  "Net line revenue after allocated discounts":
+    "Ingeniso yomgca opheleleyo emva kwezaphulelo ezibekelwe bucala",
   "Net revenue": "Ngena ingeniso",
   Never: "Ngaze",
   "Never accept payments for this product": "Ungaze wamkele iintlawulo zale mveliso",
@@ -835,6 +905,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "New conversation": "Incoko entsha",
   "New coupon code": "Ikhowudi entsha yekhuphoni",
   "New customers": "Abathengi abatsha",
+  "New Experiment": "Uvavanyo olutsha",
   "New farm": "Fama entsha",
   "New password": "Igama lokugqitha elitsha",
   "New post": "Iposti entsha",
@@ -862,18 +933,24 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Akukho khowudi okwangoku — olunyuso lusebenza ngokuzenzekelayo kwinqwelo nganye efanelekileyo.",
   "No comments": "Akukho zimvo",
   "No comments yet.": "Akukho zimvo okwangoku.",
+  "No completed run": "Akukho kuqhuba kugqityiweyo",
   "No contact attempts": "Akukho zinzame zoqhagamshelwano",
   "No content yet": "Akukho mxholo okwangoku",
   "No conversations yet": "Akukho ncoko okwangoku",
+  "No countries assigned yet.": "Akukho mazwe abelweyo okwangoku.",
   "No country overrides yet. Add a country above to give it its own section visibility.":
     "Akukho lizwe likhuphayo okwangoku. Yongeza ilizwe elingentla ukuze linike elalo icandelo ukubonakala.",
   "No discussions": "Akukho ngxoxo",
+  "No email activity yet.": "Akukho msebenzi we-imeyile okwangoku.",
   "No embedded True Grit logo, headline, button, or watermark.":
     "Akukho ifakelelwe True Grit logo, isihloko, iqhosha, okanye iwatermark.",
+  "No experiments": "Akukho mifuniselo",
   "No farm assigned": "Akukho fama yabelweyo",
   "No farm requests": "Akukho zicelo zefama",
   "No farmer name": "Akukho gama lomfama",
   "No farms yet": "Azikho iifama okwangoku",
+  "No forecast yet": "Akukabikho luqikelelo lwangaphambili",
+  "No fraud signals fired.": "Akukho miqondiso yobuqhophololo egxothiweyo.",
   "No fresh favourites yet. Add a few below.":
     "Akukho zintsha zithandwayo okwangoku. Yongeza ezimbalwa ngezantsi.",
   "No gift cards yet": "Akukabikho makhadi esipho",
@@ -902,6 +979,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No permissions": "Akukho zimvumelwano",
   "No pre-orders yet.": "Azikabikho zi-odolo zangaphambili.",
   "No price adjustments yet": "Akukho luhlenga-hlengiso lwamaxabiso okwangoku",
+  "No pricing brackets yet": "Akukho zibiyeli zamaxabiso okwangoku",
   "No products linked yet.": "Akukho mveliso eziqhagamshelweyo okwangoku.",
   "No products match": "Akukho mveliso zihambelanayo",
   "No products match.": "Akukho mveliso zihambelanayo.",
@@ -931,6 +1009,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Not orderable even while the site-wide switch is on.": "Ayiodoleki naxa isitshixo sivuliwe.",
   "Not redeemed against any order yet.":
     "Ayikafunyanwa ngokuchasene nayo nayiphi na iodolo okwangoku.",
+  "Not set": "Ayikamiselwa",
+  "not signed in": "ayikasayinwanga",
+  "Not Significant (Yet)": "Ayibalulekanga (Okwangoku)",
+  "Not started": "Ayikaqaliswa",
   "Note (optional)": "Qaphela (ukhetho)",
   "Note (required to decline)": "Qaphela (kuyafuneka ukwala)",
   "Note (required to request changes or reject)":
@@ -943,6 +1025,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Nothing selected — the storefront stays exactly as it is.":
     "Akukho nto ikhethiweyo — umphambili wevenkile uhlala kanye njengoko unjalo.",
   "Nothing urgent": "Akukho nto ingxamisekileyo",
+  "Nothing waiting. Everything asked so far was answered or refused cleanly.":
+    "Akukho nto ilindileyo. Yonke into ebuziweyo ukuza kuthi ga ngoku iphendulwe okanye yaliwe ngokucocekileyo.",
   Notifications: "Izaziso",
   Off: "Cimile",
   "Off closes checkout entirely and shows customers a contact form instead, so interest is still captured. Baskets are left untouched.":
@@ -953,6 +1037,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "On hand": "Esandleni",
   "on the sign-in page. The reset link goes to the address above.":
     "kwiphepha lokungena. Ikhonkco lokuseta ngokutsha liya kule dilesi ingasentla.",
+  "Once a window fills up, further emails in it wait for the next minute's dispatch instead of failing outright -- nothing is lost, it just slows down.":
+    "Yakube ifestile izaliswe, ezinye ii-imeyile kuyo zilinda ukuthunyelwa komzuzu olandelayo endaweni yokusilela ngokuthe ngqo -- akukho nto ilahlekayo, isuka icothe.",
   "Once you have created this grower's farm in the console, link the application to it here for provenance.":
     "Xa sele udale ifama yalo mlimi kwiconsole, qhagamshela isicelo kuyo apha ukuze ufumane iprovenance.",
   "One composition engine renders every category — no code per category.":
@@ -977,6 +1063,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Optional: "Ngokuzikhethela",
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
     "Umxholo ozikhethelayo oboniswe ngentla kwezithako — uxhasa iibhloko ezifanayo njengezithuba zeblogi, kuquka",
+  "Order confirmation": "Uqinisekiso lweodolo",
   "order line": "umgca we-odolo",
   "Order lines": "Imigca yoku-odola",
   "Order not found": "I-odolo ayifunyenwanga",
@@ -992,7 +1079,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic mangoes held in a sunlit orchard":
     "Iimango zeOrganic ezibanjelwe kwigadi yeziqhamo elayitiwe lilanga",
   "Organic wheat flour in a wooden bowl": "Organic umgubo wengqolowa kwisitya somthi",
+  Outcome: "Isiphumo",
   Outstanding: "Egqwesileyo",
+  "over India's base price": "ngaphezu kwesiseko sexabiso laseIndiya",
   Overview: "Amagqabantshintshi",
   "Owner Reports": "IiNgxelo zoMni",
   "Owner-only controls for /sitemap.xml, /robots.txt and /llms.txt.":
@@ -1008,7 +1097,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Isihloko sephepha",
   "Page unavailable": "Iphepha alifumaneki",
   Pages: "Amaphepha",
-  "Pages the storefront bot may quote": "Amaphepha ibhoti engaphambili yevenkile inokucaphula",
   Paid: "Ahlawulwa",
   "Paid out": "Ihlawulwe",
   "paid via": "ihlawulwe nge",
@@ -1027,6 +1115,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Pending: "Isalindile",
   "Pending fulfilment": "Isaza kuzaliseka",
   "Pending work for your role": "Umsebenzi osalindileyo wendima yakho",
+  "Per day": "Ngosuku",
+  "Per hour": "Ngeyure",
+  "Per-category overrides": "Ngodidi logibe ngaphezulu",
   "Per-customer limit (optional)": "Umda womthengi ngamnye (ukhetho)",
   "Percent off": "Ipesenti yesaphulelo",
   "Permanently delete item": "Cima into ngokusisigxina",
@@ -1050,8 +1141,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Platform earns": "Iingeniso zeqonga",
   "points ·": "amanqaku ·",
   "Points (+ / -)": "-",
-  "Policy page slugs": "Iphepha lomgaqo-nkqubo i-slugs",
-  "Policy text quoted per answer": "Umgaqo-nkqubo ucatshulwe ngempendulo nganye",
   "Portuguese (Português)": "Português (Português)",
   Position: "Indawo",
   "Positive raises the price (a markup, shown as the new price alone). Negative lowers it (a discount, shown with the real price struck through). Between −90% and 500%. Saving a rule for the same target and scope replaces it rather than adding a duplicate.":
@@ -1060,6 +1149,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Post a recipe (submission form)": "Thumela iresiphi (ifomu yokungenisa)",
   "Post Comments": "Posa amagqabantshintshi",
   Posted: "Post Comments",
+  "Power Achieved:": "Amandla aphunyeziwe:",
+  "Preferred provider": "Umboneleli okhethwayo",
   "Prep minutes": "Prep imizuzu",
   "Preview is checked on both a narrow phone and a desktop screen.":
     "Imboniselo yangaphambili ikhangelwe kwifowuni emxinwa kunye nescreen sedesktop.",
@@ -1067,6 +1158,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Price: "Ixabiso",
   "Price (₹) (Primary Variant)": "Ixabiso ( ₹) (Eyantlukwano Engundoqo)",
   "Price adjustments unavailable": "Uhlengahlengiso lwexabiso alufumaneki",
+  "Price Tiers": "Amanqanaba eXabiso",
+  "Price tiers unavailable": "Amanqanaba exabiso awafumaneki",
   "Primary button label": "Ileyibhile yeqhosha elingundoqo",
   "Primary button link": "Iqhosha leqhosha elingundoqo",
   "Primary buttons, links, the wordmark.": "Amaqhosha angundoqo, amakhonkco, uphawu lwegama.",
@@ -1075,6 +1168,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Okuphambili (okuphezulu ukuphumelela xa abaninzi befaneleka)",
   Private: "Yabucala",
   Product: "Imveliso",
+  "Product / SKU": "Imveliso / SKU",
   "Product cards, panels, the header.": "Amakhadi emveliso, iiphaneli,iheda.",
   "Product editor sections": "Amacandelo omhleli wemveliso",
   "Product ID": "Isazisi seMveliso",
@@ -1086,6 +1180,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Product type": "Udidi lwemveliso",
   Products: "Iimveliso",
   Promotion: "Unyuso",
+  Provider: "Umboneleli",
   "Provider ref": "Umnikezeli ref",
   Public: "Uluntu",
   "Public categories": "Iindidi zoluntu",
@@ -1096,18 +1191,21 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Ipapashiwe njenge",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "ipapashe iindidi zesilayidi sephepha lasekhaya. Abathengi babona ezine ngexesha kwi-desktop, ngolu hlobo. Nyusa umda kuLawulo lweSiza.",
-  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
-    "Ipapasho lamaphepha apapashiweyo ngesithuba. I-bot ifunda eli gama negama xa umthengi ebuza ngepolisi, ngoko ke iimpendulo zayo zihambelana noko ukupapashiweyo.",
   "Published products": "Imveliso ezipapashiweyo",
   "Publishing…": "Iyapapasha…",
   "Pull quote": "Tsala ikhowuti",
+  "Push to Sheet": "Tyhila kwiShiti",
+  "Pushing…": "Ukutyhala…",
   "Put essential subjects inside the dashed centre. Responsive crops may remove the edges.":
     "Beka izifundo ezibalulekileyo kumbindi odewuzisiweyo. Izityalo eziphendulayo zinokususa imiphetho.",
   Quantity: "Ubuninzi",
   "Quantity delta (+/−)": "Ubungakanani bedelta (+/−)",
   Question: "Umbuzo",
+  "Questions the storefront bot would not answer, worst first. The phrasings it nearly matched are shown against each one, which is what tells you what to add to its vocabulary.":
+    "Imibuzo ibhot engaphambili ayinakuyiphendula, eyona imbi kuqala. Amabinzana aphantse adibana nawo aboniswa ngakunye, nto leyo ekuxelela ukuba wongeze ntoni kwisigama sayo.",
   Quote: "Caphula",
   "Raise this to curate more than": "Phakamisa oku ukucudisa ngaphezulu kwe",
+  "Rate limits": "Imilinganiselo yemilinganiselo",
   Rating: "Ukalisho",
   "Reader comments on blog posts and recipes appear here.":
     "Amagqabantshintshi omfundi kwiiposti zeblogi kunye neendlela zokupheka zivela apha.",
@@ -1120,12 +1218,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Reason: "Isizathu",
   "Reason (optional)": "Isizathu (ukhetho)",
   "Reason:": "Isizathu:",
+  "Rebuild recommendations": "Izindululo zakha kwakhona",
+  "Rebuilding...": "Ukwakha kwakhona...",
   Receipt: "Irisithi",
+  "Recent activity": "Umsebenzi wakutshanje",
   "Recent administrative activity": "Umsebenzi wangoku wolawulo",
   "Recipe not found": "Iresiphi ayifunyenwanga",
   Recipes: "Iiresiphi",
+  Recipient: "Umamkeli",
   "Recipient email (optional)": "I-imeyile yomamkeli (uyazikhethela)",
+  "Recommendation performance": "Ingcebiso yokusebenza",
   Recommendations: "Izindululo",
+  "Recommended order": "I-odolo eCetyisiweyo",
   "Reconnecting…": "Iqhagamshela kwakhona…",
   "Record adjustment": "Uhlengahlengiso lwerekhodi",
   "Record movement": "Record intshukumo",
@@ -1138,9 +1242,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Redemptions: "Iintlawulo",
   Reference: "Ireferensi",
   Refresh: "Hlaziya",
+  "Refresh now": "Hlaziya ngoku",
   "Refresh once the API is back online.": "Hlaziya kanye i-API ibuyile kwi-intanethi.",
+  "Refreshing…": "Iyahlaziya…",
   Refund: "Buyisela",
   "Refund amount (₹)": "Imbuyekezo yemali ( ₹)",
+  "Refund automation": "Buyisela i-automation",
   Refunded: "Ibuyiselwe",
   "Refunded by": "Ibuyiselwe ngu",
   "refunded of": "ibuyiselwe ye",
@@ -1149,9 +1256,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Region: "INgingqi",
   Reject: "Yala",
   Rejected: "Yaliwe",
+  "Relative Effect": "Isiphumo Esizalanayo",
   "Release everywhere": "Khupha kuyo yonke indawo",
   "Release globally (all countries)": "Related countries",
   "Release only in these countries": "Ikhutshelwa kula mazwe kuphela",
+  "Reload page": "Layisha kwakhona iphepha",
   "remaining of": "eshiyekileyo",
   "remains unrefunded on this": "ishiyeke ingabuyiswanga kweli",
   Remove: "Susa",
@@ -1162,6 +1271,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Remove page colours": "Susa imibala yephepha",
   "Remove translation": "Susa inguqulelo",
   Removed: "Isusiwe",
+  "Reorder soon": "Hlenza kwakhona kwakamsinya",
   "Replace the pointer with the trail": "Susa isalathisi ngomzila",
   Replaced: "Ibuyiselwe",
   "Request changes": "Cela utshintsho",
@@ -1169,8 +1279,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requested refund": "Isicelo sembuyekezo eceliweyo",
   "Requests filed from the storefront appear here.":
     "Izicelo ezifakwe kuluhlu oluphambili zivela apha.",
+  "Required Sample:": "ISampulu eFunwayo:",
   "Requires articles.publish": "Ifuna amanqaku.papasha",
   "Requires categories.publish": "Ifuna iindidi.publish",
+  "Requires inventory.view and migration 0111.": "Requires and miventory. 0111.",
   "Requires owner settings access and a connected API.":
     "Ifuna ufikelelo kwisetingi somnini kunye ne-API eqhagamshelweyo.",
   "Requires owner settings access.": "Ifuna ufikelelo kwizicwangciso zomnini.",
@@ -1182,6 +1294,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires the analytics.view permission.": "Ifuna imvume yohlalutyo.",
   "Requires the inventory.adjust permission.": "Ifuna imvume yogcino-mpahla.lungisa imvume.",
   "Requires the reports.query permission.": "Ifuna ingxelo.imvume yemibuzo.",
+  Resend: "Thumela kwakhona",
   "Reserve future capacity without consuming current inventory.":
     "Gcina umthamo wexesha elizayo ngaphandle kokutya inventory yangoku.",
   Reserved: "Igciniwe",
@@ -1191,16 +1304,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Resolution: "Isisombululo",
   Resolve: "Sombulula",
   "Resolve return": "Sombulula imbuyekezo",
+  "Resolved automatically by the refund agent":
+    "Isonjululwe ngokuzenzekelayo ngumenzeli wembuyekezo",
   "Resolves live on every homepage load -- nothing to keep up to date.":
     "Izisombululo ngqo kuwo wonke umthwalo wephepha lasekhaya -- akukho nto iza kuhlala isexesheni.",
   "Resolving…": "Isonjululwa…",
   "Respect the safe area": "Hlonipha indawo ekhuselekileyo",
+  "Restock lead time (days)": "Restock lead time (iintsuku)",
   Restore: "Buyisela",
   "Restore (make visible)": "Buyisela (yenza kubonakale)",
   Retry: "Phinda uzame",
   "Return request not found": "Isicelo sokubuyisela asifunyenwanga",
   Returns: "Imbuyekezo",
-  "returns delivery help terms privacy": "ibuyisela unikezelo loncedo imigaqo yabucala",
   Revenue: "Ingeniso",
   "Revenue (paid)": "Ingeniso (ihlawulwe)",
   "Revenue by day": "Ingeniso ngemini",
@@ -1223,11 +1338,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Roles have not been seeded yet.": "Iindima azikafakwa.",
   "Roles unavailable": "Iindima azifumaneki",
   "Romanian (Română)": "IsiRomania (Română)",
+  "Run forecast now": "Sebenzisa uqikelelo ngoku",
   "Run renewals now": "Yenza uhlaziyo ngoku",
   "Run report": "Yenza ingxelo",
+  "Run the baseline once; it will then refresh every Monday.":
+    "Sebenzisa isiseko kube kanye; iya kuthi emva koko ihlaziye rhoqo ngoMvulo.",
   "Running...": "Iyabaleka...",
   "Running…": "Iyasebenza…",
   "Safe area": "Indawo ekhuselekileyo",
+  "Safety stock (days)": "Safety stock (iintsuku)",
   "Sale & Discounts": "Intengiso & nezaphulelo",
   "Sale price": "Ixabiso lokuthengisa",
   "Sale Price (₹)": "Ixabiso lokuthengisa ( ₹)",
@@ -1249,6 +1368,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Save labels": "Gcina iilebhile",
   "Save message": "Gcina umyalezo",
   "Save page SEO": "Gcina iphepha SEO",
+  "Save planning settings": "Gcina useto locwangciso",
   "Save roles": "Gcina iindima",
   "Save rule": "Gcina umthetho",
   "Save scope": "Gcina umda",
@@ -1305,7 +1425,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Phendla iimveliso, iiodolo, abasebenzisi, iindidi…",
   "Search promotions": "Khangela unyuso",
   "Search recipes": "Khangela iiresiphi",
-  "Search results per lookup": "Phanda iziphumo ngokhangelo ngalunye",
   "Search returns": "Imbuyekezo yokukhangela",
   "Search reviews": "Phendla izigxeko ncomo",
   "Search submissions": "Phendla uthunyelwe",
@@ -1352,13 +1471,34 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Send invite": "Thumela isimemo",
   "Send reset email": "Thumela ukusetha kwakhona imeyile",
   "Send reset link": "Thumela ukusetha kwakhona ilinki",
+  "Send test email": "Thumela uvavanyo imeyile",
   "Sending...": "Ithumela...",
   "Sending…": "Iyathunyelwa…",
+  "Sent to a contributor when staff approve, request changes on, or reject a submission.":
+    "Ithunyelwe kumnikeli xa abasebenzi bevuma, becela utshintsho, okanye bakhaba uthumelo.",
+  "Sent to a customer when their order is placed.": "Ithunyelwe kumthengi xa iodolo yabo yenziwe.",
+  "Sent to a farm owner when one of their products is ordered.":
+    "Ithunyelwe kumnini-fama xa enye yeemveliso zabo iyalelwe.",
+  "Sent to a person": "Ithunyelwe emntwini",
+  "Sent to an applicant when staff approve or reject their application.":
+    "Ithunyelwe kumfaki-sicelo xa abasebenzi bevuma okanye besala isicelo sabo.",
+  "Sent to staff and the applicant when a farm applies to supply True Grit.":
+    "Ithunyelwe kubasebenzi kunye nomfaki-sicelo xa ifama ifaka isicelo sokubonelela True Grit.",
+  "Sent to staff when a storefront contact form is submitted.":
+    "Ithunyelwe kubasebenzi xa kufakwe ifomu yoqhagamshelwano engaphambili kwevenkile.",
+  "Sent when a customer requests a password reset.":
+    "Ithunyelwa xa umthengi ecela ukusetha kwakhona igama lokugqitha.",
+  "Sent when a new customer account is created.":
+    "Ithunyelwe xa i-akhawunti yomthengi entsha yenziwe.",
   "Separate paragraphs with a blank line. Links use [text](/path); HTML is rejected.":
     "Yahlula imihlathi ngomgca ongenanto. Unxulumano lusebenzisa [isicatshulwa](/indlela); I-HTML yaliwe.",
+  "Sequential testing allows continuous monitoring without p-hacking. Results are valid at any time.":
+    "Uvavanyo olulandelelanayo luvumela ujongo oluqhubekayo ngaphandle kwe-p-hacking. Iziphumo ziyasebenza nanini na.",
   Servings: "Ukukhonza",
   "Set a new password": "Seta igama-mfihlo elitsha",
   "Set as default": "Seta njengendalo",
+  "Shaded area is the 95% residual interval; the line is expected daily units.":
+    "Indawo enomthunzi yi-95% yekhefu lokuphumla; umgca ulindelwe imihla ngemihla.",
   "Shop · Farms · Journal": "Ivenkile · Iifama · Ijenali",
   "Shop fresh greens": "Thenga imifuno emitsha",
   "Shop root vegetables": "Thenga imifuno yeengcambu",
@@ -1370,7 +1510,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show dietary and certification filters on the shop page":
     "Bonisa izihluzo zokutya kunye nesiqinisekiso kwiphepha levenkile",
   "Show original": "Bonisa eyantlandlolo",
+  "Show password": "Bonisa igama lokugqitha",
   "Show product recommendations": "Bonisa izindululo zemveliso",
+  "Show reorder recommendations only": "Bonisa izindululo zokuphinda uodole kuphela",
   "Show this snippet": "Bonisa le snippet",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
     "Iboniswe phezulu kweposti nanjengomfanekiso wayo kuluhlu lweblogi.",
@@ -1404,6 +1546,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Site-wide default:": "Site-wide default default:",
   "Skip to content": "Tqibela umxholo",
   "SKU (Primary Variant)": "SKU (Iyantlukwano yokuqala)",
+  "SKU demand, days until stockout and reorder quantities from rolling sales and weekday seasonality.":
+    "imfuno ye-SKU, iintsuku kude kuphele kwaye uphinde u-odole izixa kwiintengiso eziphumayo kunye nexesha leveki lonyaka.",
   "slots used": "izithuba ezisetyenzisiweyo",
   "Slug (optional — derived from the name if blank)":
     "Islug (uyazikhethela — sithatyathwe kwigama ukuba alinanto)",
@@ -1411,22 +1555,33 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Snapshots at purchase time — catalogue edits never rewrite an order.":
     "Izifinyezo ngexesha lokuthenga — uhlela lwekhathalogu aluze luphinde lubhale iodolo.",
   "Sold out": "Ithengisiwe",
+  "Something went wrong": "Kukho into engahambanga kakuhle",
   "space separated, e.g. product publish visibility":
     "isithuba esahluliweyo, umz. imveliso yokupapasha ukubonakala",
   "Sprouted ragi flour": "Ihluma umgubo weragi",
   "SQL Tables": "Iitafile zeSQL",
+  "Staff account": "Iakhawunti yabasebenzi",
   "Staff sign in": "Bangena abasebenzi",
+  "Start Experiment": "Qalisa uMfuniselo",
+  "Started At": "Liqale e",
   Starts: "Iqala",
   "Starts (optional)": "Qala (ukhetho)",
   "Starts with no permissions — you'll pick what it can do right after creating it.":
     "Iqala ngaphandle kweemvumelwano — uya kukhetha into enokuyenza emva kokuyidala.",
+  "Statistical Significance (mSPRT)": "Ukubaluleka koBalo (mSPRT)",
+  "Statistically rigorous sequential testing for product features and growth.":
+    "Uvavanyo lolandelelwano ngokweenkcukacha-manani lweempawu zemveliso kunye nokukhula.",
+  "Statistically Significant": "Ibalulwe ngokweenkcukacha-manani",
   Status: "Isimo",
   Steps: "Amanyathelo",
   "Steps (one per line)": "Amanyathelo (enye ngomgca)",
+  "Stock healthy": "Impahla esempilweni",
   "Stock Status": "Isimo seSitokhwe",
+  Stop: "Misa",
   "Storage guidance": "Isikhokelo sokuGcina",
   "Store credit": "Gcina ikhredithi",
   Storefront: "Umphambili wevenkile",
+  "Storefront answers": "Iimpendulo zevenkile engaphambili",
   "Storefront bot": "Bot yangaphambili yevenkile",
   "Storefront switches": "Izitshixo zangaphambili kwevenkile",
   "Storefront switches unavailable": "Izitshixo zangaphambili kwevenkile azifumaneki",
@@ -1449,6 +1604,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Super-admin only. Application errors and unhandled exceptions, newest first.":
     "Super-admin kuphela. Iimpazamo zesicelo kunye nezinto ezingaphandle ezingaphathwanga, ezintsha kuqala.",
   "Supporting text": "Umbhalo oxhasayo",
+  "Sync from Sheet": "Ungqamaniso ukusuka kwiShiti",
+  "Syncing…": "Ungqamaniso…",
   Table: "Itheyibhile",
   "Tags & Certifications": "Iithegi & neZiqinisekiso",
   "Taking payments": "Ukuthatha iintlawulo",
@@ -1489,6 +1646,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     'I- kill-switch efanayo njengoLawulo lweSiza "Yamkela iiodolo kunye neentlawulo", ezibekwe kule mveliso kuphela. Susa ukukhangela xa le nto inye iphelelwa okanye isilela ukutshekishwa komgangatho — iphepha lihlala liphila kwaye liphewundwa, kodwa "Yongeza kwibhasikithi" endaweni yomyalezo kunye nefom yoqhagamshelwano de ube uyilayita kwakhona. Oku kuzimeleyo kutshintshiselwano olubanzi lwesiza: ukucima iodolo apha akunasiphumo kuyo nayiphi na enye imveliso.',
   "The selected CMS page could not be loaded.":
     "Iphepha elikhethiweyo leCMS alikwazanga kulayishwa.",
+  "The storefront bot only states figures you have entered here. Anything left blank is sent to a person instead, so it can never quote a policy nobody set.":
+    "Ibhot yangaphambili yevenkile ichaza kuphela amanani owafakileyo apha. Nantoni na eshiywe ingenanto ithunyelwa emntwini endaweni yoko, ayinakuze icaphule umgaqo-nkqubo ekungekho mntu ubekiweyo.",
   "The storefront's palette and the decoration on top of it.":
     "Iphalethi yangaphambili yevenkile kunye nokuhombisa ngaphezulu kwayo.",
   "The two new passwords do not match.": "Amagama okugqithisa amabini amatsha awahambelani.",
@@ -1500,10 +1659,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These roles define the permission sets available when inviting or editing users.":
     "Ezi ndima zichaza iiseti zemvume ekhoyo xa umema okanye uhlela abasebenzisi.",
   "Thinking…": "Ukucinga…",
+  "Thirty-day unit forecast with confidence interval":
+    "uqikelelo lweyunithi yeentsuku ezingamashumi amathathu kunye nexesha lokuzithemba",
   "This application is": "Le nkqubo i",
   "This order is in a final state.": "Le odolo ikwimo yokugqibela.",
   "This page contains sensitive application diagnostics.":
     "Eli phepha liqulathe usetyenziso olubuthathaka.",
+  "This page hit an unexpected error and could not finish rendering. Reloading usually fixes it. If it keeps happening, share what you were doing when it happened with the engineering team.":
+    "Eli phepha libenempazamo ebingalindelekanga kwaye alikwazanga ukugqiba unikezelo. Ukulayishwa kwakhona ngokuqhelekileyo kuyilungisa. Ukuba iyaqhubeka, yabelana ngale nto ubuyenza xa isenzeka neqela lobunjineli.",
   "This page requires the revenue.view permission.": "Eli phepha lifuna imvume yengeniso.Jonga.",
   "This permanently removes the image from storage. Images still referenced by a product, page, article or recipe cannot be deleted.":
     "Oku ukususa ngokusisigxina umfanekiso kugcino. Imifanekiso isaboniswa yimveliso, iphepha, inqaku okanye iresiphi ayinakucinywa.",
@@ -1519,6 +1682,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Threads started from the storefront appear here.":
     "Imigca eqalwe kumqolo wevenkile ibonakala apha.",
   "Thumbnail image URL": "I-URL yomfanekiso we-Thumbnail",
+  "Tier 1": "Inqanaba 1",
+  "Tier 2": "Inqanaba lesi-2",
+  "Tier 3": "Inqanaba lesi-3",
+  "Tier 4": "Inqanaba lesi-4",
   Time: "Ixesha",
   "Title, description, keywords and indexing for storefront routes that aren't backed by a CMS page above. Leave a field blank to keep that route's built-in default.":
     "Isihloko, inkcazelo, amagama angundoqo kunye nesalathiso sendlela yevenkile yangaphambili engaxhaswanga liphepha leCMS ngasentla. Shiya indawo engenanto ukugcina indlela eyakhiwe-ngaphakathi engagqibekanga.",
@@ -1529,7 +1696,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Top products": "Iimveliso eziphezulu",
   "Top-rated reviews (updates automatically)": "Uphononongo oluphezulu (uhlaziyo ngokuzenzekelayo)",
   Total: "Itotali",
+  "Total Conversions": "Itotali yoguqulo",
+  "Total Traffic": "Itotali yeTrafikhi",
   "Total use limit (optional)": "Usetyenziso lulonke lomda (ukhetho)",
+  "Traffic Allocation": "uLwabiwo lweTrafikhi",
   Trail: "Umzila",
   "Trail colour": "Umbala weTrail",
   "transfer money — make the transfer to": "transfer money — yenza ugqithiselo ku",
@@ -1542,6 +1712,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Cima ukumisa ubhaliso olutsha ngelixa abathengi abakhoyo behlala bengena ngokwesiqhelo.",
   "Turn sign-in methods and ordering on or off without a deploy. The pill on the right is what customers actually get: a switch can only ever take a feature away, never add one the API is not configured for.":
     "Vula iindlela zokungena kwaye uodole uvule okanye ucime ngaphandle kobeko. Ipilisi esekunene yile nto abayifumanayo abathengi: iswitshi inokuze ithathe inqaku, ungaze wongeze enye iAPI engamiselwanga.",
+  "Turning this off can block staff self-service password reset -- the recovery path into this very admin panel.":
+    "Ukucima oku kunokuthintela ukusetwa kwakhona kwegama lokugqitha lenkonzo yokuzenzela -- indlela yokubuyisela kule ndawo yolawulo.",
   Type: "Udidi",
   "Type of section to add": "Udidi lwecandelo lokongeza",
   "Uncheck this for products that genuinely cannot be returned (e.g. certain fresh perishables). Customers won't be able to file a return request against an ineligible product.":
@@ -1549,12 +1721,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Under review": "Phantsi kokuphononongwa",
   Unit: "Iyunithi",
   "Unit price, ₹": "Ixabiso leyunithi, ₹",
+  "units (": "iiyunithi (",
   "units sold": "iiyunithi zithengisiwe",
   Unpublish: "Akupapashwa",
   Unpublished: "Akupapashwanga",
   "Unpublishing…": "Ayipapashi…",
-  "Untick a section to hide it from customers without losing its content, and use the arrows to change the order they appear in. Changes here apply as soon as you make them.":
-    "Khetha icandelo ukuyifihla kubathengi ngaphandle kokuphulukana nomxholo wayo, kwaye usebenzise utolo ukutshintsha indlela ezibonakala ngayo. Utshintsho apha lusebenza kamsinya nje wakuba ulenzile.",
+  "Untick a kind of email to stop it from sending, without touching anything else.":
+    "Untick uhlobo lwe-imeyile ukuyiyeka ekuthumeleni, ngaphandle kokuchukumisa nantoni na eyenye.",
+  "Untick a section to hide it from customers without losing its content, and use the position dropdown to change the order they appear in. Changes here apply as soon as you make them.":
+    "Ungaphawuli icandelo ukuyifihla kubathengi ngaphandle kokuphulukana nomxholo wayo, kwaye usebenzise indawo eyehlayo ukutshintsha indlela ebonakala ngayo. Utshintsho apha lusebenza kamsinya nje wakuba ulenzile.",
   "Up to": "Ukuya kuthi",
   Updated: "Ihlaziywe",
   "Updated by": "Ihlaziywe ngu",
@@ -1562,6 +1737,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload an image to get started.": "Layisha umfanekiso ukuze uqalise.",
   "Upload checklist": "Layisha uluhlu lokukhangela",
   "Upload image": "Layisha umfanekiso",
+  "Upload to R2": "Layisha kwi-R2",
   "Uploading image...": "Iyanyula umfanekiso...",
   "Uploading image…": "Iyanyula umfanekiso...",
   "Uploading thumbnail...": "Iyanyula i-thumbnail...",
@@ -1579,6 +1755,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Users & Roles": "Abasebenzisi & Nendima",
   "Users unavailable": "Abasebenzisi abafumaneki",
   "Using the site brand colour": "Usebenzisa indawo yombala webhrendi",
+  "Value (Mean)": "Ixabiso (Lithetha)",
   "Value of 1 INR": "Ixabiso le-1 INR",
   "Value per INR": "Ixabiso ngokwe-INR",
   "Value, ₹": "Ixabiso,",
@@ -1586,6 +1763,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Variant (SKU)": "Eyahlukileyo (SKU)",
   "Variant ID": "I-ID eyahlukileyo",
   "Variant Name": "Igama elohlukileyo",
+  "Variant Performance": "Ukusebenza okwahlukileyo",
   Variants: "Ezahlukeneyo",
   "Variants of": "Ezahlukeneyo ze",
   View: "Jonga",
@@ -1614,10 +1792,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "What the promotion does": "Yintoni eyenziwa yintengiso",
   "What they grow:": "Yintoni abayikhulisayo:",
   "What this role is for": "Yeyantoni le ndima",
+  "What was actually sent, blocked, throttled or rejected.":
+    "Yintoni kanye ethunyelweyo, evaliweyo, yaliwe okanye yaliwe.",
   When: "Nini",
   "Where this category is released": "Apho olu didi lukhutshwa khona",
   "Where this product is released": "Apho le mveliso ikhutshwa khona",
   "Which promotion to show": "Loluphi unyuso oluya kuboniswa",
+  "Which provider sends True Grit's email, which kinds of email are allowed out, how fast, and what actually happened recently.":
+    "Ngowuphi umnikezeli othumela __TGBRAND i-imeyile, yeyiphi i-imeyile evunyelweyo, yeyiphi i-imeyile eyenzeka ngokukhawuleza, yeyiphi i-imeyile kutshanje.",
   "Which reviews to show": "Loluphi uphononongo oluza kuboniswa",
   "Whole order": "Yonke i-odolo",
   "Whole site": "Indawo yonke",
@@ -1627,6 +1809,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Kutheni eli khadi likhutshiweyo — isenzo esihle, imbuyekezo esonjululwe njengetyala levenkile, njalo njalo.",
   "Widget colour": "Umbala weWidget",
   "Widget colour hex": "Widget umbala wehex",
+  "Widget engagement and checkout revenue attributed to products discovered through recommendations in this date range.":
+    "Uthethathethwano lweWidget kunye nengeniso yokuphuma ibalelwa kwiimveliso ezifunyenwe ngeengcebiso kolu luhlu lomhla.",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Amagama e-bot ahambelana nombuzo ukwenza isigqibo sokuba longeniso lufanelekile.",
   "Working...": "Iyasebenza...",
