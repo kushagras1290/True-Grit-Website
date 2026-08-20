@@ -17,6 +17,7 @@ import {
   FlaskConical,
   FolderTree,
   Gift,
+  Globe2,
   HandHeart,
   Home,
   Image,
@@ -208,6 +209,12 @@ const NAV_GROUPS: Array<{ heading: string; entries: NavEntry[] }> = [
         to: "/currency-rates",
         label: "Currency Converter",
         icon: <CircleDollarSign size={16} />,
+        permission: "settings.view",
+      },
+      {
+        to: "/price-tiers",
+        label: "Price Tiers",
+        icon: <Globe2 size={16} />,
         permission: "settings.view",
       },
       {

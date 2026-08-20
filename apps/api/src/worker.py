@@ -285,6 +285,7 @@ class Default(WorkerEntrypoint):
         remains live.
         """
         from truegrit_api.platform.d1 import D1Database
+        from truegrit_api.services.currency_rates import refresh_live_rates
         from truegrit_api.services.demand_forecasting import recompute_demand_forecasts
         from truegrit_api.services.jobs import dispatch_pending_outbox
         from truegrit_api.services.recommendations import recompute_recommendations
@@ -323,6 +324,12 @@ class Default(WorkerEntrypoint):
                 result = await run_due_renewals(db, new_request_id())
                 print(
                     f"subscriptions.scheduled: {result['succeeded']}/{result['processed']} renewed"
+                )
+            elif cron == "0 4 * * *":
+                result = await refresh_live_rates(db, new_request_id())
+                print(
+                    "currency_rates.scheduled: "
+                    f"{result['updatedCount']} rates updated from the live source"
                 )
         except Exception as exc:
             print(f"scheduled.crashed: {type(exc).__name__}: {exc}")

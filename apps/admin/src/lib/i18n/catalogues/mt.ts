@@ -35,6 +35,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "2 cups": "2 tazzi",
   "2 stars": "2 stilel",
   "3 stars": "3 stilel",
+  "30-day demand": "Domanda ta’ 30 jum",
   "4 stars": "4 stilel",
   "5 stars": "5 stilel",
   "5xx AppErrors and unhandled exceptions will show up here as they happen.":
@@ -66,6 +67,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Faxxa ikkulurita — iċċekkja test muted għadu jinqara hawn.",
   "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
     "pajjiż ta’ viżitatur jagħżel munita, din it-tabella tipprovdi l-valur tal-wiri tagħha, u l-prezz oriġinali tal-INR jibqa’ mhux mibdul. Muniti b'diżabbiltà jaqgħu lura għal defaults siguri għall-INR.",
+  "A/B Experiments": '</span Experiments id="t0006">Attiva, varjanti ppubblikati',
   Accent: "Aċċent",
   "Accept orders and payments": "Aċċetta ordnijiet u ħlasijiet",
   "Accept orders and payments for this product":
@@ -78,6 +80,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Active points appear as free checkout alternatives.":
     "Punti attivi jidhru bħala alternattivi ta' checkout b'xejn.",
   "Active rules": "Regoli attivi",
+  "Active, published variants": "Attiva, varjanti ppubblikati",
   Actor: "Attur",
   Add: "Żid",
   "Add / edit roles": "Żid/editja rwoli",
@@ -88,6 +91,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add a question": "Żid mistoqsija",
   "Add a section…": "Żid taqsima...",
   "Add a snippet": "Żid snippet",
+  "Add bracket": "Żid il-parentesi",
   "Add business": "Żid il-munita",
   "Add category": "Żid kategorija",
   "Add code": "Żid il-kodiċi",
@@ -121,9 +125,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add window": "Żid tieqa",
   "Add zone": "Żid żona",
   Added: "Miżjud",
+  "Added to basket": "Miżjud mal-basket",
   "Adding...": "Żieda...",
   "Adding…": "Żieda...",
   Address: "Indirizz",
+  "Adds after a recommendation click": "Żid wara rakkomandazzjoni ikklikkja",
   "Adjust points": "Aġġusta l-punti",
   "Adjust the search or create a category.": "Aġġusta t-tfittxija jew oħloq kategorija.",
   "Adjust the search or create a product.": "Aġġusta t-tfittxija jew oħloq prodott.",
@@ -131,11 +137,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjustments restricted": "Aġġustamenti ristretti",
   Admin: "Amministratur",
   "Admin API is unavailable": "Admin API mhix disponibbli",
+  "Admin bot answer tuning": "Irfinar tat-tweġibiet tal-bot tal-amministratur",
   "Admin navigation": "Ammin navigazzjoni",
   "Admin panel bot": "Bot tal-pannell tal-amministrazzjoni",
   "After refunds, all farms": "Wara rifużjonijiet, irziezet kollha",
+  "Agent assessment": "Valutazzjoni tal-aġent",
   Albanian: "Albaniż",
   All: "Kull",
+  "All outcomes": "Ir-riżultati kollha",
   "All ratings": "Klassifikazzjonijiet kollha",
   "All types": "It-tipi kollha",
   "Alphonso season is here — orchard-fresh boxes ship every Tuesday.":
@@ -150,6 +159,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Amharic: "Amhariku",
   Amount: "Ammont",
   "Amount off, ₹": "Ammont off, ₹",
+  "An admin preference wins only if that provider's API key is actually configured on the server -- picking one here can never send mail through a provider with no key set.":
+    "Preferenza ta' amministrazzjoni tirbaħ biss jekk iċ-ċavetta API ta' dak il-fornitur tkun fil-fatt ikkonfigurata fuq is-server -- għażla waħda hawn qatt ma tista' tibgħat posta permezz ta' fornitur mingħajr l-ebda ċavetta sett.",
   "An impression of the motion and colour, not a pixel-accurate rehearsal.":
     "Impressjoni tal-moviment u l-kulur, mhux prova preċiża tal-pixel.",
   Analytics: "Analitika",
@@ -161,7 +172,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Announcer banner",
   "Announcements unavailable": "Avviżi mhux disponibbli",
   Answer: "Tweġiba",
-  "Answer tuning": "Irfinar tat-tweġibiet",
+  "Answered by the bot": "Imwieġeb mill-bot",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Kulħadd iffirmat jista’ jikkummenta. Il-bidu ta' diskussjoni ġdida biss huwa mqabbad mill-età tal-kont.",
   "API mode": "Modalità API",
@@ -180,12 +191,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Applikat għal kull razzett mingħajr ir-rata tiegħu stess.",
   "Applies to": "Japplika għal",
-  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
-    "Japplika għaż-żewġ bots. Valuri akbar jagħtu lill-assistent aktar biex jaħdem u jiswew aktar għal kull tweġiba.",
   "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
     "Japplika għaż-żewġ widgets taċ-chat. Ħalliha ċara biex issegwi l-kulur tad-ditta tas-sit minn Kuluri u Effetti.",
   "Applies to every visitor Cloudflare resolves to":
     "Japplika għal kull viżitatur Cloudflare jirrisolvi għal",
+  "Applies to the admin panel bot only. The storefront bot does not use a language model, so it has nothing to tune here.":
+    "Japplika għall-bot tal-pannell tal-amministrazzjoni biss. Il-bot tal-vetrina ma jużax mudell tal-lingwa, għalhekk m'għandu xejn x'jirranġa hawn.",
   Approve: 'id="t0010">Japprova u jippubblika',
   "Approve & publish": "Approva u ippubblika",
   Approved: "Approvat",
@@ -203,11 +214,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Staqsi kif tagħmel xi ħaġa fil-pannell tal-amministrazzjoni, jew staqsi dwar ordnijiet pendenti, oġġetti ta' stokk baxx, jew status ta' ordni.",
   "Assamese (অসমীয়া)": 'Assamese id="t0010">Attribuzzjoni',
   "Assigned roles": "Rwoli assenjati",
+  "Attributed orders": "Ordnijiet attribwiti",
+  "Attributed revenue": "Dħul attribwit",
   Attribution: "Attribuzzjoni",
   "Audit Log": "Log tal-Verifika",
   Author: "Awtur",
+  "Auto (best configured)": "Awtomatiku (l-aħjar konfigurat)",
   "Auto-translate": "Traduzzjoni awtomatika",
   "Auto-translate all": 'riżerva (t00005) dejjem id="t00005">. Kull bidla hija moviment.',
+  "Automatically scores every new return request for fraud risk and auto-approves (with a real Razorpay refund), auto-denies, or escalates it to a human in the Returns queue. Off by default -- while off, every return request is triaged and resolved by staff exactly as it works today. See a request's Returns detail page for the agent's risk score and reasoning once this is on.":
+    "Awtomatikament tikkalkula kull talba ġdida ta' ritorn għal riskju ta' frodi u tapprova awtomatikament (b'rifużjoni reali ta' Razorpay), tiċħadha awtomatikament, jew teskalaha lil bniedem fil-kju tar-Ritornijiet. Mitfi b'mod awtomatiku -- waqt li tkun mitfija, kull talba ta' ritorn tiġi trijajata u solvuta mill-persunal eżatt kif taħdem illum. Ara l-paġna tad-dettal tar-Ritornijiet ta' talba għall-punteġġ tar-riskju u r-raġunament tal-aġent ladarba dan ikun mixgħul.",
   Availability: "Disponibbiltà",
   Available: "Disponibbli",
   "available · reorder at": "disponibbli · ordna mill-ġdid fi",
@@ -221,6 +237,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "B2B / bulk ordering": "B2B / ordnijiet bl-ingrossa",
   Back: "Lura",
   "Back to conversations": "Lura għall-konversazzjonijiet",
+  "Back to experiments": "Lura għall-esperimenti",
+  "Back to Experiments": "Lura għall-Esperimenti",
   "Back to sign in": "Lura biex tidħol",
   Balance: "Bilanċ",
   "Banner alt text": "Test alternattiv tal-banner",
@@ -241,6 +259,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "L-aħjar promozzjoni attiva (taġġorna awtomatikament)",
   "Best sellers, resolved live from orders on every homepage load -- nothing to keep stocked.":
     "Best sellers, solvuti live minn ordnijiet fuq kull tagħbija fuq il-homepage -- xejn x'jżomm maħżun.",
+  "Blank means a category has no cap of its own -- the global limit above still applies.":
+    "Blank ifisser li kategorija m'għandha l-ebda limitu tagħha stess -- il-limitu globali ta' hawn fuq għadu japplika.",
   "Blocks JSON": "Blokk JSON",
   "Blog and recipe pitches from the community appear here.":
     "Pitchs tal-blog u r-riċetti mill-komunità jidhru hawn.",
@@ -252,6 +272,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Body: "Korp",
   "Body text": "Test tal-korp",
   Bosnian: "Bosnjan",
+  "Bracket name": "Isem tal-parentesi",
   Brand: "Ditta",
   "Bulgarian (Български)": "Bulgaru (Български)",
   "bundle price · items priced at": "prezz tal-pakkett · oġġetti bi prezz",
@@ -313,6 +334,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Clear: "Ċara",
   "Clearing...": "Jikklerja...",
   "Click link": "Ikklikkja fuq il-link",
+  "Click-through rate": "Rata tal-ikklikkjar",
   Close: "Agħlaq",
   "Close help assistant": "Agħlaq l-assistent tal-għajnuna",
   "Close navigation": "Agħlaq in-navigazzjoni",
@@ -338,6 +360,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Common questions": "Mistoqsijiet komuni",
   Community: "Komunita",
   Company: "Kumpanija",
+  Complete: "Imla",
   Completed: "Imlesta",
   Configuration: "Konfigurazzjoni",
   "Configure loyalty, pickup, harvest reservations, delivery logistics and wholesale accounts. Customer access is controlled independently by the five checkboxes in Site Control.":
@@ -351,15 +374,23 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact Attempts": "Kompli ma' Facebook",
   "Contact attempts unavailable": "Ttentati ta' kuntatt mhux disponibbli",
   "Contact email": "Kuntatt email",
+  "Contact form": "Formola ta' kuntatt",
   Content: "Kontenut",
+  "Content submission decision": "Deċiżjoni dwar is-sottomissjoni tal-kontenut",
   "Continue with Facebook": "Kompli ma' Facebook",
+  "Continuous (e.g. AOV)": "Kontinwu (eż. AOV)",
+  Control: "Kontroll",
   "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
     "Ikkontrolla l-prezzijiet approssimattivi tal-munita lokali billi tiffissa kemm tiswa rupee Indjana waħda. Ir-rekords tal-katalogu, tal-ħruġ u tal-ordnijiet jibqgħu mingħajr periklu f'INR.",
+  "Control vs": "Kontroll vs",
   "Control what each role can view, create, edit, publish or manage.":
     "Ikkontrolla x'jista' jara, joħloq, jeditja, jippubblika jew jimmaniġġja kull rwol.",
   "Control whether each bot is available, and edit what it knows.":
     "Ikkontrolla jekk kull bot huwiex disponibbli, u editja dak li jaf.",
+  "Conv. Rate": "Konv. Rata",
   "Conversation turns remembered": "Konversazzjoni dawriet imfakkar",
+  "Conversion rate": "Rata ta' konverżjoni",
+  Conversions: "Konverżjonijiet",
   Cook: "Sajjar",
   "Cook minutes": "Sajjar il-minuti",
   "Copy inside dark bands.": "Ikkopja ġewwa meded skuri.",
@@ -367,6 +398,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Could not load archived records.": "Ma setgħetx tgħabbi r-rekords arkivjati.",
   "Could not load this feature.": "Ma setgħetx tagħbija din il-karatteristika.",
   Countries: "Pajjiżi",
+  "Countries in this bracket": "Pajjiżi f'din il-parentesi",
   Country: "Coupons & promotions",
   "Country overrides unavailable": "Il-pajjiż jissupera mhux disponibbli",
   "Coupon codes": "Kodiċijiet tal-kupun",
@@ -390,6 +422,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Create promotion": "Oħloq promozzjoni",
   "Create role": "Oħloq...",
   "Create the first draft to get started.": "Oħloq l-ewwel abbozz biex tibda.",
+  "Creating experiments from the admin panel is not available yet.":
+    "Il-ħolqien ta' esperimenti mill-pannell tal-amministrazzjoni għadu mhux disponibbli.",
   "Creating...": "Ħolqien...",
   "Credit limit, ₹": "Limitu tal-kreditu, ₹",
   "Crisp sprouted ragi dosa": "Ragi dosa iqarmeċ imnibbieta",
@@ -404,15 +438,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Currency values unavailable": "Valuri tal-munita mhux disponibbli",
   "Current password": "Password kurrenti",
   "Currently its own effects.": "Bħalissa l-effetti tagħha stess.",
+  "Currently sending via": "Bħalissa qed jintbagħat permezz",
   "Currently the site-wide effects — save below to give it its own.":
     "Bħalissa l-effetti fuq is-sit kollu — ħlief hawn taħt biex tagħtiha tagħha stess.",
   "Cursor trail": "Traċċa tal-Kursur",
   Customer: "Klijent",
   "Customer favourites": "Favourites tal-klijenti",
   "Customer image URL": "URL tal-immaġni tal-klijent",
+  "Customer password reset": "Reset tal-password tal-klijent",
   "Customer ratings and reviews from verified purchases.":
     "Klassifikazzjonijiet tal-klijenti u reviżjonijiet minn xiri verifikat.",
   "Customer user ID": "ID tal-utent tal-klijent",
+  "Customer welcome": "Klijent merħba",
   "Customer-created Subscribe & Save deliveries. Pause, resume or cancel on a customer's behalf, or run the renewal batch that otherwise fires on its own schedule.":
     "Abbona u Ħlief kunsinni maħluqa mill-klijent. Waqfien, tkompli jew tikkanċella f'isem klijent, jew mexxi l-lott ta' tiġdid li inkella jispara fuq l-iskeda tiegħu stess.",
   "Customer-facing description (optional)":
@@ -428,12 +465,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Il-klijenti jistgħu jirriżervaw prodotti kontra twieqi tal-ħsad attivi minflok stokk attwali.",
   Cut: "Aqta",
   "Czech (Čeština)": "Ċeka (Čeština)",
+  "Daily demand": "Domanda ta’ kuljum",
   "Daily revenue for the selected range": "Dħul ta’ kuljum għall-firxa magħżula",
   "Dairy Free": "Ħieles mill-Ħalib",
   Danger: "Periklu",
   "Danish (Dansk)": "Daniż (Dansk)",
   "Dark band": "Faxxa skura",
+  "data days": "Ġranet tad-dejta",
   "Day (0 Sun – 6 Sat)": "Default",
+  "Days left": "Ġranet li fadal",
   Deactivate: "Diżattiva",
   Decision: "Deċiżjoni",
   Decline: "Tnaqqas",
@@ -460,6 +500,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete selected (": "Ħassar magħżul (",
   "Delete this entry": "Ħassar din l-entrata",
   "Delete this price adjustment?": '<5" id="t0006">Aċċess għall-console Demo',
+  "Delete this pricing bracket?": "Ħassar din il-kategorija tal-prezzijiet?",
   "Delete user": "Ħassar l-utent",
   "Deleting...": "Tħassir...",
   Delivery: "Kunsinna",
@@ -527,6 +568,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Effects & Trails": "Effetti & Trails",
   "Eligible for return": "Eliġibbli għar-ritorn",
   "Email for reset link": "Email għall-reset link",
+  "Email settings unavailable": "Settings tal-email mhux disponibbli",
   Enable: "Ippermetti",
   "Enable at least one block.": "Ippermetti mill-inqas blokka waħda.",
   "Enable B2B and bulk ordering": "Ippermetti B2B u ordnijiet bl-ingrossa",
@@ -538,6 +580,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Enable seasonal pre-orders": "Ippermetti ordnijiet minn qabel staġjonali",
   "Enable selected (": "Ippermetti magħżula (",
   "Enable Subscribe & Save": "Ippermetti Abbona u Issejvja",
+  "Enable the refund agent": "Ippermetti l-aġent tar-rifużjoni",
   Enabled: "Ippermettiet",
   Ends: "Tmiem",
   "Ends (optional)": "Tmiem (mhux obbligatorju)",
@@ -546,6 +589,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Errors and destructive actions.": "Żbalji u azzjonijiet distruttivi.",
   Established: "Stabbilit",
   Estonian: "Estonjan",
+  Evaluated: "Evalwat",
   Event: "Avveniment",
   "Every colour the storefront uses, site-wide or for one page, plus ambient effects and cursor trails. Changes go live as soon as you save.":
     "Kull kulur li juża l-vetrina, paġna waħda, effett ambjentali u paġna waħda, traċċa kollha jew għall-cursor. Il-bidliet jibdew jaħdmu hekk kif issalva.",
@@ -564,17 +608,24 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Expanded Commerce": "Kummerċ Estiża",
   "Expected end": "Tmiem mistenni",
   "Expected start": "Bidu mistenni",
+  "Expected to run out inside lead time": "Mistennija li tispiċċa fil-ħin taċ-ċomb",
+  Experiment: "Esperiment",
+  "Experiments are currently created from the database; the admin panel does not yet have a creation form.":
+    "Attwalment l-esperimenti huma maħluqa mid-database; il-pannell tal-amministrazzjoni għad m'għandux formola ta' ħolqien.",
   Expires: "Jiskadi",
   "Expires (optional)": "Jiskadi (mhux obbligatorju)",
   Explore: "Esplora",
   "Explore the market": "Esplora s-suq",
   "Export at the listed width and height. Do not upload a 16:9 photo for a banner.":
     "Wesa' u għoli. Ttellax ritratt 16:9 għal banner.",
+  Exposures: "Espożizzjonijiet",
   'Extra photos shown as a thumbnail strip on the product page, the way most shops show different angles of the same item. Up to 8. Saved immediately, no separate "Save draft" needed.':
     'Ritratti żejda murija bħala strixxa ta\' thumbnail fuq il-paġna tal-prodott, il-mod kif ħafna mill-ħwienet juru angoli differenti tal-istess oġġett. Sa 8. Issejvjat immedjatament, l-ebda "Save draft" separata meħtieġa.',
   "Eyebrows and small highlights.": "Eyebrows u jenfasizza żgħar.",
   "Facebook Login button in the storefront account menu.":
     "Facebook Login buttuna fil-menu tal-kont tal-maħżen.",
+  "Failed to load experiment": "Naqas milli tgħabbi l-esperiment",
+  "Failed to load experiments": "Naqas milli tgħabbi l-esperimenti",
   "Falls back to the route's built-in description": "Id-deskrizzjoni tar-rotta",
   "Falls back to the route's built-in title": "Taqa' lura għat-titlu inkorporat tar-rotta",
   Farm: "Razzett",
@@ -583,6 +634,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Farm id (e.g. farm_devika)": 'Id tar-razzett (eż. id="t0017">Razzett ma nstabx',
   "Farm name": "Isem tar-razzett",
   "Farm not found": "Razzett ma nstabx",
+  "Farm order notice": "Avviż ta’ ordni ta’ razzett",
+  "Farm partnership application": "Applikazzjoni ta’ sħubija tal-irziezet",
+  "Farm partnership decision": "Deċiżjoni ta’ sħubija tal-irziezet",
   "Farm record": "Rekord tar-razzett",
   "Farm request not found": "Talba tar-razzett ma nstabitx",
   "Farm Requests": "Talbiet tar-razzett",
@@ -599,6 +653,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Fee, ₹": "Ħlas, ₹",
   Fields: "Għelieqi",
   Filipino: "Filippino",
+  "Filter by outcome": "Iffiltra skont ir-riżultat",
   "Filter by rating": "Iffiltra skont il-klassifikazzjoni",
   "Filter by status": "Iffiltra skont l-istatus",
   "Find a product to add": "Sib prodott li żżid",
@@ -610,6 +665,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Footer and inverted sections.": "Footer u sezzjonijiet maqlubin.",
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     "Iġġiegħel sezzjoni tixgħel jew titfi għall-viżitaturi f'pajjiż wieħed, mingħajr ma tbiddel dak li jara kulħadd. Ħalli taqsima fuq \"Jitret\" u ssegwi biss il-kaxxa tal-immarka fil-lista tat-taqsima ta' hawn fuq.",
+  "Forecast unavailable": 'id="t0006">Globali — fis-siegħa',
+  "Forecasted SKUs": "SKUs imbassra",
+  "Forecasting...": "Tbassir...",
   "Forgot password?": "Insejt il-password?",
   "Formatting locale": "Lokali tal-ifformatt",
   "Free delivery above (₹)": "Konsenja b'xejn hawn fuq (₹)",
@@ -624,6 +682,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Gift card": "Karta tar-rigal",
   "Gift cards": 'Gift="t0015">Gift="t0015">Gift="t0015">Gift Karti',
   "Give one page its own colours": "Give one page its own kuluri",
+  "Global — per day": "Globali - kuljum",
+  "Global — per hour": "Globali - kull siegħa",
   "Gluten Free": "Ħieles Glutina",
   "gluten-free, plant-based": "mingħajr glutina, ibbażati fuq il-pjanti",
   "Go back": "Mur lura",
@@ -633,6 +693,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Greek (Ελληνικά)": "Grieg (Ελληνικά)",
   "Gross revenue": "Dħul gross",
   Group: "Grupp",
+  "Group countries into brackets that each pay a markup over India's base price. Both the percentage and which countries sit in each bracket are yours to adjust at any time.":
+    "Iggruppa l-pajjiżi fil-parentesi li kull wieħed iħallas markup fuq il-prezz bażi tal-Indja. Kemm il-perċentwali kif ukoll liema pajjiżi joqogħdu f'kull parentesi huma tiegħek biex taġġusta fi kwalunkwe ħin.",
   "Group name": "Isem tal-grupp",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "Kultivaturi li applikaw fi /farms/partner biex ifornu s-suq. L-ebda kont mhu meħtieġ biex japplika, għalhekk reviżjoni hawn hija l-uniku bieb.",
@@ -642,6 +704,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "h lead": "h ċomb",
   "Hairline border": "Bord tal-linja tax-xagħar",
   "Hand-picked testimonials": "Testimonjanzi magħżula bl-idejn",
+  "Handed to a person": "Jitgħata lil persuna",
   "Harvest calendar": "H ċomb",
   "Harvest note": "Nota tal-ħsad",
   Heading: "Intestatura",
@@ -656,6 +719,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Hero title": "Titolu tal-eroj",
   Hidden: "Moħbi",
   Hide: "Aħbi",
+  "Hide password": 'id="t0013">l-aħħar sinkronizzat',
   "Hides the system cursor so the trail is the cursor. Links, buttons and form fields keep a real pointer regardless — losing the hit target on those is not a trade worth making.":
     "Aħbi l-cursor tas-sistema sabiex it-traċċa tkun il-cursor. Il-links, il-buttuni u l-oqsma tal-formoli jżommu punter reali irrispettivament - it-telf tal-mira tal-hit fuq dawk mhuwiex kummerċ ta 'min jagħmel.",
   "Highlighted products": "Prodotti enfasizzati",
@@ -666,15 +730,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage Settings": "Settings tal-Homepage",
   "Homepage settings unavailable": "Settings tal-Homepage mhux disponibbli",
   Hours: "Sigħat",
-  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
-    "Kemm karattri ta' paġna ta' politika jista' jaqra l-bot tal-maħżen qabel ma jwieġeb. Itwal iżżomm aktar tad-dettall li klijent staqsa dwaru.",
   "How many entries from the list below are given to the assistant as reference.":
     "Kemm entrati mil-lista hawn taħt jingħataw lill-assistent bħala referenza.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Kemm prodotti jew kategoriji jista' jagħżel operatur f'Favourites Frisk, Kategoriji Dehru (Settings tal-Homepage) u Prodotti Enfasizzati (hawn taħt). Jgħolliha jiffranka immedjatament, l-ebda skjerament meħtieġ; sa 50, il-limitu massimu l-format tal-blokk innifsu jinforza.",
   "How many products to show": "Kemm prodotti biex juru",
-  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
-    "Kemm prodotti, artikoli jew riċetti jirritorna t-tfittxija tal-bot tal-maħżen kull darba li jħares xi ħaġa.",
   "How many to show": "Kemm biex juru",
   "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
     "Kemm miċ-chat attwali jintbagħat lura ma' kull mistoqsija. 0 jwieġeb kull mistoqsija waħedha.",
@@ -709,6 +769,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Intro / story blocks": "Intro/blokki tal-istorja",
   "Intro line (optional)": "Linja tal-introduzzjoni (mhux obbligatorja)",
   Inventory: "Inventarju",
+  "Inventory Intelligence": "Inventarju Intelliġenza",
   "Invite a user or add a farm owner to populate this page.":
     "Jistieden utent jew żid sid tar-razzett biex jimla din il-paġna.",
   "Invite user": "Jistieden utent",
@@ -750,10 +811,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Label: "Tikketta",
   "Land under cultivation": "Art taħt kultivazzjoni",
   Language: "Lingwa",
+  "last 24h": 'aħħar 24h="t0011">aħħar 24h="t0011">l-aħħar 24h="t0011">l-aħħar 24h="t0008">',
   "Last activity": "L-aħħar attività",
+  "Last refresh": "L-aħħar aġġornament",
   "Last reviewer note": "L-aħħar nota tar-reviżur",
   "Last sign-in": "L-aħħar dħul",
   "Last sync": "L-aħħar sinkronizzazzjoni",
+  "last synced": "l-aħħar sinkronizzat",
   "Last updated": "Aġġornata l-aħħar",
   Latvian:
     "00000004 True Grit jintbagħat bi — l-ikklerjar ta' qasam huwa kif tneħħa. Il-kuluri tal-paġna jew tal-pajjiż jibdew mill-kuluri tas-sit u jegħlbu biss dak li tibdel, għalhekk kull waħda hija lista qasira, mhux it-tieni paletta biex iżżomm. Meta t-tnejn japplikaw għall-istess viżitatur, il-paġna tirbaħ — disinn ta' paġna editorjali m'għandux jitneħħa permezz ta' esperiment ġeografiku.",
@@ -793,6 +857,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live marketplace state, fulfilment pressure and publishing activity.":
     "Stat fis-suq ħajjin, pressjoni ta' twettiq u attività ta' pubblikazzjoni.",
   "Live preview": "Previżjoni diretta",
+  "Live rates from": "Rati ħajjin minn",
   "Live, and to scale with the real storefront's own styles.":
     "Live, u għall-iskala mal-istili tal-vetrina reali stess.",
   Loading: "Tagħbija",
@@ -812,6 +877,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading currency values…": "Tagħbija tal-valuri tal-munita...",
   "Loading delivery charges...": "Tagħbija tal-ħlasijiet tal-konsenja...",
   "Loading discussion…": "Tagħbija tad-diskussjoni...",
+  "Loading email settings...": 'Id="t0016">Tgħabija tal-prezzijiet...',
+  "Loading forecast...": "Tgħabija tat-tbassir...",
   "Loading highlights...": "Tagħbija tad-dar... sezzjonijiet...",
   "Loading homepage sections...": "Qagħbija ta' sezzjonijiet tal-paġna ewlenija...",
   "Loading homepage settings...": "Tagħbija tas-settings tal-homepage...",
@@ -820,6 +887,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading order…": "Ordni tat-tagħbija...",
   "Loading permissions...": "Tgħabija tal-permessi...",
   "Loading price adjustments...": "Aġġustamenti tal-prezz...",
+  "Loading price tiers…": "Tagħbija l-livelli tal-prezz...",
   "Loading product…": "Qagħbija tal-prodott...",
   "Loading products...": "Tagħbija tal-prodotti...",
   "Loading recipe…": "Qagħbija tar-riċetta...",
@@ -875,6 +943,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Metadata used by search engines and social previews for `/`.":
     "Metadejta użata minn magni tat-tiftix u previews soċjali għal `/`.",
   Method: "Metodu",
+  Metric: "Metriku",
   "Minimum account age to start a discussion (months)":
     "Età minima tal-kont biex tibda diskussjoni (xhur)",
   "Minimum order, ₹ (optional)": "Ordni minima, ₹ (mhux obbligatorju)",
@@ -890,12 +959,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Move later": "Imxi aktar tard",
   "Move order to": "Messi l-ordni lejn",
   "Move up in the showcase": "Imxi 'l fuq fil-vetrina",
+  "mSPRT Test Stat:": "Stat tat-test mSPRT:",
   "Muted text": "Test siekt",
   Name: "Isem",
   Navigation: "Navigazzjoni",
   "Navigation labels": "Navigazzjoni",
+  "Nearly matched": "Kważi mqabbla",
   "Needs attention": "Jeħtieġ attenzjoni",
   "Nepali (नेपाली)": "Nepaliż (नेपाली)",
+  "Net line revenue after allocated discounts": "Ebda pajjiż assenjat",
   "Net revenue": "Dħul nett",
   Never: "Qatt",
   "Never accept payments for this product": "Qatt taċċetta pagamenti għal dan il-prodott",
@@ -908,6 +980,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "New conversation": "Konversazzjoni ġdida",
   "New coupon code": "Kodiċi tal-kupun ġdid",
   "New customers": "Klijenti ġodda",
+  "New Experiment": 'Għadhom id="t0006">Għadu l-ebda attività ta\' email.',
   "New farm": "Razzett ġdid",
   "New password": "Password ġdida",
   "New post": "Post ġdid",
@@ -935,18 +1008,24 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Għadu l-ebda kodiċi — din il-promozzjoni tapplika awtomatikament għal kull cart eliġibbli.",
   "No comments": "L-ebda kumment",
   "No comments yet.": "Għadu l-ebda kumment.",
+  "No completed run": "L-ebda ġirja kompluta",
   "No contact attempts": "L-ebda tentattiv ta' kuntatt",
   "No content yet": "Għadu l-ebda kontenut",
   "No conversations yet": "Għadu l-ebda konversazzjoni",
+  "No countries assigned yet.": "S'issa l-ebda pajjiż assenjat.",
   "No country overrides yet. Add a country above to give it its own section visibility.":
     "S'issa l-ebda pajjiż ma jegħleb. Żid pajjiż hawn fuq biex tagħtih il-viżibilità tat-taqsima tiegħu stess.",
   "No discussions": "L-ebda diskussjoni",
+  "No email activity yet.": "S'issa l-ebda attività tal-email.",
   "No embedded True Grit logo, headline, button, or watermark.":
     "L-ebda logo True Grit inkorporat, intestatura, buttuna, jew watermark.",
+  "No experiments": "L-ebda esperimenti",
   "No farm assigned": "Ebda razzett assenjat",
   "No farm requests": "Ebda razzett",
   "No farmer name": "L-ebda isem tal-bidwi",
   "No farms yet": "Għadu l-ebda farms",
+  "No forecast yet": "Għadu l-ebda tbassir",
+  "No fraud signals fired.": "L-ebda sinjali ta' frodi sparati.",
   "No fresh favourites yet. Add a few below.": "Għadu l-ebda favoriti friski. Żid ftit hawn taħt.",
   "No gift cards yet": "Għadu l-ebda karti tar-rigali",
   "No highlighted products yet. Add a few below.":
@@ -974,6 +1053,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No permissions": "L-ebda permessi",
   "No pre-orders yet.": "Għadu l-ebda ordnijiet minn qabel.",
   "No price adjustments yet": "Għadu l-ebda aġġustamenti fil-prezz",
+  "No pricing brackets yet": "Għadu l-ebda parentesi tal-prezzijiet",
   "No products linked yet.": "S'issa l-ebda prodott marbut.",
   "No products match": "L-ebda prodotti ma jaqblu",
   "No products match.": "L-ebda prodotti ma jaqblux.",
@@ -1003,6 +1083,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Norwegian (Norsk bokmål)": "Norveġiż (Norsk bokmål)",
   "Not orderable even while the site-wide switch is on.": "Mhux ordnat anke waqt li s-sit mixgħul.",
   "Not redeemed against any order yet.": "Għadu mhux mifdija kontra xi ordni.",
+  "Not set": "Mhux issettjat",
+  "not signed in": "mhux iffirmat",
+  "Not Significant (Yet)": "Mhux Sinifikanti (Għadha)",
+  "Not started": "Mhux mibdi",
   "Note (optional)": "Nota (mhux obbligatorja)",
   "Note (required to decline)": "Nota (meħtieġa biex tirrifjuta)",
   "Note (required to request changes or reject)":
@@ -1015,6 +1099,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Nothing selected — the storefront stays exactly as it is.":
     'Xejn magħżula — il-vetrina tibqa\' eżattament kif inhi. id="t0005">Notifiki',
   "Nothing urgent": "Xejn urġenti",
+  "Nothing waiting. Everything asked so far was answered or refused cleanly.":
+    "Xejn qed jistenna. Kollox mistoqsi s'issa ġie mwieġeb jew miċħud b'mod nadif.",
   Notifications: "Notifiki",
   "Nut Free": "Ħieles Ġewż",
   "Off closes checkout entirely and shows customers a contact form instead, so interest is still captured. Baskets are left untouched.":
@@ -1025,6 +1111,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "On hand": "Fuq l-idejn",
   "on the sign-in page. The reset link goes to the address above.":
     "fuq il-paġna ta’ dħul. Ir-reset link tmur għall-indirizz ta 'hawn fuq.",
+  "Once a window fills up, further emails in it wait for the next minute's dispatch instead of failing outright -- nothing is lost, it just slows down.":
+    "Ladarba tieqa timtela, aktar emails fiha jistennew id-dispaċċ tal-minuta ta' wara minflok ma jonqsu għal kollox -- xejn ma jintilef, jonqos biss.",
   "Once you have created this grower's farm in the console, link the application to it here for provenance.":
     "Ladarba tkun ħoloq dan ir-razzett tal-koltivatur fil-console, għaqqad l-applikazzjoni magħha hawn għall-provenjenza.",
   "One composition engine renders every category — no code per category.":
@@ -1049,6 +1137,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
     'id="t0005">linja tal-ordni',
   Order: "Ordni",
+  "Order confirmation": "Konferma tal-ordni",
   "order line": "linja tal-ordni",
   "Order lines": "Linji tal-ordni",
   "Order not found": "Ordni mhux misjuba",
@@ -1063,7 +1152,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic Alphonso Mangoes": "Mangoesspan>so",
   "Organic mangoes held in a sunlit orchard": "Mang organiku miżmum fi ġnien imdawwal mix-xemx",
   "Organic wheat flour in a wooden bowl": "Dqiq tal-qamħ organiku fi skutella tal-injam",
+  Outcome: "Riżultat",
   Outstanding: "Spendenti",
+  "over India's base price": "fuq il-prezz bażi tal-Indja",
   Overview: "Ħarsa ġenerali",
   "Owner Reports": "Rapporti tas-Sidien",
   "Owner-only controls for /sitemap.xml, /robots.txt and /llms.txt.":
@@ -1080,7 +1171,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Titolu tal-paġna",
   "Page unavailable": "Paġna mhux disponibbli",
   Pages: "Paġni",
-  "Pages the storefront bot may quote": "Paġni li l-bot tal-maħżen jista’ jikkwota",
   Paid: "Mħallsa",
   "Paid out": "Paġni mħallsa",
   "paid via": "imħallsa permezz",
@@ -1100,6 +1190,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Pending: "Pendenti",
   "Pending fulfilment": "Pendenti twettiq",
   "Pending work for your role": "Xogħol pendenti għar-rwol tiegħek",
+  "Per day": "Kuljum",
+  "Per hour": "Fis-siegħa",
+  "Per-category overrides": "Jupposti għal kull kategorija",
   "Per-customer limit (optional)": "Limitu għal kull klijent (mhux obbligatorju)",
   "Percent off": "Perċentwali off",
   "Permanently delete item": "Ħassar l-oġġett b'mod permanenti",
@@ -1125,8 +1218,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Platform earns": "Pjattaforma taqla",
   "points ·": "punti ·",
   "Points (+ / -)": "Punti (+ / -)",
-  "Policy page slugs": "Paġni tal-politika slugs",
-  "Policy text quoted per answer": "Test tal-politika kkwotat għal kull tweġiba",
   "Polish (Polski)": "Pollakk (Polski)",
   "Portuguese (Português)": "Portugiż (Portugiż)",
   Position: "Pożizzjoni",
@@ -1136,6 +1227,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Post a recipe (submission form)": "Postja riċetta (formola ta' sottomissjoni)",
   "Post Comments": "Ippubblika Kummenti",
   Posted: "Imposta",
+  "Power Achieved:": "Qawwa Miksuba:",
+  "Preferred provider": "Pferred provider",
   "Prep minutes": "Minuti tal-preparazzjoni",
   "Preview is checked on both a narrow phone and a desktop screen.":
     "Preview hija ċċekkjata kemm fuq telefon dejjaq kif ukoll fuq skrin tad-desktop.",
@@ -1143,6 +1236,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Price: "Prezz",
   "Price (₹) (Primary Variant)": "Prezz (₹) (Varjant Primarja)",
   "Price adjustments unavailable": "Aġġustamenti fil-prezz mhux disponibbli",
+  "Price Tiers": "Livelli tal-prezz",
+  "Price tiers unavailable": "Livelli tal-prezzijiet mhux disponibbli",
   "Primary button label": "Tikketta tal-buttuna primarja",
   "Primary button link": "Link tal-buttuna primarja",
   "Primary buttons, links, the wordmark.": "Btutuni primarji, links, il-marka tal-kelma.",
@@ -1151,6 +1246,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Prijorità (rebħiet ogħla meta diversi jikkwalifikaw)",
   Private: "Privat",
   Product: "Prodott",
+  "Product / SKU": "Prodott / SKU",
   "Product cards, panels, the header.": "Karti tal-prodott, pannelli, l-intestatura.",
   "Product editor sections": "Sezzjonijiet tal-editur tal-prodott",
   "Product ID": "ID tal-prodott",
@@ -1162,6 +1258,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Product type": "Tip ta' prodott",
   Products: "Prodotti",
   Promotion: "Promozzjoni",
+  Provider: "Fornitur",
   "Provider ref": "Fornitur ref",
   Public: "Pubbliku",
   "Public categories": "Kategoriji pubbliċi",
@@ -1172,17 +1269,19 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Ippubblika bħala",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "kategoriji ppubblikati għas-slider tal-homepage. Il-klijenti jaraw erbgħa kull darba fuq id-desktop, f'din l-ordni. Għolli l-limitu fuq il-Kontroll tas-Sit.",
-  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
-    "Ippubblikat, paġna separata bi spazju. Il-bot jaqra dawn kelma b'kelma meta klijent jistaqsi dwar il-politika, u għalhekk it-tweġibiet tiegħu jaqblu ma' dak li fil-fatt ippublikajt.",
   "Published products": "Prodotti ppubblikati",
   "Publishing…": "Pubblikazzjoni...",
   "Pull quote": "Iġbed kwotazzjoni",
   "Punjabi (ਪੰਜਾਬੀ)": "Punġabi (ਪੰਜਾਬੀ)",
+  "Push to Sheet": "Imbotta għall-Folja",
+  "Pushing…": "Imbutta...",
   "Put essential subjects inside the dashed centre. Responsive crops may remove the edges.":
     "Poġġi suġġetti essenzjali ġewwa ċ-ċentru b'sing. Uċuħ tar-raba' li jirreaġixxu jistgħu jneħħu t-truf.",
   Quantity: "Kwant",
   "Quantity delta (+/−)": "Kwantità delta (+/−)",
   Question: "Mistoqsija",
+  "Questions the storefront bot would not answer, worst first. The phrasings it nearly matched are shown against each one, which is what tells you what to add to its vocabulary.":
+    "Mistoqsijiet li l-bot tal-maħżen ma kienx se jwieġeb, l-agħar l-ewwel. Il-frażi li kważi qabbel jintwerew ma' kull wieħed, li huwa dak li jgħidlek x'għandek iżżid mal-vokabularju tagħha.",
   Quote: "Kwotazzjoni",
   "Raise this to curate more than": "Għolli dan biex tikkura aktar minn",
   Rating: "Klassifikazzjoni",
@@ -1197,12 +1296,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Reason: "Raġuni",
   "Reason (optional)": "Raġuni (mhux obbligatorju)",
   "Reason:": "Raġuni:",
+  "Rebuild recommendations": "Rakkomandazzjonijiet għall-bini mill-ġdid",
+  "Rebuilding...": "Ribini...",
   Receipt: "Rċevuta",
+  "Recent activity": "Attività riċenti",
   "Recent administrative activity": "Attività amministrattiva riċenti",
   "Recipe not found": "Riċetta ma nstabitx",
   Recipes: "Riċetti",
+  Recipient: "Riċevitur",
   "Recipient email (optional)": "Email tar-riċevitur (mhux obbligatorju)",
+  "Recommendation performance": "Prestazzjoni tar-rakkomandazzjoni",
   Recommendations: "Rakkomandazzjonijiet",
+  "Recommended order": "Ordni rakkomandata",
   "Reconnecting…": "Ngħaqqdu mill-ġdid...",
   "Record adjustment": "Aġġustament tar-rekord",
   "Record inventory adjustment": "Aġġustament tal-inventarju tar-rekord",
@@ -1215,9 +1320,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Redemptions: "Fidliet",
   Reference: "Referenza",
   Refresh: "Aġġorna",
+  "Refresh now": "Aġġorna issa",
   "Refresh once the API is back online.": "Aġġorna ladarba l-API terġa' tkun onlajn.",
+  "Refreshing…": "Aġġorna...",
   Refund: "Rifużjoni",
   "Refund amount (₹)": "Ammont ta' rifużjoni (₹)",
+  "Refund automation": "Awtomazzjoni tar-rifużjoni",
   Refunded: "Rifużjoni",
   "Refunded by": "Rifużjoni minn",
   "refunded of": "rifużjoni ta'",
@@ -1226,6 +1334,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Region: "Reġjun",
   Reject: "Il-pajjiżi kollha",
   Rejected: "Riċaħda",
+  "Relative Effect": "Effett Relattiv",
   "Release everywhere": "Rilaxx kullimkien",
   "Release globally (all countries)": "il-pajjiżi kollha",
   "Release only in these countries": 'id="t0005">Neħħi l-kuluri tal-pajjiż',
@@ -1239,6 +1348,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Remove page colours": "Neħħi l-kuluri tal-paġna",
   "Remove translation": 'id="t0018">Sostituzzjoni',
   Removed: "Ibdel il-pointer bit-traċċa",
+  "Reorder soon": "Ordna mill-ġdid dalwaqt",
   "Replace the pointer with the trail": "Ibdel il-pointer bit-traċċa",
   Replaced: "Tippubblika l-prodotti",
   Replacement: "Sostituzzjoni",
@@ -1248,8 +1358,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requested refund": "Rifużjoni mitluba",
   "Requests filed from the storefront appear here.":
     'Talbiet ippreżentati mill-maħżen jidher hawn. id="t0011">Jeħtieġ il-permess reports.query.',
+  "Required Sample:": "Kampjun Meħtieġa:",
   "Requires articles.publish": "Jirrikjedi articles.publish",
   "Requires categories.publish": "Jirrikjedi categories.publish",
+  "Requires inventory.view and migration 0111.": "requires inventory. 0111.",
   "Requires owner settings access and a connected API.":
     "Jirrikjedi aċċess għas-settings tas-sid u API konness.",
   "Requires owner settings access.": "Jeħtieġ aċċess għas-settings tas-sid.",
@@ -1260,6 +1372,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires settings access.": "Teħtieġ aċċess għas-settings.",
   "Requires the analytics.view permission.": "Jirrikjedi l-permess analytics.view.",
   "Requires the inventory.adjust permission.": "Jeħtieġ il-permess inventory.adjust.",
+  Resend: "Ibgħat mill-ġdid",
   "Reserve future capacity without consuming current inventory.":
     "Irriżerva l-kapaċità futura mingħajr ma tikkonsma l-inventarju attwali.",
   Reserved: "Riservat",
@@ -1269,18 +1382,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Resolution: "Riżoluzzjoni",
   Resolve: "Isolvu",
   "Resolve return": "Irriżolvi ritorn",
+  "Resolved automatically by the refund agent": "Ssolva awtomatikament mill-aġent tar-rifużjoni",
   "Resolves live on every homepage load -- nothing to keep up to date.":
     "Jsolvi live fuq kull tagħbija tal-homepage -- xejn x'iżommu aġġornat.",
   "Resolving…": "Issolvi...",
   "Respect the safe area": "Irrispetta ż-żona sigura",
+  "Restock lead time (days)": "Ħin mill-ġdid (jiem)",
   Restore: "Irrestawra",
   "Restore (make visible)": "Irrestawra (tagħmel viżibbli)",
   Resume: "Ibda",
   Retry: "Ipprova mill-ġdid",
   "Return request not found": "Talba għar-ritorn ma nstabitx",
   Returns: "Ritorni",
-  "returns delivery help terms privacy":
-    "it-termini tal-għajnuna tal-konsenja tad-ritorni privatezza",
   Revenue: "Ritorn",
   "Revenue (paid)": "Dħul (mħallas)",
   "Revenue by day": "Dħul kuljum",
@@ -1295,6 +1408,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Reviews: "Reviżjonijiet",
   "Reviews customers write from a completed order appear here.":
     "Riċensjonijiet li jiktbu l-klijenti minn ordni kompluta jidhru hawn.",
+  Risk: "Riskju",
   Role: "Rwol",
   "Role catalogue": "Katalgu tar-rwoli",
   Roles: "Rwoli",
@@ -1303,13 +1417,17 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Roles have not been seeded yet.": "Rwoli għadhom ma nżergħux.",
   "Roles unavailable": "Rwoli mhux disponibbli",
   "Romanian (Română)": "Rumen (Română)",
+  "Run forecast now": "0111. darba; imbagħad se jġedded kull nhar ta' Tnejn.",
   "Run renewals now": "Mexxi tiġdid issa",
   "Run report": "Mexxi rapport",
+  "Run the baseline once; it will then refresh every Monday.":
+    "Mexxi l-linja bażi darba; imbagħad se jġedded kull nhar ta' Tnejn.",
   "Running...": "Tmexxija...",
   "Running…": "Tmexxija...",
   "Russian (Русский)": "Russu (Русский)",
   "Safe area": "Żona sigura",
   "Safe geo-lock:": "Ġeo-lock sikur:",
+  "Safety stock (days)": "Stock ta' sigurtà (jiem)",
   "Sale & Discounts": "Bejgħ u Skontijiet",
   "Sale price": "Prezz tal-bejgħ",
   "Sale Price (₹)": "Prezz tal-Bejgħ (₹)",
@@ -1331,6 +1449,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Save labels": "Issejvja t-tikketti",
   "Save message": "Issejvja l-messaġġ",
   "Save page SEO": "Issejvja l-paġna SEO",
+  "Save planning settings": "Issejvja s-settings ta' ppjanar",
   "Save roles": "Issejvja r-rwoli",
   "Save rule": "Issejvja r-regola",
   "Save scope": "Issejvja l-ambitu",
@@ -1387,7 +1506,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Fittex prodotti, ordnijiet, utenti, kategoriji...",
   "Search promotions": "Fittex promozzjonijiet",
   "Search recipes": "Fittex riċetti",
-  "Search results per lookup": "Riżultati tat-tfittxija għal kull tfittxija",
   "Search returns": "Fittex prospetti",
   "Search reviews": '1><1"ch="t0008">Fittex sottomissjonijiet',
   "Search submissions": "Fittex sottomissjonijiet",
@@ -1434,16 +1552,37 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Send invite": "><spanding...",
   "Send reset email": "Ibgħat email ta' reset",
   "Send reset link": "Ibgħat link ta' reset",
+  "Send test email": "<1 ; lil klijent meta ssir l-ordni tiegħu.",
   "Sending...": '><spanding id="t0007">Tibgħat...',
   "Sending…": "Tibgħat...",
+  "Sent to a contributor when staff approve, request changes on, or reject a submission.":
+    "Mibgħuta lil kontributur meta l-istaff japprova, jitlob bidliet fuq, jew",
+  "Sent to a customer when their order is placed.":
+    "Mibgħuta lil klijent meta titqiegħed l-ordni tiegħu.",
+  "Sent to a farm owner when one of their products is ordered.":
+    "Mibgħuta lil sid ta' razzett meta jiġi ordnat wieħed mill-prodotti tagħhom.",
+  "Sent to a person": "Mibgħut lil persuna",
+  "Sent to an applicant when staff approve or reject their application.":
+    "Mibgħuta lil applikant meta l-persunal japprova jew jirrifjuta l-applikazzjoni tiegħu.",
+  "Sent to staff and the applicant when a farm applies to supply True Grit.":
+    "Mibgħut lill-persunal u lill-applikant meta razzett japplika biex iforni True Grit.",
+  "Sent to staff when a storefront contact form is submitted.":
+    "Mibgħuta lill-persunal meta tiġi sottomessa formola ta' kuntatt ta' storefront.",
+  "Sent when a customer requests a password reset.":
+    "Mibgħuta meta klijent jitlob reset tal-password.",
+  "Sent when a new customer account is created.": "Mibgħut meta jinħoloq kont ġdid tal-klijent.",
   "SEO description": "Deskrizzjoni tas-SEO",
   "SEO keywords": "Kliem ewlenin tas-SEO",
   "SEO title": "Titolu tas-SEO",
   "Separate paragraphs with a blank line. Links use [text](/path); HTML is rejected.":
     "Paragrafi separati b'linja vojta. Il-links jużaw [test](/path); HTML huwa miċħud.",
+  "Sequential testing allows continuous monitoring without p-hacking. Results are valid at any time.":
+    "L-ittestjar sekwenzjali jippermetti monitoraġġ kontinwu mingħajr p-hacking. Ir-riżultati huma validi fi kwalunkwe ħin.",
   Serbian: "Serb",
   "Set a new password": "Issettja password ġdida",
   "Set as default": "Issettja bħala default",
+  "Shaded area is the 95% residual interval; the line is expected daily units.":
+    "Żona sfumata hija l-intervall residwu ta' 95%; il-linja hija mistennija unitajiet ta' kuljum.",
   "Shop · Farms · Journal": "Aħt · Farms · Ġurnal",
   "Shop fresh greens": "Aħt ħodor friski",
   "Shop root vegetables": "Ħut l-għeruq tal-ħaxix",
@@ -1456,7 +1595,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show dietary and certification filters on the shop page":
     "Uri filtri tad-dieta u taċ-ċertifikazzjoni fil-paġna tal-ħanut",
   "Show original": "Uri l-oriġinali",
+  "Show password": "Uri l-password",
   "Show product recommendations": "Uri r-rakkomandazzjonijiet tal-prodott",
+  "Show reorder recommendations only": "Uri r-rakkomandazzjonijiet tal-ordni mill-ġdid biss",
   "Show this snippet": "Uri dan is-snippet",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
     "Muri fil-quċċata tal-post u bħala thumbnail tagħha fuq il-lista tal-blog.",
@@ -1490,6 +1631,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Site-wide default:": "Default mas-sit kollu:",
   "Skip to content": "Aqbeż għall-kontenut",
   "SKU (Primary Variant)": "SKU (Varjent Primarja)",
+  "SKU demand, days until stockout and reorder quantities from rolling sales and weekday seasonality.":
+    "Domanda tal-SKU, jiem sakemm ma jkunx hemm ħażna u ordni mill-ġdid mill-bejgħ kontinwu u staġjonalità tal-ġimgħa.",
   "slots used": "slots użati",
   "Slovak (Slovenčina)": "Slovakk (Slovenčina)",
   Slovenian: "Sloven",
@@ -1500,20 +1643,31 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Snapshots at purchase time — catalogue edits never rewrite an order.":
     "Snapshots fil-ħin tax-xiri — editjar tal-katalgu qatt ma jerġa’ jikteb ordni.",
   "Sold out": "Mibjugħa",
+  "Something went wrong": "Xi ħaġa marret ħażin",
   "space separated, e.g. product publish visibility":
     "spazju separati, eż. prodott tippubblika viżibilità",
   "Spanish (Español)": "Spanjol (Español) (Español) dqiq ragi",
   "Sprouted ragi flour": 't0009">tagħna',
   "SQL Tables": "Tabelli SQL",
+  "Staff account": "Kont tal-persunal",
+  "Start Experiment": "Ibda l-Esperiment",
+  "Started At": "Bdew fi",
   Starts: "Bidu",
   "Starts (optional)": "Tibda (mhux obbligatorju)",
   "Starts with no permissions — you'll pick what it can do right after creating it.":
     'Tibda mingħajr permessi. id="t0011">Passi',
+  "Statistical Significance (mSPRT)": "Sinifikat Statistiku (mSPRT)",
+  "Statistically rigorous sequential testing for product features and growth.":
+    "Ittestjar sekwenzjali statistikament rigoruż għall-karatteristiċi u t-tkabbir tal-prodott.",
+  "Statistically Significant": "Statistikament Sinifikanti",
   Steps: "Passi",
   "Steps (one per line)": "Passi (wieħed għal kull linja)",
+  "Stock healthy": "Stock b'saħħtu",
   "Stock Status": "Storefront switch una",
+  Stop: "Waqqaf",
   "Storage guidance": "Gwida għall-ħażna",
   "Store credit": 'id="t0017">Fruntieri qawwija',
+  "Storefront answers": "Aħżen",
   "Storefront switches": "Swiċċijiet tal-maħżen",
   "Storefront switches unavailable": "Storefront switches mhux disponibbli",
   "Strong border": "Fruntieri qawwija",
@@ -1536,6 +1690,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Supporting text": "Test ta' appoġġ",
   "Swahili (Kiswahili)": "Swaħili (Kiswahili)",
   "Swedish (Svenska)": "Svediż (Svenska)",
+  "Sync from Sheet": "Sinkronizza mill-Folja",
+  "Syncing…": "Sinkronizza...",
   Table: "Tabella",
   "Tags & Certifications": "Tags & Ċertifikazzjonijiet",
   Tajik: "Taġik",
@@ -1578,6 +1734,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'The same kill-switch as Site Control\'s "Accept orders and payments", scoped to just this product. Uncheck it when this one item runs out or fails a quality check — the page stays live and browsable, but "Add to basket" is replaced with a message and a contact form until you switch it back on. This is independent of the site-wide switch: turning ordering off here has no effect on any other product.':
     'L-istess kill-switch bħall-"Aċċetta ordnijiet u ħlasijiet" tal-Kontroll tas-Sit, immirat għal dan il-prodott biss. Neħħi l-iċċekkja meta dan l-oġġett wieħed jispiċċa jew jonqos mill-kontroll tal-kwalità — il-paġna tibqa’ ħajja u tista’ tfittex, iżda “Żid mal-basket” tinbidel b’messaġġ u formola ta’ kuntatt sakemm terġa’ tixgħelha. Dan huwa indipendenti mill-iswiċċ tas-sit kollu: it-tidwir tal-ordni hawn m\'għandu l-ebda effett fuq l-ebda prodott ieħor.',
   "The selected CMS page could not be loaded.": "Il-paġna tas-CMS magħżula ma setgħetx titgħabba.",
+  "The storefront bot only states figures you have entered here. Anything left blank is sent to a person instead, so it can never quote a policy nobody set.":
+    "Il-bot tal-maħżen jiddikjara biss iċ-ċifri li daħħalt hawn. Kull ħaġa li titħalla vojta tintbagħat lil persuna minflok, u għalhekk qatt ma tista' tikkwota politika li ħadd ma stabbilixxa.",
   "The storefront's palette and the decoration on top of it.":
     "Il-paletta tal-vetrina u d-dekorazzjoni ta' fuqha.",
   "The two new passwords do not match.": "Iż-żewġ passwords ġodda ma jaqblux.",
@@ -1589,10 +1747,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These roles define the permission sets available when inviting or editing users.":
     "Jiffissaw l-utenti.",
   "Thinking…": "Taħseb...",
+  "Thirty-day unit forecast with confidence interval":
+    "Tbassir ta' unità ta' tletin jum b'intervall ta' kunfidenza",
   "This application is": "Din l-applikazzjoni hija",
   "This order is in a final state.": "Din l-ordni tinsab fi stat finali.",
   "This page contains sensitive application diagnostics.":
     "Din il-paġna fiha dijanjostiċi sensittivi tal-applikazzjoni.",
+  "This page hit an unexpected error and could not finish rendering. Reloading usually fixes it. If it keeps happening, share what you were doing when it happened with the engineering team.":
+    "Din il-paġna laqtet żball mhux mistenni u ma setgħetx tispiċċa l- rendering. It-tagħbija mill-ġdid normalment tiffissaha. Jekk jibqa' jiġri, aqsam dak li kont tagħmel meta ġara mat-tim tal-inġinerija.",
   "This page requires the revenue.view permission.":
     "Din il-paġna teħtieġ il-permess ta’ revenue.view.",
   "This permanently removes the image from storage. Images still referenced by a product, page, article or recipe cannot be deleted.":
@@ -1607,6 +1769,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Din it-taqsima hija editjata fil-panel tagħha stess aktar 'l isfel fil-paġna.",
   "Threads started from the storefront appear here.": "Threads li bdew mill-vetrina jidhru hawn.",
   "Thumbnail image URL": "URL ta' l-immaġini thumbnail",
+  "Tier 1": "Livell 1",
+  "Tier 2": "Livell 2",
+  "Tier 3": "Livell 3",
+  "Tier 4": "Livell 4",
   Time: "Ħin",
   "Tinted band": "Faxxa ikkulurita",
   Title: "Titolu",
@@ -1619,7 +1785,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Top products": "L-aqwa prodotti",
   "Top-rated reviews (updates automatically)":
     "Reċensjonijiet bl-ogħla rata (aġġornamenti awtomatikament)",
+  "Total Conversions": "Konverżjonijiet Totali",
+  "Total Traffic": "Traffiku Totali",
   "Total use limit (optional)": "Limitu totali ta' użu (mhux obbligatorju)",
+  "Traffic Allocation": "Allokazzjoni tat-Traffiku",
   Trail: "Traċċa",
   "Trail colour": "Kulur tat-traċċa",
   "transfer money — make the transfer to": "ittrasferixxi l-flus — agħmel it-trasferiment lil",
@@ -1637,6 +1806,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Itfi biex tiffriża reġistrazzjonijiet ġodda filwaqt li l-klijenti eżistenti jibqgħu jiffirmaw b'mod normali.",
   "Turn sign-in methods and ordering on or off without a deploy. The pill on the right is what customers actually get: a switch can only ever take a feature away, never add one the API is not configured for.":
     "Ixgħel jew itfi l-metodi ta' dħul u l-ordnijiet mingħajr skjerament. Il-pillola fuq il-lemin hija dak li fil-fatt jiksbu l-klijenti: swiċċ jista' qatt ineħħi karatteristika biss, qatt ma żżid waħda li l-API mhix ikkonfigurata għaliha.",
+  "Turning this off can block staff self-service password reset -- the recovery path into this very admin panel.":
+    "It-tifi ta' dan jista' jimblokka l-issettjar tal-password self-service tal-persunal -- il-mogħdija ta' rkupru f'dan il-pannell ta' l-amministrazzjoni stess.",
   Type: "Tip",
   "Type of section to add":
     'id="t0011">Iċċekkja dan għal prodotti li ġenwinament ma jistgħux jintbagħtu lura (eż. ċerti oġġetti li jitħassru friski). Il-klijenti mhux se jkunu jistgħu jippreżentaw talba għar-ritorn kontra prodott ineliġibbli.',
@@ -1646,12 +1817,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Under review": "Taħt reviżjoni",
   Unit: "Unità",
   "Unit price, ₹": "Prezz ta' unità, ₹",
+  "units (": "unitajiet (",
   "units sold": "unitajiet mibjugħa",
   Unpublish: "Mhux ippubblikat",
   Unpublished: "Mhux ippubblikat",
   "Unpublishing…": "Tneħħi l-pubblikazzjoni...",
-  "Untick a section to hide it from customers without losing its content, and use the arrows to change the order they appear in. Changes here apply as soon as you make them.":
-    "Immarka sezzjoni biex taħbiha mill-klijenti mingħajr ma titlef il-kontenut tagħha, u uża l-vleġeġ biex tibdel l-ordni li jidhru fiha. Il-bidliet hawnhekk japplikaw malli tagħmilhom.",
+  "Untick a kind of email to stop it from sending, without touching anything else.":
+    "Agħlaq tip ta' email biex twaqqafha milli tibgħat, mingħajr ma tmiss xi ħaġa oħra.",
+  "Untick a section to hide it from customers without losing its content, and use the position dropdown to change the order they appear in. Changes here apply as soon as you make them.":
+    "Immarka sezzjoni biex taħbiha mill-klijenti mingħajr ma titlef il-kontenut tagħha, u uża d-dropdown tal-pożizzjoni biex tbiddel l-ordni li jidhru fiha. Il-bidliet hawnhekk japplikaw malli tagħmilhom.",
   "Up to": 'id="t0004">Aġġornata minn',
   Updated: "Aġġornata",
   "Updated by": "Aġġornata minn",
@@ -1659,6 +1833,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload an image to get started.": "Ttella' immaġni biex tibda.",
   "Upload checklist": "Ttella' lista ta' kontroll",
   "Upload image": "Ttella' immaġni",
+  "Upload to R2": "Ttella' fuq R2",
   "Uploading image...": "Jittella’ immaġni...",
   "Uploading image…": "Ttella’ immaġni...",
   "Uploading thumbnail...": "Ttella' thumbnail...",
@@ -1679,6 +1854,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "L-użu tal-kulur tad-ditta tas-sit",
   Uyghur: "Ujgur",
   Uzbek: "Użbek",
+  "Value (Mean)": "Valur (Medju)",
   "Value of 1 INR": "Valur ta' INR 1",
   "Value per INR": "Valur għal kull INR",
   "Value, ₹": "Valur, ₹",
@@ -1686,6 +1862,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Variant (SKU)": "Varjant (SKU)",
   "Variant ID": "ID tal-varjant",
   "Variant Name": "Isem tal-Varja",
+  "Variant Performance": "Prestazzjoni tal-Varjent",
   Variants: "Varjanti",
   "Variants of": "Varjanti ta",
   Vegetarian: "Veġetarjan",
@@ -1716,10 +1893,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "What the promotion does": "X'tagħmel il-promozzjoni",
   "What they grow:": "Dak li jikbru:",
   "What this role is for": "Għalxiex hu dan ir-rwol",
+  "What was actually sent, blocked, throttled or rejected.":
+    "Dak li fil-fatt ntbagħat, imblukkat, throttled jew miċħud.",
   When: "Meta",
   "Where this category is released": "Fejn tinħareġ din il-kategorija",
   "Where this product is released": 'id="t0006">Ordni sħiħa',
   "Which promotion to show": "Liema promozzjoni għandha turi",
+  "Which provider sends True Grit's email, which kinds of email are allowed out, how fast, and what actually happened recently.":
+    "Liema fornitur jibgħat True Grit's emails, liema tip ta' emails huma permessi, x'inhu l-veloċi u attwali reċentement.",
   "Which reviews to show": "Liema reviżjonijiet turi",
   "Whole order": "Ordni sħiħa",
   "Whole site": "Sit kollu",
@@ -1731,6 +1912,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Għaliex inħarġet din il-karta — ġest ta' rieda tajba, ritorn riżolt bħala kreditu tal-maħżen, eċċ.",
   "Widget colour": "Kulur tal-widget",
   "Widget colour hex": "Hex tal-kulur tal-widget",
+  "Widget engagement and checkout revenue attributed to products discovered through recommendations in this date range.":
+    "Ingaġġ minn widget u dħul minn checkout attribwit għal prodotti skoperti permezz ta' rakkomandazzjonijiet f'din il-firxa tad-data.",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Kliem li l-bot jaqbel ma' mistoqsija biex jiddeċiedi li din l-entrata hija rilevanti.",
   "Working...": "Taħdem...",

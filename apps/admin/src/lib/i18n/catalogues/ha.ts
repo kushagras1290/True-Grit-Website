@@ -23,6 +23,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   ") · started": ") an fara",
   "[label](/path)": "[label](/hanya)",
   "/ due": "/ saboda",
+  "/ variant": "/ bambance-bambancen",
   "/farms": "/ gonaki",
   "/recipes": "/ girke-girke",
   "/recipes/": "/kayayyakin abinci/",
@@ -35,6 +36,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "2 cups": "kofuna biyu",
   "2 stars": "2 taurari",
   "3 stars": "taurari 3",
+  "30-day demand": "Buƙatar kwanaki 30",
   "4 stars": "taurari hudu",
   "5 stars": "5 taurari",
   "5xx AppErrors and unhandled exceptions will show up here as they happen.":
@@ -65,6 +67,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Maɗaukaki mai launi — duba muted rubutu har yanzu ana iya karantawa anan.",
   "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
     "Kasar baƙo ta zaɓi kuɗi, wannan tebur yana ba da ƙimar nuninsa, kuma ainihin farashin INR ya kasance baya canzawa. Kudaden da aka kashe sun koma ga rashin aminci na INR.",
+  "A/B Experiments": "A/B Gwaje-gwaje",
   "Accept orders and payments": "Karɓi oda da biya",
   "Accept orders and payments for this product": "Yar da oda da biya na wannan samfurin",
   Action: "Ayyukan",
@@ -75,6 +78,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Active points appear as free checkout alternatives.":
     "Mataki masu aiki suna bayyana azaman madadin wurin biya kyauta.",
   "Active rules": "Dokoki masu aiki",
+  "Active, published variants": "Ayyukan bambance-bambancen da aka buga",
   Actor: "Dan wasan kwaikwayo",
   Add: "Ƙara",
   "Add / edit roles": "Ƙara / gyara matsayin",
@@ -85,6 +89,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add a question": "Ƙara tambaya",
   "Add a section…": "Ƙara sashe…",
   "Add a snippet": "Ƙara snippet",
+  "Add bracket": "Ƙara sashi",
   "Add business": "Ƙara kasuwanci",
   "Add category": "Ƙara nau'i",
   "Add code": "Ƙara lambar",
@@ -118,9 +123,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add window": "Ƙara taga",
   "Add zone": "Ƙara yanki",
   Added: "An ƙara",
+  "Added to basket": "An ƙara zuwa kwandon",
   "Adding...": "Ƙara...",
   "Adding…": "Ƙara…",
   Address: "Adireshi",
+  "Adds after a recommendation click": "An ƙara bayan shawarwarin danna",
   "Adjust points": "A daidaita maki",
   "Adjust the search or create a category.": "Daidaita bincike ko ƙirƙirar rukuni.",
   "Adjust the search or create a product.": "daidaita samfurin.",
@@ -133,8 +140,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   ADMIN_LOGIN_EMAIL: 'id="t0005">ADMIN_LOGIN_PASSWORD',
   Afrikaans: "Afirka",
   "After refunds, all farms": "Bayan an dawo da kudade, duk gonaki",
+  "Agent assessment": "Kimanin wakili",
   Albanian: "Albaniya",
   All: "Duk",
+  "All outcomes": "Duk sakamakon",
   "All ratings": "Dukkan kima",
   "All statuses": "Dukkan matsayi",
   "All types": "Kowane iri",
@@ -148,6 +157,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Ambient effect": "Tasirin yanayi",
   Amount: "Yawan",
   "Amount off, ₹": "Adiddigar da aka kashe, ₹",
+  "An admin preference wins only if that provider's API key is actually configured on the server -- picking one here can never send mail through a provider with no key set.":
+    "Abin zaɓin mai gudanarwa yana samun nasara ne kawai idan an saita maɓallin API ɗin mai badawa a zahiri akan sabar -- ɗaukar ɗaya anan ba zai taɓa aika saƙo ta hanyar mai ba da saitin maɓalli ba.",
   "An impression of the motion and colour, not a pixel-accurate rehearsal.":
     "Wani ra'ayi na motsi da launi, ba madaidaicin maimaitawa na pixel ba.",
   "Analytics unavailable": "Ba a samun nazari",
@@ -158,6 +169,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Banner sanarwa",
   "Announcements unavailable": "Babu ​​sanarwar",
   Answer: "Amsa",
+  "Answered by the bot": "Bot",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Duk wanda ya shiga yana iya yin sharhi. Fara sabon tattaunawa ne kawai aka rufe ta hanyar shekarun asusun.",
   "API mode": "Yanayin API",
@@ -176,12 +188,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "Ana amfani da kowace gona ba tare da ƙimar ta ba.",
   "Applies to": "Ya shafi",
-  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
-    "Ya shafi duka bots. Manyan dabi'u suna ba mataimaki fiye da yin aiki tare da ƙarin farashi akan kowane amsa.",
   "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
     "Ya shafi duka widget din taɗi. A bar shi a share don bin launin alamar rukunin daga Launuka & Tasirin.",
   "Applies to every visitor Cloudflare resolves to":
     "Ya shafi kowane baƙo Cloudflare ya yanke shawara ga",
+  "Applies to the admin panel bot only. The storefront bot does not use a language model, so it has nothing to tune here.":
+    "Ya shafi bot ɗin admin kawai. Botfront bot ba ya amfani da samfurin harshe, don haka ba shi da wani abin da zai iya kunnawa anan.",
   Approve: "Abbaba",
   "Approve & publish": "A yarda & buga",
   Approved: "An amince",
@@ -196,10 +208,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Ask how to do something in the admin panel, or ask about pending orders, low-stock items, or an order's status.":
     "Tambayi yadda ake yin wani abu a cikin kwamitin gudanarwa, ko tambaya game da oda masu jiran aiki, ƙananan kayayyaki, ko matsayin oda.",
   "Assigned roles": "ayyukan da aka ba wa",
+  "Attributed orders": "An danganta oda",
+  "Attributed revenue": "An danganta kudaden shiga",
   Attribution: "Sakamako",
   "Audit Log": "Log tantancewa",
   Author: "Marubuci",
+  "Auto (best configured)": "Auto (mafi kyawun daidaitawa)",
   "Auto-translate": "Fassara kai tsaye",
+  "Automatically scores every new return request for fraud risk and auto-approves (with a real Razorpay refund), auto-denies, or escalates it to a human in the Returns queue. Off by default -- while off, every return request is triaged and resolved by staff exactly as it works today. See a request's Returns detail page for the agent's risk score and reasoning once this is on.":
+    "Mai ƙididdige ƙima ta atomatik ga kowane sabon buƙatun dawowa don haɗarin zamba da kuma yarda da kai (tare da ainihin kuɗin Razorpay), musantawa ta atomatik, ko haɓaka shi zuwa mutum a cikin layin Dawowa. Kashe ta tsohuwa - yayin kashewa, kowane buƙatun dawowa ana daidaita shi kuma ma'aikata sun warware shi daidai kamar yadda yake aiki a yau. Duba dalla-dalla shafin Dawowar buƙatu don ƙimar haɗarin wakili da dalili da zarar an kunna wannan.",
   Availability: "samuwa",
   Available: "Akwai",
   "available · reorder at": "ana samunsa · sake yin oda a",
@@ -212,6 +229,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "B2B / bulk ordering": "B2B / oda mai yawa",
   Back: "Baya",
   "Back to conversations": "Komawa tattaunawa",
+  "Back to experiments": "Komawa ga gwaji",
+  "Back to Experiments": "Komawa Gwaje-gwaje",
   "Back to sign in": "Komawa shiga",
   "Banner image": "Hoton banner",
   "Banner image alt text": "Hoton tuta alt rubutu",
@@ -226,6 +245,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Mafi kyawun haɓakawa mai aiki (sabuntawa ta atomatik)",
   "Best sellers, resolved live from orders on every homepage load -- nothing to keep stocked.":
     "Mafi kyawun siyarwa, an warware kai tsaye daga umarni akan kowane nau'in gidan yanar gizon -- babu abin da za a adana.",
+  "Blank means a category has no cap of its own -- the global limit above still applies.":
+    "Baki yana nufin nau'in ba shi da iyaka na kansa -- iyakar duniya da ke sama har yanzu tana aiki.",
   "Blocks JSON": "Yana toshe JSON",
   "Blog and recipe pitches from the community appear here.":
     "Blog da kuma girke-girke filayen daga al'umma sun bayyana a nan.",
@@ -238,6 +259,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Body: "Jiki",
   "Body text": "Rubutun jiki",
   Bosnian: "Bosniya",
+  "Bracket name": "Sunan gungu",
   Brand: 'Brand="t0007" ( Български)',
   "Built-in": "An gina shi",
   "bundle price · items priced at": "Farashin dam · abubuwan da aka saka farashi a",
@@ -296,6 +318,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "City / town": "Birni / gari",
   "Clearing...": "Ana Share...",
   "Click link": "Latsa hanyar haɗi",
+  "Click-through rate": "Danna-ta hanyar ƙima",
   Close: "Rufe",
   "Close help assistant": "Rufe mataimakiyar taimako",
   "Close navigation": "Rufe kewayawa",
@@ -318,6 +341,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Common questions": "Tambayoyin gama gari",
   Community: "Al'umma",
   Company: "Kamfani",
+  Complete: "cikakke",
   Completed: "An kammala",
   Configuration: "Tsarin tsari",
   "Configure loyalty, pickup, harvest reservations, delivery logistics and wholesale accounts. Customer access is controlled independently by the five checkboxes in Site Control.":
@@ -331,15 +355,21 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact Attempts": "Ƙoƙarin Tuntuɓi",
   "Contact attempts unavailable": "Ba a samun yunƙurin tuntuɓar",
   "Contact email": "Imel na lamba",
+  "Contact form": "Form lamba",
   Content: "abun ciki",
+  "Content submission decision": "Shawarar ƙaddamar da abun ciki",
   "Continue with Facebook": "Ci gaba da Facebook",
+  "Continuous (e.g. AOV)": "Ci gaba (misali AOV)",
   "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
     "Sarrafa kimanin farashin kuɗaɗen gida ta hanyar saita nawa ne darajar Rupe ta Indiya. Katalogi, rajista da oda suna zama lafiya a cikin INR.",
+  "Control vs": "Control vs</span Ƙimar",
   "Control what each role can view, create, edit, publish or manage.":
     "Sarrafa abin da kowace rawa za ta iya gani, ƙirƙira, gyara, bugawa ko sarrafa.",
   "Control whether each bot is available, and edit what it knows.":
     "Sarrafa ko akwai kowane bot, sannan a gyara abin da ya sani.",
   "Conversation turns remembered": "Tattaunawa tana juyawa",
+  "Conversion rate": "Yawan canji",
+  Conversions: "Juyin-juyawa",
   Cook: "Ku dafa",
   "Cook minutes": "Dafa mintuna",
   "Copy inside dark bands.": "Kwafi cikin duhun makada.",
@@ -347,6 +377,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Could not load archived records.": "An kasa loda bayanan da aka adana.",
   "Could not load this feature.": "An kasa loda wannan fasalin.",
   Countries: "Kasashe",
+  "Countries in this bracket": "Ƙasashen da ke cikin wannan sashin",
   Country: "Kasar",
   "Country overrides unavailable": "Ƙasa ta soke babu",
   "Coupon codes": "Lambobin kumbura",
@@ -368,6 +399,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Create promotion": "Ƙirƙiri gabatarwa",
   "Create role": "Ƙirƙiri rawar",
   "Create the first draft to get started.": "Ƙirƙiri daftarin farko don farawa.",
+  "Creating experiments from the admin panel is not available yet.":
+    "Ba a samu ƙirƙirar gwaje-gwaje daga kwamitin gudanarwa ba tukuna.",
   "Creating...": "Ƙirƙira...",
   "Creating…": "Ƙirƙira…",
   "Credit limit, ₹": "Iyadin kuɗi, ₹",
@@ -381,15 +414,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Currency values unavailable": "Babu ​​ƙimar kuɗin kuɗi",
   "Current password": "Password na yanzu",
   "Currently its own effects.": "A halin yanzu tasirinsa.",
+  "Currently sending via": "Ana aikawa a halin yanzu ta hanyar",
   "Currently the site-wide effects — save below to give it its own.":
     "A halin yanzu tasirin rukunin yanar gizon - ajiye ƙasa don ba da kansa.",
   "Cursor trail": "Hanyar siginar kwamfuta",
   Customer: "Abokin ciniki",
   "Customer favourites": "Abokan da aka fi so",
   "Customer image URL": "URL na hoton abokin ciniki",
+  "Customer password reset": "Sake saitin kalmar sirri ta abokin ciniki",
   "Customer ratings and reviews from verified purchases.":
     "Kimanin abokin ciniki da sake dubawa daga ingantattun sayayya.",
   "Customer user ID": "ID mai amfani na abokin ciniki",
+  "Customer welcome": "barka da abokin ciniki",
   "Customer-created Subscribe & Save deliveries. Pause, resume or cancel on a customer's behalf, or run the renewal batch that otherwise fires on its own schedule.":
     "Abokin ciniki ya ƙirƙira Kuɗi da Ajiye isarwa. Dakata, ci gaba ko sokewa a madadin abokin ciniki, ko gudanar da tsarin sabuntawa wanda in ba haka ba ya kunna kan nasa jadawalin.",
   "Customer-facing description (optional)": "Bayyanawar fuskantar abokin ciniki (na zaɓi)",
@@ -404,10 +440,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Customers can reserve products against active harvest windows instead of current stock.":
     "Abokan ciniki za su iya tanadin samfura akan tagogin girbi masu aiki maimakon hannun jari na yanzu.",
   Cut: "Yanke",
+  "Daily demand": "Buƙatar yau da kullun",
   "Daily revenue for the selected range": "kudaden shiga na yau da kullun don kewayon da aka zaɓa",
   "Dairy Free": "Kyautar Kiwo",
   Danger: "Haɗari",
+  "data days": "kwanakin bayanai",
   "Day (0 Sun – 6 Sat)": "Ranar (0 Rana – 6 Sat)",
+  "Days left": "Sauran kwanaki",
   Deactivate: "Kashe",
   Decision: "Hukunci",
   Decline: "Raguwa",
@@ -435,6 +474,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete selected (": "Share zaɓaɓɓen (",
   "Delete this entry": "Share wannan shigarwa",
   "Delete this price adjustment?": "Shirye wannan daidaitawar farashin?",
+  "Delete this pricing bracket?": "Share wannan sashin farashin?",
   "Delete user": "Share mai amfani",
   "Deleting...": "Sharewa...",
   Delivery: "Iska",
@@ -504,6 +544,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Email: "Imel",
   "Email + password": "Email + kalmar sirri",
   "Email for reset link": "Imel don sake saitin hanyar haɗin yanar gizo",
+  "Email settings unavailable": "Babu ​​saitunan imel",
   Enable: "A kunna",
   "Enable at least one block.": "A kunna aƙalla shinge ɗaya.",
   "Enable B2B and bulk ordering": "Kunna B2B da oda mai yawa",
@@ -514,6 +555,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Enable seasonal pre-orders": "A kunna pre-umarni na yanayi",
   "Enable selected (": "Kunna zaɓaɓɓen (",
   "Enable Subscribe & Save": "A kunna Subscribe & Ajiye",
+  "Enable the refund agent": "Ba da damar wakili na maidowa",
   Enabled: "An kunna",
   Ends: "Ƙare",
   "Ends (optional)": "Ƙare (na zaɓi)",
@@ -522,6 +564,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Errors and destructive actions.": "Kurakurai da ayyuka masu lalacewa.",
   Established: "An Kafa",
   Estonian: "Estoniya",
+  Evaluated: "An kimanta",
   Event: "Tattaunawa",
   "Every colour the storefront uses, site-wide or for one page, plus ambient effects and cursor trails. Changes go live as soon as you save.":
     "Kowane launi da gaban shagon ke amfani da shi, a faɗin rukunin yanar gizon ko na shafi ɗaya, da tasirin yanayi da hanyoyin siginan kwamfuta. Canje-canje suna gudana da zarar kun adana.",
@@ -540,18 +583,25 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Expanded Commerce": "Babban Ciniki",
   "Expected end": "Karshen da ake tsammani",
   "Expected start": "Farkon da ake tsammani",
+  "Expected to run out inside lead time": "Ana tsammanin ya ƙare cikin lokacin jagora",
+  Experiment: "gwaji",
+  "Experiments are currently created from the database; the admin panel does not yet have a creation form.":
+    "A halin yanzu an ƙirƙiri gwaje-gwajen daga bayanan bayanan. kwamitin gudanarwa bai riga ya sami form ɗin halitta ba.",
   Expires: 'Katin kyauta id="t0016">Katin Kyau',
   "Expires (optional)": "Ya ƙare (na zaɓi)",
   Explore: "Bincike",
   "Explore the market": "Bincika kasuwar",
   "Export at the listed width and height. Do not upload a 16:9 photo for a banner.":
     "A fitarwa a faɗin da tsayin da aka jera. Kar a ɗora hoto na 16:9 don banner.",
+  Exposures: "Bayyanawa",
   'Extra photos shown as a thumbnail strip on the product page, the way most shops show different angles of the same item. Up to 8. Saved immediately, no separate "Save draft" needed.':
     'Ƙarin hotuna da aka nuna azaman tsaunin thumbnail akan shafin samfurin, yadda yawancin shagunan ke nuna kusurwoyi daban-daban na abu ɗaya. Har zuwa 8. Ana ajiyewa nan da nan, ba a buƙatar "Ajiye daftarin" daban.',
   Eyebrow: "Gishi",
   "Eyebrows and small highlights.": "Gishiri da ƙananan filaye.",
   "Facebook Login button in the storefront account menu.":
     "Maɓallin Shiga Facebook a cikin menu na asusun ajiya na gaba.",
+  "Failed to load experiment": "An kasa loda gwaji",
+  "Failed to load experiments": "Ba a yi nasarar loda gwaje-gwajen ba",
   "Falls back to the route's built-in description": "Ta koma ga bayanin da aka gina ta hanyar",
   "Falls back to the route's built-in title": "Ta koma ga ginanniyar taken hanyar",
   Farm: "Gona",
@@ -560,6 +610,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Farm id (e.g. farm_devika)": "Idin gona (misali farm_devika)",
   "Farm name": "Sunan gona",
   "Farm not found": "Ba a sami gonaki ba",
+  "Farm order notice": "Sanarwa na odar gona",
+  "Farm partnership application": "Aikace-aikacen haɗin gwiwar gonaki",
+  "Farm partnership decision": "Shawarar haɗin gwiwar gonaki",
   "Farm record": "Rikodin noma",
   "Farm request not found": "Ba a sami buƙatar noma ba",
   "Farm Requests": "Buƙatun gona",
@@ -576,6 +629,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Fee, ₹": "Kuda, ₹",
   Fields: "Filaye",
   "File target": "Manufar fayil",
+  "Filter by outcome": "Tace ta hanyar sakamako",
   "Filter by rating": "Tace ta rating",
   "Filter by status": "Tace ta matsayi",
   "Find a product to add": "Nemi samfur don ƙara",
@@ -586,6 +640,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Footer and inverted sections.": "Kafa da jujjuya sassan.",
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Tilasta kunna ko kashe sashe ga baƙi a cikin ƙasa ɗaya, ba tare da canza abin da kowa ke gani ba. Ka bar wani sashe kan "Gado" kuma yana bin akwatin tickbox a cikin jerin sashe na sama.',
+  "Forecast unavailable": "Ba a samun hasashen hasashen",
+  "Forecasted SKUs": "SKUs da aka yi hasashe",
+  "Forecasting...": "Hasashen...",
   "Forgot password?": "An manta kalmar sirri?",
   "Formatting locale": "Tsarin wuri",
   "Free delivery above (₹)": "Sadarwa kyauta sama da (₹)",
@@ -604,6 +661,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Give one country its own colours": "Ba wa wata kasa launinta",
   "Give one country its own effects": "Ba wa wata kasa tasirinta",
   "Give one page its own colours": "Ba da shafi guda launukansa",
+  "Global — per day": "Global — kowace rana",
+  "Global — per hour": "Global — a kowace awa",
   "Gluten Free": "Gluten Kyauta",
   "gluten-free, plant-based": "marasa abinci, tushen shuka",
   "Go back": "Komawa",
@@ -613,6 +672,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Gross: "Babban",
   "Gross revenue": "Babban kudaden shiga",
   Group: "Ƙungiya",
+  "Group countries into brackets that each pay a markup over India's base price. Both the percentage and which countries sit in each bracket are yours to adjust at any time.":
+    "Ƙasashe na rukuni a cikin baka wanda kowanne ya biya ma'auni fiye da farashin tushe na Indiya. Duka kashi da ƙasashen da ke zaune a kowane sashi naka ne don daidaitawa a kowane lokaci.",
   "Group name": "Sunan rukuni",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "Manoman da suka nemi a / gonaki/abokin tarayya don samar da kasuwa. Babu wani asusu da ake buƙata don amfani, don haka bita anan ita ce ƙofar kaɗai.",
@@ -621,6 +682,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "h lead": "h gubar",
   "Hairline border": "Idin gashin gashi",
   "Hand-picked testimonials": "Shaida da aka zabo da hannu",
+  "Handed to a person": "An miƙa wa mutum",
   "Harvest calendar": "Kalandar girbi",
   "Harvest note": "bayanin kula",
   Heading: "Kasa",
@@ -635,6 +697,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Hero title": "Taken jarumi",
   Hidden: "Boye",
   Hide: "Boye",
+  "Hide password": "Booye kalmar sirri",
   "Hides the system cursor so the trail is the cursor. Links, buttons and form fields keep a real pointer regardless — losing the hit target on those is not a trade worth making.":
     "Yana boye siginan kwamfuta don haka sawu ya zama siginan kwamfuta. Hanyoyin haɗi, maɓallai da filayen tsari suna kiyaye ma'ana ta gaske ba tare da la'akari da su ba - rasa maƙasudin bugu akan waɗannan ba cinikin da ya cancanci yin ba.",
   "Highlighted products": "Haskantattun samfura",
@@ -647,15 +710,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage Settings": "Saitunan Gidan Gida",
   "Homepage settings unavailable": "Ba a samun saitunan shafin gida",
   Hours: "Sa'o'i",
-  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
-    "Haruffa nawa ne na shafin manufofin bot na gaban kantin zai iya karantawa kafin amsawa. Ya daɗe yana adana ƙarin cikakkun bayanai da abokin ciniki ya tambaya game da su.",
   "How many entries from the list below are given to the assistant as reference.":
     "Shigo nawa ne daga lissafin da ke ƙasa aka bai wa mataimaki a matsayin tunani.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Kayayyaki ko nau'ikan nawa ne mai aiki zai iya shiga cikin Sabbin Faifan da aka fi so, Fitattun Rukunoni (Saitunan Gidan Gida) da Fitattun samfuran (a ƙasa). Tada shi yana ajiyewa nan da nan, ba a buƙatar turawa; har zuwa 50, rufin tsarin toshe kansa yana aiwatar da shi.",
   "How many products to show": "Nawa samfuran da za a nuna",
-  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
-    "Kayayyaki, labarai ko girke-girke nawa ne binciken gaban bot ke dawowa a duk lokacin da aka ga wani abu.",
   "How many to show": "Nawa ne za a nuna",
   "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
     "Nawa ne aka aika a baya tare da kowace tambaya. 0 yana amsa kowace tambaya a ware.",
@@ -684,6 +743,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Internal note (optional)": "Bayanin ciki (na zaɓi)",
   "Intro / story blocks": "Intro / labari toshe",
   "Intro line (optional)": "Layin Gaba (na zaɓi)",
+  "Inventory Intelligence": "Ingen Inventory Intelligence",
   "Invite a user or add a farm owner to populate this page.":
     "Gayyatar mai amfani ko ƙara mai gona don cika wannan shafin.",
   "Invite user": "Gayyatar mai amfani",
@@ -720,13 +780,17 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Land under cultivation": "Kasar dake karkashin noma",
   Language: "Harshe",
   "Language Studio": "Studio Studio",
+  "last 24h": "24h na karshe",
   "Last activity": "aikin karshe",
+  "Last refresh": "An wartsakewa na karshe",
   "Last reviewer note": "bayanin kula na karshe",
   "Last sign-in": "Shiga na karshe",
   "Last sync": "Daidaitawar karshe",
+  "last synced": "arshe da aka daidaita",
   "Last updated": "An sabunta ta ƙarshe",
   Latvian: "Latvia",
   "Layout — drag or use arrow keys": "Layout — ja ko amfani da maɓallan kibiya",
+  "Lead time": "Lokacin jagora",
   "Lead time, hours": "Lokacin jagora, sa'o'i",
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Barin launi babu komai don kiyaye True Grit guda ɗaya tare da - share filin shine yadda kuke warwarewa. Launi na shafi ko ƙasa suna farawa daga launukan rukunin yanar gizon kuma suna soke abin da kuka canza kawai, don haka kowane ɗan gajeren jeri ne, ba palette na biyu don kiyayewa ba. Lokacin da duka biyun suka shafi baƙo ɗaya, shafin ya yi nasara — ƙirar shafin edita bai kamata a soke shi ta hanyar gwaji ta geo ba.",
@@ -760,6 +824,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live marketplace state, fulfilment pressure and publishing activity.":
     "Kasuwancin yanayin kasuwa, matsa lamba da ayyukan bugawa.",
   "Live preview": "Kallon samfoti na kai tsaye",
+  "Live rates from": "Rayuwar farashin daga",
   "Live, and to scale with the real storefront's own styles.":
     "Rayuwa, kuma don auna ma'auni tare da ainihin salon kanti.",
   "Loading active promotions...": "Loadad da talla mai aiki...",
@@ -778,6 +843,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading currency values…": "Load da ƙimar kuɗi…",
   "Loading delivery charges...": "Loaddinar cajin isarwa...",
   "Loading discussion…": "Loading tattaunawa…",
+  "Loading email settings...": "Load da saitunan imel...",
   "Loading highlights...": "Loadara manyan bayanai...",
   "Loading homepage sections...": "Load da sassan shafin gida...",
   "Loading homepage settings...": "Loadara saitunan shafin gida...",
@@ -785,6 +851,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading order…": "Load oda…",
   "Loading permissions...": "Izinin lodawa...",
   "Loading price adjustments...": "Lokawan daidaita farashin...",
+  "Loading price tiers…": "Loading tiers price…",
   "Loading product…": "Loading samfur…",
   "Loading products...": "Loading Products...",
   "Loading recipe…": "Loading Recipe…",
@@ -818,6 +885,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Mark contacted": "An tuntubi Mark",
   "Mark paid": "An biya",
   "Mark under review": "Alamba a karkashin bita",
+  "Markup %": "Sami %",
   "Maximum carousel slides": "Mafi girman nunin faifan carousel",
   "Maximum discount, ₹ (optional)": "Mafi girman ragi, ₹ (na zaɓi)",
   "Maximum items": "Mafi girman abubuwa",
@@ -852,7 +920,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Name: "Sunan",
   Navigation: "Kewayawa",
   "Navigation labels": "Labulen kewayawa",
+  "Nearly matched": "Kusan daidaita",
   "Needs attention": "yana bukatar kulawa",
+  "Net line revenue after allocated discounts":
+    "Kudaden shiga layi na yanar gizo bayan rangwamen da aka kebe",
   "Net revenue": "Kudaden shiga yanar gizo",
   Never: "Kada",
   "Never accept payments for this product": "Kada ku taɓa karɓar biyan kuɗin wannan samfurin",
@@ -865,6 +936,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "New conversation": "Sabuwar tattaunawa",
   "New coupon code": "Sabon lambar coupon",
   "New customers": "Sabbin abokan ciniki",
+  "New Experiment": "Sabon Gwaji",
   "New farm": "Sabon gona",
   "New password": "Sabon kalmar sirri",
   "New post": "Sabon post",
@@ -893,18 +965,24 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Babu ​​lambobi har yanzu - wannan tallan yana aiki ta atomatik ga kowane keken da ya cancanta.",
   "No comments": "Babu ​​sharhi",
   "No comments yet.": "Babu ​​sharhi tukuna.",
+  "No completed run": "Babu ​​kammala gudu",
   "No contact attempts": "Babu ​​yunkurin tuntuɓar",
   "No content yet": "Babu ​​abun ciki tukuna",
   "No conversations yet": "Babu ​​tattaunawa tukuna",
+  "No countries assigned yet.": "Babu ​​wata kasa da aka sanyawa tukuna.",
   "No country overrides yet. Add a country above to give it its own section visibility.":
     "Babu ​​wata ƙasa da ta soke tukuna. Ƙara ƙasa a sama don ba ta ganuwa sashinta.",
   "No discussions": "Babu ​​tattaunawa",
+  "No email activity yet.": "Babu ​​wani aiki na imel tukuna.",
   "No embedded True Grit logo, headline, button, or watermark.":
     "Babu ​​alamar tambarin True Grit, kanun labarai, maballin, ko alamar ruwa.",
+  "No experiments": "Babu ​​gwaji",
   "No farm assigned": "Ba a sanya gonakin gona",
   "No farm requests": "Babu ​​buƙatun gona",
   "No farmer name": "Babu ​​sunan manomi",
   "No farms yet": "Babu ​​gonaki tukuna",
+  "No forecast yet": "Ba a yi hasashe ba tukuna",
+  "No fraud signals fired.": "Ba a harba siginar zamba.",
   "No fresh favourites yet. Add a few below.": "Babu ​​wani sabon fi so tukuna. Ƙara kaɗan a ƙasa.",
   "No gift cards yet": "Babu ​​katunan kyauta tukuna",
   "No highlighted products yet. Add a few below.":
@@ -932,6 +1010,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No permissions": "Babu ​​izini",
   "No pre-orders yet.": "Ba a riga an yi oda ba tukuna.",
   "No price adjustments yet": "Ba a daidaita farashin tukuna",
+  "No pricing brackets yet": "Babu ​​madaidaicin farashi tukuna",
   "No products linked yet.": "Babu ​​wani samfur da aka haɗe tukuna.",
   "No products match": "Babu ​​samfurin da ya dace",
   "No products match.": "Babu ​​samfurin da ya dace.",
@@ -962,6 +1041,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Not orderable even while the site-wide switch is on.":
     "Ba za a iya yin oda ba ko da a yayin da ake kunna babban shafin.",
   "Not redeemed against any order yet.": "Ba a fanshi kan kowane oda tukuna.",
+  "Not set": "Ba a saita",
+  "not signed in": "ba a sanya hannu ba",
+  "Not Significant (Yet)": "Ba Muhimmanci (Duk da haka)",
+  "Not started": "Ba a fara ba",
   "Note (optional)": "Lura (na zaɓi)",
   "Note (required to decline)": "A kula (ana buƙatar ƙi)",
   "Note (required to request changes or reject)": "A kula (ana buƙatar canje-canje ko ƙi)",
@@ -972,6 +1055,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Nothing selected — the storefront stays exactly as it is.":
     "Babu wani abu da aka zaba - gaban kantin sayar da kayayyaki ya tsaya daidai yadda yake.",
   "Nothing urgent": 'Babu wani abu na gaggawa. id="t0005">Sanarwa',
+  "Nothing waiting. Everything asked so far was answered or refused cleanly.":
+    "Babu ​​wani abu da ke jira. Duk abin da aka tambaya ya zuwa yanzu an amsa ko kuma an ƙi shi da tsafta.",
   Notifications: "Sanarwa",
   "Nut Free": "Kyautar Kwaya",
   Off: "A kashe",
@@ -983,6 +1068,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "On hand": "A hannu",
   "on the sign-in page. The reset link goes to the address above.":
     "akan shafin shiga. Hanyar sake saitin yana zuwa adireshin da ke sama.",
+  "Once a window fills up, further emails in it wait for the next minute's dispatch instead of failing outright -- nothing is lost, it just slows down.":
+    "Da zarar taga ya cika, ƙarin imel a ciki yana jira a aika minti na gaba maimakon kasawa kai tsaye -- babu abin da ya ɓace, sai ya rage gudu.",
   "Once you have created this grower's farm in the console, link the application to it here for provenance.":
     "Da zarar kun ƙirƙiri wannan gonar noma a cikin na'ura mai ba da hanya tsakanin hanyoyin sadarwa, haɗa aikace-aikacen zuwa gare ta a nan don haɓakawa.",
   "One composition engine renders every category — no code per category.":
@@ -1007,6 +1094,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
     "Nuni na zaɓi wanda aka nuna sama da abubuwan haɗin - yana goyan bayan tubalan iri ɗaya kamar rubutun bulogi, gami da",
   Order: "Oda",
+  "Order confirmation": "Tabbacin oda",
   "order line": "layin oda",
   "Order lines": "Layin oda",
   "Order not found": "Ba a samo oda",
@@ -1021,7 +1109,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic mangoes held in a sunlit orchard":
     "Mangwaro na asali da ake rike da su a cikin wata gona mai hasken rana",
   "Organic wheat flour in a wooden bowl": "Garin alkama na gargajiya a cikin kwano na katako",
+  Outcome: "Sakamako",
   Outstanding: "Fitaccen",
+  "over India's base price": "sama da farashin tushe na Indiya",
   Overview: "Bayyanawa",
   "Owner Reports": "Rahotannin Mai shi",
   "Owner-only controls for /sitemap.xml, /robots.txt and /llms.txt.":
@@ -1037,7 +1127,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Taken shafi",
   "Page unavailable": "Babu ​​Shafi",
   Pages: "Shafuka",
-  "Pages the storefront bot may quote": "Shafukan da ke gaban kantin sayar da bot na iya nakalto",
   Paid: "An biya",
   "Paid out": "An biya",
   "paid via": "an biya ta",
@@ -1055,6 +1144,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Pending: "A jiran",
   "Pending fulfilment": "A jiran cikar",
   "Pending work for your role": "Aikin jiran aikin ku",
+  "Per day": "A kowace rana",
+  "Per hour": "A kowace awa",
+  "Per-category overrides": "An soke kowane nau'i",
   "Per-customer limit (optional)": "Iyakar kowane abokin ciniki (na zaɓi)",
   "Percent off": "Kashi kashi",
   "Permanently delete item": "Share abun har abada",
@@ -1077,8 +1169,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Platform earns": "Sakamakon dandali",
   "points ·": "maki ·",
   "Points (+ / -)": "Maki (+ / -)",
-  "Policy page slugs": "Slugs shafi na doka",
-  "Policy text quoted per answer": "Rubutun manufofin da aka nakalto kowace amsa",
   "Polish (Polski)": "Polski (Polski)",
   "Portuguese (Português)": "Português (Português)",
   Position: "Mataki",
@@ -1088,6 +1178,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Post a recipe (submission form)": "Buga girke-girke (sikin ƙaddamarwa)",
   "Post Comments": "An Buga Comments",
   Posted: "An buga",
+  "Power Achieved:": "An Cimma Wuta:",
+  "Preferred provider": "Mai bada sabis da aka fi so",
   Prep: "Shiri",
   "Prep minutes": "mintunan shiri",
   Preview: "Samfurt",
@@ -1097,6 +1189,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Price: "Farashi",
   "Price (₹) (Primary Variant)": "Farashi (₹) (Bambancin Farko)",
   "Price adjustments unavailable": "Ba a samun gyare-gyaren farashi",
+  "Price Tiers": "Tsarin farashin",
+  "Price tiers unavailable": "Ba a samun matakan farashin",
   "Primary button label": "Lambar maɓalli na farko",
   "Primary button link": "Haɗin maɓalli na farko",
   "Primary buttons, links, the wordmark.": "Maɓallai na farko, hanyoyin haɗin gwiwa, alamar kalma.",
@@ -1105,6 +1199,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Mafi fifiko (mafi girman nasara idan da yawa sun cancanta)",
   Private: "Mai zaman kansa",
   Product: "Kayayyakin",
+  "Product / SKU": "Samfur / SKU",
   "Product cards, panels, the header.": "Katunan samfura, falaye, kan kai.",
   "Product editor sections": "Sassan editan samfur",
   "Product ID": "ID na samfur",
@@ -1116,6 +1211,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Product type": "Nau'in samfur",
   Products: "Kayayyakin",
   Promotion: "Cigaba",
+  Provider: "Mai bayarwa",
   "Provider ref": "Mai bayarwa ref",
   Public: "Jama'a",
   "Public categories": "Kasuwancin jama'a",
@@ -1126,17 +1222,20 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "An buga shi azaman",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "an buga rukunoni don mahallin shafin farko. Abokan ciniki suna ganin hudu a lokaci ɗaya akan tebur, a cikin wannan tsari. Ƙara iyaka akan Sarrafa Yanar Gizo.",
-  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
-    "Buga slugs na shafi, ware ta sarari. Bot yana karanta waɗannan kalmomi zuwa kalma lokacin da abokin ciniki ya yi tambaya game da manufofi, don haka amsoshinsa sun dace da abin da kuka buga a zahiri.",
   "Published products": "Kayayyakin da aka buga",
   "Publishing…": "Bugawa…",
   "Pull quote": "A cire zance",
+  "Push to Sheet": "Tura zuwa Sheet",
+  "Pushing…": "Turawa…",
   "Put essential subjects inside the dashed centre. Responsive crops may remove the edges.":
     "Asa muhimman batutuwa a cikin cibiyar dashed. Amfanin amfanin gona na iya cire gefuna.",
   Quantity: "Yawa",
   "Quantity delta (+/−)": "Yawan delta (+/−)",
   Question: "Tambaya",
+  "Questions the storefront bot would not answer, worst first. The phrasings it nearly matched are shown against each one, which is what tells you what to add to its vocabulary.":
+    "Tambayoyin bot ɗin kantin ba zai amsa ba, mafi muni da farko. Kalmomin da suka kusan daidaita su ana nuna su da kowannensu, wanda shine abin da zai gaya muku abin da za ku ƙara a cikin ƙamus ɗinsa.",
   "Raise this to curate more than": "Tada wannan don tsara fiye da",
+  "Rate limits": "Iyakokin ƙima",
   "Reader comments on blog posts and recipes appear here.":
     "sharhin masu karatu a kan posts na blog da girke-girke suna bayyana anan.",
   "Reader comments on blog posts and recipes.":
@@ -1148,12 +1247,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Reason: "Dalilin",
   "Reason (optional)": "Dalilin (na zaɓi)",
   "Reason:": "Dalilin:",
+  "Rebuild recommendations": "Sake gina shawarwari",
+  "Rebuilding...": "Sake ginawa...",
   Receipt: "Rasit",
+  "Recent activity": "aikin kwanan nan",
   "Recent administrative activity": "aikin gudanarwa na baya-bayan nan",
   "Recipe not found": "Ba a samo girke-girke ba",
   Recipes: "Kayan girke-girke",
+  Recipient: "Mai karɓa",
   "Recipient email (optional)": "Imel na mai karɓa (na zaɓi)",
+  "Recommendation performance": "aikin shawarwarin",
   Recommendations: "Shawarwari",
+  "Recommended order": "An ba da shawarar",
   "Reconnecting…": "Sake haɗawa…",
   "Record adjustment": "Sautar rikodi",
   "Record inventory adjustment": "Saiɓan lissafin ƙididdiga",
@@ -1165,9 +1270,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Mado da boyayyun kayayyaki, nau'ikan, gonaki da shafukan CMS.",
   "Redemption history": "Tarihin fansa",
   Redemptions: "Cantarwa",
+  "Refresh now": "Sake sabuntawa yanzu",
   "Refresh once the API is back online.": "Sake da zarar API ya dawo kan layi.",
+  "Refreshing…": "Ana shakatawa…",
   Refund: "Dadawa",
   "Refund amount (₹)": "Adadin kuɗaɗe (₹)",
+  "Refund automation": "Mayar da kuɗi ta atomatik",
   Refunded: "An mayar da kuɗi",
   "Refunded by": "An mayar da kuɗaɗe ta",
   "refunded of": "an mayar da kuɗaɗen",
@@ -1176,9 +1284,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Region: "Saki duniya",
   Reject: "An ƙi",
   Rejected: "An ƙi",
+  "Relative Effect": "Tasirin dangi",
   "Release everywhere": "Saki ko'ina",
   "Release globally (all countries)": "Saki a duniya (duk ƙasashe)",
   "Release only in these countries": "Saki a cikin waɗannan ƙasashe kawai",
+  "Reload page": "Sake saka shafi",
   "remaining of": "sauran",
   "remains unrefunded on this": "Ba a mayar da kuɗaɗen wannan",
   Remove: "Cire",
@@ -1189,6 +1299,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Remove page colours": "Cire shafukan shafi",
   "Remove translation": "Cire fassara",
   Removed: "An cire",
+  "Reorder soon": "Sake oda nan ba da jimawa ba",
   "Replace the pointer with the trail": "Masanya mai nuni da hanya",
   Replaced: "An maye gurbin",
   Replacement: "Masanya",
@@ -1198,8 +1309,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requested refund": "An nemi maida kuɗaɗe",
   "Requests filed from the storefront appear here.":
     "Buƙatun da aka yi daga gaban kantin suna bayyana a nan.",
+  "Required Sample:": "Samfur da ake bukata:",
   "Requires articles.publish": "Yana bukatar labarai. bugu",
   "Requires categories.publish": "ana buƙatar izinin saitin mai shi.",
+  "Requires inventory.view and migration 0111.": "Yana buƙatar inventory.view and migration 0111.",
   "Requires owner settings access and a connected API.":
     "Yana buƙatar samun damar saitunan mai shi da API mai haɗin gwiwa.",
   "Requires owner settings access.": "yana buƙatar samun dama ga saitunan mai shi.",
@@ -1211,6 +1324,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires the analytics.view permission.": "Na buƙatar izinin nazari. duba.",
   "Requires the inventory.adjust permission.": "Yana buƙatar kayan ƙira. daidaita izini.",
   "Requires the reports.query permission.": "Yana buƙatar izinin rahotanni.query.",
+  Resend: "Sake aikawa",
   "Reserve future capacity without consuming current inventory.":
     "Ajiye iya aiki na gaba ba tare da cinye kayan aikin yanzu ba.",
   Reserved: "An adana",
@@ -1219,17 +1333,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Reset password": "Sake saita kalmar sirri",
   Resolve: "Magana",
   "Resolve return": "Yana magance dawowa",
+  "Resolved automatically by the refund agent": "An warware ta atomatik ta wakilin maidowa",
   "Resolves live on every homepage load -- nothing to keep up to date.":
     "Yana magance kai tsaye akan kowane nauyin shafin gida -- babu abin da zai ci gaba da kasancewa.",
   "Resolving…": "Yanke warwarewa…",
   "Respect the safe area": "Mutunta wuri mai aminci",
+  "Restock lead time (days)": "Maida lokacin jagora (kwanaki)",
   Restore: "Maida",
   "Restore (make visible)": "Maida (sake bayyane)",
   Resume: "Ci gaba",
   Retry: "Sake gwadawa",
   "Return request not found": "Ba a sami buƙatun dawowa ba",
   Returns: "Komawa",
-  "returns delivery help terms privacy": "yana mayar da sharuɗɗan taimakon isarwa sirrin",
   Revenue: "Kudirin shiga",
   "Revenue (paid)": "Kudaden shiga (an biya)",
   "Revenue by day": "Harkokin shiga da rana",
@@ -1244,19 +1359,24 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Reviews: "Bita",
   "Reviews customers write from a completed order appear here.":
     "Sakamakon da abokan ciniki ke rubutawa daga cikaken oda ya bayyana a nan.",
+  Risk: "Haɗari",
   "Role catalogue": "Kasidar rawar",
   "Roles are collections of permissions; the API checks permissions, never role names.":
     "Rolments tarin izini ne; API ɗin yana bincika izini, ba za a taɓa yin suna ba.",
   "Roles have not been seeded yet.": "Ba a samar da ayyuka tukuna.",
   "Roles unavailable": "Babu ​​rawar da",
   "Romanian (Română)": "Romanian (Romawa)",
+  "Run forecast now": "Ku gudanar da hasashen yanzu",
   "Run renewals now": "Ku gudanar da sabuntawa yanzu",
   "Run report": "Gudanar da rahoto",
+  "Run the baseline once; it will then refresh every Monday.":
+    "Ku gudanar da tushen sau ɗaya; daga nan za ta wartsake kowace Litinin.",
   "Running...": "Ana Gudu...",
   "Running…": "Gudun…",
   "Russian (Русский)": "Rashanci (Русский)",
   "Safe area": "Yanki mai aminci",
   "Safe geo-lock:": "Safe geo-kulle:",
+  "Safety stock (days)": "Safety stock (kwanaki)",
   "Sale & Discounts": "Sayarwa & Rangwame",
   "Sale price": "Farashin siyarwa",
   "Sale Price (₹)": "Farashin Siyarwa (₹)",
@@ -1278,6 +1398,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Save labels": "Ajiye alamomin",
   "Save message": "Ajiye sako",
   "Save page SEO": "Ajiye shafi SEO",
+  "Save planning settings": "Ajiye saitunan tsare-tsare",
   "Save roles": "Ajiye matsayi",
   "Save rule": "Ajiye doka",
   "Save scope": "Ajiye iyaka",
@@ -1331,7 +1452,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Search products, orders, users, categories…": "Bincike samfura, umarni, masu amfani, nau'ikan…",
   "Search promotions": "Bincike talla",
   "Search recipes": "Binciken girke-girke",
-  "Search results per lookup": "Sakamakon bincike a kowane bincike",
   "Search returns": "Sakamakon bincike",
   "Search reviews": "Binciken bita",
   "Search submissions": "Bincike gabatarwa",
@@ -1377,16 +1497,38 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Send invite": "Aika gayyata",
   "Send reset email": "Aika imel ɗin sake saitin",
   "Send reset link": "Aika hanyar hanyar saiti",
+  "Send test email": "Aika imel na gwaji",
   "Sending...": "Aika...",
   "Sending…": "Aika...",
+  "Sent to a contributor when staff approve, request changes on, or reject a submission.":
+    "An aika zuwa mai bayar da gudummuwa lokacin da ma'aikata suka amince, ko neman canje-canje a kunne, ko ƙin ƙaddamarwa.",
+  "Sent to a customer when their order is placed.":
+    "An aika zuwa abokin ciniki lokacin da aka ba da odar su.",
+  "Sent to a farm owner when one of their products is ordered.":
+    "An aika zuwa ga mai gona lokacin da aka ba da oda ɗaya daga cikin kayayyakinsu.",
+  "Sent to a person": "Aika wa mutum",
+  "Sent to an applicant when staff approve or reject their application.":
+    "Aika zuwa ga mai nema lokacin da ma'aikata suka amince ko suka ƙi aikace-aikacen su.",
+  "Sent to staff and the applicant when a farm applies to supply True Grit.":
+    "An aika zuwa ga ma'aikata da mai nema lokacin da gona ta nemi samar da True Grit.",
+  "Sent to staff when a storefront contact form is submitted.":
+    "An aika zuwa ga ma'aikata lokacin da aka ƙaddamar da fom ɗin tuntuɓar shagon.",
+  "Sent when a customer requests a password reset.":
+    "An aika lokacin da abokin ciniki ya nemi sake saitin kalmar sirri.",
+  "Sent when a new customer account is created.":
+    "An aika lokacin da aka ƙirƙiri sabon asusun abokin ciniki.",
   "SEO description": "Bayanin SEO",
   "SEO title": "taken SEO",
   "Separate paragraphs with a blank line. Links use [text](/path); HTML is rejected.":
     "Raba sakin layi tare da fanko. Hanyoyin haɗi suna amfani da [rubutu] (/ hanya); HTML an ƙi.",
+  "Sequential testing allows continuous monitoring without p-hacking. Results are valid at any time.":
+    "Gwaji na jeri yana ba da damar ci gaba da sa ido ba tare da hacking ba. Sakamako suna aiki a kowane lokaci.",
   Serbian: "Serbiya",
   Servings: "Sabis",
   "Set a new password": "Saba sabon kalmar sirri",
   "Set as default": "A saita azaman tsoho",
+  "Shaded area is the 95% residual interval; the line is expected daily units.":
+    "Yanki mai inuwa shine ragowar tazarar kashi 95%; ana sa ran layin yau da kullun.",
   "Shop · Farms · Journal": "Kayayya · Farms · Jarida",
   "Shop fresh greens": "Siyar da sabbin ganye",
   "Shop root vegetables": "Siyar kayan lambu",
@@ -1398,7 +1540,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show dietary and certification filters on the shop page":
     "Nuna abubuwan abinci da takaddun shaida akan shafin shago",
   "Show original": "Nuna asali",
+  "Show password": "Nuna kalmar sirri",
   "Show product recommendations": "Nuna shawarwarin samfur",
+  "Show reorder recommendations only": "Nuna shawarwarin sake oda kawai",
   "Show this snippet": "Nuna wannan snippet",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
     "An nuna a saman sakon kuma azaman babban ɗan yatsan sa akan jeri na bulogi.",
@@ -1431,6 +1575,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Masu sarrafa rukunin yanar gizo: banner sanarwar, maɓalli na gaba, shafukan CMS, SEO na kowane hanya da fayilolin crawler. Shafin farko da kansa yana da nasa shafin.",
   "Site-wide default:": "Tsohuwar rukunin yanar gizo:",
   "Skip to content": "Tsalle zuwa abun ciki",
+  "SKU demand, days until stockout and reorder quantities from rolling sales and weekday seasonality.":
+    "Bukatar SKU, kwanaki har sai an fitar da kayayyaki da kuma sake yin odar adadi daga tallace-tallacen da aka yi da kuma yanayin ranar mako.",
   "slots used": "Ramummuka da aka yi amfani da su",
   "Slug (optional — derived from the name if blank)":
     "Slug (na zaɓi - an samo shi daga sunan idan babu komai)",
@@ -1439,21 +1585,32 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Snapshots a lokacin siya - gyare-gyaren kasida ba zai sake rubuta oda ba.",
   "Sold out": "An sayar da shi",
   Somali: "Somaliya",
+  "Something went wrong": "Wani abu ya faru ba daidai ba",
   "space separated, e.g. product publish visibility":
     "sarari ya rabu, misali. samfurin buga ganuwa",
   "Sprouted ragi flour": "Garin ragi da aka tsiro",
+  "Staff account": "Asusun ma'aikata",
   "Staff sign in": "Ma'aikata sun shiga",
+  "Start Experiment": "Fara Gwaji",
+  "Started At": "An fara A",
   Starts: "An fara",
   "Starts (optional)": "An fara (na zaɓi)",
   "Starts with no permissions — you'll pick what it can do right after creating it.":
     "Yana farawa ba tare da izini ba - za ku zaɓi abin da zai iya yi daidai bayan ƙirƙirar shi.",
+  "Statistical Significance (mSPRT)": "Muhimmancin Ƙididdiga (mSPRT)",
+  "Statistically rigorous sequential testing for product features and growth.":
+    "Tsarin ƙididdiga na gwaji don fasalin samfur da haɓaka.",
+  "Statistically Significant": "Muhimmancin ƙididdiga",
   Status: "Mataki",
   Steps: "Mataki",
   "Steps (one per line)": "Mataki (daya akan layi)",
+  "Stock healthy": "Harshen lafiya",
   "Stock Status": "Halin jari",
+  Stop: "Dakata",
   "Storage guidance": "Jagorancin ajiya",
   "Store credit": "Kiredit Store",
   Storefront: "front Store",
+  "Storefront answers": "Amsoshin kantuna",
   "Storefront bot": "Gogon kantunan bot",
   "Storefront switches": "Maɓallai na gaban kantuna",
   "Storefront switches unavailable": "Ba a samun maɓalli na gaban kantin",
@@ -1476,6 +1633,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Super-admin kawai. Kurakurai na aikace-aikacen da keɓancewar da ba a sarrafa su ba, sabon farkon farko.",
   "Supporting text": "Taimako rubutu",
   "Swedish (Svenska)": "Yaren mutanen Sweden (Svenska)",
+  "Sync from Sheet": "Daidaito daga Sheet",
+  "Syncing…": "Ana daidaitawa…",
   "Tags & Certifications": "Tags & Takaddun shaida",
   "Taking payments": "Cutar biyan kuɗi",
   Target: "Manufa",
@@ -1514,6 +1673,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   'The same kill-switch as Site Control\'s "Accept orders and payments", scoped to just this product. Uncheck it when this one item runs out or fails a quality check — the page stays live and browsable, but "Add to basket" is replaced with a message and a contact form until you switch it back on. This is independent of the site-wide switch: turning ordering off here has no effect on any other product.':
     'Maɓallin kisa iri ɗaya da "Karɓar umarni da biyan kuɗi" Ikon Gidan Yanar Gizo, wanda aka keɓe ga wannan samfurin kawai. Cire shi lokacin da wannan abu ɗaya ya ƙare ko kuma ya kasa yin rajistar inganci - shafin yana dawwama kuma ana iya lilo, amma "Ƙara zuwa kwandon" ana maye gurbinsa da saƙo da hanyar tuntuɓar har sai kun kunna shi baya. Wannan ya zamanto mai zaman kansa daga madaidaicin rukunin yanar gizon: kashe oda anan ba shi da wani tasiri akan kowane samfur.',
   "The selected CMS page could not be loaded.": "Ba za a iya loda shafin CMS da aka zaɓa ba.",
+  "The storefront bot only states figures you have entered here. Anything left blank is sent to a person instead, so it can never quote a policy nobody set.":
+    "Batun bot ɗin yana faɗin alkaluman da ka shigar anan. Ana aika duk wani abin da ya bari babu komai ga mutum a maimakon haka, don haka ba zai taɓa faɗi wata manufar da babu wanda ya tsara ba.",
   "The storefront's palette and the decoration on top of it.":
     "Paleti na gaban kantin sayar da kayan adon da ke samansa.",
   "The two new passwords do not match.": "Sabbin kalmomin shiga biyu ba su daidaita ba.",
@@ -1526,10 +1687,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These roles define the permission sets available when inviting or editing users.":
     "Waɗannan matsayi suna bayyana tsarin izinin da ake samu lokacin gayyata ko gyara masu amfani.",
   "Thinking…": "Tunani…",
+  "Thirty-day unit forecast with confidence interval":
+    "Hasashen naúrar kwana talatin tare da tazarar amincewa",
   "This application is": "Wannan aikace-aikacen",
   "This order is in a final state.": "Wannan oda yana cikin yanayi na ƙarshe.",
   "This page contains sensitive application diagnostics.":
     "Wannan shafin yana dauke da binciken bincike na aikace-aikace.",
+  "This page hit an unexpected error and could not finish rendering. Reloading usually fixes it. If it keeps happening, share what you were doing when it happened with the engineering team.":
+    "Wannan shafin ya sami kuskuren bazata kuma ya kasa gama samarwa. Sake saukewa yawanci yana gyara shi. Idan ya ci gaba da faruwa, raba abin da kuke yi lokacin da abin ya faru tare da ƙungiyar injiniyoyi.",
   "This page requires the revenue.view permission.":
     "Wannan shafin yana buƙatar izinin shiga.view.",
   "This permanently removes the image from storage. Images still referenced by a product, page, article or recipe cannot be deleted.":
@@ -1555,7 +1720,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Top products": "Manyan samfura",
   "Top-rated reviews (updates automatically)": "Mafi kyawun bita (sabuntawa ta atomatik)",
   Total: "Jimlar",
+  "Total Conversions": "Jimlar Juyin Halitta",
+  "Total Traffic": "Jimlar zirga-zirga",
   "Total use limit (optional)": "Jimlar iyakar amfani (na zaɓi)",
+  "Traffic Allocation": "Rarraba zirga-zirga",
   Trail: "Hanyar hanya",
   "Trail colour": "Layin hanya",
   "transfer money — make the transfer to": "canja wurin kuɗi - yi canja wuri zuwa",
@@ -1570,6 +1738,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "A kashe don daskare sabbin rajista yayin da abokan cinikin ke ci gaba da shiga akai-akai.",
   "Turn sign-in methods and ordering on or off without a deploy. The pill on the right is what customers actually get: a switch can only ever take a feature away, never add one the API is not configured for.":
     "Kunna hanyoyin shiga da yin oda a kunna ko kashewa ba tare da turawa ba. Kwayar da ke hannun dama ita ce ainihin abin da abokan ciniki ke samu: maɓalli kawai zai iya kawar da fasalin, kar a ƙara ɗaya API ɗin ba a saita shi ba.",
+  "Turning this off can block staff self-service password reset -- the recovery path into this very admin panel.":
+    "Kashe wannan na iya toshe saitin kalmar sirri ta sabis na ma'aikata -- hanyar dawowa cikin wannan rukunin gudanarwa.",
   Type: "Nau'in",
   "Type of section to add": "Nau'in sashin da za a ƙara",
   "Uncheck this for products that genuinely cannot be returned (e.g. certain fresh perishables). Customers won't be able to file a return request against an ineligible product.":
@@ -1577,12 +1747,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Under review": "A karkashin bita",
   Unit: "Naúrar",
   "Unit price, ₹": "Farashin raka'a, ₹",
+  "units (": "raka'a (",
   "units sold": "an sayar da raka'a",
   Unpublish: "Ba a buga",
   Unpublished: "Ba a buga ba",
   "Unpublishing…": "Ba da bugawa…",
-  "Untick a section to hide it from customers without losing its content, and use the arrows to change the order they appear in. Changes here apply as soon as you make them.":
-    "Cire wani sashe don ɓoye shi daga abokan ciniki ba tare da rasa abun ciki ba, kuma yi amfani da kiban don canza tsarin da suka bayyana a ciki. Ana aiwatar da canje-canje a nan da zarar kun yi su.",
+  "Untick a kind of email to stop it from sending, without touching anything else.":
+    "Cire wani nau'in imel don dakatar da aikawa, ba tare da taɓa wani abu ba.",
+  "Untick a section to hide it from customers without losing its content, and use the position dropdown to change the order they appear in. Changes here apply as soon as you make them.":
+    "Cire wani sashe don ɓoye shi daga abokan ciniki ba tare da rasa abun ciki ba, kuma yi amfani da jerin abubuwan da aka ajiye don canza tsarin da suka bayyana a ciki. Canje-canje a nan yana aiki da zarar kun yi su.",
   "Up to": "Har zuwa",
   Updated: "An sabunta",
   "Updated by": "An sabunta ta",
@@ -1590,6 +1763,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload an image to get started.": "Loka hoto don farawa.",
   "Upload checklist": "Loka lissafin bincike",
   "Upload image": "Loka hoto",
+  "Upload to R2": "Loka zuwa R2",
   "Uploading image...": "Hoto na lodawa...",
   "Uploading image…": "Hoto na loda…",
   "Uploading thumbnail...": "Loda thumbnail...",
@@ -1607,6 +1781,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Users & Roles": "Masu amfani & Matsayin",
   "Users unavailable": "Babu ​​masu amfani",
   "Using the site brand colour": "Amfani da alamar alamar rukunin yanar gizon",
+  "Value (Mean)": "darajar (Ma'ana)",
   "Value of 1 INR": "Kimar 1 INR",
   "Value per INR": "darajar kowace INR",
   "Value, ₹": "darajar, ₹",
@@ -1614,6 +1789,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Variant (SKU)": "Bambancin (SKU)",
   "Variant ID": "Bambancin ID",
   "Variant Name": "Bambancin Suna",
+  "Variant Performance": "Ayyukan Bambanci",
   Variants: "Bambance-bambancen",
   "Variants of": "Bambancin",
   Vegetarian: "Macijin cin ganyayyaki",
@@ -1644,10 +1820,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "What the promotion does": "Abinda talla ke yi",
   "What they grow:": "Abin da suke girma:",
   "What this role is for": "Menene wannan rawar",
+  "What was actually sent, blocked, throttled or rejected.":
+    "Abin da a zahiri aka aika, toshe, matsawa ko ƙi.",
   When: "Lokacin da",
   "Where this category is released": "Inda aka fitar da wannan nau'in",
   "Where this product is released": "Inda aka fitar da wannan samfurin",
   "Which promotion to show": "Wanne talla za a nuna",
+  "Which provider sends True Grit's email, which kinds of email are allowed out, how fast, and what actually happened recently.":
+    "Wane mai bada sabis ne ke aika saƙon True Grit, waɗanne nau'ikan imel ne aka ba da izinin fita, yadda sauri, da kuma ainihin abin da ya faru kwanan nan.",
   "Which reviews to show": "Wanne sake dubawa za a nuna",
   "Whole order": "Dukkan tsari",
   "Whole site": "Dukkan rukunin yanar gizo",
@@ -1659,6 +1839,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Me ya sa aka bayar da wannan kati - nunin fatan alheri, dawowar da aka warware a matsayin kiredit, da sauransu.",
   "Widget colour": "Layin Widget",
   "Widget colour hex": "Widget launi hex",
+  "Widget engagement and checkout revenue attributed to products discovered through recommendations in this date range.":
+    "Haɗin gwiwar widget da kudaden shiga da aka danganta ga samfuran da aka gano ta hanyar shawarwari a cikin wannan kewayon kwanan wata.",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Kalmomin bot sun yi daidai da tambaya don yanke shawarar wannan shigarwar ta dace.",
   "Working...": "Aiki...",

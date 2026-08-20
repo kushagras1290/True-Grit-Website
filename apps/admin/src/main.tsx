@@ -43,6 +43,7 @@ import {
   UsersPage,
 } from "./features/operations";
 import { PriceAdjustmentsPage } from "./features/price-adjustments";
+import { PriceTiersPage } from "./features/price-tiers";
 import { ProductEditorPage, ProductListPage } from "./features/products";
 import { PromotionsListPage } from "./features/promotions";
 import { RecipeEditorPage, RecipeListPage } from "./features/recipes";
@@ -99,6 +100,7 @@ createRoot(document.getElementById("root")!).render(
                   <Route path="tags-certifications" element={<TagsCertificationsPage />} />
                   <Route path="price-adjustments" element={<PriceAdjustmentsPage />} />
                   <Route path="currency-rates" element={<CurrencyRatesPage />} />
+                  <Route path="price-tiers" element={<PriceTiersPage />} />
                   <Route path="promotions" element={<PromotionsListPage />} />
                   <Route path="gift-cards" element={<GiftCardsListPage />} />
                   <Route path="bundles" element={<BundlesListPage />} />

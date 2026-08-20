@@ -17,6 +17,7 @@ from truegrit_api.api.intelligence import admin_router as intelligence_admin_rou
 from truegrit_api.api.intelligence import public_router as intelligence_public_router
 from truegrit_api.api.messages import router as messages_router
 from truegrit_api.api.phone_auth import router as phone_auth_router
+from truegrit_api.api.price_tiers import router as price_tiers_router
 from truegrit_api.api.public import router as public_router
 from truegrit_api.api.roadmap_admin import router as roadmap_admin_router
 from truegrit_api.api.roadmap_public import router as roadmap_public_router
@@ -140,6 +141,7 @@ def create_app(
     app.include_router(seo_router, prefix="/v1/admin")
     app.include_router(translation_hub_admin_router, prefix="/v1/admin")
     app.include_router(currency_rates_admin_router, prefix="/v1/admin")
+    app.include_router(price_tiers_router, prefix="/v1/admin")
 
     @app.get("/health/live", tags=["health"])
     async def live() -> dict[str, str]:

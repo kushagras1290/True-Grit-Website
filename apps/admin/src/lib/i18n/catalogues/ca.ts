@@ -21,6 +21,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "(new)": '· id="t0006">(no desat)',
   "(unsaved)": "(no desat)",
   ") · started": ") · començat",
+  "/ 30d": "/ 30 d",
+  "/ 7d": "/ 7 d",
   "/ due": "/ venciment",
   "/ qty": "/ quantitat",
   "/recipes": "/receptes",
@@ -35,10 +37,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "2 cups": "2 tasses",
   "2 stars": "2 estrelles",
   "3 stars": "3 estrelles",
+  "30-day demand": "Demanda de 30 dies",
   "4 stars": "4 estrelles",
   "5 stars": "5 estrelles",
   "5xx AppErrors and unhandled exceptions will show up here as they happen.":
     "Els errors d'aplicació 5xx i les excepcions no gestionades es mostraran aquí a mesura que succeeixin.",
+  "95% CI:": "IC del 95%:",
   "A bundle can hold at most 12 items.": "Un paquet pot contenir com a màxim 12 articles.",
   "A crate of ripe Alphonso mangoes": "Una caixa de mangos Alphonso madurs",
   "A farm owner is a sub-admin who can only manage their own farm's products and stock.":
@@ -66,6 +70,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Una banda tenyida: comproveu que el text silenciat encara es pot llegir aquí.",
   "a visitor’s country selects a currency, this table supplies its display value, and the original INR price remains unchanged. Disabled currencies fall back to INR-safe defaults.":
     "el país d'un visitant selecciona una moneda, aquesta taula proporciona el seu valor de visualització i el preu original de INR es manté sense canvis. Les monedes desactivades tornen als valors predeterminats segurs per a l'INR.",
+  "A/B Experiments": "Experiments A/B",
   "Accept orders and payments": "Accepta comandes i pagaments",
   "Accept orders and payments for this product":
     "Accepta comandes i pagaments per a aquest producte",
@@ -77,6 +82,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Active points appear as free checkout alternatives.":
     "Els punts actius apareixen com a alternatives de pagament gratuïtes.",
   "Active rules": "Regles actives",
+  "Active, published variants": "Variants actives i publicades",
   Add: "Afegeix",
   "Add / edit roles": "Afegeix/edita rols",
   "Add a category…": "Afegeix una categoria...",
@@ -86,6 +92,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add a question": "Afegeix una pregunta",
   "Add a section…": "Afegeix una secció...",
   "Add a snippet": "Afegeix un fragment",
+  "Add bracket": "Afegeix un claudàtor",
   "Add business": "Afegeix una empresa",
   "Add category": "Afegeix una categoria",
   "Add code": "Afegeix un codi",
@@ -119,9 +126,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Add window": "Afegeix finestra",
   "Add zone": "Afegeix zona",
   Added: "Afegida",
+  "Added to basket": "Afegit a la cistella",
   "Adding...": "Afegeix...",
   "Adding…": 'Tornar a les converses. id="t0008">URL de la miniatura de la categoria',
   Address: "Adreça",
+  "Adds after a recommendation click": "Afegeix després d'un clic de recomanació",
   "Adjust points": "Ajusta els punts",
   "Adjust the search or create a category.": "Ajusta la cerca o crea una categoria.",
   "Adjust the search or create a product.": "Ajusta la cerca o crea un producte.",
@@ -129,12 +138,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Adjustments restricted": "Ajusts restringits",
   Admin: "Administrador",
   "Admin API is unavailable": "L'API d'administració no està disponible",
+  "Admin bot answer tuning": "Ajustament de la resposta del bot d'administració",
   "Admin Logs": "Registres d'administració",
   "Admin navigation": "Navegació de l'administrador",
   "Admin panel bot": "Bot del tauler d'administració",
   "After refunds, all farms": "Després de les devolucions, totes les granges",
+  "Agent assessment": "Avaluació de l'agent",
   Albanian: "Albaneses",
   All: "Totes",
+  "All outcomes": "Tots els resultats",
   "All ratings": "Totes les puntuacions",
   "All statuses": "estats",
   "All types": "Tots els tipus",
@@ -149,6 +161,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Ambient effect": "Efecte ambient",
   Amount: "Quant",
   "Amount off, ₹": "Import de descompte, ₹",
+  "An admin preference wins only if that provider's API key is actually configured on the server -- picking one here can never send mail through a provider with no key set.":
+    "Una preferència d'administrador només guanya si la clau de l'API d'aquest proveïdor està realment configurada al servidor; escollir-ne una aquí mai no es pot enviar correu a través d'un proveïdor sense cap clau establerta.",
   "An impression of the motion and colour, not a pixel-accurate rehearsal.":
     "Una impressió del moviment i el color, no un assaig amb precisió de píxels.",
   "Analytics unavailable": "Analytics no disponible",
@@ -159,7 +173,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Announcement banner": "Bàner d'anunci",
   "Announcements unavailable": "Anuncis no disponibles",
   Answer: "Resposta",
-  "Answer tuning": "Ajustament de respostes",
+  "Answered by the bot": "Resposta pel bot",
   "Anyone signed in may comment. Only starting a new discussion is gated by account age.":
     "Qualsevol persona que hagi iniciat sessió pot comentar. Només l'inici d'una discussió nova està determinat per l'edat del compte.",
   "API mode": "Mode API",
@@ -178,12 +192,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Applied to every farm without its own rate.":
     "S'aplica a totes les granges sense la seva pròpia tarifa.",
   "Applies to": "S'aplica a",
-  "Applies to both bots. Larger values give the assistant more to work with and cost more per answer.":
-    "S'aplica als dos robots. Els valors més grans donen a l'assistent més per treballar i costen més per resposta.",
   "Applies to both chat widgets. Leave it cleared to follow the site brand colour from Colours & Effects.":
     "S'aplica als dos ginys de xat. Deixeu-lo esborrat per seguir el color de la marca del lloc a Colors & Effects.",
   "Applies to every visitor Cloudflare resolves to":
     "S'aplica a tots els visitants que Cloudflare resol",
+  "Applies to the admin panel bot only. The storefront bot does not use a language model, so it has nothing to tune here.":
+    "S'aplica només al bot del tauler d'administració. El bot d'aparador no utilitza cap model d'idioma, de manera que no té res a ajustar aquí.",
   Approve: "Aprova",
   "Approve & publish": "Aprovar i publicar",
   Approved: "Aprovat",
@@ -201,11 +215,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Pregunteu com fer alguna cosa al tauler d'administració o pregunteu sobre comandes pendents, articles amb estoc baix o l'estat d'una comanda.",
   "Assamese (অসমীয়া)": 'Assamés id="t0010">Reconeixement',
   "Assigned roles": "Rols assignats",
+  "Attributed orders": "Comandes atribuïdes",
+  "Attributed revenue": "Ingressos atribuïts",
   Attribution: "Atribució",
   "Audit Log": "Registre d'auditoria",
   Author: "Autor",
+  "Auto (best configured)": "Automàtic (millor configurat)",
   "Auto-translate": "Traducció automàtica",
   "Auto-translate all": "Traducció automàtica de tot",
+  "Automatically scores every new return request for fraud risk and auto-approves (with a real Razorpay refund), auto-denies, or escalates it to a human in the Returns queue. Off by default -- while off, every return request is triaged and resolved by staff exactly as it works today. See a request's Returns detail page for the agent's risk score and reasoning once this is on.":
+    "Avalua automàticament cada nova sol·licitud de devolució per risc de frau i s'aprova automàticament (amb un reemborsament de Razorpay real), la nega automàticament o l'escala a un humà a la cua de devolucions. Desactivat de manera predeterminada: mentre està desactivat, cada sol·licitud de devolució és triada i resolta pel personal exactament com funciona avui. Vegeu la pàgina de detalls de les devolucions d'una sol·licitud per conèixer la puntuació de risc i el raonament de l'agent un cop activada.",
   Availability: "Disponibilitat",
   Available: "Disponible a",
   "available · reorder at": "disponible · reordenar a",
@@ -219,6 +238,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "B2B / bulk ordering": "Comandes a granel/B2B",
   Back: "Enrere",
   "Back to conversations": "Tornar a les converses",
+  "Back to experiments": "Tornar als experiments",
+  "Back to Experiments": "Tornar als experiments",
   "Back to sign in": "Tornar per iniciar la sessió",
   Balance: "Saldo",
   "Banner alt text": "Text alternatiu del bàner",
@@ -240,6 +261,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Millor promoció activa (s'actualitza automàticament)",
   "Best sellers, resolved live from orders on every homepage load -- nothing to keep stocked.":
     "Més venuts, resolt en directe a partir de comandes a cada càrrega de la pàgina d'inici: res per mantenir en estoc.",
+  "Blank means a category has no cap of its own -- the global limit above still applies.":
+    "En blanc significa que una categoria no té cap límit propi; el límit global anterior encara s'aplica.",
   "Blocks JSON": "Bloqueja JSON",
   "Blog and recipe pitches from the community appear here.":
     "Les presentacions de blog i receptes de la comunitat apareixen aquí.",
@@ -252,6 +275,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Body: "Cos",
   "Body text": "Text corporal",
   Bosnian: "Bosnià",
+  "Bracket name": "Nom del suport",
   Brand: "Marca",
   "Built-in": "Incorporat",
   "Bulgarian (Български)": "Búlgar (Български)",
@@ -313,6 +337,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Clear: "Esborra",
   "Clearing...": "Esborrant...",
   "Click link": "Feu clic a l'enllaç",
+  "Click-through rate": "Percentatge de clics",
   Close: "Tancar",
   "Close help assistant": "Tanca l'Assistent d'ajuda",
   "Close navigation": "Tancar la navegació",
@@ -337,6 +362,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Common questions": 'id="t0006">Comunitat',
   Community: "Comunitat",
   Company: "Empresa",
+  Complete: "Complet",
   Completed: "Completada",
   Configuration: "Configuració",
   "Configure loyalty, pickup, harvest reservations, delivery logistics and wholesale accounts. Customer access is controlled independently by the five checkboxes in Site Control.":
@@ -350,15 +376,20 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Contact Attempts": "Intents de contacte",
   "Contact attempts unavailable": "Intents de contacte no disponibles",
   "Contact email": "Correu electrònic de contacte",
+  "Contact form": "Formulari de contacte",
   Content: "Contingut",
+  "Content submission decision": "Decisió d'enviament de contingut",
   "Continue with Facebook": "Delivery",
+  "Continuous (e.g. AOV)": "Continu (p. ex., AOV)",
   "Control approximate local-currency prices by setting how much one Indian rupee is worth. Catalogue, checkout and order records stay safely in INR.":
     "Controleu els preus aproximats en moneda local establint quant val una rupia índia. Els registres de catàleg, pagament i comandes es mantenen amb seguretat en INR.",
   "Control what each role can view, create, edit, publish or manage.":
     "Controleu què pot veure, crear, editar, publicar o gestionar cada rol.",
   "Control whether each bot is available, and edit what it knows.":
     "Controla si cada bot està disponible i edita el que sap.",
+  "Conv. Rate": "Conv. Tarifa",
   "Conversation turns remembered": "Es recorda els torns de conversa",
+  "Conversion rate": "Taxa de conversió",
   Cook: "Cuina",
   "Cook minutes": "Minuts de cuina",
   "Copy inside dark bands.": "Copia dins de bandes fosques.",
@@ -366,6 +397,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Could not load archived records.": "No s'han pogut carregar els registres arxivats.",
   "Could not load this feature.": "No s'ha pogut carregar aquesta funció.",
   Countries: "Països",
+  "Countries in this bracket": "Països d'aquest parèntesi",
   Country: "Codis de promoció",
   "Country overrides unavailable": "Les substitucions del país no estan disponibles",
   "Coupon codes": "Codis de cupó",
@@ -389,6 +421,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Create promotion": "Crea una promoció",
   "Create role": "Crea una funció",
   "Create the first draft to get started.": "Crea el primer esborrany per començar.",
+  "Creating experiments from the admin panel is not available yet.":
+    "La creació d'experiments des del tauler d'administració encara no està disponible.",
   "Creating...": "S'està creant...",
   "Creating…": "S'està creant...",
   "Credit limit, ₹": "Límit de crèdit, ₹",
@@ -404,15 +438,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Currency values unavailable": "Els valors de la moneda no estan disponibles",
   "Current password": "Contrasenya actual",
   "Currently its own effects.": "Actualment els seus propis efectes.",
+  "Currently sending via": "Actualment s'està enviant mitjançant",
   "Currently the site-wide effects — save below to give it its own.":
     "Actualment els efectes de tot el lloc: deseu-los a continuació per donar-los els seus.",
   "Cursor trail": "Ruta del cursor",
   Customer: "Client",
   "Customer favourites": "Preferits del client",
   "Customer image URL": "URL de la imatge del client",
+  "Customer password reset": "Restabliment de la contrasenya del client",
   "Customer ratings and reviews from verified purchases.":
     "Valoracions i ressenyes dels clients de compres verificades.",
   "Customer user ID": "Identificador d'usuari del client",
+  "Customer welcome": "Benvinguda del client",
   "Customer-created Subscribe & Save deliveries. Pause, resume or cancel on a customer's behalf, or run the renewal batch that otherwise fires on its own schedule.":
     "Subscriu-te i estalvia entregues creades pel client. Posa en pausa, reprèn o cancel·la en nom d'un client, o bé executa el lot de renovació que d'altra manera s'activa segons el seu propi programa.",
   "Customer-facing description (optional)": "Descripció orientada al client (opcional)",
@@ -427,13 +464,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Els clients poden reservar productes amb períodes de collita actius en comptes de l'estoc actual.",
   Cut: "Tallar",
   "Czech (Čeština)": "Txec (Čeština)",
+  "Daily demand": "Demanda diària",
   "Daily revenue for the selected range": "Ingressos diaris per a l'interval seleccionat",
   "Dairy Free": "Sense lactis",
   Danger: "Perill",
   "Danish (Dansk)": "Danès (Dansk)",
   "Dark band": "Banda fosca",
   Dashboard: "Tauler",
+  "data days": "Dies de dades",
   "Day (0 Sun – 6 Sat)": "Dia (0 dg - 6 ds)",
+  "Days left": "Dies restants",
   Deactivate: "Desactiva",
   Decision: "Decisió",
   Decline: "Declinació",
@@ -461,6 +501,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Delete selected (": "Suprimeix seleccionat (",
   "Delete this entry": "Suprimeix aquesta entrada",
   "Delete this price adjustment?": "Vols suprimir aquest ajust de preu?",
+  "Delete this pricing bracket?": "Vols suprimir aquest grup de preus?",
   "Delete user": "Suprimeix l'usuari",
   "Deleting...": "(Enviament)",
   Delivery: 'Enviament id="t0006">Accés a la consola de demostració',
@@ -529,6 +570,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Email: "Correu electrònic",
   "Email + password": "Correu electrònic + contrasenya",
   "Email for reset link": "Correu electrònic per restablir l'enllaç",
+  "Email settings unavailable": "La configuració del correu electrònic no està disponible",
   Enable: "Activa",
   "Enable at least one block.": "Activa almenys un bloc.",
   "Enable B2B and bulk ordering": "Activa les comandes B2B i a granel",
@@ -539,6 +581,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Enable seasonal pre-orders": "Activa les comandes anticipades de temporada",
   "Enable selected (": "Activa seleccionats (",
   "Enable Subscribe & Save": "Activa la subscripció i desa",
+  "Enable the refund agent": "Activa l'agent de reemborsament",
   Enabled: "Habilita",
   Ends: "Finalitza",
   "Ends (optional)": "Finalitza (opcional)",
@@ -547,6 +590,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Errors and destructive actions.": "Errors i accions destructives.",
   Established: "Establit",
   Estonian: "Estonià",
+  Evaluated: "Avaluat",
   Event: "Esdeveniment",
   "Every colour the storefront uses, site-wide or for one page, plus ambient effects and cursor trails. Changes go live as soon as you save.":
     "Tots els colors que utilitza l'aparador, a tota la pàgina, efectes d'ambient o cursors. Els canvis es posen en marxa tan bon punt deseu.",
@@ -565,18 +609,24 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Expanded Commerce": "Comerç ampliat",
   "Expected end": "Final previst",
   "Expected start": "Inici previst",
+  "Expected to run out inside lead time": "S'espera que s'esgoti dins del temps de lliurament",
+  "Experiments are currently created from the database; the admin panel does not yet have a creation form.":
+    "Actualment es creen experiments a partir de la base de dades; el tauler d'administració encara no té un formulari de creació.",
   Expires: "Caduca",
   "Expires (optional)": "Caduca (opcional)",
   Explore: "Explora",
   "Explore the market": "Explora el mercat",
   "Export at the listed width and height. Do not upload a 16:9 photo for a banner.":
     "Exporta a l'amplada i l'alçada indicades. No pengeu una foto de 16:9 per a un bàner.",
+  Exposures: "Exposicions",
   'Extra photos shown as a thumbnail strip on the product page, the way most shops show different angles of the same item. Up to 8. Saved immediately, no separate "Save draft" needed.':
     'Fotos addicionals que es mostren com a tira en miniatura a la pàgina del producte, com la majoria de botigues mostren diferents angles del mateix article. Fins a 8. Desat immediatament, no cal "Desa l\'esborrany" separat.',
   Eyebrow: "Cella",
   "Eyebrows and small highlights.": "Celles i petits aspectes destacats.",
   "Facebook Login button in the storefront account menu.":
     "Botó d'inici de sessió a Facebook al menú del compte de l'aparador.",
+  "Failed to load experiment": "No s'ha pogut carregar l'experiment",
+  "Failed to load experiments": "No s'han pogut carregar els experiments",
   "Falls back to the route's built-in description": "Retorn a la descripció integrada de la ruta",
   "Falls back to the route's built-in title": "Retorn al títol integrat de la ruta",
   Farm: "Granja",
@@ -585,6 +635,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Farm id (e.g. farm_devika)": "Identificador de la granja (p. ex., farm_devika)",
   "Farm name": "Nom de la granja",
   "Farm not found": "No s'ha trobat la granja",
+  "Farm order notice": "Avís de la comanda de la granja",
+  "Farm partnership application": "Solicitud d'associació de la granja",
+  "Farm partnership decision": "Decisió d'associació agrícola",
   "Farm record": "Registre de la granja",
   "Farm request not found": "No s'ha trobat la sol·licitud de la granja",
   "Farm Requests": "Solicituds de la granja",
@@ -602,6 +655,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Fields: "Camps",
   "File target": "Destinació del fitxer",
   Filipino: "Filipí",
+  "Filter by outcome": "Filtra per resultat",
   "Filter by rating": "Filtra per puntuació",
   "Filter by status": "Filtra per estat",
   "Find a product to add": "Troba un producte per afegir",
@@ -612,6 +666,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Footer and inverted sections.": "Peu de pàgina i seccions invertides.",
   'Force a section on or off for visitors in one country, without changing what everyone else sees. Leave a section on "Inherit" and it just follows the tickbox in the section list above.':
     'Obligar o desactivar una secció per als visitants d\'un país, sense canviar el que veuen els altres. Deixeu una secció sobre "Heretar" i només seguirà la casella de selecció de la llista de seccions de dalt.',
+  "Forecast unavailable": "Previsió no disponible",
+  "Forecasted SKUs": "SKU previstes",
+  "Forecasting...": "Previsió...",
   "Forgot password?": "Heu oblidat la contrasenya?",
   "Formatting locale": "Format de la configuració regional",
   "Free delivery above (₹)": "Enviament gratuït més amunt (₹)",
@@ -632,6 +689,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Give one country its own colours": "Donar a un país els seus propis colors",
   "Give one country its own effects": "Donar a un país el seu propi efecte",
   "Give one page its own colours": "Ofereix els seus propis colors a una pàgina",
+  "Global — per day": "Global — per dia",
+  "Global — per hour": "Global — per hora",
   "Gluten Free": "Sense gluten",
   "gluten-free, plant-based": "sense gluten, a base de plantes",
   "Go back": "Torna",
@@ -641,6 +700,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Gross: "Brut",
   "Gross revenue": "Ingressos bruts",
   Group: "Grup",
+  "Group countries into brackets that each pay a markup over India's base price. Both the percentage and which countries sit in each bracket are yours to adjust at any time.":
+    "Agrupeu els països entre parèntesis que paguen cadascun un marge sobre el preu base de l'Índia. Tant el percentatge com els països que es troben a cada parèntesi són els vostres per ajustar-lo en qualsevol moment.",
   "Group name": "Nom del grup",
   "Growers who applied at /farms/partner to supply the market. No account is required to apply, so review here is the only gate.":
     "Productors que van sol·licitar a /farms/partner per proveir el mercat. No es requereix cap compte per sol·licitar-se, així que revisa aquí és l'única porta.",
@@ -648,6 +709,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "GST number": "Número GST",
   "Hairline border": "Bord de la línia del cabell",
   "Hand-picked testimonials": "Testimonis triats a mà",
+  "Handed to a person": "Entregat a una persona",
   "Harvest calendar": "Calendari de collita",
   "Harvest note": "Nota de collita",
   Heading: "Títol",
@@ -663,6 +725,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Hero title": "Títol de l'heroi",
   Hidden: "Ocult",
   Hide: "Oculta",
+  "Hide password": "Amaga la contrasenya",
   "Hides the system cursor so the trail is the cursor. Links, buttons and form fields keep a real pointer regardless — losing the hit target on those is not a trade worth making.":
     "Oculta el cursor del sistema perquè el rastre sigui el cursor. Els enllaços, els botons i els camps de formulari mantenen un punter real independentment: perdre l'objectiu d'èxit en aquests no és un comerç que valgui la pena.",
   "Highlighted products": "Productes destacats",
@@ -675,15 +738,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Homepage Settings": "Configuració de la pàgina d'inici",
   "Homepage settings unavailable": "La configuració de la pàgina d'inici no està disponible",
   Hours: "Hores",
-  "How many characters of a policy page the storefront bot may read before answering. Longer keeps more of the detail a customer asked about.":
-    "Quants caràcters d'una pàgina de polítiques pot llegir el bot d'aparador abans de respondre. Més temps conserva més detalls sobre els quals pregunta un client.",
   "How many entries from the list below are given to the assistant as reference.":
     "Quantes entrades de la llista següent es donen a l'assistent com a referència.",
   "How many products or categories an operator may pick into Fresh Favourites, Featured Categories (Homepage Settings) and Highlighted products (below). Raising it saves immediately, no deploy needed; up to 50, the ceiling the block format itself enforces.":
     "Quants productes o categories pot triar un operador per a Preferits nous, Categories destacades (Configuració de la pàgina d'inici) i Productes destacats (a continuació). Aixecar-lo estalvia immediatament, no cal desplegar-lo; fins a 50, el sostre que imposa el format de bloc.",
   "How many products to show": "Quants productes s'han de mostrar",
-  "How many products, articles or recipes the storefront bot's search returns each time it looks something up.":
-    "Quants productes, articles o receptes retorna la cerca del bot d'aparador cada vegada que cerca alguna cosa.",
   "How many to show": "Quants s'han de mostrar",
   "How much of the current chat is sent back with each question. 0 answers every question in isolation.":
     "Quanta part del xat actual s'envia amb cada pregunta. 0 respon a cada pregunta de manera aïllada.",
@@ -715,6 +774,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Intro / story blocks": "Blocs d'introducció/història",
   "Intro line (optional)": "Línia d'introducció (opcional)",
   Inventory: "Inventari",
+  "Inventory Intelligence": "Intel·ligència d'inventari",
   "Invite a user or add a farm owner to populate this page.":
     "Convida un usuari o afegeix un propietari de granja per omplir aquesta pàgina.",
   "Invite user": "Convida un usuari",
@@ -756,13 +816,17 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Language: "Idioma",
   "Language Studio": ". (opcional)",
   Lao: "Laos",
+  "last 24h": "últimes 24 hores",
   "Last activity": "Darrera activitat",
+  "Last refresh": "Darrera actualització",
   "Last reviewer note": "Nota de l'últim revisor",
   "Last sign-in": "Últim inici de sessió",
   "Last sync": "Darrera sincronització",
+  "last synced": "última sincronització",
   "Last updated": "Darrera actualització",
   Latvian: "Letó",
   "Layout — drag or use arrow keys": "Disposició: arrossegueu o utilitzeu les tecles de fletxa",
+  "Lead time": "Temps d'execució",
   "Lead time, hours": "Temps d'execució, hores",
   "Leave a colour blank to keep the one True Grit ships with — clearing a field is how you undo. A page or country's colours start from the site colours and override only what you change, so each is a short list, not a second palette to maintain. When both apply to the same visitor, the page wins — an editorial page's design should not be undone by a geo experiment.":
     "Deixeu un color en blanc per mantenir el que s'envia True Grit; esborrar un camp és la manera de desfer. Els colors d'una pàgina o d'un país comencen a partir dels colors del lloc i substitueixen només el que canvieu, de manera que cadascun és una llista curta, no una segona paleta per mantenir. Quan tots dos s'apliquen al mateix visitant, la pàgina guanya: el disseny d'una pàgina editorial no s'hauria de desfer per un experiment geogràfic.",
@@ -798,6 +862,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Live marketplace state, fulfilment pressure and publishing activity.":
     "Estat del mercat en directe, pressió de compliment i activitat de publicació.",
   "Live preview": "Previsualització en directe",
+  "Live rates from": "Tarifas en directe des de",
   "Live, and to scale with the real storefront's own styles.":
     "En directe i escalar amb els estils propis de l'aparador real.",
   Loading: "S'estan carregant",
@@ -817,6 +882,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading currency values…": "S'estan carregant els valors de la moneda...",
   "Loading delivery charges...": "S'estan carregant els càrrecs de lliurament...",
   "Loading discussion…": "S'està carregant la discussió...",
+  "Loading email settings...": "S'està carregant la configuració del correu electrònic...",
+  "Loading forecast...": "S'està carregant la previsió...",
   "Loading highlights...": "S'estan carregant els elements destacats...",
   "Loading homepage sections...": "S'estan carregant les seccions de la pàgina d'inici...",
   "Loading homepage settings...": "S'està carregant la configuració de la pàgina d'inici...",
@@ -825,6 +892,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Loading order…": "S'està carregant l'ordre...",
   "Loading permissions...": "S'estan carregant els permisos...",
   "Loading price adjustments...": "S'estan carregant els ajustos de preu...",
+  "Loading price tiers…": "S'estan carregant els nivells de preu...",
   "Loading product…": "S'està carregant el producte...",
   "Loading products...": "S'estan carregant els productes...",
   "Loading recipe…": "S'està carregant la recepta...",
@@ -866,6 +934,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Mark contacted": "Marca contactat",
   "Mark paid": "Marca com a pagat",
   "Mark under review": "Marca en revisió",
+  "Markup %": "% de marcatge",
   "Maximum carousel slides": "Màxim de diapositives del carrusel",
   "Maximum discount, ₹ (optional)": "Descompte màxim, ₹ (opcional)",
   "Maximum items": "Màxim d'articles",
@@ -880,6 +949,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Metadata used by search engines and social previews for `/`.":
     "Metadades utilitzades pels motors de cerca i visualitzacions prèvies socials per a `/`.",
   Method: "Mètode",
+  Metric: "Mètrica",
   "Minimum account age to start a discussion (months)":
     "Edat mínima del compte per iniciar una discussió (mesos)",
   "Minimum order, ₹ (optional)": "Comanda mínima, ₹ (opcional)",
@@ -896,12 +966,16 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Move later": "Mou més tard",
   "Move order to": "Mou la comanda a",
   "Move up in the showcase": "Amunt a l'aparador",
+  "mSPRT Test Stat:": "Estadística de la prova mSPRT:",
   "Muted text": "Text silenciat",
   Name: "Nom",
   Navigation: "Navegació",
   "Navigation labels": "etiqueta de navegació",
+  "Nearly matched": "Gairebé igual",
   "Needs attention": "Necessita atenció",
   "Nepali (नेपाली)": "Nepalí (नेपाली)",
+  "Net line revenue after allocated discounts":
+    "Ingressos nets de la línia després dels descomptes assignats",
   "Net revenue": "Ingressos nets",
   Never: "Mai",
   "Never accept payments for this product": "No accepteu mai pagaments per aquest producte",
@@ -914,6 +988,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "New conversation": "Nova conversa",
   "New coupon code": "Nou codi de cupó",
   "New customers": "Nous clients",
+  "New Experiment": 'id="t0006">Encara no hi ha activitat de correu electrònic.',
   "New farm": "Nova granja",
   "New password": "Nova contrasenya",
   "New post": "Nova publicació",
@@ -943,18 +1018,24 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Encara no hi ha cap codi: aquesta promoció s'aplica automàticament a tots els carretons aptes.",
   "No comments": "Sense comentaris",
   "No comments yet.": "Encara no hi ha cap comentari.",
+  "No completed run": "Encara no s'ha assignat cap país.",
   "No contact attempts": "Cap intent de contacte",
   "No content yet": "Encara no hi ha contingut",
   "No conversations yet": "Encara no hi ha cap conversa",
+  "No countries assigned yet.": "Encara no s'ha assignat cap país.",
   "No country overrides yet. Add a country above to give it its own section visibility.":
     "Encara no s'ha anul·lat cap país. Afegeix un país a dalt per donar-li visibilitat a la seva pròpia secció.",
   "No discussions": "Sense debats",
+  "No email activity yet.": "Encara no hi ha activitat de correu electrònic.",
   "No embedded True Grit logo, headline, button, or watermark.":
     "No hi ha cap logotip, títol, botó ni filigrana True Grit incrustat.",
+  "No experiments": "No hi ha experiments",
   "No farm assigned": "No hi ha cap granja assignada",
   "No farm requests": "No hi ha sol·licituds de granja",
   "No farmer name": "Sense nom d'agricultor",
   "No farms yet": "Encara no hi ha granges",
+  "No forecast yet": "Encara no hi ha cap previsió",
+  "No fraud signals fired.": "No s'han disparat cap senyal de frau.",
   "No fresh favourites yet. Add a few below.":
     "Encara no hi ha cap favorit nou. Afegeix-ne uns quants a continuació.",
   "No gift cards yet": "Encara no hi ha cap targeta regal",
@@ -983,6 +1064,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "No permissions": "Sense permís",
   "No pre-orders yet.": "Encara no hi ha cap comanda prèvia.",
   "No price adjustments yet": "Encara no hi ha ajustos de preu",
+  "No pricing brackets yet": "Encara no hi ha parèntesis de preus",
   "No products linked yet.": "Encara no hi ha cap producte enllaçat.",
   "No products match": "Cap producte coincideix",
   "No products match.": "Cap producte coincideix.",
@@ -1013,6 +1095,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Not orderable even while the site-wide switch is on.":
     "No es pot demanar encara que l'interruptor del lloc estigui activat.",
   "Not redeemed against any order yet.": "Encara no s'ha bescanviat contra cap comanda.",
+  "Not set": "No s'ha definit",
+  "not signed in": "no s'ha iniciat la sessió",
+  "Not Significant (Yet)":
+    "Tot el que s'ha demanat fins ara s'ha contestat o rebutjat de manera clara.",
+  "Not started": "No s'ha iniciat",
   "Note (optional)": "Nota (opcional)",
   "Note (required to decline)": "Nota (obligatòria per rebutjar)",
   "Note (required to request changes or reject)":
@@ -1024,6 +1111,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Nothing selected — the storefront stays exactly as it is.":
     "Res seleccionat: l'aparador es manté exactament com està.",
   "Nothing urgent": 'Res urgent. id="t0005">Notificacions',
+  "Nothing waiting. Everything asked so far was answered or refused cleanly.":
+    "Res esperant. Tot el que es va demanar fins ara va ser contestat o rebutjat netament.",
   Notifications: "Notificacions",
   "Nut Free": "Sense fruits secs",
   Off: "Desactivat",
@@ -1035,6 +1124,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "On hand": "A la mà",
   "on the sign-in page. The reset link goes to the address above.":
     "a la pàgina d'inici de sessió. L'enllaç de restabliment va a l'adreça anterior.",
+  "Once a window fills up, further emails in it wait for the next minute's dispatch instead of failing outright -- nothing is lost, it just slows down.":
+    "Una vegada que s'omple una finestra, més correus electrònics en ella esperen l'enviament del minut següent en comptes de fallar completament; no es perd res, només s'alenteix.",
   "Once you have created this grower's farm in the console, link the application to it here for provenance.":
     "Un cop hàgiu creat la granja d'aquest productor a la consola, enllaceu-hi l'aplicació aquí per a la procedència.",
   "One composition engine renders every category — no code per category.":
@@ -1059,6 +1150,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Optional content shown above the ingredients — supports the same blocks as blog posts, including":
     "El contingut opcional que es mostra a sobre dels ingredients: admet els mateixos blocs que les publicacions de bloc, incloses",
   Order: "Comandes",
+  "Order confirmation":
+    'Confirmació de la comanda</span id="t0utcome</span id="t0007"> id="t0009">per sobre del preu base de l\'Índia',
   "order line": "línia de comanda",
   "Order lines": "Línies de comanda",
   "Order not found": "No s'ha trobat la comanda",
@@ -1074,7 +1167,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Organic mangoes held in a sunlit orchard":
     "Mangos ecològics conservats en un hort il·luminat pel sol",
   "Organic wheat flour in a wooden bowl": "Farina de blat ecològica en un bol de fusta",
+  Outcome: "Resultat",
   Outstanding: "Excepcional",
+  "over India's base price": "per sobre del preu base de l'Índia",
   Overview: "Visió general",
   "Owner Reports": "Informes del propietari",
   "Owner-only controls for /sitemap.xml, /robots.txt and /llms.txt.":
@@ -1090,7 +1185,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Page title": "Títol de la pàgina",
   "Page unavailable": "Pàgina no disponible",
   Pages: "Pàgines",
-  "Pages the storefront bot may quote": "Pàgines que el bot de l'aparador pot citar",
   Paid: "Pagat",
   "Paid out": "Pagament",
   "paid via": "pagat mitjançant",
@@ -1108,6 +1202,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Pending: "Pendent",
   "Pending fulfilment": "Pendent de compliment",
   "Pending work for your role": "Treball pendent per a la teva funció",
+  "Per day": "Per dia",
+  "Per hour": 'Preferred id="t0005">0005">0005">00005">0005" Nivells',
+  "Per-category overrides": "Anul·lació per categoria",
   "Per-customer limit (optional)": 'id="t0006">No s\'han afegit permisos.',
   "Percent off": "Percentatge de descompte",
   "Permanently delete item": "Suprimeix l'element permanentment",
@@ -1134,8 +1231,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Platform earns": "Guanys de la plataforma",
   "points ·": "punts ·",
   "Points (+ / -)": "Punts (+ / -)",
-  "Policy page slugs": "Slugs de la pàgina de la política",
-  "Policy text quoted per answer": "Text de la política citat per resposta",
   "Polish (Polski)": "Polonès (Polski)",
   "Portuguese (Português)": "Portuguès (portuguès)",
   Position: "Posició",
@@ -1145,6 +1240,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Post a recipe (submission form)": "Publica una recepta (formulari d'enviament)",
   "Post Comments": "Publica comentaris",
   Posted: "Publicat",
+  "Power Achieved:": "Potència aconseguida:",
+  "Preferred provider": "Proveïdor preferit",
   "Prep minutes": "Minuts de preparació",
   Preview: "Vista prèvia",
   "Preview is checked on both a narrow phone and a desktop screen.":
@@ -1153,6 +1250,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Price: "Preu",
   "Price (₹) (Primary Variant)": "Preu (₹) (variant principal)",
   "Price adjustments unavailable": "Ajusts de preu no disponibles",
+  "Price Tiers": "Nivells de preus",
+  "Price tiers unavailable": "Nivells de preu no disponibles",
   "Primary button label": "Etiqueta del botó principal",
   "Primary button link": "Enllaç del botó principal",
   "Primary buttons, links, the wordmark.": "Botons primaris, enllaços, la marca de paraula.",
@@ -1161,6 +1260,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Prioritat (guany més alt quan es qualifiquen diversos)",
   Private: "Privat",
   Product: "Producte",
+  "Product / SKU": "Bot no respondria a...",
   "Product cards, panels, the header.": "Targetes de producte, panells, la capçalera.",
   "Product editor sections": "Seccions de l'editor de productes",
   "Product ID": "Identificador del producte",
@@ -1172,6 +1272,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Product type": "Tipus de producte",
   Products: "Productes",
   Promotion: "Promoció",
+  Provider:
+    "La botiga primer. Les frases que gairebé coincideixen es mostren amb cadascuna d'elles, que és la que us indica què heu d'afegir al seu vocabulari.",
   "Provider ref": "Referència del proveïdor",
   Public: "Públic",
   "Public categories": "Categories públiques",
@@ -1182,19 +1284,21 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Published as": "Publicat com a",
   "published categories for the homepage slider. Customers see four at a time on desktop, in this order. Raise the limit on Site Control.":
     "categories publicades per al control lliscant de la pàgina d'inici. Els clients en veuen quatre a l'escriptori, en aquest ordre. Augmenta el límit del control del lloc.",
-  "Published page slugs, separated by spaces. The bot reads these word for word when a customer asks about policy, so its answers match what you actually published.":
-    "Pàgina publicada, espais separats perlug El bot els llegeix paraula per paraula quan un client pregunta sobre la política, de manera que les seves respostes coincideixen amb el que realment vau publicar.",
   "Published products": "Productes publicats",
   "Publishing…": "Publicació...",
   "Pull quote": "Extreu cita",
+  "Pushing…": "Pushing...",
   "Put essential subjects inside the dashed centre. Responsive crops may remove the edges.":
     "Coloqueu temes essencials dins del centre guionat. Els retalls sensibles poden eliminar les vores.",
   Qty: "Quantitat",
   Quantity: "Quantitat",
   "Quantity delta (+/−)": "Quantitat delta (+/−)",
   Question: "Pregunta",
+  "Questions the storefront bot would not answer, worst first. The phrasings it nearly matched are shown against each one, which is what tells you what to add to its vocabulary.":
+    "Preguntes que el bot d'aparador no respondria, el pitjor primer. Les frases que gairebé coincideixen es mostren contra cadascuna, que és la que us indica què heu d'afegir al seu vocabulari.",
   Quote: "Cita",
   "Raise this to curate more than": "Augmenteu-ho per seleccionar més de",
+  "Rate limits": "Límits de tarifa",
   Rating: "Valoració",
   "Reader comments on blog posts and recipes appear here.":
     "Els comentaris dels lectors a les entrades i les receptes del blog apareixen aquí.",
@@ -1207,12 +1311,18 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Reason: "Motiu",
   "Reason (optional)": "Motiu (opcional)",
   "Reason:": "Motiu:",
+  "Rebuild recommendations": "Recomanacions de reconstrucció",
+  "Rebuilding...": "Reconstrucció...",
   Receipt: "Rebut",
+  "Recent activity": '<span> id="t0017">Destinatari',
   "Recent administrative activity": "Activitat administrativa recent",
   "Recipe not found": '><span id="t0006">Receptes',
   Recipes: "Receptes",
+  Recipient: "Destinatari",
   "Recipient email (optional)": "Correu electrònic del destinatari (opcional)",
+  "Recommendation performance": "Rendiment de la recomanació",
   Recommendations: "Recomanacions",
+  "Recommended order": "Comanda recomanada",
   "Reconnecting…": "S'està tornant a connectar...",
   "Record adjustment": "Enregistrament de pagament",
   "Record inventory adjustment": "Ajust d'inventari de registre",
@@ -1227,9 +1337,12 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Reference: "Referència",
   Refresh:
     "Actualitzar la id=\">t0017\">actualitzar una vegada l'API s'actualitza una vegada</08> en línia.",
+  "Refresh now": "Actualitza ara",
   "Refresh once the API is back online.": "Actualitza un cop l'API torni a estar en línia.",
+  "Refreshing…": "S'està actualitzant...",
   Refund: "Reembossament",
   "Refund amount (₹)": "Import del reemborsament (₹)",
+  "Refund automation": "Automatització de reemborsaments",
   Refunded: "Reembossat",
   "Refunded by": "Reembossat per",
   "refunded of": "Reemborsament de",
@@ -1238,9 +1351,11 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Region: "Regió",
   Reject: "Rebutjar",
   Rejected: "Rebutjat",
+  "Relative Effect": "Efecte relatiu",
   "Release everywhere": "Alliberament a tot arreu",
   "Release globally (all countries)": "Recull a tot el món (tots els països)",
   "Release only in these countries": "El llançament només en aquests països",
+  "Reload page": "Recarrega la pàgina",
   "remaining of": "Resta de",
   "remains unrefunded on this": "no es reemborsa en aquest",
   Remove: "Suprimeix",
@@ -1251,6 +1366,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Remove page colours": "Elimina els colors de la pàgina",
   "Remove translation": "Substituïu",
   Removed: 'id="t0006">Substitució',
+  "Reorder soon": "Reordena aviat",
   "Replace the pointer with the trail": "Substitueix el punter pel rastre",
   Replaced: "Substituït",
   Replacement: "Substitució",
@@ -1260,8 +1376,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requested refund": "Devolució sol·licitada",
   "Requests filed from the storefront appear here.":
     "Les sol·licituds apareixen aquí des de l'aparador.",
+  "Required Sample:": "Mostra necessària:",
   "Requires articles.publish": "Requereix articles.publish",
   "Requires categories.publish": "Requereix categories.publish",
+  "Requires inventory.view and migration 0111.": "Revisió i migració. 0111.",
   "Requires owner settings access and a connected API.":
     "Requereix accés a la configuració del propietari i una API connectada.",
   "Requires owner settings access.": "Requereix accés a la configuració del propietari.",
@@ -1273,6 +1391,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Requires the analytics.view permission.": "Requereix el permís analytics.view.",
   "Requires the inventory.adjust permission.": "Requereix el permís inventory.adjust.",
   "Requires the reports.query permission.": "Requereix el permís reports.query.",
+  Resend: "Torna a enviar",
   "Reserve future capacity without consuming current inventory.":
     "Reservar la capacitat futura sense consumir l'inventari actual.",
   Reserved: "Reservat",
@@ -1282,17 +1401,19 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Resolution: "Resolució",
   Resolve: "Resol",
   "Resolve return": "mantenir-se al dia.",
+  "Resolved automatically by the refund agent":
+    "Resolt automàticament per l'agent de reemborsament",
   "Resolves live on every homepage load -- nothing to keep up to date.":
     "Resol en directe a cada càrrega de la pàgina d'inici; res a mantenir al dia.",
   "Resolving…": "Resolució...",
   "Respect the safe area": "Respectar l'àrea segura",
+  "Restock lead time (days)": "Termini de reposició (dies)",
   Restore: "Restaurar",
   "Restore (make visible)": "Restaura (fes visible)",
   Resume: "Reprèn",
   Retry: "Torna-ho a provar",
   "Return request not found": "No s'ha trobat la sol·licitud de devolució",
   Returns: "Devolució",
-  "returns delivery help terms privacy": "termes d'ajuda de lliurament de devolucions privadesa",
   Revenue: "Retorn",
   "Revenue (paid)": "Ingressos (de pagament)",
   "Revenue by day": "Ingressos per dia",
@@ -1307,6 +1428,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   Reviews: "Ressenyes",
   "Reviews customers write from a completed order appear here.":
     "Les ressenyes que escriuen els clients d'una comanda completada apareixen aquí.",
+  Risk: "Risc",
   Role: "Rol",
   "Role catalogue": "Catàleg de rols",
   Roles: "Rol",
@@ -1315,13 +1437,17 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Roles have not been seeded yet.": "Els rols encara no s'han sembrat.",
   "Roles unavailable": "Rols no disponibles",
   "Romanian (Română)": "Romanès (Română)",
+  "Run forecast now": "Executar la previsió ara",
   "Run renewals now": "Executa les renovacions ara",
   "Run report": "Executa l'informe",
+  "Run the baseline once; it will then refresh every Monday.":
+    "Executar la línia de base una vegada; Llavors s'actualitzarà cada dilluns.",
   "Running...": "Córrer...",
   "Running…": "Còrrer...",
   "Russian (Русский)": "Rus (Русский)",
   "Safe area": "Àrea segura",
   "Safe geo-lock:": "Bloqueig geogràfic segur:",
+  "Safety stock (days)": "Estoc de seguretat (dies)",
   "Sale & Discounts": "Rebaixes i descomptes",
   "Sale price": "Preu de venda",
   "Sale Price (₹)": "Preu de venda (₹)",
@@ -1344,6 +1470,7 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Save labels": "Desa les etiquetes",
   "Save message": "Desa el missatge",
   "Save page SEO": "Desa la pàgina SEO",
+  "Save planning settings": "Desa la configuració de planificació",
   "Save roles": "Desa els rols",
   "Save rule": "Desa la regla",
   "Save scope": "Desa l'àmbit",
@@ -1400,7 +1527,6 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Cerca productes, comandes, usuaris, categories...",
   "Search promotions": "Cerca promocions",
   "Search recipes": "Cerca receptes",
-  "Search results per lookup": "Resultats de la cerca per cerca",
   "Search returns": "Cerca resultats",
   "Search reviews": '1>Cerca id="t0008">Cerca enviaments',
   "Search submissions": "Cerca enviaments",
@@ -1447,17 +1573,38 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Send invite": "Envia la invitació",
   "Send reset email": "Envia un correu electrònic de restabliment",
   "Send reset link": "Envia l'enllaç de restabliment",
+  "Send test email": "<0span. a un client quan es fa la seva comanda.",
   "Sending...": "S'està enviant...",
   "Sending…": "S'està enviant...",
+  "Sent to a contributor when staff approve, request changes on, or reject a submission.":
+    'Enviat a un col·laborador quan el personal aprovi, sol·liciti canvis a l\'id="t0003" o',
+  "Sent to a customer when their order is placed.":
+    "S'envia a un client quan es fa la seva comanda.",
+  "Sent to a farm owner when one of their products is ordered.":
+    "Enviat al propietari d'una granja quan es fa la comanda d'un dels seus productes.",
+  "Sent to a person": "Enviat a una persona",
+  "Sent to an applicant when staff approve or reject their application.":
+    "Enviat a un sol·licitant quan el personal aprova o rebutja la seva sol·licitud.",
+  "Sent to staff and the applicant when a farm applies to supply True Grit.":
+    "Enviat al personal i al sol·licitant quan una granja sol·licita subministrar True Grit.",
+  "Sent to staff when a storefront contact form is submitted.":
+    "Enviat al personal quan s'envia un formulari de contacte d'aparador quan s'envia una contrasenya de client. restableix.",
+  "Sent when a customer requests a password reset.":
+    "S'envia quan un client sol·licita un restabliment de la contrasenya.",
+  "Sent when a new customer account is created.": "S'envia quan es crea un compte de client nou.",
   "SEO description": "Descripció de SEO",
   "SEO keywords": "Paraules clau de SEO",
   "SEO title": "Títol de SEO",
   "Separate paragraphs with a blank line. Links use [text](/path); HTML is rejected.":
     "Separa els paràgrafs amb una línia en blanc. Els enllaços utilitzen [text](/path); Es rebutja l'HTML.",
+  "Sequential testing allows continuous monitoring without p-hacking. Results are valid at any time.":
+    "Les proves seqüencials permeten un seguiment continu sense pirateria virtual. Els resultats són vàlids en qualsevol moment.",
   Serbian: "Serbi",
   Servings: "Porcions",
   "Set a new password": "Estableix una nova contrasenya",
   "Set as default": "Estableix com a predeterminat",
+  "Shaded area is the 95% residual interval; the line is expected daily units.":
+    "L'àrea ombrejada és l'interval residual del 95%; la línia s'esperen unitats diàries.",
   "Shop · Farms · Journal": "Botiga · Granges · Diari",
   "Shop fresh greens": "Compreu verdures fresques",
   "Shop root vegetables": "Compra hortalisses d'arrel",
@@ -1469,7 +1616,9 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Show dietary and certification filters on the shop page":
     "Mostra els filtres dietètics i de certificació a la pàgina de la botiga",
   "Show original": "Mostra l'original",
+  "Show password": "Mostra la contrasenya",
   "Show product recommendations": "Mostra les recomanacions de productes",
+  "Show reorder recommendations only": "Mostra només les recomanacions de reordenació",
   "Show this snippet": "Mostra aquest fragment",
   "Shown at the top of the post and as its thumbnail on the blog listing.":
     "Es mostra a la part superior de la publicació i com a miniatura a la llista del bloc.",
@@ -1503,6 +1652,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Site-wide default:": "Per defecte a tot el lloc:",
   "Skip to content": "Vés al contingut",
   "SKU (Primary Variant)": "SKU (variant principal)",
+  "SKU demand, days until stockout and reorder quantities from rolling sales and weekday seasonality.":
+    "Demanda de SKU, dies fins a l'exhauriment d'existències i quantitats de reordenació de vendes continuades i estacionalitat dels dies feiners.",
   "slots used": "eslovàquia utilitzada",
   "Slovak (Slovenčina)": "Eslovac (Slovenčina)",
   Slovenian: "Eslovè",
@@ -1519,17 +1670,27 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Spanish (Español)": "Espanyol (Español)",
   "Sprouted ragi flour": "Farina de ragi germinada",
   "SQL Tables": "Taules SQL",
+  "Staff account": "Compte del personal",
   "Staff sign in": "Inici de sessió del personal",
+  "Start Experiment": "Inicia l'experiment",
+  "Started At": "Començat a",
   Starts: "Inici",
   "Starts (optional)": "Comença (opcional)",
   "Starts with no permissions — you'll pick what it can do right after creating it.":
     "Comença sense permís: triareu què pot fer just després de crear-lo.",
+  "Statistical Significance (mSPRT)": "Importància estadística (mSPRT)",
+  "Statistically rigorous sequential testing for product features and growth.":
+    "Proves seqüencials estadísticament rigoroses per a les característiques del producte i el creixement.",
+  "Statistically Significant": "Estadísticament significativa",
   Status: "Estat",
   Steps: "Passos",
   "Steps (one per line)": "Pasos (un per línia)",
+  "Stock healthy": "Estocs saludables",
   "Stock Status": "Estat de l'estoc",
+  Stop: "Aturar",
   "Storage guidance": "Guia d'emmagatzematge",
   "Store credit": "Crèdit de la botiga",
+  "Storefront answers": "Botiga",
   "Storefront bot": "Bot de la botiga",
   "Storefront switches": "Commutadors d'aparador",
   "Storefront switches unavailable": "Commutadors d'aparador no disponibles",
@@ -1552,6 +1713,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Només superadministrador. Errors d'aplicació i excepcions no gestionades, primer el més recent.",
   "Supporting text": "Text de suport",
   "Swedish (Svenska)": "Suec (Svenska)",
+  "Sync from Sheet": "Sincronització des del full",
+  "Syncing…": "Sincronització...",
   Table: "Taula",
   "Tags & Certifications": "Etiquetes i certificacions",
   "Tags:": "Etiquetes:",
@@ -1596,6 +1759,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "El mateix interruptor d'aturada que l'opció \"Accepta comandes i pagaments\" de Site Control, s'aplica només a aquest producte. Desmarqueu-lo quan aquest element s'esgoti o no superi una comprovació de qualitat: la pàgina es manté activa i es pot navegar, però \"Afegeix a la cistella\" es substitueix per un missatge i un formulari de contacte fins que la torneu a activar. Això és independent de l'interruptor de tot el lloc: desactivar la comanda aquí no té cap efecte en cap altre producte.",
   "The selected CMS page could not be loaded.":
     "La pàgina CMS seleccionada no s'ha pogut carregar.",
+  "The storefront bot only states figures you have entered here. Anything left blank is sent to a person instead, so it can never quote a policy nobody set.":
+    "El bot d'aparador només indica les xifres que heu introduït aquí. Tot el que es deixa en blanc s'envia a una persona, de manera que mai no pot citar una política que ningú ha establert.",
   "The storefront's palette and the decoration on top of it.":
     "La paleta de l'aparador i la decoració que hi ha a sobre.",
   "The two new passwords do not match.": "Les dues contrasenyes noves no coincideixen.",
@@ -1608,10 +1773,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "These roles define the permission sets available when inviting or editing users.":
     "Aquests rols defineixen els conjunts de permisos disponibles per convidar o editar usuaris.",
   "Thinking…": "Pensant...",
+  "Thirty-day unit forecast with confidence interval":
+    "Previsió d'unitats de trenta dies amb interval de confiança",
   "This application is": "Aquesta aplicació està",
   "This order is in a final state.": "Aquesta comanda es troba en un estat final.",
   "This page contains sensitive application diagnostics.":
     "Aquesta pàgina conté diagnòstics d'aplicacions sensibles.",
+  "This page hit an unexpected error and could not finish rendering. Reloading usually fixes it. If it keeps happening, share what you were doing when it happened with the engineering team.":
+    "Aquesta pàgina ha produït un error inesperat i no s'ha pogut acabar de renderitzar. La recàrrega sol solucionar-ho. Si continua passant, comparteix el que estàveu fent quan va passar amb l'equip d'enginyeria.",
   "This page requires the revenue.view permission.":
     "Aquesta pàgina requereix el permís de revenue.view.",
   "This permanently removes the image from storage. Images still referenced by a product, page, article or recipe cannot be deleted.":
@@ -1628,6 +1797,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Threads started from the storefront appear here.":
     "Els fils iniciats des de l'aparador apareixen aquí.",
   "Thumbnail image URL": "URL de la imatge en miniatura",
+  "Tier 1": "Nivell 1",
+  "Tier 2": "Nivell 2",
+  "Tier 3": "Nivell 3",
+  "Tier 4": "Nivell 4",
   Time: "Temps",
   "Tinted band": "Banda tintada",
   Title: "Títol",
@@ -1640,7 +1813,10 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Top products": "Productes principals",
   "Top-rated reviews (updates automatically)":
     "Ressenyes amb millor puntuació (s'actualitza automàticament)",
+  "Total Conversions": "Conversions totals",
+  "Total Traffic": "Trànsit total",
   "Total use limit (optional)": "Límit total d'ús (opcional)",
+  "Traffic Allocation": "Assignació de trànsit",
   Trail: "Ruta",
   "Trail colour": "Color del rastre",
   "transfer money — make the transfer to": "transferir diners: feu la transferència a",
@@ -1656,6 +1832,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Desactiva per congelar nous registres mentre els clients existents segueixen iniciant la sessió amb normalitat.",
   "Turn sign-in methods and ordering on or off without a deploy. The pill on the right is what customers actually get: a switch can only ever take a feature away, never add one the API is not configured for.":
     "Activa o desactiva els mètodes d'inici de sessió i de comanda sense implementar-lo. La píndola de la dreta és el que realment obtenen els clients: un interruptor només pot eliminar una funció, mai afegir-ne una per a la qual l'API no està configurada.",
+  "Turning this off can block staff self-service password reset -- the recovery path into this very admin panel.":
+    "Desactivar-ho pot bloquejar el restabliment de la contrasenya d'autoservei del personal: la ruta de recuperació en aquest mateix tauler d'administració.",
   Type: "Tipus",
   "Type of section to add": "Tipus de secció que cal afegir",
   "Ukrainian (Українська)": "Ucraïnès (Українська)",
@@ -1664,12 +1842,15 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Under review": "En revisió",
   Unit: "Unitat",
   "Unit price, ₹": "Preu unitari, ₹",
+  "units (": "unitats (",
   "units sold": "Unitats venudes",
   Unpublish: "Anul·la publicació",
   Unpublished: "No publicada",
   "Unpublishing…": "Anul·lació de publicació...",
-  "Untick a section to hide it from customers without losing its content, and use the arrows to change the order they appear in. Changes here apply as soon as you make them.":
-    "Desmarqueu una secció per amagar-la als clients sense perdre-ne el contingut i utilitzeu les fletxes per canviar l'ordre en què apareixen. Els canvis aquí s'apliquen tan bon punt els feu.",
+  "Untick a kind of email to stop it from sending, without touching anything else.":
+    "Desmarqueu una mena de correu electrònic per evitar que s'enviï, sense tocar res més.",
+  "Untick a section to hide it from customers without losing its content, and use the position dropdown to change the order they appear in. Changes here apply as soon as you make them.":
+    "Desmarqueu una secció per ocultar-la als clients sense perdre-ne el contingut i utilitzeu el menú desplegable de posició per canviar l'ordre en què apareixen. Els canvis aquí s'apliquen tan bon punt els feu.",
   "Up to": "Fins a",
   Updated: "Actualitzat",
   "Updated by": "Actualitzat per",
@@ -1677,11 +1858,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Upload an image to get started.": "Penja una imatge per començar.",
   "Upload checklist": "Llista de comprovació de la càrrega",
   "Upload image": "Penja una imatge",
+  "Upload to R2": "Penja a R2",
   "Uploading image...": "S'està penjant la imatge...",
   "Uploading image…": "S'està penjant la imatge...",
   "Uploading thumbnail...": "S'està penjant la miniatura...",
   "Uploading...": "S'està penjant...",
   "Uploading…": "S'està penjant...",
+  US: "EUA",
   "Use a separate 1200 × 1200 image. This square image is cropped for category cards; do not reuse the wide hero banner.":
     "Utilitzeu una imatge independent de 1200 × 1200. Aquesta imatge quadrada es retalla per a les targetes de categoria; no reutilitzeu el bàner d'heroi ample.",
   "Use site-wide effects instead": "Utilitzeu efectes de tot el lloc en lloc d'això",
@@ -1696,11 +1879,13 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "Using the site brand colour": "Ús del color de la marca del lloc",
   Uyghur: "Uigur",
   Uzbek: "Uzbec",
+  "Value (Mean)": "Valor (mitjana)",
   "Value of 1 INR": "Valor d'1 INR",
   "Value per INR": "Valor per INR",
   "Value, ₹": "Valor, ₹",
   "Variant ID": "Identificador de variant",
   "Variant Name": "Nom de la variant",
+  "Variant Performance": "Rendiment de la variant",
   "Variants of": "Variants de",
   Vegan: "Vegà",
   Vegetarian: "Vegetarià",
@@ -1731,10 +1916,14 @@ const CATALOGUE: Readonly<Record<string, string>> = {
   "What the promotion does": "Què fa la promoció",
   "What they grow:": "Què creixen:",
   "What this role is for": "Per a què serveix aquesta funció",
+  "What was actually sent, blocked, throttled or rejected.":
+    "Què s'ha enviat, bloquejat, accelerat o rebutjat realment.",
   When: "Quan",
   "Where this category is released": "On es publica aquesta categoria",
   "Where this product is released": "On es publica aquest producte",
   "Which promotion to show": "Quina promoció es mostra",
+  "Which provider sends True Grit's email, which kinds of email are allowed out, how fast, and what actually happened recently.":
+    "Quin proveïdor envia True Grit de correu electrònic, quin tipus de correu electrònic es permet, quin tipus de correu electrònic i de quina rapidesa es permeten recentment.",
   "Which reviews to show": "Quines ressenyes mostrar",
   "Whole order": "Tota la comanda",
   "Whole site": "Tot el lloc",
@@ -1746,6 +1935,8 @@ const CATALOGUE: Readonly<Record<string, string>> = {
     "Per què es va emetre aquesta targeta: un gest de bona voluntat, una devolució resolta com a crèdit de la botiga, etc.",
   "Widget colour": "Color del widget",
   "Widget colour hex": "Color hexadecimal del widget",
+  "Widget engagement and checkout revenue attributed to products discovered through recommendations in this date range.":
+    "Ingressos de compra i interacció del widget atribuïts als productes descoberts mitjançant recomanacions en aquest interval de dates.",
   "Words the bot matches against a question to decide this entry is relevant.":
     "Paraules que el bot coincideix amb una pregunta per decidir que aquesta entrada és rellevant.",
   "Working...": "Funcionant...",
