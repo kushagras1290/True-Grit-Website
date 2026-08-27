@@ -1453,8 +1453,12 @@ function GeneralTab({
           className="mb-2"
           disabled={uploadMutation.isPending || saving}
         >
-          <option value="r2">Save upload to R2</option>
-          <option value="git">Save upload to Git repo</option>
+          <option value="r2">
+            <T>Save upload to R2</T>
+          </option>
+          <option value="git">
+            <T>Save upload to Git repo</T>
+          </option>
         </Select>
         <Input
           id="productImageUpload"
@@ -1628,8 +1632,12 @@ function ProductGallerySection({
             onChange={(event) => setUploadStorage(event.target.value as "r2" | "git")}
             disabled={busy}
           >
-            <option value="r2">Save to R2</option>
-            <option value="git">Save to Git repo</option>
+            <option value="r2">
+              <T>Save to R2</T>
+            </option>
+            <option value="git">
+              <T>Save to Git repo</T>
+            </option>
           </Select>
           <Input
             type="file"

@@ -1266,8 +1266,12 @@ export function MediaPage() {
                 value={uploadStorage}
                 onChange={(event) => setUploadStorage(event.target.value as "r2" | "git")}
               >
-                <option value="r2">Save to R2</option>
-                <option value="git">Save to Git repo</option>
+                <option value="r2">
+                  <T>Save to R2</T>
+                </option>
+                <option value="git">
+                  <T>Save to Git repo</T>
+                </option>
               </Select>
               <Button
                 variant="primary"
