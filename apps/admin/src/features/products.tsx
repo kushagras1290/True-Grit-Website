@@ -1285,8 +1285,10 @@ function GeneralTab({
 
   const watchedImageUrl = form.watch("imageUrl");
   const watchedImageAlt = form.watch("imageAlt");
+  const [uploadStorage, setUploadStorage] = useState<"r2" | "git">("r2");
   const uploadMutation = useMutation({
-    mutationFn: (file: File) => api.uploadImage(file, IMAGE_SPECIFICATIONS_BY_ID["product-image"]),
+    mutationFn: (file: File) =>
+      api.uploadImage(file, IMAGE_SPECIFICATIONS_BY_ID["product-image"], uploadStorage),
     onSuccess: (result) => {
       const imageAlt = form.getValues("imageAlt") || product.name;
       form.setValue("imageUrl", result.url, { shouldDirty: true, shouldValidate: true });
@@ -1444,6 +1446,16 @@ function GeneralTab({
         htmlFor="imageUrl"
         error={form.formState.errors.imageUrl?.message}
       >
+        <Select
+          aria-label="Image storage"
+          value={uploadStorage}
+          onChange={(event) => setUploadStorage(event.target.value as "r2" | "git")}
+          className="mb-2"
+          disabled={uploadMutation.isPending || saving}
+        >
+          <option value="r2">Save upload to R2</option>
+          <option value="git">Save upload to Git repo</option>
+        </Select>
         <Input
           id="productImageUpload"
           type="file"
@@ -1510,13 +1522,15 @@ function ProductGallerySection({
   const toast = useToast();
   const queryClient = useQueryClient();
   const [gallery, setGallery] = useState<AdminProductImage[]>(images);
+  const [uploadStorage, setUploadStorage] = useState<"r2" | "git">("r2");
 
   useEffect(() => {
     setGallery(images);
   }, [images]);
 
   const uploadMutation = useMutation({
-    mutationFn: (file: File) => api.uploadImage(file, IMAGE_SPECIFICATIONS_BY_ID["product-image"]),
+    mutationFn: (file: File) =>
+      api.uploadImage(file, IMAGE_SPECIFICATIONS_BY_ID["product-image"], uploadStorage),
     onError: (error) =>
       toast.error(error instanceof ApiError ? error.message : "Could not upload image."),
   });
@@ -1607,22 +1621,50 @@ function ProductGallerySection({
       ) : null}
 
       {gallery.length < 8 ? (
-        <Input
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif"
-          className="mt-3"
-          disabled={busy}
-          onChange={(event) => {
-            const file = event.currentTarget.files?.[0];
-            event.currentTarget.value = "";
-            if (!file) return;
-            uploadMutation.mutate(file, {
-              onSuccess: (result) => {
-                saveMutation.mutate([...gallery, { id: "", imageUrl: result.url, imageAlt: "" }]);
-              },
-            });
-          }}
-        />
+        <div className="mt-3 grid gap-2 sm:grid-cols-[180px_1fr]">
+          <Select
+            aria-label="Gallery image storage"
+            value={uploadStorage}
+            onChange={(event) => setUploadStorage(event.target.value as "r2" | "git")}
+            disabled={busy}
+          >
+            <option value="r2">Save to R2</option>
+            <option value="git">Save to Git repo</option>
+          </Select>
+          <Input
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            multiple
+            disabled={busy}
+            onChange={async (event) => {
+              const files = Array.from(event.currentTarget.files ?? []).slice(
+                0,
+                8 - gallery.length,
+              );
+              event.currentTarget.value = "";
+              if (files.length === 0) return;
+              try {
+                const uploaded = await Promise.all(
+                  files.map((file) =>
+                    uploadMutation.mutateAsync(file),
+                  ),
+                );
+                saveMutation.mutate([
+                  ...gallery,
+                  ...uploaded.map((result) => ({
+                    id: "",
+                    imageUrl: result.url,
+                    imageAlt: "",
+                  })),
+                ]);
+              } catch (error) {
+                toast.error(
+                  error instanceof ApiError ? error.message : "Could not upload gallery images.",
+                );
+              }
+            }}
+          />
+        </div>
       ) : (
         <p className="mt-3 text-xs text-ink-muted">
           <T>A product can hold at most 8 gallery images.</T>

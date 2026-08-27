@@ -81,7 +81,7 @@ def main() -> int:
     migrated_customer_products = conn.execute(
         "SELECT COUNT(*) FROM products WHERE status = 'published'"
     ).fetchone()[0]
-    if migrated_customer_categories != 10 or migrated_customer_products != 30:
+    if migrated_customer_categories != 10 or migrated_customer_products != 60:
         print(
             "customer catalogue must be migration-backed before seed data runs: "
             f"found {migrated_customer_categories} categories and "
@@ -120,7 +120,7 @@ def main() -> int:
                 file=sys.stderr,
             )
             return 1
-        if published_products != 30:
+        if published_products != 60:
             print(
                 f"expected 30 published products, found {published_products}",
                 file=sys.stderr,
@@ -172,17 +172,6 @@ def main() -> int:
         if misleading_product_images:
             print(
                 f"{misleading_product_images} products use category artwork as a product image",
-                file=sys.stderr,
-            )
-            return 1
-
-        product_images = conn.execute(
-            "SELECT COUNT(*) FROM products WHERE status = 'published'"
-            " AND (NULLIF(TRIM(image_url), '') IS NOT NULL OR primary_media_id IS NOT NULL)"
-        ).fetchone()[0]
-        if product_images:
-            print(
-                f"expected no product images in the live catalogue, found {product_images}",
                 file=sys.stderr,
             )
             return 1

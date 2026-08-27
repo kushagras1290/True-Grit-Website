@@ -9,6 +9,9 @@ test-results/
 .env.*
 !.env.example
 client_secret_*.json
+# Google Cloud service-account key export (GCP's default download filename
+# is <project-id>-<key-id-prefix>.json at the repo root) — never commit secrets.
+beaming-ion-473105-k8-*.json
 # Downloaded gateway/API key exports — never commit secrets.
 *_api_keys_*.csv
 *api_key*.csv

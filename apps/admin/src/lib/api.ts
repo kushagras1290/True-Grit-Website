@@ -184,6 +184,7 @@ const DEMO_STOREFRONT_SETTINGS: StorefrontSettingsResponse = {
     // Off by default (migration 0113) -- real financial/business-risk
     // decision, same reasoning as promotions/subscriptions/giftCards.
     refundOrchestrator: false,
+    englishOnly: false,
     blogBannerImageUrl: "",
     blogBannerImageAlt: "",
     farmsBannerImageUrl: "",
@@ -207,6 +208,7 @@ const DEMO_STOREFRONT_SETTINGS: StorefrontSettingsResponse = {
     deliveryZones: false,
     b2b: false,
     refundOrchestrator: false,
+    englishOnly: false,
     anySignInAvailable: true,
   },
 };
@@ -3104,11 +3106,15 @@ export const api = {
   uploadImage: async (
     file: File,
     resizeSpec?: Pick<ImageSpecification, "width" | "height">,
+    storage: "r2" | "git" = "r2",
   ): Promise<{ id: string; url: string }> => {
     const upload = resizeSpec ? await resizeImageToSpec(file, resizeSpec) : file;
     return demoMode
       ? demo({ id: `img_${Date.now().toString(36)}`, url: URL.createObjectURL(upload) })
-      : postFile(`/v1/admin/media/images?filename=${encodeURIComponent(upload.name)}`, upload);
+      : postFile(
+          `/v1/admin/media/images?filename=${encodeURIComponent(upload.name)}&storage=${storage}`,
+          upload,
+        );
   },
 
   homeBlocks: (): Promise<PublicPageBlock[]> => demo(homePage.blocks),

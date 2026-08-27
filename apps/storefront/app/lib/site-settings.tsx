@@ -51,6 +51,7 @@ export interface SiteSettings {
   preorders: { enabled: boolean };
   deliveryZones: { enabled: boolean };
   b2b: { enabled: boolean };
+  i18n: { englishOnly: boolean };
   banners: {
     blogImageUrl: string;
     blogImageAlt: string;
@@ -98,6 +99,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   preorders: { enabled: false },
   deliveryZones: { enabled: false },
   b2b: { enabled: false },
+  i18n: { englishOnly: false },
   banners: { blogImageUrl: "", blogImageAlt: "", farmsImageUrl: "", farmsImageAlt: "" },
   theme: DEFAULT_THEME,
   effects: DEFAULT_EFFECTS,
@@ -126,6 +128,7 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
     preorders: Partial<SiteSettings["preorders"]>;
     deliveryZones: Partial<SiteSettings["deliveryZones"]>;
     b2b: Partial<SiteSettings["b2b"]>;
+    i18n: Partial<SiteSettings["i18n"]>;
     banners: Partial<SiteSettings["banners"]>;
     theme: unknown;
     effects: unknown;
@@ -144,6 +147,7 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
   const preorders = source.preorders ?? {};
   const deliveryZones = source.deliveryZones ?? {};
   const b2b = source.b2b ?? {};
+  const i18n = source.i18n ?? {};
   const banners = source.banners ?? {};
 
   const bool = (value: unknown, fallback: boolean): boolean =>
@@ -185,6 +189,7 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
       enabled: bool(deliveryZones.enabled, DEFAULT_SITE_SETTINGS.deliveryZones.enabled),
     },
     b2b: { enabled: bool(b2b.enabled, DEFAULT_SITE_SETTINGS.b2b.enabled) },
+    i18n: { englishOnly: bool(i18n.englishOnly, DEFAULT_SITE_SETTINGS.i18n.englishOnly) },
     banners: {
       blogImageUrl: text(banners.blogImageUrl, ""),
       blogImageAlt: text(banners.blogImageAlt, ""),

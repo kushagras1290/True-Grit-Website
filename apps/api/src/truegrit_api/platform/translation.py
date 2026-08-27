@@ -62,9 +62,11 @@ class WorkersAITranslator:
                 _MODEL, {"text": text, "source_lang": source_lang, "target_lang": target_lang}
             )
         except Exception as exc:
+            detail = str(exc)
             raise TranslationUnavailableError(
-                f"Could not translate into '{target_lang}' — the built-in translator may not"
-                " support this language yet. Edit it by hand instead."
+                f"Could not translate into '{target_lang}'. The built-in translator may not"
+                " support this language yet, or the Workers AI daily quota may be exhausted."
+                f" Edit it by hand instead. Provider detail: {detail[:240]}"
             ) from exc
         translated = getattr(result, "translated_text", None)
         if translated is None and isinstance(result, dict):

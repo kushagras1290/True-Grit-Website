@@ -477,7 +477,13 @@ class Default(WorkerEntrypoint):
         path = urlparse(str(request.url)).path
         method = str(request.method).upper()
         try:
-            if path == "/v1/admin/media/images" and method in {"POST", "OPTIONS"}:
+            upload_query = parse_qs(urlparse(str(request.url)).query)
+            upload_storage = (upload_query.get("storage") or ["r2"])[0].strip().lower()
+            if (
+                path == "/v1/admin/media/images"
+                and method in {"POST", "OPTIONS"}
+                and upload_storage != "git"
+            ):
                 return await _upload_media_direct(self.env, request)
             if path.startswith("/media/") and method in {"GET", "HEAD", "OPTIONS"}:
                 return await _serve_media_direct(self.env, request, path)
