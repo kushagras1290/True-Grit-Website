@@ -67,7 +67,8 @@ EMAIL_CATEGORIES: Final[dict[str, tuple[str, str]]] = {
     ),
     "ai_quota": (
         "Workers AI quota",
-        "Sent to staff when Cloudflare Workers AI appears to exhaust its daily free-neuron allowance.",
+        "Sent to staff when Cloudflare Workers AI appears to exhaust its "
+        "daily free-neuron allowance.",
     ),
 }
 

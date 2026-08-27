@@ -8,7 +8,6 @@ from truegrit_api.config import Settings, get_settings
 from truegrit_api.platform.database import Database
 from truegrit_api.services.jobs import enqueue_email
 
-
 _QUOTA_MARKERS = (
     "quota",
     "limit",

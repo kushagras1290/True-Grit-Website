@@ -82,7 +82,10 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   );
   const siteSettings = await loadSiteSettings(country, runtime);
   const resolved = siteSettings.i18n.englishOnly
-    ? { locale: locales.find((entry) => entry.code === DEFAULT_LOCALE) ?? LOCALES[0]!, source: "default" as const }
+    ? {
+        locale: locales.find((entry) => entry.code === DEFAULT_LOCALE) ?? LOCALES[0]!,
+        source: "default" as const,
+      }
     : resolveLocale(request, locales);
   // Both in one round trip: the header needs the sign-in switches on first
   // paint, or it flashes a button the API would refuse.

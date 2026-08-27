@@ -174,7 +174,10 @@ export function ProductCard({
   const price = usePriceFormatter();
   const effective = productEffectivePrice(product);
   const imageChoices = useMemo(() => {
-    return uniqueImageUrls([product.imageUrl, ...(product.images ?? []).map((image) => image.imageUrl)]);
+    return uniqueImageUrls([
+      product.imageUrl,
+      ...(product.images ?? []).map((image) => image.imageUrl),
+    ]);
   }, [product.imageUrl, product.images]);
   const liveImageChoices = useLiveProductImages(product.slug, imageChoices);
   const [hovered, setHovered] = useState(false);

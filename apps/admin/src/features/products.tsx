@@ -1645,9 +1645,7 @@ function ProductGallerySection({
               if (files.length === 0) return;
               try {
                 const uploaded = await Promise.all(
-                  files.map((file) =>
-                    uploadMutation.mutateAsync(file),
-                  ),
+                  files.map((file) => uploadMutation.mutateAsync(file)),
                 );
                 saveMutation.mutate([
                   ...gallery,
