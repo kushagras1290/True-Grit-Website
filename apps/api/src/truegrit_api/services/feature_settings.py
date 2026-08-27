@@ -56,6 +56,7 @@ KEY_PREORDERS: Final = "commerce.preorders.enabled"
 KEY_DELIVERY_ZONES: Final = "commerce.delivery_zones.enabled"
 KEY_B2B: Final = "commerce.b2b.enabled"
 KEY_REFUND_ORCHESTRATOR: Final = "commerce.refund_orchestrator.enabled"
+KEY_ENGLISH_ONLY: Final = "i18n.english_only.enabled"
 KEY_DELIVERY_FEE_MINOR: Final = "commerce.delivery_fee_minor"
 KEY_FREE_DELIVERY_THRESHOLD_MINOR: Final = "commerce.free_delivery_threshold_minor"
 KEY_BLOG_BANNER_URL: Final = "banner.blog.image_url"
@@ -110,6 +111,7 @@ _BOOLEAN_DEFAULTS: Final[dict[str, bool]] = {
     # unattended is a deliberate business decision an operator switches on,
     # never a permissive fallback for a corrupted row (migration 0113).
     KEY_REFUND_ORCHESTRATOR: False,
+    KEY_ENGLISH_ONLY: False,
 }
 
 DEFAULT_SUBSCRIPTION_DISCOUNT_PERCENT: Final = 5
@@ -158,6 +160,7 @@ class StorefrontSettings:
     delivery_zones: bool
     b2b: bool
     refund_orchestrator: bool
+    english_only: bool
     blog_banner_image_url: str
     blog_banner_image_alt: str
     farms_banner_image_url: str
@@ -183,6 +186,7 @@ class StorefrontSettings:
             "deliveryZones": self.delivery_zones,
             "b2b": self.b2b,
             "refundOrchestrator": self.refund_orchestrator,
+            "englishOnly": self.english_only,
             "blogBannerImageUrl": self.blog_banner_image_url,
             "blogBannerImageAlt": self.blog_banner_image_alt,
             "farmsBannerImageUrl": self.farms_banner_image_url,
@@ -511,6 +515,9 @@ async def load_storefront_settings(db: Database) -> StorefrontSettings:
         refund_orchestrator=_parse_bool(
             values.get(KEY_REFUND_ORCHESTRATOR), default=_BOOLEAN_DEFAULTS[KEY_REFUND_ORCHESTRATOR]
         ),
+        english_only=_parse_bool(
+            values.get(KEY_ENGLISH_ONLY), default=_BOOLEAN_DEFAULTS[KEY_ENGLISH_ONLY]
+        ),
         blog_banner_image_url=(values.get(KEY_BLOG_BANNER_URL) or "").strip(),
         blog_banner_image_alt=(values.get(KEY_BLOG_BANNER_ALT) or "").strip(),
         farms_banner_image_url=(values.get(KEY_FARMS_BANNER_URL) or "").strip(),
@@ -545,6 +552,7 @@ class PublicStorefrontSettings:
     delivery_zones: bool
     b2b: bool
     refund_orchestrator: bool
+    english_only: bool
     blog_banner_image_url: str
     blog_banner_image_alt: str
     farms_banner_image_url: str
@@ -593,6 +601,7 @@ class PublicStorefrontSettings:
             "deliveryZones": {"enabled": self.delivery_zones},
             "b2b": {"enabled": self.b2b},
             "refundOrchestrator": {"enabled": self.refund_orchestrator},
+            "i18n": {"englishOnly": self.english_only},
             "banners": {
                 "blogImageUrl": self.blog_banner_image_url,
                 "blogImageAlt": self.blog_banner_image_alt,
@@ -648,6 +657,7 @@ def resolve_public_settings(
         # gateway, deciding and refunding through Razorpay needs no separate
         # external key beyond what checkout already requires.
         refund_orchestrator=stored.refund_orchestrator,
+        english_only=stored.english_only,
         blog_banner_image_url=stored.blog_banner_image_url,
         blog_banner_image_alt=stored.blog_banner_image_alt,
         farms_banner_image_url=stored.farms_banner_image_url,
@@ -822,6 +832,7 @@ async def update_storefront_settings(
         "delivery_zones": KEY_DELIVERY_ZONES,
         "b2b": KEY_B2B,
         "refund_orchestrator": KEY_REFUND_ORCHESTRATOR,
+        "english_only": KEY_ENGLISH_ONLY,
     }
 
     now = utc_now_iso()

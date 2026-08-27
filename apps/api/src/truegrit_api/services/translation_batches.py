@@ -12,6 +12,7 @@ from truegrit_api.errors import NotFoundError, ValidationAppError
 from truegrit_api.platform.database import Database
 from truegrit_api.platform.translation import Translator
 from truegrit_api.services import translation_hub
+from truegrit_api.services.ai_quota import looks_like_ai_quota_error, notify_ai_quota_exhausted
 from truegrit_api.services.audit import audit_statement
 from truegrit_api.util.ids import new_id
 from truegrit_api.util.timeutil import utc_now_iso
@@ -557,6 +558,8 @@ async def process_task(db: Database, translator: Translator, task_id: str) -> No
                 )
             translated_count = len(selected)
     except ValidationAppError as exc:
+        if looks_like_ai_quota_error(exc):
+            await notify_ai_quota_exhausted(db, exc)
         await db.execute(
             "UPDATE translation_batch_tasks SET status = 'failed', error_summary = ?,"
             " updated_at = ? WHERE id = ?",

@@ -11,12 +11,15 @@ from __future__ import annotations
 
 import base64
 import binascii
+import hashlib
+import re
 from pathlib import Path
 from typing import Any
 
 from truegrit_api.auth.principal import Principal
 from truegrit_api.errors import ConflictError, NotFoundError, ValidationAppError
 from truegrit_api.platform.database import Database, repo_root
+from truegrit_api.platform.github import GitHubApiError, GitHubClient
 from truegrit_api.platform.media_store import MediaStore
 from truegrit_api.repositories.media import MediaRepository
 from truegrit_api.services.audit import audit_statement
@@ -30,6 +33,10 @@ _IMAGE_TYPES = {
     "image/webp": ".webp",
     "image/gif": ".gif",
 }
+_STATIC_UPLOAD_PREFIX = "apps/storefront/public/uploads/images/"
+_ADMIN_STATIC_UPLOAD_PREFIX = "apps/admin/public/uploads/images/"
+_STATIC_URL_PREFIX = "/uploads/images/"
+_SAFE_FILENAME = re.compile(r"[^a-zA-Z0-9._-]+")
 
 
 def media_root() -> Path:
@@ -94,6 +101,83 @@ async def save_image_bytes(
         ),
     )
     return {"id": image_id, "path": f"/media/{key}"}
+
+
+def _safe_upload_filename(original_filename: str | None, image_id: str, extension: str) -> str:
+    raw = (original_filename or "").rsplit("/", 1)[-1].rsplit("\\", 1)[-1].strip()
+    stem = raw.rsplit(".", 1)[0] if raw else image_id
+    cleaned = _SAFE_FILENAME.sub("-", stem).strip(".-").lower()[:80] or image_id
+    return f"{cleaned}-{image_id}{extension}"
+
+
+async def save_image_to_git(
+    github: GitHubClient,
+    db: Database,
+    actor: Principal,
+    *,
+    content_type: str,
+    data: bytes,
+    original_filename: str | None = None,
+) -> dict[str, str]:
+    extension = _IMAGE_TYPES.get(content_type)
+    if extension is None:
+        raise ValidationAppError("Upload a JPG, PNG, WebP, or GIF image.")
+    if not data:
+        raise ValidationAppError("The uploaded image is empty.")
+    if len(data) > _MAX_IMAGE_BYTES:
+        raise ValidationAppError("Images must be 5 MB or smaller.")
+    if not github.can_write:
+        raise ValidationAppError("Configure GITHUB_TOKEN before uploading images to the Git repo.")
+
+    image_id = new_id("gitimg")
+    filename = _safe_upload_filename(original_filename, image_id, extension)
+    repo_path = f"{_STATIC_UPLOAD_PREFIX}{filename}"
+    admin_repo_path = f"{_ADMIN_STATIC_UPLOAD_PREFIX}{filename}"
+    try:
+        existing = await github.get_file(repo_path)
+        await github.put_file(
+            path=repo_path,
+            content=data,
+            message=f"Add admin uploaded image {filename}",
+            sha=str(existing.get("sha")) if existing and existing.get("sha") else None,
+        )
+        admin_existing = await github.get_file(admin_repo_path)
+        await github.put_file(
+            path=admin_repo_path,
+            content=data,
+            message=f"Add admin uploaded image {filename}",
+            sha=(
+                str(admin_existing.get("sha"))
+                if admin_existing and admin_existing.get("sha")
+                else None
+            ),
+        )
+    except GitHubApiError as exc:
+        raise ValidationAppError(f"GitHub upload failed: {exc}") from exc
+
+    key = f"git:{repo_path}"
+    now = utc_now_iso()
+    checksum = hashlib.sha256(data).hexdigest()
+    await db.execute(
+        "INSERT INTO media_assets"
+        " (id, object_key, original_filename, mime_type, size_bytes, alt_text,"
+        "  visibility, processing_status, checksum_sha256, created_at, created_by,"
+        "  updated_at, updated_by)"
+        " VALUES (?, ?, ?, ?, ?, NULL, 'public', 'ready', ?, ?, ?, ?, ?)",
+        (
+            image_id,
+            key,
+            (original_filename or filename)[:180],
+            content_type,
+            len(data),
+            checksum,
+            now,
+            actor.user_id,
+            now,
+            actor.user_id,
+        ),
+    )
+    return {"id": image_id, "path": f"{_STATIC_URL_PREFIX}{filename}"}
 
 
 async def list_media(
@@ -168,4 +252,5 @@ async def delete_media(
             ),
         ]
     )
-    await store.delete(current["object_key"])
+    if not str(current["object_key"]).startswith("git:"):
+        await store.delete(current["object_key"])

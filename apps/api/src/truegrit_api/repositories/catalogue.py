@@ -165,6 +165,30 @@ class CatalogueRepository:
         )
         return {row["product_id"]: row for row in rows}
 
+    async def _images_for(self, product_ids: list[str]) -> dict[str, list[dict[str, Any]]]:
+        if not product_ids:
+            return {}
+        placeholders = ", ".join("?" for _ in product_ids)
+        rows = await self._db.fetch_all(
+            f"""
+            SELECT product_id, id, image_url, image_alt
+            FROM product_images
+            WHERE product_id IN ({placeholders})
+            ORDER BY product_id, sort_order, id
+            """,
+            product_ids,
+        )
+        images: dict[str, list[dict[str, Any]]] = {}
+        for row in rows:
+            images.setdefault(row["product_id"], []).append(
+                {
+                    "id": row["id"],
+                    "image_url": row["image_url"],
+                    "image_alt": row["image_alt"],
+                }
+            )
+        return images
+
     async def _tags_for(self, product_ids: list[str]) -> dict[str, list[str]]:
         if not product_ids:
             return {}
@@ -208,6 +232,7 @@ class CatalogueRepository:
         tags: list[str],
         percent: int,
         rating: dict[str, Any] | None = None,
+        images: list[dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
         variant_summaries = [self._variant_summary(entry, percent) for entry in variants]
         lead = variant_summaries[0] if variant_summaries else None
@@ -239,6 +264,7 @@ class CatalogueRepository:
             "lead_variant_id": lead["id"] if lead else None,
             "rating_average": round(float(rating["average"]), 1) if rating else 0.0,
             "rating_count": int(rating["count"]) if rating else 0,
+            "images": images or [],
             "_variants": variant_summaries,
             "_farm_slug": row["farm_slug"] or "",
             "_short_description": row["short_description"] or "",
@@ -257,6 +283,7 @@ class CatalogueRepository:
         tags = await self._tags_for(ids)
         adjustments = await resolve_adjustments(self._db, ids, country)
         ratings = await self._ratings_for(ids)
+        images = await self._images_for(ids)
         summaries = [
             self._summarize(
                 row,
@@ -265,6 +292,7 @@ class CatalogueRepository:
                 tags.get(row["id"], []),
                 adjustments.get(row["id"], 0),
                 ratings.get(row["id"]),
+                images.get(row["id"], []),
             )
             for row in rows
         ]

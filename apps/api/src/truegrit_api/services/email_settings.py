@@ -65,6 +65,11 @@ EMAIL_CATEGORIES: Final[dict[str, tuple[str, str]]] = {
         "Refund orchestrator",
         "Sent to a customer when the automated refund agent approves or denies their return.",
     ),
+    "ai_quota": (
+        "Workers AI quota",
+        "Sent to staff when Cloudflare Workers AI appears to exhaust its "
+        "daily free-neuron allowance.",
+    ),
 }
 
 _DEFAULT_GLOBAL_HOURLY: Final = 300

@@ -80,12 +80,17 @@ export async function loader({ request, context }: Route.LoaderArgs) {
       [...LOCALES, ...customLocales].map((entry) => [entry.code.toLowerCase(), entry]),
     ).values(),
   );
-  const resolved = resolveLocale(request, locales);
+  const siteSettings = await loadSiteSettings(country, runtime);
+  const resolved = siteSettings.i18n.englishOnly
+    ? {
+        locale: locales.find((entry) => entry.code === DEFAULT_LOCALE) ?? LOCALES[0]!,
+        source: "default" as const,
+      }
+    : resolveLocale(request, locales);
   // Both in one round trip: the header needs the sign-in switches on first
   // paint, or it flashes a button the API would refuse.
-  const [bootstrap, siteSettings, interfaceTranslations, currencyRates] = await Promise.all([
+  const [bootstrap, interfaceTranslations, currencyRates] = await Promise.all([
     loadBootstrap(country, runtime, resolved.locale.code),
-    loadSiteSettings(country, runtime),
     loadInterfaceTranslations(resolved.locale.code, runtime),
     loadCurrencyRates(runtime),
   ]);
@@ -232,7 +237,10 @@ export default function App() {
                         color={siteSettings.effects.cursor.color}
                         hideNativeCursor={siteSettings.effects.cursor.hideNativeCursor}
                       />
-                      <LanguageSuggestionPrompt locale={locale} active={localeSource === "geo"} />
+                      <LanguageSuggestionPrompt
+                        locale={locale}
+                        active={!siteSettings.i18n.englishOnly && localeSource === "geo"}
+                      />
                       <SupportBotWidget country={country} />
                     </>
                   )}

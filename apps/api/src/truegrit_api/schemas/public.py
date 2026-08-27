@@ -45,6 +45,12 @@ class PublicBootstrap(PublicModel):
     announcement: Announcement | None = None
 
 
+class ProductImage(PublicModel):
+    id: str
+    image_url: str
+    image_alt: str | None = None
+
+
 class ProductSummary(PublicModel):
     id: str
     name: str
@@ -88,6 +94,7 @@ class ProductSummary(PublicModel):
     # display state rather than a missing-data case.
     rating_average: float = 0.0
     rating_count: int = 0
+    images: list[ProductImage] = []
 
 
 class ProductListResponse(PublicModel):
@@ -131,12 +138,6 @@ class VariantSummary(PublicModel):
 class TraceabilityStep(PublicModel):
     label: str
     detail: str
-
-
-class ProductImage(PublicModel):
-    id: str
-    image_url: str
-    image_alt: str | None = None
 
 
 class ProductDetail(ProductSummary):

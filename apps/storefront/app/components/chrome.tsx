@@ -562,6 +562,7 @@ function GlobalSearch() {
 export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
   const { count } = useCart();
   const { t } = useLocaleContext();
+  const siteSettings = useSiteSettings();
   const localize = useLocalizeText();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -635,7 +636,9 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
             {/* Left of the search box on purpose — a returning visitor scans
                 right-to-left from search to cart, so the language control
                 needs to be the first thing in that path, not buried after it. */}
-            <HeaderLanguageSwitcher className="hidden sm:inline-flex" />
+            {siteSettings.i18n.englishOnly ? null : (
+              <HeaderLanguageSwitcher className="hidden sm:inline-flex" />
+            )}
             <GlobalSearch />
             <CustomerPortal />
             <Link
@@ -685,9 +688,11 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
             {/* The switcher is in the mobile menu as well as the footer:
                 a visitor who cannot read the page should not have to scroll
                 past the whole of it to find the way out. */}
-            <div className="border-t border-line px-4 py-3">
-              <LanguageSwitcher />
-            </div>
+            {siteSettings.i18n.englishOnly ? null : (
+              <div className="border-t border-line px-4 py-3">
+                <LanguageSwitcher />
+              </div>
+            )}
           </nav>
         ) : null}
       </header>
@@ -697,6 +702,7 @@ export function Header({ bootstrap }: { bootstrap: PublicBootstrap }) {
 
 export function Footer({ bootstrap }: { bootstrap: PublicBootstrap }) {
   const { t } = useLocaleContext();
+  const siteSettings = useSiteSettings();
   return (
     <footer className="mt-20 bg-inverse text-ink-inverse print:hidden">
       <div className="mx-auto grid max-w-[80rem] gap-10 px-4 py-14 sm:px-6 md:grid-cols-[2fr_1fr_1fr]">
@@ -706,12 +712,14 @@ export function Footer({ bootstrap }: { bootstrap: PublicBootstrap }) {
           {/* The permanent home of the language control. The header carries one
               too on small screens, but this is the one that is always present
               and always in the same place. */}
-          <div className="mt-6">
-            <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-70">
-              {t("language.label")}
-            </p>
-            <LanguageSwitcher tone="dark" className="mt-2" />
-          </div>
+          {siteSettings.i18n.englishOnly ? null : (
+            <div className="mt-6">
+              <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-70">
+                {t("language.label")}
+              </p>
+              <LanguageSwitcher tone="dark" className="mt-2" />
+            </div>
+          )}
         </div>
         <nav aria-label={t("footer.market")}>
           <p className="text-xs font-semibold tracking-[0.14em] uppercase opacity-70">

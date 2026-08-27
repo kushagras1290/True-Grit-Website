@@ -1216,6 +1216,7 @@ export function MediaPage() {
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [uploadStorage, setUploadStorage] = useState<"r2" | "git">("r2");
   const limit = 6;
   const offset = (page - 1) * limit;
 
@@ -1229,7 +1230,7 @@ export function MediaPage() {
   const assets = data ?? [];
 
   const uploadMutation = useMutation({
-    mutationFn: (file: File) => api.uploadImage(file),
+    mutationFn: (file: File) => api.uploadImage(file, undefined, uploadStorage),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["admin-media"] });
       toast.success("Image uploaded.");
@@ -1259,6 +1260,19 @@ export function MediaPage() {
         actions={
           <PermissionGate permission="media.upload">
             <label>
+              <Select
+                aria-label="Image storage"
+                className="mr-2"
+                value={uploadStorage}
+                onChange={(event) => setUploadStorage(event.target.value as "r2" | "git")}
+              >
+                <option value="r2">
+                  <T>Save to R2</T>
+                </option>
+                <option value="git">
+                  <T>Save to Git repo</T>
+                </option>
+              </Select>
               <Button
                 variant="primary"
                 type="button"

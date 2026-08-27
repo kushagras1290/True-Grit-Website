@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import base64
 import json
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from typing import Any
@@ -161,6 +163,47 @@ class GitHubClient:
             body={"state": "success", "context": context, "description": description[:140]},
             accepted=frozenset({201}),
         )
+
+    async def get_file(self, path: str, ref: str = "main") -> dict[str, Any] | None:
+        quoted = urllib.parse.quote(path, safe="/")
+        try:
+            response = await self.request(
+                "GET",
+                f"/contents/{quoted}?ref={urllib.parse.quote(ref, safe='')}",
+                accepted=frozenset({200, 404}),
+            )
+        except GitHubApiError as exc:
+            if exc.status == 404:
+                return None
+            raise
+        if response.status == 404:
+            return None
+        return response.body if isinstance(response.body, dict) else None
+
+    async def put_file(
+        self,
+        *,
+        path: str,
+        content: bytes,
+        message: str,
+        branch: str = "main",
+        sha: str | None = None,
+    ) -> dict[str, Any]:
+        body: dict[str, Any] = {
+            "message": message,
+            "content": base64.b64encode(content).decode("ascii"),
+            "branch": branch,
+        }
+        if sha:
+            body["sha"] = sha
+        quoted = urllib.parse.quote(path, safe="/")
+        response = await self.request(
+            "PUT",
+            f"/contents/{quoted}",
+            body=body,
+            accepted=frozenset({200, 201}),
+        )
+        return response.body if isinstance(response.body, dict) else {}
 
     async def merge(self, base: str, head: str, message: str) -> tuple[str | None, bool]:
         response = await self.request(

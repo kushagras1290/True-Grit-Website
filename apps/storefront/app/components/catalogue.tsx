@@ -6,7 +6,7 @@
 
 import type { CategorySummary, ProductSummary } from "@truegrit/contracts";
 import { themeVars } from "@truegrit/ui";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 
 import { usePriceFormatter } from "../lib/currency";
@@ -25,11 +25,16 @@ const PRODUCE_GLYPHS: Record<string, string> = {
   "himalayan-red-rajma": "R",
 };
 
-function useLiveProductImage(slug: string, imageUrl?: string | null): string | null | undefined {
+function useLiveProductImage(
+  slug: string,
+  imageUrl?: string | null,
+  enabled = true,
+): string | null | undefined {
   const [resolvedImageUrl, setResolvedImageUrl] = useState(imageUrl);
 
   useEffect(() => {
     setResolvedImageUrl(imageUrl);
+    if (!enabled) return;
     const apiUrl = getPublicApiUrl();
     if (!apiUrl) return;
 
@@ -48,23 +53,73 @@ function useLiveProductImage(slug: string, imageUrl?: string | null): string | n
     return () => {
       active = false;
     };
-  }, [imageUrl, slug]);
+  }, [enabled, imageUrl, slug]);
 
   return resolvedImageUrl;
+}
+
+function uniqueImageUrls(entries: Array<string | null | undefined>): string[] {
+  const seen = new Set<string>();
+  return entries.filter((entry): entry is string => {
+    if (!entry || seen.has(entry)) return false;
+    seen.add(entry);
+    return true;
+  });
+}
+
+function useLiveProductImages(slug: string, imageUrls: string[]): string[] {
+  const [resolvedImageUrls, setResolvedImageUrls] = useState(imageUrls);
+
+  useEffect(() => {
+    setResolvedImageUrls(imageUrls);
+    const apiUrl = getPublicApiUrl();
+    if (!apiUrl) return;
+
+    let active = true;
+    fetch(`${apiUrl}/v1/public/products/${encodeURIComponent(slug)}`, {
+      headers: { accept: "application/json" },
+    })
+      .then((response) => (response.ok ? response.json() : null))
+      .then(
+        (
+          product: {
+            imageUrl?: string | null;
+            images?: Array<{ imageUrl?: string | null }>;
+          } | null,
+        ) => {
+          if (!active || !product) return;
+          const next = uniqueImageUrls([
+            product.imageUrl,
+            ...(product.images ?? []).map((image) => image.imageUrl),
+            ...imageUrls,
+          ]);
+          if (next.length > imageUrls.length) setResolvedImageUrls(next);
+        },
+      )
+      .catch(() => undefined);
+
+    return () => {
+      active = false;
+    };
+  }, [imageUrls, slug]);
+
+  return resolvedImageUrls;
 }
 
 export function ProduceFrame({
   slug,
   alt,
   imageUrl,
+  live = true,
   className = "",
 }: {
   slug: string;
   alt: string;
   imageUrl?: string | null;
+  live?: boolean;
   className?: string;
 }) {
-  const resolvedImageUrl = useLiveProductImage(slug, imageUrl);
+  const resolvedImageUrl = useLiveProductImage(slug, imageUrl, live);
   return (
     <div
       role="img"
@@ -118,14 +173,44 @@ export function ProductCard({
 }) {
   const price = usePriceFormatter();
   const effective = productEffectivePrice(product);
+  const imageChoices = useMemo(() => {
+    return uniqueImageUrls([
+      product.imageUrl,
+      ...(product.images ?? []).map((image) => image.imageUrl),
+    ]);
+  }, [product.imageUrl, product.images]);
+  const liveImageChoices = useLiveProductImages(product.slug, imageChoices);
+  const [hovered, setHovered] = useState(false);
+  const [imageIndex, setImageIndex] = useState(0);
+  const hasSlideshow = liveImageChoices.length > 1;
+
+  useEffect(() => {
+    if (!hovered || !hasSlideshow) {
+      setImageIndex(0);
+      return;
+    }
+    const timer = window.setInterval(() => {
+      setImageIndex((current) => (current + 1) % liveImageChoices.length);
+    }, 850);
+    return () => window.clearInterval(timer);
+  }, [hasSlideshow, hovered, liveImageChoices.length]);
+
+  const displayImageUrl = liveImageChoices[imageIndex] ?? product.imageUrl;
   return (
-    <article className="group relative">
+    <article
+      className="group relative"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
+    >
       <WishlistButton productId={product.id} className="absolute top-2 right-2 z-10" />
       <Link to={href} onClick={onNavigate} className="block">
         <ProduceFrame
           slug={product.slug}
           alt={product.imageAlt}
-          imageUrl={product.imageUrl}
+          imageUrl={displayImageUrl}
+          live={false}
           className="aspect-square rounded-md transition-transform duration-200 group-hover:scale-[1.01]"
         />
         <div className="pt-3">

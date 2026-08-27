@@ -170,6 +170,7 @@ from truegrit_api.services.media import (
     delete_media,
     list_media,
     save_image_bytes,
+    save_image_to_git,
     save_image_upload,
     update_media,
 )
@@ -3471,6 +3472,7 @@ class StorefrontSettingsUpdateRequest(_CamelModel):
     delivery_zones: bool | None = None
     b2b: bool | None = None
     refund_orchestrator: bool | None = None
+    english_only: bool | None = None
     payments_disabled_notice: str | None = Field(default=None, max_length=600)
     blog_banner_image_url: str | None = Field(default=None, max_length=1000)
     blog_banner_image_alt: str | None = Field(default=None, max_length=200)
@@ -3684,6 +3686,7 @@ def _storefront_settings_response(
             "deliveryZones": effective.delivery_zones,
             "b2b": effective.b2b,
             "refundOrchestrator": effective.refund_orchestrator,
+            "englishOnly": effective.english_only,
             "anySignInAvailable": effective.any_sign_in_available,
         },
     }
@@ -5041,9 +5044,37 @@ async def upload_image_endpoint(
     db: Annotated[Database, Depends(get_database)],
     principal: Annotated[Principal, Depends(require_permission("media.upload"))],
     filename: Annotated[str | None, Query(min_length=1, max_length=180)] = None,
+    storage: Annotated[str, Query(pattern="^(r2|git)$")] = "r2",
 ) -> Any:
     content_type = (request.headers.get("content-type") or "").split(";", 1)[0].lower()
-    if content_type == "application/json":
+    if storage == "git":
+        if content_type == "application/json":
+            payload = ImageUploadRequest.model_validate(await request.json())
+            import base64
+            import binascii
+
+            try:
+                data = base64.b64decode(payload.data_base64, validate=True)
+            except (binascii.Error, ValueError) as exc:
+                raise ValidationAppError("The uploaded image could not be decoded.") from exc
+            saved = await save_image_to_git(
+                request.app.state.github,
+                db,
+                principal,
+                content_type=payload.content_type,
+                data=data,
+                original_filename=filename,
+            )
+        else:
+            saved = await save_image_to_git(
+                request.app.state.github,
+                db,
+                principal,
+                content_type=content_type,
+                data=await request.body(),
+                original_filename=filename,
+            )
+    elif content_type == "application/json":
         payload = ImageUploadRequest.model_validate(await request.json())
         saved = await save_image_upload(
             request.app.state.media,
@@ -5065,6 +5096,8 @@ async def upload_image_endpoint(
             data=await request.body(),
             original_filename=filename,
         )
+    if saved["path"].startswith("/uploads/"):
+        return {"id": saved["id"], "url": saved["path"]}
     base_url = str(request.base_url).rstrip("/")
     return {"id": saved["id"], "url": f"{base_url}{saved['path']}"}
 
@@ -5075,9 +5108,16 @@ class MediaUpdateRequest(_CamelModel):
 
 
 def _media_row(row: dict[str, Any], base_url: str) -> dict[str, Any]:
+    object_key = row["object_key"]
+    url = (
+        "/" + object_key.removeprefix("git:apps/storefront/public/").lstrip("/")
+        if str(object_key).startswith("git:apps/storefront/public/")
+        else f"/media/{object_key}"
+    )
     return {
         "id": row["id"],
-        "url": f"/media/{row['object_key']}",
+        "url": url,
+        "storage": "git" if str(object_key).startswith("git:") else "r2",
         "originalFilename": row["original_filename"],
         "mimeType": row["mime_type"],
         "sizeBytes": row["size_bytes"],

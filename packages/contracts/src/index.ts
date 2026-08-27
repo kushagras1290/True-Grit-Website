@@ -115,6 +115,10 @@ export interface ProductSummary {
    *  missing-data case. */
   ratingAverage: number;
   ratingCount: number;
+  /** Gallery images available to listing cards for hover slideshows and to
+   *  detail pages for the full viewer. Includes whatever the admin saved in
+   *  product image order; empty when no gallery has been configured. */
+  images?: ProductImage[];
 }
 
 export interface VariantSummary {
@@ -132,9 +136,7 @@ export interface TraceabilityStep {
   detail: string;
 }
 
-/** A gallery photo beyond `ProductSummary.imageUrl` -- the one required
- *  thumbnail every listing uses. Never used for a thumbnail itself, only the
- *  product detail page's own image viewer (see migration 0066). */
+/** A product gallery photo, ordered by the admin. */
 export interface ProductImage {
   id: string;
   imageUrl: string;
@@ -1344,6 +1346,7 @@ export interface StorefrontSettings {
   deliveryZones: boolean;
   b2b: boolean;
   refundOrchestrator: boolean;
+  englishOnly: boolean;
   blogBannerImageUrl: string;
   blogBannerImageAlt: string;
   farmsBannerImageUrl: string;
@@ -1368,6 +1371,7 @@ export interface StorefrontSettingsEffective {
   deliveryZones: boolean;
   b2b: boolean;
   refundOrchestrator: boolean;
+  englishOnly: boolean;
   anySignInAvailable: boolean;
 }
 
@@ -1650,6 +1654,7 @@ export interface AdminRouteSeo {
 export interface AdminMediaAssetRow {
   id: string;
   url: string;
+  storage?: "r2" | "git";
   originalFilename: string;
   mimeType: string;
   sizeBytes: number;

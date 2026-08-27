@@ -646,6 +646,23 @@ function StorefrontSwitchesSection() {
 
       <div>
         <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
+          <T>Language</T>
+        </h3>
+        <ul className="mt-3 max-w-3xl">
+          <SwitchRow
+            label="Force English storefront"
+            description="When enabled, every storefront request renders English, skips geo/header language selection, and hides the language picker. Saved language packs remain untouched."
+            checked={settings.englishOnly}
+            effective={effective.englishOnly}
+            unavailableHint=""
+            disabled={mutation.isPending}
+            onChange={(next) => mutation.mutate({ englishOnly: next })}
+          />
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold tracking-[0.08em] text-ink-muted uppercase">
           <T>Sign-in methods</T>
         </h3>
         {/* Locking every route out of a live storefront is a legitimate thing to

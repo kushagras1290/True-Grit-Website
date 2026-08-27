@@ -234,7 +234,15 @@ export function ImagePreview({
   const [failed, setFailed] = useState(false);
   const initial = label.trim().charAt(0).toUpperCase() || "?";
   const apiUrl = ((import.meta.env.VITE_API_URL as string | undefined) ?? "").replace(/\/+$/, "");
-  const resolvedSrc = src.startsWith("/media/") && apiUrl ? `${apiUrl}${src}` : src;
+  const storefrontUrl = (
+    (import.meta.env.VITE_STOREFRONT_URL as string | undefined) ?? "https://www.truegritin.com"
+  ).replace(/\/+$/, "");
+  const resolvedSrc =
+    src.startsWith("/media/") && apiUrl
+      ? `${apiUrl}${src}`
+      : src.startsWith("/uploads/")
+        ? `${storefrontUrl}${src}`
+        : src;
 
   useEffect(() => {
     setFailed(false);
